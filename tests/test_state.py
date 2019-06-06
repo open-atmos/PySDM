@@ -5,27 +5,37 @@ from SDM import debug
 
 from numpy.testing import assert_almost_equal
 
+
 class TestState:
+
+	# TODO: test copy() calls in ctor
+
 	def test_moment(self):
 		# Arrange (parameters from Clark 1976)
-		n_part = 1000# 190 # cm-3 # TODO!!!!
-		r_mean = 0#6.0 # um    # TODO: geom mean?
-		d = 0.2 # dimensionless -> geom. standard dev
+		n_part = 1000  # 190 # cm-3 # TODO!!!!
+		mmean = 2e-6  # 6.0 # um    # TODO: geom mean?
+		d = 1.2  # dimensionless -> geom. standard dev
 
-		r_min = 0.1
-		r_max = 100
-		n_sd = 16
+		mmin = 0.01e-6
+		mmax = 10e-6
+		n_sd = 32
 
-		spectrum = Lognormal(n_part, r_mean, d)
-		discretise = Linear(r_min, r_max)
-		sut = State(n_sd, discretise, spectrum)
+		spectrum = Lognormal(n_part, mmean, d)
+		discretise = Linear(mmin, mmax)
+		sut = State(*discretise(n_sd, spectrum))
 
-		debug.plot(sut)
+		#debug.plot(sut)
+		true_mean, true_var = spectrum.stats(moments='mv')
 
 		# Act
-		mom_discr = sut.moment(1)
+		discr_zero = sut.moment(0)
+		discr_mean = sut.moment(1)
+		discr_mrsq = sut.moment(2)
 
 		# Assert
-		mom_true = spectrum.stats(moments='m')
-		assert abs(mom_discr - mom_true) / mom_true < 1e-1
-		#assert_almost_equal(mom_discr, mom_true, decimal=100)
+		assert discr_zero == 1
+
+		assert abs(discr_mean - true_mean) / true_mean < .01e-1
+
+		true_mrsq = true_var + true_mean**2
+		assert abs(discr_mrsq - true_mrsq) / true_mrsq < .05e-1
