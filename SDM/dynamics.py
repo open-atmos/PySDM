@@ -2,6 +2,7 @@
 Created at 06.06.2019
 
 @author: Piotr Bartman
+@author: Sylwester Arabas
 """
 
 import numpy as np

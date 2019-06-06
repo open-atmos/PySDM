@@ -2,7 +2,7 @@ import numpy as np
 
 
 class State:
-	def __init__(self, m, n):#n_particles, discretise, spectrum):
+	def __init__(self, m, n):  # n_particles, discretise, spectrum):
 		assert m.shape == n.shape
 		assert len(m.shape) == 1
 		self.m = m.copy()
@@ -14,7 +14,9 @@ class State:
 	def collide(self, i, j, gamma):
 		if self.n[i] < self.n[j]:
 			i, j = j, i
-		gamma = np.amin(gamma, self.n[j] / self.n[i])
+
+		gamma = min(gamma, self.n[i] // self.n[j])
+
 		if self.n[j] != 0:
 			self.n[i] -= gamma * self.n[j]
 			self.m[j] += gamma * self.m[i]

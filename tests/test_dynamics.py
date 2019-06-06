@@ -2,12 +2,14 @@
 Created at 06.06.2019
 
 @author: Piotr Bartman
+@author: Sylwester Arabas
 """
 
 from SDM.dynamics import Dynamic
 from SDM.state import State
 import numpy as np
 import pytest
+
 
 class TestDynamic:
 
@@ -33,7 +35,6 @@ class TestDynamic:
         if np.amin(n) > 0: assert np.amax(state.m) == np.sum(m)
         assert np.amax(state.n) == max(np.amax(n) - np.amin(n), np.amin(n))
 
-
     @pytest.mark.parametrize("m, n, p", [
         pytest.param(np.array([1, 1]), np.array([1, 1]), 2),
         pytest.param(np.array([1, 1]), np.array([1, 0]), 3),
@@ -48,12 +49,13 @@ class TestDynamic:
         state = State(m, n)
 
         # Act
+        print(state.m, state.n)
         sut.step(state)
 
         # Assert
-        print(state.n, state.m)
+        gamma = min(p, max(n[0] // n[1], n[1] // n[1]))
         assert np.amin(state.n) >= 0
         assert np.sum(state.n * state.m) == np.sum(n * m)
-        assert np.sum(state.n) == np.sum(n) - p * np.amin(n)
-        if np.amin(n) > 0: assert np.amax(state.m) == np.sum(m)
-        assert np.amax(state.n) == max(np.amax(n) - np.amin(n), np.amin(n))
+        assert np.sum(state.n) == np.sum(n) - gamma * np.amin(n)
+        if np.amin(n) > 0: assert np.amax(state.m) == gamma * m[np.argmax(n)] + m[np.argmax(n) - 1]
+        assert np.amax(state.n) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))

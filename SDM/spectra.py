@@ -1,7 +1,8 @@
 from scipy.stats import lognorm
 import math
 
-class Lognormal():
+
+class Lognormal:
 	def __init__(self, n_part, m_mode, s_geom):
 		self.s = math.log(s_geom) 
 		self.loc = 0
