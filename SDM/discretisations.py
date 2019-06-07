@@ -1,6 +1,7 @@
 import numpy as np
 
 
+# TODO Discretisation.linear(function, bins, (min, max))
 class Linear:
 	def __init__(self, m_min, m_max):
 		self.m_min = m_min

@@ -1,5 +1,2 @@
 # hello-SDM
-## Requirements
-- scipy
-- matplotlib
-- pythran
+- SDM collision

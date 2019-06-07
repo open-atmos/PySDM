@@ -2,7 +2,8 @@ import numpy as np
 
 
 class State:
-	def __init__(self, m, n):  # n_particles, discretise, spectrum):
+	# TODO: rethink if m and n should not be in one array
+	def __init__(self, m, n):
 		assert m.shape == n.shape
 		assert len(m.shape) == 1
 		self.m = m.copy()

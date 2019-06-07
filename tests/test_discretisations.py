@@ -6,4 +6,4 @@ class TestLinear:
 		# Act
 
 		# Assert
-		
+
