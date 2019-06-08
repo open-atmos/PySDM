@@ -65,6 +65,9 @@ class TestSDM:
         if np.amin(n) > 0: assert np.amax(state.m) == gamma * m[np.argmax(n)] + m[np.argmax(n) - 1]
         assert np.amax(state.n) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
 
+    def test_multi_droplet(self):
+        pass # TODO
+
     def test_probability(self):
         # Arrange
         kerval = 44

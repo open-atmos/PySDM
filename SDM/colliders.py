@@ -33,4 +33,4 @@ class SDM:
 
         # TODO ! no loops
         for i in range(1, n_sd, 2):
-            state.collide(idx[i], idx[i - 1], gamma)
+            state.collide(idx[i], idx[i - 1], gamma[i - 1])
