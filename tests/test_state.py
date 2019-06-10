@@ -1,5 +1,5 @@
 from SDM.state import State
-from SDM.discretisations import Linear
+from SDM.discretisations import linear
 from SDM.spectra import Lognormal
 from SDM import debug
 
@@ -21,8 +21,7 @@ class TestState:
 		n_sd = 32
 
 		spectrum = Lognormal(n_part, mmean, d)
-		discretise = Linear(mmin, mmax)
-		sut = State(*discretise(n_sd, spectrum))
+		sut = State(*linear(n_sd, spectrum, (mmin, mmax)))
 
 		#debug.plot(sut)
 		true_mean, true_var = spectrum.stats(moments='mv')

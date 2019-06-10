@@ -9,7 +9,7 @@ from SDM.runner import Runner
 from SDM.state import State
 from SDM.colliders import SDM
 from SDM.undertakers import Resize
-from SDM.discretisations import Linear
+from SDM.discretisations import logarithmic
 from SDM.spectra import Exponential
 from SDM.kernels import Golovin
 
@@ -27,7 +27,7 @@ class setup:
 
 def TODO(s):
     spectrum = Exponential(s.n_part, s.x_0) # TODO: parameters
-    state = State(*Linear(s.m_min, s.m_max)(s.n_sd, spectrum))
+    state = State(*logarithmic(s.n_sd, spectrum, (s.m_min, s.m_max)))
     kernel = Golovin(setup.b)
     collider = SDM(kernel, s.dt, s.dv)
     undertaker = Resize()
