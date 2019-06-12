@@ -16,7 +16,7 @@ class Exponential:
         raise expon.stats(loc=self.loc, scale=self.scale, moments=moments)
 
     def cumulative(self, m):
-        return self.n_part * expon.cdf(m, self.s, self.loc, self.scale)
+        return self.n_part * expon.cdf(m, self.loc, self.scale)
 
 
 class Lognormal:
@@ -33,4 +33,5 @@ class Lognormal:
         return lognorm.stats(self.s, loc=self.loc, scale=self.scale, moments=moments)
 
     def cumulative(self, m):
-        return self.n_part * lognorm.cdf(m, self.s, self.loc, self.scale)
+        result = self.n_part * lognorm.cdf(m, self.s, self.loc, self.scale)
+        return result

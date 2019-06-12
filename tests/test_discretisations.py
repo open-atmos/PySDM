@@ -10,21 +10,25 @@ import pytest
 ])
 def test_discretisation(discretisation):
 	# Arrange
-	n_sd = 64
-	m_mode = 2e-6
-	n_part = 32 * n_sd
-	s_geom = 1.2
-	spectrum = Lognormal(m_mode, n_part, s_geom)
-	m_range = (0, 1000)
+	n_sd = 100
+	m_mode = .5e-5
+	n_part = 256
+	s_geom = 1.5
+	spectrum = Lognormal(n_part, m_mode, s_geom)
+	m_range = (.1e-6, 100e-6)
 
 	# Act
 	m, n = discretisation(n_sd, spectrum, m_range)
 
 	# Assert
 	assert m.shape == n.shape == (n_sd,)
-	print(m)
 	assert np.min(m) >= m_range[0]
 	assert np.max(m) <= m_range[1]
+	actual = np.sum(n)
+	desired = spectrum.cumulative(m_range[1]) - spectrum.cumulative(m_range[0])
+	quotient = actual / desired
+	# TODO relative error
+	np.testing.assert_almost_equal(actual=quotient, desired=1.0, decimal=2)
 
 
 def test_linear():

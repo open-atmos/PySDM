@@ -6,4 +6,4 @@ class Runner:
 	def run(self, nt):
 		for _ in range(nt):
 			for d in self.dynamics:
-				d.dynamics.step(self.state)
+				d(self.state)

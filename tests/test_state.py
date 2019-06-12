@@ -1,9 +1,6 @@
 from SDM.state import State
 from SDM.discretisations import linear
 from SDM.spectra import Lognormal
-from SDM import debug
-
-from numpy.testing import assert_almost_equal
 
 
 class TestState:

@@ -11,4 +11,5 @@ class Golovin:
         self.b = b
 
     def __call__(self, m1, m2):
+
         return self.b * (m1 + m2)

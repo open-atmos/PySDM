@@ -66,7 +66,7 @@ class TestSDM:
         assert np.amax(state.n) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
 
     def test_multi_droplet(self):
-        pass # TODO
+        pass  # TODO
 
     def test_probability(self):
         # Arrange
@@ -77,7 +77,7 @@ class TestSDM:
         sut = SDM(StubKernel(kerval), dt, dv)
 
         # Act
-        actual = sut.probability(0, 0, n_sd)
+        actual = sut.probability((0, 1), (0, 1), n_sd)  # TODO dependency to state[]
 
         # Assert
         desired = dt/dv * kerval * n_sd * (n_sd - 1) / 2 / (n_sd//2)
