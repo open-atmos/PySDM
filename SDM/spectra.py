@@ -1,37 +1,39 @@
+"""
+Created at 03.06.2019
+
+@author: Piotr Bartman
+@author: Sylwester Arabas
+"""
+
 from scipy.stats import lognorm
 from scipy.stats import expon
 import math
 
 
-class Exponential:
-    def __init__(self, n_part, m_mode, s_geom):  # TODO change name of params?
-        self.loc = m_mode
-        self.scale = s_geom
+class Spectrum:
+    def __init__(self, distribution, distribution_params, n_part):
+        self.distribution_params = distribution_params  # (loc, scale)
         self.n_part = n_part
+        self.distribution = distribution
 
     def size_distribution(self, m):
-        return self.n_part * expon.pdf(m, self.loc, self.scale)
-
-    def stats(self, moments):
-        raise expon.stats(loc=self.loc, scale=self.scale, moments=moments)
-
-    def cumulative(self, m):
-        return self.n_part * expon.cdf(m, self.loc, self.scale)
-
-
-class Lognormal:
-    def __init__(self, n_part, m_mode, s_geom):
-        self.s = math.log(s_geom)
-        self.loc = 0
-        self.scale = m_mode
-        self.n_part = n_part
-
-    def size_distribution(self, m):
-        return self.n_part * lognorm.pdf(m, self.s, self.loc, self.scale)
-
-    def stats(self, moments):
-        return lognorm.stats(self.s, loc=self.loc, scale=self.scale, moments=moments)
-
-    def cumulative(self, m):
-        result = self.n_part * lognorm.cdf(m, self.s, self.loc, self.scale)
+        result = self.n_part * self.distribution.pdf(m, *self.distribution_params)
         return result
+
+    def stats(self, moments):
+        result = self.distribution.stats(*self.distribution_params, moments)
+        return result
+
+    def cumulative(self, m):
+        result = self.n_part * self.distribution.cdf(m, *self.distribution_params)
+        return result
+
+
+class Exponential(Spectrum):
+    def __init__(self, n_part, m_mode, s_geom):  # TODO change name of params?
+        super().__init__(expon, (m_mode, s_geom), n_part)
+
+
+class Lognormal(Spectrum):
+    def __init__(self, n_part, m_mode, s_geom):
+        super().__init__(lognorm, (math.log(s_geom), 0, m_mode), n_part)

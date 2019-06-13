@@ -62,23 +62,38 @@ class TestSDM:
         assert np.amin(state.n) >= 0
         assert np.sum(state.n * state.m) == np.sum(n * m)
         assert np.sum(state.n) == np.sum(n) - gamma * np.amin(n)
-        if np.amin(n) > 0: assert np.amax(state.m) == gamma * m[np.argmax(n)] + m[np.argmax(n) - 1]
+        assert np.amax(state.m) == gamma * m[np.argmax(n)] + m[np.argmax(n) - 1]
         assert np.amax(state.n) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
 
-    def test_multi_droplet(self):
-        pass  # TODO
+    @pytest.mark.parametrize("m, n, p", [
+        pytest.param(np.array([1, 1, 1]), np.array([1, 1, 1]), 2),
+        pytest.param(np.array([1, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
+        pytest.param(np.array([1, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
+    ])
+    def test_multi_droplet(self, m, n, p):
+        # Arrange
+        sut = SDM(StubKernel(), dt=0, dv=0)
+        sut.probability = lambda m1, m2, n_sd: p
+        state = State(m, n)
+
+        # Act
+        sut(state)
+
+        # Assert
+        assert np.amin(state.n) >= 0
+        assert np.sum(state.n * state.m) == np.sum(n * m)
 
     def test_probability(self):
         # Arrange
-        kerval = 44
+        kernel_value = 44
         dt = 666
         dv = 9
         n_sd = 64
-        sut = SDM(StubKernel(kerval), dt, dv)
+        sut = SDM(StubKernel(kernel_value), dt, dv)
 
         # Act
-        actual = sut.probability((0, 1), (0, 1), n_sd)  # TODO dependency to state[]
+        actual = sut.probability((0, 1), (0, 1), n_sd)  # TODO dependency state []
 
         # Assert
-        desired = dt/dv * kerval * n_sd * (n_sd - 1) / 2 / (n_sd//2)
+        desired = dt/dv * kernel_value * n_sd * (n_sd - 1) / 2 / (n_sd//2)
         assert actual == desired

@@ -1,3 +1,10 @@
+"""
+Created at 03.06.2019
+
+@author: Piotr Bartman
+@author: Sylwester Arabas
+"""
+
 import numpy as np
 
 
@@ -6,19 +13,20 @@ class State:
 	def __init__(self, m, n):
 		assert m.shape == n.shape
 		assert len(m.shape) == 1
+
 		self.m = m.copy()
 		self.n = n.copy()
 
-	def _sort(self, key):
+	def __sort(self, key):
 		idx = np.argsort(key)
 		self.n = self.n[idx]
 		self.m = self.m[idx]
 
 	def sort_by_m(self):
-		self._sort(self.m)
+		self.__sort(self.m)
 
 	def sort_by_n(self):
-		self._sort(self.n)
+		self.__sort(self.n)
 
 	def unsort(self):
 		idx = np.random.permutation(np.arange(len(self)))
