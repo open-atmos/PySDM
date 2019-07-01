@@ -12,11 +12,11 @@ import pytest
 
 
 class StubKernel:
-    def __init__(self, retval=-1):
-        self.retval = retval
+    def __init__(self, returned_value=-1):
+        self.returned_value = returned_value
 
     def __call__(self, m1, m2):
-        return self.retval
+        return self.returned_value
 
 
 class TestSDM:
@@ -82,6 +82,30 @@ class TestSDM:
         # Assert
         assert np.amin(state.n) >= 0
         assert np.sum(state.n * state.m) == np.sum(n * m)
+
+    # TODO integration test?
+    def test_multi_step(self):
+        # Arrange
+        n = np.random.randint(1, 64, size=256)
+        m = np.random.uniform(size=256)
+
+        sut = SDM(StubKernel(), dt=0, dv=0)
+        sut.probability = lambda m1, m2, n_sd: 0.5
+        state = State(m, n)
+
+        from SDM.undertakers import Resize
+        undertaker = Resize()
+
+        # Act
+        for _ in range(32):
+            sut(state)
+            undertaker(state)
+
+        # Assert
+        assert np.amin(state.n) >= 0
+        actual = np.sum(state.n * state.m)
+        desired = np.sum(n * m)
+        np.testing.assert_almost_equal(actual=actual, desired=desired)
 
     def test_probability(self):
         # Arrange

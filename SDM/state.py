@@ -33,8 +33,17 @@ class State:
 		self.m = self.m[idx]
 		self.n = self.n[idx]
 
-	def moment(self, k):
-		return np.average(self.m ** k, weights=self.n)
+	def moment(self, k, m_range=(0, np.inf)):
+		idx = np.where(
+			np.logical_and(
+				self.n > 0, #TODO: alternatively depend on undertaker...
+				np.logical_and(m_range[0] <= self.m,  self.m < m_range[1])
+			)
+		)
+		if not idx[0].any():
+			return 0 if k == 0 else np.nan
+		avg, sum = np.average(self.m[idx] ** k, weights=self.n[idx], returned=True)
+		return avg * sum
 
 	def collide(self, i, j, gamma):
 		if self.n[i] < self.n[j]:

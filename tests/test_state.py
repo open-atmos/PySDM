@@ -9,7 +9,7 @@ class TestState:
 
     def test_moment(self):
         # Arrange (parameters from Clark 1976)
-        n_part = 1000  # 190 # cm-3 # TODO!!!!
+        n_part = 10000  # 190 # cm-3 # TODO!!!!
         mmean = 2e-6  # 6.0 # um    # TODO: geom mean?
         d = 1.2  # dimensionless -> geom. standard dev
 
@@ -24,12 +24,12 @@ class TestState:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # Act
-        discr_zero = sut.moment(0)
-        discr_mean = sut.moment(1)
-        discr_mrsq = sut.moment(2)
+        discr_zero = sut.moment(0) / n_part
+        discr_mean = sut.moment(1) / n_part
+        discr_mrsq = sut.moment(2) / n_part
 
         # Assert
-        assert discr_zero == 1
+        assert abs(discr_zero - 1) / 1 < 1e-3
 
         assert abs(discr_mean - true_mean) / true_mean < .01e-1
 

@@ -8,6 +8,7 @@ Created at 03.06.2019
 from scipy.stats import lognorm
 from scipy.stats import expon
 import math
+import numpy as np
 
 
 class Spectrum:
@@ -26,6 +27,10 @@ class Spectrum:
 
     def cumulative(self, m):
         result = self.n_part * self.distribution.cdf(m, *self.distribution_params)
+        return result
+
+    def percentiles(self, cdfarg):
+        result = self.distribution.ppf(cdfarg, *self.distribution_params)
         return result
 
 
