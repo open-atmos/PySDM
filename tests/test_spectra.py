@@ -1,7 +1,8 @@
-from SDM.spectra import Lognormal
+from SDM.spectra import Lognormal, Exponential
+
 import numpy as np
 from numpy.testing import assert_approx_equal
-
+import pytest
 
 class TestLognormal:
 	def test_size_distribution_n_part(self):
@@ -37,3 +38,21 @@ class TestLognormal:
 	def test_size_distribution_s(self):
 		# TODO
 		pass
+
+
+class TestExponential:
+	@pytest.mark.parametrize("scale", [
+		pytest.param(0.5), pytest.param(1), pytest.param(1.5),
+	])
+	def test_size_distribution_n_part(self, scale):
+		# Arrange
+		scale = 1
+		n_part = 256
+		sut = Exponential(n_part, scale)
+
+		# Act
+		m, dm = np.linspace(0, 5, 10000, retstep=True)
+		sd = sut.size_distribution(m)
+
+		# Assert
+		assert_approx_equal(np.sum(sd) * dm, n_part, 2)
