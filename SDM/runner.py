@@ -5,13 +5,19 @@ Created at 03.06.2019
 @author: Sylwester Arabas
 """
 
+from SDM.stats import Stats
 
 class Runner:
 	def __init__(self, state, dynamics):
 		self.state = state
 		self.dynamics = dynamics
+		self.n_steps = 0
+		self.stats = Stats()  # TODO: inject?
 
-	def run(self, nt):
-		for _ in range(nt):
-			for d in self.dynamics:
-				d(self.state)
+	def run(self, steps):
+		with self.stats:
+			for _ in range(steps):
+				for d in self.dynamics:
+					d(self.state)
+		self.n_steps += steps
+

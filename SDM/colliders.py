@@ -7,6 +7,7 @@ Created at 07.06.2019
 
 
 import numpy as np
+import  numba
 
 
 class SDM:
@@ -16,6 +17,7 @@ class SDM:
         self.probability = lambda sd1, sd2, n_sd: \
             max(sd1[N], sd2[N]) * kernel(sd1[M], sd2[M]) * dt / dv * n_sd * (n_sd - 1) / 2 / (n_sd//2)
 
+    # @numba.jit() #TODO
     def __call__(self, state):
         n_sd = len(state)
 

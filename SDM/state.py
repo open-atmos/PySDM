@@ -17,6 +17,7 @@ class State:
 		self.m = m.copy()
 		self.n = n.copy()
 
+
 	def __sort(self, key):
 		idx = np.argsort(key)
 		self.n = self.n[idx]
@@ -32,6 +33,14 @@ class State:
 		idx = np.random.permutation(np.arange(len(self)))
 		self.m = self.m[idx]
 		self.n = self.n[idx]
+
+	def m_min(self):
+		result = np.amin(self.m)
+		return result
+
+	def m_max(self):
+		result = np.amax(self.m)
+		return result
 
 	def moment(self, k, m_range=(0, np.inf)):
 		idx = np.where(
