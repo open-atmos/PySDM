@@ -9,63 +9,76 @@ import numpy as np
 
 
 class State:
-	# TODO: rethink if m and n should not be in one array
-	def __init__(self, m, n):
-		assert m.shape == n.shape
-		assert len(m.shape) == 1
+    def __init__(self, m, n):
+        assert m.shape == n.shape
+        assert len(m.shape) == 1
 
-		self.m = m.copy()
-		self.n = n.copy()
+        self.data = np.concatenate((m.copy()[:, None], n.copy()[:, None]), axis=1)
 
+    @property
+    def m(self):
+        return self.data[:, 0]
 
-	def __sort(self, key):
-		idx = np.argsort(key)
-		self.n = self.n[idx]
-		self.m = self.m[idx]
+    @m.setter
+    def m(self, value):
+        self.data[:, 0] = value
 
-	def sort_by_m(self):
-		self.__sort(self.m)
+    @property
+    def n(self):
+        return self.data[:, 1]
 
-	def sort_by_n(self):
-		self.__sort(self.n)
+    @n.setter
+    def n(self, value):
+        self.data[:, 1] = value
 
-	def unsort(self):
-		idx = np.random.permutation(np.arange(len(self)))
-		self.m = self.m[idx]
-		self.n = self.n[idx]
+    def __sort(self, key):
+        idx = np.argsort(key)
+        self.n = self.n[idx]
+        self.m = self.m[idx]
 
-	def m_min(self):
-		result = np.amin(self.m)
-		return result
+    def sort_by_m(self):
+        self.__sort(self.m)
 
-	def m_max(self):
-		result = np.amax(self.m)
-		return result
+    def sort_by_n(self):
+        self.__sort(self.n)
 
-	def moment(self, k, m_range=(0, np.inf)):
-		idx = np.where(
-			np.logical_and(
-				self.n > 0, #TODO: alternatively depend on undertaker...
-				np.logical_and(m_range[0] <= self.m,  self.m < m_range[1])
-			)
-		)
-		if not idx[0].any():
-			return 0 if k == 0 else np.nan
-		avg, sum = np.average(self.m[idx] ** k, weights=self.n[idx], returned=True)
-		return avg * sum
+    def unsort(self):
+        idx = np.random.permutation(np.arange(len(self)))
+        self.m = self.m[idx]
+        self.n = self.n[idx]
 
-	def collide(self, i, j, gamma):
-		if self.n[i] < self.n[j]:
-			i, j = j, i
+    def m_min(self):
+        result = np.amin(self.m)
+        return result
 
-		gamma = min(gamma, self.n[i] // self.n[j])
+    def m_max(self):
+        result = np.amax(self.m)
+        return result
 
-		if self.n[j] != 0:
-			self.n[i] -= gamma * self.n[j]
-			self.m[j] += gamma * self.m[i]
+    def moment(self, k, m_range=(0, np.inf)):
+        idx = np.where(
+            np.logical_and(
+                self.n > 0,  # TODO: alternatively depend on undertaker...
+                np.logical_and(m_range[0] <= self.m, self.m < m_range[1])
+            )
+        )
+        if not idx[0].any():
+            return 0 if k == 0 else np.nan
+        avg, sum = np.average(self.m[idx] ** k, weights=self.n[idx], returned=True)
+        return avg * sum
 
-	def __len__(self):
-		return self.m.shape[0]
+    def collide(self, i, j, gamma):
+        if self.n[i] < self.n[j]:
+            i, j = j, i
 
-	def __getitem__(self, item):
-		return self.m[item], self.n[item]
+        gamma = min(gamma, self.n[i] // self.n[j])
+
+        if self.n[j] != 0:
+            self.n[i] -= gamma * self.n[j]
+            self.m[j] += gamma * self.m[i]
+
+    def __len__(self):
+        return self.m.shape[0]
+
+    def __getitem__(self, item):
+        return self.m[item], self.n[item]

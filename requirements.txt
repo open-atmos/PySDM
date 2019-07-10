@@ -2,4 +2,3 @@ numpy
 pytest
 scipy
 matplotlib
-pythran
