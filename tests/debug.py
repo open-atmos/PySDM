@@ -5,7 +5,7 @@ from SDM.state import State
 def plot(state):
 	state.sort_by_m()
 
-	pyplot.plot(state.m, state.n)
+	pyplot.plot(state.x, state.n)
 	pyplot.grid()
 	pyplot.show()
 

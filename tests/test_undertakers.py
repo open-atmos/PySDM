@@ -13,18 +13,18 @@ import numpy as np
 
 class TestResize:
 
-    @pytest.mark.parametrize("m, n", [
+    @pytest.mark.parametrize("x, n", [
         pytest.param(np.array([1, 1, 1, 1]), np.array([1, 1, 1, 1])),
         pytest.param(np.array([1, 2, 1, 1]), np.array([2, 0, 2, 0])),
         pytest.param(np.array([1, 1, 4]), np.array([5, 0, 0]))
     ])
-    def test___call__(self, m, n):
+    def test___call__(self, x, n):
         sut = Resize()
-        state = State(m, n)
+        state = State(x, n)
 
         sut(state)
 
-        assert state.m.shape == state.n.shape
+        assert state.x.shape == state.n.shape
         assert state.n.shape[0] == (n != 0).sum()
         assert state.n.sum() == n.sum()
-        assert (state.m * state.n).sum() == (m * n).sum()
+        assert (state.x * state.n).sum() == (x * n).sum()

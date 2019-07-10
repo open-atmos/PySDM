@@ -16,11 +16,11 @@ class State:
         self.data = np.concatenate((m.copy()[:, None], n.copy()[:, None]), axis=1)
 
     @property
-    def m(self):
+    def x(self):
         return self.data[:, 0]
 
-    @m.setter
-    def m(self, value):
+    @x.setter
+    def x(self, value):
         self.data[:, 0] = value
 
     @property
@@ -34,37 +34,37 @@ class State:
     def __sort(self, key):
         idx = np.argsort(key)
         self.n = self.n[idx]
-        self.m = self.m[idx]
+        self.x = self.x[idx]
 
     def sort_by_m(self):
-        self.__sort(self.m)
+        self.__sort(self.x)
 
     def sort_by_n(self):
         self.__sort(self.n)
 
     def unsort(self):
         idx = np.random.permutation(np.arange(len(self)))
-        self.m = self.m[idx]
+        self.x = self.x[idx]
         self.n = self.n[idx]
 
     def m_min(self):
-        result = np.amin(self.m)
+        result = np.amin(self.x)
         return result
 
     def m_max(self):
-        result = np.amax(self.m)
+        result = np.amax(self.x)
         return result
 
     def moment(self, k, m_range=(0, np.inf)):
         idx = np.where(
             np.logical_and(
                 self.n > 0,  # TODO: alternatively depend on undertaker...
-                np.logical_and(m_range[0] <= self.m, self.m < m_range[1])
+                np.logical_and(m_range[0] <= self.x, self.x < m_range[1])
             )
         )
         if not idx[0].any():
             return 0 if k == 0 else np.nan
-        avg, sum = np.average(self.m[idx] ** k, weights=self.n[idx], returned=True)
+        avg, sum = np.average(self.x[idx] ** k, weights=self.n[idx], returned=True)
         return avg * sum
 
     def collide(self, i, j, gamma):
@@ -75,10 +75,10 @@ class State:
 
         if self.n[j] != 0:
             self.n[i] -= gamma * self.n[j]
-            self.m[j] += gamma * self.m[i]
+            self.x[j] += gamma * self.x[i]
 
     def __len__(self):
-        return self.m.shape[0]
+        return self.x.shape[0]
 
     def __getitem__(self, item):
-        return self.m[item], self.n[item]
+        return self.x[item], self.n[item]

@@ -39,5 +39,5 @@ class SetupA:
             np.testing.assert_approx_equal(state.n[0], check_ksi, 1)
 
         # liquid water content
-        LWC = self.rho * np.dot(state.n, state.m) / self.dv
+        LWC = self.rho * np.dot(state.n, state.x) / self.dv
         np.testing.assert_approx_equal(LWC, check_LWC, 3)
