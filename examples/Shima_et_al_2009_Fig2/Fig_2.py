@@ -18,11 +18,14 @@ from SDM.discretisations import constant_multiplicity
 
 
 def test_Fig2():
+    import numpy as np
+    np.seterr(all='raise')
+
     setup = SetupA()
     states, _ = run(setup)
 
-    x_min = min([state.m_min() for state in states.values()])
-    x_max = max([state.m_max() for state in states.values()])
+    x_min = min([state.x_min() for state in states.values()])
+    x_max = max([state.x_max() for state in states.values()])
 
     plotter = Plotter(setup, (x_min, x_max))
     for step, state in states.items():
@@ -47,7 +50,7 @@ def test_timing():
 
 
 def run(setup):
-    state = State(*constant_multiplicity(setup.n_sd, setup.spectrum, (setup.m_min, setup.m_max)))
+    state = State(*constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max)))
     collider = SDM(setup.kernel, setup.dt, setup.dv)
     undertaker = Resize()
     runner = Runner(state, (undertaker, collider))

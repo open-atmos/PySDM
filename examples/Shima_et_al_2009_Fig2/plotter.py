@@ -18,7 +18,7 @@ class Plotter:
         self.x_bins = np.logspace(
             (np.log10(xrange[0])),
             (np.log10(xrange[1])),
-            num=32,
+            num=64,
             endpoint=True
         )
         self.r_bins = x2r(self.x_bins)

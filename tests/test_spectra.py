@@ -56,3 +56,15 @@ class TestExponential:
 
 		# Assert
 		assert_approx_equal(np.sum(sd) * dm, n_part, 2)
+
+	def test_underflow(self):
+		np.seterr(all='raise') #TODO: use with construct
+
+		norm_factor = 1e10
+		scale = 1e-13
+		sut = Exponential(norm_factor, scale)
+
+		x = 5e-10
+		value = sut.size_distribution(x)
+
+		assert value != 0

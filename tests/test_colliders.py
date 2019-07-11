@@ -42,6 +42,23 @@ class TestSDM:
         if np.amin(n) > 0: assert np.amax(state.x) == np.sum(x)
         assert np.amax(state.n) == max(np.amax(n) - np.amin(n), np.amin(n))
 
+    @pytest.mark.parametrize("n_in, n_out", [
+        pytest.param(1, np.array([1, 0])),
+        pytest.param(2, np.array([1, 1])),
+        pytest.param(3, np.array([2, 1])),
+    ])
+    def test_single_collision_same_n(self, n_in, n_out):
+        # Arrange
+        sut = SDM(StubKernel(), dt=0, dv=0)
+        sut.probability = lambda m1, m2, n_sd: 1
+        state = State(x=np.full(2, 1), n=np.full(2, n_in))
+
+        # Act
+        sut(state)
+
+        # Assert
+        np.testing.assert_array_equal(state.n, n_out)
+
     @pytest.mark.parametrize("x, n, p", [
         pytest.param(np.array([1, 1]), np.array([1, 1]), 2),
         pytest.param(np.array([1, 1]), np.array([5, 1]), 4),
@@ -121,3 +138,5 @@ class TestSDM:
         # Assert
         desired = dt/dv * kernel_value * n_sd * (n_sd - 1) / 2 / (n_sd//2)
         assert actual == desired
+
+    #TODO

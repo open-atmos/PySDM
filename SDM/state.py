@@ -9,11 +9,11 @@ import numpy as np
 
 
 class State:
-    def __init__(self, m, n):
-        assert m.shape == n.shape
-        assert len(m.shape) == 1
+    def __init__(self, x, n):
+        assert x.shape == n.shape
+        assert len(x.shape) == 1
 
-        self.data = np.concatenate((m.copy()[:, None], n.copy()[:, None]), axis=1)
+        self.data = np.concatenate((x.copy()[:, None], n.copy()[:, None]), axis=1)
 
     @property
     def x(self):
@@ -31,6 +31,7 @@ class State:
     def n(self, value):
         self.data[:, 1] = value
 
+    # TODO optimize
     def __sort(self, key):
         idx = np.argsort(key)
         self.n = self.n[idx]
@@ -42,16 +43,17 @@ class State:
     def sort_by_n(self):
         self.__sort(self.n)
 
+    # TODO optimize
     def unsort(self):
         idx = np.random.permutation(np.arange(len(self)))
         self.x = self.x[idx]
         self.n = self.n[idx]
 
-    def m_min(self):
+    def x_min(self):
         result = np.amin(self.x)
         return result
 
-    def m_max(self):
+    def x_max(self):
         result = np.amax(self.x)
         return result
 
@@ -67,15 +69,22 @@ class State:
         avg, sum = np.average(self.x[idx] ** k, weights=self.n[idx], returned=True)
         return avg * sum
 
-    def collide(self, i, j, gamma):
-        if self.n[i] < self.n[j]:
-            i, j = j, i
+    def collide(self, j, k, gamma):
+        if self.n[j] < self.n[k]:
+            j, k = k, j
 
-        gamma = min(gamma, self.n[i] // self.n[j])
+        gamma = min(gamma, self.n[j] // self.n[k])
 
-        if self.n[j] != 0:
-            self.n[i] -= gamma * self.n[j]
-            self.x[j] += gamma * self.x[i]
+        if self.n[k] != 0: #TODO: guaranteed by undertaker
+            n = self.n[j] - gamma * self.n[k]
+            if n > 0:
+                self.n[j] = n
+                self.x[k] += gamma * self.x[j]
+            else:  # n == 0
+                self.n[j] = self.n[k] // 2
+                self.n[k] = self.n[k] - self.n[j]
+                self.x[j] = gamma * self.x[j] + self.x[k]
+                self.x[k] = self.x[j]
 
     def __len__(self):
         return self.x.shape[0]
