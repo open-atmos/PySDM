@@ -6,6 +6,7 @@ Created at 07.06.2019
 """
 
 import copy
+import numpy as np
 
 from examples.Shima_et_al_2009_Fig2.plotter import Plotter
 from examples.Shima_et_al_2009_Fig2.setups import SetupA
@@ -18,19 +19,18 @@ from SDM.discretisations import constant_multiplicity
 
 
 def test_Fig2():
-    import numpy as np
-    np.seterr(all='raise')
+    with np.errstate(all='raise'):
+        setup = SetupA()
+        states, _ = run(setup)
 
-    setup = SetupA()
-    states, _ = run(setup)
+        x_min = min([state.x_min() for state in states.values()])
+        x_max = max([state.x_max() for state in states.values()])
 
-    x_min = min([state.x_min() for state in states.values()])
-    x_max = max([state.x_max() for state in states.values()])
-
-    plotter = Plotter(setup, (x_min, x_max))
-    for step, state in states.items():
-        plotter.plot(state, step * setup.dt)
-    plotter.show()
+    with np.errstate(invalid='ignore'):
+        plotter = Plotter(setup, (x_min, x_max))
+        for step, state in states.items():
+            plotter.plot(state, step * setup.dt)
+        plotter.show()
 
 
 def test_timing():

@@ -46,4 +46,7 @@ def constant_multiplicity(n_sd, spectrum, range):
     cdfarg = np.linspace(cdf_min, cdf_max, num=2 * n_sd + 1)
     cdfarg /= spectrum.norm_factor
     grid = spectrum.percentiles(cdfarg)
+
+    assert np.isfinite(grid).all()
+
     return __discritise(grid, spectrum)

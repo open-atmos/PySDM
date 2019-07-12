@@ -12,8 +12,8 @@ import numpy as np
 
 
 class SetupA:
-    m_min = r2x(10e-6)   # not given in the paper
-    m_max = r2x(100e-6) # not given in the paper
+    x_min = r2x(10e-6)   # not given in the paper
+    x_max = r2x(100e-6)  # not given in the paper
 
     n_sd = 2 ** 13
     n_part = 2 ** 23  # [m-3]
@@ -35,7 +35,7 @@ class SetupA:
 
         # multiplicities
         if step == 0:
-            assert np.amin(state.n) == np.amax(state.n)
+            np.testing.assert_approx_equal(np.amin(state.n), np.amax(state.n), 1)
             np.testing.assert_approx_equal(state.n[0], check_ksi, 1)
 
         # liquid water content
