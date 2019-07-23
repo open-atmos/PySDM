@@ -7,14 +7,13 @@ Created at 07.06.2019
 
 
 class Resize:
-    def __call__(self, state):
+    def __call__(self, state, attr='n'):
         # TODO dependency state items!!!
-        idx_valid = state['n'] != 0
+        idx_valid = state[attr] != 0
         state.data = state.data[:, idx_valid]
 
 
 class Recycle:
-    def __call__(self, state):
-        #TODO: 	state.sort_by_n()
-
+    def __call__(self, state, attr='n'):
+        # TODO: state.sort_by(attr)
         raise NotImplementedError
