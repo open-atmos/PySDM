@@ -23,8 +23,8 @@ def test_Fig2():
         setup = SetupA()
         states, _ = run(setup)
 
-        x_min = min([state.x_min() for state in states.values()])
-        x_max = max([state.x_max() for state in states.values()])
+        x_min = min([state.min('x') for state in states.values()])
+        x_max = max([state.max('x') for state in states.values()])
 
     with np.errstate(invalid='ignore'):
         plotter = Plotter(setup, (x_min, x_max))
@@ -51,7 +51,8 @@ def test_timing():
 
 
 def run(setup):
-    state = State(*constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max)))
+    x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
+    state = State({'x': x, 'n': n})
     collider = SDM(setup.kernel, setup.dt, setup.dv)
     undertaker = Resize()
     runner = Runner(state, (undertaker, collider))

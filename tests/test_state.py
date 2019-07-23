@@ -18,7 +18,8 @@ class TestState:
         n_sd = 32
 
         spectrum = Lognormal(n_part, mmean, d)
-        sut = State(*linear(n_sd, spectrum, (mmin, mmax)))
+        x, n = linear(n_sd, spectrum, (mmin, mmax))
+        sut = State({'x': x, 'n': n})
 
         #debug.plot(sut)
         true_mean, true_var = spectrum.stats(moments='mv')

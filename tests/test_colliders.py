@@ -31,16 +31,16 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=0)
         sut.probability = lambda m1, m2, n_sd: 1
-        state = State(x, n)
+        state = State({'x': x, 'n': n})
 
         # Act
         sut(state)
 
         # Assert
-        assert np.sum(state.n * state.x) == np.sum(n * x)
-        assert np.sum(state.n) == np.sum(n) - np.amin(n)
-        if np.amin(n) > 0: assert np.amax(state.x) == np.sum(x)
-        assert np.amax(state.n) == max(np.amax(n) - np.amin(n), np.amin(n))
+        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
+        assert np.sum(state['n']) == np.sum(n) - np.amin(n)
+        if np.amin(n) > 0: assert np.amax(state['x']) == np.sum(x)
+        assert np.amax(state['n']) == max(np.amax(n) - np.amin(n), np.amin(n))
 
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
@@ -51,13 +51,13 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=0)
         sut.probability = lambda m1, m2, n_sd: 1
-        state = State(x=np.full(2, 1), n=np.full(2, n_in))
+        state = State({'x': np.full(2, 1), 'n': np.full(2, n_in)})
 
         # Act
         sut(state)
 
         # Assert
-        np.testing.assert_array_equal(state.n, n_out)
+        np.testing.assert_array_equal(state['n'], n_out)
 
     @pytest.mark.parametrize("x, n, p", [
         pytest.param(np.array([1, 1]), np.array([1, 1]), 2),
@@ -69,18 +69,18 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=0)
         sut.probability = lambda m1, m2, n_sd: p
-        state = State(x, n)
+        state = State({'x': x, 'n': n})
 
         # Act
         sut(state)
 
         # Assert
         gamma = min(p, max(n[0] // n[1], n[1] // n[1]))
-        assert np.amin(state.n) >= 0
-        assert np.sum(state.n * state.x) == np.sum(n * x)
-        assert np.sum(state.n) == np.sum(n) - gamma * np.amin(n)
-        assert np.amax(state.x) == gamma * x[np.argmax(n)] + x[np.argmax(n) - 1]
-        assert np.amax(state.n) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
+        assert np.amin(state['n']) >= 0
+        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
+        assert np.sum(state['n']) == np.sum(n) - gamma * np.amin(n)
+        assert np.amax(state['x']) == gamma * x[np.argmax(n)] + x[np.argmax(n) - 1]
+        assert np.amax(state['n']) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
 
     @pytest.mark.parametrize("x, n, p", [
         pytest.param(np.array([1, 1, 1]), np.array([1, 1, 1]), 2),
@@ -91,14 +91,14 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=0)
         sut.probability = lambda x1, x2, n_sd: p
-        state = State(x, n)
+        state = State({'x': x, 'n': n})
 
         # Act
         sut(state)
 
         # Assert
-        assert np.amin(state.n) >= 0
-        assert np.sum(state.n * state.x) == np.sum(n * x)
+        assert np.amin(state['n']) >= 0
+        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
 
     # TODO integration test?
     def test_multi_step(self):
@@ -108,7 +108,7 @@ class TestSDM:
 
         sut = SDM(StubKernel(), dt=0, dv=0)
         sut.probability = lambda x1, x2, n_sd: 0.5
-        state = State(x, n)
+        state = State({'x': x, 'n': n})
 
         from SDM.undertakers import Resize
         undertaker = Resize()
@@ -119,8 +119,8 @@ class TestSDM:
             undertaker(state)
 
         # Assert
-        assert np.amin(state.n) >= 0
-        actual = np.sum(state.n * state.x)
+        assert np.amin(state['n']) >= 0
+        actual = np.sum(state['n'] * state['x'])
         desired = np.sum(n * x)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 

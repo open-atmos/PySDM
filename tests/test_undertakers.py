@@ -20,11 +20,11 @@ class TestResize:
     ])
     def test___call__(self, x, n):
         sut = Resize()
-        state = State(x, n)
+        state = State({'x': x, 'n': n})
 
         sut(state)
 
-        assert state.x.shape == state.n.shape
-        assert state.n.shape[0] == (n != 0).sum()
-        assert state.n.sum() == n.sum()
-        assert (state.x * state.n).sum() == (x * n).sum()
+        assert state['x'].shape == state['n'].shape
+        assert state['n'].shape[0] == (n != 0).sum()
+        assert state['n'].sum() == n.sum()
+        assert (state['x'] * state['n']).sum() == (x * n).sum()

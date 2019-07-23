@@ -8,9 +8,9 @@ Created at 07.06.2019
 
 class Resize:
     def __call__(self, state):
-        # TODO dependency state items
-        idx_valid = state.n != 0
-        state.data = state.data[idx_valid]
+        # TODO dependency state items!!!
+        idx_valid = state['n'] != 0
+        state.data = state.data[:, idx_valid]
 
 
 class Recycle:
