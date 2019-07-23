@@ -33,6 +33,7 @@ def test_Fig2():
         plotter.show()
 
 
+# TODO python -O
 def test_timing():
     setup = SetupA()
     setup.steps = [100, 3600]
