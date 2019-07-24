@@ -56,7 +56,7 @@ class Plotter:
     
         vals = np.empty(len(self.r_bins)-1)
         for i in range(len(vals)):
-            vals[i] = state.moment(1, (self.x_bins[i], self.x_bins[i+1]))
+            vals[i] = state.moment(1, attr='x', attr_range=(self.x_bins[i], self.x_bins[i+1]))
             vals[i] *= s.rho / s.dv
             vals[i] /= (np.log(self.r_bins[i+1]) - np.log(self.r_bins[i]))
     

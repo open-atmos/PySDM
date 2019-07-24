@@ -10,17 +10,14 @@ import numpy as np
 
 class State:
     def __init__(self, attributes):
-        first_attr = None
-        for attribute in attributes.values():
-            if first_attr is None:
-                first_attr = attribute
-                continue
-            assert attribute.shape == first_attr.shape
+#        assert n.ndim == 1
+#        for attribute in attributes.values():
+#            assert attribute.shape == n.shape
 
-        assert first_attr.ndim == 1
-
+#        self.n = n
+        n = attributes["n"]
         self.keys = {}
-        self.data = np.empty((len(attributes), len(first_attr)))
+        self.data = np.empty((len(attributes), len(n)))
 
         idx = 0
         for key, array in attributes.items():
@@ -51,34 +48,17 @@ class State:
         result = np.amax(self[item])
         return result
 
-    def moment(self, k, m_range=(0, np.inf)):
+    def moment(self, k, attr='x', attr_range=(0, np.inf)):
         idx = np.where(
             np.logical_and(
                 self['n'] > 0,  # TODO: alternatively depend on undertaker...
-                np.logical_and(m_range[0] <= self['x'], self['x'] < m_range[1])
+                np.logical_and(attr_range[0] <= self[attr], self[attr] < attr_range[1])
             )
         )
         if not idx[0].any():
             return 0 if k == 0 else np.nan
-        avg, sum = np.average(self['x'][idx] ** k, weights=self['n'][idx], returned=True)
+        avg, sum = np.average(self[attr][idx] ** k, weights=self['n'][idx], returned=True)
         return avg * sum
-
-    def collide(self, j, k, gamma):
-        if self['n'][j] < self['n'][k]:
-            j, k = k, j
-
-        gamma = min(gamma, self['n'][j] // self['n'][k])
-
-        if self['n'][k] != 0:  # TODO: guaranteed by undertaker
-            n = self['n'][j] - gamma * self['n'][k]
-            if n > 0:
-                self['n'][j] = n
-                self['x'][k] += gamma * self['x'][j]
-            else:  # n == 0
-                self['n'][j] = self['n'][k] // 2
-                self['n'][k] = self['n'][k] - self['n'][j]
-                self['x'][j] = gamma * self['x'][j] + self['x'][k]
-                self['x'][k] = self['x'][j]
 
     @property
     def SD_num(self):

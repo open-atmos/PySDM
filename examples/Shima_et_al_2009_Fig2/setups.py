@@ -23,7 +23,7 @@ class SetupA:
     rho = 1000  # [kg m-3]
 
     dt = 1  # [s]
-    steps = [0, 1200, 2400, 3600]
+    steps = [0, 1200]  # [0, 1200, 2400, 3600]
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
