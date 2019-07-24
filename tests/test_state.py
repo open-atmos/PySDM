@@ -2,10 +2,66 @@ from SDM.state import State
 from SDM.discretisations import linear
 from SDM.spectra import Lognormal
 
+import numpy as np
+
 
 class TestState:
 
-    # TODO: test copy() calls in ctor
+    @staticmethod
+    def check_contiguity(state, attr='n', i_SD=0):
+        item = state[attr]
+        assert item.flags['C_CONTIGUOUS']
+        assert item.flags['F_CONTIGUOUS']
+
+        sd = state.get_SD(i_SD)
+        assert not sd.flags['C_CONTIGUOUS']
+        assert not sd.flags['F_CONTIGUOUS']
+
+    def test_get_item_does_not_copy(self):
+        # Arrange
+        arr = np.ones(10)
+        sut = State({'n': arr, 'a': arr, 'b': arr})
+
+        # Act
+        item = sut['a']
+
+        # Assert
+        assert item.base.__array_interface__['data'] == sut.data.__array_interface__['data']
+
+    def test_get_sd_does_not_copy(self):
+        # Arrange
+        arr = np.ones(10)
+        sut = State({'n': arr, 'a': arr, 'b': arr})
+
+        # Act
+        item = sut.get_SD(5)
+
+        # Assert
+        assert item.base.__array_interface__['data'] == sut.data.__array_interface__['data']
+
+    def test_contiguity(self):
+        # Arrange
+        arr = np.ones(10)
+        sut = State({'n': arr, 'a': arr, 'b': arr})
+
+        # Act & Assert
+        self.check_contiguity(sut, attr='a', i_SD=5)
+
+    def test_reindex_works(self):
+        pass
+
+    def test_reindex_maintains_contiguity(self):
+        # Arrange
+        arr = np.linspace(0, 10)
+        sut = State({'n': arr, 'a': arr, 'b': arr})
+        idx = range(len(arr) - 1, -1, -1)
+        assert len(idx) == sut.data.shape[1]
+
+        # Act
+        sut._reindex(idx)
+
+        # Assert
+        self.check_contiguity(sut)
 
     def test_moment(self):
         # Arrange (parameters from Clark 1976)

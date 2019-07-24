@@ -10,38 +10,38 @@ import numpy as np
 
 class State:
     def __init__(self, attributes):
-        first = None
+        first_attr = None
         for attribute in attributes.values():
-            if first is None:
-                first = attribute
+            if first_attr is None:
+                first_attr = attribute
                 continue
-            assert attribute.shape == first.shape
+            assert attribute.shape == first_attr.shape
 
-        assert first.ndim == 1
+        assert first_attr.ndim == 1
 
         self.keys = {}
-        self.data = np.empty((len(attributes), len(first)))
-        i = 0
+        self.data = np.empty((len(attributes), len(first_attr)))
+
+        idx = 0
         for key, array in attributes.items():
-            self.keys[key] = i
-            self.data[i, :] = array[:]
-            i += 1
+            self.keys[key] = idx
+            self.data[idx, :] = array[:]
+            idx += 1
 
     def __getitem__(self, item):
         result = self.data[self.keys[item], :]
-
-        # assert result.flags['C_CONTIGUOUS']
-        # assert result.flags['F_CONTIGUOUS']
-
         return result
+
+    def _reindex(self, idx):
+        self.data[:] = self.data[:, idx]
 
     def sort_by(self, item):
         idx = self.data[item].argsort()
-        self.data = self.data[:, idx]
+        self._reindex(idx)
 
     def unsort(self):
         idx = np.random.permutation(range(self.SD_num))
-        self.data = self.data[:, idx]
+        self._reindex(idx)
 
     def min(self, item):
         result = np.amin(self[item])
@@ -85,6 +85,7 @@ class State:
         return self.data.shape[1]
 
     def get_SD(self, i):
-        return self.data[:, i]
+        result = self.data[:, i:i+1]
+        return result
 
 
