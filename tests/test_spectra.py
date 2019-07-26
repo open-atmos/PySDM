@@ -72,6 +72,7 @@ class TestExponential:
         plt.loglog(x, y)
         plt.show()
 
+    @pytest.mark.xfail
     def test_underflow(self):
         np.seterr(all='raise')  # TODO: use with construct
 
