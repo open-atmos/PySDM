@@ -4,6 +4,7 @@ python: "3.6"
 install:
   - pip install -U -r requirements.txt
   - pip install -U -r requirements-dev.txt
+  - pip install -U -r requirements-examples.txt
 
 script:
   - python -m pytest --cov-report term --cov=SDM
