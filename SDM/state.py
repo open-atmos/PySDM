@@ -115,13 +115,13 @@ class State:
         result = backend.amin(self.n[0][self.idx[0, 0:self.SD_num]]) > 0
         return result
 
+    # TODO: optionally recycle n=0 drops
     def housekeeping(self):
         if self.is_healthy():
             return
         else:
             self.SD_num = backend.remove_zeros(self.n, self.idx, length=self.SD_num)
-            print(self.n[0])
-            print(self.idx)
+
 
 
 

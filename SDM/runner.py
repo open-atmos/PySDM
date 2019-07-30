@@ -7,6 +7,7 @@ Created at 03.06.2019
 
 from SDM.stats import Stats
 
+
 class Runner:
 	def __init__(self, state, dynamics):
 		self.state = state

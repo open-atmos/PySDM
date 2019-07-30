@@ -111,9 +111,6 @@ class TestSDM:
         sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: 0.5
         state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
-        from SDM.undertakers import Resize
-        undertaker = Resize()
-
         # Act
         for _ in range(32):
             sut(state)

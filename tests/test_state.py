@@ -97,3 +97,21 @@ class TestState:
 
         true_mrsq = true_var + true_mean**2
         assert abs(discr_mrsq - true_mrsq) / true_mrsq < .05e-1
+
+    @pytest.mark.parametrize("x, n", [
+        pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
+        pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
+        pytest.param(np.array([1., 1, 4]), np.array([5, 0, 0]))
+    ])
+    def test_housekeeping(self, x, n):
+        # Arrange
+        sut = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+
+        # Act
+        sut.housekeeping()
+
+        # Assert
+        assert sut['x'].shape == sut['n'].shape
+        assert sut.SD_num == (n != 0).sum()
+        assert sut['n'].sum() == n.sum()
+        assert (sut['x'] * sut['n']).sum() == (x * n).sum()
