@@ -5,41 +5,52 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-
-import numpy as np
-# import  numba
+from SDM.backends.numpy import Numpy as backend
 
 
 class SDM:
-    def __init__(self, kernel, dt, dv):
-        M = 0  # TODO dependency to state[]
-        N = 1
-        self.probability = lambda sd1, sd2, n_sd: \
-            max(sd1[N], sd2[N]) * kernel(sd1[M], sd2[M]) * dt / dv * n_sd * (n_sd - 1) / 2 / (n_sd//2)
+    def __init__(self, kernel, dt, dv, n_sd):
+        self.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: \
+            max(sd1n, sd2n) * kernel(sd1x, sd2x) * dt / dv * n_sd * (n_sd - 1) / 2 / (n_sd // 2)
+        self.rand = backend.array((n_sd // 2,), type=float)
+        self.prob = backend.array((n_sd // 2,), float)
+        self.gamma = backend.array((n_sd // 2,), float)
 
-    # @numba.jit() #TODO
     def __call__(self, state):
-        n_sd = len(state)
-
-        assert np.amin(state.n) > 0
-        if n_sd < 2:
-            return
+        assert state.is_healthy()
 
         # toss pairs
         state.unsort()
 
+        # TODO (segments)
+        # state.sort_by('z', stable=True)  # state.stable_sort_by_segment()
+
         # collide iterating over pairs
-        rand = np.random.uniform(0, 1, n_sd // 2)
+        backend.urand(self.rand)
 
-        prob_func = np.vectorize(lambda j: self.probability(state[2*int(j)], state[2*int(j)+1], n_sd))
-        prob = np.fromfunction(prob_func, rand.shape, dtype=float)
+        backend.transform(self.prob, lambda j: self.probability(state._n[state._idx[2 * j]],
+                                                                state._n[state._idx[2 * j + 1]],
+                                                                state._x[state._idx[2 * j]],
+                                                                state._x[state._idx[2 * j + 1]],
+                                                                state.SD_num),
+                          state.SD_num // 2)
 
-        # prob = np.empty_like(rand)
-        # for i in range(1, n_sd, 2):
-        #     prob[i // 2] = self.probability(state[idx[i]], state[idx[i - 1]], n_sd)
+        backend.transform(self.gamma, lambda j: self.prob[j] // 1 + (self.rand[j] < self.prob[j] - self.prob[j] // 1),
+                          state.SD_num // 2)
 
-        gamma = np.floor(prob) + np.where(rand < prob - np.floor(prob), 1, 0)
+        # TODO (potential optimisation... some doubts...)
+        # state.sort_by_pairs('n')
 
-        # TODO ! no loops
-        for i in range(1, n_sd, 2):
-            state.collide(i, i - 1, gamma[i//2])
+        # TODO (when an example with intensive param will be available)
+        # backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
+
+        for attrs in state.get_extensive_attrs().values():
+            backend.extensive_attr_coalescence(n=state._n,
+                                               idx=state._idx,
+                                               length=state.SD_num,
+                                               data=attrs,
+                                               gamma=self.gamma)
+
+        backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.gamma)
+
+        state.housekeeping()

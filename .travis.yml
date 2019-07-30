@@ -4,9 +4,17 @@ python: "3.6"
 install:
   - pip install -U -r requirements.txt
   - pip install -U -r requirements-dev.txt
+  - pip install -U -r requirements-examples.txt
 
 script:
   - python -m pytest --cov-report term --cov=SDM
+  - |
+      python -m ipykernel install --user
+      for i in examples/*.ipynb; do
+         travis_wait 30 jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
+        # TODO!
+        #diff $i.md.repo $i.md.travis
+      done;
 
 after_success:
   - codecov

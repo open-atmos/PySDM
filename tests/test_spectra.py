@@ -58,20 +58,21 @@ class TestExponential:
         # Assert
         assert_approx_equal(np.sum(sd) * dm, n_part, 2)
 
+    # TODO optional
+    # def test_plot(self):
+    #     from matplotlib import pyplot as plt
+    #
+    #     norm_factor = 1e10
+    #     scale = 1e-13
+    #     sut = Exponential(norm_factor, scale)
+    #
+    #     x = np.logspace(-25, -11, 100)
+    #     y = sut.size_distribution(x)
+    #
+    #     plt.loglog(x, y)
+    #     plt.show()
 
-    def test_plot(self):
-        from matplotlib import pyplot as plt
-
-        norm_factor = 1e10
-        scale = 1e-13
-        sut = Exponential(norm_factor, scale)
-
-        x = np.logspace(-25, -11, 100)
-        y = sut.size_distribution(x)
-
-        plt.loglog(x, y)
-        plt.show()
-
+    # TODO
     @pytest.mark.xfail
     def test_underflow(self):
         np.seterr(all='raise')  # TODO: use with construct
