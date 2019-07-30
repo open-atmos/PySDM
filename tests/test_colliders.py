@@ -22,16 +22,16 @@ class StubKernel:
 class TestSDM:
 
     @pytest.mark.parametrize("x, n", [
-        pytest.param(np.array([1, 1]), np.array([1, 1])),
-        pytest.param(np.array([1, 1]), np.array([5, 1])),
-        pytest.param(np.array([1, 1]), np.array([5, 3])),
-        pytest.param(np.array([4, 2]), np.array([1, 1])),
+        pytest.param(np.array([1., 1.]), np.array([1, 1])),
+        pytest.param(np.array([1., 1.]), np.array([5, 1])),
+        pytest.param(np.array([1., 1.]), np.array([5, 3])),
+        pytest.param(np.array([4., 2.]), np.array([1, 1])),
     ])
     def test_single_collision(self, x, n):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=0)
-        sut.probability = lambda m1, m2, n_sd: 1
-        state = State({'x': x, 'n': n})
+        sut = SDM(StubKernel(), dt=0, dv=0, n_sd=len(n))
+        sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: 1
+        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
@@ -49,27 +49,27 @@ class TestSDM:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=0)
-        sut.probability = lambda m1, m2, n_sd: 1
-        state = State({'x': np.full(2, 1), 'n': np.full(2, n_in)})
+        sut = SDM(StubKernel(), dt=0, dv=0, n_sd=2)
+        sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: 1
+        state = State(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
 
         # Assert
-        np.testing.assert_array_equal(state['n'], n_out)
+        np.testing.assert_array_equal(sorted(state._n), sorted(n_out))
 
     @pytest.mark.parametrize("x, n, p", [
-        pytest.param(np.array([1, 1]), np.array([1, 1]), 2),
-        pytest.param(np.array([1, 1]), np.array([5, 1]), 4),
-        pytest.param(np.array([1, 1]), np.array([5, 3]), 5),
-        pytest.param(np.array([4, 2]), np.array([1, 1]), 7),
+        pytest.param(np.array([1., 1]), np.array([1, 1]), 2),
+        pytest.param(np.array([1., 1]), np.array([5, 1]), 4),
+        pytest.param(np.array([1., 1]), np.array([5, 3]), 5),
+        pytest.param(np.array([4., 2]), np.array([1, 1]), 7),
     ])
     def test_multi_collision(self, x, n, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=0)
-        sut.probability = lambda m1, m2, n_sd: p
-        state = State({'x': x, 'n': n})
+        sut = SDM(StubKernel(), dt=0, dv=0, n_sd=len(n))
+        sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: p
+        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
@@ -83,15 +83,15 @@ class TestSDM:
         assert np.amax(state['n']) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
 
     @pytest.mark.parametrize("x, n, p", [
-        pytest.param(np.array([1, 1, 1]), np.array([1, 1, 1]), 2),
-        pytest.param(np.array([1, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
-        pytest.param(np.array([1, 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
+        pytest.param(np.array([1., 1, 1]), np.array([1, 1, 1]), 2),
+        pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
+        pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=0)
-        sut.probability = lambda x1, x2, n_sd: p
-        state = State({'x': x, 'n': n})
+        sut = SDM(StubKernel(), dt=0, dv=0, n_sd=len(n))
+        sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: p
+        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
@@ -106,9 +106,10 @@ class TestSDM:
         n = np.random.randint(1, 64, size=256)
         x = np.random.uniform(size=256)
 
-        sut = SDM(StubKernel(), dt=0, dv=0)
-        sut.probability = lambda x1, x2, n_sd: 0.5
-        state = State({'x': x, 'n': n})
+        sut = SDM(StubKernel(), dt=0, dv=0, n_sd=len(n))
+
+        sut.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: 0.5
+        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         from SDM.undertakers import Resize
         undertaker = Resize()
@@ -116,7 +117,7 @@ class TestSDM:
         # Act
         for _ in range(32):
             sut(state)
-            undertaker(state)
+            # undertaker(state)
 
         # Assert
         assert np.amin(state['n']) >= 0
@@ -130,13 +131,12 @@ class TestSDM:
         dt = 666
         dv = 9
         n_sd = 64
-        sut = SDM(StubKernel(kernel_value), dt, dv)
+        sut = SDM(StubKernel(kernel_value), dt, dv, n_sd)
 
         # Act
-        actual = sut.probability((0, 1), (0, 1), n_sd)  # TODO dependency state []
+        actual = sut.probability(1, 1, 0, 0, n_sd)  # TODO dependency state []
 
         # Assert
         desired = dt/dv * kernel_value * n_sd * (n_sd - 1) / 2 / (n_sd//2)
         assert actual == desired
 
-    #TODO

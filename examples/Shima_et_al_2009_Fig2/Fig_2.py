@@ -52,10 +52,10 @@ def test_timing():
 
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = State({'x': x, 'n': n})
-    collider = SDM(setup.kernel, setup.dt, setup.dv)
+    state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd)
     undertaker = Resize()
-    runner = Runner(state, (undertaker, collider))
+    runner = Runner(state, (collider,))
 
     states = {}
     for step in setup.steps:
