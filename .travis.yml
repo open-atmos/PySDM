@@ -2,7 +2,18 @@ language: python
 python: "3.6"
   
 install:
-  - pip install -r requirements.txt
+  - pip install -U -r requirements.txt
+  - pip install -U -r requirements-dev.txt
 
 script:
-  - python -m pytest tests/
+  - python -m pytest --cov-report term --cov=SDM
+  - |
+      python -m ipykernel install --user
+      for i in examples/*.ipynb; do
+        jupyter nbconvert --ExecutePreprocessor.timeout=600 --to markdown --execute --stdout $i > $i.md.travis;
+        # TODO!
+        #diff $i.md.repo $i.md.travis
+      done;
+
+after_success:
+  - codecov
