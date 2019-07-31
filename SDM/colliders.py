@@ -10,11 +10,21 @@ from SDM.backends.numpy import Numpy as backend
 
 class SDM:
     def __init__(self, kernel, dt, dv, n_sd):
-        self.probability = lambda sd1n, sd2n, sd1x, sd2x, n_sd: \
-            max(sd1n, sd2n) * kernel(sd1x, sd2x) * dt / dv * n_sd * (n_sd - 1) / 2 / (n_sd // 2)
+        self.dt = dt
+        self.dv = dv
+        self.kernel = kernel
+        self.ker = backend.array((n_sd // 2,), type=float)
         self.rand = backend.array((n_sd // 2,), type=float)
-        self.prob = backend.array((n_sd // 2,), float)
-        self.gamma = backend.array((n_sd // 2,), float)
+        self.prob = backend.array((n_sd // 2,), type=float)
+        self.gamma = backend.array((n_sd // 2,), type=float)
+
+    # TODO
+    @staticmethod
+    def compute_gamma(backend_TODO, prob: backend.storage, rand: backend.storage):
+        prob[:] = -prob
+        backend_TODO.sum(prob, rand)
+        backend_TODO.floor(prob)
+        prob[:] = -prob
 
     def __call__(self, state):
         assert state.is_healthy()
@@ -28,29 +38,37 @@ class SDM:
         # collide iterating over pairs
         backend.urand(self.rand)
 
-        backend.transform(self.prob, lambda j: self.probability(state._n[state._idx[2 * j]],
-                                                                state._n[state._idx[2 * j + 1]],
-                                                                state._x[state._idx[2 * j]],
-                                                                state._x[state._idx[2 * j + 1]],
-                                                                state.SD_num),
-                          state.SD_num // 2)
+        # kernel
+        self.kernel(backend, self.ker, state)
 
-        backend.transform(self.gamma, lambda j: self.prob[j] // 1 + (self.rand[j] < self.prob[j] - self.prob[j] // 1),
-                          state.SD_num // 2)
+        # probability, explain
+        backend.max_pair(self.prob, state._n, state._idx, state.SD_num)
+        backend.multiply(self.prob, self.ker)
+        # TODO segment
+        if state.SD_num < 2:
+            norm_factor = 0
+        else:
+            norm_factor = self.dt / self.dv * state.SD_num * (state.SD_num - 1) / 2 / (state.SD_num // 2)
+        backend.multiply(self.prob, norm_factor)
+
+        self.compute_gamma(backend, self.prob, self.rand)
 
         # TODO (potential optimisation... some doubts...)
         # state.sort_by_pairs('n')
 
         # TODO (when an example with intensive param will be available)
         # backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
-
+        print(self.prob)
         for attrs in state.get_extensive_attrs().values():
             backend.extensive_attr_coalescence(n=state._n,
                                                idx=state._idx,
                                                length=state.SD_num,
                                                data=attrs,
-                                               gamma=self.gamma)
+                                               gamma=self.prob)
 
-        backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.gamma)
+        backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.prob)
 
+        import numpy as np
+        # print(state['n'], state['x'])
         state.housekeeping()
+        # print(state['n'], state['x'])
