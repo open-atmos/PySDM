@@ -108,7 +108,6 @@ class Numba:
             if n[j] < n[k]:
                 j, k = k, j
             g = min(gamma[i], n[j] // n[k])
-            print(g)
 
             new_n = n[j] - g * n[k]
             if new_n > 0:

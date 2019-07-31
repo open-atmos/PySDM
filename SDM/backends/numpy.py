@@ -92,7 +92,6 @@ class Numpy:
         return np.count_nonzero(data)
 
     @staticmethod
-    @numba.njit("void(int32[:], int32[:], int32, float64[:,:], float64[:])")
     def extensive_attr_coalescence(n, idx, length, data, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -105,7 +104,6 @@ class Numpy:
             if n[j] < n[k]:
                 j, k = k, j
             g = min(gamma[i], n[j] // n[k])
-            print(g)
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
