@@ -16,7 +16,6 @@ class SDM:
         self.ker = backend.array((n_sd // 2,), type=float)
         self.rand = backend.array((n_sd // 2,), type=float)
         self.prob = backend.array((n_sd // 2,), type=float)
-        self.gamma = backend.array((n_sd // 2,), type=float)
 
     # TODO
     @staticmethod
@@ -58,7 +57,7 @@ class SDM:
 
         # TODO (when an example with intensive param will be available)
         # backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
-        print(self.prob)
+
         for attrs in state.get_extensive_attrs().values():
             backend.extensive_attr_coalescence(n=state._n,
                                                idx=state._idx,
@@ -68,7 +67,4 @@ class SDM:
 
         backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.prob)
 
-        import numpy as np
-        # print(state['n'], state['x'])
         state.housekeeping()
-        # print(state['n'], state['x'])
