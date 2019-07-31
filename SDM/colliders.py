@@ -5,11 +5,13 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.backends.numpy import Numpy as backend
+from SDM.backends.default import Default
 
 
 class SDM:
-    def __init__(self, kernel, dt, dv, n_sd):
+    def __init__(self, kernel, dt, dv, n_sd, backend=Default):
+        self.backend = backend
+
         self.dt = dt
         self.dv = dv
         self.kernel = kernel
@@ -19,7 +21,7 @@ class SDM:
 
     # TODO
     @staticmethod
-    def compute_gamma(backend_TODO, prob: backend.storage, rand: backend.storage):
+    def compute_gamma(backend_TODO, prob, rand):
         prob[:] = -prob
         backend_TODO.sum(prob, rand)
         backend_TODO.floor(prob)
@@ -35,36 +37,36 @@ class SDM:
         # state.sort_by('z', stable=True)  # state.stable_sort_by_segment()
 
         # collide iterating over pairs
-        backend.urand(self.rand)
+        self.backend.urand(self.rand)
 
         # kernel
-        self.kernel(backend, self.ker, state)
+        self.kernel(self.backend, self.ker, state)
 
         # probability, explain
-        backend.max_pair(self.prob, state._n, state._idx, state.SD_num)
-        backend.multiply(self.prob, self.ker)
+        self.backend.max_pair(self.prob, state._n, state._idx, state.SD_num)
+        self.backend.multiply(self.prob, self.ker)
         # TODO segment
         if state.SD_num < 2:
             norm_factor = 0
         else:
             norm_factor = self.dt / self.dv * state.SD_num * (state.SD_num - 1) / 2 / (state.SD_num // 2)
-        backend.multiply(self.prob, norm_factor)
+        self.backend.multiply(self.prob, norm_factor)
 
-        self.compute_gamma(backend, self.prob, self.rand)
+        self.compute_gamma(self.backend, self.prob, self.rand)
 
         # TODO (potential optimisation... some doubts...)
         # state.sort_by_pairs('n')
 
         # TODO (when an example with intensive param will be available)
-        # backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
+        # self.backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
         for attrs in state.get_extensive_attrs().values():
-            backend.extensive_attr_coalescence(n=state._n,
-                                               idx=state._idx,
-                                               length=state.SD_num,
-                                               data=attrs,
-                                               gamma=self.prob)
+            self.backend.extensive_attr_coalescence(n=state._n,
+                                                    idx=state._idx,
+                                                    length=state.SD_num,
+                                                    data=attrs,
+                                                    gamma=self.prob)
 
-        backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.prob)
+        self.backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.prob)
 
         state.housekeeping()

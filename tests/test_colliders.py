@@ -145,8 +145,8 @@ class TestSDM:
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
 
-        from SDM.backends.numpy import Numpy
-        backend = Numpy
+        from SDM.backends.default import Default
+        backend = Default
 
         expected = lambda p,r: p // 1 + (r < p - p // 1)
 

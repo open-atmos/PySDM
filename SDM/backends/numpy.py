@@ -6,10 +6,9 @@ Created at 24.07.2019
 """
 
 import numpy as np
-import numba
 
 
-# TODO backend.array overrides __getitem__
+# TODO backend.storage overrides __getitem__
 
 class Numpy:
     storage = np.ndarray
@@ -33,13 +32,11 @@ class Numpy:
         return result
 
     @staticmethod
-    # @numba.njit()
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
         Numpy.reindex(data, idx, length, axis=axis)
 
     @staticmethod
-    # @numba.njit()
     def reindex(data, idx, length, axis):
         if axis == 1:
             data[:, 0:length] = data[:, idx]
@@ -118,7 +115,6 @@ class Numpy:
                 data[:, k] = data[:, j]
 
     @staticmethod
-    @numba.njit("void(int32[:], int32[:], int32, float64[:])")
     def n_coalescence(n, idx, length, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -140,13 +136,11 @@ class Numpy:
                 n[k] = n[k] - n[j]
 
     @staticmethod
-    @numba.njit("void(float64[:], float64[:], int32[:], int64)")
     def sum_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
 
     @staticmethod
-    @numba.njit("void(float64[:], int32[:], int32[:], int64)")
     def max_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
@@ -162,7 +156,3 @@ class Numpy:
     @staticmethod
     def floor(data):
         data[:] = np.floor(data)
-
-
-
-
