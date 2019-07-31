@@ -6,11 +6,11 @@ Created at 03.06.2019
 """
 
 import numpy as np
-from SDM.backends.numpy import Numpy as backend
+from SDM.backends.default import Default
 
 
 class State:
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int):
+    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int, backend=Default):
         assert n.ndim == 1
 
         # https://en.wikipedia.org/wiki/Intensive_and_extensive_properties
@@ -18,6 +18,8 @@ class State:
             assert backend.shape(attribute) == backend.shape(n)
         for attribute in extensive.values():
             assert backend.shape(attribute) == backend.shape(n)
+
+        self.backend = backend
 
         self.SD_num = len(n)
         self.idx = backend.from_ndarray(np.arange(self.SD_num))
@@ -54,7 +56,7 @@ class State:
         return result
 
     # TODO: in principle, should not be needed at all (GPU-resident state)
-    def __getitem__(self, item: str) -> backend.storage:
+    def __getitem__(self, item: str):
         all_valid = self.idx[0, :self.SD_num]
         if item == 'n':
             result = self.n[0, all_valid]
@@ -79,19 +81,19 @@ class State:
 
     def sort_by(self, item: str, stable=False):
         if stable:
-            backend.stable_argsort(self.idx, self[item], length=self.SD_num)
+            self.backend.stable_argsort(self.idx, self[item], length=self.SD_num)
         else:
-            backend.argsort(self.idx, self[item], length=self.SD_num)
+            self.backend.argsort(self.idx, self[item], length=self.SD_num)
 
     def unsort(self):
-        backend.shuffle(self.idx, length=self.SD_num, axis=1)
+        self.backend.shuffle(self.idx, length=self.SD_num, axis=1)
 
     def min(self, item):
-        result = backend.amin(self[item])
+        result = self.backend.amin(self[item])
         return result
 
     def max(self, item):
-        result = backend.amax(self[item])
+        result = self.backend.amax(self[item])
         return result
 
     # TODO update
@@ -112,7 +114,7 @@ class State:
         return result
 
     def is_healthy(self):
-        result = backend.amin(self.n[0][self.idx[0, 0:self.SD_num]]) > 0
+        result = self.backend.amin(self.n[0][self.idx[0, 0:self.SD_num]]) > 0
         return result
 
     # TODO: optionally recycle n=0 drops
@@ -120,7 +122,7 @@ class State:
         if self.is_healthy():
             return
         else:
-            self.SD_num = backend.remove_zeros(self.n, self.idx, length=self.SD_num)
+            self.SD_num = self.backend.remove_zeros(self.n, self.idx, length=self.SD_num)
 
 
 

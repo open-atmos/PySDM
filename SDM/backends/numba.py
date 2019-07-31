@@ -6,11 +6,12 @@ Created at 24.07.2019
 """
 
 import numpy as np
+import numba
 
 
 # TODO backend.storage overrides __getitem__
 
-class Numpy:
+class Numba:
     storage = np.ndarray
 
     @staticmethod
@@ -39,11 +40,13 @@ class Numpy:
         return result
 
     @staticmethod
+    # @numba.njit()
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
-        Numpy.reindex(data, idx, length, axis=axis)
+        Numba.reindex(data, idx, length, axis=axis)
 
     @staticmethod
+    # @numba.njit()
     def reindex(data, idx, length, axis):
         if axis == 1:
             data[:, 0:length] = data[:, idx]
@@ -99,6 +102,7 @@ class Numpy:
         return np.count_nonzero(data)
 
     @staticmethod
+    @numba.njit("void(int64[:], int64[:], int64, float64[:,:], float64[:])")
     def extensive_attr_coalescence(n, idx, length, data, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -120,6 +124,7 @@ class Numpy:
                 data[:, k] = data[:, j]
 
     @staticmethod
+    @numba.njit("void(int64[:], int64[:], int64, float64[:])")
     def n_coalescence(n, idx, length, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -141,11 +146,13 @@ class Numpy:
                 n[k] = n[k] - n[j]
 
     @staticmethod
+    @numba.njit("void(float64[:], float64[:], int64[:], int64)")
     def sum_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
 
     @staticmethod
+    @numba.njit("void(float64[:], int64[:], int64[:], int64)")
     def max_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
@@ -161,3 +168,7 @@ class Numpy:
     @staticmethod
     def floor(data):
         data[:] = np.floor(data)
+
+
+
+
