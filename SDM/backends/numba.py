@@ -17,19 +17,26 @@ class Numba:
     @staticmethod
     def array(shape, type):
         if type is float:
-            data = np.full(shape, np.nan, dtype=np.float)
+            data = np.full(shape, np.nan, dtype=np.float64)
         elif type is int:
-            data = np.full(shape, -1, dtype=np.int)
+            data = np.full(shape, -1, dtype=np.int64)
         else:
             raise NotImplementedError
         return data
 
     @staticmethod
     def from_ndarray(array):
-        if array.ndim > 1:
-            result = array.copy()
+        if str(array.dtype).startswith('int'):
+            dtype = np.int64
+        elif str(array.dtype).startswith('float'):
+            dtype = np.float64
         else:
-            result = np.reshape(array.copy(), (1, -1))
+            raise NotImplementedError
+
+        if array.ndim > 1:
+            result = array.astype(dtype).copy()
+        else:
+            result = np.reshape(array.astype(dtype).copy(), (1, -1))
         return result
 
     @staticmethod
@@ -95,7 +102,7 @@ class Numba:
         return np.count_nonzero(data)
 
     @staticmethod
-    @numba.njit("void(int32[:], int32[:], int32, float64[:,:], float64[:])")
+    @numba.njit("void(int64[:], int64[:], int64, float64[:,:], float64[:])")
     def extensive_attr_coalescence(n, idx, length, data, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -117,7 +124,7 @@ class Numba:
                 data[:, k] = data[:, j]
 
     @staticmethod
-    @numba.njit("void(int32[:], int32[:], int32, float64[:])")
+    @numba.njit("void(int64[:], int64[:], int64, float64[:])")
     def n_coalescence(n, idx, length, gamma):
         # TODO in segments
         for i in range(length // 2):
@@ -139,13 +146,13 @@ class Numba:
                 n[k] = n[k] - n[j]
 
     @staticmethod
-    @numba.njit("void(float64[:], float64[:], int32[:], int64)")
+    @numba.njit("void(float64[:], float64[:], int64[:], int64)")
     def sum_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
 
     @staticmethod
-    @numba.njit("void(float64[:], int32[:], int32[:], int64)")
+    @numba.njit("void(float64[:], int64[:], int64[:], int64)")
     def max_pair(data_out, data_in, idx, length):
         for i in range(length // 2):
             data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])

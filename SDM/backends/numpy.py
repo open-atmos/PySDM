@@ -16,19 +16,26 @@ class Numpy:
     @staticmethod
     def array(shape, type):
         if type is float:
-            data = np.full(shape, np.nan, dtype=np.float)
+            data = np.full(shape, np.nan, dtype=np.float64)
         elif type is int:
-            data = np.full(shape, -1, dtype=np.int)
+            data = np.full(shape, -1, dtype=np.int64)
         else:
             raise NotImplementedError
         return data
 
     @staticmethod
     def from_ndarray(array):
-        if array.ndim > 1:
-            result = array.copy()
+        if str(array.dtype).startswith('int'):
+            dtype = np.int64
+        elif str(array.dtype).startswith('float'):
+            dtype = np.float64
         else:
-            result = np.reshape(array.copy(), (1, -1))
+            raise NotImplementedError
+
+        if array.ndim > 1:
+            result = array.astype(dtype).copy()
+        else:
+            result = np.reshape(array.astype(dtype).copy(), (1, -1))
         return result
 
     @staticmethod

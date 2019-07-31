@@ -12,7 +12,7 @@ from SDM.backends.numba import Numba
 
 class NumbaParallel(Numba):
     @staticmethod
-    @numba.njit("void(int32[:], int32[:], int32, float64[:,:], float64[:])", parallel=True)
+    @numba.njit("void(int64[:], int64[:], int64, float64[:,:], float64[:])", parallel=True)
     def extensive_attr_coalescence(n, idx, length, data, gamma):
         # TODO in segments
         for i in numba.prange(length // 2):
