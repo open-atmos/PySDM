@@ -5,8 +5,6 @@ import numpy as np
 class ThrustRTC:
     storage = trtc.DVVector
 
-    trtc.
-
     @staticmethod
     def array(shape, type):
         if type is float:
@@ -16,18 +14,21 @@ class ThrustRTC:
         else:
             raise NotImplementedError
 
-        size = shape[0]
-        if len(shape) == 2:
-            assert shape[0] == 1
-            size = shape[1]
+        data = trtc.device_vector(elem_cls, int(np.prod(shape)))
+        # TODO: trtc.Fill(data, trtc.DVConstant(np.nan))
 
-        data = trtc.device_vector(elem_cls, size)
-        trtc.Fill(data, np.nan)
-
+        ThrustRTC.__equip(data, shape)
         return data
 
     @staticmethod
+    def __equip(data, shape):
+        data.shape = shape
+        data.get = lambda index: trtc.Reduce(data.range(index, index+1))
+
+    @staticmethod
     def from_ndarray(array):
+        shape = array.shape
+
         if str(array.dtype).startswith('int'):
             dtype = np.int64
         elif str(array.dtype).startswith('float'):
@@ -36,21 +37,25 @@ class ThrustRTC:
             raise NotImplementedError
 
         if array.ndim > 1:
-            array = array.astype(dtype)
+            array = array.astype(dtype).flatten()
         else:
-            array = np.reshape(array.astype(dtype), (1, -1))
+            shape = (1, array.size)
+            array = array.astype(dtype)
 
         result = trtc.device_vector_from_numpy(array)
 
+        ThrustRTC.__equip(result, shape)
         return result
 
     @staticmethod
     def to_ndarray(data: storage):
-        return data.to_host().reshape(1, -1)
+        result = data.to_host()
+        result = np.reshape(result, data.shape)
+        return result
 
     @staticmethod
     def shape(data):
-        return (1, data.size())
+        return data.shape
 
     @staticmethod
     def dtype(data):
@@ -66,55 +71,54 @@ class ThrustRTC:
 
     @staticmethod
     def shuffle(data, length, axis):
-        pass# idx = np.random.permutation(length)
+        pass  # idx = np.random.permutation(length)
         # Numpy.reindex(data, idx, length, axis=axis)
 
     @staticmethod
     def reindex(data, idx, length, axis):
-        pass# if axis == 1:
+        pass  # if axis == 1:
         #     data[:, 0:length] = data[:, idx]
         # else:
         #     raise NotImplementedError
 
     @staticmethod
     def argsort(idx, data, length):
-        pass# idx[0:length] = data[0:length].argsort()
+        # TODO...
+        copy = trtc.device_vector_from_dvs([data])
+        trtc.Sort_By_Key(
+            copy.range(0, length),
+            idx.range(0, length)
+        )
 
     @staticmethod
     def stable_argsort(idx: np.ndarray, data: np.ndarray, length: int):
-        pass# idx[0:length] = data[0:length].argsort(kind='stable')
+        pass  # idx[0:length] = data[0:length].argsort(kind='stable')
+
+    # @staticmethod
+    # def item(data, index):
+    #     result = trtc.Reduce(trtc.DVVector.DVRange(data, index, index+1))
+    #     return result #data.to_host()[index]
 
     @staticmethod
     def amin(data):
-        pass# result = np.amin(data)
-        # return result
+        index = trtc.Min_Element(data)
+        result = data.get(index) #ThrustRTC.item(data, index)
+        return result
 
     @staticmethod
     def amax(data):
-        pass# result = np.amax(data)
-        # return result
-
-    @staticmethod
-    def transform(data, func, length):
-        pass# data[:length] = np.fromfunction(
-        #     np.vectorize(func, otypes=(data.dtype,)),
-        #     (length,),
-        #     dtype=np.int
-        # )
-
-    @staticmethod
-    def foreach(data, func):
-        pass# for i in range(len(data)):
-        #     func(i)
+        index = trtc.Max_Element(data)
+        result = data.get(index) # ThrustRTC.item(data, index)
+        return result
 
     @staticmethod
     def urand(data, min=0, max=1):
-        pass# data[:] = np.random.uniform(min, max, data.shape)
+        pass  # data[:] = np.random.uniform(min, max, data.shape)
 
     # TODO do not create array
     @staticmethod
     def remove_zeros(data, idx, length) -> int:
-        pass# for i in range(length):
+        pass  # for i in range(length):
         #     if data[0][idx[0][i]] == 0:
         #         idx[0][i] = idx.shape[1]
         # idx.sort()
@@ -122,7 +126,7 @@ class ThrustRTC:
 
     @staticmethod
     def extensive_attr_coalescence(n, idx, length, data, gamma):
-        pass# # TODO in segments
+        pass  # # TODO in segments
         # for i in range(length // 2):
         #     j = 2 * i
         #     k = j + 1
@@ -143,7 +147,7 @@ class ThrustRTC:
 
     @staticmethod
     def n_coalescence(n, idx, length, gamma):
-        pass# # TODO in segments
+        pass  # # TODO in segments
         # for i in range(length // 2):
         #     j = 2 * i
         #     k = j + 1
@@ -164,23 +168,37 @@ class ThrustRTC:
 
     @staticmethod
     def sum_pair(data_out, data_in, idx, length):
-        pass# for i in range(length // 2):
-        #     data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
+        perm_in = trtc.DVPermutation(data_in, idx)
+
+        loop = trtc.For(['arr_in, arr_out'], "i",
+                        '''
+                        arr_out[i] = arr_in[2 * i] + arr_in[2 * i + 1]
+                        ''')
+
+        loop.launch_n(length // 2, [perm_in, data_out])
 
     @staticmethod
     def max_pair(data_out, data_in, idx, length):
-        pass# for i in range(length // 2):
-        #     data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
+        perm_in = trtc.DVPermutation(data_in, idx)
+
+        loop = trtc.For(['arr_in, arr_out'], "i",
+                        '''
+                        arr_out[i] = max(arr_in[2 * i], arr_in[2 * i + 1])
+                        ''')
+
+        loop.launch_n(length // 2, [perm_in, data_out])
 
     @staticmethod
     def multiply(data, multiplier):
-        pass# data *= multiplier
+        loop = trtc.For(['arr', 'k'], "i", "arr[i] *= k;")
+        const = trtc.DVDouble(multiplier)
+        loop.launch_n(data.size(), [data, const])
 
     @staticmethod
     def sum(data_out, data_in):
-        pass# data_out[:] = data_out + data_in
+        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Plus)
 
     @staticmethod
     def floor(data):
-        pass
-
+        loop = trtc.For(['arr'], "i", "arr[i] = (long) arr[i];")
+        loop.launch_n(data.size(), [data])

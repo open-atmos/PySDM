@@ -68,7 +68,7 @@ class TestBackend:
     @staticmethod
     def data(backend, shape, dtype, seed=0):
         np.random.seed(seed)
-        rand_ndarray = np.random.rand(*shape).astype(dtype)
+        rand_ndarray = (100*np.random.rand(*shape)).astype(dtype)
 
         result_sut = backend.from_ndarray(rand_ndarray)
         result_default = Default.from_ndarray(rand_ndarray)
@@ -99,7 +99,7 @@ class TestBackend:
             expected = Default.array(shape_full, dtype_full)
 
             assert sut.shape(actual) == Default.shape(expected)
-            assert sut.dtype(actual) == Default.dtype(actual)
+            assert sut.dtype(actual) == Default.dtype(expected)
         except NotImplementedError:
             if dtype_full in (float, int):
                 assert False
@@ -134,6 +134,7 @@ class TestBackend:
     #     else:
     #         raise NotImplementedError
 
+    #TODO: 1D data
     def test_argsort(self, sut, shape, dtype, length):
         # Arrange
         sut_data, data = TestBackend.data(sut, shape, dtype)
