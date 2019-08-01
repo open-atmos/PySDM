@@ -39,6 +39,18 @@ class Numpy:
         return result
 
     @staticmethod
+    def to_ndarray(data):
+        return data
+
+    @staticmethod
+    def shape(data):
+        return data.shape
+
+    @staticmethod
+    def dtype(data):
+        return data.dtype
+
+    @staticmethod
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
         Numpy.reindex(data, idx, length, axis=axis)
@@ -80,14 +92,6 @@ class Numpy:
     def foreach(data, func):
         for i in range(len(data)):
             func(i)
-
-    @staticmethod
-    def shape(data):
-        return data.shape
-
-    @staticmethod
-    def dtype(data):
-        return data.dtype
 
     @staticmethod
     def urand(data, min=0, max=1):
@@ -166,6 +170,3 @@ class Numpy:
     def floor(data):
         data[:] = np.floor(data)
 
-    @staticmethod
-    def to_ndarray(data):
-        return data

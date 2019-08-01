@@ -12,6 +12,7 @@ from SDM.backends.default import Default
 from SDM.backends.numpy import Numpy
 from SDM.backends.numba import Numba
 from SDM.backends.numba_parallel import NumbaParallel
+from SDM.backends.thrustRTC import ThrustRTC
 
 
 @pytest.fixture(params=[
@@ -62,7 +63,7 @@ def length(request):
     return request.param
 
 
-@pytest.mark.parametrize('sut', [Numpy, Numba, NumbaParallel])
+@pytest.mark.parametrize('sut', [Numpy, Numba, NumbaParallel, ThrustRTC])
 class TestBackend:
     @staticmethod
     def data(backend, shape, dtype, seed=0):
