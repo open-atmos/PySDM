@@ -86,6 +86,10 @@ class Numpy:
         return data.shape
 
     @staticmethod
+    def dtype(data):
+        return data.dtype
+
+    @staticmethod
     def urand(data, min=0, max=1):
         data[:] = np.random.uniform(min, max, data.shape)
 
@@ -161,3 +165,7 @@ class Numpy:
     @staticmethod
     def floor(data):
         data[:] = np.floor(data)
+
+    @staticmethod
+    def to_ndarray(data):
+        return data

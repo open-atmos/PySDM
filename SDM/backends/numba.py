@@ -72,21 +72,12 @@ class Numba:
         return result
 
     @staticmethod
-    def transform(data, func, length):
-        data[:length] = np.fromfunction(
-            np.vectorize(func, otypes=(data.dtype,)),
-            (length,),
-            dtype=np.int
-        )
-
-    @staticmethod
-    def foreach(data, func):
-        for i in range(len(data)):
-            func(i)
-
-    @staticmethod
     def shape(data):
         return data.shape
+
+    @staticmethod
+    def dtype(data):
+        return data.dtype
 
     @staticmethod
     def urand(data, min=0, max=1):
@@ -168,6 +159,10 @@ class Numba:
     @staticmethod
     def floor(data):
         data[:] = np.floor(data)
+
+    @staticmethod
+    def to_ndarray(data):
+        return data
 
 
 
