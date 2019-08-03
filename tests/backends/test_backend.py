@@ -12,7 +12,7 @@ from SDM.backends.default import Default
 from SDM.backends.numpy import Numpy
 from SDM.backends.numba import Numba
 from SDM.backends.numba_parallel import NumbaParallel
-from SDM.backends.thrustRTC import ThrustRTC
+# from SDM.backends.thrustRTC import ThrustRTC
 
 from tests.backends.test_backend_parameterisation import *
 

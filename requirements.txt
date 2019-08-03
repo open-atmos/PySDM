@@ -2,5 +2,4 @@ numpy
 scipy
 mpmath
 numba
-ThrustRTC
 matplotlib
