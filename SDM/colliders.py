@@ -19,7 +19,6 @@ class SDM:
         self.rand = backend.array(n_sd // 2, dtype=float)
         self.prob = backend.array(n_sd // 2, dtype=float)
 
-    # TODO
     @staticmethod
     def compute_gamma(backend, prob, rand):
         prob[:] = -prob
@@ -59,7 +58,7 @@ class SDM:
         # state.sort_by_pairs('n')
 
         # TODO (when an example with intensive param will be available)
-        # self.backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
+        # self.backend.intensive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
         for attrs in state.get_extensive_attrs().values():
             self.backend.extensive_attr_coalescence(n=state.n,
