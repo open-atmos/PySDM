@@ -138,7 +138,6 @@ class TestSDM:
         desired = dt/dv * kernel_value * n_sd * (n_sd - 1) / 2 / (n_sd//2)
         assert actual == desired
 
-
     def test_compute_gamma(self):
         # Arrange
         n = 87

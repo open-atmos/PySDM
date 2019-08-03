@@ -39,7 +39,6 @@ class ThrustRTC:
         if array.ndim > 1:
             array = array.astype(dtype).flatten()
         else:
-            shape = (1, array.size)
             array = array.astype(dtype)
 
         result = trtc.device_vector_from_numpy(array)

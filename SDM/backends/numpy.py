@@ -32,10 +32,7 @@ class Numpy:
         else:
             raise NotImplementedError
 
-        if array.ndim > 1:
-            result = array.astype(dtype).copy()
-        else:
-            result = np.reshape(array.astype(dtype).copy(), (1, -1))
+        result = array.astype(dtype).copy()
         return result
 
     @staticmethod
@@ -57,8 +54,10 @@ class Numpy:
 
     @staticmethod
     def reindex(data, idx, length, axis):
-        if axis == 1:
-            data[:, 0:length] = data[:, idx]
+        if axis == 0:
+            data[:length] = data[idx[:length]]
+        elif axis == 1:
+            data[:, :length] = data[:, idx[:length]]
         else:
             raise NotImplementedError
 
@@ -101,8 +100,8 @@ class Numpy:
     @staticmethod
     def remove_zeros(data, idx, length) -> int:
         for i in range(length):
-            if data[0][idx[0][i]] == 0:
-                idx[0][i] = idx.shape[1]
+            if data[idx[i]] == 0:
+                idx[i] = len(idx)
         idx.sort()
         return np.count_nonzero(data)
 

@@ -15,16 +15,16 @@ class SDM:
         self.dt = dt
         self.dv = dv
         self.kernel = kernel
-        self.ker = backend.array((n_sd // 2,), type=float)
-        self.rand = backend.array((n_sd // 2,), type=float)
-        self.prob = backend.array((n_sd // 2,), type=float)
+        self.ker = backend.array(n_sd // 2, dtype=float)
+        self.rand = backend.array(n_sd // 2, dtype=float)
+        self.prob = backend.array(n_sd // 2, dtype=float)
 
     # TODO
     @staticmethod
-    def compute_gamma(backend_TODO, prob, rand):
+    def compute_gamma(backend, prob, rand):
         prob[:] = -prob
-        backend_TODO.sum(prob, rand)
-        backend_TODO.floor(prob)
+        backend.sum(prob, rand)
+        backend.floor(prob)
         prob[:] = -prob
 
     def __call__(self, state):
@@ -43,7 +43,7 @@ class SDM:
         self.kernel(self.backend, self.ker, state)
 
         # probability, explain
-        self.backend.max_pair(self.prob, state._n, state._idx, state.SD_num)
+        self.backend.max_pair(self.prob, state.n, state.idx, state.SD_num)
         self.backend.multiply(self.prob, self.ker)
         # TODO segment
         if state.SD_num < 2:
@@ -61,12 +61,12 @@ class SDM:
         # self.backend.intesive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
         for attrs in state.get_extensive_attrs().values():
-            self.backend.extensive_attr_coalescence(n=state._n,
-                                                    idx=state._idx,
+            self.backend.extensive_attr_coalescence(n=state.n,
+                                                    idx=state.idx,
                                                     length=state.SD_num,
                                                     data=attrs,
                                                     gamma=self.prob)
 
-        self.backend.n_coalescence(n=state._n, idx=state._idx, length=state.SD_num, gamma=self.prob)
+        self.backend.n_coalescence(n=state.n, idx=state.idx, length=state.SD_num, gamma=self.prob)
 
         state.housekeeping()

@@ -57,9 +57,9 @@ class State:
 
     # TODO: in principle, should not be needed at all (GPU-resident state)
     def __getitem__(self, item: str):
-        all_valid = self.idx[0, :self.SD_num]
+        all_valid = self.idx[:self.SD_num]
         if item == 'n':
-            result = self.n[0, all_valid]
+            result = self.n[all_valid]
         else:
             tensive = self.keys[item][0]
             dtype = self.keys[item][1]
@@ -69,11 +69,11 @@ class State:
 
     @property
     def _n(self):
-        return self.n[0]
+        return self.n
 
     @property
     def _idx(self):
-        return self.idx[0]
+        return self.idx
 
     @property
     def _x(self):
@@ -86,7 +86,7 @@ class State:
             self.backend.argsort(self.idx, self[item], length=self.SD_num)
 
     def unsort(self):
-        self.backend.shuffle(self.idx, length=self.SD_num, axis=1)
+        self.backend.shuffle(self.idx, length=self.SD_num, axis=0)
 
     def min(self, item):
         result = self.backend.amin(self[item])
@@ -114,7 +114,7 @@ class State:
         return result
 
     def is_healthy(self):
-        result = self.backend.amin(self.n[0][self.idx[0, 0:self.SD_num]]) > 0
+        result = self.backend.amin(self.n[self.idx[:self.SD_num]]) > 0
         return result
 
     # TODO: optionally recycle n=0 drops
