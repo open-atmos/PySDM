@@ -138,8 +138,8 @@ class TestSDM:
         desired = dt/dv * kernel_value * n_sd * (n_sd - 1) / 2 / (n_sd//2)
         assert actual == desired
 
-
-    def test_compute_gamma(self):
+    @staticmethod
+    def test_compute_gamma():
         # Arrange
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
@@ -148,7 +148,7 @@ class TestSDM:
         from SDM.backends.default import Default
         backend = Default
 
-        expected = lambda p,r: p // 1 + (r < p - p // 1)
+        expected = lambda p, r: p // 1 + (r < p - p // 1)
 
         for p in prob:
             for r in rand:
