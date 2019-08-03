@@ -15,7 +15,7 @@ class SDM:
         self.dt = dt
         self.dv = dv
         self.kernel = kernel
-        self.ker = backend.array(n_sd // 2, dtype=float)
+        self.temp = backend.array(n_sd // 2, dtype=float)
         self.rand = backend.array(n_sd // 2, dtype=float)
         self.prob = backend.array(n_sd // 2, dtype=float)
 
@@ -27,6 +27,20 @@ class SDM:
         backend.floor(prob)
         prob[:] = -prob
 
+    @staticmethod
+    def compute_probability(backend, kernel, dt, dv, state, prob, temp):
+        # kernel
+        kernel(backend, temp, state)
+
+        backend.max_pair(prob, state.n, state.idx, state.SD_num)
+        backend.multiply(prob, temp)
+        # TODO segment
+        if state.SD_num < 2:
+            norm_factor = 0
+        else:
+            norm_factor = dt / dv * state.SD_num * (state.SD_num - 1) / 2 / (state.SD_num // 2)
+        backend.multiply(prob, norm_factor)
+
     def __call__(self, state):
         assert state.is_healthy()
 
@@ -36,22 +50,9 @@ class SDM:
         # TODO (segments)
         # state.sort_by('z', stable=True)  # state.stable_sort_by_segment()
 
-        # collide iterating over pairs
+        self.compute_probability(self.backend, self.kernel, self.dt, self.dv, state, self.prob, self.temp)
+
         self.backend.urand(self.rand)
-
-        # kernel
-        self.kernel(self.backend, self.ker, state)
-
-        # probability, explain
-        self.backend.max_pair(self.prob, state.n, state.idx, state.SD_num)
-        self.backend.multiply(self.prob, self.ker)
-        # TODO segment
-        if state.SD_num < 2:
-            norm_factor = 0
-        else:
-            norm_factor = self.dt / self.dv * state.SD_num * (state.SD_num - 1) / 2 / (state.SD_num // 2)
-        self.backend.multiply(self.prob, norm_factor)
-
         self.compute_gamma(self.backend, self.prob, self.rand)
 
         # TODO (potential optimisation... some doubts...)
