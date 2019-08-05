@@ -12,12 +12,12 @@ from SDM.backends.default import Default
 from SDM.backends.numpy import Numpy
 from SDM.backends.numba import Numba
 from SDM.backends.numba_parallel import NumbaParallel
-from SDM.backends.thrustRTC import ThrustRTC
+# from SDM.backends.thrustRTC import ThrustRTC
 
 from tests.backends.test_backend_parameterisation import *
 
 
-@pytest.mark.parametrize('sut', [Numpy, Numba, NumbaParallel, ThrustRTC])
+@pytest.mark.parametrize('sut', [Numpy, Numba, NumbaParallel])
 class TestBackend:
     @staticmethod
     def data(backend, shape, dtype, seed=0):
