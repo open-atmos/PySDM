@@ -1,15 +1,17 @@
-"""
-Created at 01.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
-"""
+# """
+# Created at 01.08.2019
+#
+# @author: Piotr Bartman
+# @author: Sylwester Arabas
+# """
+#
 # import ThrustRTC as trtc
+# import CURandRTC as rndrtc
 # import numpy as np
 #
 #
 # class ThrustRTC:
-#     storage = trtc.DVVector
+#     storage = trtc.DVVector.DVVector
 #
 #     @staticmethod
 #     def array(shape, type):
@@ -71,20 +73,19 @@ Created at 01.08.2019
 #             nptype = np.float64
 #         else:
 #             raise NotImplemented()
-#
 #         return nptype
 #
 #     @staticmethod
 #     def shuffle(data, length, axis):
-#         pass  # idx = np.random.permutation(length)
-#         # Numpy.reindex(data, idx, length, axis=axis)
+#         # TODO: take as argument (temporary memory)
+#         idx = ThrustRTC.array((data.size(),), float)
 #
-#     @staticmethod
-#     def reindex(data, idx, length, axis):
-#         pass  # if axis == 1:
-#         #     data[:, 0:length] = data[:, idx]
-#         # else:
-#         #     raise NotImplementedError
+#         ThrustRTC.urand(idx.range(0, length))
+#
+#         if axis == 0:
+#             trtc.Sort_By_Key(idx.range(0, length), data.range(0, length))
+#         else:
+#             raise NotImplementedError
 #
 #     @staticmethod
 #     def argsort(idx, data, length):
@@ -117,68 +118,108 @@ Created at 01.08.2019
 #         return result
 #
 #     @staticmethod
-#     def urand(data, min=0, max=1):
-#         pass  # data[:] = np.random.uniform(min, max, data.shape)
+#     def urand(data):
+#         rng = rndrtc.DVRNG()
+#         # TODO: threads vs. blocks
+#         # TODO: proper state_init
+#         # TODO: generator choice
+#         ker = trtc.For(['rng', 'vec_rnd'], 'idx',
+#                        '''
+#                        RNGState state;
+#                        rng.state_init(1234, idx, 0, state);  // initialize a state using the rng object
+#                        for (int i=0; i<1; i++)
+#                            vec_rnd[i+idx*1]=(float)state.rand01(); // generate random number using the rng object
+#                        ''')
 #
-#     # TODO do not create array
+#         ker.launch_n(data.size(), [rng, data])
+#
 #     @staticmethod
 #     def remove_zeros(data, idx, length) -> int:
-#         pass  # for i in range(length):
-#         #     if data[0][idx[0][i]] == 0:
-#         #         idx[0][i] = idx.shape[1]
-#         # idx.sort()
-#         # return np.count_nonzero(data)
+#         idx_length = trtc.DVInt64(idx.size())
+#
+#         loop = trtc.For(['data', 'idx', 'idx_length'], "i", '''
+#             if (data[idx[i]] == 0)
+#                 idx[i] = idx_length;
+#             ''')
+#         loop.launch_n(length, [data, idx, idx_length])
+#
+#         trtc.Sort(idx.range(0, length))
+#
+#         result = trtc.Find(idx.range(0, length), idx_length)
+#         if result == -1:
+#             result = length
+#
+#         return result
 #
 #     @staticmethod
 #     def extensive_attr_coalescence(n, idx, length, data, gamma):
-#         pass  # # TODO in segments
-#         # for i in range(length // 2):
-#         #     j = 2 * i
-#         #     k = j + 1
-#         #
-#         #     j = idx[j]
-#         #     k = idx[k]
-#         #
-#         #     if n[j] < n[k]:
-#         #         j, k = k, j
-#         #     g = min(gamma[i], n[j] // n[k])
-#         #
-#         #     new_n = n[j] - g * n[k]
-#         #     if new_n > 0:
-#         #         data[:, k] += g * data[:, j]
-#         #     else:  # new_n == 0
-#         #         data[:, j] = g * data[:, j] + data[:, k]
-#         #         data[:, k] = data[:, j]
+#         loop = trtc.For(['n', 'idx', 'data', 'gamma'], "i", '''
+#             auto j = 2 * i;
+#             auto k = j + 1;
+#
+#             j = idx[j];
+#             k = idx[k];
+#
+#             if (n[j] < n[k]) {
+#                 auto tmp = j;
+#                 j = k;
+#                 k = tmp;
+#             }
+#
+#             auto g = n[j] / n[k];
+#             if (g > gamma[i])
+#                 g = gamma[i];
+#
+#             if (g != 0) {
+#                 auto new_n = n[j] - g * n[k];
+#                 if (new_n > 0)
+#                     data[/*:,*/ k] += g * data[/*:,*/ j];
+#                 else{  // new_n == 0
+#                     data[/*:,*/ j] = g * data[/*:,*/ j] + data[/*:,*/ k];
+#                     data[/*:,*/ k] = data[/*:,*/ j];
+#                 }
+#             }
+#                 ''')
+#         loop.launch_n(length // 2, [n, idx, data, gamma])
 #
 #     @staticmethod
 #     def n_coalescence(n, idx, length, gamma):
-#         pass  # # TODO in segments
-#         # for i in range(length // 2):
-#         #     j = 2 * i
-#         #     k = j + 1
-#         #
-#         #     j = idx[j]
-#         #     k = idx[k]
-#         #
-#         #     if n[j] < n[k]:
-#         #         j, k = k, j
-#         #     g = min(gamma[i], n[j] // n[k])
-#         #
-#         #     new_n = n[j] - g * n[k]
-#         #     if new_n > 0:
-#         #         n[j] = new_n
-#         #     else:  # new_n == 0
-#         #         n[j] = n[k] // 2
-#         #         n[k] = n[k] - n[j]
+#
+#         loop = trtc.For(['n', 'idx', 'gamma'], "i", '''
+#             auto j = 2 * i;
+#             auto k = j + 1;
+#
+#             j = idx[j];
+#             k = idx[k];
+#
+#             if (n[j] < n[k]) {
+#                 auto tmp = j;
+#                 j = k;
+#                 k = tmp;
+#             }
+#
+#             auto g = n[j] / n[k];
+#             if (g > gamma[i])
+#                 g = gamma[i];
+#
+#             if (g != 0) {
+#                 auto new_n = n[j] - g * n[k];
+#
+#                 if (new_n > 0)
+#                     n[j] = new_n;
+#                 else {  // new_n == 0
+#                     n[j] = n[k] / 2;
+#                     n[k] = n[k] - n[j];
+#                 }
+#             }
+#             ''')
+#         loop.launch_n(length // 2, [n, idx, gamma])
 #
 #     @staticmethod
 #     def sum_pair(data_out, data_in, idx, length):
 #         perm_in = trtc.DVPermutation(data_in, idx)
 #
-#         loop = trtc.For(['arr_in, arr_out'], "i",
-#                         '''
-#                         arr_out[i] = arr_in[2 * i] + arr_in[2 * i + 1]
-#                         ''')
+#         loop = trtc.For(['arr_in', 'arr_out'], "i", "arr_out[i] = arr_in[2 * i] + arr_in[2 * i + 1];")
 #
 #         loop.launch_n(length // 2, [perm_in, data_out])
 #
@@ -186,22 +227,25 @@ Created at 01.08.2019
 #     def max_pair(data_out, data_in, idx, length):
 #         perm_in = trtc.DVPermutation(data_in, idx)
 #
-#         loop = trtc.For(['arr_in, arr_out'], "i",
-#                         '''
-#                         arr_out[i] = max(arr_in[2 * i], arr_in[2 * i + 1])
-#                         ''')
+#         loop = trtc.For(['arr_in', 'arr_out'], "i", "arr_out[i] = max(arr_in[2 * i], arr_in[2 * i + 1]);")
 #
 #         loop.launch_n(length // 2, [perm_in, data_out])
 #
 #     @staticmethod
 #     def multiply(data, multiplier):
-#         loop = trtc.For(['arr', 'k'], "i", "arr[i] *= k;")
-#         const = trtc.DVDouble(multiplier)
-#         loop.launch_n(data.size(), [data, const])
+#         if isinstance(multiplier, ThrustRTC.storage):
+#             loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult[i];")
+#             mult = multiplier
+#         elif isinstance(multiplier, float):
+#             loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult;")
+#             mult = trtc.DVDouble(multiplier)
+#         else:
+#             raise NotImplementedError()
+#         loop.launch_n(data.size(), [data, mult])
 #
 #     @staticmethod
 #     def sum(data_out, data_in):
-#         trtc.Transform_Binary(data_in, data_out, data_out, trtc.Plus)
+#         trtc.Transform_Binary(data_in, data_out, data_out, trtc.Plus())
 #
 #     @staticmethod
 #     def floor(data):

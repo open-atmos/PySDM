@@ -60,6 +60,7 @@ class SDM:
         # TODO (when an example with intensive param will be available)
         # self.backend.intensive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
+        # TODO coalescence as one method
         for attrs in state.get_extensive_attrs().values():
             self.backend.extensive_attr_coalescence(n=state.n,
                                                     idx=state.idx,

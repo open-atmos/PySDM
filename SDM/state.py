@@ -67,6 +67,8 @@ class State:
             result = self.attributes[tensive][dtype][attr, all_valid]
         return result
 
+
+
     @property
     def _n(self):
         return self.n
@@ -79,11 +81,11 @@ class State:
     def _x(self):
         return self.attributes['extensive']['float64'][0, :]
 
-    def sort_by(self, item: str, stable=False):
-        if stable:
-            self.backend.stable_argsort(self.idx, self[item], length=self.SD_num)
-        else:
-            self.backend.argsort(self.idx, self[item], length=self.SD_num)
+    # def sort_by(self, item: str, stable=False):
+    #     if stable:
+    #         self.backend.stable_argsort(self.idx, self[item], length=self.SD_num)
+    #     else:
+    #         self.backend.argsort(self.idx, self[item], length=self.SD_num)
 
     def unsort(self):
         self.backend.shuffle(self.idx, length=self.SD_num, axis=0)

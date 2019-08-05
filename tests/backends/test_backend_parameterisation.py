@@ -71,3 +71,12 @@ def dtype(request):
 ])
 def length(request):
     return request.param
+
+
+@pytest.fixture(params=[
+    pytest.param('asc'),
+    pytest.param('desc'),
+    pytest.param('random')
+])
+def order(request):
+    return request.param
