@@ -63,7 +63,7 @@ class TestBackend:
         if length == 'zero':
             return 0
         elif length == 'middle':
-            return idx_len // 2
+            return (idx_len + 1) // 2
         elif length == 'full':
             return idx_len
 
@@ -97,13 +97,16 @@ class TestBackend:
             if dtype_full in (float, int):
                 assert False
 
+    # TODO test_stack_2d(array_1, array_2, axis)
+
     # TODO idx as input
     @staticmethod
-    def test_shuffle(sut, shape_1D, length):
+    def test_shuffle(sut, shape_1D, natural_length):
         # Arrange
         axis = 0
         sut_data, data = TestBackend.data(sut, shape_1D, int)
-        length = TestBackend.length(length, shape_1D)
+        sut_idx, idx = TestBackend.idx(sut, shape_1D, 'asc')
+        length = TestBackend.length(natural_length, shape_1D)
         # Act
         sut.shuffle(sut_data, length, axis)
         Default.shuffle(data, length, axis)
@@ -111,8 +114,8 @@ class TestBackend:
         # Assert
         sut_data_original, data_original = TestBackend.data(sut, shape_1D, int)
         assert sut.shape(sut_data) == Default.shape(data)
-        assert sut.amin(sut_data) == sut.amin(sut_data_original)
-        assert sut.amax(sut_data) == sut.amax(sut_data_original)
+        assert sut.amin(sut_data, sut_idx, length) == sut.amin(sut_data_original, idx, length)
+        assert sut.amax(sut_data, sut_idx, length) == sut.amax(sut_data_original, idx, length)
 
     @staticmethod
     def test_argsort(sut, shape_1D, length, order):
@@ -145,25 +148,30 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
 
     @staticmethod
-    def test_amin(sut, shape_full, dtype):
+    def test_amin(sut, shape_1D, natural_length, order):
         # Arrange
-        sut_data, data = TestBackend.data(sut, shape_full, dtype)
+        sut_data, data = TestBackend.data(sut, shape_1D, float)
+        sut_idx, idx = TestBackend.idx(sut, shape_1D, order)
+        length = TestBackend.length(natural_length, shape_1D)
+
 
         # Act
-        actual = sut.amin(sut_data)
-        expected = Default.amin(data)
+        actual = sut.amin(sut_data, sut_idx, length)
+        expected = Default.amin(data, idx, length)
 
         # Assert
         assert actual == expected
 
     @staticmethod
-    def test_amax(sut, shape_full, dtype):
+    def test_amax(sut, shape_1D, natural_length, order):
         # Arrange
-        sut_data, data = TestBackend.data(sut, shape_full, dtype)
+        sut_data, data = TestBackend.data(sut, shape_1D, float)
+        sut_idx, idx = TestBackend.idx(sut, shape_1D, order)
+        length = TestBackend.length(natural_length, shape_1D)
 
         # Act
-        actual = sut.amax(sut_data)
-        expected = Default.amax(data)
+        actual = sut.amax(sut_data, sut_idx, length)
+        expected = Default.amax(data, idx, length)
 
         # Assert
         assert actual == expected
@@ -196,6 +204,8 @@ class TestBackend:
     def test_urand(sut, shape_1D):
         # Arrange
         sut_data, data = TestBackend.data(sut, shape_1D, float)
+        sut_idx, idx = TestBackend.idx(sut, shape_1D, 'asc')
+        length = shape_1D[0]
 
         # Act
         sut.urand(sut_data)
@@ -204,8 +214,8 @@ class TestBackend:
         # Assert
         assert sut.shape(sut_data) == Default.shape(data)
         assert sut.dtype(sut_data) == Default.dtype(data)
-        assert sut.amin(sut_data) >= 0
-        assert sut.amax(sut_data) <= 1
+        assert sut.amin(sut_data, sut_idx, length) >= 0
+        assert sut.amax(sut_data, idx, length) <= 1
 
     @staticmethod
     @pytest.mark.parametrize('data_ndarray', [
@@ -234,13 +244,14 @@ class TestBackend:
                                       sut.to_ndarray(sut_idx)[:new_length].sort())
 
     @staticmethod
-    def test_extensive_attr_coalescence(sut, shape_2D, length, order):
+    def test_extensive_attr_coalescence(sut, shape_2D, natural_length, order):
         # Arrange
         sut_n, n = TestBackend.data(sut, (shape_2D[1],), int)
-        assert Default.amin(n) > 0
         sut_data, data = TestBackend.data(sut, shape_2D, float)
         sut_idx, idx = TestBackend.idx(sut, shape_2D, order)
-        length = TestBackend.length(length, shape_2D)
+        length = TestBackend.length(natural_length, shape_2D)
+
+        assert Default.amin(n, idx, length) > 0
 
         sut_gamma = sut.from_ndarray(np.arange(shape_2D[1] // 2).astype(np.float64))
         gamma = Default.from_ndarray(np.arange(shape_2D[1] // 2).astype(np.float64))
@@ -257,12 +268,13 @@ class TestBackend:
 
     @staticmethod
     # TODO new_n == 0
-    def test_n_coalescence(sut, shape_1D, length, order):
+    def test_n_coalescence(sut, shape_1D, natural_length, order):
         # Arrange
         sut_n, n = TestBackend.data(sut, shape_1D, int)
-        assert Default.amin(n) > 0
         sut_idx, idx = TestBackend.idx(sut, shape_1D, order)
-        length = TestBackend.length(length, shape_1D)
+        length = TestBackend.length(natural_length, shape_1D)
+
+        assert Default.amin(n, idx, length) > 0
 
         sut_gamma = sut.from_ndarray(np.arange(shape_1D[0] // 2).astype(np.float64))
         gamma = Default.from_ndarray(np.arange(shape_1D[0] // 2).astype(np.float64))

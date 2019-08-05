@@ -61,12 +61,11 @@ class SDM:
         # self.backend.intensive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
         # TODO coalescence as one method
-        for attrs in state.get_extensive_attrs().values():
-            self.backend.extensive_attr_coalescence(n=state.n,
-                                                    idx=state.idx,
-                                                    length=state.SD_num,
-                                                    data=attrs,
-                                                    gamma=self.prob)
+        self.backend.extensive_attr_coalescence(n=state.n,
+                                                idx=state.idx,
+                                                length=state.SD_num,
+                                                data=state.get_extensive_attrs(),
+                                                gamma=self.prob)
 
         self.backend.n_coalescence(n=state.n, idx=state.idx, length=state.SD_num, gamma=self.prob)
 

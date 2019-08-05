@@ -57,7 +57,7 @@ class TestSDM:
         sut(state)
 
         # Assert
-        np.testing.assert_array_equal(sorted(state._n), sorted(n_out))
+        np.testing.assert_array_equal(sorted(state.n), sorted(n_out))
 
     @pytest.mark.parametrize("x, n, p", [
         pytest.param(np.array([1., 1]), np.array([1, 1]), 2),

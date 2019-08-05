@@ -66,13 +66,13 @@ class Numpy:
         idx[0:length] = data[0:length].argsort(kind='stable')
 
     @staticmethod
-    def amin(data):
-        result = np.amin(data)
+    def amin(data, idx, length):
+        result = np.amin(data[idx[:length]])
         return result
 
     @staticmethod
-    def amax(data):
-        result = np.amax(data)
+    def amax(data, idx, length):
+        result = np.amax(data[idx[:length]])
         return result
 
     @staticmethod

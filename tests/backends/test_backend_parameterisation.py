@@ -74,6 +74,14 @@ def length(request):
 
 
 @pytest.fixture(params=[
+    pytest.param('middle'),
+    pytest.param('full')
+])
+def natural_length(request):
+    return request.param
+
+
+@pytest.fixture(params=[
     pytest.param('asc'),
     pytest.param('desc'),
     pytest.param('random')
