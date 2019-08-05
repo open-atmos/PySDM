@@ -21,4 +21,3 @@ class Runner:
 				for d in self.dynamics:
 					d(self.state)
 		self.n_steps += steps
-

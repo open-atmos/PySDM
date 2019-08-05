@@ -50,10 +50,6 @@ class Numpy:
     @staticmethod
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
-        Numpy.reindex(data, idx, length, axis=axis)
-
-    @staticmethod
-    def reindex(data, idx, length, axis):
         if axis == 0:
             data[:length] = data[idx[:length]]
         elif axis == 1:
@@ -93,17 +89,20 @@ class Numpy:
             func(i)
 
     @staticmethod
-    def urand(data, min=0, max=1):
-        data[:] = np.random.uniform(min, max, data.shape)
+    def urand(data):
+        data[:] = np.random.uniform(0, 1, data.shape)
 
     # TODO do not create array
     @staticmethod
     def remove_zeros(data, idx, length) -> int:
+        result = 0
         for i in range(length):
             if data[idx[i]] == 0:
                 idx[i] = len(idx)
-        idx.sort()
-        return np.count_nonzero(data)
+            else:
+                result += 1
+        idx[:length].sort()
+        return result
 
     @staticmethod
     def extensive_attr_coalescence(n, idx, length, data, gamma):
@@ -118,6 +117,8 @@ class Numpy:
             if n[j] < n[k]:
                 j, k = k, j
             g = min(gamma[i], n[j] // n[k])
+            if g == 0:
+                continue
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
@@ -139,6 +140,8 @@ class Numpy:
             if n[j] < n[k]:
                 j, k = k, j
             g = min(gamma[i], n[j] // n[k])
+            if g == 0:
+                continue
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
