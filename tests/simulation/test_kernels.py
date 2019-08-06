@@ -25,7 +25,8 @@ class TestGolovin:
     #     pyplot.show()
 
     @pytest.mark.parametrize("x", [
-        pytest.param(5e-10), pytest.param(np.full(10, 5e-10))
+        pytest.param(5e-10),
+        pytest.param(np.full(10, 5e-10))
     ])
     def test_analytic_solution_underflow(self, x):
         # Arrange

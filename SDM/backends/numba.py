@@ -40,7 +40,6 @@ class Numba:
         result = array.astype(dtype).copy()
         return result
 
-    # !!! create new array
     @staticmethod
     # @numba.njit()
     def stack_2d(data, array):

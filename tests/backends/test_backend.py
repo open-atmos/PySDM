@@ -14,7 +14,7 @@ from SDM.backends.numba import Numba
 from SDM.backends.numba_parallel import NumbaParallel
 # from SDM.backends.thrustRTC import ThrustRTC
 
-# Parametrisation for pytest
+# parametrisation for pytest: do not remove
 from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
                                                 dtype_full, dtype, \
                                                 length, natural_length, \
