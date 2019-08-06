@@ -1,6 +1,4 @@
-from SDM.state import State
-from SDM.discretisations import linear
-from SDM.spectra import Lognormal
+from SDM.simulation.state import State
 
 import numpy as np
 import pytest

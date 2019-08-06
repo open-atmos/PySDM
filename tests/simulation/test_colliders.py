@@ -5,8 +5,8 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.colliders import SDM
-from SDM.state import State
+from SDM.simulation.colliders import SDM
+from SDM.simulation.state import State
 import numpy as np
 import pytest
 

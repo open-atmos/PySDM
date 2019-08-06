@@ -44,6 +44,7 @@ class State:
             idx = 0
             for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
                 keys[key] = (tensive, idx)
+                # TODO backend.write(data, array, (range, range))
                 if attributes[tensive] is None:
                     attributes[tensive] = backend.from_ndarray(array[np.newaxis])
                 else:

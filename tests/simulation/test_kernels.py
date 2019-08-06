@@ -5,7 +5,7 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.kernels import Golovin
+from SDM.simulation.kernels import Golovin
 import numpy as np
 import pytest
 

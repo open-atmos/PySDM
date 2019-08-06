@@ -5,10 +5,10 @@ Created at 05.08.2019
 @author: Sylwester Arabas
 """
 
-from SDM.maths import Maths
-from SDM.state import State
-from SDM.spectra import Lognormal
-from SDM.discretisations import linear
+from SDM.simulation.maths import Maths
+from SDM.simulation.state import State
+from SDM.simulation.spectra import Lognormal
+from SDM.simulation.discretisations import linear
 
 
 class TestMaths:

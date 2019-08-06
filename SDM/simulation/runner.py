@@ -5,7 +5,7 @@ Created at 03.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.stats import Stats
+from SDM.simulation.stats import Stats
 
 
 class Runner:

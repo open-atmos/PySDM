@@ -1,4 +1,4 @@
-from SDM.spectra import Lognormal, Exponential
+from SDM.simulation.spectra import Lognormal, Exponential
 
 import numpy as np
 from numpy.testing import assert_approx_equal

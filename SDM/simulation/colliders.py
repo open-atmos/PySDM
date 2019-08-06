@@ -54,9 +54,6 @@ class SDM:
         self.backend.urand(self.rand)
         self.compute_gamma(self.backend, self.prob, self.rand)
 
-        # TODO (potential optimisation... some doubts...)
-        # state.sort_by_pairs('n')
-
         # TODO (when an example with intensive param will be available)
         # self.backend.intensive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
