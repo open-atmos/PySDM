@@ -14,11 +14,11 @@ from SDM.backends.numba import Numba
 from SDM.backends.numba_parallel import NumbaParallel
 # from SDM.backends.thrustRTC import ThrustRTC
 
-# parametrisation for pytest: do not remove
+# noinspection PyUnresolvedReferences
 from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
-                                                dtype_full, dtype, \
-                                                length, natural_length, \
-                                                order
+                                               dtype_full, dtype, \
+                                               length, natural_length, \
+                                               order
 
 
 @pytest.mark.parametrize('sut', [Numpy, Numba, NumbaParallel])

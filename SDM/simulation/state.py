@@ -18,7 +18,7 @@ class State:
         self.SD_num = len(n)
         self.idx = backend.from_ndarray(np.arange(self.SD_num))
         self.n = backend.from_ndarray(n)
-        self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive)
+        self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
 
         self.segment = backend.from_ndarray(np.full(segment_num, 0))
         self.segment_multiplicity = backend.array((segment_num,), int)
@@ -36,19 +36,17 @@ class State:
         return result
 
     @staticmethod
-    def init_attributes_and_keys(backend, intensive: dict, extensive: dict) -> (dict, dict):
-        attributes = {'intensive': None, 'extensive': None}
+    def init_attributes_and_keys(backend, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
+        attributes = {'intensive': backend.array((len(intensive), SD_num), float),
+                      'extensive': backend.array((len(extensive), SD_num), float)
+                      }
         keys = {}
 
         for tensive in attributes:
             idx = 0
             for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
                 keys[key] = (tensive, idx)
-                # TODO backend.write(data, array, (range, range))
-                if attributes[tensive] is None:
-                    attributes[tensive] = backend.from_ndarray(array[np.newaxis])
-                else:
-                    backend.stack_2d(attributes[tensive], array)
+                backend.write_row(attributes[tensive], idx, array)
                 idx += 1
 
         return attributes, keys
@@ -67,7 +65,7 @@ class State:
     def get_backend_storage(self, item):
         tensive = self.keys[item][0]
         attr = self.keys[item][1]
-        result = self.backend.get_item(self.attributes[tensive], attr)
+        result = self.backend.read_row(self.attributes[tensive], attr)
         return result
 
     # def sort_by(self, item: str, stable=False):

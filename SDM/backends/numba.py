@@ -41,13 +41,12 @@ class Numba:
         return result
 
     @staticmethod
-    # @numba.njit()
-    def stack_2d(data, array):
-        data[:] = np.concatenate((data, array), axis=0)
+    def write_row(array, i, row):
+        array[i, :] = row
 
     @staticmethod
-    def get_item(array, item):
-        return array[item]
+    def read_row(array, i):
+        return array[i]
 
     # TODO idx as input
     @staticmethod

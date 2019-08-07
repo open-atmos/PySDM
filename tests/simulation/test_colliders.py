@@ -10,7 +10,7 @@ from SDM.simulation.state import State
 import numpy as np
 import pytest
 
-# parametrisation for pytest: do not remove
+# noinspection PyUnresolvedReferences
 from tests.simulation.__parametrisation__ import x_2, n_2
 
 
