@@ -5,10 +5,13 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.colliders import SDM
-from SDM.state import State
+from SDM.simulation.colliders import SDM
+from SDM.simulation.state import State
 import numpy as np
 import pytest
+
+# noinspection PyUnresolvedReferences
+from tests.simulation.__parametrisation__ import x_2, n_2
 
 
 class StubKernel:
@@ -20,27 +23,20 @@ class StubKernel:
 
 
 class TestSDM:
-
-    @pytest.mark.parametrize("x, n", [
-        pytest.param(np.array([1., 1.]), np.array([1, 1])),
-        pytest.param(np.array([1., 1.]), np.array([5, 1])),
-        pytest.param(np.array([1., 1.]), np.array([5, 3])),
-        pytest.param(np.array([4., 2.]), np.array([1, 1])),
-    ])
-    def test_single_collision(self, x, n):
+    def test_single_collision(self, x_2, n_2):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n))
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2))
         sut.compute_gamma = lambda backend, prob, rand: prob.fill(1)
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+        state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
 
         # Assert
-        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
-        assert np.sum(state['n']) == np.sum(n) - np.amin(n)
-        if np.amin(n) > 0: assert np.amax(state['x']) == np.sum(x)
-        assert np.amax(state['n']) == max(np.amax(n) - np.amin(n), np.amin(n))
+        assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
+        assert np.sum(state['n']) == np.sum(n_2) - np.amin(n_2)
+        if np.amin(n_2) > 0: assert np.amax(state['x']) == np.sum(x_2)
+        assert np.amax(state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
@@ -57,30 +53,30 @@ class TestSDM:
         sut(state)
 
         # Assert
-        np.testing.assert_array_equal(sorted(state._n), sorted(n_out))
+        np.testing.assert_array_equal(sorted(state.n), sorted(n_out))
 
-    @pytest.mark.parametrize("x, n, p", [
-        pytest.param(np.array([1., 1]), np.array([1, 1]), 2),
-        pytest.param(np.array([1., 1]), np.array([5, 1]), 4),
-        pytest.param(np.array([1., 1]), np.array([5, 3]), 5),
-        pytest.param(np.array([4., 2]), np.array([1, 1]), 7),
+    @pytest.mark.parametrize("p", [
+        pytest.param(2),
+        pytest.param(4),
+        pytest.param(5),
+        pytest.param(7),
     ])
-    def test_multi_collision(self, x, n, p):
+    def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n))
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2))
         sut.compute_gamma = lambda backend, prob, rand: prob.fill(p)
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+        state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
 
         # Assert
-        gamma = min(p, max(n[0] // n[1], n[1] // n[1]))
+        gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
-        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
-        assert np.sum(state['n']) == np.sum(n) - gamma * np.amin(n)
-        assert np.amax(state['x']) == gamma * x[np.argmax(n)] + x[np.argmax(n) - 1]
-        assert np.amax(state['n']) == max(np.amax(n) - gamma * np.amin(n), np.amin(n))
+        assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
+        assert np.sum(state['n']) == np.sum(n_2) - gamma * np.amin(n_2)
+        assert np.amax(state['x']) == gamma * x_2[np.argmax(n_2)] + x_2[np.argmax(n_2) - 1]
+        assert np.amax(state['n']) == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("x, n, p", [
         pytest.param(np.array([1., 1, 1]), np.array([1, 1, 1]), 2),

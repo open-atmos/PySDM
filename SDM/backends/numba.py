@@ -40,6 +40,14 @@ class Numba:
         result = array.astype(dtype).copy()
         return result
 
+    @staticmethod
+    def write_row(array, i, row):
+        array[i, :] = row
+
+    @staticmethod
+    def read_row(array, i):
+        return array[i]
+
     # TODO idx as input
     @staticmethod
     @numba.njit(void(int64[:], int64, int64))
@@ -62,15 +70,17 @@ class Numba:
         idx[:length] = data[:length].argsort(kind='stable')
 
     @staticmethod
-    # @numba.njit(float64(float64[:]))
-    def amin(data):
-        result = np.amin(data)
+    @numba.njit([float64(float64[:], int64[:], int64),
+                int64(int64[:], int64[:], int64)])
+    def amin(data, idx, length):
+        result = np.amin(data[idx[:length]])
         return result
 
     @staticmethod
-    # @numba.njit(float64(float64[:]))
-    def amax(data):
-        result = np.amax(data)
+    @numba.njit([float64(float64[:], int64[:], int64),
+                int64(int64[:], int64[:], int64)])
+    def amax(data, idx, length):
+        result = np.amax(data[idx[:length]])
         return result
 
     @staticmethod
