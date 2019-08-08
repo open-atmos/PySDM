@@ -7,11 +7,10 @@ Created at 24.07.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64
+from numba import void, float64, int64, boolean
 
 
-# TODO backend.storage overrides __getitem__
-
+# TODO rename args
 
 class Numba:
     storage = np.ndarray
@@ -20,7 +19,7 @@ class Numba:
     # @numba.njit()
     def array(shape, dtype):
         if dtype is float:
-            data = np.full(shape, np.nan, dtype=np.float64)
+            data = np.full(shape, -1., dtype=np.float64)
         elif dtype is int:
             data = np.full(shape, -1, dtype=np.int64)
         else:
@@ -46,7 +45,7 @@ class Numba:
 
     @staticmethod
     def read_row(array, i):
-        return array[i]
+        return array[i, :]
 
     # TODO idx as input
     @staticmethod
@@ -60,27 +59,17 @@ class Numba:
             raise NotImplementedError
 
     @staticmethod
-    # @numba.njit(void(int64[:], float64[:], int64))
-    def argsort(idx, data, length):
-        idx[0:length] = data[0:length].argsort()
-
-    @staticmethod
-    # @numba.njit(void(int64[:], float64[:], int64))
-    def stable_argsort(idx: np.ndarray, data: np.ndarray, length: int):
-        idx[:length] = data[:length].argsort(kind='stable')
-
-    @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
                 int64(int64[:], int64[:], int64)])
-    def amin(data, idx, length):
-        result = np.amin(data[idx[:length]])
+    def amin(row, idx, length):
+        result = np.amin(row[idx[:length]])
         return result
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
                 int64(int64[:], int64[:], int64)])
-    def amax(data, idx, length):
-        result = np.amax(data[idx[:length]])
+    def amax(row, idx, length):
+        result = np.amax(row[idx[:length]])
         return result
 
     @staticmethod
@@ -111,32 +100,8 @@ class Numba:
         return result
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:]))
-    def extensive_attr_coalescence(n, idx, length, data, gamma):
-        # TODO in segments
-        for i in range(length // 2):
-            j = 2 * i
-            k = j + 1
-
-            j = idx[j]
-            k = idx[k]
-
-            if n[j] < n[k]:
-                j, k = k, j
-            g = min(gamma[i], n[j] // n[k])
-            if g == 0:
-                continue
-
-            new_n = n[j] - g * n[k]
-            if new_n > 0:
-                data[:, k] += g * data[:, j]
-            else:  # new_n == 0
-                data[:, j] = g * data[:, j] + data[:, k]
-                data[:, k] = data[:, j]
-
-    @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:]))
-    def n_coalescence(n, idx, length, gamma):
+    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]))
+    def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
         # TODO in segments
         for i in range(length // 2):
             j = 2 * i
@@ -154,9 +119,14 @@ class Numba:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
+                extensive[:, k] += g * extensive[:, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
+                extensive[:, j] = g * extensive[:, j] + extensive[:, k]
+                extensive[:, k] = extensive[:, j]
+            if n[k] == 0 or n[j] == 0:
+                healthy[0] = 0
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64))
@@ -183,14 +153,15 @@ class Numba:
 
     @staticmethod
     @numba.njit(void(float64[:]))
-    def floor(data):
-        data[:] = np.floor(data)
+    def floor(row):
+        row[:] = np.floor(row)
 
     @staticmethod
     # @numba.njit()
     def to_ndarray(data):
-        return data
+        return data.copy()
 
-
-
-
+    @staticmethod
+    @numba.njit(boolean(int64[:]))
+    def first_element_is_zero(arr):
+        return arr[0] == 0
