@@ -11,9 +11,9 @@ script:
   - |
       python -m ipykernel install --user
       for i in examples/*.ipynb; do
+         jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
          travis_wait 30 jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
-        # TODO!
-        #diff $i.md.repo $i.md.travis
+         diff $i.md.repo $i.md.travis
       done;
 
 after_success:
