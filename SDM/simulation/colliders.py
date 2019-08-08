@@ -21,10 +21,10 @@ class SDM:
 
     @staticmethod
     def compute_gamma(backend, prob, rand):
-        prob[:] = -prob
+        backend.multiply(prob, -1.)
         backend.sum(prob, rand)
         backend.floor(prob)
-        prob[:] = -prob
+        backend.multiply(prob, -1.)
 
     @staticmethod
     def compute_probability(backend, kernel, dt, dv, state, prob, temp):
@@ -44,6 +44,7 @@ class SDM:
         assert state.is_healthy()
 
         # toss pairs
+        # TODO: consider having two idx arrays and unsorting them asynchronously
         state.unsort()
 
         # TODO (segments)
@@ -57,13 +58,12 @@ class SDM:
         # TODO (when an example with intensive param will be available)
         # self.backend.intensive_attr_coalescence(data=state.get_intensive(), gamma=self.gamma)
 
-        # TODO coalescence as one method
-        self.backend.extensive_attr_coalescence(n=state.n,
-                                                idx=state.idx,
-                                                length=state.SD_num,
-                                                data=state.get_extensive_attrs(),
-                                                gamma=self.prob)
-
-        self.backend.n_coalescence(n=state.n, idx=state.idx, length=state.SD_num, gamma=self.prob)
+        self.backend.coalescence(n=state.n,
+                                 idx=state.idx,
+                                 length=state.SD_num,
+                                 intensive=state.get_intensive_attrs(),
+                                 extensive=state.get_extensive_attrs(),
+                                 gamma=self.prob,
+                                 healthy=state.healthy)
 
         state.housekeeping()

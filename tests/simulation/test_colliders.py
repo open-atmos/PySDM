@@ -14,24 +14,29 @@ import pytest
 from tests.simulation.__parametrisation__ import x_2, n_2
 
 
+def backend_fill(backend, array, value):
+    full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+    full_backend = backend.from_ndarray(full_ndarray)
+    backend.multiply(array, 0.)
+    backend.sum(array, full_backend)
+
+
 class StubKernel:
     def __init__(self, returned_value=-1):
         self.returned_value = returned_value
 
     def __call__(self, backend, output, state):
-        output.fill(self.returned_value)
+        backend_fill(backend, output, self.returned_value)
 
 
 class TestSDM:
     def test_single_collision(self, x_2, n_2):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2))
-        sut.compute_gamma = lambda backend, prob, rand: prob.fill(1)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
         state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1)
-
         # Act
         sut(state)
-
         # Assert
         assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
         assert np.sum(state['n']) == np.sum(n_2) - np.amin(n_2)
@@ -46,14 +51,14 @@ class TestSDM:
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2)
-        sut.compute_gamma = lambda backend, prob, rand: prob.fill(1)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
         state = State(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, segment_num=1)
 
         # Act
         sut(state)
 
         # Assert
-        np.testing.assert_array_equal(sorted(state.n), sorted(n_out))
+        np.testing.assert_array_equal(sorted(state.backend.to_ndarray(state.n)), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -64,7 +69,7 @@ class TestSDM:
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2))
-        sut.compute_gamma = lambda backend, prob, rand: prob.fill(p)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
         state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1)
 
         # Act
@@ -86,7 +91,7 @@ class TestSDM:
     def test_multi_droplet(self, x, n, p):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n))
-        sut.compute_gamma = lambda backend, prob, rand: prob.fill(p)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
         state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         # Act
@@ -104,7 +109,7 @@ class TestSDM:
 
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n))
 
-        sut.compute_gamma = lambda backend, prob, rand: np.copyto(prob, rand > 0.5)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, backend.to_ndarray(rand) > 0.5)
         state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
 
         # Act
@@ -154,4 +159,4 @@ class TestSDM:
                 SDM.compute_gamma(backend, prob_arr, rand_arr)
 
                 # Assert
-                assert expected(p, r) == prob_arr[0]
+                assert expected(p, r) == backend.to_ndarray(prob_arr)[0]

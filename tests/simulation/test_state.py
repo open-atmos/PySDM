@@ -5,7 +5,6 @@ import pytest
 
 
 class TestState:
-
     @staticmethod
     def check_contiguity(state, attr='n', i_SD=0):
         item = state[attr]
@@ -49,23 +48,6 @@ class TestState:
         # Act & Assert
         self.check_contiguity(sut, attr='a', i_SD=5)
 
-    def test_reindex_works(self):
-        pass
-
-    @pytest.mark.xfail
-    def test_reindex_maintains_contiguity(self):
-        # Arrange
-        arr = np.linspace(0, 10)
-        sut = State({'n': arr, 'a': arr, 'b': arr})
-        idx = range(len(arr) - 1, -1, -1)
-        assert len(idx) == sut.data.shape[1]
-
-        # Act
-        sut._reindex(idx)
-
-        # Assert
-        self.check_contiguity(sut)
-
     @pytest.mark.parametrize("x, n", [
         pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
         pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
@@ -74,6 +56,8 @@ class TestState:
     def test_housekeeping(self, x, n):
         # Arrange
         sut = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+        # TODO
+        sut.healthy = sut.backend.from_ndarray(np.array([0]))
 
         # Act
         sut.housekeeping()
