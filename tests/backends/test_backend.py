@@ -11,6 +11,7 @@ import numpy as np
 from SDM.backends.default import Default
 from SDM.backends.numba import Numba
 from SDM.backends.thrustRTC import ThrustRTC
+from SDM.backends.pythran import Pythran
 
 # noinspection PyUnresolvedReferences
 from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
@@ -19,7 +20,7 @@ from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
                                                order
 
 
-@pytest.mark.parametrize('sut', [Numba, ThrustRTC])
+@pytest.mark.parametrize('sut', [Numba, ThrustRTC, Pythran])
 class TestBackend:
     @staticmethod
     def data(backend, shape, dtype, seed=0):
@@ -159,7 +160,6 @@ class TestBackend:
         sut_data, data = TestBackend.data(sut, shape_1d, float)
         sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
         length = TestBackend.length(natural_length, shape_1d)
-
 
         # Act
         actual = sut.amin(sut_data, sut_idx, length)
