@@ -19,8 +19,9 @@ from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
                                                length, natural_length, \
                                                order
 
+backend = Default()
 
-@pytest.mark.parametrize('sut', [Numba, ThrustRTC, Pythran])
+@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), Pythran()])
 class TestBackend:
     @staticmethod
     def data(backend, shape, dtype, seed=0):
@@ -28,7 +29,7 @@ class TestBackend:
         rand_ndarray = (100*np.random.rand(*shape)).astype(dtype)
 
         result_sut = backend.from_ndarray(rand_ndarray)
-        result_default = Default.from_ndarray(rand_ndarray)
+        result_default = backend.from_ndarray(rand_ndarray)
 
         return result_sut, result_default
 
@@ -55,7 +56,7 @@ class TestBackend:
             np.random.permutation(idx_ndarray)
 
         result_sut = backend.from_ndarray(idx_ndarray)
-        result_default = Default.from_ndarray(idx_ndarray)
+        result_default = backend.from_ndarray(idx_ndarray)
 
         return result_sut, result_default
 
@@ -75,11 +76,11 @@ class TestBackend:
         try:
             # Act
             actual = sut.array(shape_full, dtype_full)
-            expected = Default.array(shape_full, dtype_full)
+            expected = backend.array(shape_full, dtype_full)
 
             # Assert
-            assert sut.shape(actual) == Default.shape(expected)
-            assert sut.dtype(actual) == Default.dtype(expected)
+            assert sut.shape(actual) == backend.shape(expected)
+            assert sut.dtype(actual) == backend.dtype(expected)
         except NotImplementedError:
             if dtype_full in (float, int):
                 assert False
@@ -92,10 +93,10 @@ class TestBackend:
         try:
             # Act
             actual = sut.from_ndarray(ndarray)
-            expected = Default.from_ndarray(ndarray)
+            expected = backend.from_ndarray(ndarray)
 
             # Assert
-            np.testing.assert_array_equal(sut.to_ndarray(actual), Default.to_ndarray(expected))
+            np.testing.assert_array_equal(sut.to_ndarray(actual), backend.to_ndarray(expected))
         except NotImplementedError:
             if dtype_full in (float, int):
                 assert False
@@ -114,11 +115,11 @@ class TestBackend:
         length = TestBackend.length(natural_length, shape_1d)
         # Act
         sut.shuffle(sut_data, length, axis)
-        Default.shuffle(data, length, axis)
+        backend.shuffle(data, length, axis)
 
         # Assert
         sut_data_original, data_original = TestBackend.data(sut, shape_1d, int)
-        assert sut.shape(sut_data) == Default.shape(data)
+        assert sut.shape(sut_data) == backend.shape(data)
         assert sut.amin(sut_data, sut_idx, length) == sut.amin(sut_data_original, sut_idx, length)
         assert sut.amax(sut_data, sut_idx, length) == sut.amax(sut_data_original, sut_idx, length)
 
@@ -132,11 +133,11 @@ class TestBackend:
 
         # Act
         sut.argsort(sut_data, sut_idx, length)
-        Default.argsort(data, idx, length)
+        backend.argsort(data, idx, length)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
     @pytest.mark.xfail
@@ -148,11 +149,11 @@ class TestBackend:
 
         # Act
         sut.stable_argsort(sut_data, sut_idx, length)
-        Default.stable_argsort(data, idx, length)
+        backend.stable_argsort(data, idx, length)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
     def test_amin(sut, shape_1d, natural_length, order):
@@ -163,7 +164,7 @@ class TestBackend:
 
         # Act
         actual = sut.amin(sut_data, sut_idx, length)
-        expected = Default.amin(data, idx, length)
+        expected = backend.amin(data, idx, length)
 
         # Assert
         assert actual == expected
@@ -177,7 +178,7 @@ class TestBackend:
 
         # Act
         actual = sut.amax(sut_data, sut_idx, length)
-        expected = Default.amax(data, idx, length)
+        expected = backend.amax(data, idx, length)
 
         # Assert
         assert actual == expected
@@ -189,7 +190,7 @@ class TestBackend:
 
         # Act
         actual = sut.shape(sut_data)
-        expected = Default.shape(data)
+        expected = backend.shape(data)
 
         # Assert
         assert actual == expected
@@ -201,7 +202,7 @@ class TestBackend:
 
         # Act
         actual = sut.dtype(sut_data)
-        expected = Default.dtype(data)
+        expected = backend.dtype(data)
 
         # Assert
         assert actual == expected
@@ -215,11 +216,11 @@ class TestBackend:
 
         # Act
         sut.urand(sut_data)
-        Default.urand(data)
+        backend.urand(data)
 
         # Assert
-        assert sut.shape(sut_data) == Default.shape(data)
-        assert sut.dtype(sut_data) == Default.dtype(data)
+        assert sut.shape(sut_data) == backend.shape(data)
+        assert sut.dtype(sut_data) == backend.dtype(data)
         assert sut.amin(sut_data, sut_idx, length) >= 0
         assert sut.amax(sut_data, sut_idx, length) <= 1
 
@@ -234,18 +235,18 @@ class TestBackend:
         # Arrange
         shape = data_ndarray.shape
         sut_data = sut.from_ndarray(data_ndarray)
-        data = Default.from_ndarray(data_ndarray)
+        data = backend.from_ndarray(data_ndarray)
         sut_idx, idx = TestBackend.idx(sut, shape, order)
         length = TestBackend.length(length, shape)
 
         # Act
         sut_new_length = sut.remove_zeros(sut_data, sut_idx, length)
-        new_length = Default.remove_zeros(data, idx, length)
+        new_length = backend.remove_zeros(data, idx, length)
 
         # Assert
         assert sut_new_length == new_length
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx)[sut_new_length:], Default.to_ndarray(idx)[new_length:])
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx)[sut_new_length:], backend.to_ndarray(idx)[new_length:])
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx)[:sut_new_length].sort(),
                                       sut.to_ndarray(sut_idx)[:new_length].sort())
 
@@ -258,25 +259,25 @@ class TestBackend:
         sut_idx, idx = TestBackend.idx(sut, shape_2d, order)
         length = TestBackend.length(natural_length, shape_2d)
         sut_healthy = sut.from_ndarray(np.array([0]))
-        healthy = Default.from_ndarray(np.array([0]))
+        healthy = backend.from_ndarray(np.array([0]))
 
-        assert Default.amin(n, idx, length) > 0
+        assert backend.amin(n, idx, length) > 0
 
         sut_gamma = sut.from_ndarray(np.arange(shape_2d[1] // 2).astype(np.float64))
-        gamma = Default.from_ndarray(np.arange(shape_2d[1] // 2).astype(np.float64))
+        gamma = backend.from_ndarray(np.arange(shape_2d[1] // 2).astype(np.float64))
 
         # Act
         # TODO intensive
         sut.coalescence(sut_n, sut_idx, length, sut_data, sut_data, sut_gamma, sut_healthy)
-        Default.coalescence(n, idx, length, data, data, gamma, healthy)
+        backend.coalescence(n, idx, length, data, data, gamma, healthy)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_n), Default.to_ndarray(n))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_n), Default.to_ndarray(n))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_gamma), Default.to_ndarray(gamma))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_healthy), Default.to_ndarray(healthy))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_n), backend.to_ndarray(n))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_n), backend.to_ndarray(n))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_gamma), backend.to_ndarray(gamma))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_healthy), backend.to_ndarray(healthy))
 
     @staticmethod
     def test_sum_pair(sut, shape_1d, length, order):
@@ -288,12 +289,12 @@ class TestBackend:
 
         # Act
         sut.sum_pair(sut_data, sut_data_in, sut_idx, length)
-        Default.sum_pair(data, data_in, idx, length)
+        backend.sum_pair(data, data_in, idx, length)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), Default.to_ndarray(data_in))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
     def test_max_pair(sut, shape_1d, length, order):
@@ -305,12 +306,12 @@ class TestBackend:
 
         # Act
         sut.max_pair(sut_data, sut_data_in, sut_idx, length)
-        Default.max_pair(data, data_in, idx, length)
+        backend.max_pair(data, data_in, idx, length)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), Default.to_ndarray(data_in))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), Default.to_ndarray(idx))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
     @pytest.mark.parametrize('multiplier', [0., 1., 87., -5., .7, -.44])
@@ -320,10 +321,10 @@ class TestBackend:
 
         # Act
         sut.multiply(sut_data, multiplier)
-        Default.multiply(data, multiplier)
+        backend.multiply(data, multiplier)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
 
     @staticmethod
     def test_multiply_elementwise(sut, shape_1d):
@@ -333,11 +334,11 @@ class TestBackend:
 
         # Act
         sut.multiply(sut_data, sut_multiplier)
-        Default.multiply(data, multiplier)
+        backend.multiply(data, multiplier)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_multiplier), Default.to_ndarray(multiplier))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_multiplier), backend.to_ndarray(multiplier))
 
     @staticmethod
     def test_sum(sut, shape_1d):
@@ -347,10 +348,10 @@ class TestBackend:
 
         # Act
         sut.sum(sut_data, sut_data_in)
-        Default.sum(data, data_in)
+        backend.sum(data, data_in)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
 
     @staticmethod
     # TODO data<0
@@ -360,10 +361,10 @@ class TestBackend:
 
         # Act
         sut.floor(sut_data)
-        Default.floor(data)
+        backend.floor(data)
 
         # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), Default.to_ndarray(data))
+        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
 
     @staticmethod
     def test_to_ndarray(sut, shape_full, dtype):
@@ -372,7 +373,7 @@ class TestBackend:
 
         # Act
         actual = sut.to_ndarray(sut_data)
-        expected = Default.to_ndarray(data)
+        expected = backend.to_ndarray(data)
 
         # Assert
         np.testing.assert_array_equal(actual, expected)

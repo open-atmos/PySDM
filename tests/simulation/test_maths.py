@@ -9,6 +9,9 @@ from SDM.simulation.maths import Maths
 from SDM.simulation.state import State
 from SDM.simulation.spectra import Lognormal
 from SDM.simulation.discretisations import linear
+from SDM.backends.default import Default
+
+backend = Default()
 
 
 class TestMaths:
@@ -25,7 +28,7 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, x_mean, d)
         x, n = linear(n_sd, spectrum, (x_min, x_max))
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 

@@ -1,7 +1,10 @@
 from SDM.simulation.state import State
+from SDM.backends.default import Default
 
 import numpy as np
 import pytest
+
+backend = Default()
 
 
 class TestState:
@@ -19,7 +22,7 @@ class TestState:
     def test_get_item_does_not_copy(self):
         # Arrange
         arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr})
+        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
 
         # Act
         item = sut['a']
@@ -31,7 +34,7 @@ class TestState:
     def test_get_sd_does_not_copy(self):
         # Arrange
         arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr})
+        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
 
         # Act
         item = sut.get_SD(5)
@@ -43,7 +46,7 @@ class TestState:
     def test_contiguity(self):
         # Arrange
         arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr})
+        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
 
         # Act & Assert
         self.check_contiguity(sut, attr='a', i_SD=5)
@@ -55,7 +58,7 @@ class TestState:
     ])
     def test_housekeeping(self, x, n):
         # Arrange
-        sut = State(n=n, extensive={'x': x}, intensive={}, segment_num=1)
+        sut = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
         # TODO
         sut.healthy = sut.backend.from_ndarray(np.array([0]))
 

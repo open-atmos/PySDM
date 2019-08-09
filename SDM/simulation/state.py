@@ -10,7 +10,7 @@ from SDM.backends.default import Default
 
 
 class State:
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int, backend=Default):
+    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int, backend):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend

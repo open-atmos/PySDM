@@ -10,13 +10,19 @@ import time
 
 class Stats:
     def __init__(self):
-        self.times = []
-        self.t0 = 0.
+        self.cpu_times = []
+        self.wall_times = []
+        self.cpu_t0 = None
+        self.wall_t0 = None
 
     def __enter__(self):
-        self.t0 = time.process_time()
+        self.cpu_t0 = time.process_time()
+        self.wall_t0 = time.perf_counter()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        t1 = time.process_time()
-        self.times.append(t1 - self.t0)
+        cpu_t1 = time.process_time()
+        wall_t1 = time.perf_counter()
+
+        self.cpu_times.append(cpu_t1 - self.cpu_t0)
+        self.wall_times.append(wall_t1 - self.wall_t0)

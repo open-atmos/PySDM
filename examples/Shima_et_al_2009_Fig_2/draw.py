@@ -38,8 +38,6 @@ def run(setup):
 with np.errstate(all='raise'):
     setup = SetupA()
 
-    setup.backend.init()
-
     setup.n_sd = 2 ** 18
     # setup.steps = [0, 1]
 

@@ -9,7 +9,6 @@ import numpy as np
 import numba
 from numba import void, float64, int64, boolean
 
-
 # TODO rename args
 
 class Numba:
@@ -47,7 +46,7 @@ class Numba:
     def read_row(array, i):
         return array[i, :]
 
-    # TODO idx as input
+    # TODO idx -> self.idx?
     @staticmethod
     @numba.njit(void(int64[:], int64, int64))
     def shuffle(data, length, axis):

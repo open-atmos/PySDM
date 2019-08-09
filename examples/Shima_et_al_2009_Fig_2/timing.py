@@ -36,23 +36,23 @@ from SDM.backends.thrustRTC import ThrustRTC
 from SDM.backends.pythran import Pythran
 
 setup = SetupA()
-setup.steps = [3600]
+setup.steps = [100, 3600]
 
 times = {}
-for backend in (Numba, ThrustRTC, Pythran):
+for backend in (Numba, Pythran):
     setup.backend = backend
-    nsds = [2 ** n for n in range(12, 16)]
+    nsds = [2 ** n for n in range(12, 20, 3)]
     key = backend.__name__
     times[key] = []
     for sd in nsds:
         setup.n_sd = sd
         _, stats = run(setup)
-        times[key].append(stats.times[-1])
+        times[key].append(stats.wall_times[-1])
 #%%
 from matplotlib import pyplot as plt
 for backend, t in times.items():
     plt.plot(nsds, t, label=backend)
 plt.legend()
-plt.loglog()
+#plt.loglog()
 plt.show()
 #%%
