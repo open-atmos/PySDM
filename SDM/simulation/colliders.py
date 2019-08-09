@@ -9,7 +9,7 @@ from SDM.backends.default import Default
 
 
 class SDM:
-    def __init__(self, kernel, dt, dv, n_sd, backend=Default):
+    def __init__(self, kernel, dt, dv, n_sd, backend):
         self.backend = backend
 
         self.dt = dt
