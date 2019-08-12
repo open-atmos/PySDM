@@ -7,9 +7,9 @@ Created at 24.07.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64, boolean
+from numba import void, float64, int64, boolean, prange
+from SDM.conf import NUMBA_PARALLEL
 
-# TODO rename args
 
 class Numba:
     storage = np.ndarray
@@ -48,7 +48,7 @@ class Numba:
 
     # TODO idx -> self.idx?
     @staticmethod
-    @numba.njit(void(int64[:], int64, int64))
+    @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
 
@@ -59,14 +59,14 @@ class Numba:
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
-                int64(int64[:], int64[:], int64)])
+                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
     def amin(row, idx, length):
         result = np.amin(row[idx[:length]])
         return result
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
-                int64(int64[:], int64[:], int64)])
+                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
     def amax(row, idx, length):
         result = np.amax(row[idx[:length]])
         return result
@@ -82,7 +82,7 @@ class Numba:
         return data.dtype
 
     @staticmethod
-    @numba.njit(void(float64[:]))
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
     def urand(data):
         data[:] = np.random.uniform(0, 1, data.shape)
 
@@ -99,10 +99,11 @@ class Numba:
         return result
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]))
+    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+                parallel=NUMBA_PARALLEL)
     def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
         # TODO in segments
-        for i in range(length // 2):
+        for i in prange(length // 2):
             j = 2 * i
             k = j + 1
 
@@ -128,15 +129,15 @@ class Numba:
                 healthy[0] = 0
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64))
+    @numba.njit(void(float64[:], float64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def sum_pair(data_out, data_in, idx, length):
-        for i in range(length // 2):
+        for i in prange(length // 2):
             data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64))
+    @numba.njit(void(float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def max_pair(data_out, data_in, idx, length):
-        for i in range(length // 2):
+        for i in prange(length // 2):
             data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
 
     @staticmethod
@@ -146,12 +147,12 @@ class Numba:
         data *= multiplier
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:]))
+    @numba.njit(void(float64[:], float64[:]), parallel=NUMBA_PARALLEL)
     def sum(data_out, data_in):
         data_out[:] = data_out + data_in
 
     @staticmethod
-    @numba.njit(void(float64[:]))
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
     def floor(row):
         row[:] = np.floor(row)
 

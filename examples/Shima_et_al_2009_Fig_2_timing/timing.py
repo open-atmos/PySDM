@@ -9,7 +9,7 @@ from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.colliders import SDM
 from SDM.simulation.discretisations import constant_multiplicity
-from examples.Shima_et_al_2009_Fig_2.setup import SetupA
+from examples.Shima_et_al_2009_Fig_2_timing.setup import SetupA
 
 #%%
 
@@ -39,7 +39,7 @@ setup = SetupA()
 setup.steps = [100, 3600]
 
 times = {}
-for backend in (Numba, Pythran):
+for backend in (Numba, ThrustRTC):
     setup.backend = backend
     nsds = [2 ** n for n in range(12, 20, 3)]
     key = backend.__name__
@@ -53,6 +53,6 @@ from matplotlib import pyplot as plt
 for backend, t in times.items():
     plt.plot(nsds, t, label=backend)
 plt.legend()
-#plt.loglog()
+plt.loglog()
 plt.show()
 #%%

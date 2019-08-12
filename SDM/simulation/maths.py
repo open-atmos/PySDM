@@ -16,3 +16,7 @@ class Maths:
             return 0 if k == 0 else np.nan
         avg, sum_of_n = np.average(state[attr][idx] ** k, weights=state['n'][idx], returned=True)
         return avg * sum_of_n
+
+    @staticmethod
+    def test():
+        print("magic")

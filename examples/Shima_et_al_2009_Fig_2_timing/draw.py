@@ -12,8 +12,8 @@ from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.colliders import SDM
 from SDM.simulation.discretisations import constant_multiplicity
-from examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
+from examples.Shima_et_al_2009_Fig_2_timing.setup import SetupA
+from SDM.utils.plotter import Plotter
 
 #%%
 
@@ -38,8 +38,8 @@ def run(setup):
 with np.errstate(all='raise'):
     setup = SetupA()
 
-    setup.n_sd = 2 ** 18
-    # setup.steps = [0, 1]
+    setup.n_sd = 2 ** 15
+    setup.steps = [0, 3600]
 
     states, _ = run(setup)
 

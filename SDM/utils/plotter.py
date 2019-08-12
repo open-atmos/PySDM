@@ -1,5 +1,5 @@
 """
-Created at 08.08.2019
+Created at 12.08.2019
 
 @author: Piotr Bartman
 @author: Sylwester Arabas
@@ -7,9 +7,9 @@ Created at 08.08.2019
 
 import numpy as np
 from matplotlib import pyplot
-from SDM.simulation.maths import Maths
-from examples.Shima_et_al_2009_Fig_2.setup import x2r, r2x, kg2g, m2um
 
+from SDM.utils.physics import Physics
+from SDM.simulation.maths import Maths
 
 class Plotter:
     def __init__(self, setup, xrange):
@@ -21,14 +21,12 @@ class Plotter:
             num=64,
             endpoint=True
         )
-        self.r_bins = x2r(self.x_bins)
+        self.r_bins = Physics.x2r(self.x_bins)
 
-    @staticmethod
-    def show():
+    def show(self):
         pyplot.show()
 
-    @staticmethod
-    def save(file):
+    def save(self, file):
         pyplot.savefig(file)
 
     def plot(self, state, t):
@@ -51,8 +49,8 @@ class Plotter:
         pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
 
         pyplot.plot(
-            m2um * pdf_r_x,
-            kg2g * pdf_r_y * r2x(pdf_r_x) * s.rho / s.dv,
+            Physics.m2um * pdf_r_x,
+            Physics.kg2g * pdf_r_y * Physics.r2x(pdf_r_x) * s.rho / s.dv,
             color='black'
         )
 
@@ -63,8 +61,8 @@ class Plotter:
             vals[i] /= (np.log(self.r_bins[i + 1]) - np.log(self.r_bins[i]))
 
         pyplot.step(
-            m2um * self.r_bins[:-1],
-            kg2g * vals,
+            Physics.m2um * self.r_bins[:-1],
+            Physics.kg2g * vals,
             where='post',
             label=f"t = {t}s"
         )

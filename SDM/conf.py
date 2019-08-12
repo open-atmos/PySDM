@@ -5,4 +5,7 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
+
+# TODO
 TRTC = False
+NUMBA_PARALLEL = False

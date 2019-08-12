@@ -34,7 +34,7 @@ def remove_zeros(data, idx, length):
     return result
 
 
-#pythran export coalescence(int64[:], int64[:], int, float64[:, :], float64[:, :], float64[:], int64[:])
+# pythran export coalescence(int64[:], int64[:], int, float64[:, :], float64[:, :], float64[:], int64[:])
 def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
     # omp parallel for
     for i in range(length // 2):
@@ -81,8 +81,8 @@ def max_pair(data_out, data_in, idx, length):
 # pythran export multiply(float64[:], float64[:])
 def multiply(data, multiplier):
     data *= multiplier
-        
-        
+
+
 # pythran export sum(float64[:], float64[:])
 def sum(data_out, data_in):
     data_out[:] = data_out + data_in

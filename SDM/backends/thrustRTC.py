@@ -123,7 +123,7 @@ else:
             # TODO: take as argument (temporary memory)
             # idx = ThrustRTC.array((data.size(),), float)
             #
-            # ThrustRTC.urand(idx.range(0, length))
+            # ThrustRTC.urand(idx)
             #
             # if axis == 0:
             #     trtc.Sort_By_Key(idx.range(0, length), data.range(0, length))
@@ -152,15 +152,16 @@ else:
             # TODO: threads vs. blocks
             # TODO: proper state_init
             # TODO: generator choice
+            chunks = min(32, data.size())  # TODO!!!
             ker = trtc.For(['rng', 'vec_rnd'], 'idx',
-                           '''
+                           f'''
                            RNGState state;
                            rng.state_init(1234, idx, 0, state);  // initialize a state using the rng object
-                           for (int i=0; i<1; i++)
-                               vec_rnd[i+idx*1]=(float)state.rand01(); // generate random number using the rng object
+                           for (int i=0; i<{chunks}; i++)
+                               vec_rnd[i+idx*{chunks}]=(float)state.rand01(); // generate random number using the rng object
                            ''')
 
-            ker.launch_n(data.size(), [rng, data])
+            ker.launch_n(data.size()//chunks, [rng, data])
 
         @staticmethod
         def remove_zeros(data, idx, length) -> int:

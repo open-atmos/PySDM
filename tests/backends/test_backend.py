@@ -21,14 +21,14 @@ from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
 
 backend = Default()
 
-@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), Pythran()])
+@pytest.mark.parametrize('sut', [Numba(), ThrustRTC()])
 class TestBackend:
     @staticmethod
-    def data(backend, shape, dtype, seed=0):
+    def data(sut_backend, shape, dtype, seed=0):
         np.random.seed(seed)
         rand_ndarray = (100*np.random.rand(*shape)).astype(dtype)
 
-        result_sut = backend.from_ndarray(rand_ndarray)
+        result_sut = sut_backend.from_ndarray(rand_ndarray)
         result_default = backend.from_ndarray(rand_ndarray)
 
         return result_sut, result_default
@@ -43,7 +43,7 @@ class TestBackend:
         return result
 
     @staticmethod
-    def idx(backend, shape, order, seed=0):
+    def idx(sut_backend, shape, order, seed=0):
         np.random.seed(seed)
 
         idx_len = TestBackend.idx_length(shape)
@@ -55,7 +55,7 @@ class TestBackend:
         elif order == 'random':
             np.random.permutation(idx_ndarray)
 
-        result_sut = backend.from_ndarray(idx_ndarray)
+        result_sut = sut_backend.from_ndarray(idx_ndarray)
         result_default = backend.from_ndarray(idx_ndarray)
 
         return result_sut, result_default
@@ -219,6 +219,7 @@ class TestBackend:
         backend.urand(data)
 
         # Assert
+        print(sut.to_ndarray(sut_data))
         assert sut.shape(sut_data) == backend.shape(data)
         assert sut.dtype(sut_data) == backend.dtype(data)
         assert sut.amin(sut_data, sut_idx, length) >= 0
