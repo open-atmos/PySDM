@@ -1,5 +1,5 @@
 language: python
-python: "3.6"
+python: "3.7"
   
 install:
   - pip install -U -r requirements.txt
@@ -10,10 +10,14 @@ script:
   - python -m pytest --cov-report term --cov=SDM
   - |
       python -m ipykernel install --user
-      for i in examples/*.ipynb; do
+      for i in examples/*/demo.ipynb; do
          jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
          jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
          diff $i.md.repo $i.md.travis
+      done;
+  - |
+      for i in examples/*/example.py; do
+        python $i
       done;
 
 after_success:

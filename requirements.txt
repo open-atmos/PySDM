@@ -3,3 +3,4 @@ scipy
 mpmath
 numba
 matplotlib
+pythran

@@ -4,15 +4,12 @@ Created at 08.08.2019
 @author: Piotr Bartman
 @author: Sylwester Arabas
 """
-#%%
+
 from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.colliders import SDM
 from SDM.simulation.discretisations import constant_multiplicity
-from examples.Shima_et_al_2009_Fig_2_timing.setup import SetupA
-
-#%%
-
+from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
@@ -26,8 +23,6 @@ def run(setup):
         # setup.check(runner.state, runner.n_steps) TODO???
 
     return states, runner.stats
-
-#%%
 
 
 # TODO python -O

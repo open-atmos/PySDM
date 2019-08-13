@@ -9,11 +9,17 @@ from SDM.backends.numba import Numba
 
 # import os
 # os.environ['OMP_NUM_THREADS'] = '8'
-
+#%%
 from SDM.backends import pythran_impl
 if not hasattr(pythran_impl, '__pythran__'):
-    raise ModuleNotFoundError
-
+    # TODO: use fluentPythran
+    import subprocess, importlib, os
+    os.chdir("SDM/backends")
+    code = subprocess.call(["pythran", "pythran_impl.py"])
+    os.chdir("../..")
+    assert code == 0
+    importlib.reload(pythran_impl)
+#%%
 
 class Pythran(Numba):
     @staticmethod

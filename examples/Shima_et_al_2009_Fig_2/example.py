@@ -12,12 +12,12 @@ from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.colliders import SDM
 from SDM.simulation.discretisations import constant_multiplicity
-from examples.Shima_et_al_2009_Fig_2_timing.setup import SetupA
+
+from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from SDM.utils.plotter import Plotter
 
-#%%
 
-
+# instantiation of simulation components, timestepping
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=setup.backend)
@@ -31,8 +31,6 @@ def run(setup):
         states[runner.n_steps] = copy.deepcopy(runner.state)
 
     return states, runner.stats
-
-#%%
 
 
 with np.errstate(all='raise'):
@@ -52,4 +50,3 @@ with np.errstate(invalid='ignore'):
         plotter.plot(state, step * setup.dt)
     plotter.show()
 
-#%%
