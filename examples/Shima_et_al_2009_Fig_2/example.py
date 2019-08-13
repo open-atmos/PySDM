@@ -33,20 +33,21 @@ def run(setup):
     return states, runner.stats
 
 
-with np.errstate(all='raise'):
-    setup = SetupA()
+if __name__ == '__main__':
+    with np.errstate(all='raise'):
+        setup = SetupA()
 
-    setup.n_sd = 2 ** 15
-    setup.steps = [0, 3600]
+        setup.n_sd = 2 ** 15
+        setup.steps = [0, 3600]
 
-    states, _ = run(setup)
+        states, _ = run(setup)
 
-    x_min = min([state.min('x') for state in states.values()])
-    x_max = max([state.max('x') for state in states.values()])
+        x_min = min([state.min('x') for state in states.values()])
+        x_max = max([state.max('x') for state in states.values()])
 
-with np.errstate(invalid='ignore'):
-    plotter = Plotter(setup, (x_min, x_max))
-    for step, state in states.items():
-        plotter.plot(state, step * setup.dt)
-    plotter.show()
+    with np.errstate(invalid='ignore'):
+        plotter = Plotter(setup, (x_min, x_max))
+        for step, state in states.items():
+            plotter.plot(state, step * setup.dt)
+        plotter.show()
 

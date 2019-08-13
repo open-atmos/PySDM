@@ -21,7 +21,7 @@ from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
 
 backend = Default()
 
-@pytest.mark.parametrize('sut', [Numba(), ThrustRTC()])
+@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), Pythran()])
 class TestBackend:
     @staticmethod
     def data(sut_backend, shape, dtype, seed=0):

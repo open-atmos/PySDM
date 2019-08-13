@@ -17,7 +17,7 @@ script:
       done;
   - |
       for i in examples/*/example.py; do
-        python $i
+        PYTHONPATH=. python $i
       done;
 
 after_success:
