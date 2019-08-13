@@ -5,7 +5,7 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.kernels import Golovin
+from SDM.simulation.kernels import Golovin
 import numpy as np
 import pytest
 
@@ -25,7 +25,8 @@ class TestGolovin:
     #     pyplot.show()
 
     @pytest.mark.parametrize("x", [
-        pytest.param(5e-10), pytest.param(np.full(10, 5e-10))
+        pytest.param(5e-10),
+        pytest.param(np.full(10, 5e-10))
     ])
     def test_analytic_solution_underflow(self, x):
         # Arrange

@@ -7,10 +7,8 @@ Created at 24.07.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64
-
-
-# TODO backend.storage overrides __getitem__
+from numba import void, float64, int64, boolean, prange
+from SDM.conf import NUMBA_PARALLEL
 
 
 class Numba:
@@ -20,7 +18,7 @@ class Numba:
     # @numba.njit()
     def array(shape, dtype):
         if dtype is float:
-            data = np.full(shape, np.nan, dtype=np.float64)
+            data = np.full(shape, -1., dtype=np.float64)
         elif dtype is int:
             data = np.full(shape, -1, dtype=np.int64)
         else:
@@ -40,9 +38,17 @@ class Numba:
         result = array.astype(dtype).copy()
         return result
 
-    # TODO idx as input
     @staticmethod
-    @numba.njit(void(int64[:], int64, int64))
+    def write_row(array, i, row):
+        array[i, :] = row
+
+    @staticmethod
+    def read_row(array, i):
+        return array[i, :]
+
+    # TODO idx -> self.idx?
+    @staticmethod
+    @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
     def shuffle(data, length, axis):
         idx = np.random.permutation(length)
 
@@ -52,25 +58,17 @@ class Numba:
             raise NotImplementedError
 
     @staticmethod
-    # @numba.njit(void(int64[:], float64[:], int64))
-    def argsort(idx, data, length):
-        idx[0:length] = data[0:length].argsort()
-
-    @staticmethod
-    # @numba.njit(void(int64[:], float64[:], int64))
-    def stable_argsort(idx: np.ndarray, data: np.ndarray, length: int):
-        idx[:length] = data[:length].argsort(kind='stable')
-
-    @staticmethod
-    # @numba.njit(float64(float64[:]))
-    def amin(data):
-        result = np.amin(data)
+    @numba.njit([float64(float64[:], int64[:], int64),
+                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
+    def amin(row, idx, length):
+        result = np.amin(row[idx[:length]])
         return result
 
     @staticmethod
-    # @numba.njit(float64(float64[:]))
-    def amax(data):
-        result = np.amax(data)
+    @numba.njit([float64(float64[:], int64[:], int64),
+                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
+    def amax(row, idx, length):
+        result = np.amax(row[idx[:length]])
         return result
 
     @staticmethod
@@ -84,7 +82,7 @@ class Numba:
         return data.dtype
 
     @staticmethod
-    @numba.njit(void(float64[:]))
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
     def urand(data):
         data[:] = np.random.uniform(0, 1, data.shape)
 
@@ -101,34 +99,11 @@ class Numba:
         return result
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:]))
-    def extensive_attr_coalescence(n, idx, length, data, gamma):
+    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+                parallel=NUMBA_PARALLEL)
+    def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
         # TODO in segments
-        for i in range(length // 2):
-            j = 2 * i
-            k = j + 1
-
-            j = idx[j]
-            k = idx[k]
-
-            if n[j] < n[k]:
-                j, k = k, j
-            g = min(gamma[i], n[j] // n[k])
-            if g == 0:
-                continue
-
-            new_n = n[j] - g * n[k]
-            if new_n > 0:
-                data[:, k] += g * data[:, j]
-            else:  # new_n == 0
-                data[:, j] = g * data[:, j] + data[:, k]
-                data[:, k] = data[:, j]
-
-    @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:]))
-    def n_coalescence(n, idx, length, gamma):
-        # TODO in segments
-        for i in range(length // 2):
+        for i in prange(length // 2):
             j = 2 * i
             k = j + 1
 
@@ -144,20 +119,25 @@ class Numba:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
+                extensive[:, k] += g * extensive[:, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
+                extensive[:, j] = g * extensive[:, j] + extensive[:, k]
+                extensive[:, k] = extensive[:, j]
+            if n[k] == 0 or n[j] == 0:
+                healthy[0] = 0
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64))
+    @numba.njit(void(float64[:], float64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def sum_pair(data_out, data_in, idx, length):
-        for i in range(length // 2):
+        for i in prange(length // 2):
             data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64))
+    @numba.njit(void(float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def max_pair(data_out, data_in, idx, length):
-        for i in range(length // 2):
+        for i in prange(length // 2):
             data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
 
     @staticmethod
@@ -167,20 +147,21 @@ class Numba:
         data *= multiplier
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:]))
+    @numba.njit(void(float64[:], float64[:]), parallel=NUMBA_PARALLEL)
     def sum(data_out, data_in):
         data_out[:] = data_out + data_in
 
     @staticmethod
-    @numba.njit(void(float64[:]))
-    def floor(data):
-        data[:] = np.floor(data)
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
+    def floor(row):
+        row[:] = np.floor(row)
 
     @staticmethod
     # @numba.njit()
     def to_ndarray(data):
-        return data
+        return data.copy()
 
-
-
-
+    @staticmethod
+    @numba.njit(boolean(int64[:]))
+    def first_element_is_zero(arr):
+        return arr[0] == 0

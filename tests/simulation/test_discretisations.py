@@ -1,5 +1,5 @@
-from SDM.discretisations import *
-from SDM.spectra import Lognormal
+from SDM.simulation.discretisations import *
+from SDM.simulation.spectra import Lognormal
 import numpy as np
 import pytest
 
@@ -33,19 +33,8 @@ def test_discretisation(discretisation):
 	np.testing.assert_almost_equal(actual=quotient, desired=1.0, decimal=2)
 
 
-def test_linear():
-	# Arrange
-	pass
+# TODO test_linear()
 
-	# Act
+# TODO test_logarithmic()
 
-	# Assert
-
-
-def test_logarithmic():
-	# Arrange
-	pass
-
-	# Act
-
-	# Assert
+# TODO test_constant_multiplicity()
