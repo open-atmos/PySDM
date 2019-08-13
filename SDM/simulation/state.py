@@ -6,7 +6,6 @@ Created at 03.06.2019
 """
 
 import numpy as np
-from SDM.backends.default import Default
 
 
 class State:
@@ -69,6 +68,7 @@ class State:
         return result
 
     def unsort(self):
+        # TODO: consider having two idx arrays and unsorting them asynchronously
         self.backend.shuffle(self.idx, length=self.SD_num, axis=0)
 
     def min(self, item):
@@ -88,7 +88,8 @@ class State:
         return result
 
     def is_healthy(self):
-        return not self.backend.first_element_is_zero(self.healthy)
+        result = not self.backend.first_element_is_zero(self.healthy)
+        return result
 
     # TODO: optionally recycle n=0 drops
     def housekeeping(self):

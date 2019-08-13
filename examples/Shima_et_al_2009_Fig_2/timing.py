@@ -4,15 +4,12 @@ Created at 08.08.2019
 @author: Piotr Bartman
 @author: Sylwester Arabas
 """
-#%%
+
 from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.colliders import SDM
 from SDM.simulation.discretisations import constant_multiplicity
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
-
-#%%
-
 
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
@@ -27,8 +24,6 @@ def run(setup):
 
     return states, runner.stats
 
-#%%
-
 
 # TODO python -O
 from SDM.backends.numba import Numba
@@ -39,7 +34,7 @@ setup = SetupA()
 setup.steps = [100, 3600]
 
 times = {}
-for backend in (Numba, Pythran):
+for backend in (Numba, ThrustRTC):
     setup.backend = backend
     nsds = [2 ** n for n in range(12, 20, 3)]
     key = backend.__name__
@@ -53,6 +48,6 @@ from matplotlib import pyplot as plt
 for backend, t in times.items():
     plt.plot(nsds, t, label=backend)
 plt.legend()
-#plt.loglog()
+plt.loglog()
 plt.show()
 #%%

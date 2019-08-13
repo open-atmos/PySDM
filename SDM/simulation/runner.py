@@ -8,6 +8,7 @@ Created at 03.06.2019
 from SDM.simulation.stats import Stats
 
 
+# TODO inject callback functions
 class Runner:
 	def __init__(self, state, dynamics):
 		self.state = state
