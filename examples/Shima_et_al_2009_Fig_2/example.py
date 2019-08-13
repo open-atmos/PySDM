@@ -27,7 +27,7 @@ def run(setup):
     states = {}
     for step in setup.steps:
         runner.run(step - runner.n_steps)
-        # setup.check(runner.state, runner.n_steps) TODO!!!
+        setup.check(runner.state, runner.n_steps)
         states[runner.n_steps] = copy.deepcopy(runner.state)
 
     return states, runner.stats
@@ -39,6 +39,7 @@ if __name__ == '__main__':
 
         setup.n_sd = 2 ** 15
         setup.steps = [0, 3600]
+        setup.check = lambda _, __: 0  # TODO!!!
 
         states, _ = run(setup)
 
