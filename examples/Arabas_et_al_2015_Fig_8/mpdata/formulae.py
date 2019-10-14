@@ -13,19 +13,19 @@ import numba
 
 class Formulae:
     @staticmethod
-    @numba.jit()
+    # @numba.jit()
     def flux(psi: ScalarField, C: VectorField):
         return (
-                np.maximum(0, C.ij(-.5, 0)) * psi.ij(0, 0) +
-                np.minimum(0, C.ij(+.5, 0)) * psi.ij(1, 0)
+                np.maximum(0, C.at(-.5, 0)) * psi.ij(0, 0) +
+                np.minimum(0, C.at(+.5, 0)) * psi.ij(1, 0)
         )
         # TODO: check if (abs(c)-C)/2 is not faster
 
     @staticmethod
-    @numba.jit()
-    def upwind(psi, flx):
-        return psi.ij(0, 0) - (
-                flx.ij(+.5, 0) -
-                flx.ij(-.5, 0)
+    # @numba.jit()
+    def upwind(flx: VectorField):
+        return - (
+                flx.at(+.5, 0) -
+                flx.at(-.5, 0)
         )
 
