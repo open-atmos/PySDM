@@ -8,48 +8,47 @@ Created at 25.09.2019
 import numpy as np
 import numba
 from examples.Arabas_et_al_2015_Fig_8.mpdata.fields import ScalarField, VectorField
+from examples.Arabas_et_al_2015_Fig_8.mpdata.formulae import Formulae
 
 
+# @numba.jitclass()
 class MPDATA:
-    def __init__(self, init_values: dict, courant_field: tuple, n_iters: int):
-        # TODO check values shape
-        self.halo = 1
-        self.state = {}
-        for key in init_values:
-            self.state[key] = ScalarField(init_values[key], halo=self.halo)
-        self.C_physical = VectorField(*courant_field, halo=self.halo)
-        self.C_antidiff = VectorField(*courant_field, halo=self.halo)
-        self.n_iters = n_iters
+    def __init__(self, state: ScalarField, courant_field: VectorField, n_iters: int, halo: int):
+        self.new = state
+        self.old = ScalarField.copy(state)
 
+        self.C_physical = courant_field
+        self.C_antidiff = courant_field.clone()
+        self.flux = courant_field.clone()
+
+        self.n_iters = n_iters
+        self.halo = halo
+
+    # @numba.jit()
     def step(self):
         for i in range(self.n_iters):
             if i == 0:
-                apply(..., upwind, self.C_physical)
+                apply(function=Formulae.flux, args=(self.C_physical, self.old), out=self.flux, halo=self.halo)
+                apply(function=Formulae.upwind, args=(self.flux, self.old), out=self.new, halo=self.halo)
             else:
-                apply(..., antidiff, self.C_antidiff)
-                apply(..., upwind, self.C_antidiff)
-
-    @staticmethod
-    def upwind(psi, flx, G, i):
-        return psi[i] - (flx[i + HALF] - flx[i - HALF]) / G[i]
+                raise NotImplementedError()
+                #apply(..., antidiff, in=self.state[key], out=self.C_antidiff[key])
+                #apply(..., upwind, self.C_antidiff)
+            self.new.swap_memory(self.old)
 
 
 @numba.jit()
-def apply(array, function, halo):
-    for i in range(halo, array.shape[0] - halo):
-        for j in range(halo, array.shape[0] - halo):
-            array.focus(i, j)
-            C.focus(i, j)
+def apply(function, args: tuple, out: ScalarField, halo: int):
+    for i in range(halo, out.shape[0] - halo):
+        for j in range(halo, out.shape[1] - halo):
+            out.focus(i, j)
+            for arg in args:
+                arg.focus(i, j)
 
-            # X
-            tmp = function(psi, C)
-            array.swap_axis()
-            C.swap_axis()
+            out.tmp[i, j] = 0
+            for dim in (0, 1):  # TODO: from shape of out?
+                out.set_axis(dim)
+                for arg in args:
+                    arg.set_axis(dim)
 
-            # Y
-            tmp += function(psi, C)
-            array.swap_axis()
-            C.swap_axis()
-
-            array.tmp[i, j] = tmp + array.data[i, j]
-    array.swap_memory()
+                out.tmp[i, j] += function(*args)
