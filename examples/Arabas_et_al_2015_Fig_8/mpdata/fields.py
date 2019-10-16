@@ -43,16 +43,17 @@ class ScalarField:
         else:
             return self.data[self.i + arg1, self.j + arg2]
 
-    # TODO !!!
+    # TODO: _2d, _1d, ...
     def clone(self):
-        return ScalarField(data=self.data, halo=0)
+        return ScalarField(data=self.data[
+                                self.halo:-self.halo ,
+                                self.halo:-self.halo ,
+                                ], halo=self.halo)
 
     def apply(self, function, args: tuple):
-        print(self.shape)
-        for i in range(self.halo, self.shape[0] - self.halo):
-            for j in range(self.halo, self.shape[1] - self.halo):
+        for i in range(self.shape[0] - 2*self.halo):
+            for j in range(self.shape[1] - 2*self.halo):
                 self.focus(i, j)
-                print(i, j)
                 for arg in args:
                     arg.focus(i, j)
 
@@ -137,16 +138,16 @@ class VectorField:
 
         return data[self.i + idx1, self.j + idx2]
 
-    # TODO !!!
+    # TODO: _1d, _2d, ...
     def clone(self, value=np.nan):
         data1 = np.full_like(self.data[0], value)
         data2 = np.full_like(self.data[1], value)
-        return VectorField([data1, data2], halo=1)
+        return VectorField([data1, data2], halo=1) #TODO: !!! halo is now important!
 
     def apply(self, function, args: tuple):
         for d in range(2):
-            for i in range(self.halo, self.data[d].shape[0] - self.halo):
-                for j in range(self.halo, self.data[d].shape[1] - self.halo):
+            for i in range(self.data[d].shape[0] - 2*self.halo):
+                for j in range(self.data[d].shape[1] - 2*self.halo):
                     self.focus(i, j)
                     for arg in args:
                         arg.focus(i, j)
