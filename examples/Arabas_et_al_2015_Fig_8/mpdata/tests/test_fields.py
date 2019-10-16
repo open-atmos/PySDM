@@ -8,49 +8,67 @@ Created at 14.10.2019
 
 from examples.Arabas_et_al_2015_Fig_8.mpdata.fields import VectorField, ScalarField
 import numpy as np
+import pytest
 
 
 class TestVectorField1D:
-    def test_at(self):
+    @pytest.mark.parametrize("halo", [
+        pytest.param(1),
+        pytest.param(2),
+        pytest.param(3),
+    ])
+    def test_at(self, halo):
         # Arrange
         idx = 3
         data = np.zeros((10,))
         data[idx] = 44
-        sut = VectorField(data=[data], halo=1)
+        sut = VectorField(data=[data], halo=halo)
 
         # Act
-        value = sut.at(idx - 0.5)
+        value = sut.at((halo - 1) + (idx - 0.5))
 
         # Assert
         assert value == data[idx]
 
 
 class TestVectorField2D:
-    def test_at(self):
+    @pytest.mark.parametrize("halo", [
+        pytest.param(1),
+        pytest.param(2),
+        pytest.param(3),
+    ])
+    def test_at(self, halo):
         # Arrange
         idx = (3, 5)
-        data1 = np.zeros((10, 12))
+        data1 = np.arange(0, 10 * 12, 1).reshape(10, 12)
         data2 = np.zeros((9, 13))
-        data1[idx] = 44
-        sut = VectorField(data=(data1, data2), halo=1)
+        data1[idx] = -1
+        sut = VectorField(data=(data1, data2), halo=halo)
 
         # Act
-        value = sut.at(idx[0] - 0.5, idx[1])
+        print()
+        print(data1, sut.data)
+        value = sut.at((halo - 1) + (idx[0] - 0.5), (halo - 1) + idx[1])
 
         # Assert
         assert value == data1[idx]
 
-    def test_set_axis(self):
+    @pytest.mark.parametrize("halo", [
+        pytest.param(1),
+        pytest.param(2),
+        pytest.param(3),
+    ])
+    def test_set_axis(self, halo):
         # Arrange
         idx = (0, 0)
         data1 = np.zeros((10, 12))
         data2 = np.zeros((9, 13))
         data2[idx] = 44
-        sut = VectorField(data=(data1, data2), halo=1)
+        sut = VectorField(data=(data1, data2), halo=halo)
 
         # Act
         sut.set_axis(1)
-        value = sut.at(idx[0] - 0.5, idx[1])
+        value = sut.at(halo - 1 + idx[0] - 0.5, halo - 1 + idx[1])
 
         # Assert
         assert value == data2[idx]

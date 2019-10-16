@@ -18,6 +18,7 @@ import numba
 #     ('transpose', numba.boolean)])
 class ScalarField:
     def __init__(self, data, halo):
+        self.halo = halo
         self.shape = (data.shape[0] + 2 * halo, data.shape[1] + 2 * halo)
         self.data = np.zeros(self.shape, dtype=np.float32)
         self.data[halo:self.shape[0] - halo, halo:self.shape[1] - halo] = data[:, :]
@@ -27,8 +28,8 @@ class ScalarField:
         self.axis = 0
 
     def focus(self, i, j):
-        self.i = i
-        self.j = j
+        self.i = i + self.halo
+        self.j = j + self.halo
 
     def set_axis(self, axis):
         self.axis = axis
@@ -46,10 +47,10 @@ class ScalarField:
     def clone(self):
         return ScalarField(data=self.data, halo=0)
 
-    def apply(self, function, args: tuple, halo: int):
+    def apply(self, function, args: tuple):
         print(self.shape)
-        for i in range(halo, self.shape[0] - halo):
-            for j in range(halo, self.shape[1] - halo):
+        for i in range(self.halo, self.shape[0] - self.halo):
+            for j in range(self.halo, self.shape[1] - self.halo):
                 self.focus(i, j)
                 print(i, j)
                 for arg in args:
@@ -73,6 +74,7 @@ class ScalarField:
 class VectorField:
     def __init__(self, data, halo):
         assert halo > 0
+        self.halo = halo
         if len(data) == 2:
             assert data[0].shape[0] == data[1].shape[0] + 1
             assert data[0].shape[1] == data[1].shape[1] - 1
@@ -94,9 +96,9 @@ class VectorField:
             raise NotImplementedError()
 
     def focus(self, i, j=0, k=0):
-        self.i = i
-        self.j = j
-        self.k = k
+        self.i = i + self.halo - 1
+        self.j = j + self.halo - 1
+        self.k = k + self.halo - 1
         # TODO: depending on number of dims
 
     # TODO: set_dim
@@ -122,14 +124,14 @@ class VectorField:
 
         if isinstance(arg1, int) and isinstance(arg2, float):
             data = self.data[1]
-            idx1 = arg1 - 1
-            idx2 = int(arg2 - .5)
-            assert idx2 == arg2 - .5
+            idx1 = arg1
+            idx2 = int(arg2 + .5)
+            assert idx2 == arg2 + .5
         elif isinstance(arg2, int) and isinstance(arg1, float):
             data = self.data[0]
-            idx1 = int(arg1 - .5)
-            idx2 = arg2 - 1
-            assert idx1 == arg1 - .5
+            idx1 = int(arg1 + .5)
+            idx2 = arg2
+            assert idx1 == arg1 + .5
         else:
             raise NotImplementedError()
 
@@ -141,10 +143,10 @@ class VectorField:
         data2 = np.full_like(self.data[1], value)
         return VectorField([data1, data2], halo=1)
 
-    def apply(self, function, args: tuple, halo: int):
+    def apply(self, function, args: tuple):
         for d in range(2):
-            for i in range(halo, self.data[d].shape[0] - halo):
-                for j in range(halo, self.data[d].shape[1] - halo):
+            for i in range(self.halo, self.data[d].shape[0] - self.halo):
+                for j in range(self.halo, self.data[d].shape[1] - self.halo):
                     self.focus(i, j)
                     for arg in args:
                         arg.focus(i, j)

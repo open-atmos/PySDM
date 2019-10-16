@@ -14,7 +14,7 @@ import numpy as np
 class TestMPDATA:
 
     def test(self):
-        scalar_field_init = np.array([[0., 1., 0.]])
+        scalar_field_init = np.array([[0., 1., 0.]]).T
         vector_field_init_x = np.full((4, 1), 1.)
         vector_field_init_y = np.full((3, 2), 0.)
         halo = 1
@@ -22,4 +22,5 @@ class TestMPDATA:
         vector_field = VectorField((vector_field_init_x, vector_field_init_y), halo=halo)
 
         mpdata = MPDATA(courant_field=vector_field, state=scalar_field, halo=halo, n_iters=1)
+        print(mpdata)
         mpdata.step()
