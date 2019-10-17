@@ -21,7 +21,7 @@ class MPDATA:
         assert courant_field.data[0].shape[1] == courant_field.data[1].shape[1] - 1
 
         self.curr = state
-        self.next = ScalarField.clone(state)
+        self.next = ScalarField.clone(state)  # TODO: prev?
 
         self.C_physical = courant_field
         self.C_antidiff = courant_field.clone()
