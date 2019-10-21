@@ -14,18 +14,14 @@ from examples.Arabas_et_al_2015_Fig_8.mpdata.formulae import Formulae
 
 # @numba.jitclass()
 class MPDATA:
-    def __init__(self, state: ScalarField, courant_field: VectorField, n_iters: int, halo: int):
-        assert state.data.shape[0] == courant_field.data[0].shape[0] + 1
-        assert state.data.shape[1] == courant_field.data[0].shape[1] + 2
-        assert courant_field.data[0].shape[0] == courant_field.data[1].shape[0] + 1
-        assert courant_field.data[0].shape[1] == courant_field.data[1].shape[1] - 1
+    def __init__(self, prev: ScalarField, curr: ScalarField, C_physical: VectorField, C_antidiff: VectorField,
+                 flux: VectorField, n_iters: int, halo: int):
+        self.curr = curr
+        self.prev = prev
 
-        self.curr = state
-        self.next = ScalarField.clone(state)  # TODO: prev?
-
-        self.C_physical = courant_field
-        self.C_antidiff = courant_field.clone()
-        self.flux = courant_field.clone()
+        self.C_physical = C_physical
+        self.C_antidiff = C_antidiff
+        self.flux = flux
 
         self.n_iters = n_iters
         self.halo = halo
@@ -33,16 +29,17 @@ class MPDATA:
     # @numba.jit()
     def step(self):
         for i in range(self.n_iters):
+            self.prev.swap_memory(self.curr)
+
+            # bcond
             if i == 0:
-                self.next.data[:] = 0
-                self.flux.apply(function=Formulae.flux, args=(self.curr, self.C_physical))
-                self.next.apply(function=Formulae.upwind, args=(self.flux,))
-                self.next.data += self.curr.data
+                C = self.C_physical
             else:
-                raise NotImplementedError()
-                #apply(..., antidiff, in=self.state[key], out=self.C_antidiff[key])
-                #apply(..., upwind, self.C_antidiff)
-            self.next.swap_memory(self.curr)
+                self.C_antidiff.apply(function=Formulae.antidiff, args=(self.prev, self.C_physical))
+                C = self.C_antidiff
+            self.flux.apply(function=Formulae.flux, args=(self.prev, C))
+            self.curr.apply(function=Formulae.upwind, args=(self.flux,))
+            self.curr.data += self.prev.data
 
     def debug_print(self):
         print()

@@ -16,12 +16,14 @@ from SDM.simulation.discretisations import constant_multiplicity
 from examples.Arabas_et_al_2015_Fig_8.setup import Setup
 from SDM.utils.plotter import Plotter
 from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata import MPDATA
+from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
 
 
 # instantiation of simulation components, time-stepping
 def run(setup):
     # Eulerian domain
-    mpdata = MPDATA(setup.grid, setup.size, {'th': np.full(setup.grid, 300), 'qv': np.full(setup.grid, 10e-3)})
+    eulerian_fields = MPDATAFactory.kinematic_2d(grid=setup.grid, size=setup.size, stream_function=setup.stream_function,
+                                                 field_values=setup.field_values)
 
     # Lagrangian domain
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
@@ -31,7 +33,7 @@ def run(setup):
 
     for step in setup.steps:
         # async: Eulerian advection (TODO: run in background)
-        mpdata.step()
+        eulerian_fields.step()
 
         # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
         runner.run(step - runner.n_steps)

@@ -23,9 +23,15 @@ kg2g = 1e3
 m2um = 1e6
 
 
-class Setup:
+class Setup:  # TODO pint
     grid = (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
+
+    field_values = {'th': 300,
+                    'qv': 10e-3}
+
+    def stream_function(self, x, z):
+        raise NotImplementedError
 
     x_min = r2x(10e-6)  # not given in the paper
     x_max = r2x(100e-6)  # not given in the paper
