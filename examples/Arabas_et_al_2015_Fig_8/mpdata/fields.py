@@ -150,8 +150,9 @@ class VectorField:
 
         return d, self.i + idx1, self.j + idx2
 
-    def get_domain(self):
-        pass
+    def get_component(self, i):
+        return self.data[i][self.halo - 1: self.data[i].shape[0] - self.halo + 1,
+                            self.halo - 1: self.data[i].shape[1] - self.halo + 1]
 
     def fill_halos(self):
         if self.boundary_cond == 'periodic':

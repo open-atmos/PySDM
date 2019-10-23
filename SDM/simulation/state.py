@@ -9,7 +9,20 @@ import numpy as np
 
 
 class State:
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int, backend):
+    # @staticmethod
+    # def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
+    #     return State(n, intensive, extensive, backend)
+
+    @staticmethod
+    def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, backend):
+        segments = backend.from_ndarray(positions.astype(dtype=int))
+        positions = positions - np.floor(positions)
+        positions_backend = backend.from_ndarray(positions)
+
+        return State(n, intensive, extensive, segments, backend, positions_backend)
+
+    # TODO domain
+    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segments, backend, positions=None):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend
@@ -18,6 +31,8 @@ class State:
         self.idx = backend.from_ndarray(np.arange(self.SD_num))
         self.n = backend.from_ndarray(n)
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
+        self.positions = positions
+        self.segments = segments
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
     @staticmethod
