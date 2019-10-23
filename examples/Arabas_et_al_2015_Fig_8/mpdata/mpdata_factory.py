@@ -13,7 +13,7 @@ from examples.Arabas_et_al_2015_Fig_8.mpdata.eulerian_fields import EulerianFiel
 
 class MPDATAFactory:
     @staticmethod
-    def mpdata(state: ScalarField, courant_field: VectorField):
+    def mpdata(state: ScalarField, courant_field: VectorField, n_iters):
         assert state.data.shape[0] == courant_field.data[0].shape[0] + 1
         assert state.data.shape[1] == courant_field.data[0].shape[1] + 2
         assert courant_field.data[0].shape[0] == courant_field.data[1].shape[0] + 1
@@ -25,7 +25,7 @@ class MPDATAFactory:
         flux = courant_field.clone()
         halo = state.halo
         mpdata = MPDATA(curr=state, prev=prev, C_physical=courant_field, C_antidiff=C_antidiff, flux=flux,
-                        n_iters=1, halo=halo)
+                        n_iters=n_iters, halo=halo)
 
         return mpdata
 

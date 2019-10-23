@@ -6,13 +6,11 @@ Created at 11.10.2019
 @author: Sylwester Arabas
 """
 
-from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata import MPDATA
+from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
 from examples.Arabas_et_al_2015_Fig_8.mpdata.fields import ScalarField, VectorField
 import numpy as np
 import pytest
-
 from examples.Arabas_et_al_2015_Fig_8.mpdata.tests.__parametrisation__ import halo
-
 
 class TestMPDATA:
     @pytest.mark.parametrize("shape, ij0, out, C, n_steps", [
@@ -33,7 +31,8 @@ class TestMPDATA:
         scalar_field = ScalarField(scalar_field_init, halo=halo)
         vector_field = VectorField((vector_field_init_x, vector_field_init_y), halo=halo)
 
-        mpdata = MPDATA(courant_field=vector_field, state=scalar_field, halo=halo, n_iters=2)
+
+        mpdata = MPDATAFactory.mpdata(courant_field=vector_field, state=scalar_field, n_iters=1)
         mpdata.debug_print()
         for _ in range(n_steps):
             mpdata.step()

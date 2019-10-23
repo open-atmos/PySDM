@@ -76,8 +76,8 @@ class VectorField:
     def __init__(self, data, halo):
         assert halo > 0
         self.halo = halo
-        self.shape = (data[1].shape[0], data[0].shape[1])
         if len(data) == 2:
+            self.shape = (data[1].shape[0], data[0].shape[1])
             assert data[0].shape[0] == data[1].shape[0] + 1
             assert data[0].shape[1] == data[1].shape[1] - 1
         self.data = []
