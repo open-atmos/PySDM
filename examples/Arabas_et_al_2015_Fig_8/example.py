@@ -20,7 +20,7 @@ from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
 # instantiation of simulation components, time-stepping
 def run(setup):
     # Eulerian domain
-    eulerian_fields = MPDATAFactory.kinematic_2d(grid=setup.grid, size=setup.size,
+    eulerian_fields = MPDATAFactory.kinematic_2d(grid=setup.grid, size=setup.size, dt=setup.dt,
                                                  stream_function=setup.stream_function,
                                                  field_values=setup.field_values)
 
@@ -35,7 +35,6 @@ def run(setup):
 
     for step in setup.steps:
         Maths.moment_2d(moment_0, state=state, k=0)
-        print(moment_0)
         import matplotlib.pyplot as plt
         plt.imshow(moment_0)
         plt.show()
