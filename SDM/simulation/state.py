@@ -11,30 +11,32 @@ import numpy as np
 class State:
     @staticmethod
     def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
-        return State(n, intensive, extensive, None, None, None, backend)
+        cell_id = backend.from_ndarray(np.zeros_like(n))
+        return State(n, (), intensive, extensive, cell_id, None, None, backend)
 
     @staticmethod
-    def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, backend):
-        segments = backend.from_ndarray(positions.astype(dtype=int))
-        positions = positions - np.floor(positions)
-        positions_in_segment = backend.from_ndarray(positions)
-        segments_id = backend.from_ndarray(np.empty(len(n), dtype=int))
-        backend.segments_id(segments_id, segments)
+    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend):
+        cell_origin = backend.from_ndarray(positions.astype(dtype=int))
+        position_in_cell = backend.from_ndarray(positions - np.floor(positions))
+        cell_id = backend.from_ndarray(np.empty(len(n), dtype=int))
+        backend.cell_id(cell_id, cell_origin, grid)
 
-        return State(n, intensive, extensive, segments_id, segments, positions_in_segment, backend)
+        return State(n, grid, intensive, extensive, cell_id, cell_origin, position_in_cell, backend)
 
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segments_id, segments, positions, backend):
+    def __init__(self, n: np.ndarray, grid: tuple, intensive: dict, extensive: dict,
+                 cell_id, cell_origin, position_in_cell, backend):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend
 
+        self.grid = backend.from_ndarray(np.array(grid))
         self.SD_num = len(n)
         self.idx = backend.from_ndarray(np.arange(self.SD_num))
         self.n = backend.from_ndarray(n)
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
-        self.positions = positions
-        self.segments = segments
-        self.segments_id = segments_id
+        self.position_in_cell = position_in_cell
+        self.cell_origin = cell_origin
+        self.cell_id = cell_id
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
     @staticmethod

@@ -7,7 +7,6 @@ Created at 23.10.2019
 """
 
 from SDM.simulation.state import State
-from SDM.simulation.domain import Domain
 import numpy as np
 
 
@@ -22,6 +21,7 @@ class Advection:
 
         self.backend = backend
 
+        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
         self.n_sd = n_sd
         self.dimension = len(courant_field)
         self.courant = [backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
@@ -34,29 +34,29 @@ class Advection:
         for droplet in range(self.n_sd):
             for d in range(self.dimension):
                 self.displacement[droplet, d] = (
-                    self.courant[d][
-                        state.segments[droplet, 0],
-                        state.segments[droplet, 1]
-                        ] * (0 + state.positions[droplet, d]) +
-                    self.courant[d][
-                        state.segments[droplet, 0] + 1 * (d == 0),
-                        state.segments[droplet, 1] + 1 * (d == 1),
-                        ] * (1 - state.positions[droplet, d])
+                        self.courant[d][
+                        state.cell_origin[droplet, 0],
+                        state.cell_origin[droplet, 1]
+                        ] * (0 + state.position_in_cell[droplet, d]) +
+                        self.courant[d][
+                        state.cell_origin[droplet, 0] + 1 * (d == 0),
+                        state.cell_origin[droplet, 1] + 1 * (d == 1),
+                        ] * (1 - state.position_in_cell[droplet, d])
                 )
         # update position
-        self.backend.sum(state.positions, self.displacement)
+        self.backend.sum(state.position_in_cell, self.displacement)
 
-        # update segments
+        # update cell_origin
         self.segments(state)
 
-        # TODO handle boundary condition ( & invalid segments?)
+        # TODO handle boundary condition ( & invalid cell_origin?)
 
-    def segments(self, state):
+    def segments(self, state: State):
         # TODO add backend.add_floor/subtract_floor ?
-        self.backend.floor2(self.floor_of_positions, state.positions)
-        self.backend.sum(state.segments, self.floor_of_positions)
+        self.backend.floor2(self.floor_of_positions, state.position_in_cell)
+        self.backend.sum(state.cell_origin, self.floor_of_positions)
         self.backend.multiply(self.floor_of_positions, -1)
-        self.backend.sum(state.positions, self.floor_of_positions)
+        self.backend.sum(state.position_in_cell, self.floor_of_positions)
 
-        self.backend.segments_id(state.segments_id, state.segments)
+        self.backend.cell_id(state.cell_id, state.cell_origin, state.grid)
 

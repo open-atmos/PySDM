@@ -81,10 +81,14 @@ class Numba:
         return data.shape
 
     @staticmethod
-    def segments_id(segments_id, segments):
-        strides = np.array(segments.strides) / segments.itemsize
+    def cell_id(cell_id, cell_origin, grid):
+        # <TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        domain = np.empty(tuple(grid))
+        # </TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        strides = np.array(domain.strides) / cell_origin.itemsize
         strides = strides.reshape(1, -1)  # transpose
-        segments_id[:] = np.dot(strides, segments.T)
+        print("strides", strides)
+        cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
     # @numba.njit()
@@ -112,7 +116,7 @@ class Numba:
     @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 parallel=NUMBA_PARALLEL)
     def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
-        # TODO in segments
+        # TODO in cell_origin
         for i in prange(length // 2):
             j = 2 * i
             k = j + 1

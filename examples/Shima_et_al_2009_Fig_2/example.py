@@ -20,7 +20,7 @@ from SDM.utils.plotter import Plotter
 # instantiation of simulation components, timestepping
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=setup.backend)
+    state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=setup.backend)
     collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
     runner = Runner(state, (collider,))
 

@@ -15,4 +15,4 @@ class Condensation:
 
     def __call__(self, state: State):
         for i in range(state.SD_num):
-            th = self.th[state.segments[i]]
+            th = self.th[state.cell_origin[i]]

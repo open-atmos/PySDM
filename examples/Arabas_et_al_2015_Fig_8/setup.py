@@ -39,7 +39,7 @@ class Setup:  # TODO pint
     n_sd = 2 ** 13
     n_part = 2 ** 23  # [m-3]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
-    dv = 1e6  # [m3]
+    dv = size[0] / grid[0] * size[1] / grid[1]  # [m3]
     norm_factor = n_part * dv
     rho = 1000  # [kg m-3]
 

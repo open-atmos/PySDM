@@ -33,9 +33,9 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # Act
-        discr_zero = Maths.moment(state, 0) / n_part
-        discr_mean = Maths.moment(state, 1) / n_part
-        discr_mrsq = Maths.moment(state, 2) / n_part
+        discr_zero = Maths.moment_0d(state, 0) / n_part
+        discr_mean = Maths.moment_0d(state, 1) / n_part
+        discr_mrsq = Maths.moment_0d(state, 2) / n_part
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3

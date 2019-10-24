@@ -11,6 +11,7 @@ from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
 from SDM.simulation.dynamics.coalescence import SDM
 from SDM.simulation.discretisations import spatial, spectral
+from SDM.simulation.maths import Maths
 
 from examples.Arabas_et_al_2015_Fig_8.setup import Setup
 from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
@@ -26,11 +27,20 @@ def run(setup):
     # Lagrangian domain
     x, n = spectral.constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     positions = spatial.pseudorandom(setup.grid, setup.n_sd)
-    state = State.state_2d(n=n, extensive={'x': x}, intensive={}, positions=positions, backend=setup.backend)
+    state = State.state_2d(n=n, grid=setup.grid, extensive={'x': x}, intensive={}, positions=positions,
+                           backend=setup.backend)
     collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
     runner = Runner(state, (collider,))
+    moment_0 = np.empty(setup.grid)
 
     for step in setup.steps:
+        Maths.moment_2d(moment_0, state=state, k=0)
+        print(moment_0)
+        import matplotlib.pyplot as plt
+        plt.imshow(moment_0)
+        plt.show()
+
+
         # async: Eulerian advection (TODO: run in background)
         eulerian_fields.step()
 
