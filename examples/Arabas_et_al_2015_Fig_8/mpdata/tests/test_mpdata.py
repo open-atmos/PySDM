@@ -12,6 +12,7 @@ import numpy as np
 import pytest
 from examples.Arabas_et_al_2015_Fig_8.mpdata.tests.__parametrisation__ import halo
 
+
 class TestMPDATA:
     @pytest.mark.parametrize("shape, ij0, out, C, n_steps", [
         pytest.param((3, 1), (1, 0), np.array([[0.], [0.], [44.]]), (1., 0.), 1),
@@ -30,7 +31,6 @@ class TestMPDATA:
         vector_field_init_y = np.full((shape[0], shape[1] + 1), C[1])
         scalar_field = ScalarField(scalar_field_init, halo=halo)
         vector_field = VectorField((vector_field_init_x, vector_field_init_y), halo=halo)
-
 
         mpdata = MPDATAFactory.mpdata(courant_field=vector_field, state=scalar_field, n_iters=1)
         mpdata.debug_print()

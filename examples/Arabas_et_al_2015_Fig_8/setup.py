@@ -31,7 +31,7 @@ class Setup:  # TODO pint
                     'qv': 10e-3}
 
     def stream_function(self, x, z):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     x_min = r2x(10e-6)  # not given in the paper
     x_max = r2x(100e-6)  # not given in the paper

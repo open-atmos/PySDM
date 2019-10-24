@@ -5,7 +5,7 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from SDM.simulation.colliders import SDM
+from SDM.simulation.dynamics.coalescence import SDM
 from SDM.simulation.state import State
 from SDM.backends.default import Default
 import numpy as np
@@ -36,7 +36,7 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
         # Act
         sut(state)
         # Assert
@@ -54,7 +54,7 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = State(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -72,7 +72,7 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
-        state = State(n=n_2, extensive={'x': x_2}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -94,7 +94,7 @@ class TestSDM:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -112,7 +112,7 @@ class TestSDM:
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), backend=backend)
 
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, backend.to_ndarray(rand) > 0.5)
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
         for _ in range(32):

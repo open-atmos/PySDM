@@ -47,10 +47,16 @@ class Advection:
         self.backend.sum(state.positions, self.displacement)
 
         # update segments
+        self.segments(state)
+
+        # TODO handle boundary condition ( & invalid segments?)
+
+    def segments(self, state):
         # TODO add backend.add_floor/subtract_floor ?
         self.backend.floor2(self.floor_of_positions, state.positions)
         self.backend.sum(state.segments, self.floor_of_positions)
         self.backend.multiply(self.floor_of_positions, -1)
         self.backend.sum(state.positions, self.floor_of_positions)
 
-        # TODO handle boundary condition ( & invalid segments?)
+        self.backend.segments_id(state.segments_id, state.segments)
+

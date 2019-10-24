@@ -22,7 +22,7 @@ class Numba:
         elif dtype is int:
             data = np.full(shape, -1, dtype=np.int64)
         else:
-            raise NotImplementedError
+            raise NotImplementedError()
         return data
 
     @staticmethod
@@ -33,7 +33,7 @@ class Numba:
         elif str(array.dtype).startswith('float'):
             dtype = np.float64
         else:
-            raise NotImplementedError
+            raise NotImplementedError()
 
         result = array.astype(dtype).copy()
         return result
@@ -46,6 +46,10 @@ class Numba:
     def read_row(array, i):
         return array[i, :]
 
+    @staticmethod
+    def sort(data, length, keys):
+        pass
+
     # TODO idx -> self.idx?
     @staticmethod
     @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
@@ -55,7 +59,7 @@ class Numba:
         if axis == 0:
             data[:length] = data[idx[:length]]
         else:
-            raise NotImplementedError
+            raise NotImplementedError()
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
@@ -75,6 +79,12 @@ class Numba:
     # @numba.njit()
     def shape(data):
         return data.shape
+
+    @staticmethod
+    def segments_id(segments_id, segments):
+        strides = np.array(segments.strides) / segments.itemsize
+        strides = strides.reshape(1, -1)  # transpose
+        segments_id[:] = np.dot(strides, segments.T)
 
     @staticmethod
     # @numba.njit()
@@ -142,12 +152,18 @@ class Numba:
 
     @staticmethod
     @numba.njit([void(float64[:], float64),
-                 void(float64[:], float64[:])])
+                 void(float64[:], float64[:]),
+                 void(int64[:, :], int64)])  # TODO add subtract
     def multiply(data, multiplier):
         data *= multiplier
 
+    # TODO add
     @staticmethod
-    @numba.njit(void(float64[:], float64[:]), parallel=NUMBA_PARALLEL)
+    @numba.njit([void(float64[:], float64[:]),
+                 void(float64[:, :], float64[:, :]),
+                 void(int64[:, :], int64[:, :]),
+                 void(float64[:, :], int64[:, :])],
+                parallel=NUMBA_PARALLEL)
     def sum(data_out, data_in):
         data_out[:] = data_out + data_in
 
@@ -155,6 +171,12 @@ class Numba:
     @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
     def floor(row):
         row[:] = np.floor(row)
+
+    # TODO
+    @staticmethod
+    @numba.njit()  # TODO
+    def floor2(data_out, data_in):
+        data_out[:] = np.floor(data_in)
 
     @staticmethod
     # @numba.njit()

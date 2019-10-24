@@ -31,12 +31,12 @@ class MPDATAFactory:
 
     @staticmethod
     def kinematic_2d(grid, size, stream_function: callable, field_values: dict, halo=1):
-        courant_field = nondivergent_vector_field(grid, size, halo, stream_function)
+        courant_field = nondivergent_vector_field_2d(grid, size, halo, stream_function)
 
         mpdatas = {}
         for key, value in field_values.items():
             state = uniform_scalar_field(grid, value, halo)
-            mpdatas[key] = MPDATAFactory.mpdata(state=state, courant_field=courant_field)
+            mpdatas[key] = MPDATAFactory.mpdata(state=state, courant_field=courant_field, n_iters=1)
 
         eulerian_fields = EulerianFields(mpdatas)
         return eulerian_fields
@@ -51,8 +51,8 @@ def uniform_scalar_field(grid, value, halo):
 def nondivergent_vector_field_2d(grid, size, halo, stream_function: callable):
     dx = grid[0] / size[0]
     dz = grid[1] / size[1]
-    data_x = np.empty((grid[0] + 1, grid[1]))
-    data_z = np.empty((grid[0], grid[1] + 1))
+    data_x = np.zeros((grid[0] + 1, grid[1]))
+    data_z = np.zeros((grid[0], grid[1] + 1))
     # TODO
     data = [data_x, data_z]
     vector_field = VectorField(data=data, halo=halo)

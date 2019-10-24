@@ -1,4 +1,4 @@
-from SDM.simulation.discretisations import *
+from SDM.simulation.discretisations.spectral import *
 from SDM.simulation.spectra import Lognormal
 import numpy as np
 import pytest

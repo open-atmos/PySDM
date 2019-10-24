@@ -9,20 +9,21 @@ import numpy as np
 
 
 class State:
-    # @staticmethod
-    # def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
-    #     return State(n, intensive, extensive, backend)
+    @staticmethod
+    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
+        return State(n, intensive, extensive, None, None, None, backend)
 
     @staticmethod
     def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, backend):
         segments = backend.from_ndarray(positions.astype(dtype=int))
         positions = positions - np.floor(positions)
-        positions_backend = backend.from_ndarray(positions)
+        positions_in_segment = backend.from_ndarray(positions)
+        segments_id = backend.from_ndarray(np.empty(len(n), dtype=int))
+        backend.segments_id(segments_id, segments)
 
-        return State(n, intensive, extensive, segments, backend, positions_backend)
+        return State(n, intensive, extensive, segments_id, segments, positions_in_segment, backend)
 
-    # TODO domain
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segments, backend, positions=None):
+    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segments_id, segments, positions, backend):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend
@@ -33,6 +34,7 @@ class State:
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
         self.positions = positions
         self.segments = segments
+        self.segments_id = segments_id
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
     @staticmethod
@@ -84,7 +86,7 @@ class State:
 
     def unsort(self):
         # TODO: consider having two idx arrays and unsorting them asynchronously
-        self.backend.shuffle(self.idx, length=self.SD_num, axis=0)
+        self.backend.shuffle(data=self.idx, length=self.SD_num, axis=0)
 
     def min(self, item):
         result = self.backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)
