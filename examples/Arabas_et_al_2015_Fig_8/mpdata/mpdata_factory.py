@@ -39,7 +39,7 @@ class MPDATAFactory:
             mpdatas[key] = MPDATAFactory.mpdata(state=state, courant_field=courant_field, n_iters=1)
 
         eulerian_fields = EulerianFields(mpdatas)
-        return eulerian_fields
+        return courant_field, eulerian_fields
 
 
 def uniform_scalar_field(grid, value, halo):
@@ -51,8 +51,8 @@ def uniform_scalar_field(grid, value, halo):
 def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
     # TODO: density!
 
-    dx = grid[0] / size[0]
-    dz = grid[1] / size[1]
+    dx = size[0] / grid[0]
+    dz = size[1] / grid[1]
 
     nx = grid[0]+1
     nz = grid[1]
@@ -60,7 +60,7 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(dz / 2, size[1] - dz/2, nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
-    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2) / dz)
+    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2)) / dz
 
     nx = grid[0]
     nz = grid[1]+1
@@ -68,7 +68,11 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
-    velocity_z = stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z ) / dx
+    velocity_z = (stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z)) / dx
 
     courant_field = [velocity_x * dt / dx, velocity_z * dt / dz]
+    print(courant_field[0])
+    for d in range(len(courant_field)):
+        np.testing.assert_array_less(np.abs(courant_field[d]), 1)
+
     return VectorField(data=courant_field, halo=halo)

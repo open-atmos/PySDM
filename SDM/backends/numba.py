@@ -87,7 +87,6 @@ class Numba:
         # </TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         strides = np.array(domain.strides) / cell_origin.itemsize
         strides = strides.reshape(1, -1)  # transpose
-        print("strides", strides)
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
@@ -196,3 +195,8 @@ class Numba:
     @numba.njit(boolean(int64[:]))
     def first_element_is_zero(arr):
         return arr[0] == 0
+
+    @staticmethod
+    def modulo(cell_origin, grid):
+        for d in range(len(grid)):
+            cell_origin[:, d] %= grid[d]

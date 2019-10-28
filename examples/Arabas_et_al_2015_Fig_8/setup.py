@@ -24,7 +24,8 @@ m2um = 1e6
 
 
 class Setup:  # TODO pint
-    grid = (75, 75)  # dx=dz=20m
+    #grid = (75, 75)  # dx=dz=20m
+    grid = (25,25)
     size = (1500, 1500)  # [m]
 
     field_values = {'th': 300,
@@ -32,14 +33,14 @@ class Setup:  # TODO pint
 
     def stream_function(self, x, z):
         w_max = .6
-        X = self.grid[0]
-        Z = self.grid[1]
-        return - w_max * X / np.pi * np.sin(np.pi * z / Z) * np.cos (2* np.pi * x / X)
+        X = self.size[0]
+        Z = self.size[1]
+        return - w_max * X / np.pi * np.sin(np.pi * z / Z) * np.cos (2 * np.pi * x / X)
 
     x_min = r2x(10e-6)  # not given in the paper
     x_max = r2x(100e-6)  # not given in the paper
 
-    n_sd = 2 ** 13
+    n_sd = grid[0] * grid[1] * 2
     n_part = 2 ** 23  # [m-3]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
     dv = size[0] / grid[0] * size[1] / grid[1]  # [m3]
@@ -48,7 +49,7 @@ class Setup:  # TODO pint
 
     dt = 1  # [s]
 
-    steps = [0, 1200, 2400, 3600]
+    steps = np.arange(0, 50000, 100)
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)

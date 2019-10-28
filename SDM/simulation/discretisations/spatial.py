@@ -20,7 +20,6 @@ def pseudorandom(grid, n_sd):
     positions = np.random.rand(n_sd, dimension)
     for i in range(dimension):
         positions[:, i] *= grid[i]
-    print(positions)
     return positions
 
 
