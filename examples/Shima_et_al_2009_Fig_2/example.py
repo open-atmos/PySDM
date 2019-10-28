@@ -21,7 +21,7 @@ from SDM.utils.plotter import Plotter
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
+    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, n_cell=1, backend=setup.backend)
     runner = Runner(state, (collider,))
 
     states = {}

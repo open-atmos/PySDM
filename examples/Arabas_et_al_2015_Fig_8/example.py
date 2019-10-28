@@ -29,7 +29,8 @@ def run(setup):
     positions = spatial.pseudorandom(setup.grid, setup.n_sd)
     state = State.state_2d(n=n, grid=setup.grid, extensive={'x': x}, intensive={}, positions=positions,
                            backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
+    n_cell = setup.grid[0] * setup.grid[1]
+    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, n_cell=n_cell, backend=setup.backend)
     runner = Runner(state, (collider,))
     moment_0 = np.empty(setup.grid)
 

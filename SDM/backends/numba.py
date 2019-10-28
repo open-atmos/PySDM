@@ -47,8 +47,8 @@ class Numba:
         return array[i, :]
 
     @staticmethod
-    def sort(data, length, keys):
-        pass
+    def stable_sort(idx, keys, length):
+        idx[:length] = keys[idx[:length]].argsort(kind='stable')
 
     # TODO idx -> self.idx?
     @staticmethod
@@ -63,14 +63,14 @@ class Numba:
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
-                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
+                 int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
     def amin(row, idx, length):
         result = np.amin(row[idx[:length]])
         return result
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),
-                int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
+                 int64(int64[:], int64[:], int64)], parallel=NUMBA_PARALLEL)
     def amax(row, idx, length):
         result = np.amax(row[idx[:length]])
         return result
@@ -116,13 +116,12 @@ class Numba:
     @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 parallel=NUMBA_PARALLEL)
     def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
-        # TODO in cell_origin
-        for i in prange(length // 2):
-            j = 2 * i
-            k = j + 1
+        for i in prange(length - 1):
+            if gamma[i] == 0:
+                continue
 
-            j = idx[j]
-            k = idx[k]
+            j = idx[i]
+            k = idx[i + 1]
 
             if n[j] < n[k]:
                 j, k = k, j
@@ -142,17 +141,23 @@ class Numba:
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
+    # TODO: silently assumes that data_out is not permuted (i.e. not part of state)
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
-    def sum_pair(data_out, data_in, idx, length):
-        for i in prange(length // 2):
-            data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
+        #        for i in prange(length // 2):
+        #            data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
+        for i in prange(length - 1):
+            data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
+    # TODO: ditto
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
-    def max_pair(data_out, data_in, idx, length):
-        for i in prange(length // 2):
-            data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
+    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    def max_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # for i in prange(length // 2):
+        #    data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
+        for i in prange(length - 1):
+            data_out[i] = max(data_in[idx[i]], data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
     @staticmethod
     @numba.njit([void(float64[:], float64),

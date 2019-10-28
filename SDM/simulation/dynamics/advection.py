@@ -22,16 +22,15 @@ class Advection:
         self.backend = backend
 
         self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
-        self.n_sd = n_sd
         self.dimension = len(courant_field)
         self.courant = [backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
 
-        self.displacement = backend.from_ndarray(np.zeros((self.n_sd, self.dimension)))
-        self.floor_of_positions = backend.from_ndarray(np.zeros((self.n_sd, self.dimension), dtype=int))
+        self.displacement = backend.from_ndarray(np.zeros((n_sd, self.dimension)))
+        self.floor_of_positions = backend.from_ndarray(np.zeros((n_sd, self.dimension), dtype=int))
 
     def __call__(self, state: State):
         # interpolation
-        for droplet in range(self.n_sd):
+        for droplet in range(state.SD_num):
             for d in range(self.dimension):
                 self.displacement[droplet, d] = (
                         self.courant[d][

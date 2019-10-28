@@ -14,8 +14,8 @@ class Golovin:
         self.b = b
         self.x = x
 
-    def __call__(self, backend, output, state):
-        backend.sum_pair(output, state.get_backend_storage(self.x), state.idx, state.SD_num)
+    def __call__(self, backend, output, is_first_in_pair, state):
+        backend.sum_pair(output, state.get_backend_storage(self.x), is_first_in_pair, state.idx, state.SD_num)
         backend.multiply(output, self.b)
 
     def analytic_solution(self, x, t, x_0, N_0):

@@ -18,7 +18,7 @@ class State:
     def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend):
         cell_origin = backend.from_ndarray(positions.astype(dtype=int))
         position_in_cell = backend.from_ndarray(positions - np.floor(positions))
-        cell_id = backend.from_ndarray(np.empty(len(n), dtype=int))
+        cell_id = backend.array(n.shape, dtype=int)
         backend.cell_id(cell_id, cell_origin, grid)
 
         return State(n, grid, intensive, extensive, cell_id, cell_origin, position_in_cell, backend)
@@ -89,6 +89,9 @@ class State:
     def unsort(self):
         # TODO: consider having two idx arrays and unsorting them asynchronously
         self.backend.shuffle(data=self.idx, length=self.SD_num, axis=0)
+
+    def sort_by_cell_id(self):
+        self.backend.stable_sort(self.idx, self.cell_id, self.SD_num)
 
     def min(self, item):
         result = self.backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)
