@@ -31,7 +31,10 @@ class Setup:  # TODO pint
                     'qv': 10e-3}
 
     def stream_function(self, x, z):
-        raise NotImplementedError()
+        w_max = .6
+        X = self.grid[0]
+        Z = self.grid[1]
+        return - w_max * X / np.pi * np.sin(np.pi * z / Z) * np.cos (2* np.pi * x / X)
 
     x_min = r2x(10e-6)  # not given in the paper
     x_max = r2x(100e-6)  # not given in the paper

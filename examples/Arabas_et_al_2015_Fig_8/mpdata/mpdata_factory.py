@@ -30,8 +30,8 @@ class MPDATAFactory:
         return mpdata
 
     @staticmethod
-    def kinematic_2d(grid, size, stream_function: callable, field_values: dict, halo=1):
-        courant_field = nondivergent_vector_field_2d(grid, size, halo, stream_function)
+    def kinematic_2d(grid, size, dt, stream_function: callable, field_values: dict, halo=1):
+        courant_field = nondivergent_vector_field_2d(grid, size, halo, dt, stream_function)
 
         mpdatas = {}
         for key, value in field_values.items():
@@ -48,12 +48,27 @@ def uniform_scalar_field(grid, value, halo):
     return scalar_field
 
 
-def nondivergent_vector_field_2d(grid, size, halo, stream_function: callable):
+def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
+    # TODO: density!
+
     dx = grid[0] / size[0]
     dz = grid[1] / size[1]
-    data_x = np.zeros((grid[0] + 1, grid[1]))
-    data_z = np.zeros((grid[0], grid[1] + 1))
-    # TODO
-    data = [data_x, data_z]
-    vector_field = VectorField(data=data, halo=halo)
-    return vector_field
+
+    nx = grid[0]+1
+    nz = grid[1]
+    x = np.repeat(np.linspace(0, size[0], nx).reshape((nx, 1)), nz, axis=1)
+    assert x.shape == (nx, nz)
+    z = np.repeat(np.linspace(dz / 2, size[1] - dz/2, nz).reshape((1, nz)), nx, axis=0)
+    assert z.shape == (nx, nz)
+    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2) / dz)
+
+    nx = grid[0]
+    nz = grid[1]+1
+    x = np.repeat(np.linspace(dx/2, size[0]-dx/2, nx).reshape((nx, 1)), nz, axis=1)
+    assert x.shape == (nx, nz)
+    z = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
+    assert z.shape == (nx, nz)
+    velocity_z = stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z ) / dx
+
+    courant_field = [velocity_x * dt / dx, velocity_z * dt / dz]
+    return VectorField(data=courant_field, halo=halo)
