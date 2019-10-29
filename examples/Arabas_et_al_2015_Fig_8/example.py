@@ -34,7 +34,7 @@ def run(setup):
 
     dynamics = (
         #coalescence.SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, n_cell=n_cell, backend=setup.backend),
-        advection.ExplicitEulerWithInterpolation(n_sd=setup.n_sd, courant_field=courant_field.data, backend=setup.backend),
+        advection.Advection(n_sd=setup.n_sd, courant_field=courant_field.data, scheme='BackwardEuler', backend=setup.backend),
     )
     runner = Runner(state, dynamics)
     moment_0 = np.empty(setup.grid)

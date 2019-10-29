@@ -189,7 +189,11 @@ class VectorField:
 
                     self.data[d][ii, jj] += function(*args)
 
-
+    def div(self, grid_step):
+        result = ScalarField(np.zeros(self.shape), halo=0)
+        for d in range(self.dimension):
+            result.data[:, :] += np.diff(self.data[d], axis=d) / grid_step[d]
+        return result
 
 
 

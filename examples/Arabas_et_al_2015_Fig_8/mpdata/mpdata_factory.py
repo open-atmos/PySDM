@@ -48,10 +48,7 @@ def uniform_scalar_field(grid, value, halo):
     return scalar_field
 
 
-def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
-    # TODO: density!
-
-    dx = size[0] / grid[0]
+def x_vec_coord(grid, size):
     dz = size[1] / grid[1]
 
     nx = grid[0]+1
@@ -60,7 +57,11 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(dz / 2, size[1] - dz/2, nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
-    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2)) / dz
+    return x, z
+
+
+def z_vec_coord(grid, size):
+    dx = size[0] / grid[0]
 
     nx = grid[0]
     nz = grid[1]+1
@@ -68,11 +69,29 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
+    return x, z
+
+
+def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
+    # TODO: density!
+    dx = size[0] / grid[0]
+    dz = size[1] / grid[1]
+
+    x, z = x_vec_coord(grid, size)
+    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2)) / dz
+
+    x, z = z_vec_coord(grid, size)
     velocity_z = (stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z)) / dx
 
     courant_field = [velocity_x * dt / dx, velocity_z * dt / dz]
-    print(courant_field[0])
+
+    # CFL condition
     for d in range(len(courant_field)):
         np.testing.assert_array_less(np.abs(courant_field[d]), 1)
 
-    return VectorField(data=courant_field, halo=halo)
+    result = VectorField(data=courant_field, halo=halo)
+
+    # nondivergence (of velocity field, hence dt)
+    assert np.amax(abs(result.div(grid_step=[dt, dt]).data)) < 5e-9
+
+    return result
