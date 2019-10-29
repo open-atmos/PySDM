@@ -39,7 +39,7 @@ class MPDATAFactory:
             mpdatas[key] = MPDATAFactory.mpdata(state=state, courant_field=courant_field, n_iters=1)
 
         eulerian_fields = EulerianFields(mpdatas)
-        return eulerian_fields
+        return courant_field, eulerian_fields
 
 
 def uniform_scalar_field(grid, value, halo):
@@ -48,11 +48,8 @@ def uniform_scalar_field(grid, value, halo):
     return scalar_field
 
 
-def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
-    # TODO: density!
-
-    dx = grid[0] / size[0]
-    dz = grid[1] / size[1]
+def x_vec_coord(grid, size):
+    dz = size[1] / grid[1]
 
     nx = grid[0]+1
     nz = grid[1]
@@ -60,7 +57,11 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(dz / 2, size[1] - dz/2, nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
-    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2) / dz)
+    return x, z
+
+
+def z_vec_coord(grid, size):
+    dx = size[0] / grid[0]
 
     nx = grid[0]
     nz = grid[1]+1
@@ -68,7 +69,29 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     assert x.shape == (nx, nz)
     z = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
     assert z.shape == (nx, nz)
-    velocity_z = stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z ) / dx
+    return x, z
+
+
+def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
+    # TODO: density!
+    dx = size[0] / grid[0]
+    dz = size[1] / grid[1]
+
+    x, z = x_vec_coord(grid, size)
+    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2)) / dz
+
+    x, z = z_vec_coord(grid, size)
+    velocity_z = (stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z)) / dx
 
     courant_field = [velocity_x * dt / dx, velocity_z * dt / dz]
-    return VectorField(data=courant_field, halo=halo)
+
+    # CFL condition
+    for d in range(len(courant_field)):
+        np.testing.assert_array_less(np.abs(courant_field[d]), 1)
+
+    result = VectorField(data=courant_field, halo=halo)
+
+    # nondivergence (of velocity field, hence dt)
+    assert np.amax(abs(result.div(grid_step=[dt, dt]).data)) < 5e-9
+
+    return result
