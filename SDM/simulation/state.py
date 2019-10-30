@@ -9,15 +9,34 @@ import numpy as np
 
 
 class State:
-    def __init__(self, n: np.ndarray, intensive: dict, extensive: dict, segment_num: int, backend):
+    @staticmethod
+    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
+        cell_id = backend.from_ndarray(np.zeros_like(n))
+        return State(n, (), intensive, extensive, cell_id, None, None, backend)
+
+    @staticmethod
+    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend):
+        cell_origin = backend.from_ndarray(positions.astype(dtype=int))
+        position_in_cell = backend.from_ndarray(positions - np.floor(positions))
+        cell_id = backend.array(n.shape, dtype=int)
+        backend.cell_id(cell_id, cell_origin, grid)
+
+        return State(n, grid, intensive, extensive, cell_id, cell_origin, position_in_cell, backend)
+
+    def __init__(self, n: np.ndarray, grid: tuple, intensive: dict, extensive: dict,
+                 cell_id, cell_origin, position_in_cell, backend):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend
 
+        self.grid = backend.from_ndarray(np.array(grid))
         self.SD_num = len(n)
-        self.idx = backend.from_ndarray(np.arange(self.SD_num))
+        self.idx = backend.from_ndarray(np.arange(self.SD_num)) # TODO: to backend_storage
         self.n = backend.from_ndarray(n)
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
+        self.position_in_cell = position_in_cell
+        self.cell_origin = cell_origin # TODO: move to advection? (or remove - same info in cell_id)
+        self.cell_id = cell_id
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
     @staticmethod
@@ -69,7 +88,10 @@ class State:
 
     def unsort(self):
         # TODO: consider having two idx arrays and unsorting them asynchronously
-        self.backend.shuffle(self.idx, length=self.SD_num, axis=0)
+        self.backend.shuffle(data=self.idx, length=self.SD_num, axis=0)
+
+    def sort_by_cell_id(self):
+        self.backend.stable_argsort(self.idx, self.cell_id, self.SD_num)
 
     def min(self, item):
         result = self.backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)

@@ -58,7 +58,7 @@ class TestState:
     ])
     def test_housekeeping(self, x, n):
         # Arrange
-        sut = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
+        sut = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
         # TODO
         sut.healthy = sut.backend.from_ndarray(np.array([0]))
 

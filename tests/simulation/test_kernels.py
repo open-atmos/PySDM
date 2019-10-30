@@ -14,7 +14,7 @@ class TestGolovin:
     # TODO optional
     # def test_analytic_solution(self):
     #     b = 1.5e3
-    #     x_0 = 4/3 * np.pi * 30.531e-6**3
+    #     x_0 = 4/3 * np.permutation * 30.531e-6**3
     #     N_0 = 2**23
     #
     #     sut = Golovin(b)

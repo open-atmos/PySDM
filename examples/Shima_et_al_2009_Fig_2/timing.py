@@ -7,8 +7,8 @@ Created at 08.08.2019
 
 from SDM.simulation.runner import Runner
 from SDM.simulation.state import State
-from SDM.simulation.colliders import SDM
-from SDM.simulation.discretisations import constant_multiplicity
+from SDM.simulation.dynamics.coalescence import SDM
+from SDM.simulation.discretisations.spectral import constant_multiplicity
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 def run(setup):
@@ -28,7 +28,6 @@ def run(setup):
 # TODO python -O
 from SDM.backends.numba import Numba
 from SDM.backends.thrustRTC import ThrustRTC
-from SDM.backends.pythran import Pythran
 
 setup = SetupA()
 setup.steps = [100, 3600]

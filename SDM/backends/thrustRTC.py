@@ -191,9 +191,9 @@ else:
                 k = idx[k];
     
                 if (n[j] < n[k]) {
-                    auto tmp = j;
+                    auto old = j;
                     j = k;
-                    k = tmp;
+                    k = old;
                 }
     
                 auto g = n[j] / n[k];
@@ -258,9 +258,9 @@ else:
                     arr[i] = (long) arr[i];
                 else
                 {
-                    auto tmp = arr[i];
+                    auto old = arr[i];
                     arr[i] = (long) arr[i];
-                    if (tmp != arr[i])
+                    if (old != arr[i])
                         arr[i] -= 1;
                 }
             ''')

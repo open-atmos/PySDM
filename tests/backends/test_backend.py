@@ -21,7 +21,8 @@ from tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
 
 backend = Default()
 
-@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), Pythran()])
+
+@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), ])  # Pythran()])
 class TestBackend:
     @staticmethod
     def data(sut_backend, shape, dtype, seed=0):
@@ -55,6 +56,7 @@ class TestBackend:
         elif order == 'random':
             np.random.permutation(idx_ndarray)
 
+        print(idx_ndarray.dtype)
         result_sut = sut_backend.from_ndarray(idx_ndarray)
         result_default = backend.from_ndarray(idx_ndarray)
 
@@ -70,6 +72,23 @@ class TestBackend:
             return (idx_len + 1) // 2
         elif length == 'full':
             return idx_len
+
+    @staticmethod
+    def is_first_in_pair(sut_backend, length, seed=0):
+        np.random.seed(seed)
+
+        is_first_in_pair = np.random.randint(2, size=length)
+        pair = False
+        for i in range(length):
+            if pair:
+                is_first_in_pair[i] = 0
+                pair = False
+            elif is_first_in_pair[i] == 1:
+                pair = True
+        sut_is_first_in_pair = sut_backend.from_ndarray(is_first_in_pair)
+        backend_is_first_in_pair = backend.from_ndarray(is_first_in_pair)
+
+        return sut_is_first_in_pair, backend_is_first_in_pair
 
     @staticmethod
     def test_array(sut, dtype_full, shape_full):
@@ -140,7 +159,6 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
-    @pytest.mark.xfail
     def test_stable_argsort(sut, shape_1d, dtype, length, order):
         # Arrange
         sut_data, data = TestBackend.data(sut, shape_1d, dtype)
@@ -287,10 +305,11 @@ class TestBackend:
         sut_data_in, data_in = TestBackend.data(sut, shape_1d, float, seed=1)
         sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
         length = TestBackend.length(length, shape_1d)
+        sut_is_first_in_pair, is_first_in_pair = TestBackend.is_first_in_pair(sut, length)
 
         # Act
-        sut.sum_pair(sut_data, sut_data_in, sut_idx, length)
-        backend.sum_pair(data, data_in, idx, length)
+        sut.sum_pair(sut_data, sut_data_in, sut_is_first_in_pair, sut_idx, length)
+        backend.sum_pair(data, data_in, is_first_in_pair, idx, length)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
@@ -304,10 +323,11 @@ class TestBackend:
         sut_data_in, data_in = TestBackend.data(sut, shape_1d, int, seed=1)
         sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
         length = TestBackend.length(length, shape_1d)
+        sut_is_first_in_pair, is_first_in_pair = TestBackend.is_first_in_pair(sut, length)
 
         # Act
-        sut.max_pair(sut_data, sut_data_in, sut_idx, length)
-        backend.max_pair(data, data_in, idx, length)
+        sut.max_pair(sut_data, sut_data_in, sut_is_first_in_pair, sut_idx, length)
+        backend.max_pair(data, data_in, is_first_in_pair, idx, length)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))

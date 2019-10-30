@@ -1,4 +1,4 @@
-from SDM.simulation.discretisations import *
+from SDM.simulation.discretisations.spectral import *
 from SDM.simulation.spectra import Lognormal
 import numpy as np
 import pytest
@@ -9,7 +9,7 @@ import pytest
 	pytest.param(logarithmic),
 	pytest.param(constant_multiplicity)
 ])
-def test_discretisation(discretisation):
+def test_spectral_discretisation(discretisation):
 	# Arrange
 	n_sd = 100
 	m_mode = .5e-5

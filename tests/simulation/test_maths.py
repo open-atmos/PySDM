@@ -8,7 +8,7 @@ Created at 05.08.2019
 from SDM.simulation.maths import Maths
 from SDM.simulation.state import State
 from SDM.simulation.spectra import Lognormal
-from SDM.simulation.discretisations import linear
+from SDM.simulation.discretisations.spectral import linear
 from SDM.backends.default import Default
 
 backend = Default()
@@ -28,14 +28,14 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, x_mean, d)
         x, n = linear(n_sd, spectrum, (x_min, x_max))
-        state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=backend)
+        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # Act
-        discr_zero = Maths.moment(state, 0) / n_part
-        discr_mean = Maths.moment(state, 1) / n_part
-        discr_mrsq = Maths.moment(state, 2) / n_part
+        discr_zero = Maths.moment_0d(state, 0) / n_part
+        discr_mean = Maths.moment_0d(state, 1) / n_part
+        discr_mrsq = Maths.moment_0d(state, 2) / n_part
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3
