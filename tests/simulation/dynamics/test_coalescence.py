@@ -21,20 +21,22 @@ def backend_fill(backend, array, value):
     backend.multiply(array, 0.)
     backend.sum(array, full_backend)
 
+
 backend = Default()
+
 
 class StubKernel:
     def __init__(self, returned_value=-1):
         self.returned_value = returned_value
 
-    def __call__(self, backend, output, state):
+    def __call__(self, backend, output, is_first_in_pair, state):
         backend_fill(backend, output, self.returned_value)
 
 
 class TestSDM:
     def test_single_collision(self, x_2, n_2):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
         state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
         # Act
@@ -52,7 +54,7 @@ class TestSDM:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2, backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2, n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
         state = State.state_0d(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, backend=backend)
 
@@ -70,7 +72,7 @@ class TestSDM:
     ])
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
         state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
 
@@ -92,7 +94,7 @@ class TestSDM:
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
         state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
@@ -109,7 +111,7 @@ class TestSDM:
         n = np.random.randint(1, 64, size=256)
         x = np.random.uniform(size=256)
 
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
 
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, backend.to_ndarray(rand) > 0.5)
         state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
@@ -132,7 +134,7 @@ class TestSDM:
         dt = 666
         dv = 9
         n_sd = 64
-        sut = SDM(StubKernel(kernel_value), dt, dv, n_sd, backend=backend)
+        sut = SDM(StubKernel(kernel_value), dt, dv, n_sd, n_cell=1, backend=backend)
 
         # Act
         actual = sut.probability(1, 1, 0, 0, n_sd)  # TODO dependency state []

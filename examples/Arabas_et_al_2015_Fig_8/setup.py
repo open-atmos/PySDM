@@ -25,7 +25,7 @@ m2um = 1e6
 
 class Setup:  # TODO pint
     #grid = (75, 75)  # dx=dz=20m
-    grid = (25,25)
+    grid = (25, 25)
     size = (1500, 1500)  # [m]
 
     field_values = {'th': 300,

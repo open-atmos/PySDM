@@ -46,13 +46,13 @@ class TestExplicitEulerWithInterpolation:
         positions = Default.from_ndarray(np.array([[w, 0]]))
         courant_field = (np.array([[a, b]]).T, np.array([[0, 0]]))
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=positions)
-        sut = Advection(n_sd=n_sd, courant_field=courant_field, backend=Default)
+        sut = Advection(n_sd=n_sd, courant_field=courant_field, backend=Default, scheme='ForwardEuler')
 
         # Act
-        sut.calculate_displacement(state)
+        sut.calculate_displacement(state.cell_origin, state.position_in_cell)
 
         # Assert
-        np.testing.assert_equal(sut.displacement[0, 0], w * a + (1 - w) * b)
+        np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
 
     def test_update_position(self):
         # Arrange
@@ -63,13 +63,14 @@ class TestExplicitEulerWithInterpolation:
         py = .2
         initial_position = Default.from_ndarray(np.array([[px, py]]))
         dummy_courant_field = (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        #TODO: state not needed?
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
         sut = Advection(n_sd=n_sd, courant_field=dummy_courant_field, backend=Default)
         sut.displacement[droplet_id, 0] = .1
         sut.displacement[droplet_id, 1] = .2
 
         # Act
-        sut.update_position(state)
+        sut.update_position(state.position_in_cell)
 
         # Assert
         for d in range(2):
@@ -84,13 +85,14 @@ class TestExplicitEulerWithInterpolation:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         dummy_courant_field = (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        #TODO: state not needed?
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
         sut = Advection(n_sd=n_sd, courant_field=dummy_courant_field, backend=Default)
         state.position_in_cell[droplet_id, 0] = 1.1
         state.position_in_cell[droplet_id, 1] = 1.2
 
         # Act
-        sut.update_cell_origin(state)
+        sut.update_cell_origin(state.cell_origin, state.position_in_cell)
 
         # Assert
         for d in range(2):
@@ -104,13 +106,14 @@ class TestExplicitEulerWithInterpolation:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         dummy_courant_field = (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        #TODO: state not needed?
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
         sut = Advection(n_sd=n_sd, courant_field=dummy_courant_field, backend=Default)
         state.cell_origin[droplet_id, 0] = 1.1
         state.cell_origin[droplet_id, 1] = 1.2
 
         # Act
-        sut.boundary_condition(state)
+        sut.boundary_condition(state.cell_origin)
 
         # Assert
         assert state.cell_origin[droplet_id, 0] == 0
@@ -123,6 +126,7 @@ class TestExplicitEulerWithInterpolation:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         dummy_courant_field = (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        #TODO: state not needed?
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
         sut = Advection(n_sd=n_sd, courant_field=dummy_courant_field, backend=Default)
         state.cell_origin[droplet_id, 0] = .1
@@ -130,7 +134,7 @@ class TestExplicitEulerWithInterpolation:
         state.cell_id[droplet_id] = -1
 
         # Act
-        sut.recalculate_cell_id(state)
+        sut.recalculate_cell_id(state.cell_id, state.cell_origin, state.grid)
 
         # Assert
         assert state.cell_id[droplet_id] == 0

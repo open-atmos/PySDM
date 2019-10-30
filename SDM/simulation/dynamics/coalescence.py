@@ -5,6 +5,8 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
+from SDM.simulation.state import State
+
 
 class SDM:
     def __init__(self, kernel, dt, dv, n_sd, n_cell, backend):
@@ -13,23 +15,20 @@ class SDM:
         self.dt = dt
         self.dv = dv
         self.kernel = kernel
-        # TODO: optimise? (was n//2 for single cell)
         self.temp = backend.array(n_sd, dtype=float)
-        self.rand = backend.array(n_sd, dtype=float)
+        self.rand = backend.array(n_sd//2, dtype=float)
         self.prob = backend.array(n_sd, dtype=float)
 
         self.is_first_in_pair = backend.array(n_sd, dtype=int)  # TODO bool
         self.cell_start = backend.array(n_cell+1, dtype=int)
 
+    # TODO remove
     @staticmethod
     def compute_gamma(backend, prob, rand):
-        backend.multiply(prob, -1.)
-        backend.sum(prob, rand)
-        backend.floor(prob)
-        backend.multiply(prob, -1.)
+        backend.compute_gamma(prob, rand)
 
     @staticmethod
-    def compute_probability(backend, kernel, dt, dv, state, prob, temp, is_first_in_pair, cell_start):
+    def compute_probability(backend, kernel, dt, dv, state: State, prob, temp, is_first_in_pair, cell_start):
 
         kernel_temp = temp
         kernel(backend, kernel_temp, is_first_in_pair, state)
@@ -50,7 +49,7 @@ class SDM:
         backend.multiply(prob, norm_factor)
 
     @staticmethod
-    def toss_pairs(is_first_in_pair, cell_start, state):
+    def toss_pairs(is_first_in_pair, cell_start, state: State):
         state.unsort()
         state.sort_by_cell_id()
 
@@ -67,7 +66,7 @@ class SDM:
             )
 
     @staticmethod
-    def coalescence(backend, state, gamma):
+    def coalescence(backend, state: State, gamma):
         backend.coalescence(n=state.n,
                             idx=state.idx,
                             length=state.SD_num,
@@ -76,7 +75,7 @@ class SDM:
                             gamma=gamma,
                             healthy=state.healthy)
 
-    def __call__(self, state):
+    def __call__(self, state: State):
         assert state.is_healthy()
 
         self.toss_pairs(self.is_first_in_pair, self.cell_start, state)

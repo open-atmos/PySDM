@@ -31,11 +31,11 @@ class State:
 
         self.grid = backend.from_ndarray(np.array(grid))
         self.SD_num = len(n)
-        self.idx = backend.from_ndarray(np.arange(self.SD_num))
+        self.idx = backend.from_ndarray(np.arange(self.SD_num)) # TODO: to backend_storage
         self.n = backend.from_ndarray(n)
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
         self.position_in_cell = position_in_cell
-        self.cell_origin = cell_origin
+        self.cell_origin = cell_origin # TODO: move to advection? (or remove - same info in cell_id)
         self.cell_id = cell_id
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
@@ -91,7 +91,7 @@ class State:
         self.backend.shuffle(data=self.idx, length=self.SD_num, axis=0)
 
     def sort_by_cell_id(self):
-        self.backend.stable_sort(self.idx, self.cell_id, self.SD_num)
+        self.backend.stable_argsort(self.idx, self.cell_id, self.SD_num)
 
     def min(self, item):
         result = self.backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)

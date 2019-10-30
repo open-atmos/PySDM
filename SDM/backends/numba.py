@@ -47,7 +47,7 @@ class Numba:
         return array[i, :]
 
     @staticmethod
-    def stable_sort(idx, keys, length):
+    def stable_argsort(idx, keys, length):
         idx[:length] = keys[idx[:length]].argsort(kind='stable')
 
     # TODO idx -> self.idx?
@@ -174,6 +174,15 @@ class Numba:
                 parallel=NUMBA_PARALLEL)
     def sum(data_out, data_in):
         data_out[:] = data_out + data_in
+
+    # TODO comment
+    @staticmethod
+    def compute_gamma(prob, rand):
+        prob *= -1.
+        prob[0::2] += rand
+        prob[1::2] += rand
+        prob[:] = np.floor(prob)
+        prob *= -1.
 
     @staticmethod
     @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
