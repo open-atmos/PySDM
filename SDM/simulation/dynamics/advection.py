@@ -12,7 +12,7 @@ import numpy as np
 
 class Advection:
     # TODO Adapter
-    def __init__(self, n_sd, courant_field, backend, scheme='BackwardEuler'):
+    def __init__(self, n_sd, courant_field, backend, scheme='FTBS'):
         if len(courant_field) == 2:
             assert courant_field[0].shape[0] == courant_field[1].shape[0] + 1
             assert courant_field[0].shape[1] == courant_field[1].shape[1] - 1
@@ -62,12 +62,12 @@ class Advection:
                     cell_origin[droplet, 1] + 1 * (d == 1)
                 ]
                 omega = position_in_cell[droplet, d]
-                if self.scheme == 'ForwardEuler':
+                if self.scheme == 'FTFS':
                     self.displacement[droplet, d] = (
                         C_l * (1 - omega) +
                         C_r * omega
                     )
-                elif self.scheme == 'BackwardEuler':
+                elif self.scheme == 'FTBS':
                     # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
                     dC = C_r - C_l
                     self.displacement[droplet, d] = (omega * dC + C_l) / (1 - dC)

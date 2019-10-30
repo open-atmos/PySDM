@@ -24,9 +24,13 @@ m2um = 1e6
 
 
 class Setup:  # TODO pint
-    #grid = (75, 75)  # dx=dz=20m
-    grid = (25, 25)
+    grid = (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
+
+    # processes = {
+    #     "advection": True,
+    #     "coalescence": False
+    # }
 
     field_values = {'th': 300,
                     'qv': 10e-3}
@@ -49,7 +53,7 @@ class Setup:  # TODO pint
 
     dt = 1  # [s]
 
-    steps = np.arange(0, 50000, 100)
+    steps = np.arange(0, 3600, 30)
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
