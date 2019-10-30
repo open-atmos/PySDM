@@ -16,7 +16,7 @@ class DemoViewer:
         self.im = None
         self.reinit()
 
-    def reinit(self, _=None):
+    def reinit(self):
         n_steps = len(self.setup.steps)
         self.slider.max = n_steps - 1
         self.play.max = n_steps - 1

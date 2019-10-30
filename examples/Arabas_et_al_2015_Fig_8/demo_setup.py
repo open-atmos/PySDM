@@ -11,17 +11,17 @@ class DemoSetup(Setup):
         return self.ui_nx.value, self.ui_nz.value
 
     # processes
-    # ui_adve = Checkbox(value=Setup.processes["advection"], description="advection")
-    # ui_coal = Checkbox(value=Setup.processes["coalescence"], description="coalescence")
-    # @property
-    # def processes(self):
-    #     return {
-    #         "advection": self.ui_adve.value,
-    #         "coalescence": self.ui_coal.value
-    #     }
+    ui_adve = Checkbox(value=Setup.processes["advection"], description="advection")
+    ui_coal = Checkbox(value=Setup.processes["coalescence"], description="coalescence")
+    @property
+    def processes(self):
+        return {
+            "advection": self.ui_adve.value,
+            "coalescence": self.ui_coal.value
+        }
 
     def box(self):
         return VBox([
             self.ui_nx, self.ui_nz,
-            #self.ui_adve, self.ui_coal
+            self.ui_adve, self.ui_coal
         ])

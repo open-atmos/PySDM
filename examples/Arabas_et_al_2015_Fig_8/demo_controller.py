@@ -22,6 +22,8 @@ class DemoController:
         self._setup_play()
 
     def reinit(self, _=None):
+        self.panic = True
+        self.viewer.reinit()
         self._setup_play()
         self.progress.value = 0
 
@@ -47,7 +49,6 @@ class DemoController:
         self._setup_play()
 
     def _handle_play(self, _):
-        # storage.reinit()
         self.thread = Thread(target=self.target, args=(self,))
         self.thread.start()
         self._setup_stop()

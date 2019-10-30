@@ -32,47 +32,51 @@ class Simulation:
 
     # instantiation of simulation components, time-stepping
     def run(self, controller):
-        # Eulerian domain
-        courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
-            grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
-            stream_function=self.setup.stream_function,
-            field_values=self.setup.field_values)
+        self.storage.init(self.setup)
+        with controller:
+            # Eulerian domain
+            courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
+                grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
+                stream_function=self.setup.stream_function,
+                field_values=self.setup.field_values)
 
-        # Lagrangian domain
-        x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
-        n[0] *= 20
-        positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
-        state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
-                               backend=self.setup.backend)
-        n_cell = self.setup.grid[0] * self.setup.grid[1]
+            # Lagrangian domain
+            x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
+            n[0] *= 20
+            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
+            state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
+				   backend=self.setup.backend)
+            n_cell = self.setup.grid[0] * self.setup.grid[1]
 
-        dynamics = (
-            # coalescence.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd, n_cell=n_cell, backend=self.setup.backend),
-            advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field.data, scheme='FTBS', backend=self.setup.backend),
-        )
+            dynamics = []
+            # TODO: order of processes?
+            if self.setup.processes["coalescence"]:
+                dynamics.append(coalescence.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd, n_cell=n_cell, backend=self.setup.backend))
+            if self.setup.processes["advection"]:
+                dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field.data, scheme='FTBS', backend=self.setup.backend))
 
-        runner = Runner(state, dynamics)
-        moment_0 = np.empty(self.setup.grid)
+            runner = Runner(state, dynamics)
+            moment_0 = np.empty(self.setup.grid)
 
-        for step in self.setup.steps:
-            if controller.panic:
-                break
+            for step in self.setup.steps:
+                if controller.panic:
+                    break
 
-            # async: Eulerian advection (TODO: run in background)
-            #eulerian_fields.step() # TODO: same arg as run below!
+                # async: Eulerian advection (TODO: run in background)
+                #eulerian_fields.step() # TODO: same arg as run below!
 
-            # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
-            runner.run(step - runner.n_steps)
+                # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
+                runner.run(step - runner.n_steps)
 
-            # synchronous part:
-            # - condensation
+                # synchronous part:
+                # - condensation
 
-            # runner.state  # TODO: ...save()
+                # runner.state  # TODO: ...save()
 
-            Maths.moment_2d(moment_0, state=state, k=0)
-            self.storage.save(moment_0, step)
+                Maths.moment_2d(moment_0, state=state, k=0) 
+                self.storage.save(moment_0 / self.setup.dv, step)
 
-            controller.set_percent(float(step + 1) / self.setup.steps[-1])
+                controller.set_percent(float(step + 1) / self.setup.steps[-1])
 
         return runner.stats
 
