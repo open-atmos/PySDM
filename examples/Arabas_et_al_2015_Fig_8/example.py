@@ -62,11 +62,12 @@ class Simulation:
                 if controller.panic:
                     break
 
-                # async: Eulerian advection (TODO: run in background)
-                #eulerian_fields.step() # TODO: same arg as run below!
+                for _ in range(step - runner.n_steps):
+                    # async: Eulerian advection (TODO: run in background)
+                    eulerian_fields.step() # TODO: same arg as run below!
 
-                # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
-                runner.run(step - runner.n_steps)
+                    # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
+                    runner.run(1)
 
                 # synchronous part:
                 # - condensation
@@ -76,7 +77,7 @@ class Simulation:
                 Maths.moment_2d(moment_0, state=state, k=0) 
                 self.storage.save(moment_0 / self.setup.dv, step)
 
-                controller.set_percent(float(step + 1) / self.setup.steps[-1])
+                controller.set_percent(step / self.setup.steps[-1])
 
         return runner.stats
 

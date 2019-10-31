@@ -38,6 +38,10 @@ class Advection:
         position_in_cell = state.position_in_cell[state.idx[:state.SD_num]]
         cell_id = state.cell_id[state.idx[:state.SD_num]]
         displacement = self.displacement[:state.SD_num]
+        # displacement = self.displacement
+        # cell_origin = state.cell_origin
+        # position_in_cell = state.position_in_cell
+        # cell_id = state.cell_id
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
@@ -53,7 +57,7 @@ class Advection:
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         # TODO: move to backend
-        SD_num = self.backend.shape(cell_origin)[0]
+        SD_num = self.backend.shape(displacement)[0]
         for droplet in range(SD_num):
             for d in range(self.dimension):
                 C_l = courant[d][
