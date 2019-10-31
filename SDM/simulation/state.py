@@ -73,6 +73,9 @@ class State:
         if item == 'n':
             n = self.backend.to_ndarray(self.n)
             result = n[all_valid]
+        elif item == 'cell_id':
+            cell_id = self.backend.from_ndarray(self.cell_id)
+            result = cell_id[all_valid]
         else:
             tensive = self.keys[item][0]
             attr = self.keys[item][1]

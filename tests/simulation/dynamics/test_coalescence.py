@@ -15,11 +15,24 @@ import pytest
 from tests.simulation.__parametrisation__ import x_2, n_2
 
 
-def backend_fill(backend, array, value):
-    full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+def backend_fill(backend, array, value, odd_zeros=False):
+    if odd_zeros:
+        if isinstance(value, np.ndarray):
+            full_ndarray = insert_zeros(value).astype(np.float64)
+        else:
+            full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+            full_ndarray = insert_zeros(full_ndarray)
+    else:
+        full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+
     full_backend = backend.from_ndarray(full_ndarray)
     backend.multiply(array, 0.)
     backend.sum(array, full_backend)
+
+
+def insert_zeros(array):
+    return np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
+
 
 
 backend = Default()
@@ -95,7 +108,7 @@ class TestSDM:
     def test_multi_droplet(self, x, n, p):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
         state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
@@ -108,17 +121,25 @@ class TestSDM:
     # TODO integration test?
     def test_multi_step(self):
         # Arrange
-        n = np.random.randint(1, 64, size=256)
-        x = np.random.uniform(size=256)
+        SD_num = 256
+        n = np.random.randint(1, 64, size=SD_num)
+        x = np.random.uniform(size=SD_num)
 
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
+        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=SD_num, n_cell=1, backend=backend)
 
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, backend.to_ndarray(rand) > 0.5)
+        sut.compute_gamma = lambda backend, prob, rand: backend_fill(
+            backend,
+            prob,
+            backend.to_ndarray(rand) > 0.5,
+            odd_zeros=True
+        )
         state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
         for _ in range(32):
+            print("A", state['n'], state.n)
             sut(state)
+            print("B", state['n'], state.n)
 
         # Assert
         assert np.amin(state['n']) >= 0

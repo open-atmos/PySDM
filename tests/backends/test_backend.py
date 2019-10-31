@@ -159,15 +159,15 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
-    def test_stable_argsort(sut, shape_1d, dtype, length, order):
+    def test_stable_argsort(sut, shape_1d, length, order):
         # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, dtype)
+        sut_data, data = TestBackend.data(sut, shape_1d, int)
         sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
         length = TestBackend.length(length, shape_1d)
 
         # Act
-        sut.stable_argsort(sut_data, sut_idx, length)
-        backend.stable_argsort(data, idx, length)
+        sut.stable_argsort(sut_idx, sut_data, length)
+        backend.stable_argsort(idx, data, length)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
@@ -277,13 +277,14 @@ class TestBackend:
         sut_data, data = TestBackend.data(sut, shape_2d, float)
         sut_idx, idx = TestBackend.idx(sut, shape_2d, order)
         length = TestBackend.length(natural_length, shape_2d)
-        sut_healthy = sut.from_ndarray(np.array([0]))
-        healthy = backend.from_ndarray(np.array([0]))
+        sut_healthy = sut.from_ndarray(np.array([1]))
+        healthy = backend.from_ndarray(np.array([1]))
 
         assert backend.amin(n, idx, length) > 0
 
-        sut_gamma = sut.from_ndarray(np.arange(shape_2d[1] // 2).astype(np.float64))
-        gamma = backend.from_ndarray(np.arange(shape_2d[1] // 2).astype(np.float64))
+        # TODO insert 0 in odd position in gamma array  (per pairs)
+        sut_gamma = sut.from_ndarray(np.arange(shape_2d[1]).astype(np.float64))
+        gamma = backend.from_ndarray(np.arange(shape_2d[1]).astype(np.float64))
 
         # Act
         # TODO intensive

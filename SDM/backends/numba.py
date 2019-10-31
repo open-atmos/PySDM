@@ -48,7 +48,7 @@ class Numba:
 
     @staticmethod
     def stable_argsort(idx, keys, length):
-        idx[:length] = keys[idx[:length]].argsort(kind='stable')
+        idx[:length] = idx[np.argsort(keys[idx[:length]], kind='stable')]
 
     # TODO idx -> self.idx?
     @staticmethod

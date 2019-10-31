@@ -49,7 +49,7 @@ class TestExplicitEulerWithInterpolation:
         sut = Advection(n_sd=n_sd, courant_field=courant_field, backend=Default, scheme='FTFS')
 
         # Act
-        sut.calculate_displacement(state.cell_origin, state.position_in_cell)
+        sut.calculate_displacement(sut.displacement, sut.courant, state.cell_origin, state.position_in_cell)
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
@@ -70,7 +70,7 @@ class TestExplicitEulerWithInterpolation:
         sut.displacement[droplet_id, 1] = .2
 
         # Act
-        sut.update_position(state.position_in_cell)
+        sut.update_position(state.position_in_cell, sut.displacement)
 
         # Assert
         for d in range(2):

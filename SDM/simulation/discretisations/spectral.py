@@ -6,7 +6,7 @@ def __discritise(grid, spectrum):
     m = grid[1: -1: 2]
     cdf = spectrum.cumulative(grid[0::2])
     n_float = cdf[1:] - cdf[0:-1]
-    n_int = n_float.round().astype(int)
+    n_int = n_float.round().astype(np.int64)
 
     percent_diff = abs(1 - np.sum(n_float) / np.sum(n_int.astype(float)))
     if percent_diff > .01:

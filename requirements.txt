@@ -4,3 +4,4 @@ mpmath
 numba
 matplotlib
 pythran
+Pint

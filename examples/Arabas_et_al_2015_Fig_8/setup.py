@@ -15,7 +15,7 @@ from SDM.backends.default import Default
 class Setup:
     si = pint.UnitRegistry()
 
-    grid = (75, 75)  # dx=dz=20m
+    grid = (25, 25)  # (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
 
     @property
@@ -24,7 +24,7 @@ class Setup:
 
     @property
     def n_sd(self):
-        return self.grid[0] * self.grid[1] * 2
+        return self.grid[0] * self.grid[1] * 20
 
     # TODO: second mode
     # TODO: number -> mass distribution
@@ -36,7 +36,7 @@ class Setup:
 
     processes = {
         "advection": True,
-        "coalescence": False
+        "coalescence": True
     }
 
     field_values = {'th': 300,

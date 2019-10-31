@@ -20,7 +20,7 @@ from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
 
 class DummyController:
     panic = False
-    def set_percent(*_): pass
+    def set_percent(self, value): print(f"{100*value:.1f}%")
     def __enter__(*_): pass
     def __exit__(*_): pass
 
