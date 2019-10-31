@@ -30,8 +30,7 @@ class MPDATA:
     def step(self):
         for i in range(self.n_iters):
             self.prev.swap_memory(self.curr)
-
-            # bcond
+            self.prev.fill_halos()
             if i == 0:
                 C = self.C_physical
             else:

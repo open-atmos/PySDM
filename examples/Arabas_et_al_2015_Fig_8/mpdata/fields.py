@@ -65,6 +65,21 @@ class ScalarField:
 
                     self.data[self.i, self.j] += function(*args)
 
+    def get(self):
+        results = self.data[
+            self.halo : self.data.shape[0] - self.halo,
+            self.halo : self.data.shape[1] - self.halo
+        ]
+        return results
+
+    def fill_halos(self):
+        # TODO: use set_axis and loop over dimensions
+        # TODO: hardcoded periodic boundary
+        self.data[: self.halo, : ] = self.data[-2*self.halo:-self.halo, :]
+        self.data[-self.halo:, :] = self.data[self.halo:2*self.halo, :]
+
+        self.data[:, : self.halo] = self.data[:, -2 * self.halo:-self.halo]
+        self.data[:, -self.halo:] = self.data[:, self.halo:2 * self.halo]
 
 # @numba.jitclass([
 #     ('data1', numba.float32[:, :]),

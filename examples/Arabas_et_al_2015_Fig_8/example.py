@@ -64,8 +64,7 @@ class Simulation:
 
                 for _ in range(step - runner.n_steps):
                     # async: Eulerian advection (TODO: run in background)
-                    eulerian_fields.step() # TODO: same arg as run below!
-
+                    eulerian_fields.step()
                     # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
                     runner.run(1)
 
@@ -75,7 +74,9 @@ class Simulation:
                 # runner.state  # TODO: ...save()
 
                 Maths.moment_2d(moment_0, state=state, k=0) 
-                self.storage.save(moment_0 / self.setup.dv, step)
+                self.storage.save(moment_0 / self.setup.dv, step, "m0")
+                for key in eulerian_fields.mpdatas.keys():
+                    self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
 
                 controller.set_percent(step / self.setup.steps[-1])
 

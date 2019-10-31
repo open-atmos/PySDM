@@ -20,8 +20,15 @@ class DemoSetup(Setup):
             "coalescence": self.ui_coal.value
         }
 
+    # n_sd_per_gridbox
+    ui_sdpg = IntSlider(value=Setup.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=1024)
+    @property
+    def n_sd_per_gridbox(self):
+        return self.ui_sdpg.value
+
     def box(self):
         return VBox([
             self.ui_nx, self.ui_nz,
+            self.ui_sdpg,
             self.ui_adve, self.ui_coal
         ])
