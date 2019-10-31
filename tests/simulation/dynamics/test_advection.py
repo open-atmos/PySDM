@@ -46,7 +46,7 @@ class TestExplicitEulerWithInterpolation:
         positions = Default.from_ndarray(np.array([[w, 0]]))
         courant_field = (np.array([[a, b]]).T, np.array([[0, 0]]))
         state = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=positions)
-        sut = Advection(n_sd=n_sd, courant_field=courant_field, backend=Default, scheme='ForwardEuler')
+        sut = Advection(n_sd=n_sd, courant_field=courant_field, backend=Default, scheme='FTFS')
 
         # Act
         sut.calculate_displacement(state.cell_origin, state.position_in_cell)
