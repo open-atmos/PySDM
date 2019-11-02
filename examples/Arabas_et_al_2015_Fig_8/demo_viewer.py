@@ -1,19 +1,26 @@
-from ipywidgets import VBox, Box, Play, Output, IntSlider, jslink
-from matplotlib.pyplot import imshow, show, draw, colorbar
+from ipywidgets import VBox, HBox, Box, Play, Output, IntSlider, jslink
+import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 import numpy as np
 
 
 class DemoViewer:
-    play = Play()
-    slider = IntSlider()
-    plot = Output()
-
     def __init__(self, storage, setup):
         self.storage = storage
         self.setup = setup
+
         self.nans = None
-        self.im = None
+
+        # TODO: fps slider
+        self.play = Play()
+        self.slider = IntSlider()
+        self.plots = {
+            "m0": Output(),
+            "th": Output(),
+            "qv": Output()
+        }
+        self.ims = {}
+
         self.reinit()
 
     def reinit(self):
@@ -23,25 +30,31 @@ class DemoViewer:
         self.play.value = 0
         self.slider.value = 0
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)
-        with self.plot:
-            clear_output()
-            self.im = imshow(self.nans, cmap='GnBu')
-            self.im.set_clim(vmin=0, vmax=500000000)
-            colorbar()
-            show()
+        for key in self.plots.keys():
+            with self.plots[key]:
+                clear_output()
+                self.ims[key] = plt.imshow(self.nans, cmap='GnBu')
+                self.ims[key].set_clim(vmin=0, vmax=500000000)
+                plt.colorbar()
+                plt.title(key)
+                plt.show()
 
     def replot(self, bunch):
         step = bunch.new
-        with self.plot:
+
+        for key in self.plots.keys():
             try:
-                data = self.storage.load(self.setup.steps[step])
+                data = self.storage.load(self.setup.steps[step], key)
             except self.storage.Exception:
                 data = self.nans
-            self.im.set_data(data)
-            clear_output(wait=True)
-            display(self.im.figure)
+            self.ims[key].set_data(data)
+
+        for key in self.plots.keys():
+            with self.plots[key]:
+                clear_output(wait=True)
+                display(self.ims[key].figure)
 
     def box(self):
         jslink((self.play, 'value'), (self.slider, 'value'))
         self.play.observe(self.replot, 'value')
-        return VBox([Box([self.play, self.slider]), self.plot])
+        return VBox([Box([self.play, self.slider]), HBox(tuple(self.plots.values()))])
