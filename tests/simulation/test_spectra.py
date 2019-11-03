@@ -36,10 +36,6 @@ class TestLognormal:
             2
         )
 
-    def test_size_distribution_s(self):
-        # TODO
-        pass
-
 
 class TestExponential:
     @pytest.mark.parametrize("scale", [

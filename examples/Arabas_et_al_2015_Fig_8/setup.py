@@ -47,15 +47,16 @@ class Setup:
         w_max = .6
         X = self.size[0]
         Z = self.size[1]
-        return - w_max * X / np.pi * np.sin(np.pi * z / Z) * np.cos (2 * np.pi * x / X)
+        return - w_max * X / np.pi * np.sin(np.pi * z / Z) * np.cos(2 * np.pi * x / X)
 
-    x_min = .01e-6 # TODO: mass!
-    x_max = 5e-6 # TODO: mass!
+    x_min = .01e-6  # TODO: mass!
+    x_max = 5e-6  # TODO: mass!
 
     dt = 1  # [s]
 
-    steps = np.arange(0, 3600, 30)
+    # output steps
+    steps = np.arange(0, 360, 30)
 
-    kernel = Golovin(b=1.5e3)  # [s-1]
+    kernel = Golovin(b=1)  # [s-1]
 
     backend = Default()

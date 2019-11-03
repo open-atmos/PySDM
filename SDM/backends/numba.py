@@ -39,12 +39,44 @@ class Numba:
         return result
 
     @staticmethod
+    # @numba.njit()
+    def to_ndarray(data):
+        return data.copy()
+
+    @staticmethod
+    # @numba.njit()
+    def shape(data):
+        return data.shape
+
+    @staticmethod
+    # @numba.njit()
+    def dtype(data):
+        return data.dtype
+
+    @staticmethod
     def write_row(array, i, row):
         array[i, :] = row
 
     @staticmethod
     def read_row(array, i):
         return array[i, :]
+
+    @staticmethod
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
+    def urand(data):
+        data[:] = np.random.uniform(0, 1, data.shape)
+
+    @staticmethod
+    @numba.njit([void(float64[:], float64),
+                 void(float64[:], float64[:]),
+                 void(int64[:, :], int64)])  # TODO add subtract
+    def multiply(data, multiplier):
+        data *= multiplier
+
+    @staticmethod
+    def modulo(cell_origin, grid):
+        for d in range(len(grid)):
+            cell_origin[:, d] %= grid[d]
 
     @staticmethod
     def stable_argsort(idx, keys, length):
@@ -76,28 +108,15 @@ class Numba:
         return result
 
     @staticmethod
-    # @numba.njit()
-    def shape(data):
-        return data.shape
-
-    @staticmethod
-    def cell_id(cell_id, cell_origin, grid):
-        # <TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        domain = np.empty(tuple(grid))
-        # </TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        strides = np.array(domain.strides) / cell_origin.itemsize
-        strides = strides.reshape(1, -1)  # transpose
-        cell_id[:] = np.dot(strides, cell_origin.T)
-
-    @staticmethod
-    # @numba.njit()
-    def dtype(data):
-        return data.dtype
-
-    @staticmethod
     @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
-    def urand(data):
-        data[:] = np.random.uniform(0, 1, data.shape)
+    def floor(row):
+        row[:] = np.floor(row)
+
+    # TODO
+    @staticmethod
+    @numba.njit()  # TODO
+    def floor2(data_out, data_in):
+        data_out[:] = np.floor(data_in)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64))
@@ -158,13 +177,6 @@ class Numba:
         for i in prange(length - 1):
             data_out[i] = max(data_in[idx[i]], data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
-    @staticmethod
-    @numba.njit([void(float64[:], float64),
-                 void(float64[:], float64[:]),
-                 void(int64[:, :], int64)])  # TODO add subtract
-    def multiply(data, multiplier):
-        data *= multiplier
-
     # TODO add
     @staticmethod
     @numba.njit([void(float64[:], float64[:]),
@@ -185,27 +197,15 @@ class Numba:
         prob *= -1.
 
     @staticmethod
-    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
-    def floor(row):
-        row[:] = np.floor(row)
-
-    # TODO
-    @staticmethod
-    @numba.njit()  # TODO
-    def floor2(data_out, data_in):
-        data_out[:] = np.floor(data_in)
-
-    @staticmethod
-    # @numba.njit()
-    def to_ndarray(data):
-        return data.copy()
-
-    @staticmethod
     @numba.njit(boolean(int64[:]))
     def first_element_is_zero(arr):
         return arr[0] == 0
 
     @staticmethod
-    def modulo(cell_origin, grid):
-        for d in range(len(grid)):
-            cell_origin[:, d] %= grid[d]
+    def cell_id(cell_id, cell_origin, grid):
+        # <TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        domain = np.empty(tuple(grid))
+        # </TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        strides = np.array(domain.strides) / cell_origin.itemsize
+        strides = strides.reshape(1, -1)  # transpose
+        cell_id[:] = np.dot(strides, cell_origin.T)

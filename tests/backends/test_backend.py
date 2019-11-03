@@ -56,7 +56,6 @@ class TestBackend:
         elif order == 'random':
             np.random.permutation(idx_ndarray)
 
-        print(idx_ndarray.dtype)
         result_sut = sut_backend.from_ndarray(idx_ndarray)
         result_default = backend.from_ndarray(idx_ndarray)
 
@@ -143,22 +142,6 @@ class TestBackend:
         assert sut.amax(sut_data, sut_idx, length) == sut.amax(sut_data_original, sut_idx, length)
 
     @staticmethod
-    @pytest.mark.xfail
-    def test_argsort(sut, shape_1d, length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, int)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(length, shape_1d)
-
-        # Act
-        sut.argsort(sut_data, sut_idx, length)
-        backend.argsort(data, idx, length)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
-
-    @staticmethod
     def test_stable_argsort(sut, shape_1d, length, order):
         # Arrange
         sut_data, data = TestBackend.data(sut, shape_1d, int)
@@ -237,7 +220,6 @@ class TestBackend:
         backend.urand(data)
 
         # Assert
-        print(sut.to_ndarray(sut_data))
         assert sut.shape(sut_data) == backend.shape(data)
         assert sut.dtype(sut_data) == backend.dtype(data)
         assert sut.amin(sut_data, sut_idx, length) >= 0
