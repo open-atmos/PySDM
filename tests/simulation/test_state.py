@@ -9,6 +9,16 @@ backend = Default()
 
 class TestState:
     @staticmethod
+    def get_empty_state() -> State:
+        return State(n=np.zeros(0), grid=(), intensive={}, extensive={},
+                     cell_id=np.zeros(0), position_in_cell=None, cell_origin=None,
+                     backend=backend)
+
+    @staticmethod
+    def storage(iterable):
+        return backend.from_ndarray(np.array(iterable))
+
+    @staticmethod
     def check_contiguity(state, attr='n', i_SD=0):
         item = state[attr]
         assert item.flags['C_CONTIGUOUS']
@@ -70,3 +80,19 @@ class TestState:
         assert sut.SD_num == (n != 0).sum()
         assert sut['n'].sum() == n.sum()
         assert (sut['x'] * sut['n']).sum() == (x * n).sum()
+
+    def test_sort_by_cell_id(self):
+        # Arrange
+        sut = TestState.get_empty_state()
+        sut.n = TestState.storage([0, 1, 0, 1, 1])
+        sut.cell_id = TestState.storage([3, 4, 0, 1, 2])
+        sut.idx = TestState.storage([4, 1, 3, 2, 0])
+        sut.SD_num = 3
+
+        # Act
+        sut.sort_by_cell_id()
+
+        # Assert
+        np.testing.assert_array_equal(np.array([3, 4, 1, 2, 0]), backend.to_ndarray(sut.idx))
+
+

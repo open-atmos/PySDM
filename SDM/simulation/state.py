@@ -11,32 +11,33 @@ import numpy as np
 class State:
     @staticmethod
     def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
-        cell_id = backend.from_ndarray(np.zeros_like(n))
+        cell_id = np.zeros_like(n)
         return State(n, (), intensive, extensive, cell_id, None, None, backend)
 
     @staticmethod
     def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend):
-        cell_origin = backend.from_ndarray(positions.astype(dtype=int))
-        position_in_cell = backend.from_ndarray(positions - np.floor(positions))
+        cell_origin = positions.astype(dtype=int)
+        position_in_cell = positions - np.floor(positions)
         cell_id = backend.array(n.shape, dtype=int)
-        backend.cell_id(cell_id, cell_origin, grid)
+        backend.cell_id(cell_id, backend.from_ndarray(cell_origin), backend.from_ndarray(np.array(grid)))
+        cell_id = backend.to_ndarray(cell_id)
 
         return State(n, grid, intensive, extensive, cell_id, cell_origin, position_in_cell, backend)
 
     def __init__(self, n: np.ndarray, grid: tuple, intensive: dict, extensive: dict,
-                 cell_id, cell_origin, position_in_cell, backend):
+                 cell_id: np.ndarray, cell_origin: np.ndarray, position_in_cell: np.ndarray, backend):
         assert State.check_args(n, intensive, extensive)
 
         self.backend = backend
 
         self.grid = backend.from_ndarray(np.array(grid))
         self.SD_num = len(n)
-        self.idx = backend.from_ndarray(np.arange(self.SD_num)) # TODO: to backend_storage
+        self.idx = backend.from_ndarray(np.arange(self.SD_num))  # TODO: to backend_storage
         self.n = backend.from_ndarray(n)
         self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
-        self.position_in_cell = position_in_cell
-        self.cell_origin = cell_origin # TODO: move to advection? (or remove - same info in cell_id)
-        self.cell_id = cell_id
+        self.position_in_cell = None if position_in_cell is None else backend.from_ndarray(position_in_cell)
+        self.cell_origin = None if cell_origin is None else backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
+        self.cell_id = backend.from_ndarray(cell_id)
         self.healthy = backend.from_ndarray(np.full((1,), 1))
 
     @staticmethod

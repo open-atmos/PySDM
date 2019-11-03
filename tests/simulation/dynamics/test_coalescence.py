@@ -20,8 +20,11 @@ def backend_fill(backend, array, value, odd_zeros=False):
         if isinstance(value, np.ndarray):
             full_ndarray = insert_zeros(value).astype(np.float64)
         else:
-            full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+            print("this")
+            full_ndarray = np.full(backend.shape(array)[0] // 2, value).astype(np.float64)
             full_ndarray = insert_zeros(full_ndarray)
+            if backend.shape(array)[0] % 2 != 0:
+                full_ndarray = np.concatenate((full_ndarray, np.zeros(1)))
     else:
         full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
 
@@ -31,8 +34,8 @@ def backend_fill(backend, array, value, odd_zeros=False):
 
 
 def insert_zeros(array):
-    return np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
-
+    result = np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
+    return result
 
 
 backend = Default()
