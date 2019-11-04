@@ -2,6 +2,7 @@
 Created at 25.09.2019
 
 @author: Piotr Bartman
+@author: Michael Olesik
 @author: Sylwester Arabas
 """
 
@@ -15,7 +16,7 @@ from PySDM.simulation.maths import Maths
 
 from examples.Arabas_et_al_2015_Fig_8.setup import Setup
 from examples.Arabas_et_al_2015_Fig_8.storage import Storage
-from MPyDATA.mpdata import MPDATAFactory
+from MPyDATA.mpdata.mpdata_factory import MPDATAFactory
 
 
 class DummyController:

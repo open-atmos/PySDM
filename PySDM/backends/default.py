@@ -5,7 +5,7 @@ Created at 31.07.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.backends.numba import Numba
+from PySDM.backends.numba.numba import Numba
 # from SDM.backends.thrustRTC import ThrustRTC
 # from SDM.backends.pythran import Pythran
 

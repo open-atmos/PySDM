@@ -1,3 +1,9 @@
+"""
+Created at 02.10.2019
+
+@author: Sylwester Arabas
+"""
+
 import os
 import numpy as np
 import tempfile

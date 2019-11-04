@@ -82,20 +82,20 @@ class Advection:
                     raise NotImplementedError()
 
     def update_position(self, position_in_cell, displacement):
-        self.backend.sum(position_in_cell, displacement)
+        self.backend.add(position_in_cell, displacement)
 
     def update_cell_origin(self, cell_origin, position_in_cell):
         # TODO add backend.add_floor/subtract_floor ?
         floor_of_position = self.temp[:position_in_cell.shape[0]]
 
         self.backend.floor2(floor_of_position, position_in_cell)
-        self.backend.sum(cell_origin, floor_of_position)
+        self.backend.add(cell_origin, floor_of_position)
         self.backend.multiply(floor_of_position, -1)
-        self.backend.sum(position_in_cell, floor_of_position)
+        self.backend.add(position_in_cell, floor_of_position)
 
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic
-        self.backend.modulo(cell_origin, self.grid)
+        self.backend.column_modulo(cell_origin, self.grid)
 
     def recalculate_cell_id(self, cell_id, cell_origin, grid):
         self.backend.cell_id(cell_id, cell_origin, grid)

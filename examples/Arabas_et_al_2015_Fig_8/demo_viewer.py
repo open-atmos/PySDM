@@ -1,3 +1,9 @@
+"""
+Created at 02.10.2019
+
+@author: Sylwester Arabas
+"""
+
 from ipywidgets import VBox, HBox, Box, Play, Output, IntSlider, jslink
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display

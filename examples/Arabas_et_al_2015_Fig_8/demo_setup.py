@@ -1,3 +1,9 @@
+"""
+Created at 02.10.2019
+
+@author: Sylwester Arabas
+"""
+
 from ipywidgets import IntSlider, VBox, Checkbox
 from examples.Arabas_et_al_2015_Fig_8.setup import Setup
 
