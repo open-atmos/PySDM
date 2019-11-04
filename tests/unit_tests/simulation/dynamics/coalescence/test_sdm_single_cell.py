@@ -10,46 +10,16 @@ from PySDM.simulation.state import State
 from PySDM.backends.default import Default
 import numpy as np
 import pytest
+from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 
 # noinspection PyUnresolvedReferences
-from tests.unit_tests.simulation.__parametrisation__ import x_2, n_2
-
-
-def backend_fill(backend, array, value, odd_zeros=False):
-    if odd_zeros:
-        if isinstance(value, np.ndarray):
-            full_ndarray = insert_zeros(value).astype(np.float64)
-        else:
-            print("this")
-            full_ndarray = np.full(backend.shape(array)[0] // 2, value).astype(np.float64)
-            full_ndarray = insert_zeros(full_ndarray)
-            if backend.shape(array)[0] % 2 != 0:
-                full_ndarray = np.concatenate((full_ndarray, np.zeros(1)))
-    else:
-        full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
-
-    full_backend = backend.from_ndarray(full_ndarray)
-    backend.multiply(array, 0.)
-    backend.sum(array, full_backend)
-
-
-def insert_zeros(array):
-    result = np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
-    return result
+from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
 
 
 backend = Default()
 
 
-class StubKernel:
-    def __init__(self, returned_value=-1):
-        self.returned_value = returned_value
-
-    def __call__(self, backend, output, is_first_in_pair, state):
-        backend_fill(backend, output, self.returned_value)
-
-
-class TestSDM:
+class TestSDMSingleCell:
     def test_single_collision(self, x_2, n_2):
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
@@ -140,9 +110,7 @@ class TestSDM:
 
         # Act
         for _ in range(32):
-            print("A", state['n'], state.n)
             sut(state)
-            print("B", state['n'], state.n)
 
         # Assert
         assert np.amin(state['n']) >= 0
@@ -171,3 +139,5 @@ class TestSDM:
 
                 # Assert
                 assert expected(p, r) == backend.to_ndarray(prob_arr)[0]
+
+    # TODO test_compute_probability

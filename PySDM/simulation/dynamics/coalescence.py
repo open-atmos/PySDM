@@ -22,6 +22,21 @@ class SDM:
         self.is_first_in_pair = backend.array(n_sd, dtype=int)  # TODO bool
         self.cell_start = backend.array(n_cell+1, dtype=int)
 
+    def __call__(self, state: State):
+        assert state.is_healthy()
+
+        self.toss_pairs(self.is_first_in_pair, self.cell_start, state)
+
+        self.compute_probability(self.backend, self.kernel, self.dt, self.dv, state, self.prob, self.temp,
+                                 self.is_first_in_pair, self.cell_start)
+
+        self.backend.urand(self.rand)
+        self.compute_gamma(self.backend, self.prob, self.rand)
+
+        self.coalescence(self.backend, state, gamma=self.prob)
+
+        state.housekeeping()
+
     # TODO remove
     @staticmethod
     def compute_gamma(backend, prob, rand):
@@ -48,7 +63,7 @@ class SDM:
         # TODO: use backend
         for d in range(len(prob)):
             prob[d] *= norm_factor[state.cell_id[d]]
-#        backend.multiply(prob, norm_factor)
+        # backend.multiply(prob, norm_factor)
 
     @staticmethod
     def toss_pairs(is_first_in_pair, cell_start, state: State):
@@ -76,18 +91,3 @@ class SDM:
                             extensive=state.get_extensive_attrs(),
                             gamma=gamma,
                             healthy=state.healthy)
-
-    def __call__(self, state: State):
-        assert state.is_healthy()
-
-        self.toss_pairs(self.is_first_in_pair, self.cell_start, state)
-
-        self.compute_probability(self.backend, self.kernel, self.dt, self.dv, state, self.prob, self.temp,
-                                 self.is_first_in_pair, self.cell_start)
-
-        self.backend.urand(self.rand)
-        self.compute_gamma(self.backend, self.prob, self.rand)
-
-        self.coalescence(self.backend, state, gamma=self.prob)
-
-        state.housekeeping()
