@@ -3,11 +3,10 @@ python: "3.7"
   
 install:
   - pip install -U -r requirements.txt
-  - pip install -U -r requirements-dev.txt
-  - pip install -U -r requirements-examples.txt
 
 script:
-  - python -m pytest --cov-report term --cov=SDM
+  - python -m pytest --cov-report term --cov=PySDM
+  - python -m pytest --cov-report term --cov=MPyDATA  # TODO
   - |
       python -m ipykernel install --user
       for i in examples/*/demo.ipynb; do

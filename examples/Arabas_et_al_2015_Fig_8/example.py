@@ -7,15 +7,15 @@ Created at 25.09.2019
 
 import numpy as np
 
-from SDM.simulation.runner import Runner
-from SDM.simulation.state import State
-from SDM.simulation.dynamics import coalescence, advection
-from SDM.simulation.discretisations import spatial, spectral
-from SDM.simulation.maths import Maths
+from PySDM.simulation.runner import Runner
+from PySDM.simulation.state import State
+from PySDM.simulation.dynamics import coalescence, advection
+from PySDM.simulation.discretisations import spatial, spectral
+from PySDM.simulation.maths import Maths
 
 from examples.Arabas_et_al_2015_Fig_8.setup import Setup
 from examples.Arabas_et_al_2015_Fig_8.storage import Storage
-from examples.Arabas_et_al_2015_Fig_8.mpdata.mpdata_factory import MPDATAFactory
+from MPyDATA.mpdata import MPDATAFactory
 
 
 class DummyController:

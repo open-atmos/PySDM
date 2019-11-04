@@ -5,3 +5,13 @@ numba
 matplotlib
 pythran
 Pint
+
+pytest
+pytest-cov
+codecov
+matplotlib
+
+nbconvert
+jupyter_client
+ipykernel
+ipywidgets

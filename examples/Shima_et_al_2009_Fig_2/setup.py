@@ -6,9 +6,9 @@ Created at 08.08.2019
 """
 
 import numpy as np
-from SDM.simulation.spectra import Exponential
-from SDM.simulation.kernels import Golovin
-from SDM.backends.default import Default
+from PySDM.simulation.spectra import Exponential
+from PySDM.simulation.kernels import Golovin
+from PySDM.backends.default import Default
 
 
 def x2r(x):

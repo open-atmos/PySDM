@@ -7,9 +7,9 @@ Created at 25.09.2019
 
 import numpy as np
 import pint
-from SDM.simulation.spectra import Lognormal
-from SDM.simulation.kernels import Golovin
-from SDM.backends.default import Default
+from PySDM.simulation.spectra import Lognormal
+from PySDM.simulation.kernels import Golovin
+from PySDM.backends.default import Default
 
 
 class Setup:
@@ -57,6 +57,6 @@ class Setup:
     # output steps
     steps = np.arange(0, 360, 30)
 
-    kernel = Golovin(b=1)  # [s-1]
+    kernel = Golovin(b=1e-3)  # [s-1]
 
     backend = Default()

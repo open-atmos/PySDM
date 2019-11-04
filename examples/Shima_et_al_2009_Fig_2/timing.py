@@ -5,10 +5,10 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from SDM.simulation.runner import Runner
-from SDM.simulation.state import State
-from SDM.simulation.dynamics.coalescence import SDM
-from SDM.simulation.discretisations.spectral import constant_multiplicity
+from PySDM.simulation.runner import Runner
+from PySDM.simulation.state import State
+from PySDM.simulation.dynamics.coalescence import SDM
+from PySDM.simulation.discretisations.spectral import constant_multiplicity
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 def run(setup):
@@ -26,8 +26,8 @@ def run(setup):
 
 
 # TODO python -O
-from SDM.backends.numba import Numba
-from SDM.backends.thrustRTC import ThrustRTC
+from PySDM.backends.numba import Numba
+from PySDM.backends.thrustRTC import ThrustRTC
 
 setup = SetupA()
 setup.steps = [100, 3600]

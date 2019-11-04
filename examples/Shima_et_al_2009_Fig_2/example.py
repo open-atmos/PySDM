@@ -8,13 +8,13 @@ Created at 08.08.2019
 import copy
 import numpy as np
 
-from SDM.simulation.runner import Runner
-from SDM.simulation.state import State
-from SDM.simulation.dynamics.coalescence import SDM
-from SDM.simulation.discretisations.spectral import constant_multiplicity
+from PySDM.simulation.runner import Runner
+from PySDM.simulation.state import State
+from PySDM.simulation.dynamics.coalescence import SDM
+from PySDM.simulation.discretisations.spectral import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from SDM.utils.plotter import Plotter
+from PySDM.utils.plotter import Plotter
 
 
 # instantiation of simulation components, timestepping
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         setup = SetupA()
 
         setup.n_sd = 2 ** 15
-        setup.steps = [0, 3600]
+        setup.steps = [0, 90, 180]
         setup.check = lambda _, __: 0  # TODO!!!
 
         states, _ = run(setup)
