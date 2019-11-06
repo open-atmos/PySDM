@@ -73,7 +73,7 @@ class SpecialMethods:
 
     # TODO comment
     @staticmethod
-    @numba.jit()
+    @numba.njit()
     def compute_gamma(prob, rand):
         prob *= -1.
         prob[0::2] += rand
@@ -107,3 +107,27 @@ class SpecialMethods:
                 cell_id[idx[i]] == cell_id[idx[i+1]] and
                 (i - cell_start[cell_id[idx[i]]]) % 2 == 0
             )
+
+    @staticmethod
+    @numba.njit()
+    def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+        length = displacement.shape[0]
+        for droplet in range(length):
+            C = courant
+            _l = (cell_origin[droplet, 0], cell_origin[droplet, 1])
+            _r = (cell_origin[droplet, 0] + 1 * (dim == 0), cell_origin[droplet, 1] + 1 * (dim == 1))
+            omega = position_in_cell[droplet, dim]
+            displacement[droplet, dim] = scheme(omega, C[_l], C[_r])
+
+    # TODO
+    @staticmethod
+    @numba.njit()
+    def explicit_in_space(omega, c_l, c_r):
+        return c_l * (1 - omega) + c_r * omega
+
+    @staticmethod
+    @numba.njit()
+    def implicit_in_space(omega, c_l, c_r):
+        # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
+        dC = c_r - c_l
+        return (omega * dC + c_l) / (1 - dC)

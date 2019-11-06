@@ -23,8 +23,15 @@ class Advection:
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
+        if scheme == 'FTFS':
+            method = backend.explicit_in_space
+        elif scheme == 'FTBS':
+            method = backend.implicit_in_space
+        else:
+            raise NotImplementedError()
+
         self.backend = backend
-        self.scheme = scheme
+        self.scheme = method
         self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
         self.dimension = len(courant_field)
         self.courant = [backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
@@ -56,30 +63,8 @@ class Advection:
             state.cell_id[xdi] = cell_id[i]
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
-        # TODO: move to backend
-        SD_num = self.backend.shape(displacement)[0]
-        for droplet in range(SD_num):
-            for d in range(self.dimension):
-                C_l = courant[d][
-                    cell_origin[droplet, 0],
-                    cell_origin[droplet, 1]
-                ]
-                C_r = courant[d][
-                    cell_origin[droplet, 0] + 1 * (d == 0),
-                    cell_origin[droplet, 1] + 1 * (d == 1)
-                ]
-                omega = position_in_cell[droplet, d]
-                if self.scheme == 'FTFS':
-                    displacement[droplet, d] = (
-                        C_l * (1 - omega) +
-                        C_r * omega
-                    )
-                elif self.scheme == 'FTBS':
-                    # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
-                    dC = C_r - C_l
-                    displacement[droplet, d] = (omega * dC + C_l) / (1 - dC)
-                else:
-                    raise NotImplementedError()
+        for dim in range(self.dimension):
+            self.backend.calculate_displacement(dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
 
     def update_position(self, position_in_cell, displacement):
         self.backend.add(position_in_cell, displacement)
