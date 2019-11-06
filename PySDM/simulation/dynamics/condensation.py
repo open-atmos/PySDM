@@ -6,13 +6,18 @@ Created at 24.10.2019
 """
 
 from PySDM.simulation.state import State
+import numpy as np
 
 
 class Condensation:
-    def __init__(self, th, qv):
-        self.th = th
-        self.qv = qv
+    def __init__(self, ambient_air):
+        self.ambient_air = ambient_air
 
     def __call__(self, state: State):
-        for i in range(state.SD_num):
-            th = self.th[state.cell_origin[i]]
+
+        self.ambient_air.sync()
+
+        # update drop radii
+
+
+

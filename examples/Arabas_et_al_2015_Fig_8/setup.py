@@ -7,8 +7,11 @@ Created at 25.09.2019
 
 import numpy as np
 import pint
+
 from PySDM.simulation.spectra import Lognormal
-from PySDM.simulation.kernels import Golovin
+from PySDM.simulation.kernels.Golovin import Golovin
+from PySDM.simulation.ambient_air.qv_thd import QvThd
+
 from PySDM.backends.default import Default
 
 
@@ -37,11 +40,13 @@ class Setup:
 
     processes = {
         "advection": True,
-        "coalescence": True
+        "coalescence": True,
+        "condensation": True
     }
 
-    field_values = {'th': 1e8,
-                    'qv': 1e8}
+    # TODO: lwpt=289 K, r_tot=7.5 g/kg
+    field_values = {'th': 300,
+                    'qv': 7.5e-3}
 
     def stream_function(self, x, z):
         w_max = .6
@@ -60,3 +65,5 @@ class Setup:
     kernel = Golovin(b=1e-3)  # [s-1]
 
     backend = Default()
+
+    ambient_air = QvThd

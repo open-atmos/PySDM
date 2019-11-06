@@ -44,7 +44,6 @@ class MPDATAFactory:
 
 def uniform_scalar_field(grid, value, halo):
     data = np.full(grid, value)
-    data[3:10,3:10] *= 10
     scalar_field = ScalarField(data=data, halo=halo)
     return scalar_field
 
