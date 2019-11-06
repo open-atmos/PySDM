@@ -26,7 +26,7 @@ def run(setup):
 
 
 # TODO python -O
-from PySDM.backends.numba import Numba
+from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC import ThrustRTC
 
 setup = SetupA()

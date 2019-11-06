@@ -2,6 +2,7 @@
 Created at 25.09.2019
 
 @author: Piotr Bartman
+@author: Michael Olesik
 @author: Sylwester Arabas
 """
 
@@ -110,13 +111,7 @@ def main():
         storage = Storage()
         simulation = Simulation(setup, storage)
         controller = DummyController()
-        stats = simulation.run(controller)
-
-    # with np.errstate(invalid='ignore'):
-    #     plotter = Plotter(setup, (x_min, x_max))
-    #     for step, state in states.items():
-    #         plotter.plot(state, step * setup.dt)
-    #     plotter.show()
+        simulation.run(controller)
 
 
 if __name__ == '__main__':

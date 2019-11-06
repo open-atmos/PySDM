@@ -83,7 +83,7 @@ def multiply(data, multiplier):
     data *= multiplier
 
 
-# pythran export sum(float64[:], float64[:])
+# pythran export add(float64[:], float64[:])
 def sum(data_out, data_in):
     data_out[:] = data_out + data_in
 

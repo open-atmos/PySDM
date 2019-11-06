@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 
 from PySDM.backends.default import Default
-from PySDM.backends.numba import Numba
+from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC import ThrustRTC
 
 # noinspection PyUnresolvedReferences
@@ -350,8 +350,8 @@ class TestBackend:
         sut_data_in, data_in = TestBackend.data(sut, shape_1d, float)
 
         # Act
-        sut.sum(sut_data, sut_data_in)
-        backend.sum(data, data_in)
+        sut.add(sut_data, sut_data_in)
+        backend.add(data, data_in)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))

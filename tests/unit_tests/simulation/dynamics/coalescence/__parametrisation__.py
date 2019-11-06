@@ -31,7 +31,7 @@ def backend_fill(backend, array, value, odd_zeros=False):
 
     full_backend = backend.from_ndarray(full_ndarray)
     backend.multiply(array, 0.)
-    backend.sum(array, full_backend)
+    backend.add(array, full_backend)
 
 
 def insert_zeros(array):

@@ -6,7 +6,7 @@ Created at 01.08.2019
 """
 
 import numpy as np
-from PySDM.backends.numba import Numba
+from PySDM.backends.numba.numba import Numba
 from PySDM.conf import TRTC
 
 
@@ -114,7 +114,7 @@ else:
 
         @staticmethod
         def shuffle(data, length, axis):
-            from PySDM.backends.numba import Numba
+            from PySDM.backends.numba.numba import Numba
             host_arr = ThrustRTC.to_ndarray(data)
             Numba.shuffle(host_arr, length, axis=axis)
             dvce_arr = ThrustRTC.from_ndarray(host_arr)

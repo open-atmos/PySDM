@@ -1,7 +1,6 @@
 """
-Created at 02.10.2019
+Created at 04.11.2019
 
 @author: Piotr Bartman
-@author: Michael Olesik
 @author: Sylwester Arabas
 """

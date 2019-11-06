@@ -2,7 +2,7 @@
 Created at 14.10.2019
 
 @author: Piotr Bartman
-@author: Micheal Olesik
+@author: Michael Olesik
 @author: Sylwester Arabas
 """
 

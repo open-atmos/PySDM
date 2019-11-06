@@ -5,7 +5,7 @@ Created at 09.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.backends.numba import Numba
+from PySDM.backends.numba.numba import Numba
 
 # import os
 # os.environ['OMP_NUM_THREADS'] = '8'
@@ -39,7 +39,7 @@ class Pythran(Numba):
         return pythran_impl.max_pair(data_out, data_in, idx, length)
 
     @staticmethod
-    def sum(data_out, data_in):
+    def add(data_out, data_in):
         return pythran_impl.sum(data_out, data_in)
 
     @staticmethod
