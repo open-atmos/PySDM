@@ -52,8 +52,9 @@ class Simulation:
             ambient_air = self.setup.ambient_air(
                 grid=self.setup.grid,
                 backend=self.setup.backend,
-                thd_lambda=lambda: eulerian_fields.mpdatas["th"].curr.get(),
-                qv_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get()
+                thd_xzt_lambda=lambda: eulerian_fields.mpdatas["th"].curr.get(),
+                qv_xzt_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get(),
+                rhod_z_lambda=self.setup.rhod
             )
 
             dynamics = []

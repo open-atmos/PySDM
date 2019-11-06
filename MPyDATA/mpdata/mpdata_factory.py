@@ -50,27 +50,23 @@ def uniform_scalar_field(grid, value, halo):
 
 
 def x_vec_coord(grid, size):
-    dz = size[1] / grid[1]
-
     nx = grid[0]+1
     nz = grid[1]
-    x = np.repeat(np.linspace(0, size[0], nx).reshape((nx, 1)), nz, axis=1)
-    assert x.shape == (nx, nz)
-    z = np.repeat(np.linspace(dz / 2, size[1] - dz/2, nz).reshape((1, nz)), nx, axis=0)
-    assert z.shape == (nx, nz)
-    return x, z
+    xX = np.repeat(np.linspace(0, size[0], nx).reshape((nx, 1)), nz, axis=1)
+    assert xX.shape == (nx, nz)
+    zZ = np.repeat(np.linspace(1 / 2, size[1] - 1/2, nz).reshape((1, nz)), nx, axis=0)
+    assert zZ.shape == (nx, nz)
+    return xX, zZ
 
 
 def z_vec_coord(grid, size):
-    dx = size[0] / grid[0]
-
     nx = grid[0]
     nz = grid[1]+1
-    x = np.repeat(np.linspace(dx/2, size[0]-dx/2, nx).reshape((nx, 1)), nz, axis=1)
-    assert x.shape == (nx, nz)
-    z = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
-    assert z.shape == (nx, nz)
-    return x, z
+    xX = np.repeat(np.linspace(1/2, size[0]-1/2, nx).reshape((nx, 1)), nz, axis=1)
+    assert xX.shape == (nx, nz)
+    zZ = np.repeat(np.linspace(0, size[1], nz).reshape((1, nz)), nx, axis=0)
+    assert zZ.shape == (nx, nz)
+    return xX, zZ
 
 
 def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable):
@@ -78,11 +74,11 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     dx = size[0] / grid[0]
     dz = size[1] / grid[1]
 
-    x, z = x_vec_coord(grid, size)
-    velocity_x = -(stream_function(x, z + dz / 2) - stream_function(x, z - dz / 2)) / dz
+    xX, zZ = x_vec_coord(grid, size)
+    velocity_x = -(stream_function(xX, zZ + 1/2) - stream_function(xX, zZ - 1/2)) / dz
 
-    x, z = z_vec_coord(grid, size)
-    velocity_z = (stream_function(x + dx / 2, z) - stream_function(x - dx / 2, z)) / dx
+    xX, zZ = z_vec_coord(grid, size)
+    velocity_z = (stream_function(xX + dx / 2, zZ) - stream_function(xX - 1/2, zZ)) / dx
 
     courant_field = [velocity_x * dt / dx, velocity_z * dt / dz]
 

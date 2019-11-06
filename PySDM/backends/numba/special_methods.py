@@ -131,3 +131,11 @@ class SpecialMethods:
         # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
         dC = c_r - c_l
         return (omega * dC + c_l) / (1 - dC)
+
+    @staticmethod
+    # TODO: rename, jit
+    def traverse(function, output, args):
+        for i in range(len(output[0])):
+            result = function(*[arg[i] for arg in args])
+            for j in range(len(result)):
+                output[j][i] = result[j]
