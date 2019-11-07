@@ -1,6 +1,6 @@
 import numpy as np
 import numba
-import PySDM.simulation.constants as const
+import PySDM.simulation.phys as const
 
 p1000 = const.mgn(const.p1000)
 Rd = const.mgn(const.Rd)

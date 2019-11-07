@@ -10,9 +10,9 @@ import numpy as np
 
 from PySDM.simulation.spectra import Lognormal
 from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.ambient_air.qv_thd import QvThd
+from PySDM.simulation.ambient_air.AuxiliaryFields import AuxiliaryFields
 from PySDM.backends.default import Default
-from PySDM.simulation.constants import si, mgn, th_dry
+from PySDM.simulation.phys import si, mgn, th_dry
 
 class Setup:
     grid = (25, 25)  # (75, 75)  # dx=dz=20m
@@ -54,7 +54,7 @@ class Setup:
         return mgn(- w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX))
 
     def rhod(self, zZ):
-        from PySDM.simulation.constants import R, Rd, c_pd, p1000, g, eps
+        from PySDM.simulation.phys import R, Rd, c_pd, p1000, g, eps
 
         Z = self.size[1] * si.metres
         z = zZ * Z  # :)
@@ -84,4 +84,4 @@ class Setup:
 
     backend = Default()
 
-    ambient_air = QvThd
+    ambient_air = AuxiliaryFields
