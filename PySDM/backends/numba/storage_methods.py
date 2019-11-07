@@ -70,3 +70,7 @@ class StorageMethods:
     @staticmethod
     def write_row(array, i, row):
         array[i, :] = row
+
+    @staticmethod
+    def upload(data, target):
+        target[:] = data[:]

@@ -12,7 +12,7 @@ from PySDM.simulation.state import State
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.dynamics.coalescence import SDM
 from PySDM.simulation.discretisations.spectral import constant_multiplicity
-from PySDM.simulation.kernels import Golovin
+from PySDM.simulation.kernels.Golovin import Golovin
 from PySDM.simulation.spectra import Exponential
 
 

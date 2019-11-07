@@ -10,7 +10,7 @@ import numpy as np
 
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.state import State
-from PySDM.simulation.dynamics import coalescence, advection
+from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
 from PySDM.simulation.maths import Maths
 
@@ -49,6 +49,14 @@ class Simulation:
                                    backend=self.setup.backend)
             n_cell = self.setup.grid[0] * self.setup.grid[1]
 
+            ambient_air = self.setup.ambient_air(
+                grid=self.setup.grid,
+                backend=self.setup.backend,
+                thd_xzt_lambda=lambda: eulerian_fields.mpdatas["th"].curr.get(),
+                qv_xzt_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get(),
+                rhod_z_lambda=self.setup.rhod
+            )
+
             dynamics = []
             # TODO: order of processes?
             if self.setup.processes["coalescence"]:
@@ -56,9 +64,10 @@ class Simulation:
             if self.setup.processes["advection"]:
                 courant_field_data = [courant_field.data(0), courant_field.data(1)]
                 dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data, scheme='FTBS', backend=self.setup.backend))
+            if self.setup.processes["condensation"]:
+                dynamics.append(condensation.Condensation(ambient_air))
 
             runner = Runner(state, dynamics)
-            moment_0 = np.empty(self.setup.grid)
 
             for step in self.setup.steps:
                 if controller.panic:
@@ -66,23 +75,35 @@ class Simulation:
 
                 for _ in range(step - runner.n_steps):
                     # async: Eulerian advection (TODO: run in background)
-                    eulerian_fields.step()
+                    if self.setup.processes["advection"]:
+                        eulerian_fields.step()
+
                     # async: coalescence and Lagrangian advection/sedimentation(TODO: run in the background)
                     runner.run(1)
 
                 # synchronous part:
-                # - condensation
+                # - condensation:
+                #   - TODO: update fields due to condensation/evaporation
+                #   - TODO: ensure the above does include droplets that precipitated out of the domain
 
-                # runner.state  # TODO: ...save()
-
-                Maths.moment_2d(moment_0, state=state, k=0) 
-                self.storage.save(moment_0 / self.setup.dv, step, "m0")
-                for key in eulerian_fields.mpdatas.keys():
-                    self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
+                self.store(state, eulerian_fields, ambient_air, step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
         return runner.stats
+
+    def store(self, state, eulerian_fields, ambient_air, step):
+        # store moments
+        moment_0 = np.empty(self.setup.grid)
+        Maths.moment_2d(moment_0, state=state, k=0)
+        self.storage.save(moment_0 / self.setup.dv, step, "m0")
+
+        # store advected fields
+        for key in eulerian_fields.mpdatas.keys():
+            self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
+
+        # store auxiliary fields (TODO: assumes numpy backend)
+        self.storage.save(ambient_air.RH.reshape(self.setup.grid), step, "RH")
 
 
 def main():

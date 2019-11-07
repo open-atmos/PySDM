@@ -23,7 +23,8 @@ class DemoViewer:
         self.plots = {
             "m0": Output(),
             "th": Output(),
-            "qv": Output()
+            "qv": Output(),
+            "RH": Output()
         }
         self.ims = {}
 
@@ -40,7 +41,7 @@ class DemoViewer:
             with self.plots[key]:
                 clear_output()
                 self.ims[key] = plt.imshow(self.nans, cmap='GnBu')
-                self.ims[key].set_clim(vmin=0, vmax=500000000)
+                self.ims[key].set_clim(vmin=0, vmax=1.2)
                 plt.colorbar()
                 plt.title(key)
                 plt.show()

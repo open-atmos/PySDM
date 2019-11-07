@@ -5,12 +5,10 @@ numba
 matplotlib
 pythran
 Pint
-
 pytest
 pytest-cov
 codecov
-matplotlib
-
+mendeleev
 nbconvert
 jupyter_client
 ipykernel
