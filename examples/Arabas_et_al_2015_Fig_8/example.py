@@ -46,7 +46,7 @@ class Simulation:
             n[0] *= 20
             positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
             state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
-				   backend=self.setup.backend)
+                                   backend=self.setup.backend)
             n_cell = self.setup.grid[0] * self.setup.grid[1]
 
             ambient_air = self.setup.ambient_air(
@@ -62,7 +62,8 @@ class Simulation:
             if self.setup.processes["coalescence"]:
                 dynamics.append(coalescence.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd, n_cell=n_cell, backend=self.setup.backend))
             if self.setup.processes["advection"]:
-                dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field.data, scheme='FTBS', backend=self.setup.backend))
+                courant_field_data = [courant_field.data(0), courant_field.data(1)]
+                dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data, scheme='FTBS', backend=self.setup.backend))
             if self.setup.processes["condensation"]:
                 dynamics.append(condensation.Condensation(ambient_air))
 

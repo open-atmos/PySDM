@@ -7,7 +7,10 @@ Created at 21.10.2019
 """
 
 import numpy as np
-from MPyDATA.mpdata.fields import ScalarField, VectorField
+from MPyDATA.mpdata.fields.scalar_field import ScalarField
+from MPyDATA.mpdata.fields import scalar_field
+from MPyDATA.mpdata.fields.vector_field import VectorField
+from MPyDATA.mpdata.fields import vector_field
 from MPyDATA.mpdata.mpdata import MPDATA
 from MPyDATA.mpdata.eulerian_fields import EulerianFields
 
@@ -15,15 +18,15 @@ from MPyDATA.mpdata.eulerian_fields import EulerianFields
 class MPDATAFactory:
     @staticmethod
     def mpdata(state: ScalarField, courant_field: VectorField, n_iters):
-        assert state.data.shape[0] == courant_field.data[0].shape[0] + 1
-        assert state.data.shape[1] == courant_field.data[0].shape[1] + 2
-        assert courant_field.data[0].shape[0] == courant_field.data[1].shape[0] + 1
-        assert courant_field.data[0].shape[1] == courant_field.data[1].shape[1] - 1
+        assert state.data.shape[0] == courant_field.data(0).shape[0] + 1
+        assert state.data.shape[1] == courant_field.data(0).shape[1] + 2
+        assert courant_field.data(0).shape[0] == courant_field.data(1).shape[0] + 1
+        assert courant_field.data(0).shape[1] == courant_field.data(1).shape[1] - 1
         # TODO assert halo
 
-        prev = state.clone()
-        C_antidiff = courant_field.clone()
-        flux = courant_field.clone()
+        prev = scalar_field.clone(state)  # TODO rename?
+        C_antidiff = vector_field.clone(courant_field)
+        flux = vector_field.clone(courant_field)
         halo = state.halo
         mpdata = MPDATA(curr=state, prev=prev, C_physical=courant_field, C_antidiff=C_antidiff, flux=flux,
                         n_iters=n_iters, halo=halo)
@@ -89,6 +92,6 @@ def nondivergent_vector_field_2d(grid, size, halo, dt, stream_function: callable
     result = VectorField(data=courant_field, halo=halo)
 
     # nondivergence (of velocity field, hence dt)
-    assert np.amax(abs(result.div(grid_step=[dt, dt]).data)) < 5e-9
+    assert np.amax(abs(vector_field.div(result, (dt, dt)).data)) < 5e-9
 
     return result

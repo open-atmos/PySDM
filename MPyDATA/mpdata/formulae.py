@@ -6,8 +6,10 @@ Created at 11.10.2019
 @author: Sylwester Arabas
 """
 
-from MPyDATA.mpdata.fields import ScalarField, VectorField
+from MPyDATA.mpdata.fields.scalar_field import ScalarField
+from MPyDATA.mpdata.fields.vector_field import VectorField
 import numpy as np
+import numba
 
 
 class Formulae:
@@ -15,27 +17,28 @@ class Formulae:
     HALO = 1
 
     @staticmethod
-    # @numba.jit()
+    @numba.njit()
     def flux(psi: ScalarField, C: VectorField):
         result = (
-                np.maximum(0, C.at(+.5, 0)) * psi.ij(0, 0) +  # TODO
-                np.minimum(0, C.at(+.5, 0)) * psi.ij(1, 0)
+                np.maximum(0, C.at(+.5, 0)) * psi.at(0, 0) +  # TODO
+                np.minimum(0, C.at(+.5, 0)) * psi.at(1, 0)
         )
         return result
         # TODO: check if (abs(c)-C)/2 is not faster
 
     @staticmethod
-    # @numba.jit()
+    @numba.njit()
     def upwind(flx: VectorField):
         return - (
                 flx.at(+.5, 0) -
                 flx.at(-.5, 0)
         )
 
+    # TODO comment
     @staticmethod
     def A(psi: ScalarField):
-        result = psi.ij(1, 0) - psi.ij(0, 0)
-        result /= (psi.ij(1, 0) + psi.ij(0, 0) + Formulae.EPS)
+        result = psi.at(1, 0) - psi.at(0, 0)
+        result /= (psi.at(1, 0) + psi.at(0, 0) + Formulae.EPS)
 
         return result
 
@@ -47,8 +50,8 @@ class Formulae:
             if i == psi.axis:
                 continue
             result -= 0.5 * C.at(+.5, 0) * 0.25 * (C.at(1, +.5) + C.at(0, +.5) + C.at(1, -.5) + C.at(0, -.5)) * \
-                (psi.ij(1, 1) + psi.ij(0, 1) - psi.ij(1, -1) - psi.ij(0, -1)) / \
-                (psi.ij(1, 1) + psi.ij(0, 1) + psi.ij(1, -1) + psi.ij(0, -1) + Formulae.EPS)
+                      (psi.at(1, 1) + psi.at(0, 1) - psi.at(1, -1) - psi.at(0, -1)) / \
+                      (psi.at(1, 1) + psi.at(0, 1) + psi.at(1, -1) + psi.at(0, -1) + Formulae.EPS)
             # TODO dx, dt
 
         return result
