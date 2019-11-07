@@ -6,7 +6,8 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
-from MPyDATA.mpdata.fields import ScalarField, VectorField
+from MPyDATA.mpdata.fields.scalar_field import ScalarField
+from MPyDATA.mpdata.fields.vector_field import VectorField
 from MPyDATA.mpdata.formulae import Formulae
 
 
@@ -32,10 +33,10 @@ class MPDATA:
             if i == 0:
                 C = self.C_physical
             else:
-                self.C_antidiff.apply(function=Formulae.antidiff, args=(self.prev, self.C_physical))
+                self.C_antidiff.apply(Formulae.antidiff, self.prev, self.C_physical)
                 C = self.C_antidiff
-            self.flux.apply(function=Formulae.flux, args=(self.prev, C))
-            self.curr.apply(function=Formulae.upwind, args=(self.flux,))
+            self.flux.apply(Formulae.flux, self.prev, C)
+            self.curr.apply(Formulae.upwind, self.flux)
             self.curr.data += self.prev.data
 
     def debug_print(self):
@@ -77,12 +78,12 @@ class MPDATA:
                     print(color, end='')
                 else:
                     print(bold, end='')
-                svalue = '{:04.1f}'.format(self.curr.ij(i,j))
+                svalue = '{:04.1f}'.format(self.curr.at(i,j))
                 print(f"\t{svalue}", end = endcolor)
 
                 # i+.5,j
                 if (is_not_vector_halo):
-                    vvalue = '{:04.1f}'.format(self.C_physical.at(i, j+.5))
+                    vvalue = '{:04.1f}'.format(self.C_physical.at(i, j + .5))
                     print(f'\t{vvalue}', end='')
                 else:
                     print('\t' * 2, end='')
@@ -96,7 +97,7 @@ class MPDATA:
                     -(self.halo-1) <= j < shp1-(self.halo-1)-2 and
                     -self.halo <= i < shp0-(self.halo-1)-2
                 ):
-                    vvalue = '{:04.1f}'.format(self.C_physical.at(i+.5, j))
+                    vvalue = '{:04.1f}'.format(self.C_physical.at(i + .5, j))
                     print(f"\t\t\t{vvalue}", end='')
                 else:
                     print("\t" * 2, end='')

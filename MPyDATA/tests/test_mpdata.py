@@ -7,7 +7,8 @@ Created at 11.10.2019
 """
 
 from MPyDATA.mpdata.mpdata_factory import MPDATAFactory
-from MPyDATA.mpdata.fields import ScalarField, VectorField
+from MPyDATA.mpdata.fields.scalar_field import ScalarField
+from MPyDATA.mpdata.fields.vector_field import VectorField
 import numpy as np
 import pytest
 

@@ -6,7 +6,8 @@ Created at 14.10.2019
 @author: Sylwester Arabas
 """
 
-from MPyDATA.mpdata.fields import VectorField, ScalarField
+from MPyDATA.mpdata.fields.scalar_field import ScalarField
+from MPyDATA.mpdata.fields.vector_field import VectorField
 import numpy as np
 import pytest
 
@@ -66,8 +67,6 @@ class TestVectorField2D:
         sut = VectorField(data=(data1, data2), halo=halo)
 
         # Act
-        print()
-        print(data1, sut.data)
         value = sut.at((halo - 1) + (idx[0] - 0.5), (halo - 1) + idx[1])
 
         # Assert
