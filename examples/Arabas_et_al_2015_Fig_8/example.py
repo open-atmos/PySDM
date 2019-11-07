@@ -43,7 +43,6 @@ class Simulation:
 
             # Lagrangian domain
             x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
-            n[0] *= 20
             positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
             state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
                                    backend=self.setup.backend)

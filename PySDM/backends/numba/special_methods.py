@@ -139,3 +139,14 @@ class SpecialMethods:
             result = function(*[arg[i] for arg in args])
             for j in range(len(result)):
                 output[j][i] = result[j]
+
+    @staticmethod
+    @numba.njit()
+    def moments(output, n, attr, cell_id, idx, length, moments, min_x, max_x, x_id):
+        output[:, :] = 0
+        for i in idx[:length]:
+            if min_x < attr[x_id][i] < max_x:
+                output[-1, cell_id[i]] += n[i]
+                for k in range(moments.shape[0]):
+                    output[k, cell_id[i]] += n[i] * attr[moments[k, 0], i] ** moments[k, 1]
+        output[:-1, :] /= output[-1, :]
