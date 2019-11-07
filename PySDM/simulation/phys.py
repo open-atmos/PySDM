@@ -7,7 +7,6 @@ si = pint.UnitRegistry()
 mgn = lambda x: x.to_base_units().magnitude
 awgh = lambda x: x.atomic_weight * si.gram / si.mole
 
-# TODO: if we want to incclude such things, then rename file...
 th_dry = lambda th_std, qv: th_std * np.power(1 + qv / eps, Rd / c_pd)
 
 Md = 0.78 * awgh(pt.N) * 2 + 0.21 * awgh(pt.O) * 2 + 0.01 * awgh(pt.Ar)

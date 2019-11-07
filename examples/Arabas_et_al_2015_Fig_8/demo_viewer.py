@@ -30,18 +30,26 @@ class DemoViewer:
 
         self.reinit()
 
+
     def reinit(self):
         n_steps = len(self.setup.steps)
         self.slider.max = n_steps - 1
         self.play.max = n_steps - 1
         self.play.value = 0
         self.slider.value = 0
+        self.clims = {
+            "m0": (0, 1e8,  'YlGnBu'),
+            "th": (295,305, 'Reds'),
+            "qv": (0,1e-2,  'Greens'),
+            "RH": (0,1.2,   'GnBu')
+        }
+
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)
         for key in self.plots.keys():
             with self.plots[key]:
                 clear_output()
-                self.ims[key] = plt.imshow(self.nans, cmap='GnBu')
-                self.ims[key].set_clim(vmin=0, vmax=1.2)
+                self.ims[key] = plt.imshow(self.nans, cmap=self.clims[key][2])
+                self.ims[key].set_clim(vmin = self.clims[key][0], vmax = self.clims[key][1])
                 plt.colorbar()
                 plt.title(key)
                 plt.show()

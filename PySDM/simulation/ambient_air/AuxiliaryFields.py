@@ -1,7 +1,6 @@
 import numpy as np
 
-# TODO: rename
-class QvThd:
+class AuxiliaryFields:
     def __init__(self, grid, backend, thd_xzt_lambda, qv_xzt_lambda, rhod_z_lambda):
         self.backend = backend
         self.thd_lambda = thd_xzt_lambda
