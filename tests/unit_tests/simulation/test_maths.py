@@ -16,7 +16,7 @@ backend = Default()
 
 class TestMaths:
     @staticmethod
-    def test_moment():
+    def test_moment_0d():
         # Arrange (parameters from Clark 1976)
         n_part = 10000  # 190 # cm-3 # TODO!!!!
         x_mean = 2e-6  # 6.0 # um    # TODO: geom mean?
@@ -44,3 +44,4 @@ class TestMaths:
 
         true_mrsq = true_var + true_mean**2
         assert abs(discr_mrsq - true_mrsq) / true_mrsq < .05e-1
+

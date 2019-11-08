@@ -10,12 +10,12 @@ import numpy as np
 
 from PySDM.simulation.spectra import Lognormal
 from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.ambient_air.AuxiliaryFields import AuxiliaryFields
+from PySDM.simulation.ambient_air.moist_air import MoistAir
 from PySDM.backends.default import Default
 from PySDM.simulation.phys import si, mgn, th_dry
 
 class Setup:
-    grid = (25, 25)  # (75, 75)  # dx=dz=20m
+    grid = (75, 75)  # (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
     n_sd_per_gridbox = 20
 
@@ -75,13 +75,13 @@ class Setup:
     x_min = .01e-6  # TODO: mass!
     x_max = 5e-6  # TODO: mass!
 
-    dt = 1  # [s]
+    dt = 0.25  # [s] #TODO: was 1s in the ICMW case?
 
     # output steps
-    steps = np.arange(0, 360, 30)
+    steps = np.arange(0, 3600, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
 
     backend = Default()
 
-    ambient_air = AuxiliaryFields
+    ambient_air = MoistAir

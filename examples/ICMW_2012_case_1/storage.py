@@ -20,7 +20,7 @@ class Storage:
     def init(self, setup):
         self.tempdir.cleanup()
         self.createdir()
-        # TODO: dump serialised setup?
+        self.grid = setup.grid
 
     def createdir(self):
         self.tempdir = tempfile.TemporaryDirectory()
@@ -30,6 +30,7 @@ class Storage:
         return path
 
     def save(self, data: np.ndarray, step: int, name: str):
+        assert data.shape == self.grid
         np.save(self._filepath(step, name), data.astype(self.dtype))
 
     def load(self, step: int, name: str) -> np.ndarray:

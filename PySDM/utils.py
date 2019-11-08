@@ -8,6 +8,7 @@ Created at 05.08.2019
 import numpy as np
 
 
+# TODO: move to example
 class Physics:
     @staticmethod
     def x2r(x):
@@ -19,3 +20,9 @@ class Physics:
 
     kg2g = 1e3
     m2um = 1e6
+
+
+def strides(grid):
+    domain = np.empty(tuple(grid))  # TODO optimize
+    strides = np.array(domain.strides).reshape(1, -1) // domain.itemsize
+    return strides

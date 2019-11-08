@@ -36,6 +36,7 @@ class MathsMethods:
         return result
 
     @staticmethod
+    @numba.njit()
     def column_modulo(data, divisor):
         for d in range(len(divisor)):
             data[:, d] %= divisor[d]
@@ -45,7 +46,7 @@ class MathsMethods:
     def floor(row):
         row[:] = np.floor(row)
 
-    # TODO
+    # TODO: rename
     @staticmethod
     @numba.njit()  # TODO
     def floor2(data_out, data_in):
@@ -54,9 +55,11 @@ class MathsMethods:
     @staticmethod
     @numba.njit([void(float64[:], float64),
                  void(float64[:], float64[:]),
-                 void(int64[:, :], int64)])  # TODO add subtract
+                 void(int64[:, :], int64)])
     def multiply(data, multiplier):
         data *= multiplier
+
+    # TODO def subtract( , ):
 
     @staticmethod
     @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)

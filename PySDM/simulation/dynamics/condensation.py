@@ -17,7 +17,9 @@ class Condensation:
 
         self.ambient_air.sync()
 
-        # update drop radii
+        # TODO: update drop radii
+        #       update fields due to condensation/evaporation
+        #       ensure the above does include droplets that precipitated out of the domain
 
 
 

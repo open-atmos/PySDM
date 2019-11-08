@@ -22,18 +22,3 @@ class Maths:
         avg, sum_of_n = np.average(state[attr][idx] ** k, weights=state['n'][idx], returned=True)
         return avg * sum_of_n
 
-    @staticmethod
-    def moment_2d(output: np.ndarray, state, k, attr='x', attr_range=(0, np.inf)):
-        # output_flat = output.ravel()  # TODO?
-        # for cell_id in range(output.size):
-        #     output_flat[cell_id] = Maths.moment_0d(state, k, attr, attr_range, cell_id=cell_id)
-        tmp = np.empty((1+1, output.ravel().shape[0]))
-        Maths.moments(tmp, state, k, attr='x', attr_range=(0, np.inf))
-        output.ravel()[:] = tmp[1, :]
-
-    @staticmethod
-    def moments(output, state: State, k, attr='x', attr_range=(0, np.inf)):
-        moments = np.array([[state.keys[attr][1], k]])
-        state.backend.moments(output, state.n, state.get_extensive_attrs(), state.cell_id, state.idx, state.SD_num,
-                              moments, attr_range[0], attr_range[1], state.keys[attr][1])
-

@@ -8,6 +8,7 @@ Created at 23.10.2019
 
 from PySDM.simulation.state import State
 import numpy as np
+from PySDM import utils
 
 
 class Advection:
@@ -32,35 +33,26 @@ class Advection:
 
         self.backend = backend
         self.scheme = method
-        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
+
         self.dimension = len(courant_field)
+        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
+
         self.courant = [backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
 
         self.displacement = backend.from_ndarray(np.zeros((n_sd, self.dimension)))
         self.temp = backend.from_ndarray(np.zeros((n_sd, self.dimension), dtype=np.int64))
 
     def __call__(self, state: State):
-        # TODO
-        cell_origin = state.cell_origin[state.idx[:state.SD_num]]
-        position_in_cell = state.position_in_cell[state.idx[:state.SD_num]]
-        cell_id = state.cell_id[state.idx[:state.SD_num]]
-        displacement = self.displacement[:state.SD_num]
-        # displacement = self.displacement
-        # cell_origin = state.cell_origin
-        # position_in_cell = state.position_in_cell
-        # cell_id = state.cell_id
+        # TODO: not need all array only [idx[:sd_num]]
+        displacement = self.displacement
+        cell_origin = state.cell_origin
+        position_in_cell = state.position_in_cell
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
-        self.recalculate_cell_id(cell_id, cell_origin, state.grid)
-
-        for i in range(state.SD_num):
-            xdi = state.idx[i]
-            state.cell_origin[xdi] = cell_origin[i]
-            state.position_in_cell[xdi] = position_in_cell[i]
-            state.cell_id[xdi] = cell_id[i]
+        state.recalculate_cell_id()
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
@@ -81,6 +73,3 @@ class Advection:
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic
         self.backend.column_modulo(cell_origin, self.grid)
-
-    def recalculate_cell_id(self, cell_id, cell_origin, grid):
-        self.backend.cell_id(cell_id, cell_origin, grid)

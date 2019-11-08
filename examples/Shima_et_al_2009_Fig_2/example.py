@@ -14,7 +14,7 @@ from PySDM.simulation.dynamics.coalescence import SDM
 from PySDM.simulation.discretisations.spectral import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from PySDM.utils.plotter import Plotter
+from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 
 # instantiation of simulation components, timestepping

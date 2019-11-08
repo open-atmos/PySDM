@@ -52,16 +52,7 @@ class SDM:
         backend.multiply(prob, kernel_temp)
 
         norm_factor = temp
-        n_cell = len(cell_start)
-        # TODO: use backend
-        for i in range(n_cell - 1):
-            SD_num = cell_start[i + 1] - cell_start[i]
-            if SD_num < 2:
-                norm_factor[i] = 0
-            else:
-                norm_factor[i] = dt / dv * SD_num * (SD_num - 1) / 2 / (SD_num // 2)
-        for d in range(len(prob)):
-            prob[d] *= norm_factor[state.cell_id[d]]
+        backend.normalize(prob, state.cell_id, cell_start, norm_factor, dt / dv)
 
     @staticmethod
     def toss_pairs(backend, is_first_in_pair, cell_start, state: State):

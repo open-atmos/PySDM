@@ -95,4 +95,20 @@ class TestState:
         # Assert
         np.testing.assert_array_equal(np.array([3, 4, 1, 2, 0]), backend.to_ndarray(sut.idx))
 
+    def test_recalculate_cell_id(self):
+        # Arrange
+        n = np.ones(1)
+        droplet_id = 0
+        initial_position = Default.from_ndarray(np.array([[0, 0]]))
+        sut = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
+        sut.cell_origin[droplet_id, 0] = .1
+        sut.cell_origin[droplet_id, 1] = .2
+        sut.cell_id[droplet_id] = -1
+
+        # Act
+        sut.recalculate_cell_id()
+
+        # Assert
+        assert sut.cell_id[droplet_id] == 0
+
 

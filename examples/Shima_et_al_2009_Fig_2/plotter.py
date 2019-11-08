@@ -8,7 +8,7 @@ Created at 12.08.2019
 import numpy as np
 from matplotlib import pyplot
 
-from PySDM.utils.physics import Physics
+from PySDM.utils import Physics
 from PySDM.simulation.maths import Maths
 
 class Plotter:

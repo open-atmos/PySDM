@@ -11,7 +11,6 @@ class EulerianFields:
     def __init__(self, mpdatas: dict):
         self.mpdatas = mpdatas
 
-    # TODO prange
     def step(self):
         for mpdata in self.mpdatas.values():
             mpdata.step()

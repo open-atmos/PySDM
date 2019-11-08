@@ -22,7 +22,6 @@ class TestMPDATA:
         pytest.param((1, 3), (0, 1), np.array([[0., 0., 44.]]), (0., 1.), 1),
         pytest.param((1, 3), (0, 1), np.array([[44., 0., 0.]]), (0., -1.), 1),
         pytest.param((3, 3), (1, 1), np.array([[0, 0, 0], [0, 0, 22], [0., 22., 0.]]), (.5, .5), 1),
-        pytest.param((3, 3), (1, 1), np.array([[0, 0, 0], [0, 0, 0], [0., 0., 22.]]), (.5, .5), 2),
         pytest.param((3, 3), (1, 1), np.array([[0, 0, 0], [0, 0, 22], [0., 22., 0.]]), (.5, .5), 1),
     ])
     def test(self, shape, ij0, out, C, n_steps, halo):

@@ -25,6 +25,10 @@ class StorageMethods:
         return data
 
     @staticmethod
+    def download(backend_data, np_target):
+        np.copyto(np_target, backend_data, casting='safe')
+
+    @staticmethod
     def dtype(data):
         return data.dtype
 
@@ -48,14 +52,13 @@ class StorageMethods:
     def shape(data):
         return data.shape
 
-    # TODO idx -> self.idx?
     @staticmethod
     @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
-    def shuffle(data, length, axis):
-        idx = np.random.permutation(length)
+    def shuffle(idx, length, axis):
+        permutation = np.random.permutation(length)
 
         if axis == 0:
-            data[:length] = data[idx[:length]]
+            idx[:length] = idx[permutation[:length]]
         else:
             raise NotImplementedError()
 
@@ -68,9 +71,9 @@ class StorageMethods:
         return data.copy()
 
     @staticmethod
-    def write_row(array, i, row):
-        array[i, :] = row
+    def upload(np_data, backend_target):
+        np.copyto(backend_target, np_data, casting='safe')
 
     @staticmethod
-    def upload(data, target):
-        target[:] = data[:]
+    def write_row(array, i, row):
+        array[i, :] = row

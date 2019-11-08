@@ -20,7 +20,7 @@ class Formulae:
     @numba.njit()
     def flux(psi: ScalarField, C: VectorField):
         result = (
-                np.maximum(0, C.at(+.5, 0)) * psi.at(0, 0) +  # TODO
+                np.maximum(0, C.at(+.5, 0)) * psi.at(0, 0) +
                 np.minimum(0, C.at(+.5, 0)) * psi.at(1, 0)
         )
         return result

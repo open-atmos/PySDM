@@ -5,7 +5,7 @@ Created at 02.10.2019
 """
 
 from ipywidgets import IntSlider, VBox, Checkbox
-from examples.Arabas_et_al_2015_Fig_8.setup import Setup
+from examples.ICMW_2012_case_1.setup import Setup
 
 
 class DemoSetup(Setup):

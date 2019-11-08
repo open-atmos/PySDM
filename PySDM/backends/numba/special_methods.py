@@ -53,21 +53,17 @@ class SpecialMethods:
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
-    # TODO: silently assumes that data_out is not permuted (i.e. not part of state)
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
-        #        for i in prange(length // 2):
-        #            data_out[i] = data_in[idx[2 * i]] + data_in[idx[2 * i + 1]]
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
-    # TODO: ditto
     @staticmethod
     @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # for i in prange(length // 2):
-        #    data_out[i] = max(data_in[idx[2 * i]], data_in[idx[2 * i + 1]])
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = max(data_in[idx[i]], data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
@@ -87,12 +83,8 @@ class SpecialMethods:
         return arr[0] == 0
 
     @staticmethod
-    def cell_id(cell_id, cell_origin, grid):
-        # <TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        domain = np.empty(tuple(grid))
-        # </TODO> !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        strides = np.array(domain.strides) / cell_origin.itemsize
-        strides = strides.reshape(1, -1)  # transpose
+    # @numba.njit() TODO: "np.dot() only supported on float and complex arrays"
+    def cell_id(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
@@ -113,40 +105,49 @@ class SpecialMethods:
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[0]
         for droplet in range(length):
-            C = courant
+            # Arakawa-C grid
             _l = (cell_origin[droplet, 0], cell_origin[droplet, 1])
             _r = (cell_origin[droplet, 0] + 1 * (dim == 0), cell_origin[droplet, 1] + 1 * (dim == 1))
             omega = position_in_cell[droplet, dim]
-            displacement[droplet, dim] = scheme(omega, C[_l], C[_r])
-
-    # TODO
-    @staticmethod
-    @numba.njit()
-    def explicit_in_space(omega, c_l, c_r):
-        return c_l * (1 - omega) + c_r * omega
+            displacement[droplet, dim] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
     @numba.njit()
-    def implicit_in_space(omega, c_l, c_r):
-        # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
-        dC = c_r - c_l
-        return (omega * dC + c_l) / (1 - dC)
-
-    @staticmethod
-    # TODO: rename, jit
-    def traverse(function, output, args):
-        for i in range(len(output[0])):
-            result = function(*[arg[i] for arg in args])
-            for j in range(len(result)):
-                output[j][i] = result[j]
-
-    @staticmethod
-    @numba.njit()
-    def moments(output, n, attr, cell_id, idx, length, moments, min_x, max_x, x_id):
-        output[:, :] = 0
+    def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
+        moment_0[:] = 0
+        moments[:, :] = 0
         for i in idx[:length]:
             if min_x < attr[x_id][i] < max_x:
-                output[-1, cell_id[i]] += n[i]
-                for k in range(moments.shape[0]):
-                    output[k, cell_id[i]] += n[i] * attr[moments[k, 0], i] ** moments[k, 1]
-        output[:-1, :] /= output[-1, :]
+                moment_0[cell_id[i]] += n[i]
+                for k in range(specs_idx.shape[0]):
+                    moments[k, cell_id[i]] += n[i] * attr[specs_idx[k], i] ** specs_rank[k]
+        moments[:, :] /= moment_0
+
+    @staticmethod
+    @numba.njit()
+    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+        n_cell = cell_start.shape[0]
+        for i in range(n_cell - 1):
+            sd_num = cell_start[i + 1] - cell_start[i]
+            if sd_num < 2:
+                norm_factor[i] = 0
+            else:
+                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+        for d in range(prob.shape[0]):
+            prob[d] *= norm_factor[cell_id[d]]
+
+    @staticmethod
+    @numba.njit()
+    def apply_f_3_3(function, arg0, arg1, arg2, output0, output1, output2):
+        for i in range(output0.shape[0]):
+            output0[i], output1[i], output2[i] = function(arg0[i], arg1[i], arg2[i])
+
+    @staticmethod
+    def apply(function, args, output):
+        if len(args) == 3:
+            if len(output) == 3:
+                SpecialMethods.apply_f_3_3(function, *args, *output)
+            else:
+                raise NotImplementedError()
+        else:
+            raise NotImplementedError()
