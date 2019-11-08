@@ -4,3 +4,12 @@ mpmath
 numba
 matplotlib
 pythran
+Pint
+pytest
+pytest-cov
+codecov
+mendeleev
+nbconvert
+jupyter_client
+ipykernel
+ipywidgets

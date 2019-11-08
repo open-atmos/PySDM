@@ -1,0 +1,9 @@
+TODO rename state.x -> state.v
+TODO test SD_num=1, 5, etc.
+TODO interfaces?
+TODO abstraction over state.idx
+TODO processes: sync vs. async; order of processes
+TODO concurrent Eulerian advection (prange in eulerian_fields?)
+TODO! test_moments
+     remove maths.py & state.__getitem__
+
