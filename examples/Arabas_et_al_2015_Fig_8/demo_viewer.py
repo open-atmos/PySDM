@@ -17,9 +17,9 @@ class DemoViewer:
 
         self.nans = None
 
-        # TODO: fps slider
         self.play = Play()
-        self.slider = IntSlider()
+        self.step_slider = IntSlider()
+        self.fps_slider = IntSlider(min=100, max=1000, description="1000/fps")
         self.plots = {
             "m0": Output(),
             "th": Output(),
@@ -33,10 +33,10 @@ class DemoViewer:
 
     def reinit(self):
         n_steps = len(self.setup.steps)
-        self.slider.max = n_steps - 1
+        self.step_slider.max = n_steps - 1
         self.play.max = n_steps - 1
         self.play.value = 0
-        self.slider.value = 0
+        self.step_slider.value = 0
         self.clims = {
             "m0": (0, 1e8,  'YlGnBu'),
             "th": (295,305, 'Reds'),
@@ -70,6 +70,7 @@ class DemoViewer:
                 display(self.ims[key].figure)
 
     def box(self):
-        jslink((self.play, 'value'), (self.slider, 'value'))
+        jslink((self.play, 'value'), (self.step_slider, 'value'))
+        jslink((self.play, 'interval'), (self.fps_slider, 'value'))
         self.play.observe(self.replot, 'value')
-        return VBox([Box([self.play, self.slider]), HBox(tuple(self.plots.values()))])
+        return VBox([Box([self.play, self.step_slider, self.fps_slider]), HBox(tuple(self.plots.values()))])
