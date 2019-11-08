@@ -8,20 +8,20 @@ Created at 08.08.2019
 import copy
 import numpy as np
 
-from SDM.simulation.runner import Runner
-from SDM.simulation.state import State
-from SDM.simulation.colliders import SDM
-from SDM.simulation.discretisations import constant_multiplicity
+from PySDM.simulation.runner import Runner
+from PySDM.simulation.state import State
+from PySDM.simulation.dynamics.coalescence import SDM
+from PySDM.simulation.discretisations.spectral import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from SDM.utils.plotter import Plotter
+from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 
 # instantiation of simulation components, timestepping
 def run(setup):
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
+    state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=setup.backend)
+    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, n_cell=1, backend=setup.backend)
     runner = Runner(state, (collider,))
 
     states = {}
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         setup = SetupA()
 
         setup.n_sd = 2 ** 15
-        setup.steps = [0, 3600]
+        setup.steps = [0, 90, 180]
         setup.check = lambda _, __: 0  # TODO!!!
 
         states, _ = run(setup)
