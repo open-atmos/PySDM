@@ -71,7 +71,7 @@ class State:
 
         return attributes, keys
 
-    # TODO: in principle, should not be needed at all (GPU-resident state)
+    # TODO: only used in tests!
     def __getitem__(self, item: str):
         idx = self.backend.to_ndarray(self.idx)
         all_valid = idx[:self.SD_num]

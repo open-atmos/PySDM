@@ -12,7 +12,6 @@ from PySDM.simulation.runner import Runner
 from PySDM.simulation.state import State
 from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
-from PySDM.simulation.maths import Maths
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
@@ -106,7 +105,7 @@ class Simulation:
         i = 0
         for attr in self.specs:
             for k in self.specs[attr]:
-                state.backend.download(self.moments[i], self.tmp)
+                state.backend.download(self.moments[i], self.tmp) # TODO: [i] will not work
                 self.tmp /= self.setup.dv
                 self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
                 i += 1

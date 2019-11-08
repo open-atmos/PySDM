@@ -7,9 +7,7 @@ Created at 12.08.2019
 
 import numpy as np
 from matplotlib import pyplot
-
 from PySDM.utils import Physics
-from PySDM.simulation.maths import Maths
 
 class Plotter:
     def __init__(self, setup, xrange):
@@ -55,8 +53,15 @@ class Plotter:
         )
 
         vals = np.empty(len(self.r_bins) - 1)
+        tmp = np.empty((1,1))
+        moment_0 = state.backend.array(1, dtype=int)
+        moments = state.backend.array((1, 1), dtype=float)
         for i in range(len(vals)):
-            vals[i] = Maths.moment_0d(state, 1, attr='x', attr_range=(self.x_bins[i], self.x_bins[i + 1]))
+            state.moments(moment_0, moments, specs={'x': (1,)}, attr_range=(self.x_bins[i], self.x_bins[i + 1]))
+            state.backend.download(moments, tmp)
+            vals[i] = tmp[0, 0]
+            state.backend.download(moment_0, tmp)
+            vals[i] *= tmp[0, 0]
             vals[i] *= s.rho / s.dv
             vals[i] /= (np.log(self.r_bins[i + 1]) - np.log(self.r_bins[i]))
 
