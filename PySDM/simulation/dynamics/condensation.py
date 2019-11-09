@@ -5,8 +5,7 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.state import State
-import numpy as np
+from PySDM.simulation.state.state import State
 
 
 class Condensation:

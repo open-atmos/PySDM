@@ -7,7 +7,7 @@ Created at 05.08.2019
 
 import numpy as np
 
-from PySDM.simulation.state import State
+from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.spectra import Lognormal
 from PySDM.simulation.discretisations.spectral import linear
 from PySDM.backends.default import Default
@@ -29,7 +29,7 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, x_mean, d)
         x, n = linear(n_sd, spectrum, (x_min, x_max))
-        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        state = StateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 

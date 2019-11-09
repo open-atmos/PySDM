@@ -10,23 +10,9 @@ from PySDM import utils
 
 
 class State:
-    @staticmethod
-    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend):
-        cell_id = np.zeros_like(n)
-        return State(n, (), intensive, extensive, cell_id, None, None, backend)
 
-    @staticmethod
-    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend):
-        cell_origin = positions.astype(dtype=int)
-        position_in_cell = positions - np.floor(positions)
-        cell_id = np.empty_like(n)
-        state = State(n, grid, intensive, extensive, cell_id, cell_origin, position_in_cell, backend)
-        state.recalculate_cell_id()
-        return state
-
-    def __init__(self, n: np.ndarray, grid: tuple, intensive: dict, extensive: dict,
-                 cell_id: np.ndarray, cell_origin: np.ndarray, position_in_cell: np.ndarray, backend):
-        assert State.check_args(n, intensive, extensive)
+    def __init__(self, n: np.ndarray, grid: tuple, attributes: dict, keys: dict,
+                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), backend):
 
         self.backend = backend
 
@@ -38,38 +24,12 @@ class State:
         self.idx = backend.from_ndarray(np.arange(self.SD_num))
         self.n = backend.from_ndarray(n)
         # TODO: 0=tensive, 1=index (also in moments)
-        self.attributes, self.keys = State.init_attributes_and_keys(self.backend, intensive, extensive, self.SD_num)
+        self.attributes = attributes
+        self.keys = keys
         self.position_in_cell = None if position_in_cell is None else backend.from_ndarray(position_in_cell)
         self.cell_origin = None if cell_origin is None else backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
         self.cell_id = backend.from_ndarray(cell_id)
         self.healthy = backend.from_ndarray(np.full((1,), 1))
-
-    @staticmethod
-    def check_args(n, intensive, extensive):
-        result = True
-        if n.ndim != 1:
-            result = False
-        # https://en.wikipedia.org/wiki/Intensive_and_extensive_properties
-        for attribute in (*intensive.values(), *extensive.values()):
-            if attribute.shape != n.shape:
-                result = False
-        return result
-
-    @staticmethod
-    def init_attributes_and_keys(backend, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
-        attributes = {'intensive': backend.array((len(intensive), SD_num), float),
-                      'extensive': backend.array((len(extensive), SD_num), float)
-                      }
-        keys = {}
-
-        for tensive in attributes:
-            idx = 0
-            for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
-                keys[key] = (tensive, idx)
-                backend.write_row(attributes[tensive], idx, backend.from_ndarray(array))
-                idx += 1
-
-        return attributes, keys
 
     def get_backend_storage(self, item):
         tensive = self.keys[item][0]
@@ -111,7 +71,10 @@ class State:
             self.healthy = self.backend.from_ndarray(np.full((1,), 1))
 
     def recalculate_cell_id(self):
-        self.backend.cell_id(self.cell_id, self.cell_origin, self.strides)
+        if self.cell_origin is None:
+            return
+        else:
+            self.backend.cell_id(self.cell_id, self.cell_origin, self.strides)
 
     def moments(self, moment_0, moments, specs: dict, attr_range=(0, np.inf)):
         # TODO: intensive

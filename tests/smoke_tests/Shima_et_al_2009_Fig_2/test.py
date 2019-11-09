@@ -8,7 +8,7 @@ Created at 08.08.2019
 import copy
 
 from PySDM.backends.default import Default
-from PySDM.simulation.state import State
+from PySDM.simulation.state.state import State
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.dynamics.coalescence import SDM
 from PySDM.simulation.discretisations.spectral import constant_multiplicity

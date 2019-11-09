@@ -6,9 +6,8 @@ Created at 23.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.state import State
+from PySDM.simulation.state.state import State
 import numpy as np
-from PySDM import utils
 
 
 class Advection:

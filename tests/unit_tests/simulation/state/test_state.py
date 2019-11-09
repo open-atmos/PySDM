@@ -1,4 +1,4 @@
-from tests.unit_tests.simulation.state.testable_state import TestableState as State
+from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM.backends.default import Default
 
 import numpy as np
@@ -8,11 +8,6 @@ backend = Default()
 
 
 class TestState:
-    @staticmethod
-    def get_empty_state() -> State:
-        return State(n=np.zeros(0), grid=(), intensive={}, extensive={},
-                     cell_id=np.zeros(0), position_in_cell=None, cell_origin=None,
-                     backend=backend)
 
     @staticmethod
     def storage(iterable):
@@ -68,7 +63,7 @@ class TestState:
     ])
     def test_housekeeping(self, x, n):
         # Arrange
-        sut = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        sut = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
         # TODO
         sut.healthy = sut.backend.from_ndarray(np.array([0]))
 
@@ -83,7 +78,7 @@ class TestState:
 
     def test_sort_by_cell_id(self):
         # Arrange
-        sut = TestState.get_empty_state()
+        sut = TestableStateFactory.empty_state(backend)
         sut.n = TestState.storage([0, 1, 0, 1, 1])
         sut.cell_id = TestState.storage([3, 4, 0, 1, 2])
         sut.idx = TestState.storage([4, 1, 3, 2, 0])
@@ -100,7 +95,8 @@ class TestState:
         n = np.ones(1)
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
-        sut = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
+        sut = TestableStateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={},
+                                    backend=Default, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1
         sut.cell_origin[droplet_id, 1] = .2
         sut.cell_id[droplet_id] = -1

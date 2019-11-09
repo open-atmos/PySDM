@@ -82,6 +82,6 @@ class Setup:
 
     kernel = Golovin(b=1e-3)  # [s-1]
 
-    backend = Default()
+    backend = Default
 
     ambient_air = MoistAir

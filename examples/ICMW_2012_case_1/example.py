@@ -8,8 +8,9 @@ Created at 25.09.2019
 
 import numpy as np
 
+from PySDM.simulation.simulation import Simulation as Particles
 from PySDM.simulation.runner import Runner
-from PySDM.simulation.state import State
+from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
 
@@ -20,8 +21,11 @@ from MPyDATA.mpdata.mpdata_factory import MPDATAFactory
 
 class DummyController:
     panic = False
-    def set_percent(self, value): print(f"{100*value:.1f}%")
+
+    def set_percent(self, value): print(f"{100 * value:.1f}%")
+
     def __enter__(*_): pass
+
     def __exit__(*_): pass
 
 
@@ -33,6 +37,7 @@ class Simulation:
 
     # instantiation of simulation components, time-stepping
     def run(self, controller):
+        particles = Particles(self.setup.backend)
         self.storage.init(self.setup)
         with controller:
             # Eulerian domain
@@ -42,13 +47,14 @@ class Simulation:
                 field_values=self.setup.field_values)
 
             # Lagrangian domain
-            x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
+            x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum,
+                                                  (self.setup.x_min, self.setup.x_max))
 
             n[0] *= 100
 
             positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
-            state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
-                                   backend=self.setup.backend)
+            state = StateFactory.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={},
+                                          positions=positions, backend=self.setup.backend)
             n_cell = self.setup.grid[0] * self.setup.grid[1]
 
             ambient_air = self.setup.ambient_air(
@@ -91,7 +97,7 @@ class Simulation:
     def store(self, state, eulerian_fields, ambient_air, step):
         # allocations
         if self.tmp is None:  # TODO: move to constructor
-            self.specs = {'x': (1, 1/3)} # TODO: move to setup
+            self.specs = {'x': (1, 1 / 3)}  # TODO: move to setup
             self.moment_0 = state.backend.array(state.n_cell, dtype=int)
             self.moments = state.backend.array((2, state.n_cell), dtype=float)
             self.tmp = np.empty(state.n_cell)
@@ -105,7 +111,7 @@ class Simulation:
         i = 0
         for attr in self.specs:
             for k in self.specs[attr]:
-                state.backend.download(self.moments[i], self.tmp) # TODO: [i] will not work
+                state.backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
                 self.tmp /= self.setup.dv
                 self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
                 i += 1

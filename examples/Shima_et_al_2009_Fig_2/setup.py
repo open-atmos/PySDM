@@ -41,7 +41,7 @@ class SetupA:
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
-    backend = Default()
+    backend = Default
 
     # TODO: rename?
     # TODO: as backend method?

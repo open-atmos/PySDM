@@ -5,7 +5,7 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.state import State
+from PySDM.simulation.state.state import State
 
 
 class SDM:

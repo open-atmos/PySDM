@@ -6,7 +6,7 @@ Created at 06.06.2019
 """
 
 from PySDM.simulation.dynamics.coalescence import SDM
-from tests.unit_tests.simulation.state.testable_state import TestableState as State
+from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM.backends.default import Default
 import numpy as np
 import pytest
@@ -24,7 +24,7 @@ class TestSDMSingleCell:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
+        state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
         # Act
         sut(state)
         # Assert
@@ -42,7 +42,7 @@ class TestSDMSingleCell:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2, n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = State.state_0d(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, backend=backend)
+        state = TestableStateFactory.state_0d(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -60,7 +60,7 @@ class TestSDMSingleCell:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
-        state = State.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
+        state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -82,7 +82,7 @@ class TestSDMSingleCell:
         # Arrange
         sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
         sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
-        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
         sut(state)
@@ -106,7 +106,7 @@ class TestSDMSingleCell:
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True
         )
-        state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
 
         # Act
         for _ in range(32):
