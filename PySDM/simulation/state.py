@@ -71,23 +71,6 @@ class State:
 
         return attributes, keys
 
-    # TODO: in principle, should not be needed at all (GPU-resident state)
-    def __getitem__(self, item: str):
-        idx = self.backend.to_ndarray(self.idx)
-        all_valid = idx[:self.SD_num]
-        if item == 'n':
-            n = self.backend.to_ndarray(self.n)
-            result = n[all_valid]
-        elif item == 'cell_id':
-            cell_id = self.backend.from_ndarray(self.cell_id)
-            result = cell_id[all_valid]
-        else:
-            tensive = self.keys[item][0]
-            attr = self.keys[item][1]
-            attribute = self.backend.to_ndarray(self.backend.read_row(self.attributes[tensive], attr))
-            result = attribute[all_valid]
-        return result
-
     def get_backend_storage(self, item):
         tensive = self.keys[item][0]
         attr = self.keys[item][1]

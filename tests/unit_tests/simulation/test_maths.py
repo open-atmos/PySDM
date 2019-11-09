@@ -5,7 +5,8 @@ Created at 05.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.maths import Maths
+import numpy as np
+
 from PySDM.simulation.state import State
 from PySDM.simulation.spectra import Lognormal
 from PySDM.simulation.discretisations.spectral import linear
@@ -32,10 +33,19 @@ class TestMaths:
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
+        # TODO: add a moments_0 wrapper
+        moment_0 = np.empty((1,), dtype=int)
+        moments = np.empty((1, 1), dtype=float)
+
         # Act
-        discr_zero = Maths.moment_0d(state, 0) / n_part
-        discr_mean = Maths.moment_0d(state, 1) / n_part
-        discr_mrsq = Maths.moment_0d(state, 2) / n_part
+        state.moments(moment_0, moments, specs={'x': (0,)}) #/ n_part
+        discr_zero = moments[0, 0]
+
+        state.moments(moment_0, moments, specs={'x': (1,)}) #/ n_part
+        discr_mean = moments[0, 0]
+
+        state.moments(moment_0, moments, specs={'x': (2,)}) #/ n_part
+        discr_mrsq = moments[0, 0]
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3
