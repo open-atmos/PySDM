@@ -20,8 +20,16 @@ class Setup:
     n_sd_per_gridbox = 20
 
     @property
+    def dx(self):
+        return self.size[0] / self.grid[0]
+
+    @property
+    def dz(self):
+        return self.size[0] / self.grid[0]
+
+    @property
     def dv(self):
-        return self.size[0] / self.grid[0] * self.size[1] / self.grid[1]  # [m3]
+        return self.dx * self.dz # [m3] (assumes unit dy)
 
     @property
     def n_sd(self):
@@ -85,3 +93,6 @@ class Setup:
     backend = Default()
 
     ambient_air = MoistAir
+
+    output_vars = ["m0", "th", "qv", "RH"]
+

@@ -4,9 +4,8 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-import os
+import os, tempfile, shutil
 import numpy as np
-import tempfile
 
 
 class Storage:
@@ -18,7 +17,6 @@ class Storage:
         self.dtype = dtype
 
     def init(self, setup):
-        self.tempdir.cleanup()
         self.createdir()
         self.grid = setup.grid
 
@@ -39,7 +37,4 @@ class Storage:
         except FileNotFoundError:
             raise Storage.Exception()
         return data
-
-#    def create_netcdf():
-#        raise NotInmplementedError()
 
