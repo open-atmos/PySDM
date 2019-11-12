@@ -6,7 +6,7 @@ Created at 06.06.2019
 """
 
 from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.state import State
+from tests.unit_tests.simulation.state.testable_state import TestableState as State
 from PySDM.backends.default import Default
 import numpy as np
 import pytest

@@ -121,7 +121,7 @@ class SpecialMethods:
                 moment_0[cell_id[i]] += n[i]
                 for k in range(specs_idx.shape[0]):
                     moments[k, cell_id[i]] += n[i] * attr[specs_idx[k], i] ** specs_rank[k]
-        moments[:, :] /= moment_0
+        moments[:, :] /= moment_0  # TODO: should we divide or not...
 
     @staticmethod
     @numba.njit()

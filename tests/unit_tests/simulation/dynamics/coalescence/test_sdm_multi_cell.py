@@ -5,13 +5,8 @@ Created at 04.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.state import State
 from PySDM.backends.default import Default
-import numpy as np
 # TODO: get_empty_state()
-from tests.unit_tests.simulation.test_state import TestState
-from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 
 # noinspection PyUnresolvedReferences
 from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
