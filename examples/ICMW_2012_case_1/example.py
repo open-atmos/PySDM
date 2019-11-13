@@ -12,6 +12,7 @@ from PySDM.simulation.runner import Runner
 from PySDM.simulation.state import State
 from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
+from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
@@ -35,22 +36,6 @@ class Simulation:
     def run(self, controller):
         self.storage.init(self.setup)
         with controller:
-            # Eulerian domain
-            courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
-                grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
-                stream_function=self.setup.stream_function,
-                field_values=self.setup.field_values)
-
-            # Lagrangian domain
-            x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
-
-            n[0] *= 100
-
-            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
-            state = State.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={}, positions=positions,
-                                   backend=self.setup.backend)
-            n_cell = self.setup.grid[0] * self.setup.grid[1]
-
             ambient_air = self.setup.ambient_air(
                 grid=self.setup.grid,
                 backend=self.setup.backend,
@@ -58,6 +43,30 @@ class Simulation:
                 qv_xzt_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get(),
                 rhod_z_lambda=self.setup.rhod
             )
+
+            # Eulerian domain
+            courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
+                grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
+                stream_function=self.setup.stream_function,
+                field_values=self.setup.field_values)
+
+            # Lagrangian domain
+            r_dry, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum, (self.setup.x_min, self.setup.x_max))
+            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
+
+            # <TEMP>
+            cell_origin = positions.astype(dtype=int)
+            strides = utils.strides(self.setup.grid)
+            cell_id = np.dot(strides, cell_origin.T)
+            # </TEMP>
+
+            r_wet = condensation.Condensation.r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
+            state = State.state_2d(n=n, grid=self.setup.grid,
+                                   extensive={'x': r_wet, 'dry radius': r_dry},
+                                   intensive={},
+                                   positions=positions,
+                                   backend=self.setup.backend)
+            n_cell = self.setup.grid[0] * self.setup.grid[1]
 
             dynamics = []
             if self.setup.processes["coalescence"]:
@@ -68,7 +77,7 @@ class Simulation:
                 dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data,
                                                     scheme='FTBS', backend=self.setup.backend))
             if self.setup.processes["condensation"]:
-                dynamics.append(condensation.Condensation(ambient_air))
+                dynamics.append(condensation.Condensation(ambient_air)) # TODO: self.setup.kappa
 
             runner = Runner(state, dynamics)
 

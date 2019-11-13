@@ -94,5 +94,7 @@ class Setup:
 
     ambient_air = MoistAir
 
+    kappa = 1.
+
     output_vars = ["m0", "th", "qv", "RH"]
 
