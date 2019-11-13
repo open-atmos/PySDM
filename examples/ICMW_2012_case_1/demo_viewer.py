@@ -20,12 +20,9 @@ class DemoViewer:
         self.play = Play()
         self.step_slider = IntSlider()
         self.fps_slider = IntSlider(min=100, max=1000, description="1000/fps")
-        self.plots = {
-            "m0": Output(),
-            "th": Output(),
-            "qv": Output(),
-            "RH": Output()
-        }
+        self.plots = {}
+        for var in setup.output_vars:
+            self.plots[var] = Output() 
         self.ims = {}
 
         self.reinit()
