@@ -15,7 +15,7 @@ from PySDM.backends.default import Default
 from PySDM.simulation.phys import si, mgn, th_dry
 
 class Setup:
-    grid = (5, 5)  # (75, 75)  # dx=dz=20m
+    grid = (25, 25)  # (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
     n_sd_per_gridbox = 20
 
@@ -46,7 +46,7 @@ class Setup:
     processes = {
         "advection": True,
         "coalescence": True,
-        "condensation": True
+        "condensation": False
     }
 
     th0 = 289 * si.kelvins

@@ -32,9 +32,9 @@ class Condensation:
             cid = cell_id[i]
             # root-finding initial guess
             a = r_d
-            b = phys.mgn(Condensation.r_cr(kappa, r_d * si.metres, ambient_air.T[cid] * si.kelvins))
+            b = phys.mgn(phys.r_cr(kappa, r_d * si.metres, ambient_air.T[cid] * si.kelvins))
             # minimisation
-            f = lambda r_w: phys.mgn(Condensation.dr_dt_MM(
+            f = lambda r_w: phys.mgn(phys.dr_dt_MM(
                 r_w * si.metres,
                 ambient_air.T[cid] * si.kelvin,
                 ambient_air.p[cid] * si.pascal,
@@ -62,7 +62,7 @@ class Condensation:
             rd = rdry[i] * si.metres
 
             # explicit Euler
-            r_new = r + self.dt * self.dr_dt_MM(r, T, p, S, kp, rd)
+            r_new = r + self.dt * phys.dr_dt_MM(r, T, p, S, kp, rd)
 
             x[i] = Physics.r2x(phys.mgn(r_new))
 
@@ -70,65 +70,4 @@ class Condensation:
         #       update fields due to condensation/evaporation
         #       ensure the above does include droplets that precipitated out of the domain
 
-    @staticmethod
-    def dr_dt_MM(r, T, p, S, kp, rd):
-        nom = (S - Condensation.A(T) / r + Condensation.B(kp, rd) / r ** 3)
-        den = Condensation.Fd(T, Condensation.D(r, T)) + Condensation.Fk(T, Condensation.K(r, T, p), Condensation.lv(T))
-        result = 1 / r * nom / den
-        return result
-
-    @staticmethod
-    def lv(T):
-        # latent heat of evaporation
-        return phys.l_tri + (phys.c_pv - phys.c_pw) * (T - phys.T_tri)
-
-    @staticmethod
-    def lambdaD(T):
-        return phys.D0 / np.sqrt(2 * phys.Rv * T)
-
-    @staticmethod
-    def lambdaK(T, p):
-        return (4 / 5) * phys.K0 * T / p / np.sqrt(2 * phys.Rd * T)
-
-    @staticmethod
-    def beta(Kn):
-        return (1 + Kn) / (1 + 1.71 * Kn + 1.33 * Kn * Kn)
-
-    @staticmethod
-    def D(r, T):
-        Kn = Condensation.lambdaD(T) / r  # TODO: optional
-        return phys.D0 * Condensation.beta(Kn)
-
-    @staticmethod
-    def K(r, T, p):
-        Kn = Condensation.lambdaK(T, p) / r
-        return phys.K0 * Condensation.beta(Kn)
-
-    # Maxwel-Mason coefficients:
-    @staticmethod
-    def Fd(T, D):
-        return phys.rho_w * phys.Rv * T / D / Condensation.pvs(T)
-
-    @staticmethod
-    def Fk(T, K, lv):
-        return phys.rho_w * lv / K / T * (lv / phys.Rv / T - 1)
-
-    # Koehler curve (expressed in partial pressure):
-    @staticmethod
-    def A(T):
-        return 2 * phys.sgm / phys.Rv / T / phys.rho_w
-
-    @staticmethod
-    def B(kp, rd):
-        return kp * rd ** 3
-
-    @staticmethod
-    def r_cr(kp, rd, T):
-        # critical radius
-        return np.sqrt(3 * kp * rd ** 3 / Condensation.A(T))
-
-    @staticmethod
-    def pvs(T):
-        # August-Roche-Magnus formula
-        return phys.ARM_C1 * np.exp((phys.ARM_C2 * (T - phys.T0)) / (T - phys.T0 + phys.ARM_C3))
 
