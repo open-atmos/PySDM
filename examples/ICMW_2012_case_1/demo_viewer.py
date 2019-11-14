@@ -20,12 +20,9 @@ class DemoViewer:
         self.play = Play()
         self.step_slider = IntSlider()
         self.fps_slider = IntSlider(min=100, max=1000, description="1000/fps")
-        self.plots = {
-            "m0": Output(),
-            "th": Output(),
-            "qv": Output(),
-            "RH": Output()
-        }
+        self.plots = {}
+        for var in setup.output_vars:
+            self.plots[var] = Output() 
         self.ims = {}
 
         self.reinit()
@@ -37,11 +34,12 @@ class DemoViewer:
         self.play.max = n_steps - 1
         self.play.value = 0
         self.step_slider.value = 0
-        self.clims = {
+        self.clims = { # TODO !
             "m0": (0, 1e8,  'YlGnBu'),
             "th": (295,305, 'Reds'),
             "qv": (0,1e-2,  'Greens'),
-            "RH": (0,1.2,   'GnBu')
+            "RH": (0,1.2,   'GnBu'),
+            "x_m1": (1e-8, 1e-7, 'Reds')
         }
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)

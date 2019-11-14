@@ -13,6 +13,7 @@ from PySDM.simulation.runner import Runner
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
+from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
@@ -40,7 +41,6 @@ class Simulation:
         particles = Particles(self.setup.backend)
         self.storage.init(self.setup)
         with controller:
-            # Eulerian domain
             courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
                 grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
                 stream_function=self.setup.stream_function,
@@ -65,6 +65,25 @@ class Simulation:
                 rhod_z_lambda=self.setup.rhod
             )
 
+            r_dry, n = spectral.constant_multiplicity(
+                self.setup.n_sd, self.setup.spectrum, (self.setup.r_min, self.setup.r_max)
+            )
+            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
+
+            # <TEMP>
+            cell_origin = positions.astype(dtype=int)
+            strides = utils.strides(self.setup.grid)
+            cell_id = np.dot(strides, cell_origin.T).ravel()
+            # </TEMP>
+
+            r_wet = condensation.Condensation.r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
+            state = State.state_2d(n=n, grid=self.setup.grid,
+                                   extensive={'x': utils.Physics.r2x(r_wet), 'dry radius': r_dry},  # TODO: rename x -> ...
+                                   intensive={},
+                                   positions=positions,
+                                   backend=self.setup.backend)
+            n_cell = self.setup.grid[0] * self.setup.grid[1]
+
             dynamics = []
             if self.setup.processes["coalescence"]:
                 dynamics.append(coalescence.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd,
@@ -74,7 +93,7 @@ class Simulation:
                 dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data,
                                                     scheme='FTBS', backend=self.setup.backend))
             if self.setup.processes["condensation"]:
-                dynamics.append(condensation.Condensation(ambient_air))
+                dynamics.append(condensation.Condensation(ambient_air, self.setup.dt, self.setup.kappa))
 
             runner = Runner(state, dynamics)
 
@@ -97,21 +116,24 @@ class Simulation:
     def store(self, state, eulerian_fields, ambient_air, step):
         # allocations
         if self.tmp is None:  # TODO: move to constructor
-            self.specs = {'x': (1, 1 / 3)}  # TODO: move to setup
+            n_moments = 0
+            for attr in self.setup.specs:
+                for _ in self.setup.specs[attr]:
+                    n_moments += 1
             self.moment_0 = state.backend.array(state.n_cell, dtype=int)
-            self.moments = state.backend.array((2, state.n_cell), dtype=float)
+            self.moments = state.backend.array((n_moments, state.n_cell), dtype=float)
             self.tmp = np.empty(state.n_cell)
 
         # store moments
-        state.moments(self.moment_0, self.moments, self.specs)  # TODO: attr_range
+        state.moments(self.moment_0, self.moments, self.setup.specs)  # TODO: attr_range
         state.backend.download(self.moment_0, self.tmp)
         self.tmp /= self.setup.dv
         self.storage.save(self.tmp.reshape(self.setup.grid), step, "m0")
 
         i = 0
-        for attr in self.specs:
-            for k in self.specs[attr]:
-                state.backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
+        for attr in self.setup.specs:
+            for k in self.setup.specs[attr]:
+                state.backend.download(self.moments[i], self.tmp) # TODO: [i] will not work
                 self.tmp /= self.setup.dv
                 self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
                 i += 1
