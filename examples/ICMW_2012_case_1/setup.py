@@ -15,7 +15,7 @@ from PySDM.backends.default import Default
 from PySDM.simulation.phys import si, mgn, th_dry
 
 class Setup:
-    grid = (75, 75)  # (75, 75)  # dx=dz=20m
+    grid = (5, 5)  # (75, 75)  # dx=dz=20m
     size = (1500, 1500)  # [m]
     n_sd_per_gridbox = 20
 
@@ -80,8 +80,9 @@ class Setup:
 
         return mgn(rhod)
 
-    x_min = .01e-6  # TODO: mass!
-    x_max = 5e-6  # TODO: mass!
+    # initial dry radius discretisation range
+    r_min = .01e-6
+    r_max = 5e-6
 
     dt = 0.25  # [s] #TODO: was 1s in the ICMW case?
 
@@ -94,7 +95,7 @@ class Setup:
 
     ambient_air = MoistAir
 
-    kappa = 1.
+    kappa = 1
 
-    output_vars = ["m0", "th", "qv", "RH"]
-
+    specs = {'x': (1, 1/3)}
+    output_vars = ["m0", "th", "qv", "RH", "x_m1"]  # TODO: add in a loop over specs

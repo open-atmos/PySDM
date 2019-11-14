@@ -1,4 +1,4 @@
-import netCDF4, tempfile, os
+import tempfile, os
 import numpy as np
 from scipy.io.netcdf import netcdf_file
 
