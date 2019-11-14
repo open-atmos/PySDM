@@ -38,24 +38,13 @@ class Simulation:
 
     # instantiation of simulation components, time-stepping
     def run(self, controller):
-        particles = Particles(self.setup.backend)
+        # TODO: particles = Particles(self.setup.backend)
         self.storage.init(self.setup)
         with controller:
             courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
                 grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
                 stream_function=self.setup.stream_function,
                 field_values=self.setup.field_values)
-
-            # Lagrangian domain
-            x, n = spectral.constant_multiplicity(self.setup.n_sd, self.setup.spectrum,
-                                                  (self.setup.x_min, self.setup.x_max))
-
-            n[0] *= 100
-
-            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
-            state = StateFactory.state_2d(n=n, grid=self.setup.grid, extensive={'x': x}, intensive={},
-                                          positions=positions, backend=self.setup.backend)
-            n_cell = self.setup.grid[0] * self.setup.grid[1]
 
             ambient_air = self.setup.ambient_air(
                 grid=self.setup.grid,
@@ -77,11 +66,12 @@ class Simulation:
             # </TEMP>
 
             r_wet = condensation.Condensation.r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
-            state = State.state_2d(n=n, grid=self.setup.grid,
-                                   extensive={'x': utils.Physics.r2x(r_wet), 'dry radius': r_dry},  # TODO: rename x -> ...
-                                   intensive={},
-                                   positions=positions,
-                                   backend=self.setup.backend)
+            state = StateFactory.state_2d(n=n, grid=self.setup.grid,
+                                          # TODO: rename x -> ...
+                                          extensive={'x': utils.Physics.r2x(r_wet), 'dry radius': r_dry},
+                                          intensive={},
+                                          positions=positions,
+                                          backend=self.setup.backend)
             n_cell = self.setup.grid[0] * self.setup.grid[1]
 
             dynamics = []
@@ -133,7 +123,7 @@ class Simulation:
         i = 0
         for attr in self.setup.specs:
             for k in self.setup.specs[attr]:
-                state.backend.download(self.moments[i], self.tmp) # TODO: [i] will not work
+                state.backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
                 self.tmp /= self.setup.dv
                 self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
                 i += 1
