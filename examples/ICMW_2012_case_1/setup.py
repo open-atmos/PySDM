@@ -12,12 +12,42 @@ from PySDM.simulation.spectra import Lognormal
 from PySDM.simulation.kernels.Golovin import Golovin
 from PySDM.simulation.ambient_air.moist_air import MoistAir
 from PySDM.backends.default import Default
-from PySDM.simulation.phys import si, mgn, th_dry
+
+from PySDM.simulation.physics import constants as const
+from PySDM.simulation.physics.constants import si
+from PySDM.simulation.physics.formulae import Formulae as phys
+
 
 class Setup:
-    grid = (25, 25)  # (75, 75)  # dx=dz=20m
-    size = (1500, 1500)  # [m]
+    backend = Default
+    grid = (75, 75)  # dx=dz=20m
+    size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
+    dt = 0.25 * si.seconds  # TODO: was 1s in the ICMW case?
+    w_max = .6 * si.metres / si.seconds
+
+    # TODO: second mode
+    # TODO: number -> mass distribution
+    spectrum = Lognormal(
+      norm_factor=40 / si.centimetre**3 * size[0] * size[1] * 1*si.metre,
+      m_mode=0.15 * si.micrometre,
+      s_geom=1.6
+    )
+
+    processes = {
+        "advection": True,
+        "coalescence": True,
+        "condensation": False
+    }
+
+    th0 = 289 * si.kelvins
+    qv0 = 7.5 * si.grams / si.kilogram
+    p0 = 1015 * si.hectopascals
+
+    field_values = {
+        'th': phys.th_dry(th0, qv0),
+        'qv': qv0
+    }
 
     @property
     def dx(self):
@@ -35,63 +65,36 @@ class Setup:
     def n_sd(self):
         return self.grid[0] * self.grid[1] * self.n_sd_per_gridbox
 
-    # TODO: second mode
-    # TODO: number -> mass distribution
-    spectrum = Lognormal(
-      norm_factor=mgn(40 / si.centimetre**3 * size[0]*si.metre * size[1]*si.metre * 1*si.metre),
-      m_mode=mgn(0.15 * si.micrometre),
-      s_geom=1.6
-    )
-
-    processes = {
-        "advection": True,
-        "coalescence": True,
-        "condensation": False
-    }
-
-    th0 = 289 * si.kelvins
-    qv0 = 7.5 * si.grams / si.kilogram
-    p0 = 1015 * si.hectopascals
-
-    field_values = {'th': mgn(th_dry(th0, qv0)),
-                    'qv': mgn(qv0)}
-
     def stream_function(self, xX, zZ):
-        w_max = .6 * si.metres / si.seconds
-        X = self.size[0] * si.metres
-        return mgn(- w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX))
+        X = self.size[0]
+        return - self.w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
-        from PySDM.simulation.phys import R, Rd, c_pd, p1000, g, eps
-
-        Z = self.size[1] * si.metres
+        Z = self.size[1]
         z = zZ * Z  # :)
 
         # hydrostatic profile
-        kappa = Rd / c_pd
-        arg = np.power(Setup.p0/p1000, kappa) - z*kappa*g/Setup.th0/R(Setup.qv0)
-        p = p1000 * np.power(arg, 1/kappa)
+        kappa = const.Rd / const.c_pd
+        arg = np.power(self.p0/const.p1000, kappa) - z*kappa*const.g/self.th0/phys.R(self.qv0)
+        p = const.p1000 * np.power(arg, 1/kappa)
 
         #np.testing.assert_array_less(p, Setup.p0) TODO: less or equal
 
         # density using "dry" potential temp.
-        pd = p * (1 - Setup.qv0 / (Setup.qv0 + eps))
-        rhod = pd / (np.power(p / p1000, kappa) * Rd * Setup.th0)
+        pd = p * (1 - self.qv0 / (self.qv0 + const.eps))
+        rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th0)
 
-        return mgn(rhod)
+        return rhod
 
     # initial dry radius discretisation range
     r_min = .01e-6
     r_max = 5e-6
 
-    dt = 0.25  # [s] #TODO: was 1s in the ICMW case?
 
     # output steps
     steps = np.arange(0, 3600, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
-
-    backend = Default
 
     ambient_air = MoistAir
 
