@@ -6,13 +6,14 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
+
 import numpy as np
 
-from PySDM.simulation.simulation import Simulation as Particles
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics import coalescence, advection, condensation
 from PySDM.simulation.discretisations import spatial, spectral
+from PySDM.simulation.r_wet_init import r_wet_init
 from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
@@ -65,7 +66,7 @@ class Simulation:
             cell_id = np.dot(strides, cell_origin.T).ravel()
             # </TEMP>
 
-            r_wet = condensation.Condensation.r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
+            r_wet = r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
             state = StateFactory.state_2d(n=n, grid=self.setup.grid,
                                           # TODO: rename x -> ...
                                           extensive={'x': utils.Physics.r2x(r_wet), 'dry radius': r_dry},
