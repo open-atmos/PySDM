@@ -84,7 +84,7 @@ class Simulation:
                 dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data,
                                                     scheme='FTBS', backend=self.setup.backend))
             if self.setup.processes["condensation"]:
-                dynamics.append(condensation.Condensation(ambient_air, self.setup.dt, self.setup.kappa))
+                dynamics.append(condensation.Condensation(ambient_air, self.setup.dt, self.setup.kappa, self.setup.backend, n_cell))
 
             runner = Runner(state, dynamics)
 
@@ -139,12 +139,12 @@ class Simulation:
 
 
 def main():
-    with np.errstate(all='raise'):
-        setup = Setup()
-        storage = Storage()
-        simulation = Simulation(setup, storage)
-        controller = DummyController()
-        simulation.run(controller)
+    #with np.errstate(all='raise'):
+    setup = Setup()
+    storage = Storage()
+    simulation = Simulation(setup, storage)
+    controller = DummyController()
+    simulation.run(controller)
 
 
 if __name__ == '__main__':

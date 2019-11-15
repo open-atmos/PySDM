@@ -4,15 +4,14 @@ from numba import float64
 
 import PySDM.simulation.physics.constants as const
 
-
 class PhysicsMethods:
     @staticmethod
     @numba.njit()
     def temperature_pressure_RH(rhod, thd, qv):
         # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-        kappa = const.Rd / const.c_pd
-        pd = np.power((rhod * const.Rd * thd) / const.p1000 ** kappa, 1 / (1 - kappa))
-        T = thd * (pd / const.p1000) ** kappa
+        exponent = const.Rd / const.c_pd
+        pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
+        T = thd * (pd / const.p1000) ** exponent
 
         R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
         p = rhod * (1 + qv) * R * T

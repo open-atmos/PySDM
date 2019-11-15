@@ -12,3 +12,5 @@ class Formulae:
     dr_dt_MM = backend.dr_dt_MM
     th_dry = physics.th_dry
     pvs = physics.pvs
+    lv = physics.lv
+    c_p = physics.c_p
