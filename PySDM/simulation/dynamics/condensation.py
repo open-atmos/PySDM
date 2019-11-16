@@ -8,7 +8,7 @@ Created at 24.10.2019
 from PySDM.simulation.state.state import State
 from PySDM.simulation.ambient_air.moist_air import MoistAir
 from PySDM.utils import Physics
-from PySDM.simulation.physics.formulae import Formulae
+from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
 from PySDM.simulation.physics.constants import p1000, Rd, c_pd
 
 from scipy import integrate as ode
@@ -38,9 +38,9 @@ class _ODESystem:
 
         dy_dt = np.empty_like(y)
         for i in range(len(rw)):
-            dy_dt[idx_rw + i] = Formulae.dr_dt_MM(rw[i], T, p, RH-1, self.kappa, self.rd[i])
+            dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, RH-1, self.kappa, self.rd[i])
         dy_dt[idx_qv] = -4 * np.pi * np.sum(self.n * rw**2 * dy_dt[idx_rw:]) * self.rho_w
-        dy_dt[idx_thd] = - Formulae.lv(T) * dy_dt[idx_qv] / Formulae.c_p(qv) * (p1000/p) ** (Rd/c_pd)
+        dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000/p) ** (Rd/c_pd)
 
         return dy_dt
 

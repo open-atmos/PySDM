@@ -1,10 +1,11 @@
 import mendeleev as atoms
 import pint
 from scipy import constants as sci
-from PySDM.simulation.physics._fake_unit_registry import FakeUnitRegistry, FAKE_UNITS
+from PySDM.simulation.physics._fake_unit_registry import FakeUnitRegistry
+from PySDM.simulation.physics._flag import DIMENSIONAL_ANALYSIS
 
 si = pint.UnitRegistry()
-if FAKE_UNITS:
+if not DIMENSIONAL_ANALYSIS:
     si = FakeUnitRegistry(si)
 
 

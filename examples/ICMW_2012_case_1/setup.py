@@ -13,9 +13,9 @@ from PySDM.simulation.kernels.Golovin import Golovin
 from PySDM.simulation.ambient_air.moist_air import MoistAir
 from PySDM.backends.default import Default
 
+from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics.formulae import Formulae as phys
 
 
 class Setup:
