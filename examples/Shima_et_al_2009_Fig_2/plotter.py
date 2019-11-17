@@ -8,6 +8,8 @@ Created at 12.08.2019
 import numpy as np
 from matplotlib import pyplot
 from PySDM.utils import Physics
+from PySDM.simulation.physics.constants import si
+
 
 class Plotter:
     def __init__(self, setup, xrange):
@@ -47,8 +49,8 @@ class Plotter:
         pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
 
         pyplot.plot(
-            Physics.m2um * pdf_r_x,
-            Physics.kg2g * pdf_r_y * Physics.r2x(pdf_r_x) * s.rho / s.dv,
+            pdf_r_x * si.metres / si.micrometres,
+            pdf_r_y * Physics.r2x(pdf_r_x) * s.rho / s.dv * si.kilograms / si.grams,
             color='black'
         )
 
@@ -66,8 +68,8 @@ class Plotter:
             vals[i] /= (np.log(self.r_bins[i + 1]) - np.log(self.r_bins[i]))
 
         pyplot.step(
-            Physics.m2um * self.r_bins[:-1],
-            Physics.kg2g * vals,
+            self.r_bins[:-1] * si.metres / si.micrometres,
+            vals * si.kilograms / si.grams,
             where='post',
             label=f"t = {t}s"
         )
