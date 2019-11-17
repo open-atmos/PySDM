@@ -5,7 +5,7 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.dynamics.coalescence import SDM
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM.backends.default import Default
 import numpy as np

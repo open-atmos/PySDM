@@ -10,10 +10,10 @@ import copy
 from PySDM.backends.default import Default
 from PySDM.simulation.state.state import State
 from PySDM.simulation.runner import Runner
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.discretisations.spectral import constant_multiplicity
-from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.spectra import Exponential
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
+from PySDM.simulation.dynamics.coalescence.kernels import golovin
+from PySDM.simulation.initialisation.spectra import Exponential
 
 
 backend = Default()
@@ -31,7 +31,7 @@ def test():
     dt = 1  # [s]
     norm_factor = n_part * dv
 
-    kernel = Golovin(b=1.5e3)  # [s-1]
+    kernel = golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
     x, n = constant_multiplicity(n_sd, spectrum, (x_min, x_max))
     state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)

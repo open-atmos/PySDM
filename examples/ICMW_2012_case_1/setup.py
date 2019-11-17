@@ -8,9 +8,9 @@ Created at 25.09.2019
 
 import numpy as np
 
-from PySDM.simulation.spectra import Lognormal
-from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.ambient_air.moist_air import MoistAir
+from PySDM.simulation.initialisation.spectra import Lognormal
+from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM.backends.default import Default
 
 from PySDM.simulation.physics import constants as const

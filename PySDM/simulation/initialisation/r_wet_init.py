@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import optimize as root
 from PySDM.simulation.physics.formulae import Formulae
-from PySDM.simulation.ambient_air.moist_air import MoistAir
+from PySDM.simulation.environment.moist_air import MoistAir
 
 
 class _MinFun:

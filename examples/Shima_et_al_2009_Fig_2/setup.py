@@ -6,8 +6,8 @@ Created at 08.08.2019
 """
 
 import numpy as np
-from PySDM.simulation.spectra import Exponential
-from PySDM.simulation.kernels.Golovin import Golovin
+from PySDM.simulation.initialisation.spectra import Exponential
+from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.backends.default import Default
 
 
