@@ -9,36 +9,25 @@ import numpy as np
 from PySDM.simulation.spectra import Exponential
 from PySDM.simulation.kernels.Golovin import Golovin
 from PySDM.backends.default import Default
-
-
-def x2r(x):
-    return (x * 3 / 4 / np.pi) ** (1 / 3)
-
-
-def r2x(r):
-    return 4 / 3 * np.pi * r ** 3
-
-
-kg2g = 1e3
-m2um = 1e6
+from PySDM.utils import Physics
+from PySDM.simulation.physics.constants import si
 
 
 class SetupA:
-    x_min = r2x(10e-6)  # not given in the paper
-    x_max = r2x(100e-6)  # not given in the paper
+    x_min = Physics.r2x(10 * si.micrometres)  # not given in the paper
+    x_max = Physics.r2x(100 * si.micrometres)  # not given in the paper
 
     n_sd = 2 ** 13
-    n_part = 2 ** 23  # [m-3]
+    n_part = 2 ** 23 / si.metre**3
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
-    dv = 1e6  # [m3]
+    dv = 1e6 * si.metres**3
     norm_factor = n_part * dv
-    rho = 1000  # [kg m-3]
-
-    dt = 1  # [s]
+    rho = 1000 * si.kilogram / si.metre**3
+    dt = 1 * si.seconds
 
     steps = [0, 1200, 2400, 3600]
 
-    kernel = Golovin(b=1.5e3)  # [s-1]
+    kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
     backend = Default
@@ -46,7 +35,7 @@ class SetupA:
     # TODO: rename?
     # TODO: as backend method?
     def check(self, state, step):
-        check_LWC = 1e-3  # kg m-3
+        check_LWC = 1e-3  * si.kilogram / si.metre**3
         check_ksi = self.n_part * self.dv / self.n_sd
 
         # multiplicities

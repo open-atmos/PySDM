@@ -18,9 +18,6 @@ class Physics:
     def r2x(r):
         return 4 / 3 * np.pi * r ** 3
 
-    kg2g = 1e3
-    m2um = 1e6
-
 
 def strides(grid):
     domain = np.empty(tuple(grid))  # TODO optimize
