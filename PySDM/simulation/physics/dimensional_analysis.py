@@ -1,12 +1,19 @@
 from importlib import reload
-from PySDM.simulation.physics import constants, _fake_unit_registry
+from PySDM.simulation.physics import _flag
+from PySDM.simulation.physics import constants
+from PySDM.simulation.physics import formulae
+from PySDM.backends.numba import _physics_methods
 
 
 class DimensionalAnalysis:
     def __enter__(*_):
-        _fake_unit_registry.FAKE_UNITS = False
+        _flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
+        reload(_physics_methods)
+        reload(formulae)
 
     def __exit__(*_):
-        _fake_unit_registry.FAKE_UNITS = True
+        _flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
+        reload(_physics_methods)
+        reload(formulae)

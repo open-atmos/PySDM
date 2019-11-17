@@ -1,16 +1,14 @@
 from PySDM.simulation.physics import constants
 from PySDM.simulation.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.simulation.physics.formulae import Formulae
+from PySDM.simulation.physics import formulae
 
-import pytest
 
 class TestFormulae:
-
     def test_pvs(self):
         with DimensionalAnalysis():
             # Arrange
             si = constants.si
-            sut = Formulae.pvs.py_func
+            sut = formulae.pvs
             T = 300 * si.kelvins
 
             # Act
@@ -19,12 +17,11 @@ class TestFormulae:
             # Assert
             assert pvs.units == si.hectopascals
 
-    @pytest.mark.xfail
     def test_r_cr(self):
         with DimensionalAnalysis():
             # Arrange
             si = constants.si
-            sut = Formulae.r_cr.py_func
+            sut = formulae.r_cr
 
             kp = .5
             rd = .1 * si.micrometre
@@ -34,5 +31,5 @@ class TestFormulae:
             r_cr = sut(kp, rd, T)
 
             # Assert
-            assert r_cr.units == si.micrometres
+            assert r_cr.to_base_units().units == si.metres
 

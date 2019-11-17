@@ -1,8 +1,13 @@
 import numpy as np
-import numba
 from numba import float64
-
 import PySDM.simulation.physics.constants as const
+
+from PySDM.simulation.physics import _flag
+if _flag.DIMENSIONAL_ANALYSIS:
+    import PySDM.simulation.physics._fake_numba as numba
+else:
+    import numba
+
 
 class PhysicsMethods:
     @staticmethod

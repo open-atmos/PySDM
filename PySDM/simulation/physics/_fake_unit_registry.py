@@ -7,9 +7,6 @@ Created at 14.11.2019
 """
 
 
-FAKE_UNITS = True
-
-
 def fake(si_unit):
     return (1 * si_unit).to_base_units().magnitude
 

@@ -1,9 +1,9 @@
 from PySDM.simulation.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.simulation.physics import constants
+from PySDM.simulation.physics import constants, formulae
 
 
 class TestDimensionalAnalysis:
-    def test(self):
+    def test_fake_units(self):
         # Arrange
         sut = DimensionalAnalysis()
 
@@ -13,3 +13,13 @@ class TestDimensionalAnalysis:
             assert type(constants.D0) != float
             assert type(constants.D0.magnitude) == float
         assert type(constants.D0) == float
+
+    def test_fake_numba(self):
+        # Arrange
+        sut = DimensionalAnalysis()
+
+        # Act & Assert
+        assert hasattr(formulae.pvs, "py_func")
+        with sut:
+            assert not hasattr(formulae.pvs, "py_func")
+        assert hasattr(formulae.pvs, "py_func")
