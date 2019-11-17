@@ -10,10 +10,10 @@ import copy
 from PySDM.backends.default import Default
 from PySDM.simulation.state.state import State
 from PySDM.simulation.runner import Runner
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.discretisations.spectral import constant_multiplicity
-from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.spectra import Exponential
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
+from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM.simulation.initialisation.spectra import Exponential
 
 
 backend = Default()

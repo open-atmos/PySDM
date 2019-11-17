@@ -10,8 +10,8 @@ import numpy as np
 
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.state.state_factory import StateFactory
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.discretisations.spectral import constant_multiplicity
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from examples.Shima_et_al_2009_Fig_2.plotter import Plotter

@@ -6,7 +6,7 @@ Created at 24.10.2019
 """
 
 from PySDM.simulation.state.state import State
-from PySDM.simulation.ambient_air.moist_air import MoistAir
+from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM.utils import Physics
 from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
 from PySDM.simulation.physics.constants import p1000, Rd, c_pd

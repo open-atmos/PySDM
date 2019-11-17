@@ -11,9 +11,10 @@ import numpy as np
 
 from PySDM.simulation.runner import Runner
 from PySDM.simulation.state.state_factory import StateFactory
-from PySDM.simulation.dynamics import coalescence, advection, condensation
-from PySDM.simulation.discretisations import spatial, spectral
-from PySDM.simulation.r_wet_init import r_wet_init
+from PySDM.simulation.dynamics import advection, condensation
+from PySDM.simulation.dynamics.coalescence.algorithms import sdm
+from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
+from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
@@ -55,10 +56,10 @@ class Simulation:
                 rhod_z_lambda=self.setup.rhod
             )
 
-            r_dry, n = spectral.constant_multiplicity(
+            r_dry, n = spectral_discretisation.constant_multiplicity(
                 self.setup.n_sd, self.setup.spectrum, (self.setup.r_min, self.setup.r_max)
             )
-            positions = spatial.pseudorandom(self.setup.grid, self.setup.n_sd)
+            positions = spatial_discretisation.pseudorandom(self.setup.grid, self.setup.n_sd)
 
             # <TEMP>
             cell_origin = positions.astype(dtype=int)
@@ -77,8 +78,8 @@ class Simulation:
 
             dynamics = []
             if self.setup.processes["coalescence"]:
-                dynamics.append(coalescence.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd,
-                                                n_cell=n_cell, backend=self.setup.backend))
+                dynamics.append(sdm.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd,
+                                        n_cell=n_cell, backend=self.setup.backend))
             if self.setup.processes["advection"]:
                 courant_field_data = [courant_field.data(0), courant_field.data(1)]
                 dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data,

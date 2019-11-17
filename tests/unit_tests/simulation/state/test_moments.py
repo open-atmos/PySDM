@@ -8,8 +8,8 @@ Created at 05.08.2019
 import numpy as np
 
 from PySDM.simulation.state.state_factory import StateFactory
-from PySDM.simulation.spectra import Lognormal
-from PySDM.simulation.discretisations.spectral import linear
+from PySDM.simulation.initialisation.spectra import Lognormal
+from PySDM.simulation.initialisation.spectral_discretisation import linear
 from PySDM.backends.default import Default
 
 backend = Default()
