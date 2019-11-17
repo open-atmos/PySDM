@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import optimize as root
-from PySDM.simulation.physics.formulae import Formulae
 from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.physics import formulae
 
 
 class _MinFun:
@@ -13,7 +13,7 @@ class _MinFun:
         self.r_d = r_d
 
     def __call__(self, r_w):
-        return Formulae.dr_dt_MM(r_w, self.T, self.p, self.S, self.kappa, self.r_d)
+        return formulae.dr_dt_MM(r_w, self.T, self.p, self.S, self.kappa, self.r_d)
 
 
 def r_wet_init(r_dry: np.ndarray, ambient_air: MoistAir, cell_id: np.ndarray, kappa):
@@ -23,7 +23,7 @@ def r_wet_init(r_dry: np.ndarray, ambient_air: MoistAir, cell_id: np.ndarray, ka
         cid = cell_id[i]
         # root-finding initial guess
         a = r_d
-        b = Formulae.r_cr(kappa, r_d, ambient_air.T[cid])
+        b = formulae.r_cr(kappa, r_d, ambient_air.T[cid])
         # minimisation
         f = _MinFun(
             ambient_air.T[cid],
