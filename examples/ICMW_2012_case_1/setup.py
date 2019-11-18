@@ -20,7 +20,7 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
-    grid = (75, 75)  # dx=dz=20m
+    grid = (25, 25)  # dx=dz=20m
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
     dt = 0.25 * si.seconds  # TODO: was 1s in the ICMW case?
@@ -37,12 +37,13 @@ class Setup:
     processes = {
         "advection": True,
         "coalescence": True,
-        "condensation": False
+        "condensation": True
     }
 
     th0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
+    rho = 1000 * si.kilogram / si.metre**3
 
     field_values = {
         'th': phys.th_dry(th0, qv0),
@@ -87,12 +88,12 @@ class Setup:
         return rhod
 
     # initial dry radius discretisation range
-    r_min = .01e-6
-    r_max = 5e-6
+    r_min = .01 * si.micrometre
+    r_max = 5 * si.micrometre
 
 
     # output steps
-    steps = np.arange(0, 3600, 30)
+    steps = np.arange(0, 60, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
 

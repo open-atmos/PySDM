@@ -70,7 +70,10 @@ class Simulation:
             r_wet = r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
             state = StateFactory.state_2d(n=n, grid=self.setup.grid,
                                           # TODO: rename x -> ...
-                                          extensive={'x': utils.Physics.r2x(r_wet), 'dry radius': r_dry},
+                                          extensive={
+                                              'x': utils.Physics.r2x(r_wet),
+                                              'dry volume': utils.Physics.r2x(r_dry)
+                                          },
                                           intensive={},
                                           positions=positions,
                                           backend=self.setup.backend)

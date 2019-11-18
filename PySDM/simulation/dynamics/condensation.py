@@ -15,6 +15,7 @@ from scipy import integrate as ode
 
 from PySDM.backends.numba.numba import Numba
 import numpy as np
+import numba
 
 idx_qv = 0  # redundant
 idx_thd = 1
@@ -26,8 +27,8 @@ class _ODESystem:
         self.rhod = rhod
         self.kappa = kappa
         self.rd = rd
-        self.n = n # TODO: per mass of dry air !
-        self.rho_w = 1 # TODO
+        self.n = n  # TODO: per mass of dry air !
+        self.rho_w = 1  # TODO
 
     def __call__(self, t, y):
         thd = y[idx_thd]
@@ -37,12 +38,21 @@ class _ODESystem:
         T, p, RH = Numba.temperature_pressure_RH(self.rhod, thd, qv)
 
         dy_dt = np.empty_like(y)
-        for i in range(len(rw)):
-            dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, RH-1, self.kappa, self.rd[i])
-        dy_dt[idx_qv] = -4 * np.pi * np.sum(self.n * rw**2 * dy_dt[idx_rw:]) * self.rho_w
-        dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000/p) ** (Rd/c_pd)
+
+        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, self.rho_w, qv)
 
         return dy_dt
+
+@numba.njit()
+def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv):
+    for i in range(len(rw)):
+        dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.maximum(RH - 1, .01), kappa, rd[i])
+    dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w
+    dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+    # for i in range(len(rw)):
+    #     dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.maximum(RH - 1, .01), self.kappa, self.rd[i])
+    # dy_dt[idx_qv] = -4 * np.pi * np.sum(self.n * rw ** 2 * dy_dt[idx_rw:]) * self.rho_w
+    # dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
 
 def compute_cell_start(cell_start, cell_id, idx, sd_num):
@@ -111,9 +121,9 @@ class Condensation:
                     (0., self.dt),
                     y0,
                     method='BDF',
-                    rtol=1e-6,
-                    atol=1e-6,
-                    first_step=self.dt/10,
+#                    rtol=1e-6,
+#                    atol=1e-6,
+                    first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message

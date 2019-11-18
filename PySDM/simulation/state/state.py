@@ -76,7 +76,7 @@ class State:
         else:
             self.backend.cell_id(self.cell_id, self.cell_origin, self.strides)
 
-    def moments(self, moment_0, moments, specs: dict, attr_range=(0, np.inf)):
+    def moments(self, moment_0, moments, specs: dict, attr_name='x', attr_range=(0, np.inf)):
         # TODO: intensive
         specs_idx, specs_rank = [], []
         for attr in specs:
@@ -86,4 +86,4 @@ class State:
         specs_idx = np.array(specs_idx)
         specs_rank = np.array(specs_rank)
         self.backend.moments(moment_0, moments, self.n, self.get_extensive_attrs(), self.cell_id, self.idx, self.SD_num,
-                             specs_idx, specs_rank, attr_range[0], attr_range[1], self.keys['x'][1])
+                             specs_idx, specs_rank, attr_range[0], attr_range[1], self.keys[attr_name][1])

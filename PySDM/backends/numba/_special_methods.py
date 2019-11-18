@@ -112,7 +112,7 @@ class SpecialMethods:
             displacement[droplet, dim] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
-    @numba.njit()
+    #@numba.njit()
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         moment_0[:] = 0
         moments[:, :] = 0
