@@ -1,17 +1,16 @@
 import numpy as np
-# import warnings # TODO
 
 
 def __discritise(grid, spectrum):
-    m = grid[1: -1: 2]
+    x = grid[1: -1: 2]
     cdf = spectrum.cumulative(grid[0::2])
-    n_float = cdf[1:] - cdf[0:-1]
-    n_int = n_float.round().astype(np.int64)
+    y_float = cdf[1:] - cdf[0:-1]
+    y_int = y_float.round().astype(np.int64)
 
-    percent_diff = abs(1 - np.sum(n_float) / np.sum(n_int.astype(float)))
+    percent_diff = abs(1 - np.sum(y_float) / np.sum(y_int.astype(float)))
     if percent_diff > .01:
         raise Exception(f"{percent_diff}% error in total real-droplet number due to casting multiplicities to ints")
-    return m, n_int
+    return x, y_int
 
 
 def linear(n_sd, spectrum, range):

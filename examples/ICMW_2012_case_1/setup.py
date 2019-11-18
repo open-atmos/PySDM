@@ -28,8 +28,8 @@ class Setup:
 
     # TODO: second mode
     # TODO: number -> mass distribution
-    spectrum = Lognormal(
-      norm_factor=40 / si.centimetre**3 * size[0] * size[1] * 1*si.metre,
+    spectrum_per_mass_of_dry_air = Lognormal(
+      norm_factor=40 / si.centimetre**3 / const.rho_STP,
       m_mode=0.15 * si.micrometre,
       s_geom=1.6
     )

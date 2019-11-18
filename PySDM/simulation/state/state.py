@@ -83,7 +83,7 @@ class State:
             for rank in specs[attr]:
                 specs_idx.append(self.keys[attr][1])
                 specs_rank.append(rank)
-        specs_idx = np.array(specs_idx)
-        specs_rank = np.array(specs_rank)
+        specs_idx = np.array(specs_idx, dtype=int)
+        specs_rank = np.array(specs_rank, dtype=float)
         self.backend.moments(moment_0, moments, self.n, self.get_extensive_attrs(), self.cell_id, self.idx, self.SD_num,
                              specs_idx, specs_rank, attr_range[0], attr_range[1], self.keys[attr_name][1])
