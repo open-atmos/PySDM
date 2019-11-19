@@ -9,63 +9,62 @@ from PySDM.simulation.state.state import State
 
 
 class SDM:
-    def __init__(self, kernel, dt, dv, n_sd, n_cell, backend):
-        self.backend = backend
 
-        self.dt = dt
-        self.dv = dv
+    def __init__(self, simulation, kernel):
+        self.simulation = simulation
+
         self.kernel = kernel
-        self.temp = backend.array(n_sd, dtype=float)
-        self.rand = backend.array(n_sd // 2, dtype=float)
-        self.prob = backend.array(n_sd, dtype=float)
 
-        self.is_first_in_pair = backend.array(n_sd, dtype=int)  # TODO bool
-        self.cell_start = backend.array(n_cell + 1, dtype=int)
+        self.temp = simulation.backend.array(simulation.n_sd, dtype=float)
+        self.rand = simulation.backend.array(simulation.n_sd // 2, dtype=float)
+        self.prob = simulation.backend.array(simulation.n_sd, dtype=float)
+        self.is_first_in_pair = simulation.backend.array(simulation.n_sd, dtype=int)  # TODO bool
+        self.cell_start = simulation.backend.array(simulation.n_cell + 1, dtype=int)
 
-    def __call__(self, state: State):
-        assert state.is_healthy()
+    def __call__(self):
+        assert self.simulation.state.is_healthy()
 
-        self.toss_pairs(self.backend, self.is_first_in_pair, self.cell_start, state)
+        self.toss_pairs(self.is_first_in_pair, self.cell_start)
 
-        self.compute_probability(self.backend, self.kernel, self.dt, self.dv, state, self.prob, self.temp,
-                                 self.is_first_in_pair, self.cell_start)
+        self.compute_probability(self.prob, self.temp, self.is_first_in_pair, self.cell_start)
 
-        self.backend.urand(self.rand)
-        self.compute_gamma(self.backend, self.prob, self.rand)
+        self.simulation.backend.urand(self.rand)
+        self.compute_gamma(self.prob, self.rand)
 
-        self.coalescence(self.backend, state, gamma=self.prob)
+        self.coalescence(gamma=self.prob)
 
-        state.housekeeping()
+        self.simulation.state.housekeeping()
 
+    def compute_gamma(self, prob, rand):
+        self.simulation.backend.compute_gamma(prob, rand)
     # TODO remove
-    @staticmethod
-    def compute_gamma(backend, prob, rand):
-        backend.compute_gamma(prob, rand)
 
-    @staticmethod
-    def compute_probability(backend, kernel, dt, dv, state: State, prob, temp, is_first_in_pair, cell_start):
-
+    def compute_probability(self, prob, temp, is_first_in_pair, cell_start):
         kernel_temp = temp
-        kernel(backend, kernel_temp, is_first_in_pair, state)
+        self.kernel(self.simulation.backend, kernel_temp, is_first_in_pair, self.simulation.state)
 
-        backend.max_pair(prob, state.n, is_first_in_pair, state.idx, state.SD_num)
-        backend.multiply(prob, kernel_temp)
+        self.simulation.backend.max_pair(prob, self.simulation.state.n, is_first_in_pair, self.simulation.state.idx,
+                                         self.simulation.state.SD_num)
+        self.simulation.backend.multiply(prob, kernel_temp)
 
         norm_factor = temp
-        backend.normalize(prob, state.cell_id, cell_start, norm_factor, dt / dv)
+        self.simulation.backend.normalize(prob, self.simulation.state.cell_id, cell_start, norm_factor,
+                                          self.simulation.dt / self.simulation.dv)
 
-    @staticmethod
-    def toss_pairs(backend, is_first_in_pair, cell_start, state: State):
-        state.unsort()
-        state.sort_by_cell_id()
-        backend.find_pairs(cell_start, is_first_in_pair, state.cell_id, state.idx, state.SD_num)
+    def toss_pairs(self, is_first_in_pair, cell_start):
+        self.simulation.state.unsort()
+        self.simulation.state.sort_by_cell_id()
+        self.simulation.backend.find_pairs(cell_start, is_first_in_pair,
+                                           self.simulation.state.cell_id,
+                                           self.simulation.state.idx,
+                                           self.simulation.state.SD_num)
 
-    @staticmethod
-    def coalescence(backend, state: State, gamma):
-        backend.coalescence(n=state.n,
-                            idx=state.idx,
-                            length=state.SD_num,
-                            intensive=state.get_intensive_attrs(),
-                            extensive=state.get_extensive_attrs(),
-                            gamma=gamma,
-                            healthy=state.healthy)
+    def coalescence(self, gamma):
+        state = self.simulation.state
+        self.simulation.backend.coalescence(n=state.n,
+                                            idx=state.idx,
+                                            length=state.SD_num,
+                                            intensive=state.get_intensive_attrs(),
+                                            extensive=state.get_extensive_attrs(),
+                                            gamma=gamma,
+                                            healthy=state.healthy)

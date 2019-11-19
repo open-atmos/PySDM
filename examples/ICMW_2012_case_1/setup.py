@@ -60,7 +60,7 @@ class Setup:
 
     @property
     def dv(self):
-        return self.dx * self.dz # [m3] (assumes unit dy)
+        return self.dx * self.dz  # [m3] (assumes unit dy)
 
     @property
     def n_sd(self):

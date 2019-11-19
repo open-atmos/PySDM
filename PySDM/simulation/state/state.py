@@ -12,24 +12,25 @@ from PySDM import utils
 class State:
 
     def __init__(self, n: np.ndarray, grid: tuple, attributes: dict, keys: dict,
-                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), backend):
+                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), simulation):
 
-        self.backend = backend
+        self.simulation = simulation
+        self.backend = simulation.backend
 
-        self.grid = backend.from_ndarray(np.array(grid))
-        self.strides = backend.from_ndarray(utils.strides(grid))
+        self.grid = self.backend.from_ndarray(np.array(grid))
+        self.strides = self.backend.from_ndarray(utils.strides(grid))
         self.n_cell = np.prod(np.array(grid))
 
         self.SD_num = len(n)
-        self.idx = backend.from_ndarray(np.arange(self.SD_num))
-        self.n = backend.from_ndarray(n)
+        self.idx = self.backend.from_ndarray(np.arange(self.SD_num))
+        self.n = self.backend.from_ndarray(n)
         # TODO: 0=tensive, 1=index (also in moments)
         self.attributes = attributes
         self.keys = keys
-        self.position_in_cell = None if position_in_cell is None else backend.from_ndarray(position_in_cell)
-        self.cell_origin = None if cell_origin is None else backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
-        self.cell_id = backend.from_ndarray(cell_id)
-        self.healthy = backend.from_ndarray(np.full((1,), 1))
+        self.position_in_cell = None if position_in_cell is None else self.backend.from_ndarray(position_in_cell)
+        self.cell_origin = None if cell_origin is None else self.backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
+        self.cell_id = self.backend.from_ndarray(cell_id)
+        self.healthy = self.backend.from_ndarray(np.full((1,), 1))
 
     def get_backend_storage(self, item):
         tensive = self.keys[item][0]

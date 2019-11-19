@@ -7,6 +7,7 @@ Created at 18.11.2019
 
 import numpy as np
 
+from PySDM.simulation.simulation import Simulation as Particles
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
@@ -20,6 +21,11 @@ from PySDM.simulation.physics.constants import si
 
 def test():
     setup = Setup()
+    particles = Particles(n_sd=setup.n_sd,
+                          dt=setup.dt,
+                          size=setup.size,
+                          grid=setup.grid,
+                          backend=setup.backend)
 
     _, eulerian_fields = MPDATAFactory.kinematic_2d(
         grid=setup.grid, size=setup.size, dt=setup.dt,
@@ -46,15 +52,14 @@ def test():
     # </TEMP>
 
     r_wet = r_wet_init(r_dry, ambient_air, cell_id, setup.kappa)
-    state = StateFactory.state_2d(n=n, grid=setup.grid,
-                                  # TODO: rename x -> ...
-                                  extensive={'x': utils.Physics.r2x(r_wet), 'dry volume': Physics.r2x(r_dry)},
-                                  intensive={},
-                                  positions=positions,
-                                  backend=setup.backend)
+    particles.create_state_2d(n=n,
+                              extensive={'x': utils.Physics.r2x(r_wet), 'dry volume': Physics.r2x(r_dry)},
+                              intensive={},
+                              positions=positions)
+    state = particles.state
 
     # Act (moments)
-    
+
     # Asset (TODO: turn plotting into asserts)
     from matplotlib import pyplot
 
@@ -75,8 +80,8 @@ def test():
     for i in range(len(vals)):
         state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(x_bins[i], x_bins[i + 1]))
         state.backend.download(moment_0, tmp)
-        #vals[i] *= setup.rho / setup.dv
-        #vals[i] /= (np.log(r_bins[i + 1]) - np.log(r_bins[i]))
+        # vals[i] *= setup.rho / setup.dv
+        # vals[i] /= (np.log(r_bins[i + 1]) - np.log(r_bins[i]))
         vals[i, :] = tmp.reshape(setup.grid).sum(axis=0)
 
     for lev in range(0, setup.grid[1], 5):
@@ -91,4 +96,3 @@ def test():
     pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
     pyplot.legend()
     pyplot.show()
-

@@ -6,13 +6,12 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
-
 import numpy as np
 
-from PySDM.simulation.runner import Runner
-from PySDM.simulation.state.state_factory import StateFactory
-from PySDM.simulation.dynamics import advection, condensation
-from PySDM.simulation.dynamics.coalescence.algorithms import sdm
+from PySDM.simulation.simulation import Simulation as Particles
+from PySDM.simulation.dynamics.advection import Advection
+from PySDM.simulation.dynamics.condensation import Condensation
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM import utils
@@ -40,7 +39,11 @@ class Simulation:
 
     # instantiation of simulation components, time-stepping
     def run(self, controller):
-        # TODO: particles = Particles(self.setup.backend)
+        particles = Particles(n_sd=self.setup.n_sd,
+                              dt=self.setup.dt,
+                              size=self.setup.size,
+                              grid=self.setup.grid,
+                              backend=self.setup.backend)
         self.storage.init(self.setup)
         with controller:
             courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
@@ -68,45 +71,38 @@ class Simulation:
             # </TEMP>
 
             r_wet = r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
-            state = StateFactory.state_2d(n=n, grid=self.setup.grid,
-                                          # TODO: rename x -> ...
-                                          extensive={
-                                              'x': utils.Physics.r2x(r_wet),
-                                              'dry volume': utils.Physics.r2x(r_dry)
-                                          },
-                                          intensive={},
-                                          positions=positions,
-                                          backend=self.setup.backend)
-            n_cell = self.setup.grid[0] * self.setup.grid[1]
+            particles.create_state_2d(n=n,
+                                      # TODO: rename x -> ...
+                                      extensive={
+                                          'x': utils.Physics.r2x(r_wet),
+                                          'dry volume': utils.Physics.r2x(r_dry)
+                                      },
+                                      intensive={},
+                                      positions=positions)
 
-            dynamics = []
             if self.setup.processes["coalescence"]:
-                dynamics.append(sdm.SDM(self.setup.kernel, self.setup.dt, self.setup.dv, n_sd=self.setup.n_sd,
-                                        n_cell=n_cell, backend=self.setup.backend))
+                particles.add_dynamics(SDM, (self.setup.kernel,))
             if self.setup.processes["advection"]:
                 courant_field_data = [courant_field.data(0), courant_field.data(1)]
-                dynamics.append(advection.Advection(n_sd=self.setup.n_sd, courant_field=courant_field_data,
-                                                    scheme='FTBS', backend=self.setup.backend))
+                particles.add_dynamics(Advection, (courant_field_data, 'FTBS'))
             if self.setup.processes["condensation"]:
-                dynamics.append(condensation.Condensation(ambient_air, self.setup.dt, self.setup.kappa, self.setup.backend, n_cell))
-
-            runner = Runner(state, dynamics)
+                particles.add_dynamics(Condensation, (ambient_air, self.setup.kappa))
 
             for step in self.setup.steps:
                 if controller.panic:
                     break
 
-                for _ in range(step - runner.n_steps):
+                for _ in range(step - particles.n_steps):
                     if self.setup.processes["advection"]:
                         eulerian_fields.step()
 
-                    runner.run(1)
+                    particles.run(1)
 
-                self.store(state, eulerian_fields, ambient_air, step)
+                self.store(particles.state, eulerian_fields, ambient_air, step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
-        return runner.stats
+        return particles.stats
 
     def store(self, state, eulerian_fields, ambient_air, step):
         # allocations
@@ -143,7 +139,7 @@ class Simulation:
 
 
 def main():
-    #with np.errstate(all='raise'):
+    # with np.errstate(all='raise'):
     setup = Setup()
     storage = Storage()
     simulation = Simulation(setup, storage)

@@ -43,6 +43,7 @@ class _ODESystem:
 
         return dy_dt
 
+# TODO
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv):
     for i in range(len(rw)):
@@ -62,21 +63,23 @@ def compute_cell_start(cell_start, cell_id, idx, sd_num):
 
 
 class Condensation:
-    def __init__(self, ambient_air: MoistAir, dt, kappa, backend, n_cell):
+    def __init__(self, simulation, ambient_air: MoistAir, kappa):
+
+        self.simulation = simulation
         self.ambient_air = ambient_air
 
-        self.dt = dt
+        self.dt = simulation.dt
         self.kappa = kappa
 
         self.rd = None
 
-        self.cell_start = backend.array(n_cell + 1, dtype=int)
-        self.n_cell = n_cell
+        self.cell_start = simulation.backend.array(simulation.n_cell + 1, dtype=int)
 
-        self.scheme = 'scipy.odeint'
+        self.scheme = 'scipy.odeint'  # TODO
 
     # TODO: assumes sorted by cell_id (i.e., executed after coalescence)
-    def __call__(self, state: State):
+    def __call__(self):
+        state = self.simulation.state
         state.sort_by_cell_id()
         self.ambient_air.sync()
 
@@ -84,7 +87,7 @@ class Condensation:
 
         x = state.get_backend_storage("x")
         n = state.n
-        rdry = state.get_backend_storage("dry radius")
+        rdry = state.get_backend_storage("dry volume")
 
         if self.scheme == 'explicitEuler':
             for i in state.idx[:state.SD_num]:
@@ -101,7 +104,7 @@ class Condensation:
 
                 x[i] = Physics.r2x(r_new)
         elif self.scheme == 'scipy.odeint':
-            for cell_id in reversed(range(self.n_cell)):
+            for cell_id in reversed(range(self.simulation.n_cell)):
                 cell_start = self.cell_start[cell_id]
                 cell_end = self.cell_start[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
@@ -123,7 +126,7 @@ class Condensation:
                     method='BDF',
 #                    rtol=1e-6,
 #                    atol=1e-6,
-                    first_step=self.dt,
+                    first_step=self.dt / 2,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message

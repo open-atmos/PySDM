@@ -7,6 +7,7 @@ Created at 06.06.2019
 
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
+from tests.unit_tests.simulation.state.dummy_simulation import DummySimulation
 from PySDM.backends.default import Default
 import numpy as np
 import pytest
@@ -16,22 +17,25 @@ from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import
 from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
 
 
-backend = Default()
+backend = Default
 
 
 class TestSDMSingleCell:
+
     def test_single_collision(self, x_2, n_2):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
+        simulation = DummySimulation(backend)
+        simulation.add_attrs(dt=0, dv=1, n_sd=len(n_2), n_cell=1)
+        sut = SDM(simulation, StubKernel())
+        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
+        simulation.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, simulation=simulation)
         # Act
-        sut(state)
+        sut()
         # Assert
-        assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
-        assert np.sum(state['n']) == np.sum(n_2) - np.amin(n_2)
-        if np.amin(n_2) > 0: assert np.amax(state['x']) == np.sum(x_2)
-        assert np.amax(state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+        assert np.sum(simulation.state['n'] * simulation.state['x']) == np.sum(n_2 * x_2)
+        assert np.sum(simulation.state['n']) == np.sum(n_2) - np.amin(n_2)
+        if np.amin(n_2) > 0: assert np.amax(simulation.state['x']) == np.sum(x_2)
+        assert np.amax(simulation.state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
@@ -40,15 +44,20 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=2, n_cell=1, backend=backend)
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, 1)
-        state = TestableStateFactory.state_0d(n=np.full(2, n_in), extensive={'x': np.full(2, 1.)}, intensive={}, backend=backend)
+        simulation = DummySimulation(backend)
+        simulation.add_attrs(dt=0, dv=1, n_sd=2, n_cell=1)
+        sut = SDM(simulation, StubKernel())
+        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
+        simulation.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
+                                                         extensive={'x': np.full(2, 1.)},
+                                                         intensive={},
+                                                         simulation=simulation)
 
         # Act
-        sut(state)
+        sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(state.backend.to_ndarray(state.n)), sorted(n_out))
+        np.testing.assert_array_equal(sorted(simulation.state.backend.to_ndarray(simulation.state.n)), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -58,14 +67,17 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n_2), n_cell=1, backend=backend)
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p)
-        state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, backend=backend)
+        simulation = DummySimulation(backend)
+        simulation.add_attrs(dt=0, dv=1, n_sd=len(n_2), n_cell=1)
+        sut = SDM(simulation, StubKernel())
+        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
+        simulation.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, simulation=simulation)
 
         # Act
-        sut(state)
+        sut()
 
         # Assert
+        state = simulation.state
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
         assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
@@ -80,16 +92,18 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=len(n), n_cell=1, backend=backend)
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
-        state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        simulation = DummySimulation(backend)
+        simulation.add_attrs(dt=0, dv=1, n_sd=len(n), n_cell=1)
+        sut = SDM(simulation, StubKernel())
+        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
+        simulation.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
 
         # Act
-        sut(state)
+        sut()
 
         # Assert
-        assert np.amin(state['n']) >= 0
-        assert np.sum(state['n'] * state['x']) == np.sum(n * x)
+        assert np.amin(simulation.state['n']) >= 0
+        assert np.sum(simulation.state['n'] * simulation.state['x']) == np.sum(n * x)
 
     # TODO integration test?
     def test_multi_step(self):
@@ -98,26 +112,29 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=SD_num)
         x = np.random.uniform(size=SD_num)
 
-        sut = SDM(StubKernel(), dt=0, dv=1, n_sd=SD_num, n_cell=1, backend=backend)
+        simulation = DummySimulation(backend)
+        simulation.add_attrs(dt=0, dv=1, n_sd=SD_num, n_cell=1)
+        sut = SDM(simulation, StubKernel())
 
-        sut.compute_gamma = lambda backend, prob, rand: backend_fill(
+        sut.compute_gamma = lambda prob, rand: backend_fill(
             backend,
             prob,
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True
         )
-        state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        simulation.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
 
         # Act
         for _ in range(32):
-            sut(state)
+            sut()
 
         # Assert
-        assert np.amin(state['n']) >= 0
-        actual = np.sum(state['n'] * state['x'])
+        assert np.amin(simulation.state['n']) >= 0
+        actual = np.sum(simulation.state['n'] * simulation.state['x'])
         desired = np.sum(n * x)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 
+    # TODO: move to backend tests
     @staticmethod
     def test_compute_gamma():
         # Arrange
@@ -135,7 +152,7 @@ class TestSDMSingleCell:
                 # Act
                 prob_arr = backend.from_ndarray(np.full((1,), p))
                 rand_arr = backend.from_ndarray(np.full((1,), r))
-                SDM.compute_gamma(backend, prob_arr, rand_arr)
+                backend.compute_gamma(prob_arr, rand_arr)
 
                 # Assert
                 assert expected(p, r) == backend.to_ndarray(prob_arr)[0]

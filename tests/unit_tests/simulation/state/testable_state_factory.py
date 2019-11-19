@@ -14,33 +14,33 @@ class TestableStateFactory(StateFactory):
 
     @staticmethod
     def state(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: (np.ndarray, None),
-              backend) -> TestableState:
+              simulation) -> TestableState:
 
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
-        attributes, keys = StateFactory.init_attributes_and_keys(backend, intensive, extensive, sd_num)
+        attributes, keys = StateFactory.init_attributes_and_keys(simulation, intensive, extensive, sd_num)
 
         cell_id, cell_origin, position_in_cell = StateFactory.positions(n, positions)
 
-        state = TestableState(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, backend)
+        state = TestableState(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, simulation)
 
         state.recalculate_cell_id()
         return state
 
     @staticmethod
-    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, backend) -> TestableState:
+    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, simulation) -> TestableState:
 
-        return TestableStateFactory.state(n, (), intensive, extensive, None, backend)
+        return TestableStateFactory.state(n, (), intensive, extensive, None, simulation)
 
     @staticmethod
-    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, backend) \
+    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, simulation) \
             -> TestableState:
 
-        return TestableStateFactory.state(n, grid, intensive, extensive, positions, backend)
+        return TestableStateFactory.state(n, grid, intensive, extensive, positions, simulation)
 
     @staticmethod
-    def empty_state(backend) -> TestableState:
+    def empty_state(simulation) -> TestableState:
 
         return TestableState(n=np.zeros(0), grid=(), attributes={}, keys={},
                              cell_id=np.zeros(0), position_in_cell=None, cell_origin=None,
-                             backend=backend)
+                             simulation=simulation)
