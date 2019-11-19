@@ -13,6 +13,7 @@ from PySDM.simulation.runner import Runner
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics import advection, condensation
 from PySDM.simulation.dynamics.coalescence.algorithms import sdm
+from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM import utils
@@ -39,13 +40,15 @@ class Simulation:
         self.tmp = None
 
     def init(self):
+        self.tmp = None # TODO (done to force reinitialisation of tmp arrays as setup.grid might have changed)
+
         # TODO: particles = Particles(self.setup.backend)
         courant_field, self.eulerian_fields = MPDATAFactory.kinematic_2d(
             grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
             stream_function=self.setup.stream_function,
             field_values=self.setup.field_values)
 
-        self.ambient_air = self.setup.ambient_air(
+        self.ambient_air = MoistAir(
             grid=self.setup.grid,
             backend=self.setup.backend,
             thd_xzt_lambda=lambda: self.eulerian_fields.mpdatas["th"].curr.get(),

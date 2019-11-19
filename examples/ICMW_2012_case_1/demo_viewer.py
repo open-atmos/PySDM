@@ -7,6 +7,7 @@ Created at 02.10.2019
 from ipywidgets import VBox, HBox, Box, Play, Output, IntSlider, jslink
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
+from examples.ICMW_2012_case_1 import plotter
 import numpy as np
 
 
@@ -42,14 +43,15 @@ class DemoViewer:
             "x_m1": (1e-8, 1e-7, 'Reds')
         }
 
-        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)
+        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan) # TODO: np.nan
         for key in self.plots.keys():
             with self.plots[key]:
                 clear_output()
-                self.ims[key] = plt.imshow(self.nans, cmap=self.clims[key][2])
+                _, ax = plt.subplots(1, 1)
+                self.ims[key] = plotter.image(ax, self.nans, self.setup.size, label=key, cmap=self.clims[key][2])
                 self.ims[key].set_clim(vmin = self.clims[key][0], vmax = self.clims[key][1])
-                plt.colorbar()
-                plt.title(key)
+                #plt.colorbar()
+                #plt.title(key)
                 plt.show()
 
     def replot(self, bunch):
@@ -60,7 +62,7 @@ class DemoViewer:
                 data = self.storage.load(self.setup.steps[step], key)
             except self.storage.Exception:
                 data = self.nans
-            self.ims[key].set_data(data)
+            plotter.image_update(self.ims[key], data)
 
         for key in self.plots.keys():
             with self.plots[key]:

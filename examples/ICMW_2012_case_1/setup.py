@@ -10,7 +10,6 @@ import numpy as np
 
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
-from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM.backends.default import Default
 
 from PySDM.simulation.physics import formulae as phys
@@ -27,7 +26,6 @@ class Setup:
     w_max = .6 * si.metres / si.seconds
 
     # TODO: second mode
-    # TODO: number -> mass distribution
     spectrum_per_mass_of_dry_air = Lognormal(
       norm_factor=40 / si.centimetre**3 / const.rho_STP,
       m_mode=0.15 * si.micrometre,
@@ -44,6 +42,7 @@ class Setup:
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
     rho = 1000 * si.kilogram / si.metre**3
+    kappa = 1
 
     field_values = {
         'th': phys.th_dry(th0, qv0),
@@ -93,13 +92,9 @@ class Setup:
 
 
     # output steps
-    steps = np.arange(0, 60, 30)
+    steps = np.arange(0, 3600, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
-
-    ambient_air = MoistAir
-
-    kappa = 1
 
     specs = {'x': (1, 1/3)}
     output_vars = ["m0", "th", "qv", "RH", "x_m1"]  # TODO: add in a loop over specs

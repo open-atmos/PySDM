@@ -41,6 +41,7 @@ class Exponential(Spectrum):
         ), norm_factor)
 
 
+
 class Lognormal(Spectrum):
     def __init__(self, norm_factor, m_mode, s_geom):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
