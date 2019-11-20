@@ -48,18 +48,20 @@ class ScalarField2D:
         else:
             return self.data[self.i + arg1, self.j + arg2]
 
-    def apply(self, function, arg):
+    def apply(self, function, arg1, arg2):
         for i in range(self.shape[0] - 2 * self.halo):
             for j in range(self.shape[1] - 2 * self.halo):
                 self.focus(i, j)
-                arg.focus(i, j)
+                arg1.focus(i, j)
+                arg2.focus(i, j)
 
                 self.data[self.i, self.j] = 0
                 for dim in range(2):
                     self.set_axis(dim)
-                    arg.set_axis(dim)
+                    arg1.set_axis(dim)
+                    arg2.set_axis(dim)
 
-                    self.data[self.i, self.j] += function(arg)
+                    self.data[self.i, self.j] += function(arg1, arg2)
 
     def get(self):
         results = self.data[

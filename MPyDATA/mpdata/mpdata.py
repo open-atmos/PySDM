@@ -13,13 +13,14 @@ from MPyDATA.mpdata.formulae import Formulae
 
 # @numba.jitclass()
 class MPDATA:
-    def __init__(self, prev: ScalarField, curr: ScalarField, C_physical: VectorField, C_antidiff: VectorField,
+    def __init__(self, prev: ScalarField, curr: ScalarField, G: ScalarField,
+                 GC_physical: VectorField, GC_antidiff: VectorField,
                  flux: VectorField, n_iters: int, halo: int):
         self.curr = curr
         self.prev = prev
-
-        self.C_physical = C_physical
-        self.C_antidiff = C_antidiff
+        self.G = G
+        self.GC_physical = GC_physical
+        self.GC_antidiff = GC_antidiff
         self.flux = flux
 
         self.n_iters = n_iters
@@ -31,12 +32,12 @@ class MPDATA:
             self.prev.swap_memory(self.curr)
             self.prev.fill_halos()
             if i == 0:
-                C = self.C_physical
+                GC = self.GC_physical
             else:
-                self.C_antidiff.apply(Formulae.antidiff, self.prev, self.C_physical)
-                C = self.C_antidiff
-            self.flux.apply(Formulae.flux, self.prev, C)
-            self.curr.apply(Formulae.upwind, self.flux)
+                self.GC_antidiff.apply(Formulae.antidiff, self.prev, self.GC_physical)
+                GC = self.GC_antidiff
+            self.flux.apply(Formulae.flux, self.prev, GC)
+            self.curr.apply(Formulae.upwind, self.flux, self.G)
             self.curr.data += self.prev.data
 
     def debug_print(self):
@@ -48,8 +49,8 @@ class MPDATA:
         shp0 = self.curr.data.shape[0]
         shp1 = self.curr.data.shape[1]
 
-        self.C_physical.focus(0,0)
-        self.C_physical.set_axis(0)
+        self.GC_physical.focus(0,0)
+        self.GC_physical.set_axis(0)
         self.curr.focus(0,0)
         self.curr.set_axis(0)
 
@@ -83,7 +84,7 @@ class MPDATA:
 
                 # i+.5,j
                 if (is_not_vector_halo):
-                    vvalue = '{:04.1f}'.format(self.C_physical.at(i, j + .5))
+                    vvalue = '{:04.1f}'.format(self.GC_physical.at(i, j + .5))
                     print(f'\t{vvalue}', end='')
                 else:
                     print('\t' * 2, end='')
@@ -97,7 +98,7 @@ class MPDATA:
                     -(self.halo-1) <= j < shp1-(self.halo-1)-2 and
                     -self.halo <= i < shp0-(self.halo-1)-2
                 ):
-                    vvalue = '{:04.1f}'.format(self.C_physical.at(i + .5, j))
+                    vvalue = '{:04.1f}'.format(self.GC_physical.at(i + .5, j))
                     print(f"\t\t\t{vvalue}", end='')
                 else:
                     print("\t" * 2, end='')
