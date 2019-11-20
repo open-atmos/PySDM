@@ -8,7 +8,7 @@ Created at 03.06.2019
 from PySDM.simulation.stats import Stats
 
 
-# TODO inject callback functions
+# TODO: remove
 class Runner:
 	def __init__(self, state, dynamics):
 		self.state = state

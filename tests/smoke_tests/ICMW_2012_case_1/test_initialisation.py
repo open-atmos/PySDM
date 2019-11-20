@@ -2,71 +2,34 @@
 Created at 18.11.2019
 
 @author: Piotr Bartman
+@author: Michael Olesik
 @author: Sylwester Arabas
 """
 
 import numpy as np
-
-from PySDM.simulation.simulation import Simulation as Particles
-from PySDM.simulation.state.state_factory import StateFactory
-from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
-from PySDM.simulation.initialisation.r_wet_init import r_wet_init
-from PySDM import utils
+from examples.ICMW_2012_case_1.setup import Setup
+from examples.ICMW_2012_case_1.example import Simulation
+from PySDM.simulation.physics.constants import si
 from PySDM.utils import Physics
 
-from examples.ICMW_2012_case_1.setup import Setup
-from MPyDATA.mpdata.mpdata_factory import MPDATAFactory
-from PySDM.simulation.physics.constants import si
+from matplotlib import pyplot
 
 
-def test():
+def test_dry_radius(plot=True):
+    # TODO: seed as a part of setup?
     setup = Setup()
-    particles = Particles(n_sd=setup.n_sd,
-                          dt=setup.dt,
-                          size=setup.size,
-                          grid=setup.grid,
-                          backend=setup.backend)
+    setup.steps = []
+    setup.grid = (20, 10)
+    setup.n_sd_per_gridbox = 1000
 
-    _, eulerian_fields = MPDATAFactory.kinematic_2d(
-        grid=setup.grid, size=setup.size, dt=setup.dt,
-        stream_function=setup.stream_function,
-        field_values=setup.field_values)
+    simulation = Simulation(setup, None)
 
-    ambient_air = setup.ambient_air(
-        grid=setup.grid,
-        backend=setup.backend,
-        thd_xzt_lambda=lambda: eulerian_fields.mpdatas["th"].curr.get(),
-        qv_xzt_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get(),
-        rhod_z_lambda=setup.rhod
-    )
-
-    r_dry, n = spectral_discretisation.constant_multiplicity(
-        setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max)
-    )
-    positions = spatial_discretisation.pseudorandom(setup.grid, setup.n_sd)
-
-    # <TEMP>
-    cell_origin = positions.astype(dtype=int)
-    strides = utils.strides(setup.grid)
-    cell_id = np.dot(strides, cell_origin.T).ravel()
-    # </TEMP>
-
-    r_wet = r_wet_init(r_dry, ambient_air, cell_id, setup.kappa)
-    particles.create_state_2d(n=n,
-                              extensive={'x': utils.Physics.r2x(r_wet), 'dry volume': Physics.r2x(r_dry)},
-                              intensive={},
-                              positions=positions)
-    state = particles.state
-
-    # Act (moments)
-
-    # Asset (TODO: turn plotting into asserts)
-    from matplotlib import pyplot
-
+    n_bins = 32
+    n_levels = setup.grid[1]
     x_bins = np.logspace(
         (np.log10(Physics.r2x(setup.r_min))),
         (np.log10(Physics.r2x(setup.r_max))),
-        num=64,
+        num=n_bins,
         endpoint=True
     )
     r_bins = Physics.x2r(x_bins)
@@ -74,25 +37,53 @@ def test():
     vals = np.empty((len(r_bins) - 1, setup.grid[1]))
 
     n_moments = 1
-    moment_0 = state.backend.array(state.n_cell, dtype=int)
-    moments = state.backend.array((n_moments, state.n_cell), dtype=float)
-    tmp = np.empty(state.n_cell)
+    n_cell = np.prod(np.array(setup.grid))
+    moment_0 = setup.backend.array(n_cell, dtype=int)
+    moments = setup.backend.array((n_moments, n_cell), dtype=float)
+    tmp = np.empty(n_cell)
+
+    # Act (moments)
+    simulation.run()
+    state = simulation.particles.state
+    environment = simulation.particles.environment
+    rhod = setup.backend.to_ndarray(environment.rhod).reshape(setup.grid).mean(axis=0)
+
     for i in range(len(vals)):
         state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(x_bins[i], x_bins[i + 1]))
         state.backend.download(moment_0, tmp)
-        # vals[i] *= setup.rho / setup.dv
-        # vals[i] /= (np.log(r_bins[i + 1]) - np.log(r_bins[i]))
-        vals[i, :] = tmp.reshape(setup.grid).sum(axis=0)
+        vals[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (setup.dv * setup.grid[0])
 
-    for lev in range(0, setup.grid[1], 5):
-        pyplot.step(
-            r_bins[:-1] * si.metres / si.micrometres,
-            vals[:, lev] * si.kilograms / si.grams,
-            where='post'
-        )
-    pyplot.grid()
-    pyplot.xscale('log')
-    pyplot.xlabel('particle radius [µm]')
-    pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-    pyplot.legend()
-    pyplot.show()
+    # Plot
+    if plot:
+        for level in range(0, n_levels):
+            pyplot.step(
+                r_bins[:-1] * si.metres / si.micrometres,
+                vals[:, level] * si.metre ** 3 / si.centimetre ** 3,
+                where='post'
+            )
+        pyplot.grid()
+        pyplot.xscale('log')
+        pyplot.xlabel('particle radius [µm]')
+        pyplot.ylabel('concentration [cm^{-3}/(unit dr/r)]')
+        pyplot.legend()
+        pyplot.show()
+
+    # Assert - location of maximum
+    for level in range(n_levels):
+        real_max = setup.spectrum_per_mass_of_dry_air.distribution_params[2]
+        idx_max = np.argmax(vals[:, level])
+        assert r_bins[idx_max] < real_max < r_bins[idx_max+1]
+
+    # Assert - total number
+    for level in reversed(range(n_levels)):
+        mass_conc = np.sum(vals[:, level]) / rhod[level]
+        mass_conc_STP = setup.spectrum_per_mass_of_dry_air.norm_factor
+        assert .5 * mass_conc_STP < mass_conc < 1.5 * mass_conc_STP
+
+    # Assert - decreasing number density
+    total_above = 0
+    for level in reversed(range(n_levels)):
+        total_below = np.sum(vals[:, level])
+        assert total_below > total_above
+        total_above = total_below
+

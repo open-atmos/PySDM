@@ -8,7 +8,7 @@ Created at 08.08.2019
 import copy
 import numpy as np
 
-from PySDM.simulation.simulation import Simulation
+from PySDM.simulation.particles import Particles
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
@@ -19,7 +19,7 @@ from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 # instantiation of simulation components, timestepping
 def run(setup):
-    simulation = Simulation(n_sd=setup.n_sd, grid=(), size=(), dt=setup.dt, backend=setup.backend)
+    simulation = Particles(n_sd=setup.n_sd, grid=(), size=(), dt=setup.dt, backend=setup.backend)
     simulation.set_dv(setup.dv)
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     simulation.create_state_0d(n=n, extensive={'x': x}, intensive={})

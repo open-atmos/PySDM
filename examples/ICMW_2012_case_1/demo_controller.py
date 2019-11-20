@@ -18,8 +18,8 @@ class DemoController:
     thread = None
 
     def __init__(self, simulator, viewer, exporter):
-        self.play_target = simulator.run
-        self.ncdf_target = exporter.run
+        self.simulator = simulator
+        self.exporter = exporter
         self.ncdf_filename = exporter.filename
         self.viewer = viewer
         self._setup_play()
@@ -71,13 +71,14 @@ class DemoController:
         self._setup_play()
 
     def _handle_play(self, _):
-        self.link.value = ''
-        self.thread = Thread(target=self.play_target, args=(self,))
-        self.thread.start()
         self._setup_stop()
+        self.simulator.init()
+        self.link.value = ''
+        self.thread = Thread(target=self.simulator.run, args=(self,))
+        self.thread.start()
 
     def _handle_ncdf(self, _):
-        self.thread = Thread(target=self.ncdf_target, args=(self,))
+        self.thread = Thread(target=self.exporter.run, args=(self,))
         self.thread.start()
         self.link.value = FileLink(self.ncdf_filename)._format_path()
         self._setup_stop()

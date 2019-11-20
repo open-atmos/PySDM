@@ -23,10 +23,10 @@ idx_rw = 2
 
 
 class _ODESystem:
-    def __init__(self, rhod, kappa, rd: np.ndarray, n: np.ndarray):
+    def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray):
         self.rhod = rhod
         self.kappa = kappa
-        self.rd = rd
+        self.rd = Physics.x2r(xd)
         self.n = n  # TODO: per mass of dry air !
         self.rho_w = 1  # TODO
 
@@ -87,7 +87,7 @@ class Condensation:
 
         x = state.get_backend_storage("x")
         n = state.n
-        rdry = state.get_backend_storage("dry volume")
+        xdry = state.get_backend_storage("dry volume")
 
         if self.scheme == 'explicitEuler':
             for i in state.idx[:state.SD_num]:
@@ -97,7 +97,7 @@ class Condensation:
                 p = self.ambient_air.p[cid]
                 S = (self.ambient_air.RH[cid] - 1)
                 kp = self.kappa
-                rd = rdry[i]
+                rd = Physics.x2r(xdry[i])
 
                 # explicit Euler
                 r_new = r + self.dt * state.backend.dr_dt_MM(r, T, p, S, kp, rd)
@@ -118,7 +118,7 @@ class Condensation:
                     _ODESystem(
                         self.ambient_air.rhod[cell_id],
                         self.kappa,
-                        rdry[state.idx[cell_start:cell_end]],
+                        xdry[state.idx[cell_start:cell_end]],
                         n[state.idx[cell_start:cell_end]]
                     ),
                     (0., self.dt),
@@ -126,7 +126,7 @@ class Condensation:
                     method='BDF',
 #                    rtol=1e-6,
 #                    atol=1e-6,
-                    first_step=self.dt / 2,
+#                    first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message

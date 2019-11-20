@@ -8,16 +8,16 @@ Created at 14.11.2019
 
 
 def fake(si_unit):
-    return (1 * si_unit).to_base_units().magnitude
+    return (1. * si_unit).to_base_units().magnitude
 
 
 class FakeUnitRegistry:
     def __init__(self, si):
 
-        self.dimensionless = 1
+        self.dimensionless = 1.
 # TODO: loop over prefixes
         for unit in ["centimetre", "metre", "gram", "kilogram", "mole", "joule", "kelvin", "second", "hectopascal",
                      "pascal", "litre", "micrometre"]:
-            self.__setattr__(unit, fake(1 * si.__getattr__(unit)))
-            self.__setattr__(unit + "s", fake(1 * si.__getattr__(unit + "s")))
+            self.__setattr__(unit, fake(si.__getattr__(unit)))
+            self.__setattr__(unit + "s", fake(si.__getattr__(unit + "s")))
 

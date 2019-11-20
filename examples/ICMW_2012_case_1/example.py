@@ -8,12 +8,12 @@ Created at 25.09.2019
 
 import numpy as np
 
-from PySDM.simulation.simulation import Simulation as Particles
+from PySDM.simulation.particles import Particles as Particles
 from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation import Condensation
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
-from PySDM.simulation.initialisation.r_wet_init import r_wet_init
+from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
@@ -36,73 +36,63 @@ class Simulation:
         self.setup = setup
         self.storage = storage
         self.tmp = None
+        self.particles = Particles(n_sd=self.setup.n_sd,
+                                   dt=self.setup.dt,
+                                   size=self.setup.size,
+                                   grid=self.setup.grid,
+                                   backend=self.setup.backend)
 
     # instantiation of simulation components, time-stepping
-    def run(self, controller):
-        particles = Particles(n_sd=self.setup.n_sd,
-                              dt=self.setup.dt,
-                              size=self.setup.size,
-                              grid=self.setup.grid,
-                              backend=self.setup.backend)
-        self.storage.init(self.setup)
+    def run(self, controller=DummyController()):
+        courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
+            grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
+            stream_function=self.setup.stream_function,
+            field_values=self.setup.field_values)
+
+        self.particles.set_environment(MoistAir, (
+            lambda: eulerian_fields.mpdatas["th"].curr.get(),
+            lambda: eulerian_fields.mpdatas["qv"].curr.get(),
+            self.setup.rhod
+        ))
+
+        self.particles.create_state_2d2( # TODO: ...
+                                        extensive={},
+                                        intensive={},
+                                        spatial_discretisation=spatial_discretisation.pseudorandom,
+                                        spectral_discretisation=spectral_discretisation.constant_multiplicity,
+                                        spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
+                                        r_range=(self.setup.r_min, self.setup.r_max),
+                                        kappa=self.setup.kappa
+        )
+
+        if self.setup.processes["coalescence"]:
+            self.particles.add_dynamics(SDM, (self.setup.kernel,))
+        if self.setup.processes["advection"]:
+            courant_field_data = [courant_field.data(0), courant_field.data(1)]
+            self.particles.add_dynamics(Advection, (courant_field_data, 'FTBS'))
+        if self.setup.processes["condensation"]:
+            self.particles.add_dynamics(Condensation, (self.particles.environment, self.setup.kappa))
+
+        # TODO
+        if self.storage is not None:
+            self.storage.init(self.setup)
+
         with controller:
-            courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
-                grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
-                stream_function=self.setup.stream_function,
-                field_values=self.setup.field_values)
-
-            ambient_air = self.setup.ambient_air(
-                grid=self.setup.grid,
-                backend=self.setup.backend,
-                thd_xzt_lambda=lambda: eulerian_fields.mpdatas["th"].curr.get(),
-                qv_xzt_lambda=lambda: eulerian_fields.mpdatas["qv"].curr.get(),
-                rhod_z_lambda=self.setup.rhod
-            )
-
-            r_dry, n = spectral_discretisation.constant_multiplicity(
-                self.setup.n_sd, self.setup.spectrum, (self.setup.r_min, self.setup.r_max)
-            )
-            positions = spatial_discretisation.pseudorandom(self.setup.grid, self.setup.n_sd)
-
-            # <TEMP>
-            cell_origin = positions.astype(dtype=int)
-            strides = utils.strides(self.setup.grid)
-            cell_id = np.dot(strides, cell_origin.T).ravel()
-            # </TEMP>
-
-            r_wet = r_wet_init(r_dry, ambient_air, cell_id, self.setup.kappa)
-            particles.create_state_2d(n=n,
-                                      # TODO: rename x -> ...
-                                      extensive={
-                                          'x': utils.Physics.r2x(r_wet),
-                                          'dry volume': utils.Physics.r2x(r_dry)
-                                      },
-                                      intensive={},
-                                      positions=positions)
-
-            if self.setup.processes["coalescence"]:
-                particles.add_dynamics(SDM, (self.setup.kernel,))
-            if self.setup.processes["advection"]:
-                courant_field_data = [courant_field.data(0), courant_field.data(1)]
-                particles.add_dynamics(Advection, (courant_field_data, 'FTBS'))
-            if self.setup.processes["condensation"]:
-                particles.add_dynamics(Condensation, (ambient_air, self.setup.kappa))
-
             for step in self.setup.steps:
                 if controller.panic:
                     break
 
-                for _ in range(step - particles.n_steps):
+                for _ in range(step - self.particles.n_steps):
                     if self.setup.processes["advection"]:
                         eulerian_fields.step()
 
-                    particles.run(1)
+                    self.particles.run(1)
 
-                self.store(particles.state, eulerian_fields, ambient_air, step)
+                self.store(self.particles.state, eulerian_fields, self.particles.environment, step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
-        return particles.stats
+        return self.particles.stats
 
     def store(self, state, eulerian_fields, ambient_air, step):
         # allocations
@@ -143,8 +133,7 @@ def main():
     setup = Setup()
     storage = Storage()
     simulation = Simulation(setup, storage)
-    controller = DummyController()
-    simulation.run(controller)
+    simulation.run()
 
 
 if __name__ == '__main__':
