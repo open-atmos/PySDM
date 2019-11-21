@@ -12,24 +12,25 @@ import numpy as np
 import numba
 
 
+
 class Formulae:
     EPS = 1e-8
     HALO = 1
 
     @staticmethod
     @numba.njit()
-    def flux(psi: ScalarField, C: VectorField):
+    def flux(psi: ScalarField, GC: VectorField):
         result = (
-                np.maximum(0, C.at(+.5, 0)) * psi.at(0, 0) +
-                np.minimum(0, C.at(+.5, 0)) * psi.at(1, 0)
+                np.maximum(0, GC.at(+.5, 0)) * psi.at(0, 0) +
+                np.minimum(0, GC.at(+.5, 0)) * psi.at(1, 0)
         )
         return result
         # TODO: check if (abs(c)-C)/2 is not faster
 
     @staticmethod
     @numba.njit()
-    def upwind(flx: VectorField):
-        return - (
+    def upwind(flx: VectorField, G: ScalarField):
+        return - 1/G.at(0, 0) * (
                 flx.at(+.5, 0) -
                 flx.at(-.5, 0)
         )

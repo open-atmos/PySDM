@@ -14,11 +14,10 @@ from PySDM.simulation.dynamics.condensation import Condensation
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
 from PySDM.simulation.environment.moist_air import MoistAir
-from PySDM import utils
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
-from MPyDATA.mpdata.mpdata_factory import MPDATAFactory
+from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 
 
 class DummyController:
@@ -45,15 +44,26 @@ class Simulation:
                                    grid=self.setup.grid,
                                    backend=self.setup.backend)
 
-        courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
+        # TODO - not here
+        rhod = np.repeat(
+            self.setup.rhod(
+                (np.arange(self.setup.grid[1]) + 1/2) / self.setup.grid[1]
+            ).reshape((1, self.setup.grid[1])),
+            self.setup.grid[0],
+            axis=0
+        )
+
+        GC, eulerian_fields = MPDATAFactory.kinematic_2d(
             grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
             stream_function=self.setup.stream_function,
-            field_values=self.setup.field_values)
+            field_values=self.setup.field_values,
+            g_factor=rhod
+        )
 
         self.particles.set_environment(MoistAir, (
             lambda: eulerian_fields.mpdatas["th"].curr.get(),
             lambda: eulerian_fields.mpdatas["qv"].curr.get(),
-            self.setup.rhod
+            rhod
         ))
 
         self.particles.create_state_2d2( # TODO: ...
@@ -66,10 +76,14 @@ class Simulation:
                                         kappa=self.setup.kappa
         )
 
+
         if self.setup.processes["coalescence"]:
             self.particles.add_dynamics(SDM, (self.setup.kernel,))
         if self.setup.processes["advection"]:
-            courant_field_data = [courant_field.data(0), courant_field.data(1)]
+            courant_field_data = [ # TODO: test it!!!!
+                GC.data(0) / self.setup.rhod(x_vec_coord(self.setup.grid, self.setup.size)[1]),
+                GC.data(1) / self.setup.rhod(z_vec_coord(self.setup.grid, self.setup.size)[1])
+            ]
             self.particles.add_dynamics(Advection, (courant_field_data, 'FTBS'))
         if self.setup.processes["condensation"]:
             self.particles.add_dynamics(Condensation, (self.particles.environment, self.setup.kappa))

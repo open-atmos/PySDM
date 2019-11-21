@@ -34,7 +34,8 @@ class TestMPDATA:
         scalar_field = ScalarField(scalar_field_init, halo=halo)
         vector_field = VectorField((vector_field_init_x, vector_field_init_y), halo=halo)
 
-        mpdata = MPDATAFactory.mpdata(courant_field=vector_field, state=scalar_field, n_iters=1)
+        G = ScalarField(np.ones(shape), halo=0)
+        mpdata = MPDATAFactory.mpdata(GC_field=vector_field, state=scalar_field, G=G, n_iters=1)
         mpdata.debug_print()
         for _ in range(n_steps):
             mpdata.step()

@@ -65,6 +65,10 @@ class Setup:
     def n_sd(self):
         return self.grid[0] * self.grid[1] * self.n_sd_per_gridbox
 
+    @property
+    def eddy_period(self):
+        raise NotImplementedError()
+
     def stream_function(self, xX, zZ):
         X = self.size[0]
         return - self.w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)

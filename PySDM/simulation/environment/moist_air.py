@@ -10,13 +10,12 @@ import numpy as np
 
 
 class MoistAir:
-    def __init__(self, simulation, thd_xzt_lambda, qv_xzt_lambda, rhod_z_lambda):
+    def __init__(self, simulation, thd_xzt_lambda, qv_xzt_lambda, rhod):
         self.simulation = simulation
 
         self.thd_lambda = thd_xzt_lambda
         self.qv_lambda = qv_xzt_lambda
 
-        grid = simulation.grid
         n_cell = simulation.n_cell
 
         self.qv = simulation.backend.array((n_cell,), float)
@@ -26,7 +25,6 @@ class MoistAir:
         self.p = simulation.backend.array((n_cell,), float)
         self.T = simulation.backend.array((n_cell,), float)
 
-        rhod = np.repeat(rhod_z_lambda((np.arange(grid[1]) + 1/2)/grid[1]).reshape((1, grid[1])), grid[0], axis=0)
         self.rhod = simulation.backend.from_ndarray(rhod.ravel())
 
         self.sync()
