@@ -38,14 +38,14 @@ class Setup:
         "condensation": True
     }
 
-    th0 = 289 * si.kelvins
+    th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
     rho = 1000 * si.kilogram / si.metre**3
     kappa = 1
 
     field_values = {
-        'th': phys.th_dry(th0, qv0),
+        'th': phys.th_dry(th_std0, qv0),
         'qv': qv0
     }
 
@@ -76,14 +76,14 @@ class Setup:
 
         # hydrostatic profile
         kappa = const.Rd / const.c_pd
-        arg = np.power(self.p0/const.p1000, kappa) - z*kappa*const.g/self.th0/phys.R(self.qv0)
+        arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)
         p = const.p1000 * np.power(arg, 1/kappa)
 
         #np.testing.assert_array_less(p, Setup.p0) TODO: less or equal
 
         # density using "dry" potential temp.
         pd = p * (1 - self.qv0 / (self.qv0 + const.eps))
-        rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th0)
+        rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)
 
         return rhod
 

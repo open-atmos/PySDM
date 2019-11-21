@@ -51,4 +51,4 @@ class netCDF:
                     if controller.panic:
                         break
                     self._writeVariables(ncdf, i)
-                    controller.set_percent(i / len(self.setup.steps))
+                    controller.set_percent(i / len(self.setup.steps)) # TODO: if len=1 -> ...

@@ -5,7 +5,6 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.state.state import State
 from PySDM.simulation.environment.moist_air import MoistAir
 from PySDM.utils import Physics
 from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
@@ -23,12 +22,14 @@ idx_rw = 2
 
 
 class _ODESystem:
-    def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray):
+    def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray, dqv_dt, dthd_dt):
         self.rhod = rhod
         self.kappa = kappa
         self.rd = Physics.x2r(xd)
         self.n = n  # TODO: per mass of dry air !
         self.rho_w = 1  # TODO
+        self.dqv_dt = dqv_dt
+        self.dthd_dt = dthd_dt
 
     def __call__(self, t, y):
         thd = y[idx_thd]
@@ -39,21 +40,20 @@ class _ODESystem:
 
         dy_dt = np.empty_like(y)
 
-        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, self.rho_w, qv)
+        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, self.rho_w, qv, self.dqv_dt, self.dthd_dt)
 
         return dy_dt
 
 # TODO
 @numba.njit()
-def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv):
+def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
     for i in range(len(rw)):
         dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.maximum(RH - 1, .01), kappa, rd[i])
     dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w
     dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
-    # for i in range(len(rw)):
-    #     dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.maximum(RH - 1, .01), self.kappa, self.rd[i])
-    # dy_dt[idx_qv] = -4 * np.pi * np.sum(self.n * rw ** 2 * dy_dt[idx_rw:]) * self.rho_w
-    # dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+
+    dy_dt[idx_qv] += dqv_dt
+    dy_dt[idx_thd] += dthd_dt
 
 
 def compute_cell_start(cell_start, cell_id, idx, sd_num):
@@ -63,25 +63,28 @@ def compute_cell_start(cell_start, cell_id, idx, sd_num):
 
 
 class Condensation:
-    def __init__(self, simulation, ambient_air: MoistAir, kappa):
+    def __init__(self, particles, environment: MoistAir, kappa):
 
-        self.simulation = simulation
-        self.ambient_air = ambient_air
+        self.particles = particles
+        self.environment = environment
 
-        self.dt = simulation.dt
+        self.dt = particles.dt
         self.kappa = kappa
 
         self.rd = None
 
-        self.cell_start = simulation.backend.array(simulation.n_cell + 1, dtype=int)
+        self.cell_start = particles.backend.array(particles.n_cell + 1, dtype=int)
 
         self.scheme = 'scipy.odeint'  # TODO
 
     # TODO: assumes sorted by cell_id (i.e., executed after coalescence)
     def __call__(self):
-        state = self.simulation.state
-        state.sort_by_cell_id()
-        self.ambient_air.sync()
+        state = self.particles.state
+        state.sort_by_cell_id() #TODO
+
+        self.environment.sync()
+        new = self.environment['new']
+        old = self.environment['old']
 
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
 
@@ -89,50 +92,43 @@ class Condensation:
         n = state.n
         xdry = state.get_backend_storage("dry volume")
 
-        if self.scheme == 'explicitEuler':
-            for i in state.idx[:state.SD_num]:
-                cid = state.cell_id[i]
-                r = Physics.x2r(x[i])
-                T = self.ambient_air.T[cid]
-                p = self.ambient_air.p[cid]
-                S = (self.ambient_air.RH[cid] - 1)
-                kp = self.kappa
-                rd = Physics.x2r(xdry[i])
+        if self.scheme == 'scipy.odeint':
+            for cell_id in reversed(range(self.particles.n_cell)):
+                if cell_id != self.particles.n_cell-1: continue
 
-                # explicit Euler
-                r_new = r + self.dt * state.backend.dr_dt_MM(r, T, p, S, kp, rd)
-
-                x[i] = Physics.r2x(r_new)
-        elif self.scheme == 'scipy.odeint':
-            for cell_id in reversed(range(self.simulation.n_cell)):
                 cell_start = self.cell_start[cell_id]
                 cell_end = self.cell_start[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
                 y0 = np.empty(n_sd_in_cell + 2)
-                y0[idx_thd] = self.ambient_air.thd[cell_id]
-                y0[idx_qv] = self.ambient_air.qv[cell_id]
+                y0[idx_thd] = old['thd'][cell_id]
+                y0[idx_qv] = old['qv'][cell_id]
                 y0[idx_rw:] = Physics.x2r(x[state.idx[cell_start:cell_end]])
                 integ = ode.solve_ivp(
                     _ODESystem(
-                        self.ambient_air.rhod[cell_id],
+                        self.environment.rhod[cell_id],
                         self.kappa,
                         xdry[state.idx[cell_start:cell_end]],
-                        n[state.idx[cell_start:cell_end]]
+                        n[state.idx[cell_start:cell_end]],
+                        (new['qv'][cell_id] - old['qv'][cell_id]) / self.dt,
+                        (new['thd'][cell_id] - old['thd'][cell_id]) / self.dt
                     ),
                     (0., self.dt),
                     y0,
-                    method='BDF',
+#                    method='BDF',
 #                    rtol=1e-6,
 #                    atol=1e-6,
 #                    first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message
-                # TODO: qv, thd
+
                 for i in range(cell_end - cell_start):
                     x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
+                new['qv'][cell_id] = integ.y[idx_qv]
+                new['thd'][cell_id] = integ.y[idx_thd]
+                # TODO: RH_new, T_new, p_new
         else:
             raise NotImplementedError()
 

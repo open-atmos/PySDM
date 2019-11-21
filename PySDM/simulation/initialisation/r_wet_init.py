@@ -16,19 +16,19 @@ class _MinFun:
         return formulae.dr_dt_MM(r_w, self.T, self.p, self.S, self.kappa, self.r_d)
 
 
-def r_wet_init(r_dry: np.ndarray, ambient_air: MoistAir, cell_id: np.ndarray, kappa):
+def r_wet_init(r_dry: np.ndarray, ambient_air: dict, cell_id: np.ndarray, kappa):
     r_wet = np.empty_like(r_dry)
 
     for i, r_d in enumerate(r_dry):
         cid = cell_id[i]
         # root-finding initial guess
         a = r_d
-        b = formulae.r_cr(kappa, r_d, ambient_air.T[cid])
+        b = formulae.r_cr(kappa, r_d, ambient_air['T'][cid])
         # minimisation
         f = _MinFun(
-            ambient_air.T[cid],
-            ambient_air.p[cid],
-            np.minimum(0, ambient_air.RH[cid] - 1),
+            ambient_air['T'][cid],
+            ambient_air['p'][cid],
+            np.minimum(0, ambient_air['RH'][cid] - 1),
             kappa,
             r_d
         )

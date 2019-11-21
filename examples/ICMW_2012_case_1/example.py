@@ -92,7 +92,7 @@ class Simulation:
             self.storage.init(self.setup)
 
         with controller:
-            for step in self.setup.steps:
+            for step in self.setup.steps: # TODO: rename output_steps
                 if controller.panic:
                     break
 
@@ -140,7 +140,7 @@ class Simulation:
             self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
 
         # store auxiliary fields
-        backend.download(particles.environment.RH, self.tmp)
+        backend.download(particles.environment['old']['RH'], self.tmp)
         self.storage.save(self.tmp.reshape(particles.grid), step, "RH")
 
 
