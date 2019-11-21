@@ -55,7 +55,7 @@ class Setup:
 
     @property
     def dz(self):
-        return self.size[0] / self.grid[0]
+        return self.size[1] / self.grid[1]
 
     @property
     def dv(self):

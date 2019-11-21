@@ -35,6 +35,9 @@ class Simulation:
     def __init__(self, setup, storage):
         self.setup = setup
         self.storage = storage
+
+    # instantiation of simulation components, time-stepping
+    def run(self, controller=DummyController()):
         self.tmp = None
         self.particles = Particles(n_sd=self.setup.n_sd,
                                    dt=self.setup.dt,
@@ -42,8 +45,6 @@ class Simulation:
                                    grid=self.setup.grid,
                                    backend=self.setup.backend)
 
-    # instantiation of simulation components, time-stepping
-    def run(self, controller=DummyController()):
         courant_field, eulerian_fields = MPDATAFactory.kinematic_2d(
             grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
             stream_function=self.setup.stream_function,

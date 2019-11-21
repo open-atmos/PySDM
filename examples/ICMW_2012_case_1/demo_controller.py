@@ -72,7 +72,6 @@ class DemoController:
 
     def _handle_play(self, _):
         self._setup_stop()
-        self.simulator.init()
         self.link.value = ''
         self.thread = Thread(target=self.simulator.run, args=(self,))
         self.thread.start()
