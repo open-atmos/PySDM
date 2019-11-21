@@ -5,24 +5,26 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.runner import Runner
+from PySDM.simulation.particles import Particles
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
+
 def run(setup):
+    particles = Particles(n_sd=setup.n_sd, grid=(), size=(), dt=setup.dt, backend=setup.backend)
+    particles.set_dv(setup.dv)
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = StateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend, n_cell=1)
-    runner = Runner(state, (collider,))
+    particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
+    particles.add_dynamics(SDM, (setup.kernel,))
 
     states = {}
     for step in setup.steps:
-        runner.run(step - runner.n_steps)
+        particles.run(step - particles.n_steps)
         # setup.check(runner.state, runner.n_steps) TODO???
 
-    return states, runner.stats
+    return states, particles.stats
 
 
 # TODO python -O

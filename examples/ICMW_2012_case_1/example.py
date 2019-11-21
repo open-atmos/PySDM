@@ -29,7 +29,6 @@ class DummyController:
 
     def __exit__(*_): pass
 
-
 class Simulation:
     def __init__(self, setup, storage):
         self.setup = setup
@@ -103,35 +102,37 @@ class Simulation:
 
                     self.particles.run(1)
 
-                self.store(self.particles.state, eulerian_fields, self.particles.environment, step)
+                self.store(self.particles, eulerian_fields, step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
         return self.particles.stats
 
-    def store(self, state, eulerian_fields, ambient_air, step):
+    def store(self, particles, eulerian_fields, step):
+        backend = particles.backend
+
         # allocations
         if self.tmp is None:  # TODO: move to constructor
             n_moments = 0
             for attr in self.setup.specs:
                 for _ in self.setup.specs[attr]:
                     n_moments += 1
-            self.moment_0 = state.backend.array(state.n_cell, dtype=int)
-            self.moments = state.backend.array((n_moments, state.n_cell), dtype=float)
-            self.tmp = np.empty(state.n_cell)
+            self.moment_0 = backend.array(particles.n_cell, dtype=int)
+            self.moments = backend.array((n_moments, particles.n_cell), dtype=float)
+            self.tmp = np.empty(particles.n_cell)
 
         # store moments
-        state.moments(self.moment_0, self.moments, self.setup.specs)  # TODO: attr_range
-        state.backend.download(self.moment_0, self.tmp)
-        self.tmp /= self.setup.dv
-        self.storage.save(self.tmp.reshape(self.setup.grid), step, "m0")
+        particles.state.moments(self.moment_0, self.moments, self.setup.specs)  # TODO: attr_range
+        backend.download(self.moment_0, self.tmp)
+        self.tmp /= particles.dv
+        self.storage.save(self.tmp.reshape(particles.grid), step, "m0")
 
         i = 0
         for attr in self.setup.specs:
             for k in self.setup.specs[attr]:
-                state.backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
-                self.tmp /= self.setup.dv
-                self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
+                backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
+                self.tmp /= particles.dv
+                self.storage.save(self.tmp.reshape(particles.grid), step, f"{attr}_m{k}")
                 i += 1
 
         # store advected fields
@@ -139,8 +140,8 @@ class Simulation:
             self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
 
         # store auxiliary fields
-        state.backend.download(ambient_air.RH, self.tmp)
-        self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
+        backend.download(particles.environment.RH, self.tmp)
+        self.storage.save(self.tmp.reshape(particles.grid), step, "RH")
 
 
 def main():

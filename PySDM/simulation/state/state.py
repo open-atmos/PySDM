@@ -12,10 +12,10 @@ from PySDM import utils
 class State:
 
     def __init__(self, n: np.ndarray, grid: tuple, attributes: dict, keys: dict,
-                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), simulation):
+                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), particles):
 
-        self.simulation = simulation
-        self.backend = simulation.backend
+        self.simulation = particles
+        self.backend = particles.backend # TODO: make private
 
         self.grid = self.backend.from_ndarray(np.array(grid))
         self.strides = self.backend.from_ndarray(utils.strides(grid))

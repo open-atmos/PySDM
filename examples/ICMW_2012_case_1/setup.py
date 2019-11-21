@@ -49,6 +49,7 @@ class Setup:
         'qv': qv0
     }
 
+    # TODO: potentially to be removed as already present in particles
     @property
     def dx(self):
         return self.size[0] / self.grid[0]
@@ -56,10 +57,6 @@ class Setup:
     @property
     def dz(self):
         return self.size[1] / self.grid[1]
-
-    @property
-    def dv(self):
-        return self.dx * self.dz  # [m3] (assumes unit dy)
 
     @property
     def n_sd(self):
