@@ -48,7 +48,7 @@ class _ODESystem:
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
     for i in range(len(rw)):
-        dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.maximum(RH - 1, .01), kappa, rd[i])
+        dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.minimum(RH - 1, .01), kappa, rd[i])
     dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w
     dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
@@ -94,8 +94,6 @@ class Condensation:
 
         if self.scheme == 'scipy.odeint':
             for cell_id in reversed(range(self.particles.n_cell)):
-                if cell_id != self.particles.n_cell-1: continue
-
                 cell_start = self.cell_start[cell_id]
                 cell_end = self.cell_start[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
@@ -116,9 +114,9 @@ class Condensation:
                     ),
                     (0., self.dt),
                     y0,
-#                    method='BDF',
-#                    rtol=1e-6,
-#                    atol=1e-6,
+                    method='BDF',
+                    rtol=1e-6,
+                    atol=1e-6,
 #                    first_step=self.dt,
                     t_eval=[self.dt]
                 )
@@ -132,8 +130,6 @@ class Condensation:
         else:
             raise NotImplementedError()
 
-        # TODO: update drop radii
-        #       update fields due to condensation/evaporation
-        #       ensure the above does include droplets that precipitated out of the domain
+        # TODO: what about droplets that precipitated out of the domain
 
 
