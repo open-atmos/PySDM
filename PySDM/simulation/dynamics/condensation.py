@@ -57,9 +57,15 @@ def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
 
 
 def compute_cell_start(cell_start, cell_id, idx, sd_num):
+    cell_start[:] = -1
+
     for i in range(sd_num - 1, -1, -1):  # reversed
         cell_start[cell_id[idx[i]]] = i
     cell_start[-1] = sd_num
+
+    for i in range(len(cell_start) - 1, -1, -1):  # reversed
+        if cell_start[i] == -1:
+            cell_start[i] = cell_start[i + 1]
 
 
 class Condensation:
@@ -87,18 +93,22 @@ class Condensation:
         old = self.environment['old']
 
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
+        # print(self.cell_start)
 
         x = state.get_backend_storage("x")
         n = state.n
         xdry = state.get_backend_storage("dry volume")
 
         if self.scheme == 'scipy.odeint':
-            for cell_id in reversed(range(self.particles.n_cell)):
+            for cell_id in range(self.particles.n_cell):
                 cell_start = self.cell_start[cell_id]
                 cell_end = self.cell_start[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
+
+                # print(old['RH'][cell_id], " -> ", new['RH'][cell_id]) TODO
+
                 y0 = np.empty(n_sd_in_cell + 2)
                 y0[idx_thd] = old['thd'][cell_id]
                 y0[idx_qv] = old['qv'][cell_id]
@@ -123,9 +133,11 @@ class Condensation:
                 assert integ.success, integ.message
 
                 for i in range(cell_end - cell_start):
+                    # print(x[state.idx[cell_start + i]], Physics.r2x(integ.y[idx_rw + i]))
                     x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
                 new['qv'][cell_id] = integ.y[idx_qv]
                 new['thd'][cell_id] = integ.y[idx_thd]
+                # print()
                 # TODO: RH_new, T_new, p_new
         else:
             raise NotImplementedError()

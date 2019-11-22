@@ -90,9 +90,13 @@ class SpecialMethods:
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64))
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
+        cell_start[:] = -1
         for i in range(sd_num - 1, -1, -1):  # reversed
             cell_start[cell_id[idx[i]]] = i
         cell_start[-1] = sd_num
+        for i in range(len(cell_start) - 1, -1, -1):  # reversed
+            if cell_start[i] == -1:
+                cell_start[i] = cell_start[i + 1]
 
         for i in range(sd_num - 1):
             is_first_in_pair[i] = (
