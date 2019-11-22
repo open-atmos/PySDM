@@ -37,10 +37,10 @@ class DemoViewer:
         self.step_slider.value = 0
         self.clims = { # TODO !
             "m0": (0, 1e8,  'YlGnBu'),
-            "th": (295,305, 'Reds'),
-            "qv": (0,1e-2,  'Greens'),
-            "RH": (0,1.2,   'GnBu'),
-            "x_m1": (1e-8, 1e-7, 'Reds')
+            "th": (288, 295, 'Reds'),
+            "qv": (0.005, .0075,  'Greens'),
+            "RH": (.5, 1.1,   'GnBu'),
+            "x_m1": (1e-20, 1e-19, 'Reds')
         }
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan) # TODO: np.nan
