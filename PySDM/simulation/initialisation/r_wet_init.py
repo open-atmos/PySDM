@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import optimize as root
-from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 from PySDM.simulation.physics import formulae
 
 

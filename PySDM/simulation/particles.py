@@ -8,7 +8,7 @@ Created at 09.11.2019
 import numpy as np
 from PySDM import utils
 from PySDM.simulation.state.state import State
-from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
@@ -24,7 +24,7 @@ class Particles:
         self.dt = dt
         self.backend = backend()
         self.state: (State, None) = None
-        self.environment: (MoistAir, None) = None
+        self.environment: (Kinematic2D, None) = None
         self.dynamics: list = []
         self.__dv = None
         self.__dimension = len(grid)
@@ -76,6 +76,7 @@ class Particles:
     def set_dv(self, value):
         self.__dv = value
 
+    # TODO use params: dict
     def set_environment(self, environment_class, params):
         self.environment = environment_class(self, *params)
 
@@ -127,8 +128,9 @@ class Particles:
     def run(self, steps):
         with self.stats:
             for _ in range(steps):
+                self.environment.ante_step()
                 for dynamic in self.dynamics:
                     dynamic()
-                self.environment.signal_next_timestep()
+                self.environment.post_step()
         self.n_steps += steps
 

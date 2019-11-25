@@ -13,11 +13,10 @@ from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation import Condensation
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
-from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
-from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 
 
 class DummyController:
@@ -28,6 +27,7 @@ class DummyController:
     def __enter__(*_): pass
 
     def __exit__(*_): pass
+
 
 class Simulation:
     def __init__(self, setup, storage):
@@ -43,26 +43,10 @@ class Simulation:
                                    grid=self.setup.grid,
                                    backend=self.setup.backend)
 
-        # TODO - not here
-        rhod = np.repeat(
-            self.setup.rhod(
-                (np.arange(self.setup.grid[1]) + 1/2) / self.setup.grid[1]
-            ).reshape((1, self.setup.grid[1])),
-            self.setup.grid[0],
-            axis=0
-        )
-
-        GC, eulerian_fields = MPDATAFactory.kinematic_2d(
-            grid=self.setup.grid, size=self.setup.size, dt=self.setup.dt,
-            stream_function=self.setup.stream_function,
-            field_values=self.setup.field_values,
-            g_factor=rhod
-        )
-
-        self.particles.set_environment(MoistAir, (
-            lambda: eulerian_fields.mpdatas["th"].curr.get(),
-            lambda: eulerian_fields.mpdatas["qv"].curr.get(),
-            rhod
+        self.particles.set_environment(Kinematic2D, (
+            self.setup.stream_function,
+            self.setup.field_values,
+            self.setup.rhod
         ))
 
         self.particles.create_state_2d2( # TODO: ...
@@ -75,15 +59,10 @@ class Simulation:
                                         kappa=self.setup.kappa
         )
 
-
         if self.setup.processes["coalescence"]:
             self.particles.add_dynamics(SDM, (self.setup.kernel,))
         if self.setup.processes["advection"]:
-            courant_field_data = [ # TODO: test it!!!!
-                GC.data(0) / self.setup.rhod(x_vec_coord(self.setup.grid, self.setup.size)[1]),
-                GC.data(1) / self.setup.rhod(z_vec_coord(self.setup.grid, self.setup.size)[1])
-            ]
-            self.particles.add_dynamics(Advection, (courant_field_data, 'FTBS'))
+            self.particles.add_dynamics(Advection, ('FTBS',))
         if self.setup.processes["condensation"]:
             self.particles.add_dynamics(Condensation, (self.particles.environment, self.setup.kappa))
 
@@ -97,19 +76,18 @@ class Simulation:
                     break
 
                 for _ in range(step - self.particles.n_steps):
-                    if self.setup.processes["advection"]:
-                        eulerian_fields.step()
 
                     self.particles.run(1)
 
-                self.store(self.particles, eulerian_fields, step)
+                self.store(self.particles, step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
         return self.particles.stats
 
-    def store(self, particles, eulerian_fields, step):
+    def store(self, particles, step):
         backend = particles.backend
+        eulerian_fields = particles.environment.eulerian_fields
 
         # allocations
         if self.tmp is None:  # TODO: move to constructor

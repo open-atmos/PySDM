@@ -25,7 +25,7 @@ class TestExplicitEulerWithInterpolation:
         courant_field = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={},
                                                  positions=positions, simulation=simulation)
-        sut = Advection(courant_field=courant_field, simulation=simulation)
+        sut = Advection(courant_field=courant_field, particles=simulation)
 
         # Act
         sut()
@@ -41,7 +41,7 @@ class TestExplicitEulerWithInterpolation:
         courant_field = (np.ones((4, 3)), np.zeros((3, 4)))
         simulation.state = StateFactory.state_2d(n=n, grid=(3, 3), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=positions)
-        sut = Advection(courant_field=courant_field, simulation=simulation)
+        sut = Advection(courant_field=courant_field, particles=simulation)
 
         sut()
 
@@ -59,7 +59,7 @@ class TestExplicitEulerWithInterpolation:
         courant_field = (np.array([[a, b]]).T, np.array([[0, 0]]))
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=positions)
-        sut = Advection(courant_field=courant_field, simulation=simulation, scheme='FTFS')
+        sut = Advection(courant_field=courant_field, particles=simulation, scheme='FTFS')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant, simulation.state.cell_origin, simulation.state.position_in_cell)
@@ -79,7 +79,7 @@ class TestExplicitEulerWithInterpolation:
         courant_field = (np.array([[0, 0]]).T, np.array([[a, b]]))
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=positions)
-        sut = Advection(courant_field=courant_field, simulation=simulation, scheme='FTFS')
+        sut = Advection(courant_field=courant_field, particles=simulation, scheme='FTFS')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant, simulation.state.cell_origin, simulation.state.position_in_cell)
@@ -101,7 +101,7 @@ class TestExplicitEulerWithInterpolation:
         # TODO: state not needed?
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=initial_position)
-        sut = Advection(courant_field=dummy_courant_field, simulation=simulation)
+        sut = Advection(courant_field=dummy_courant_field, particles=simulation)
         sut.displacement[droplet_id, 0] = .1
         sut.displacement[droplet_id, 1] = .2
 
@@ -125,7 +125,7 @@ class TestExplicitEulerWithInterpolation:
         # TODO: state not needed?
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=initial_position)
-        sut = Advection(courant_field=dummy_courant_field, simulation=simulation)
+        sut = Advection(courant_field=dummy_courant_field, particles=simulation)
         state = simulation.state
         state.position_in_cell[droplet_id, 0] = 1.1
         state.position_in_cell[droplet_id, 1] = 1.2
@@ -149,7 +149,7 @@ class TestExplicitEulerWithInterpolation:
         # TODO: state not needed?
         simulation.state = StateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, 
                                                  simulation=simulation, positions=initial_position)
-        sut = Advection(courant_field=dummy_courant_field, simulation=simulation)
+        sut = Advection(courant_field=dummy_courant_field, particles=simulation)
         state = simulation.state
         state.cell_origin[droplet_id, 0] = 1.1
         state.cell_origin[droplet_id, 1] = 1.2

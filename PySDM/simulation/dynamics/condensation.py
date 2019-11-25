@@ -5,7 +5,7 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 from PySDM.utils import Physics
 from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
 from PySDM.simulation.physics.constants import p1000, Rd, c_pd
@@ -30,6 +30,7 @@ class _ODESystem:
         self.rho_w = 1  # TODO
         self.dqv_dt = dqv_dt
         self.dthd_dt = dthd_dt
+        # self.dy_dt = np.empty(len(n) + 2)
 
     def __call__(self, t, y):
         thd = y[idx_thd]
@@ -69,7 +70,7 @@ def compute_cell_start(cell_start, cell_id, idx, sd_num):
 
 
 class Condensation:
-    def __init__(self, particles, environment: MoistAir, kappa):
+    def __init__(self, particles, environment: Kinematic2D, kappa):
 
         self.particles = particles
         self.environment = environment
@@ -126,7 +127,7 @@ class Condensation:
                     y0,
                     method='BDF',
                     rtol=1e-6,
-                    atol=1e-6,
+                    atol=1e-22,
 #                    first_step=self.dt,
                     t_eval=[self.dt]
                 )
