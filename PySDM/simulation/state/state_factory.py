@@ -13,28 +13,28 @@ class StateFactory:
 
     @staticmethod
     def state(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: (np.ndarray, None),
-              simulation) -> State:
+              particles) -> State:
 
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
-        attributes, keys = StateFactory.init_attributes_and_keys(simulation, intensive, extensive, sd_num)
+        attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
 
         cell_id, cell_origin, position_in_cell = StateFactory.positions(n, positions)
 
-        state = State(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, simulation)
+        state = State(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
 
         state.recalculate_cell_id()
         return state
 
     @staticmethod
-    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, simulation) -> State:
+    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, particles) -> State:
 
-        return StateFactory.state(n, (), intensive, extensive, None, simulation)
+        return StateFactory.state(n, (), intensive, extensive, None, particles)
 
     @staticmethod
-    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, simulation) -> State:
+    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, particles) -> State:
 
-        return StateFactory.state(n, grid, intensive, extensive, positions, simulation)
+        return StateFactory.state(n, grid, intensive, extensive, positions, particles)
 
     @staticmethod
     def check_args(n: np.ndarray, intensive: dict, extensive: dict) -> bool:
@@ -51,10 +51,10 @@ class StateFactory:
         return result
 
     @staticmethod
-    def init_attributes_and_keys(simulation, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
+    def init_attributes_and_keys(particles, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
 
-        attributes = {'intensive': simulation.backend.array((len(intensive), SD_num), float),
-                      'extensive': simulation.backend.array((len(extensive), SD_num), float)
+        attributes = {'intensive': particles.backend.array((len(intensive), SD_num), float),
+                      'extensive': particles.backend.array((len(extensive), SD_num), float)
                       }
         keys = {}
 
@@ -62,7 +62,7 @@ class StateFactory:
             idx = 0
             for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
                 keys[key] = (tensive, idx)
-                simulation.backend.write_row(attributes[tensive], idx, simulation.backend.from_ndarray(array))
+                particles.backend.write_row(attributes[tensive], idx, particles.backend.from_ndarray(array))
                 idx += 1
 
         return attributes, keys

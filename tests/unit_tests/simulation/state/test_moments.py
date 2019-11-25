@@ -8,13 +8,12 @@ Created at 05.08.2019
 import numpy as np
 
 from PySDM.simulation.state.state_factory import StateFactory
-from tests.unit_tests.simulation.state.dummy_simulation import DummySimulation
+from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.initialisation.spectral_discretisation import linear
 from PySDM.backends.default import Default
 
 backend = Default
-simulation = DummySimulation(backend)
 
 
 class TestMaths:
@@ -31,7 +30,8 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, x_mean, d)
         x, n = linear(n_sd, spectrum, (x_min, x_max))
-        state = StateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
+        particles = DummyParticles(backend, n_sd)
+        state = StateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 

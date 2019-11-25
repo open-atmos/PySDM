@@ -7,8 +7,9 @@ Created at 06.06.2019
 
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
-from tests.unit_tests.simulation.state.dummy_simulation import DummySimulation
+from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.backends.default import Default
+from PySDM.simulation.environment.box import Box
 import numpy as np
 import pytest
 from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
@@ -24,18 +25,20 @@ class TestSDMSingleCell:
 
     def test_single_collision(self, x_2, n_2):
         # Arrange
-        simulation = DummySimulation(backend)
-        simulation.add_attrs(dt=0, dv=1, n_sd=len(n_2), n_cell=1)
-        sut = SDM(simulation, StubKernel())
+        particles = DummyParticles(backend, n_sd=len(n_2))
+        dt = 0
+        dv = 1
+        particles.set_environment(Box, (dv, dt))
+        sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        simulation.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, simulation=simulation)
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
         # Act
         sut()
         # Assert
-        assert np.sum(simulation.state['n'] * simulation.state['x']) == np.sum(n_2 * x_2)
-        assert np.sum(simulation.state['n']) == np.sum(n_2) - np.amin(n_2)
-        if np.amin(n_2) > 0: assert np.amax(simulation.state['x']) == np.sum(x_2)
-        assert np.amax(simulation.state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+        assert np.sum(particles.state['n'] * particles.state['x']) == np.sum(n_2 * x_2)
+        assert np.sum(particles.state['n']) == np.sum(n_2) - np.amin(n_2)
+        if np.amin(n_2) > 0: assert np.amax(particles.state['x']) == np.sum(x_2)
+        assert np.amax(particles.state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
@@ -44,20 +47,22 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        simulation = DummySimulation(backend)
-        simulation.add_attrs(dt=0, dv=1, n_sd=2, n_cell=1)
-        sut = SDM(simulation, StubKernel())
+        particles = DummyParticles(backend, n_sd=2)
+        dt = 0
+        dv = 1
+        particles.set_environment(Box, (dv, dt))
+        sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        simulation.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
+        particles.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
                                                          extensive={'x': np.full(2, 1.)},
                                                          intensive={},
-                                                         simulation=simulation)
+                                                         particles=particles)
 
         # Act
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(simulation.state.backend.to_ndarray(simulation.state.n)), sorted(n_out))
+        np.testing.assert_array_equal(sorted(particles.state.backend.to_ndarray(particles.state.n)), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -67,17 +72,19 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        simulation = DummySimulation(backend)
-        simulation.add_attrs(dt=0, dv=1, n_sd=len(n_2), n_cell=1)
-        sut = SDM(simulation, StubKernel())
+        particles = DummyParticles(backend, n_sd=len(n_2))
+        dt=0
+        dv=1
+        particles.set_environment(Box, (dv, dt))
+        sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
-        simulation.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, simulation=simulation)
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
 
         # Act
         sut()
 
         # Assert
-        state = simulation.state
+        state = particles.state
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
         assert np.sum(state['n'] * state['x']) == np.sum(n_2 * x_2)
@@ -92,18 +99,20 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        simulation = DummySimulation(backend)
-        simulation.add_attrs(dt=0, dv=1, n_sd=len(n), n_cell=1)
-        sut = SDM(simulation, StubKernel())
+        particles = DummyParticles(backend, n_sd=len(n))
+        dt=0
+        dv=1
+        particles.set_environment(Box, (dv, dt))
+        sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
-        simulation.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
+        particles.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
 
         # Act
         sut()
 
         # Assert
-        assert np.amin(simulation.state['n']) >= 0
-        assert np.sum(simulation.state['n'] * simulation.state['x']) == np.sum(n * x)
+        assert np.amin(particles.state['n']) >= 0
+        assert np.sum(particles.state['n'] * particles.state['x']) == np.sum(n * x)
 
     # TODO integration test?
     def test_multi_step(self):
@@ -112,9 +121,11 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=SD_num)
         x = np.random.uniform(size=SD_num)
 
-        simulation = DummySimulation(backend)
-        simulation.add_attrs(dt=0, dv=1, n_sd=SD_num, n_cell=1)
-        sut = SDM(simulation, StubKernel())
+        particles = DummyParticles(backend, n_sd=SD_num)
+        dt=0
+        dv=1
+        particles.set_environment(Box, (dv, dt))
+        sut = SDM(particles, StubKernel())
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             backend,
@@ -122,15 +133,15 @@ class TestSDMSingleCell:
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True
         )
-        simulation.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
+        particles.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
 
         # Act
         for _ in range(32):
             sut()
 
         # Assert
-        assert np.amin(simulation.state['n']) >= 0
-        actual = np.sum(simulation.state['n'] * simulation.state['x'])
+        assert np.amin(particles.state['n']) >= 0
+        actual = np.sum(particles.state['n'] * particles.state['x'])
         desired = np.sum(n * x)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 

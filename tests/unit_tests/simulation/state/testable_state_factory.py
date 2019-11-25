@@ -28,19 +28,19 @@ class TestableStateFactory(StateFactory):
         return state
 
     @staticmethod
-    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, simulation) -> TestableState:
+    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, particles) -> TestableState:
 
-        return TestableStateFactory.state(n, (), intensive, extensive, None, simulation)
+        return TestableStateFactory.state(n, (), intensive, extensive, None, particles)
 
     @staticmethod
-    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, simulation) \
+    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, particles) \
             -> TestableState:
 
-        return TestableStateFactory.state(n, grid, intensive, extensive, positions, simulation)
+        return TestableStateFactory.state(n, grid, intensive, extensive, positions, particles)
 
     @staticmethod
-    def empty_state(simulation) -> TestableState:
+    def empty_state(particles) -> TestableState:
 
         return TestableState(n=np.zeros(0), grid=(), attributes={}, keys={},
                              cell_id=np.zeros(0), position_in_cell=None, cell_origin=None,
-                             simulation=simulation)
+                             particles=particles)
