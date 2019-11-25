@@ -9,7 +9,7 @@ import copy
 import numpy as np
 
 from PySDM.simulation.particles import Particles
-from PySDM.simulation.state.state_factory import StateFactory
+from PySDM.simulation.environment.box import Box
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
 
@@ -17,21 +17,20 @@ from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 
-# instantiation of simulation components, timestepping
 def run(setup):
-    simulation = Particles(n_sd=setup.n_sd, grid=(), size=(), dt=setup.dt, backend=setup.backend)
-    simulation.set_dv(setup.dv)
+    particles = Particles(n_sd=setup.n_sd, backend=setup.backend)
+    particles.set_environment(Box, (setup.dv, setup.dt))
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    simulation.create_state_0d(n=n, extensive={'x': x}, intensive={})
-    simulation.add_dynamics(SDM, (setup.kernel,))
+    particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
+    particles.add_dynamics(SDM, (setup.kernel,))
 
     states = {}
     for step in setup.steps:
-        simulation.run(step - simulation.n_steps)
-        setup.check(simulation.state, simulation.n_steps)
-        states[simulation.n_steps] = copy.deepcopy(simulation.state)
+        particles.run(step - particles.n_steps)
+        setup.check(particles.state, particles.n_steps)
+        states[particles.n_steps] = copy.deepcopy(particles.state)
 
-    return states, simulation.stats
+    return states, particles.stats
 
 
 if __name__ == '__main__':

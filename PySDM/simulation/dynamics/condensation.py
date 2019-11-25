@@ -70,17 +70,17 @@ def compute_cell_start(cell_start, cell_id, idx, sd_num):
 
 
 class Condensation:
-    def __init__(self, particles, environment: Kinematic2D, kappa):
+    def __init__(self, particles, environment, kappa):
 
         self.particles = particles
         self.environment = environment
 
-        self.dt = particles.dt
+        self.dt = environment.dt
         self.kappa = kappa
 
         self.rd = None
 
-        self.cell_start = particles.backend.array(particles.n_cell + 1, dtype=int)
+        self.cell_start = particles.backend.array(environment.n_cell + 1, dtype=int)
 
         self.scheme = 'scipy.odeint'  # TODO
 
@@ -101,7 +101,7 @@ class Condensation:
         xdry = state.get_backend_storage("dry volume")
 
         if self.scheme == 'scipy.odeint':
-            for cell_id in range(self.particles.n_cell):
+            for cell_id in range(self.environment.n_cell):
                 cell_start = self.cell_start[cell_id]
                 cell_end = self.cell_start[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start

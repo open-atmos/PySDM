@@ -8,7 +8,6 @@ Created at 09.11.2019
 import numpy as np
 from PySDM import utils
 from PySDM.simulation.state.state import State
-from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
@@ -16,65 +15,21 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 
 class Particles:
 
-    def __init__(self, n_sd, grid, size, dt, backend):
+    def __init__(self, n_sd, backend):
 
         self.__n_sd = n_sd
-        self.__grid = grid
-        self.__size = size
-        self.dt = dt
         self.backend = backend()
         self.state: (State, None) = None
-        self.environment: (Kinematic2D, None) = None
+        self.environment = None
         self.dynamics: list = []
         self.__dv = None
-        self.__dimension = len(grid)
 
         self.n_steps = 0
         self.stats = Stats()  # TODO: inject?
 
     @property
-    def dimension(self) -> int:
-        return self.__dimension
-
-    @property
     def n_sd(self) -> int:
         return self.__n_sd
-
-    @property
-    def grid(self) -> tuple:
-        return self.__grid
-
-    @property
-    def n_cell(self) -> int:
-        if self.dimension == 0:
-            return 1
-        if self.dimension == 2:
-            return self.grid[0] * self.grid[1]
-        raise NotImplementedError()
-
-    @property
-    def size(self) -> tuple:
-        return self.__size
-
-    # TODO: hardcoded 2D
-    @property
-    def dx(self) -> float:
-        return self.size[0] / self.grid[0]
-
-    @property
-    def dz(self) -> float:
-        return self.size[1] / self.grid[1]
-
-    @property
-    def dv(self) -> float:
-        if self.dimension == 0:
-            return self.__dv
-        if self.dimension == 2:
-            return self.dx * self.dz
-        raise NotImplementedError()
-
-    def set_dv(self, value):
-        self.__dv = value
 
     # TODO use params: dict
     def set_environment(self, environment_class, params):
@@ -92,7 +47,7 @@ class Particles:
 
     def create_state_2d(self, n, extensive, intensive, positions):
         if self.state is None:
-            self.state = StateFactory.state_2d(n, self.grid, intensive, extensive, positions, self)
+            self.state = StateFactory.state_2d(n, self.environment.grid, intensive, extensive, positions, self)
         else:
             raise AssertionError("State is already initialized.")
 
@@ -102,7 +57,7 @@ class Particles:
             raise AssertionError("Environment is not initialized.")
 
         with np.errstate(all='raise'):
-            positions = spatial_discretisation(self.grid, self.n_sd)
+            positions = spatial_discretisation(self.environment.grid, self.n_sd)
 
             r_dry, n_per_kg = spectral_discretisation(
                 self.n_sd, spectrum_per_mass_of_dry_air, r_range
@@ -110,13 +65,13 @@ class Particles:
             # TODO: cell_id, _, _ = StateFactory.positions(n_per_kg, positions)  # TODO
 
             cell_origin = positions.astype(dtype=int)
-            strides = utils.strides(self.grid)
+            strides = utils.strides(self.environment.grid)
             cell_id = np.dot(strides, cell_origin.T).ravel()
             # </TEMP>
 
             # TODO: not here
             n_per_m3 = n_per_kg * self.environment.rhod[cell_id]
-            domain_volume = np.prod(np.array(self.size))
+            domain_volume = np.prod(np.array(self.environment.size))
             n = (n_per_m3 * domain_volume).astype(np.int64)
             r_wet = r_wet_init(r_dry, self.environment['old'], cell_id, kappa)
 

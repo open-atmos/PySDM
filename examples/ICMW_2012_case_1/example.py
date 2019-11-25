@@ -37,16 +37,15 @@ class Simulation:
     # instantiation of simulation components, time-stepping
     def run(self, controller=DummyController()):
         self.tmp = None
-        self.particles = Particles(n_sd=self.setup.n_sd,
-                                   dt=self.setup.dt,
-                                   size=self.setup.size,
-                                   grid=self.setup.grid,
-                                   backend=self.setup.backend)
+        self.particles = Particles(n_sd=self.setup.n_sd, backend=self.setup.backend)
 
         self.particles.set_environment(Kinematic2D, (
             self.setup.stream_function,
             self.setup.field_values,
-            self.setup.rhod
+            self.setup.rhod,
+            self.setup.dt,
+            self.setup.size,
+            self.setup.grid,
         ))
 
         self.particles.create_state_2d2( # TODO: ...
@@ -95,22 +94,22 @@ class Simulation:
             for attr in self.setup.specs:
                 for _ in self.setup.specs[attr]:
                     n_moments += 1
-            self.moment_0 = backend.array(particles.n_cell, dtype=int)
-            self.moments = backend.array((n_moments, particles.n_cell), dtype=float)
-            self.tmp = np.empty(particles.n_cell)
+            self.moment_0 = backend.array(particles.environment.n_cell, dtype=int)
+            self.moments = backend.array((n_moments, particles.environment.n_cell), dtype=float)
+            self.tmp = np.empty(particles.environment.n_cell)
 
         # store moments
         particles.state.moments(self.moment_0, self.moments, self.setup.specs)  # TODO: attr_range
         backend.download(self.moment_0, self.tmp)
-        self.tmp /= particles.dv
-        self.storage.save(self.tmp.reshape(particles.grid), step, "m0")
+        self.tmp /= particles.environment.dv
+        self.storage.save(self.tmp.reshape(self.setup.grid), step, "m0")
 
         i = 0
         for attr in self.setup.specs:
             for k in self.setup.specs[attr]:
                 backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
-                self.tmp /= particles.dv
-                self.storage.save(self.tmp.reshape(particles.grid), step, f"{attr}_m{k}")
+                self.tmp /= particles.environment.dv
+                self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
                 i += 1
 
         # store advected fields
@@ -119,7 +118,7 @@ class Simulation:
 
         # store auxiliary fields
         backend.download(particles.environment['old']['RH'], self.tmp)
-        self.storage.save(self.tmp.reshape(particles.grid), step, "RH")
+        self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
 
 
 def main():
