@@ -1,12 +1,11 @@
 from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
-from tests.unit_tests.simulation.state.dummy_simulation import DummySimulation
+from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.backends.default import Default
 
 import numpy as np
 import pytest
 
 backend = Default
-simulation = DummySimulation(backend)
 
 
 class TestState:
@@ -65,7 +64,8 @@ class TestState:
     ])
     def test_housekeeping(self, x, n):
         # Arrange
-        sut = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, simulation=simulation)
+        particles = DummyParticles(backend, n_sd=len(n))
+        sut = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
         # TODO
         sut.healthy = sut.backend.from_ndarray(np.array([0]))
 
@@ -80,12 +80,12 @@ class TestState:
 
     def test_sort_by_cell_id(self):
         # Arrange
-
-        sut = TestableStateFactory.empty_state(simulation)
+        particles = DummyParticles(backend, n_sd=3)
+        sut = TestableStateFactory.empty_state(particles)
         sut.n = TestState.storage([0, 1, 0, 1, 1])
         sut.cell_id = TestState.storage([3, 4, 0, 1, 2])
         sut.idx = TestState.storage([4, 1, 3, 2, 0])
-        sut.SD_num = 3
+        sut.SD_num = particles.n_sd
 
         # Act
         sut.sort_by_cell_id()
@@ -98,8 +98,9 @@ class TestState:
         n = np.ones(1)
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
+        particles= DummyParticles(backend, n_sd = 1)
         sut = TestableStateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={},
-                                            simulation=simulation, positions=initial_position)
+                                            particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1
         sut.cell_origin[droplet_id, 1] = .2
         sut.cell_id[droplet_id] = -1

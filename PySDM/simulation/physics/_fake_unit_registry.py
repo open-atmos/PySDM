@@ -15,9 +15,8 @@ class FakeUnitRegistry:
     def __init__(self, si):
 
         self.dimensionless = 1.
-# TODO: loop over prefixes
-        for unit in ["centimetre", "metre", "gram", "kilogram", "mole", "joule", "kelvin", "second", "hectopascal",
-                     "pascal", "litre", "micrometre"]:
-            self.__setattr__(unit, fake(si.__getattr__(unit)))
-            self.__setattr__(unit + "s", fake(si.__getattr__(unit + "s")))
+        for prefix in ["nano", "micro", "milli", "centi", "", "hecto", "kilo"]:
+            for unit in ["metre", "gram", "gram", "mole", "joule", "kelvin", "second", "pascal", "litre"]:
+                self.__setattr__(prefix+unit, fake(si.__getattr__(prefix+unit)))
+                self.__setattr__(prefix+unit + "s", fake(si.__getattr__(prefix+unit + "s")))
 

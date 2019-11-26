@@ -1,10 +1,13 @@
 import numpy as np
 from matplotlib import pyplot
+import pytest
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.example import Simulation
 from examples.ICMW_2012_case_1 import plotter
 from PySDM.simulation.physics.constants import si
 
+
+@pytest.mark.xfail
 def test_velocity_field(plot=True):
     # Arrange
     setup = Setup()

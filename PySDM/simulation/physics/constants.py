@@ -43,6 +43,6 @@ T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
 # standard pressure and temperature (ICAO)
-T_STP = T0 + 15
+T_STP = T0 + 15 * si.kelvin
 p_STP = 101325 * si.pascal
 rho_STP = p_STP / Rd / T_STP
