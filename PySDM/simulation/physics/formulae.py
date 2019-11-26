@@ -1,15 +1,23 @@
 # noinspection PyProtectedMember
 from PySDM.backends.numba import _physics_methods as physics
 from PySDM.backends.numba.numba import Numba
+from PySDM.simulation.physics import constants as const
 
-# TODO: move all formulae here and call the from the backend?
+import numpy as np
+
 backend = Numba()
-
+dr_dt_MM = backend.dr_dt_MM
 
 R = physics.R
 r_cr = physics.r_cr
-dr_dt_MM = backend.dr_dt_MM
-th_dry = physics.th_dry
 pvs = physics.pvs
 lv = physics.lv
 c_p = physics.c_p
+
+
+def th_dry(th_std, qv):
+    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
+
+
+def th_std(p, T):
+    return T * (const.p1000 / p)**(const.Rd / const.c_pd)
