@@ -1,7 +1,6 @@
 class Box:
-    def __init__(self, _, dv, dt):
+    def __init__(self, _, dv):
         self.dv = dv
-        self.dt = dt
 
     @property
     def n_cell(self):

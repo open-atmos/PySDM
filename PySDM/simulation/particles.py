@@ -15,9 +15,10 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 
 class Particles:
 
-    def __init__(self, n_sd, backend):
+    def __init__(self, n_sd, dt, backend):
 
         self.__n_sd = n_sd
+        self.__dt = dt
         self.backend = backend()
         self.state: (State, None) = None
         self.environment = None
@@ -30,6 +31,10 @@ class Particles:
     @property
     def n_sd(self) -> int:
         return self.__n_sd
+
+    @property
+    def dt(self) -> float:
+        return self.__dt
 
     # TODO use params: dict
     def set_environment(self, environment_class, params):

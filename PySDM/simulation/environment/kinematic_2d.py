@@ -8,13 +8,14 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
+from PySDM import utils
 
 
 class Kinematic2D:
-    def __init__(self, particles, stream_function, field_values, rhod_lambda, dt, size, grid):
+    def __init__(self, particles, stream_function, field_values, rhod_lambda, size, grid):
         self.grid = grid
+        self.strides = utils.strides(grid)
         self.size = size
-        self.dt = dt
 
         self.n_cell = grid[0] * grid[1]
         self.dv = (size[0]/grid[0]) * (size[1]/grid[1])
@@ -32,7 +33,7 @@ class Kinematic2D:
         )
 
         self.GC, self.eulerian_fields = MPDATAFactory.kinematic_2d(
-            grid=self.grid, size=self.size, dt=self.dt,
+            grid=self.grid, size=self.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=field_values,
             g_factor=rhod

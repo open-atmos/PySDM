@@ -46,7 +46,7 @@ class SDM:
 
         norm_factor = temp
         self.particles.backend.normalize(prob, self.particles.state.cell_id, cell_start, norm_factor,
-                                         self.particles.environment.dt / self.particles.environment.dv)
+                                         self.particles.dt / self.particles.environment.dv)
 
     def toss_pairs(self, is_first_in_pair, cell_start):
         self.particles.state.unsort()

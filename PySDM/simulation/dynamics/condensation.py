@@ -70,17 +70,17 @@ def compute_cell_start(cell_start, cell_id, idx, sd_num):
 
 
 class Condensation:
-    def __init__(self, particles, environment, kappa):
+    def __init__(self, particles, kappa):
 
         self.particles = particles
-        self.environment = environment
+        self.environment = particles.environment
 
-        self.dt = environment.dt
+        self.dt = self.particles.dt
         self.kappa = kappa
 
         self.rd = None
 
-        self.cell_start = particles.backend.array(environment.n_cell + 1, dtype=int)
+        self.cell_start = particles.backend.array(self.environment.n_cell + 1, dtype=int)
 
         self.scheme = 'scipy.odeint'  # TODO
 

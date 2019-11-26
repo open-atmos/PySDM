@@ -17,7 +17,6 @@ from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import
 # noinspection PyUnresolvedReferences
 from tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
 
-
 backend = Default
 
 
@@ -25,10 +24,9 @@ class TestSDMSingleCell:
 
     def test_single_collision(self, x_2, n_2):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n_2))
-        dt = 0
+        particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
         dv = 1
-        particles.set_environment(Box, (dv, dt))
+        particles.set_environment(Box, (dv,))
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
         particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
@@ -47,16 +45,15 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        particles = DummyParticles(backend, n_sd=2)
-        dt = 0
+        particles = DummyParticles(backend, n_sd=2, dt=0)
         dv = 1
-        particles.set_environment(Box, (dv, dt))
+        particles.set_environment(Box, (dv,))
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
         particles.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
-                                                         extensive={'x': np.full(2, 1.)},
-                                                         intensive={},
-                                                         particles=particles)
+                                                        extensive={'x': np.full(2, 1.)},
+                                                        intensive={},
+                                                        particles=particles)
 
         # Act
         sut()
@@ -72,10 +69,9 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n_2))
-        dt=0
-        dv=1
-        particles.set_environment(Box, (dv, dt))
+        particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
+        dv = 1
+        particles.set_environment(Box, (dv,))
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
         particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
@@ -99,10 +95,9 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n))
-        dt=0
-        dv=1
-        particles.set_environment(Box, (dv, dt))
+        particles = DummyParticles(backend, n_sd=len(n), dt=0)
+        dv = 1
+        particles.set_environment(Box, (dv,))
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
         particles.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
@@ -121,10 +116,9 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=SD_num)
         x = np.random.uniform(size=SD_num)
 
-        particles = DummyParticles(backend, n_sd=SD_num)
-        dt=0
-        dv=1
-        particles.set_environment(Box, (dv, dt))
+        particles = DummyParticles(backend, n_sd=SD_num, dt=0)
+        dv = 1
+        particles.set_environment(Box, (dv,))
         sut = SDM(particles, StubKernel())
 
         sut.compute_gamma = lambda prob, rand: backend_fill(

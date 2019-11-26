@@ -1,5 +1,6 @@
 from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
+from tests.unit_tests.simulation.dynamics.advection.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
@@ -98,8 +99,10 @@ class TestState:
         n = np.ones(1)
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
-        particles= DummyParticles(backend, n_sd = 1)
-        sut = TestableStateFactory.state_2d(n=n, grid=(1, 1), intensive={}, extensive={},
+        grid = (1, 1)
+        particles = DummyParticles(backend, n_sd=1)
+        particles.set_environment(DummyEnvironment, (grid, None))
+        sut = TestableStateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
                                             particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1
         sut.cell_origin[droplet_id, 1] = .2

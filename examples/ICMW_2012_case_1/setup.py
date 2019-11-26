@@ -93,7 +93,7 @@ class Setup:
 
 
     # output steps
-    steps = np.arange(0, 300, 30)
+    steps = np.arange(0, 60, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
 

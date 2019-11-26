@@ -6,7 +6,6 @@ Created at 03.06.2019
 """
 
 import numpy as np
-from PySDM import utils
 
 
 class State:
@@ -14,12 +13,12 @@ class State:
     def __init__(self, n: np.ndarray, grid: tuple, attributes: dict, keys: dict,
                  cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), particles):
 
-        self.simulation = particles
+        self.particles = particles
         self.backend = particles.backend # TODO: make private
 
-        self.grid = self.backend.from_ndarray(np.array(grid))
-        self.strides = self.backend.from_ndarray(utils.strides(grid))
-        self.n_cell = np.prod(np.array(grid))
+        # self.grid = self.backend.from_ndarray(np.array(grid))
+        # self.strides = self.backend.from_ndarray(utils.strides(grid))
+        # self.n_cell = np.prod(np.array(grid))
 
         self.SD_num = len(n)
         self.idx = self.backend.from_ndarray(np.arange(self.SD_num))
@@ -75,7 +74,7 @@ class State:
         if self.cell_origin is None:
             return
         else:
-            self.backend.cell_id(self.cell_id, self.cell_origin, self.strides)
+            self.backend.cell_id(self.cell_id, self.cell_origin, self.particles.environment.strides)
 
     def moments(self, moment_0, moments, specs: dict, attr_name='x', attr_range=(0, np.inf)):
         # TODO: intensive

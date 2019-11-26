@@ -37,13 +37,12 @@ class Simulation:
     # instantiation of simulation components, time-stepping
     def run(self, controller=DummyController()):
         self.tmp = None
-        self.particles = Particles(n_sd=self.setup.n_sd, backend=self.setup.backend)
+        self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
 
         self.particles.set_environment(Kinematic2D, (
             self.setup.stream_function,
             self.setup.field_values,
             self.setup.rhod,
-            self.setup.dt,
             self.setup.size,
             self.setup.grid,
         ))
@@ -63,7 +62,7 @@ class Simulation:
         if self.setup.processes["advection"]:
             self.particles.add_dynamics(Advection, ('FTBS',))
         if self.setup.processes["condensation"]:
-            self.particles.add_dynamics(Condensation, (self.particles.environment, self.setup.kappa))
+            self.particles.add_dynamics(Condensation, (self.setup.kappa,))
 
         # TODO
         if self.storage is not None:

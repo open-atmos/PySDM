@@ -8,11 +8,10 @@ Created at 23.10.2019
 
 from PySDM.backends.default import Default
 from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
-from tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
 from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.state.state_factory import StateFactory
 import numpy as np
-from tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
+from tests.unit_tests.simulation.dynamics.advection.dummy_environment import DummyEnvironment
 
 
 class TestExplicitEulerWithInterpolation:

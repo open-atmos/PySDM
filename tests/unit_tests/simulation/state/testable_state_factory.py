@@ -14,15 +14,15 @@ class TestableStateFactory(StateFactory):
 
     @staticmethod
     def state(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: (np.ndarray, None),
-              simulation) -> TestableState:
+              particles) -> TestableState:
 
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
-        attributes, keys = StateFactory.init_attributes_and_keys(simulation, intensive, extensive, sd_num)
+        attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
 
         cell_id, cell_origin, position_in_cell = StateFactory.positions(n, positions)
 
-        state = TestableState(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, simulation)
+        state = TestableState(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
 
         state.recalculate_cell_id()
         return state
