@@ -70,12 +70,6 @@ def c_p(q):
 def R(q):
     return _mix(q, const.Rd, const.Rv)
 
-
-@numba.njit(float64(float64, float64))
-def th_dry(th_std, qv):
-    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
-
-
 ''' latent heat of evaporation '''
 @numba.njit(float64(float64))
 def lv(T):
