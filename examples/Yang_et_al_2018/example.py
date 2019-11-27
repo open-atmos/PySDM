@@ -13,16 +13,19 @@ from PySDM.simulation.initialisation import spectral_discretisation
 from PySDM.simulation.environment.adiabatic_parcel import AdiabaticParcel
 from PySDM.utils import Physics
 from examples.Yang_et_al_2018.setup import Setup
+from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 
 
-class Simulation():
+class Simulation:
     def __init__(self):
         setup = Setup()
         self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=setup.dt)
-        r, n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
-        x = Physics.r2x(r)
-        self.particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
         self.particles.set_environment(AdiabaticParcel, (setup.mass, setup.p0, setup.q0, setup.T0, setup.w))
+        r_dry, n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
+        x_dry = Physics.r2x(r_dry)
+        r_wet = r_wet_init(r_dry, self.particles.environment['old'], np.zeros_like(n), setup.kappa)
+        x_wet = Physics.r2x(r_wet)
+        self.particles.create_state_0d(n=n, extensive={'dry volume': x_dry, 'x': x_wet}, intensive={})
         self.particles.add_dynamics(Condensation, (setup.kappa, ))
 
     def run(self):

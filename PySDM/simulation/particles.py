@@ -38,6 +38,8 @@ class Particles:
 
     # TODO use params: dict
     def set_environment(self, environment_class, params):
+        if self.environment is not None:
+            raise AssertionError("Environment is already initialized.")
         self.environment = environment_class(self, *params)
 
     def add_dynamics(self, dynamic_class, params):
@@ -56,6 +58,7 @@ class Particles:
         else:
             raise AssertionError("State is already initialized.")
 
+    # TODO: rename!
     def create_state_2d2(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
                          spectrum_per_mass_of_dry_air, r_range, kappa):
         if self.environment is None:
@@ -67,7 +70,7 @@ class Particles:
             r_dry, n_per_kg = spectral_discretisation(
                 self.n_sd, spectrum_per_mass_of_dry_air, r_range
             )
-            # TODO: cell_id, _, _ = StateFactory.positions(n_per_kg, positions)  # TODO
+            # TODO: cell_id, _, _ = StateFactory.positions(n_per_kg, positions)
 
             cell_origin = positions.astype(dtype=int)
             strides = utils.strides(self.environment.grid)

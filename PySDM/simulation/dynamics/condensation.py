@@ -86,13 +86,13 @@ class Condensation:
 
     # TODO: assumes sorted by cell_id (i.e., executed after coalescence)
     def __call__(self):
-        state = self.particles.state
-        state.sort_by_cell_id() #TODO
-
         self.environment.sync()
+
         new = self.environment['new']
         old = self.environment['old']
 
+        state = self.particles.state
+        state.sort_by_cell_id() #TODO
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
         # print(self.cell_start)
 

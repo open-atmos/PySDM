@@ -51,6 +51,7 @@ class Kinematic2D:
         self._tmp = self._allocate()
 
         # TODO
+        self.ante_step = self.eulerian_fields.step
         self.sync()
         self.post_step()
 
@@ -79,14 +80,12 @@ class Kinematic2D:
             raise Exception("condensation not called.")
         return values
 
-    # TODO: rename?
-    def ante_step(self):
-        self.eulerian_fields.step()
-
     def post_step(self):
         self.particles.backend.download(self._values["new"]["qv"].reshape(self.grid), self.qv_lambda())
         self.particles.backend.download(self._values["new"]["thd"].reshape(self.grid), self.thd_lambda())
+        self._swap()
 
+    def _swap(self):
         self._tmp = self._values["old"]
         self._values["old"] = self._values["new"]
         self._values["new"] = None
