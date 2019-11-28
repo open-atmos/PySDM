@@ -8,7 +8,7 @@ Created at 19.11.2019
 
 class DummyParticles:
 
-    def __init__(self, backend, n_sd, dt):
+    def __init__(self, backend, n_sd, dt=None):
         self.backend = backend
         self.n_sd = n_sd
         self.dt = dt
