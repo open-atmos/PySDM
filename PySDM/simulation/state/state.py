@@ -74,7 +74,7 @@ class State:
         if self.cell_origin is None:
             return
         else:
-            self.backend.cell_id(self.cell_id, self.cell_origin, self.particles.environment.strides)
+            self.backend.cell_id(self.cell_id, self.cell_origin, self.particles.mesh.strides)
 
     def moments(self, moment_0, moments, specs: dict, attr_name='x', attr_range=(0, np.inf)):
         # TODO: intensive

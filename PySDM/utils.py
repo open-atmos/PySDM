@@ -17,9 +17,3 @@ class Physics:
     @staticmethod
     def r2x(r):
         return 4 / 3 * np.pi * r ** 3
-
-
-def strides(grid):
-    domain = np.empty(tuple(grid))  # TODO optimize
-    strides = np.array(domain.strides).reshape(1, -1) // domain.itemsize
-    return strides

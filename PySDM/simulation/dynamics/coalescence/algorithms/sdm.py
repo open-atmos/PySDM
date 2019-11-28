@@ -16,7 +16,7 @@ class SDM:
         self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)
         self.prob = particles.backend.array(particles.n_sd, dtype=float)
         self.is_first_in_pair = particles.backend.array(particles.n_sd, dtype=int)  # TODO bool
-        self.cell_start = particles.backend.array(particles.environment.n_cell + 1, dtype=int)
+        self.cell_start = particles.backend.array(particles.mesh.n_cell + 1, dtype=int)
 
     def __call__(self):
         assert self.particles.state.is_healthy()
@@ -46,7 +46,7 @@ class SDM:
 
         norm_factor = temp
         self.particles.backend.normalize(prob, self.particles.state.cell_id, cell_start, norm_factor,
-                                         self.particles.dt / self.particles.environment.dv)
+                                         self.particles.dt / self.particles.mesh.dv)
 
     def toss_pairs(self, is_first_in_pair, cell_start):
         self.particles.state.unsort()

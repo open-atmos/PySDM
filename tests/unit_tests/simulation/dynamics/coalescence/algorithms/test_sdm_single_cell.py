@@ -26,7 +26,8 @@ class TestSDMSingleCell:
         # Arrange
         particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
         dv = 1
-        particles.set_environment(Box, (dv,))
+        particles.set_mesh_0d(dv)
+        particles.set_environment(Box, ())
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
         particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
@@ -47,7 +48,8 @@ class TestSDMSingleCell:
         # Arrange
         particles = DummyParticles(backend, n_sd=2, dt=0)
         dv = 1
-        particles.set_environment(Box, (dv,))
+        particles.set_mesh_0d(dv)
+        particles.set_environment(Box, ())
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
         particles.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
@@ -71,7 +73,8 @@ class TestSDMSingleCell:
         # Arrange
         particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
         dv = 1
-        particles.set_environment(Box, (dv,))
+        particles.set_mesh_0d(dv)
+        particles.set_environment(Box, ())
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
         particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'x': x_2}, intensive={}, particles=particles)
@@ -97,7 +100,8 @@ class TestSDMSingleCell:
         # Arrange
         particles = DummyParticles(backend, n_sd=len(n), dt=0)
         dv = 1
-        particles.set_environment(Box, (dv,))
+        particles.set_mesh_0d(dv)
+        particles.set_environment(Box, ())
         sut = SDM(particles, StubKernel())
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
         particles.state = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
@@ -118,7 +122,8 @@ class TestSDMSingleCell:
 
         particles = DummyParticles(backend, n_sd=SD_num, dt=0)
         dv = 1
-        particles.set_environment(Box, (dv,))
+        particles.set_mesh_0d(dv)
+        particles.set_environment(Box, ())
         sut = SDM(particles, StubKernel())
 
         sut.compute_gamma = lambda prob, rand: backend_fill(

@@ -53,11 +53,11 @@ def test_initialisation(plot=False):
     for i in range(len(histogram_dry)):
         particles.state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(x_bins[i], x_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
-        histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (environment.dv * setup.grid[0])
+        histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
         particles.state.moments(moment_0, moments, specs={}, attr_name='x', attr_range=(x_bins[i], x_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
-        histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (environment.dv * setup.grid[0])
+        histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
     # Plot
     if plot:

@@ -19,7 +19,8 @@ from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 def run(setup):
     particles = Particles(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
-    particles.set_environment(Box, (setup.dv,))
+    particles.set_mesh_0d(setup.dv)
+    particles.set_environment(Box, ())
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
     particles.add_dynamics(SDM, (setup.kernel,))
@@ -33,7 +34,7 @@ def run(setup):
     return states, particles.stats
 
 
-if __name__ == '__main__':
+def main():
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -52,3 +53,6 @@ if __name__ == '__main__':
             plotter.plot(state, step * setup.dt)
         plotter.show()
 
+
+if __name__ == '__main__':
+    main()

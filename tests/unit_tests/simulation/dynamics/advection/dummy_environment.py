@@ -1,12 +1,16 @@
+"""
+Created at 21.11.2019
+
+@author: Piotr Bartman
+@author: Sylwester Arabas
+"""
 
 
-from PySDM import utils
+from PySDM.simulation.environment.mesh import Mesh
 
 
 class DummyEnvironment:
-    def __init__(self, _, grid, courant_field_data):
-        self.grid = grid
-        self.strides = utils.strides(grid)
+    def __init__(self, _, courant_field_data):
         self.courant_field_data = courant_field_data
 
     def get_courant_field_data(self):

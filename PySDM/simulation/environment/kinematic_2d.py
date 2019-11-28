@@ -8,32 +8,26 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-from PySDM import utils
+from PySDM.simulation.environment.enviroment import Environment
 
 
-class Kinematic2D:
-    def __init__(self, particles, stream_function, field_values, rhod_lambda, size, grid):
-        self.grid = grid
-        self.strides = utils.strides(grid)
-        self.size = size
+class Kinematic2D(Environment):
+    def __init__(self, particles, stream_function, field_values, rhod_of):
+        super().__init__(particles, ['qv', 'thd', 'RH', 'p', 'T'])
 
-        self.n_cell = grid[0] * grid[1]
-        self.dv = (size[0]/grid[0]) * (size[1]/grid[1])
+        self.rhod_of = rhod_of
 
-        self.particles = particles
-        # TODO: rename
-        self.rhod_lambda = rhod_lambda
-
+        grid = self.particles.mesh.grid
         rhod = np.repeat(
-            rhod_lambda(
-                (np.arange(self.grid[1]) + 1 / 2) / self.grid[1]
-            ).reshape((1, self.grid[1])),
-            self.grid[0],
+            rhod_of(
+                (np.arange(grid[1]) + 1 / 2) / grid[1]
+            ).reshape((1, grid[1])),
+            grid[0],
             axis=0
         )
 
         self.GC, self.eulerian_fields = MPDATAFactory.kinematic_2d(
-            grid=self.grid, size=self.size, dt=particles.dt,
+            grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=field_values,
             g_factor=rhod
@@ -44,34 +38,10 @@ class Kinematic2D:
 
         self.rhod = particles.backend.from_ndarray(rhod.ravel())
 
-        self._values = {
-            "new": None,
-            "old": self._allocate()
-        }
-        self._tmp = self._allocate()
-
         # TODO
         self.ante_step = self.eulerian_fields.step
         self.sync()
         self.post_step()
-
-    def _allocate(self):
-        result = {}
-        for var in ['qv', 'thd', 'RH', 'p', 'T']:
-            result[var] = self.particles.backend.array((self.n_cell,), float)
-        return result
-
-    def sync(self):
-        target = self._tmp
-        self.particles.backend.upload(self.qv_lambda().ravel(), target['qv'])
-        self.particles.backend.upload(self.thd_lambda().ravel(), target['thd'])
-
-        self.particles.backend.apply(
-             function=self.particles.backend.temperature_pressure_RH,
-             args=(self.rhod, target['thd'], target['qv']),
-             output=(target['T'], target['p'], target['RH'])
-        )
-        self._values["new"] = target
 
     # TODO: this is only used from within PySDM, examples always use ["old"] - awkward
     def __getitem__(self, index):
@@ -81,20 +51,15 @@ class Kinematic2D:
         return values
 
     def post_step(self):
-        self.particles.backend.download(self._values["new"]["qv"].reshape(self.grid), self.qv_lambda())
-        self.particles.backend.download(self._values["new"]["thd"].reshape(self.grid), self.thd_lambda())
+        self.particles.backend.download(self._values["new"]["qv"].reshape(self.particles.mesh.grid), self.qv_lambda())
+        self.particles.backend.download(self._values["new"]["thd"].reshape(self.particles.mesh.grid), self.thd_lambda())
         self._swap()
-
-    def _swap(self):
-        self._tmp = self._values["old"]
-        self._values["old"] = self._values["new"]
-        self._values["new"] = None
         
     def get_courant_field_data(self):
         result = [  # TODO: test it!!!!
-            self.GC.data(0) / self.rhod_lambda(
-                x_vec_coord(self.grid, self.size)[1]),
-            self.GC.data(1) / self.rhod_lambda(
-                z_vec_coord(self.grid, self.size)[1])
+            self.GC.data(0) / self.rhod_of(
+                x_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1]),
+            self.GC.data(1) / self.rhod_of(
+                z_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1])
         ]
         return result

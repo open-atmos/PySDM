@@ -20,6 +20,7 @@ class Simulation:
     def __init__(self):
         setup = Setup()
         self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=setup.dt)
+        self.particles.set_mesh_0d()
         self.particles.set_environment(AdiabaticParcel, (setup.mass, setup.p0, setup.q0, setup.T0, setup.w))
         r_dry, n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
         x_dry = Physics.r2x(r_dry)

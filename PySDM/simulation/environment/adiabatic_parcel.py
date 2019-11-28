@@ -1,25 +1,26 @@
+"""
+Created at 25.11.2019
 
+@author: Piotr Bartman
+@author: Michael Olesik
+@author: Sylwester Arabas
+"""
 
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
 import numpy as np
+from PySDM.simulation.environment.enviroment import Environment
 
 
-class AdiabaticParcel: # TODO: inherit from environmrnt.moist_air!
+class AdiabaticParcel(Environment):  # TODO: inherit from environmrnt.moist_air!
 
     def __init__(self, particles, mass, p0, q0, T0, w):
+
+        super().__init__(particles, ['qv', 'thd', 'T', 'p', 'RH', "rhod"])
         self.mass = mass
         self.w = w
-        self.particles = particles
 
         self.t = 0.
-
-        variables = ['qv', 'thd', 'T', 'p', 'RH', "rhod"]
-        self._values = {
-            "new": None,
-            "old": self._allocate(variables)
-        }
-        self._tmp = self._allocate(variables)
 
         pd0 = p0 # TODO !!!!!!!!!!!!!!!!!!!!!
         initial_values = self._values["old"]
@@ -39,10 +40,6 @@ class AdiabaticParcel: # TODO: inherit from environmrnt.moist_air!
         self._swap()
 
     @property
-    def dv(self):
-        raise NotImplementedError()
-
-    @property
     def n_cell(self):
         return 1
 
@@ -52,28 +49,9 @@ class AdiabaticParcel: # TODO: inherit from environmrnt.moist_air!
             raise Exception("condensation not called.")
         return values
 
-    def _allocate(self, variables):
-        result = {}
-        for var in variables:
-            result[var] = self.particles.backend.array((self.n_cell,), float)
-        return result
-
     @property
     def rhod(self):
         return self._values["old"]["rhod"]
-
-    def sync(self):
-        target = self._tmp
-        self.particles.backend.upload(self.qv_lambda().ravel(), target['qv'])
-        self.particles.backend.upload(self.thd_lambda().ravel(), target['thd'])
-
-        self.particles.backend.apply(
-            function=self.particles.backend.temperature_pressure_RH,
-            args=(self.rhod, target['thd'], target['qv']),
-            output=(target['T'], target['p'], target['RH'])
-        )
-
-        self._values["new"] = target
 
     def ante_step(self):
         dt = self.particles.dt
@@ -97,8 +75,3 @@ class AdiabaticParcel: # TODO: inherit from environmrnt.moist_air!
 
     def post_step(self):
         self._swap()
-
-    def _swap(self):
-        self._tmp = self._values["old"]
-        self._values["old"] = self._values["new"]
-        self._values["new"] = None
