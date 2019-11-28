@@ -24,7 +24,7 @@ class Simulation:
         self.particles.set_environment(AdiabaticParcel, (setup.mass, setup.p0, setup.q0, setup.T0, setup.w))
         r_dry, n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
         x_dry = Physics.r2x(r_dry)
-        r_wet = r_wet_init(r_dry, self.particles.environment['old'], np.zeros_like(n), setup.kappa)
+        r_wet = r_wet_init(r_dry, self.particles.environment, np.zeros_like(n), setup.kappa)
         x_wet = Physics.r2x(r_wet)
         self.particles.create_state_0d(n=n, extensive={'dry volume': x_dry, 'x': x_wet}, intensive={})
         self.particles.add_dynamics(Condensation, (setup.kappa, ))

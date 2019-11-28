@@ -6,12 +6,12 @@ Created at 28.11.2019
 """
 
 
-class Environment:
+class MoistAir:
     def __init__(self, particles, variables):
         self.particles = particles
         self._values = {
-            "new": None,
-            "old": self._allocate(variables)
+            "predicted": None,
+            "current": self._allocate(variables)
         }
         self._tmp = self._allocate(variables)
 
@@ -20,6 +20,14 @@ class Environment:
         for var in variables:
             result[var] = self.particles.backend.array((self.particles.mesh.n_cell,), float)
         return result
+
+    def __getitem__(self, index):
+        return self._values['current'][index]
+
+    def get_predicted(self, index):
+        if self._values['predicted'] is None:
+            raise Exception("Condensation not called.")
+        return self._values['predicted'][index]
 
     def sync(self):
         target = self._tmp
@@ -31,9 +39,9 @@ class Environment:
             args=(self.rhod, target['thd'], target['qv']),
             output=(target['T'], target['p'], target['RH'])
         )
-        self._values["new"] = target
+        self._values["predicted"] = target
 
-    def _swap(self):
-        self._tmp = self._values["old"]
-        self._values["old"] = self._values["new"]
-        self._values["new"] = None
+    def _update(self):
+        self._tmp = self._values["current"]
+        self._values["current"] = self._values["predicted"]
+        self._values["predicted"] = None

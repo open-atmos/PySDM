@@ -45,7 +45,7 @@ class _ODESystem:
 
         return dy_dt
 
-# TODO
+# TODO !!
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
     for i in range(len(rw)):
@@ -88,9 +88,6 @@ class Condensation:
     def __call__(self):
         self.environment.sync()
 
-        new = self.environment['new']
-        old = self.environment['old']
-
         state = self.particles.state
         state.sort_by_cell_id() #TODO
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
@@ -111,8 +108,8 @@ class Condensation:
                 # print(old['RH'][cell_id], " -> ", new['RH'][cell_id]) TODO
 
                 y0 = np.empty(n_sd_in_cell + 2)
-                y0[idx_thd] = old['thd'][cell_id]
-                y0[idx_qv] = old['qv'][cell_id]
+                y0[idx_thd] = self.environment['thd'][cell_id]
+                y0[idx_qv] = self.environment['qv'][cell_id]
                 y0[idx_rw:] = Physics.x2r(x[state.idx[cell_start:cell_end]])
                 integ = ode.solve_ivp(
                     _ODESystem(
@@ -120,8 +117,8 @@ class Condensation:
                         self.kappa,
                         xdry[state.idx[cell_start:cell_end]],
                         n[state.idx[cell_start:cell_end]],
-                        (new['qv'][cell_id] - old['qv'][cell_id]) / self.dt,
-                        (new['thd'][cell_id] - old['thd'][cell_id]) / self.dt
+                        (self.environment.get_predicted('qv')[cell_id] - self.environment['qv'][cell_id]) / self.dt,
+                        (self.environment.get_predicted('thd')[cell_id] - self.environment['thd'][cell_id]) / self.dt
                     ),
                     (0., self.dt),
                     y0,
@@ -136,8 +133,8 @@ class Condensation:
                 for i in range(cell_end - cell_start):
                     # print(x[state.idx[cell_start + i]], Physics.r2x(integ.y[idx_rw + i]))
                     x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
-                new['qv'][cell_id] = integ.y[idx_qv]
-                new['thd'][cell_id] = integ.y[idx_thd]
+                self.environment.get_predicted('qv')[cell_id] = integ.y[idx_qv]
+                self.environment.get_predicted('thd')[cell_id] = integ.y[idx_thd]
                 # print()
                 # TODO: RH_new, T_new, p_new
         else:

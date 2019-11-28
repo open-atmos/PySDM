@@ -114,7 +114,7 @@ class Simulation:
             self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
 
         # store auxiliary fields
-        backend.download(particles.environment['old']['RH'], self.tmp)
+        backend.download(particles.environment['RH'], self.tmp)
         self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
 
 

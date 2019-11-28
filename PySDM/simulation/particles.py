@@ -98,7 +98,7 @@ class Particles:
             n_per_m3 = n_per_kg * self.environment.rhod[cell_id]
             domain_volume = np.prod(np.array(self.mesh.size))
             n = (n_per_m3 * domain_volume).astype(np.int64)
-            r_wet = r_wet_init(r_dry, self.environment['old'], cell_id, kappa)
+            r_wet = r_wet_init(r_dry, self.environment, cell_id, kappa)
 
         extensive['x'] = utils.Physics.r2x(r_wet)  # TODO: rename x -> ...
         extensive['dry volume'] = utils.Physics.r2x(r_dry)
@@ -113,3 +113,15 @@ class Particles:
                     dynamic()
                 self.environment.post_step()
         self.n_steps += steps
+
+
+def assert_none(*params):
+    for param in params:
+        if param is not None:
+            raise AssertionError(param + " is already initialized.")
+
+
+def assert_not_none(*params):
+    for param in params:
+        if param is None:
+            raise AssertionError(param + " is not initialized.")

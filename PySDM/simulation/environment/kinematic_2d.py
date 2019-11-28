@@ -8,10 +8,10 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-from PySDM.simulation.environment.enviroment import Environment
+from PySDM.simulation.environment.moist_air import MoistAir
 
 
-class Kinematic2D(Environment):
+class Kinematic2D(MoistAir):
     def __init__(self, particles, stream_function, field_values, rhod_of):
         super().__init__(particles, ['qv', 'thd', 'RH', 'p', 'T'])
 
@@ -33,27 +33,21 @@ class Kinematic2D(Environment):
             g_factor=rhod
         )
 
-        self.thd_lambda = lambda: self.eulerian_fields.mpdatas["th"].curr.get()
-        self.qv_lambda = lambda: self.eulerian_fields.mpdatas["qv"].curr.get()
+        self.thd_lambda = lambda: self.eulerian_fields.mpdatas['th'].curr.get()
+        self.qv_lambda = lambda: self.eulerian_fields.mpdatas['qv'].curr.get()
 
         self.rhod = particles.backend.from_ndarray(rhod.ravel())
 
-        # TODO
-        self.ante_step = self.eulerian_fields.step
         self.sync()
         self.post_step()
 
-    # TODO: this is only used from within PySDM, examples always use ["old"] - awkward
-    def __getitem__(self, index):
-        values = self._values[index]
-        if values is None:
-            raise Exception("condensation not called.")
-        return values
+    def ante_step(self):
+        self.eulerian_fields.step()
 
     def post_step(self):
-        self.particles.backend.download(self._values["new"]["qv"].reshape(self.particles.mesh.grid), self.qv_lambda())
-        self.particles.backend.download(self._values["new"]["thd"].reshape(self.particles.mesh.grid), self.thd_lambda())
-        self._swap()
+        self.particles.backend.download(self.get_predicted('qv').reshape(self.particles.mesh.grid), self.qv_lambda())
+        self.particles.backend.download(self.get_predicted('thd').reshape(self.particles.mesh.grid), self.thd_lambda())
+        self._update()
         
     def get_courant_field_data(self):
         result = [  # TODO: test it!!!!
