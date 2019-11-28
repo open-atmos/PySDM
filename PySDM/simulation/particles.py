@@ -40,21 +40,17 @@ class Particles:
         return self.__dt
 
     def set_mesh(self, grid, size):
-        if self.mesh is not None:
-            raise AssertionError("Mesh is already initialized.")
+        assert_none(self.mesh)
         self.mesh = Mesh(grid, size)
 
     def set_mesh_0d(self, dv=None):
-        if self.mesh is not None:
-            raise AssertionError("Mesh is already initialized.")
+        assert_none(self.mesh)
         self.mesh = Mesh.mesh_0d(dv)
 
     # TODO use params: dict
     def set_environment(self, environment_class, params):
-        if self.environment is not None:
-            raise AssertionError("Environment is already initialized.")
-        if self.mesh is None:
-            raise AssertionError("Mesh is not initialized.")
+        assert_not_none(self.mesh)
+        assert_none(self.environment)
         self.environment = environment_class(self, *params)
 
     def add_dynamics(self, dynamic_class, params):
@@ -62,24 +58,19 @@ class Particles:
 
     # TODO: extensive, intensive
     def create_state_0d(self, n, intensive, extensive):
-        if self.state is not None:
-            raise AssertionError("State is already initialized.")
-        if self.mesh is None:
-            raise AssertionError("Mesh is not initialized.")
-        if self.environment is None:
-            raise AssertionError("Environment is not initialized.")
+        assert_not_none(self.mesh)
+        assert_none(self.state)
         self.state = StateFactory.state_0d(n, intensive, extensive, self)
 
     def create_state_2d(self, n, extensive, intensive, positions):
-        if self.state is not None:
-            raise AssertionError("State is already initialized.")
+        assert_not_none(self.mesh)
+        assert_none(self.state)
         self.state = StateFactory.state_2d(n, self.mesh.grid, intensive, extensive, positions, self)
 
     # TODO: rename!
     def create_state_2d2(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
                          spectrum_per_mass_of_dry_air, r_range, kappa):
-        if self.environment is None:
-            raise AssertionError("Environment is not initialized.")
+        assert_not_none(self.environment)
 
         with np.errstate(all='raise'):
             positions = spatial_discretisation(self.mesh.grid, self.n_sd)
@@ -115,13 +106,14 @@ class Particles:
         self.n_steps += steps
 
 
+# TODO: move somewhere
 def assert_none(*params):
     for param in params:
         if param is not None:
-            raise AssertionError(param + " is already initialized.")
+            raise AssertionError(str(param.__class__.__name__) + " is already initialized.")
 
 
 def assert_not_none(*params):
     for param in params:
         if param is None:
-            raise AssertionError(param + " is not initialized.")
+            raise AssertionError(str(param.__class__.__name__) + " is not initialized.")
