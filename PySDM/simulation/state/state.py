@@ -10,17 +10,16 @@ import numpy as np
 
 class State:
 
+    # TODO update
     def __init__(self, n: np.ndarray, grid: tuple, attributes: dict, keys: dict,
                  cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), particles):
 
         self.particles = particles
         self.backend = particles.backend # TODO: make private
 
-        # self.grid = self.backend.from_ndarray(np.array(grid))
-        # self.strides = self.backend.from_ndarray(utils.strides(grid))
-        # self.n_cell = np.prod(np.array(grid))
-
+        # TODO remove
         self.SD_num = len(n)
+        # TODO make private
         self.idx = self.backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.backend.from_ndarray(n)
         # TODO: 0=tensive, 1=index (also in moments)

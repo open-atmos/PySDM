@@ -48,7 +48,7 @@ def test_initialisation(plot=False):
     simulation.run()
     particles = simulation.particles
     environment = simulation.particles.environment
-    rhod = setup.backend.to_ndarray(environment.rhod).reshape(setup.grid).mean(axis=0)
+    rhod = setup.backend.to_ndarray(environment["rhod"]).reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
         particles.state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(x_bins[i], x_bins[i + 1]))

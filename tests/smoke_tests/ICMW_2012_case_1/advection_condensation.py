@@ -48,8 +48,8 @@ def main():
                                     kappa=setup.kappa
     )
 
-    particles.add_dynamics(Condensation, (particles.environment, setup.kappa))
-    particles.add_dynamics(Advection, ('FTBS',))
+    particles.add_dynamic(Condensation, (particles.environment, setup.kappa))
+    particles.add_dynamic(Advection, ('FTBS',))
 
     for step in setup.steps:  # TODO: rename output_steps
         for _ in range(step - particles.n_steps):

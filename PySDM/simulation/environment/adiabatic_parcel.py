@@ -16,49 +16,51 @@ class AdiabaticParcel(MoistAir):
 
     def __init__(self, particles, mass, p0, q0, T0, w):
 
-        super().__init__(particles, ['qv', 'thd', 'T', 'p', 'RH', 'rhod'])
-        self.mass = mass
-        self.w = w
-
-        self.t = 0.
-
-        pd0 = p0  # TODO !
-        self['qv'][:] = q0
-        self['thd'][:] = phys.th_std(pd0, T0)
-        self['rhod'][:] = pd0 / const.Rd / T0
+        parcel_vars = ['rhod', 'z']
+        super().__init__(particles, parcel_vars)
 
         self.qv_lambda = lambda: self['qv']
         self.thd_lambda = lambda: self['thd']
 
-        self.sync()
-        self._values['predicted']['rhod'] = self['rhod']
+        self.mass = mass  # TODO: would be needed for dv (but let's remember it's the total mass - not dry-air mass)
+        self.w = w
 
-        np.testing.assert_approx_equal(self._values['predicted']['T'][0], T0)
-        # TODO: same for p (after fixing the above pd0 issue !!!!!)
+        pd0 = p0  # TODO !
 
-        self._update()
+        self.t = 0.
+        self['qv'][:] = q0
+        self['thd'][:] = phys.th_std(pd0, T0)
 
-    @property
-    def rhod(self):
-        return self['rhod']
+        self._tmp['rhod'][:] = pd0 / const.Rd / T0
+        super().sync()
 
-    def ante_step(self):
+        self.post_step()
+        self['z'][:] = 0
+
+        np.testing.assert_approx_equal(self['T'][0], T0)
+        # TODO: same for p (after fixing the above pd0 issue !)
+
+    def sync(self):
+        self.advance_parcel_vars()
+        super().sync()
+
+    def advance_parcel_vars(self):
         dt = self.particles.dt
 
         # mid-point value for w (TODO?)
         self.t += self.particles.dt
-        w = self.w(self.t - dt/2)
+        dz_dt = self.w(self.t - dt/2)
 
-        pv = 0 # TODO!!!!!!!
+        pv = 0  # TODO !!!!!!!!!!!
 
         # Explicit Euler for p,T (predictor step)
-        dpd_dt = - self['rhod'] * const.g * w
-        dT_dt = dpd_dt / self['rhod'] / phys.c_p(self['qv'][0]) # TODO: consider true dT_dt(p, ...)
-        self['rhod'][:] = self['rhod'] + dt * (
+        dpd_dt = - self['rhod'] * const.g * dz_dt
+        dT_dt = dpd_dt / self['rhod'] / phys.c_p(self['qv'][0])  # TODO: consider true dT_dt(p, ...)
+        self._tmp['rhod'][:] = self['rhod'] + dt * (
                 dpd_dt / const.Rd / self['T'] +
                 -dT_dt * (self['p'] - pv) / const.Rd / self['T']**2
         )
-        pass
+        self._tmp['z'][:] = self['z'] + dt * dz_dt
 
-    def post_step(self):
-        self._update()
+
+

@@ -11,6 +11,7 @@ import numpy as np
 from PySDM.simulation.particles import Particles as Particles
 from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation import Condensation
+from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
 from PySDM.simulation.environment.kinematic_2d import Kinematic2D
@@ -55,12 +56,13 @@ class Simulation:
                                         kappa=self.setup.kappa
         )
 
-        if self.setup.processes["coalescence"]:
-            self.particles.add_dynamics(SDM, (self.setup.kernel,))
-        if self.setup.processes["advection"]:
-            self.particles.add_dynamics(Advection, ('FTBS',))
         if self.setup.processes["condensation"]:
-            self.particles.add_dynamics(Condensation, (self.setup.kappa,))
+            self.particles.add_dynamic(Condensation, (self.setup.kappa,))
+        if self.setup.processes["advection"]:
+            self.particles.add_dynamic(EulerianAdvection, ())
+            self.particles.add_dynamic(Advection, ('FTBS',))
+        if self.setup.processes["coalescence"]:
+            self.particles.add_dynamic(SDM, (self.setup.kernel,))
 
         # TODO
         if self.storage is not None:

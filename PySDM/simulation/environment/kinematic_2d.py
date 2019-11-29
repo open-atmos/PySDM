@@ -13,7 +13,7 @@ from PySDM.simulation.environment.moist_air import MoistAir
 
 class Kinematic2D(MoistAir):
     def __init__(self, particles, stream_function, field_values, rhod_of):
-        super().__init__(particles, ['qv', 'thd', 'RH', 'p', 'T'])
+        super().__init__(particles, [])
 
         self.rhod_of = rhod_of
 
@@ -36,19 +36,21 @@ class Kinematic2D(MoistAir):
         self.thd_lambda = lambda: self.eulerian_fields.mpdatas['th'].curr.get()
         self.qv_lambda = lambda: self.eulerian_fields.mpdatas['qv'].curr.get()
 
-        self.rhod = particles.backend.from_ndarray(rhod.ravel())
+        rhod = particles.backend.from_ndarray(rhod.ravel())
+        self._values["current"]["rhod"] = rhod
+        self._tmp["rhod"] = rhod
 
         self.sync()
         self.post_step()
 
-    def ante_step(self):
-        self.eulerian_fields.step()
+    def wait(self):
+        # TODO
+        pass
 
-    def post_step(self):
-        self.particles.backend.download(self.get_predicted('qv').reshape(self.particles.mesh.grid), self.qv_lambda())
-        self.particles.backend.download(self.get_predicted('thd').reshape(self.particles.mesh.grid), self.thd_lambda())
-        self._update()
-        
+    def sync(self):
+        self.wait()
+        super().sync()
+
     def get_courant_field_data(self):
         result = [  # TODO: test it!!!!
             self.GC.data(0) / self.rhod_of(

@@ -17,7 +17,7 @@ def run(setup):
     particles.set_dv(setup.dv)
     x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
-    particles.add_dynamics(SDM, (setup.kernel,))
+    particles.add_dynamic(SDM, (setup.kernel,))
 
     states = {}
     for step in setup.steps:

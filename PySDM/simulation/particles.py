@@ -21,7 +21,7 @@ class Particles:
 
         self.__n_sd = n_sd
         self.__dt = dt
-        self.backend = backend()
+        self.backend = backend
         self.mesh = None
         self.environment = None
         self.state: (State, None) = None
@@ -53,7 +53,7 @@ class Particles:
         assert_none(self.environment)
         self.environment = environment_class(self, *params)
 
-    def add_dynamics(self, dynamic_class, params):
+    def add_dynamic(self, dynamic_class, params):
         self.dynamics.append(dynamic_class(self, *params))
 
     # TODO: extensive, intensive
@@ -86,7 +86,7 @@ class Particles:
             # </TEMP>
 
             # TODO: not here
-            n_per_m3 = n_per_kg * self.environment.rhod[cell_id]
+            n_per_m3 = n_per_kg * self.environment["rhod"][cell_id]
             domain_volume = np.prod(np.array(self.mesh.size))
             n = (n_per_m3 * domain_volume).astype(np.int64)
             r_wet = r_wet_init(r_dry, self.environment, cell_id, kappa)
@@ -99,7 +99,6 @@ class Particles:
     def run(self, steps):
         with self.stats:
             for _ in range(steps):
-                self.environment.ante_step()
                 for dynamic in self.dynamics:
                     dynamic()
                 self.environment.post_step()

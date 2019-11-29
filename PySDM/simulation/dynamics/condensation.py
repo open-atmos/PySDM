@@ -45,7 +45,7 @@ class _ODESystem:
 
         return dy_dt
 
-# TODO !!
+# TODO !!!
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
     for i in range(len(rw)):
@@ -91,7 +91,6 @@ class Condensation:
         state = self.particles.state
         state.sort_by_cell_id() #TODO
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
-        # print(self.cell_start)
 
         x = state.get_backend_storage("x")
         n = state.n
@@ -113,7 +112,7 @@ class Condensation:
                 y0[idx_rw:] = Physics.x2r(x[state.idx[cell_start:cell_end]])
                 integ = ode.solve_ivp(
                     _ODESystem(
-                        self.environment.rhod[cell_id],
+                        self.environment.get_predicted("rhod")[cell_id],
                         self.kappa,
                         xdry[state.idx[cell_start:cell_end]],
                         n[state.idx[cell_start:cell_end]],
@@ -125,7 +124,7 @@ class Condensation:
                     method='BDF',
                     rtol=1e-6,
                     atol=1e-22,
-#                    first_step=self.dt,
+                    # first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message

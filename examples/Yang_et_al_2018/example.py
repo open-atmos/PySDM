@@ -27,7 +27,7 @@ class Simulation:
         r_wet = r_wet_init(r_dry, self.particles.environment, np.zeros_like(n), setup.kappa)
         x_wet = Physics.r2x(r_wet)
         self.particles.create_state_0d(n=n, extensive={'dry volume': x_dry, 'x': x_wet}, intensive={})
-        self.particles.add_dynamics(Condensation, (setup.kappa, ))
+        self.particles.add_dynamic(Condensation, (setup.kappa,))
 
     def run(self):
         self.particles.run(1)

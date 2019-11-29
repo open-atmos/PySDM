@@ -7,9 +7,9 @@ Created at 25.11.2019
 
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.backends.default import Default
-from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics.constants import si
 import numpy as np
+
 
 class Setup:
     backend = Default

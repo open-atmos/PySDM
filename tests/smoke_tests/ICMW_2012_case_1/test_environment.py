@@ -14,7 +14,7 @@ def test_environment(plot=False):
 
     # Act
     simulation.run()
-    rhod = setup.backend.to_ndarray(simulation.particles.environment.rhod).reshape(setup.grid)
+    rhod = setup.backend.to_ndarray(simulation.particles.environment["rhod"]).reshape(setup.grid)
 
     # Plot
     if plot:

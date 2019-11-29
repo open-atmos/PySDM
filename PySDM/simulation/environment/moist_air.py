@@ -8,6 +8,7 @@ Created at 28.11.2019
 
 class MoistAir:
     def __init__(self, particles, variables):
+        variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles
         self._values = {
             "predicted": None,
@@ -26,7 +27,7 @@ class MoistAir:
 
     def get_predicted(self, index):
         if self._values['predicted'] is None:
-            raise Exception("Condensation not called.")
+            raise AssertionError("Condensation not called.")
         return self._values['predicted'][index]
 
     def sync(self):
@@ -36,12 +37,12 @@ class MoistAir:
 
         self.particles.backend.apply(
             function=self.particles.backend.temperature_pressure_RH,
-            args=(self.rhod, target['thd'], target['qv']),
+            args=(target['rhod'], target['thd'], target['qv']),
             output=(target['T'], target['p'], target['RH'])
         )
         self._values["predicted"] = target
 
-    def _update(self):
+    def post_step(self):
         self._tmp = self._values["current"]
         self._values["current"] = self._values["predicted"]
         self._values["predicted"] = None

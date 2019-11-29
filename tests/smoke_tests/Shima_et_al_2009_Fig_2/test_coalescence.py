@@ -13,13 +13,16 @@ from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.simulation.initialisation.spectra import Exponential
+from PySDM.simulation.environment.box import Box
+import numpy as np
 
 
 backend = Default
 
 
-# TODO seed
-def test():
+def test_coalescence():
+    # TODO: np.random.RandomState in backend?
+
     # Arrange
     x_min = 4.186e-15
     x_max = 4.186e-12
@@ -33,11 +36,12 @@ def test():
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    particles = Particles(n_sd=n_sd, grid=(), size=(), dt=dt, backend=backend)
-    particles.set_dv(dv)
+    particles = Particles(n_sd=n_sd, dt=dt, backend=backend)
+    particles.set_mesh_0d(dv=dv)
+    particles.set_environment(Box, ())
     x, n = constant_multiplicity(n_sd, spectrum, (x_min, x_max))
     particles.create_state_0d(n=n, extensive={'x': x}, intensive={})
-    particles.add_dynamics(SDM, (kernel,))
+    particles.add_dynamic(SDM, (kernel,))
 
     states = {}
 

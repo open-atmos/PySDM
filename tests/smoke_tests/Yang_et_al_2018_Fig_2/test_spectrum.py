@@ -7,7 +7,8 @@ import numpy as np
 
 def test_spectrum_x():
     simulation = Simulation()
-    dry_volume = simulation.particles.state.get_backend_storage('x') #TODO: to_ndarray
+    dry_volume = simulation.particles.state.get_backend_storage('dry volume')
+    dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
     rd = Physics.x2r(dry_volume) / si.nanometre
 
     rd = rd[::-1]
@@ -19,16 +20,17 @@ def test_spectrum_x():
 
 def test_spectrum_y():
     simulation = Simulation()
-    dry_volume = simulation.particles.state.get_backend_storage('x') #TODO: to_ndarray
+    dry_volume = simulation.particles.state.get_backend_storage('dry volume')
+    dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
     rd = Physics.x2r(dry_volume) / si.nanometre
-    nd = simulation.particles.state.n # TODO: to_ndarray
+    nd = simulation.particles.backend.to_ndarray(simulation.particles.state.n)
 
     dr = (rd[1:] - rd[0:-1]) / si.nanometre
     env = simulation.particles.environment
-    dn_dr = (nd[0:-1] / env.mass * env.rho / dr)
+    dn_dr = (nd[0:-1] / env.mass * env["rhod"] / dr)
     dn_dr /= (1/si.centimetre**3)
 
-    plt.figure(figsize=(5,5))
+    plt.figure(figsize=(5, 5))
     plt.xscale('log')
     plt.yscale('log')
     plt.xlim(1e1, 1e3)
@@ -38,7 +40,7 @@ def test_spectrum_y():
     plt.show()
 
     # from fig. 1b
-    assert 1e-3 < dn_dr[0] < 1e-1
+    assert 1e-3 < dn_dr[0] < 1e-2
     assert 1e1 < max(dn_dr) < 1e2
     assert dn_dr[-1] < 1e-9
 
