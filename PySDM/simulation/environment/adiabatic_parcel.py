@@ -25,20 +25,30 @@ class AdiabaticParcel(MoistAir):
         self.mass = mass  # TODO: would be needed for dv (but let's remember it's the total mass - not dry-air mass)
         self.w = w
 
-        pd0 = p0  # TODO !
+        pv0 = p0 / (1 + const.eps / q0)
+        pd0 = p0 - pv0
+        rhod0 = pd0 / const.Rd / T0
+        thd0 = phys.th_std(pd0, T0)
+        z0 = 0
 
         self.t = 0.
         self['qv'][:] = q0
-        self['thd'][:] = phys.th_std(pd0, T0)
+        self['thd'][:] = thd0
 
-        self._tmp['rhod'][:] = pd0 / const.Rd / T0
+        self._tmp['rhod'][:] = rhod0
+        self._tmp['z'][:] = z0
         super().sync()
 
+        self['rhod'][:] = rhod0
+        self['z'][:] = z0
         self.post_step()
-        self['z'][:] = 0
 
-        np.testing.assert_approx_equal(self['T'][0], T0)
-        # TODO: same for p (after fixing the above pd0 issue !)
+        np.testing.assert_approx_equal(self['T'][:], T0)
+        np.testing.assert_approx_equal(self['RH'][:], pv0/phys.pvs(T0))
+        np.testing.assert_approx_equal(self['p'][:], p0)
+        np.testing.assert_approx_equal(self['qv'][:], q0)
+        np.testing.assert_approx_equal(self['rhod'][:], rhod0)
+        np.testing.assert_approx_equal(self['thd'][:], thd0)
 
     def sync(self):
         self.advance_parcel_vars()
@@ -48,19 +58,27 @@ class AdiabaticParcel(MoistAir):
         dt = self.particles.dt
 
         # mid-point value for w (TODO?)
-        self.t += self.particles.dt
+        self.t += dt
         dz_dt = self.w(self.t - dt/2)
 
-        pv = 0  # TODO !!!!!!!!!!!
+        # Explicit Euler for p,T (predictor step assuming dq=0)
+        qv = self['qv'][0]
+        T = self['T'][0]
+        p = self['p'][0]
 
-        # Explicit Euler for p,T (predictor step)
-        dpd_dt = - self['rhod'] * const.g * dz_dt
-        dT_dt = dpd_dt / self['rhod'] / phys.c_p(self['qv'][0])  # TODO: consider true dT_dt(p, ...)
-        self._tmp['rhod'][:] = self['rhod'] + dt * (
-                dpd_dt / const.Rd / self['T'] +
-                -dT_dt * (self['p'] - pv) / const.Rd / self['T']**2
+        rho = p / phys.R(qv) / T
+        pd = p * (1 - 1/ (1 + const.eps / qv))
+
+        dp_dt = - rho * const.g * dz_dt
+        dpd_dt = dp_dt
+        dT_dt = dp_dt / rho / phys.c_p(qv)
+
+        self._tmp['rhod'][:] += dt * (
+                dpd_dt / const.Rd / T +
+                -dT_dt * pd / const.Rd / T**2
         )
-        self._tmp['z'][:] = self['z'] + dt * dz_dt
+        self._tmp['z'][:] += dt * dz_dt
+        print(self.t, dz_dt, self._tmp['z'][0])
 
 
 

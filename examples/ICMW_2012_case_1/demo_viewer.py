@@ -4,7 +4,7 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-from ipywidgets import VBox, HBox, Box, Play, Output, IntSlider, jslink
+from ipywidgets import VBox, GridBox, Box, Play, Output, IntSlider, jslink
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 from examples.ICMW_2012_case_1 import plotter
@@ -73,4 +73,4 @@ class DemoViewer:
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         jslink((self.play, 'interval'), (self.fps_slider, 'value'))
         self.play.observe(self.replot, 'value')
-        return VBox([Box([self.play, self.step_slider, self.fps_slider]), HBox(tuple(self.plots.values()))])
+        return VBox([Box([self.play, self.step_slider, self.fps_slider]), GridBox(tuple(self.plots.values()))])

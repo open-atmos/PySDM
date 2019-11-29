@@ -19,12 +19,11 @@ class Simulation:
     def __init__(self, setup):
         t_half = setup.z_half / setup.w_avg
         dt = (2 * t_half) / setup.n_steps
+        print("t_half:", t_half, "dt:", dt, "n_steps:", setup.n_steps, "w_avg:", setup.w_avg)
 
         self.particles = Particles(backend=setup.backend, n_sd=1, dt=dt)
         self.particles.set_mesh_0d()
         self.particles.set_environment(AdiabaticParcel, (setup.mass, setup.p0, setup.q0, setup.T0, setup.w))
-
-        print(setup.RH0, self.particles.environment["RH"])
 
         r_dry = np.array([setup.r_dry])
         x_dry = Physics.r2x(r_dry)
