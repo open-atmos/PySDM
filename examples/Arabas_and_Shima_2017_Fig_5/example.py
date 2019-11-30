@@ -1,6 +1,7 @@
 """
 Created at 29.11.2019
 
+@author: Michael Olesik
 @author: Piotr Bartman
 @author: Sylwester Arabas
 """
@@ -19,7 +20,6 @@ class Simulation:
     def __init__(self, setup):
         t_half = setup.z_half / setup.w_avg
         dt = (2 * t_half) / setup.n_steps
-        print("t_half:", t_half, "dt:", dt, "n_steps:", setup.n_steps, "w_avg:", setup.w_avg)
 
         self.particles = Particles(backend=setup.backend, n_sd=1, dt=dt)
         self.particles.set_mesh_0d()
@@ -36,7 +36,7 @@ class Simulation:
         self.n_steps = setup.n_steps
 
     def run(self):
-        output = {"r": [], "S": [], "z": []}
+        output = {"r": [], "S": [], "z": [], "t": []}
 
         # TODO: save t=0
         for step in range(self.n_steps):
@@ -49,6 +49,7 @@ class Simulation:
             output["r"].append(Physics.x2r(x))
             output["S"].append(self.particles.environment["RH"][cell_id]-1)
             output["z"].append(self.particles.environment["z"][cell_id])
+            output["t"].append(self.particles.environment["t"][cell_id])
 
         return output
 

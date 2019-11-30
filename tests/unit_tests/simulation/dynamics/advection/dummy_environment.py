@@ -6,7 +6,7 @@ Created at 21.11.2019
 """
 
 
-from PySDM.simulation.environment.mesh import Mesh
+from PySDM.simulation.environment._meshed_environment import _MeshedEnvironment
 
 
 class DummyEnvironment:

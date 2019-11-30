@@ -11,7 +11,7 @@ from PySDM.simulation.state.state import State
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
-from PySDM.simulation.environment.mesh import Mesh
+from PySDM.simulation.environment._meshed_environment import _MeshedEnvironment
 
 
 class Particles:
@@ -41,11 +41,11 @@ class Particles:
 
     def set_mesh(self, grid, size):
         assert_none(self.mesh)
-        self.mesh = Mesh(grid, size)
+        self.mesh = _MeshedEnvironment(grid, size)
 
     def set_mesh_0d(self, dv=None):
         assert_none(self.mesh)
-        self.mesh = Mesh.mesh_0d(dv)
+        self.mesh = _MeshedEnvironment.mesh_0d(dv)
 
     # TODO use params: dict
     def set_environment(self, environment_class, params):
@@ -81,7 +81,7 @@ class Particles:
             # TODO: cell_id, _, _ = StateFactory.positions(n_per_kg, positions)
 
             cell_origin = positions.astype(dtype=int)
-            strides = Mesh.strides(self.mesh.grid)
+            strides = _MeshedEnvironment.strides(self.mesh.grid)
             cell_id = np.dot(strides, cell_origin.T).ravel()
             # </TEMP>
 

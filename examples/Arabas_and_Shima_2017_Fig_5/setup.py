@@ -1,6 +1,7 @@
 """
 Created at 29.11.2019
 
+@author: Michael Olesik
 @author: Piotr Bartman
 @author: Sylwester Arabas
 """
@@ -23,8 +24,8 @@ class Setup:
         self.n_per_mass = N / rho0 * self.mass
 
     backend = Default
-    mass = 1 * si.kilogram
-    n_steps = 1000
+    mass = 1000 * si.kilogram  # TODO: it should not matter, but it does !!!!!!!!!!!!1
+    n_steps = 500
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

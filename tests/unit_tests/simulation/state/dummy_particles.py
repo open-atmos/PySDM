@@ -5,7 +5,7 @@ Created at 19.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.environment.mesh import Mesh
+from PySDM.simulation.environment._meshed_environment import _MeshedEnvironment
 
 
 class DummyParticles:
@@ -20,10 +20,10 @@ class DummyParticles:
     def set_mesh(self, grid, size=None):
         if size is None:
             size = tuple(1 for _ in range(len(grid)))
-        self.mesh = Mesh(grid, size)
+        self.mesh = _MeshedEnvironment(grid, size)
 
     def set_mesh_0d(self, dv=None):
-        self.mesh = Mesh.mesh_0d(dv)
+        self.mesh = _MeshedEnvironment.mesh_0d(dv)
 
     def set_environment(self, environment_class, params):
         self.environment = environment_class(None, *params)
