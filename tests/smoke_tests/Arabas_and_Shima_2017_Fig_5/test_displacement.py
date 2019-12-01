@@ -7,7 +7,7 @@ import numpy as np
 def test_displacement(setup_idx):
     # Arrange
     setup = setups[setup_idx]
-    setup.n_steps = 100
+    setup.n_steps = 50
     simulation = Simulation(setup)
 
     # Act

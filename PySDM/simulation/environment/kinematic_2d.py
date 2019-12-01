@@ -43,6 +43,10 @@ class Kinematic2D(_MoistAirEnvironment):
         self.sync()
         self.post_step()
 
+    @property
+    def dv(self):
+        return self.particles.mesh.dv
+
     def wait(self):
         # TODO
         pass

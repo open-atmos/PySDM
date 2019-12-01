@@ -9,13 +9,13 @@ Created at 25.11.2019
 from PySDM.simulation.particles import Particles
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
-import numpy as np
 from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
 
 
 class AdiabaticParcel(_MoistAirEnvironment):
 
-    def __init__(self, particles: Particles, mass: float, p0: float, q0: float, T0: float, w: callable):
+    def __init__(self, particles: Particles,
+                 mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
         self.parcel_vars = ['rhod', 'z', 't']
         super().__init__(particles, self.parcel_vars)
@@ -23,30 +23,24 @@ class AdiabaticParcel(_MoistAirEnvironment):
         self.qv_lambda = lambda: self['qv']
         self.thd_lambda = lambda: self['thd']
 
-        self.mass = mass  # TODO: would be needed for dv (but let's remember it's the total mass - not dry-air mass)
+        self.m_d = mass_of_dry_air
         self.w = w
 
-        pv0 = p0 / (1 + const.eps / q0)
-        pd0 = p0 - pv0
-        rhod0 = pd0 / const.Rd / T0
-        thd0 = phys.th_std(pd0, T0)
+        pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
 
         self['qv'][:] = q0
-        self['thd'][:] = thd0
-        self['rhod'][:] = rhod0
-        self['z'][:] = 0
+        self['thd'][:] = phys.th_std(pd0, T0)
+        self['rhod'][:] = pd0 / const.Rd / T0
+        self['z'][:] = z0
         self['t'][:] = 0
 
         self.sync_parcel_vars()
         super().sync()
         self.post_step()
 
-        np.testing.assert_approx_equal(self['T'][:], T0)
-        np.testing.assert_approx_equal(self['RH'][:], pv0/phys.pvs(T0))
-        np.testing.assert_approx_equal(self['p'][:], p0)
-        np.testing.assert_approx_equal(self['qv'][:], q0)
-        np.testing.assert_approx_equal(self['rhod'][:], rhod0)
-        np.testing.assert_approx_equal(self['thd'][:], thd0)
+    @property
+    def dv(self):
+        return self.m_d / self.get_predicted("rhod")[0]
 
     def sync_parcel_vars(self):
         for var in self.parcel_vars:

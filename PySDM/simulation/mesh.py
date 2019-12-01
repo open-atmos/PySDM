@@ -8,11 +8,11 @@ Created at 28.11.2019
 import numpy as np
 
 
-class _MeshedEnvironment:
+class Mesh:
     def __init__(self, grid, size):
         self.grid = grid
         self.size = size
-        self.strides = _MeshedEnvironment.strides(grid)
+        self.strides = Mesh.strides(grid)
         self.n_cell = grid[0] * grid[1]
         self.dv = (size[0] / grid[0]) * (size[1] / grid[1])
 
@@ -27,7 +27,7 @@ class _MeshedEnvironment:
     # TODO hardcoded 2D in constructor
     @staticmethod
     def mesh_0d(dv=None):
-        mesh = _MeshedEnvironment((1, 1), (1, 1))
+        mesh = Mesh((1, 1), (1, 1))
         mesh.grid = ()
         mesh.size = ()
         mesh.strides = None
