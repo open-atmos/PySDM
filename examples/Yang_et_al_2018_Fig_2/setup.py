@@ -18,9 +18,9 @@ class Setup:
 
     backend = Default
 
-    mass_of_dry_air = 1 * si.kilogram
+    mass_of_dry_air = 100 * si.kilogram
     spectrum = Lognormal(
-      norm_factor=1000 / si.milligram / si.nanometre * mass_of_dry_air,
+      norm_factor=1000 / si.milligram * mass_of_dry_air,
       m_mode=50 * si.nanometre,
       s_geom=1.4
     )

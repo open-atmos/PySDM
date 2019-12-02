@@ -28,7 +28,7 @@ def test_dry_spectrum_y():
     rd = Physics.x2r(dry_volume) / si.nanometre
     nd = simulation.particles.backend.to_ndarray(simulation.particles.state.n)
 
-    dr = (rd[1:] - rd[0:-1]) / si.nanometre
+    dr = (rd[1:] - rd[0:-1])
     env = simulation.particles.environment
     dn_dr = (nd[0:-1] / env.m_d * env["rhod"] / dr)
     dn_dr /= (1/si.centimetre**3)
@@ -45,7 +45,7 @@ def test_dry_spectrum_y():
     # from fig. 1b
     assert 1e-3 < dn_dr[0] < 1e-2
     assert 1e1 < max(dn_dr) < 1e2
-    assert dn_dr[-1] < 1e-9
+    assert 0 < dn_dr[-1] < 1e-9
 
 
 def test_wet_vs_dry_spectrum(plot=False):

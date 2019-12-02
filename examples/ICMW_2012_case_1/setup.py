@@ -19,7 +19,7 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
-    grid = (25, 25)  # dx=dz=20m
+    grid = (10, 10)  # dx=dz=20m
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
     dt = 0.25 * si.seconds  # TODO: was 1s in the ICMW case?

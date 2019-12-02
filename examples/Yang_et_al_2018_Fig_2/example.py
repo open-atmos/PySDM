@@ -17,12 +17,20 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 
 # TODO: the q1 logic from PyCloudParcel?
 
+
 class Simulation:
     def __init__(self, setup):
+        self.r_dry, self.n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
+
+        # self.r_dry = self.r_dry[50:52]
+        # self.n = self.n[50:52]
+        # setup.n_sd = 2
+
         self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=setup.dt)
         self.particles.set_mesh_0d()
         self.particles.set_environment(AdiabaticParcel, (setup.mass_of_dry_air, setup.p0, setup.q0, setup.T0, setup.w, setup.z0))
-        self.r_dry, self.n = spectral_discretisation.logarithmic(setup.n_sd, setup.spectrum, (setup.r_min, setup.r_max))
+
+
         x_dry = Physics.r2x(self.r_dry)
         r_wet = r_wet_init(self.r_dry, self.particles.environment, np.zeros_like(self.n), setup.kappa)
         x_wet = Physics.r2x(r_wet)
@@ -37,7 +45,6 @@ class Simulation:
 
         # TODO: save t=0
         for step in range(self.n_steps):
-            print(step / self.n_steps, self.particles.environment["RH"])
             self.particles.run(1)
 
             # TODO

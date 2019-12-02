@@ -119,17 +119,33 @@ class Condensation:
                     (0., self.dt),
                     y0,
                     method='BDF',
-                    rtol=1e-6,
-                    atol=1e-22,
+                    # rtol=1e-6,
+                    atol=1e-8,
                     # first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message
 
+                dm = 0
                 for i in range(cell_end - cell_start):
-                    x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
-                self.environment.get_predicted('qv')[cell_id] = integ.y[idx_qv]
-                self.environment.get_predicted('thd')[cell_id] = integ.y[idx_thd]
+                    x_new = Physics.r2x(integ.y[idx_rw + i])
+                    x_old = x[state.idx[cell_start + i]]
+                    nd = n[state.idx[cell_start + i]]
+                    dm += nd * (x_new - x_old) * rho_w
+                    x[state.idx[cell_start + i]] = x_new
+
+                m_d = self.environment.get_predicted('rhod')[cell_id] * self.environment.dv
+                dq_sum = - dm / m_d
+                dq_ode = integ.y[idx_qv] - self.environment.get_predicted('qv')[cell_id]
+
+                #dth_sum =
+                dth_ode = integ.y[idx_thd] - self.environment.get_predicted('thd')[cell_id]
+
+                #np.testing.assert_approx_equal(dq_ode, dq_sum, 4)
+                #np.testing.assert_approx_equal(dth_ode, dth_sum)
+
+                self.environment.get_predicted('qv')[cell_id] += dq_sum
+                self.environment.get_predicted('thd')[cell_id] += dth_ode
         else:
             raise NotImplementedError()
 

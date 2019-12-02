@@ -17,7 +17,7 @@ def test_displacement(plot=False):
 
     # Plot
     if plot:
-        plt.plot(output["t"], output["z"])
+        plt.plot(output["t"], output["S"])
         plt.grid()
         plt.show()
 
