@@ -5,10 +5,9 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.environment.kinematic_2d import Kinematic2D
 from PySDM.utils import Physics
 from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
-from PySDM.simulation.physics.constants import p1000, Rd, c_pd
+from PySDM.simulation.physics.constants import p1000, Rd, c_pd, rho_w
 
 from scipy import integrate as ode
 
@@ -22,15 +21,14 @@ idx_rw = 2
 
 
 class _ODESystem:
-    def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray, dqv_dt, dthd_dt):
+    def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray, dqv_dt, dthd_dt, m_d):
         self.rhod = rhod
         self.kappa = kappa
         self.rd = Physics.x2r(xd)
         self.n = n  # TODO: per mass of dry air !
-        self.rho_w = 1  # TODO
         self.dqv_dt = dqv_dt
         self.dthd_dt = dthd_dt
-        # self.dy_dt = np.empty(len(n) + 2)
+        self.m_d = m_d
 
     def __call__(self, t, y):
         thd = y[idx_thd]
@@ -41,16 +39,16 @@ class _ODESystem:
 
         dy_dt = np.empty_like(y)
 
-        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, self.rho_w, qv, self.dqv_dt, self.dthd_dt)
+        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, qv, self.dqv_dt, self.dthd_dt, self.m_d)
 
         return dy_dt
 
-# TODO !!!
+# TODO !!! (incl. np.minimum())
 @numba.njit()
-def foo(dy_dt, rw, T, p, n, RH, kappa, rd, rho_w, qv, dqv_dt, dthd_dt):
+def foo(dy_dt, rw, T, p, n, RH, kappa, rd, qv, dqv_dt, dthd_dt, m_d):
     for i in range(len(rw)):
         dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.minimum(RH - 1, .01), kappa, rd[i])
-    dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w
+    dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
     dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
     dy_dt[idx_qv] += dqv_dt
@@ -104,8 +102,6 @@ class Condensation:
                 if n_sd_in_cell == 0:
                     continue
 
-                # print(old['RH'][cell_id], " -> ", new['RH'][cell_id]) TODO
-
                 y0 = np.empty(n_sd_in_cell + 2)
                 y0[idx_thd] = self.environment['thd'][cell_id]
                 y0[idx_qv] = self.environment['qv'][cell_id]
@@ -117,7 +113,8 @@ class Condensation:
                         xdry[state.idx[cell_start:cell_end]],
                         n[state.idx[cell_start:cell_end]],
                         (self.environment.get_predicted('qv')[cell_id] - self.environment['qv'][cell_id]) / self.dt,
-                        (self.environment.get_predicted('thd')[cell_id] - self.environment['thd'][cell_id]) / self.dt
+                        (self.environment.get_predicted('thd')[cell_id] - self.environment['thd'][cell_id]) / self.dt,
+                        self.environment.get_predicted("rhod")[cell_id] * self.environment.dv
                     ),
                     (0., self.dt),
                     y0,
@@ -130,12 +127,9 @@ class Condensation:
                 assert integ.success, integ.message
 
                 for i in range(cell_end - cell_start):
-                    # print(x[state.idx[cell_start + i]], Physics.r2x(integ.y[idx_rw + i]))
                     x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
                 self.environment.get_predicted('qv')[cell_id] = integ.y[idx_qv]
                 self.environment.get_predicted('thd')[cell_id] = integ.y[idx_thd]
-                # print()
-                # TODO: RH_new, T_new, p_new
         else:
             raise NotImplementedError()
 

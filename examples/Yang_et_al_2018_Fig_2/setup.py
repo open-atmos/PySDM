@@ -12,11 +12,15 @@ import numpy as np
 
 
 class Setup:
+    def __init__(self, dt=1 * si.second):
+        self.dt = dt
+        self.n_steps = int(3 * si.hours / dt)
+
     backend = Default
 
-    mass = 1 * si.kilogram
+    mass_of_dry_air = 1 * si.kilogram
     spectrum = Lognormal(
-      norm_factor=1000 / si.milligram / si.nanometre * mass,
+      norm_factor=1000 / si.milligram / si.nanometre * mass_of_dry_air,
       m_mode=50 * si.nanometre,
       s_geom=1.4
     )
@@ -25,13 +29,12 @@ class Setup:
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram
     p0 = 938.5 * si.hectopascals
-    kappa = 0.53 # Petters and S. M. Kreidenweis mean growth-factor derived
+    z0 = 600 * si.metres
+    kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
 
     # initial dry radius discretisation range
     r_min = 10.633 * si.nanometre
     r_max = 513.06 * si.nanometre
-
-    dt = 0.1 * si.second
 
     @staticmethod
     def w(t):

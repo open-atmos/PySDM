@@ -11,7 +11,7 @@ from PySDM.simulation.state.state import State
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
-from PySDM.simulation.environment.mesh import Mesh
+from PySDM.simulation.mesh import Mesh
 
 
 class Particles:
