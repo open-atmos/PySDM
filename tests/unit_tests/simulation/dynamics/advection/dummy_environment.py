@@ -6,9 +6,6 @@ Created at 21.11.2019
 """
 
 
-from PySDM.simulation.environment.mesh import Mesh
-
-
 class DummyEnvironment:
     def __init__(self, _, courant_field_data):
         self.courant_field_data = courant_field_data

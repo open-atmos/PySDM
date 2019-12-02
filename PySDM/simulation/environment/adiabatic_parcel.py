@@ -6,61 +6,73 @@ Created at 25.11.2019
 @author: Sylwester Arabas
 """
 
+from PySDM.simulation.particles import Particles
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
-import numpy as np
-from PySDM.simulation.environment.moist_air import MoistAir
+from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
 
 
-class AdiabaticParcel(MoistAir):
+class AdiabaticParcel(_MoistAirEnvironment):
 
-    def __init__(self, particles, mass, p0, q0, T0, w):
+    def __init__(self, particles: Particles,
+                 mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
-        parcel_vars = ['rhod', 'z']
-        super().__init__(particles, parcel_vars)
+        self.parcel_vars = ['rhod', 'z', 't']
+        super().__init__(particles, self.parcel_vars)
 
         self.qv_lambda = lambda: self['qv']
         self.thd_lambda = lambda: self['thd']
 
-        self.mass = mass  # TODO: would be needed for dv (but let's remember it's the total mass - not dry-air mass)
+        self.m_d = mass_of_dry_air
         self.w = w
 
-        pd0 = p0  # TODO !
+        pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
 
-        self.t = 0.
         self['qv'][:] = q0
         self['thd'][:] = phys.th_std(pd0, T0)
+        self['rhod'][:] = pd0 / const.Rd / T0
+        self['z'][:] = z0
+        self['t'][:] = 0
 
-        self._tmp['rhod'][:] = pd0 / const.Rd / T0
+        self.sync_parcel_vars()
         super().sync()
-
         self.post_step()
-        self['z'][:] = 0
 
-        np.testing.assert_approx_equal(self['T'][0], T0)
-        # TODO: same for p (after fixing the above pd0 issue !)
+    @property
+    def dv(self):
+        return self.m_d / self.get_predicted("rhod")[0]
+
+    def sync_parcel_vars(self):
+        for var in self.parcel_vars:
+            self._tmp[var][:] = self[var][:]
 
     def sync(self):
+        self.sync_parcel_vars()
         self.advance_parcel_vars()
         super().sync()
 
     def advance_parcel_vars(self):
         dt = self.particles.dt
+        qv = self['qv'][0]
+        T = self['T'][0]
+        p = self['p'][0]
+        t = self['t'][0]
 
-        # mid-point value for w (TODO?)
-        self.t += self.particles.dt
-        dz_dt = self.w(self.t - dt/2)
+        rho = p / phys.R(qv) / T
+        pd = p * (1 - 1/ (1 + const.eps / qv))
 
-        pv = 0  # TODO !!!!!!!!!!!
+        # mid-point value for w
+        dz_dt = self.w(t + dt/2)
 
-        # Explicit Euler for p,T (predictor step)
-        dpd_dt = - self['rhod'] * const.g * dz_dt
-        dT_dt = dpd_dt / self['rhod'] / phys.c_p(self['qv'][0])  # TODO: consider true dT_dt(p, ...)
-        self._tmp['rhod'][:] = self['rhod'] + dt * (
-                dpd_dt / const.Rd / self['T'] +
-                -dT_dt * (self['p'] - pv) / const.Rd / self['T']**2
+        # Explicit Euler for p,T (predictor step assuming dq=0)
+        dp_dt = - rho * const.g * dz_dt
+        dpd_dt = dp_dt  # dq=0
+        dT_dt = dp_dt / rho / phys.c_p(qv)
+
+        self._tmp['t'][:] += dt
+        self._tmp['z'][:] += dt * dz_dt
+        self._tmp['rhod'][:] += dt * (
+                dpd_dt / const.Rd / T +
+                -dT_dt * pd / const.Rd / T**2
         )
-        self._tmp['z'][:] = self['z'] + dt * dz_dt
-
-
-
+        # TODO: do RK4 for all the above...

@@ -6,7 +6,7 @@ Created at 28.11.2019
 """
 
 
-class MoistAir:
+class _MoistAirEnvironment:
     def __init__(self, particles, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles

@@ -4,7 +4,7 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-from ipywidgets import VBox, HBox, Box, Play, Output, IntSlider, jslink
+from ipywidgets import VBox, Box, Play, Output, IntSlider, jslink, Layout
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 from examples.ICMW_2012_case_1 import plotter
@@ -28,7 +28,6 @@ class DemoViewer:
 
         self.reinit()
 
-
     def reinit(self):
         n_steps = len(self.setup.steps)
         self.step_slider.max = n_steps - 1
@@ -50,8 +49,6 @@ class DemoViewer:
                 _, ax = plt.subplots(1, 1)
                 self.ims[key] = plotter.image(ax, self.nans, self.setup.size, label=key, cmap=self.clims[key][2])
                 self.ims[key].set_clim(vmin = self.clims[key][0], vmax = self.clims[key][1])
-                #plt.colorbar()
-                #plt.title(key)
                 plt.show()
 
     def replot(self, bunch):
@@ -73,4 +70,10 @@ class DemoViewer:
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         jslink((self.play, 'interval'), (self.fps_slider, 'value'))
         self.play.observe(self.replot, 'value')
-        return VBox([Box([self.play, self.step_slider, self.fps_slider]), HBox(tuple(self.plots.values()))])
+        return VBox([
+            Box([self.play, self.step_slider, self.fps_slider]),
+            Box(
+                children=tuple(self.plots.values()),
+                layout=Layout(display='flex', flex_flow='column')
+            )
+        ])
