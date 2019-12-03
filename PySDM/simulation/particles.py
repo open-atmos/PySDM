@@ -6,7 +6,7 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM import utils
+from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.state.state import State
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
@@ -47,14 +47,13 @@ class Particles:
         assert_none(self.mesh)
         self.mesh = Mesh.mesh_0d(dv)
 
-    # TODO use params: dict
-    def set_environment(self, environment_class, params):
+    def set_environment(self, environment_class, params: dict):
         assert_not_none(self.mesh)
         assert_none(self.environment)
-        self.environment = environment_class(self, *params)
+        self.environment = environment_class(self, **params)
 
-    def add_dynamic(self, dynamic_class, params):
-        self.dynamics.append(dynamic_class(self, *params))
+    def add_dynamic(self, dynamic_class, params: dict):
+        self.dynamics.append(dynamic_class(self, **params))
 
     # TODO: extensive, intensive
     def create_state_0d(self, n, intensive, extensive):
@@ -62,14 +61,8 @@ class Particles:
         assert_none(self.state)
         self.state = StateFactory.state_0d(n, intensive, extensive, self)
 
-    def create_state_2d(self, n, extensive, intensive, positions):
-        assert_not_none(self.mesh)
-        assert_none(self.state)
-        self.state = StateFactory.state_2d(n, self.mesh.grid, intensive, extensive, positions, self)
-
-    # TODO: rename!
-    def create_state_2d2(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
-                         spectrum_per_mass_of_dry_air, r_range, kappa):
+    def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
+                        spectrum_per_mass_of_dry_air, r_range, kappa):
         assert_not_none(self.environment)
 
         with np.errstate(all='raise'):
@@ -91,10 +84,12 @@ class Particles:
             n = (n_per_m3 * domain_volume).astype(np.int64)
             r_wet = r_wet_init(r_dry, self.environment, cell_id, kappa)
 
-        extensive['x'] = utils.Physics.r2x(r_wet)  # TODO: rename x -> ...
-        extensive['dry volume'] = utils.Physics.r2x(r_dry)
+        extensive['volume'] = phys.volume(radius=r_wet)
+        extensive['dry volume'] = phys.volume(radius=r_dry)
 
-        self.create_state_2d(n, extensive, intensive, positions)
+        assert_not_none(self.mesh)
+        assert_none(self.state)
+        self.state = StateFactory.state_2d(n, self.mesh.grid, intensive, extensive, positions, self)
 
     def run(self, steps):
         with self.stats:

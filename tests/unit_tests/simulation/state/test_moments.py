@@ -19,19 +19,19 @@ backend = Default
 class TestMaths:
     @staticmethod
     def test_moment_0d():
-        # Arrange (parameters from Clark 1976)
-        n_part = 10000  # 190 # cm-3 # TODO!!!!
-        x_mean = 2e-6  # 6.0 # um    # TODO: geom mean?
-        d = 1.2  # dimensionless -> geom. standard dev
+        # Arrange
+        n_part = 10000
+        v_mean = 2e-6
+        d = 1.2
 
-        x_min = 0.01e-6
-        x_max = 10e-6
+        v_min = 0.01e-6
+        v_max = 10e-6
         n_sd = 32
 
-        spectrum = Lognormal(n_part, x_mean, d)
-        x, n = linear(n_sd, spectrum, (x_min, x_max))
+        spectrum = Lognormal(n_part, v_mean, d)
+        v, n = linear(n_sd, spectrum, (v_min, v_max))
         particles = DummyParticles(backend, n_sd)
-        state = StateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
+        state = StateFactory.state_0d(n=n, extensive={'volume': v}, intensive={}, particles=particles)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
@@ -40,13 +40,13 @@ class TestMaths:
         moments = np.empty((1, 1), dtype=float)
 
         # Act
-        state.moments(moment_0, moments, specs={'x': (0,)}) #/ n_part
+        state.moments(moment_0, moments, specs={'volume': (0,)})
         discr_zero = moments[0, 0]
 
-        state.moments(moment_0, moments, specs={'x': (1,)}) #/ n_part
+        state.moments(moment_0, moments, specs={'volume': (1,)})
         discr_mean = moments[0, 0]
 
-        state.moments(moment_0, moments, specs={'x': (2,)}) #/ n_part
+        state.moments(moment_0, moments, specs={'volume': (2,)})
         discr_mrsq = moments[0, 0]
 
         # Assert

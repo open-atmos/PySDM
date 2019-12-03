@@ -34,12 +34,12 @@ class DemoViewer:
         self.play.max = n_steps - 1
         self.play.value = 0
         self.step_slider.value = 0
-        self.clims = { # TODO !
+        self.clims = { # TODO : not here
             "m0": (0, 1e8,  'YlGnBu'),
             "th": (288, 295, 'Reds'),
             "qv": (0.005, .0075,  'Greens'),
             "RH": (.5, 1.1,   'GnBu'),
-            "x_m1": (1e-20, 1e-19, 'Reds')
+            "volume_m1": (1e-20, 1e-19, 'Reds')
         }
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan) # TODO: np.nan

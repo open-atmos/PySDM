@@ -11,7 +11,6 @@ import numpy as np
 
 
 class Advection:
-    # TODO Adapter
     def __init__(self, particles, scheme='FTBS'):
         courant_field = particles.environment.get_courant_field_data()
 

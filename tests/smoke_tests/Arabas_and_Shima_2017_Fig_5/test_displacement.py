@@ -1,12 +1,18 @@
-from examples.Arabas_and_Shima_2017_Fig_5.example import Simulation, setups
+from examples.Arabas_and_Shima_2017_Fig_5.example import Simulation
+from examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs
 import pytest
 import numpy as np
 
 
-@pytest.mark.parametrize("setup_idx", range(len(setups)))
-def test_displacement(setup_idx):
+@pytest.mark.parametrize("w_idx", range(len(w_avgs)))
+def test_displacement(w_idx):
     # Arrange
-    setup = setups[setup_idx]
+    setup = Setup(
+        w_avg=w_avgs[w_idx],
+        N_STP=0,
+        r_dry=1,
+        mass_of_dry_air=1
+    )
     setup.n_steps = 50
     simulation = Simulation(setup)
 

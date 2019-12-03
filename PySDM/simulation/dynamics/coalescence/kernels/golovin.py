@@ -10,7 +10,7 @@ import numpy as np
 
 
 class Golovin:
-    def __init__(self, b, x='x'):
+    def __init__(self, b, x='volume'):
         self.b = b
         self.x = x
 
