@@ -9,4 +9,3 @@ Created at 08.08.2019
 # TODO
 TRTC = False
 NUMBA_PARALLEL = False
-
