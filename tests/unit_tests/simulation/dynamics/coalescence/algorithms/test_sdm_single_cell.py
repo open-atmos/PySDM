@@ -22,15 +22,21 @@ backend = Default
 
 class TestSDMSingleCell:
 
-    def test_single_collision(self, x_2, n_2):
-        # Arrange
-        particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
+    @staticmethod
+    def get_dummy_particles_and_sdm(n_length):
+        particles = DummyParticles(backend, n_sd=n_length, dt=0)
         dv = 1
         particles.set_mesh_0d(dv)
         particles.set_environment(Box, ())
-        sut = SDM(particles, StubKernel())
+        sdm = SDM(particles, StubKernel())
+        return particles, sdm
+
+    def test_single_collision(self, x_2, n_2):
+        # Arrange
+        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={}, particles=particles)
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={},
+                                                        particles=particles)
         # Act
         sut()
         # Assert
@@ -46,11 +52,7 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        particles = DummyParticles(backend, n_sd=2, dt=0)
-        dv = 1
-        particles.set_mesh_0d(dv)
-        particles.set_environment(Box, ())
-        sut = SDM(particles, StubKernel())
+        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(2)
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
         particles.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
                                                         extensive={'volume': np.full(2, 1.)},
@@ -61,7 +63,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particles.state.backend.to_ndarray(particles.state.n)), sorted(n_out))
+        np.testing.assert_array_equal(sorted(particles.backend.to_ndarray(particles.state.n)), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -71,13 +73,10 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(self, x_2, n_2, p):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n_2), dt=0)
-        dv = 1
-        particles.set_mesh_0d(dv)
-        particles.set_environment(Box, ())
-        sut = SDM(particles, StubKernel())
+        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={}, particles=particles)
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={},
+                                                        particles=particles)
 
         # Act
         sut()
@@ -98,13 +97,10 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(self, x, n, p):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n), dt=0)
-        dv = 1
-        particles.set_mesh_0d(dv)
-        particles.set_environment(Box, ())
-        sut = SDM(particles, StubKernel())
-        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, odd_zeros=True)
-        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={}, particles=particles)
+        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n))
+        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, True)
+        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={},
+                                                        particles=particles)
 
         # Act
         sut()
@@ -116,15 +112,11 @@ class TestSDMSingleCell:
     # TODO integration test?
     def test_multi_step(self):
         # Arrange
-        SD_num = 256
-        n = np.random.randint(1, 64, size=SD_num)
-        x = np.random.uniform(size=SD_num)
+        n_sd = 256
+        n = np.random.randint(1, 64, size=n_sd)
+        x = np.random.uniform(size=n_sd)
 
-        particles = DummyParticles(backend, n_sd=SD_num, dt=0)
-        dv = 1
-        particles.set_mesh_0d(dv)
-        particles.set_environment(Box, ())
-        sut = SDM(particles, StubKernel())
+        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             backend,
@@ -132,7 +124,8 @@ class TestSDMSingleCell:
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True
         )
-        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={}, particles=particles)
+        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={},
+                                                        particles=particles)
 
         # Act
         for _ in range(32):

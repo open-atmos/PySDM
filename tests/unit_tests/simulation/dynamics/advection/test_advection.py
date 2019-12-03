@@ -25,7 +25,7 @@ class TestExplicitEulerWithInterpolation:
         particles.set_mesh(grid)
         particles.set_environment(DummyEnvironment, ((np.array([[.1, .2]]).T, np.array([[.3, .4]])),))
         positions = Default.from_ndarray(np.array([[0.5, 0.5]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
                                                 positions=positions, particles=particles)
         sut = Advection(particles=particles)
 
@@ -42,8 +42,8 @@ class TestExplicitEulerWithInterpolation:
         particles.set_mesh(grid)
         particles.set_environment(DummyEnvironment, ((np.ones((4, 3)), np.zeros((3, 4))),))
         positions = Default.from_ndarray(np.array([[1.5, 1.5]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
-                                                 particles=particles, positions=positions)
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
+                                                particles=particles, positions=positions)
         sut = Advection(particles=particles)
 
         sut()
@@ -61,12 +61,13 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         particles.set_environment(DummyEnvironment, ((np.array([[a, b]]).T, np.array([[0, 0]])),))
         positions = Default.from_ndarray(np.array([[w, 0]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
-                                                 particles=particles, positions=positions)
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
+                                                particles=particles, positions=positions)
         sut = Advection(particles=particles, scheme='FTFS')
 
         # Act
-        sut.calculate_displacement(sut.displacement, sut.courant, particles.state.cell_origin, particles.state.position_in_cell)
+        sut.calculate_displacement(sut.displacement, sut.courant,
+                                   particles.state.cell_origin, particles.state.position_in_cell)
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
@@ -82,12 +83,13 @@ class TestExplicitEulerWithInterpolation:
         particles.set_mesh(grid)
         particles.set_environment(DummyEnvironment, ((np.array([[0, 0]]).T, np.array([[a, b]])),))
         positions = Default.from_ndarray(np.array([[0, w]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
-                                                 particles=particles, positions=positions)
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
+                                                particles=particles, positions=positions)
         sut = Advection(particles=particles, scheme='FTFS')
 
         # Act
-        sut.calculate_displacement(sut.displacement, sut.courant, particles.state.cell_origin, particles.state.position_in_cell)
+        sut.calculate_displacement(sut.displacement, sut.courant,
+                                   particles.state.cell_origin, particles.state.position_in_cell)
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 1], (1 - w) * a + w * b)
@@ -103,8 +105,8 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         initial_position = Default.from_ndarray(np.array([[px, py]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
-                                                 particles=particles, positions=initial_position)
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
+                                                particles=particles, positions=initial_position)
         sut = Advection(particles=particles)
         sut.displacement[droplet_id, 0] = .1
         sut.displacement[droplet_id, 1] = .2
@@ -127,8 +129,8 @@ class TestExplicitEulerWithInterpolation:
         particles.set_environment(DummyEnvironment, ((np.array([[0, 0]]).T, np.array([[0, 0]])),))
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
-        particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
-                                                 particles=particles, positions=initial_position)
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
+                                                particles=particles, positions=initial_position)
         sut = Advection(particles=particles)
         state = particles.state
         state.position_in_cell[droplet_id, 0] = 1.1
@@ -140,7 +142,8 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         for d in range(2):
             assert state.cell_origin[droplet_id, d] == initial_position[droplet_id, d] + 1
-            assert state.position_in_cell[droplet_id, d] == state.position_in_cell[droplet_id, d] - np.floor(state.position_in_cell[droplet_id, d])
+            assert state.position_in_cell[droplet_id, d] == (state.position_in_cell[droplet_id, d]
+                                                             - np.floor(state.position_in_cell[droplet_id, d]))
 
     def test_boundary_condition(self):
         # Arrange
@@ -152,7 +155,7 @@ class TestExplicitEulerWithInterpolation:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
 
-        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={}, grid=grid,
+        particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={},
                                                 positions=initial_position, particles=particles)
         sut = Advection(particles=particles)
         state = particles.state

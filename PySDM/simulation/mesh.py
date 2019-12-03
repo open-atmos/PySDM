@@ -9,12 +9,13 @@ import numpy as np
 
 
 class Mesh:
+
     def __init__(self, grid, size):
         self.grid = grid
         self.size = size
         self.strides = Mesh.strides(grid)
-        self.n_cell = grid[0] * grid[1]
-        self.dv = (size[0] / grid[0]) * (size[1] / grid[1])
+        self.n_cell = int(np.prod(grid))
+        self.dv = np.prod((np.array(size) / np.array(grid)))
 
     @property
     def dimension(self):
@@ -24,14 +25,9 @@ class Mesh:
     def dim(self):
         return self.dimension
 
-    # TODO hardcoded 2D in constructor
     @staticmethod
     def mesh_0d(dv=None):
-        mesh = Mesh((1, 1), (1, 1))
-        mesh.grid = ()
-        mesh.size = ()
-        mesh.strides = None
-        mesh.n_cell = 1
+        mesh = Mesh((), ())
         mesh.dv = dv
         return mesh
 

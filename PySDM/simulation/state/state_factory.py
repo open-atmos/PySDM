@@ -12,33 +12,31 @@ from PySDM.simulation.state.state import State
 class StateFactory:
 
     @staticmethod
-    def state(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: (np.ndarray, None),
+    def state(n: np.ndarray, intensive: dict, extensive: dict, positions: (np.ndarray, None),
               particles) -> State:
-
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
         attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
 
         cell_id, cell_origin, position_in_cell = StateFactory.positions(n, positions)
 
-        state = State(n, grid, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
+        state = State(n, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
 
         state.recalculate_cell_id()
         return state
 
     @staticmethod
-    def state_0d(n: np.ndarray, intensive: dict, extensive: dict, particles) -> State:
+    def state_0d(n: np.ndarray, extensive: dict, intensive: dict, particles) -> State:
 
-        return StateFactory.state(n, (), intensive, extensive, None, particles)
+        return StateFactory.state(n, intensive, extensive, None, particles)
 
     @staticmethod
-    def state_2d(n: np.ndarray, grid: tuple, intensive: dict, extensive: dict, positions: np.ndarray, particles) -> State:
-
-        return StateFactory.state(n, grid, intensive, extensive, positions, particles)
+    def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, particles)\
+            -> State:
+        return StateFactory.state(n, intensive, extensive, positions, particles)
 
     @staticmethod
     def check_args(n: np.ndarray, intensive: dict, extensive: dict) -> bool:
-
         result = True
         if n.ndim != 1:
             result = False
@@ -52,7 +50,6 @@ class StateFactory:
 
     @staticmethod
     def init_attributes_and_keys(particles, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
-
         attributes = {'intensive': particles.backend.array((len(intensive), SD_num), float),
                       'extensive': particles.backend.array((len(extensive), SD_num), float)
                       }
@@ -69,7 +66,6 @@ class StateFactory:
 
     @staticmethod
     def positions(n, positions):
-
         if positions is None:
             cell_id = np.zeros_like(n)
             return cell_id, None, None

@@ -20,9 +20,6 @@ class AdiabaticParcel(_MoistAirEnvironment):
         self.parcel_vars = ['rhod', 'z', 't']
         super().__init__(particles, self.parcel_vars)
 
-        self.qv_lambda = lambda: self['qv']
-        self.thd_lambda = lambda: self['thd']
-
         self.m_d = mass_of_dry_air
         self.w = w
 
@@ -38,7 +35,14 @@ class AdiabaticParcel(_MoistAirEnvironment):
         super().sync()
         self.post_step()
 
-    # TODO: better expose m_d (and equip other environments with m_d)
+    def _get_thd(self):
+        return self['thd']
+
+    def _get_qv(self):
+        return self['qv']
+
+    # TODO: probably not working outside of running simulation
+    # TODO: move back to mesh ! # TODO: better expose m_d (and equip other environments with m_d)
     @property
     def dv(self):
         return self.m_d / self.get_predicted("rhod")[0]

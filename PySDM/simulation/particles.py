@@ -15,10 +15,8 @@ from PySDM.simulation.mesh import Mesh
 
 
 class Particles:
-    # TODO: assertion method
 
-    def __init__(self, n_sd, dt, backend):
-
+    def __init__(self, n_sd, dt, backend, stats=Stats()):
         self.__n_sd = n_sd
         self.__dt = dt
         self.backend = backend
@@ -27,9 +25,8 @@ class Particles:
         self.state: (State, None) = None
         self.dynamics: list = []
         self.__dv = None
-
         self.n_steps = 0
-        self.stats = Stats()  # TODO: inject?
+        self.stats = stats
 
     @property
     def n_sd(self) -> int:
@@ -55,15 +52,15 @@ class Particles:
     def add_dynamic(self, dynamic_class, params: dict):
         self.dynamics.append(dynamic_class(self, **params))
 
-    # TODO: extensive, intensive
-    def create_state_0d(self, n, intensive, extensive):
+    def create_state_0d(self, n, extensive, intensive):
         assert_not_none(self.mesh)
         assert_none(self.state)
-        self.state = StateFactory.state_0d(n, intensive, extensive, self)
+        self.state = StateFactory.state_0d(n, extensive, intensive, self)
 
     def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
                         spectrum_per_mass_of_dry_air, r_range, kappa):
-        assert_not_none(self.environment)
+        assert_not_none(self.mesh, self.environment)
+        assert_none(self.state)
 
         with np.errstate(all='raise'):
             positions = spatial_discretisation(self.mesh.grid, self.n_sd)
@@ -74,8 +71,7 @@ class Particles:
             # TODO: cell_id, _, _ = StateFactory.positions(n_per_kg, positions)
 
             cell_origin = positions.astype(dtype=int)
-            strides = Mesh.strides(self.mesh.grid)
-            cell_id = np.dot(strides, cell_origin.T).ravel()
+            cell_id = np.dot(self.mesh.strides, cell_origin.T).ravel()
             # </TEMP>
 
             # TODO: not here
@@ -87,9 +83,7 @@ class Particles:
         extensive['volume'] = phys.volume(radius=r_wet)
         extensive['dry volume'] = phys.volume(radius=r_dry)
 
-        assert_not_none(self.mesh)
-        assert_none(self.state)
-        self.state = StateFactory.state_2d(n, self.mesh.grid, intensive, extensive, positions, self)
+        self.state = StateFactory.state_2d(n, intensive, extensive, positions, self)
 
     def run(self, steps):
         with self.stats:

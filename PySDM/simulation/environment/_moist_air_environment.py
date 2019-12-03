@@ -7,6 +7,7 @@ Created at 28.11.2019
 
 
 class _MoistAirEnvironment:
+
     def __init__(self, particles, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles
@@ -32,8 +33,8 @@ class _MoistAirEnvironment:
 
     def sync(self):
         target = self._tmp
-        self.particles.backend.upload(self.qv_lambda().ravel(), target['qv'])
-        self.particles.backend.upload(self.thd_lambda().ravel(), target['thd'])
+        self.particles.backend.upload(self._get_qv().ravel(), target['qv'])
+        self.particles.backend.upload(self._get_thd().ravel(), target['thd'])
 
         self.particles.backend.apply(
             function=self.particles.backend.temperature_pressure_RH,

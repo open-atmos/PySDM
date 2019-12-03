@@ -12,6 +12,7 @@ from PySDM.simulation.environment._moist_air_environment import _MoistAirEnviron
 
 
 class Kinematic2D(_MoistAirEnvironment):
+
     def __init__(self, particles, stream_function, field_values, rhod_of):
         super().__init__(particles, [])
 
@@ -33,9 +34,6 @@ class Kinematic2D(_MoistAirEnvironment):
             g_factor=rhod
         )
 
-        self.thd_lambda = lambda: self.eulerian_fields.mpdatas['th'].curr.get()
-        self.qv_lambda = lambda: self.eulerian_fields.mpdatas['qv'].curr.get()
-
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
@@ -43,6 +41,13 @@ class Kinematic2D(_MoistAirEnvironment):
         self.sync()
         self.post_step()
 
+    def _get_thd(self):
+        return self.eulerian_fields.mpdatas['th'].curr.get()
+
+    def _get_qv(self):
+        return self.eulerian_fields.mpdatas['qv'].curr.get()
+
+    # TODO: move back to mesh
     @property
     def dv(self):
         return self.particles.mesh.dv
