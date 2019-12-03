@@ -1,0 +1,3 @@
+[submodule "submodules/MPyDATA"]
+	path = submodules/MPyDATA
+	url = git@github.com:atmos-cloud-sim-uj/MPyDATA.git
