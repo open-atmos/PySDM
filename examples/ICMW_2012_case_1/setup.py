@@ -19,10 +19,10 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
-    grid = (10, 10)  # dx=dz=20m
+    grid = (10, 10)  # TODO: 75x75
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-    dt = 0.25 * si.seconds  # TODO: was 1s in the ICMW case?
+    dt = .1 * si.seconds  # TODO
     w_max = .6 * si.metres / si.seconds
 
     # TODO: second mode
@@ -48,15 +48,6 @@ class Setup:
         'th': phys.th_dry(th_std0, qv0),
         'qv': qv0
     }
-
-    # TODO: potentially to be removed as already present in particles
-    @property
-    def dx(self):
-        return self.size[0] / self.grid[0]
-
-    @property
-    def dz(self):
-        return self.size[1] / self.grid[1]
 
     @property
     def n_sd(self):
@@ -96,5 +87,5 @@ class Setup:
 
     kernel = Golovin(b=1e-3)  # [s-1]
 
-    specs = {'x': (1, 1/3)}
-    output_vars = ["m0", "th", "qv", "RH", "x_m1"]  # TODO: add in a loop over specs
+    specs = {'volume': (1, 1/3)}
+    output_vars = ["m0", "th", "qv", "RH", "volume_m1"]  # TODO: add in a loop over specs

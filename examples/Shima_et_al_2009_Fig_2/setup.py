@@ -9,13 +9,13 @@ import numpy as np
 from PySDM.simulation.initialisation.spectra import Exponential
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.backends.default import Default
-from PySDM.utils import Physics
 from PySDM.simulation.physics.constants import si
+from PySDM.simulation.physics import formulae as phys
 
 
 class SetupA:
-    x_min = Physics.r2x(10 * si.micrometres)  # not given in the paper
-    x_max = Physics.r2x(100 * si.micrometres)  # not given in the paper
+    x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
+    x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
@@ -44,5 +44,5 @@ class SetupA:
             np.testing.assert_approx_equal(state['n'][0], check_ksi, 1)
 
         # liquid water content
-        LWC = self.rho * np.dot(state['n'], state['x']) / self.dv
+        LWC = self.rho * np.dot(state['n'], state['volume']) / self.dv
         np.testing.assert_approx_equal(LWC, check_LWC, 3)

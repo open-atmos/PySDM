@@ -35,41 +35,40 @@ class Simulation:
         self.setup = setup
         self.storage = storage
 
-    # instantiation of simulation components, time-stepping
     def run(self, controller=DummyController()):
-        self.tmp = None
+        self.tmp = None # TODO!
         self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
         self.particles.set_mesh(grid=self.setup.grid, size=self.setup.size)
-        self.particles.set_environment(Kinematic2D, (
-            self.setup.stream_function,
-            self.setup.field_values,
-            self.setup.rhod
-        ))
+        self.particles.set_environment(Kinematic2D, {
+            "stream_function": self.setup.stream_function,
+            "field_values": self.setup.field_values,
+            "rhod_of": self.setup.rhod
+        })
 
-        self.particles.create_state_2d2( # TODO: ...
-                                        extensive={},
-                                        intensive={},
-                                        spatial_discretisation=spatial_discretisation.pseudorandom,
-                                        spectral_discretisation=spectral_discretisation.constant_multiplicity,
-                                        spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
-                                        r_range=(self.setup.r_min, self.setup.r_max),
-                                        kappa=self.setup.kappa
+        self.particles.create_state_2d(
+            extensive={},
+            intensive={},
+            spatial_discretisation=spatial_discretisation.pseudorandom,
+            spectral_discretisation=spectral_discretisation.constant_multiplicity,
+            spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
+            r_range=(self.setup.r_min, self.setup.r_max),
+            kappa=self.setup.kappa
         )
 
         if self.setup.processes["condensation"]:
-            self.particles.add_dynamic(Condensation, (self.setup.kappa,))
+            self.particles.add_dynamic(Condensation, {"kappa": self.setup.kappa})
         if self.setup.processes["advection"]:
-            self.particles.add_dynamic(EulerianAdvection, ())
-            self.particles.add_dynamic(Advection, ('FTBS',))
+            self.particles.add_dynamic(EulerianAdvection, {})
+            self.particles.add_dynamic(Advection, {"scheme": 'FTBS'})
         if self.setup.processes["coalescence"]:
-            self.particles.add_dynamic(SDM, (self.setup.kernel,))
+            self.particles.add_dynamic(SDM, {"kernel": self.setup.kernel})
 
         # TODO
         if self.storage is not None:
             self.storage.init(self.setup)
 
         with controller:
-            for step in self.setup.steps: # TODO: rename output_steps
+            for step in self.setup.steps:  # TODO: rename output_steps
                 if controller.panic:
                     break
 

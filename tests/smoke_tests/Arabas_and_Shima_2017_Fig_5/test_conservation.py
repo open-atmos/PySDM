@@ -9,7 +9,7 @@ import itertools
 def ql(simulation):
     backend = simulation.particles.backend
 
-    droplet_volume = simulation.particles.state.get_backend_storage('x')
+    droplet_volume = simulation.particles.state.get_backend_storage('volume')
     droplet_volume = backend.to_ndarray(droplet_volume)[0]
 
     droplet_number = simulation.particles.state.n
@@ -50,9 +50,9 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air):
 def test_energy_conservation(setup_idx, mass_of_dry_air):
     # Arrange
     setup = Setup(
-        w_avg = setups[setup_idx].w_avg,
-        N_STP = setups[setup_idx].N_STP,
-        r_dry = setups[setup_idx].r_dry,
-        mass_of_dry_air = mass_of_dry_air
+        w_avg=setups[setup_idx].w_avg,
+        N_STP=setups[setup_idx].N_STP,
+        r_dry=setups[setup_idx].r_dry,
+        mass_of_dry_air=mass_of_dry_air
     )
     # TODO

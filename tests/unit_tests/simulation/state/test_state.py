@@ -58,15 +58,15 @@ class TestState:
         # Act & Assert
         self.check_contiguity(sut, attr='a', i_SD=5)
 
-    @pytest.mark.parametrize("x, n", [
+    @pytest.mark.parametrize("volume, n", [
         pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
         pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
         pytest.param(np.array([1., 1, 4]), np.array([5, 0, 0]))
     ])
-    def test_housekeeping(self, x, n):
+    def test_housekeeping(self, volume, n):
         # Arrange
         particles = DummyParticles(backend, n_sd=len(n))
-        sut = TestableStateFactory.state_0d(n=n, extensive={'x': x}, intensive={}, particles=particles)
+        sut = TestableStateFactory.state_0d(n=n, extensive={'volume': volume}, intensive={}, particles=particles)
         # TODO
         sut.healthy = sut.backend.from_ndarray(np.array([0]))
 
@@ -74,10 +74,10 @@ class TestState:
         sut.housekeeping()
 
         # Assert
-        assert sut['x'].shape == sut['n'].shape
+        assert sut['volume'].shape == sut['n'].shape
         assert sut.SD_num == (n != 0).sum()
         assert sut['n'].sum() == n.sum()
-        assert (sut['x'] * sut['n']).sum() == (x * n).sum()
+        assert (sut['volume'] * sut['n']).sum() == (volume * n).sum()
 
     def test_sort_by_cell_id(self):
         # Arrange

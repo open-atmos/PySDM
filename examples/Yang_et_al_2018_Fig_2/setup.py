@@ -8,33 +8,34 @@ Created at 25.11.2019
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.backends.default import Default
 from PySDM.simulation.physics.constants import si
+from PySDM.simulation.initialisation import spectral_discretisation
 import numpy as np
 
 
 class Setup:
-    def __init__(self, dt=1 * si.second):
+    def __init__(self, dt=1 * si.second, n_sd = 100):
         self.dt = dt
         self.n_steps = int(3 * si.hours / dt)
+        self.n_sd = n_sd
+        self.r_dry, self.n = spectral_discretisation.logarithmic(
+            n_sd=n_sd,
+            spectrum=Lognormal(
+                norm_factor=1000 / si.milligram * self.mass_of_dry_air,
+                m_mode=50 * si.nanometre,
+                s_geom=1.4
+            ),
+            range=(10.633 * si.nanometre, 513.06 * si.nanometre)
+        )
 
     backend = Default
 
     mass_of_dry_air = 100 * si.kilogram
-    spectrum = Lognormal(
-      norm_factor=1000 / si.milligram * mass_of_dry_air,
-      m_mode=50 * si.nanometre,
-      s_geom=1.4
-    )
 
-    n_sd = 100
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram
     p0 = 938.5 * si.hectopascals
     z0 = 600 * si.metres
     kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
-
-    # initial dry radius discretisation range
-    r_min = 10.633 * si.nanometre
-    r_max = 513.06 * si.nanometre
 
     @staticmethod
     def w(t):
