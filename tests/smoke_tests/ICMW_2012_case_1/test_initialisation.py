@@ -10,8 +10,7 @@ import numpy as np
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.example import Simulation
 from PySDM.simulation.physics.constants import si
-from PySDM.utils import Physics
-
+from PySDM.simulation.physics import formulae as phys
 from matplotlib import pyplot
 
 
@@ -29,13 +28,13 @@ def test_initialisation(plot=False):
     n_cell = np.prod(np.array(setup.grid))
     n_moments = 1
 
-    x_bins = np.logspace(
-        (np.log10(Physics.r2x(setup.r_min))),
-        (np.log10(Physics.r2x(10*setup.r_max))),
+    v_bins = np.logspace(
+        (np.log10(phys.volume(radius=setup.r_min))),
+        (np.log10(phys.volume(radius=10*setup.r_max))),
         num=n_bins,
         endpoint=True
     )
-    r_bins = Physics.x2r(x_bins)
+    r_bins = phys.radius(volume=v_bins)
 
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
@@ -51,11 +50,11 @@ def test_initialisation(plot=False):
     rhod = setup.backend.to_ndarray(environment["rhod"]).reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
-        particles.state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(x_bins[i], x_bins[i + 1]))
+        particles.state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
         histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
-        particles.state.moments(moment_0, moments, specs={}, attr_name='x', attr_range=(x_bins[i], x_bins[i + 1]))
+        particles.state.moments(moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
         histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 

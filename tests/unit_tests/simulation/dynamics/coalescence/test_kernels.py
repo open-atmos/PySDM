@@ -11,18 +11,6 @@ import pytest
 
 
 class TestGolovin:
-    # TODO optional
-    # def test_analytic_solution(self):
-    #     b = 1.5e3
-    #     x_0 = 4/3 * np.permutation * 30.531e-6**3
-    #     N_0 = 2**23
-    #
-    #     sut = Golovin(b)
-    #
-    #     from matplotlib import pyplot
-    #     x = np.linspace(8e-25, 500e-15, 100)
-    #     pyplot.plot(x, sut.analytic_solution(x=x, t=0.01, x_0=x_0, N_0=N_0))
-    #     pyplot.show()
 
     @pytest.mark.parametrize("x", [
         pytest.param(5e-10),

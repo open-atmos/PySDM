@@ -38,6 +38,7 @@ class AdiabaticParcel(_MoistAirEnvironment):
         super().sync()
         self.post_step()
 
+    # TODO: better expose m_d (and equip other environments with m_d)
     @property
     def dv(self):
         return self.m_d / self.get_predicted("rhod")[0]

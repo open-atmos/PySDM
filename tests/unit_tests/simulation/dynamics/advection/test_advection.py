@@ -92,7 +92,6 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_equal(sut.displacement[0, 1], (1 - w) * a + w * b)
 
-
     def test_update_position(self):
         # Arrange
         n = np.ones(1)
@@ -104,7 +103,6 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         initial_position = Default.from_ndarray(np.array([[px, py]]))
-        # TODO: state not needed?
         particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
                                                  particles=particles, positions=initial_position)
         sut = Advection(particles=particles)
@@ -129,7 +127,6 @@ class TestExplicitEulerWithInterpolation:
         particles.set_environment(DummyEnvironment, ((np.array([[0, 0]]).T, np.array([[0, 0]])),))
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
-        # TODO: state not needed?
         particles.state = StateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
                                                  particles=particles, positions=initial_position)
         sut = Advection(particles=particles)
@@ -155,7 +152,6 @@ class TestExplicitEulerWithInterpolation:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
 
-        # TODO: state not needed?
         particles.state = StateFactory.state_2d(n=n, intensive={}, extensive={}, grid=grid,
                                                 positions=initial_position, particles=particles)
         sut = Advection(particles=particles)

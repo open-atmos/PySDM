@@ -9,7 +9,7 @@ import itertools
 def ql(simulation):
     backend = simulation.particles.backend
 
-    droplet_volume = simulation.particles.state.get_backend_storage('x')
+    droplet_volume = simulation.particles.state.get_backend_storage('volume')
     droplet_volume = backend.to_ndarray(droplet_volume)[0]
 
     droplet_number = simulation.particles.state.n
@@ -41,4 +41,18 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air):
 
     # Assert
     qt = simulation.particles.environment["qv"] + ql(simulation)
-    np.testing.assert_approx_equal(qt, qt0, 6)
+    np.testing.assert_approx_equal(qt, qt0, 15)
+
+
+@pytest.mark.parametrize(
+    "setup_idx, mass_of_dry_air", itertools.product(range(len(w_avgs)), [1, 10, 100, 1000, 10000])
+)
+def test_energy_conservation(setup_idx, mass_of_dry_air):
+    # Arrange
+    setup = Setup(
+        w_avg=setups[setup_idx].w_avg,
+        N_STP=setups[setup_idx].N_STP,
+        r_dry=setups[setup_idx].r_dry,
+        mass_of_dry_air=mass_of_dry_air
+    )
+    # TODO

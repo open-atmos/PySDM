@@ -34,7 +34,6 @@ def logarithmic(n_sd, spectrum, range):
     return __discritise(grid, spectrum)
 
 
-# TODO in principle, the range param. not needed -> we could check when multiplicity goes to zero
 def constant_multiplicity(n_sd, spectrum, range):
     assert range[0] > 0
     assert range[1] > range[0]

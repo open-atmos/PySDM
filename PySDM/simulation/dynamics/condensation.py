@@ -5,8 +5,7 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.utils import Physics
-from PySDM.simulation.physics.formulae import dr_dt_MM, lv, c_p
+from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics.constants import p1000, Rd, c_pd, rho_w
 
 from scipy import integrate as ode
@@ -24,8 +23,8 @@ class _ODESystem:
     def __init__(self, rhod, kappa, xd: np.ndarray, n: np.ndarray, dqv_dt, dthd_dt, m_d):
         self.rhod = rhod
         self.kappa = kappa
-        self.rd = Physics.x2r(xd)
-        self.n = n  # TODO: per mass of dry air !
+        self.rd = phys.radius(volume=xd)
+        self.n = n
         self.dqv_dt = dqv_dt
         self.dthd_dt = dthd_dt
         self.m_d = m_d
@@ -47,9 +46,9 @@ class _ODESystem:
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, qv, dqv_dt, dthd_dt, m_d):
     for i in range(len(rw)):
-        dy_dt[idx_rw + i] = dr_dt_MM(rw[i], T, p, np.minimum(RH - 1, .01), kappa, rd[i])
+        dy_dt[idx_rw + i] = phys.dr_dt_MM(rw[i], T, p, np.minimum(RH - 1, .01), kappa, rd[i])
     dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
-    dy_dt[idx_thd] = - lv(T) * dy_dt[idx_qv] / c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+    dy_dt[idx_thd] = - phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
     dy_dt[idx_qv] += dqv_dt
     dy_dt[idx_thd] += dthd_dt
@@ -87,12 +86,12 @@ class Condensation:
         self.environment.sync()
 
         state = self.particles.state
-        state.sort_by_cell_id() #TODO
+        state.sort_by_cell_id()  # TODO +what about droplets that precipitated out of the domain
         compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
 
-        x = state.get_backend_storage("x")
+        v = state.get_backend_storage("volume")
         n = state.n
-        xdry = state.get_backend_storage("dry volume")
+        vdry = state.get_backend_storage("dry volume")
 
         if self.scheme == 'scipy.odeint':
             for cell_id in range(self.particles.mesh.n_cell):
@@ -105,12 +104,12 @@ class Condensation:
                 y0 = np.empty(n_sd_in_cell + 2)
                 y0[idx_thd] = self.environment['thd'][cell_id]
                 y0[idx_qv] = self.environment['qv'][cell_id]
-                y0[idx_rw:] = Physics.x2r(x[state.idx[cell_start:cell_end]])
+                y0[idx_rw:] = phys.radius(volume=v[state.idx[cell_start:cell_end]])
                 integ = ode.solve_ivp(
                     _ODESystem(
                         self.environment.get_predicted("rhod")[cell_id],
                         self.kappa,
-                        xdry[state.idx[cell_start:cell_end]],
+                        vdry[state.idx[cell_start:cell_end]],
                         n[state.idx[cell_start:cell_end]],
                         (self.environment.get_predicted('qv')[cell_id] - self.environment['qv'][cell_id]) / self.dt,
                         (self.environment.get_predicted('thd')[cell_id] - self.environment['thd'][cell_id]) / self.dt,
@@ -119,20 +118,36 @@ class Condensation:
                     (0., self.dt),
                     y0,
                     method='BDF',
-                    rtol=1e-6,
-                    atol=1e-22,
+                    # rtol=1e-6,
+                    atol=1e-9,
                     # first_step=self.dt,
                     t_eval=[self.dt]
                 )
                 assert integ.success, integ.message
 
+                dm = 0
                 for i in range(cell_end - cell_start):
-                    x[state.idx[cell_start + i]] = Physics.r2x(integ.y[idx_rw + i])
-                self.environment.get_predicted('qv')[cell_id] = integ.y[idx_qv]
-                self.environment.get_predicted('thd')[cell_id] = integ.y[idx_thd]
+                    x_new = phys.volume(radius=integ.y[idx_rw + i])
+                    x_old = v[state.idx[cell_start + i]]
+                    nd = n[state.idx[cell_start + i]]
+                    dm += nd * (x_new - x_old) * rho_w
+                    v[state.idx[cell_start + i]] = x_new
+
+                m_d = self.environment.get_predicted('rhod')[cell_id] * self.environment.dv
+                dq_sum = - dm / m_d
+                dq_ode = integ.y[idx_qv] - self.environment.get_predicted('qv')[cell_id]
+
+                #dth_sum =
+                dth_ode = integ.y[idx_thd] - self.environment.get_predicted('thd')[cell_id]
+
+                # TODO: move to a separate test
+                #np.testing.assert_approx_equal(dq_ode, dq_sum, 4)
+                #np.testing.assert_approx_equal(dth_ode, dth_sum)
+
+                self.environment.get_predicted('qv')[cell_id] += dq_sum
+                self.environment.get_predicted('thd')[cell_id] += dth_ode
         else:
             raise NotImplementedError()
 
-        # TODO: what about droplets that precipitated out of the domain
 
 
