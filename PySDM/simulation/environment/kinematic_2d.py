@@ -7,7 +7,7 @@ Created at 06.11.2019
 """
 
 import numpy as np
-from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
+from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
 
 
