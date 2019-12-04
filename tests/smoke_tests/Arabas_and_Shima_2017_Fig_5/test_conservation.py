@@ -18,7 +18,7 @@ def ql(simulation):
     droplet_mass = droplet_number * droplet_volume * const.rho_w
 
     env = simulation.particles.environment
-    return droplet_mass / env.m_d
+    return droplet_mass / env.mass_of_dry_air
 
 
 @pytest.mark.parametrize(
