@@ -8,10 +8,10 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
+from ._moist_eulerian import _MoistEulerian
 
 
-class Kinematic2D(_MoistAirEnvironment):
+class MoistEulerian2DKinematic(_MoistEulerian):
 
     def __init__(self, particles, stream_function, field_values, rhod_of):
         super().__init__(particles, [])
@@ -46,11 +46,6 @@ class Kinematic2D(_MoistAirEnvironment):
 
     def _get_qv(self):
         return self.eulerian_fields.mpdatas['qv'].curr.get()
-
-    # TODO: move back to mesh
-    @property
-    def dv(self):
-        return self.particles.mesh.dv
 
     def wait(self):
         # TODO

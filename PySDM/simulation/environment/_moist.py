@@ -5,8 +5,10 @@ Created at 28.11.2019
 @author: Sylwester Arabas
 """
 
+import numpy as np
 
-class _MoistAirEnvironment:
+
+class _Moist:
 
     def __init__(self, particles, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
@@ -42,6 +44,9 @@ class _MoistAirEnvironment:
             output=(target['T'], target['p'], target['RH'])
         )
         self._values["predicted"] = target
+
+    def _get_qv(self) -> np.ndarray: raise NotImplemented()
+    def _get_thd(self) -> np.ndarray: raise NotImplemented()
 
     def post_step(self):
         self._tmp = self._values["current"]

@@ -10,7 +10,7 @@ import numpy as np
 
 from PySDM.simulation.particles import Particles as Particles
 from PySDM.simulation.dynamics.condensation import Condensation
-from PySDM.simulation.environment.adiabatic_parcel import AdiabaticParcel
+from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys
 from examples.Arabas_and_Shima_2017_Fig_5.setup import setups
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
@@ -23,7 +23,7 @@ class Simulation:
 
         self.particles = Particles(backend=setup.backend, n_sd=1, dt=dt)
         self.particles.set_mesh_0d()
-        self.particles.set_environment(AdiabaticParcel, {
+        self.particles.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,
             "p0": setup.p0,
             "q0": setup.q0,

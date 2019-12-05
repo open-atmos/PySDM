@@ -6,21 +6,21 @@ Created at 25.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particles import Particles
-from PySDM.simulation.physics import formulae as phys
-from PySDM.simulation.physics import constants as const
-from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
+from ...simulation.particles import Particles
+from ...simulation.physics import formulae as phys
+from ...simulation.physics import constants as const
+from ._moist import _Moist
+from ._moist_lagrangian_parcel import _MoistLagrangianParcel
 
 
-class AdiabaticParcel(_MoistAirEnvironment):
+class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
     def __init__(self, particles: Particles,
                  mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
-        self.parcel_vars = ['rhod', 'z', 't']
-        super().__init__(particles, self.parcel_vars)
+        super().__init__(particles, ['rhod', 'z', 't'], mass_of_dry_air)
 
-        self.m_d = mass_of_dry_air
+        # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w
 
         pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
@@ -32,29 +32,8 @@ class AdiabaticParcel(_MoistAirEnvironment):
         self['t'][:] = 0
 
         self.sync_parcel_vars()
-        super().sync()
+        _Moist.sync(self)
         self.post_step()
-
-    def _get_thd(self):
-        return self['thd']
-
-    def _get_qv(self):
-        return self['qv']
-
-    # TODO: probably not working outside of running simulation
-    # TODO: move back to mesh ! # TODO: better expose m_d (and equip other environments with m_d)
-    @property
-    def dv(self):
-        return self.m_d / self.get_predicted("rhod")[0]
-
-    def sync_parcel_vars(self):
-        for var in self.parcel_vars:
-            self._tmp[var][:] = self[var][:]
-
-    def sync(self):
-        self.sync_parcel_vars()
-        self.advance_parcel_vars()
-        super().sync()
 
     def advance_parcel_vars(self):
         dt = self.particles.dt
