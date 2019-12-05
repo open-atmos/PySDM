@@ -30,7 +30,7 @@ def test_dry_spectrum_y(plot=False):
 
     dr = (rd[1:] - rd[0:-1])
     env = simulation.particles.environment
-    dn_dr = (nd[0:-1] / env.m_d * env["rhod"] / dr)
+    dn_dr = (nd[0:-1] / env.mass_of_dry_air * env["rhod"] / dr)
     dn_dr /= (1/si.centimetre**3)
 
     if plot:

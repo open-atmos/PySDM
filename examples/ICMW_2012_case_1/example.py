@@ -14,7 +14,7 @@ from PySDM.simulation.dynamics.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
-from PySDM.simulation.environment.kinematic_2d import Kinematic2D
+from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEulerian2DKinematic
 
 from examples.ICMW_2012_case_1.setup import Setup
 from examples.ICMW_2012_case_1.storage import Storage
@@ -39,7 +39,7 @@ class Simulation:
         self.tmp = None # TODO!
         self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
         self.particles.set_mesh(grid=self.setup.grid, size=self.setup.size)
-        self.particles.set_environment(Kinematic2D, {
+        self.particles.set_environment(MoistEulerian2DKinematic, {
             "stream_function": self.setup.stream_function,
             "field_values": self.setup.field_values,
             "rhod_of": self.setup.rhod
