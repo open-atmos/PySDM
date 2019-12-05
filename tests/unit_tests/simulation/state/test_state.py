@@ -68,7 +68,7 @@ class TestState:
         particles = DummyParticles(backend, n_sd=len(n))
         sut = TestableStateFactory.state_0d(n=n, extensive={'volume': volume}, intensive={}, particles=particles)
         # TODO
-        sut.healthy = sut.backend.from_ndarray(np.array([0]))
+        sut.healthy = particles.backend.from_ndarray(np.array([0]))
 
         # Act
         sut.housekeeping()
@@ -103,7 +103,7 @@ class TestState:
         particles = DummyParticles(backend, n_sd=1)
         particles.set_mesh(grid)
         particles.set_environment(DummyEnvironment, (None,))
-        sut = TestableStateFactory.state_2d(n=n, grid=grid, intensive={}, extensive={},
+        sut = TestableStateFactory.state_2d(n=n, intensive={}, extensive={},
                                             particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1
         sut.cell_origin[droplet_id, 1] = .2

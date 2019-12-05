@@ -14,7 +14,6 @@ from PySDM.simulation.initialisation.spectral_discretisation import constant_mul
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.simulation.initialisation.spectra import Exponential
 from PySDM.simulation.environment.box import Box
-import numpy as np
 
 
 backend = Default

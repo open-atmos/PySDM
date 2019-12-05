@@ -7,11 +7,12 @@ Created at 06.11.2019
 """
 
 import numpy as np
-from MPyDATA.mpdata.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-from PySDM.simulation.environment._moist_air_environment import _MoistAirEnvironment
+from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
+from ._moist_eulerian import _MoistEulerian
 
 
-class Kinematic2D(_MoistAirEnvironment):
+class MoistEulerian2DKinematic(_MoistEulerian):
+
     def __init__(self, particles, stream_function, field_values, rhod_of):
         super().__init__(particles, [])
 
@@ -33,9 +34,6 @@ class Kinematic2D(_MoistAirEnvironment):
             g_factor=rhod
         )
 
-        self.thd_lambda = lambda: self.eulerian_fields.mpdatas['th'].curr.get()
-        self.qv_lambda = lambda: self.eulerian_fields.mpdatas['qv'].curr.get()
-
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
@@ -43,9 +41,11 @@ class Kinematic2D(_MoistAirEnvironment):
         self.sync()
         self.post_step()
 
-    @property
-    def dv(self):
-        return self.particles.mesh.dv
+    def _get_thd(self):
+        return self.eulerian_fields.mpdatas['th'].curr.get()
+
+    def _get_qv(self):
+        return self.eulerian_fields.mpdatas['qv'].curr.get()
 
     def wait(self):
         # TODO
