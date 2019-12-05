@@ -1,4 +1,4 @@
-from PySDM.simulation.initialisation.spectral_discretisation import *
+from PySDM.simulation.initialisation.spectral_sampling import *
 from PySDM.simulation.initialisation.spectra import Lognormal
 import numpy as np
 import pytest

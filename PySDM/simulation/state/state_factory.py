@@ -12,28 +12,16 @@ from PySDM.simulation.state.state import State
 class StateFactory:
 
     @staticmethod
-    def state(n: np.ndarray, intensive: dict, extensive: dict, positions: (np.ndarray, None),
+    def state(n: np.ndarray, intensive: dict, extensive: dict, cell_id, cell_origin, position_in_cell,
               particles) -> State:
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
         attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
 
-        cell_id, cell_origin, position_in_cell = StateFactory.positions(n, positions)
-
         state = State(n, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
 
         state.recalculate_cell_id()
         return state
-
-    @staticmethod
-    def state_0d(n: np.ndarray, extensive: dict, intensive: dict, particles) -> State:
-
-        return StateFactory.state(n, intensive, extensive, None, particles)
-
-    @staticmethod
-    def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, particles)\
-            -> State:
-        return StateFactory.state(n, intensive, extensive, positions, particles)
 
     @staticmethod
     def check_args(n: np.ndarray, intensive: dict, extensive: dict) -> bool:
@@ -63,15 +51,4 @@ class StateFactory:
                 idx += 1
 
         return attributes, keys
-
-    @staticmethod
-    def positions(n, positions):
-        if positions is None:
-            cell_id = np.zeros_like(n)
-            return cell_id, None, None
-        else:
-            cell_origin = positions.astype(dtype=int)
-            position_in_cell = positions - np.floor(positions)
-            cell_id = np.empty_like(n)
-            return cell_id, cell_origin, position_in_cell
 

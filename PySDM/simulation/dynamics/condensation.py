@@ -42,11 +42,11 @@ class _ODESystem:
 
         return dy_dt
 
-# TODO !!! (incl. np.minimum())
+# TODO
 @numba.njit()
 def foo(dy_dt, rw, T, p, n, RH, kappa, rd, qv, dqv_dt, dthd_dt, m_d):
     for i in range(len(rw)):
-        dy_dt[idx_rw + i] = phys.dr_dt_MM(rw[i], T, p, np.minimum(RH - 1, .01), kappa, rd[i])
+        dy_dt[idx_rw + i] = phys.dr_dt_MM(rw[i], T, p, RH - 1, kappa, rd[i])
     dy_dt[idx_qv] = -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
     dy_dt[idx_thd] = - phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 

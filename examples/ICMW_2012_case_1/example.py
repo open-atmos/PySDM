@@ -13,7 +13,7 @@ from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.initialisation import spatial_discretisation, spectral_discretisation
+from PySDM.simulation.initialisation import spatial_sampling, spectral_sampling
 from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEulerian2DKinematic
 
 from examples.ICMW_2012_case_1.setup import Setup
@@ -48,8 +48,8 @@ class Simulation:
         self.particles.create_state_2d(
             extensive={},
             intensive={},
-            spatial_discretisation=spatial_discretisation.pseudorandom,
-            spectral_discretisation=spectral_discretisation.constant_multiplicity,
+            spatial_discretisation=spatial_sampling.pseudorandom,
+            spectral_discretisation=spectral_sampling.constant_multiplicity,
             spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
             r_range=(self.setup.r_min, self.setup.r_max),
             kappa=self.setup.kappa

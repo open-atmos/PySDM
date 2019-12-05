@@ -1,6 +1,5 @@
 import numpy as np
 from scipy import optimize as root
-from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEulerian2DKinematic
 from PySDM.simulation.physics import formulae
 
 

@@ -7,10 +7,11 @@ Created at 05.08.2019
 
 import numpy as np
 
-from PySDM.simulation.state.state_factory import StateFactory
+from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
+from PySDM.simulation.particles import discretise_n
 from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.simulation.initialisation.spectra import Lognormal
-from PySDM.simulation.initialisation.spectral_discretisation import linear
+from PySDM.simulation.initialisation.spectral_sampling import linear
 from PySDM.backends.default import Default
 
 backend = Default
@@ -30,8 +31,9 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = linear(n_sd, spectrum, (v_min, v_max))
+        n = discretise_n(n)
         particles = DummyParticles(backend, n_sd)
-        state = StateFactory.state_0d(n=n, extensive={'volume': v}, intensive={}, particles=particles)
+        state = TestableStateFactory.state_0d(n=n, extensive={'volume': v}, intensive={}, particles=particles)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
