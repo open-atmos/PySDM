@@ -8,32 +8,33 @@ Created at 08.08.2019
 import copy
 import numpy as np
 
-from PySDM.simulation.runner import Runner
-from PySDM.simulation.state import State
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.discretisations.spectral import constant_multiplicity
+from PySDM.simulation.particles import Particles
+from PySDM.simulation.environment.box import Box
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 
-# instantiation of simulation components, timestepping
 def run(setup):
-    x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, n_cell=1, backend=setup.backend)
-    runner = Runner(state, (collider,))
+    particles = Particles(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
+    particles.set_mesh_0d(setup.dv)
+    particles.set_environment(Box, {})
+    v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
+    particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    particles.add_dynamic(SDM, {"kernel": setup.kernel})
 
     states = {}
     for step in setup.steps:
-        runner.run(step - runner.n_steps)
-        setup.check(runner.state, runner.n_steps)
-        states[runner.n_steps] = copy.deepcopy(runner.state)
+        particles.run(step - particles.n_steps)
+        setup.check(particles.state, particles.n_steps)
+        states[particles.n_steps] = copy.deepcopy(particles.state)
 
-    return states, runner.stats
+    return states, particles.stats
 
 
-if __name__ == '__main__':
+def main():
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -43,8 +44,8 @@ if __name__ == '__main__':
 
         states, _ = run(setup)
 
-        x_min = min([state.min('x') for state in states.values()])
-        x_max = max([state.max('x') for state in states.values()])
+        x_min = min([state.min('volume') for state in states.values()])
+        x_max = max([state.max('volume') for state in states.values()])
 
     with np.errstate(invalid='ignore'):
         plotter = Plotter(setup, (x_min, x_max))
@@ -52,3 +53,6 @@ if __name__ == '__main__':
             plotter.plot(state, step * setup.dt)
         plotter.show()
 
+
+if __name__ == '__main__':
+    main()

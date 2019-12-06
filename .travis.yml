@@ -6,7 +6,6 @@ install:
 
 script:
   - python -m pytest --cov-report term --cov=PySDM
-  - python -m pytest --cov-report term --cov=MPyDATA  # TODO
   - |
       python -m ipykernel install --user
       for i in examples/*/demo.ipynb; do

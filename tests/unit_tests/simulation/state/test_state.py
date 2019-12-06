@@ -1,18 +1,15 @@
-from tests.unit_tests.simulation.state.testable_state import TestableState as State
+from tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
+from tests.unit_tests.simulation.state.dummy_particles import DummyParticles
+from tests.unit_tests.simulation.dynamics.advection.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
 import pytest
 
-backend = Default()
+backend = Default
 
 
 class TestState:
-    @staticmethod
-    def get_empty_state() -> State:
-        return State(n=np.zeros(0), grid=(), intensive={}, extensive={},
-                     cell_id=np.zeros(0), position_in_cell=None, cell_origin=None,
-                     backend=backend)
 
     @staticmethod
     def storage(iterable):
@@ -61,33 +58,35 @@ class TestState:
         # Act & Assert
         self.check_contiguity(sut, attr='a', i_SD=5)
 
-    @pytest.mark.parametrize("x, n", [
+    @pytest.mark.parametrize("volume, n", [
         pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
         pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
         pytest.param(np.array([1., 1, 4]), np.array([5, 0, 0]))
     ])
-    def test_housekeeping(self, x, n):
+    def test_housekeeping(self, volume, n):
         # Arrange
-        sut = State.state_0d(n=n, extensive={'x': x}, intensive={}, backend=backend)
+        particles = DummyParticles(backend, n_sd=len(n))
+        sut = TestableStateFactory.state_0d(n=n, extensive={'volume': volume}, intensive={}, particles=particles)
         # TODO
-        sut.healthy = sut.backend.from_ndarray(np.array([0]))
+        sut.healthy = particles.backend.from_ndarray(np.array([0]))
 
         # Act
         sut.housekeeping()
 
         # Assert
-        assert sut['x'].shape == sut['n'].shape
+        assert sut['volume'].shape == sut['n'].shape
         assert sut.SD_num == (n != 0).sum()
         assert sut['n'].sum() == n.sum()
-        assert (sut['x'] * sut['n']).sum() == (x * n).sum()
+        assert (sut['volume'] * sut['n']).sum() == (volume * n).sum()
 
     def test_sort_by_cell_id(self):
         # Arrange
-        sut = TestState.get_empty_state()
+        particles = DummyParticles(backend, n_sd=3)
+        sut = TestableStateFactory.empty_state(particles)
         sut.n = TestState.storage([0, 1, 0, 1, 1])
         sut.cell_id = TestState.storage([3, 4, 0, 1, 2])
         sut.idx = TestState.storage([4, 1, 3, 2, 0])
-        sut.SD_num = 3
+        sut.SD_num = particles.n_sd
 
         # Act
         sut.sort_by_cell_id()
@@ -100,7 +99,12 @@ class TestState:
         n = np.ones(1)
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
-        sut = State.state_2d(n=n, grid=(1, 1), intensive={}, extensive={}, backend=Default, positions=initial_position)
+        grid = (1, 1)
+        particles = DummyParticles(backend, n_sd=1)
+        particles.set_mesh(grid)
+        particles.set_environment(DummyEnvironment, (None,))
+        sut = TestableStateFactory.state_2d(n=n, intensive={}, extensive={},
+                                            particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1
         sut.cell_origin[droplet_id, 1] = .2
         sut.cell_id[droplet_id] = -1

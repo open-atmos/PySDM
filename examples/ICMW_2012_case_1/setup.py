@@ -8,38 +8,27 @@ Created at 25.09.2019
 
 import numpy as np
 
-from PySDM.simulation.spectra import Lognormal
-from PySDM.simulation.kernels.Golovin import Golovin
-from PySDM.simulation.ambient_air.moist_air import MoistAir
+from PySDM.simulation.initialisation.spectra import Lognormal
+from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.backends.default import Default
-from PySDM.simulation.phys import si, mgn, th_dry
+
+from PySDM.simulation.physics import formulae as phys
+from PySDM.simulation.physics import constants as const
+from PySDM.simulation.physics.constants import si
+
 
 class Setup:
-    grid = (75, 75)  # (75, 75)  # dx=dz=20m
-    size = (1500, 1500)  # [m]
+    backend = Default
+    grid = (10, 10)  # TODO: 75x75
+    size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-
-    @property
-    def dx(self):
-        return self.size[0] / self.grid[0]
-
-    @property
-    def dz(self):
-        return self.size[0] / self.grid[0]
-
-    @property
-    def dv(self):
-        return self.dx * self.dz # [m3] (assumes unit dy)
-
-    @property
-    def n_sd(self):
-        return self.grid[0] * self.grid[1] * self.n_sd_per_gridbox
+    dt = .1 * si.seconds  # TODO
+    w_max = .6 * si.metres / si.seconds
 
     # TODO: second mode
-    # TODO: number -> mass distribution
-    spectrum = Lognormal(
-      norm_factor=mgn(40 / si.centimetre**3 * size[0]*si.metre * size[1]*si.metre * 1*si.metre),
-      m_mode=mgn(0.15 * si.micrometre),
+    spectrum_per_mass_of_dry_air = Lognormal(
+      norm_factor=40 / si.centimetre**3 / const.rho_STP,
+      m_mode=0.15 * si.micrometre,
       s_geom=1.6
     )
 
@@ -49,50 +38,54 @@ class Setup:
         "condensation": True
     }
 
-    th0 = 289 * si.kelvins
+    th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
+    rho = 1000 * si.kilogram / si.metre**3
+    kappa = 1
 
-    field_values = {'th': mgn(th_dry(th0, qv0)),
-                    'qv': mgn(qv0)}
+    field_values = {
+        'th': phys.th_dry(th_std0, qv0),
+        'qv': qv0
+    }
+
+    @property
+    def n_sd(self):
+        return self.grid[0] * self.grid[1] * self.n_sd_per_gridbox
+
+    @property
+    def eddy_period(self):
+        raise NotImplementedError()
 
     def stream_function(self, xX, zZ):
-        w_max = .6 * si.metres / si.seconds
-        X = self.size[0] * si.metres
-        return mgn(- w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX))
+        X = self.size[0]
+        return - self.w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
-        from PySDM.simulation.phys import R, Rd, c_pd, p1000, g, eps
-
-        Z = self.size[1] * si.metres
+        Z = self.size[1]
         z = zZ * Z  # :)
 
         # hydrostatic profile
-        kappa = Rd / c_pd
-        arg = np.power(Setup.p0/p1000, kappa) - z*kappa*g/Setup.th0/R(Setup.qv0)
-        p = p1000 * np.power(arg, 1/kappa)
+        kappa = const.Rd / const.c_pd
+        arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)
+        p = const.p1000 * np.power(arg, 1/kappa)
 
         #np.testing.assert_array_less(p, Setup.p0) TODO: less or equal
 
         # density using "dry" potential temp.
-        pd = p * (1 - Setup.qv0 / (Setup.qv0 + eps))
-        rhod = pd / (np.power(p / p1000, kappa) * Rd * Setup.th0)
+        pd = p * (1 - self.qv0 / (self.qv0 + const.eps))
+        rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)
 
-        return mgn(rhod)
+        return rhod
 
-    x_min = .01e-6  # TODO: mass!
-    x_max = 5e-6  # TODO: mass!
-
-    dt = 0.25  # [s] #TODO: was 1s in the ICMW case?
+    # initial dry radius discretisation range
+    r_min = .01 * si.micrometre
+    r_max = 5 * si.micrometre
 
     # output steps
-    steps = np.arange(0, 3600, 30)
+    steps = np.arange(0, 330, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
 
-    backend = Default()
-
-    ambient_air = MoistAir
-
-    output_vars = ["m0", "th", "qv", "RH"]
-
+    specs = {'volume': (1, 1/3)}
+    output_vars = ["m0", "th", "qv", "RH", "volume_m1"]  # TODO: add in a loop over specs

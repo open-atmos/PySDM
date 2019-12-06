@@ -5,26 +5,29 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.runner import Runner
-from PySDM.simulation.state import State
-from PySDM.simulation.dynamics.coalescence import SDM
-from PySDM.simulation.discretisations.spectral import constant_multiplicity
+from PySDM.simulation.particles import Particles
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.environment.box import Box
+from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
+
 def run(setup):
-    x, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    state = State(n=n, extensive={'x': x}, intensive={}, segment_num=1, backend=setup.backend)
-    collider = SDM(setup.kernel, setup.dt, setup.dv, n_sd=setup.n_sd, backend=setup.backend)
-    runner = Runner(state, (collider,))
+    particles = Particles(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
+    particles.set_mesh_0d(setup.dv)
+    particles.set_environment(Box, {})
+    v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
+    particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    particles.add_dynamic(SDM, {"kernel": setup.kernel})
 
     states = {}
     for step in setup.steps:
-        runner.run(step - runner.n_steps)
+        particles.run(step - particles.n_steps)
         # setup.check(runner.state, runner.n_steps) TODO???
 
-    return states, runner.stats
+    return states, particles.stats
 
-
+#%%
 # TODO python -O
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC import ThrustRTC
@@ -49,4 +52,3 @@ for backend, t in times.items():
 plt.legend()
 plt.loglog()
 plt.show()
-#%%
