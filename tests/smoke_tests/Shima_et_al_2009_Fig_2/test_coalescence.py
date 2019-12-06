@@ -34,7 +34,7 @@ def test_coalescence():
     dt = 1  # [s]
     norm_factor = n_part * dv
 
-    kernel = Golovin(b=1.5e9)  # [s-1]
+    kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
     particles = Particles(n_sd=n_sd, dt=dt, backend=backend)
     particles.set_mesh_0d(dv=dv)

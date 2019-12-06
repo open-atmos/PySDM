@@ -16,9 +16,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def __init__(self, particles, stream_function, field_values, rhod_of):
         super().__init__(particles, [])
 
-        self.rhod_of = rhod_of
+        self.__rhod_of = rhod_of
 
-        grid = self.particles.mesh.grid
+        grid = particles.mesh.grid
         rhod = np.repeat(
             rhod_of(
                 (np.arange(grid[1]) + 1 / 2) / grid[1]
@@ -27,7 +27,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             axis=0
         )
 
-        self.GC, self.eulerian_fields = MPDATAFactory.kinematic_2d(
+        self.__GC, self.__eulerian_fields = MPDATAFactory.kinematic_2d(
             grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=field_values,
@@ -42,10 +42,14 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.post_step()
 
     def _get_thd(self):
-        return self.eulerian_fields.mpdatas['th'].curr.get()
+        return self.__eulerian_fields.mpdatas['th'].curr.get()
 
     def _get_qv(self):
-        return self.eulerian_fields.mpdatas['qv'].curr.get()
+        return self.__eulerian_fields.mpdatas['qv'].curr.get()
+
+    @property
+    def eulerian_fields(self):
+        return self.__eulerian_fields
 
     def wait(self):
         # TODO
@@ -57,9 +61,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
     def get_courant_field_data(self):
         result = [  # TODO: test it!!!!
-            self.GC.data(0) / self.rhod_of(
+            self.__GC.data(0) / self.__rhod_of(
                 x_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1]),
-            self.GC.data(1) / self.rhod_of(
+            self.__GC.data(1) / self.__rhod_of(
                 z_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1])
         ]
         return result
