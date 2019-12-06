@@ -11,7 +11,7 @@ import numpy as np
 from PySDM.simulation.particles import Particles
 from PySDM.simulation.environment.box import Box
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.initialisation.spectral_discretisation import constant_multiplicity
+from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 
 from examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from examples.Shima_et_al_2009_Fig_2.plotter import Plotter

@@ -8,7 +8,8 @@ Created at 25.11.2019
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.backends.default import Default
 from PySDM.simulation.physics.constants import si
-from PySDM.simulation.initialisation import spectral_discretisation
+from PySDM.simulation.initialisation import spectral_sampling
+from PySDM.simulation.particles import discretise_n
 import numpy as np
 
 
@@ -17,7 +18,7 @@ class Setup:
         self.dt = dt
         self.n_steps = int(3 * si.hours / dt)
         self.n_sd = n_sd
-        self.r_dry, self.n = spectral_discretisation.logarithmic(
+        self.r_dry, self.n = spectral_sampling.logarithmic(
             n_sd=n_sd,
             spectrum=Lognormal(
                 norm_factor=1000 / si.milligram * self.mass_of_dry_air,
@@ -26,6 +27,7 @@ class Setup:
             ),
             range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         )
+        self.n = discretise_n(self.n)
 
     backend = Default
 

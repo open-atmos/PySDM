@@ -56,13 +56,13 @@ class Plotter:
 
         vals = np.empty(len(self.r_bins) - 1)
         tmp = np.empty((1,1))
-        moment_0 = state.backend.array(1, dtype=int)
-        moments = state.backend.array((1, 1), dtype=float)
+        moment_0 = state.particles.backend.array(1, dtype=int)
+        moments = state.particles.backend.array((1, 1), dtype=float)
         for i in range(len(vals)):
             state.moments(moment_0, moments, specs={'volume': (1,)}, attr_range=(self.v_bins[i], self.v_bins[i + 1]))
-            state.backend.download(moments, tmp)
+            state.particles.backend.download(moments, tmp)
             vals[i] = tmp[0, 0]
-            state.backend.download(moment_0, tmp)
+            state.particles.backend.download(moment_0, tmp)
             vals[i] *= tmp[0, 0]
             vals[i] *= s.rho / s.dv
             vals[i] /= (np.log(self.r_bins[i + 1]) - np.log(self.r_bins[i]))

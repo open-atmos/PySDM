@@ -41,7 +41,25 @@ class Exponential(Spectrum):
         ), norm_factor)
 
 
-
 class Lognormal(Spectrum):
-    def __init__(self, norm_factor, m_mode, s_geom):
+    def __init__(self, norm_factor: float, m_mode: float, s_geom: float):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
+
+
+# TODO
+class Sum:
+    def __init__(self, spectra: tuple):
+        self.spectra = spectra
+
+    def size_distribution(self, m):
+        result = 0.
+        for spectrum in self.spectra:
+            result += spectrum.size_distribution(m)
+        return result
+
+    def cumulative(self, m):
+        result = 0.
+        for spectrum in self.spectra:
+            result += spectrum.cumulative(m)
+        return result
+

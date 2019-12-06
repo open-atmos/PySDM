@@ -1,16 +1,12 @@
 import numpy as np
 
 
-def __discritise(grid, spectrum):
+def __sample(grid, spectrum):
     x = grid[1: -1: 2]
     cdf = spectrum.cumulative(grid[0::2])
     y_float = cdf[1:] - cdf[0:-1]
-    y_int = y_float.round().astype(np.int64)
 
-    percent_diff = abs(1 - np.sum(y_float) / np.sum(y_int.astype(float)))
-    if percent_diff > .01:
-        raise Exception(f"{percent_diff}% error in total real-droplet number due to casting multiplicities to ints")
-    return x, y_int
+    return x, y_float
 
 
 def linear(n_sd, spectrum, range):
@@ -19,7 +15,7 @@ def linear(n_sd, spectrum, range):
 
     grid = np.linspace(range[0], range[1], num=2 * n_sd + 1)
 
-    return __discritise(grid, spectrum)
+    return __sample(grid, spectrum)
 
 
 def logarithmic(n_sd, spectrum, range):
@@ -31,7 +27,7 @@ def logarithmic(n_sd, spectrum, range):
 
     grid = np.logspace(start, stop, num=2 * n_sd + 1)
 
-    return __discritise(grid, spectrum)
+    return __sample(grid, spectrum)
 
 
 def constant_multiplicity(n_sd, spectrum, range):
@@ -47,4 +43,7 @@ def constant_multiplicity(n_sd, spectrum, range):
 
     assert np.isfinite(grid).all()
 
-    return __discritise(grid, spectrum)
+    return __sample(grid, spectrum)
+
+
+# TODO: sample randomly
