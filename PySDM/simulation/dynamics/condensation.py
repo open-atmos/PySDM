@@ -53,8 +53,8 @@ def foo(dy_dt, rw, T, p, n, RH, kappa, rd, qv, dot_rhod, dot_thd, dot_qv, m_d):
 
     for i in range(len(rw)):
         dy_dt[idx_rw + i] = phys.dr_dt_MM(rw[i], T, p, RH - 1, kappa, rd[i])
-    dy_dt[idx_qv] += -4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
-    dy_dt[idx_thd] += - phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+    dy_dt[idx_qv] -= 4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
+    dy_dt[idx_thd] -= phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
 
 def compute_cell_start(cell_start, cell_id, idx, sd_num):
