@@ -91,12 +91,42 @@ class Particles:
                 self.environment.post_step()
         self.n_steps += steps
 
+    ###
+
+    def find_pairs(self, cell_start, is_first_in_pair):
+        self.backend.find_pairs(cell_start, is_first_in_pair,
+                                self.state.cell_id,
+                                self.state.idx,
+                                self.state.SD_num)
+
+    def sum_pair(self, output, x, is_first_in_pair):
+        self.backend.sum_pair(output, self.state.get_backend_storage(x),
+                              is_first_in_pair,
+                              self.state.idx,
+                              self.state.SD_num)
+
+    def max_pair(self, prob, is_first_in_pair):
+        self.backend.max_pair(prob, self.state.n, is_first_in_pair, self.state.idx, self.state.SD_num)
+
+    def normalize(self, prob, cell_start, norm_factor):
+        self.backend.normalize(prob, self.state.cell_id, cell_start, norm_factor, self.dt / self.mesh.dv)
+
+    def coalescence(self, gamma):
+        self.backend.coalescence(n=self.state.n,
+                                 idx=self.state.idx,
+                                 length=self.state.SD_num,
+                                 intensive=self.state.get_intensive_attrs(),
+                                 extensive=self.state.get_extensive_attrs(),
+                                 gamma=gamma,
+                                 healthy=self.state.healthy)
+
 
 # TODO: move somewhere
 def n_init(n_per_kg, particles, cell_id):
     n_per_m3 = n_per_kg * particles.environment["rhod"][cell_id]
     domain_volume = np.prod(np.array(particles.mesh.size))
     return n_per_m3 * domain_volume
+
 
 def assert_none(*params):
     for param in params:

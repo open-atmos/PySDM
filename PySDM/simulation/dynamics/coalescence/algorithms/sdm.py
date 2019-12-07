@@ -5,9 +5,12 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
+from PySDM.simulation.particles import Particles
+
+
 class SDM:
 
-    def __init__(self, particles, kernel):
+    def __init__(self, particles: Particles, kernel):
         self.particles = particles
 
         self.kernel = kernel
@@ -28,7 +31,7 @@ class SDM:
         self.particles.backend.urand(self.rand)
         self.compute_gamma(self.prob, self.rand)
 
-        self.coalescence(gamma=self.prob)
+        self.particles.coalescence(gamma=self.prob)
 
         self.particles.state.housekeeping()
 
@@ -38,30 +41,16 @@ class SDM:
 
     def compute_probability(self, prob, temp, is_first_in_pair, cell_start):
         kernel_temp = temp
-        self.kernel(self.particles.backend, kernel_temp, is_first_in_pair, self.particles.state)
+        self.kernel(self.particles, kernel_temp, is_first_in_pair)
 
-        self.particles.backend.max_pair(prob, self.particles.state.n, is_first_in_pair, self.particles.state.idx,
-                                        self.particles.state.SD_num)
+        self.particles.max_pair(prob, is_first_in_pair)
         self.particles.backend.multiply(prob, kernel_temp)
 
         norm_factor = temp
-        self.particles.backend.normalize(prob, self.particles.state.cell_id, cell_start, norm_factor,
-                                         self.particles.dt / self.particles.mesh.dv)
+        self.particles.normalize(prob, cell_start, norm_factor)
 
     def toss_pairs(self, is_first_in_pair, cell_start):
         self.particles.state.unsort()
         self.particles.state.sort_by_cell_id()
-        self.particles.backend.find_pairs(cell_start, is_first_in_pair,
-                                          self.particles.state.cell_id,
-                                          self.particles.state.idx,
-                                          self.particles.state.SD_num)
+        self.particles.find_pairs(cell_start, is_first_in_pair)
 
-    def coalescence(self, gamma):
-        state = self.particles.state
-        self.particles.backend.coalescence(n=state.n,
-                                           idx=state.idx,
-                                           length=state.SD_num,
-                                           intensive=state.get_intensive_attrs(),
-                                           extensive=state.get_extensive_attrs(),
-                                           gamma=gamma,
-                                           healthy=state.healthy)
