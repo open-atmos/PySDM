@@ -12,7 +12,6 @@ The package features a Pythonic implementation of the Super-Droplet Method (SDM)
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)
 - [Yang et al. 2018](http://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=examples%2FYang_et_al_2018_Fig_2/demo.ipynb)
-/Yang_et_al_2018_Fig_2/demo.ipynb)
 - ICMW 2012 case 1 (work in progress)
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=examples%2FICMW_2012_case_1/demo.ipynb)
   
