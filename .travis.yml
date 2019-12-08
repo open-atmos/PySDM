@@ -2,9 +2,9 @@ language: python
 python: "3.7"
   
 install:
-  - sudo pip install -U -r requirements.txt
-  - sudo pip install -r submodules/MPyDATA/requirements.txt
-  - sudo pip install submodules/MPyDATA
+  - sudo pip3 install -U -r requirements.txt
+  - sudo pip3 install -r submodules/MPyDATA/requirements.txt
+  - sudo pip3 install submodules/MPyDATA
 
 script:
   - python -m pytest --ignore submodules --cov-report term --cov=PySDM
