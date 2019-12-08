@@ -5,7 +5,7 @@ install:
   - pip install -U -r requirements.txt
 
 script:
-  - python -m pytest --cov-report term --cov=PySDM
+  - python -m pytest --ignore submodules --cov-report term --cov=PySDM
   - |
       python -m ipykernel install --user
       for i in examples/*/demo.ipynb; do
