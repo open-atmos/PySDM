@@ -3,8 +3,8 @@ python: "3.7"
   
 install:
   - pip install -U -r requirements.txt
-  - pip install --user -r submodules/MPyDATA/requirements.txt
-  - pip install --user -e submodules/MPyDATA
+  - pip install -r submodules/MPyDATA/requirements.txt
+  - pip install -e submodules/MPyDATA
 
 script:
   - python -m pytest --ignore submodules --cov-report term --cov=PySDM
