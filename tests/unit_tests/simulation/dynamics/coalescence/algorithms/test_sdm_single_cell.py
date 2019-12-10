@@ -27,7 +27,7 @@ class TestSDMSingleCell:
         particles = DummyParticles(backend, n_sd=n_length, dt=0)
         dv = 1
         particles.set_mesh_0d(dv)
-        particles.set_environment(Box, ())
+        particles.set_environment(Box, {})
         sdm = SDM(particles, StubKernel())
         return particles, sdm
 
