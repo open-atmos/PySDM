@@ -70,6 +70,7 @@ def c_p(q):
 def R(q):
     return _mix(q, const.Rd, const.Rv)
 
+
 ''' latent heat of evaporation '''
 @numba.njit(float64(float64))
 def lv(T):
@@ -114,7 +115,10 @@ def Fk(T, K, lv):
 
 
 ''' Koehler curve (expressed in partial pressure) '''
-@numba.njit(float64(float64))
+@numba.njit([
+    float64(float64),
+    float64[:, :](float64[:, :])
+])
 def A(T):
     return 2 * const.sgm / const.Rv / T / const.rho_w
 
@@ -124,7 +128,10 @@ def B(kp, rd):
     return kp * rd ** 3
 
 
-@numba.njit(float64(float64, float64, float64))
+@numba.njit([
+    float64(float64, float64, float64),
+    float64[:, :](float64, float64[:], float64[:, :])
+])
 def r_cr(kp, rd, T):
     # critical radius
     return np.sqrt(3 * kp * rd ** 3 / A(T))
