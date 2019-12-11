@@ -10,7 +10,7 @@ import numpy as np
 
 from PySDM.backends.default import Default
 from PySDM.backends.numba.numba import Numba
-from PySDM.backends.thrustRTC import ThrustRTC
+from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
 
 # noinspection PyUnresolvedReferences
 from tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
@@ -363,8 +363,8 @@ class TestBackend:
         sut_data, data = TestBackend.data(sut, shape_1d, float)
 
         # Act
-        sut.floor(sut_data)
-        backend.floor(data)
+        sut.floor_in_place(sut_data)
+        backend.floor_in_place(data)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))

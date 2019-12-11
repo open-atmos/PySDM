@@ -37,7 +37,7 @@ class Advection:
         self.temp = self.particles.backend.from_ndarray(np.zeros((self.particles.n_sd, self.dimension), dtype=np.int64))
 
     def __call__(self):
-        # TODO: not need all array only [idx[:sd_num]]
+        # TIP: not need all array only [idx[:sd_num]]
         displacement = self.displacement
         cell_origin = self.particles.state.cell_origin
         position_in_cell = self.particles.state.position_in_cell
@@ -56,13 +56,10 @@ class Advection:
         self.particles.backend.add(position_in_cell, displacement)
 
     def update_cell_origin(self, cell_origin, position_in_cell):
-        # TODO add backend.add_floor/subtract_floor ?
         floor_of_position = self.temp[:position_in_cell.shape[0]]
-
-        self.particles.backend.floor2(floor_of_position, position_in_cell)
+        self.particles.backend.floor(floor_of_position, position_in_cell)
         self.particles.backend.add(cell_origin, floor_of_position)
-        self.particles.backend.multiply(floor_of_position, -1)
-        self.particles.backend.add(position_in_cell, floor_of_position)
+        self.particles.backend.subtract(position_in_cell, floor_of_position)
 
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic

@@ -43,7 +43,7 @@ class Pythran(Numba):
         return pythran_impl.sum(data_out, data_in)
 
     @staticmethod
-    def floor(row):
+    def floor_in_place(row):
         return pythran_impl.floor(row)
 
     @staticmethod
