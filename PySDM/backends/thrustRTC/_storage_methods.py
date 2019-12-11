@@ -123,7 +123,8 @@ class StorageMethods:
 
     @staticmethod
     def upload(np_data, backend_target):
-        raise NotImplementedError()
+        tmp = trtc.device_vector_from_numpy(np_data)
+        trtc.Copy(tmp, backend_target)
 
     @staticmethod
     def write_row(array, i, row):

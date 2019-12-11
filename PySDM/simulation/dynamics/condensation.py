@@ -17,7 +17,7 @@ import numba
 idx_rhod = 0
 idx_thd = 1
 idx_qv = 2
-idx_rw = 3
+idx_lnv = 3
 
 
 class _ODESystem:
@@ -34,27 +34,28 @@ class _ODESystem:
         rhod = y[idx_rhod]
         thd = y[idx_thd]
         qv = y[idx_qv]
-        rw = y[idx_rw:]
+        lnv = y[idx_lnv:]
 
         T, p, RH = Numba.temperature_pressure_RH(rhod, thd, qv)
 
         dy_dt = np.empty_like(y)
 
-        foo(dy_dt, rw, T, p, self.n, RH, self.kappa, self.rd, qv, self.drhod_dt, self.dthd_dt, self.dqv_dt, self.m_d)
+        self.impl(dy_dt, lnv, T, p, self.n, RH, self.kappa, self.rd, qv, self.drhod_dt, self.dthd_dt, self.dqv_dt, self.m_d)
 
         return dy_dt
 
-# TODO
-@numba.njit()
-def foo(dy_dt, rw, T, p, n, RH, kappa, rd, qv, dot_rhod, dot_thd, dot_qv, m_d):
-    dy_dt[idx_qv] = dot_qv
-    dy_dt[idx_thd] = dot_thd
-    dy_dt[idx_rhod] = dot_rhod
+    @staticmethod
+    @numba.njit()
+    def impl(dy_dt, lnv, T, p, n, RH, kappa, rd, qv, dot_rhod, dot_thd, dot_qv, m_d):
+        dy_dt[idx_qv] = dot_qv
+        dy_dt[idx_thd] = dot_thd
+        dy_dt[idx_rhod] = dot_rhod
 
-    for i in range(len(rw)):
-        dy_dt[idx_rw + i] = phys.dr_dt_MM(rw[i], T, p, RH - 1, kappa, rd[i])
-    dy_dt[idx_qv] -= 4 * np.pi * np.sum(n * rw ** 2 * dy_dt[idx_rw:]) * rho_w / m_d
-    dy_dt[idx_thd] -= phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+        for i in range(len(lnv)):
+            r = (np.exp(lnv[i]) * 3 / 4 / np.pi) ** (1 / 3)
+            dy_dt[idx_lnv + i] = 3/r * phys.dr_dt_MM(r, T, p, RH - 1, kappa, rd[i])
+        dy_dt[idx_qv] -= np.sum(n * np.exp(lnv) * dy_dt[idx_lnv:]) * rho_w / m_d
+        dy_dt[idx_thd] -= phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
 
 def compute_cell_start(cell_start, cell_id, idx, sd_num):
@@ -104,11 +105,11 @@ class Condensation:
                 if n_sd_in_cell == 0:
                     continue
 
-                y0 = np.empty(n_sd_in_cell + idx_rw)
+                y0 = np.empty(n_sd_in_cell + idx_lnv)
                 y0[idx_rhod] = self.environment['rhod'][cell_id]
                 y0[idx_thd] = self.environment['thd'][cell_id]
                 y0[idx_qv] = self.environment['qv'][cell_id]
-                y0[idx_rw:] = phys.radius(volume=v[state.idx[cell_start:cell_end]])
+                y0[idx_lnv:] = np.log(v[state.idx[cell_start:cell_end]])
                 integ = ode.solve_ivp(
                     _ODESystem(
                         self.kappa,
@@ -122,8 +123,8 @@ class Condensation:
                     (0., self.dt),
                     y0,
                     method='BDF',
-                    # rtol=1e-6,
-                    atol=1e-9,
+                    rtol=1e-3,
+                    atol=1e-3,
                     # first_step=self.dt,
                     t_eval=[self.dt]
                 )
@@ -131,7 +132,7 @@ class Condensation:
 
                 dm = 0
                 for i in range(cell_end - cell_start):
-                    x_new = phys.volume(radius=integ.y[idx_rw + i])
+                    x_new = np.exp(integ.y[idx_lnv + i])
                     x_old = v[state.idx[cell_start + i]]
                     nd = n[state.idx[cell_start + i]]
                     dm += nd * (x_new - x_old) * rho_w
