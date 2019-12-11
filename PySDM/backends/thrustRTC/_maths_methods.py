@@ -34,11 +34,25 @@ class MathsMethods:
 
     @staticmethod
     def column_modulo(data, divisor):
-        raise NotImplementedError()
+        loop = trtc.For(['arr', 'divisor'], "i", f'''
+                            for (int d=0; d<{divisor.size()}; d++)
+                                arr[d + i] = arr[d + i] % divisor[d];
+                        ''')
+        loop.launch_n(data.shape[0], [data, divisor])
 
     @staticmethod
     def floor(data_out, data_in):
-        raise NotImplementedError()
+        loop = trtc.For(['out', 'in'], "i", '''
+                            if (in[i] >= 0) 
+                                out[i] = (long) in[i];
+                            else
+                            {
+                                out[i] = (long) in[i];
+                                if (in != out[i])
+                                    out[i] -= 1;
+                            }
+                        ''')
+        loop.launch_n(data_out.size(), [data_out, data_in])
 
     @staticmethod
     def floor_in_place(data):
@@ -69,7 +83,7 @@ class MathsMethods:
 
     @staticmethod
     def subtract(data_out, data_in):
-        raise NotImplementedError()
+        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Minus)
 
     @staticmethod
     def urand(data):

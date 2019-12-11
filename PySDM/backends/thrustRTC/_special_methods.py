@@ -6,6 +6,7 @@ Created at 10.12.2019
 """
 
 import ThrustRTC as trtc
+from ._maths_methods import MathsMethods
 
 
 class SpecialMethods:
@@ -84,7 +85,11 @@ class SpecialMethods:
 
     @staticmethod
     def compute_gamma(prob, rand):
-        raise NotImplementedError()
+        MathsMethods.multiply(prob, -1.)
+        loop = trtc.For(['prob', 'rand'], "i", "prob[i] += rand[int(i / 2)];")
+        loop.launch_n(prob.size(), [prob, rand])
+        MathsMethods.floor_in_place(prob)
+        MathsMethods.multiply(prob, -1.)
 
     # TODO: add test, rethink...
     @staticmethod
