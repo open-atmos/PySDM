@@ -22,7 +22,7 @@ class Setup:
     grid = (10, 10)  # TODO: 75x75
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-    dt = .1 * si.seconds  # TODO
+    dt = 1 * si.seconds  # TODO
     w_max = .6 * si.metres / si.seconds
 
     # TODO: second mode

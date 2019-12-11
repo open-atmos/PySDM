@@ -14,7 +14,7 @@ import numpy as np
 
 
 class Setup:
-    def __init__(self, dt=1 * si.second, n_sd = 100):
+    def __init__(self, dt=2 * si.second, n_sd=100):
         self.dt = dt
         self.n_steps = int(3 * si.hours / dt)
         self.n_sd = n_sd
