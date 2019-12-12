@@ -11,6 +11,7 @@ import numpy as np
 from PySDM.backends.default import Default
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
+from PySDM import conf
 
 # noinspection PyUnresolvedReferences
 from tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
@@ -19,9 +20,12 @@ from tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, 
                                                order
 
 backend = Default()
+backends = [Numba()]
+if conf.TRTC:
+    backends.append(ThrustRTC())
 
 
-@pytest.mark.parametrize('sut', [Numba(), ThrustRTC(), ])  # Pythran()])
+@pytest.mark.parametrize('sut', backends)
 class TestBackend:
     @staticmethod
     def data(sut_backend, shape, dtype, seed=0):
