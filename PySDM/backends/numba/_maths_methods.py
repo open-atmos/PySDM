@@ -42,15 +42,14 @@ class MathsMethods:
             data[:, d] %= divisor[d]
 
     @staticmethod
-    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
-    def floor(row):
-        row[:] = np.floor(row)
-
-    # TODO: rename
-    @staticmethod
     @numba.njit()  # TODO
-    def floor2(data_out, data_in):
+    def floor(data_out, data_in):
         data_out[:] = np.floor(data_in)
+
+    @staticmethod
+    @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)
+    def floor_in_place(row):
+        row[:] = np.floor(row)
 
     @staticmethod
     @numba.njit([void(float64[:], float64),
@@ -59,7 +58,9 @@ class MathsMethods:
     def multiply(data, multiplier):
         data *= multiplier
 
-    # TODO def subtract( , ):
+    @staticmethod
+    def subtract(data_out, data_in):
+        data_out[:] = data_out - data_in
 
     @staticmethod
     @numba.njit(void(float64[:]), parallel=NUMBA_PARALLEL)

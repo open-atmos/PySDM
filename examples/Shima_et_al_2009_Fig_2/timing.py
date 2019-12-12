@@ -30,7 +30,7 @@ def run(setup):
 #%%
 # TODO python -O
 from PySDM.backends.numba.numba import Numba
-from PySDM.backends.thrustRTC import ThrustRTC
+from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
 
 setup = SetupA()
 setup.steps = [100, 3600]

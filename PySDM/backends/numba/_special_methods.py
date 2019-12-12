@@ -12,6 +12,7 @@ from PySDM.conf import NUMBA_PARALLEL
 
 
 class SpecialMethods:
+
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64))
     def remove_zeros(data, idx, length) -> int:
