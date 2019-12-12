@@ -10,13 +10,13 @@ script:
   - python -m pytest --ignore submodules --cov-report term --cov=PySDM
   - |
       python -m ipykernel install --user
-      for i in examples/*/demo.ipynb; do
+      for i in PySDM_examples/*/demo.ipynb; do
          jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
          jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
          # diff $i.md.repo $i.md.travis  # does not make sense with ipywidgets
       done;
   - |
-      for i in examples/*/example.py; do
+      for i in PySDM_examples/*/example.py; do
         PYTHONPATH=. python $i
       done;
 

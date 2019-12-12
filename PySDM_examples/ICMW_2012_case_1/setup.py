@@ -83,7 +83,7 @@ class Setup:
     r_max = 5 * si.micrometre
 
     # output steps
-    steps = np.arange(0, 330, 30)
+    steps = np.arange(0, 90, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
 
