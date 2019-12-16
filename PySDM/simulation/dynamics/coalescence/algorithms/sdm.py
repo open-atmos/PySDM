@@ -10,10 +10,17 @@ from PySDM.simulation.particles import Particles
 
 class SDM:
 
-    def __init__(self, particles: Particles, kernel):
+    def __init__(self, particles: Particles, kernel, croupier=''):
         self.particles = particles
 
         self.kernel = kernel
+
+        if croupier == '':
+            pass
+        elif croupier == 'Shima_serial':
+            self.toss_pairs = lambda _, __: 0
+        else:
+            raise NotImplementedError()
 
         self.temp = particles.backend.array(particles.n_sd, dtype=float)
         self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)

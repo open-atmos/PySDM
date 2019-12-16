@@ -49,6 +49,9 @@ class _Moist:
     def _get_thd(self) -> np.ndarray: raise NotImplemented()
 
     def post_step(self):
+        if self._values["predicted"] is None:
+            return
+
         self._tmp = self._values["current"]
         self._values["current"] = self._values["predicted"]
         self._values["predicted"] = None

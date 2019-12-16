@@ -8,7 +8,7 @@ Created at 18.11.2019
 
 import numpy as np
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
-from PySDM_examples.ICMW_2012_case_1.example import Simulation
+from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.physics import formulae as phys
 from matplotlib import pyplot
