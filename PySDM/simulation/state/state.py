@@ -18,6 +18,7 @@ class State:
         self.SD_num = particles.n_sd
         # TODO make private
         self.idx = self.__backend.from_ndarray(np.arange(self.SD_num))
+        self.__tmp_idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.__backend.from_ndarray(n)
         # TODO: 0=tensive, 1=index (also in moments)
         self.attributes = attributes
@@ -37,8 +38,9 @@ class State:
         # TODO: consider having two idx arrays and unsorting them asynchronously
         self.__backend.shuffle(idx=self.idx, length=self.SD_num, axis=0)
 
-    def sort_by_cell_id(self):
-        self.__backend.stable_argsort(self.idx, self.cell_id, self.SD_num)
+    def sort_by_cell_id(self, cell_start):
+        self.__backend.countsort_by_cell_id(self.__tmp_idx, self.idx, self.cell_id, self.SD_num, cell_start)
+        self.idx, self.__tmp_idx = self.__tmp_idx, self.idx
 
     def min(self, item):
         result = self.__backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)
