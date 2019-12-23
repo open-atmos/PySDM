@@ -6,7 +6,8 @@ Created at 22.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM_examples.ICMW_2012_case_1.example import Simulation, Setup
+from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
+from PySDM_examples.ICMW_2012_case_1.setup import Setup
 
 
 class DummyStorage:

@@ -63,10 +63,6 @@ class StorageMethods:
             raise NotImplementedError()
 
     @staticmethod
-    def stable_argsort(idx, keys, length):
-        idx[:length] = idx[np.argsort(keys[idx[:length]], kind='stable')]
-
-    @staticmethod
     def to_ndarray(data):
         return data.copy()
 

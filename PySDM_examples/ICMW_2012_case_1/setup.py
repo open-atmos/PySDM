@@ -86,6 +86,8 @@ class Setup:
     steps = np.arange(0, 90, 30)
 
     kernel = Golovin(b=1e-3)  # [s-1]
+    croupier = ''
 
     specs = {'volume': (1, 1/3)}
     output_vars = ["m0", "th", "qv", "RH", "volume_m1"]  # TODO: add in a loop over specs
+

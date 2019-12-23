@@ -84,15 +84,19 @@ class TestState:
         particles = DummyParticles(backend, n_sd=3)
         sut = TestableStateFactory.empty_state(particles)
         sut.n = TestState.storage([0, 1, 0, 1, 1])
-        sut.cell_id = TestState.storage([3, 4, 0, 1, 2])
+        cells = [3, 4, 0, 1, 2]
+        n_cell = max(cells) + 1
+        sut.cell_id = TestState.storage(cells)
         sut.idx = TestState.storage([4, 1, 3, 2, 0])
+        sut._State__tmp_idx = TestState.storage([0] * 5)
         sut.SD_num = particles.n_sd
 
         # Act
-        sut.sort_by_cell_id()
+        sut.sort_by_cell_id(particles.backend.array(n_cell + 1, int))
 
         # Assert
-        np.testing.assert_array_equal(np.array([3, 4, 1, 2, 0]), backend.to_ndarray(sut.idx))
+        assert len(sut.idx) == 5
+        np.testing.assert_array_equal(np.array([3, 4, 1]), backend.to_ndarray(sut.idx[:sut.SD_num]))
 
     def test_recalculate_cell_id(self):
         # Arrange

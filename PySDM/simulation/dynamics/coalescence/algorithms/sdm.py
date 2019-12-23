@@ -6,14 +6,20 @@ Created at 07.06.2019
 """
 
 from PySDM.simulation.particles import Particles
+from PySDM.simulation.dynamics.coalescence.croupiers import global_numpy
 
 
 class SDM:
 
-    def __init__(self, particles: Particles, kernel):
+    def __init__(self, particles: Particles, kernel, croupier=''):
         self.particles = particles
 
         self.kernel = kernel
+
+        if croupier == '':
+            self.croupier = global_numpy
+        else:
+            raise NotImplementedError()
 
         self.temp = particles.backend.array(particles.n_sd, dtype=float)
         self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)
@@ -37,7 +43,6 @@ class SDM:
 
     def compute_gamma(self, prob, rand):
         self.particles.backend.compute_gamma(prob, rand)
-    # TODO remove
 
     def compute_probability(self, prob, temp, is_first_in_pair, cell_start):
         kernel_temp = temp
@@ -50,7 +55,7 @@ class SDM:
         self.particles.normalize(prob, cell_start, norm_factor)
 
     def toss_pairs(self, is_first_in_pair, cell_start):
-        self.particles.state.unsort()
-        self.particles.state.sort_by_cell_id()
+        self.croupier(self.particles, cell_start)
         self.particles.find_pairs(cell_start, is_first_in_pair)
+
 

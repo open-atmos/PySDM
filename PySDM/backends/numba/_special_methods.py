@@ -91,14 +91,6 @@ class SpecialMethods:
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64))
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
-        cell_start[:] = -1
-        for i in range(sd_num - 1, -1, -1):  # reversed
-            cell_start[cell_id[idx[i]]] = i
-        cell_start[-1] = sd_num
-        for i in range(len(cell_start) - 1, -1, -1):  # reversed
-            if cell_start[i] == -1:
-                cell_start[i] = cell_start[i + 1]
-
         for i in range(sd_num - 1):
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i+1]] and
@@ -156,3 +148,17 @@ class SpecialMethods:
                 raise NotImplementedError()
         else:
             raise NotImplementedError()
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), parallel=NUMBA_PARALLEL)
+    def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
+        cell_end = cell_start
+
+        cell_end[:] = 0
+        for i in range(length):
+            cell_end[cell_id[idx[i]]] += 1
+        for i in range(1, len(cell_end)):
+            cell_end[i] += cell_end[i - 1]
+        for i in range(length-1, -1, -1):
+            cell_end[cell_id[idx[i]]] -= 1
+            new_idx[cell_end[cell_id[idx[i]]]] = idx[i]

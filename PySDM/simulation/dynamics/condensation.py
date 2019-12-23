@@ -58,18 +58,6 @@ class _ODESystem:
         dy_dt[idx_thd] -= phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
 
 
-def compute_cell_start(cell_start, cell_id, idx, sd_num):
-    cell_start[:] = -1
-
-    for i in range(sd_num - 1, -1, -1):  # reversed
-        cell_start[cell_id[idx[i]]] = i
-    cell_start[-1] = sd_num
-
-    for i in range(len(cell_start) - 1, -1, -1):  # reversed
-        if cell_start[i] == -1:
-            cell_start[i] = cell_start[i + 1]
-
-
 class Condensation:
     def __init__(self, particles, kappa):
 
@@ -90,8 +78,7 @@ class Condensation:
         self.environment.sync()
 
         state = self.particles.state
-        state.sort_by_cell_id()  # TODO +what about droplets that precipitated out of the domain
-        compute_cell_start(self.cell_start, state.cell_id, state.idx, state.SD_num)
+        state.sort_by_cell_id(self.cell_start)  # TODO +what about droplets that precipitated out of the domain
 
         v = state.get_backend_storage("volume")
         n = state.n
