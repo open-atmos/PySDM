@@ -8,6 +8,7 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
+from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 
 
@@ -31,7 +32,8 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=field_values,
-            g_factor=rhod
+            g_factor=rhod,
+            opts=Options(n_iters=1)
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
@@ -61,9 +63,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
     def get_courant_field_data(self):
         result = [  # TODO: test it!!!!
-            self.__GC.data(0) / self.__rhod_of(
+            self.__GC.get_component(0) / self.__rhod_of(
                 x_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1]),
-            self.__GC.data(1) / self.__rhod_of(
+            self.__GC.get_component(1) / self.__rhod_of(
                 z_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1])
         ]
         return result
