@@ -32,7 +32,8 @@ class SDM:
     def __call__(self):
         assert self.particles.state.is_healthy()
 
-        self.toss_pairs(self.is_first_in_pair, self.cell_start)
+        self.particles.backend.urand(self.temp)
+        self.toss_pairs(self.is_first_in_pair, self.cell_start, self.temp)
 
         self.compute_probability(self.prob, self.temp, self.is_first_in_pair, self.cell_start)
 
@@ -56,8 +57,8 @@ class SDM:
         norm_factor = temp
         self.particles.normalize(prob, cell_start, norm_factor)
 
-    def toss_pairs(self, is_first_in_pair, cell_start):
-        self.croupier(self.particles, cell_start)
+    def toss_pairs(self, is_first_in_pair, cell_start, u01):
+        self.croupier(self.particles, cell_start, u01)
         self.particles.find_pairs(cell_start, is_first_in_pair)
 
 
