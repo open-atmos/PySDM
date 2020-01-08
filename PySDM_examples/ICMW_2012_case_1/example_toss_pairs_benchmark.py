@@ -8,6 +8,7 @@ Created at 16.12.2019
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
+import PySDM.conf
 
 
 def main():
@@ -20,10 +21,11 @@ def main():
         "coalescence": True,
         "condensation": False
     }
+    # setup.croupier = 'local_FisherYates'; PySDM.conf.NUMBA_PARALLEL = True
     n_sd = range(20, 100, 20)
 
     times = {}
-    for method in ('',):
+    for method in ('global_FisherYates', 'local_FisherYates'):
         times[method] = []
         setup.croupier = method
         for sd in n_sd:

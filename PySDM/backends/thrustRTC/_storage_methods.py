@@ -87,7 +87,7 @@ class StorageMethods:
     def shuffle(data, length, axis):
         from PySDM.backends.numba.numba import Numba
         host_arr = StorageMethods.to_ndarray(data)
-        Numba.shuffle(host_arr, length, axis=axis)
+        Numba.shuffle_global(host_arr, length)
         dvce_arr = StorageMethods.from_ndarray(host_arr)
         trtc.Copy(dvce_arr, data)
 

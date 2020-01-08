@@ -6,21 +6,14 @@ Created at 18.12.2019
 """
 
 
-def global_numpy(particles, cell_start):
+def global_FisherYates(particles, cell_start):
     particles.state.unsort()
     particles.state.sort_by_cell_id(cell_start)
 
 
-def global_FisherYates(particles, cell_start):
-    raise NotImplementedError()
-
-
-def local_numpy(particles, cell_start):
-    raise NotImplementedError()
-
-
 def local_FisherYates(particles, cell_start):
-    raise NotImplementedError()
+    particles.state.sort_by_cell_id(cell_start)
+    particles.state.unsort(cell_start)
 
 
 def global_Shima(particles, cell_start):

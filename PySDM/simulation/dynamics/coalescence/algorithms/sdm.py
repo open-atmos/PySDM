@@ -6,18 +6,20 @@ Created at 07.06.2019
 """
 
 from PySDM.simulation.particles import Particles
-from PySDM.simulation.dynamics.coalescence.croupiers import global_numpy
+from PySDM.simulation.dynamics.coalescence.croupiers import global_FisherYates, local_FisherYates
 
 
 class SDM:
 
-    def __init__(self, particles: Particles, kernel, croupier=''):
+    def __init__(self, particles: Particles, kernel, croupier='global_FisherYates'):
         self.particles = particles
 
         self.kernel = kernel
 
-        if croupier == '':
-            self.croupier = global_numpy
+        if croupier == 'global_FisherYates':
+            self.croupier = global_FisherYates
+        elif croupier == 'local_FisherYates':
+            self.croupier = local_FisherYates
         else:
             raise NotImplementedError()
 

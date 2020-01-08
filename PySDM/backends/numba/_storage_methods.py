@@ -53,14 +53,20 @@ class StorageMethods:
         return data.shape
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
-    def shuffle(idx, length, axis):
-        permutation = np.random.permutation(length)
+    @numba.njit(void(int64[:], int64))
+    def shuffle_global(idx, length):
+        # np.random.shuffle(idx[:length])
+        for i in range(length-1, 0, -1):
+            j = np.random.randint(i+1)
+            idx[i], idx[j] = idx[j], idx[i]
 
-        if axis == 0:
-            idx[:length] = idx[permutation[:length]]
-        else:
-            raise NotImplementedError()
+    @staticmethod
+    @numba.njit(void(int64[:], int64, int64[:]), parallel=True)
+    def shuffle_local(idx, length, cell_start):
+        for c in prange(len(cell_start) - 1):
+            for i in range(cell_start[c+1]-1, cell_start[c], -1):
+                j = np.random.randint(i+1)
+                idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
     def to_ndarray(data):

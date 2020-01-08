@@ -150,7 +150,7 @@ class SpecialMethods:
             raise NotImplementedError()
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]))
     def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
         cell_end = cell_start
 
