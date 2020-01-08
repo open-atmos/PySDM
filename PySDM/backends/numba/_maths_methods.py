@@ -13,13 +13,13 @@ from PySDM.conf import NUMBA_PARALLEL
 
 class MathsMethods:
     @staticmethod
-    @numba.njit([void(float64[:], float64[:]),
-                 void(float64[:, :], float64[:, :]),
-                 void(int64[:, :], int64[:, :]),
-                 void(float64[:, :], int64[:, :])],
-                parallel=NUMBA_PARALLEL)
+    # @numba.njit([void(float64[:], float64[:]),
+    #              void(float64[:, :], float64[:, :]),
+    #              void(int64[:, :], int64[:, :]),
+    #              void(float64[:, :], int64[:, :])],
+    #             parallel=NUMBA_PARALLEL)
     def add(data_out, data_in):
-        data_out[:] = data_out + data_in
+        data_out += data_in
 
     @staticmethod
     @numba.njit([float64(float64[:], int64[:], int64),

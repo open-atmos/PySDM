@@ -135,8 +135,8 @@ class TestBackend:
         sut_idx, idx = TestBackend.idx(sut, shape_1d, 'asc')
         length = TestBackend.length(natural_length, shape_1d)
         # Act
-        sut.shuffle(sut_data, length, axis)
-        backend.shuffle(data, length, axis)
+        sut.shuffle_global(sut_data, length)
+        backend.shuffle_global(data, length)
 
         # Assert
         sut_data_original, data_original = TestBackend.data(sut, shape_1d, int)
