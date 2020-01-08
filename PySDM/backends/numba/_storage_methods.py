@@ -55,10 +55,8 @@ class StorageMethods:
     @staticmethod
     @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
     def shuffle(idx, length, axis):
-        permutation = np.random.permutation(length)
-
         if axis == 0:
-            idx[:length] = idx[permutation[:length]]
+            np.random.shuffle(idx[:length])
         else:
             raise NotImplementedError()
 
