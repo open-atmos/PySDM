@@ -19,4 +19,4 @@ class EulerianAdvection:
         self.particles.backend.download(env.get_predicted('thd').reshape(self.particles.mesh.grid), env.get_thd())
 
         # TODO: launch on separate thread
-        env.eulerian_fields.step()
+        env.eulerian_fields.step(n_iters=2)  # TODO!!!

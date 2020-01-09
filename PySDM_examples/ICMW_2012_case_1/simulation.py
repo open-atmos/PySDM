@@ -10,7 +10,7 @@ import numpy as np
 
 from PySDM.simulation.particles import Particles as Particles
 from PySDM.simulation.dynamics.advection import Advection
-from PySDM.simulation.dynamics.condensation import Condensation
+from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_sampling, spectral_sampling
@@ -46,7 +46,7 @@ class Simulation:
             extensive={},
             intensive={},
             spatial_discretisation=spatial_sampling.pseudorandom,
-            spectral_discretisation=spectral_sampling.constant_multiplicity,
+            spectral_discretisation=spectral_sampling.constant_multiplicity,  # TODO: random
             spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
             r_range=(self.setup.r_min, self.setup.r_max),
             kappa=self.setup.kappa
@@ -109,7 +109,7 @@ class Simulation:
 
         # store advected fields
         for key in eulerian_fields.mpdatas.keys():
-            self.storage.save(eulerian_fields.mpdatas[key].curr.get(), step, key)
+            self.storage.save(eulerian_fields.mpdatas[key].arrays.curr.get(), step, key)
 
         # store auxiliary fields
         backend.download(particles.environment['RH'], self.tmp)

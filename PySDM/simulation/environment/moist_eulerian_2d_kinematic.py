@@ -33,7 +33,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             stream_function=stream_function,
             field_values=field_values,
             g_factor=rhod,
-            opts=Options(n_iters=1)
+            opts=Options()
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
@@ -44,10 +44,10 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.post_step()
 
     def _get_thd(self):
-        return self.__eulerian_fields.mpdatas['th'].curr.get()
+        return self.__eulerian_fields.mpdatas['th'].arrays.curr.get()
 
     def _get_qv(self):
-        return self.__eulerian_fields.mpdatas['qv'].curr.get()
+        return self.__eulerian_fields.mpdatas['qv'].arrays.curr.get()
 
     @property
     def eulerian_fields(self):
