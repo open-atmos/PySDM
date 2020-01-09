@@ -34,11 +34,11 @@ class State:
         result = self.__backend.read_row(self.attributes[tensive], attr)
         return result
 
-    def unsort(self, u01, cell_start=None):
-        if cell_start is None:
-            self.__backend.shuffle_global(idx=self.idx, length=self.SD_num, u01=u01)
-        else:
-            self.__backend.shuffle_local(idx=self.idx, length=self.SD_num, u01=u01, cell_start=cell_start)
+    def unsort_global(self, u01, temp):
+        self.__backend.shuffle_global(idx=self.idx, length=self.SD_num, u01=u01)
+
+    def unsort_local(self, u01, cell_start):
+        self.__backend.shuffle_local(idx=self.idx, length=self.SD_num, u01=u01, cell_start=cell_start)
 
     def sort_by_cell_id(self, cell_start):
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.idx, self.cell_id, self.SD_num, cell_start)
