@@ -16,7 +16,7 @@ from PySDM.simulation.mesh import Mesh
 
 class Particles:
 
-    def __init__(self, n_sd, dt, backend, stats=Stats()):
+    def __init__(self, n_sd, dt, backend, stats=None):
         self.__n_sd = n_sd
         self.__dt = dt
         self.backend = backend
@@ -26,7 +26,7 @@ class Particles:
         self.dynamics: list = []
         self.__dv = None
         self.n_steps = 0
-        self.stats = stats
+        self.stats = stats if stats is not None else Stats()
 
     @property
     def n_sd(self) -> int:

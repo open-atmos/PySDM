@@ -58,7 +58,7 @@ class SDM:
         self.particles.normalize(prob, cell_start, norm_factor)
 
     def toss_pairs(self, is_first_in_pair, cell_start, u01):
-        self.croupier(self.particles, cell_start, u01)
+        self.croupier(self.particles.state, cell_start, u01)
         self.particles.find_pairs(cell_start, is_first_in_pair)
 
 

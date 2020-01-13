@@ -156,7 +156,7 @@ class SpecialMethods:
         cell_end[:] = 0
         for i in range(length):
             cell_end[cell_id[idx[i]]] += 1
-        for i in range(1, len(cell_end)):
+        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
             cell_end[i] += cell_end[i - 1]
         for i in range(length-1, -1, -1):
             cell_end[cell_id[idx[i]]] -= 1

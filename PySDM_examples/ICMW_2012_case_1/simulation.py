@@ -69,9 +69,7 @@ class Simulation:
                 if controller.panic:
                     break
 
-                for _ in range(step - self.particles.n_steps):
-
-                    self.particles.run(1)
+                self.particles.run(step - self.particles.n_steps)
 
                 self.store(self.particles, step)
 

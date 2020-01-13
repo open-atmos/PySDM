@@ -137,8 +137,8 @@ class TestBackend:
         u01 = np.random.uniform(0, 1, shape_1d)
 
         # Act
-        sut.shuffle_global(sut_data, length, u01)
-        backend.shuffle_global(data, length, u01)
+        sut.shuffle_global(sut_idx, length, u01)
+        backend.shuffle_global(idx, length, u01)
 
         # Assert
         sut_data_original, data_original = TestBackend.data(sut, shape_1d, int)
