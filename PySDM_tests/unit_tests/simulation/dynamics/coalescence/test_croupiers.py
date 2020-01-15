@@ -7,7 +7,6 @@ Created at 13.01.2020
 
 import pytest
 import numpy as np
-from PySDM.simulation.dynamics.coalescence.croupiers import local_FisherYates, global_FisherYates
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
@@ -18,7 +17,7 @@ from PySDM.backends.default import Default
 backend = Default
 
 
-@pytest.mark.parametrize('croupier', [local_FisherYates, global_FisherYates])
+@pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_final_state(croupier):
     # Arrange
     n_part = 10000
@@ -35,6 +34,7 @@ def test_final_state(croupier):
     n = discretise_n(n)
     particles = DummyParticles(backend, n_sd)
     particles.set_mesh((x, y))
+    particles.croupier = croupier
 
     cell_id = backend.array((n_sd,), dtype=int)
     cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((-1, 2))
@@ -43,11 +43,12 @@ def test_final_state(croupier):
     position_in_cell = backend.from_ndarray(position_in_cell_np)
     state = TestableStateFactory.state(n=n, extensive={'volume': v}, intensive={}, cell_id=cell_id,
                                        cell_origin=cell_origin, position_in_cell=position_in_cell, particles=particles)
-    cell_start = backend.array((x*y+1,), dtype=int)
-    u01 = backend.from_ndarray(np.random.random(n_sd))
+    particles.state = state
 
     # Act
-    croupier(state, cell_start, u01)
+    u01 = backend.from_ndarray(np.random.random(n_sd))
+    particles.permute(u01)
+    _ = particles.state.cell_start
 
     # Assert
     assert (np.diff(state.cell_id[state.idx]) >= 0).all()

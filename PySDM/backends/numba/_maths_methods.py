@@ -43,7 +43,7 @@ class MathsMethods:
                 data[i, d] %= divisor[d]
 
     @staticmethod
-    #@numba.njit()  # TODO
+    # @numba.njit()  # TODO
     def floor(data_out, data_in):
         data_out[:] = np.floor(data_in)
 

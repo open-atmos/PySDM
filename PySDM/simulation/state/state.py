@@ -11,7 +11,9 @@ import numpy as np
 class State:
 
     def __init__(self, n: np.ndarray, attributes: dict, keys: dict,
-                 cell_id: np.ndarray, cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None), particles):
+                 cell_id: np.ndarray, cell_start: np.ndarray,
+                 cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None),
+                 particles):
         self.particles = particles
         self.__backend = particles.backend
 
@@ -26,7 +28,15 @@ class State:
         self.position_in_cell = None if position_in_cell is None else self.__backend.from_ndarray(position_in_cell)
         self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
         self.cell_id = self.__backend.from_ndarray(cell_id)
+        self.__cell_start = self.__backend.from_ndarray(cell_start)
+        self.__sorted = False
         self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
+
+    @property
+    def cell_start(self):
+        if not self.__sorted:
+            self.__sort_by_cell_id(self.__cell_start)
+        return self.__cell_start
 
     def get_backend_storage(self, item):
         tensive = self.keys[item][0]
@@ -34,13 +44,20 @@ class State:
         result = self.__backend.read_row(self.attributes[tensive], attr)
         return result
 
-    def unsort_global(self, u01, temp):
+    def permutation_global(self, u01):
+        """
+        apply Fisher-Yates algorithm to all sds
+        """
         self.__backend.shuffle_global(idx=self.idx, length=self.SD_num, u01=u01)
+        self.__sorted = False
 
-    def unsort_local(self, u01, cell_start):
-        self.__backend.shuffle_local(idx=self.idx, length=self.SD_num, u01=u01, cell_start=cell_start)
+    def permutation_local(self, u01):
+        """
+        apply Fisher-Yates algorithm per cell
+        """
+        self.__backend.shuffle_local(idx=self.idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
-    def sort_by_cell_id(self, cell_start):
+    def __sort_by_cell_id(self, cell_start):
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.idx, self.cell_id, self.SD_num, cell_start)
         self.idx, self.__tmp_idx = self.__tmp_idx, self.idx
 
@@ -75,6 +92,7 @@ class State:
             return
         else:
             self.__backend.cell_id(self.cell_id, self.cell_origin, self.particles.mesh.strides)
+            self.__sorted = False
 
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(0, np.inf)):
         # TODO: intensive

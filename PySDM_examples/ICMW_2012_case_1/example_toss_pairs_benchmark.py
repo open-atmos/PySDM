@@ -35,20 +35,20 @@ def main():
         "coalescence": True,
         "condensation": False
     }
-    n_sd = range(40, 120, 20)
+    n_sd = range(100, 201, 50)
 
     times = {}
-    for parallel in (True, False):
+    for parallel in (False,):
         PySDM.conf.NUMBA_PARALLEL = parallel
         reload_backend()
-        for method in ('global_FisherYates', 'local_FisherYates'):
+        for method in ('local', 'global'):
             key = f"{method} (parallel={parallel})"
             times[key] = []
-            setup.croupier = method
             for sd in n_sd:
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
+                simulation.particles.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
 

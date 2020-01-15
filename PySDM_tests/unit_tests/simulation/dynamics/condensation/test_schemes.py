@@ -20,7 +20,7 @@ def args():
 
 
 class TestBDF:
-    def test_plot(self, args, plot=True):
+    def test_plot(self, args, plot=False):
 
         ci = args["cell_idx"]
 

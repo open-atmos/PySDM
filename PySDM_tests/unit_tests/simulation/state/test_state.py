@@ -92,7 +92,7 @@ class TestState:
         sut.SD_num = particles.n_sd
 
         # Act
-        sut.sort_by_cell_id(particles.backend.array(n_cell + 1, int))
+        sut._State__sort_by_cell_id(particles.backend.array(n_cell + 1, int))
 
         # Assert
         assert len(sut.idx) == 5

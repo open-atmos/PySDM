@@ -35,7 +35,7 @@ def test_single_timestep():
     # Assert
 
 
-def test_multi_timestep(plot=True):
+def test_multi_timestep(plot=False):
     # Arrange
     setup = Setup()
     setup.steps = range(0, 20, 1)
