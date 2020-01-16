@@ -12,4 +12,4 @@ def test_just_do_it(setup_idx):
     simulation.run()
 
     # Assert
-    # TODO
+    # TODO: e.g., relative posiion of curves

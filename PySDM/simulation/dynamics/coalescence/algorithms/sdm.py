@@ -6,33 +6,27 @@ Created at 07.06.2019
 """
 
 from PySDM.simulation.particles import Particles
-from PySDM.simulation.dynamics.coalescence.croupiers import global_numpy
 
 
 class SDM:
 
-    def __init__(self, particles: Particles, kernel, croupier=''):
+    def __init__(self, particles: Particles, kernel):
         self.particles = particles
 
         self.kernel = kernel
-
-        if croupier == '':
-            self.croupier = global_numpy
-        else:
-            raise NotImplementedError()
 
         self.temp = particles.backend.array(particles.n_sd, dtype=float)
         self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)
         self.prob = particles.backend.array(particles.n_sd, dtype=float)
         self.is_first_in_pair = particles.backend.array(particles.n_sd, dtype=int)  # TODO bool
-        self.cell_start = particles.backend.array(particles.mesh.n_cell + 1, dtype=int)
 
     def __call__(self):
         assert self.particles.state.is_healthy()
 
-        self.toss_pairs(self.is_first_in_pair, self.cell_start)
+        self.particles.backend.urand(self.temp)
+        self.toss_pairs(self.is_first_in_pair, self.temp)
 
-        self.compute_probability(self.prob, self.temp, self.is_first_in_pair, self.cell_start)
+        self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
 
         self.particles.backend.urand(self.rand)
         self.compute_gamma(self.prob, self.rand)
@@ -44,7 +38,7 @@ class SDM:
     def compute_gamma(self, prob, rand):
         self.particles.backend.compute_gamma(prob, rand)
 
-    def compute_probability(self, prob, temp, is_first_in_pair, cell_start):
+    def compute_probability(self, prob, temp, is_first_in_pair):
         kernel_temp = temp
         self.kernel(self.particles, kernel_temp, is_first_in_pair)
 
@@ -52,10 +46,10 @@ class SDM:
         self.particles.backend.multiply(prob, kernel_temp)
 
         norm_factor = temp
-        self.particles.normalize(prob, cell_start, norm_factor)
+        self.particles.normalize(prob, norm_factor)
 
-    def toss_pairs(self, is_first_in_pair, cell_start):
-        self.croupier(self.particles, cell_start)
-        self.particles.find_pairs(cell_start, is_first_in_pair)
+    def toss_pairs(self, is_first_in_pair, u01):
+        self.particles.permute(u01)
+        self.particles.find_pairs(self.particles.state.cell_start, is_first_in_pair)
 
 

@@ -9,7 +9,6 @@ import copy
 
 from PySDM.backends.default import Default
 from PySDM.simulation.particles import Particles
-from PySDM.simulation.particles import discretise_n
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin

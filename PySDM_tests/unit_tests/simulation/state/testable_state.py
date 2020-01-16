@@ -11,7 +11,7 @@ from PySDM.simulation.state.state import State
 class TestableState(State):
 
     def __getitem__(self, item: str):
-        idx = self.particles.backend.to_ndarray(self.idx)
+        idx = self.particles.backend.to_ndarray(self._State__idx)
         all_valid = idx[:self.SD_num]
         if item == 'n':
             n = self.particles.backend.to_ndarray(self.n)

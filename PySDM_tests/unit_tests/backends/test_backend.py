@@ -10,8 +10,6 @@ import numpy as np
 
 from PySDM.backends.default import Default
 from PySDM.backends.numba.numba import Numba
-from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
-from PySDM import conf
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
@@ -20,8 +18,9 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import shape_full, shap
                                                order
 
 backend = Default()
-backends = [Numba()]
-if conf.TRTC:
+backends = []  # TODO: add Pythran
+if False:  # TODO: check for TRAVIS env var
+    from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
     backends.append(ThrustRTC())
 
 
@@ -134,9 +133,11 @@ class TestBackend:
         sut_data, data = TestBackend.data(sut, shape_1d, int)
         sut_idx, idx = TestBackend.idx(sut, shape_1d, 'asc')
         length = TestBackend.length(natural_length, shape_1d)
+        u01 = np.random.uniform(0, 1, shape_1d)
+
         # Act
-        sut.shuffle(sut_data, length, axis)
-        backend.shuffle(data, length, axis)
+        sut.shuffle_global(sut_idx, length, u01)
+        backend.shuffle_global(idx, length, u01)
 
         # Assert
         sut_data_original, data_original = TestBackend.data(sut, shape_1d, int)

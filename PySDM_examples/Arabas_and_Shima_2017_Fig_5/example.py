@@ -9,7 +9,7 @@ Created at 29.11.2019
 import numpy as np
 
 from PySDM.simulation.particles import Particles as Particles
-from PySDM.simulation.dynamics.condensation import Condensation
+from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
@@ -41,7 +41,6 @@ class Simulation:
 
         self.n_steps = setup.n_steps
 
-    # TODO: common with Yang?
     def save(self, output):
         cell_id = 0
         volume = self.particles.state.get_backend_storage('volume')

@@ -18,9 +18,10 @@ class StateFactory:
         sd_num = len(n)
         attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
 
-        state = State(n, attributes, keys, cell_id, cell_origin, position_in_cell, particles)
-
+        cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
+        state = State(n, attributes, keys, cell_id, cell_start, cell_origin, position_in_cell, particles)
         state.recalculate_cell_id()
+
         return state
 
     @staticmethod

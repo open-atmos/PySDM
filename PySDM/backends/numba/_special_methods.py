@@ -8,7 +8,7 @@ Created at 04.11.2019
 import numpy as np
 import numba
 from numba import void, float64, int64, boolean, prange
-from PySDM.conf import NUMBA_PARALLEL
+from PySDM.backends.numba.conf import NUMBA_PARALLEL
 
 
 class SpecialMethods:
@@ -70,13 +70,12 @@ class SpecialMethods:
 
     # TODO comment
     @staticmethod
-    @numba.njit()
+    @numba.njit(parallel=NUMBA_PARALLEL)
     def compute_gamma(prob, rand):
-        prob *= -1.
-        prob[0::2] += rand
-        prob[1::2] += rand
-        prob[:] = np.floor(prob)
-        prob *= -1.
+        for i in prange(len(prob)):
+            prob[i] *= -1.
+            prob[i] += rand[i//2]
+            prob[i] = -np.floor(prob[i])
 
     @staticmethod
     @numba.njit(boolean(int64[:]))
@@ -89,19 +88,19 @@ class SpecialMethods:
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64))
+    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
-        for i in range(sd_num - 1):
+        for i in prange(sd_num - 1):
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i+1]] and
                 (i - cell_start[cell_id[idx[i]]]) % 2 == 0
             )
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(parallel=NUMBA_PARALLEL)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[0]
-        for droplet in range(length):
+        for droplet in prange(length):
             # Arakawa-C grid
             _l = (cell_origin[droplet, 0], cell_origin[droplet, 1])
             _r = (cell_origin[droplet, 0] + 1 * (dim == 0), cell_origin[droplet, 1] + 1 * (dim == 1))
@@ -150,14 +149,14 @@ class SpecialMethods:
             raise NotImplementedError()
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]))
     def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
         cell_end = cell_start
 
         cell_end[:] = 0
         for i in range(length):
             cell_end[cell_id[idx[i]]] += 1
-        for i in range(1, len(cell_end)):
+        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
             cell_end[i] += cell_end[i - 1]
         for i in range(length-1, -1, -1):
             cell_end[cell_id[idx[i]]] -= 1
