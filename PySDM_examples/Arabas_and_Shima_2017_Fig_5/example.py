@@ -41,7 +41,6 @@ class Simulation:
 
         self.n_steps = setup.n_steps
 
-    # TODO: common with Yang?
     def save(self, output):
         cell_id = 0
         volume = self.particles.state.get_backend_storage('volume')

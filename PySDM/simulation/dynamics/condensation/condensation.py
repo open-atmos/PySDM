@@ -47,7 +47,7 @@ class Condensation:
                     v=state.get_backend_storage("volume"),
                     n=state.n,
                     vdry=state.get_backend_storage("dry volume"),
-                    cell_idx=self.particles.state.idx[cell_start:cell_end],
+                    cell_idx=self.particles.state._State__idx[cell_start:cell_end],
                     dt=self.particles.dt,
                     kappa=self.kappa,
                     rhod=self.environment['rhod'][cell_id],

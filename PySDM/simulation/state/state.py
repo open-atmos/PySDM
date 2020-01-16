@@ -18,15 +18,15 @@ class State:
         self.__backend = particles.backend
 
         self.SD_num = particles.n_sd
-        # TODO make private
-        self.idx = self.__backend.from_ndarray(np.arange(self.SD_num))
+        self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.__tmp_idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.__backend.from_ndarray(n)
         # TODO: 0=tensive, 1=index (also in moments)
         self.attributes = attributes
         self.keys = keys
         self.position_in_cell = None if position_in_cell is None else self.__backend.from_ndarray(position_in_cell)
-        self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(cell_origin)  # TODO: move to advection? (or remove - same info in cell_id)
+        self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(
+            cell_origin)
         self.cell_id = self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
         self.__sorted = False
@@ -48,25 +48,25 @@ class State:
         """
         apply Fisher-Yates algorithm to all sds
         """
-        self.__backend.shuffle_global(idx=self.idx, length=self.SD_num, u01=u01)
+        self.__backend.shuffle_global(idx=self.__idx, length=self.SD_num, u01=u01)
         self.__sorted = False
 
     def permutation_local(self, u01):
         """
         apply Fisher-Yates algorithm per cell
         """
-        self.__backend.shuffle_local(idx=self.idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
+        self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self, cell_start):
-        self.__backend.countsort_by_cell_id(self.__tmp_idx, self.idx, self.cell_id, self.SD_num, cell_start)
-        self.idx, self.__tmp_idx = self.__tmp_idx, self.idx
+        self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, cell_start)
+        self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
 
     def min(self, item):
-        result = self.__backend.amin(self.get_backend_storage(item), self.idx, self.SD_num)
+        result = self.__backend.amin(self.get_backend_storage(item), self.__idx, self.SD_num)
         return result
 
     def max(self, item):
-        result = self.__backend.amax(self.get_backend_storage(item), self.idx, self.SD_num)
+        result = self.__backend.amax(self.get_backend_storage(item), self.__idx, self.SD_num)
         return result
 
     def get_extensive_attrs(self):
@@ -84,7 +84,7 @@ class State:
     # TODO: optionally recycle n=0 drops
     def housekeeping(self):
         if not self.is_healthy():
-            self.SD_num = self.__backend.remove_zeros(self.n, self.idx, length=self.SD_num)
+            self.SD_num = self.__backend.remove_zeros(self.n, self.__idx, length=self.SD_num)
             self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
 
     def recalculate_cell_id(self):
@@ -103,6 +103,30 @@ class State:
                 specs_rank.append(rank)
         specs_idx = np.array(specs_idx, dtype=int)
         specs_rank = np.array(specs_rank, dtype=float)
-        self.__backend.moments(moment_0, moments, self.n, self.get_extensive_attrs(), self.cell_id, self.idx,
+        self.__backend.moments(moment_0, moments, self.n, self.get_extensive_attrs(), self.cell_id, self.__idx,
                                self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                                self.keys[attr_name][1])
+
+    def find_pairs(self, cell_start, is_first_in_pair):
+        self.__backend.find_pairs(cell_start, is_first_in_pair,
+                                  self.cell_id,
+                                  self.__idx,
+                                  self.SD_num)
+
+    def sum_pair(self, output, x, is_first_in_pair):
+        self.__backend.sum_pair(output, self.get_backend_storage(x),
+                                is_first_in_pair,
+                                self.__idx,
+                                self.SD_num)
+
+    def max_pair(self, prob, is_first_in_pair):
+        self.__backend.max_pair(prob, self.n, is_first_in_pair, self.__idx, self.SD_num)
+
+    def coalescence(self, gamma):
+        self.__backend.coalescence(n=self.n,
+                                   idx=self.__idx,
+                                   length=self.SD_num,
+                                   intensive=self.get_intensive_attrs(),
+                                   extensive=self.get_extensive_attrs(),
+                                   gamma=gamma,
+                                   healthy=self.healthy)

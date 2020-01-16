@@ -15,49 +15,6 @@ class TestState:
     def storage(iterable):
         return backend.from_ndarray(np.array(iterable))
 
-    @staticmethod
-    def check_contiguity(state, attr='n', i_SD=0):
-        item = state[attr]
-        assert item.flags['C_CONTIGUOUS']
-        assert item.flags['F_CONTIGUOUS']
-
-        sd = state.get_SD(i_SD)
-        assert not sd.flags['C_CONTIGUOUS']
-        assert not sd.flags['F_CONTIGUOUS']
-
-    @pytest.mark.xfail
-    def test_get_item_does_not_copy(self):
-        # Arrange
-        arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
-
-        # Act
-        item = sut['a']
-
-        # Assert
-        assert item.base.__array_interface__['data'] == sut.data.__array_interface__['data']
-
-    @pytest.mark.xfail
-    def test_get_sd_does_not_copy(self):
-        # Arrange
-        arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
-
-        # Act
-        item = sut.get_SD(5)
-
-        # Assert
-        assert item.base.__array_interface__['data'] == sut.data.__array_interface__['data']
-
-    @pytest.mark.xfail
-    def test_contiguity(self):
-        # Arrange
-        arr = np.ones(10)
-        sut = State({'n': arr, 'a': arr, 'b': arr}, backend=backend)
-
-        # Act & Assert
-        self.check_contiguity(sut, attr='a', i_SD=5)
-
     @pytest.mark.parametrize("volume, n", [
         pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
         pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
@@ -87,7 +44,7 @@ class TestState:
         cells = [3, 4, 0, 1, 2]
         n_cell = max(cells) + 1
         sut.cell_id = TestState.storage(cells)
-        sut.idx = TestState.storage([4, 1, 3, 2, 0])
+        sut._State__idx = TestState.storage([4, 1, 3, 2, 0])
         sut._State__tmp_idx = TestState.storage([0] * 5)
         sut.SD_num = particles.n_sd
 
@@ -95,8 +52,8 @@ class TestState:
         sut._State__sort_by_cell_id(particles.backend.array(n_cell + 1, int))
 
         # Assert
-        assert len(sut.idx) == 5
-        np.testing.assert_array_equal(np.array([3, 4, 1]), backend.to_ndarray(sut.idx[:sut.SD_num]))
+        assert len(sut._State__idx) == 5
+        np.testing.assert_array_equal(np.array([3, 4, 1]), backend.to_ndarray(sut._State__idx[:sut.SD_num]))
 
     def test_recalculate_cell_id(self):
         # Arrange

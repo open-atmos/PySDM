@@ -8,11 +8,11 @@ Created at 05.08.2019
 import numpy as np
 
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
-from PySDM.simulation.particles import discretise_n
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.initialisation.spectral_sampling import linear
 from PySDM.backends.default import Default
+from PySDM.simulation.initialisation.multiplicities import discretise_n
 
 backend = Default
 

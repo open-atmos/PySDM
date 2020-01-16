@@ -11,7 +11,6 @@ import numpy as np
 from PySDM.backends.default import Default
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
-from PySDM import conf
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
@@ -20,8 +19,8 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import shape_full, shap
                                                order
 
 backend = Default()
-backends = [Numba()]
-if conf.TRTC:
+backends = []  # TODO: add Pythran
+if False:  # TODO: check for TRAVIS env var
     backends.append(ThrustRTC())
 
 

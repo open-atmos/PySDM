@@ -60,5 +60,5 @@ for w_i in range(len(w_avgs)):
                     w_avg=w_avgs[w_i],
                     N_STP=N_STPs[N_i],
                     r_dry=r_drys[rd_i],
-                    mass_of_dry_air=1000 * si.kilogram  # TODO: it should not matter, but it does !!!!!!!!!!!!1
+                    mass_of_dry_air=1000 * si.kilogram
                 ))

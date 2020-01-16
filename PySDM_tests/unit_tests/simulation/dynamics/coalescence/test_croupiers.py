@@ -10,9 +10,10 @@ import numpy as np
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
-from PySDM.simulation.particles import discretise_n
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.backends.default import Default
+from PySDM.simulation.initialisation.multiplicities import discretise_n
+
 
 backend = Default
 
@@ -51,4 +52,4 @@ def test_final_state(croupier):
     _ = particles.state.cell_start
 
     # Assert
-    assert (np.diff(state.cell_id[state.idx]) >= 0).all()
+    assert (np.diff(state.cell_id[state._State__idx]) >= 0).all()

@@ -62,7 +62,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         super().sync()
 
     def get_courant_field_data(self):
-        result = [  # TODO: test it!!!!
+        result = [
             self.__GC.get_component(0) / self.__rhod_of(
                 x_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1]),
             self.__GC.get_component(1) / self.__rhod_of(

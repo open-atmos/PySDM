@@ -7,8 +7,8 @@ Created at 04.11.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64, boolean, prange
-from PySDM.conf import NUMBA_PARALLEL
+from numba import void, float64, int64, prange
+from PySDM.backends.numba.conf import NUMBA_PARALLEL
 
 
 class StorageMethods:

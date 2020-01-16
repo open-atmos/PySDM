@@ -8,7 +8,7 @@ Created at 16.12.2019
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
-import PySDM.conf
+import PySDM.backends.numba.conf
 import importlib
 from PySDM.backends.numba import numba as backend
 import PySDM.backends.numba._maths_methods
@@ -39,7 +39,7 @@ def main():
 
     times = {}
     for parallel in (False,):
-        PySDM.conf.NUMBA_PARALLEL = parallel
+        PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
         reload_backend()
         for method in ('local', 'global'):
             key = f"{method} (parallel={parallel})"

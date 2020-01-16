@@ -59,4 +59,3 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
                 dpd_dt / const.Rd / T +
                 -dT_dt * pd / const.Rd / T**2
         )
-        # TODO: do RK4 for all the above...
