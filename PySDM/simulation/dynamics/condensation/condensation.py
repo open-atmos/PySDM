@@ -6,6 +6,8 @@ Created at 24.10.2019
 """
 
 from .schemes import BDF
+from ...physics import formulae as phys
+from ...physics import constants as const
 
 
 class Condensation:
@@ -37,9 +39,11 @@ class Condensation:
                 drhod_dt = (prhod[cell_id] - self.environment['rhod'][cell_id]) / dt
                 dthd_dt = (pthd[cell_id] - self.environment['thd'][cell_id]) / dt
                 dqv_dt = (pqv[cell_id] - self.environment['qv'][cell_id]) / dt
-                m_d_mean = (prhod[cell_id] + self.environment['rhod'][cell_id])/2 * self.environment.dv
+                md_new = prhod[cell_id] * self.environment.dv
+                md_old = self.environment['rhod'][cell_id] * self.environment.dv
+                md_mean = (md_new + md_old) / 2
 
-                dm, thd_new = BDF.step(
+                ml_new, ml_old, thd_new = BDF.step(
                     v=state.get_backend_storage("volume"),
                     n=state.n,
                     vdry=state.get_backend_storage("dry volume"),
@@ -52,11 +56,18 @@ class Condensation:
                     drhod_dt=drhod_dt,
                     dthd_dt=dthd_dt,
                     dqv_dt=dqv_dt,
-                    m_d_mean=m_d_mean
+                    m_d_mean=md_mean
                 )
 
-                pqv[cell_id] -= dm / m_d_mean
-                pthd[cell_id] = thd_new  # TODO: same logic as above with tests for conservation of energy and mass
+                pqv[cell_id] -= (ml_new - ml_old) / md_mean
+
+                # TODO
+                # mse0 = phys.mse(T=self.environment['T'][cell_id], qv=self.environment['qv'][cell_id], ql=ml_old/md_old, z=0)
+                # mse1_over_T = phys.mse(T=1, qv=pqv[cell_id], ql=ml_new/md_new , z=0)
+                # if drhod_dt != 0:
+                #     dz = self.environment.get_predicted('z') - self.environment['z'][cell_id]
+                #     mse1_over_T += (1 + self.environment['qv'][cell_id]) * const.g * dz
+                pthd[cell_id] = thd_new
         else:
             raise NotImplementedError()
 

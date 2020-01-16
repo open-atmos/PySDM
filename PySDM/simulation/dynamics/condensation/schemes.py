@@ -34,7 +34,7 @@ class BDF:
         y0[idx_rhod] = rhod
         y0[idx_thd] = thd
         y0[idx_qv] = qv
-        y0[idx_lnv:] = np.log(v[cell_idx])
+        y0[idx_lnv:] = np.log(v[cell_idx])  # TODO: abstract out ln()
         integ = ode.solve_ivp(
             _ODESystem(
                 kappa,
@@ -55,13 +55,15 @@ class BDF:
         )
         assert integ.success, integ.message
 
-        dm = 0
+        m_new = 0
+        m_old = 0
         for i in range(n_sd_in_cell):
             x_new = np.exp(integ.y[idx_lnv + i])
             x_old = v[cell_idx[i]]
             nd = n[cell_idx[i]]
-            dm += nd * (x_new - x_old) * rho_w
+            m_new += nd * x_new * rho_w
+            m_old += nd * x_old * rho_w
             v[cell_idx[i]] = x_new
 
-        return dm, integ.y[idx_thd]
+        return m_new, m_old, integ.y[idx_thd]
 
