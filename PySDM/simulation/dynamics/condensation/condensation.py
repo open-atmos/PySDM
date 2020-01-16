@@ -17,6 +17,7 @@ class Condensation:
         self.environment = particles.environment
         self.kappa = kappa
         self.scheme = 'scipy.odeint'
+        self.ode_solver = BDF()
 
     def __call__(self):
         self.environment.sync()
@@ -43,7 +44,7 @@ class Condensation:
                 md_old = self.environment['rhod'][cell_id] * self.environment.dv
                 md_mean = (md_new + md_old) / 2
 
-                ml_new, ml_old, thd_new = BDF.step(
+                ml_new, ml_old, thd_new = self.ode_solver.step(
                     v=state.get_backend_storage("volume"),
                     n=state.n,
                     vdry=state.get_backend_storage("dry volume"),

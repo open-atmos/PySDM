@@ -27,7 +27,7 @@ class _ODESystem:
         self.drhod_dt = drhod_dt
         self.m_d = m_d
 
-    def __call__(self, t, y):
+    def __call__(self, _, y):
         rhod = y[idx_rhod]
         thd = y[idx_thd]
         qv = y[idx_qv]
