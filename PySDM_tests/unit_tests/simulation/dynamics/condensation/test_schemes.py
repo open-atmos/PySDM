@@ -19,7 +19,7 @@ def args():
     return np.load(os.path.join(path, "test_data.npy"),
                    allow_pickle=True).item()
 
-
+@pytest.mark.skip
 class TestBDF:
     # TODO: run for all condensation schemes
     @pytest.mark.parametrize("solver_class", [schemes.BDF, schemes.EE])
