@@ -23,6 +23,7 @@ class Solver:
     def __init__(self, backend, mean_n_sd_in_cell):
         length = 2 * mean_n_sd_in_cell + 3
         self.y = backend.array(length, dtype=float)  # TODO: list
+        self.substep = 1
 
     def step(self,
              v, n, vdry,
@@ -76,6 +77,7 @@ class Integ:
 class EE(Solver):
     memory_requirement = 1
 
+
     def solve_ivp(self, odesys, t_range,
                   y0,
                   rtol=1e-3,
@@ -94,29 +96,41 @@ class ImplicitInSizeExplicitInThermodynamic(Solver):
                   y0,
                   rtol=1e-3,
                   atol=1e-3):
-        dt = t_range[1] - t_range[0]
 
-        for i in range(idx_lnv, len(y0[idx_lnv:])):
-            g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_rhod], y0[idx_thd], y0[idx_qv], odesys.rd[i])
-            y_left = y0[i]
-            g0 = g(y_left)
-            y1 = y_left + 2 * g0
-            g1 = g(y1)
-            if y_left > y1:
-                y_left, y1 = y1, y_left
-            if g0 * g1 < 0:
-                for j in range(50):
-                    ys = (y_left + y1) / 2
-                    gs = g(ys)
-                    if g0 * gs < 0:
-                        y1 = ys
-                        g1 = gs
-                    else:
-                        y_left = ys
-                        g0 = gs
-            else:
-                y_left += g0
-            y0[i] = y_left
+        dt = (t_range[1] - t_range[0]) / self.substep
+
+        for _ in range(self.substep):
+            # ambient air
+            y0[idx_thd] += dt/2 * odesys.dthd_dt
+            y0[idx_qv] += dt/2 * odesys.dqv_dt
+            y0[idx_rhod] += dt/2 * odesys.drhod_dt
+
+            # sizes
+            for i in range(idx_lnv, len(y0[idx_lnv:])):
+                g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_rhod], y0[idx_thd], y0[idx_qv], odesys.rd[i])
+                y_left = y0[i]
+                g0 = g(y_left)
+                y1 = y_left + 2 * g0
+                g1 = g(y1)
+                if y_left > y1:
+                    y_left, y1 = y1, y_left
+                if g0 * g1 < 0:
+                    for j in range(50):
+                        ys = (y_left + y1) / 2
+                        gs = g(ys)
+                        if g0 * gs < 0:
+                            y1 = ys
+                            g1 = gs
+                        else:
+                            y_left = ys
+                            g0 = gs
+                else:
+                    y_left += g0
+                y0[i] = y_left
+
+            y0[idx_thd] += dt/2 * odesys.dthd_dt
+            y0[idx_qv] += dt/2 * odesys.dqv_dt
+            y0[idx_rhod] += dt/2 * odesys.drhod_dt
 
         integ = Integ()
         integ.y = y0

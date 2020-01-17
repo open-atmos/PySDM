@@ -43,7 +43,7 @@ class TestBDF:
             pyplot.stem(args["v"][ci], args["n"][ci], linefmt='b-')
             pyplot.xlabel("particle volume [m^3]")
             pyplot.ylabel("multiplicity")
-            pyplot.xlim([2e-14,2.8*10**-14])
+            pyplot.xlim([2e-14,2.8e-14])
             pyplot.legend()
             pyplot.show()
 
