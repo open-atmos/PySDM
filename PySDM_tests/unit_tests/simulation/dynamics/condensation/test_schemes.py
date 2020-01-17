@@ -12,17 +12,17 @@ import numpy as np
 from matplotlib import pyplot
 
 
-@pytest.fixture(scope='module')
+@pytest.fixture()
 def args():
     path = os.path.dirname(os.path.abspath(__file__))
 
     return np.load(os.path.join(path, "test_data.npy"),
                    allow_pickle=True).item()
 
-@pytest.mark.skip
+# @pytest.mark.skip
 class TestBDF:
     # TODO: run for all condensation schemes
-    @pytest.mark.parametrize("solver_class", [schemes.BDF, schemes.EE])
+    @pytest.mark.parametrize("solver_class", [schemes.BDF, schemes.EE, schemes.ImplicitInSizeExplicitInThermodynamic])
     def test_plot(self, solver_class, args, plot=True):
 
         ci = args["cell_idx"]
@@ -43,6 +43,7 @@ class TestBDF:
             pyplot.stem(args["v"][ci], args["n"][ci], linefmt='b-')
             pyplot.xlabel("particle volume [m^3]")
             pyplot.ylabel("multiplicity")
+            pyplot.xlim([2e-14,2.8*10**-14])
             pyplot.legend()
             pyplot.show()
 

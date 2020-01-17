@@ -18,9 +18,9 @@ idx_lnv = 3
 
 
 class _ODESystem:
-    def __init__(self, kappa, xd: np.ndarray, n: np.ndarray, drhod_dt, dthd_dt, dqv_dt, m_d):
+    def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, drhod_dt, dthd_dt, dqv_dt, m_d):
         self.kappa = kappa
-        self.rd = phys.radius(volume=xd)
+        self.rd = phys.radius(volume=dry_volume)
         self.n = n
         self.dqv_dt = dqv_dt
         self.dthd_dt = dthd_dt
@@ -52,3 +52,14 @@ class _ODESystem:
             dy_dt[idx_lnv + i] = 3/r * phys.dr_dt_MM(r, T, p, RH - 1, kappa, rd[i])
         dy_dt[idx_qv] -= np.sum(n * np.exp(lnv) * dy_dt[idx_lnv:]) * rho_w / m_d
         dy_dt[idx_thd] -= phys.lv(T) * dy_dt[idx_qv] / phys.c_p(qv) * (p1000 / p) ** (Rd / c_pd)
+
+    def derr(self, lnv, rhod, thd, qv, rd):
+        T, p, RH = Numba.temperature_pressure_RH(rhod, thd, qv)
+        return _ODESystem.derr_impl(lnv, T, p, RH, self.kappa, rd)
+
+
+    @staticmethod
+    @numba.njit()
+    def derr_impl(lnv, T, p, RH, kappa, rd):
+        r = (np.exp(lnv) * 3 / 4 / np.pi) ** (1 / 3)
+        return 3 / r * phys.dr_dt_MM(r, T, p, RH - 1, kappa, rd)

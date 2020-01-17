@@ -17,7 +17,7 @@ class Condensation:
         self.environment = particles.environment
         self.kappa = kappa
         self.scheme = 'scipy.odeint'
-        self.ode_solver = BDF()
+        self.ode_solver = BDF(particles.backend, particles.n_sd//particles.mesh.n_cell)
 
     def __call__(self):
         self.environment.sync()
@@ -62,13 +62,20 @@ class Condensation:
 
                 pqv[cell_id] -= (ml_new - ml_old) / md_mean
 
-                # TODO
-                # mse0 = phys.mse(T=self.environment['T'][cell_id], qv=self.environment['qv'][cell_id], ql=ml_old/md_old, z=0)
-                # mse1_over_T = phys.mse(T=1, qv=pqv[cell_id], ql=ml_new/md_new , z=0)
+                # old = self.environment
+                # exner0 = old['thd'][cell_id] / old['T'][cell_id]
+                # mse0 = phys.mse(T=old['T'][cell_id], qv=old['qv'][cell_id], ql=ml_old/md_old, z=0.)
+                # mse1_over_T = phys.mse(T=1., qv=pqv[cell_id], ql=ml_new/md_new, z=0.)
                 # if drhod_dt != 0:
-                #     dz = self.environment.get_predicted('z') - self.environment['z'][cell_id]
-                #     mse1_over_T += (1 + self.environment['qv'][cell_id]) * const.g * dz
+                #     pass
+                #     # dz = self.environment.get_predicted('z') - old['z'][cell_id]
+                #     # mse1_over_T += (1 + old['qv'][cell_id]) * const.g * dz
+                #     # # TODO!!!
+                # T_new = mse0 / mse1_over_T
+                # pthd[cell_id] = exner0 * T_new
+
                 pthd[cell_id] = thd_new
+
         else:
             raise NotImplementedError()
 
