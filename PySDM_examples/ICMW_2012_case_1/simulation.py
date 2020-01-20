@@ -33,7 +33,7 @@ class Simulation:
         self.storage = storage
 
     def run(self, controller=DummyController()):
-        self.tmp = None # TODO!
+        self.tmp = None  # TODO!
         self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
         self.particles.set_mesh(grid=self.setup.grid, size=self.setup.size)
         self.particles.set_environment(MoistEulerian2DKinematic, {

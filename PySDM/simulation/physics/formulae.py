@@ -12,7 +12,7 @@ R = physics.R
 r_cr = physics.r_cr
 pvs = physics.pvs
 lv = physics.lv
-mse = physics.mse
+heat = physics.heat
 c_p = physics.c_p
 
 
