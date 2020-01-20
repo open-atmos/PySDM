@@ -8,7 +8,7 @@ Created at 09.01.2020
 
 import numpy as np
 import scipy.integrate
-from ._odesystem import _ODESystem, idx_qv, idx_lnv, idx_rhod, idx_thd
+from ._odesystem import _ODESystem, idx_lnv, idx_thd
 from PySDM.simulation.physics.constants import rho_w
 
 
@@ -21,32 +21,32 @@ from PySDM.simulation.physics.constants import rho_w
 
 class Solver:
     def __init__(self, backend, mean_n_sd_in_cell):
-        length = 2 * mean_n_sd_in_cell + 3
+        length = 2 * mean_n_sd_in_cell + 2
         self.y = backend.array(length, dtype=float)  # TODO: list
 
     def step(self,
              v, n, vdry,
              cell_idx,
              dt, kappa,
-             rhod, thd, qv,
-             drhod_dt, dthd_dt, dqv_dt,
-             m_d_mean
+             thd, qv,
+             dthd_dt, dqv_dt,
+             m_d_mean, rhod_mean
              ):
         n_sd_in_cell = len(cell_idx)
         y0 = self.y[0:n_sd_in_cell + idx_lnv]
-        y0[idx_rhod] = rhod
         y0[idx_thd] = thd
-        y0[idx_qv] = qv
         y0[idx_lnv:] = np.log(v[cell_idx])  # TODO: abstract out ln()
-        integ = self.solve_ivp(
+        qt = qv + _ODESystem.ql(n[cell_idx], y0[idx_lnv:], m_d_mean)
+        y1 = self.solve_ivp(
             _ODESystem(
                 kappa,
                 vdry[cell_idx],
                 n[cell_idx],
-                drhod_dt,
                 dthd_dt,
                 dqv_dt,
-                m_d_mean
+                m_d_mean,
+                rhod_mean,
+                qt
             ),
             t_range=(0., dt),
             y0=y0,
@@ -57,39 +57,28 @@ class Solver:
         m_new = 0
         m_old = 0
         for i in range(n_sd_in_cell):
-            x_new = np.exp(integ.y[idx_lnv + i])
+            x_new = np.exp(y1[idx_lnv + i])
             x_old = v[cell_idx[i]]
             nd = n[cell_idx[i]]
             m_new += nd * x_new * rho_w
             m_old += nd * x_old * rho_w
             v[cell_idx[i]] = x_new
 
-        return m_new, m_old, integ.y[idx_thd]
-
-
-class Integ:
-    success = True
-    message = ""
-    pass
+        return m_new, m_old, y1[idx_thd]
 
 
 class EE(Solver):
-    memory_requirement = 1
-
     def solve_ivp(self, odesys, t_range,
                   y0,
                   rtol=1e-3,
                   atol=1e-3):
-        integ = Integ()
-        integ.y = y0
+        y = y0
         dt = t_range[1] - t_range[0]
-        integ.y += dt * odesys(None, integ.y)  # TODO: backend.add()
-        return integ
+        y += dt * odesys(None, y0)  # TODO: backend.add()
+        return y
 
 
 class ImplicitInSizeExplicitInThermodynamic(Solver):
-    memory_requirement = 1
-
     def solve_ivp(self, odesys, t_range,
                   y0,
                   rtol=1e-3,
@@ -97,7 +86,7 @@ class ImplicitInSizeExplicitInThermodynamic(Solver):
         dt = t_range[1] - t_range[0]
 
         for i in range(idx_lnv, len(y0[idx_lnv:])):
-            g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_rhod], y0[idx_thd], y0[idx_qv], odesys.rd[i])
+            g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_thd], y0[idx_qv], odesys.rd[i])
             y_left = y0[i]
             g0 = g(y_left)
             y1 = y_left + 2 * g0
@@ -118,16 +107,10 @@ class ImplicitInSizeExplicitInThermodynamic(Solver):
                 y_left += g0
             y0[i] = y_left
 
-        integ = Integ()
-        integ.y = y0
-        dt = t_range[1] - t_range[0]
-        integ.y += dt * odesys(None, integ.y)  # TODO: backend.add()
-        return integ
+        return y0
 
 
 class BDF(Solver):
-    memory_requirement = 1
-
     def __init__(self, backend, mean_n_sd_in_cell):
         super().__init__(backend, mean_n_sd_in_cell)
 
@@ -144,5 +127,4 @@ class BDF(Solver):
                                          t_eval=[t_range[-1]]
                                          )
         assert integ.success, integ.message
-        integ.y = integ.y[:, 0]
-        return integ
+        return integ.y[:, 0]

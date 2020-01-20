@@ -23,7 +23,9 @@ class Setup:
         self.mass_of_dry_air = mass_of_dry_air
 
     backend = Default
+
     n_steps = 500
+    scheme = 'BDF'
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

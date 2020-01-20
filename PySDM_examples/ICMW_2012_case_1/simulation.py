@@ -53,7 +53,7 @@ class Simulation:
         )
 
         if self.setup.processes["condensation"]:
-            self.particles.add_dynamic(Condensation, {"kappa": self.setup.kappa})
+            self.particles.add_dynamic(Condensation, {"kappa": self.setup.kappa, "scheme": self.setup.condensation_scheme})
             self.particles.add_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
             self.particles.add_dynamic(Advection, {"scheme": 'FTBS'})

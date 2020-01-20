@@ -135,14 +135,3 @@ def B(kp, rd):
 def r_cr(kp, rd, T):
     # critical radius
     return np.sqrt(3 * kp * rd ** 3 / A(T))
-
-
-@numba.njit([
-    float64(float64, float64, float64)
-])
-def heat(T, qv, ql):
-    return T * (
-        const.c_pd +
-        const.c_pv * qv +
-        const.c_pw * ql
-    )
