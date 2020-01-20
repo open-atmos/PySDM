@@ -8,7 +8,7 @@ Created at 09.01.2020
 
 import numpy as np
 import scipy.integrate
-from ._odesystem import _ODESystem, idx_qv, idx_lnv, idx_rhod, idx_thd
+from ._odesystem import _ODESystem, idx_qv, idx_lnv, idx_thd
 from PySDM.simulation.physics.constants import rho_w
 
 
@@ -28,13 +28,12 @@ class Solver:
              v, n, vdry,
              cell_idx,
              dt, kappa,
-             rhod, thd, qv,
-             drhod_dt, dthd_dt, dqv_dt,
-             m_d_mean
+             thd, qv,
+             dthd_dt, dqv_dt,
+             m_d_mean, rhod_mean
              ):
         n_sd_in_cell = len(cell_idx)
         y0 = self.y[0:n_sd_in_cell + idx_lnv]
-        y0[idx_rhod] = rhod
         y0[idx_thd] = thd
         y0[idx_qv] = qv
         y0[idx_lnv:] = np.log(v[cell_idx])  # TODO: abstract out ln()
@@ -43,10 +42,10 @@ class Solver:
                 kappa,
                 vdry[cell_idx],
                 n[cell_idx],
-                drhod_dt,
                 dthd_dt,
                 dqv_dt,
-                m_d_mean
+                m_d_mean,
+                rhod_mean
             ),
             t_range=(0., dt),
             y0=y0,
@@ -97,7 +96,7 @@ class ImplicitInSizeExplicitInThermodynamic(Solver):
         dt = t_range[1] - t_range[0]
 
         for i in range(idx_lnv, len(y0[idx_lnv:])):
-            g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_rhod], y0[idx_thd], y0[idx_qv], odesys.rd[i])
+            g = lambda x: y0[i] - x + dt * odesys.derr(x, y0[idx_thd], y0[idx_qv], odesys.rd[i])
             y_left = y0[i]
             g0 = g(y_left)
             y1 = y_left + 2 * g0

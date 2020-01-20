@@ -37,12 +37,12 @@ class Condensation:
                 pqv = self.environment.get_predicted("qv")
 
                 dt = self.particles.dt
-                drhod_dt = (prhod[cell_id] - self.environment['rhod'][cell_id]) / dt
                 dthd_dt = (pthd[cell_id] - self.environment['thd'][cell_id]) / dt
                 dqv_dt = (pqv[cell_id] - self.environment['qv'][cell_id]) / dt
                 md_new = prhod[cell_id] * self.environment.dv
                 md_old = self.environment['rhod'][cell_id] * self.environment.dv
                 md_mean = (md_new + md_old) / 2
+                rhod_mean = (prhod[cell_id] + self.environment['rhod'][cell_id]) / 2
 
                 ml_new, ml_old, thd_new = self.ode_solver.step(
                     v=state.get_backend_storage("volume"),
@@ -51,30 +51,27 @@ class Condensation:
                     cell_idx=self.particles.state._State__idx[cell_start:cell_end],
                     dt=self.particles.dt,
                     kappa=self.kappa,
-                    rhod=self.environment['rhod'][cell_id],
                     thd=self.environment['thd'][cell_id],
                     qv=self.environment['qv'][cell_id],
-                    drhod_dt=drhod_dt,
                     dthd_dt=dthd_dt,
                     dqv_dt=dqv_dt,
-                    m_d_mean=md_mean
+                    m_d_mean=md_mean,
+                    rhod_mean=rhod_mean
                 )
 
                 pqv[cell_id] -= (ml_new - ml_old) / md_mean
 
-                # old = self.environment
-                # exner0 = old['thd'][cell_id] / old['T'][cell_id]
-                # mse0 = phys.mse(T=old['T'][cell_id], qv=old['qv'][cell_id], ql=ml_old/md_old, z=0.)
-                # mse1_over_T = phys.mse(T=1., qv=pqv[cell_id], ql=ml_new/md_new, z=0.)
-                # if drhod_dt != 0:
-                #     pass
-                #     # dz = self.environment.get_predicted('z') - old['z'][cell_id]
-                #     # mse1_over_T += (1 + old['qv'][cell_id]) * const.g * dz
-                #     # # TODO!!!
-                # T_new = mse0 / mse1_over_T
-                # pthd[cell_id] = exner0 * T_new
+                env_old = self.environment
+                exner_old = env_old['thd'][cell_id] / env_old['T'][cell_id]
+                heat_old = phys.heat(T=env_old['T'][cell_id], qv=env_old['qv'][cell_id], ql=ml_old/md_mean)
+                heat_new_over_T_new = phys.heat(T=1., qv=pqv[cell_id], ql=ml_new/md_mean)
+                T_new = heat_old / heat_new_over_T_new
+                pthd[cell_id] = exner_old * T_new
 
-                pthd[cell_id] = thd_new
+                # TODO
+                # print(env_old['t'][cell_id])
+                # import numpy as np
+                # np.testing.assert_almost_equal(pthd[cell_id], thd_new, decimal=1)
 
         else:
             raise NotImplementedError()

@@ -138,11 +138,11 @@ def r_cr(kp, rd, T):
 
 
 @numba.njit([
-    float64(float64, float64, float64, float64)
+    float64(float64, float64, float64)
 ])
-def mse(T, qv, ql, z):
+def heat(T, qv, ql):
     return T * (
         const.c_pd +
         const.c_pv * qv +
         const.c_pw * ql
-    ) + (1 + qv) * const.g * z
+    )
