@@ -10,32 +10,6 @@ else:
 
 
 class PhysicsMethods:
-    @staticmethod
-    @numba.njit()
-    def temperature_pressure_RH(rhod, thd, qv):
-        # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-        exponent = const.Rd / const.c_pd
-        pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
-        T = thd * (pd / const.p1000) ** exponent
-
-        R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-        p = rhod * (1 + qv) * R * T
-
-        RH = (p - pd) / pvs(T)
-
-        return T, p, RH
-
-    @staticmethod
-    @numba.njit()
-    def dr_dt_MM(r, T, p, S, kp, rd):
-        nom = (S - A(T) / r + B(kp, rd) / r ** 3)
-        den = (
-                Fd(T, D(r, T)) +
-                Fk(T, K(r, T, p), lv(T))
-        )
-        result = 1 / r * nom / den
-        return result
-
     # TODO: move somewhere
     @staticmethod
     @numba.njit()
@@ -48,6 +22,26 @@ class PhysicsMethods:
         # see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
         dC = c_r - c_l
         return (omega * dC + c_l) / (1 - dC)
+
+    @staticmethod
+    @numba.njit()
+    def temperature_pressure_RH(rhod, thd, qv):
+        return temperature_pressure_RH(rhod, thd, qv)
+
+
+@numba.njit()
+def temperature_pressure_RH(rhod, thd, qv):
+    # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
+    exponent = const.Rd / const.c_pd
+    pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
+    T = thd * (pd / const.p1000) ** exponent
+
+    R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
+    p = rhod * (1 + qv) * R * T
+
+    RH = (p - pd) / pvs(T)
+
+    return T, p, RH
 
 
 @numba.njit(float64(float64))
@@ -135,3 +129,29 @@ def B(kp, rd):
 def r_cr(kp, rd, T):
     # critical radius
     return np.sqrt(3 * kp * rd ** 3 / A(T))
+
+
+@numba.njit()
+def dr_dt_MM(r, T, p, S, kp, rd):
+    nom = (S - A(T) / r + B(kp, rd) / r ** 3)
+    den = (
+            Fd(T, D(r, T)) +
+            Fk(T, K(r, T, p), lv(T))
+    )
+    return 1 / r * nom / den
+
+
+@numba.njit([float64(float64, float64, float64, float64, float64, float64)])
+def dlnv_dt(lnv, T, p, RH, kappa, rd):
+    r = (np.exp(lnv) * 3 / 4 / np.pi) ** (1 / 3)
+    return 3 / r * dr_dt_MM(r, T, p, RH - 1, kappa, rd)
+
+
+@numba.njit()
+def dthd_dt(rhod, thd, T, dqv_dt):
+    return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
+
+
+@numba.njit()
+def radius(volume):
+    return (volume * 3 / 4 / np.pi) ** (1 / 3)
