@@ -37,7 +37,7 @@ class Simulation:
         r_wet = r_wet_init(r_dry, self.particles.environment, np.zeros_like(n), setup.kappa)
         v_wet = phys.volume(radius=r_wet)
         self.particles.create_state_0d(n=n, extensive={'dry volume': x_dry, 'volume': v_wet}, intensive={})
-        self.particles.add_dynamic(Condensation, {"kappa": setup.kappa})
+        self.particles.add_dynamic(Condensation, {"kappa": setup.kappa, "scheme": setup.scheme})
 
         self.n_steps = setup.n_steps
 

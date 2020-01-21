@@ -30,6 +30,7 @@ class Setup:
         self.n = discretise_n(self.n)
 
     backend = Default
+    condensation_scheme = 'BDF'
 
     mass_of_dry_air = 100 * si.kilogram
 
