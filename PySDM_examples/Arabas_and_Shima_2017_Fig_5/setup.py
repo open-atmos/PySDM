@@ -10,6 +10,7 @@ from PySDM.backends.default import Default
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics import formulae as phys
+from PySDM.simulation.dynamics.condensation import condensation
 import numpy as np
 
 
@@ -25,7 +26,11 @@ class Setup:
     backend = Default
 
     n_steps = 500
-    scheme = 'BDF'
+
+    scheme = 'libcloud'
+    dt_max = condensation.default_dt_max
+    atol = condensation.default_atol
+    rtol = condensation.default_rtol
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

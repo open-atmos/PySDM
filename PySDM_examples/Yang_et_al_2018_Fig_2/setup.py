@@ -10,6 +10,7 @@ from PySDM.backends.default import Default
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.initialisation import spectral_sampling
 from PySDM.simulation.particles import discretise_n
+from PySDM.simulation.dynamics.condensation import condensation
 import numpy as np
 
 
@@ -30,7 +31,10 @@ class Setup:
         self.n = discretise_n(self.n)
 
     backend = Default
-    condensation_scheme = 'BDF'
+    condensation_scheme = 'libcloud'
+    dt_max = condensation.default_dt_max
+    atol = condensation.default_atol
+    rtol = condensation.default_rtol
 
     mass_of_dry_air = 100 * si.kilogram
 
