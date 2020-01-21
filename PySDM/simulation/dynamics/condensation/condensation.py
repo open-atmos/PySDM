@@ -5,7 +5,8 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from .schemes import BDF, ImplicitInSizeExplicitInThermodynamic
+from .schemes.bdf import BDF
+from .schemes.libcloud import ImplicitInSizeExplicitInTheta
 
 
 class Condensation:
@@ -19,7 +20,7 @@ class Condensation:
         if scheme == 'BDF':
             self.ode_solver = BDF(particles.backend, mean_n_sd_in_cell)
         elif scheme == 'libcloud':
-            self.ode_solver = ImplicitInSizeExplicitInThermodynamic(particles.backend, mean_n_sd_in_cell)
+            self.ode_solver = ImplicitInSizeExplicitInTheta(particles.backend, mean_n_sd_in_cell)
         else:
             raise NotImplementedError()
 
@@ -47,7 +48,7 @@ class Condensation:
             md_mean = (md_new + md_old) / 2
             rhod_mean = (prhod[cell_id] + self.environment['rhod'][cell_id]) / 2
 
-            ml_new, ml_old, thd_new = self.ode_solver.step(
+            qv_new, thd_new = self.ode_solver.step(
                 v=state.get_backend_storage("volume"),
                 n=state.n,
                 vdry=state.get_backend_storage("dry volume"),
@@ -62,7 +63,7 @@ class Condensation:
                 rhod_mean=rhod_mean
             )
 
-            pqv[cell_id] -= (ml_new - ml_old) / md_mean
+            pqv[cell_id] = qv_new
             pthd[cell_id] = thd_new
 
 
