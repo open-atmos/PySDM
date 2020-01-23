@@ -9,8 +9,13 @@ from .schemes.bdf import BDF
 from .schemes.libcloud import ImplicitInSizeExplicitInTheta
 
 
+default_rtol = 1e-3
+default_atol = 1e-3
+default_dt_max = .5
+
+
 class Condensation:
-    def __init__(self, particles, kappa, scheme):
+    def __init__(self, particles, kappa, scheme, rtol=default_rtol, atol=default_atol, dt_max=default_dt_max):
 
         self.particles = particles
         self.environment = particles.environment
@@ -18,9 +23,9 @@ class Condensation:
 
         mean_n_sd_in_cell = particles.n_sd//particles.mesh.n_cell
         if scheme == 'BDF':
-            self.ode_solver = BDF(particles.backend, mean_n_sd_in_cell)
+            self.ode_solver = BDF(particles.backend, mean_n_sd_in_cell, rtol, atol)
         elif scheme == 'libcloud':
-            self.ode_solver = ImplicitInSizeExplicitInTheta(particles.backend, mean_n_sd_in_cell)
+            self.ode_solver = ImplicitInSizeExplicitInTheta(particles.backend, rtol, atol, dt_max)
         else:
             raise NotImplementedError()
 

@@ -1,8 +1,30 @@
-from ._base import Solver
 from ....physics import formulae as phys
 from ....physics import constants as const
 import numba
 import numpy as np
+
+
+class ImplicitInSizeExplicitInTheta:
+    def __init__(self, backend, rtol, atol, dt_max):
+        self.backend = backend
+        self.rtol = rtol
+        self.atol = atol
+        self.dt_max = dt_max  # TODO: more clever - as a function of supersaturation!
+
+    def step(self,
+             v, n, vdry,
+             cell_idx,
+             dt, kappa,
+             thd, qv,
+             dthd_dt, dqv_dt,
+             m_d_mean, rhod_mean
+             ):
+        return impl(v, n, vdry,
+                    cell_idx,
+                    dt, kappa,
+                    thd, qv,
+                    dthd_dt, dqv_dt,
+                    m_d_mean, rhod_mean, self.rtol, self.atol, self.dt_max)
 
 
 @numba.njit()
@@ -17,9 +39,9 @@ def impl(v, n, vdry,
              dt, kappa,
              thd, qv,
              dthd_dt, dqv_dt,
-             m_d_mean, rhod_mean, rtol, atol):
+             m_d_mean, rhod_mean, rtol, atol, dt_max):
     n_sd_in_cell = len(cell_idx)
-    n_substeps = np.maximum(1, int(dt / 0.5))  # TODO: more clever!
+    n_substeps = np.maximum(1, int(dt / dt_max))
     dt /= n_substeps
 
     ml_old = 0
@@ -44,7 +66,7 @@ def impl(v, n, vdry,
             if fa * _minfun(b, *args) >= 0:
                 lnv_new = lnv_old + dlnv_old
             else:
-                while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink
+                while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink (SciPy definition:  solver keeps the local error estimates less than atol + rtol * abs(y).)
                     lnv_new = (a + b) / 2
                     f = _minfun(lnv_new, *args)
                     if f * fa > 0:
@@ -66,21 +88,3 @@ def impl(v, n, vdry,
     return qv, thd
 
 
-class ImplicitInSizeExplicitInTheta(Solver):
-    def __init__(self, backend, _):
-        super().__init__(backend, 0)
-
-    def step(self,
-             v, n, vdry,
-             cell_idx,
-             dt, kappa,
-             thd, qv,
-             dthd_dt, dqv_dt,
-             m_d_mean, rhod_mean
-             ):
-        return impl(v, n, vdry,
-             cell_idx,
-             dt, kappa,
-             thd, qv,
-             dthd_dt, dqv_dt,
-             m_d_mean, rhod_mean, self.rtol, self.atol)
