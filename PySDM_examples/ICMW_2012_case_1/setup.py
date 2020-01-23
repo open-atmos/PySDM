@@ -19,6 +19,8 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
+    condensation_scheme = 'BDF'
+
     grid = (10, 10)  # TODO: 75x75
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
