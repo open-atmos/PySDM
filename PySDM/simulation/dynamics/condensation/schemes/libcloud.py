@@ -10,6 +10,7 @@ class ImplicitInSizeExplicitInTheta:
         self.rtol = rtol
         self.atol = atol
         self.dt_max = dt_max  # TODO: more clever - as a function of supersaturation!
+        self.thread_safe = True
 
     def step(self,
              v, n, vdry,
@@ -49,31 +50,19 @@ def impl(v, n, vdry,
         ml_old += n[cell_idx[i]] * v[cell_idx[i]] * const.rho_w
 
     for t in range(n_substeps):
-        thd += dt * dthd_dt / 2
+        thd += dt * dthd_dt / 2  # TODO: test showing that it makes sense
         qv += dt * dqv_dt / 2
         T, p, RH = phys.temperature_pressure_RH(rhod_mean, thd, qv)
 
         for i in range(n_sd_in_cell):
-            lnv_old = np.log(v[cell_idx[i]])
+            lnv_old = np.log(v[cell_idx[i]])  # TODO: abstract out coord logic
             rd = phys.radius(volume=vdry[cell_idx[i]])
             dlnv_old = dt * phys.dlnv_dt(lnv_old, T, p, RH, kappa, rd)
             a = lnv_old
-            b = lnv_old + 2 * dlnv_old
-            if a > b:
-                a, b = b, a
+            # b = lnv_old + 16 * dlnv_old  # TODO: better initial interval
+            interval = dlnv_old
             args = (lnv_old, dt, T, p, RH, kappa, rd)
-            fa = _minfun(a, *args)
-            if fa * _minfun(b, *args) >= 0:
-                lnv_new = lnv_old + dlnv_old
-            else:
-                while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink (SciPy definition:  solver keeps the local error estimates less than atol + rtol * abs(y).)
-                    lnv_new = (a + b) / 2
-                    f = _minfun(lnv_new, *args)
-                    if f * fa > 0:
-                        a = lnv_new
-                    else:
-                        b = lnv_new
-                lnv_new = (a + b) / 2
+            lnv_new = bisec(a, interval, args, rtol, atol)
             v[cell_idx[i]] = np.exp(lnv_new)
 
         ml_new = 0
@@ -86,5 +75,29 @@ def impl(v, n, vdry,
         ml_old = ml_new
 
     return qv, thd
+
+
+@numba.njit()
+def bisec(a, interval, args, rtol, atol):
+    b = a + interval
+    if b < a:
+        a, b = b, a
+    fa = _minfun(a, *args)
+    i = 0
+    while _minfun(b, *args) * fa > 0:
+        i += 1
+        b = a + interval * 2**i
+    iter = 0
+    while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink (SciPy definition:  solver keeps the local error estimates less than atol + rtol * abs(y).)
+        lnv_new = (a + b) / 2
+        f = _minfun(lnv_new, *args)
+        if f * fa > 0:
+            a = lnv_new
+        else:
+            b = lnv_new
+        iter += 1
+    print(iter)
+    lnv_new = (a + b) / 2
+    return lnv_new
 
 

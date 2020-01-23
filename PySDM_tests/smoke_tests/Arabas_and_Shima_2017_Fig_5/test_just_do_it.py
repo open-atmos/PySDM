@@ -28,7 +28,7 @@ def data():
     return data
 
 
-def test_plot(data, plot = True):
+def test_plot(data, plot=False):
     if not plot:
         return
     fig, axs = plt.subplots(len(setups), len(ln10_dz_maxs),

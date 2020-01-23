@@ -22,6 +22,7 @@ class BDF:
 
         self.rtol = rtol
         self.atol = atol
+        self.thread_safe = False
 
     def step(self,
              v, n, vdry,

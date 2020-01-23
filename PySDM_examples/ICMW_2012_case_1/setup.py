@@ -11,6 +11,7 @@ import numpy as np
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.backends.default import Default
+from PySDM.simulation.dynamics.condensation import condensation
 
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
@@ -19,7 +20,8 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
-    condensation_scheme = 'BDF'
+    condensation_scheme = 'libcloud'
+    condensation_dt_max = condensation.default_dt_max
 
     grid = (10, 10)  # TODO: 75x75
     size = (1500 * si.metres, 1500 * si.metres)
