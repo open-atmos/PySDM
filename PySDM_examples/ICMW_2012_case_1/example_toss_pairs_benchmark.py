@@ -41,14 +41,14 @@ def main():
     for parallel in (False,):
         PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
         reload_backend()
-        for method in ('local', 'global'):
+        for method in ('local',):
             key = f"{method} (parallel={parallel})"
             times[key] = []
             for sd in n_sd:
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
-                simulation.particles.croupier = method
+                # simulation.particles.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
 

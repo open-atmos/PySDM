@@ -161,3 +161,23 @@ class SpecialMethods:
         for i in range(length-1, -1, -1):
             cell_end[cell_id[idx[i]]] -= 1
             new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
+
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
+        cell_end_p = cell_start_p
+        cell_end = cell_start
+
+        thn = cell_end_p.shape[1]
+        for t in prange(thn):
+            cell_end_p[:, t] = 0
+            for i in range(t * length//thn, (t + 1) * length//thn if t != thn-1 else length):
+                cell_end_p[cell_id[idx[i]], t] += 1
+        cell_end[:] = np.sum(cell_end_p, axis=1)
+        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
+            cell_end[i] += cell_end[i - 1]
+        for t in prange(thn):
+            for i in range(length-1, -1, -1):
+                cell_end[cell_id[idx[i]]] -= 1
+                new_idx[cell_end[cell_id[idx[i]]]] = idx[i]

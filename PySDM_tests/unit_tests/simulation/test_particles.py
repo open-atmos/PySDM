@@ -12,7 +12,6 @@ from PySDM.simulation.particles import Particles
 class TestParticles:
 
     def test_set_mesh(self):
-
         # Arrange
         sut = Particles(0, 0, Default)
         grid = (1, 1)

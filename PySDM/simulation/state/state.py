@@ -29,13 +29,15 @@ class State:
             cell_origin)
         self.cell_id = self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
+        # TODO!
+        self.__cell_start_p = self.__backend.array((len(cell_start), self.__backend.num_threads()), dtype=int)
         self.__sorted = False
         self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
 
     @property
     def cell_start(self):
         if not self.__sorted:
-            self.__sort_by_cell_id(self.__cell_start)
+            self.__sort_by_cell_id()
         return self.__cell_start
 
     def get_backend_storage(self, item):
@@ -57,8 +59,9 @@ class State:
         """
         self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
-    def __sort_by_cell_id(self, cell_start):
-        self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, cell_start)
+    def __sort_by_cell_id(self):
+        self.__backend.countsort_by_cell_id_parallel(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start, self.__cell_start_p)
+        # self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)
         self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
 
     def min(self, item):
