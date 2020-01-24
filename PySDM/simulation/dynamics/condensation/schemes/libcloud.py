@@ -96,7 +96,6 @@ def bisec(a, interval, args, rtol, atol):
         else:
             b = lnv_new
         iter += 1
-    print(iter)
     lnv_new = (a + b) / 2
     return lnv_new
 

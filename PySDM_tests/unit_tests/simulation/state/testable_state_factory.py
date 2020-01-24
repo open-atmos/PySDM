@@ -42,6 +42,6 @@ class TestableStateFactory(StateFactory):
     @staticmethod
     def empty_state(particles) -> TestableState:
         return TestableState(n=np.zeros(0), attributes={}, keys={},
-                             cell_id=np.zeros(0), cell_start=np.zeros(0),
+                             cell_id=np.zeros(0, dtype=np.int64), cell_start=np.zeros(0, dtype=np.int64),
                              position_in_cell=None, cell_origin=None,
                              particles=particles)

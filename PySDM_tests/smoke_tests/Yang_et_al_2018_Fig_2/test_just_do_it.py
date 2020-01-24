@@ -8,7 +8,7 @@ def test_just_do_it():
     # Arrange
     setup = Setup()
     # setup.condensation_scheme = scheme
-    setup.dt_max = 0.07
+    # setup.dt_max = 0.07
     simulation = Simulation(setup)
 
     # Act
