@@ -13,6 +13,8 @@ def _weight(x):
     return x.atomic_weight * si.gram / si.mole
 
 
+pi = sci.pi
+
 Md = 0.78 * _weight(atoms.N) * 2 + 0.21 * _weight(atoms.O) * 2 + 0.01 * _weight(atoms.Ar)
 Mv = _weight(atoms.O) + _weight(atoms.H) * 2
 

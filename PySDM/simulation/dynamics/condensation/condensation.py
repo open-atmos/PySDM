@@ -92,7 +92,7 @@ class Condensation:
                 pthd[cell_id] = thd_new
 
 
-@numba.njit(parallel=False)
+@numba.njit(parallel=True)
 def condensation_parallel(n_cell, cell_start_arg, n, v, vdry, idx,
                           dt,
                           rhod, thd, qv, dv, prhod, pthd, pqv,

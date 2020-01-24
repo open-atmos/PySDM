@@ -55,7 +55,7 @@ class Pythran(Numba):
         return pythran_impl.amax(row, idx, length)
 
     @staticmethod
-    def multiply(data, multiplier):
+    def multiply_in_place(data, multiplier):
         return pythran_impl.multiply(data, multiplier)
 
     @staticmethod

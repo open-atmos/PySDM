@@ -14,6 +14,7 @@ from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM.simulation.mesh import Mesh
+from PySDM.simulation.terminal_velocity import TerminalVelocity
 
 
 class Particles:
@@ -29,7 +30,8 @@ class Particles:
         self.__dv = None
         self.n_steps = 0
         self.stats = stats if stats is not None else Stats()
-        self.croupier = 'local'
+        self.croupier = 'global'  # TODO: 1st: failing test for 'local' using Shima example with big b
+        self.terminal_velocity = TerminalVelocity(self)
 
     @property
     def n_sd(self) -> int:
@@ -100,7 +102,7 @@ class Particles:
         if self.croupier == 'global':
             self.state.permutation_global(u01)
         elif self.croupier == 'local':
-            self.state.permutation_global(u01)
+            self.state.permutation_local(u01)
         else:
             raise NotImplementedError()
 

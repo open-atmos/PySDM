@@ -53,11 +53,18 @@ class MathsMethods:
         row[:] = np.floor(row)
 
     @staticmethod
-    @numba.njit([void(float64[:], float64),
-                 void(float64[:], float64[:]),
-                 void(int64[:, :], int64)])
-    def multiply(data, multiplier):
+    # @numba.njit()
+    def multiply(data_out, data_in, multiplier):
+        data_out[:] = data_in * multiplier
+
+    @staticmethod
+    # @numba.njit()
+    def multiply_in_place(data, multiplier):
         data *= multiplier
+
+    @staticmethod
+    def power(data, exponent):
+        data[:] = np.power(data, exponent)
 
     @staticmethod
     #@numba.njit()

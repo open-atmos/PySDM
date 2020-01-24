@@ -13,6 +13,7 @@ class SDM:
     def __init__(self, particles: Particles, kernel):
         self.particles = particles
 
+        kernel.particles = particles
         self.kernel = kernel
 
         self.temp = particles.backend.array(particles.n_sd, dtype=float)
@@ -40,10 +41,11 @@ class SDM:
 
     def compute_probability(self, prob, temp, is_first_in_pair):
         kernel_temp = temp
-        self.kernel(self.particles, kernel_temp, is_first_in_pair)
-
+        self.kernel(kernel_temp, is_first_in_pair)
+        # if self.particles.n_steps > 260:
+        #     print("a")
         self.particles.max_pair(prob, is_first_in_pair)
-        self.particles.backend.multiply(prob, kernel_temp)
+        self.particles.backend.multiply_in_place(prob, kernel_temp)
 
         norm_factor = temp
         self.particles.normalize(prob, norm_factor)

@@ -329,8 +329,8 @@ class TestBackend:
         sut_data, data = TestBackend.data(sut, shape_1d, float)
 
         # Act
-        sut.multiply(sut_data, multiplier)
-        backend.multiply(data, multiplier)
+        sut.multiply_in_place(sut_data, multiplier)
+        backend.multiply_in_place(data, multiplier)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
@@ -342,8 +342,8 @@ class TestBackend:
         sut_multiplier, multiplier = TestBackend.data(sut, shape_1d, float, seed=1)
 
         # Act
-        sut.multiply(sut_data, sut_multiplier)
-        backend.multiply(data, multiplier)
+        sut.multiply_in_place(sut_data, sut_multiplier)
+        backend.multiply_in_place(data, multiplier)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))

@@ -39,7 +39,6 @@ def main():
         setup = SetupA()
 
         setup.n_sd = 2 ** 15
-        # setup.steps = [0, 90, 180]
         setup.check = lambda _, __: 0  # TODO!!!
 
         states, _ = run(setup)
