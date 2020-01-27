@@ -15,57 +15,49 @@ idx_thd = 0
 idx_lnv = 1
 
 
-class BDF:
-    def __init__(self, backend, mean_n_sd_in_cell, rtol, atol):
-        length = 2 * mean_n_sd_in_cell + idx_lnv
-        self.y = backend.array(length, dtype=float)
+def impl(y,
+         v, n, vdry,
+         cell_idx,
+         dt, kappa,
+         thd, qv,
+         dthd_dt, dqv_dt,
+         m_d_mean, rhod_mean,
+         rtol, atol, dt_max
+         ):
+    n_sd_in_cell = len(cell_idx)
+    y0 = y[0:n_sd_in_cell + idx_lnv]
+    y0[idx_thd] = thd
+    y0[idx_lnv:] = np.log(v[cell_idx])  # TODO: abstract out ln()
+    qt = qv + _ODESystem.ql(n[cell_idx], y0[idx_lnv:], m_d_mean)
 
-        self.rtol = rtol
-        self.atol = atol
-        self.thread_safe = False
+    integ = scipy.integrate.solve_ivp(
+        _ODESystem(
+            kappa,
+            vdry[cell_idx],
+            n[cell_idx],
+            dthd_dt,
+            dqv_dt,
+            m_d_mean,
+            rhod_mean,
+            qt
+        ),
+        t_span=[0, dt],
+        t_eval=[dt],
+        y0=y0,
+        rtol=rtol,
+        atol=atol,
+        method="BDF"
+    )
+    assert integ.success, integ.message
+    y1 = integ.y[:, 0]
 
-    def step(self,
-             v, n, vdry,
-             cell_idx,
-             dt, kappa,
-             thd, qv,
-             dthd_dt, dqv_dt,
-             m_d_mean, rhod_mean
-             ):
-        n_sd_in_cell = len(cell_idx)
-        y0 = self.y[0:n_sd_in_cell + idx_lnv]
-        y0[idx_thd] = thd
-        y0[idx_lnv:] = np.log(v[cell_idx])  # TODO: abstract out ln()
-        qt = qv + _ODESystem.ql(n[cell_idx], y0[idx_lnv:], m_d_mean)
+    m_new = 0
+    for i in range(n_sd_in_cell):
+        x_new = np.exp(y1[idx_lnv + i])
+        m_new += n[cell_idx[i]] * x_new * rho_w
+        v[cell_idx[i]] = x_new
 
-        integ = scipy.integrate.solve_ivp(
-            _ODESystem(
-                kappa,
-                vdry[cell_idx],
-                n[cell_idx],
-                dthd_dt,
-                dqv_dt,
-                m_d_mean,
-                rhod_mean,
-                qt
-            ),
-            t_span=[0, dt],
-            t_eval=[dt],
-            y0=y0,
-            rtol=self.rtol,
-            atol=self.atol,
-            method="BDF"
-        )
-        assert integ.success, integ.message
-        y1 = integ.y[:, 0]
-
-        m_new = 0
-        for i in range(n_sd_in_cell):
-            x_new = np.exp(y1[idx_lnv + i])
-            m_new += n[cell_idx[i]] * x_new * rho_w
-            v[cell_idx[i]] = x_new
-
-        return qt - m_new/m_d_mean, y1[idx_thd]
+    return qt - m_new/m_d_mean, y1[idx_thd]
 
 
 class _ODESystem:

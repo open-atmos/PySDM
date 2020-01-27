@@ -5,8 +5,8 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from .schemes.bdf import BDF
-from .schemes.libcloud import impl
+from .schemes import bdf
+from .schemes import libcloud
 import numba
 
 
@@ -21,123 +21,86 @@ class Condensation:
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
-
-        mean_n_sd_in_cell = particles.n_sd//particles.mesh.n_cell
-
         self.dt_max = dt_max
         self.rtol = rtol
         self.atol = atol
 
-        self.ode_solver = None
+        self.scheme = scheme
+
         if scheme == 'BDF':
-            self.ode_solver = BDF(particles.backend, mean_n_sd_in_cell, rtol, atol)
+            mean_n_sd_in_cell = particles.n_sd // particles.mesh.n_cell
+            self.y = particles.backend.array(2 * mean_n_sd_in_cell + bdf.idx_lnv, dtype=float)
+            thread_safe = False
+            self.impl = bdf.impl
         elif scheme == 'libcloud':
-            pass
+            self.y = None
+            thread_safe = True
+            self.impl = libcloud.impl
         else:
             raise NotImplementedError()
 
-    def __call__(self):
-        self.environment.sync()
-
-        state = self.particles.state
-        if self.ode_solver is None:
-            condensation_parallel(n_cell=self.particles.mesh.n_cell,
-                                  cell_start_arg=state.cell_start,
-                                  n=state.n,
-                                  v=state.get_backend_storage("volume"),
-                                  vdry=state.get_backend_storage("dry volume"),
-                                  idx=state._State__idx,
-                                  dt=self.particles.dt,
-                                  rhod=self.environment["rhod"],
-                                  thd=self.environment["thd"],
-                                  qv=self.environment["qv"],
-                                  dv=self.environment.dv,
-                                  prhod=self.environment.get_predicted("rhod"),
-                                  pthd=self.environment.get_predicted("thd"),
-                                  pqv=self.environment.get_predicted("qv"),
-                                  kappa=self.kappa,
-                                  rtol=self.rtol,
-                                  atol=self.atol,
-                                  dt_max=self.dt_max)
-        else:
-            for cell_id in range(self.particles.mesh.n_cell,):
-                cell_start = state.cell_start[cell_id]
-                cell_end = state.cell_start[cell_id + 1]
+        @numba.jit(parallel=thread_safe, nopython=thread_safe)
+        def step(y, impl, n_cell, cell_start_arg, n, v, vdry, idx,
+                                  dt, rhod, thd, qv, dv, prhod, pthd, pqv,
+                                  kappa, rtol, atol, dt_max):
+            for cell_id in numba.prange(n_cell):  # TODO: after making dt automatic and f(S, N), consider more clever pool logic
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
 
-                prhod = self.environment.get_predicted("rhod")
-                pthd = self.environment.get_predicted("thd")
-                pqv = self.environment.get_predicted("qv")
-
-                dt = self.particles.dt
-                dthd_dt = (pthd[cell_id] - self.environment['thd'][cell_id]) / dt
-                dqv_dt = (pqv[cell_id] - self.environment['qv'][cell_id]) / dt
-                md_new = prhod[cell_id] * self.environment.dv
-                md_old = self.environment['rhod'][cell_id] * self.environment.dv
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                md_new = prhod[cell_id] * dv
+                md_old = rhod[cell_id] * dv
                 md_mean = (md_new + md_old) / 2
-                rhod_mean = (prhod[cell_id] + self.environment['rhod'][cell_id]) / 2
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
 
-                qv_new, thd_new = self.ode_solver.step(
-                    v=state.get_backend_storage("volume"),
-                    n=state.n,
-                    vdry=state.get_backend_storage("dry volume"),
-                    cell_idx=self.particles.state._State__idx[cell_start:cell_end],
-                    dt=self.particles.dt,
-                    kappa=self.kappa,
-                    thd=self.environment['thd'][cell_id],
-                    qv=self.environment['qv'][cell_id],
+                qv_new, thd_new = impl(
+                    y=y,
+                    v=v,
+                    n=n,
+                    vdry=vdry,
+                    cell_idx=idx[cell_start:cell_end],
+                    dt=dt,
+                    kappa=kappa,
+                    thd=thd[cell_id],
+                    qv=qv[cell_id],
                     dthd_dt=dthd_dt,
                     dqv_dt=dqv_dt,
                     m_d_mean=md_mean,
-                    rhod_mean=rhod_mean
+                    rhod_mean=rhod_mean,
+                    rtol=rtol,
+                    atol=atol,
+                    dt_max=dt_max
                 )
 
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new
+        self.step = step
 
-
-@numba.njit(parallel=True)
-def condensation_parallel(n_cell, cell_start_arg, n, v, vdry, idx,
-                          dt,
-                          rhod, thd, qv, dv, prhod, pthd, pqv,
-                          kappa,
-                          rtol, atol, dt_max):
-    for cell_id in numba.prange(n_cell):  # TODO: after making dt automatic and f(S, N), consider more clever pool logic
-        cell_start = cell_start_arg[cell_id]
-        cell_end = cell_start_arg[cell_id + 1]
-        n_sd_in_cell = cell_end - cell_start
-        if n_sd_in_cell == 0:
-            continue
-
-        dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
-        dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
-        md_new = prhod[cell_id] * dv
-        md_old = rhod[cell_id] * dv
-        md_mean = (md_new + md_old) / 2
-        rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-
-        qv_new, thd_new = impl(
-            v=v,
-            n=n,
-            vdry=vdry,
-            cell_idx=idx[cell_start:cell_end],
-            dt=dt,
-            kappa=kappa,
-            thd=thd[cell_id],
-            qv=qv[cell_id],
-            dthd_dt=dthd_dt,
-            dqv_dt=dqv_dt,
-            m_d_mean=md_mean,
-            rhod_mean=rhod_mean,
-            rtol=rtol,
-            atol=atol,
-            dt_max=dt_max
+    def __call__(self):
+        self.environment.sync()
+        self.step(
+            y=self.y,
+            impl=self.impl,
+            n_cell=self.particles.mesh.n_cell,
+            cell_start_arg=self.particles.state.cell_start,
+            n=self.particles.state.n,
+            v=self.particles.state.get_backend_storage("volume"),
+            vdry=self.particles.state.get_backend_storage("dry volume"),
+            idx=self.particles.state._State__idx,
+            dt=self.particles.dt,
+            rhod=self.environment["rhod"],
+            thd=self.environment["thd"],
+            qv=self.environment["qv"],
+            dv=self.environment.dv,
+            prhod=self.environment.get_predicted("rhod"),
+            pthd=self.environment.get_predicted("thd"),
+            pqv=self.environment.get_predicted("qv"),
+            kappa=self.kappa,
+            rtol=self.rtol,
+            atol=self.atol,
+            dt_max=self.dt_max
         )
-
-        pqv[cell_id] = qv_new
-        pthd[cell_id] = thd_new
-
-
-
