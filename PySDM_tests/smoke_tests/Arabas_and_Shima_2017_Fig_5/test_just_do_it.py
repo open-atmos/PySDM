@@ -1,11 +1,17 @@
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.example import Simulation, setups
+from PySDM.simulation.dynamics.condensation import condensation
 import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 
 
-ln10_dz_maxs = [-2, ]
+ln10_dz_maxs = [-2.5, -3]
 schemes = ['BDF', 'libcloud']
+
+local_rtol = condensation.default_rtol
+local_atol = condensation.default_atol
+global_rtol = 10 * local_rtol
+global_atol = 10 * local_atol
 
 
 @pytest.fixture(scope='module')
@@ -18,29 +24,29 @@ def data():
             for setup_idx in range(len(setups)):
                 setup = setups[setup_idx]
                 setup.scheme = scheme
-                # TODO
-                # setup.rtol = rtol
-                # setup.atol = atol
+                setup.rtol = local_rtol
+                setup.atol = local_atol
                 setup.dt_max = 10**ln10_dz_max / setup.w_avg
-                print(setup.dt_max)
                 setup.n_steps = 100
                 data[scheme][ln10_dz_max].append(Simulation(setup).run())
     return data
 
 
-def test_plot(data, plot=False):
+def test_plot(data, plot=True):
     if not plot:
         return
     fig, axs = plt.subplots(len(setups), len(ln10_dz_maxs),
                             sharex=True, sharey=True, figsize=(6, 15))
     for setup_idx in range(len(setups)):
         for dt_idx in range(len(ln10_dz_maxs)):
+            ax = axs[setup_idx, dt_idx]
             for scheme in schemes:
                 datum = data[scheme][ln10_dz_maxs[dt_idx]][setup_idx]
                 S = datum['S']
                 z = datum['z']
-                axs[setup_idx][dt_idx].plot(S, z)
-#        plt.title(f"setup: {setup_idx}; dt_max: 10^{ln10_dz_max}; scheme: {scheme}")
+                ax.plot(S, z, label=scheme)
+            ax.set_title(f"setup: {setup_idx}; dz_max: 10^{ln10_dz_maxs[dt_idx]}")
+    ax.legend()
     plt.show()
 
 
@@ -63,6 +69,6 @@ def test_vs_BDF(setup_idx, data, ln10_dz_max, leg):
     np.testing.assert_allclose(
         desired=supersaturation['BDF'],
         actual=supersaturation['libcloud'],
-        rtol=setups[setup_idx].rtol,
-        atol=setups[setup_idx].atol
+        rtol=global_rtol,
+        atol=global_atol
     )

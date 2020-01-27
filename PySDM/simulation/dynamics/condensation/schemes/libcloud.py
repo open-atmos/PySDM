@@ -4,30 +4,6 @@ import numba
 import numpy as np
 
 
-class ImplicitInSizeExplicitInTheta:
-    def __init__(self, backend, rtol, atol, dt_max):
-        self.backend = backend
-        self.rtol = rtol
-        self.atol = atol
-        self.dt_max = dt_max  # TODO: more clever - as a function of supersaturation!
-        self.thread_safe = True
-
-    def step(self,
-             v, n, vdry,
-             cell_idx,
-             dt, kappa,
-             thd, qv,
-             dthd_dt, dqv_dt,
-             m_d_mean, rhod_mean
-             ):
-        return impl(v, n, vdry,
-                    cell_idx,
-                    dt, kappa,
-                    thd, qv,
-                    dthd_dt, dqv_dt,
-                    m_d_mean, rhod_mean, self.rtol, self.atol, self.dt_max)
-
-
 @numba.njit()
 def _minfun(lnv_new,
     lnv_old, dt, T, p, RH, kappa, rd):
@@ -59,7 +35,6 @@ def impl(v, n, vdry,
             rd = phys.radius(volume=vdry[cell_idx[i]])
             dlnv_old = dt * phys.dlnv_dt(lnv_old, T, p, RH, kappa, rd)
             a = lnv_old
-            # b = lnv_old + 16 * dlnv_old  # TODO: better initial interval
             interval = dlnv_old
             args = (lnv_old, dt, T, p, RH, kappa, rd)
             lnv_new = bisec(a, interval, args, rtol, atol)

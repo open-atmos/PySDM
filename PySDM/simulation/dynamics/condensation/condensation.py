@@ -6,7 +6,7 @@ Created at 24.10.2019
 """
 
 from .schemes.bdf import BDF
-from .schemes.libcloud import ImplicitInSizeExplicitInTheta, impl
+from .schemes.libcloud import impl
 import numba
 
 
@@ -23,10 +23,16 @@ class Condensation:
         self.kappa = kappa
 
         mean_n_sd_in_cell = particles.n_sd//particles.mesh.n_cell
+
+        self.dt_max = dt_max
+        self.rtol = rtol
+        self.atol = atol
+
+        self.ode_solver = None
         if scheme == 'BDF':
             self.ode_solver = BDF(particles.backend, mean_n_sd_in_cell, rtol, atol)
         elif scheme == 'libcloud':
-            self.ode_solver = ImplicitInSizeExplicitInTheta(particles.backend, rtol, atol, dt_max)
+            pass
         else:
             raise NotImplementedError()
 
@@ -34,7 +40,7 @@ class Condensation:
         self.environment.sync()
 
         state = self.particles.state
-        if self.ode_solver.thread_safe:
+        if self.ode_solver is None:
             condensation_parallel(n_cell=self.particles.mesh.n_cell,
                                   cell_start_arg=state.cell_start,
                                   n=state.n,
@@ -50,9 +56,9 @@ class Condensation:
                                   pthd=self.environment.get_predicted("thd"),
                                   pqv=self.environment.get_predicted("qv"),
                                   kappa=self.kappa,
-                                  rtol=self.ode_solver.rtol,
-                                  atol=self.ode_solver.atol,
-                                  dt_max=self.ode_solver.dt_max)
+                                  rtol=self.rtol,
+                                  atol=self.atol,
+                                  dt_max=self.dt_max)
         else:
             for cell_id in range(self.particles.mesh.n_cell,):
                 cell_start = state.cell_start[cell_id]

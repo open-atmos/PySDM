@@ -28,7 +28,7 @@ class TestSDMSingleCell:
         dv = 1
         particles.set_mesh_0d(dv)
         particles.set_environment(Box, {})
-        sdm = SDM(particles, StubKernel())
+        sdm = SDM(particles, StubKernel(particles.backend))
         return particles, sdm
 
     def test_single_collision(self, x_2, n_2):

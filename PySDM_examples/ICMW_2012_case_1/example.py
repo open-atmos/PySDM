@@ -18,7 +18,8 @@ def main():
 
     # TODO
     setup.n_sd_per_gridbox = 5
-    setup.grid = (25, 25)
+    setup.grid = (5, 5)
+    setup.processes["coalescence"] = True
 
     storage = Storage()
     simulation = Simulation(setup, storage)

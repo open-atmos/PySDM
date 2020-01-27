@@ -42,8 +42,6 @@ class SDM:
     def compute_probability(self, prob, temp, is_first_in_pair):
         kernel_temp = temp
         self.kernel(kernel_temp, is_first_in_pair)
-        # if self.particles.n_steps > 260:
-        #     print("a")
         self.particles.max_pair(prob, is_first_in_pair)
         self.particles.backend.multiply_in_place(prob, kernel_temp)
 
