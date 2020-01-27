@@ -17,6 +17,5 @@ class _MoistEulerian(_Moist):
     def get_thd(self) -> np.ndarray:
         return self._get_thd()
 
-    @property
-    def eulerian_fields(self):
+    def step(self):
         raise NotImplementedError()

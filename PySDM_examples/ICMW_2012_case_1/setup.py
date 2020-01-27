@@ -45,6 +45,11 @@ class Setup:
         "condensation": True
     }
 
+    mpdata_iters = 2
+    mpdata_iga = False
+    mpdata_fct = False
+    mpdata_tot = False
+
     th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals

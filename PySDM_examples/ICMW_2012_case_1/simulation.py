@@ -39,7 +39,11 @@ class Simulation:
         self.particles.set_environment(MoistEulerian2DKinematic, {
             "stream_function": self.setup.stream_function,
             "field_values": self.setup.field_values,
-            "rhod_of": self.setup.rhod
+            "rhod_of": self.setup.rhod,
+            "mpdata_iga": self.setup.mpdata_iga,
+            "mpdata_tot": self.setup.mpdata_tot,
+            "mpdata_fct": self.setup.mpdata_fct,
+            "mpdata_iters": self.setup.mpdata_iters
         })
 
         self.particles.create_state_2d(

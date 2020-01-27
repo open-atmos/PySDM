@@ -14,10 +14,12 @@ from ._moist_eulerian import _MoistEulerian
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles, stream_function, field_values, rhod_of):
+    def __init__(self, particles, stream_function, field_values, rhod_of,
+                 mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
         super().__init__(particles, [])
 
         self.__rhod_of = rhod_of
+        self.mpdata_iters = mpdata_iters
 
         grid = particles.mesh.grid
         rhod = np.repeat(
@@ -33,7 +35,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             stream_function=stream_function,
             field_values=field_values,
             g_factor=rhod,
-            opts=Options()
+            opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
@@ -52,6 +54,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     @property
     def eulerian_fields(self):
         return self.__eulerian_fields
+
+    def step(self):
+        self.__eulerian_fields.step(n_iters=self.mpdata_iters)
 
     def wait(self):
         # TODO
