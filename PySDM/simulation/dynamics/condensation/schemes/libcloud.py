@@ -1,10 +1,11 @@
 from ....physics import formulae as phys
 from ....physics import constants as const
+from .....backends.numba import conf
 import numba
 import numpy as np
 
 
-@numba.njit()
+@numba.njit(fastmath=conf.NUMBA_FASTMATH)
 def impl(y, v, n, vdry,
              cell_idx,
              dt, kappa,
@@ -45,7 +46,7 @@ def impl(y, v, n, vdry,
 
     return qv, thd
 
-@numba.njit()
+@numba.njit(fastmath=conf.NUMBA_FASTMATH)
 def bisec(minfun, a, interval, args, rtol, atol):
         b = a + interval
         if b < a:
@@ -68,7 +69,7 @@ def bisec(minfun, a, interval, args, rtol, atol):
         return lnv_new
 
 
-@numba.njit()
+@numba.njit(fastmath=conf.NUMBA_FASTMATH)
 def _minfun(lnv_new,
     lnv_old, dt, T, p, RH, kappa, rd):
     return lnv_old - lnv_new + dt * phys.dlnv_dt(lnv_new, T, p, RH, kappa, rd)
