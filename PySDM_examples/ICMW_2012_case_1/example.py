@@ -13,13 +13,15 @@ import numpy as np
 
 
 def main():
-    with np.errstate(all='raise'):
+    with np.errstate(all='ignore'):
         setup = Setup()
 
         # TODO
-        setup.n_sd_per_gridbox = 25
-        setup.grid = (25, 25)
-        setup.processes["coalescence"] = False
+        setup.n_sd_per_gridbox = 10
+        setup.grid = (5, 5)
+        setup.processes["coalescence"] = True
+        setup.processes["condensation"] = True
+
 
         storage = Storage()
         simulation = Simulation(setup, storage)
