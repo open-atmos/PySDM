@@ -31,7 +31,7 @@ class Condensation:
             self.y = particles.backend.array(2 * mean_n_sd_in_cell + bdf.idx_lnv, dtype=float)
             thread_safe = False
             self.impl = bdf.impl
-        elif scheme == 'libcloud':
+        elif scheme == 'libcloud':  # TODO: rename!!!
             self.y = None
             thread_safe = True
             self.impl = libcloud.impl
@@ -39,7 +39,10 @@ class Condensation:
             raise NotImplementedError()
 
         # TODO: move to backend
-        @numba.jit(parallel=thread_safe, nopython=thread_safe, fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+        jit_flags = conf.JIT_FLAGS.copy()
+        jit_flags['parallel'] = thread_safe
+        jit_flags['nopython'] = thread_safe
+        @numba.jit(**jit_flags)
         def step(y, impl, n_cell, cell_start_arg, n, v, vdry, idx,
                                   dt, rhod, thd, qv, dv, prhod, pthd, pqv,
                                   kappa, rtol, atol):

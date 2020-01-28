@@ -5,7 +5,7 @@ import numba
 import numpy as np
 
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def impl(y, v, n, vdry,
              cell_idx,
              dt, kappa,
@@ -34,7 +34,7 @@ def impl(y, v, n, vdry,
     # TODO: if very good: lower number of substeps
     return qv, thd
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def error_estimate(y, v, n, vdry,
              cell_idx,
              dt, kappa,
@@ -51,7 +51,7 @@ def error_estimate(y, v, n, vdry,
                                      update_v=False)
     return thd_err_est
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def impl_impl(y, v, n, vdry,
              cell_idx,
              dt, kappa,
@@ -90,7 +90,7 @@ def impl_impl(y, v, n, vdry,
         dml_dt = (ml_new - ml_old) / dt
         dqv_dt_corr = - dml_dt / m_d_mean
         dthd_dt_corr = phys.dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_pred + dqv_dt_corr)
-        thd_err_est = np.maximum(thd_err_est, np.abs(dt * dthd_dt_corr))
+        thd_err_est = np.maximum(thd_err_est, np.abs(dt * dthd_dt_corr))  # TODO: no maximum needed, see assert above
         thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
         qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
         ml_old = ml_new
@@ -98,12 +98,12 @@ def impl_impl(y, v, n, vdry,
     return qv, thd, thd_err_est
 
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def within_tolerance(error_estimate, value, rtol, atol):
     return error_estimate < atol + rtol * np.abs(value)
 
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def bisec(minfun, a, interval, args, rtol, atol):
         b = a + interval
 
@@ -130,7 +130,7 @@ def bisec(minfun, a, interval, args, rtol, atol):
         return lnv_new
 
 
-@numba.njit(fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
+@numba.njit(**conf.JIT_FLAGS)
 def _minfun(lnv_new,
     lnv_old, dt, T, p, RH, kappa, rd):
     return lnv_old - lnv_new + dt * phys.dlnv_dt(lnv_new, T, p, RH, kappa, rd)

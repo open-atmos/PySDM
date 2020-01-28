@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 
 rtols = [1e-3, 1e-4]
 schemes = ['BDF', 'libcloud']
-#setups = setups[7:] # TODO: all setups !!!!!!!!!
 
 
 @pytest.fixture(scope='module')

@@ -6,6 +6,8 @@ Created at 08.08.2019
 """
 
 
-NUMBA_PARALLEL = False
-NUMBA_FASTMATH = True
-NUMBA_ERROR_MODEL = 'python'  # 'numpy'
+JIT_FLAGS = {
+    "parallel": True,
+    "fastmath": True,
+    "error_model": 'python'  # TODO: 'numpy' would be faster, but nans make condensation loop forever
+}

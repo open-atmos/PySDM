@@ -32,7 +32,6 @@ class Setup:
 
     backend = Default
     condensation_scheme = 'libcloud'
-    dt_max = condensation.default_dt_max
     atol = condensation.default_atol
     rtol = condensation.default_rtol
 

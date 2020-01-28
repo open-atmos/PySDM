@@ -18,8 +18,8 @@ def main():
 
         # TODO
         setup.n_sd_per_gridbox = 10
-        setup.grid = (5, 5)
-        setup.processes["coalescence"] = True
+        setup.grid = (75, 75)
+        setup.processes["coalescence"] = False
         setup.processes["condensation"] = True
 
 

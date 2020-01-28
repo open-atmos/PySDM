@@ -39,8 +39,7 @@ class Simulation:
             "kappa": setup.kappa,
             "scheme": setup.condensation_scheme,
             "rtol": setup.rtol,
-            "atol": setup.atol,
-            "dt_max": setup.dt_max
+            "atol": setup.atol
         })
 
         self.n_steps = setup.n_steps
