@@ -5,12 +5,6 @@ import numpy as np
 
 
 @numba.njit()
-def _minfun(lnv_new,
-    lnv_old, dt, T, p, RH, kappa, rd):
-    return lnv_old - lnv_new + dt * phys.dlnv_dt(lnv_new, T, p, RH, kappa, rd)
-
-
-@numba.njit()
 def impl(y, v, n, vdry,
              cell_idx,
              dt, kappa,
@@ -37,7 +31,7 @@ def impl(y, v, n, vdry,
             a = lnv_old
             interval = dlnv_old
             args = (lnv_old, dt, T, p, RH, kappa, rd)
-            lnv_new = bisec(a, interval, args, rtol, atol)
+            lnv_new = bisec(_minfun, a, interval, args, rtol, atol)
             v[cell_idx[i]] = np.exp(lnv_new)
 
         ml_new = 0
@@ -51,27 +45,30 @@ def impl(y, v, n, vdry,
 
     return qv, thd
 
+@numba.njit()
+def bisec(minfun, a, interval, args, rtol, atol):
+        b = a + interval
+        if b < a:
+            a, b = b, a
+        fa = minfun(a, *args)
+        i = 0
+        while minfun(b, *args) * fa > 0:
+            i += 1
+            b = a + interval * 2**i
+        iter = 0
+        while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink (SciPy definition:  solver keeps the local error estimates less than atol + rtol * abs(y).)
+            lnv_new = (a + b) / 2
+            f = minfun(lnv_new, *args)
+            if f * fa > 0:
+                a = lnv_new
+            else:
+                b = lnv_new
+            iter += 1
+        lnv_new = (a + b) / 2
+        return lnv_new
+
 
 @numba.njit()
-def bisec(a, interval, args, rtol, atol):
-    b = a + interval
-    if b < a:
-        a, b = b, a
-    fa = _minfun(a, *args)
-    i = 0
-    while _minfun(b, *args) * fa > 0:
-        i += 1
-        b = a + interval * 2**i
-    iter = 0
-    while (b - a) / (-a) > rtol or (b - a) > atol:  # TODO: rethink (SciPy definition:  solver keeps the local error estimates less than atol + rtol * abs(y).)
-        lnv_new = (a + b) / 2
-        f = _minfun(lnv_new, *args)
-        if f * fa > 0:
-            a = lnv_new
-        else:
-            b = lnv_new
-        iter += 1
-    lnv_new = (a + b) / 2
-    return lnv_new
-
-
+def _minfun(lnv_new,
+    lnv_old, dt, T, p, RH, kappa, rd):
+    return lnv_old - lnv_new + dt * phys.dlnv_dt(lnv_new, T, p, RH, kappa, rd)

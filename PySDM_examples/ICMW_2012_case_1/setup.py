@@ -53,13 +53,14 @@ class Setup:
     th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
-    rho = 1000 * si.kilogram / si.metre**3
     kappa = 1
 
-    field_values = {
-        'th': phys.th_dry(th_std0, qv0),
-        'qv': qv0
-    }
+    @property
+    def field_values(self):
+        return {
+            'th': phys.th_dry(self.th_std0, self.qv0),
+            'qv': self.qv0
+        }
 
     @property
     def n_sd(self):

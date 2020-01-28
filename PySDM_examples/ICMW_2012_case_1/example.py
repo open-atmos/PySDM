@@ -9,7 +9,6 @@ Created at 25.09.2019
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
-import numpy as np
 
 
 def main():
@@ -18,7 +17,7 @@ def main():
 
     # TODO
     setup.n_sd_per_gridbox = 5
-    setup.grid = (5, 5)
+    setup.grid = (75, 75)
     setup.processes["coalescence"] = True
 
     storage = Storage()

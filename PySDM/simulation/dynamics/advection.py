@@ -14,7 +14,7 @@ class Advection:
     def __init__(self, particles, scheme='FTBS'):
         courant_field = particles.environment.get_courant_field_data()
 
-        # CFL
+        # CFL # TODO: this should be done by MPyDATA
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
