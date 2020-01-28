@@ -30,7 +30,6 @@ class Setup:
     # output steps
     steps = np.arange(0, 3600+1, 60)
     dt = 1 * si.seconds
-    condensation_dt_max = .1
 
     # TODO: second mode
     spectrum_per_mass_of_dry_air = Lognormal(

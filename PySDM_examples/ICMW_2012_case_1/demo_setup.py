@@ -55,12 +55,6 @@ class DemoSetup(Setup):
     ui_condensation_dt_max = FloatSlider(value=Setup.condensation_dt_max, min=.05, max=1.01, step=.05, description="dt_max (condensation)")
 
     @property
-    def condensation_dt_max(self):
-        return self.ui_condensation_dt_max.value
-
-    ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
-
-    @property
     def processes(self):
         result = {}
         for checkbox in self.ui_processes:

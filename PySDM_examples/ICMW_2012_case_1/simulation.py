@@ -59,8 +59,7 @@ class Simulation:
         if self.setup.processes["condensation"]:
             self.particles.add_dynamic(Condensation, {
                 "kappa": self.setup.kappa,
-                "scheme": self.setup.condensation_scheme,
-                "dt_max": self.setup.condensation_dt_max
+                "scheme": self.setup.condensation_scheme, # TODO: rtol
             })
             self.particles.add_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:

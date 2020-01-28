@@ -22,7 +22,7 @@ def impl(y,
          thd, qv,
          dthd_dt, dqv_dt,
          m_d_mean, rhod_mean,
-         rtol, atol, dt_max
+         rtol, atol
          ):
     n_sd_in_cell = len(cell_idx)
     y0 = y[0:n_sd_in_cell + idx_lnv]

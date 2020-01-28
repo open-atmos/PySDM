@@ -13,16 +13,14 @@ from ....backends.numba import conf
 
 default_rtol = 1e-3
 default_atol = 1e-3
-default_dt_max = .5
 
 
 class Condensation:
-    def __init__(self, particles, kappa, scheme, rtol=default_rtol, atol=default_atol, dt_max=default_dt_max):
+    def __init__(self, particles, kappa, scheme, rtol=default_rtol, atol=default_atol):
 
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
-        self.dt_max = dt_max
         self.rtol = rtol
         self.atol = atol
 
@@ -41,10 +39,10 @@ class Condensation:
             raise NotImplementedError()
 
         # TODO: move to backend
-        @numba.jit(parallel=thread_safe, nopython=thread_safe, fastmath=conf.NUMBA_FASTMATH)
+        @numba.jit(parallel=thread_safe, nopython=thread_safe, fastmath=conf.NUMBA_FASTMATH, error_model=conf.NUMBA_ERROR_MODEL)
         def step(y, impl, n_cell, cell_start_arg, n, v, vdry, idx,
                                   dt, rhod, thd, qv, dv, prhod, pthd, pqv,
-                                  kappa, rtol, atol, dt_max):
+                                  kappa, rtol, atol):
             for cell_id in numba.prange(n_cell):  # TODO: after making dt automatic and f(S, N), consider more clever pool logic
                 cell_start = cell_start_arg[cell_id]
                 cell_end = cell_start_arg[cell_id + 1]
@@ -74,8 +72,7 @@ class Condensation:
                     m_d_mean=md_mean,
                     rhod_mean=rhod_mean,
                     rtol=rtol,
-                    atol=atol,
-                    dt_max=dt_max
+                    atol=atol
                 )
 
                 pqv[cell_id] = qv_new
@@ -103,6 +100,5 @@ class Condensation:
             pqv=self.environment.get_predicted("qv"),
             kappa=self.kappa,
             rtol=self.rtol,
-            atol=self.atol,
-            dt_max=self.dt_max
+            atol=self.atol
         )
