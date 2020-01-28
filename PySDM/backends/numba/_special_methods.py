@@ -8,13 +8,13 @@ Created at 04.11.2019
 import numpy as np
 import numba
 from numba import void, float64, int64, boolean, prange
-from PySDM.backends.numba.conf import NUMBA_PARALLEL
+from PySDM.backends.numba import conf
 
 
 class SpecialMethods:
 
     @staticmethod
-    @numba.njit(int64(int64[:], int64[:], int64))
+    @numba.njit(int64(int64[:], int64[:], int64), fastmath=conf.NUMBA_FASTMATH)
     def remove_zeros(data, idx, length) -> int:
         new_length = 0
         for i in range(length):
@@ -27,7 +27,7 @@ class SpecialMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
-                parallel=NUMBA_PARALLEL)
+                parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
         for i in prange(length - 1):
             if gamma[i] == 0:
@@ -55,21 +55,21 @@ class SpecialMethods:
                 healthy[0] = 0
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
@@ -77,7 +77,7 @@ class SpecialMethods:
 
     # TODO comment
     @staticmethod
-    @numba.njit(parallel=NUMBA_PARALLEL)
+    @numba.njit(parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def compute_gamma(prob, rand):
         for i in prange(len(prob)):
             prob[i] *= -1.
@@ -85,17 +85,17 @@ class SpecialMethods:
             prob[i] = -np.floor(prob[i])
 
     @staticmethod
-    @numba.njit(boolean(int64[:]))
+    @numba.njit(boolean(int64[:]), fastmath=conf.NUMBA_FASTMATH)
     def first_element_is_zero(arr):
         return arr[0] == 0
 
     @staticmethod
-    # @numba.njit() TODO: "np.dot() only supported on float and complex arrays"
+    # @numba.njit(fastmath=conf.NUMBA_FASTMATH) TODO: "np.dot() only supported on float and complex arrays"
     def cell_id(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
         for i in prange(sd_num - 1):
             is_first_in_pair[i] = (
@@ -104,7 +104,7 @@ class SpecialMethods:
             )
 
     @staticmethod
-    @numba.njit(parallel=NUMBA_PARALLEL)
+    @numba.njit(parallel=conf.NUMBA_PARALLEL, fastmath=conf.NUMBA_FASTMATH)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[0]
         for droplet in prange(length):
@@ -115,7 +115,7 @@ class SpecialMethods:
             displacement[droplet, dim] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(fastmath=conf.NUMBA_FASTMATH)
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         moment_0[:] = 0
         moments[:, :] = 0
@@ -127,7 +127,7 @@ class SpecialMethods:
         moments[:, :] /= moment_0  # TODO: should we divide or not...
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(fastmath=conf.NUMBA_FASTMATH)
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0]
         for i in range(n_cell - 1):
@@ -140,7 +140,7 @@ class SpecialMethods:
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(fastmath=conf.NUMBA_FASTMATH)
     def apply_f_3_3(function, arg0, arg1, arg2, output0, output1, output2):
         for i in range(output0.shape[0]):
             output0[i], output1[i], output2[i] = function(arg0[i], arg1[i], arg2[i])
@@ -156,7 +156,7 @@ class SpecialMethods:
             raise NotImplementedError()
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]))
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), fastmath=conf.NUMBA_FASTMATH)
     def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
         cell_end = cell_start
 
@@ -171,7 +171,7 @@ class SpecialMethods:
 
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True, fastmath=conf.NUMBA_FASTMATH)
     def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
         cell_end_p = cell_start_p
         cell_end = cell_start

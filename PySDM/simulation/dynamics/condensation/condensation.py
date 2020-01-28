@@ -8,6 +8,7 @@ Created at 24.10.2019
 from .schemes import bdf
 from .schemes import libcloud
 import numba
+from ....backends.numba import conf
 
 
 default_rtol = 1e-3
@@ -39,7 +40,8 @@ class Condensation:
         else:
             raise NotImplementedError()
 
-        @numba.jit(parallel=thread_safe, nopython=thread_safe)
+        # TODO: move to backend
+        @numba.jit(parallel=thread_safe, nopython=thread_safe, fastmath=conf.NUMBA_FASTMATH)
         def step(y, impl, n_cell, cell_start_arg, n, v, vdry, idx,
                                   dt, rhod, thd, qv, dv, prhod, pthd, pqv,
                                   kappa, rtol, atol, dt_max):
