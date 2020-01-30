@@ -11,7 +11,7 @@ import numpy as np
 from PySDM.simulation.initialisation.spectra import Lognormal
 from PySDM.simulation.dynamics.coalescence.kernels.gravitational import Gravitational
 from PySDM.backends.default import Default
-
+from PySDM.simulation.dynamics.condensation import condensation
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics.constants import si
@@ -21,6 +21,8 @@ class Setup:
     backend = Default
 
     condensation_scheme = 'libcloud'
+    condensation_rtol_lnv = condensation.default_rtol_lnv
+    condensation_rtol_thd = condensation.default_rtol_thd
 
     grid = (75, 75)
     size = (1500 * si.metres, 1500 * si.metres)
@@ -90,8 +92,8 @@ class Setup:
     r_min = .01 * si.micrometre
     r_max = 5 * si.micrometre
 
-    kernel = Gravitational(collection_efficiency=10)  # [s-1]
+    kernel = Gravitational(collection_efficiency=10)  # [s-1] # TODO!
 
     specs = {'volume': (1, 1/3)}
-    output_vars = ["m0", "th", "qv", "RH", "volume_m1"]  # TODO: add in a loop over specs
+    output_vars = ["m0", "th", "qv", "RH", "volume_m1", 'dt_cond']  # TODO: add in a loop over specs
 

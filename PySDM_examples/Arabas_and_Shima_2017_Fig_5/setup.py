@@ -28,8 +28,8 @@ class Setup:
     n_steps = 500
 
     scheme = 'libcloud'
-    atol = condensation.default_atol
-    rtol = condensation.default_rtol
+    rtol_lnv = condensation.default_rtol_lnv
+    rtol_thd = condensation.default_rtol_thd
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

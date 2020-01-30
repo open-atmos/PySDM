@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-rtols = [1e-3, 1e-4]
+rtols = [1e-5, 1e-7, 1e-9]
 schemes = ['BDF', 'libcloud']
 
 
@@ -19,8 +19,12 @@ def data():
             for setup_idx in range(len(setups)):
                 setup = setups[setup_idx]
                 setup.scheme = scheme
-                setup.rtol = rtol
-                setup.atol = condensation.default_atol
+                if scheme == 'libcloud':
+                    setup.rtol_lnv = rtol
+                    setup.rtol_thd = rtol
+                else:
+                    setup.rtol_lnv = 1e-5
+                    setup.rtol_thd = 1e-5
                 setup.n_steps = 100
                 data[scheme][rtol].append(Simulation(setup).run())
     return data
@@ -49,7 +53,7 @@ def split(arg1, arg2):
 
 
 @pytest.mark.parametrize("setup_idx", range(len(setups)))
-@pytest.mark.parametrize("rtol", rtols)
+@pytest.mark.parametrize("rtol", [condensation.default_rtol_lnv]) # TODO
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
 def test_vs_BDF(setup_idx, data, rtol, leg):
     # Arrange
@@ -62,7 +66,5 @@ def test_vs_BDF(setup_idx, data, rtol, leg):
     # Assert
     np.testing.assert_allclose(
         desired=supersaturation['BDF'],
-        actual=supersaturation['libcloud'],
-        rtol=rtol,  # TODO: not this kind of tols
-        atol=condensation.default_atol
+        actual=supersaturation['libcloud']
     )

@@ -35,11 +35,12 @@ class DemoViewer:
         self.play.value = 0
         self.step_slider.value = 0
         self.clims = { # TODO : not here
-            "m0": (0, 1e8,  'YlGnBu'),
-            "th": (288, 295, 'Reds'),
-            "qv": (0.005, .0075,  'Greens'),
-            "RH": (.5, 1.1,   'GnBu'),
-            "volume_m1": (1e-20, 1e-19, 'Reds')
+            "m0": (0, 1e8,  'YlGnBu', 'linear'),
+            "th": (288, 295, 'Reds', 'linear'),
+            "qv": (0.005, .0075,  'Greens', 'linear'),
+            "RH": (.5, 1.1,   'GnBu', 'linear'),
+            "volume_m1": (1e-20, 1e-19, 'Reds', 'linear'),
+            "dt_cond": (self.setup.dt / 1e5, self.setup.dt, 'Blues', 'log')
         }
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan) # TODO: np.nan
@@ -47,7 +48,7 @@ class DemoViewer:
             with self.plots[key]:
                 clear_output()
                 _, ax = plt.subplots(1, 1)
-                self.ims[key] = plotter.image(ax, self.nans, self.setup.size, label=key, cmap=self.clims[key][2])
+                self.ims[key] = plotter.image(ax, self.nans, self.setup.size, label=key, cmap=self.clims[key][2], scale=self.clims[key][3])
                 self.ims[key].set_clim(vmin = self.clims[key][0], vmax = self.clims[key][1])
                 plt.show()
 

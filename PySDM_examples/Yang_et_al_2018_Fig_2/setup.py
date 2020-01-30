@@ -32,8 +32,8 @@ class Setup:
 
     backend = Default
     condensation_scheme = 'libcloud'
-    atol = condensation.default_atol
-    rtol = condensation.default_rtol
+    rtol_lnv = condensation.default_rtol_lnv
+    rtol_thd = condensation.default_rtol_thd
 
     mass_of_dry_air = 100 * si.kilogram
 

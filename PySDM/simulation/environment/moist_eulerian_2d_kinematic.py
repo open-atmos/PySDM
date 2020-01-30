@@ -55,8 +55,11 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def eulerian_fields(self):
         return self.__eulerian_fields
 
-    def step(self):
+    def __mpdata_step(self):
         self.__eulerian_fields.step(n_iters=self.mpdata_iters)
+
+    def step(self):
+        self.__mpdata_step()
 
     def wait(self):
         # TODO

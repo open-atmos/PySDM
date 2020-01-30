@@ -52,7 +52,7 @@ class DemoSetup(Setup):
     def dt(self):
         return self.ui_dt.value
 
-    ui_condensation_dt_max = FloatSlider(value=Setup.condensation_dt_max, min=.05, max=1.01, step=.05, description="dt_max (condensation)")
+    ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
 
     @property
     def processes(self):
@@ -105,7 +105,7 @@ class DemoSetup(Setup):
     def box(self):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
-            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_condensation_dt_max]),
+            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt]),
             VBox([*self.ui_processes]),
             VBox([*self.ui_mpdata_options])
         ])

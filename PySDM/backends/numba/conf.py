@@ -7,7 +7,11 @@ Created at 08.08.2019
 
 
 JIT_FLAGS = {
-    "parallel": True,
+    "parallel": False,
     "fastmath": True,
-    "error_model": 'python'  # TODO: 'numpy' would be faster, but nans make condensation loop forever
+    "error_model": 'numpy',  # TODO: 'numpy' would be faster, but nans make condensation loop forever
+#    "boundscheck": False
 }
+
+# TODO: cache!
+# TODO: enforce cache for mpdata...

@@ -38,8 +38,8 @@ class Simulation:
         self.particles.add_dynamic(Condensation, {
             "kappa": setup.kappa,
             "scheme": setup.condensation_scheme,
-            "rtol": setup.rtol,
-            "atol": setup.atol
+            "rtol_lnv": setup.rtol_lnv,
+            "rtol_thd": setup.rtol_thd,
         })
 
         self.n_steps = setup.n_steps

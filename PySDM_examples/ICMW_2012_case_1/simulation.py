@@ -7,6 +7,7 @@ Created at 25.09.2019
 """
 
 import numpy as np
+import time
 
 from PySDM.simulation.particles import Particles as Particles
 from PySDM.simulation.dynamics.advection import Advection
@@ -18,9 +19,19 @@ from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEuleri
 
 
 class DummyController:
-    panic = False
+    def __init__(self):
+        self.panic = False
+        self.t_last = self.__times()
 
-    def set_percent(self, value): print(f"{100 * value:.1f}%")
+    def __times(self):
+        return time.perf_counter_ns(), time.process_time_ns()
+
+    def set_percent(self, value):
+        t_curr = self.__times()
+        wall_time = (t_curr[0] - self.t_last[0])/1e9
+        cpu_time = (t_curr[1] - self.t_last[1])/1e9
+        print(f"{100 * value:.1f}% (times since last print: cpu={cpu_time:.1f}s wall={wall_time:.1f}s)")
+        self.t_last = self.__times()
 
     def __enter__(*_): pass
 
@@ -59,7 +70,9 @@ class Simulation:
         if self.setup.processes["condensation"]:
             self.particles.add_dynamic(Condensation, {
                 "kappa": self.setup.kappa,
-                "scheme": self.setup.condensation_scheme, # TODO: rtol
+                "scheme": self.setup.condensation_scheme,
+                "rtol_lnv": self.setup.condensation_rtol_lnv,
+                "rtol_thd": self.setup.condensation_rtol_thd,
             })
             self.particles.add_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
@@ -120,3 +133,7 @@ class Simulation:
         backend.download(particles.environment['RH'], self.tmp)
         self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
 
+        # store numerical stats # TODO: hardcoded 0!
+        backend.download(particles.dynamics[0].substeps, self.tmp)
+        self.tmp[:] = self.setup.dt / self.tmp
+        self.storage.save(self.tmp.reshape(self.setup.grid), step, "dt_cond")
