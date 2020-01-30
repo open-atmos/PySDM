@@ -15,9 +15,8 @@ import numpy as np
 
 
 class Setup:
-    def __init__(self, dt=2 * si.second, n_sd=100):
-        self.dt = dt
-        self.n_steps = int(3 * si.hours / dt)
+    def __init__(self, n_sd=100):
+        self.n_steps = int(self.total_time / si.second)  # TODO: rename to n_output
         self.n_sd = n_sd
         self.r_dry, self.n = spectral_sampling.logarithmic(
             n_sd=n_sd,
@@ -34,9 +33,10 @@ class Setup:
     condensation_scheme = 'libcloud'
     rtol_lnv = condensation.default_rtol_lnv
     rtol_thd = condensation.default_rtol_thd
+    dt_max = 1 * si.second
 
     mass_of_dry_air = 100 * si.kilogram
-
+    total_time = 3 * si.hours
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram
     p0 = 938.5 * si.hectopascals

@@ -14,17 +14,17 @@ def impl(y, v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rho
     n_substeps = substeps_hint
 
     multiplier = 1.2
-    thd_new_dt_all = step_fake(args, dt / n_substeps)
+    thd_new_long = step_fake(args, dt / n_substeps)
     while True:
-        thd_new_dt_one = step_fake(args, dt / (multiplier * n_substeps))
-        if thd_new_dt_one != -1 and thd_new_dt_all != -1:
-            dthd_all = (thd_new_dt_all - thd)
-            dthd_one = (thd_new_dt_one - thd)
-            error_estimate = np.abs(dthd_all - multiplier * dthd_one)
+        thd_new_short = step_fake(args, dt / (multiplier * n_substeps))
+        if thd_new_short != -1 and thd_new_long != -1:
+            dthd_long = (thd_new_long - thd)
+            dthd_short = (thd_new_short - thd)
+            error_estimate = np.sqrt(n_substeps) * np.abs(dthd_long - multiplier * dthd_short)  # TODO: rethink
             if within_tolerance(error_estimate, thd, rtol_thd):
                 break
         n_substeps *= multiplier
-        thd_new_dt_all = thd_new_dt_one
+        thd_new_long = thd_new_short
 
     qv, thd = step_true(args, dt, n_substeps)
 
@@ -105,7 +105,7 @@ def bisec(minfun, a, interval, args, rtol, n_substeps):
         fa = minfun(a, *args) # TODO: computed above
 
         iter = 0
-        while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
+        while not within_tolerance(error_estimate=np.sqrt(n_substeps)*(b-a), value=(a+b)/2, rtol=rtol):
             lnv_new = (a + b) / 2
             f = minfun(lnv_new, *args)
             if f * fa > 0:

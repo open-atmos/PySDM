@@ -25,11 +25,12 @@ class Setup:
 
     backend = Default
 
-    n_steps = 500
+    n_steps = 500 # TODO: rename to n_output
 
     scheme = 'libcloud'
     rtol_lnv = condensation.default_rtol_lnv
     rtol_thd = condensation.default_rtol_thd
+    dt_max = 10 * si.second # TODO: as a function of w?
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

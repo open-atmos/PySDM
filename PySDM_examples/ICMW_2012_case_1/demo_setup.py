@@ -6,6 +6,7 @@ Created at 02.10.2019
 
 from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
+import numpy as np
 
 
 class DemoSetup(Setup):
@@ -51,6 +52,21 @@ class DemoSetup(Setup):
     @property
     def dt(self):
         return self.ui_dt.value
+
+    ui_condensation_rtol = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="condensation solver tolerance (log_10)")
+
+    def __condensation_rtol(self):
+        # TODO
+        assert Setup.condensation_rtol_thd == Setup.condensation_rtol_lnv
+        return 10**self.ui_condensation_rtol.value
+
+    @property
+    def condensation_rtol_lnv(self):
+        return self.__condensation_rtol()
+
+    @property
+    def condensation_rtol_thd(self):
+        return self.__condensation_rtol()
 
     ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
 
@@ -105,7 +121,7 @@ class DemoSetup(Setup):
     def box(self):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
-            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt]),
+            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_condensation_rtol]),
             VBox([*self.ui_processes]),
             VBox([*self.ui_mpdata_options])
         ])

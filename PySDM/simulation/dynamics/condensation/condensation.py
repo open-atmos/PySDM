@@ -12,8 +12,8 @@ from ....backends.numba import conf
 import numpy as np
 
 
-default_rtol_lnv = 1e-4
-default_rtol_thd = 1e-6
+default_rtol_lnv = 1e-9
+default_rtol_thd = 1e-9
 
 
 class Condensation:
@@ -21,7 +21,6 @@ class Condensation:
                  rtol_lnv=default_rtol_lnv,
                  rtol_thd=default_rtol_thd,
                  ):
-
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
@@ -57,7 +56,7 @@ class Condensation:
             rtol_lnv, rtol_thd, dt, substeps, cell_order
         ):
             for thread_id in numba.prange(n_threads):
-                for i in range(thread_id, n_cell, n_threads):
+                for i in range(thread_id, n_cell, n_threads): # TODO: at least show that it is not slower :)
                     cell_id = cell_order[i]
 
                     cell_start = cell_start_arg[cell_id]

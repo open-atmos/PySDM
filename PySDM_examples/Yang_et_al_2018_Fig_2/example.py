@@ -20,7 +20,12 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 class Simulation:
     def __init__(self, setup):
 
-        self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=setup.dt)
+        dt_output = setup.total_time / setup.n_steps
+        self.n_substeps = 1
+        while (dt_output / self.n_substeps >= setup.dt_max):
+            self.n_substeps += 1
+
+        self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
         self.particles.set_mesh_0d()
         self.particles.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,
@@ -61,9 +66,8 @@ class Simulation:
 
         self.save(output)
         for step in range(self.n_steps):
-            self.particles.run(1)
+            self.particles.run(self.n_substeps)
             self.save(output)
-
         return output
 
 

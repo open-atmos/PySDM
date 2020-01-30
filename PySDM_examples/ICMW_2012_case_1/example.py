@@ -17,13 +17,13 @@ def main():
         setup = Setup()
 
         # TODO
-        setup.n_sd_per_gridbox = 10
-        setup.grid = (50, 50)
+        setup.n_sd_per_gridbox = 25
+        setup.grid = (25, 25)
         setup.processes["coalescence"] = False
         setup.processes["condensation"] = True
-        setup.condensation_rtol_lnv = 1e-4
-        setup.condensation_rtol_thd = 1e-5
-        setup.mpdata_iters = 3
+        setup.condensation_rtol_lnv = 1e-8
+        setup.condensation_rtol_thd = 1e-8
+        setup.mpdata_iters = 2
 
         storage = Storage()
         simulation = Simulation(setup, storage)

@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 
 
 rtols = [1e-5, 1e-7, 1e-9]
-schemes = ['BDF', 'libcloud']
+schemes = ['libcloud', 'BDF']
+setups = setups[0:6]
 
 
 @pytest.fixture(scope='module')
@@ -23,8 +24,8 @@ def data():
                     setup.rtol_lnv = rtol
                     setup.rtol_thd = rtol
                 else:
-                    setup.rtol_lnv = 1e-5
-                    setup.rtol_thd = 1e-5
+                    setup.rtol_lnv = 1e-3 # TODO...
+                    setup.rtol_thd = 1e-3
                 setup.n_steps = 100
                 data[scheme][rtol].append(Simulation(setup).run())
     return data
@@ -44,6 +45,7 @@ def test_plot(data, plot=True):
                 z = datum['z']
                 ax.plot(S, z, label=scheme)
             ax.set_title(f"setup: {setup_idx}; rtol: {rtols[rtol_idx]}")
+            ax.set_xlim(-.0075, .0075)
     ax.legend()
     plt.show()
 
