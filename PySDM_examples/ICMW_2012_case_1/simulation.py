@@ -24,12 +24,12 @@ class DummyController:
         self.t_last = self.__times()
 
     def __times(self):
-        return time.perf_counter_ns(), time.process_time_ns()
+        return time.perf_counter(), time.process_time()
 
     def set_percent(self, value):
         t_curr = self.__times()
-        wall_time = (t_curr[0] - self.t_last[0])/1e9
-        cpu_time = (t_curr[1] - self.t_last[1])/1e9
+        wall_time = (t_curr[0] - self.t_last[0])
+        cpu_time = (t_curr[1] - self.t_last[1])
         print(f"{100 * value:.1f}% (times since last print: cpu={cpu_time:.1f}s wall={wall_time:.1f}s)")
         self.t_last = self.__times()
 
@@ -133,7 +133,9 @@ class Simulation:
         backend.download(particles.environment['RH'], self.tmp)
         self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
 
-        # store numerical stats # TODO: hardcoded 0!
-        backend.download(particles.dynamics[0].substeps, self.tmp)
-        self.tmp[:] = self.setup.dt / self.tmp
-        self.storage.save(self.tmp.reshape(self.setup.grid), step, "dt_cond")
+        # store numerical stats
+        if self.setup.processes["condensation"]:
+            # TODO: hardcoded 0!
+            backend.download(particles.dynamics[0].substeps, self.tmp)
+            self.tmp[:] = self.setup.dt / self.tmp
+            self.storage.save(self.tmp.reshape(self.setup.grid), step, "dt_cond")

@@ -5,13 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-rtols = [1e-5, 1e-7, 1e-9]
+rtols = [1e-6, 1e-7]
 schemes = ['libcloud', 'BDF']
-setups = setups[0:6]
 
 
 @pytest.fixture(scope='module')
 def data():
+    # TODO: calculate BDF just once - as a reference solution
     data = {}
     for scheme in schemes:
         data[scheme] = {}
@@ -24,8 +24,8 @@ def data():
                     setup.rtol_lnv = rtol
                     setup.rtol_thd = rtol
                 else:
-                    setup.rtol_lnv = 1e-3 # TODO...
-                    setup.rtol_thd = 1e-3
+                    setup.rtol_lnv = rtol
+                    setup.rtol_thd = rtol
                 setup.n_steps = 100
                 data[scheme][rtol].append(Simulation(setup).run())
     return data

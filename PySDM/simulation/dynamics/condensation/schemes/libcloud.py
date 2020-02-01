@@ -13,16 +13,15 @@ def impl(y, v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rho
 
     n_substeps = substeps_hint
 
-    multiplier = 1.2
+    multiplier = 2
     thd_new_long = step_fake(args, dt / n_substeps)
     while True:
         thd_new_short = step_fake(args, dt / (multiplier * n_substeps))
-        if thd_new_short != -1 and thd_new_long != -1:
-            dthd_long = (thd_new_long - thd)
-            dthd_short = (thd_new_short - thd)
-            error_estimate = np.sqrt(n_substeps) * np.abs(dthd_long - multiplier * dthd_short)  # TODO: rethink
-            if within_tolerance(error_estimate, thd, rtol_thd):
-                break
+        dthd_long = (thd_new_long - thd)
+        dthd_short = (thd_new_short - thd)
+        error_estimate = np.abs(dthd_long - multiplier * dthd_short)
+        if within_tolerance(error_estimate, thd, rtol_thd):
+            break
         n_substeps *= multiplier
         thd_new_long = thd_new_short
 
@@ -64,8 +63,10 @@ def step_impl(
             lnv_old = np.log(v[cell_idx[i]])  # TODO: abstract out coord logic
             rd = phys.radius(volume=vdry[cell_idx[i]])
             dlnv_old = dt * phys.dlnv_dt(lnv_old, T, p, RH, kappa, rd)
-            if fake and phys.radius(np.exp(lnv_old + dlnv_old)) < rd:
-                return -1, -1
+
+            if dlnv_old < 0:
+                dlnv_old = np.maximum(dlnv_old, np.log(vdry[cell_idx[i]]) - lnv_old)
+
             a = lnv_old
             interval = dlnv_old
             args = (lnv_old, dt, T, p, RH, kappa, rd)
@@ -105,7 +106,7 @@ def bisec(minfun, a, interval, args, rtol, n_substeps):
         fa = minfun(a, *args) # TODO: computed above
 
         iter = 0
-        while not within_tolerance(error_estimate=np.sqrt(n_substeps)*(b-a), value=(a+b)/2, rtol=rtol):
+        while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
             lnv_new = (a + b) / 2
             f = minfun(lnv_new, *args)
             if f * fa > 0:
