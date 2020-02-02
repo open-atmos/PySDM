@@ -90,6 +90,7 @@ class State:
         if not self.is_healthy():
             self.SD_num = self.__backend.remove_zeros(self.n, self.__idx, length=self.SD_num)
             self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
+            self.__sorted = False
 
     def recalculate_cell_id(self):
         if self.cell_origin is None:

@@ -93,29 +93,30 @@ def within_tolerance(error_estimate, value, rtol):
 
 @numba.njit(**conf.JIT_FLAGS)
 def bisec(minfun, a, interval, args, rtol, n_substeps):
-        b = a + interval
+    b = a + interval
 
-        i = 0
-        while minfun(a, *args) * minfun(b, *args) > 0:
-            i += 1
-            b = a + interval * 2**i
+    i = 0
+    while minfun(a, *args) * minfun(b, *args) > 0:
+        i += 1
+        b = a + interval * 2**i
 
-        if b < a:
-            a, b = b, a
+    if b < a:
+        a, b = b, a
 
-        fa = minfun(a, *args) # TODO: computed above
+    fa = minfun(a, *args) # TODO: computed above
 
-        iter = 0
-        while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
-            lnv_new = (a + b) / 2
-            f = minfun(lnv_new, *args)
-            if f * fa > 0:
-                a = lnv_new
-            else:
-                b = lnv_new
-            iter += 1
+    iter = 0
+    while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
         lnv_new = (a + b) / 2
-        return lnv_new
+        f = minfun(lnv_new, *args)
+        if f * fa > 0:
+            a = lnv_new
+        else:
+            b = lnv_new
+        iter += 1
+    lnv_new = (a + b) / 2
+
+    return lnv_new
 
 
 @numba.njit(**conf.JIT_FLAGS)

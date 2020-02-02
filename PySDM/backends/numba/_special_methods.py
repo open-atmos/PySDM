@@ -169,7 +169,6 @@ class SpecialMethods:
             cell_end[cell_id[idx[i]]] -= 1
             new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
 
-
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
     def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
