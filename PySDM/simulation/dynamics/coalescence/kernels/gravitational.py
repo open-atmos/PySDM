@@ -9,6 +9,7 @@ from PySDM.simulation.physics import constants as const
 
 
 class Gravitational:
+    # TODO: handle collection_efficiency
     def __init__(self, collection_efficiency=1, x='volume'):
         self.collection_efficiency = 1
         self.x = x
@@ -39,5 +40,6 @@ class Gravitational:
                               self.particles.state._State__idx, self.particles.state.SD_num)
         backend.multiply_in_place(output, self.__tmp)
 
+    # TODO: cleanup
     def analytic_solution(self, x, t, x_0, N_0):
         return x * 0

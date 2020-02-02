@@ -43,7 +43,8 @@ class Setup:
     processes = {
         "advection": True,
         "coalescence": True,
-        "condensation": True
+        "condensation": True,
+        "sedimentation": True
     }
 
     mpdata_iters = 2

@@ -11,7 +11,7 @@ import numpy as np
 
 
 class Advection:
-    def __init__(self, particles, scheme='FTBS'):
+    def __init__(self, particles, scheme='FTBS', sedimentation=False):
         courant_field = particles.environment.get_courant_field_data()
 
         # CFL # TODO: this should be done by MPyDATA
@@ -27,6 +27,7 @@ class Advection:
 
         self.particles = particles
         self.scheme = method
+        self.sedimentation = sedimentation
 
         self.dimension = len(courant_field)
         self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
@@ -51,6 +52,12 @@ class Advection:
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
             self.particles.backend.calculate_displacement(dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
+        if self.sedimentation:
+            displacement_z = displacement[:, -1]
+            dt_over_dz = self.particles.dt / self.particles.mesh.dz
+            self.particles.backend.multiply_in_place(displacement_z, 1/dt_over_dz)
+            self.particles.backend.subtract(displacement_z, self.particles.terminal_velocity.values)
+            self.particles.backend.multiply_in_place(displacement_z, dt_over_dz)
 
     def update_position(self, position_in_cell, displacement):
         self.particles.backend.add(position_in_cell, displacement)
