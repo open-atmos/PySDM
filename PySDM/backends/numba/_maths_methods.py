@@ -63,6 +63,7 @@ class MathsMethods:
         data *= multiplier
 
     @staticmethod
+    @numba.njit(fastmath=True, parallel=True, error_model="numpy")
     def power(data, exponent):
         data[:] = np.power(data, exponent)
 

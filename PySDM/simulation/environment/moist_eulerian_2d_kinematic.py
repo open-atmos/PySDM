@@ -10,6 +10,7 @@ import numpy as np
 from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
+from threading import Thread
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
@@ -41,8 +42,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
+        self.thread: Thread = None
 
-        self.sync()
+        super().sync()
         self.post_step()
 
     def _get_thd(self):
@@ -59,11 +61,12 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.__eulerian_fields.step(n_iters=self.mpdata_iters)
 
     def step(self):
-        self.__mpdata_step()
+        self.thread = Thread(target=self.__mpdata_step, args=())
+        self.thread.start()
 
     def wait(self):
-        # TODO
-        pass
+        if self.thread is not None:
+            self.thread.join()
 
     def sync(self):
         self.wait()
