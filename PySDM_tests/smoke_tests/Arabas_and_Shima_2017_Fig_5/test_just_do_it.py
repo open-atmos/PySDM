@@ -31,6 +31,7 @@ def data():
     return data
 
 
+@pytest.mark.skip
 def test_plot(data, plot=True):
     if not plot:
         return
@@ -54,6 +55,7 @@ def split(arg1, arg2):
     return arg1[0:np.argmax(arg2)+1], arg1[np.argmax(arg2):-1]
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize("setup_idx", range(len(setups)))
 @pytest.mark.parametrize("rtol", [condensation.default_rtol_lnv]) # TODO
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])

@@ -8,7 +8,7 @@ import numpy as np
 
 def test_displacement(plot=False):
     # Arrange
-    setup = Setup(dt=10 * si.second, n_sd=0)
+    setup = Setup(n_sd=0)
     simulation = Simulation(setup)
 
     # Act

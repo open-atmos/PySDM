@@ -22,8 +22,8 @@ class Simulation:
 
         dt_output = (2 * t_half) / setup.n_steps
         self.n_substeps = 1
-        while (dt_output / self.n_substeps >= setup.dt_max):
-           self.n_substeps += 1
+        while dt_output / self.n_substeps >= setup.dt_max:  # TODO dt_max
+            self.n_substeps += 1
 
         self.particles = Particles(backend=setup.backend, n_sd=1, dt=dt_output / self.n_substeps)
         self.particles.set_mesh_0d()
@@ -41,7 +41,7 @@ class Simulation:
         r_wet = r_wet_init(r_dry, self.particles.environment, np.zeros_like(n), setup.kappa)
         v_wet = phys.volume(radius=r_wet)
         self.particles.create_state_0d(n=n, extensive={'dry volume': x_dry, 'volume': v_wet}, intensive={})
-        self.particles.add_dynamic(Condensation, {
+        self.particles.dynamics.register(Condensation, {
             "kappa": setup.kappa,
             "scheme": setup.scheme,
             "rtol_lnv": setup.rtol_lnv,

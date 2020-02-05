@@ -6,7 +6,6 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
-import numpy as np
 import time
 
 from PySDM.simulation.particles import Particles as Particles
@@ -68,17 +67,17 @@ class Simulation:
         )
 
         if self.setup.processes["condensation"]:
-            self.particles.add_dynamic(Condensation, {
+            self.particles.dynamics.register(Condensation, {
                 "kappa": self.setup.kappa,
                 "scheme": self.setup.condensation_scheme,
                 "rtol_lnv": self.setup.condensation_rtol_lnv,
                 "rtol_thd": self.setup.condensation_rtol_thd,
             })
-            self.particles.add_dynamic(EulerianAdvection, {})
+            self.particles.dynamics.register(EulerianAdvection, {})
         if self.setup.processes["advection"]:
-            self.particles.add_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
+            self.particles.dynamics.register(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
         if self.setup.processes["coalescence"]:
-            self.particles.add_dynamic(SDM, {"kernel": self.setup.kernel})
+            self.particles.dynamics.register(SDM, {"kernel": self.setup.kernel})
 
         # TODO
         if self.storage is not None:
@@ -98,44 +97,5 @@ class Simulation:
         return self.particles.stats
 
     def store(self, particles, step):
-        backend = particles.backend
-        eulerian_fields = particles.environment.eulerian_fields
-
-        # allocations
-        if self.tmp is None:  # TODO: move to constructor
-            n_moments = 0
-            for attr in self.setup.specs:
-                for _ in self.setup.specs[attr]:
-                    n_moments += 1
-            self.moment_0 = backend.array(particles.mesh.n_cell, dtype=int)
-            self.moments = backend.array((n_moments, particles.mesh.n_cell), dtype=float)
-            self.tmp = np.empty(particles.mesh.n_cell)
-
-        # store moments
-        particles.state.moments(self.moment_0, self.moments, self.setup.specs)  # TODO: attr_range
-        backend.download(self.moment_0, self.tmp)
-        self.tmp /= particles.mesh.dv
-        self.storage.save(self.tmp.reshape(self.setup.grid), step, "m0")
-
-        i = 0
-        for attr in self.setup.specs:
-            for k in self.setup.specs[attr]:
-                backend.download(self.moments[i], self.tmp)  # TODO: [i] will not work
-                self.tmp /= particles.mesh.dv
-                self.storage.save(self.tmp.reshape(self.setup.grid), step, f"{attr}_m{k}")
-                i += 1
-
-        # store advected fields
-        for key in eulerian_fields.mpdatas.keys():
-            self.storage.save(eulerian_fields.mpdatas[key].arrays.curr.get(), step, key)
-
-        # store auxiliary fields
-        backend.download(particles.environment['RH'], self.tmp)
-        self.storage.save(self.tmp.reshape(self.setup.grid), step, "RH")
-
-        # store numerical stats
-        if self.setup.processes["condensation"]:
-            # TODO: hardcoded 0!
-            backend.download(particles.dynamics[0].substeps, self.tmp)
-            self.tmp[:] = self.setup.dt / self.tmp
-            self.storage.save(self.tmp.reshape(self.setup.grid), step, "dt_cond")
+        for name, product in self.particles.products.items():
+            self.storage.save(product.get(), step, name)

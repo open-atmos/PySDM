@@ -40,7 +40,7 @@ def test_coalescence():
     particles.set_environment(Box, {})
     v, n = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
     particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles.add_dynamic(SDM, {"kernel": kernel})
+    particles.dynamics.register(SDM, {"kernel": kernel})
 
     states = {}
 

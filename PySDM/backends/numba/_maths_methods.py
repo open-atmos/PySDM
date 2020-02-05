@@ -58,12 +58,12 @@ class MathsMethods:
         data_out[:] = data_in * multiplier
 
     @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**conf.JIT_FLAGS)
     def multiply_in_place(data, multiplier):
         data *= multiplier
 
     @staticmethod
-    @numba.njit(fastmath=True, parallel=True, error_model="numpy")
+    @numba.njit(**conf.JIT_FLAGS)
     def power(data, exponent):
         data[:] = np.power(data, exponent)
 

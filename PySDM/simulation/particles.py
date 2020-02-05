@@ -15,6 +15,7 @@ from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM.simulation.mesh import Mesh
 from PySDM.simulation.terminal_velocity import TerminalVelocity
+from PySDM.simulation.dynamics.dynamics import Dynamics
 
 
 class Particles:
@@ -22,14 +23,17 @@ class Particles:
     def __init__(self, n_sd, dt, backend, stats=None):
         self.__n_sd = n_sd
         self.__dt = dt
+
         self.backend = backend
         self.mesh = None
         self.environment = None
         self.state: (State, None) = None
-        self.dynamics: list = []
+        self.dynamics = Dynamics(self)
+        self.products = {}
+
         self.__dv = None
         self.n_steps = 0
-        self.stats = stats if stats is not None else Stats()
+        self.stats = stats or Stats()
         self.croupier = 'global'  # TODO: 1st: failing test for 'local' using Shima example with big b
         self.terminal_velocity = TerminalVelocity(self)
 
@@ -53,9 +57,7 @@ class Particles:
         assert_not_none(self.mesh)
         assert_none(self.environment)
         self.environment = environment_class(self, **params)
-
-    def add_dynamic(self, dynamic_class, params: dict):
-        self.dynamics.append(dynamic_class(self, **params))
+        self.register_products(self.environment)
 
     def create_state_0d(self, n, extensive, intensive):
         n = discretise_n(n)
@@ -91,8 +93,7 @@ class Particles:
     def run(self, steps):
         with self.stats:
             for _ in range(steps):
-                for dynamic in self.dynamics:
-                    dynamic()
+                self.dynamics.step_all()
                 self.environment.post_step()
         self.n_steps += steps
 
@@ -120,6 +121,13 @@ class Particles:
 
     def coalescence(self, gamma):
         self.state.coalescence(gamma)
+
+    def register_products(self, instance):
+        if hasattr(instance, 'products'):
+            for product in instance.products:
+                if product.name in self.products:
+                    raise Exception(f"product name >>{product.name}<< already registered")
+                self.products[product.name] = product
 
 
 def assert_none(*params):

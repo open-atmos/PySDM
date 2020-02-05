@@ -11,6 +11,9 @@ from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
+from .products.rh import RH
+from .products.thd import THD
+from .products.qv import QV
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
@@ -42,6 +45,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
+        self.products = [RH(self), THD(self), QV(self)]
         self.thread: Thread = None
 
         super().sync()
