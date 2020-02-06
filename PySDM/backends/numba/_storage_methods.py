@@ -53,7 +53,7 @@ class StorageMethods:
         return data.shape
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, float64[:]), **conf.JIT_FLAGS)
+    @numba.njit(void(int64[:], int64, float64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def shuffle_global(idx, length, u01):
         for i in range(length-1, 0, -1):
             j = int(u01[i] * (i+1))
