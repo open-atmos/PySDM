@@ -6,7 +6,7 @@ Created at 08.08.2019
 """
 
 import copy
-
+import pytest
 from PySDM.backends.default import Default
 from PySDM.simulation.particles import Particles
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
@@ -19,7 +19,8 @@ from PySDM.simulation.environment.box import Box
 backend = Default
 
 
-def test_coalescence():
+@pytest.mark.parametrize('croupier', ['local', 'global'])
+def test_coalescence(croupier):
     # TODO: np.random.RandomState in backend?
 
     # Arrange
@@ -40,7 +41,8 @@ def test_coalescence():
     particles.set_environment(Box, {})
     v, n = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
     particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles.dynamics.register(SDM, {"kernel": kernel})
+    particles.register_dynamic(SDM, {"kernel": kernel})
+    particles.croupier = croupier
 
     states = {}
 

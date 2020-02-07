@@ -27,6 +27,7 @@ def main():
 
         storage = Storage()
         simulation = Simulation(setup, storage)
+        simulation.reinit()
         simulation.run()
 
 

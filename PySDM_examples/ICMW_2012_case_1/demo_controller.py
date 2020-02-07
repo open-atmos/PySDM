@@ -11,7 +11,7 @@ from threading import Thread
 
 
 class DemoController:
-    progress = FloatProgress(value=0.0, min=0.0, max=1.0, description="%")
+    progress = FloatProgress(value=0.0, min=0.0, max=1.0)
     button = Button()
     link = HTML()
     panic = False
@@ -34,18 +34,21 @@ class DemoController:
         else:
             self._setup_ncdf()
         self.panic = False
+        self.progress.description = ' '
 
     def reinit(self, _=None):
         self.panic = True
-        self.viewer.reinit()
         self._setup_play()
         self.progress.value = 0
+        self.progress.description = ' '
+        self.viewer.clear()
         self.link.value = ''
 
     def box(self):
         return HBox([self.progress, self.button, self.link])
 
     def set_percent(self, value):
+        self.progress.description = 'running'
         self.progress.value = value
 
     def _setup_play(self):
@@ -72,9 +75,15 @@ class DemoController:
 
     def _handle_play(self, _):
         self._setup_stop()
+
         self.link.value = ''
+        self.progress.description = 'initialisation'
+
         self.thread = Thread(target=self.simulator.run, args=(self,))
+
+        self.simulator.reinit()
         self.thread.start()
+        self.viewer.reinit(self.simulator.products)
 
     def _handle_ncdf(self, _):
         self.thread = Thread(target=self.exporter.run, args=(self,))

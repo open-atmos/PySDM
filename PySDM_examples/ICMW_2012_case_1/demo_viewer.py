@@ -21,40 +21,52 @@ class DemoViewer:
         self.play = Play()
         self.step_slider = IntSlider()
         self.fps_slider = IntSlider(min=100, max=1000, description="1000/fps")
+
         self.plots = {}
-        for var in setup.output_vars:
-            self.plots[var] = Output() 
+        self.plots_box = Box(
+            children=tuple(self.plots.values()),
+            layout=Layout(display='flex', flex_flow='column')
+        )
+
+        self.reinit({})
+
+    def clear(self):
+        self.plots_box.children = ()
+
+    def reinit(self, products):
+        self.products = products
+
+        self.plots.clear()
+        for var in products.keys():
+            self.plots[var] = Output()
         self.ims = {}
 
-        self.reinit()
+        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)  # TODO: np.nan
+        for key in self.plots.keys():
+            with self.plots[key]:
+                clear_output()
+                _, ax = plt.subplots(1, 1)
+                product = self.products[key]
+                self.ims[key] = plotter.image(ax, self.nans, self.setup.size,
+                                              label=f"{product.description} [{product.unit}]",
+                                              # cmap=self.clims[key][2], # TODO: Reds, Blues, YlGnBu...
+                                              scale=product.scale
+                                              )
+                self.ims[key].set_clim(vmin=product.range[0], vmax=product.range[1])
+                plt.show()
 
-    def reinit(self):
+        self.plots_box.children = tuple(self.plots.values())
         n_steps = len(self.setup.steps)
         self.step_slider.max = n_steps - 1
         self.play.max = n_steps - 1
         self.play.value = 0
         self.step_slider.value = 0
-        self.clims = { # TODO : not here
-            "m0": (0, 1e8,  'YlGnBu', 'linear'),
-            "th": (288, 295, 'Reds', 'linear'),
-            "qv": (0.005, .0075,  'Greens', 'linear'),
-            "RH": (.5, 1.1,   'GnBu', 'linear'),
-            "volume_m1": (1e-20, 1e-19, 'Reds', 'linear'),
-            "dt_cond": (self.setup.dt / 1e5, self.setup.dt, 'Blues', 'log')
-        }
+        self.replot(step=0)
 
-        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan) # TODO: np.nan
-        for key in self.plots.keys():
-            with self.plots[key]:
-                clear_output()
-                _, ax = plt.subplots(1, 1)
-                self.ims[key] = plotter.image(ax, self.nans, self.setup.size, label=key, cmap=self.clims[key][2], scale=self.clims[key][3])
-                self.ims[key].set_clim(vmin = self.clims[key][0], vmax = self.clims[key][1])
-                plt.show()
+    def handle_replot(self, bunch):
+        self.replot(bunch.new)
 
-    def replot(self, bunch):
-        step = bunch.new
-
+    def replot(self, step):
         for key in self.plots.keys():
             try:
                 data = self.storage.load(self.setup.steps[step], key)
@@ -70,11 +82,8 @@ class DemoViewer:
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         jslink((self.play, 'interval'), (self.fps_slider, 'value'))
-        self.play.observe(self.replot, 'value')
+        self.play.observe(self.handle_replot, 'value')
         return VBox([
             Box([self.play, self.step_slider, self.fps_slider]),
-            Box(
-                children=tuple(self.plots.values()),
-                layout=Layout(display='flex', flex_flow='column')
-            )
+            self.plots_box
         ])

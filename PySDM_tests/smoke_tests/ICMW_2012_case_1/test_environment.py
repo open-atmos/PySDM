@@ -11,6 +11,7 @@ def test_environment(plot=False):
     setup = Setup()
     setup.steps = []
     simulation = Simulation(setup, None)
+    simulation.reinit()
 
     # Act
     simulation.run()

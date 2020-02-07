@@ -30,10 +30,10 @@ class MomentProduct(Product):
 
         # TODO
         self.moment_0 = particles.backend.array(particles.mesh.n_cell, dtype=int)
-        self.moments = particles.backend.array((2, particles.mesh.n_cell), dtype=float)
+        self.moments = particles.backend.array((1, particles.mesh.n_cell), dtype=float)
 
-    def download_moment_to_buffer(self, attr, rank, exponent, attr_range=(-np.inf, np.inf)):
-        self.particles.state.moments(self.moment_0, self.moments, {attr: (rank, exponent)}, attr_range=attr_range)
+    def download_moment_to_buffer(self, attr, rank, attr_range=(-np.inf, np.inf)):
+        self.particles.state.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_range=attr_range)
         if rank == 0:  # TODO
             self.download_to_buffer(self.moment_0)
         else:

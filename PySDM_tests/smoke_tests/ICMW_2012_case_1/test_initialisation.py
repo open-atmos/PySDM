@@ -42,6 +42,7 @@ def test_initialisation(plot=False):
     moment_0 = setup.backend.array(n_cell, dtype=int)
     moments = setup.backend.array((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
+    simulation.reinit()
 
     # Act (moments)
     simulation.run()

@@ -7,6 +7,7 @@ Created at 05.02.2020
 
 from PySDM.simulation.product import MomentProduct
 from PySDM.simulation.physics import constants as const
+from PySDM.simulation.physics import formulae as phys
 
 
 class AerosolConcentration(MomentProduct):
@@ -20,11 +21,12 @@ class AerosolConcentration(MomentProduct):
             unit='cm-3',
             description='Aerosol concentration',
             scale='log',
-            range=[0, 1e4]
+            range=[1e-1, 1e4]
         )
 
     def get(self):
-        self.download_moment_to_buffer('volume', rank=0, exponent=1, attr_range=[0, self.radius_threshold])
+        self.download_moment_to_buffer('volume', rank=0,
+                                       attr_range=[0, phys.volume(self.radius_threshold)])
         self.buffer[:] /= self.particles.mesh.dv
-        const.convert_to(self.buffer, const.si.centimetre**3)
+        const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer

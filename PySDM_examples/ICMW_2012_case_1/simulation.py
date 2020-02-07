@@ -42,7 +42,11 @@ class Simulation:
         self.setup = setup
         self.storage = storage
 
-    def run(self, controller=DummyController()):
+    @property
+    def products(self):
+        return self.particles.products
+
+    def reinit(self):
         self.tmp = None  # TODO!
         self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
         self.particles.set_mesh(grid=self.setup.grid, size=self.setup.size)
@@ -84,6 +88,7 @@ class Simulation:
         if self.storage is not None:
             self.storage.init(self.setup)
 
+    def run(self, controller=DummyController()):
         with controller:
             for step in self.setup.steps:  # TODO: rename output_steps
                 if controller.panic:

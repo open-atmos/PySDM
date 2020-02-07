@@ -18,11 +18,11 @@ class TotalParticleConcentration(MomentProduct):
             unit='cm-3',
             description='Total particle concentration',
             scale='log',
-            range=[0, 1e4]
+            range=[1e-1, 1e4]
         )
 
     def get(self):
-        self.download_moment_to_buffer('volume', rank=0, exponent=1)  # TODO
+        self.download_moment_to_buffer('volume', rank=0)
         self.buffer[:] /= self.particles.mesh.dv
-        const.convert_to(self.buffer, const.si.centimetre**3)
+        const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer

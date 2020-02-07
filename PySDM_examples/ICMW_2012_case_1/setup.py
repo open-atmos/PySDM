@@ -94,8 +94,4 @@ class Setup:
     r_max = 5 * si.micrometre
 
     kernel = Gravitational(collection_efficiency=10)  # [s-1] # TODO!
-
-    specs = {'volume': (1, 1/3)}
-    output_vars = ["m0", "th", "qv", "RH", "volume_m1", 'dt_cond']  # TODO: add in a loop over specs
-
     aerosol_radius_threshold = 1 * si.micrometre

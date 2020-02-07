@@ -28,6 +28,7 @@ def test_single_timestep():
     setup = Setup()
     setup.steps = [0, 1]
     simulation = Simulation(setup, DummyStorage())
+    simulation.reinit()
 
     # Act
     simulation.run()
@@ -39,8 +40,14 @@ def test_multi_timestep(plot=False):
     # Arrange
     setup = Setup()
     setup.steps = range(0, 20, 1)
+
+    for key in setup.processes.keys():
+        setup.processes[key] = False
+    setup.processes["condensation"] = True
+
     storage = DummyStorage()
     simulation = Simulation(setup, storage)
+    simulation.reinit()
 
     # Act
     simulation.run()
