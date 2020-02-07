@@ -19,6 +19,10 @@ class Mesh:
         self.dv = np.prod((np.array(size) / np.array(grid)))
 
     @property
+    def dz(self):
+        return self.size[-1] / self.grid[-1]
+
+    @property
     def dimension(self):
         return len(self.grid)
 

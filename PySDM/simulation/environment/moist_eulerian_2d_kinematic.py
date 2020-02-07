@@ -10,14 +10,20 @@ import numpy as np
 from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
 from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
+from threading import Thread
+from .products.relative_humidity import RelativeHumidity
+from .products.dry_air_potential_temperature import DryAirPotentialTemperature
+from .products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles, stream_function, field_values, rhod_of):
+    def __init__(self, particles, stream_function, field_values, rhod_of,
+                 mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
         super().__init__(particles, [])
 
         self.__rhod_of = rhod_of
+        self.mpdata_iters = mpdata_iters
 
         grid = particles.mesh.grid
         rhod = np.repeat(
@@ -33,14 +39,16 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             stream_function=stream_function,
             field_values=field_values,
             g_factor=rhod,
-            opts=Options()
+            opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
+        self.products = [RelativeHumidity(self), DryAirPotentialTemperature(self), WaterVapourMixingRatio(self)]
+        self.thread: Thread = None
 
-        self.sync()
+        super().sync()
         self.post_step()
 
     def _get_thd(self):
@@ -53,9 +61,16 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def eulerian_fields(self):
         return self.__eulerian_fields
 
+    def __mpdata_step(self):
+        self.__eulerian_fields.step(n_iters=self.mpdata_iters)
+
+    def step(self):
+        self.thread = Thread(target=self.__mpdata_step, args=())
+        self.thread.start()
+
     def wait(self):
-        # TODO
-        pass
+        if self.thread is not None:
+            self.thread.join()
 
     def sync(self):
         self.wait()

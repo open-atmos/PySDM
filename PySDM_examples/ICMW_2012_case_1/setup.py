@@ -9,9 +9,9 @@ Created at 25.09.2019
 import numpy as np
 
 from PySDM.simulation.initialisation.spectra import Lognormal
-from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM.simulation.dynamics.coalescence.kernels.gravitational import Gravitational
 from PySDM.backends.default import Default
-
+from PySDM.simulation.dynamics.condensation import condensation
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics.constants import si
@@ -19,11 +19,19 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
-    grid = (10, 10)  # TODO: 75x75
+
+    condensation_scheme = 'libcloud'
+    condensation_rtol_lnv = condensation.default_rtol_lnv
+    condensation_rtol_thd = condensation.default_rtol_thd
+
+    grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-    dt = 1 * si.seconds  # TODO
     w_max = .6 * si.metres / si.seconds
+
+    # output steps
+    steps = np.arange(0, 3600+1, 60)
+    dt = 1 * si.seconds
 
     # TODO: second mode
     spectrum_per_mass_of_dry_air = Lognormal(
@@ -35,27 +43,30 @@ class Setup:
     processes = {
         "advection": True,
         "coalescence": True,
-        "condensation": True
+        "condensation": True,
+        "sedimentation": True
     }
+
+    mpdata_iters = 2
+    mpdata_iga = False
+    mpdata_fct = False
+    mpdata_tot = False
 
     th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram
     p0 = 1015 * si.hectopascals
-    rho = 1000 * si.kilogram / si.metre**3
     kappa = 1
 
-    field_values = {
-        'th': phys.th_dry(th_std0, qv0),
-        'qv': qv0
-    }
+    @property
+    def field_values(self):
+        return {
+            'th': phys.th_dry(self.th_std0, self.qv0),
+            'qv': self.qv0
+        }
 
     @property
     def n_sd(self):
         return self.grid[0] * self.grid[1] * self.n_sd_per_gridbox
-
-    @property
-    def eddy_period(self):
-        raise NotImplementedError()
 
     def stream_function(self, xX, zZ):
         X = self.size[0]
@@ -82,12 +93,5 @@ class Setup:
     r_min = .01 * si.micrometre
     r_max = 5 * si.micrometre
 
-    # output steps
-    steps = np.arange(0, 90, 30)
-
-    kernel = Golovin(b=1e-3)  # [s-1]
-    croupier = 'global_FisherYates'
-
-    specs = {'volume': (1, 1/3)}
-    output_vars = ["m0", "th", "qv", "RH", "volume_m1"]  # TODO: add in a loop over specs
-
+    kernel = Gravitational(collection_efficiency=10)  # [s-1] # TODO!
+    aerosol_radius_threshold = 1 * si.micrometre

@@ -8,7 +8,7 @@ Created at 04.11.2019
 import numpy as np
 import numba
 from numba import void, float64, int64, prange
-from PySDM.backends.numba.conf import NUMBA_PARALLEL
+from PySDM.backends.numba import conf
 
 
 class StorageMethods:
@@ -53,14 +53,14 @@ class StorageMethods:
         return data.shape
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, float64[:]), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(int64[:], int64, float64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def shuffle_global(idx, length, u01):
         for i in range(length-1, 0, -1):
             j = int(u01[i] * (i+1))
             idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, float64[:], int64[:]), parallel=True)
+    @numba.njit(void(int64[:], int64, float64[:], int64[:]), **conf.JIT_FLAGS)
     def shuffle_local(idx, length, u01, cell_start):
         for c in prange(len(cell_start) - 1):
             for i in range(cell_start[c+1]-1, cell_start[c], -1):

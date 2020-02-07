@@ -10,11 +10,12 @@ import numpy as np
 
 
 class StubKernel:
-    def __init__(self, returned_value=-1):
+    def __init__(self, backend, returned_value=-1):
         self.returned_value = returned_value
+        self.backend = backend
 
-    def __call__(self, particles, output, is_first_in_pair):
-        backend_fill(particles.backend, output, self.returned_value)
+    def __call__(self, output, is_first_in_pair):
+        backend_fill(self.backend, output, self.returned_value)
 
 
 def backend_fill(backend, array, value, odd_zeros=False):
@@ -30,7 +31,7 @@ def backend_fill(backend, array, value, odd_zeros=False):
         full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
 
     full_backend = backend.from_ndarray(full_ndarray)
-    backend.multiply(array, 0.)
+    backend.multiply_in_place(array, 0.)
     backend.add(array, full_backend)
 
 

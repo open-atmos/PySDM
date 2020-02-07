@@ -14,22 +14,30 @@ from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM.simulation.mesh import Mesh
+from PySDM.simulation.terminal_velocity import TerminalVelocity
 
+from .state.products.aerosol_concentration import AerosolConcentration
+from .state.products.total_particle_concentration import TotalParticleConcentration
+from .state.products.particle_mean_radius import ParticleMeanRadius
 
 class Particles:
 
     def __init__(self, n_sd, dt, backend, stats=None):
         self.__n_sd = n_sd
         self.__dt = dt
+
         self.backend = backend
         self.mesh = None
         self.environment = None
         self.state: (State, None) = None
-        self.dynamics: list = []
+        self.dynamics = {}
+        self.products = {}
+
         self.__dv = None
         self.n_steps = 0
-        self.stats = stats if stats is not None else Stats()
+        self.stats = stats or Stats()
         self.croupier = 'local'
+        self.terminal_velocity = TerminalVelocity(self)
 
     @property
     def n_sd(self) -> int:
@@ -51,9 +59,12 @@ class Particles:
         assert_not_none(self.mesh)
         assert_none(self.environment)
         self.environment = environment_class(self, **params)
+        self.register_products(self.environment)
 
-    def add_dynamic(self, dynamic_class, params: dict):
-        self.dynamics.append(dynamic_class(self, **params))
+    def register_dynamic(self, dynamic_class, params: dict):
+        instance = (dynamic_class(self, **params))
+        self.dynamics[str(dynamic_class)] = instance
+        self.register_products(instance)
 
     def create_state_0d(self, n, extensive, intensive):
         n = discretise_n(n)
@@ -69,7 +80,7 @@ class Particles:
                                         particles=self)
 
     def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
-                        spectrum_per_mass_of_dry_air, r_range, kappa):
+                        spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold):
         assert_not_none(self.mesh, self.environment)
         assert_none(self.state)
 
@@ -85,11 +96,17 @@ class Particles:
         extensive['dry volume'] = phys.volume(radius=r_dry)
 
         self.state = StateFactory.state(n, intensive, extensive, cell_id, cell_origin, position_in_cell, self)
+        for product in [
+            TotalParticleConcentration(self),
+            AerosolConcentration(self, radius_threshold),
+            ParticleMeanRadius(self)
+        ]:
+            self.register_product(product)
 
     def run(self, steps):
         with self.stats:
             for _ in range(steps):
-                for dynamic in self.dynamics:
+                for dynamic in self.dynamics.values():
                     dynamic()
                 self.environment.post_step()
         self.n_steps += steps
@@ -100,7 +117,7 @@ class Particles:
         if self.croupier == 'global':
             self.state.permutation_global(u01)
         elif self.croupier == 'local':
-            self.state.permutation_global(u01)
+            self.state.permutation_local(u01)
         else:
             raise NotImplementedError()
 
@@ -118,6 +135,16 @@ class Particles:
 
     def coalescence(self, gamma):
         self.state.coalescence(gamma)
+
+    def register_products(self, instance):
+        if hasattr(instance, 'products'):
+            for product in instance.products:
+                self.register_product(product)
+
+    def register_product(self, product):
+        if product.name in self.products:
+            raise Exception(f"product name >>{product.name}<< already registered")
+        self.products[product.name] = product
 
 
 def assert_none(*params):

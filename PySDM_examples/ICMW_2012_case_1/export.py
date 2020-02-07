@@ -41,7 +41,7 @@ class netCDF:
 
     def _write_variables(self, ncdf, i):
         self.vars["T"][i] = self.setup.steps[i] * self.setup.dt
-        for var in self.setup.output_vars:
+        for var in self.setup.output_vars:  # TODO: products
             self.vars[var][i, :, :] = self.storage.load(self.setup.steps[i], var)
 
     def run(self, controller):

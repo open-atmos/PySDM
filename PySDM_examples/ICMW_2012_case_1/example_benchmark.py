@@ -28,27 +28,29 @@ def reload_backend():
 def main():
     setup = Setup()
 
-    setup.grid = (25, 25)
-    setup.steps = [100, 3600]
+    setup.grid = (75, 75)
+    setup.steps = [1] + list(range(10, 100, 10))#[100, 3600]
     setup.processes = {
         "advection": True,
         "coalescence": True,
-        "condensation": False
+        "condensation": True
     }
-    n_sd = range(100, 201, 50)
+    setup.condensation_dt_max = .2
+
+    n_sd = range(50, 51, 10)
 
     times = {}
     for parallel in (False,):
         PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
         reload_backend()
-        for method in ('local', 'global'):
+        for method in ('local',):
             key = f"{method} (parallel={parallel})"
             times[key] = []
             for sd in n_sd:
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
-                simulation.particles.croupier = method
+                # simulation.particles.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
 

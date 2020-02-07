@@ -5,71 +5,112 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from .schemes import BDF
-from ...physics import formulae as phys
-from ...physics import constants as const
+from .schemes import bdf
+from .schemes import libcloud
+from .products.condensation_timestep import CondensationTimestep
+import numba
+from ....backends.numba import conf
+import numpy as np
+
+
+default_rtol_lnv = 1e-9
+default_rtol_thd = 1e-9
 
 
 class Condensation:
-    def __init__(self, particles, kappa):
-
+    def __init__(self, particles, kappa, scheme,
+                 rtol_lnv=default_rtol_lnv,
+                 rtol_thd=default_rtol_thd,
+                 ):
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
-        self.scheme = 'scipy.odeint'
+        self.rtol_lnv = rtol_lnv
+        self.rtol_thd = rtol_thd
 
-    def __call__(self):
-        self.environment.sync()
+        self.scheme = scheme
 
-        state = self.particles.state
+        self.substeps = particles.backend.array(particles.mesh.n_cell, dtype=int)
+        self.substeps[:] = np.maximum(1, int(particles.dt))
 
-        if self.scheme == 'scipy.odeint':
-            for cell_id in range(self.particles.mesh.n_cell,):
-                cell_start = state.cell_start[cell_id]
-                cell_end = state.cell_start[cell_id + 1]
-                n_sd_in_cell = cell_end - cell_start
-                if n_sd_in_cell == 0:
-                    continue
-
-                prhod = self.environment.get_predicted("rhod")
-                pthd = self.environment.get_predicted("thd")
-                pqv = self.environment.get_predicted("qv")
-
-                dt = self.particles.dt
-                drhod_dt = (prhod[cell_id] - self.environment['rhod'][cell_id]) / dt
-                dthd_dt = (pthd[cell_id] - self.environment['thd'][cell_id]) / dt
-                dqv_dt = (pqv[cell_id] - self.environment['qv'][cell_id]) / dt
-                md_new = prhod[cell_id] * self.environment.dv
-                md_old = self.environment['rhod'][cell_id] * self.environment.dv
-                md_mean = (md_new + md_old) / 2
-
-                ml_new, ml_old, thd_new = BDF.step(
-                    v=state.get_backend_storage("volume"),
-                    n=state.n,
-                    vdry=state.get_backend_storage("dry volume"),
-                    cell_idx=self.particles.state._State__idx[cell_start:cell_end],
-                    dt=self.particles.dt,
-                    kappa=self.kappa,
-                    rhod=self.environment['rhod'][cell_id],
-                    thd=self.environment['thd'][cell_id],
-                    qv=self.environment['qv'][cell_id],
-                    drhod_dt=drhod_dt,
-                    dthd_dt=dthd_dt,
-                    dqv_dt=dqv_dt,
-                    m_d_mean=md_mean
-                )
-
-                pqv[cell_id] -= (ml_new - ml_old) / md_mean
-
-                # TODO
-                # mse0 = phys.mse(T=self.environment['T'][cell_id], qv=self.environment['qv'][cell_id], ql=ml_old/md_old, z=0)
-                # mse1_over_T = phys.mse(T=1, qv=pqv[cell_id], ql=ml_new/md_new , z=0)
-                # if drhod_dt != 0:
-                #     dz = self.environment.get_predicted('z') - self.environment['z'][cell_id]
-                #     mse1_over_T += (1 + self.environment['qv'][cell_id]) * const.g * dz
-                pthd[cell_id] = thd_new
+        if scheme == 'BDF':
+            mean_n_sd_in_cell = particles.n_sd // particles.mesh.n_cell
+            self.y = particles.backend.array(2 * mean_n_sd_in_cell + bdf.idx_lnv, dtype=float)
+            thread_safe = False
+            self.impl = bdf.impl
+        elif scheme == 'libcloud':  # TODO: rename!!!
+            self.y = None
+            thread_safe = True
+            self.impl = libcloud.impl
         else:
             raise NotImplementedError()
 
+        # TODO: move to backend
+        jit_flags = conf.JIT_FLAGS.copy()
+        jit_flags['parallel'] = thread_safe and particles.mesh.n_cell > 1
+        jit_flags['nopython'] = thread_safe
 
+        @numba.jit(**jit_flags)
+        def condensation_step(
+            impl, n_threads, n_cell, cell_start_arg,
+            y, v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+        ):
+            for thread_id in numba.prange(n_threads):
+                for i in range(thread_id, n_cell, n_threads): # TODO: at least show that it is not slower :)
+                    cell_id = cell_order[i]
+
+                    cell_start = cell_start_arg[cell_id]
+                    cell_end = cell_start_arg[cell_id + 1]
+                    n_sd_in_cell = cell_end - cell_start
+                    if n_sd_in_cell == 0:
+                        continue
+
+                    dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                    dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                    md_new = prhod[cell_id] * dv
+                    md_old = rhod[cell_id] * dv
+                    md_mean = (md_new + md_old) / 2
+                    rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+
+                    qv_new, thd_new, substeps_hint = impl(
+                        y, v, n, vdry,
+                        idx[cell_start:cell_end], # TODO
+                        kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
+                        rtol_lnv, rtol_thd, dt, substeps[cell_id]
+                    )
+
+                    substeps[cell_id] = substeps_hint
+
+                    pqv[cell_id] = qv_new
+                    pthd[cell_id] = thd_new
+        self.__condensation_step = condensation_step
+        self.products = [CondensationTimestep(self), ]
+
+    def __call__(self):
+        self.environment.sync()
+        self.__condensation_step(
+            impl=self.impl,
+            n_threads=self.particles.backend.num_threads(),
+            n_cell=self.particles.mesh.n_cell,
+            cell_start_arg=self.particles.state.cell_start,
+            y=self.y,
+            v=self.particles.state.get_backend_storage("volume"),
+            n=self.particles.state.n,
+            vdry=self.particles.state.get_backend_storage("dry volume"),
+            idx=self.particles.state._State__idx,
+            rhod=self.environment["rhod"],
+            thd=self.environment["thd"],
+            qv=self.environment["qv"],
+            dv=self.environment.dv,
+            prhod=self.environment.get_predicted("rhod"),
+            pthd=self.environment.get_predicted("thd"),
+            pqv=self.environment.get_predicted("qv"),
+            kappa=self.kappa,
+            rtol_lnv=self.rtol_lnv,
+            rtol_thd=self.rtol_thd,
+            dt=self.particles.dt,
+            substeps=self.substeps,
+            cell_order=np.argsort(self.substeps)
+        )
 

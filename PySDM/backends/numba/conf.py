@@ -6,4 +6,8 @@ Created at 08.08.2019
 """
 
 
-NUMBA_PARALLEL = False
+JIT_FLAGS = dict(
+    parallel=False,
+    fastmath=True,
+    error_model='numpy'
+)

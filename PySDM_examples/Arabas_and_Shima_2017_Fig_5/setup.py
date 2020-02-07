@@ -10,6 +10,7 @@ from PySDM.backends.default import Default
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics import formulae as phys
+from PySDM.simulation.dynamics.condensation import condensation
 import numpy as np
 
 
@@ -23,7 +24,13 @@ class Setup:
         self.mass_of_dry_air = mass_of_dry_air
 
     backend = Default
-    n_steps = 500
+
+    n_steps = 500 # TODO: rename to n_output
+
+    scheme = 'libcloud'
+    rtol_lnv = condensation.default_rtol_lnv
+    rtol_thd = condensation.default_rtol_thd
+    dt_max = 10 * si.second # TODO: as a function of w?
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

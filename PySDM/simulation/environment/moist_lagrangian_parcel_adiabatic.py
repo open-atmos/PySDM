@@ -43,7 +43,7 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
         t = self['t'][0]
 
         rho = p / phys.R(qv) / T
-        pd = p * (1 - 1/ (1 + const.eps / qv))
+        pd = p * (1 - 1 / (1 + const.eps / qv))
 
         # mid-point value for w
         dz_dt = self.w(t + dt/2)

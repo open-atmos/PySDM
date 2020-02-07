@@ -23,7 +23,7 @@ def run(setup):
     particles.set_environment(Box, {})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
     particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles.add_dynamic(SDM, {"kernel": setup.kernel})
+    particles.register_dynamic(SDM, {"kernel": setup.kernel})
 
     states = {}
     for step in setup.steps:
@@ -39,7 +39,6 @@ def main():
         setup = SetupA()
 
         setup.n_sd = 2 ** 15
-        # setup.steps = [0, 90, 180]
         setup.check = lambda _, __: 0  # TODO!!!
 
         states, _ = run(setup)

@@ -20,7 +20,12 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 class Simulation:
     def __init__(self, setup):
 
-        self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=setup.dt)
+        dt_output = setup.total_time / setup.n_steps
+        self.n_substeps = 1
+        while (dt_output / self.n_substeps >= setup.dt_max):
+            self.n_substeps += 1
+
+        self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
         self.particles.set_mesh_0d()
         self.particles.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,
@@ -35,7 +40,12 @@ class Simulation:
         r_wet = r_wet_init(setup.r_dry, self.particles.environment, np.zeros_like(setup.n), setup.kappa)
         v_wet = phys.volume(radius=r_wet)
         self.particles.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
-        self.particles.add_dynamic(Condensation, {"kappa": setup.kappa})
+        self.particles.register_dynamic(Condensation, {
+            "kappa": setup.kappa,
+            "scheme": setup.condensation_scheme,
+            "rtol_lnv": setup.rtol_lnv,
+            "rtol_thd": setup.rtol_thd,
+        })
 
         self.n_steps = setup.n_steps
 
@@ -56,9 +66,8 @@ class Simulation:
 
         self.save(output)
         for step in range(self.n_steps):
-            self.particles.run(1)
+            self.particles.run(self.n_substeps)
             self.save(output)
-
         return output
 
 
