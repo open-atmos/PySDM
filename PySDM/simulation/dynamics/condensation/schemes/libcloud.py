@@ -5,7 +5,7 @@ import numba
 import numpy as np
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def impl(y, v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
          rtol_lnv, rtol_thd, dt, substeps_hint):
 
@@ -30,18 +30,18 @@ def impl(y, v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rho
     return qv, thd, np.maximum(1, n_substeps // multiplier)
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def step_fake(args, dt):
     _, thd_new = step_impl(*args, dt, 1, True)
     return thd_new
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def step_true(args, dt, n_substeps):
     return step_impl(*args, dt, n_substeps, False)
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def step_impl(
     _, v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred, m_d_mean, rhod_mean, rtol_lnv,
     dt, n_substeps, fake
@@ -86,12 +86,12 @@ def step_impl(
     return qv, thd
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def within_tolerance(error_estimate, value, rtol):
     return error_estimate < rtol * np.abs(value)
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}} )
 def bisec(minfun, a, interval, args, rtol, n_substeps):
     b = a + interval
 
@@ -119,7 +119,7 @@ def bisec(minfun, a, interval, args, rtol, n_substeps):
     return lnv_new
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def _minfun(lnv_new,
     lnv_old, dt, T, p, RH, kappa, rd):
     return lnv_old - lnv_new + dt * phys.dlnv_dt(lnv_new, T, p, RH, kappa, rd)

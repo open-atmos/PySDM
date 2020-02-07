@@ -14,7 +14,7 @@ from PySDM.backends.numba import conf
 class SpecialMethods:
 
     @staticmethod
-    @numba.njit(int64(int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def remove_zeros(data, idx, length) -> int:
         new_length = 0
         for i in range(length):
@@ -85,12 +85,12 @@ class SpecialMethods:
             prob[i] = -np.floor(prob[i])
 
     @staticmethod
-    @numba.njit(boolean(int64[:]), **conf.JIT_FLAGS)
+    @numba.njit(boolean(int64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def first_element_is_zero(arr):
         return arr[0] == 0
 
     @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS) TODO: "np.dot() only supported on float and complex arrays"
+    #@numba.njit(**conf.JIT_FLAGS) # TODO: "np.dot() only supported on float and complex arrays"
     def cell_id(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin.T)
 
@@ -104,7 +104,7 @@ class SpecialMethods:
             )
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[0]
         for droplet in prange(length):
@@ -127,7 +127,7 @@ class SpecialMethods:
         moments[:, :] /= moment_0  # TODO: should we divide or not...
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0]
         for i in range(n_cell - 1):
@@ -140,7 +140,7 @@ class SpecialMethods:
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def apply_f_3_3(function, arg0, arg1, arg2, output0, output1, output2):
         for i in range(output0.shape[0]):
             output0[i], output1[i], output2[i] = function(arg0[i], arg1[i], arg2[i])
