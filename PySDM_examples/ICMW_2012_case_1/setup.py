@@ -24,7 +24,7 @@ class Setup:
     condensation_rtol_lnv = condensation.default_rtol_lnv
     condensation_rtol_thd = condensation.default_rtol_thd
 
-    grid = (75, 75)
+    grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
     w_max = .6 * si.metres / si.seconds
@@ -98,3 +98,4 @@ class Setup:
     specs = {'volume': (1, 1/3)}
     output_vars = ["m0", "th", "qv", "RH", "volume_m1", 'dt_cond']  # TODO: add in a loop over specs
 
+    aerosol_radius_threshold = 1 * si.micrometre

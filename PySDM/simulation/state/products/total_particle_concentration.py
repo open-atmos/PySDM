@@ -6,27 +6,23 @@ Created at 05.02.2020
 """
 
 from PySDM.simulation.product import MomentProduct
-from ....physics import constants as const
-from ....physics import formulae as phys
+from PySDM.simulation.physics import constants as const
 
 
-class M0(MomentProduct):
-    def __init__(self, condensation):
-        particles = condensation.particles
-
-        self.condensation = condensation
-
+class TotalParticleConcentration(MomentProduct):
+    def __init__(self, particles):
         super().__init__(
             particles=particles,
             shape=particles.mesh.grid,
             name='m0',
-            unit='TODO',
-            description='m0',
-            scale='linear',
-            range=[0, 1e8]
+            unit='cm-3',
+            description='Total particle concentration',
+            scale='log',
+            range=[0, 1e4]
         )
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0, exponent=1)  # TODO
         self.buffer[:] /= self.particles.mesh.dv
+        const.convert_to(self.buffer, const.si.centimetre**3)
         return self.buffer

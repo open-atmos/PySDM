@@ -8,17 +8,18 @@ Created at 05.02.2020
 from ...product import Product
 
 
-class THD(Product):
+class RelativeHumidity(Product):
     def __init__(self, environment):
         self.environment = environment
         super().__init__(particles=environment.particles,
-                         description="Dry-air potential temperature",
-                         name="thd",
-                         unit="K",
-                         range=(275, 300),
+                         description="Relative humidity",
+                         name="RH",
+                         unit="%",
+                         range=(75, 105),
                          scale="linear",
                          shape=environment.particles.mesh.grid)
 
     def get(self):
-        self.download_to_buffer(self.environment['thd'])
+        self.download_to_buffer(self.environment['RH'])
+        self.buffer *= 100
         return self.buffer

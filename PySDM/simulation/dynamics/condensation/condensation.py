@@ -7,9 +7,7 @@ Created at 24.10.2019
 
 from .schemes import bdf
 from .schemes import libcloud
-from .products.dt_cond import DtCond
-from .products.m0 import M0
-from .products.radius_m1 import RadiusM1
+from .products.condensation_timestep import CondensationTimestep
 import numba
 from ....backends.numba import conf
 import numpy as np
@@ -87,7 +85,7 @@ class Condensation:
                     pqv[cell_id] = qv_new
                     pthd[cell_id] = thd_new
         self.__condensation_step = condensation_step
-        self.products = [DtCond(self), M0(self), RadiusM1(self)]
+        self.products = [CondensationTimestep(self), ]
 
     def __call__(self):
         self.environment.sync()

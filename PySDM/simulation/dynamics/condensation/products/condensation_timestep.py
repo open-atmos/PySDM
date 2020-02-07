@@ -8,7 +8,7 @@ Created at 05.02.2020
 from PySDM.simulation.product import Product
 
 
-class DtCond(Product):
+class CondensationTimestep(Product):
     def __init__(self, condensation):
         particles = condensation.particles
 

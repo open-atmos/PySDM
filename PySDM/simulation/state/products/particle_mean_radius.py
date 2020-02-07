@@ -6,16 +6,12 @@ Created at 05.02.2020
 """
 
 from PySDM.simulation.product import MomentProduct
-from ....physics import constants as const
-from ....physics import formulae as phys
+from PySDM.simulation.physics import constants as const
+from PySDM.simulation.physics import formulae as phys
 
 
-class RadiusM1(MomentProduct):
-    def __init__(self, condensation):
-        particles = condensation.particles
-
-        self.condensation = condensation
-
+class ParticleMeanRadius(MomentProduct):
+    def __init__(self, particles):
         super().__init__(
             particles=particles,
             shape=particles.mesh.grid,
@@ -30,5 +26,5 @@ class RadiusM1(MomentProduct):
         self.download_moment_to_buffer('volume', rank=1, exponent=1/3)
         self.buffer[:] /= self.particles.mesh.dv
         self.buffer[:] *= phys.radius(volume=1)
-        self.buffer[:] /= const.si.micrometre
+        const.convert_to(self.buffer, const.si.micrometre)
         return self.buffer

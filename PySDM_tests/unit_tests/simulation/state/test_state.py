@@ -47,6 +47,7 @@ class TestState:
         sut._State__idx = TestState.storage([4, 1, 3, 2, 0])
         sut._State__tmp_idx = TestState.storage([0] * 5)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
+        sut._State__cell_start_p = backend.array((2, len(sut._State__cell_start)), dtype=int)
         sut.SD_num = particles.n_sd
 
         # Act

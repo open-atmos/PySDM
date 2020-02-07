@@ -63,21 +63,22 @@ class Simulation:
             spectral_discretisation=spectral_sampling.constant_multiplicity,  # TODO: random
             spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
             r_range=(self.setup.r_min, self.setup.r_max),
-            kappa=self.setup.kappa
+            kappa=self.setup.kappa,
+            radius_threshold = self.setup.aerosol_radius_threshold
         )
 
         if self.setup.processes["condensation"]:
-            self.particles.dynamics.register(Condensation, {
+            self.particles.register_dynamic(Condensation, {
                 "kappa": self.setup.kappa,
                 "scheme": self.setup.condensation_scheme,
                 "rtol_lnv": self.setup.condensation_rtol_lnv,
                 "rtol_thd": self.setup.condensation_rtol_thd,
             })
-            self.particles.dynamics.register(EulerianAdvection, {})
+            self.particles.register_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
-            self.particles.dynamics.register(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
+            self.particles.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
         if self.setup.processes["coalescence"]:
-            self.particles.dynamics.register(SDM, {"kernel": self.setup.kernel})
+            self.particles.register_dynamic(SDM, {"kernel": self.setup.kernel})
 
         # TODO
         if self.storage is not None:
@@ -90,12 +91,12 @@ class Simulation:
 
                 self.particles.run(step - self.particles.n_steps)
 
-                self.store(self.particles, step)
+                self.store(step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
         return self.particles.stats
 
-    def store(self, particles, step):
+    def store(self, step):
         for name, product in self.particles.products.items():
             self.storage.save(product.get(), step, name)

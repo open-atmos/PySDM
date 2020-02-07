@@ -30,7 +30,7 @@ class State:
         self.cell_id = self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
         # TODO!
-        self.__cell_start_p = self.__backend.array((len(cell_start), self.__backend.num_threads()), dtype=int)
+        self.__cell_start_p = self.__backend.array((self.__backend.num_threads(), len(cell_start)), dtype=int)
         self.__sorted = False
         self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
 
@@ -60,7 +60,8 @@ class State:
         self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
-        # self.__backend.countsort_by_cell_id_parallel(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start, self.__cell_start_p)
+        # self.__backend.countsort_by_cell_id_parallel(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num,
+                                                     # self.__cell_start, self.__cell_start_p)
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)
         self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
         self.__sorted = True
@@ -99,7 +100,7 @@ class State:
             self.__backend.cell_id(self.cell_id, self.cell_origin, self.particles.mesh.strides)
             self.__sorted = False
 
-    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(0, np.inf)):
+    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
         # TODO: intensive
         specs_idx, specs_rank = [], []
         for attr in specs:

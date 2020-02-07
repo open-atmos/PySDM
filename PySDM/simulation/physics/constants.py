@@ -13,6 +13,10 @@ def _weight(x):
     return x.atomic_weight * si.gram / si.mole
 
 
+def convert_to(value, unit):
+    value /= unit
+
+
 pi = sci.pi
 
 Md = 0.78 * _weight(atoms.N) * 2 + 0.21 * _weight(atoms.O) * 2 + 0.01 * _weight(atoms.Ar)
