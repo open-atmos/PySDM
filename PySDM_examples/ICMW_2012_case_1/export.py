@@ -3,11 +3,11 @@ import numpy as np
 from scipy.io.netcdf import netcdf_file
 
 
-#TODO: test
 class netCDF:
-    def __init__(self, storage, setup):
+    def __init__(self, storage, setup, simulator):
         self.storage = storage
         self.setup = setup
+        self.simulator = simulator
         self.vars = {}
 
         self.tempfile_fd, self.tempfile_path = tempfile.mkstemp(
@@ -36,12 +36,13 @@ class netCDF:
         self.vars["Z"][:] = (self.setup.size[1] / self.setup.grid[1]) * (1/2 + np.arange(self.setup.grid[1]))
         self.vars["Z"].units = "metres"
 
-        for var in self.setup.output_vars:
+        for var in self.simulator.products.keys():
+            # TODO: write unit, description
             self.vars[var] = ncdf.createVariable(var, "f", ["T", "X", "Z"])
 
-    def _write_variables(self, ncdf, i):
+    def _write_variables(self, i):
         self.vars["T"][i] = self.setup.steps[i] * self.setup.dt
-        for var in self.setup.output_vars:  # TODO: products
+        for var in self.simulator.products.keys():
             self.vars[var][i, :, :] = self.storage.load(self.setup.steps[i], var)
 
     def run(self, controller):
@@ -53,5 +54,5 @@ class netCDF:
                 for i in range(len(self.setup.steps)):
                     if controller.panic:
                         break
-                    self._write_variables(ncdf, i)
+                    self._write_variables(i)
                     controller.set_percent((i+1) / len(self.setup.steps))

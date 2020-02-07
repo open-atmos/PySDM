@@ -16,7 +16,6 @@ def main():
     with np.errstate(all='ignore'):
         setup = Setup()
 
-        # TODO
         setup.n_sd_per_gridbox = 25
         setup.grid = (25, 25)
         setup.processes["coalescence"] = True
