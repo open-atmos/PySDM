@@ -42,10 +42,10 @@ class TestState:
         return request.param
 
     @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
-                             ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
-                             ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
-                             ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
-                             ])
+        ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
+        ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
+        ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
+    ])
     def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
@@ -89,4 +89,50 @@ class TestState:
         # Assert
         assert sut.cell_id[droplet_id] == 0
 
+    def test_permutation_global(self):
+        n_sd = 8
+        idx = range(n_sd)
+        u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
+        # Arrange
+        particles = DummyParticles(backend, n_sd=n_sd)
+        sut = TestableStateFactory.empty_state(particles)
+        sut._State__idx = TestState.storage(idx)
+        idx_length = len(sut._State__idx)
+        sut._State__tmp_idx = TestState.storage([0] * idx_length)
+        sut._State__sorted = True
+        sut.SD_num = particles.n_sd
+        u01 = TestState.storage(u01)
+
+        # Act
+        sut.permutation_global(u01)
+
+        # Assert
+        expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
+        np.array_equal(sut._State__idx, expected)
+        assert sut._State__sorted == False
+
+    def test_permutation_local(self):
+        n_sd = 8
+        idx = range(n_sd)
+        u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
+        cell_start = [0, 0, 2, 5, 7, 8]
+
+        # Arrange
+        particles = DummyParticles(backend, n_sd=n_sd)
+        sut = TestableStateFactory.empty_state(particles)
+        sut._State__idx = TestState.storage(idx)
+        idx_length = len(sut._State__idx)
+        sut._State__tmp_idx = TestState.storage([0] * idx_length)
+        sut._State__cell_start = TestState.storage(cell_start)
+        sut._State__sorted = True
+        sut.SD_num = particles.n_sd
+        u01 = TestState.storage(u01)
+
+        # Act
+        sut.permutation_local(u01)
+
+        # Assert
+        expected = np.array([1, 0, 2, 3, 4, 5, 6, 7])
+        np.array_equal(sut._State__idx, expected)
+        assert sut._State__sorted == True
