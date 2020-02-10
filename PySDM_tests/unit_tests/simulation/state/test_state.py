@@ -36,26 +36,37 @@ class TestState:
         assert sut['n'].sum() == n.sum()
         assert (sut['volume'] * sut['n']).sum() == (volume * n).sum()
 
-    def test_sort_by_cell_id(self):
+    @staticmethod
+    @pytest.fixture(params=[1, 2, 3, 4, 5, 8, 9, 16])
+    def thread_number(request):
+        return request.param
+
+    @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
+                             ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
+                             ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
+                             ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
+                             ])
+    def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
-        particles = DummyParticles(backend, n_sd=3)
+        particles = DummyParticles(backend, n_sd=n_sd)
         sut = TestableStateFactory.empty_state(particles)
-        sut.n = TestState.storage([0, 1, 0, 1, 1])
-        cells = [3, 4, 0, 1, 2]
+        sut.n = TestState.storage(n)
         n_cell = max(cells) + 1
         sut.cell_id = TestState.storage(cells)
-        sut._State__idx = TestState.storage([4, 1, 3, 2, 0])
-        sut._State__tmp_idx = TestState.storage([0] * 5)
+        sut._State__idx = TestState.storage(idx)
+        idx_length = len(sut._State__idx)
+        sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
-        sut._State__cell_start_p = backend.array((2, len(sut._State__cell_start)), dtype=int)
+        sut._State__cell_start_p = backend.array((thread_number, len(sut._State__cell_start)), dtype=int)
         sut.SD_num = particles.n_sd
 
         # Act
         sut._State__sort_by_cell_id()
 
         # Assert
-        assert len(sut._State__idx) == 5
-        np.testing.assert_array_equal(np.array([3, 4, 1]), backend.to_ndarray(sut._State__idx[:sut.SD_num]))
+        assert len(sut._State__idx) == idx_length
+        np.testing.assert_array_equal(np.array(new_idx), backend.to_ndarray(sut._State__idx[:sut.SD_num]))
+        np.testing.assert_array_equal(np.array(cell_start), backend.to_ndarray(sut._State__cell_start))
 
     def test_recalculate_cell_id(self):
         # Arrange
