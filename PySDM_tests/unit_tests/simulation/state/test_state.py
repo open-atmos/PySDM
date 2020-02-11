@@ -109,14 +109,14 @@ class TestState:
 
         # Assert
         expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
-        np.array_equal(sut._State__idx, expected)
+        np.testing.assert_array_equal(sut._State__idx, expected)
         assert sut._State__sorted == False
 
     def test_permutation_local(self):
         n_sd = 8
         idx = range(n_sd)
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
-        cell_start = [0, 0, 2, 5, 7, 8]
+        cell_start = [0, 0, 2, 5, 7, n_sd]
 
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
@@ -134,5 +134,64 @@ class TestState:
 
         # Assert
         expected = np.array([1, 0, 2, 3, 4, 5, 6, 7])
-        np.array_equal(sut._State__idx, expected)
+        np.testing.assert_array_equal(sut._State__idx, expected)
         assert sut._State__sorted == True
+
+    def test_permutation_global_repeatable(self):
+        n_sd = 800
+        idx = range(n_sd)
+        u01 = np.random.random(n_sd)
+
+        # Arrange
+        particles = DummyParticles(backend, n_sd=n_sd)
+        sut = TestableStateFactory.empty_state(particles)
+        sut._State__idx = TestState.storage(idx)
+        idx_length = len(sut._State__idx)
+        sut._State__tmp_idx = TestState.storage([0] * idx_length)
+        sut._State__sorted = True
+        sut.SD_num = particles.n_sd
+        u01 = TestState.storage(u01)
+
+        # Act
+        sut.permutation_global(u01)
+        expected = backend.to_ndarray(sut._State__idx)
+        sut._State__sorted = True
+        sut._State__idx = TestState.storage(idx)
+        sut.permutation_global(u01)
+
+        # Assert
+        np.testing.assert_array_equal(sut._State__idx, expected)
+        assert sut._State__sorted == False
+
+    def test_permutation_local_repeatable(self):
+        n_sd = 800
+        idx = range(n_sd)
+        u01 = np.random.random(n_sd)
+        cell_start = [0, 0, 20, 250, 700, n_sd]
+
+        # Arrange
+        particles = DummyParticles(backend, n_sd=n_sd)
+        sut = TestableStateFactory.empty_state(particles)
+        sut._State__idx = TestState.storage(idx)
+        idx_length = len(sut._State__idx)
+        sut._State__tmp_idx = TestState.storage([0] * idx_length)
+        cell_id = []
+        for i in range(len(cell_start) - 1):
+            cell_id = cell_id + [i] * cell_start[i+1]
+        sut.cell_id = TestState.storage(cell_id)
+        sut._State__cell_start = TestState.storage(cell_start)
+        sut._State__sorted = True
+        sut.SD_num = particles.n_sd
+        u01 = TestState.storage(u01)
+
+        # Act
+        sut.permutation_local(u01)
+        expected = backend.to_ndarray(sut._State__idx)
+        sut._State__idx = TestState.storage(idx)
+        sut.permutation_local(u01)
+
+        # Assert
+        np.testing.assert_array_equal(sut._State__idx, expected)
+        assert sut._State__sorted == True
+        sut._State__sort_by_cell_id()
+        np.testing.assert_array_equal(sut._State__idx[:50], expected[:50])
