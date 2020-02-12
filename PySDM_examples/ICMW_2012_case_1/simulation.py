@@ -80,7 +80,7 @@ class Simulation:
             })
             self.particles.register_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
-            self.particles.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
+            self.particles.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             self.particles.register_dynamic(SDM, {"kernel": self.setup.kernel})
 

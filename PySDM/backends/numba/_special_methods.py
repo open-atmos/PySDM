@@ -129,7 +129,7 @@ class SpecialMethods:
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        n_cell = cell_start.shape[0]
+        n_cell = cell_start.shape[0]  # TODO: isn't it n_cell_plus_one?
         for i in range(n_cell - 1):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
