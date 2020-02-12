@@ -19,6 +19,7 @@ from PySDM.simulation.terminal_velocity import TerminalVelocity
 from .state.products.aerosol_concentration import AerosolConcentration
 from .state.products.total_particle_concentration import TotalParticleConcentration
 from .state.products.particle_mean_radius import ParticleMeanRadius
+from .state.products.super_droplet_count import SuperDropletCount
 
 class Particles:
 
@@ -99,7 +100,8 @@ class Particles:
         for product in [
             TotalParticleConcentration(self),
             AerosolConcentration(self, radius_threshold),
-            ParticleMeanRadius(self)
+            ParticleMeanRadius(self),
+            SuperDropletCount(self)
         ]:
             self.register_product(product)
 
