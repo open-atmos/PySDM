@@ -21,12 +21,17 @@ class Condensation:
     def __init__(self, particles, kappa, scheme,
                  rtol_lnv=default_rtol_lnv,
                  rtol_thd=default_rtol_thd,
+                 do_advection: bool = True,
+                 do_condensation: bool = True,
                  ):
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
         self.rtol_lnv = rtol_lnv
         self.rtol_thd = rtol_thd
+
+        self.do_advection = do_advection
+        self.do_condensation = do_condensation
 
         self.scheme = scheme
 
@@ -88,29 +93,31 @@ class Condensation:
         self.products = [CondensationTimestep(self), ]
 
     def __call__(self):
-        self.environment.sync()
-        self.__condensation_step(
-            impl=self.impl,
-            n_threads=self.particles.backend.num_threads(),
-            n_cell=self.particles.mesh.n_cell,
-            cell_start_arg=self.particles.state.cell_start,
-            y=self.y,
-            v=self.particles.state.get_backend_storage("volume"),
-            n=self.particles.state.n,
-            vdry=self.particles.state.get_backend_storage("dry volume"),
-            idx=self.particles.state._State__idx,
-            rhod=self.environment["rhod"],
-            thd=self.environment["thd"],
-            qv=self.environment["qv"],
-            dv=self.environment.dv,
-            prhod=self.environment.get_predicted("rhod"),
-            pthd=self.environment.get_predicted("thd"),
-            pqv=self.environment.get_predicted("qv"),
-            kappa=self.kappa,
-            rtol_lnv=self.rtol_lnv,
-            rtol_thd=self.rtol_thd,
-            dt=self.particles.dt,
-            substeps=self.substeps,
-            cell_order=np.argsort(self.substeps)
-        )
+        if self.do_advection:
+            self.environment.sync()
+        if self.do_condensation:
+            self.__condensation_step(
+                impl=self.impl,
+                n_threads=self.particles.backend.num_threads(),
+                n_cell=self.particles.mesh.n_cell,
+                cell_start_arg=self.particles.state.cell_start,
+                y=self.y,
+                v=self.particles.state.get_backend_storage("volume"),
+                n=self.particles.state.n,
+                vdry=self.particles.state.get_backend_storage("dry volume"),
+                idx=self.particles.state._State__idx,
+                rhod=self.environment["rhod"],
+                thd=self.environment["thd"],
+                qv=self.environment["qv"],
+                dv=self.environment.dv,
+                prhod=self.environment.get_predicted("rhod"),
+                pthd=self.environment.get_predicted("thd"),
+                pqv=self.environment.get_predicted("qv"),
+                kappa=self.kappa,
+                rtol_lnv=self.rtol_lnv,
+                rtol_thd=self.rtol_thd,
+                dt=self.particles.dt,
+                substeps=self.substeps,
+                cell_order=np.argsort(self.substeps)
+            )
 

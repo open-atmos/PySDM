@@ -7,7 +7,7 @@ Created at 25.11.2019
 
 import numpy as np
 
-from PySDM.simulation.particles import Particles as Particles
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys
@@ -25,9 +25,9 @@ class Simulation:
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
 
-        self.particles = Particles(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
-        self.particles.set_mesh_0d()
-        self.particles.set_environment(MoistLagrangianParcelAdiabatic, {
+        particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
+        particles_builder.set_mesh_0d()
+        particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,
             "p0": setup.p0,
             "q0": setup.q0,
@@ -37,15 +37,16 @@ class Simulation:
         })
 
         v_dry = phys.volume(radius=setup.r_dry)
-        r_wet = r_wet_init(setup.r_dry, self.particles.environment, np.zeros_like(setup.n), setup.kappa)
+        r_wet = r_wet_init(setup.r_dry, particles_builder.particles.environment, np.zeros_like(setup.n), setup.kappa)
         v_wet = phys.volume(radius=r_wet)
-        self.particles.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
-        self.particles.register_dynamic(Condensation, {
+        particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
+        particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
             "scheme": setup.condensation_scheme,
             "rtol_lnv": setup.rtol_lnv,
             "rtol_thd": setup.rtol_thd,
         })
+        self.particles = particles_builder.get_particles()
 
         self.n_steps = setup.n_steps
 

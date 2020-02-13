@@ -30,8 +30,14 @@ class Setup:
     w_max = .6 * si.metres / si.seconds
 
     # output steps
-    steps = np.arange(0, 3600+1, 60)
+    n_steps = 3600
+    outfreq = 60
     dt = 1 * si.seconds
+
+    @property
+    def steps(self):
+        return np.arange(0, self.n_steps+1, self.outfreq)
+
 
     # TODO: second mode
     spectrum_per_mass_of_dry_air = Lognormal(
@@ -40,11 +46,14 @@ class Setup:
       s_geom=1.6
     )
 
+
     processes = {
-        "advection": True,
-        "coalescence": True,
+        "particle advection": True,
+        "fluid advection": True,
+        "coalescence": False,
         "condensation": True,
-        "sedimentation": True
+        "sedimentation": False,
+        "relaxation": False
     }
 
     mpdata_iters = 2

@@ -48,7 +48,7 @@ class State:
 
     def permutation_global(self, u01):
         """
-        apply Fisher-Yates algorithm to all sds
+        apply Fisher-Yates algorithm to all super-droplets
         """
         self.__backend.shuffle_global(idx=self.__idx, length=self.SD_num, u01=u01)
         self.__sorted = False

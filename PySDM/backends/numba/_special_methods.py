@@ -170,20 +170,34 @@ class SpecialMethods:
             new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
     def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
-        cell_end_p = cell_start_p
-        cell_end = cell_start
+        cell_end_thread = cell_start_p
 
-        thn = cell_end_p.shape[1]
-        for t in prange(thn):
-            cell_end_p[:, t] = 0
-            for i in range(t * length//thn, (t + 1) * length//thn if t != thn-1 else length):
-                cell_end_p[cell_id[idx[i]], t] += 1
-        cell_end[:] = np.sum(cell_end_p, axis=1)
-        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
-            cell_end[i] += cell_end[i - 1]
-        for t in prange(thn):
-            for i in range(length-1, -1, -1):
-                cell_end[cell_id[idx[i]]] -= 1
-                new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
+        thread_num = cell_end_thread.shape[0]
+        for t in prange(thread_num):
+            cell_end_thread[t, :] = 0
+            for i in range(t * length // thread_num,
+                           (t + 1) * length // thread_num if t < thread_num - 1 else length):
+                cell_end_thread[t, cell_id[idx[i]]] += 1
+
+        cell_start[:] = np.sum(cell_end_thread, axis=0)
+        for i in range(1, len(cell_start)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
+            cell_start[i] += cell_start[i - 1]
+
+        tmp = cell_end_thread[0, :]
+        tmp[:] = cell_end_thread[thread_num - 1, :]
+        cell_end_thread[thread_num - 1, :] = cell_start[:]
+        for t in range(thread_num - 2, -1, -1):
+            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
+            tmp[:] = cell_end_thread[t, :]
+            cell_end_thread[t, :] = cell_start[:]
+
+        for t in prange(thread_num):
+            for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
+                           t * length // thread_num - 1,
+                           -1):
+                cell_end_thread[t, cell_id[idx[i]]] -= 1
+                new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
+
+        cell_start[:] = cell_end_thread[0, :]

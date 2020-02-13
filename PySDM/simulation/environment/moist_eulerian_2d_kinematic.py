@@ -14,6 +14,7 @@ from threading import Thread
 from .products.relative_humidity import RelativeHumidity
 from .products.dry_air_potential_temperature import DryAirPotentialTemperature
 from .products.water_vapour_mixing_ratio import WaterVapourMixingRatio
+from .products.dry_air_density import DryAirDensity
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
@@ -45,7 +46,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         rhod = particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
-        self.products = [RelativeHumidity(self), DryAirPotentialTemperature(self), WaterVapourMixingRatio(self)]
+        self.products = [DryAirDensity(self), RelativeHumidity(self), DryAirPotentialTemperature(self), WaterVapourMixingRatio(self)]
         self.thread: Thread = None
 
         super().sync()

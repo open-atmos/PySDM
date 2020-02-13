@@ -53,6 +53,12 @@ class DemoSetup(Setup):
     def dt(self):
         return self.ui_dt.value
 
+    ui_n_steps = IntSlider(value=Setup.n_steps, min=1800, max=7200, description="number of steps")
+
+    @property
+    def n_steps(self):
+        return self.ui_n_steps.value
+
     ui_condensation_rtol_lnv = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="bisection tolerance (log_10)")
 
     @property
@@ -74,7 +80,7 @@ class DemoSetup(Setup):
             result[checkbox.description] = checkbox.value
         return result
 
-    ui_sdpg = IntSlider(value=Setup.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=100)
+    ui_sdpg = IntSlider(value=Setup.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=1000)
 
     @property
     def n_sd_per_gridbox(self):
@@ -119,7 +125,7 @@ class DemoSetup(Setup):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
             VBox([*self.ui_processes]),
-            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt,
+            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_n_steps,
                   self.ui_condensation_rtol_lnv, self.ui_condensation_rtol_thd,
                   *self.ui_mpdata_options]),
             VBox([])

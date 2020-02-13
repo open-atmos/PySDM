@@ -26,7 +26,7 @@ class DummyStorage:
 def test_single_timestep():
     # Arrange
     setup = Setup()
-    setup.steps = [0, 1]
+    setup.n_steps = 1
     simulation = Simulation(setup, DummyStorage())
     simulation.reinit()
 
@@ -39,11 +39,13 @@ def test_single_timestep():
 def test_multi_timestep(plot=False):
     # Arrange
     setup = Setup()
-    setup.steps = range(0, 20, 1)
+    setup.n_steps = 20
+    setup.outfreq = 1
 
     for key in setup.processes.keys():
         setup.processes[key] = False
     setup.processes["condensation"] = True
+    setup.processes["fluid advection"] = True
 
     storage = DummyStorage()
     simulation = Simulation(setup, storage)

@@ -14,11 +14,11 @@ class TotalParticleConcentration(MomentProduct):
         super().__init__(
             particles=particles,
             shape=particles.mesh.grid,
-            name='m0',
+            name='n_cm3',
             unit='cm-3',
             description='Total particle concentration',
-            scale='log',
-            range=[1e-1, 1e4]
+            scale='linear',
+            range=[20, 50]
         )
 
     def get(self):

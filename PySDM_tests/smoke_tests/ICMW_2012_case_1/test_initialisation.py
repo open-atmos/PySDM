@@ -17,7 +17,7 @@ from matplotlib import pyplot
 def test_initialisation(plot=False):
     # TODO: seed as a part of setup?
     setup = Setup()
-    setup.steps = []
+    setup.n_steps = -1
     setup.grid = (10, 5)
     setup.n_sd_per_gridbox = 2000
 
