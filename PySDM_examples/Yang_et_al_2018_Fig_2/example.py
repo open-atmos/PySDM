@@ -7,7 +7,7 @@ Created at 25.11.2019
 
 import numpy as np
 
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys

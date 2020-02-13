@@ -8,7 +8,7 @@ Created at 25.09.2019
 
 import time
 
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
@@ -80,7 +80,7 @@ class Simulation:
             })
             particles_builder.register_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
-            particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
+            particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
 

@@ -5,7 +5,7 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.environment.box import Box
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity

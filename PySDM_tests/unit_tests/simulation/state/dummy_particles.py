@@ -5,7 +5,7 @@ Created at 19.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.particles import Particles
 from PySDM.simulation.mesh import Mesh
 

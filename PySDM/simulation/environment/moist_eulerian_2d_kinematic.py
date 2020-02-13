@@ -37,7 +37,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.__GC, self.__eulerian_fields = MPDATAFactory.kinematic_2d(
             grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
-            field_values=field_values,
+            field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
             g_factor=rhod,
             opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
         )

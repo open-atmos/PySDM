@@ -17,6 +17,7 @@ from PySDM.simulation.mesh import Mesh
 from .state.products.aerosol_concentration import AerosolConcentration
 from .state.products.total_particle_concentration import TotalParticleConcentration
 from .state.products.particle_mean_radius import ParticleMeanRadius
+from .state.products.super_droplet_count import SuperDropletCount
 
 
 class ParticlesBuilder:
@@ -88,7 +89,8 @@ class ParticlesBuilder:
         for product in [
             TotalParticleConcentration(self.particles),
             AerosolConcentration(self.particles, radius_threshold),
-            ParticleMeanRadius(self.particles)
+            ParticleMeanRadius(self.particles),
+            SuperDropletCount(self.particles)
         ]:
             self.register_product(product)
 

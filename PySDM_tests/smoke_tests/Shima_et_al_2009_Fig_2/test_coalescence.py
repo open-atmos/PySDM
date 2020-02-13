@@ -9,7 +9,7 @@ import numpy as np
 import copy
 import pytest
 from PySDM.backends.default import Default
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin

@@ -6,7 +6,7 @@ Created at 28.11.2019
 """
 
 from PySDM.backends.default import Default
-from PySDM.simulation.particlesbuilder import ParticlesBuilder
+from PySDM.simulation.particles_builder import ParticlesBuilder
 
 
 class TestParticles:
