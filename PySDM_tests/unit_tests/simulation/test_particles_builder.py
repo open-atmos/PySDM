@@ -6,14 +6,14 @@ Created at 28.11.2019
 """
 
 from PySDM.backends.default import Default
-from PySDM.simulation.particles import Particles
+from PySDM.simulation.particles_builder import ParticlesBuilder
 
 
 class TestParticles:
 
     def test_set_mesh(self):
         # Arrange
-        sut = Particles(0, 0, Default)
+        sut = ParticlesBuilder(0, 0, Default)
         grid = (1, 1)
         size = (1, 1)
 
