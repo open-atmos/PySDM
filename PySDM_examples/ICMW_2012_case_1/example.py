@@ -18,8 +18,9 @@ def main():
 
         setup.n_sd_per_gridbox = 25
         setup.grid = (25, 25)
-        setup.processes["coalescence"] = True
-        setup.processes["condensation"] = True
+        for key in setup.processes.keys():
+            setup.processes[key] = True
+        setup.processes["relaxation"] = False
         setup.condensation_rtol_lnv = 1e-8
         setup.condensation_rtol_thd = 1e-8
         setup.mpdata_iters = 2
