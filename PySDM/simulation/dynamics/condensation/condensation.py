@@ -19,10 +19,10 @@ default_rtol_thd = 1e-9
 
 class Condensation:
     def __init__(self, particles, kappa, scheme,
-                 do_advection: bool,
-                 do_condensation: bool,
                  rtol_lnv=default_rtol_lnv,
                  rtol_thd=default_rtol_thd,
+                 do_advection: bool = True,
+                 do_condensation: bool = True,
                  ):
         self.particles = particles
         self.environment = particles.environment

@@ -15,7 +15,7 @@ from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 def test_export():
     # Arrange
     setup = Setup()
-    setup.steps = [1]
+    setup.n_steps = 1
 
     storage = Storage()
     simulator = Simulation(setup, storage)

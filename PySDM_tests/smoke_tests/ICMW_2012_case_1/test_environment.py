@@ -9,7 +9,7 @@ from PySDM.simulation.physics.constants import si
 def test_environment(plot=False):
     # Arrange
     setup = Setup()
-    setup.steps = []
+    setup.n_steps = -1
     simulation = Simulation(setup, None)
     simulation.reinit()
 

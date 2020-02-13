@@ -89,12 +89,12 @@ class ParticlesBuilder:
                                                   cell_id, cell_origin, position_in_cell,
                                                   self.particles)
         for product in [
-            TotalParticleConcentration(self),
-            TotalParticleSpecificConcentration(self),
-            AerosolConcentration(self, radius_threshold),
-            AerosolSpecificConcentration(self, radius_threshold),
-            ParticleMeanRadius(self),
-            SuperDropletCount(self)
+            TotalParticleConcentration(self.particles),
+            TotalParticleSpecificConcentration(self.particles),
+            AerosolConcentration(self.particles, radius_threshold),
+            AerosolSpecificConcentration(self.particles, radius_threshold),
+            ParticleMeanRadius(self.particles),
+            SuperDropletCount(self.particles)
         ]:
             self.register_product(product)
 
