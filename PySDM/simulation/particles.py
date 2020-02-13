@@ -17,9 +17,11 @@ from PySDM.simulation.mesh import Mesh
 from PySDM.simulation.terminal_velocity import TerminalVelocity
 
 from .state.products.aerosol_concentration import AerosolConcentration
+from .state.products.aerosol_specific_concentration import AerosolSpecificConcentration
 from .state.products.total_particle_concentration import TotalParticleConcentration
 from .state.products.particle_mean_radius import ParticleMeanRadius
 from .state.products.super_droplet_count import SuperDropletCount
+from .state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
 
 class Particles:
 
@@ -99,7 +101,9 @@ class Particles:
         self.state = StateFactory.state(n, intensive, extensive, cell_id, cell_origin, position_in_cell, self)
         for product in [
             TotalParticleConcentration(self),
+            TotalParticleSpecificConcentration(self),
             AerosolConcentration(self, radius_threshold),
+            AerosolSpecificConcentration(self, radius_threshold),
             ParticleMeanRadius(self),
             SuperDropletCount(self)
         ]:
@@ -144,9 +148,10 @@ class Particles:
                 self.register_product(product)
 
     def register_product(self, product):
-        if product.name in self.products:
-            raise Exception(f"product name >>{product.name}<< already registered")
-        self.products[product.name] = product
+        name = product.name.lower()
+        if name in self.products:
+            raise Exception(f"product name >>{product.name}<< already registered (case insensitive)")
+        self.products[name] = product
 
 
 def assert_none(*params):

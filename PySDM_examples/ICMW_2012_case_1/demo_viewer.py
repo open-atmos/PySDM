@@ -40,6 +40,7 @@ class DemoViewer:
         for var in products.keys():
             self.plots[var] = Output()
         self.ims = {}
+        self.axs = {}
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)  # TODO: np.nan
         for key in self.plots.keys():
@@ -47,7 +48,7 @@ class DemoViewer:
                 clear_output()
                 _, ax = plt.subplots(1, 1)
                 product = self.products[key]
-                self.ims[key] = plotter.image(ax, self.nans, self.setup.size,
+                self.ims[key], self.axs[key] = plotter.image(ax, self.nans, self.setup.size,
                                               label=f"{product.description} [{product.unit}]",
                                               # cmap=self.clims[key][2], # TODO: Reds, Blues, YlGnBu...
                                               scale=product.scale
@@ -72,7 +73,7 @@ class DemoViewer:
                 data = self.storage.load(self.setup.steps[step], key)
             except self.storage.Exception:
                 data = self.nans
-            plotter.image_update(self.ims[key], data)
+            plotter.image_update(self.ims[key], self.axs[key], data)
 
         for key in self.plots.keys():
             with self.plots[key]:
