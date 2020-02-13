@@ -55,7 +55,7 @@ class Condensation:
         jit_flags['parallel'] = thread_safe and particles.mesh.n_cell > 1
         jit_flags['nopython'] = thread_safe
 
-        @numba.jit(**jit_flags)
+        @numba.jit(**jit_flags, forceobj=True)
         def condensation_step(
             impl, n_threads, n_cell, cell_start_arg,
             y, v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
