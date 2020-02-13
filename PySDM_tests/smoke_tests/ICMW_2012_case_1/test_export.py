@@ -16,6 +16,7 @@ def test_export():
     # Arrange
     setup = Setup()
     setup.n_steps = 1
+    setup.outfreq = 1
 
     storage = Storage()
     simulator = Simulation(setup, storage)
