@@ -5,10 +5,11 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
+import numpy as np
 import copy
 import pytest
 from PySDM.backends.default import Default
-from PySDM.simulation.particles import Particles
+from PySDM.simulation.particlesbuilder import ParticlesBuilder
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
@@ -21,7 +22,7 @@ backend = Default
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(croupier):
-    # TODO: np.random.RandomState in backend?
+    np.random.seed(0)  # TODO: working only for backend based on numpy
 
     # Arrange
     v_min = 4.186e-15
@@ -36,12 +37,13 @@ def test_coalescence(croupier):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    particles = Particles(n_sd=n_sd, dt=dt, backend=backend)
-    particles.set_mesh_0d(dv=dv)
-    particles.set_environment(Box, {})
+    particles_builder = ParticlesBuilder(n_sd=n_sd, dt=dt, backend=backend)
+    particles_builder.set_mesh_0d(dv=dv)
+    particles_builder.set_environment(Box, {})
     v, n = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles.register_dynamic(SDM, {"kernel": kernel})
+    particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    particles_builder.register_dynamic(SDM, {"kernel": kernel})
+    particles = particles_builder.get_particles()
     particles.croupier = croupier
 
     states = {}

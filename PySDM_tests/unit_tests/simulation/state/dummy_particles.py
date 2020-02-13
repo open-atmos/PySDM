@@ -5,14 +5,17 @@ Created at 19.11.2019
 @author: Sylwester Arabas
 """
 
+from PySDM.simulation.particlesbuilder import ParticlesBuilder
 from PySDM.simulation.particles import Particles
 from PySDM.simulation.mesh import Mesh
 
 
-class DummyParticles(Particles):
+class DummyParticles(ParticlesBuilder, Particles):
 
     def __init__(self, backend, n_sd, dt=None):
-        super().__init__(n_sd, dt, backend)
+        Particles.__init__(self, n_sd, dt, backend)
+        # super(ParticlesBuilder, self).__init__(n_sd, dt, backend)
+        self.particles = self
         self.mesh = None
         self.environment = None
 

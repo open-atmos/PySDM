@@ -5,7 +5,7 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particles import Particles
+from PySDM.simulation.particlesbuilder import ParticlesBuilder
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.environment.box import Box
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
@@ -13,12 +13,13 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 
 def run(setup):
-    particles = Particles(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
-    particles.set_mesh_0d(setup.dv)
-    particles.set_environment(Box, {})
+    particles_building = ParticlesBuilder(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
+    particles_building.set_mesh_0d(setup.dv)
+    particles_building.set_environment(Box, {})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
-    particles.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles.add_dynamic(SDM, {"kernel": setup.kernel})
+    particles_building.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    particles_building.register_dynamic(SDM, {"kernel": setup.kernel})
+    particles = particles_building.get_particles()
 
     states = {}
     for step in setup.steps:

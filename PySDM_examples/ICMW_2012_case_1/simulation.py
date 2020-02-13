@@ -8,7 +8,7 @@ Created at 25.09.2019
 
 import time
 
-from PySDM.simulation.particles import Particles as Particles
+from PySDM.simulation.particlesbuilder import ParticlesBuilder
 from PySDM.simulation.dynamics.advection import Advection
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
@@ -48,9 +48,9 @@ class Simulation:
 
     def reinit(self):
         self.tmp = None  # TODO!
-        self.particles = Particles(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
-        self.particles.set_mesh(grid=self.setup.grid, size=self.setup.size)
-        self.particles.set_environment(MoistEulerian2DKinematic, {
+        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
+        particles_builder.set_mesh(grid=self.setup.grid, size=self.setup.size)
+        particles_builder.set_environment(MoistEulerian2DKinematic, {
             "stream_function": self.setup.stream_function,
             "field_values": self.setup.field_values,
             "rhod_of": self.setup.rhod,
@@ -60,7 +60,7 @@ class Simulation:
             "mpdata_iters": self.setup.mpdata_iters
         })
 
-        self.particles.create_state_2d(
+        particles_builder.create_state_2d(
             extensive={},
             intensive={},
             spatial_discretisation=spatial_sampling.pseudorandom,
@@ -72,17 +72,19 @@ class Simulation:
         )
 
         if self.setup.processes["condensation"]:
-            self.particles.register_dynamic(Condensation, {
+            particles_builder.register_dynamic(Condensation, {
                 "kappa": self.setup.kappa,
                 "scheme": self.setup.condensation_scheme,
                 "rtol_lnv": self.setup.condensation_rtol_lnv,
                 "rtol_thd": self.setup.condensation_rtol_thd,
             })
-            self.particles.register_dynamic(EulerianAdvection, {})
+            particles_builder.register_dynamic(EulerianAdvection, {})
         if self.setup.processes["advection"]:
-            self.particles.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
+            particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["condensation"]})
         if self.setup.processes["coalescence"]:
-            self.particles.register_dynamic(SDM, {"kernel": self.setup.kernel})
+            particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
+
+        self.particles = particles_builder.get_particles()
 
         # TODO
         if self.storage is not None:

@@ -25,7 +25,7 @@ class TestState:
         particles = DummyParticles(backend, n_sd=len(n))
         sut = TestableStateFactory.state_0d(n=n, extensive={'volume': volume}, intensive={}, particles=particles)
         # TODO
-        sut.healthy = particles.backend.from_ndarray(np.array([0]))
+        sut.healthy = TestState.storage([0])
 
         # Act
         sut.housekeeping()
