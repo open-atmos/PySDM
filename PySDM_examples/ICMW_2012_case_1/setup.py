@@ -48,9 +48,9 @@ class Setup:
     }
 
     mpdata_iters = 2
-    mpdata_iga = False
-    mpdata_fct = False
-    mpdata_tot = False
+    mpdata_iga = True
+    mpdata_fct = True
+    mpdata_tot = True
 
     th_std0 = 289 * si.kelvins
     qv0 = 7.5 * si.grams / si.kilogram

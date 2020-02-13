@@ -34,7 +34,7 @@ class DemoSetup(Setup):
     def kappa(self):
         return self.ui_kappa.value
 
-    ui_w_max = FloatSlider(description="w_max [m/s]", value=Setup.w_max, min=0.1, max=1)
+    ui_w_max = FloatSlider(description="w_max [m/s]", value=Setup.w_max, min=-1, max=1)
 
     @property
     def w_max(self):
@@ -118,13 +118,14 @@ class DemoSetup(Setup):
     def box(self):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
-            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt,
-                  self.ui_condensation_rtol_lnv, self.ui_condensation_rtol_thd]),
             VBox([*self.ui_processes]),
-            VBox([*self.ui_mpdata_options])
+            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt,
+                  self.ui_condensation_rtol_lnv, self.ui_condensation_rtol_thd,
+                  *self.ui_mpdata_options]),
+            VBox([])
         ])
         layout.set_title(0, 'parameters')
-        layout.set_title(1, 'discretisation')
-        layout.set_title(2, 'processes')
-        layout.set_title(3, 'MPDATA options')
+        layout.set_title(1, 'processes')
+        layout.set_title(2, 'discretisation')
+        layout.set_title(3, 'parallelisation')
         return layout
