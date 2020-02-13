@@ -22,5 +22,5 @@ def image(ax, data, domain_size_in_metres, label, cmap='YlGnBu', scale='linear')
 
 def image_update(im, ax, data):
     im.set_data(_transform(data))
-    ax.set_title(f"min:{np.amin(data):.4g} max:{np.amax(data):.4g}, std:{np.std(data):.4g}")
+    ax.set_title(f"min:{np.amin(data):.4g}    max:{np.amax(data):.4g}    std:{np.std(data):.4g}")
 

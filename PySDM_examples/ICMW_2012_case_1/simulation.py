@@ -71,18 +71,21 @@ class Simulation:
             radius_threshold = self.setup.aerosol_radius_threshold
         )
 
-        if self.setup.processes["condensation"]:
-            self.particles.register_dynamic(Condensation, {
-                "kappa": self.setup.kappa,
-                "scheme": self.setup.condensation_scheme,
-                "rtol_lnv": self.setup.condensation_rtol_lnv,
-                "rtol_thd": self.setup.condensation_rtol_thd,
-            })
-            self.particles.register_dynamic(EulerianAdvection, {})
-        if self.setup.processes["advection"]:
+        self.particles.register_dynamic(Condensation, {
+            "kappa": self.setup.kappa,
+            "scheme": self.setup.condensation_scheme,
+            "rtol_lnv": self.setup.condensation_rtol_lnv,
+            "rtol_thd": self.setup.condensation_rtol_thd,
+            "do_advection": self.setup.processes["fluid advection"],
+            "do_condensation": self.setup.processes["condensation"]
+        })
+        self.particles.register_dynamic(EulerianAdvection, {})
+        if self.setup.processes["particle advection"]:
             self.particles.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             self.particles.register_dynamic(SDM, {"kernel": self.setup.kernel})
+        if self.setup.processes["relaxation"]:
+            raise NotImplementedError()
 
         # TODO
         if self.storage is not None:
