@@ -5,6 +5,7 @@ Created at 09.11.2019
 @author: Sylwester Arabas
 """
 
+import numpy as np
 from PySDM.simulation.state.state import State
 from PySDM.simulation.stats import Stats
 from PySDM.simulation.terminal_velocity import TerminalVelocity
@@ -59,6 +60,29 @@ class Particles:
 
     def coalescence(self, gamma):
         self.state.coalescence(gamma)
+
+    def condensation(self, kappa, rtol_lnv, rtol_thd, substeps):
+        self.backend.condensation(
+                n_cell=self.mesh.n_cell,
+                cell_start_arg=self.state.cell_start,
+                v=self.state.get_backend_storage("volume"),
+                n=self.state.n,
+                vdry=self.state.get_backend_storage("dry volume"),
+                idx=self.state._State__idx,
+                rhod=self.environment["rhod"],
+                thd=self.environment["thd"],
+                qv=self.environment["qv"],
+                dv=self.environment.dv,
+                prhod=self.environment.get_predicted("rhod"),
+                pthd=self.environment.get_predicted("thd"),
+                pqv=self.environment.get_predicted("qv"),
+                kappa=kappa,
+                rtol_lnv=rtol_lnv,
+                rtol_thd=rtol_thd,
+                dt=self.dt,
+                substeps=substeps,
+                cell_order=np.argsort(substeps)
+            )
 
     def run(self, steps):
         with self.stats:

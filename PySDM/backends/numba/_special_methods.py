@@ -9,6 +9,7 @@ import numpy as np
 import numba
 from numba import void, float64, int64, boolean, prange
 from PySDM.backends.numba import conf
+from PySDM.backends.numba.__condensation_solver import solve as solve__
 
 
 class SpecialMethods:
@@ -201,3 +202,52 @@ class SpecialMethods:
                 new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
 
         cell_start[:] = cell_end_thread[0, :]
+
+    @staticmethod
+    def condensation(
+            n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+    ):
+        n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
+        SpecialMethods._condensation(
+            solve__, n_threads, n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def _condensation(
+            solve, n_threads, n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+    ):
+        for thread_id in numba.prange(n_threads):
+            for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
+                cell_id = cell_order[i]
+
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
+                n_sd_in_cell = cell_end - cell_start
+                if n_sd_in_cell == 0:
+                    continue
+
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                md_new = prhod[cell_id] * dv
+                md_old = rhod[cell_id] * dv
+                md_mean = (md_new + md_old) / 2
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+
+                qv_new, thd_new, substeps_hint = solve(
+                    v, n, vdry,
+                    idx[cell_start:cell_end],  # TODO
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
+                    rtol_lnv, rtol_thd, dt, substeps[cell_id]
+                )
+
+                substeps[cell_id] = substeps_hint
+
+                pqv[cell_id] = qv_new
+                pthd[cell_id] = thd_new
