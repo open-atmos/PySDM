@@ -21,7 +21,7 @@ class Simulation:
     def __init__(self, setup):
 
         dt_output = setup.total_time / setup.n_steps
-        self.n_substeps = 1
+        self.n_substeps = 1  # TODO:
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
 
@@ -42,7 +42,6 @@ class Simulation:
         particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
-            "scheme": setup.condensation_scheme,
             "rtol_lnv": setup.rtol_lnv,
             "rtol_thd": setup.rtol_thd,
         })

@@ -73,7 +73,6 @@ class Simulation:
 
         particles_builder.register_dynamic(Condensation, {
             "kappa": self.setup.kappa,
-            "scheme": self.setup.condensation_scheme,
             "rtol_lnv": self.setup.condensation_rtol_lnv,
             "rtol_thd": self.setup.condensation_rtol_thd,
             "do_advection": self.setup.processes["fluid advection"],
