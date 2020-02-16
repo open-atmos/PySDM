@@ -20,7 +20,7 @@ jobs:
         - shopt -s expand_aliases
         - alias python=python3
         - alias pip=pip3
-        - echo "alias python=python3" >> ~/.profile
+        - echo "alias python=python3" >> ~/.bashrc
     - name: "Python 3.7 on Windows"
       os: windows
       before_install:
