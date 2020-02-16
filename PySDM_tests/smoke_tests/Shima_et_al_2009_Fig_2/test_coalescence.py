@@ -20,6 +20,7 @@ from PySDM.simulation.environment.box import Box
 backend = Default
 
 
+@pytest.mark.skip
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(croupier):
     np.random.seed(0)  # TODO: working only for backend based on numpy
