@@ -3,12 +3,14 @@ language: shell
 jobs:
   include:
     - name: "nightly Python build with newest packages on Linux"
+      language: python
       python: "nightly"
       before_install:
         - sudo python3 -m pip install --upgrade pip
       after_install:
         - python3 -m pip install -U $(pip freeze | cut -d '=' -f 1)
     - name: "Python 3.7 on Linux"
+      language: python
       python: 3.7
     - name: "Python 3.7 on OSX"
       os: osx
