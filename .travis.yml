@@ -44,5 +44,5 @@ script:
   - |
       for i in PySDM_examples/*/example.py; do
         echo $i
-        travis_wait 15 PYTHONPATH=. python $i
+        PYTHONPATH=. travis_wait 15 python $i
       done;
