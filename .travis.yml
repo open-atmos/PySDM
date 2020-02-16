@@ -1,6 +1,24 @@
-language: python
-python: "3.7"
-  
+language: shell
+
+jobs:
+  include:
+    - name: "nightly Python build with newest packages on Linux"
+      python: "nightly"
+      before_install:
+        - python -m pip install --upgrade pip
+      after_install:
+        - pip install -U $(pip freeze | cut -d '=' -f 1)
+    - name: "Python 3.7 on Linux"
+      python: 3.7
+    - name: "Python 3.7 on OSX"
+      os: osx
+    - name: "Python 3.7 on Windows"
+      os: windows
+      before_install:
+        - choco install python --version 3.7
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+
 install:
   - pip install -U -r requirements.txt
   - pip install -r submodules/MPyDATA/requirements.txt
