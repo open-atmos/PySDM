@@ -5,9 +5,9 @@ jobs:
     - name: "nightly Python build with newest packages on Linux"
       python: "nightly"
       before_install:
-        - sudo pip3 install --upgrade pip
+        - sudo python3 -m pip install --upgrade pip
       after_install:
-        - pip3 install -U $(pip freeze | cut -d '=' -f 1)
+        - python3 -m pip install -U $(pip freeze | cut -d '=' -f 1)
     - name: "Python 3.7 on Linux"
       python: 3.7
     - name: "Python 3.7 on OSX"
@@ -20,9 +20,9 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
-  - pip3 install -U -r requirements.txt
-  - pip3 install -r submodules/MPyDATA/requirements.txt
-  - pip3 install submodules/MPyDATA
+  - python3 -m pip install -U -r requirements.txt
+  - python3 -m pip install -r submodules/MPyDATA/requirements.txt
+  - python3 -m pip install submodules/MPyDATA
 
 script:
   - python3 -m pytest --ignore submodules --cov-report term --cov=PySDM
