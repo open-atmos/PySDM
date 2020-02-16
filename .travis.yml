@@ -6,9 +6,9 @@ jobs:
       language: python
       python: "nightly"
       before_install:
-        - sudo python3 -m pip install --upgrade pip
+        - sudo pip install --upgrade pip
       after_install:
-        - python3 -m pip install -U $(pip freeze | cut -d '=' -f 1)
+        - pip install -U $(pip freeze | cut -d '=' -f 1)
     - name: "Python 3.7 on Linux"
       language: python
       python: 3.7
@@ -18,18 +18,18 @@ jobs:
       os: windows
       before_install:
         - choco install python --version 3.7
-        - python3 -m pip install --upgrade pip
+        - python -m pip install --upgrade pip
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
-  - python3 -m pip install -U -r requirements.txt
-  - python3 -m pip install -r submodules/MPyDATA/requirements.txt
-  - python3 -m pip install submodules/MPyDATA
+  - pip install -U -r requirements.txt
+  - pip install -r submodules/MPyDATA/requirements.txt
+  - pip install submodules/MPyDATA
 
 script:
-  - python3 -m pytest --ignore submodules --cov-report term --cov=PySDM
+  - python -m pytest --ignore submodules --cov-report term --cov=PySDM
   - |
-      python3 -m ipykernel install --user
+      python -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do
          jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
          jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
@@ -37,7 +37,7 @@ script:
       done;
   - |
       for i in PySDM_examples/*/example.py; do
-        PYTHONPATH=. python3 $i
+        PYTHONPATH=. python $i
       done;
 
 after_success:
