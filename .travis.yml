@@ -2,9 +2,9 @@ language: shell
 
 jobs:
   include:
-    - name: "nightly Python build with newest packages on Linux"
+    - name: "Python 3.8 build with newest packages on Linux"
       language: python
-      python: "nightly"
+      python: "3.8"
       before_install:
         - sudo `which pip` install --upgrade pip
       after_install:
@@ -15,6 +15,7 @@ jobs:
     - name: "Python 3.7 on OSX"
       os: osx
       before_install:
+        - shopt -s expand_aliases
         - alias python=python3
         - alias pip=pip3
     - name: "Python 3.7 on Windows"
