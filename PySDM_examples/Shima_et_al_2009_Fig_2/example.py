@@ -35,7 +35,7 @@ def run(setup):
     return states, particles.stats
 
 
-def main():
+def main(plot:bool):
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -51,8 +51,9 @@ def main():
         plotter = Plotter(setup, (x_min, x_max))
         for step, state in states.items():
             plotter.plot(state, step * setup.dt)
-        plotter.show()
+        if plot:
+            plotter.show()
 
 
 if __name__ == '__main__':
-    main()
+    main(plot=False)
