@@ -26,6 +26,8 @@ def bdf_condensation(particles,
                      rtol_lnv, rtol_thd, substeps,
                      ):
     n_threads = 1
+    if particles.state.has_attribute("temperature"):
+        raise NotImplementedError()
 
     Numba._condensation.py_func(
         solve=solve,
@@ -33,6 +35,7 @@ def bdf_condensation(particles,
         n_cell=particles.mesh.n_cell,
         cell_start_arg=particles.state.cell_start,
         v=particles.state.get_backend_storage("volume"),
+        particle_temperatures=np.empty(0),
         n=particles.state.n,
         vdry=particles.state.get_backend_storage("dry volume"),
         idx=particles.state._State__idx,
@@ -52,7 +55,7 @@ def bdf_condensation(particles,
     )
 
 
-def solve(v, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
+def solve(v, particle_temperatures, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
           rtol_lnv, rtol_thd, dt, substeps
           ):
     n_sd_in_cell = len(cell_idx)

@@ -137,3 +137,6 @@ class State:
                                    extensive=self.get_extensive_attrs(),
                                    gamma=gamma,
                                    healthy=self.healthy)
+
+    def has_attribute(self, attr):
+        return attr in self.keys

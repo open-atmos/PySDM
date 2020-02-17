@@ -29,6 +29,34 @@ class PhysicsMethods:
     def temperature_pressure_RH(rhod, thd, qv):
         return temperature_pressure_RH(rhod, thd, qv)
 
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def radius(volume):
+        return radius(volume)
+
+    @staticmethod
+    @numba.njit(
+        [float64(float64, float64, float64, float64, float64, float64)],
+        **{**conf.JIT_FLAGS, **{'parallel': False}}
+    )
+    def dlnv_dt(lnv, dr_dt):
+        return dlnv_dt(lnv, dr_dt)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def dr_dt_MM(r, T, p, RH, kp, rd):
+        return dr_dt_MM(r, T, p, RH, kp, rd)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
+        return dr_dt_FF(r, T, p, qv, kp, rd, T_i)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def dthd_dt(rhod, thd, T, dqv_dt):
+        return dthd_dt(rhod, thd, T, dqv_dt)
+
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def temperature_pressure_RH(rhod, thd, qv):
@@ -132,14 +160,26 @@ def r_cr(kp, rd, T):
     return np.sqrt(3 * kp * rd ** 3 / A(T))
 
 
+@numba.jit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def RH_eq(r, T, kp, rd):
+    return 1 + A(T) / r - B(kp, rd) / r ** 3
+
+
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def dr_dt_MM(r, T, p, S, kp, rd):
-    nom = (S - A(T) / r + B(kp, rd) / r ** 3)
+def dr_dt_MM(r, T, p, RH, kp, rd):
+    nom = (RH - RH_eq(r, T, kp, rd))
     den = (
             Fd(T, D(r, T)) +
             Fk(T, K(r, T, p), lv(T))
     )
     return 1 / r * nom / den
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
+    rho_v = p * qv / R(qv) / T
+    rho_eq = pvs(T_i) * RH_eq(r, T_i, kp, rd) / const.Rv / T_i
+    return D(r, T_i) / const.rho_w / r * (rho_v - rho_eq)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -151,9 +191,9 @@ def radius(volume):
     [float64(float64, float64, float64, float64, float64, float64)],
     **{**conf.JIT_FLAGS, **{'parallel': False}}
 )
-def dlnv_dt(lnv, T, p, RH, kappa, rd):
-    r = radius(np.exp(lnv))
-    return 3 / r * dr_dt_MM(r, T, p, RH - 1, kappa, rd)
+def dlnv_dt(lnv, dr_dt):
+    r = radius(np.exp(lnv))  # TODO: abstract out lnv
+    return 3 / r * dr_dt
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

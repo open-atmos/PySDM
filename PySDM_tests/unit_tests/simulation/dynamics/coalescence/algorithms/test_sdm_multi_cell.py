@@ -9,7 +9,7 @@ from PySDM.backends.default import Default
 # TODO: get_empty_state()
 
 # noinspection PyUnresolvedReferences
-from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
+from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import v_2, n_2
 
 
 backend = Default()

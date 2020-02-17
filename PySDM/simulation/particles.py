@@ -62,10 +62,15 @@ class Particles:
         self.state.coalescence(gamma)
 
     def condensation(self, kappa, rtol_lnv, rtol_thd, substeps):
+        particle_temperatures = \
+            self.state.get_backend_storage("temperature") if self.state.has_attribute("temperature") else \
+            self.backend.array(0, dtype=float)
+
         self.backend.condensation(
                 n_cell=self.mesh.n_cell,
                 cell_start_arg=self.state.cell_start,
                 v=self.state.get_backend_storage("volume"),
+                particle_temperatures=particle_temperatures,
                 n=self.state.n,
                 vdry=self.state.get_backend_storage("dry volume"),
                 idx=self.state._State__idx,

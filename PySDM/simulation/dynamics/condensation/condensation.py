@@ -6,6 +6,8 @@ Created at 24.10.2019
 """
 
 from .products.condensation_timestep import CondensationTimestep
+from .products.particle_temperature import ParticleTemperature
+from ...particles import Particles
 import numpy as np
 
 
@@ -14,7 +16,7 @@ default_rtol_thd = 1e-9
 
 
 class Condensation:
-    def __init__(self, particles, kappa,
+    def __init__(self, particles: Particles, kappa,
                  rtol_lnv=default_rtol_lnv,
                  rtol_thd=default_rtol_thd,
                  do_advection: bool = True,
@@ -32,7 +34,7 @@ class Condensation:
         self.substeps = particles.backend.array(particles.mesh.n_cell, dtype=int)
         self.substeps[:] = np.maximum(1, int(particles.dt))
 
-        self.products = [CondensationTimestep(self), ]
+        self.products = [CondensationTimestep(self), ParticleTemperature(self)]
 
     def __call__(self):
         if self.do_advection:
