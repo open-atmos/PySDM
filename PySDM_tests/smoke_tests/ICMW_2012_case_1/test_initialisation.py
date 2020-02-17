@@ -12,6 +12,7 @@ from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.physics import formulae as phys
 from matplotlib import pyplot
+import pytest
 
 
 @pytest.mark.skip # TODO: sometimes fails... (https://travis-ci.org/atmos-cloud-sim-uj/PySDM/jobs/651243742#L454)
