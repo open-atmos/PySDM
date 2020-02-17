@@ -27,9 +27,9 @@ class SpecialMethods:
         return new_length
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+    @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 **conf.JIT_FLAGS)
-    def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         for i in prange(length - 1):
             if gamma[i] == 0:
                 continue
@@ -46,12 +46,18 @@ class SpecialMethods:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
+                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
+                # TODO: volume[k] += g * volume[j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
+                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
+                intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
+                # TODO: volume[j] = volume[k] + g * volume[j]
+                # TODO: volume[k] = volume[j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 

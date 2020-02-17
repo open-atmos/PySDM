@@ -15,7 +15,7 @@ import pytest
 from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 
 # noinspection PyUnresolvedReferences
-from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import x_2, n_2
+from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 
 backend = Default
 
@@ -31,18 +31,26 @@ class TestSDMSingleCell:
         sdm = SDM(particles, StubKernel(particles.backend))
         return particles, sdm
 
-    def test_single_collision(self, x_2, n_2):
+    def test_single_collision(self, v_2, T_2, n_2):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={},
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': v_2},
+                                                        intensive={'temperature': T_2},
                                                         particles=particles)
+
         # Act
         sut()
+
         # Assert
-        assert np.sum(particles.state['n'] * particles.state['volume']) == np.sum(n_2 * x_2)
+        state = particles.state
+        assert np.sum(state['n'] * state['volume'] * state['temperature']) == np.sum(n_2 * T_2 * v_2)
+        new_T = np.sum(T_2 * v_2) / np.sum(v_2)
+        assert np.isin(round(new_T, 10), np.round(state['temperature'], 10))
+
+        assert np.sum(particles.state['n'] * particles.state['volume']) == np.sum(n_2 * v_2)
         assert np.sum(particles.state['n']) == np.sum(n_2) - np.amin(n_2)
-        if np.amin(n_2) > 0: assert np.amax(particles.state['volume']) == np.sum(x_2)
+        if np.amin(n_2) > 0: assert np.amax(particles.state['volume']) == np.sum(v_2)
         assert np.amax(particles.state['n']) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("n_in, n_out", [
@@ -71,11 +79,11 @@ class TestSDMSingleCell:
         pytest.param(5),
         pytest.param(7),
     ])
-    def test_multi_collision(self, x_2, n_2, p):
+    def test_multi_collision(self, v_2, n_2, p):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': x_2}, intensive={},
+        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': v_2}, intensive={},
                                                         particles=particles)
 
         # Act
@@ -85,9 +93,9 @@ class TestSDMSingleCell:
         state = particles.state
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
-        assert np.sum(state['n'] * state['volume']) == np.sum(n_2 * x_2)
+        assert np.sum(state['n'] * state['volume']) == np.sum(n_2 * v_2)
         assert np.sum(state['n']) == np.sum(n_2) - gamma * np.amin(n_2)
-        assert np.amax(state['volume']) == gamma * x_2[np.argmax(n_2)] + x_2[np.argmax(n_2) - 1]
+        assert np.amax(state['volume']) == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
         assert np.amax(state['n']) == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("x, n, p", [

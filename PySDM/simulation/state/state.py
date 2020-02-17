@@ -130,6 +130,7 @@ class State:
 
     def coalescence(self, gamma):
         self.__backend.coalescence(n=self.n,
+                                   volume=self.get_backend_storage('volume'),
                                    idx=self.__idx,
                                    length=self.SD_num,
                                    intensive=self.get_intensive_attrs(),

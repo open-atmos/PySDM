@@ -41,7 +41,7 @@ def insert_zeros(array):
 
 
 '''
-x parametrisation: x_2
+x parametrisation: v_2
 '''
 
 __x__ = {'ones_2': pytest.param(np.array([1., 1.])),
@@ -53,7 +53,20 @@ __x__ = {'ones_2': pytest.param(np.array([1., 1.])),
     __x__['ones_2'],
     __x__['random_2']
 ])
-def x_2(request):
+def v_2(request):
+    return request.param
+
+
+'''
+T parametrisation: T_2
+'''
+
+
+@pytest.fixture(params=[
+    __x__['ones_2'],
+    __x__['random_2']
+])
+def T_2(request):
     return request.param
 
 
