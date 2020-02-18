@@ -1,6 +1,7 @@
 from PySDM.simulation.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.numba_helpers import radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dlnv_dt, dthd_dt
+from PySDM.backends.numba.numba_helpers import \
+    radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, dlnv_dt, dthd_dt
 import numba
 import numpy as np
 
@@ -46,7 +47,7 @@ def step_impl(
     v, particle_temperatures, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred, m_d_mean,
     rhod_mean, rtol_lnv, dt, n_substeps, fake
 ):
-    flag = len(particle_temperatures) > 0
+    using_drop_temperatures = len(particle_temperatures) > 0
 
     dt /= n_substeps
     n_sd_in_cell = len(cell_idx)
@@ -63,37 +64,35 @@ def step_impl(
         ml_new = 0
         for i in range(n_sd_in_cell):
             lnv_old = np.log(v[cell_idx[i]])  # TODO: abstract out coord logic
-            if flag:
+            if using_drop_temperatures:
                 T_i_old = particle_temperatures[cell_idx[i]]
 
             r_old = radius(v[cell_idx[i]])
             rd = radius(volume=vdry[cell_idx[i]])
-            dr_dt = (
-                dr_dt_MM(r_old, T, p, RH, kappa, rd) if not flag else
+            dr_dt_old = (
+                dr_dt_MM(r_old, T, p, RH, kappa, rd) if not using_drop_temperatures else
                 dr_dt_FF(r_old, T, p, qv, kappa, rd, T_i_old)
             )
-            dlnv_old = dt * dlnv_dt(lnv_old, dr_dt)
+            dlnv_old = dt * dlnv_dt(lnv_old, dr_dt_old)
 
             if dlnv_old < 0:
                 dlnv_old = np.maximum(dlnv_old, np.log(vdry[cell_idx[i]]) - lnv_old)
 
             a = lnv_old
             interval = dlnv_old
-            # TODO: if not flag:
-            args = (lnv_old, dt, T, p, RH, kappa, rd)
-            minfun = _minfun_MM
-            # TODO:
-            ## else:
-            ##     args = (lnv_old, dt, T, p, qv, kappa, rd, T_i_old)
-            ##     minfun = _minfun_FF
-
-            lnv_new = bisec(minfun, a, interval, args, rtol_lnv, n_substeps)
-            if flag:
-                T_i_new = T_i_old  #+ dt * dT_dt_FF() # TODO
+            if not using_drop_temperatures:
+                args_MM = (lnv_old, dt, T, p, RH, kappa, rd)
+                lnv_new = bisec(_minfun_MM, a, interval, args_MM, rtol_lnv, n_substeps)
+            else:
+                args_FF = (lnv_old, dt, T, p, qv, kappa, rd, T_i_old)
+                lnv_new = bisec(_minfun_FF, a, interval, args_FF, rtol_lnv, n_substeps)
 
             v_new = np.exp(lnv_new)
+
             if not fake:
-                if flag: particle_temperatures[cell_idx[i]] = T_i_new
+                if using_drop_temperatures:
+                    T_i_new = T_i_old + dt * dT_i_dt_FF(r_old, T, p, T_i_old, dr_dt_old)
+                    particle_temperatures[cell_idx[i]] = T_i_new
                 v[cell_idx[i]] = v_new
             ml_new += n[cell_idx[i]] * v_new * const.rho_w
 

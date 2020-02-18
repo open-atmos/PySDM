@@ -140,6 +140,14 @@ def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def dT_i_dt_FF(r, T, p, T_i, dr_dt):
+    return 3 / r / const.c_pw * (
+        K(r, T, p) / const.rho_w / r * (T - T_i) +  # TODO: K(T) vs. K(Td) ???
+        lv(T_i) * dr_dt
+    )
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def radius(volume):
     return (volume * 3 / 4 / np.pi) ** (1 / 3)
 
