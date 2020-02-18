@@ -122,22 +122,15 @@ def RH_eq(r, T, kp, rd):
     return 1 + A(T) / r - B(kp, rd) / r ** 3
 
 
-# @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-# def dr_dt_MM(r, T, p, RH, kp, rd):
-#     nom = (RH - RH_eq(r, T, kp, rd))
-#     den = (
-#             Fd(T, D(r, T)) +
-#             Fk(T, K(r, T, p), lv(T))
-#     )
-#     return 1 / r * nom / den
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def dr_dt_MM(r, T, p, S, kp, rd):
-    nom = (S - A(T) / r + B(kp, rd) / r ** 3)
+def dr_dt_MM(r, T, p, RH, kp, rd):
+    nom = (RH - RH_eq(r, T, kp, rd))
     den = (
             Fd(T, D(r, T)) +
             Fk(T, K(r, T, p), lv(T))
     )
     return 1 / r * nom / den
+
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
