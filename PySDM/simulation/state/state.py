@@ -60,8 +60,6 @@ class State:
         self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
-        # self.__backend.countsort_by_cell_id_parallel(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num,
-                                                     # self.__cell_start, self.__cell_start_p)
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)
         self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
         self.__sorted = True
