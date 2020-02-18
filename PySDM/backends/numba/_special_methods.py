@@ -27,9 +27,9 @@ class SpecialMethods:
         return new_length
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+    @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 **conf.JIT_FLAGS)
-    def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         for i in prange(length - 1):
             if gamma[i] == 0:
                 continue
@@ -46,12 +46,18 @@ class SpecialMethods:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
+                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
+                # TODO: volume[k] += g * volume[j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
+                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
+                intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
+                # TODO: volume[j] = volume[k] + g * volume[j]
+                # TODO: volume[k] = volume[j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
@@ -125,7 +131,7 @@ class SpecialMethods:
                 moment_0[cell_id[i]] += n[i]
                 for k in range(specs_idx.shape[0]):
                     moments[k, cell_id[i]] += n[i] * attr[specs_idx[k], i] ** specs_rank[k]
-        moments[:, :] /= moment_0  # TODO: should we divide or not...
+        moments[:, :] /= moment_0
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -206,21 +212,21 @@ class SpecialMethods:
     @staticmethod
     def condensation(
             n_cell, cell_start_arg,
-            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_lnv, rtol_thd, dt, substeps, cell_order
     ):
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         SpecialMethods._condensation(
             solve__, n_threads, n_cell, cell_start_arg,
-            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_lnv, rtol_thd, dt, substeps, cell_order
         )
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    # @numba.njit(**conf.JIT_FLAGS)
     def _condensation(
             solve, n_threads, n_cell, cell_start_arg,
-            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_lnv, rtol_thd, dt, substeps, cell_order
     ):
         for thread_id in numba.prange(n_threads):
@@ -241,7 +247,7 @@ class SpecialMethods:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
 
                 qv_new, thd_new, substeps_hint = solve(
-                    v, n, vdry,
+                    v, particle_temperatures, n, vdry,
                     idx[cell_start:cell_end],  # TODO
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
                     rtol_lnv, rtol_thd, dt, substeps[cell_id]

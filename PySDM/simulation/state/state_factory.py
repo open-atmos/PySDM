@@ -47,6 +47,8 @@ class StateFactory:
         for tensive in attributes:
             idx = 0
             for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
+                if key in keys:
+                    raise ValueError("Non-unique attribute name: " + key)
                 keys[key] = (tensive, idx)
                 particles.backend.write_row(attributes[tensive], idx, particles.backend.from_ndarray(array))
                 idx += 1

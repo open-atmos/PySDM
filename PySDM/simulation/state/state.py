@@ -60,8 +60,6 @@ class State:
         self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
-        # self.__backend.countsort_by_cell_id_parallel(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num,
-                                                     # self.__cell_start, self.__cell_start_p)
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)
         self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
         self.__sorted = True
@@ -130,9 +128,13 @@ class State:
 
     def coalescence(self, gamma):
         self.__backend.coalescence(n=self.n,
+                                   volume=self.get_backend_storage('volume'),
                                    idx=self.__idx,
                                    length=self.SD_num,
                                    intensive=self.get_intensive_attrs(),
                                    extensive=self.get_extensive_attrs(),
                                    gamma=gamma,
                                    healthy=self.healthy)
+
+    def has_attribute(self, attr):
+        return attr in self.keys

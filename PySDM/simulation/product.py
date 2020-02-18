@@ -17,11 +17,10 @@ class Product:
         self.range = range  # TODO: rename to something like plot_hint_range
 
         self.buffer = np.empty(shape)
-        self.backend = particles.backend
         self.particles = particles
 
     def download_to_buffer(self, storage):
-        self.backend.download(storage, self.buffer.ravel())
+        self.particles.backend.download(storage, self.buffer.ravel())
 
 
 class MomentProduct(Product):
