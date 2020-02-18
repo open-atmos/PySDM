@@ -2,28 +2,30 @@ language: shell
 
 jobs:
   include:
-    - name: "Python 3.8 build with newest packages on Linux"
+    - name: "Python 3.8 with newest packages on Linux"
+      os: linux
       language: python
       python: "3.8"
       before_install:
         - sudo `which pip` install --upgrade pip
       after_install:
         - pip install -U $(pip freeze | cut -d '=' -f 1)
-    - name: "Python 3.7 on Linux"
+    - name: "Python 3.8 on Linux"
+      os: linux
       language: python
-      python: 3.7
+      python: 3.8
       after_success:
         - codecov
-    - name: "Python 3.7 on OSX"
+    - name: "Python 3.8 on OSX"
       os: osx
       before_install:
         - export PY_SFX=3
-    - name: "Python 3.7 on Windows"
+    - name: "Python 3.8 on Windows"
       os: windows
       before_install:
-        - choco install python --version 3.7
+        - choco install python --version 3.8
         - python -m pip install --upgrade pip
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
 install:
   - pip$PY_SFX install -U -r requirements.txt
