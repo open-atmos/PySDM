@@ -223,7 +223,7 @@ class SpecialMethods:
         )
 
     @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**conf.JIT_FLAGS)
     def _condensation(
             solve, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,

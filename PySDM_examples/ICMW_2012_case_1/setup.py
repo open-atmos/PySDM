@@ -56,6 +56,8 @@ class Setup:
         "relaxation": False
     }
 
+    enable_particle_temperatures = False
+
     mpdata_iters = 2
     mpdata_iga = True
     mpdata_fct = True

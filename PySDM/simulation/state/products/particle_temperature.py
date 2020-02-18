@@ -10,10 +10,10 @@ from PySDM.simulation.product import MomentProduct
 
 
 class ParticleTemperature(MomentProduct):
-    def __init__(self, condensation):
+    def __init__(self, particles):
         super().__init__(
-            particles=condensation.particles,
-            shape=condensation.particles.mesh.grid,
+            particles=particles,
+            shape=particles.mesh.grid,
             name='T',
             unit='K',
             description='Particle temperature',

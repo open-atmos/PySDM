@@ -12,6 +12,7 @@ from PySDM.simulation.initialisation.multiplicities import n_init, discretise_n
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
+from PySDM.simulation.initialisation.temperature_init import temperature_init
 from PySDM.simulation.mesh import Mesh
 
 from .state.products.aerosol_concentration import AerosolConcentration
@@ -20,6 +21,7 @@ from .state.products.total_particle_concentration import TotalParticleConcentrat
 from .state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
 from .state.products.particle_mean_radius import ParticleMeanRadius
 from .state.products.super_droplet_count import SuperDropletCount
+from .state.products.particle_temperature import ParticleTemperature
 
 
 class ParticlesBuilder:
@@ -70,7 +72,8 @@ class ParticlesBuilder:
                                                   particles=self.particles)
 
     def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
-                        spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold):
+                        spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
+                        enable_temperatures: bool = False):
         assert_not_none(self.particles.mesh, self.particles.environment)
         assert_none(self.particles.state)
 
@@ -82,20 +85,27 @@ class ParticlesBuilder:
             n_per_m3 = n_init(n_per_kg, self.particles.environment, self.particles.mesh, cell_id)
             n = discretise_n(n_per_m3)
 
+        if enable_temperatures:
+            T_i = temperature_init(self.particles.environment, cell_id)
+            intensive['temperature'] = T_i
+            self.register_product(ParticleTemperature(self.particles))
+
         extensive['volume'] = phys.volume(radius=r_wet)
         extensive['dry volume'] = phys.volume(radius=r_dry)
 
         self.particles.state = StateFactory.state(n, intensive, extensive,
                                                   cell_id, cell_origin, position_in_cell,
                                                   self.particles)
-        for product in [
+        products = [
             TotalParticleConcentration(self.particles),
             TotalParticleSpecificConcentration(self.particles),
             AerosolConcentration(self.particles, radius_threshold),
             AerosolSpecificConcentration(self.particles, radius_threshold),
             ParticleMeanRadius(self.particles),
             SuperDropletCount(self.particles)
-        ]:
+        ]
+
+        for product in products:
             self.register_product(product)
 
     def get_particles(self):

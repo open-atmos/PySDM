@@ -13,7 +13,6 @@ from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 import pytest
 
 
-@pytest.mark.skip()  # TODO
 def test_export():
     # Arrange
     setup = Setup()
