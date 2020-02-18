@@ -7,7 +7,7 @@ jobs:
       python: "3.8"
       before_install:
         - sudo `which pip` install --upgrade pip
-      after_install:
+      before_script:
         - pip install -U $(pip freeze | cut -d '=' -f 1)
     - name: "Python 3.7 on Linux"
       language: python
