@@ -34,7 +34,7 @@ class Condensation:
         self.substeps = particles.backend.array(particles.mesh.n_cell, dtype=int)
         self.substeps[:] = np.maximum(1, int(particles.dt))
 
-        self.products = [CondensationTimestep(self), ParticleTemperature(self)]
+        self.products = [CondensationTimestep(self), ]  # TODO: ParticleTemperature(self)]
 
     def __call__(self):
         if self.do_advection:

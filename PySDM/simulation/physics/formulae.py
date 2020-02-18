@@ -1,5 +1,4 @@
-# noinspection PyProtectedMember
-from PySDM.backends.numba import _physics_methods as physics
+from PySDM.backends.numba import numba_helpers as physics
 from PySDM.simulation.physics import constants as const
 
 import numpy as np

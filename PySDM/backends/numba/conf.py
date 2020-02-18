@@ -7,7 +7,7 @@ Created at 08.08.2019
 
 
 JIT_FLAGS = dict(
-    parallel=False,
+    parallel=True,
     fastmath=True,
     error_model='numpy'
 )

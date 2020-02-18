@@ -1,6 +1,6 @@
 from PySDM.simulation.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.numba import Numba
+from PySDM.backends.numba.numba_helpers import radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dlnv_dt, dthd_dt
 import numba
 import numpy as np
 
@@ -58,7 +58,7 @@ def step_impl(
     for t in range(n_substeps):
         thd += dt * dthd_dt_pred / 2  # TODO: test showing that it makes sense
         qv += dt * dqv_dt_pred / 2
-        T, p, RH = Numba.temperature_pressure_RH(rhod_mean, thd, qv)
+        T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
 
         ml_new = 0
         for i in range(n_sd_in_cell):
@@ -66,28 +66,29 @@ def step_impl(
             if flag:
                 T_i_old = particle_temperatures[cell_idx[i]]
 
-            r_old = Numba.radius(v[cell_idx[i]])
-            rd = Numba.radius(volume=vdry[cell_idx[i]])
+            r_old = radius(v[cell_idx[i]])
+            rd = radius(volume=vdry[cell_idx[i]])
             dr_dt = (
-                Numba.dr_dt_MM(r_old, T, p, RH, kappa, rd) if not flag else
-                Numba.dr_dt_FF(r_old, T, p, qv, kappa, rd, T_i_old)
+                dr_dt_MM(r_old, T, p, RH, kappa, rd) if not flag else
+                dr_dt_FF(r_old, T, p, qv, kappa, rd, T_i_old)
             )
-            dlnv_old = dt * Numba.dlnv_dt(lnv_old, dr_dt)
+            dlnv_old = dt * dlnv_dt(lnv_old, dr_dt)
 
             if dlnv_old < 0:
                 dlnv_old = np.maximum(dlnv_old, np.log(vdry[cell_idx[i]]) - lnv_old)
 
             a = lnv_old
             interval = dlnv_old
-            if not flag:
-                args = (lnv_old, dt, T, p, RH, kappa, rd)
-                minfun = _minfun_MM
-            else:
-                args = (lnv_old, dt, T, p, qv, kappa, rd, T_i_old)
-                minfun = _minfun_FF
+            # TODO: if not flag:
+            args = (lnv_old, dt, T, p, RH, kappa, rd)
+            minfun = _minfun_MM
+            # TODO:
+            ## else:
+            ##     args = (lnv_old, dt, T, p, qv, kappa, rd, T_i_old)
+            ##     minfun = _minfun_FF
 
             lnv_new = bisec(minfun, a, interval, args, rtol_lnv, n_substeps)
-            T_i_new = T_i_old  #+ dt * Numba.dT_dt_FF() # TODO
+            T_i_new = T_i_old  #+ dt * dT_dt_FF() # TODO
 
             v_new = np.exp(lnv_new)
             if not fake:
@@ -97,7 +98,7 @@ def step_impl(
 
         dml_dt = (ml_new - ml_old) / dt
         dqv_dt_corr = - dml_dt / m_d_mean
-        dthd_dt_corr = Numba.dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_pred + dqv_dt_corr)
+        dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_pred + dqv_dt_corr)
         thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
         qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
         ml_old = ml_new
@@ -140,13 +141,13 @@ def bisec(minfun, a, interval, args, rtol, n_substeps):
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def _minfun_FF(lnv_new, lnv_old, dt, T, p, qv, kappa, rd, T_i):
-    r_new = Numba.radius(np.exp(lnv_new))
-    dr_dt = Numba.dr_dt_FF(r_new, T, p, qv, kappa, rd, T_i)
-    return lnv_old - lnv_new + dt * Numba.dlnv_dt(lnv_new, dr_dt)
+    r_new = radius(np.exp(lnv_new))
+    dr_dt = dr_dt_FF(r_new, T, p, qv, kappa, rd, T_i)
+    return lnv_old - lnv_new + dt * dlnv_dt(lnv_new, dr_dt)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def _minfun_MM(lnv_new, lnv_old, dt, T, p, RH, kappa, rd):
-    r_new = Numba.radius(np.exp(lnv_new))
-    dr_dt = Numba.dr_dt_MM(r_new, T, p, RH, kappa, rd)
-    return lnv_old - lnv_new + dt * Numba.dlnv_dt(lnv_new, dr_dt)
+    r_new = radius(np.exp(lnv_new))
+    dr_dt = dr_dt_MM(r_new, T, p, RH, kappa, rd)
+    return lnv_old - lnv_new + dt * dlnv_dt(lnv_new, dr_dt)
