@@ -88,11 +88,12 @@ def step_impl(
             ##     minfun = _minfun_FF
 
             lnv_new = bisec(minfun, a, interval, args, rtol_lnv, n_substeps)
-            T_i_new = T_i_old  #+ dt * dT_dt_FF() # TODO
+            if flag:
+                T_i_new = T_i_old  #+ dt * dT_dt_FF() # TODO
 
             v_new = np.exp(lnv_new)
             if not fake:
-                particle_temperatures[cell_idx[i]] = T_i_new
+                if flag: particle_temperatures[cell_idx[i]] = T_i_new
                 v[cell_idx[i]] = v_new
             ml_new += n[cell_idx[i]] * v_new * const.rho_w
 
