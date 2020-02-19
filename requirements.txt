@@ -1,7 +1,7 @@
 numpy
 scipy
 mpmath
-numba
+numba==0.48.0
 matplotlib
 pythran
 Pint

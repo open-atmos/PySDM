@@ -8,12 +8,14 @@ Created at 04.11.2019
 import numpy as np
 import numba
 from numba import void, float64, int64, boolean, prange
-from PySDM.conf import NUMBA_PARALLEL
+from PySDM.backends.numba import conf
+from PySDM.backends.numba.__condensation_solver import solve as solve__
 
 
 class SpecialMethods:
+
     @staticmethod
-    @numba.njit(int64(int64[:], int64[:], int64))
+    @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def remove_zeros(data, idx, length) -> int:
         new_length = 0
         for i in range(length):
@@ -26,7 +28,7 @@ class SpecialMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
-                parallel=NUMBA_PARALLEL)
+                **conf.JIT_FLAGS)
     def coalescence(n, idx, length, intensive, extensive, gamma, healthy):
         for i in prange(length - 1):
             if gamma[i] == 0:
@@ -54,14 +56,21 @@ class SpecialMethods:
                 healthy[0] = 0
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), parallel=NUMBA_PARALLEL)
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        for i in prange(length - 1):
+            data_out[i] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
+
+    @staticmethod
+    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
@@ -69,46 +78,37 @@ class SpecialMethods:
 
     # TODO comment
     @staticmethod
-    @numba.njit()
+    @numba.njit(**conf.JIT_FLAGS)
     def compute_gamma(prob, rand):
-        prob *= -1.
-        prob[0::2] += rand
-        prob[1::2] += rand
-        prob[:] = np.floor(prob)
-        prob *= -1.
+        for i in prange(len(prob)):
+            prob[i] *= -1.
+            prob[i] += rand[i//2]
+            prob[i] = -np.floor(prob[i])
 
     @staticmethod
-    @numba.njit(boolean(int64[:]))
+    @numba.njit(boolean(int64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def first_element_is_zero(arr):
         return arr[0] == 0
 
     @staticmethod
-    # @numba.njit() TODO: "np.dot() only supported on float and complex arrays"
+    #@numba.njit(**conf.JIT_FLAGS) # TODO: "np.dot() only supported on float and complex arrays"
     def cell_id(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64))
+    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
-        cell_start[:] = -1
-        for i in range(sd_num - 1, -1, -1):  # reversed
-            cell_start[cell_id[idx[i]]] = i
-        cell_start[-1] = sd_num
-        for i in range(len(cell_start) - 1, -1, -1):  # reversed
-            if cell_start[i] == -1:
-                cell_start[i] = cell_start[i + 1]
-
-        for i in range(sd_num - 1):
+        for i in prange(sd_num - 1):
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i+1]] and
                 (i - cell_start[cell_id[idx[i]]]) % 2 == 0
             )
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[0]
-        for droplet in range(length):
+        for droplet in prange(length):
             # Arakawa-C grid
             _l = (cell_origin[droplet, 0], cell_origin[droplet, 1])
             _r = (cell_origin[droplet, 0] + 1 * (dim == 0), cell_origin[droplet, 1] + 1 * (dim == 1))
@@ -116,7 +116,7 @@ class SpecialMethods:
             displacement[droplet, dim] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**conf.JIT_FLAGS)
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         moment_0[:] = 0
         moments[:, :] = 0
@@ -128,9 +128,9 @@ class SpecialMethods:
         moments[:, :] /= moment_0  # TODO: should we divide or not...
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        n_cell = cell_start.shape[0]
+        n_cell = cell_start.shape[0]  # TODO: isn't it n_cell_plus_one?
         for i in range(n_cell - 1):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
@@ -141,7 +141,7 @@ class SpecialMethods:
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def apply_f_3_3(function, arg0, arg1, arg2, output0, output1, output2):
         for i in range(output0.shape[0]):
             output0[i], output1[i], output2[i] = function(arg0[i], arg1[i], arg2[i])
@@ -155,3 +155,99 @@ class SpecialMethods:
                 raise NotImplementedError()
         else:
             raise NotImplementedError()
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
+    def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
+        cell_end = cell_start
+
+        cell_end[:] = 0
+        for i in range(length):
+            cell_end[cell_id[idx[i]]] += 1
+        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
+            cell_end[i] += cell_end[i - 1]
+        for i in range(length-1, -1, -1):
+            cell_end[cell_id[idx[i]]] -= 1
+            new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
+        cell_end_thread = cell_start_p
+
+        thread_num = cell_end_thread.shape[0]
+        for t in prange(thread_num):
+            cell_end_thread[t, :] = 0
+            for i in range(t * length // thread_num,
+                           (t + 1) * length // thread_num if t < thread_num - 1 else length):
+                cell_end_thread[t, cell_id[idx[i]]] += 1
+
+        cell_start[:] = np.sum(cell_end_thread, axis=0)
+        for i in range(1, len(cell_start)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
+            cell_start[i] += cell_start[i - 1]
+
+        tmp = cell_end_thread[0, :]
+        tmp[:] = cell_end_thread[thread_num - 1, :]
+        cell_end_thread[thread_num - 1, :] = cell_start[:]
+        for t in range(thread_num - 2, -1, -1):
+            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
+            tmp[:] = cell_end_thread[t, :]
+            cell_end_thread[t, :] = cell_start[:]
+
+        for t in prange(thread_num):
+            for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
+                           t * length // thread_num - 1,
+                           -1):
+                cell_end_thread[t, cell_id[idx[i]]] -= 1
+                new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
+
+        cell_start[:] = cell_end_thread[0, :]
+
+    @staticmethod
+    def condensation(
+            n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+    ):
+        n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
+        SpecialMethods._condensation(
+            solve__, n_threads, n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def _condensation(
+            solve, n_threads, n_cell, cell_start_arg,
+            v, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_lnv, rtol_thd, dt, substeps, cell_order
+    ):
+        for thread_id in numba.prange(n_threads):
+            for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
+                cell_id = cell_order[i]
+
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
+                n_sd_in_cell = cell_end - cell_start
+                if n_sd_in_cell == 0:
+                    continue
+
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                md_new = prhod[cell_id] * dv
+                md_old = rhod[cell_id] * dv
+                md_mean = (md_new + md_old) / 2
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+
+                qv_new, thd_new, substeps_hint = solve(
+                    v, n, vdry,
+                    idx[cell_start:cell_end],  # TODO
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
+                    rtol_lnv, rtol_thd, dt, substeps[cell_id]
+                )
+
+                substeps[cell_id] = substeps_hint
+
+                pqv[cell_id] = qv_new
+                pthd[cell_id] = thd_new

@@ -7,8 +7,8 @@ Created at 04.11.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64, boolean, prange
-from PySDM.conf import NUMBA_PARALLEL
+from numba import void, float64, int64, prange
+from PySDM.backends.numba import conf
 
 
 class StorageMethods:
@@ -53,18 +53,19 @@ class StorageMethods:
         return data.shape
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, int64), parallel=NUMBA_PARALLEL)
-    def shuffle(idx, length, axis):
-        permutation = np.random.permutation(length)
-
-        if axis == 0:
-            idx[:length] = idx[permutation[:length]]
-        else:
-            raise NotImplementedError()
+    @numba.njit(void(int64[:], int64, float64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
+    def shuffle_global(idx, length, u01):
+        for i in range(length-1, 0, -1):
+            j = int(u01[i] * (i+1))
+            idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
-    def stable_argsort(idx, keys, length):
-        idx[:length] = idx[np.argsort(keys[idx[:length]], kind='stable')]
+    @numba.njit(void(int64[:], int64, float64[:], int64[:]), **conf.JIT_FLAGS)
+    def shuffle_local(idx, length, u01, cell_start):
+        for c in prange(len(cell_start) - 1):
+            for i in range(cell_start[c+1]-1, cell_start[c], -1):
+                j = int(cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]))
+                idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
     def to_ndarray(data):

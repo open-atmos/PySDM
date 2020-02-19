@@ -8,4 +8,5 @@ class _MoistLagrangian(_Moist):
 
     @property
     def dv(self):
-        return self.mass_of_dry_air / self.get_predicted("rhod")[0]
+        rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
+        return self.mass_of_dry_air / rhod_mean

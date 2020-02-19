@@ -1,4 +1,5 @@
 from ._moist import _Moist
+import numpy as np
 
 
 class _MoistEulerian(_Moist):
@@ -9,3 +10,12 @@ class _MoistEulerian(_Moist):
     @property
     def dv(self):
         return self._dv
+
+    def get_qv(self) -> np.ndarray:
+        return self._get_qv()
+
+    def get_thd(self) -> np.ndarray:
+        return self._get_thd()
+
+    def step(self):
+        raise NotImplementedError()
