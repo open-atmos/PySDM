@@ -37,4 +37,4 @@ tutorials licence: CC-BY
 - libcloudph++ (C++):    
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
 - LCM1D (Python)
-  https://zenodo.org/record/3547539
+  https://github.com/SimonUnterstrasser/ColumnModel
