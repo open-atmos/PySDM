@@ -16,10 +16,12 @@ class StateFactory:
               particles) -> State:
         assert StateFactory.check_args(n, intensive, extensive)
         sd_num = len(n)
-        attributes, keys = StateFactory.init_attributes_and_keys(particles, intensive, extensive, sd_num)
+        attributes, keys, intensive_start = StateFactory.init_attributes_and_keys(
+            particles, intensive, extensive, sd_num)
 
         cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
-        state = State(n, attributes, keys, cell_id, cell_start, cell_origin, position_in_cell, particles)
+        state = State(n, attributes, keys, intensive_start,
+                      cell_id, cell_start, cell_origin, position_in_cell, particles)
         state.recalculate_cell_id()
 
         return state
@@ -38,20 +40,19 @@ class StateFactory:
         return result
 
     @staticmethod
-    def init_attributes_and_keys(particles, intensive: dict, extensive: dict, SD_num) -> (dict, dict):
-        attributes = {'intensive': particles.backend.array((len(intensive), SD_num), float),
-                      'extensive': particles.backend.array((len(extensive), SD_num), float)
-                      }
+    def init_attributes_and_keys(particles, intensive: dict, extensive: dict, SD_num) -> (np.ndarray, dict, int):
+        attributes = particles.backend.array((len(intensive) + len(extensive), SD_num), float)
         keys = {}
+        intensive_start = len(extensive)
 
-        for tensive in attributes:
-            idx = 0
+        idx = 0
+        for tensive in ['extensive', 'intensive']:
             for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
                 if key in keys:
                     raise ValueError("Non-unique attribute name: " + key)
-                keys[key] = (tensive, idx)
-                particles.backend.write_row(attributes[tensive], idx, particles.backend.from_ndarray(array))
+                keys[key] = idx
+                particles.backend.write_row(attributes, idx, particles.backend.from_ndarray(array))
                 idx += 1
 
-        return attributes, keys
+        return attributes, keys, intensive_start
 

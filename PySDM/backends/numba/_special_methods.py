@@ -42,12 +42,12 @@ class SpecialMethods:
             if g == 0:
                 continue
 
+            # note: extensive must be modified after intensive (as it is used as weights)
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
                 intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
-                # TODO: volume[k] += g * volume[j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
@@ -55,8 +55,6 @@ class SpecialMethods:
                 intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
-                # TODO: volume[j] = volume[k] + g * volume[j]
-                # TODO: volume[k] = volume[j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 

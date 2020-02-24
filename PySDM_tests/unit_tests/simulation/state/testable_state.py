@@ -20,8 +20,7 @@ class TestableState(State):
             cell_id = self.particles.backend.from_ndarray(self.cell_id)
             result = cell_id[all_valid]
         else:
-            tensive = self.keys[item][0]
-            attr = self.keys[item][1]
-            attribute = self.particles.backend.to_ndarray(self.particles.backend.read_row(self.attributes[tensive], attr))
+            attr = self.keys[item]
+            attribute = self.particles.backend.to_ndarray(self.particles.backend.read_row(self.attributes, attr))
             result = attribute[all_valid]
         return result
