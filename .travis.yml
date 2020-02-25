@@ -1,4 +1,7 @@
-language: shell
+# just defaults
+language: python
+python: 3.7
+os: linux
 
 jobs:
   include:
@@ -8,19 +11,23 @@ jobs:
       python: "3.8"
       before_install:
         - sudo `which pip` install --upgrade pip
-      after_install:
+      before_script:
         - pip install -U $(pip freeze | cut -d '=' -f 1)
-    - name: "Python 3.7 on Linux"
-      os: linux
-      language: python
-      python: 3.7.2
+    - name: "Python 3.7 on Linux numba::parallel=False"
+      before_script:
+        - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
       after_success:
         - codecov
-    - name: "Default Python 3 on OSX"
+    - name: "Python 3.7 on Linux numba::parallel=True"
+      before_script:
+        - sed -i s/parallel=False/parallel=True/g PySDM/backends/numba/conf.py
+    - name: "Python 3.7 on OSX"
+      language: shell
       os: osx
       before_install:
         - export PY_SFX=3
     - name: "Python 3.7 on Windows"
+      language: shell
       os: windows
       before_install:
         - choco install python --version 3.7
