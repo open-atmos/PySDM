@@ -30,7 +30,7 @@ class Setup:
         self.n = discretise_n(self.n)
 
     backend = Default
-    rtol_lnv = condensation.default_rtol_lnv
+    rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
     dt_max = 1 * si.second
 

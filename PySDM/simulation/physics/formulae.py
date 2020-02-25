@@ -9,7 +9,6 @@ r_cr = physics.r_cr
 pvs = physics.pvs
 lv = physics.lv
 c_p = physics.c_p
-dlnv_dt = physics.dlnv_dt
 dthd_dt = physics.dthd_dt
 temperature_pressure_RH = physics.temperature_pressure_RH
 radius = physics.radius

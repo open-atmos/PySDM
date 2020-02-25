@@ -71,7 +71,7 @@ class TestMaths:
         assert abs(discr_mean_radius_squared - true_mrsq) / true_mrsq < .05e-1
         
         assert discr_zero_T == discr_zero
-        # TODO
-        # assert discr_mean_T == 300.
-        # assert discr_mean_T_squared == 300. ** 2
+        assert discr_mean_T == 300.
+        assert discr_mean_T_squared == 300. ** 2
+
 

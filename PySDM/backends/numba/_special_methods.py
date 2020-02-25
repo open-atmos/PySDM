@@ -9,7 +9,6 @@ import numpy as np
 import numba
 from numba import void, float64, int64, boolean, prange
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.__condensation_solver import solve as solve__
 
 
 class SpecialMethods:
@@ -43,12 +42,12 @@ class SpecialMethods:
             if g == 0:
                 continue
 
+            # note: extensive must be modified after intensive (as it is used as weights)
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
                 intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
-                # TODO: volume[k] += g * volume[j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
@@ -56,8 +55,6 @@ class SpecialMethods:
                 intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
-                # TODO: volume[j] = volume[k] + g * volume[j]
-                # TODO: volume[k] = volume[j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
@@ -211,23 +208,24 @@ class SpecialMethods:
 
     @staticmethod
     def condensation(
+            solver,
             n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_lnv, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order
     ):
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         SpecialMethods._condensation(
-            solve__, n_threads, n_cell, cell_start_arg,
+            solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_lnv, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order
         )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def _condensation(
-            solve, n_threads, n_cell, cell_start_arg,
+            solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_lnv, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order
     ):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
@@ -246,11 +244,11 @@ class SpecialMethods:
                 md_mean = (md_new + md_old) / 2
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
 
-                qv_new, thd_new, substeps_hint = solve(
+                qv_new, thd_new, substeps_hint = solver(
                     v, particle_temperatures, n, vdry,
                     idx[cell_start:cell_end],  # TODO
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
-                    rtol_lnv, rtol_thd, dt, substeps[cell_id]
+                    rtol_x, rtol_thd, dt, substeps[cell_id]
                 )
 
                 substeps[cell_id] = substeps_hint

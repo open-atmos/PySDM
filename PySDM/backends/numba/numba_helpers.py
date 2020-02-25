@@ -6,6 +6,8 @@ Created at 17.02.2020
 """
 
 import numpy as np
+
+from PySDM.backends.numba import conf
 from . import conf
 import PySDM.simulation.physics.constants as const
 from numba import float64
@@ -153,12 +155,6 @@ def radius(volume):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def dlnv_dt(lnv, dr_dt):
-    r = radius(np.exp(lnv))  # TODO: abstract out lnv
-    return 3 / r * dr_dt
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def dthd_dt(rhod, thd, T, dqv_dt):
     return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
 
@@ -169,3 +165,36 @@ def lv(T):
     latent heat of evaporation
     """
     return const.l_tri + (const.c_pv - const.c_pw) * (T - const.T_tri)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def within_tolerance(error_estimate, value, rtol):
+    return error_estimate < rtol * np.abs(value)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}} )
+def bisec(minfun, a, interval, args, rtol, n_substeps):
+    b = a + interval
+
+    i = 0
+    while minfun(a, *args) * minfun(b, *args) > 0:
+        i += 1
+        b = a + interval * 2**i
+
+    if b < a:
+        a, b = b, a
+
+    fa = minfun(a, *args) # TODO: computed above
+
+    iter = 0
+    while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
+        x_new = (a + b) / 2
+        f = minfun(x_new, *args)
+        if f * fa > 0:
+            a = x_new
+        else:
+            b = x_new
+        iter += 1
+    x_new = (a + b) / 2
+
+    return x_new

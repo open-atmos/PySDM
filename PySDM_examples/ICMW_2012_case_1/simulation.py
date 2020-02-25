@@ -68,18 +68,22 @@ class Simulation:
             spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
             r_range=(self.setup.r_min, self.setup.r_max),
             kappa=self.setup.kappa,
-            radius_threshold = self.setup.aerosol_radius_threshold,
+            radius_threshold=self.setup.aerosol_radius_threshold,
             enable_temperatures=self.setup.enable_particle_temperatures
         )
 
+        # <TODO> ?
+        particles_builder.set_condensation_coord(self.setup.condensation_coord)
         particles_builder.register_dynamic(Condensation, {
             "kappa": self.setup.kappa,
-            "rtol_lnv": self.setup.condensation_rtol_lnv,
+            "rtol_x": self.setup.condensation_rtol_x,
             "rtol_thd": self.setup.condensation_rtol_thd,
             "do_advection": self.setup.processes["fluid advection"],
             "do_condensation": self.setup.processes["condensation"]
         })
         particles_builder.register_dynamic(EulerianAdvection, {})
+        # </TODO>
+
         if self.setup.processes["particle advection"]:
             particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:

@@ -27,8 +27,10 @@ class Particles:
         self.__dv = None
         self.n_steps = 0
         self.stats = stats or Stats()
+
         self.croupier = 'local'
         self.terminal_velocity = TerminalVelocity(self)
+        self.condensation_solver = self.backend.make_condensation_solver()
 
     @property
     def n_sd(self) -> int:
@@ -61,12 +63,13 @@ class Particles:
     def coalescence(self, gamma):
         self.state.coalescence(gamma)
 
-    def condensation(self, kappa, rtol_lnv, rtol_thd, substeps):
+    def condensation(self, kappa, rtol_x, rtol_thd, substeps):
         particle_temperatures = \
             self.state.get_backend_storage("temperature") if self.state.has_attribute("temperature") else \
             self.backend.array(0, dtype=float)
 
         self.backend.condensation(
+                solver=self.condensation_solver,
                 n_cell=self.mesh.n_cell,
                 cell_start_arg=self.state.cell_start,
                 v=self.state.get_backend_storage("volume"),
@@ -82,7 +85,7 @@ class Particles:
                 pthd=self.environment.get_predicted("thd"),
                 pqv=self.environment.get_predicted("qv"),
                 kappa=kappa,
-                rtol_lnv=rtol_lnv,
+                rtol_x=rtol_x,
                 rtol_thd=rtol_thd,
                 dt=self.dt,
                 substeps=substeps,

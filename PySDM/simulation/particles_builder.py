@@ -37,6 +37,9 @@ class ParticlesBuilder:
         assert_none(self.particles.mesh)
         self.particles.mesh = Mesh.mesh_0d(dv)
 
+    def set_condensation_coord(self, coord):
+        self.particles.condensation_solver = self.particles.backend.make_condensation_solver(coord)
+
     def set_environment(self, environment_class, params: dict):
         assert_not_none(self.particles.mesh)
         assert_none(self.particles.environment)

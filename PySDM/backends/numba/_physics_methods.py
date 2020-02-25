@@ -1,6 +1,6 @@
 import numba
 from PySDM.backends.numba import conf
-from .numba_helpers import temperature_pressure_RH, radius, dlnv_dt, dthd_dt, dr_dt_MM, dr_dt_FF
+from .numba_helpers import temperature_pressure_RH, radius, dthd_dt, dr_dt_MM, dr_dt_FF
 
 
 class PhysicsMethods:
@@ -27,11 +27,6 @@ class PhysicsMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def radius(volume):
         return radius(volume)
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def dlnv_dt(lnv, dr_dt):
-        return dlnv_dt(lnv, dr_dt)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

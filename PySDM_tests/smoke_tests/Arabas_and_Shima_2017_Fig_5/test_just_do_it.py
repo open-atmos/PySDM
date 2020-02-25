@@ -57,7 +57,7 @@ def split(arg1, arg2):
 
 @pytest.mark.skip
 @pytest.mark.parametrize("setup_idx", range(len(setups)))
-@pytest.mark.parametrize("rtol", [condensation.default_rtol_lnv]) # TODO
+@pytest.mark.parametrize("rtol", [condensation.default_rtol_x])  # TODO
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
 def test_vs_BDF(setup_idx, data, rtol, leg):
     # Arrange

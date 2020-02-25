@@ -42,7 +42,7 @@ class Simulation:
         particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
-            "rtol_lnv": setup.rtol_lnv,
+            "rtol_x": setup.rtol_x,
             "rtol_thd": setup.rtol_thd,
         })
         self.particles = particles_builder.get_particles()

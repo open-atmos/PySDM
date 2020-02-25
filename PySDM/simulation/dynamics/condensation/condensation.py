@@ -10,13 +10,13 @@ from ...particles import Particles
 import numpy as np
 
 
-default_rtol_lnv = 1e-9
+default_rtol_x = 1e-9
 default_rtol_thd = 1e-9
 
 
 class Condensation:
     def __init__(self, particles: Particles, kappa,
-                 rtol_lnv=default_rtol_lnv,
+                 rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  do_advection: bool = True,
                  do_condensation: bool = True,
@@ -24,7 +24,7 @@ class Condensation:
         self.particles = particles
         self.environment = particles.environment
         self.kappa = kappa
-        self.rtol_lnv = rtol_lnv
+        self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
 
         self.do_advection = do_advection
@@ -41,7 +41,7 @@ class Condensation:
         if self.do_condensation:
             self.particles.condensation(
                 kappa=self.kappa,
-                rtol_lnv=self.rtol_lnv,
+                rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 substeps=self.substeps
             )
