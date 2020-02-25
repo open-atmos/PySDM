@@ -10,6 +10,7 @@ from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
 from PySDM_examples.ICMW_2012_case_1.simulation import DummyController
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
+import pytest
 
 
 def test_export():

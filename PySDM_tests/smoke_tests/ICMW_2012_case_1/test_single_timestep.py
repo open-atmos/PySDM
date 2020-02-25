@@ -27,6 +27,12 @@ def test_single_timestep():
     # Arrange
     setup = Setup()
     setup.n_steps = 1
+    setup.outfreq = 1
+    for key in setup.processes.keys():
+        setup.processes[key] = True
+    setup.processes["condensation"] = True
+    setup.processes["relaxation"] = False
+
     simulation = Simulation(setup, DummyStorage())
     simulation.reinit()
 

@@ -31,9 +31,11 @@ class TestMaths:
 
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = linear(n_sd, spectrum, (v_min, v_max))
+        T = np.full_like(v, 300.)
         n = discretise_n(n)
         particles = DummyParticles(backend, n_sd)
-        state = TestableStateFactory.state_0d(n=n, extensive={'volume': v}, intensive={}, particles=particles)
+        state = TestableStateFactory.state_0d(n=n, extensive={'volume': v}, intensive={'temperature': T}, 
+                                              particles=particles)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
@@ -49,7 +51,16 @@ class TestMaths:
         discr_mean = moments[0, 0]
 
         state.moments(moment_0, moments, specs={'volume': (2,)})
-        discr_mrsq = moments[0, 0]
+        discr_mean_radius_squared = moments[0, 0]
+
+        state.moments(moment_0, moments, specs={'temperature': (0,)})
+        discr_zero_T = moments[0, 0]
+
+        state.moments(moment_0, moments, specs={'temperature': (1,)})
+        discr_mean_T = moments[0, 0]
+
+        state.moments(moment_0, moments, specs={'temperature': (2,)})
+        discr_mean_T_squared = moments[0, 0]
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3
@@ -57,5 +68,10 @@ class TestMaths:
         assert abs(discr_mean - true_mean) / true_mean < .01e-1
 
         true_mrsq = true_var + true_mean**2
-        assert abs(discr_mrsq - true_mrsq) / true_mrsq < .05e-1
+        assert abs(discr_mean_radius_squared - true_mrsq) / true_mrsq < .05e-1
+        
+        assert discr_zero_T == discr_zero
+        assert discr_mean_T == 300.
+        assert discr_mean_T_squared == 300. ** 2
+
 

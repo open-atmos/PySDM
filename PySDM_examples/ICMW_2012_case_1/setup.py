@@ -19,9 +19,9 @@ from PySDM.simulation.physics.constants import si
 
 class Setup:
     backend = Default
+    condensation_coord = 'volume'
 
-    condensation_scheme = 'libcloud'
-    condensation_rtol_lnv = condensation.default_rtol_lnv
+    condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
 
     grid = (25, 25)
@@ -55,6 +55,8 @@ class Setup:
         "sedimentation": False,
         "relaxation": False
     }
+
+    enable_particle_temperatures = False
 
     mpdata_iters = 2
     mpdata_iga = True
