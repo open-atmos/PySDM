@@ -33,3 +33,16 @@ class TestFormulae:
             # Assert
             assert r_cr.to_base_units().units == si.metres
 
+    @staticmethod
+    def test_lv():
+        with DimensionalAnalysis():
+            # Arrange
+            si = constants.si
+            T = 300 * si.kelvins
+
+            # Act
+            latent_heat = formulae.lv(T)
+
+            # Assert
+            assert latent_heat.check('[energy]/[mass]')
+
