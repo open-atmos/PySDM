@@ -74,7 +74,7 @@ class CondensationMethods:
 
                 ml_new = 0
                 for i in range(n_sd_in_cell):
-                    x_old = x(v[cell_idx[i]])  # TODO: abstract out coord logic
+                    x_old = x(v[cell_idx[i]])
                     if using_drop_temperatures:
                         T_i_old = particle_temperatures[cell_idx[i]]
 
