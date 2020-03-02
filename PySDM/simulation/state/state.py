@@ -17,7 +17,8 @@ class State:
         self.particles = particles
         self.__backend = particles.backend
 
-        self.SD_num = particles.n_sd
+        self.__n_sd = particles.n_sd
+        self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.__tmp_idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.__backend.from_ndarray(n)
@@ -32,13 +33,20 @@ class State:
         # TODO!
         self.__cell_start_p = self.__backend.array((self.__backend.num_threads(), len(cell_start)), dtype=int)
         self.__sorted = False
-        self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
 
     @property
     def cell_start(self):
         if not self.__sorted:
             self.__sort_by_cell_id()
         return self.__cell_start
+
+    @property
+    def SD_num(self):
+        if not self.is_healthy():
+            self.__n_sd = self.__backend.remove_zeros(self.n, self.__idx, length=self.__n_sd)
+            self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
+            self.__sorted = False
+        return self.__n_sd
 
     def get_backend_storage(self, item):
         attr = self.keys[item]
@@ -82,13 +90,6 @@ class State:
     def is_healthy(self):
         result = not self.__backend.first_element_is_zero(self.healthy)
         return result
-
-    # TODO: optionally recycle n=0 drops
-    def housekeeping(self):
-        if not self.is_healthy():
-            self.SD_num = self.__backend.remove_zeros(self.n, self.__idx, length=self.SD_num)
-            self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
-            self.__sorted = False
 
     def recalculate_cell_id(self):
         if self.cell_origin is None:
@@ -136,3 +137,6 @@ class State:
 
     def has_attribute(self, attr):
         return attr in self.keys
+
+    def remove_precipitated(self):
+        self.__backend.flag_precipitated(self.cell_origin, self.position_in_cell, self.__idx, self.SD_num, self.healthy)

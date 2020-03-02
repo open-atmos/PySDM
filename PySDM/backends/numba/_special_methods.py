@@ -26,6 +26,13 @@ class SpecialMethods:
         return new_length
 
     @staticmethod
+    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
+        for i in range(length):
+            if cell_origin[i, -1] == 0 and position_in_cell[i, -1] < 0:
+                idx[i] = len(idx)
+                healthy[0] = 0
+
+    @staticmethod
     @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}}) # TODO: waits for https://github.com/numba/numba/issues/5279
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
