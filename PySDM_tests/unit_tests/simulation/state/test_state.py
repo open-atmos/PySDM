@@ -28,7 +28,7 @@ class TestState:
         sut.healthy = TestState.storage([0])
 
         # Act
-        sut.housekeeping()
+        n_sd = sut.SD_num
 
         # Assert
         assert sut['volume'].shape == sut['n'].shape
@@ -58,7 +58,7 @@ class TestState:
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
         sut._State__cell_start_p = backend.array((thread_number, len(sut._State__cell_start)), dtype=int)
-        sut.SD_num = particles.n_sd
+        sut._State__n_sd = particles.n_sd
 
         # Act
         sut._State__sort_by_cell_id()
@@ -101,7 +101,7 @@ class TestState:
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__sorted = True
-        sut.SD_num = particles.n_sd
+        sut._State__n_sd = particles.n_sd
         u01 = TestState.storage(u01)
 
         # Act
@@ -126,7 +126,7 @@ class TestState:
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage(cell_start)
         sut._State__sorted = True
-        sut.SD_num = particles.n_sd
+        sut._State__n_sd = particles.n_sd
         u01 = TestState.storage(u01)
 
         # Act
@@ -149,7 +149,7 @@ class TestState:
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__sorted = True
-        sut.SD_num = particles.n_sd
+        sut._State__n_sd = particles.n_sd
         u01 = TestState.storage(u01)
 
         # Act
@@ -181,7 +181,7 @@ class TestState:
         sut.cell_id = TestState.storage(cell_id)
         sut._State__cell_start = TestState.storage(cell_start)
         sut._State__sorted = True
-        sut.SD_num = particles.n_sd
+        sut._State__n_sd = particles.n_sd
         u01 = TestState.storage(u01)
 
         # Act

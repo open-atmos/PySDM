@@ -63,6 +63,9 @@ class Particles:
     def coalescence(self, gamma):
         self.state.coalescence(gamma)
 
+    def remove_precipitated(self):
+        self.state.remove_precipitated()
+
     def condensation(self, kappa, rtol_x, rtol_thd, substeps):
         particle_temperatures = \
             self.state.get_backend_storage("temperature") if self.state.has_attribute("temperature") else \

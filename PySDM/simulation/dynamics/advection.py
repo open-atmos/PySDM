@@ -46,8 +46,7 @@ class Advection:
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
         if self.sedimentation:
-            # TODO: count and invalidate out-of-domain particles
-            pass
+            self.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
         self.particles.state.recalculate_cell_id()

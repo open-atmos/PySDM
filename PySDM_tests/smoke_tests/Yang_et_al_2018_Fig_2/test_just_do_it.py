@@ -1,20 +1,26 @@
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
+from PySDM.simulation.physics.constants import si
 from PySDM_tests.smoke_tests.utils import bdf
 import pytest
 
+
 # TODO: run for different atol, rtol, dt_max
-@pytest.mark.skip
 @pytest.mark.parametrize("scheme", ['default', 'BDF'])
-def test_just_do_it(scheme):
+@pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
+#@pytest.mark.parametrize("enable_particle_temperatures", [False, True])
+def test_just_do_it(scheme, coord): #, enable_particle_temperatures):
     # Arrange
+    Setup.total_time = 15 * si.minute
     setup = Setup()
+    setup.coord = coord
+    #setup.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
-        setup.dt_max = 10  #setup.total_time
+        setup.dt_max = setup.total_time
 
     simulation = Simulation(setup)
     if scheme == 'BDF':
-        bdf.patch_particles(simulation.particles)
+        bdf.patch_particles(simulation.particles, setup.coord)
 
     # Act
     output = simulation.run()

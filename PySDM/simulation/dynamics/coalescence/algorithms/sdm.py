@@ -22,8 +22,6 @@ class SDM:
         self.is_first_in_pair = particles.backend.array(particles.n_sd, dtype=int)  # TODO bool
 
     def __call__(self):
-        assert self.particles.state.is_healthy()
-
         self.particles.backend.urand(self.temp)
         self.toss_pairs(self.is_first_in_pair, self.temp)
 
@@ -33,8 +31,6 @@ class SDM:
         self.compute_gamma(self.prob, self.rand)
 
         self.particles.coalescence(gamma=self.prob)
-
-        self.particles.state.housekeeping()
 
     def compute_gamma(self, prob, rand):
         self.particles.backend.compute_gamma(prob, rand)
