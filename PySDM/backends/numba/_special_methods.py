@@ -18,7 +18,7 @@ class SpecialMethods:
     def remove_zeros(data, idx, length) -> int:
         new_length = 0
         for i in range(length):
-            if data[idx[i]] == 0:
+            if idx[i] < len(idx) and data[idx[i]] == 0:
                 idx[i] = len(idx)
             else:
                 new_length += 1
