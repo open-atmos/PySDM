@@ -85,7 +85,8 @@ class Simulation:
         # </TODO>
 
         if self.setup.processes["particle advection"]:
-            particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
+            particles_builder.register_dynamic(
+                Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
         if self.setup.processes["relaxation"]:
