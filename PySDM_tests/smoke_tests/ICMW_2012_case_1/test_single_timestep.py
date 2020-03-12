@@ -70,7 +70,7 @@ def test_multi_timestep(plot=False):
 
     # Assert
     for step in range(len(storage.profiles)-1):
-        next = storage.profiles[step+1]["qv"]
+        next = storage.profiles[step+Setup.outfreq]["qv"]
         prev = storage.profiles[step]["qv"]
         eps = 1e-5
         assert ((prev + eps) >= next).all()

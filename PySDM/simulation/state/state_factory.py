@@ -28,6 +28,8 @@ class StateFactory:
 
     @staticmethod
     def check_args(n: np.ndarray, intensive: dict, extensive: dict) -> bool:
+        assert n.dtype == np.int64 or n.dtype == np.int32
+
         result = True
         if n.ndim != 1:
             result = False

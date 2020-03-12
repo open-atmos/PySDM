@@ -10,7 +10,7 @@ from PySDM.simulation.state.state import State
 import numpy as np
 
 
-class Advection:
+class Displacement:
     def __init__(self, particles, scheme='FTBS', sedimentation=False):
         courant_field = particles.environment.get_courant_field_data()
 
@@ -72,4 +72,5 @@ class Advection:
 
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic
+        # TODO: particles above the mesh
         self.particles.backend.column_modulo(cell_origin, self.grid)

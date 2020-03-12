@@ -10,8 +10,8 @@ from ...particles import Particles
 import numpy as np
 
 
-default_rtol_x = 1e-9
-default_rtol_thd = 1e-9
+default_rtol_x = 1e-8
+default_rtol_thd = 1e-8
 
 
 class Condensation:
