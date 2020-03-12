@@ -8,7 +8,7 @@ Created at 06.11.2019
 
 import numpy as np
 from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-from MPyDATA.options import Options
+# from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from .products.relative_humidity import RelativeHumidity
@@ -24,7 +24,6 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         super().__init__(particles, [])
 
         self.__rhod_of = rhod_of
-        self.mpdata_iters = mpdata_iters
 
         grid = particles.mesh.grid
         rhod = np.repeat(
@@ -35,12 +34,12 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             axis=0
         )
 
-        self.__GC, self.__eulerian_fields = MPDATAFactory.kinematic_2d(
+        self.__GC, self.__eulerian_fields = MPDATAFactory.stream_function_2d(
             grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
             g_factor=rhod,
-            opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
+            # opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
@@ -63,15 +62,18 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         return self.__eulerian_fields
 
     def __mpdata_step(self):
-        self.__eulerian_fields.step(n_iters=self.mpdata_iters)
+        self.__eulerian_fields.step(1)
 
     def step(self):
-        self.thread = Thread(target=self.__mpdata_step, args=())
-        self.thread.start()
+        # self.thread = Thread(target=self.__mpdata_step, args=())
+        # self.thread.start()
+        self.__mpdata_step()
+        pass
 
     def wait(self):
-        if self.thread is not None:
-            self.thread.join()
+        # if self.thread is not None:
+        #     self.thread.join()
+        pass
 
     def sync(self):
         self.wait()
@@ -80,8 +82,8 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def get_courant_field_data(self):
         result = [
             self.__GC.get_component(0) / self.__rhod_of(
-                x_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1]),
+                x_vec_coord(self.particles.mesh.grid)[1]),
             self.__GC.get_component(1) / self.__rhod_of(
-                z_vec_coord(self.particles.mesh.grid, self.particles.mesh.size)[1])
+                z_vec_coord(self.particles.mesh.grid)[1])
         ]
         return result

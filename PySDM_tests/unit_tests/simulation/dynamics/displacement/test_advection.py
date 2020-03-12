@@ -8,10 +8,10 @@ Created at 23.10.2019
 
 from PySDM.backends.default import Default
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
-from PySDM.simulation.dynamics.advection import Advection
+from PySDM.simulation.dynamics.displacement import Displacement
 from PySDM.simulation.state.state_factory import StateFactory
 import numpy as np
-from PySDM_tests.unit_tests.simulation.dynamics.advection.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.simulation.dynamics.displacement.dummy_environment import DummyEnvironment
 
 
 class TestExplicitEulerWithInterpolation:
@@ -19,7 +19,7 @@ class TestExplicitEulerWithInterpolation:
     def test_single_cell(self):
 
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -29,7 +29,7 @@ class TestExplicitEulerWithInterpolation:
         particles.state = StateFactory.state(n=n, intensive={}, extensive={},
                                              cell_id=cell_id, cell_origin=cell_origin, position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles)
+        sut = Displacement(particles=particles)
 
         # Act
         sut()
@@ -38,7 +38,7 @@ class TestExplicitEulerWithInterpolation:
         # TODO
 
     def test_advection(self):
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (3, 3)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -49,7 +49,7 @@ class TestExplicitEulerWithInterpolation:
         particles.state = StateFactory.state(n=n, intensive={}, extensive={},
                                              cell_id=cell_id, cell_origin=cell_origin, position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles)
+        sut = Displacement(particles=particles)
 
         sut()
 
@@ -57,7 +57,7 @@ class TestExplicitEulerWithInterpolation:
 
     def test_calculate_displacement(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -72,7 +72,7 @@ class TestExplicitEulerWithInterpolation:
                                              cell_id=cell_id, cell_origin=cell_origin,
                                              position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles, scheme='FTFS')
+        sut = Displacement(particles=particles, scheme='FTFS')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -83,7 +83,7 @@ class TestExplicitEulerWithInterpolation:
 
     def test_calculate_displacement_dim1(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         a = .1
         b = .2
@@ -98,7 +98,7 @@ class TestExplicitEulerWithInterpolation:
                                                 cell_id=cell_id, cell_origin=cell_origin,
                                                 position_in_cell=position_in_cell,
                                                 particles=particles)
-        sut = Advection(particles=particles, scheme='FTFS')
+        sut = Displacement(particles=particles, scheme='FTFS')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -109,7 +109,7 @@ class TestExplicitEulerWithInterpolation:
 
     def test_update_position(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -124,7 +124,7 @@ class TestExplicitEulerWithInterpolation:
                                              cell_id=cell_id, cell_origin=cell_origin,
                                              position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles)
+        sut = Displacement(particles=particles)
         sut.displacement[droplet_id, 0] = .1
         sut.displacement[droplet_id, 1] = .2
 
@@ -139,7 +139,7 @@ class TestExplicitEulerWithInterpolation:
 
     def test_update_cell_origin(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -152,7 +152,7 @@ class TestExplicitEulerWithInterpolation:
                                              cell_id=cell_id, cell_origin=cell_origin,
                                              position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles)
+        sut = Displacement(particles=particles)
         state = particles.state
         state.position_in_cell[droplet_id, 0] = 1.1
         state.position_in_cell[droplet_id, 1] = 1.2
@@ -168,7 +168,7 @@ class TestExplicitEulerWithInterpolation:
 
     def test_boundary_condition(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         grid = (1, 1)
         particles = DummyParticles(Default, n_sd=len(n))
         particles.set_mesh(grid)
@@ -180,7 +180,7 @@ class TestExplicitEulerWithInterpolation:
         particles.state = StateFactory.state(n=n, intensive={}, extensive={},
                                              cell_id=cell_id, cell_origin=cell_origin, position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Advection(particles=particles)
+        sut = Displacement(particles=particles)
         state = particles.state
         state.cell_origin[droplet_id, 0] = 1.1
         state.cell_origin[droplet_id, 1] = 1.2

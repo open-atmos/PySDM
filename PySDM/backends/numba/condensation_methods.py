@@ -30,7 +30,13 @@ class CondensationMethods:
 
             multiplier = 2
             thd_new_long = step_fake(args, dt / n_substeps)
+
+            counter = 0
             while True:
+                counter += 1
+                if counter > 100:
+                    raise RuntimeError("Cannot find solution!")
+
                 thd_new_short = step_fake(args, dt / (multiplier * n_substeps))
                 dthd_long = (thd_new_long - thd)
                 dthd_short = (thd_new_short - thd)

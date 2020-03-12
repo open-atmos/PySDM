@@ -18,7 +18,7 @@ class SpecialMethods:
     def remove_zeros(data, idx, length) -> int:
         new_length = 0
         for i in range(length):
-            if data[idx[i]] == 0:
+            if idx[i] == len(idx) or data[idx[i]] == 0:
                 idx[i] = len(idx)
             else:
                 new_length += 1
@@ -26,6 +26,7 @@ class SpecialMethods:
         return new_length
 
     @staticmethod
+    @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         for i in range(length):
             if cell_origin[i, -1] == 0 and position_in_cell[i, -1] < 0:

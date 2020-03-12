@@ -9,7 +9,8 @@ Created at 25.09.2019
 import time
 
 from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.dynamics.advection import Advection
+from PySDM.simulation.dynamics.displacement import Displacement
+from PySDM.simulation.terminal_velocity import TerminalVelocity
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
@@ -47,8 +48,8 @@ class Simulation:
         return self.particles.products
 
     def reinit(self):
-        self.tmp = None  # TODO!
         particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
+        particles_builder.set_terminal_velocity(TerminalVelocity)
         particles_builder.set_mesh(grid=self.setup.grid, size=self.setup.size)
         particles_builder.set_environment(MoistEulerian2DKinematic, {
             "stream_function": self.setup.stream_function,
@@ -85,7 +86,8 @@ class Simulation:
         # </TODO>
 
         if self.setup.processes["particle advection"]:
-            particles_builder.register_dynamic(Advection, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
+            particles_builder.register_dynamic(
+                Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
         if self.setup.processes["relaxation"]:

@@ -17,6 +17,7 @@ class TerminalVelocity:
 
     @property
     def values(self):
+        # TODO: check if needed
         self.compute()
         return self.__values
 

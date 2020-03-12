@@ -1,3 +1,4 @@
 [submodule "submodules/MPyDATA"]
 	path = submodules/MPyDATA
 	url = https://github.com/atmos-cloud-sim-uj/MPyDATA.git
+	branch = optimization

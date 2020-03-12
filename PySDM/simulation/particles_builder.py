@@ -29,6 +29,10 @@ class ParticlesBuilder:
     def __init__(self, n_sd, dt, backend, stats=None):
         self.particles = Particles(n_sd, dt, backend, stats)
 
+    def set_terminal_velocity(self, terminal_velocity_class):
+        assert_none(self.particles.terminal_velocity)
+        self.particles.terminal_velocity = terminal_velocity_class(self.particles)
+
     def set_mesh(self, grid, size):
         assert_none(self.particles.mesh)
         self.particles.mesh = Mesh(grid, size)

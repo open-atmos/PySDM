@@ -1,6 +1,6 @@
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
-from PySDM_tests.unit_tests.simulation.dynamics.advection.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.simulation.dynamics.displacement.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
@@ -70,7 +70,7 @@ class TestState:
 
     def test_recalculate_cell_id(self):
         # Arrange
-        n = np.ones(1)
+        n = np.ones(1, dtype=np.int64)
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         grid = (1, 1)

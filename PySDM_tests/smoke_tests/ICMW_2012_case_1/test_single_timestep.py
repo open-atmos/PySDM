@@ -25,9 +25,9 @@ class DummyStorage:
 
 def test_single_timestep():
     # Arrange
+    Setup.n_steps = 1
+    Setup.outfreq = 1
     setup = Setup()
-    setup.n_steps = 1
-    setup.outfreq = 1
     for key in setup.processes.keys():
         setup.processes[key] = True
     setup.processes["condensation"] = True
@@ -44,9 +44,9 @@ def test_single_timestep():
 
 def test_multi_timestep(plot=False):
     # Arrange
+    Setup.n_steps = 20
+    Setup.outfreq = 1
     setup = Setup()
-    setup.n_steps = 20
-    setup.outfreq = 1
 
     for key in setup.processes.keys():
         setup.processes[key] = False
@@ -70,7 +70,7 @@ def test_multi_timestep(plot=False):
 
     # Assert
     for step in range(len(storage.profiles)-1):
-        next = storage.profiles[step+1]["qv"]
+        next = storage.profiles[step+Setup.outfreq]["qv"]
         prev = storage.profiles[step]["qv"]
         eps = 1e-5
         assert ((prev + eps) >= next).all()

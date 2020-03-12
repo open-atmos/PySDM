@@ -176,10 +176,12 @@ def within_tolerance(error_estimate, value, rtol):
 def bisec(minfun, a, interval, args, rtol, n_substeps):
     b = a + interval
 
-    i = 0
+    counter = 0
     while minfun(a, *args) * minfun(b, *args) > 0:
-        i += 1
-        b = a + interval * 2**i
+        counter += 1
+        if counter > 100:
+            raise RuntimeError("Cannot find interval!")
+        b = a + interval * 2**counter
 
     if b < a:
         a, b = b, a
