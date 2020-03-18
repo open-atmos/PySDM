@@ -39,7 +39,7 @@ class SDM:
         kernel_temp = temp
         self.kernel(kernel_temp, is_first_in_pair)
         self.particles.max_pair(prob, is_first_in_pair)
-        self.particles.backend.multiply_in_place(prob, kernel_temp)
+        self.particles.backend.multiply(prob, kernel_temp)
 
         norm_factor = temp
         self.particles.normalize(prob, norm_factor)

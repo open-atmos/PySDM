@@ -57,16 +57,16 @@ class Displacement:
         if self.sedimentation:
             displacement_z = displacement[:, -1]
             dt_over_dz = self.particles.dt / self.particles.mesh.dz
-            self.particles.backend.multiply_in_place(displacement_z, 1/dt_over_dz)
+            self.particles.backend.multiply(displacement_z, 1 / dt_over_dz)
             self.particles.backend.subtract(displacement_z, self.particles.terminal_velocity.values)
-            self.particles.backend.multiply_in_place(displacement_z, dt_over_dz)
+            self.particles.backend.multiply(displacement_z, dt_over_dz)
 
     def update_position(self, position_in_cell, displacement):
         self.particles.backend.add(position_in_cell, displacement)
 
     def update_cell_origin(self, cell_origin, position_in_cell):
         floor_of_position = self.temp[:position_in_cell.shape[0]]
-        self.particles.backend.floor(floor_of_position, position_in_cell)
+        self.particles.backend.floor_out_of_place(floor_of_position, position_in_cell)
         self.particles.backend.add(cell_origin, floor_of_position)
         self.particles.backend.subtract(position_in_cell, floor_of_position)
 

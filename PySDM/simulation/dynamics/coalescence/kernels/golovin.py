@@ -17,7 +17,7 @@ class Golovin:
 
     def __call__(self, output, is_first_in_pair):
         self.particles.sum_pair(output, self.x, is_first_in_pair)
-        self.particles.backend.multiply_in_place(output, self.b)
+        self.particles.backend.multiply(output, self.b)
 
     def analytic_solution(self, x, t, x_0, N_0):
         tau = 1 - mpmath.exp(-N_0 * self.b * x_0 * t)

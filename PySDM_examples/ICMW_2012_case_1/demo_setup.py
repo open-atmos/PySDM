@@ -72,6 +72,7 @@ class DemoSetup(Setup):
         return 10**self.ui_condensation_rtol_thd.value
 
     ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
+    ui_ept = Checkbox(value=Setup.enable_particle_temperatures, description="    enable particle temperatures")
 
     @property
     def processes(self):
@@ -79,6 +80,10 @@ class DemoSetup(Setup):
         for checkbox in self.ui_processes:
             result[checkbox.description] = checkbox.value
         return result
+
+    @property
+    def enable_particle_temperatures(self):
+        return self.ui_ept.value
 
     ui_sdpg = IntSlider(value=Setup.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=1000)
 
@@ -124,7 +129,7 @@ class DemoSetup(Setup):
     def box(self):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
-            VBox([*self.ui_processes]),
+            VBox([*self.ui_processes, self.ui_ept]),
             VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_n_steps,
                   self.ui_condensation_rtol_lnv, self.ui_condensation_rtol_thd,
                   *self.ui_mpdata_options]),

@@ -43,7 +43,7 @@ class Pythran(Numba):
         return pythran_impl.sum(data_out, data_in)
 
     @staticmethod
-    def floor_in_place(row):
+    def floor(row):
         return pythran_impl.floor(row)
 
     @staticmethod
@@ -55,7 +55,7 @@ class Pythran(Numba):
         return pythran_impl.amax(row, idx, length)
 
     @staticmethod
-    def multiply_in_place(data, multiplier):
+    def multiply(data, multiplier):
         return pythran_impl.multiply(data, multiplier)
 
     @staticmethod
@@ -63,6 +63,6 @@ class Pythran(Numba):
         return pythran_impl.sum(data_out, data_in)
 
     @staticmethod
-    def first_element_is_zero(arr):
-        return pythran_impl.first_element_is_zero(arr)
+    def first_element_is_zero(array):
+        return pythran_impl.first_element_is_zero(array)
 

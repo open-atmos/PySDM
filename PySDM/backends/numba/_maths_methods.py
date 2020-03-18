@@ -18,61 +18,47 @@ class MathsMethods:
                  void(int64[:, :], int64[:, :]),
                  void(float64[:, :], int64[:, :])],
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
-    def add(data_out, data_in):
-        data_out[:] += data_in[:]
-
-    @staticmethod
-    @numba.njit([float64(float64[:], int64[:], int64),
-                 int64(int64[:], int64[:], int64)], **conf.JIT_FLAGS)
-    def amax(row, idx, length):
-        result = np.amax(row[idx[:length]])
-        return result
-
-    @staticmethod
-    @numba.njit([float64(float64[:], int64[:], int64),
-                 int64(int64[:], int64[:], int64)], **conf.JIT_FLAGS)
-    def amin(row, idx, length):
-        result = np.amin(row[idx[:length]])
-        return result
+    def add(output, addend):
+        output[:] += addend[:]
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def column_modulo(data, divisor):
+    def column_modulo(output, divisor):
         for d in range(len(divisor)):
-            for i in prange(data.shape[0]):
-                data[i, d] %= divisor[d]
+            for i in prange(output.shape[0]):
+                output[i, d] %= divisor[d]
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def floor(data_out, data_in):
-        data_out[:] = np.floor(data_in)
+    def floor_out_of_place(output, input_data):
+        output[:] = np.floor(input_data)
 
     @staticmethod
     @numba.njit(void(float64[:]), **conf.JIT_FLAGS)
-    def floor_in_place(row):
-        row[:] = np.floor(row)
+    def floor(output):
+        output[:] = np.floor(output)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def multiply(data_out, data_in, multiplier):
-        data_out[:] = data_in * multiplier
+    def multiply_out_of_place(output, multiplicand, multiplier):
+        output[:] = multiplicand * multiplier
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def multiply_in_place(data, multiplier):
-        data *= multiplier
+    def multiply(output, multiplier):
+        output *= multiplier
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def power(data, exponent):
-        data[:] = np.power(data, exponent)
+    def power(output, exponent):
+        output[:] = np.power(output, exponent)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def subtract(data_out, data_in):
-        data_out -= data_in
+    def subtract(output, subtrahend):
+        output -= subtrahend
 
     @staticmethod
     @numba.njit(void(float64[:]), **conf.JIT_FLAGS)
-    def urand(data):
-        data[:] = np.random.uniform(0, 1, data.shape)
+    def urand(output):
+        output[:] = np.random.uniform(0, 1, output.shape)

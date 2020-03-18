@@ -64,7 +64,7 @@ class State:
         """
         apply Fisher-Yates algorithm per cell
         """
-        self.__backend.shuffle_local(idx=self.__idx, length=self.SD_num, u01=u01, cell_start=self.cell_start)
+        self.__backend.shuffle_local(idx=self.__idx, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
         self.__backend.countsort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)

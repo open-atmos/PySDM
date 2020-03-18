@@ -12,14 +12,14 @@ import PySDM.backends.numba.conf
 import importlib
 from PySDM.backends.numba import numba as backend
 import PySDM.backends.numba._maths_methods
-import PySDM.backends.numba._special_methods
+import PySDM.backends.numba._algorithmic_methods
 import PySDM.backends.numba._storage_methods
 import PySDM.backends.numba._physics_methods
 
 
 def reload_backend():
     importlib.reload(PySDM.backends.numba._maths_methods)
-    importlib.reload(PySDM.backends.numba._special_methods)
+    importlib.reload(PySDM.backends.numba._algorithmic_methods)
     importlib.reload(PySDM.backends.numba._storage_methods)
     importlib.reload(PySDM.backends.numba._physics_methods)
     importlib.reload(backend)

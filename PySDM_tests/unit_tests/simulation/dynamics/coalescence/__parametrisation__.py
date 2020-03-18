@@ -31,7 +31,7 @@ def backend_fill(backend, array, value, odd_zeros=False):
         full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
 
     full_backend = backend.from_ndarray(full_ndarray)
-    backend.multiply_in_place(array, 0.)
+    backend.multiply(array, 0.)
     backend.add(array, full_backend)
 
 

@@ -26,5 +26,5 @@ class TerminalVelocity:
 
         backend = self.particles.backend
         volume = self.particles.state.get_backend_storage('volume')
-        backend.multiply(self.__values, volume, 3 / 4 / const.pi * k**(3/2))
+        backend.multiply_out_of_place(self.__values, volume, 3 / 4 / const.pi * k**(3/2))
         backend.power(self.__values, (2 / 3))
