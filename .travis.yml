@@ -45,7 +45,7 @@ script:
       python$PY_SFX -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do
          jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
-         jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis;
+         jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis || exit 1;
          # diff $i.md.repo $i.md.travis  # does not make sense with ipywidgets
       done;
   - |
