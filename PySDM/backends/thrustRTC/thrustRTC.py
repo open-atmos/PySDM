@@ -7,8 +7,8 @@ Created at 01.08.2019
 
 from ._storage_methods import StorageMethods
 from ._maths_methods import MathsMethods
-from ._special_methods import SpecialMethods
+from ._algorithmic_methods import AlgorithmicMethods
 
 
-class ThrustRTC(StorageMethods, MathsMethods, SpecialMethods):
+class ThrustRTC(StorageMethods, MathsMethods, AlgorithmicMethods):
     pass

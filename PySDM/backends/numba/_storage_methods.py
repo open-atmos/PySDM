@@ -49,7 +49,7 @@ class StorageMethods:
         return array[i, :]
 
     @staticmethod
-    def shape(data):
+    def shape(data):  # TODO: remove
         return data.shape
 
     @staticmethod

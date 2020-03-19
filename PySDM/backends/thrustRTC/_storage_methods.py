@@ -14,11 +14,6 @@ class StorageMethods:
     storage = trtc.DVVector.DVVector
 
     @staticmethod
-    def __equip(data, shape):
-        data.shape = shape
-        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
-
-    @staticmethod
     def array(shape, dtype):
         if dtype is float:
             elem_cls = 'double'
@@ -34,8 +29,8 @@ class StorageMethods:
         return data
 
     @staticmethod
-    def download(backend_data, np_target):
-        np_target[:] = backend_data.to_host()
+    def download(backend_data, numpy_target):
+        numpy_target[:] = backend_data.to_host()
 
     @staticmethod
     def dtype(data):
@@ -80,30 +75,27 @@ class StorageMethods:
         return result
 
     @staticmethod
-    def shape(data):
+    def shape(data):  # TODO: remove
         return data.shape
 
     @staticmethod
-    def shuffle(data, length, axis):
-        from PySDM.backends.numba.numba import Numba
-        host_arr = StorageMethods.to_ndarray(data)
-        Numba.shuffle_global(host_arr, length)
-        dvce_arr = StorageMethods.from_ndarray(host_arr)
-        trtc.Copy(dvce_arr, data)
-
-        # TODO: take as argument (temporary memory)
-        # idx = ThrustRTC.array((data.size(),), float)
-        #
-        # ThrustRTC.urand(idx)
-        #
-        # if axis == 0:
-        #     trtc.Sort_By_Key(idx.range(0, length), data.range(0, length))
-        # else:
-        #     raise NotImplementedError
+    # void(int64[:], int64, float64[:])
+    def shuffle_global(idx, length, u01):
+        raise NotImplementedError()
 
     @staticmethod
-    def stable_argsort(idx, keys, length):
-        raise NotImplementedError()
+    # void(int64[:], float64[:], int64[:])
+    def shuffle_local(idx, u01, cell_start):
+        # TODO
+        print("Numba import!")
+
+        from PySDM.backends.numba.numba import Numba
+        host_idx = StorageMethods.to_ndarray(idx)
+        host_u01 = StorageMethods.to_ndarray(u01)
+        host_cell_start = StorageMethods.to_ndarray(cell_start)
+        Numba.shuffle_local(host_idx, host_u01, host_cell_start)
+        device_idx = StorageMethods.from_ndarray(host_idx)
+        trtc.Copy(device_idx, idx)
 
     @staticmethod
     def to_ndarray(data):
@@ -122,8 +114,8 @@ class StorageMethods:
         return result
 
     @staticmethod
-    def upload(np_data, backend_target):
-        tmp = trtc.device_vector_from_numpy(np_data)
+    def upload(numpy_data, backend_target):
+        tmp = trtc.device_vector_from_numpy(numpy_data)
         trtc.Copy(tmp, backend_target)
 
     @staticmethod
@@ -133,4 +125,9 @@ class StorageMethods:
         stop = start + row_length
 
         trtc.Copy(row, array.range(start, stop))
+
+    @staticmethod
+    def __equip(data, shape):
+        data.shape = shape
+        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
 

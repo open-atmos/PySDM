@@ -154,8 +154,8 @@ class TestBackend:
         length = TestBackend.length(length, shape_1d)
 
         # Act
-        sut.countsort_by_cell_id(sut_idx, sut_data, length)
-        backend.countsort_by_cell_id(idx, data, length)
+        sut.counting_sort_by_cell_id(sut_idx, sut_data, length)
+        backend.counting_sort_by_cell_id(idx, data, length)
 
         # Assert
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))

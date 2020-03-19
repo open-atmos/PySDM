@@ -33,6 +33,13 @@ class AlgorithmicStepMethods:
         cell_id[:] = np.dot(strides, cell_origin.T)
 
     @staticmethod
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        for i in prange(length - 1):
+            data_out[i] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
+
+    @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
         for i in prange(sd_num - 1):
@@ -42,22 +49,15 @@ class AlgorithmicStepMethods:
             )
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
-        for i in prange(length - 1):
-            data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
-
-    @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
-        for i in prange(length - 1):
-            data_out[i] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
-
-    @staticmethod
     @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):
             data_out[i] = max(data_in[idx[i]], data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
+
+    @staticmethod
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        for i in prange(length - 1):
+            data_out[i] = (data_in[idx[i]] + data_in[idx[i + 1]]) if is_first_in_pair[i] else 0

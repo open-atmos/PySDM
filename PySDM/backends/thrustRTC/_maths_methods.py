@@ -13,35 +13,19 @@ from ._storage_methods import StorageMethods
 class MathsMethods:
 
     @staticmethod
-    def add(data_out, data_in):
-        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Plus())
+    def add(output, addend):
+        trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
     @staticmethod
-    def amax(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Max_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
-        return result
-
-    @staticmethod
-    def amin(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Min_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
-        return result
-
-    @staticmethod
-    def column_modulo(data, divisor):
+    def column_modulo(output, divisor):
         loop = trtc.For(['arr', 'divisor'], "i", f'''
                             for (int d=0; d<{divisor.size()}; d++)
                                 arr[d + i] = arr[d + i] % divisor[d];
                         ''')
-        loop.launch_n(data.shape[0], [data, divisor])
+        loop.launch_n(output.shape[0], [output, divisor])
 
     @staticmethod
-    def floor(data_out, data_in):
+    def floor_out_of_place(output, input_data):
         loop = trtc.For(['out', 'in'], "i", '''
                             if (in[i] >= 0) 
                                 out[i] = (long) in[i];
@@ -52,10 +36,10 @@ class MathsMethods:
                                     out[i] -= 1;
                             }
                         ''')
-        loop.launch_n(data_out.size(), [data_out, data_in])
+        loop.launch_n(output.size(), [output, input_data])
 
     @staticmethod
-    def floor_in_place(data):
+    def floor(output):
         loop = trtc.For(['arr'], "i", '''
                     if (arr[i] >= 0) 
                         arr[i] = (long) arr[i];
@@ -67,23 +51,41 @@ class MathsMethods:
                             arr[i] -= 1;
                     }
                 ''')
-        loop.launch_n(data.size(), [data])
+        loop.launch_n(output.size(), [output])
 
     @staticmethod
-    def multiply(data, multiplier):
+    def multiply_out_of_place(output, multiplicand, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
-            loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult[i];")
-            mult = multiplier
+            loop = trtc.For(['output', 'multiplicand', 'multiplier'], "i",
+                            "output[i] = multiplicand[i] * multiplier[i];")
+            device_multiplier = multiplier
         elif isinstance(multiplier, float):
-            loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult;")
-            mult = trtc.DVDouble(multiplier)
+            loop = trtc.For(['output', 'multiplicand', 'multiplier'], "i",
+                            "output[i] = multiplicand[i] * multiplier;")
+            device_multiplier = trtc.DVDouble(multiplier)
         else:
             raise NotImplementedError()
-        loop.launch_n(data.size(), [data, mult])
+        loop.launch_n(output.size(), [output, multiplicand, device_multiplier])
 
     @staticmethod
-    def subtract(data_out, data_in):
-        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Minus)
+    def multiply(output, multiplier):
+        if isinstance(multiplier, StorageMethods.storage):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier[i];")
+            device_multiplier = multiplier
+        elif isinstance(multiplier, float):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
+            device_multiplier = trtc.DVDouble(multiplier)
+        else:
+            raise NotImplementedError()
+        loop.launch_n(output.size(), [output, device_multiplier])
+
+    @staticmethod
+    def power(output, exponent):
+        raise NotImplementedError()
+
+    @staticmethod
+    def subtract(output, subtrahend):
+        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus)
 
     @staticmethod
     def urand(data):
@@ -101,5 +103,3 @@ class MathsMethods:
                        ''')
 
         ker.launch_n(data.size() // chunks, [rng, data])
-
-

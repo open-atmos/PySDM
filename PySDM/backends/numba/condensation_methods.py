@@ -1,3 +1,7 @@
+"""
+Created at 11.2019
+"""
+
 from PySDM.simulation.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.numba_helpers import \

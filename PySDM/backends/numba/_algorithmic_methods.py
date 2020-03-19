@@ -7,7 +7,7 @@ Created at 04.11.2019
 
 import numpy as np
 import numba
-from numba import void, float64, int64, boolean, prange
+from numba import void, float64, int64, prange
 from PySDM.backends.numba import conf
 
 
@@ -42,7 +42,6 @@ class AlgorithmicMethods:
             if g == 0:
                 continue
 
-            # note: extensive must be modified after intensive (as it is used as weights)
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
@@ -88,7 +87,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
-    def countsort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
+    def counting_sort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
         cell_end = cell_start
 
         cell_end[:] = 0
@@ -102,7 +101,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
-    def countsort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
+    def counting_sort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p
 
         thread_num = cell_end_thread.shape[0]

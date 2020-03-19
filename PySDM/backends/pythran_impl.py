@@ -88,7 +88,7 @@ def sum(data_out, data_in):
     data_out[:] = data_out + data_in
 
 
-# pythran export floor(float[])
+# pythran export loor(float[])
 def floor(row):
     row[:] = np.floor(row)
 

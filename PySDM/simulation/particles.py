@@ -30,7 +30,7 @@ class Particles:
 
         self.croupier = 'local'
         self.terminal_velocity = None
-        self.condensation_solver = self.backend.make_condensation_solver()
+        self.condensation_solver = self.backend.make_condensation_solver()  # TODO
 
     @property
     def n_sd(self) -> int:
