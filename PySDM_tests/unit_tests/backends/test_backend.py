@@ -8,31 +8,33 @@ Created at 31.07.2019
 import pytest
 import numpy as np
 
-from PySDM.backends.default import Default
-from PySDM.backends.numba.numba import Numba
-
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.backends.__parametrisation__ import shape_full, shape_1d, shape_2d, \
                                                dtype_full, dtype, \
                                                length, natural_length, \
                                                order
-
-backend = Default()
-backends = []  # TODO: add Pythran
-if False:  # TODO: check for TRAVIS env var
-    from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
-    backends.append(ThrustRTC())
+from PySDM_tests.unit_tests.backends.__parametrisation__ import backend, backends
 
 
 @pytest.mark.parametrize('sut', backends)
 class TestBackend:
     @staticmethod
-    def data(sut_backend, shape, dtype, seed=0):
-        np.random.seed(seed)
-        rand_ndarray = (100*np.random.rand(*shape)).astype(dtype)
+    def data(sut_backend, shape=None, dtype=None, value=None, seed=0, negative=False):
+        if value is None:
+            np.random.seed(seed)
+            factor = 100
+            rand_ndarray = (factor * np.random.rand(*shape)).astype(dtype)
 
-        result_sut = sut_backend.from_ndarray(rand_ndarray)
-        result_default = backend.from_ndarray(rand_ndarray)
+            if negative:
+                rand_ndarray = (rand_ndarray - factor / 2) * 2
+
+            result_sut = sut_backend.from_ndarray(rand_ndarray)
+            result_default = backend.from_ndarray(rand_ndarray)
+        elif shape is None and dtype is None:
+            result_sut = value
+            result_default = value
+        else:
+            raise ValueError()
 
         return result_sut, result_default
 
@@ -214,23 +216,6 @@ class TestBackend:
         assert actual == expected
 
     @staticmethod
-    def test_urand(sut, shape_1d):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, 'asc')
-        length = shape_1d[0]
-
-        # Act
-        sut.urand(sut_data)
-        backend.urand(data)
-
-        # Assert
-        assert sut.shape(sut_data) == backend.shape(data)
-        assert sut.dtype(sut_data) == backend.dtype(data)
-        assert sut.amin(sut_data, sut_idx, length) >= 0
-        assert sut.amax(sut_data, sut_idx, length) <= 1
-
-    @staticmethod
     @pytest.mark.parametrize('data_ndarray', [
         np.array([0] * 87),
         np.array([1, 0, 1, 0, 1, 1, 1, 1]),
@@ -321,59 +306,6 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
         np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
-
-    @staticmethod
-    @pytest.mark.parametrize('multiplier', [0., 1., 87., -5., .7, -.44])
-    def test_multiply_scalar(sut, shape_1d, multiplier):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-
-        # Act
-        sut.multiply(sut_data, multiplier)
-        backend.multiply(data, multiplier)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-
-    @staticmethod
-    def test_multiply_elementwise(sut, shape_1d):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_multiplier, multiplier = TestBackend.data(sut, shape_1d, float, seed=1)
-
-        # Act
-        sut.multiply(sut_data, sut_multiplier)
-        backend.multiply(data, multiplier)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_multiplier), backend.to_ndarray(multiplier))
-
-    @staticmethod
-    def test_sum(sut, shape_1d):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_data_in, data_in = TestBackend.data(sut, shape_1d, float)
-
-        # Act
-        sut.add(sut_data, sut_data_in)
-        backend.add(data, data_in)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-
-    @staticmethod
-    # TODO data<0
-    def test_floor(sut, shape_1d):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-
-        # Act
-        sut.floor(sut_data)
-        backend.floor(data)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
 
     @staticmethod
     def test_to_ndarray(sut, shape_full, dtype):

@@ -6,13 +6,13 @@ Created at 24.07.2019
 """
 
 import numba
-from PySDM.backends.numba._methods import Methods
-from PySDM.backends.numba._algorithmic_methods import AlgorithmicMethods
-from PySDM.backends.numba._algorithmic_step_methods import AlgorithmicStepMethods
-from PySDM.backends.numba._storage_methods import StorageMethods
-from PySDM.backends.numba._maths_methods import MathsMethods
-from PySDM.backends.numba._physics_methods import PhysicsMethods
-from PySDM.backends.numba.condensation_methods import CondensationMethods
+from ._methods import Methods
+from ._algorithmic_methods import AlgorithmicMethods
+from ._algorithmic_step_methods import AlgorithmicStepMethods
+from ._storage_methods import StorageMethods
+from ._maths_methods import MathsMethods
+from ._physics_methods import PhysicsMethods
+from.condensation_methods import CondensationMethods
 
 
 class Numba(

@@ -18,25 +18,12 @@ class MathsMethods:
 
     @staticmethod
     def column_modulo(output, divisor):
-        loop = trtc.For(['arr', 'divisor'], "i", f'''
-                            for (int d=0; d<{divisor.size()}; d++)
-                                arr[d + i] = arr[d + i] % divisor[d];
+        loop = trtc.For(['output', 'divisor', 'col_num'], "i", '''
+                            int d = i % col_num;
+                            output[i] %= divisor[d];
                         ''')
-        loop.launch_n(output.shape[0], [output, divisor])
-
-    @staticmethod
-    def floor_out_of_place(output, input_data):
-        loop = trtc.For(['out', 'in'], "i", '''
-                            if (in[i] >= 0) 
-                                out[i] = (long) in[i];
-                            else
-                            {
-                                out[i] = (long) in[i];
-                                if (in != out[i])
-                                    out[i] -= 1;
-                            }
-                        ''')
-        loop.launch_n(output.size(), [output, input_data])
+        col_num = trtc.DVInt64(divisor.size())
+        loop.launch_n(output.size(), [output, divisor, col_num])
 
     @staticmethod
     def floor(output):
@@ -54,6 +41,35 @@ class MathsMethods:
         loop.launch_n(output.size(), [output])
 
     @staticmethod
+    def floor_out_of_place(output, input_data):
+        loop = trtc.For(['output', 'input_data'], "i", '''
+                            if (input_data[i] >= 0) 
+                                output[i] = (long) input_data[i];
+                            else
+                            {
+                                output[i] = (long) input_data[i];
+                                if (input_data[i] != output[i])
+                                    output[i] -= 1;
+                            }
+                        ''')
+        loop.launch_n(output.size(), [output, input_data])
+
+    @staticmethod
+    def multiply(output, multiplier):
+        if isinstance(multiplier, StorageMethods.storage):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier[i];")
+            device_multiplier = multiplier
+        elif isinstance(multiplier, float):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
+            device_multiplier = trtc.DVDouble(multiplier)
+        elif isinstance(multiplier, int):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
+            device_multiplier = trtc.DVInt64(multiplier)
+        else:
+            raise NotImplementedError()
+        loop.launch_n(output.size(), [output, device_multiplier])
+
+    @staticmethod
     def multiply_out_of_place(output, multiplicand, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
             loop = trtc.For(['output', 'multiplicand', 'multiplier'], "i",
@@ -68,24 +84,24 @@ class MathsMethods:
         loop.launch_n(output.size(), [output, multiplicand, device_multiplier])
 
     @staticmethod
-    def multiply(output, multiplier):
-        if isinstance(multiplier, StorageMethods.storage):
-            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier[i];")
-            device_multiplier = multiplier
-        elif isinstance(multiplier, float):
-            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
-            device_multiplier = trtc.DVDouble(multiplier)
+    def power(output, exponent):
+        if isinstance(exponent, float):
+            if exponent == 1.:
+                return
+            loop = trtc.For(['output', 'exponent'], "i", "output[i] = pow(output[i], exponent);")
+            device_multiplier = trtc.DVDouble(exponent)
+        elif isinstance(exponent, int):
+            if exponent == 1:
+                return
+            loop = trtc.For(['output', 'exponent'], "i", "output[i] = pow(output[i], exponent);")
+            device_multiplier = trtc.DVDouble(exponent)
         else:
             raise NotImplementedError()
         loop.launch_n(output.size(), [output, device_multiplier])
 
     @staticmethod
-    def power(output, exponent):
-        raise NotImplementedError()
-
-    @staticmethod
     def subtract(output, subtrahend):
-        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus)
+        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
 
     @staticmethod
     def urand(data):

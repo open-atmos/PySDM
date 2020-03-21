@@ -6,6 +6,55 @@ Created at 03.08.2019
 """
 
 import pytest
+from PySDM.backends.default import Default
+
+backend = Default()
+backends = []  # TODO: add Pythran
+if True:  # TODO: check for TRAVIS env var
+    from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
+
+    backends.append(ThrustRTC())
+
+'''
+ number parametrisation: number_float, number_int, number
+'''
+
+__number__ = {'f_zero': pytest.param(0.),
+              'f_one': pytest.param(1.),
+              'f_big_positive': pytest.param(100087.),
+              'f_small_positive': pytest.param(.00697),
+              'f_big_negative_frac': pytest.param(-100005.5723),
+              'f_small_negative': pytest.param(-.0051),
+              'i_one': pytest.param(1),
+              'i_big_positive': pytest.param(100063),
+              'i_big_negative': pytest.param(-200039)
+              }
+
+
+@pytest.fixture(params=[
+    __number__['f_zero'],
+    __number__['f_one'],
+    __number__['f_big_positive'],
+    __number__['f_small_positive'],
+    __number__['f_big_negative_frac'],
+    __number__['f_small_negative']
+])
+def number_float(request):
+    return request.param
+
+
+@pytest.fixture(params=[
+    __number__['i_one'],
+    __number__['i_big_positive'],
+    __number__['i_big_negative']
+])
+def number_int(request):
+    return request.param
+
+
+@pytest.fixture(params=[*__number__.values()])
+def number(request):
+    return request.param
 
 
 '''
@@ -78,6 +127,14 @@ def dtype_full(request):
     __dtype__['int']
 ])
 def dtype(request):
+    return request.param
+
+
+@pytest.fixture(params=[
+    __dtype__['float'],
+    __dtype__['int']
+])
+def dtype_mixed(request):
     return request.param
 
 
