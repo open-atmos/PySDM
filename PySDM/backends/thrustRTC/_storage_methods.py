@@ -17,31 +17,22 @@ class StorageMethods:
     def array(shape, dtype):
         if dtype is float:
             elem_cls = 'double'
+            elem_dtype = np.float64
         elif dtype is int:
             elem_cls = 'int64_t'
+            elem_dtype = np.int64
         else:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
         # TODO: trtc.Fill(data, trtc.DVConstant(np.nan))
 
-        StorageMethods.__equip(data, shape)
+        StorageMethods.__equip(data, shape, elem_dtype)
         return data
 
     @staticmethod
     def download(backend_data, numpy_target):
-        numpy_target[:] = backend_data.to_host()
-
-    @staticmethod
-    def dtype(data):
-        elem_cls = data.name_elem_cls()
-        if elem_cls == 'int64_t':
-            nptype = np.int64
-        elif elem_cls == 'double':
-            nptype = np.float64
-        else:
-            raise NotImplemented()
-        return nptype
+        numpy_target[:] = np.reshape(backend_data.to_host(), backend_data.shape)
 
     @staticmethod
     def from_ndarray(array):
@@ -61,7 +52,7 @@ class StorageMethods:
 
         result = trtc.device_vector_from_numpy(array)
 
-        StorageMethods.__equip(result, shape)
+        StorageMethods.__equip(result, shape, dtype)
         return result
 
     @staticmethod
@@ -71,17 +62,14 @@ class StorageMethods:
         stop = start + row_length
 
         result = array.range(start, stop)
-        StorageMethods.__equip(result, shape=(row_length,))
+        StorageMethods.__equip(result, shape=(row_length,), dtype=array.dtype)
         return result
-
-    @staticmethod
-    def shape(data):  # TODO: remove
-        return data.shape
 
     @staticmethod
     # void(int64[:], int64, float64[:])
     def shuffle_global(idx, length, u01):
-        raise NotImplementedError()
+        pass
+        # raise NotImplementedError()
 
     @staticmethod
     # void(int64[:], float64[:], int64[:])
@@ -115,8 +103,8 @@ class StorageMethods:
 
     @staticmethod
     def upload(numpy_data, backend_target):
-        tmp = trtc.device_vector_from_numpy(numpy_data)
-        trtc.Copy(tmp, backend_target)
+        tmp = trtc.device_vector_from_numpy(numpy_data.flatten())
+        trtc.Swap(tmp, backend_target)
 
     @staticmethod
     def write_row(array, i, row):
@@ -127,7 +115,8 @@ class StorageMethods:
         trtc.Copy(row, array.range(start, stop))
 
     @staticmethod
-    def __equip(data, shape):
+    def __equip(data, shape, dtype):
         data.shape = shape
+        data.dtype = dtype
         data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
 

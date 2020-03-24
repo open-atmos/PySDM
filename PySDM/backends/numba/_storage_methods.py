@@ -29,10 +29,6 @@ class StorageMethods:
         np.copyto(numpy_target, backend_data, casting='safe')
 
     @staticmethod
-    def dtype(data):
-        return data.dtype
-
-    @staticmethod
     def from_ndarray(array):
         if str(array.dtype).startswith('int'):
             dtype = np.int64
@@ -47,10 +43,6 @@ class StorageMethods:
     @staticmethod
     def read_row(array, i):
         return array[i, :]
-
-    @staticmethod
-    def shape(data):  # TODO: remove
-        return data.shape
 
     @staticmethod
     @numba.njit(void(int64[:], int64, float64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})

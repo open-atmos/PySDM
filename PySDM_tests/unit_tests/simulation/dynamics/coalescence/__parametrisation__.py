@@ -23,12 +23,12 @@ def backend_fill(backend, array, value, odd_zeros=False):
         if isinstance(value, np.ndarray):
             full_ndarray = insert_zeros(value).astype(np.float64)
         else:
-            full_ndarray = np.full(backend.shape(array)[0] // 2, value).astype(np.float64)
+            full_ndarray = np.full(array.shape[0] // 2, value).astype(np.float64)
             full_ndarray = insert_zeros(full_ndarray)
-            if backend.shape(array)[0] % 2 != 0:
+            if array.shape[0] % 2 != 0:
                 full_ndarray = np.concatenate((full_ndarray, np.zeros(1)))
     else:
-        full_ndarray = np.full(backend.shape(array), value).astype(np.float64)
+        full_ndarray = np.full(array.shape, value).astype(np.float64)
 
     full_backend = backend.from_ndarray(full_ndarray)
     backend.multiply(array, 0.)

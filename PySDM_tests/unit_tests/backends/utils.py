@@ -1,0 +1,110 @@
+"""
+Created at 21.03.2020
+
+@author: Piotr Bartman
+@author: Sylwester Arabas
+"""
+
+import numpy as np
+import warnings
+from .__parametrisation__ import backend
+
+
+def universal_test(method_name, sut, params):
+    # Arrange
+    default_params = {}
+    sut_params = {}
+    for param in params:
+        if param['name'] == 'idx':
+            generate_param = generate_idx
+        elif param['name'] == 'length':
+            generate_param = generate_length
+        else:
+            generate_param = generate_data
+        sut_params[param['name']], default_params[param['name']] = generate_param(sut, **param['details'])
+    default_method = getattr(backend, method_name)
+    sut_method = getattr(sut, method_name)
+
+    # Act
+    default_result = default_method(**default_params)
+    sut_result = sut_method(**sut_params)
+
+    # Assert
+    for param in params:
+        if 'value' in param['details'].keys() or param['name'] == 'length':
+            assert sut_params[param['name']] == default_params[param['name']]
+        else:
+            try:
+                np.testing.assert_array_equal(
+                    sut.to_ndarray(sut_params[param['name']]),
+                    backend.to_ndarray(default_params[param['name']])
+                )
+            except AssertionError:
+                precision = 15
+                warnings.warn(f"Fail with high precision, try with {precision} digit precision...")
+                np.testing.assert_almost_equal(
+                    sut.to_ndarray(sut_params[param['name']]),
+                    backend.to_ndarray(default_params[param['name']]), decimal=precision)
+    if default_result is None:
+        assert sut_result is None
+    else:
+        np.testing.assert_array_equal(sut.to_ndarray(sut_result), backend.to_ndarray(default_result))
+
+
+def generate_data(sut_backend, shape=None, dtype=None, value=None, seed=0, negative=False, factor=100):
+    if value is None:
+        np.random.seed(seed)
+        rand_ndarray = (factor * np.random.rand(*shape)).astype(dtype)
+
+        if negative:
+            rand_ndarray = (rand_ndarray - factor / 2) * 2
+
+        result_sut = sut_backend.from_ndarray(rand_ndarray)
+        result_default = backend.from_ndarray(rand_ndarray)
+    elif shape is None and dtype is None:
+        result_sut = value
+        result_default = value
+    else:
+        raise ValueError()
+
+    return result_sut, result_default
+
+
+def idx_length(shape):
+    if len(shape) >= 2:
+        result = shape[1]
+    else:
+        result = shape[0]
+
+    return result
+
+
+def generate_idx(sut_backend, shape, order='asc', seed=0):
+    np.random.seed(seed)
+
+    idx_len = idx_length(shape)
+
+    idx_ndarray = np.arange(idx_len)
+
+    if order == 'desc':
+        idx_ndarray = idx_ndarray[::-1]
+    elif order == 'random':
+        np.random.permutation(idx_ndarray)
+
+    result_sut = sut_backend.from_ndarray(idx_ndarray)
+    result_default = backend.from_ndarray(idx_ndarray)
+
+    return result_sut, result_default
+
+
+def generate_length(_sut_backend, length, shape):
+    idx_len = idx_length(shape)
+    print(length)
+
+    if length == 'zero':
+        result = 0
+    elif length == 'middle':
+        result = (idx_len + 1) // 2
+    elif length == 'full':
+        result = idx_len
+    return result, result

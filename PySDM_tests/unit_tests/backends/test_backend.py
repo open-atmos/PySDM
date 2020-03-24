@@ -18,63 +18,6 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import backend, backend
 
 @pytest.mark.parametrize('sut', backends)
 class TestBackend:
-    @staticmethod
-    def data(sut_backend, shape=None, dtype=None, value=None, seed=0, negative=False):
-        if value is None:
-            np.random.seed(seed)
-            factor = 100
-            rand_ndarray = (factor * np.random.rand(*shape)).astype(dtype)
-
-            if negative:
-                rand_ndarray = (rand_ndarray - factor / 2) * 2
-
-            result_sut = sut_backend.from_ndarray(rand_ndarray)
-            result_default = backend.from_ndarray(rand_ndarray)
-        elif shape is None and dtype is None:
-            result_sut = value
-            result_default = value
-        else:
-            raise ValueError()
-
-        return result_sut, result_default
-
-    @staticmethod
-    def idx_length(shape):
-        if len(shape) >= 2:
-            result = shape[1]
-        else:
-            result = shape[0]
-
-        return result
-
-    @staticmethod
-    def idx(sut_backend, shape, order, seed=0):
-        np.random.seed(seed)
-
-        idx_len = TestBackend.idx_length(shape)
-
-        idx_ndarray = np.arange(idx_len)
-
-        if order == 'desc':
-            idx_ndarray = idx_ndarray[::-1]
-        elif order == 'random':
-            np.random.permutation(idx_ndarray)
-
-        result_sut = sut_backend.from_ndarray(idx_ndarray)
-        result_default = backend.from_ndarray(idx_ndarray)
-
-        return result_sut, result_default
-
-    @staticmethod
-    def length(length, shape):
-        idx_len = TestBackend.idx_length(shape)
-
-        if length == 'zero':
-            return 0
-        elif length == 'middle':
-            return (idx_len + 1) // 2
-        elif length == 'full':
-            return idx_len
 
     @staticmethod
     def is_first_in_pair(sut_backend, length, seed=0):
@@ -92,60 +35,6 @@ class TestBackend:
         backend_is_first_in_pair = backend.from_ndarray(is_first_in_pair)
 
         return sut_is_first_in_pair, backend_is_first_in_pair
-
-    @staticmethod
-    def test_array(sut, dtype_full, shape_full):
-        try:
-            # Act
-            actual = sut.array(shape_full, dtype_full)
-            expected = backend.array(shape_full, dtype_full)
-
-            # Assert
-            assert sut.shape(actual) == backend.shape(expected)
-            assert sut.dtype(actual) == backend.dtype(expected)
-        except NotImplementedError:
-            if dtype_full in (float, int):
-                assert False
-
-    @staticmethod
-    def test_from_ndarray(sut, dtype_full, shape_full):
-        # Arrange
-        ndarray = np.empty(shape=shape_full, dtype=dtype_full)
-
-        try:
-            # Act
-            actual = sut.from_ndarray(ndarray)
-            expected = backend.from_ndarray(ndarray)
-
-            # Assert
-            np.testing.assert_array_equal(sut.to_ndarray(actual), backend.to_ndarray(expected))
-        except NotImplementedError:
-            if dtype_full in (float, int):
-                assert False
-
-    # TODO test_write_row()
-
-    # TODO test_read_row()
-
-    # TODO idx as input
-    @staticmethod
-    def test_shuffle(sut, shape_1d, natural_length):
-        # Arrange
-        axis = 0
-        sut_data, data = TestBackend.data(sut, shape_1d, int)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, 'asc')
-        length = TestBackend.length(natural_length, shape_1d)
-        u01 = np.random.uniform(0, 1, shape_1d)
-
-        # Act
-        sut.shuffle_global(sut_idx, length, u01)
-        backend.shuffle_global(idx, length, u01)
-
-        # Assert
-        sut_data_original, data_original = TestBackend.data(sut, shape_1d, int)
-        assert sut.shape(sut_data) == backend.shape(data)
-        assert sut.amin(sut_data, sut_idx, length) == sut.amin(sut_data_original, sut_idx, length)
-        assert sut.amax(sut_data, sut_idx, length) == sut.amax(sut_data_original, sut_idx, length)
 
     @staticmethod
     @pytest.mark.xfail
@@ -187,30 +76,6 @@ class TestBackend:
         # Act
         actual = sut.amax(sut_data, sut_idx, length)
         expected = backend.amax(data, idx, length)
-
-        # Assert
-        assert actual == expected
-
-    @staticmethod
-    def test_shape(sut, shape_full, dtype):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_full, dtype)
-
-        # Act
-        actual = sut.shape(sut_data)
-        expected = backend.shape(data)
-
-        # Assert
-        assert actual == expected
-
-    @staticmethod
-    def test_dtype(sut, shape_full, dtype):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_full, dtype)
-
-        # Act
-        actual = sut.dtype(sut_data)
-        expected = backend.dtype(data)
 
         # Assert
         assert actual == expected
@@ -306,15 +171,3 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
         np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
-
-    @staticmethod
-    def test_to_ndarray(sut, shape_full, dtype):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_full, dtype)
-
-        # Act
-        actual = sut.to_ndarray(sut_data)
-        expected = backend.to_ndarray(data)
-
-        # Assert
-        np.testing.assert_array_equal(actual, expected)

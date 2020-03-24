@@ -6,14 +6,15 @@ Created at 03.08.2019
 """
 
 import pytest
+
 from PySDM.backends.default import Default
 
 backend = Default()
 backends = []  # TODO: add Pythran
 if True:  # TODO: check for TRAVIS env var
     from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
-
     backends.append(ThrustRTC())
+
 
 '''
  number parametrisation: number_float, number_int, number
