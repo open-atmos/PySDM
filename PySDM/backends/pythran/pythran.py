@@ -10,7 +10,8 @@ from PySDM.backends.numba.numba import Numba
 # import os
 # os.environ['OMP_NUM_THREADS'] = '8'
 #%%
-from PySDM.backends import pythran_impl
+from PySDM.backends.pythran import pythran_impl
+
 if not hasattr(pythran_impl, '__pythran__'):
     # TODO: use fluentPythran
     import subprocess, importlib, os

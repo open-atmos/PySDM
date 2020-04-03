@@ -168,13 +168,15 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def remove_zeros(data, idx, length) -> int:
-        new_length = 0
-        for i in range(length):
+        new_length = length
+        i = 0
+        while i < new_length:
             if idx[i] == len(idx) or data[idx[i]] == 0:
-                idx[i] = len(idx)
+                new_length -= 1
+                idx[i] = idx[new_length]
+                idx[new_length] = len(idx)
             else:
-                new_length += 1
-        idx[:length].sort()
+                i += 1
         return new_length
 
     @staticmethod
