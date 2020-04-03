@@ -30,7 +30,7 @@ class Displacement:
         self.sedimentation = sedimentation
 
         self.dimension = len(courant_field)
-        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]])
+        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64)
 
         self.courant = [self.particles.backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
 

@@ -35,7 +35,7 @@ class MathsMethods:
         output[:] = np.floor(output)
 
     @staticmethod
-    @numba.njit(void(float64[:, :], float64[:, :]), **conf.JIT_FLAGS)
+    @numba.njit(void(int64[:, :], float64[:, :]), **conf.JIT_FLAGS)
     def floor_out_of_place(output, input_data):
         output[:] = np.floor(input_data)
 
