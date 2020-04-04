@@ -6,17 +6,16 @@ import pytest
 
 
 # TODO: run for different atol, rtol, dt_max
-@pytest.mark.parametrize("scheme", ['default', 'BDF'])
-@pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
+@pytest.mark.parametrize("scheme", ['default',  'BDF'])
+@pytest.mark.parametrize("coord", ['volume logarithm']) # , 'volume'])
 #@pytest.mark.parametrize("enable_particle_temperatures", [False, True])
-def test_just_do_it(scheme, coord): #, enable_particle_temperatures):
-    # Arrange
-    Setup.total_time = 15 * si.minute
-    setup = Setup()
+def test_just_do_it(scheme, coord): #, enable_particle_temperatures):    # Arrange
+    # Setup.total_time = 15 * si.minute
+    setup = Setup(dt_output = 10 * si.second)
     setup.coord = coord
     #setup.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
-        setup.dt_max = setup.total_time
+        setup.dt_max = setup.dt_output
 
     simulation = Simulation(setup)
     if scheme == 'BDF':
@@ -27,3 +26,4 @@ def test_just_do_it(scheme, coord): #, enable_particle_temperatures):
 
     # Assert
     # TODO!
+
