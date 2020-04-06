@@ -15,8 +15,8 @@ import numpy as np
 
 
 class Setup:
-    def __init__(self, n_sd=100):
-        self.n_steps = int(self.total_time / si.second)  # TODO: rename to n_output
+    def __init__(self, n_sd=100, dt_output = 1 * si.second, dt_max=1 * si.second):
+        self.n_steps = int(self.total_time / (5 * si.second) )  # TODO: rename to n_output
         self.n_sd = n_sd
         self.r_dry, self.n = spectral_sampling.logarithmic(
             n_sd=n_sd,
@@ -28,12 +28,12 @@ class Setup:
             range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         )
         self.n = discretise_n(self.n)
-
+        self.dt_output = dt_output
+        self.dt_max = dt_max
     backend = Default
     coord = 'volume logarithm'
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
-    dt_max = 1 * si.second
 
     mass_of_dry_air = 100 * si.kilogram
     total_time = 3 * si.hours
