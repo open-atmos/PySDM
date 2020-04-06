@@ -20,39 +20,6 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import backend, backend
 class TestBackend:
 
     @staticmethod
-    def is_first_in_pair(sut_backend, length, seed=0):
-        np.random.seed(seed)
-
-        is_first_in_pair = np.random.randint(2, size=length)
-        pair = False
-        for i in range(length):
-            if pair:
-                is_first_in_pair[i] = 0
-                pair = False
-            elif is_first_in_pair[i] == 1:
-                pair = True
-        sut_is_first_in_pair = sut_backend.from_ndarray(is_first_in_pair)
-        backend_is_first_in_pair = backend.from_ndarray(is_first_in_pair)
-
-        return sut_is_first_in_pair, backend_is_first_in_pair
-
-    @staticmethod
-    @pytest.mark.xfail
-    def test_stable_argsort(sut, shape_1d, length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, int)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(length, shape_1d)
-
-        # Act
-        sut.counting_sort_by_cell_id(sut_idx, sut_data, length)
-        backend.counting_sort_by_cell_id(idx, data, length)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
-
-    @staticmethod
     @pytest.mark.parametrize('data_ndarray', [
         np.array([0] * 87),
         np.array([1, 0, 1, 0, 1, 1, 1, 1]),

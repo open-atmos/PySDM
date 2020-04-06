@@ -121,7 +121,7 @@ def generate_is_first_in_pair(_sut_backend, shape, pairs='random', seed=0):
     if pairs == 'none':
         is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
     elif pairs == 'random':
-        is_first_in_pair = np.random.random_integers(0, 2, idx_len)
+        is_first_in_pair = np.random.random_integers(1, size=idx_len)
         for i in range(idx_len-1):
             if is_first_in_pair[i] == 1:
                 is_first_in_pair[i + 1] = 0

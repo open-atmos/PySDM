@@ -13,8 +13,8 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import \
     natural_length, length, \
     order, pairs, \
     dtype_full, dtype, dtype_mixed
-from PySDM_tests.unit_tests.backends.__parametrisation__ import backend, backends
-from .utils import universal_test, generate_data, generate_idx
+from PySDM_tests.unit_tests.backends.__parametrisation__ import backends
+from .utils import universal_test
 
 
 @pytest.mark.parametrize('sut', backends)
@@ -44,7 +44,7 @@ class TestAlgorithmicStepMethods:
         universal_test("cell_id", sut, params)
 
     @staticmethod
-    def test_distance_pair(sut, shape_1d, pairs, order, length):
+    def pair_params(shape_1d, pairs, order, length):
         params = [{'name': "data_out",
                    'details': {'shape': shape_1d, 'dtype': float}},
                   {'name': "data_in",
@@ -56,4 +56,25 @@ class TestAlgorithmicStepMethods:
                   {'name': "length",
                    'details': {'shape': shape_1d, 'length': length}}
                   ]
+        return params
+
+    @staticmethod
+    def test_distance_pair(sut, shape_1d, pairs, order, length):
+        params = TestAlgorithmicStepMethods.pair_params(shape_1d, pairs, order, length)
         universal_test("distance_pair", sut, params)
+
+    @staticmethod
+    def test_find_pairs(sut):
+        assert False
+
+    @staticmethod
+    def test_max_pair(sut, shape_1d, pairs, length, order):
+        params = TestAlgorithmicStepMethods.pair_params(shape_1d, pairs, order, length)
+        params[1]['details']['dtype'] = int
+        universal_test("max_pair", sut, params)
+
+    @staticmethod
+    def test_sum_pair(sut, shape_1d, pairs, length, order):
+        params = TestAlgorithmicStepMethods.pair_params(shape_1d, pairs, order, length)
+        universal_test("sum_pair", sut, params)
+
