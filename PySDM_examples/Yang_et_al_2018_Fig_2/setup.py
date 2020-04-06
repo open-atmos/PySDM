@@ -32,6 +32,7 @@ class Setup:
         self.dt_max = dt_max
     backend = Default
     coord = 'volume logarithm'
+    adaptive = True
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
 

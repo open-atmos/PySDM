@@ -74,7 +74,7 @@ class Simulation:
         )
 
         # <TODO> ?
-        particles_builder.set_condensation_coord(self.setup.condensation_coord)
+        particles_builder.set_condensation_parameters(self.setup.condensation_coord)
         particles_builder.register_dynamic(Condensation, {
             "kappa": self.setup.kappa,
             "rtol_x": self.setup.condensation_rtol_x,
