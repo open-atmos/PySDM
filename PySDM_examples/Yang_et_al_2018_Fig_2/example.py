@@ -26,6 +26,7 @@ class Simulation:
             self.n_substeps += 1
 
         particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
+        particles_builder.set_condensation_parameters(setup.coord, setup.adaptive)
         particles_builder.set_mesh_0d()
         particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,

@@ -10,7 +10,7 @@ import numpy as np
 
 class CondensationMethods:
     @staticmethod
-    def make_condensation_solver(coord='volume_logarithm'):
+    def make_condensation_solver(coord='volume_logarithm', adaptive=True):
         if coord == 'volume':
             coord = coord_volume
         else:
@@ -41,7 +41,7 @@ class CondensationMethods:
                 dthd_long = (thd_new_long - thd)
                 dthd_short = (thd_new_short - thd)
                 error_estimate = np.abs(dthd_long - multiplier * dthd_short)
-                if within_tolerance(error_estimate, thd, rtol_thd):
+                if not adaptive or within_tolerance(error_estimate, thd, rtol_thd):
                     break
                 n_substeps *= multiplier
                 thd_new_long = thd_new_short
