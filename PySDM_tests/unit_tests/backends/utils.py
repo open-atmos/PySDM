@@ -19,6 +19,8 @@ def universal_test(method_name, sut, params):
             generate_param = generate_idx
         elif param['name'] == 'length':
             generate_param = generate_length
+        elif param['name'] == 'is_first_in_pair':
+            generate_param = generate_is_first_in_pair
         else:
             generate_param = generate_data
         sut_params[param['name']], default_params[param['name']] = generate_param(sut, **param['details'])
@@ -47,6 +49,8 @@ def universal_test(method_name, sut, params):
                     backend.to_ndarray(default_params[param['name']]), decimal=precision)
     if default_result is None:
         assert sut_result is None
+    elif isinstance(default_result, (int, float, bool)):
+        assert sut_result == default_result
     else:
         np.testing.assert_array_equal(sut.to_ndarray(sut_result), backend.to_ndarray(default_result))
 
@@ -99,7 +103,6 @@ def generate_idx(sut_backend, shape, order='asc', seed=0):
 
 def generate_length(_sut_backend, length, shape):
     idx_len = idx_length(shape)
-    print(length)
 
     if length == 'zero':
         result = 0
@@ -108,3 +111,26 @@ def generate_length(_sut_backend, length, shape):
     elif length == 'full':
         result = idx_len
     return result, result
+
+
+def generate_is_first_in_pair(_sut_backend, shape, pairs='random', seed=0):
+    np.random.seed(seed)
+
+    idx_len = idx_length(shape)
+
+    if pairs == 'none':
+        is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
+    elif pairs == 'random':
+        is_first_in_pair = np.random.random_integers(0, 2, idx_len)
+        for i in range(idx_len-1):
+            if is_first_in_pair[i] == 1:
+                is_first_in_pair[i + 1] = 0
+        is_first_in_pair[-1] = 0
+    elif pairs == 'full':
+        is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
+        is_first_in_pair[::2] = 1
+
+    result_sut = _sut_backend.from_ndarray(is_first_in_pair)
+    result_default = backend.from_ndarray(is_first_in_pair)
+
+    return result_sut, result_default

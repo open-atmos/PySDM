@@ -53,34 +53,6 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
 
     @staticmethod
-    def test_amin(sut, shape_1d, natural_length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(natural_length, shape_1d)
-
-        # Act
-        actual = sut.amin(sut_data, sut_idx, length)
-        expected = backend.amin(data, idx, length)
-
-        # Assert
-        assert actual == expected
-
-    @staticmethod
-    def test_amax(sut, shape_1d, natural_length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(natural_length, shape_1d)
-
-        # Act
-        actual = sut.amax(sut_data, sut_idx, length)
-        expected = backend.amax(data, idx, length)
-
-        # Assert
-        assert actual == expected
-
-    @staticmethod
     @pytest.mark.parametrize('data_ndarray', [
         np.array([0] * 87),
         np.array([1, 0, 1, 0, 1, 1, 1, 1]),

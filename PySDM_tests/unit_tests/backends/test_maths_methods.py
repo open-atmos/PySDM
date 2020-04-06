@@ -46,7 +46,7 @@ class TestMathsMethods:
     @staticmethod
     def test_floor_out_of_place(sut, shape_2d):
         params = [{'name': "output",
-                   'details': {'shape': shape_2d, 'dtype': float}},
+                   'details': {'shape': shape_2d, 'dtype': int}},
                   {'name': "input_data",
                    'details': {'shape': shape_2d, 'dtype': float, 'negative': True}},
                   ]

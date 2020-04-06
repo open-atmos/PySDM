@@ -183,3 +183,22 @@ __order__ = {'asc': pytest.param('asc'),
 ])
 def order(request):
     return request.param
+
+
+'''
+pairs parametrisation: pairs
+'''
+
+__pairs__ = {'none': pytest.param('none'),
+             'random': pytest.param('random'),
+             'full': pytest.param('full')
+             }
+
+
+@pytest.fixture(params=[
+    __pairs__['none'],
+    __pairs__['random'],
+    __pairs__['full']
+])
+def pairs(request):
+    return request.param
