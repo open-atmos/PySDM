@@ -19,8 +19,8 @@ idx_thd = 0
 idx_x = 1
 
 
-def patch_particles(particles, coord):
-    particles.condensation_solver = make_solve(coord)
+def patch_particles(particles, coord, rtol=1e-3):
+    particles.condensation_solver = make_solve(coord, rtol)
     particles.condensation = types.MethodType(bdf_condensation, particles)
 
 
@@ -58,7 +58,7 @@ def bdf_condensation(particles,
     )
 
 
-def make_solve(coord):
+def make_solve(coord, rtol):
     if coord == 'volume':
         coord = coord_volume
     elif coord == 'volume logarithm':
@@ -93,7 +93,7 @@ def make_solve(coord):
             t_span=[0, dt],
             t_eval=[dt],
             y0=y0,
-            # rtol=1e-3,
+            rtol=rtol,
             atol=0,
             method="BDF"
         )
