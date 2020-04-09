@@ -32,6 +32,7 @@ class Setup:
         self.dt_max = dt_max
     backend = Default
     coord = 'volume logarithm'
+    adaptive = True
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
 
@@ -43,8 +44,9 @@ class Setup:
     z0 = 600 * si.metres
     kappa = 0.53  # Petters and S. M. Kreidenweis mean growth-factor derived
 
+    t0 = 1200 * si.second
+    f0 = 1 / 1000 * si.hertz
+
     @staticmethod
     def w(t):
-        t0 = 1200 * si.second
-        f0 = 1 / 1000 * si.hertz
-        return .5 * (np.where(t < t0, 1, np.sign(-np.sin(2*np.pi * f0 * (t-t0))))) * si.metre / si.second
+        return .5 * (np.where(t < Setup.t0, 1, np.sign(-np.sin(2*np.pi * Setup.f0 * (t-Setup.t0))))) * si.metre / si.second
