@@ -7,8 +7,9 @@ Created at 06.11.2019
 """
 
 import numpy as np
-from MPyDATA.mpdata_factory import MPDATAFactory, z_vec_coord, x_vec_coord
-# from MPyDATA.options import Options
+from MPyDATA.mpdata_factory import MPDATAFactory
+from MPyDATA.arakawa_c.discretisation import z_vec_coord, x_vec_coord
+from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from .products.relative_humidity import RelativeHumidity
@@ -34,12 +35,17 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             axis=0
         )
 
-        self.__GC, self.__eulerian_fields = MPDATAFactory.stream_function_2d(
+        self.__GC, self.__mpdatas = MPDATAFactory.stream_function_2d(
             grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
             g_factor=rhod,
-            # opts=Options(nug=True, iga=mpdata_iga, fct=mpdata_fct, tot=mpdata_tot)
+            options=Options(
+                n_iters=mpdata_iters,
+                infinite_gauge=mpdata_iga,
+                flux_corrected_transport=mpdata_fct,
+                third_order_terms=mpdata_tot
+            )
         )
 
         rhod = particles.backend.from_ndarray(rhod.ravel())
@@ -52,17 +58,18 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.post_step()
 
     def _get_thd(self):
-        return self.__eulerian_fields.mpdatas['th'].arrays.curr.get()
+        return self.__mpdatas['th'].curr.get()
 
     def _get_qv(self):
-        return self.__eulerian_fields.mpdatas['qv'].arrays.curr.get()
+        return self.__mpdatas['qv'].curr.get()
 
-    @property
-    def eulerian_fields(self):
-        return self.__eulerian_fields
+    # @property
+    # def eulerian_fields(self):
+    #     return self.__eulerian_fields
 
     def __mpdata_step(self):
-        self.__eulerian_fields.step(1)
+        for mpdata in self.__mpdatas.values():
+            mpdata.step(1)
 
     def step(self):
         # self.thread = Thread(target=self.__mpdata_step, args=())
