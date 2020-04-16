@@ -41,8 +41,8 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
-        for i in prange(sd_num - 1):
+    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, length):
+        for i in prange(length - 1):
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i+1]] and
                 (i - cell_start[cell_id[idx[i]]]) % 2 == 0

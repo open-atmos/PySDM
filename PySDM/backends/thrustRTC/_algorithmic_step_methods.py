@@ -56,8 +56,17 @@ class AlgorithmicStepMethods:
             loop.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
 
     @staticmethod
-    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, sd_num):
-        raise NotImplementedError()
+    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, length):
+        perm_cell_id = trtc.DVPermutation(cell_id, idx)
+
+        loop = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair'], "i", '''
+            is_first_in_pair[i] = (
+                perm_cell_id[i] == perm_cell_id[i+1] &&
+                (i - cell_start[perm_cell_id[i]]) % 2 == 0
+            );
+            ''')
+        if length > 1:
+            loop.launch_n(length - 1, [cell_start, perm_cell_id, is_first_in_pair])
 
     @staticmethod
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):

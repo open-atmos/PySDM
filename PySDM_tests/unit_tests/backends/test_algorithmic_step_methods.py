@@ -63,9 +63,22 @@ class TestAlgorithmicStepMethods:
         params = TestAlgorithmicStepMethods.pair_params(shape_1d, pairs, order, length)
         universal_test("distance_pair", sut, params)
 
+    # TODO (FUTURE): better test cases
     @staticmethod
-    def test_find_pairs(sut):
-        assert False
+    def test_find_pairs(sut, shape_1d, pairs, order, length):
+        cell_num = 3
+        params = [{'name': "cell_start",
+                   'details': {'shape': (cell_num,), 'dtype': int, 'factor': shape_1d[0]}},
+                  {'name': "is_first_in_pair",
+                   'details': {'shape': shape_1d, 'pairs': pairs}},
+                  {'name': "cell_id",
+                   'details': {'shape': shape_1d, 'dtype': int, 'factor': shape_1d[0]}},
+                  {'name': "idx",
+                   'details': {'shape': shape_1d, 'order': order}},
+                  {'name': "length",
+                   'details': {'shape': shape_1d, 'length': length}}
+                  ]
+        universal_test("find_pairs", sut, params)
 
     @staticmethod
     def test_max_pair(sut, shape_1d, pairs, length, order):
