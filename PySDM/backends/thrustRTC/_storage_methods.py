@@ -12,15 +12,17 @@ import numpy as np
 class StorageMethods:
     # TODO check static For
     storage = trtc.DVVector.DVVector
+    integer = np.int64
+    double = np.float64
 
     @staticmethod
     def array(shape, dtype):
-        if dtype is float:
+        if dtype in (float, StorageMethods.double):
             elem_cls = 'double'
-            elem_dtype = np.float64
-        elif dtype is int:
+            elem_dtype = StorageMethods.double
+        elif dtype in (int, StorageMethods.integer):
             elem_cls = 'int64_t'
-            elem_dtype = np.int64
+            elem_dtype = StorageMethods.integer
         else:
             raise NotImplementedError
 
@@ -39,9 +41,9 @@ class StorageMethods:
         shape = array.shape
 
         if str(array.dtype).startswith('int'):
-            dtype = np.int64
+            dtype = StorageMethods.integer
         elif str(array.dtype).startswith('float'):
-            dtype = np.float64
+            dtype = StorageMethods.double
         else:
             raise NotImplementedError
 

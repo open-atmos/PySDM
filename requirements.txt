@@ -1,10 +1,10 @@
-numpy==1.17.4
-scipy==1.3.3
+numpy==1.18.1
+scipy==1.4.1
 mpmath==1.1.0
-numba==0.48.0
+numba==0.49.0
 matplotlib==3.1.2
 pythran==0.9.5
-Pint==0.10.1
+Pint==0.11
 mendeleev==0.5.2
 ipywidgets==7.5.1
 ipykernel==5.1.3

@@ -29,6 +29,7 @@ class Particles:
         self.stats = stats or Stats()
 
         self.croupier = 'local'
+        self.sorting_scheme = 'default'
         self.terminal_velocity = None
         self.condensation_solver = self.backend.make_condensation_solver()  # TODO
 

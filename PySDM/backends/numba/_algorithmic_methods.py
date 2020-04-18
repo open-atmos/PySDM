@@ -9,6 +9,7 @@ import numpy as np
 import numba
 from numba import void, float64, int64, prange
 from PySDM.backends.numba import conf
+from PySDM.backends.numba._storage_methods import StorageMethods
 
 
 class AlgorithmicMethods:
@@ -86,59 +87,40 @@ class AlgorithmicMethods:
         )
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
-    def counting_sort_by_cell_id(new_idx, idx, cell_id, length, cell_start):
-        cell_end = cell_start
-
-        cell_end[:] = 0
-        for i in range(length):
-            cell_end[cell_id[idx[i]]] += 1
-        for i in range(1, len(cell_end)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
-            cell_end[i] += cell_end[i - 1]
-        for i in range(length-1, -1, -1):
-            cell_end[cell_id[idx[i]]] -= 1
-            new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
-
-    @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
-    def counting_sort_by_cell_id_parallel(new_idx, idx, cell_id, length, cell_start, cell_start_p):
-        cell_end_thread = cell_start_p
-
-        thread_num = cell_end_thread.shape[0]
-        for t in prange(thread_num):
-            cell_end_thread[t, :] = 0
-            for i in range(t * length // thread_num,
-                           (t + 1) * length // thread_num if t < thread_num - 1 else length):
-                cell_end_thread[t, cell_id[idx[i]]] += 1
-
-        cell_start[:] = np.sum(cell_end_thread, axis=0)
-        for i in range(1, len(cell_start)):  # TODO: if len(cell_end) != n_cell+1 silently does wrong thing...
-            cell_start[i] += cell_start[i - 1]
-
-        tmp = cell_end_thread[0, :]
-        tmp[:] = cell_end_thread[thread_num - 1, :]
-        cell_end_thread[thread_num - 1, :] = cell_start[:]
-        for t in range(thread_num - 2, -1, -1):
-            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
-            tmp[:] = cell_end_thread[t, :]
-            cell_end_thread[t, :] = cell_start[:]
-
-        for t in prange(thread_num):
-            for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
-                           t * length // thread_num - 1,
-                           -1):
-                cell_end_thread[t, cell_id[idx[i]]] -= 1
-                new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
-
-        cell_start[:] = cell_end_thread[0, :]
-
-    @staticmethod
     @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         for i in range(length):
             if cell_origin[i, -1] == 0 and position_in_cell[i, -1] < 0:
                 idx[i] = len(idx)
                 healthy[0] = 0
+
+    @staticmethod
+    def make_cell_caretaker(idx, cell_start, scheme="default"):
+        class CellCaretaker:
+            def __init__(self, idx, cell_start, scheme):
+                if scheme == "default":
+                    scheme = "counting_sort"
+                self.scheme = scheme
+                if scheme == "counting_sort" or scheme == "counting_sort_parallel":
+                    self.idx = idx
+                    self.tmp_idx = StorageMethods.array(idx.shape, idx.dtype)
+                if scheme == "counting_sort_parallel":
+                    self.cell_starts = StorageMethods.array((numba.config.NUMBA_NUM_THREADS, len(cell_start)),
+                                                            dtype=int)
+
+            def __call__(self, cell_id, cell_start, idx, length):
+                if self.scheme == "counting_sort":
+                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(self.tmp_idx, idx, cell_id, length, cell_start)
+                    self.idx, self.tmp_idx = self.tmp_idx, self.idx
+                elif self.scheme == "counting_sort_parallel":
+                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(self.tmp_idx, idx, cell_id, length,
+                                                                                                cell_start,
+                                                                                                self.cell_starts)
+                    self.idx, self.tmp_idx = self.tmp_idx, self.idx
+
+                return self.idx
+
+        return CellCaretaker(idx, cell_start, scheme)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -214,3 +196,50 @@ class AlgorithmicMethods:
 
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
+    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start):
+        cell_end = cell_start
+        # Warning: Assuming len(cell_end) == n_cell+1
+        cell_end[:] = 0
+        for i in range(length):
+            cell_end[cell_id[idx[i]]] += 1
+        for i in range(1, len(cell_end)):
+            cell_end[i] += cell_end[i - 1]
+        for i in range(length - 1, -1, -1):
+            cell_end[cell_id[idx[i]]] -= 1
+            new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
+
+    @staticmethod
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    def _parallel_counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start, cell_start_p):
+        cell_end_thread = cell_start_p
+        # Warning: Assuming len(cell_end) == n_cell+1
+        thread_num = cell_end_thread.shape[0]
+        for t in prange(thread_num):
+            cell_end_thread[t, :] = 0
+            for i in range(t * length // thread_num,
+                           (t + 1) * length // thread_num if t < thread_num - 1 else length):
+                cell_end_thread[t, cell_id[idx[i]]] += 1
+
+        cell_start[:] = np.sum(cell_end_thread, axis=0)
+        for i in range(1, len(cell_start)):
+            cell_start[i] += cell_start[i - 1]
+
+        tmp = cell_end_thread[0, :]
+        tmp[:] = cell_end_thread[thread_num - 1, :]
+        cell_end_thread[thread_num - 1, :] = cell_start[:]
+        for t in range(thread_num - 2, -1, -1):
+            cell_start[:] = cell_end_thread[t + 1, :] - tmp[:]
+            tmp[:] = cell_end_thread[t, :]
+            cell_end_thread[t, :] = cell_start[:]
+
+        for t in prange(thread_num):
+            for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
+                           t * length // thread_num - 1,
+                           -1):
+                cell_end_thread[t, cell_id[idx[i]]] -= 1
+                new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
+
+        cell_start[:] = cell_end_thread[0, :]

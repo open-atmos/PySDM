@@ -5,7 +5,6 @@ Created at 24.07.2019
 @author: Sylwester Arabas
 """
 
-import numba
 from ._methods import Methods
 from ._algorithmic_methods import AlgorithmicMethods
 from ._algorithmic_step_methods import AlgorithmicStepMethods
@@ -24,6 +23,4 @@ class Numba(
     PhysicsMethods,
     CondensationMethods
 ):
-    @staticmethod
-    def num_threads():
-        return numba.config.NUMBA_NUM_THREADS
+    pass

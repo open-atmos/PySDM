@@ -55,10 +55,9 @@ class TestState:
         sut.cell_id = TestState.storage(cells)
         sut._State__idx = TestState.storage(idx)
         idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
-        sut._State__cell_start_p = backend.array((thread_number, len(sut._State__cell_start)), dtype=int)
         sut._State__n_sd = particles.n_sd
+        sut._State__cell_caretaker = backend.make_cell_caretaker(sut._State__idx, sut._State__cell_start)
 
         # Act
         sut._State__sort_by_cell_id()

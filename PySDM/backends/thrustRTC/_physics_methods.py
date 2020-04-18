@@ -17,8 +17,7 @@ class PhysicsMethods:
         see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
         """
         result = '''
-            auto = dC = c_r - c_l;
-            (omega * dC + c_l) / (1 - dC);
+            (omega * (c_r - c_l) + c_l) / (1 - (c_r - c_l));
         '''
         return result
 

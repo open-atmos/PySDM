@@ -20,7 +20,6 @@ class State:
         self.__n_sd = particles.n_sd
         self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
-        self.__tmp_idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.__backend.from_ndarray(n)
         self.attributes = attributes
         self.keys = keys
@@ -30,8 +29,8 @@ class State:
             cell_origin)
         self.cell_id = self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
-        # TODO!
-        self.__cell_start_p = self.__backend.array((self.__backend.num_threads(), len(cell_start)), dtype=int)
+        self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
+                                                                   scheme=particles.sorting_scheme)
         self.__sorted = False
 
     @property
@@ -67,8 +66,7 @@ class State:
         self.__backend.shuffle_local(idx=self.__idx, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
-        self.__backend.counting_sort_by_cell_id(self.__tmp_idx, self.__idx, self.cell_id, self.SD_num, self.__cell_start)
-        self.__idx, self.__tmp_idx = self.__tmp_idx, self.__idx
+        self.__idx = self.__cell_caretaker(self.cell_id, self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
     def min(self, item):

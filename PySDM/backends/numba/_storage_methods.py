@@ -13,13 +13,15 @@ from PySDM.backends.numba import conf
 
 class StorageMethods:
     storage = np.ndarray
+    integer = np.int64
+    double = np.float64
 
     @staticmethod
     def array(shape, dtype):
-        if dtype is float:
-            data = np.full(shape, -1., dtype=np.float64)
-        elif dtype is int:
-            data = np.full(shape, -1, dtype=np.int64)
+        if dtype in (float, StorageMethods.double):
+            data = np.full(shape, -1., dtype=StorageMethods.double)
+        elif dtype in (int, StorageMethods.integer):
+            data = np.full(shape, -1, dtype=StorageMethods.integer)
         else:
             raise NotImplementedError()
         return data
@@ -31,9 +33,9 @@ class StorageMethods:
     @staticmethod
     def from_ndarray(array):
         if str(array.dtype).startswith('int'):
-            dtype = np.int64
+            dtype = StorageMethods.integer
         elif str(array.dtype).startswith('float'):
-            dtype = np.float64
+            dtype = StorageMethods.double
         else:
             raise NotImplementedError()
 
