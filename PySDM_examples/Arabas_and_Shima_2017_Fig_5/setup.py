@@ -23,13 +23,18 @@ class Setup:
         self.n_in_dv = N_STP / const.rho_STP * mass_of_dry_air
         self.mass_of_dry_air = mass_of_dry_air
 
+    @property
+    def dt_max(self):
+        t_total = 2 * Setup.z_half / self.w_avg
+        return t_total / Setup.n_output
+
     backend = Default
 
-    n_steps = 500  # TODO: rename to n_output
+    n_output = 500
 
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
-    dt_max = 10 * si.second  # TODO: as a function of w?
+    coord = 'volume logarithm'
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

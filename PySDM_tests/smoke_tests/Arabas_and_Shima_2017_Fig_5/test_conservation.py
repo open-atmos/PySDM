@@ -1,4 +1,4 @@
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.example import Simulation, setups
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation, setups
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs, N_STPs, r_drys
 from PySDM.simulation.physics import constants as const
 from PySDM.simulation.physics import formulae as phys
@@ -32,7 +32,7 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
         r_dry=setups[setup_idx].r_dry,
         mass_of_dry_air=mass_of_dry_air
     )
-    setup.n_steps = 50
+    setup.n_output = 50
     setup.scheme = scheme
     simulation = Simulation(setup)
     qt0 = setup.q0 + ql(simulation)

@@ -14,11 +14,13 @@ import numpy as np
 
 class CondensationMethods:
     @staticmethod
-    def make_condensation_solver(coord='volume_logarithm', adaptive=True):
+    def make_condensation_solver(coord='volume logarithm', adaptive=True):
         if coord == 'volume':
             coord = coord_volume
-        else:
+        elif coord == 'volume logarithm':
             coord = coord_volume_logarithm
+        else:
+            raise ValueError()
 
         x = coord.x
         volume = coord.volume

@@ -1,13 +1,15 @@
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.example import Simulation, setups
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation, setups
 from PySDM.simulation.dynamics.condensation import condensation
+from PySDM_tests.smoke_tests.utils import bdf
+
 import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 
 
 rtols = [1e-6, 1e-7]
-schemes = ['libcloud', 'BDF']
-
+schemes = ['default', 'BDF']
+setups_num = len(setups)-4
 
 @pytest.fixture(scope='module')
 def data():
@@ -17,27 +19,30 @@ def data():
         data[scheme] = {}
         for rtol in rtols:
             data[scheme][rtol] = []
-            for setup_idx in range(len(setups)):
+            for setup_idx in range(setups_num):
                 setup = setups[setup_idx]
                 setup.scheme = scheme
-                if scheme == 'libcloud':
-                    setup.rtol_lnv = rtol
+                if scheme == 'default':
+                    setup.rtol_x = rtol
                     setup.rtol_thd = rtol
                 else:
-                    setup.rtol_lnv = rtol
+                    setup.rtol_x = rtol
                     setup.rtol_thd = rtol
                 setup.n_steps = 100
-                data[scheme][rtol].append(Simulation(setup).run())
+                simulation = Simulation(setup)
+                if scheme == 'BDF':
+                    bdf.patch_particles(simulation.particles, setup.coord, rtol=1e-4)
+                data[scheme][rtol].append(simulation.run())
     return data
 
 
-@pytest.mark.skip
-def test_plot(data, plot=True):
+# @pytest.mark.skip
+def test_plot(data, plot=False):
     if not plot:
         return
-    fig, axs = plt.subplots(len(setups), len(rtols),
+    fig, axs = plt.subplots(len(setups)-4, len(rtols),
                             sharex=True, sharey=True, figsize=(6, 15))
-    for setup_idx in range(len(setups)):
+    for setup_idx in range(setups_num):
         for rtol_idx in range(len(rtols)):
             ax = axs[setup_idx, rtol_idx]
             for scheme in schemes:
@@ -55,9 +60,8 @@ def split(arg1, arg2):
     return arg1[0:np.argmax(arg2)+1], arg1[np.argmax(arg2):-1]
 
 
-@pytest.mark.skip
-@pytest.mark.parametrize("setup_idx", range(len(setups)))
-@pytest.mark.parametrize("rtol", [condensation.default_rtol_x])  # TODO
+@pytest.mark.parametrize("setup_idx", range(setups_num))
+@pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
 def test_vs_BDF(setup_idx, data, rtol, leg):
     # Arrange
@@ -68,7 +72,11 @@ def test_vs_BDF(setup_idx, data, rtol, leg):
         supersaturation[scheme] = ascent if leg == 'ascent' else descent
 
     # Assert
-    np.testing.assert_allclose(
-        desired=supersaturation['BDF'],
-        actual=supersaturation['libcloud']
-    )
+    desired = np.array(supersaturation['BDF'])
+    actual = np.array(supersaturation['default'])
+    assert np.mean((desired - actual)**2) < rtol
+    # np.testing.assert_allclose(
+    #     desired=supersaturation['BDF'],
+    #     actual=supersaturation['default'],
+    #     rtol=rtol*1e3
+    # )

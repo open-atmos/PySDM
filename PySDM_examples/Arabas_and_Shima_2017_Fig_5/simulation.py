@@ -20,7 +20,7 @@ class Simulation:
     def __init__(self, setup):
         t_half = setup.z_half / setup.w_avg
 
-        dt_output = (2 * t_half) / setup.n_steps
+        dt_output = (2 * t_half) / setup.n_output
         self.n_substeps = 1
         while dt_output / self.n_substeps >= setup.dt_max:  # TODO dt_max
             self.n_substeps += 1
@@ -48,7 +48,7 @@ class Simulation:
         })
         self.particles = particles_builder.get_particles()
 
-        self.n_steps = setup.n_steps
+        self.n_output = setup.n_output
 
     def save(self, output):
         cell_id = 0
@@ -63,7 +63,7 @@ class Simulation:
         output = {"r": [], "S": [], "z": [], "t": []}
 
         self.save(output)
-        for step in range(self.n_steps):
+        for step in range(self.n_output):
             self.particles.run(self.n_substeps)
             self.save(output)
 
