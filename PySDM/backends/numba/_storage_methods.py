@@ -43,6 +43,12 @@ class StorageMethods:
         return result
 
     @staticmethod
+    def range(array, start=0, stop=None):
+        if stop is None:
+            stop = array.shape[0]
+        return array[start:stop]
+
+    @staticmethod
     def read_row(array, i):
         return array[i, :]
 

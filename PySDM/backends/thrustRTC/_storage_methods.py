@@ -58,6 +58,19 @@ class StorageMethods:
         return result
 
     @staticmethod
+    def range(array, start=0, stop=None):
+        if stop is None:
+            stop = array.shape[0]
+        dim = len(array.shape)
+        if dim == 1:
+            return array.range(start, stop)
+        elif dim == 2:
+            return array.range(array.shape[0] * start, array.shape[0] * stop)
+        else:
+            raise NotImplementedError("Only 3 or more dimensions array is supported.")
+
+
+    @staticmethod
     def read_row(array, i):
         row_length = array.shape[1]
         start = row_length * i
@@ -118,6 +131,8 @@ class StorageMethods:
 
     @staticmethod
     def __equip(data, shape, dtype):
+        if isinstance(shape, int):
+            shape = (shape,)
         data.shape = shape
         data.dtype = dtype
         data.get = lambda index: trtc.Reduce(data.range(index, index + 1))

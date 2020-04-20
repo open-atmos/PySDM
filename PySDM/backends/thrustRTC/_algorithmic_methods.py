@@ -17,15 +17,15 @@ class AlgorithmicMethods:
         courant_length = trtc.DVInt64(courant.shape[0])
         loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "droplet", f'''
             // Arakawa-C grid
-            _l_0 = cell_origin[droplet + 0];
-            _l_1 = cell_origin[droplet + idx_length];
-            _l = _l_0 + _l_1 * courant_length;
-            _r_0 = cell_origin[droplet + 0] + 1 * (dim == 0);
-            _r_1 = cell_origin[droplet + idx_length] + 1 * (dim == 1);
-            _r = _r_0 + _r_1 * courant_length;
-            omega = position_in_cell[droplet + idx_length * dim];
-            c_r = courant[_r];
-            c_l = courant[_l];
+            int _l_0 = cell_origin[droplet + 0];
+            int _l_1 = cell_origin[droplet + idx_length];
+            int _l = _l_0 + _l_1 * courant_length;
+            int _r_0 = cell_origin[droplet + 0] + 1 * (dim == 0);
+            int _r_1 = cell_origin[droplet + idx_length] + 1 * (dim == 1);
+            int _r = _r_0 + _r_1 * courant_length;
+            int omega = position_in_cell[droplet + idx_length * dim];
+            int c_r = courant[_r];
+            int c_l = courant[_l];
             displacement[droplet, dim] = {scheme(None, None, None)}
             ''')
         loop.launch_n(displacement.shape[0], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
@@ -53,14 +53,14 @@ class AlgorithmicMethods:
                 auto new_n = n[j] - g * n[k];
                 if (new_n > 0) {
                     n[j] = new_n;
-                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j])
+                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j]);
                     extensive[/*:,*/ k] += g * extensive[/*:,*/ j];
                 }
                 else {  // new_n == 0
                     n[j] = n[k] / 2;
                     n[k] = n[k] - n[j];
-                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j])
-                    intensive[/*:,*/ k] = intensive[/*:,*/ j]
+                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                    intensive[/*:,*/ k] = intensive[/*:,*/ j];
                     extensive[/*:,*/ j] = g * extensive[/*:,*/ j] + extensive[/*:,*/ k];
                     extensive[/*:,*/ k] = extensive[/*:,*/ j];
                 }
@@ -101,16 +101,52 @@ class AlgorithmicMethods:
         loop.launch_n(length, [idx, idx_length, n_dims, healthy, cell_origin, position_in_cell])
 
     @staticmethod
-    def make_cell_caretaker(_idx, _cell_start, _scheme):
+    def make_cell_caretaker(idx, cell_start, scheme):
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
     @staticmethod
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
-        raise NotImplementedError()
+        # TODO
+        print("Numba import!: ThrustRTC.moments(...)")
+
+        from PySDM.backends.numba.numba import Numba
+        from PySDM.backends.thrustRTC._storage_methods import StorageMethods
+        host_moment_0 = StorageMethods.to_ndarray(moment_0)
+        host_moments = StorageMethods.to_ndarray(moments)
+        host_n = StorageMethods.to_ndarray(n)
+        host_attr = StorageMethods.to_ndarray(attr)
+        host_cell_id = StorageMethods.to_ndarray(cell_id)
+        host_idx = StorageMethods.to_ndarray(idx)
+        host_specs_idx = StorageMethods.to_ndarray(specs_idx)
+        host_specs_rank = StorageMethods.to_ndarray(specs_rank)
+        Numba.moments(host_moment_0, host_moments, host_n, host_attr, host_cell_id, host_idx, length,
+                      host_specs_idx, host_specs_rank, min_x, max_x, x_id)
+        device_moment_0 = StorageMethods.from_ndarray(host_moment_0)
+        device_moments = StorageMethods.from_ndarray(host_moments)
+        trtc.Copy(device_moment_0, moment_0)
+        trtc.Copy(device_moments, moments)
+        print("out")
 
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        raise NotImplementedError()
+        n_cell = cell_start.shape[0] - 1
+        loop = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
+            int sd_num = cell_start[i + 1] - cell_start[i];
+            if (sd_num < 2) {
+                norm_factor[i] = 0;
+            }
+            else {
+                int half_sd_num = sd_num / 2;
+                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;
+            }
+            ''')
+        device_dt_div_dv = trtc.DVDouble(dt_div_dv)
+        loop.launch_n(n_cell, [cell_start, norm_factor, device_dt_div_dv])
+
+        loop2 = trtc.For(['prob', 'cell_id', 'norm_factor'], "d", '''
+            prob[d] *= norm_factor[cell_id[d]];
+            ''')
+        loop2.launch_n(prob.shape[0], [prob, cell_id, norm_factor])
 
     @staticmethod
     def remove_zeros(data, idx, length) -> int:
@@ -134,7 +170,7 @@ class AlgorithmicMethods:
     @staticmethod
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
         trtc.Sort_By_Key(idx.range(0, length), cell_id.range(0, length))
-        trtc.Fill(cell_start, length)
+        trtc.Fill(cell_start, trtc.DVInt64(length))
         loop = trtc.For(['cell_id', 'cell_start', 'idx'], "i", '''
             int cell_id_curr = cell_id[idx[i]];
             int cell_id_next = cell_id[idx[i + 1]];

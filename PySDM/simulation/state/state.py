@@ -78,11 +78,11 @@ class State:
         return result
 
     def get_extensive_attrs(self):
-        result = self.attributes[:self.intensive_start]
+        result = self.__backend.range(self.attributes, stop=self.intensive_start)
         return result
 
     def get_intensive_attrs(self):
-        result = self.attributes[self.intensive_start:]
+        result = self.__backend.range(self.attributes, start=self.intensive_start)
         return result
 
     def is_healthy(self):
@@ -102,8 +102,8 @@ class State:
             for rank in specs[attr]:
                 specs_idx.append(self.keys[attr])
                 specs_rank.append(rank)
-        specs_idx = np.array(specs_idx, dtype=int)
-        specs_rank = np.array(specs_rank, dtype=float)
+        specs_idx = self.__backend.from_ndarray(np.array(specs_idx, dtype=int))
+        specs_rank = self.__backend.from_ndarray(np.array(specs_rank, dtype=float))
         self.__backend.moments(moment_0, moments, self.n, self.attributes, self.cell_id, self.__idx,
                                self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                                self.keys[attr_name])
