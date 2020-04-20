@@ -71,6 +71,21 @@ class TestStorageMethods:
                 assert False
 
     @staticmethod
+    def test_range(sut, shape_full):
+        for start in (0, shape_full[0] // 2, shape_full[0]):
+            for stop in (shape_full[0] // 2, shape_full[0] - 1, shape_full[0]):
+                if stop < start:
+                    continue
+                params = [{'name': "array",
+                           'details': {'shape': shape_full}},
+                          {'name': "start",
+                           'details': {'value': start}},
+                          {'name': "stop",
+                           'details': {'value': stop}}
+                          ]
+                universal_test("range", sut, params)
+
+    @staticmethod
     def test_read_row(sut, shape_2d):
         for i in range(shape_2d[0]-1):
             params = [{'name': "array",
