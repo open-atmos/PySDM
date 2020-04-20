@@ -63,12 +63,15 @@ class StorageMethods:
             stop = array.shape[0]
         dim = len(array.shape)
         if dim == 1:
-            return array.range(start, stop)
+            result = array.range(start, stop)
+            new_shape = (stop - start, )
         elif dim == 2:
-            return array.range(array.shape[0] * start, array.shape[0] * stop)
+            result = array.range(array.shape[1] * start, array.shape[1] * stop)
+            new_shape = (stop - start, array.shape[1])
         else:
             raise NotImplementedError("Only 3 or more dimensions array is supported.")
-
+        StorageMethods.__equip(result, shape=new_shape, dtype=array.dtype)
+        return result
 
     @staticmethod
     def read_row(array, i):
