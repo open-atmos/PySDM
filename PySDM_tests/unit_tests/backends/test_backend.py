@@ -20,32 +20,6 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import backend, backend
 class TestBackend:
 
     @staticmethod
-    @pytest.mark.parametrize('data_ndarray', [
-        np.array([0] * 87),
-        np.array([1, 0, 1, 0, 1, 1, 1, 1]),
-        np.array([1, 1, 1, 1, 1, 0, 1, 0]),
-        np.array([1] * 87)
-    ])
-    def test_remove_zeros(sut, data_ndarray, length, order):
-        # Arrange
-        shape = data_ndarray.shape
-        sut_data = sut.from_ndarray(data_ndarray)
-        data = backend.from_ndarray(data_ndarray)
-        sut_idx, idx = TestBackend.idx(sut, shape, order)
-        length = TestBackend.length(length, shape)
-
-        # Act
-        sut_new_length = sut.remove_zeros(sut_data, sut_idx, length)
-        new_length = backend.remove_zeros(data, idx, length)
-
-        # Assert
-        assert sut_new_length == new_length
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx)[sut_new_length:], backend.to_ndarray(idx)[new_length:])
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx)[:sut_new_length].sort(),
-                                      sut.to_ndarray(sut_idx)[:new_length].sort())
-
-    @staticmethod
     # TODO new_n == 0
     def test_coalescence(sut, shape_2d, natural_length, order):
         # Arrange

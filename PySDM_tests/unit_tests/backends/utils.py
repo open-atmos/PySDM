@@ -36,17 +36,28 @@ def universal_test(method_name, sut, params):
         if 'value' in param['details'].keys() or param['name'] == 'length':
             assert sut_params[param['name']] == default_params[param['name']]
         else:
+            sut_param = sut.to_ndarray(sut_params[param['name']])
+            default_param = backend.to_ndarray(default_params[param['name']])
+            if 'checking' in param.keys():
+                if 'length_valid' in param['checking']:
+                    sut_param = sut_param[:default_params['length']]
+                    default_param = default_param[:default_params['length']]
+                if 'sorted' in param['checking']:
+                    sut_param = sorted(sut_param)
+                    default_param = sorted(default_param)
             try:
                 np.testing.assert_array_equal(
-                    sut.to_ndarray(sut_params[param['name']]),
-                    backend.to_ndarray(default_params[param['name']])
+                    sut_param,
+                    default_param
                 )
             except AssertionError:
                 precision = 15
                 warnings.warn(f"Fail with high precision, try with {precision} digit precision...")
                 np.testing.assert_almost_equal(
-                    sut.to_ndarray(sut_params[param['name']]),
-                    backend.to_ndarray(default_params[param['name']]), decimal=precision)
+                    sut_param,
+                    default_param,
+                    decimal=precision
+                )
     if default_result is None:
         assert sut_result is None
     elif isinstance(default_result, (int, float, bool)):
@@ -55,8 +66,8 @@ def universal_test(method_name, sut, params):
         np.testing.assert_array_equal(sut.to_ndarray(sut_result), backend.to_ndarray(default_result))
 
 
-def generate_data(sut_backend, shape=None, dtype=None, value=None, seed=0, negative=False, factor=100):
-    if value is None:
+def generate_data(sut_backend, shape=None, dtype=None, value=None, array=None, seed=0, negative=False, factor=100):
+    if value is None and array is None:
         np.random.seed(seed)
         rand_ndarray = (factor * np.random.rand(*shape)).astype(dtype)
 
@@ -65,9 +76,18 @@ def generate_data(sut_backend, shape=None, dtype=None, value=None, seed=0, negat
 
         result_sut = sut_backend.from_ndarray(rand_ndarray)
         result_default = backend.from_ndarray(rand_ndarray)
-    elif shape is None and dtype is None:
-        result_sut = value
-        result_default = value
+    elif array is None and shape is None and dtype is None:
+        if isinstance(value, (float, int, bool)):
+            result_sut = value
+            result_default = value
+        else:
+            raise ValueError()
+    elif value is None and shape is None and dtype is None:
+        if isinstance(array, np.ndarray):
+            result_sut = sut_backend.from_ndarray(array)
+            result_default = backend.from_ndarray(array)
+        else:
+            raise ValueError()
     else:
         raise ValueError()
 
