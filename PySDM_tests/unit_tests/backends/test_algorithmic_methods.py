@@ -53,8 +53,13 @@ class TestAlgorithmicMethods:
         universal_test("coalescence", sut, params)
 
     @staticmethod
-    def test_compute_gamma(sut):
-        assert False
+    def test_compute_gamma(sut, shape_1d):
+        params = [{'name': "prob",
+                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 0}},
+                  {'name': "rand",
+                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 0}}
+                  ]
+        universal_test("compute_gamma", sut, params)
 
     @staticmethod
     def test_condensation(sut):

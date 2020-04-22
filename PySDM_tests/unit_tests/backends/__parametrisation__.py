@@ -63,7 +63,7 @@ shape parametrisation: shape_full, shape_1d, shape_2d
 '''
 
 __shape__ = {'1d_1': pytest.param((1,)),
-             '1d': pytest.param((32,)),
+             '1d': pytest.param((33,)),
              '2d_1': pytest.param((1, 1)),
              '2d_row': pytest.param((1, 7)),
              '2d_col': pytest.param((8, 1)),
