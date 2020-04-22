@@ -68,7 +68,7 @@ __shape__ = {'1d_1': pytest.param((1,)),
              '2d_row': pytest.param((1, 7)),
              '2d_col': pytest.param((8, 1)),
              '2d_full_short_row': pytest.param((8, 7)),
-             '2d_full_long_row': pytest.param((8, 1))
+             '2d_full_long_row': pytest.param((8, 16))
              }
 
 

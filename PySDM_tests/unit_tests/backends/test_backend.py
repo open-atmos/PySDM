@@ -48,39 +48,3 @@ class TestBackend:
         np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
         np.testing.assert_array_equal(sut.to_ndarray(sut_gamma), backend.to_ndarray(gamma))
         np.testing.assert_array_equal(sut.to_ndarray(sut_healthy), backend.to_ndarray(healthy))
-
-    @staticmethod
-    def test_sum_pair(sut, shape_1d, length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_data_in, data_in = TestBackend.data(sut, shape_1d, float, seed=1)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(length, shape_1d)
-        sut_is_first_in_pair, is_first_in_pair = TestBackend.is_first_in_pair(sut, length)
-
-        # Act
-        sut.sum_pair(sut_data, sut_data_in, sut_is_first_in_pair, sut_idx, length)
-        backend.sum_pair(data, data_in, is_first_in_pair, idx, length)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))
-
-    @staticmethod
-    def test_max_pair(sut, shape_1d, length, order):
-        # Arrange
-        sut_data, data = TestBackend.data(sut, shape_1d, float)
-        sut_data_in, data_in = TestBackend.data(sut, shape_1d, int, seed=1)
-        sut_idx, idx = TestBackend.idx(sut, shape_1d, order)
-        length = TestBackend.length(length, shape_1d)
-        sut_is_first_in_pair, is_first_in_pair = TestBackend.is_first_in_pair(sut, length)
-
-        # Act
-        sut.max_pair(sut_data, sut_data_in, sut_is_first_in_pair, sut_idx, length)
-        backend.max_pair(data, data_in, is_first_in_pair, idx, length)
-
-        # Assert
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data), backend.to_ndarray(data))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_data_in), backend.to_ndarray(data_in))
-        np.testing.assert_array_equal(sut.to_ndarray(sut_idx), backend.to_ndarray(idx))

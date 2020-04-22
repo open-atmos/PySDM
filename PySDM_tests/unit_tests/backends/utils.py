@@ -32,6 +32,7 @@ def universal_test(method_name, sut, params):
     sut_result = sut_method(**sut_params)
 
     # Assert
+    precision = 13
     for param in params:
         if 'value' in param['details'].keys() or param['name'] == 'length':
             assert sut_params[param['name']] == default_params[param['name']]
@@ -51,8 +52,7 @@ def universal_test(method_name, sut, params):
                     default_param
                 )
             except AssertionError:
-                precision = 15
-                warnings.warn(f"Fail with high precision, try with {precision} digit precision...")
+                warnings.warn(f"{param['name']} fail with high precision, try with {precision} digit precision...")
                 np.testing.assert_almost_equal(
                     sut_param,
                     default_param,
@@ -141,14 +141,14 @@ def generate_is_first_in_pair(_sut_backend, shape, pairs='random', seed=0):
     if pairs == 'none':
         is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
     elif pairs == 'random':
-        is_first_in_pair = np.random.random_integers(1, size=idx_len)
+        is_first_in_pair = np.random.random_integers(low=0, high=1, size=idx_len)
         for i in range(idx_len-1):
             if is_first_in_pair[i] == 1:
                 is_first_in_pair[i + 1] = 0
         is_first_in_pair[-1] = 0
     elif pairs == 'full':
         is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
-        is_first_in_pair[::2] = 1
+        is_first_in_pair[:-1:2] = 1
 
     result_sut = _sut_backend.from_ndarray(is_first_in_pair)
     result_default = backend.from_ndarray(is_first_in_pair)

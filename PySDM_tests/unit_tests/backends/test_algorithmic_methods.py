@@ -15,7 +15,8 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import \
     order, pairs, \
     dtype_full, dtype, dtype_mixed
 from PySDM_tests.unit_tests.backends.__parametrisation__ import backends
-from .utils import universal_test
+from .utils import universal_test, generate_is_first_in_pair, generate_data
+from .__parametrisation__ import backend
 
 
 @pytest.mark.parametrize('sut', backends)
@@ -26,8 +27,30 @@ class TestAlgorithmicMethods:
         assert False
 
     @staticmethod
-    def test_coalescence(sut):
-        assert False
+    def test_coalescence(sut, shape_2d, order, natural_length, pairs):
+        _, data = generate_data(sut, shape=(shape_2d[1],), dtype=float, factor=5)
+        _, is_first_in_pair = generate_is_first_in_pair(sut, shape=(shape_2d[1],), pairs=pairs)
+        backend.multiply(data, is_first_in_pair)
+        gamma = np.floor(backend.to_ndarray(data))
+
+        params = [{'name': "n",
+                   'details': {'shape': (shape_2d[1],), 'dtype': int}},
+                  {'name': "volume",
+                   'details': {'shape': (shape_2d[1],), 'dtype': float}},
+                  {'name': "idx",
+                   'details': {'shape': shape_2d, 'order': order}},
+                  {'name': "length",
+                   'details': {'shape': shape_2d, 'length': natural_length}},
+                  {'name': "intensive",
+                   'details': {'shape': shape_2d, 'dtype': float}},
+                  {'name': "extensive",
+                   'details': {'shape': shape_2d, 'dtype': float}},
+                  {'name': "gamma",
+                   'details': {'array': gamma}},
+                  {'name': "healthy",
+                   'details': {'shape': (1,), 'dtype': int}}
+                  ]
+        universal_test("coalescence", sut, params)
 
     @staticmethod
     def test_compute_gamma(sut):

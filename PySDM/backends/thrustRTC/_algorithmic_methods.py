@@ -32,44 +32,62 @@ class AlgorithmicMethods:
 
     @staticmethod
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
-        loop = trtc.For(['n', 'volume', 'idx', 'intensive', 'extensive', 'gamma', 'healthy'], "i", '''
-            auto j = 2 * i;
-            auto k = j + 1;
+        idx_length = trtc.DVInt64(idx.size())
+        n_intensive = trtc.DVInt64(intensive.shape[0])
+        n_extensive = trtc.DVInt64(extensive.shape[0])
+        loop = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'n_intensive', 'extensive', 'n_extensive', 'gamma', 'healthy'], "i", '''
+            if (gamma[i] == 0)
+                return;
 
-            j = idx[j];
-            k = idx[k];
+            int j = idx[i];
+            int k = idx[i + 1];
 
             if (n[j] < n[k]) {
-                auto old = j;
-                j = k;
-                k = old;
+                j = idx[i + 1];
+                k = idx[i];
             }
-
-            auto g = n[j] / n[k];
+            int g = (int)(n[j] / n[k]);
             if (g > gamma[i])
                 g = gamma[i];
-
-            if (g != 0) {
-                auto new_n = n[j] - g * n[k];
-                if (new_n > 0) {
-                    n[j] = new_n;
-                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j]);
-                    extensive[/*:,*/ k] += g * extensive[/*:,*/ j];
+            if (g == 0)
+                return;
+                
+            int new_n = n[j] - g * n[k];
+            if (new_n > 0) {
+                n[j] = new_n;
+                for (int attr = 0; attr < n_intensive; ++attr) {
+                    int attr_idx = attr * idx_length + k; // TODO
+                    int attr_idx_2 = attr * idx_length + j; // TODO
+                    intensive[attr_idx] = (intensive[attr_idx] * volume[k] + intensive[attr_idx_2] * g * volume[j]) / (volume[k] + g * volume[j]);
                 }
-                else {  // new_n == 0
-                    n[j] = n[k] / 2;
-                    n[k] = n[k] - n[j];
-                    intensive[/*:,*/ k] = (intensive[/*:,*/ k] * volume[k] + intensive[/*:,*/ j] * g * volume[j]) / (volume[k] + g * volume[j]);
-                    intensive[/*:,*/ k] = intensive[/*:,*/ j];
-                    extensive[/*:,*/ j] = g * extensive[/*:,*/ j] + extensive[/*:,*/ k];
-                    extensive[/*:,*/ k] = extensive[/*:,*/ j];
-                }
-                if (n[j] == 0 || n[k] == 0) {
-                    healthy[0] = 0;
+                for (int attr = 0; attr < n_extensive; attr++) {
+                    int attr_idx = attr * idx_length + k; // TODO
+                    int attr_idx_2 = attr * idx_length + j; // TODO
+                    extensive[attr_idx] += g * extensive[attr_idx_2];
                 }
             }
+            else {  // new_n == 0
+                n[j] = (int)(n[k] / 2);
+                n[k] = n[k] - n[j];
+                for (int attr = 0; attr < n_intensive; ++attr) {
+                    int attr_idx = attr * idx_length + k; // TODO
+                    int attr_idx_2 = attr * idx_length + j; // TODO
+                    intensive[attr_idx_2] = (intensive[attr_idx] * volume[k] + intensive[attr_idx_2] * g * volume[j]) / (volume[k] + g * volume[j]);
+                    intensive[attr_idx] = intensive[attr_idx_2];
+                }
+                for (int attr = 0; attr < n_extensive; ++attr) {
+                    int attr_idx = attr * idx_length + k; // TODO
+                    int attr_idx_2 = attr * idx_length + j; // TODO
+                    extensive[attr_idx_2] = g * extensive[attr_idx_2] + extensive[attr_idx];
+                    extensive[attr_idx] = extensive[attr_idx_2];
+                }
+            }
+            if (n[k] == 0 || n[j] == 0) {
+                healthy[0] = 0;
+            }
             ''')
-        loop.launch_n(length // 2, [n, volume, idx, intensive, extensive, gamma, healthy])
+
+        loop.launch_n(length - 1, [n, volume, idx, idx_length, intensive, n_intensive, extensive, n_extensive, gamma, healthy])
 
     @staticmethod
     def compute_gamma(prob, rand):
@@ -125,7 +143,6 @@ class AlgorithmicMethods:
         device_moments = StorageMethods.from_ndarray(host_moments)
         trtc.Copy(device_moment_0, moment_0)
         trtc.Copy(device_moments, moments)
-        print("out")
 
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
