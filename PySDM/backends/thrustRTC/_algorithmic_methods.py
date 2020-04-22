@@ -33,9 +33,9 @@ class AlgorithmicMethods:
     @staticmethod
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         idx_length = trtc.DVInt64(idx.size())
-        n_intensive = trtc.DVInt64(intensive.shape[0])
-        n_extensive = trtc.DVInt64(extensive.shape[0])
-        loop = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'n_intensive', 'extensive', 'n_extensive', 'gamma', 'healthy'], "i", '''
+        intensive_length = trtc.DVInt64(intensive.size())
+        extensive_length = trtc.DVInt64(extensive.size())
+        loop = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
             if (gamma[i] == 0)
                 return;
 
@@ -53,33 +53,27 @@ class AlgorithmicMethods:
                 return;
                 
             int new_n = n[j] - g * n[k];
+            
             if (new_n > 0) {
                 n[j] = new_n;
-                for (int attr = 0; attr < n_intensive; ++attr) {
-                    int attr_idx = attr * idx_length + k; // TODO
-                    int attr_idx_2 = attr * idx_length + j; // TODO
-                    intensive[attr_idx] = (intensive[attr_idx] * volume[k] + intensive[attr_idx_2] * g * volume[j]) / (volume[k] + g * volume[j]);
+                
+                for (int attr = 0; attr < intensive_length; attr+=idx_length) {
+                    intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
                 }
-                for (int attr = 0; attr < n_extensive; attr++) {
-                    int attr_idx = attr * idx_length + k; // TODO
-                    int attr_idx_2 = attr * idx_length + j; // TODO
-                    extensive[attr_idx] += g * extensive[attr_idx_2];
+                for (int attr = 0; attr < extensive_length; attr+=idx_length) {
+                    extensive[attr + k] += g * extensive[attr + j];
                 }
             }
             else {  // new_n == 0
                 n[j] = (int)(n[k] / 2);
                 n[k] = n[k] - n[j];
-                for (int attr = 0; attr < n_intensive; ++attr) {
-                    int attr_idx = attr * idx_length + k; // TODO
-                    int attr_idx_2 = attr * idx_length + j; // TODO
-                    intensive[attr_idx_2] = (intensive[attr_idx] * volume[k] + intensive[attr_idx_2] * g * volume[j]) / (volume[k] + g * volume[j]);
-                    intensive[attr_idx] = intensive[attr_idx_2];
+                for (int attr = 0; attr < intensive_length; attr+=idx_length) {
+                    intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                    intensive[attr + k] = intensive[attr + j];
                 }
-                for (int attr = 0; attr < n_extensive; ++attr) {
-                    int attr_idx = attr * idx_length + k; // TODO
-                    int attr_idx_2 = attr * idx_length + j; // TODO
-                    extensive[attr_idx_2] = g * extensive[attr_idx_2] + extensive[attr_idx];
-                    extensive[attr_idx] = extensive[attr_idx_2];
+                for (int attr = 0; attr < extensive_length; attr+=idx_length) {
+                    extensive[attr + j] = g * extensive[attr + j] + extensive[attr + k];
+                    extensive[attr + k] = extensive[attr + j];
                 }
             }
             if (n[k] == 0 || n[j] == 0) {
@@ -87,7 +81,7 @@ class AlgorithmicMethods:
             }
             ''')
 
-        loop.launch_n(length - 1, [n, volume, idx, idx_length, intensive, n_intensive, extensive, n_extensive, gamma, healthy])
+        loop.launch_n(length - 1, [n, volume, idx, idx_length, intensive, intensive_length, extensive, extensive_length, gamma, healthy])
 
     @staticmethod
     def compute_gamma(prob, rand):
