@@ -56,4 +56,4 @@ def main(plot:bool):
 
 
 if __name__ == '__main__':
-    main(plot=True)
+    main(plot=False)
