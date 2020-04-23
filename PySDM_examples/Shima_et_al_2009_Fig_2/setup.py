@@ -8,7 +8,8 @@ Created at 08.08.2019
 import numpy as np
 from PySDM.simulation.initialisation.spectra import Exponential
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
-from PySDM.backends.default import Default
+from PySDM.backends import Default
+from PySDM.backends import ThrustRTC
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.physics import formulae as phys
 
@@ -30,7 +31,7 @@ class SetupA:
     kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
-    backend = Default
+    backend = ThrustRTC #TODO Default
 
     # TODO: rename?
     # TODO: as backend method?
