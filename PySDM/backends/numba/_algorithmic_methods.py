@@ -162,7 +162,7 @@ class AlgorithmicMethods:
         return new_length
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,

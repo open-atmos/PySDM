@@ -28,7 +28,7 @@ class Methods:
         return array[0] == 0
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
     def _apply_f_3_3(function, arg0, arg1, arg2, output0, output1, output2):
         for i in range(output0.shape[0]):
             output0[i], output1[i], output2[i] = function(arg0[i], arg1[i], arg2[i])

@@ -26,7 +26,7 @@ class CondensationMethods:
         volume = coord.volume
         dx_dt = coord.dx_dt
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def solve(v, particle_temperatures, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
                   rtol_x, rtol_thd, dt, substeps_hint):
 
@@ -56,16 +56,16 @@ class CondensationMethods:
 
             return qv, thd, np.maximum(1, n_substeps // multiplier)
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt):
             _, thd_new = step_impl(*args, dt, 1, True)
             return thd_new
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_true(args, dt, n_substeps):
             return step_impl(*args, dt, n_substeps, False)
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_impl(
             v, particle_temperatures, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred, m_d_mean,
             rhod_mean, rtol_x, dt, n_substeps, fake
@@ -128,13 +128,13 @@ class CondensationMethods:
 
             return qv, thd
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def _minfun_FF(x_new, x_old, dt, T, p, qv, kappa, rd, T_i):
             r_new = radius(volume(x_new))
             dr_dt = dr_dt_FF(r_new, T, p, qv, kappa, rd, T_i)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def _minfun_MM(x_new, x_old, dt, T, p, RH, kappa, rd):
             r_new = radius(volume(x_new))
             dr_dt = dr_dt_MM(r_new, T, p, RH, kappa, rd)
