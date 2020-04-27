@@ -20,14 +20,15 @@ class SDM:
         self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)
         self.prob = particles.backend.array(particles.n_sd, dtype=float)
         self.is_first_in_pair = particles.backend.array(particles.n_sd, dtype=int)  # TODO bool
+        self.seed = lambda: 44
 
     def __call__(self):
-        self.particles.backend.urand(self.temp)
+        self.particles.backend.urand(self.temp, self.seed())
         self.toss_pairs(self.is_first_in_pair, self.temp)
 
         self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
 
-        self.particles.backend.urand(self.rand)
+        self.particles.backend.urand(self.rand, self.seed())
         self.compute_gamma(self.prob, self.rand)
 
         self.particles.coalescence(gamma=self.prob)

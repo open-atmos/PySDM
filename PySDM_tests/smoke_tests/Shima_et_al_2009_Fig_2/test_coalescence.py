@@ -15,26 +15,39 @@ from PySDM.simulation.initialisation.spectral_sampling import constant_multiplic
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.simulation.initialisation.spectra import Exponential
 from PySDM.simulation.environment.box import Box
+from PySDM.simulation.physics.constants import si
 
 
 backend = Default
 
 
-@pytest.mark.skip
+def check(n_part, dv, n_sd, rho, state, step):
+    check_LWC = 1e-3 * si.kilogram / si.metre ** 3
+    check_ksi = n_part * dv / n_sd
+
+    # multiplicities
+    if step == 0:
+        np.testing.assert_approx_equal(np.amin(state.n), np.amax(state.n), 1)
+        np.testing.assert_approx_equal(state.n[0], check_ksi, 1)
+
+    # liquid water content
+    LWC = rho * np.dot(state.n, state.get_backend_storage('volume')) / dv
+    np.testing.assert_approx_equal(LWC, check_LWC, 3)
+
+
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(croupier):
-    np.random.seed(0)  # TODO: working only for backend based on numpy
-
     # Arrange
     v_min = 4.186e-15
     v_max = 4.186e-12
     n_sd = 2 ** 13
     steps = [0, 30, 60]
-    X0 = 4 / 3 * 3.14 * 30.531e-6 ** 3
-    n_part = 2 ** 23  # [m-3]
-    dv = 1e6  # [m3]
-    dt = 1  # [s]
+    X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
+    n_part = 2 ** 23 / si.metre ** 3
+    dv = 1e6 * si.metres ** 3
+    dt = 1 * si.seconds
     norm_factor = n_part * dv
+    rho = 1000 * si.kilogram / si.metre ** 3
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
@@ -47,11 +60,20 @@ def test_coalescence(croupier):
     particles = particles_builder.get_particles()
     particles.croupier = croupier
 
+    class Seed:
+        seed = 0
+
+        def __call__(self):
+            Seed.seed += 1
+            return Seed.seed
+    particles.dynamics[str(SDM)].seed = Seed()
+
     states = {}
 
     # Act
     for step in steps:
         particles.run(step - particles.n_steps)
+        check(n_part, dv, n_sd, rho, particles.state, step)
         states[particles.n_steps] = copy.deepcopy(particles.state)
 
     # Assert
