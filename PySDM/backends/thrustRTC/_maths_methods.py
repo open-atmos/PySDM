@@ -104,7 +104,7 @@ class MathsMethods:
         trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
 
     @staticmethod
-    def urand(data):
+    def urand(data, seed=None):
         rng = rndrtc.DVRNG()
         # TODO: threads vs. blocks
         # TODO: proper state_init

@@ -60,6 +60,7 @@ class MathsMethods:
         output[:] -= subtrahend[:]
 
     @staticmethod
-    @numba.njit(void(float64[:]), **conf.JIT_FLAGS)
-    def urand(output):
+    # @numba.njit(void(float64[:]), **conf.JIT_FLAGS)
+    def urand(output, seed=None):
+        np.random.seed(seed)
         output[:] = np.random.uniform(0, 1, output.shape)

@@ -6,6 +6,7 @@ Created at 20.03.2020
 """
 
 import pytest
+import numpy as np
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.backends.__parametrisation__ import \
     number_float, number, \
@@ -111,18 +112,67 @@ class TestMathsMethods:
         universal_test("subtract", sut, params)
 
     @staticmethod
-    def test_urand(sut, shape_1d):
+    @pytest.mark.parametrize('seed', [None, 0])
+    def test_urand(sut, seed, shape_1d):
         # Arrange
         sut_data, data = generate_data(sut, shape_1d, float)
         sut_idx, idx = generate_idx(sut, shape_1d, 'asc')
         length = shape_1d[0]
 
         # Act
-        sut.urand(sut_data)
-        backend.urand(data)
+        sut.urand(sut_data, seed)
+        backend.urand(data, seed)
 
         # Assert
         assert sut_data.shape == data.shape
         assert sut_data.dtype == data.dtype
+        assert backend.amin(data, idx, length) >= 0
+        assert backend.amax(data, idx, length) <= 1
         assert sut.amin(sut_data, sut_idx, length) >= 0
         assert sut.amax(sut_data, sut_idx, length) <= 1
+
+    @staticmethod
+    def test_urand_seed_reproduction(sut, shape_1d):
+        # Arrange
+        sut_data, data = generate_data(sut, shape_1d, float)
+        seed = 0
+
+        # Act
+        sut_seed_ndarray = []
+        seed_ndarray = []
+        for i in range(2):
+            sut.urand(sut_data, seed)
+            backend.urand(data, seed)
+            sut_seed_ndarray.append(sut.to_ndarray(sut_data))
+            seed_ndarray.append(backend.to_ndarray(data))
+
+        # Assert
+        np.testing.assert_array_equal(seed_ndarray[0], seed_ndarray[1])
+        np.testing.assert_array_equal(sut_seed_ndarray[0], sut_seed_ndarray[1])
+
+    @staticmethod
+    def assert_array_significantly_different(actual, not_desired):
+        diff = actual - not_desired
+        assert np.min(diff) != 0  # arrays seem to be the similar
+
+        diff = np.sort(actual) - np.sort(not_desired)
+        assert np.min(diff) != 0  # arrays seem to be permutation
+
+    @staticmethod
+    def test_urand_seed_response(sut, shape_1d):
+        # Arrange
+        sut_data, data = generate_data(sut, shape_1d, float)
+
+        # Act
+        sut_seed_ndarray = []
+        seed_ndarray = []
+        for i in range(2):
+            sut.urand(sut_data, seed=i)
+            backend.urand(data, seed=i)
+            sut_seed_ndarray.append(sut.to_ndarray(sut_data))
+            seed_ndarray.append(backend.to_ndarray(data))
+
+        # Assert
+        TestMathsMethods.assert_array_significantly_different(seed_ndarray[0], seed_ndarray[1])
+        TestMathsMethods.assert_array_significantly_different(sut_seed_ndarray[0], sut_seed_ndarray[1])
+
