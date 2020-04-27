@@ -14,7 +14,7 @@ class Product:
         self.unit = unit
         self.description = description
         self.scale = scale
-        self.range = range  # TODO: rename to something like plot_hint_range
+        self.range = range  # TODO: move out (maybe inject based on setup) and rename to something like plot_hint_range
 
         self.buffer = np.empty(shape)
         self.particles = particles
@@ -37,4 +37,5 @@ class MomentProduct(Product):
             self.download_to_buffer(self.moment_0)
         else:
             self.download_to_buffer(self.moments[0])
+
 

@@ -32,7 +32,7 @@ class Mesh:
 
     @staticmethod
     def mesh_0d(dv=None):
-        mesh = Mesh((), ())
+        mesh = Mesh((1,), ())
         mesh.dv = dv
         return mesh
 

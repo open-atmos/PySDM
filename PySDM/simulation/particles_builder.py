@@ -22,6 +22,7 @@ from .state.products.total_particle_specific_concentration import TotalParticleS
 from .state.products.particle_mean_radius import ParticleMeanRadius
 from .state.products.super_droplet_count import SuperDropletCount
 from .state.products.particle_temperature import ParticleTemperature
+from .state.products.particles_size_spectrum import ParticlesSizeSpectrum
 
 
 class ParticlesBuilder:
@@ -77,6 +78,13 @@ class ParticlesBuilder:
                                                   cell_origin=None,
                                                   position_in_cell=None,
                                                   particles=self.particles)
+
+        products = [
+            ParticlesSizeSpectrum(self.particles)
+        ]
+
+        for product in products:
+            self.register_product(product)
 
     def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
                         spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
