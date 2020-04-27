@@ -13,6 +13,7 @@ from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
+from PySDM.simulation.physics import constants as const
 
 
 class Simulation:
@@ -51,9 +52,7 @@ class Simulation:
 
     def save(self, output):
         cell_id = 0
-        volume = self.particles.state.get_backend_storage('volume')
-        volume = self.particles.backend.to_ndarray(volume)
-        output["r"].append(phys.radius(volume=volume))
+        output["r"].append(self.particles.products['radius_m1'].get(unit=const.si.metre))
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)
         output["z"].append(self.particles.environment["z"][cell_id])
         output["t"].append(self.particles.environment["t"][cell_id])

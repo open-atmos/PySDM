@@ -80,6 +80,12 @@ class ParticlesBuilder:
                                                   particles=self.particles)
 
         products = [
+            TotalParticleConcentration(self.particles),
+            TotalParticleSpecificConcentration(self.particles),
+            # AerosolConcentration(self.particles, radius_threshold),
+            # AerosolSpecificConcentration(self.particles, radius_threshold),
+            ParticleMeanRadius(self.particles),
+            SuperDropletCount(self.particles),
             ParticlesSizeSpectrum(self.particles)
         ]
 
