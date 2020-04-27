@@ -55,9 +55,9 @@ class TestAlgorithmicMethods:
     @staticmethod
     def test_compute_gamma(sut, shape_1d):
         params = [{'name': "prob",
-                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 0}},
+                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 44, 'factor': 5}},
                   {'name': "rand",
-                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 0}}
+                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 66, 'factor': 1}}
                   ]
         universal_test("compute_gamma", sut, params)
 
