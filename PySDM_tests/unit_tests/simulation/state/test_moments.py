@@ -18,6 +18,7 @@ backend = Default
 
 
 class TestMaths:
+
     @staticmethod
     def test_moment_0d():
         # Arrange

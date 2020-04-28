@@ -1,4 +1,5 @@
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation, setups
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.physics import constants as const
 import pytest

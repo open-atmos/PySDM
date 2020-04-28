@@ -1,7 +1,7 @@
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation, setups
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs, N_STPs, r_drys
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs
 from PySDM.simulation.physics import constants as const
-from PySDM.simulation.physics import formulae as phys
 import pytest
 import numpy as np
 
