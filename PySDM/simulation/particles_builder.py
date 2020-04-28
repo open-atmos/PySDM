@@ -23,6 +23,7 @@ from .state.products.particle_mean_radius import ParticleMeanRadius
 from .state.products.super_droplet_count import SuperDropletCount
 from .state.products.particle_temperature import ParticleTemperature
 from .state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from .state.products.particles_mass_spectrum import ParticlesMassSpectrum
 
 
 class ParticlesBuilder:
@@ -82,11 +83,10 @@ class ParticlesBuilder:
         products = [
             TotalParticleConcentration(self.particles),
             TotalParticleSpecificConcentration(self.particles),
-            # AerosolConcentration(self.particles, radius_threshold),
-            # AerosolSpecificConcentration(self.particles, radius_threshold),
             ParticleMeanRadius(self.particles),
             SuperDropletCount(self.particles),
-            ParticlesSizeSpectrum(self.particles)
+            ParticlesSizeSpectrum(self.particles),
+            ParticlesMassSpectrum(self.particles)
         ]
 
         for product in products:
