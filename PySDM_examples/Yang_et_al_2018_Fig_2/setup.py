@@ -28,15 +28,18 @@ class Setup:
             range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         )
         self.n = discretise_n(self.n)
-        self.dt_output = dt_output
         self.dt_max = dt_max
+
+        self.dt_output = dt_output
+        self.r_bins_edges = np.linspace(0 * si.micrometre, 20 * si.micrometre, 101, endpoint=True)
+
     backend = Default
     coord = 'volume logarithm'
     adaptive = True
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
 
-    mass_of_dry_air = 100 * si.kilogram
+    mass_of_dry_air = 100 * si.kilogram  # TODO: doubled with jupyter si unit
     total_time = 3 * si.hours
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram

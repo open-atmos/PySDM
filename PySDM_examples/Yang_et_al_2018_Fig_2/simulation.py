@@ -20,11 +20,11 @@ from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 class Simulation:
     def __init__(self, setup):
 
-        dt_output = setup.total_time / setup.n_steps
+        dt_output = setup.total_time / setup.n_steps  # TODO: overwritten in jupyter example
         self.n_substeps = 1  # TODO:
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
-
+        self.bins_edges = phys.volume(setup.r_bins_edges)
         particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
         particles_builder.set_condensation_parameters(setup.coord, setup.adaptive)
         particles_builder.set_mesh_0d()
@@ -53,8 +53,9 @@ class Simulation:
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
+        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get(self.bins_edges))
         volume = self.particles.state.get_backend_storage('volume')
-        volume = self.particles.backend.to_ndarray(volume)
+        volume = self.particles.backend.to_ndarray(volume)  # TODO
         output["r"].append(phys.radius(volume=volume))
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)
         output["qv"].append(self.particles.environment["qv"][cell_id])
@@ -63,7 +64,7 @@ class Simulation:
         output["t"].append(self.particles.environment["t"][cell_id])
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": []}
 
         self.save(output)
         for step in range(self.n_steps):
