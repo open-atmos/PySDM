@@ -22,6 +22,7 @@ class Condensation:
                  do_condensation: bool = True,
                  ):
         self.particles = particles
+        self.particles.set_condensation_solver()
         self.environment = particles.environment
         self.kappa = kappa
         self.rtol_x = rtol_x
