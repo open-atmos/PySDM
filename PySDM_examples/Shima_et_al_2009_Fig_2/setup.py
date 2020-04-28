@@ -14,8 +14,8 @@ from PySDM.simulation.physics import formulae as phys
 
 
 class SetupA:
-    x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
-    x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
+    init_x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
+    init_x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
@@ -30,19 +30,12 @@ class SetupA:
     kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
+    v_bins_edges = np.logspace(
+        np.log10(phys.volume(radius=10 * si.micrometres)),
+        np.log10(phys.volume(radius=5e3 * si.micrometres)),
+        num=64,
+        endpoint=True
+    )
+    r_bins_edges = phys.radius(volume=v_bins_edges)
+
     backend = Default
-
-    # TODO: rename?
-    # TODO: as backend method?
-    def check(self, state, step):
-        check_LWC = 1e-3  * si.kilogram / si.metre**3
-        check_ksi = self.n_part * self.dv / self.n_sd
-
-        # multiplicities
-        if step == 0:
-            np.testing.assert_approx_equal(np.amin(state['n']), np.amax(state['n']), 1)
-            np.testing.assert_approx_equal(state['n'][0], check_ksi, 1)
-
-        # liquid water content
-        LWC = self.rho * np.dot(state['n'], state['volume']) / self.dv
-        np.testing.assert_approx_equal(LWC, check_LWC, 3)

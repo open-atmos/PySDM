@@ -16,7 +16,7 @@ def run(setup):
     particles_building = ParticlesBuilder(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
     particles_building.set_mesh_0d(setup.dv)
     particles_building.set_environment(Box, {})
-    v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.x_min, setup.x_max))
+    v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
     particles_building.create_state_0d(n=n, extensive={'volume': v}, intensive={})
     particles_building.register_dynamic(SDM, {"kernel": setup.kernel})
     particles = particles_building.get_particles()
@@ -24,12 +24,11 @@ def run(setup):
     states = {}
     for step in setup.steps:
         particles.run(step - particles.n_steps)
-        # setup.check(runner.state, runner.n_steps) TODO???
 
     return states, particles.stats
 
 #%%
-# TODO python -O
+# TIP: try with: python -O
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
 
