@@ -5,12 +5,14 @@ Created at 10.12.2019
 @author: Sylwester Arabas
 """
 
+import numpy as np
 import ThrustRTC as trtc
 import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
 
 
 class MathsMethods:
+    chunks = 32
 
     @staticmethod
     def add(output, addend):
@@ -105,17 +107,28 @@ class MathsMethods:
 
     @staticmethod
     def urand(data, seed=None):
+        if seed is None:
+            seed = np.random.randint(2**16)
         rng = rndrtc.DVRNG()
-        # TODO: threads vs. blocks
-        # TODO: proper state_init
-        # TODO: generator choice
-        chunks = min(32, data.size())  # TODO!!!
-        ker = trtc.For(['rng', 'vec_rnd'], 'idx',
-                       f'''
-                       RNGState state;
-                       rng.state_init(1234, idx, 0, state);  // initialize a state using the rng object
-                       for (int i=0; i<{chunks}; i++)
-                           vec_rnd[i+idx*{chunks}]=(float)state.rand01(); // generate random number using the rng object
-                       ''')
+
+        chunks = MathsMethods.chunks
+        ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+            RNGState state;
+            rng.state_init({seed}, idx, 0, state);  // initialize a state using the rng object
+            for (int i=0; i<{chunks}; i++)
+               vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
+            ''')
 
         ker.launch_n(data.size() // chunks, [rng, data])
+
+        if data.size() % MathsMethods.chunks != 0:
+            start = data.size() - (data.size() % MathsMethods.chunks)
+            stop = data.size()
+            data_tail = data.range(start, stop)
+            ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+                RNGState state;
+                rng.state_init({seed}, {start}+idx, 0, state);  // initialize a state using the rng object
+                vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
+                ''')
+
+            ker.launch_n(stop - start, [rng, data_tail])
