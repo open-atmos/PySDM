@@ -20,7 +20,7 @@ class SDM:
         self.rand = self.particles.backend.array(self.particles.n_sd // 2, dtype=float)
         self.prob = self.particles.backend.array(self.particles.n_sd, dtype=float)
         self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
-        self.seed = lambda: 44
+        self.seed = lambda: None
 
     def __call__(self):
         self.particles.backend.urand(self.temp, self.seed())
