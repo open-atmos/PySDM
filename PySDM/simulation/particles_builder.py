@@ -13,7 +13,6 @@ from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.state.state_factory import StateFactory
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM.simulation.initialisation.temperature_init import temperature_init
-from PySDM.simulation.mesh import Mesh
 
 from .state.products.aerosol_concentration import AerosolConcentration
 from .state.products.aerosol_specific_concentration import AerosolSpecificConcentration
@@ -58,10 +57,18 @@ class ParticlesBuilder:
             raise Exception(f'product name "{product.name}" already registered')
         self.particles.products[product.name] = product
 
+    def set_attributes(self, params):
+        assert_not_none(self.particles.environment)
+        assert_none(self.particles.state)
+        if self.particles.mesh.dimension == 0:
+            self.create_state_0d(**params)
+        elif self.particles.mesh.dimension == 2:
+            self.create_state_2d(**params)
+        else:
+            NotImplementedError("Implemented dimensions: [0D, 2D]")
+
     def create_state_0d(self, n, extensive, intensive):
         n = discretise_n(n)
-        assert_not_none(self.particles.mesh)
-        assert_none(self.particles.state)
         cell_id = np.zeros_like(n, dtype=np.int64)
         self.particles.state = StateFactory.state(n=n,
                                                   intensive=intensive,
@@ -86,8 +93,6 @@ class ParticlesBuilder:
     def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
                         spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
                         enable_temperatures: bool = False):
-        assert_not_none(self.particles.mesh, self.particles.environment)
-        assert_none(self.particles.state)
 
         with np.errstate(all='raise'):
             positions = spatial_discretisation(self.particles.mesh.grid, self.particles.n_sd)
