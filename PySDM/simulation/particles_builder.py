@@ -23,7 +23,7 @@ from .state.products.particle_mean_radius import ParticleMeanRadius
 from .state.products.super_droplet_count import SuperDropletCount
 from .state.products.particle_temperature import ParticleTemperature
 from .state.products.particles_size_spectrum import ParticlesSizeSpectrum
-from .state.products.particles_mass_spectrum import ParticlesMassSpectrum
+from .state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
 class ParticlesBuilder:
@@ -77,7 +77,7 @@ class ParticlesBuilder:
             ParticleMeanRadius(self.particles),
             SuperDropletCount(self.particles),
             ParticlesSizeSpectrum(self.particles),
-            ParticlesMassSpectrum(self.particles)
+            ParticlesVolumeSpectrum(self.particles)
         ]
 
         for product in products:

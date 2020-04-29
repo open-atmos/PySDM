@@ -35,9 +35,8 @@ def run(setup):
     vals = {}
     for step in setup.steps:
         particles.run(step - particles.n_steps)
-        vals[step] = particles.products['Particles Mass Spectrum'].get(setup.v_bins_edges)
-        vals[step][:] /= particles.mesh.dv
-        vals[step][:] *= setup.rho / np.diff(np.log(setup.r_bins_edges))
+        vals[step] = particles.products['dv/dlnr'].get(setup.radius_bins_edges)
+        vals[step][:] *= setup.rho
 
     return vals, particles.stats
 

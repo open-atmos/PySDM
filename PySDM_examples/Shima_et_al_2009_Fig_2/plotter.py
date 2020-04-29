@@ -31,13 +31,14 @@ class Plotter:
                 x=x, t=t, x_0=setup.X0, N_0=setup.n_part
             )
 
-        dm = np.diff(setup.v_bins_edges)
-        dr = np.diff(setup.r_bins_edges)
+        volume_bins_edges = phys.volume(setup.radius_bins_edges)
+        dm = np.diff(volume_bins_edges)
+        dr = np.diff(setup.radius_bins_edges)
 
-        pdf_m_x = setup.v_bins_edges[:-1] + dm / 2
+        pdf_m_x = volume_bins_edges[:-1] + dm / 2
         pdf_m_y = analytic_solution(pdf_m_x)
 
-        pdf_r_x = setup.r_bins_edges[:-1] + dr / 2
+        pdf_r_x = setup.radius_bins_edges[:-1] + dr / 2
         pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
 
         pyplot.plot(
@@ -47,7 +48,7 @@ class Plotter:
         )
 
         pyplot.step(
-            setup.r_bins_edges[:-1] * si.metres / si.micrometres,
+            setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
             vals * si.kilograms / si.grams,
             where='post',
             label=f"t = {t}s"
