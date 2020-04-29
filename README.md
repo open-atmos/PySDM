@@ -2,35 +2,44 @@
 [![Coverage Status](https://img.shields.io/codecov/c/github/atmos-cloud-sim-uj/PySDM/master.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
 
 # PySDM
-PySDM is a package for simulating the dynamics of population of particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics.
-The package core is a Pythonic implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisinal growth ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
+PySDM is a package for simulating the dynamics of population of particles 
+  immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
+  to represent aerosol/cloud/rain microphysics.
+The package core is a Pythonic high-performance multi-threaded implementation of the 
+  Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisinal growth 
+  ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
 
 ## Dependencies and installation
 
-It is worth here to distinguish the dependencies of the PySDM "core" sub-package
-vs. PySDM_examples and PySDM_tests sub-packages.
+It is worth here to distinguish the dependencies of the PySDM core subpackage 
+(named simply ``PySDM``) vs. ``PySDM_examples`` and ``PySDM_tests`` subpackages.
 
-PySDM "core" subpackage dependencies are all available through PyPI, the
-  key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
+PySDM core subpackage dependencies are all available through [PyPI](https://pypi.org), 
+  the key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
 As of the time of writing, PySDM has three alternative number-crunching backends 
   implemented which are based on [Numba](http://numba.pydata.org/), 
   [Pythran](https://pythran.readthedocs.io/en/latest/) and 
   [ThrustRTC](https://pypi.org/project/ThrustRTC/).
 
-The **Numba backend** is the default, and features multi-threaded parallelism on 
-  multi-core CPUs.
+The **Numba backend** is the default, and features multi-threaded parallelism for 
+  multi-core CPUs. 
+It uses the just-in-time compilation technique based on the LLVM infrastructure.
 
-The **Pythran backend** depends on the Pythran ahead-of-time compiler and
-  offers an alternative implementation of the multi-threaded parallelism.
+The **Pythran backend** uses the ahead-of-time compilation approach (also using LLVM) and
+  offers an alternative implementation of the multi-threaded parallelism in PySDM.
 
 The **ThrustRTC** backend offers GPU-resident operation of PySDM
-  leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) parallelisation model. 
-Note that as of ThrustRTC v0.2.1, only Python 3.7 is supported by ThrustRTC.
+  leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
+  parallelisation model. 
+Note that, as of ThrustRTC v0.2.1, only Python 3.7 is supported by the ThrustRTC PyPI package
+  (i.e., manual installation is needed for other versions of Python).
 
-The dependencies of examples and test subpackages are summarised in
-  the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) file.
+The dependencies of PySDM examples and test subpackages are summarised in
+  the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
+  file.
 Additionally, the [MPyDATA](https://github.com/atmos-cloud-sim-uj/MPyDATA) package
-  is used in one of the examples, and is boundled with PySDM as a git submodule.
+  is used in one of the examples (``ICMW_2012_case_1``), and is bundled 
+  in the PySDM repository as a git submodule (``submodules/MPyDATA`` path).
 Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
   used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
 
@@ -51,7 +60,19 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 ## Package structure and API
 
 The key element of the PySDM interface if the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
-  class which instances are used to control the simulations...
+  class which instances are used to control the simulation.
+Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``.
+  
+.set_mesh()
+.set_mesh_0d()
+.set_condensation_parameters()
+.set_terminal_velocity
+.set_environment()
+.create_state_0d()
+.create_state_2d
+.register_dynamic()
+.get_particles()
+
 
 
 ## Credits:
