@@ -1,6 +1,6 @@
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
-from PySDM_tests.unit_tests.simulation.dynamics.displacement.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
@@ -74,8 +74,7 @@ class TestState:
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         grid = (1, 1)
         particles = DummyParticles(backend, n_sd=1)
-        particles.set_mesh(grid)
-        particles.set_environment(DummyEnvironment, (None,))
+        particles.set_environment(DummyEnvironment, {'grid': grid})
         sut = TestableStateFactory.state_2d(n=n, intensive={}, extensive={},
                                             particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1

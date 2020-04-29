@@ -20,9 +20,11 @@ class Setup:
         self.courant_field_data = (np.array([[0, 0]]).T, np.array([[0, 0]]))
         self.positions = [[0, 0]]
         self.scheme = 'FTBS'
+        self.sedimentation = False
+        self.dt = None
 
     def get_displacement(self):
-        particles = DummyParticles(Default, n_sd=len(self.n))
+        particles = DummyParticles(Default, n_sd=len(self.n), dt=self.dt)
         particles.set_environment(DummyEnvironment,
                                   {'grid': self.grid,
                                    'courant_field_data': self.courant_field_data})
@@ -34,6 +36,6 @@ class Setup:
                                              cell_origin=cell_origin,
                                              position_in_cell=position_in_cell,
                                              particles=particles)
-        sut = Displacement(particles_builder=particles, scheme=self.scheme)
+        sut = Displacement(particles_builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
 
         return sut, particles

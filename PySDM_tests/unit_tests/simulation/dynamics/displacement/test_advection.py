@@ -7,7 +7,7 @@ Created at 23.10.2019
 """
 
 import numpy as np
-from .advection_test_setup import Setup
+from .displacement_setup import Setup
 
 
 class TestExplicitEulerWithInterpolation:

@@ -23,7 +23,6 @@ class Particles:
         self.dynamics = {}
         self.products = {}
 
-        self.__dv = None
         self.n_steps = 0
         self.stats = stats or Stats()
 
@@ -42,7 +41,8 @@ class Particles:
 
     @property
     def mesh(self):
-        return self.environment.mesh
+        if self.environment is not None:
+            return self.environment.mesh
 
     def permute(self, u01):
         if self.croupier == 'global':
