@@ -68,26 +68,47 @@ The key element of the PySDM interface if the [``Particles``](https://github.com
 Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``. 
   To construct ``ParticleBuilder`` we need to:
 ```Python
-from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.physics.constants import si
-from PySDM.simulation.environment.box import Box
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.simulation.initialisation.spectra import Exponential
 from PySDM.simulation.physics.formulae import volume
+
+n_sd = 2**15
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
+sampling_range = (volume(radius=10 * si.um), volume(radius=100 * si.um))
+v, n = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+```
+```Python
+from PySDM.simulation.particles_builder import ParticlesBuilder
+from PySDM.simulation.environment.box import Box
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.backends import Numba
 
-n_sd = 10000
-particles_builder = ParticlesBuilder(n_sd=n_sd, dt=1 * si.second, backend=Numba)
-particles_builder.set_environment(Box, {"dv": 1e6 * si.metres**3})
-initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.micrometres**3)
-sampling_range = (volume(radius=10 * si.micrometres), volume(radius=100 * si.micrometres))
-v, n = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+particles_builder = ParticlesBuilder(n_sd=n_sd, dt=1 * si.s, backend=Numba)
+particles_builder.set_environment(Box, {"dv": 1e6 * si.m**3})
 particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-particles_builder.register_dynamic(SDM, {"kernel": Golovin(b=1.5e3 / si.second)})
+particles_builder.register_dynamic(SDM, {"kernel": Golovin(b=1.5e3 / si.s)})
 particles = particles_builder.get_particles()
-particles.run(steps=3600)
+```
+```Python
+from matplotlib import pyplot
+import numpy as np
+
+radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True)
+rho = 1000 * si.kg / si.m**3
+
+for step in [0, 1200, 2400, 3600]:
+    particles.run(step - particles.n_steps)
+    pyplot.step(x=radius_bins_edges[:-1] / si.um,
+                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho / si.g,
+                where='post', label=f"t = {step}s")
+
+pyplot.xscale('log')
+pyplot.xlabel('particle radius [µm]')
+pyplot.ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
+pyplot.legend()
+pyplot.show()
 ```
   where ``n_sd`` is the number of super-droplets, ``dt`` is the timestep.
   The ``backend`` argument may be set to either ``Numba`` or ``ThrustRTC``
