@@ -55,12 +55,6 @@ class Particles:
     def find_pairs(self, cell_start, is_first_in_pair):
         self.state.find_pairs(cell_start, is_first_in_pair)
 
-    def set_condensation_solver(self, solver='default'):
-        if solver == 'default':
-            self.condensation_solver = self.backend.make_condensation_solver()
-        else:
-            raise ValueError(f"Unknown {solver} solver. Available solvers: [default]")
-
     def sum_pair(self, output, x, is_first_in_pair):
         self.state.sum_pair(output, x, is_first_in_pair)
 

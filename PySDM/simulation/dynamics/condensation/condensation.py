@@ -6,7 +6,7 @@ Created at 24.10.2019
 """
 
 from .products.condensation_timestep import CondensationTimestep
-from ...particles import Particles
+from ...particles_builder import ParticlesBuilder
 import numpy as np
 
 
@@ -15,15 +15,16 @@ default_rtol_thd = 1e-8
 
 
 class Condensation:
-    def __init__(self, particles: Particles, kappa,
+    def __init__(self, particles_builder: ParticlesBuilder, kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
+                 coord='volume logarithm', adaptive=True,
                  do_advection: bool = True,
                  do_condensation: bool = True,
                  ):
-        self.particles = particles
-        self.particles.set_condensation_solver()
-        self.environment = particles.environment
+        self.particles = particles_builder.particles
+        particles_builder._set_condensation_parameters(coord, adaptive)
+        self.environment = self.particles.environment
         self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
@@ -31,8 +32,8 @@ class Condensation:
         self.do_advection = do_advection
         self.do_condensation = do_condensation
 
-        self.substeps = particles.backend.array(particles.mesh.n_cell, dtype=int)
-        self.substeps[:] = np.maximum(1, int(particles.dt))
+        self.substeps = self.particles.backend.array(self.particles.mesh.n_cell, dtype=int)
+        self.substeps[:] = np.maximum(1, int(self.particles.dt))
 
         self.products = [CondensationTimestep(self), ]
 

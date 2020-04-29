@@ -73,17 +73,15 @@ class Simulation:
             enable_temperatures=self.setup.enable_particle_temperatures
         )
 
-        # <TODO> ?
-        particles_builder.set_condensation_parameters(self.setup.condensation_coord)
         particles_builder.register_dynamic(Condensation, {
             "kappa": self.setup.kappa,
             "rtol_x": self.setup.condensation_rtol_x,
             "rtol_thd": self.setup.condensation_rtol_thd,
-            "do_advection": self.setup.processes["fluid advection"],
-            "do_condensation": self.setup.processes["condensation"]
+            "coord": self.setup.condensation_coord,
+            "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
+            "do_condensation": self.setup.processes["condensation"]   #      do somthing with that
         })
         particles_builder.register_dynamic(EulerianAdvection, {})
-        # </TODO>
 
         if self.setup.processes["particle advection"]:
             particles_builder.register_dynamic(

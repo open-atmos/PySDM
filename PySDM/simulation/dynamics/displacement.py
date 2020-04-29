@@ -6,26 +6,26 @@ Created at 23.10.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.state.state import State
 import numpy as np
+from PySDM.simulation.particles_builder import ParticlesBuilder
 
 
 class Displacement:
-    def __init__(self, particles, scheme='FTBS', sedimentation=False):
-        courant_field = particles.environment.get_courant_field_data()
+    def __init__(self, particles_builder: ParticlesBuilder, scheme='FTBS', sedimentation=False):
+        self.particles = particles_builder.particles
+        courant_field = self.particles.environment.get_courant_field_data()
 
         # CFL # TODO: this should be done by MPyDATA
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
         if scheme == 'FTFS':
-            method = particles.backend.explicit_in_space
+            method = self.particles.backend.explicit_in_space
         elif scheme == 'FTBS':
-            method = particles.backend.implicit_in_space
+            method = self.particles.backend.implicit_in_space
         else:
             raise NotImplementedError()
 
-        self.particles = particles
         self.scheme = method
         self.sedimentation = sedimentation
 

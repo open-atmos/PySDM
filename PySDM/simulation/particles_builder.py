@@ -43,7 +43,7 @@ class ParticlesBuilder:
         assert_none(self.particles.mesh)
         self.particles.mesh = Mesh.mesh_0d(dv)
 
-    def set_condensation_parameters(self, coord, adaptive=True):
+    def _set_condensation_parameters(self, coord, adaptive=True):
         self.particles.condensation_solver = self.particles.backend.make_condensation_solver(coord, adaptive)
 
     def set_environment(self, environment_class, params: dict):
@@ -53,7 +53,7 @@ class ParticlesBuilder:
         self.register_products(self.particles.environment)
 
     def register_dynamic(self, dynamic_class, params: dict):
-        instance = (dynamic_class(self.particles, **params))
+        instance = (dynamic_class(self, **params))
         self.particles.dynamics[str(dynamic_class)] = instance
         self.register_products(instance)
 

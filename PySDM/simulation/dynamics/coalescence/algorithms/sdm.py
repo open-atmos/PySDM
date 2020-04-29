@@ -5,21 +5,21 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particles import Particles
+from PySDM.simulation.particles_builder import ParticlesBuilder
 
 
 class SDM:
 
-    def __init__(self, particles: Particles, kernel):
-        self.particles = particles
+    def __init__(self, particles_builder: ParticlesBuilder, kernel):
+        self.particles = particles_builder.particles
 
-        kernel.particles = particles
+        kernel.particles = self.particles
         self.kernel = kernel
 
-        self.temp = particles.backend.array(particles.n_sd, dtype=float)
-        self.rand = particles.backend.array(particles.n_sd // 2, dtype=float)
-        self.prob = particles.backend.array(particles.n_sd, dtype=float)
-        self.is_first_in_pair = particles.backend.array(particles.n_sd, dtype=int)  # TODO bool
+        self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)
+        self.rand = self.particles.backend.array(self.particles.n_sd // 2, dtype=float)
+        self.prob = self.particles.backend.array(self.particles.n_sd, dtype=float)
+        self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
         self.seed = lambda: 44
 
     def __call__(self):

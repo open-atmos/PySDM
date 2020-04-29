@@ -26,7 +26,6 @@ class Simulation:
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
         particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=setup.n_sd, dt=dt_output / self.n_substeps)
-        particles_builder.set_condensation_parameters(setup.coord, setup.adaptive)
         particles_builder.set_mesh_0d()
         particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
             "mass_of_dry_air": setup.mass_of_dry_air,
@@ -43,6 +42,8 @@ class Simulation:
         particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
+            "coord": setup.coord,
+            "adaptive": setup.adaptive,
             "rtol_x": setup.rtol_x,
             "rtol_thd": setup.rtol_thd,
         })
