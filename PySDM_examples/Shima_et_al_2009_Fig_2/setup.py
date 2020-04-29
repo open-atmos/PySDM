@@ -19,7 +19,7 @@ class SetupA:
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
-    X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
+    X0 = 4 / 3 * np.pi * (30.531 * si.micrometres) ** 3
     dv = 1e6 * si.metres**3
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
