@@ -52,6 +52,8 @@ class Simulation:
         particles_builder.set_terminal_velocity(TerminalVelocity)
         particles_builder.set_mesh(grid=self.setup.grid, size=self.setup.size)
         particles_builder.set_environment(MoistEulerian2DKinematic, {
+            "grid": self.setup.grid,
+            "size": self.setup.size,
             "stream_function": self.setup.stream_function,
             "field_values": self.setup.field_values,
             "rhod_of": self.setup.rhod,

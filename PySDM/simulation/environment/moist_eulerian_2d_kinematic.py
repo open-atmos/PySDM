@@ -16,13 +16,14 @@ from .products.relative_humidity import RelativeHumidity
 from .products.dry_air_potential_temperature import DryAirPotentialTemperature
 from .products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from .products.dry_air_density import DryAirDensity
+from PySDM.simulation.mesh import Mesh
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles, stream_function, field_values, rhod_of,
+    def __init__(self, particles, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
-        super().__init__(particles, [])
+        super().__init__(particles, Mesh(grid, size), [])
 
         self.__rhod_of = rhod_of
 

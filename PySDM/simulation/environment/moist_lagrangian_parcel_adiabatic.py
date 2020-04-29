@@ -11,6 +11,7 @@ from ...simulation.physics import formulae as phys
 from ...simulation.physics import constants as const
 from ._moist import _Moist
 from ._moist_lagrangian_parcel import _MoistLagrangianParcel
+from PySDM.simulation.mesh import Mesh
 
 
 class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
@@ -18,7 +19,7 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
     def __init__(self, particles: Particles,
                  mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
-        super().__init__(particles, ['rhod', 'z', 't'], mass_of_dry_air)
+        super().__init__(particles, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
 
         # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w

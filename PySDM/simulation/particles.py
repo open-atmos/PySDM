@@ -18,7 +18,6 @@ class Particles:
         self.__dt = dt
 
         self.backend = backend
-        self.mesh = None
         self.environment = None
         self.state: (State, None) = None
         self.dynamics = {}
@@ -40,6 +39,10 @@ class Particles:
     @property
     def dt(self) -> float:
         return self.__dt
+
+    @property
+    def mesh(self):
+        return self.environment.mesh
 
     def permute(self, u01):
         if self.croupier == 'global':

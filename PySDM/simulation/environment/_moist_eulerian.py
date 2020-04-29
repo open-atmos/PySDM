@@ -3,13 +3,12 @@ import numpy as np
 
 
 class _MoistEulerian(_Moist):
-    def __init__(self, particles, variables):
-        super().__init__(particles, variables)
-        self._dv = self.particles.mesh.dv
+    def __init__(self, particles, mesh, variables):
+        super().__init__(particles, mesh, variables)
 
     @property
     def dv(self):
-        return self._dv
+        return self.mesh.dv
 
     def get_qv(self) -> np.ndarray:
         return self._get_qv()

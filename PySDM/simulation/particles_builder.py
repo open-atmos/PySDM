@@ -35,19 +35,10 @@ class ParticlesBuilder:
         assert_none(self.particles.terminal_velocity)
         self.particles.terminal_velocity = terminal_velocity_class(self.particles)
 
-    def set_mesh(self, grid, size):
-        assert_none(self.particles.mesh)
-        self.particles.mesh = Mesh(grid, size)
-
-    def set_mesh_0d(self, dv=None):
-        assert_none(self.particles.mesh)
-        self.particles.mesh = Mesh.mesh_0d(dv)
-
     def _set_condensation_parameters(self, coord, adaptive=True):
         self.particles.condensation_solver = self.particles.backend.make_condensation_solver(coord, adaptive)
 
     def set_environment(self, environment_class, params: dict):
-        assert_not_none(self.particles.mesh)
         assert_none(self.particles.environment)
         self.particles.environment = environment_class(self.particles, **params)
         self.register_products(self.particles.environment)

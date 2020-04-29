@@ -6,13 +6,15 @@ Created at 28.11.2019
 """
 
 import numpy as np
+from PySDM.simulation.particles_builder import ParticlesBuilder
 
 
 class _Moist:
 
-    def __init__(self, particles, variables):
+    def __init__(self, particles_builder: ParticlesBuilder, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
-        self.particles = particles
+        self.particles = particles_builder.particles
+        self.mesh = mesh
         self._values = {
             "predicted": None,
             "current": self._allocate(variables)
