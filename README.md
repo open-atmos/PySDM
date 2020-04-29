@@ -5,8 +5,8 @@
 PySDM is a package for simulating the dynamics of population of particles 
   immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
-The package core is a Pythonic high-performance multi-threaded implementation of the 
-  Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisinal growth 
+The package core is a Pythonic high-performance multi-threaded/GPU implementation of the 
+  Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
 
 ## Dependencies and installation
@@ -46,12 +46,16 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 ## Demos:
 - [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)
+  (Box model, coalescence only, test case employing Golovin analytical solution)
 - [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)
+  (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)
 - [Yang et al. 2018](http://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FYang_et_al_2018_Fig_2/demo.ipynb)
+  (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
 - ICMW 2012 case 1 (work in progress)
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FICMW_2012_case_1/demo.ipynb)
+  (2D prescripted flow stratocumulus-mimicking aerosol collisional processing test case)
   
 ## Tutorials:
 - Introduction [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_tutorials%2F_intro.ipynb)
@@ -61,13 +65,38 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 
 The key element of the PySDM interface if the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
   class which instances are used to control the simulation.
-Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``.
-  
-.set_mesh()
-.set_mesh_0d()
-.set_condensation_parameters()
-.set_terminal_velocity
-.set_environment()
+Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``. 
+  To construct ``ParticleBuilder`` we need to:
+```Python
+from PySDM.simulation.particles_builder import ParticlesBuilder
+from PySDM.simulation.physics.constants import si
+from PySDM.simulation.environment.box import Box
+from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.simulation.initialisation.spectra import Exponential
+from PySDM.simulation.physics.formulae import volume
+from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM.backends import Numba
+
+n_sd = 10000
+particles_builder = ParticlesBuilder(n_sd=n_sd, dt=1 * si.second, backend=Numba)
+particles_builder.set_environment(Box, {"dv": 1e6 * si.metres**3})
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.micrometres**3)
+sampling_range = (volume(radius=10 * si.micrometres), volume(radius=100 * si.micrometres))
+v, n = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+particles_builder.register_dynamic(SDM, {"kernel": Golovin(b=1.5e3 / si.second)})
+particles = particles_builder.get_particles()
+particles.run(steps=3600)
+```
+  where ``n_sd`` is the number of super-droplets, ``dt`` is the timestep.
+  The ``backend`` argument may be set to either ``Numba`` or ``ThrustRTC``
+  what translates to choosing multi-threaded or GPU computation mode, respectively.
+
+ParticlesBuilder API:
+- ``set_environment(environment_class, params)``: ``environment_class`` is the chosen Environment (see below) 
+  and ``params``
+.set_terminal_velocity()
 .create_state_0d()
 .create_state_2d
 .register_dynamic()
