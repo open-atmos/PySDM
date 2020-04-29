@@ -34,7 +34,10 @@ class StorageMethods:
 
     @staticmethod
     def download(backend_data, numpy_target):
-        numpy_target[:] = np.reshape(backend_data.to_host(), backend_data.shape)
+        if isinstance(backend_data, StorageMethods.storage):
+            numpy_target[:] = np.reshape(backend_data.to_host(), backend_data.shape)
+        else:
+            numpy_target[:] = StorageMethods.to_ndarray(backend_data)
 
     @staticmethod
     def from_ndarray(array):

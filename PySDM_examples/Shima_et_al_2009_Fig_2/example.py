@@ -37,7 +37,7 @@ def run(setup):
     for step in setup.steps:
         particles.run(step - particles.n_steps)
         vals[step] = particles.products['Particles Mass Spectrum'].get(setup.v_bins_edges)
-        vals[:] /= particles.mesh.dv
+        vals[step][:] /= particles.mesh.dv
         vals[step][:] *= setup.rho / np.diff(np.log(setup.r_bins_edges))
 
     return vals, particles.stats
@@ -60,4 +60,4 @@ def main(plot: bool):
 
 
 if __name__ == '__main__':
-    main(plot=False)
+    main(plot=True)

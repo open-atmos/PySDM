@@ -26,7 +26,7 @@ class Product:
 class MomentProduct(Product):
     def __init__(self, particles, shape, name, unit, description, scale, range):
         super().__init__(particles, shape, name, unit, description, scale, range)
-
+        self.particles = particles
         # TODO
         self.moment_0 = particles.backend.array(particles.mesh.n_cell, dtype=int)
         self.moments = particles.backend.array((1, particles.mesh.n_cell), dtype=float)
@@ -36,6 +36,6 @@ class MomentProduct(Product):
         if rank == 0:  # TODO
             self.download_to_buffer(self.moment_0)
         else:
-            self.download_to_buffer(self.moments[0])
+            self.download_to_buffer(self.particles.backend.read_row(self.moments, 0))
 
 
