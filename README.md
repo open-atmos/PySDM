@@ -5,9 +5,13 @@
 PySDM is a package for simulating the dynamics of population of particles 
   immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
-The package core is a Pythonic high-performance multi-threaded/GPU implementation of the 
+The package core is a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
+PySDM has three alternative number-crunching backends 
+  available: multi-threaded CPU backends based on [Numba](http://numba.pydata.org/) 
+  and [Pythran](https://pythran.readthedocs.io/en/latest/), and a GPU-resident
+  backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
 
 ## Dependencies and installation
 
@@ -16,10 +20,7 @@ It is worth here to distinguish the dependencies of the PySDM core subpackage
 
 PySDM core subpackage dependencies are all available through [PyPI](https://pypi.org), 
   the key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
-As of the time of writing, PySDM has three alternative number-crunching backends 
-  implemented which are based on [Numba](http://numba.pydata.org/), 
-  [Pythran](https://pythran.readthedocs.io/en/latest/) and 
-  [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+
 
 The **Numba backend** is the default, and features multi-threaded parallelism for 
   multi-core CPUs. 
@@ -63,10 +64,12 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 
 ## Package structure and API
 
-The key element of the PySDM interface if the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
-  class which instances are used to control the simulation.
-Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``. 
-  To construct ``ParticleBuilder`` we need to:
+In order to depict the PySDM API with a practical example, the following
+  listings provide a sample code roughly reproducing the 
+  Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441).
+It is a coalescence-only set-up in which the initial particle size 
+  spectrum is exponential and is deterministically sampled assuring
+  that each super-droplet in the system initially has equal multiplicity:
 ```Python
 from PySDM.simulation.physics.constants import si
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
@@ -78,19 +81,40 @@ initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
 sampling_range = (volume(radius=10 * si.um), volume(radius=100 * si.um))
 v, n = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
 ```
+
+The key element of the PySDM interface if the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
+  class which instances are used to control the simulation.
+Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``
+  as exemplified below:
 ```Python
+from PySDM.backends import Numba
 from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.environment.box import Box
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
-from PySDM.backends import Numba
 
 particles_builder = ParticlesBuilder(n_sd=n_sd, dt=1 * si.s, backend=Numba)
 particles_builder.set_environment(Box, {"dv": 1e6 * si.m**3})
-particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+particles_builder.set_attributes(n=n, extensive={'volume': v}, intensive={})
 particles_builder.register_dynamic(SDM, {"kernel": Golovin(b=1.5e3 / si.s)})
 particles = particles_builder.get_particles()
 ```
+The ``backend`` argument may be set to either ``Numba`` or ``ThrustRTC``
+  what translates to choosing multi-threaded or GPU-resident computation mode, respectively.
+The employed ``Box`` environment corresponds to a zero-dimensional framework
+  (particle positions are not considered).
+The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
+  used to initialise super-droplet attributes.
+The ``SDM`` Monte-Carlo coalescence algorithm is registered as the only
+  dynamic in the system.
+Finally, the ``get_particles()`` method is used to obtain an instance
+  of ``Particles`` which can then be used to control time-stepping and
+  access simulation state.
+
+The ``run(nt)`` method advences the simulation by ``nt`` timesteps.
+In the listing below, its usage is interleaved with plotting logic
+  which displays a histogram of particle mass distribution 
+  at selected timesteps:
 ```Python
 from matplotlib import pyplot
 import numpy as np
@@ -110,20 +134,9 @@ pyplot.ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
 pyplot.legend()
 pyplot.show()
 ```
-  where ``n_sd`` is the number of super-droplets, ``dt`` is the timestep.
-  The ``backend`` argument may be set to either ``Numba`` or ``ThrustRTC``
-  what translates to choosing multi-threaded or GPU computation mode, respectively.
+The resultant plot looks as follows:
 
-ParticlesBuilder API:
-- ``set_environment(environment_class, params)``: ``environment_class`` is the chosen Environment (see below) 
-  and ``params``
-.set_terminal_velocity()
-.create_state_0d()
-.create_state_2d
-.register_dynamic()
-.get_particles()
-
-
+![plot](https://raw.githubusercontent.com/piotrbartman/PySDM/develop/PySDM_tutorials/pics/readme.png)
 
 ## Credits:
 
