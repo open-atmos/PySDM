@@ -14,7 +14,7 @@ from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
 from PySDM.simulation.initialisation.spectra import Exponential
-from PySDM.simulation.environment.box import Box
+from PySDM.simulation.environments import Box
 from PySDM.simulation.physics.constants import si
 
 

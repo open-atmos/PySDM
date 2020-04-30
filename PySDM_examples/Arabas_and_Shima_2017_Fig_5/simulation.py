@@ -10,7 +10,7 @@ import numpy as np
 
 from PySDM.simulation.particles_builder import ParticlesBuilder
 from PySDM.simulation.dynamics.condensation.condensation import Condensation
-from PySDM.simulation.environment.moist_lagrangian_parcel_adiabatic import MoistLagrangianParcelAdiabatic
+from PySDM.simulation.environments import MoistLagrangianParcelAdiabatic
 from PySDM.simulation.physics import formulae as phys
 from PySDM.simulation.initialisation.r_wet_init import r_wet_init
 from PySDM.simulation.physics import constants as const

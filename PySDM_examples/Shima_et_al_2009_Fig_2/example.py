@@ -8,7 +8,7 @@ Created at 08.08.2019
 import numpy as np
 
 from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.environment.box import Box
+from PySDM.simulation.environments import Box
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
 

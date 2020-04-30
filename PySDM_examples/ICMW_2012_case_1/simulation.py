@@ -15,7 +15,7 @@ from PySDM.simulation.dynamics.condensation.condensation import Condensation
 from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
 from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
 from PySDM.simulation.initialisation import spatial_sampling, spectral_sampling
-from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEulerian2DKinematic
+from PySDM.simulation.environments import MoistEulerian2DKinematic
 
 
 class DummyController:
