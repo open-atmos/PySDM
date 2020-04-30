@@ -7,7 +7,7 @@ Created at 30.04.2020
 
 
 class Incrementation:
-    def __init__(self, start=0, step=1):
+    def __init__(self, start=44, step=1):
         self.seed = start
         self.step = step
 
