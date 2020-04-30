@@ -10,7 +10,7 @@ import numpy as np
 from PySDM.particles import Particles
 from PySDM.initialisation.multiplicities import n_init, discretise_n
 from PySDM.physics import formulae as phys
-from PySDM.state import StateFactory
+from PySDM.state.state_factory import StateFactory
 from PySDM.initialisation import r_wet_init
 from PySDM.initialisation.temperature_init import temperature_init
 
@@ -27,8 +27,8 @@ from .state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 class ParticlesBuilder:
 
-    def __init__(self, n_sd, dt, backend, stats=None):
-        self.particles = Particles(n_sd, dt, backend, stats)
+    def __init__(self, n_sd, backend, stats=None):
+        self.particles = Particles(n_sd, backend, stats)
 
     def set_terminal_velocity(self, terminal_velocity_class):
         assert_none(self.particles.terminal_velocity)
@@ -57,13 +57,17 @@ class ParticlesBuilder:
             raise Exception(f'product name "{product.name}" already registered')
         self.particles.products[product.name] = product
 
-    def set_attributes(self, params):
+    def set_attributes(self, *, n=None, extensive=None, intensive=None, spatial_discretisation=None,
+                       spectral_discretisation=None, spectrum_per_mass_of_dry_air=None, r_range=None, kappa=None,
+                       radius_threshold=None, enable_temperatures: bool = False):
         assert_not_none(self.particles.environment)
         assert_none(self.particles.state)
         if self.particles.mesh.dimension == 0:
-            self.create_state_0d(**params)
+            self.create_state_0d(n, extensive, intensive)
         elif self.particles.mesh.dimension == 2:
-            self.create_state_2d(**params)
+            self.create_state_2d(extensive, intensive, spatial_discretisation, spectral_discretisation,
+                                 spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
+                                 enable_temperatures)
         else:
             NotImplementedError("Implemented dimensions: [0D, 2D]")
 

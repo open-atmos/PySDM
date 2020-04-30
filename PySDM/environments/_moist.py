@@ -11,9 +11,10 @@ from PySDM.particles_builder import ParticlesBuilder
 
 class _Moist:
 
-    def __init__(self, particles_builder: ParticlesBuilder, mesh, variables):
+    def __init__(self, particles_builder: ParticlesBuilder, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles_builder.particles
+        self.dt = dt
         self.mesh = mesh
         self._values = {
             "predicted": None,

@@ -6,7 +6,7 @@ Created at 25.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation import Particles
+from PySDM.particles import Particles
 from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
@@ -16,10 +16,10 @@ from PySDM.mesh import Mesh
 
 class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
-    def __init__(self, particles: Particles,
+    def __init__(self, particles: Particles, dt,
                  mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
-        super().__init__(particles, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
+        super().__init__(particles, dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
 
         # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w

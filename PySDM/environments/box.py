@@ -3,9 +3,9 @@ from PySDM.particles_builder import ParticlesBuilder
 
 
 class Box:
-    def __init__(self, _: ParticlesBuilder, dv=None):
+    def __init__(self, _: ParticlesBuilder, dt, dv=None):
+        self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
-        pass
 
     def ante_step(self): pass
     def post_step(self): pass

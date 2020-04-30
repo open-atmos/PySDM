@@ -6,15 +6,14 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM.state import State
+from PySDM.state.state import State
 from PySDM.stats import Stats
 
 
 class Particles:
 
-    def __init__(self, n_sd, dt, backend, stats=None):
+    def __init__(self, n_sd, backend, stats=None):
         self.__n_sd = n_sd
-        self.__dt = dt
 
         self.backend = backend
         self.environment = None
@@ -36,7 +35,8 @@ class Particles:
 
     @property
     def dt(self) -> float:
-        return self.__dt
+        if self.environment is not None:
+            return self.environment.dt
 
     @property
     def mesh(self):
