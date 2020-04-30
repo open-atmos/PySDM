@@ -8,8 +8,8 @@ Created at 08.08.2019
 import numpy as np
 
 from PySDM.particles_builder import ParticlesBuilder
-from PySDM.simulation import Box
-from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.environments import Box
+from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
@@ -21,16 +21,8 @@ def run(setup):
     particles_builder.set_environment(Box, {"dv": setup.dv})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
     particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles_builder.register_dynamic(SDM, {"kernel": setup.kernel})
+    particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
     particles = particles_builder.get_particles()
-
-    class Seed:
-        seed = 0
-
-        def __call__(self):
-            Seed.seed += 1
-            return Seed.seed
-    particles.dynamics[str(SDM)].seed = Seed()
 
     vals = {}
     for step in setup.steps:

@@ -6,11 +6,12 @@ Created at 07.06.2019
 """
 
 from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics.coalescence.seeds.incrementation import Incrementation
 
 
 class SDM:
 
-    def __init__(self, particles_builder: ParticlesBuilder, kernel):
+    def __init__(self, particles_builder: ParticlesBuilder, kernel, seed=None):
         self.particles = particles_builder.particles
 
         kernel.particles = self.particles
@@ -20,7 +21,7 @@ class SDM:
         self.rand = self.particles.backend.array(self.particles.n_sd // 2, dtype=float)
         self.prob = self.particles.backend.array(self.particles.n_sd, dtype=float)
         self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
-        self.seed = lambda: None
+        self.seed = seed or Incrementation()
 
     def __call__(self):
         self.particles.backend.urand(self.temp, self.seed())

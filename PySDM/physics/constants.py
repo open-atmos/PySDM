@@ -1,8 +1,8 @@
 import mendeleev as atoms
 import pint
 from scipy import constants as sci
-from PySDM.physics import FakeUnitRegistry
-from PySDM.physics import DIMENSIONAL_ANALYSIS
+from PySDM.physics._fake_unit_registry import FakeUnitRegistry
+from PySDM.physics._flag import DIMENSIONAL_ANALYSIS
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:

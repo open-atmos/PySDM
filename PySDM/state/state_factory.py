@@ -6,7 +6,7 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM.state import State
+from PySDM.state.state import State
 
 
 class StateFactory:
