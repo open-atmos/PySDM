@@ -1,6 +1,5 @@
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
-from PySDM.simulation.physics.constants import si
 import matplotlib.pyplot as plt
 from scipy import signal
 import numpy as np

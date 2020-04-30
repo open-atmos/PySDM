@@ -1,5 +1,5 @@
-from PySDM.simulation.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.simulation.physics import constants, formulae
+from PySDM.physics import DimensionalAnalysis, formulae
+from PySDM.physics import constants
 
 
 class TestDimensionalAnalysis:

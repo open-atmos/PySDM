@@ -7,10 +7,9 @@ Created at 29.11.2019
 """
 
 from PySDM.backends.default import Default
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics import constants as const
-from PySDM.simulation.physics import formulae as phys
-from PySDM.simulation.dynamics.condensation import condensation
+from PySDM.physics.constants import si
+from PySDM.physics import constants as const, formulae as phys
+from PySDM.dynamics.condensation import condensation
 import numpy as np
 
 

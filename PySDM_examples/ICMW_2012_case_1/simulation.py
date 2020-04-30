@@ -8,14 +8,14 @@ Created at 25.09.2019
 
 import time
 
-from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.dynamics.displacement import Displacement
-from PySDM.simulation.terminal_velocity import TerminalVelocity
-from PySDM.simulation.dynamics.condensation.condensation import Condensation
-from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.initialisation import spatial_sampling, spectral_sampling
-from PySDM.simulation.environments import MoistEulerian2DKinematic
+from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics import Displacement
+from PySDM.terminal_velocity import TerminalVelocity
+from PySDM.dynamics import Condensation
+from PySDM.dynamics import EulerianAdvection
+from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.simulation import MoistEulerian2DKinematic
 
 
 class DummyController:

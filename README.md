@@ -71,10 +71,10 @@ It is a coalescence-only set-up in which the initial particle size
   spectrum is exponential and is deterministically sampled assuring
   that each super-droplet in the system initially has equal multiplicity:
 ```Python
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
-from PySDM.simulation.initialisation.spectra import Exponential
-from PySDM.simulation.physics.formulae import volume
+from PySDM.physics import si
+from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.formulae import volume
 
 n_sd = 2**15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
@@ -88,10 +88,10 @@ Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``
   as exemplified below:
 ```Python
 from PySDM.backends import Numba
-from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.environment.box import Box
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM import ParticlesBuilder
+from PySDM.environments import Box
+from PySDM.dynamics.coalescence import SDM
+from PySDM.dynamics.coalescence.kernels import Golovin
 
 particles_builder = ParticlesBuilder(n_sd=n_sd, dt=1 * si.s, backend=Numba)
 particles_builder.set_environment(Box, {"dv": 1e6 * si.m**3})

@@ -1,7 +1,7 @@
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics import formulae as phys
+from PySDM.physics.constants import si
+from PySDM.physics import formulae as phys
 import matplotlib.pyplot as plt
 import numpy as np
 

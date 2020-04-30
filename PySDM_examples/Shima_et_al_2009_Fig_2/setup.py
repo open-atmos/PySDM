@@ -6,11 +6,11 @@ Created at 08.08.2019
 """
 
 import numpy as np
-from PySDM.simulation.initialisation.spectra import Exponential
-from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
+from PySDM.initialisation.spectra import Exponential
+from PySDM.dynamics import Golovin
 from PySDM.backends import Default
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics import formulae as phys
+from PySDM.physics.constants import si
+from PySDM.physics import formulae as phys
 
 
 class SetupA:

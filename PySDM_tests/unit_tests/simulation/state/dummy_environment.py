@@ -5,7 +5,7 @@ Created at 21.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.mesh import Mesh
+from PySDM.mesh import Mesh
 
 
 class DummyEnvironment:

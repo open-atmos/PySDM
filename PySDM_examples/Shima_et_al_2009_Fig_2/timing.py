@@ -5,10 +5,10 @@ Created at 08.08.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.environments import Box
-from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.simulation import Box
+from PySDM.initialisation.spectral_sampling import constant_multiplicity
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 

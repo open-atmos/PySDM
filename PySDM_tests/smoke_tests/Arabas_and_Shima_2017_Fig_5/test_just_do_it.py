@@ -1,6 +1,5 @@
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
-from PySDM.simulation.dynamics.condensation import condensation
 from PySDM_tests.smoke_tests.utils import bdf
 
 import pytest

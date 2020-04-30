@@ -1,5 +1,5 @@
-from PySDM.simulation.initialisation.spectral_sampling import *
-from PySDM.simulation.initialisation.spectra import Lognormal
+from PySDM.initialisation.spectral_sampling import *
+from PySDM.initialisation.spectra import Lognormal
 import numpy as np
 import pytest
 

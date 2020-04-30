@@ -7,8 +7,8 @@ Created at 12.08.2019
 
 import numpy as np
 from matplotlib import pyplot
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics import formulae as phys
+from PySDM.physics.constants import si
+from PySDM.physics import formulae as phys
 
 
 class Plotter:

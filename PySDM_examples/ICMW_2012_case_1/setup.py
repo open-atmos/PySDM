@@ -8,13 +8,13 @@ Created at 25.09.2019
 
 import numpy as np
 
-from PySDM.simulation.initialisation.spectra import Lognormal
-from PySDM.simulation.dynamics.coalescence.kernels.gravitational import Gravitational
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.dynamics import Gravitational
 from PySDM.backends.default import Default
-from PySDM.simulation.dynamics.condensation import condensation
-from PySDM.simulation.physics import formulae as phys
-from PySDM.simulation.physics import constants as const
-from PySDM.simulation.physics.constants import si
+from PySDM.dynamics.condensation import condensation
+from PySDM.physics import formulae as phys
+from PySDM.physics import constants as const
+from PySDM.physics.constants import si
 
 
 class Setup:

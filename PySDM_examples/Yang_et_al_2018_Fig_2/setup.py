@@ -5,12 +5,12 @@ Created at 25.11.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.initialisation.spectra import Lognormal
+from PySDM.initialisation.spectra import Lognormal
 from PySDM.backends.default import Default
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.initialisation import spectral_sampling
-from PySDM.simulation.initialisation.multiplicities import discretise_n
-from PySDM.simulation.dynamics.condensation import condensation
+from PySDM.physics.constants import si
+from PySDM.initialisation import spectral_sampling
+from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.dynamics.condensation import condensation
 import numpy as np
 
 

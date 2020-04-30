@@ -3,7 +3,7 @@ from matplotlib import pyplot
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1 import plotter
-from PySDM.simulation.physics.constants import si
+from PySDM.physics.constants import si
 
 
 def test_environment(plot=False):

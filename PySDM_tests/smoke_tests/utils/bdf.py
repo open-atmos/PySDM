@@ -5,8 +5,8 @@ Created at 09.01.2020
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.physics.constants import rho_w
-from PySDM.simulation.physics import formulae as phys
+from PySDM.physics.constants import rho_w
+from PySDM.physics import formulae as phys
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.numba.coordinates import volume as coord_volume
 from PySDM.backends.numba.coordinates import volume_logarithm as coord_volume_logarithm

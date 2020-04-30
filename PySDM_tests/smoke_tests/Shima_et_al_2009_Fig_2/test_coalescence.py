@@ -9,13 +9,13 @@ import numpy as np
 import copy
 import pytest
 from PySDM.backends.default import Default
-from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.initialisation.spectral_sampling import constant_multiplicity
-from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
-from PySDM.simulation.initialisation.spectra import Exponential
-from PySDM.simulation.environments import Box
-from PySDM.simulation.physics.constants import si
+from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.dynamics import Golovin
+from PySDM.initialisation.spectra import Exponential
+from PySDM.simulation import Box
+from PySDM.physics.constants import si
 
 
 backend = Default
