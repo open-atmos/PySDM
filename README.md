@@ -62,7 +62,7 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 - Introduction [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_tutorials%2F_intro.ipynb)
 - Coalescence [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_tutorials%2Fcoalescence.ipynb)
 
-## Package structure and API
+## Usage example
 
 In order to depict the PySDM API with a practical example, the following
   listings provide a sample code roughly reproducing the 
@@ -137,6 +137,10 @@ pyplot.show()
 The resultant plot looks as follows:
 
 ![plot](https://raw.githubusercontent.com/piotrbartman/PySDM/develop/PySDM_tutorials/pics/readme.png)
+
+## Package structure and API
+
+
 
 ## Credits:
 
