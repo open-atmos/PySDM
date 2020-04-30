@@ -5,7 +5,7 @@ Created at 07.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.dynamics import Golovin
+from PySDM.dynamics.coalescence.kernels import Golovin
 import numpy as np
 import pytest
 

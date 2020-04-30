@@ -11,7 +11,7 @@ from PySDM.particles import Particles
 from PySDM.initialisation.multiplicities import n_init, discretise_n
 from PySDM.physics import formulae as phys
 from PySDM.state.state_factory import StateFactory
-from PySDM.initialisation import r_wet_init
+from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.initialisation.temperature_init import temperature_init
 
 from .state.products.aerosol_concentration import AerosolConcentration
@@ -39,7 +39,7 @@ class ParticlesBuilder:
 
     def set_environment(self, environment_class, params: dict):
         assert_none(self.particles.environment)
-        self.particles.environment = environment_class(self.particles, **params)
+        self.particles.environment = environment_class(self, **params)
         self.register_products(self.particles.environment)
 
     def register_dynamic(self, dynamic_class, params: dict):

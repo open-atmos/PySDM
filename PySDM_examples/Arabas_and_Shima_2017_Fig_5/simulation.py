@@ -10,9 +10,9 @@ import numpy as np
 
 from PySDM.particles_builder import ParticlesBuilder
 from PySDM.dynamics import Condensation
-from PySDM.simulation import MoistLagrangianParcelAdiabatic
+from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
-from PySDM.initialisation import r_wet_init
+from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
 
 
@@ -25,8 +25,9 @@ class Simulation:
         while dt_output / self.n_substeps >= setup.dt_max:  # TODO dt_max
             self.n_substeps += 1
 
-        particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=1, dt=dt_output / self.n_substeps)
+        particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=1)
         particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
+            "dt": dt_output / self.n_substeps,
             "mass_of_dry_air": setup.mass_of_dry_air,
             "p0": setup.p0,
             "q0": setup.q0,

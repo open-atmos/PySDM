@@ -1,4 +1,4 @@
-from PySDM.physics import DimensionalAnalysis, formulae
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis, formulae
 from PySDM.physics import constants
 
 

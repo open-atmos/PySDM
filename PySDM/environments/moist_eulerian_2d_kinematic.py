@@ -18,16 +18,18 @@ from .products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from .products.dry_air_density import DryAirDensity
 from PySDM.mesh import Mesh
 
+from PySDM import ParticlesBuilder
+
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles, dt, grid, size, stream_function, field_values, rhod_of,
+    def __init__(self, particles_builder: ParticlesBuilder, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
-        super().__init__(particles, dt, Mesh(grid, size), [])
+        super().__init__(particles_builder, dt, Mesh(grid, size), [])
 
         self.__rhod_of = rhod_of
 
-        grid = particles.mesh.grid
+        grid = self.mesh.grid
         rhod = np.repeat(
             rhod_of(
                 (np.arange(grid[1]) + 1 / 2) / grid[1]
@@ -37,7 +39,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         )
 
         self.__GC, self.__mpdatas = MPDATAFactory.stream_function_2d(
-            grid=self.particles.mesh.grid, size=self.particles.mesh.size, dt=particles.dt,
+            grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
             g_factor=rhod,
@@ -49,7 +51,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             )
         )
 
-        rhod = particles.backend.from_ndarray(rhod.ravel())
+        rhod = particles_builder.particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
         self.products = [DryAirDensity(self), RelativeHumidity(self), DryAirPotentialTemperature(self), WaterVapourMixingRatio(self)]
@@ -64,7 +66,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def _get_qv(self):
         return self.__mpdatas['qv'].curr.get()
 
-    # @property
+    # @property TODO!!!
     # def eulerian_fields(self):
     #     return self.__eulerian_fields
 

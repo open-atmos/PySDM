@@ -17,7 +17,7 @@ class RelativeHumidity(Product):
                          unit="%",
                          range=(75, 105),
                          scale="linear",
-                         shape=environment.particles.mesh.grid)
+                         shape=environment.mesh.grid)
 
     def get(self):
         self.download_to_buffer(self.environment['RH'])

@@ -10,11 +10,11 @@ import copy
 import pytest
 from PySDM.backends.default import Default
 from PySDM.particles_builder import ParticlesBuilder
-from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
-from PySDM.dynamics import Golovin
+from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.initialisation.spectra import Exponential
-from PySDM.simulation import Box
+from PySDM.environments import Box
 from PySDM.physics.constants import si
 
 
@@ -51,12 +51,11 @@ def test_coalescence(croupier):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    particles_builder = ParticlesBuilder(n_sd=n_sd, dt=dt, backend=backend)
-    particles_builder.set_mesh_0d(dv=dv)
-    particles_builder.set_environment(Box, {})
+    particles_builder = ParticlesBuilder(n_sd=n_sd, backend=backend)
+    particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
     v, n = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
     particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
-    particles_builder.register_dynamic(SDM, {"kernel": kernel})
+    particles_builder.register_dynamic(Coalescence, {"kernel": kernel})
     particles = particles_builder.get_particles()
     particles.croupier = croupier
 
@@ -66,7 +65,7 @@ def test_coalescence(croupier):
         def __call__(self):
             Seed.seed += 1
             return Seed.seed
-    particles.dynamics[str(SDM)].seed = Seed()
+    particles.dynamics[str(Coalescence)].seed = Seed()
 
     states = {}
 

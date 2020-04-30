@@ -17,7 +17,7 @@ class DryAirPotentialTemperature(Product):
                          unit="K",
                          range=(275, 300),
                          scale="linear",
-                         shape=environment.particles.mesh.grid)
+                         shape=environment.mesh.grid)
 
     def get(self):
         self.download_to_buffer(self.environment['thd'])

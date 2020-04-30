@@ -13,9 +13,9 @@ from PySDM.dynamics import Displacement
 from PySDM.terminal_velocity import TerminalVelocity
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import EulerianAdvection
-from PySDM.dynamics.coalescence.algorithms import SDM
+from PySDM.dynamics import Coalescence
 from PySDM.initialisation import spectral_sampling, spatial_sampling
-from PySDM.simulation import MoistEulerian2DKinematic
+from PySDM.environments import MoistEulerian2DKinematic
 
 
 class DummyController:
@@ -48,10 +48,10 @@ class Simulation:
         return self.particles.products
 
     def reinit(self):
-        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
+        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, backend=self.setup.backend)
         particles_builder.set_terminal_velocity(TerminalVelocity)
-        particles_builder.set_mesh(grid=self.setup.grid, size=self.setup.size)
         particles_builder.set_environment(MoistEulerian2DKinematic, {
+            "dt" : self.setup.dt,
             "grid": self.setup.grid,
             "size": self.setup.size,
             "stream_function": self.setup.stream_function,
@@ -89,7 +89,7 @@ class Simulation:
             particles_builder.register_dynamic(
                 Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
-            particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
+            particles_builder.register_dynamic(Coalescence, {"kernel": self.setup.kernel})
         if self.setup.processes["relaxation"]:
             raise NotImplementedError()
 

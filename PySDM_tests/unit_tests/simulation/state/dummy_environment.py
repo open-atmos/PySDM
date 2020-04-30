@@ -10,8 +10,8 @@ from PySDM.mesh import Mesh
 
 class DummyEnvironment:
 
-    def __init__(self, _, grid=None, size=None, dv=None, courant_field_data=None):
-        print(grid)
+    def __init__(self, _, dt=None, grid=None, size=None, dv=None, courant_field_data=None):
+        self.dt = dt
         if grid is None:
             self.mesh = Mesh.mesh_0d(dv)
         else:

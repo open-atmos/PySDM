@@ -18,7 +18,7 @@ class WaterVapourMixingRatio(Product):
                          unit="g/kg",
                          range=(5, 7.5),
                          scale="linear",
-                         shape=environment.particles.mesh.grid)
+                         shape=environment.mesh.grid)
 
     def get(self):
         self.download_to_buffer(self.environment['qv'])
