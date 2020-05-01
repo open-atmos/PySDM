@@ -66,15 +66,12 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def _get_qv(self):
         return self.__mpdatas['qv'].curr.get()
 
-    # @property TODO!!!
-    # def eulerian_fields(self):
-    #     return self.__eulerian_fields
-
     def __mpdata_step(self):
         for mpdata in self.__mpdatas.values():
-            mpdata.step(1)
+            mpdata.advance(1)
 
     def step(self):
+        # TODO
         # self.thread = Thread(target=self.__mpdata_step, args=())
         # self.thread.start()
         self.__mpdata_step()
