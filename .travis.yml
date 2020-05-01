@@ -53,7 +53,9 @@ script:
          # diff $i.md.repo $i.md.travis  # does not make sense with ipywidgets
       done;
   - |
-      for i in PySDM_examples/*/example.py; do
-        echo $i
-        PYTHONPATH=. travis_wait 15 python$PY_SFX $i
-      done;
+      if [[ $TRAVIS_OS_NAME == linux ]]; then
+        for i in PySDM_examples/*/example.py; do
+          echo $i
+          PYTHONPATH=. travis_wait 15 python$PY_SFX $i
+        done;
+      fi;
