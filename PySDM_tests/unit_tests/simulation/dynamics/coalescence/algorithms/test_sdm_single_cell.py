@@ -5,11 +5,11 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
+from PySDM.dynamics import Coalescence
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.backends.default import Default
-from PySDM.simulation.environment.box import Box
+from PySDM.environments import Box
 import numpy as np
 import pytest
 from PySDM_tests.unit_tests.simulation.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
@@ -24,11 +24,10 @@ class TestSDMSingleCell:
 
     @staticmethod
     def get_dummy_particles_and_sdm(n_length):
-        particles = DummyParticles(backend, n_sd=n_length, dt=0)
+        particles = DummyParticles(backend, n_sd=n_length)
         dv = 1
-        particles.set_mesh_0d(dv)
-        particles.set_environment(Box, {})
-        sdm = SDM(particles, StubKernel(particles.backend))
+        particles.set_environment(Box, {'dv': dv, 'dt': 0})
+        sdm = Coalescence(particles, StubKernel(particles.backend))
         return particles, sdm
 
     def test_single_collision(self, v_2, T_2, n_2):

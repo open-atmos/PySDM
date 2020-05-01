@@ -8,14 +8,14 @@ Created at 25.09.2019
 
 import time
 
-from PySDM.simulation.particles_builder import ParticlesBuilder
-from PySDM.simulation.dynamics.displacement import Displacement
-from PySDM.simulation.terminal_velocity import TerminalVelocity
-from PySDM.simulation.dynamics.condensation.condensation import Condensation
-from PySDM.simulation.dynamics.eulerian_advection import EulerianAdvection
-from PySDM.simulation.dynamics.coalescence.algorithms.sdm import SDM
-from PySDM.simulation.initialisation import spatial_sampling, spectral_sampling
-from PySDM.simulation.environment.moist_eulerian_2d_kinematic import MoistEulerian2DKinematic
+from PySDM.particles_builder import ParticlesBuilder
+from PySDM.dynamics import Displacement
+from PySDM.terminal_velocity import TerminalVelocity
+from PySDM.dynamics import Condensation
+from PySDM.dynamics import EulerianAdvection
+from PySDM.dynamics import Coalescence
+from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.environments import MoistEulerian2DKinematic
 
 
 class DummyController:
@@ -48,10 +48,12 @@ class Simulation:
         return self.particles.products
 
     def reinit(self):
-        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, dt=self.setup.dt, backend=self.setup.backend)
+        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, backend=self.setup.backend)
         particles_builder.set_terminal_velocity(TerminalVelocity)
-        particles_builder.set_mesh(grid=self.setup.grid, size=self.setup.size)
         particles_builder.set_environment(MoistEulerian2DKinematic, {
+            "dt" : self.setup.dt,
+            "grid": self.setup.grid,
+            "size": self.setup.size,
             "stream_function": self.setup.stream_function,
             "field_values": self.setup.field_values,
             "rhod_of": self.setup.rhod,
@@ -73,23 +75,21 @@ class Simulation:
             enable_temperatures=self.setup.enable_particle_temperatures
         )
 
-        # <TODO> ?
-        particles_builder.set_condensation_parameters(self.setup.condensation_coord)
         particles_builder.register_dynamic(Condensation, {
             "kappa": self.setup.kappa,
             "rtol_x": self.setup.condensation_rtol_x,
             "rtol_thd": self.setup.condensation_rtol_thd,
-            "do_advection": self.setup.processes["fluid advection"],
-            "do_condensation": self.setup.processes["condensation"]
+            "coord": self.setup.condensation_coord,
+            "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
+            "do_condensation": self.setup.processes["condensation"]   #      do somthing with that
         })
         particles_builder.register_dynamic(EulerianAdvection, {})
-        # </TODO>
 
         if self.setup.processes["particle advection"]:
             particles_builder.register_dynamic(
                 Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
-            particles_builder.register_dynamic(SDM, {"kernel": self.setup.kernel})
+            particles_builder.register_dynamic(Coalescence, {"kernel": self.setup.kernel})
         if self.setup.processes["relaxation"]:
             raise NotImplementedError()
 

@@ -1,0 +1,101 @@
+"""
+Created at 20.03.2020
+
+@author: Piotr Bartman
+@author: Sylwester Arabas
+"""
+
+import ThrustRTC as trtc
+
+
+class AlgorithmicStepMethods:
+
+    @staticmethod
+    def amax(row, idx, length):
+        perm_in = trtc.DVPermutation(row, idx)
+        index = trtc.Max_Element(perm_in.range(0, length))
+        row_idx = idx.get(index)
+        result = row.get(row_idx)
+        return result
+
+    @staticmethod
+    def amin(row, idx, length):
+        perm_in = trtc.DVPermutation(row, idx)
+        index = trtc.Min_Element(perm_in.range(0, length))
+        row_idx = idx.get(index)
+        result = row.get(row_idx)
+        return result
+
+    @staticmethod
+    def cell_id(cell_id, cell_origin, strides):
+        loop = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
+            cell_id[i] = 0;
+            for (int j = 0; j < n_dims; j++) 
+            {
+                cell_id[i] += cell_origin[size * i + j] * strides[j];
+            }
+            ''')
+        n_dims = trtc.DVInt64(strides.shape[1])
+        size = trtc.DVInt64(cell_origin.shape[1])
+        loop.launch_n(cell_id.size(), [cell_id, cell_origin, strides, n_dims, size])
+
+    @staticmethod
+    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        perm_in = trtc.DVPermutation(data_in, idx)
+
+        loop = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
+            if (is_first_in_pair[i]) 
+            {
+                data_out[i] = abs(data_in[i] - data_in[i + 1]);
+            } else {
+                data_out[i] = 0;
+            }
+            ''')
+        if length > 1:
+            loop.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+
+    @staticmethod
+    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, length):
+        perm_cell_id = trtc.DVPermutation(cell_id, idx)
+
+        loop = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair'], "i", '''
+            is_first_in_pair[i] = (
+                perm_cell_id[i] == perm_cell_id[i+1] &&
+                (i - cell_start[perm_cell_id[i]]) % 2 == 0
+            );
+            ''')
+        if length > 1:
+            loop.launch_n(length - 1, [cell_start, perm_cell_id, is_first_in_pair])
+
+    @staticmethod
+    def max_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        perm_in = trtc.DVPermutation(data_in, idx)
+
+        loop = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
+            if (is_first_in_pair[i]) 
+            {
+                data_out[i] = max(perm_in[i], perm_in[i + 1]);
+            } else {
+                data_out[i] = 0;
+            }
+            ''')
+        if length > 1:
+            loop.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+
+    @staticmethod
+    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        perm_in = trtc.DVPermutation(data_in, idx)
+
+        loop = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
+                    if (is_first_in_pair[i]) 
+                    {
+                        data_out[i] = perm_in[i] + perm_in[i + 1];
+                    } else {
+                        data_out[i] = 0;
+                    }
+                    ''')
+        if length > 1:
+            loop.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])

@@ -12,50 +12,41 @@ import numpy as np
 class StorageMethods:
     # TODO check static For
     storage = trtc.DVVector.DVVector
-
-    @staticmethod
-    def __equip(data, shape):
-        data.shape = shape
-        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
+    integer = np.int64
+    double = np.float64
 
     @staticmethod
     def array(shape, dtype):
-        if dtype is float:
+        if dtype in (float, StorageMethods.double):
             elem_cls = 'double'
-        elif dtype is int:
+            elem_dtype = StorageMethods.double
+        elif dtype in (int, StorageMethods.integer):
             elem_cls = 'int64_t'
+            elem_dtype = StorageMethods.integer
         else:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
         # TODO: trtc.Fill(data, trtc.DVConstant(np.nan))
 
-        StorageMethods.__equip(data, shape)
+        StorageMethods.__equip(data, shape, elem_dtype)
         return data
 
     @staticmethod
-    def download(backend_data, np_target):
-        np_target[:] = backend_data.to_host()
-
-    @staticmethod
-    def dtype(data):
-        elem_cls = data.name_elem_cls()
-        if elem_cls == 'int64_t':
-            nptype = np.int64
-        elif elem_cls == 'double':
-            nptype = np.float64
+    def download(backend_data, numpy_target):
+        if isinstance(backend_data, StorageMethods.storage):
+            numpy_target[:] = np.reshape(backend_data.to_host(), backend_data.shape)
         else:
-            raise NotImplemented()
-        return nptype
+            numpy_target[:] = StorageMethods.to_ndarray(backend_data)
 
     @staticmethod
     def from_ndarray(array):
         shape = array.shape
 
         if str(array.dtype).startswith('int'):
-            dtype = np.int64
+            dtype = StorageMethods.integer
         elif str(array.dtype).startswith('float'):
-            dtype = np.float64
+            dtype = StorageMethods.double
         else:
             raise NotImplementedError
 
@@ -66,7 +57,23 @@ class StorageMethods:
 
         result = trtc.device_vector_from_numpy(array)
 
-        StorageMethods.__equip(result, shape)
+        StorageMethods.__equip(result, shape, dtype)
+        return result
+
+    @staticmethod
+    def range(array, start=0, stop=None):
+        if stop is None:
+            stop = array.shape[0]
+        dim = len(array.shape)
+        if dim == 1:
+            result = array.range(start, stop)
+            new_shape = (stop - start, )
+        elif dim == 2:
+            result = array.range(array.shape[1] * start, array.shape[1] * stop)
+            new_shape = (stop - start, array.shape[1])
+        else:
+            raise NotImplementedError("Only 3 or more dimensions array is supported.")
+        StorageMethods.__equip(result, shape=new_shape, dtype=array.dtype)
         return result
 
     @staticmethod
@@ -76,34 +83,28 @@ class StorageMethods:
         stop = start + row_length
 
         result = array.range(start, stop)
-        StorageMethods.__equip(result, shape=(row_length,))
+        StorageMethods.__equip(result, shape=(row_length,), dtype=array.dtype)
         return result
 
     @staticmethod
-    def shape(data):
-        return data.shape
+    # void(int64[:], int64, float64[:])
+    def shuffle_global(idx, length, u01):
+        pass
+        # raise NotImplementedError()
 
     @staticmethod
-    def shuffle(data, length, axis):
+    # void(int64[:], float64[:], int64[:])
+    def shuffle_local(idx, u01, cell_start):
+        # TODO
+        print("Numba import!")
+
         from PySDM.backends.numba.numba import Numba
-        host_arr = StorageMethods.to_ndarray(data)
-        Numba.shuffle_global(host_arr, length)
-        dvce_arr = StorageMethods.from_ndarray(host_arr)
-        trtc.Copy(dvce_arr, data)
-
-        # TODO: take as argument (temporary memory)
-        # idx = ThrustRTC.array((data.size(),), float)
-        #
-        # ThrustRTC.urand(idx)
-        #
-        # if axis == 0:
-        #     trtc.Sort_By_Key(idx.range(0, length), data.range(0, length))
-        # else:
-        #     raise NotImplementedError
-
-    @staticmethod
-    def stable_argsort(idx, keys, length):
-        raise NotImplementedError()
+        host_idx = StorageMethods.to_ndarray(idx)
+        host_u01 = StorageMethods.to_ndarray(u01)
+        host_cell_start = StorageMethods.to_ndarray(cell_start)
+        Numba.shuffle_local(host_idx, host_u01, host_cell_start)
+        device_idx = StorageMethods.from_ndarray(host_idx)
+        trtc.Copy(device_idx, idx)
 
     @staticmethod
     def to_ndarray(data):
@@ -122,9 +123,9 @@ class StorageMethods:
         return result
 
     @staticmethod
-    def upload(np_data, backend_target):
-        tmp = trtc.device_vector_from_numpy(np_data)
-        trtc.Copy(tmp, backend_target)
+    def upload(numpy_data, backend_target):
+        tmp = trtc.device_vector_from_numpy(numpy_data.flatten())
+        trtc.Swap(tmp, backend_target)
 
     @staticmethod
     def write_row(array, i, row):
@@ -133,4 +134,12 @@ class StorageMethods:
         stop = start + row_length
 
         trtc.Copy(row, array.range(start, stop))
+
+    @staticmethod
+    def __equip(data, shape, dtype):
+        if isinstance(shape, int):
+            shape = (shape,)
+        data.shape = shape
+        data.dtype = dtype
+        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
 

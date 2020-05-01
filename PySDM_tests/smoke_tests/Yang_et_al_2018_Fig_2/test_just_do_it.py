@@ -1,6 +1,6 @@
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
-from PySDM.simulation.physics.constants import si
+from PySDM.physics.constants import si
 from PySDM_tests.smoke_tests.utils import bdf
 import pytest
 import numpy as np

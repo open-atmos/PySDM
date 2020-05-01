@@ -1,6 +1,6 @@
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
-from PySDM_tests.unit_tests.simulation.dynamics.displacement.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
@@ -55,10 +55,9 @@ class TestState:
         sut.cell_id = TestState.storage(cells)
         sut._State__idx = TestState.storage(idx)
         idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
-        sut._State__cell_start_p = backend.array((thread_number, len(sut._State__cell_start)), dtype=int)
         sut._State__n_sd = particles.n_sd
+        sut._State__cell_caretaker = backend.make_cell_caretaker(sut._State__idx, sut._State__cell_start)
 
         # Act
         sut._State__sort_by_cell_id()
@@ -75,8 +74,7 @@ class TestState:
         initial_position = Default.from_ndarray(np.array([[0, 0]]))
         grid = (1, 1)
         particles = DummyParticles(backend, n_sd=1)
-        particles.set_mesh(grid)
-        particles.set_environment(DummyEnvironment, (None,))
+        particles.set_environment(DummyEnvironment, {'grid': grid})
         sut = TestableStateFactory.state_2d(n=n, intensive={}, extensive={},
                                             particles=particles, positions=initial_position)
         sut.cell_origin[droplet_id, 0] = .1

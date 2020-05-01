@@ -13,31 +13,29 @@ from PySDM.backends.numba import conf
 
 class StorageMethods:
     storage = np.ndarray
+    integer = np.int64
+    double = np.float64
 
     @staticmethod
     def array(shape, dtype):
-        if dtype is float:
-            data = np.full(shape, -1., dtype=np.float64)
-        elif dtype is int:
-            data = np.full(shape, -1, dtype=np.int64)
+        if dtype in (float, StorageMethods.double):
+            data = np.full(shape, -1., dtype=StorageMethods.double)
+        elif dtype in (int, StorageMethods.integer):
+            data = np.full(shape, -1, dtype=StorageMethods.integer)
         else:
             raise NotImplementedError()
         return data
 
     @staticmethod
-    def download(backend_data, np_target):
-        np.copyto(np_target, backend_data, casting='safe')
-
-    @staticmethod
-    def dtype(data):
-        return data.dtype
+    def download(backend_data, numpy_target):
+        np.copyto(numpy_target, backend_data, casting='safe')
 
     @staticmethod
     def from_ndarray(array):
         if str(array.dtype).startswith('int'):
-            dtype = np.int64
+            dtype = StorageMethods.integer
         elif str(array.dtype).startswith('float'):
-            dtype = np.float64
+            dtype = StorageMethods.double
         else:
             raise NotImplementedError()
 
@@ -45,12 +43,14 @@ class StorageMethods:
         return result
 
     @staticmethod
-    def read_row(array, i):
-        return array[i, :]
+    def range(array, start=0, stop=None):
+        if stop is None:
+            stop = array.shape[0]
+        return array[start:stop]
 
     @staticmethod
-    def shape(data):
-        return data.shape
+    def read_row(array, i):
+        return array[i, :]
 
     @staticmethod
     @numba.njit(void(int64[:], int64, float64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -60,8 +60,8 @@ class StorageMethods:
             idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64, float64[:], int64[:]), **conf.JIT_FLAGS)
-    def shuffle_local(idx, length, u01, cell_start):
+    @numba.njit(void(int64[:], float64[:], int64[:]), **conf.JIT_FLAGS)
+    def shuffle_local(idx, u01, cell_start):
         for c in prange(len(cell_start) - 1):
             for i in range(cell_start[c+1]-1, cell_start[c], -1):
                 j = int(cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]))
@@ -72,8 +72,8 @@ class StorageMethods:
         return data.copy()
 
     @staticmethod
-    def upload(np_data, backend_target):
-        np.copyto(backend_target, np_data, casting='safe')
+    def upload(numpy_data, backend_target):
+        np.copyto(backend_target, numpy_data, casting='safe')
 
     @staticmethod
     def write_row(array, i, row):

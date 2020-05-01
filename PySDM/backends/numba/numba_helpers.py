@@ -7,14 +7,13 @@ Created at 17.02.2020
 
 import numpy as np
 
-from PySDM.backends.numba import conf
 from . import conf
-import PySDM.simulation.physics.constants as const
+import PySDM.physics.constants as const
 from numba import float64
 
-from PySDM.simulation.physics import _flag
+from PySDM.physics import _flag
 if _flag.DIMENSIONAL_ANALYSIS:
-    import PySDM.simulation.physics._fake_numba as numba
+    import PySDM.physics._fake_numba as numba
 else:
     import numba
 

@@ -5,57 +5,30 @@ Created at 10.12.2019
 @author: Sylwester Arabas
 """
 
+import numpy as np
 import ThrustRTC as trtc
 import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
 
 
 class MathsMethods:
+    chunks = 32
 
     @staticmethod
-    def add(data_out, data_in):
-        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Plus())
+    def add(output, addend):
+        trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
     @staticmethod
-    def amax(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Max_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
-        return result
-
-    @staticmethod
-    def amin(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Min_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
-        return result
-
-    @staticmethod
-    def column_modulo(data, divisor):
-        loop = trtc.For(['arr', 'divisor'], "i", f'''
-                            for (int d=0; d<{divisor.size()}; d++)
-                                arr[d + i] = arr[d + i] % divisor[d];
+    def column_modulo(output, divisor):
+        loop = trtc.For(['output', 'divisor', 'col_num'], "i", '''
+                            int d = i % col_num;
+                            output[i] %= divisor[d];
                         ''')
-        loop.launch_n(data.shape[0], [data, divisor])
+        col_num = trtc.DVInt64(divisor.size())
+        loop.launch_n(output.size(), [output, divisor, col_num])
 
     @staticmethod
-    def floor(data_out, data_in):
-        loop = trtc.For(['out', 'in'], "i", '''
-                            if (in[i] >= 0) 
-                                out[i] = (long) in[i];
-                            else
-                            {
-                                out[i] = (long) in[i];
-                                if (in != out[i])
-                                    out[i] -= 1;
-                            }
-                        ''')
-        loop.launch_n(data_out.size(), [data_out, data_in])
-
-    @staticmethod
-    def floor_in_place(data):
+    def floor(output):
         loop = trtc.For(['arr'], "i", '''
                     if (arr[i] >= 0) 
                         arr[i] = (long) arr[i];
@@ -67,39 +40,95 @@ class MathsMethods:
                             arr[i] -= 1;
                     }
                 ''')
-        loop.launch_n(data.size(), [data])
+        loop.launch_n(output.size(), [output])
 
     @staticmethod
-    def multiply(data, multiplier):
+    def floor_out_of_place(output, input_data):
+        loop = trtc.For(['output', 'input_data'], "i", '''
+                            if (input_data[i] >= 0) 
+                                output[i] = (long) input_data[i];
+                            else
+                            {
+                                output[i] = (long) input_data[i];
+                                if (input_data[i] != output[i])
+                                    output[i] -= 1;
+                            }
+                        ''')
+        loop.launch_n(output.size(), [output, input_data])
+
+    @staticmethod
+    def multiply(output, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
-            loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult[i];")
-            mult = multiplier
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier[i];")
+            device_multiplier = multiplier
         elif isinstance(multiplier, float):
-            loop = trtc.For(['arr', 'mult'], "i", "arr[i] *= mult;")
-            mult = trtc.DVDouble(multiplier)
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
+            device_multiplier = trtc.DVDouble(multiplier)
+        elif isinstance(multiplier, int):
+            loop = trtc.For(['output', 'multiplier'], "i", "output[i] *= multiplier;")
+            device_multiplier = trtc.DVInt64(multiplier)
         else:
             raise NotImplementedError()
-        loop.launch_n(data.size(), [data, mult])
+        loop.launch_n(output.size(), [output, device_multiplier])
 
     @staticmethod
-    def subtract(data_out, data_in):
-        trtc.Transform_Binary(data_in, data_out, data_out, trtc.Minus)
+    def multiply_out_of_place(output, multiplicand, multiplier):
+        if isinstance(multiplier, StorageMethods.storage):
+            loop = trtc.For(['output', 'multiplicand', 'multiplier'], "i",
+                            "output[i] = multiplicand[i] * multiplier[i];")
+            device_multiplier = multiplier
+        elif isinstance(multiplier, float):
+            loop = trtc.For(['output', 'multiplicand', 'multiplier'], "i",
+                            "output[i] = multiplicand[i] * multiplier;")
+            device_multiplier = trtc.DVDouble(multiplier)
+        else:
+            raise NotImplementedError()
+        loop.launch_n(output.size(), [output, multiplicand, device_multiplier])
 
     @staticmethod
-    def urand(data):
+    def power(output, exponent):
+        if isinstance(exponent, float):
+            if exponent == 1.:
+                return
+            loop = trtc.For(['output', 'exponent'], "i", "output[i] = pow(output[i], exponent);")
+            device_multiplier = trtc.DVDouble(exponent)
+        elif isinstance(exponent, int):
+            if exponent == 1:
+                return
+            loop = trtc.For(['output', 'exponent'], "i", "output[i] = pow(output[i], exponent);")
+            device_multiplier = trtc.DVDouble(exponent)
+        else:
+            raise NotImplementedError()
+        loop.launch_n(output.size(), [output, device_multiplier])
+
+    @staticmethod
+    def subtract(output, subtrahend):
+        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
+
+    @staticmethod
+    def urand(data, seed=None):
+        if seed is None:
+            seed = np.random.randint(2**16)
         rng = rndrtc.DVRNG()
-        # TODO: threads vs. blocks
-        # TODO: proper state_init
-        # TODO: generator choice
-        chunks = min(32, data.size())  # TODO!!!
-        ker = trtc.For(['rng', 'vec_rnd'], 'idx',
-                       f'''
-                       RNGState state;
-                       rng.state_init(1234, idx, 0, state);  // initialize a state using the rng object
-                       for (int i=0; i<{chunks}; i++)
-                           vec_rnd[i+idx*{chunks}]=(float)state.rand01(); // generate random number using the rng object
-                       ''')
+
+        chunks = MathsMethods.chunks
+        ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+            RNGState state;
+            rng.state_init({seed}, idx, 0, state);  // initialize a state using the rng object
+            for (int i=0; i<{chunks}; i++)
+               vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
+            ''')
 
         ker.launch_n(data.size() // chunks, [rng, data])
 
+        if data.size() % MathsMethods.chunks != 0:
+            start = data.size() - (data.size() % MathsMethods.chunks)
+            stop = data.size()
+            data_tail = data.range(start, stop)
+            ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+                RNGState state;
+                rng.state_init({seed}, {start}+idx, 0, state);  // initialize a state using the rng object
+                vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
+                ''')
 
+            ker.launch_n(stop - start, [rng, data_tail])

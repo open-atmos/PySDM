@@ -7,12 +7,13 @@ Created at 13.01.2020
 
 import pytest
 import numpy as np
-from PySDM.simulation.initialisation.spectra import Lognormal
-from PySDM.simulation.initialisation.spectral_sampling import linear
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.simulation.state.testable_state_factory import TestableStateFactory
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
-from PySDM.simulation.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.multiplicities import discretise_n
 
 
 backend = Default
@@ -34,7 +35,7 @@ def test_final_state(croupier):
     v, n = linear(n_sd, spectrum, (v_min, v_max))
     n = discretise_n(n)
     particles = DummyParticles(backend, n_sd)
-    particles.set_mesh((x, y))
+    particles.set_environment(DummyEnvironment, {'grid': (x, y)})
     particles.croupier = croupier
 
     cell_id = backend.array((n_sd,), dtype=int)

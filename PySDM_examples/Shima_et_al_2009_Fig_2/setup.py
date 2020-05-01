@@ -6,20 +6,20 @@ Created at 08.08.2019
 """
 
 import numpy as np
-from PySDM.simulation.initialisation.spectra import Exponential
-from PySDM.simulation.dynamics.coalescence.kernels.golovin import Golovin
-from PySDM.backends.default import Default
-from PySDM.simulation.physics.constants import si
-from PySDM.simulation.physics import formulae as phys
+from PySDM.initialisation.spectra import Exponential
+from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.backends import Default
+from PySDM.physics.constants import si
+from PySDM.physics import formulae as phys
 
 
 class SetupA:
-    x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
-    x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
+    init_x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
+    init_x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
-    X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
+    X0 = 4 / 3 * np.pi * (30.531 * si.micrometres) ** 3
     dv = 1e6 * si.metres**3
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
@@ -30,19 +30,6 @@ class SetupA:
     kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
+    radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True)
+
     backend = Default
-
-    # TODO: rename?
-    # TODO: as backend method?
-    def check(self, state, step):
-        check_LWC = 1e-3  * si.kilogram / si.metre**3
-        check_ksi = self.n_part * self.dv / self.n_sd
-
-        # multiplicities
-        if step == 0:
-            np.testing.assert_approx_equal(np.amin(state['n']), np.amax(state['n']), 1)
-            np.testing.assert_approx_equal(state['n'][0], check_ksi, 1)
-
-        # liquid water content
-        LWC = self.rho * np.dot(state['n'], state['volume']) / self.dv
-        np.testing.assert_approx_equal(LWC, check_LWC, 3)
