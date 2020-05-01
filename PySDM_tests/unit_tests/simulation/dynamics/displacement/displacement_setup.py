@@ -8,7 +8,7 @@ Created at 29.04.2020
 from PySDM.backends.default import Default
 from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
 from PySDM.dynamics import Displacement
-from PySDM.state import StateFactory
+from PySDM.state.state_factory import StateFactory
 import numpy as np
 from PySDM_tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
 
@@ -24,9 +24,10 @@ class Setup:
         self.dt = None
 
     def get_displacement(self):
-        particles = DummyParticles(Default, n_sd=len(self.n), dt=self.dt)
+        particles = DummyParticles(Default, n_sd=len(self.n))
         particles.set_environment(DummyEnvironment,
-                                  {'grid': self.grid,
+                                  {'dt': self.dt,
+                                   'grid': self.grid,
                                    'courant_field_data': self.courant_field_data})
         positions = Default.from_ndarray(np.array(self.positions))
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)

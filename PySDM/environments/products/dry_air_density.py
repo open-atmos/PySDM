@@ -9,7 +9,7 @@ class DryAirDensity(Product):
                          unit="kg/m^3",
                          range=(0.95, 1.3),
                          scale="linear",
-                         shape=environment.particles.mesh.grid)
+                         shape=environment.mesh.grid)
 
     def get(self):
         self.download_to_buffer(self.environment['rhod'])

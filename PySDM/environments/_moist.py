@@ -25,7 +25,7 @@ class _Moist:
     def _allocate(self, variables):
         result = {}
         for var in variables:
-            result[var] = self.particles.backend.array((self.particles.mesh.n_cell,), float)
+            result[var] = self.particles.backend.array((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, index):

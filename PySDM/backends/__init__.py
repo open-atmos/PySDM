@@ -7,4 +7,6 @@ Created at 24.07.2019
 
 from .default import Default
 from .numba.numba import Numba
-from .thrustRTC.thrustRTC import ThrustRTC
+import os
+if os.environ.get('TRAVIS') != 'true':
+    from .thrustRTC.thrustRTC import ThrustRTC

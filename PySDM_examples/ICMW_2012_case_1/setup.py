@@ -9,7 +9,7 @@ Created at 25.09.2019
 import numpy as np
 
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.dynamics import Gravitational
+from PySDM.dynamics.coalescence.kernels import Gravitational
 from PySDM.backends.default import Default
 from PySDM.dynamics.condensation import condensation
 from PySDM.physics import formulae as phys
