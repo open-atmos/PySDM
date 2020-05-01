@@ -17,8 +17,8 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.plotter import Plotter
 
 
 def run(setup):
-    particles_builder = ParticlesBuilder(n_sd=setup.n_sd, dt=setup.dt, backend=setup.backend)
-    particles_builder.set_environment(Box, {"dv": setup.dv})
+    particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
+    particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
     particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
