@@ -7,7 +7,7 @@ Created at 06.11.2019
 """
 
 import numpy as np
-from MPyDATA.mpdata_factory import MPDATAFactory
+from MPyDATA.factories import Factories
 from MPyDATA.arakawa_c.discretisation import z_vec_coord, x_vec_coord
 from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
@@ -38,7 +38,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             axis=0
         )
 
-        self.__GC, self.__mpdatas = MPDATAFactory.stream_function_2d(
+        self.__GC, self.__mpdatas = Factories.stream_function_2d(
             grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
