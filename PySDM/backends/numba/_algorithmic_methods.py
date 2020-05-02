@@ -132,9 +132,9 @@ class AlgorithmicMethods:
                 moment_0[cell_id[i]] += n[i]
                 for k in range(specs_idx.shape[0]):
                     moments[k, cell_id[i]] += n[i] * attr[specs_idx[k], i] ** specs_rank[k]
-        for i in range(moment_0.shape[0]):
+        for c_id in range(moment_0.shape[0]):
             for k in range(specs_idx.shape[0]):
-                    moments[k, i] = moments[k, i] / moment_0[i] if moment_0[cell_id[i]] != 0 else 0
+                moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

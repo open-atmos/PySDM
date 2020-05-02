@@ -141,9 +141,9 @@ The resultant plot looks as follows:
 ## Package structure and API
 
 - backends:
-    - Numba
-    - ThrustRTC
-    - Pythran
+    - [Numba](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/numba): multi-threaded CPU backend using LLVM-powered just-in-time compilation
+    - [ThrustRTC](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/thrustRTC): GPU-resident backend using real-time compilation 
+    - [Pythran](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/pythran.py): multi-threaded CPU backend using LLVM-powered ahead-of-time compilation 
 - initialisation:
     - multiplicities
         - integer values
@@ -159,13 +159,13 @@ The resultant plot looks as follows:
         - logarithmic
         - constant_multiplicity
 - physics:
-    - constants
-    - dimensional_analysis
-    - formulae
+    - constants: 
+    - dimensional_analysis: tools for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
+    - formulae: 
 - Environments:
-    - Box
-    - MoistEulerian2DKinematic
-    - MoistLagrangianParcelAdiabatic
+    - Box: bare zero-dimensional framework 
+    - MoistLagrangianParcelAdiabatic: zero-dimensional adiabatic parcel framework
+    - MoistEulerian2DKinematic: two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [MPyDATA](http://github.com/atmos-cloud-sim-uj/MPyDATA/)
 - Dynamics:
     - Coalescence
         - coalescence.kernels

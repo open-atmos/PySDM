@@ -4,6 +4,8 @@ mpmath==1.1.0
 numba==0.49.0
 matplotlib==3.1.2
 pythran==0.9.5
+ThrustRTC==0.2.1
+CURandRTC==0.0.5
 Pint==0.11
 mendeleev==0.5.2
 ipywidgets==7.5.1
