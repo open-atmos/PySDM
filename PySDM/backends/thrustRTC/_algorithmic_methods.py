@@ -140,6 +140,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+        # DEBUGGING
+        # print("Numba import!")
+
+        # from PySDM.backends.numba.numba import Numba
+        # from PySDM.backends.thrustRTC._storage_methods import StorageMethods
+        # host_prob = StorageMethods.to_ndarray(prob)
+        # host_cell_id = StorageMethods.to_ndarray(cell_id)
+        # host_cell_start = StorageMethods.to_ndarray(cell_start)
+        # host_norm_factor = StorageMethods.to_ndarray(norm_factor)
+        # Numba.normalize(host_prob, host_cell_id, host_cell_start, host_norm_factor, dt_div_dv)
+        # device_norm_factor = StorageMethods.from_ndarray(host_norm_factor)
+        # device_prob = StorageMethods.from_ndarray(host_prob)
+        # trtc.Copy(device_norm_factor, norm_factor)
+        # trtc.Copy(device_prob, prob)
+
         n_cell = cell_start.shape[0] - 1
         loop = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
             int sd_num = cell_start[i + 1] - cell_start[i];

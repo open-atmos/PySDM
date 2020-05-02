@@ -95,7 +95,7 @@ class Particles:
                 rtol_thd=rtol_thd,
                 dt=self.dt,
                 substeps=substeps,
-                cell_order=np.argsort(substeps)
+                cell_order=np.argsort(substeps)  # TODO: check if better than regular order
             )
 
     def run(self, steps):
