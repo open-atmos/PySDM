@@ -25,7 +25,7 @@ class Setup:
     @property
     def dt_max(self):
         t_total = 2 * Setup.z_half / self.w_avg
-        return t_total / Setup.n_output
+        return t_total / (Setup.n_output * 100)
 
     backend = Default
 
