@@ -52,7 +52,7 @@ class Simulation:
 
     def save(self, output):
         cell_id = 0
-        output["r"].append(self.particles.products['radius_m1'].get(unit=const.si.metre))
+        output["r"].append(self.particles.products['radius_m1'].get(unit=const.si.metre)[cell_id])
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)
         output["z"].append(self.particles.environment["z"][cell_id])
         output["t"].append(self.particles.environment["t"][cell_id])
