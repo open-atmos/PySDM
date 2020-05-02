@@ -11,6 +11,7 @@ rtols = [1e-6, 1e-7]
 schemes = ['default', 'BDF']
 setups_num = len(setups)-4
 
+
 @pytest.fixture(scope='module')
 def data():
     # TODO: calculate BDF just once - as a reference solution
@@ -28,7 +29,7 @@ def data():
                 else:
                     setup.rtol_x = rtol
                     setup.rtol_thd = rtol
-                setup.n_steps = 100
+                setup.n_output = 20
                 simulation = Simulation(setup)
                 if scheme == 'BDF':
                     bdf.patch_particles(simulation.particles, setup.coord, rtol=1e-4)
