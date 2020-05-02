@@ -14,7 +14,7 @@ def image(ax, data, domain_size_in_metres, label, cmap='YlGnBu', scale='linear')
                    origin='lower',
                    extent=(0, domain_size_in_metres[0], 0, domain_size_in_metres[1]),
                    cmap=cmap,
-                   norm=matplotlib.colors.LogNorm() if scale == 'log' else None
+                   norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(data).all() else None
                    )
     pyplot.colorbar(im, ax=ax).set_label(label)
     return im, ax
