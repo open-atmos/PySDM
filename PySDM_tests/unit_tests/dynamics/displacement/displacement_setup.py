@@ -6,11 +6,11 @@ Created at 29.04.2020
 """
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.simulation.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
 from PySDM.dynamics import Displacement
 from PySDM.state.state_factory import StateFactory
 import numpy as np
-from PySDM_tests.unit_tests.simulation.state.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
 
 
 class Setup:
