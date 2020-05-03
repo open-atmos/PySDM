@@ -139,5 +139,9 @@ class StorageMethods:
             shape = (shape,)
         data.shape = shape
         data.dtype = dtype
-        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
+
+        def get(index):
+            return trtc.Reduce(data.range(index, index + 1))
+
+        data.get = get
 
