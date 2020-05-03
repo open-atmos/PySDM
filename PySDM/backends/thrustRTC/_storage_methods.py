@@ -89,14 +89,12 @@ class StorageMethods:
     @staticmethod
     # void(int64[:], int64, float64[:])
     def shuffle_global(idx, length, u01):
-        pass
-        # raise NotImplementedError()
+        raise NotImplementedError()
 
     @staticmethod
     # void(int64[:], float64[:], int64[:])
     def shuffle_local(idx, u01, cell_start):
-        # TODO
-        print("Numba import!")
+        # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
 
         from PySDM.backends.numba.numba import Numba
         host_idx = StorageMethods.to_ndarray(idx)

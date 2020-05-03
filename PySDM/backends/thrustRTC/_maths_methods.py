@@ -107,28 +107,34 @@ class MathsMethods:
 
     @staticmethod
     def urand(data, seed=None):
-        if seed is None:
-            seed = np.random.randint(2**16)
-        rng = rndrtc.DVRNG()
+        # TODO: print("Numpy import!: ThrustRTC.urand(...)")
 
-        chunks = MathsMethods.chunks
-        ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
-            RNGState state;
-            rng.state_init({seed}, idx, 0, state);  // initialize a state using the rng object
-            for (int i=0; i<{chunks}; i++)
-               vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
-            ''')
+        # np.random.seed(seed)
+        output = np.random.uniform(0, 1, data.shape)
+        StorageMethods.upload(output, data)
 
-        ker.launch_n(data.size() // chunks, [rng, data])
-
-        if data.size() % MathsMethods.chunks != 0:
-            start = data.size() - (data.size() % MathsMethods.chunks)
-            stop = data.size()
-            data_tail = data.range(start, stop)
-            ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
-                RNGState state;
-                rng.state_init({seed}, {start}+idx, 0, state);  // initialize a state using the rng object
-                vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
-                ''')
-
-            ker.launch_n(stop - start, [rng, data_tail])
+        # if seed is None:
+        #     seed = np.random.randint(2**16)
+        # rng = rndrtc.DVRNG()
+        #
+        # chunks = MathsMethods.chunks
+        # ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+        #     RNGState state;
+        #     rng.state_init({seed}, idx, 0, state);  // initialize a state using the rng object
+        #     for (int i=0; i<{chunks}; i++)
+        #        vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
+        #     ''')
+        #
+        # ker.launch_n(data.size() // chunks, [rng, data])
+        #
+        # if data.size() % MathsMethods.chunks != 0:
+        #     start = data.size() - (data.size() % MathsMethods.chunks)
+        #     stop = data.size()
+        #     data_tail = data.range(start, stop)
+        #     ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
+        #         RNGState state;
+        #         rng.state_init({seed}, {start}+idx, 0, state);  // initialize a state using the rng object
+        #         vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
+        #         ''')
+        #
+        #     ker.launch_n(stop - start, [rng, data_tail])

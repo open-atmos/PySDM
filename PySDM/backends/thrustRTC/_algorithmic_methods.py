@@ -118,8 +118,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
-        # TODO
-        print("Numba import!: ThrustRTC.moments(...)")
+        # TODO print("Numba import!: ThrustRTC.moments(...)")
 
         from PySDM.backends.numba.numba import Numba
         from PySDM.backends.thrustRTC._storage_methods import StorageMethods
@@ -140,20 +139,6 @@ class AlgorithmicMethods:
 
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        # DEBUGGING
-        # print("Numba import!")
-
-        # from PySDM.backends.numba.numba import Numba
-        # from PySDM.backends.thrustRTC._storage_methods import StorageMethods
-        # host_prob = StorageMethods.to_ndarray(prob)
-        # host_cell_id = StorageMethods.to_ndarray(cell_id)
-        # host_cell_start = StorageMethods.to_ndarray(cell_start)
-        # host_norm_factor = StorageMethods.to_ndarray(norm_factor)
-        # Numba.normalize(host_prob, host_cell_id, host_cell_start, host_norm_factor, dt_div_dv)
-        # device_norm_factor = StorageMethods.from_ndarray(host_norm_factor)
-        # device_prob = StorageMethods.from_ndarray(host_prob)
-        # trtc.Copy(device_norm_factor, norm_factor)
-        # trtc.Copy(device_prob, prob)
 
         n_cell = cell_start.shape[0] - 1
         loop = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
@@ -198,11 +183,16 @@ class AlgorithmicMethods:
         trtc.Sort_By_Key(idx.range(0, length), cell_id.range(0, length))
         trtc.Fill(cell_start, trtc.DVInt64(length))
         loop = trtc.For(['cell_id', 'cell_start', 'idx'], "i", '''
-            int cell_id_curr = cell_id[idx[i]];
-            int cell_id_next = cell_id[idx[i + 1]];
-            int diff = (cell_id_next - cell_id_curr);
-            for (int j = 1; j <= diff; j++) {
-                cell_start[cell_id_curr + j] = idx[i + 1];
+            if (i == 0) {
+                cell_start[cell_id[idx[0]]] = 0;
+            } 
+            else {
+                int cell_id_curr = cell_id[idx[i]];
+                int cell_id_next = cell_id[idx[i + 1]];
+                int diff = (cell_id_next - cell_id_curr);
+                for (int j = 1; j <= diff; j++) {
+                    cell_start[cell_id_curr + j] = idx[i + 1];
+                }
             }
             ''')
         loop.launch_n(length - 1, [cell_id, cell_start, idx])
