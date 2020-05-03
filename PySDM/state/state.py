@@ -18,7 +18,8 @@ class State:
         self.__backend = particles.backend
 
         self.__n_sd = particles.n_sd
-        self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
+        self.healthy = True
+        self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
         self.n = self.__backend.from_ndarray(n)
         self.attributes = attributes
@@ -41,9 +42,10 @@ class State:
 
     @property
     def SD_num(self):
-        if not self.is_healthy():
+        if not self.healthy:
             self.__n_sd = self.__backend.remove_zeros(self.n, self.__idx, length=self.__n_sd)
-            self.healthy = self.__backend.from_ndarray(np.full((1,), 1))
+            self.healthy = True
+            self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
             self.__sorted = False
         return self.__n_sd
 
@@ -83,10 +85,6 @@ class State:
 
     def get_intensive_attrs(self):
         result = self.__backend.range(self.attributes, start=self.intensive_start)
-        return result
-
-    def is_healthy(self):
-        result = not self.__backend.first_element_is_zero(self.healthy)
         return result
 
     def recalculate_cell_id(self):
@@ -131,10 +129,13 @@ class State:
                                    intensive=self.get_intensive_attrs(),
                                    extensive=self.get_extensive_attrs(),
                                    gamma=gamma,
-                                   healthy=self.healthy)
+                                   healthy=self.__healthy_memory)
+        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
 
     def has_attribute(self, attr):
         return attr in self.keys
 
     def remove_precipitated(self):
-        self.__backend.flag_precipitated(self.cell_origin, self.position_in_cell, self.__idx, self.SD_num, self.healthy)
+        self.__backend.flag_precipitated(self.cell_origin, self.position_in_cell,
+                                         self.__idx, self.SD_num, self.__healthy_memory)
+        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
