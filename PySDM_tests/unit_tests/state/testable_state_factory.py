@@ -7,7 +7,7 @@ Created at 09.11.2019
 
 import numpy as np
 from PySDM.state.state_factory import StateFactory
-from PySDM_tests.unit_tests.simulation.state.testable_state import TestableState
+from PySDM_tests.unit_tests.state.testable_state import TestableState
 
 
 class TestableStateFactory(StateFactory):
