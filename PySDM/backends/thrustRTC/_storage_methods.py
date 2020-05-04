@@ -89,7 +89,8 @@ class StorageMethods:
     @staticmethod
     # void(int64[:], int64, float64[:])
     def shuffle_global(idx, length, u01):
-        raise NotImplementedError()
+        # WARNING: ineffective implementation
+        trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     @staticmethod
     # void(int64[:], float64[:], int64[:])
