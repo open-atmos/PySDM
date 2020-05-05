@@ -121,7 +121,7 @@ class CondensationMethods:
 
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d_mean
-                dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_pred + dqv_dt_corr)
+                dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
                 thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new

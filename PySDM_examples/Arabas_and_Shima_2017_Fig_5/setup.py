@@ -25,7 +25,10 @@ class Setup:
     @property
     def dt_max(self):
         t_total = 2 * Setup.z_half / self.w_avg
-        return t_total / Setup.n_output
+        result = t_total / Setup.n_output
+        if result < 1 * si.centimetre / si.second:
+            result /= 100  # TODO
+        return result
 
     backend = Default
 
