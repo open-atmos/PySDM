@@ -172,7 +172,7 @@ def within_tolerance(error_estimate, value, rtol):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}} )
-def bisec(minfun, a, interval, args, rtol, n_substeps):
+def bisec(minfun, a, interval, args, rtol):
     b = a + interval
 
     counter = 0
