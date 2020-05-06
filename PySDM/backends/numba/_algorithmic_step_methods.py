@@ -57,13 +57,6 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-    def subtract_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
-        for i in prange(length - 1):
-            data_out[i] = (data_in[idx[i]] - data_in[idx[i + 1]]) if is_first_in_pair[i] else 0
-
-    @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         for i in prange(length - 1):

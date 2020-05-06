@@ -11,7 +11,7 @@ from PySDM.physics import constants as const
 class Gravitational:
     # TODO: handle collection_efficiency
     def __init__(self, collection_efficiency=1, x='volume'):
-        self.collection_efficiency = 1
+        self.collection_efficiency = collection_efficiency
         self.x = x
 
         self.__particles = None
