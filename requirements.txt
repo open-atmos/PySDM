@@ -4,12 +4,12 @@ mpmath==1.1.0
 numba==0.49.0
 matplotlib==3.2.1
 pythran==0.9.5
-ThrustRTC==0.2.1
-CURandRTC==0.0.5
+ThrustRTC==0.3.0
+CURandRTC
 Pint==0.11
-mendeleev==0.5.2
+mendeleev==0.6.0
 ipywidgets==7.5.1
-ipykernel==5.1.3
+ipykernel==5.2.1
 pytest
 pytest-cov
 codecov
