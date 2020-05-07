@@ -26,6 +26,7 @@ jobs:
       language: shell
       os: osx
       before_install:
+        - sed -i -e '/^ThrustRTC/d' requirements.txt  # TODO
         - sed -i -e '/^CURandRTC/d' requirements.txt  # TODO
         - export PY_SFX=3
     - name: "Python 3.7 on Windows"
