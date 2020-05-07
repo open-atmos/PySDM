@@ -14,7 +14,7 @@ backend = Default()
 backends = []  # TODO: add Pythran
 if os.environ.get('TRAVIS') != 'true':
     from PySDM.backends import ThrustRTC
-    # backends.append(ThrustRTC())
+    backends.append(ThrustRTC())
 
 
 '''
