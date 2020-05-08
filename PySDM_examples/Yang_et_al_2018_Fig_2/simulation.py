@@ -63,9 +63,10 @@ class Simulation:
         output["T"].append(self.particles.environment["T"][cell_id])
         output["z"].append(self.particles.environment["z"][cell_id])
         output["t"].append(self.particles.environment["t"][cell_id])
+        output["dt_cond"].append(self.particles.products["dt_cond"].get().copy())
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond": []}
 
         self.save(output)
         for step in range(self.n_steps):

@@ -28,3 +28,4 @@ class CondensationTimestep(Product):
         self.download_to_buffer(self.condensation.substeps)
         self.buffer[:] = self.condensation.particles.dt / self.buffer
         return self.buffer
+    
