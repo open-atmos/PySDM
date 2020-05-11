@@ -104,4 +104,7 @@ class Particles:
                 for dynamic in self.dynamics.values():
                     dynamic()
                 self.environment.post_step()
+                for product in self.products.values():
+                    product.poll()
         self.n_steps += steps
+

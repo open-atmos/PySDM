@@ -48,7 +48,7 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         self.particles = particles_builder.get_particles()
-
+        self.particles.products['dt_cond'].debug = True
         self.n_steps = setup.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
@@ -63,10 +63,14 @@ class Simulation:
         output["T"].append(self.particles.environment["T"][cell_id])
         output["z"].append(self.particles.environment["z"][cell_id])
         output["t"].append(self.particles.environment["t"][cell_id])
-        output["dt_cond"].append(self.particles.products["dt_cond"].get().copy())
+        output["dt_cond_max"].append(self.particles.products["dt_cond"].get_max().copy())
+        output["dt_cond_min"].append(self.particles.products["dt_cond"].get_min().copy())
+        self.particles.products["dt_cond"].reset()
+
+
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": []}
 
         self.save(output)
         for step in range(self.n_steps):

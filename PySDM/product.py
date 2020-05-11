@@ -22,6 +22,9 @@ class Product:
     def download_to_buffer(self, storage):
         self.particles.backend.download(storage, self.buffer.ravel())
 
+    def poll(self):
+        pass
+
 
 class MomentProduct(Product):
     def __init__(self, particles, shape, name, unit, description, scale, range):
