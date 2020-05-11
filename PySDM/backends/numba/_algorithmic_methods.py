@@ -167,7 +167,7 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, substeps, cell_order
     ):
         for thread_id in numba.prange(n_threads):
@@ -182,15 +182,13 @@ class AlgorithmicMethods:
 
                 dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
                 dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
-                md_new = prhod[cell_id] * dv
-                md_old = rhod[cell_id] * dv
-                md_mean = (md_new + md_old) / 2
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+                md = rhod_mean * dv_mean
 
                 qv_new, thd_new, substeps_hint = solver(
                     v, particle_temperatures, n, vdry,
                     idx[cell_start:cell_end],  # TODO
-                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md_mean, rhod_mean,
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, substeps[cell_id]
                 )
 
