@@ -39,11 +39,11 @@ class CondensationTimestep(Product):
     def get_count(self):
         return self.count
 
-
     def get(self):
         self.download_to_buffer(self.condensation.substeps)
         self.buffer[:] = self.condensation.particles.dt / self.buffer
         return self.buffer
+
 
     def poll(self):
         if self.debug:
