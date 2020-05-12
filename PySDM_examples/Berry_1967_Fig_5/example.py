@@ -38,10 +38,8 @@ def run(setup):
 def main(plot: bool):
     with np.errstate(all='raise'):
         setup = Setup()
-        from PySDM.dynamics.coalescence.kernels.gravitational import Gravitational
-        setup.kernel = Gravitational(collection_efficiency=1)
-        setup.steps = [200 * i for i in range(5)]
-        setup.n_sd = 2**19
+        setup.steps = [int(200 / setup.dt * i) for i in range(6)]
+        setup.n_sd = 2**13
 
         states, _ = run(setup)
 
