@@ -7,7 +7,7 @@ Created at 10.12.2019
 
 import numpy as np
 import ThrustRTC as trtc
-import CURandRTC as rndrtc
+# TODO import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
 
 
