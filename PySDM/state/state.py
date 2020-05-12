@@ -6,14 +6,15 @@ Created at 03.06.2019
 """
 
 import numpy as np
+from PySDM.attributes.attribute import Attribute
 
 
 class State:
 
-    def __init__(self, n: np.ndarray, attributes: dict, keys: dict, intensive_start: int,
-                 cell_id: np.ndarray, cell_start: np.ndarray,
+    def __init__(self, n: (np.ndarray, Attribute), attributes: dict, keys: dict, intensive_start: int,
+                 cell_id: (np.ndarray, Attribute), cell_start: np.ndarray,
                  cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None),
-                 particles):
+                 particles, whole_attributes=None):
         self.particles = particles
         self.__backend = particles.backend
 
@@ -21,18 +22,20 @@ class State:
         self.healthy = True
         self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
-        self.n = self.__backend.from_ndarray(n)
+        self.n = n.get() if whole_attributes is not None else self.__backend.from_ndarray(n)
         self.attributes = attributes
         self.keys = keys
         self.intensive_start = intensive_start
         self.position_in_cell = None if position_in_cell is None else self.__backend.from_ndarray(position_in_cell)
         self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(
             cell_origin)
-        self.cell_id = self.__backend.from_ndarray(cell_id)
+        self.cell_id = cell_id.get() if whole_attributes is not None else self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                    scheme=particles.sorting_scheme)
         self.__sorted = False
+
+        self.whole_attributes = whole_attributes
 
     @property
     def cell_start(self):
@@ -53,6 +56,9 @@ class State:
         attr = self.keys[item]
         result = self.__backend.read_row(self.attributes, attr)
         return result
+
+    def __getitem__(self, item):
+        return self.whole_attributes[item].get()
 
     def permutation_global(self, u01):
         """

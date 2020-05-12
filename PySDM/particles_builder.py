@@ -24,11 +24,18 @@ from .state.products.particle_temperature import ParticleTemperature
 from .state.products.particles_size_spectrum import ParticlesSizeSpectrum
 from .state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
+from PySDM.attributes.mapper import get_class as attr_class
+from PySDM.attributes.droplet.multiplicities import Multiplicities
+from PySDM.attributes.droplet.volume import Volume
+from PySDM.attributes.cell.cell_id import CellID
+
 
 class ParticlesBuilder:
 
     def __init__(self, n_sd, backend, stats=None):
         self.particles = Particles(n_sd, backend, stats)
+        self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
+        self.attributes = {}
 
     def set_terminal_velocity(self, terminal_velocity_class):
         assert_none(self.particles.terminal_velocity)
@@ -56,6 +63,11 @@ class ParticlesBuilder:
         if product.name in self.particles.products:
             raise Exception(f'product name "{product.name}" already registered')
         self.particles.products[product.name] = product
+
+    def get_attribute(self, attribute_name):
+        if attribute_name not in self.req_attr:
+            self.req_attr[attribute_name] = attr_class(attribute_name)(self)
+        return self.req_attr[attribute_name]
 
     def set_attributes(self, *, n=None, extensive=None, intensive=None, spatial_discretisation=None,
                        spectral_discretisation=None, spectrum_per_mass_of_dry_air=None, r_range=None, kappa=None,
@@ -129,8 +141,26 @@ class ParticlesBuilder:
         for product in products:
             self.register_product(product)
 
-    def get_particles(self):
-        assert_not_none(self.particles.state)
+    def get_particles(self, attributes=None):
+        if attributes is None:
+            assert_not_none(self.particles.state)
+        else:
+            self.attributes['n'] = discretise_n(self.attributes['n'])
+            if self.particles.mesh.dimension == 0:
+                self.attributes['cell id'] = np.zeros_like(self.attributes['n'], dtype=np.int64)
+            self.particles.state = StateFactory.attributes(self.particles, self.req_attr, self.attributes)
+            products = [  # TODO: move somewhere
+                TotalParticleConcentration(self.particles),
+                TotalParticleSpecificConcentration(self.particles),
+                ParticleMeanRadius(self.particles),
+                SuperDropletCount(self.particles),
+                ParticlesSizeSpectrum(self.particles),
+                ParticlesVolumeSpectrum(self.particles)
+            ]
+
+            for product in products:
+                self.register_product(product)
+
         return self.particles
 
 
