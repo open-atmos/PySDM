@@ -10,7 +10,6 @@ jobs:
       language: python
       python: "3.8"
       before_install:
-        - sed -i -e '/^ThrustRTC/d' requirements.txt  # TODO
         - sed -i -e '/^CURandRTC/d' requirements.txt  # TODO
         - sudo `which pip` install --upgrade pip
       before_script:
