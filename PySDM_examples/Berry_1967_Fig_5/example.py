@@ -20,11 +20,12 @@ from PySDM_examples.Berry_1967_Fig_5.plotter import Plotter
 def run(setup):
     particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
     particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
-    v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
-    particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    attributes = {}
+    attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
+                                                                  (setup.init_x_min, setup.init_x_max))
     particles_builder.set_terminal_velocity(TerminalVelocity)
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
-    particles = particles_builder.get_particles()
+    particles = particles_builder.get_particles(attributes)
 
     vals = {}
     for step in setup.steps:

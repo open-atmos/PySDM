@@ -36,10 +36,8 @@ class Simulation:
             "z0": setup.z0
         })
 
-        v_dry = phys.volume(radius=setup.r_dry)
         r_wet = r_wet_init(setup.r_dry, particles_builder.particles.environment, np.zeros_like(setup.n), setup.kappa)
-        v_wet = phys.volume(radius=r_wet)
-        particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
+        attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
             "coord": setup.coord,
@@ -47,7 +45,7 @@ class Simulation:
             "rtol_x": setup.rtol_x,
             "rtol_thd": setup.rtol_thd,
         })
-        self.particles = particles_builder.get_particles()
+        self.particles = particles_builder.get_particles(attributes)
 
         self.n_steps = setup.n_steps
 
