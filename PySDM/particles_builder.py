@@ -35,7 +35,6 @@ class ParticlesBuilder:
     def __init__(self, n_sd, backend, stats=None):
         self.particles = Particles(n_sd, backend, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
-        self.attributes = {}
 
     def set_terminal_velocity(self, terminal_velocity_class):
         assert_none(self.particles.terminal_velocity)
@@ -145,10 +144,12 @@ class ParticlesBuilder:
         if attributes is None:
             assert_not_none(self.particles.state)
         else:
-            self.attributes['n'] = discretise_n(self.attributes['n'])
+            for attribute in attributes:
+                self.get_attribute(attribute)
+            attributes['n'] = discretise_n(attributes['n'])
             if self.particles.mesh.dimension == 0:
-                self.attributes['cell id'] = np.zeros_like(self.attributes['n'], dtype=np.int64)
-            self.particles.state = StateFactory.attributes(self.particles, self.req_attr, self.attributes)
+                attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
+            self.particles.state = StateFactory.attributes(self.particles, self.req_attr, attributes)
             products = [  # TODO: move somewhere
                 TotalParticleConcentration(self.particles),
                 TotalParticleSpecificConcentration(self.particles),

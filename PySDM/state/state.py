@@ -22,13 +22,14 @@ class State:
         self.healthy = True
         self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
+
         self.n = n.get() if whole_attributes is not None else self.__backend.from_ndarray(n)
         self.attributes = attributes
         self.keys = keys
         self.intensive_start = intensive_start
+
         self.position_in_cell = None if position_in_cell is None else self.__backend.from_ndarray(position_in_cell)
-        self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(
-            cell_origin)
+        self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(cell_origin)
         self.cell_id = cell_id.get() if whole_attributes is not None else self.__backend.from_ndarray(cell_id)
         self.__cell_start = self.__backend.from_ndarray(cell_start)
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
