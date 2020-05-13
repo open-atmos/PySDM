@@ -35,10 +35,7 @@ class ParticlesBuilder:
     def __init__(self, n_sd, backend, stats=None):
         self.particles = Particles(n_sd, backend, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
-
-    def set_terminal_velocity(self, terminal_velocity_class):
-        assert_none(self.particles.terminal_velocity)
-        self.particles.terminal_velocity = terminal_velocity_class(self.particles)
+        self.aerosol_radius_threshold = 0
 
     def _set_condensation_parameters(self, coord, adaptive=True):
         self.particles.condensation_solver = self.particles.backend.make_condensation_solver(coord, adaptive)
@@ -46,7 +43,6 @@ class ParticlesBuilder:
     def set_environment(self, environment_class, params: dict):
         assert_none(self.particles.environment)
         self.particles.environment = environment_class(self, **params)
-        self.register_products(self.particles.environment)
 
     def register_dynamic(self, dynamic_class, params: dict):
         instance = (dynamic_class(self, **params))
@@ -64,83 +60,14 @@ class ParticlesBuilder:
         self.particles.products[product.name] = product
 
     def get_attribute(self, attribute_name):
-        if attribute_name not in self.req_attr:
-            self.req_attr[attribute_name] = attr_class(attribute_name)(self)
+        self.request_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def set_attributes(self, *, n=None, extensive=None, intensive=None, spatial_discretisation=None,
-                       spectral_discretisation=None, spectrum_per_mass_of_dry_air=None, r_range=None, kappa=None,
-                       radius_threshold=None, enable_temperatures: bool = False):
-        assert_not_none(self.particles.environment)
-        assert_none(self.particles.state)
-        if self.particles.mesh.dimension == 0:
-            self.create_state_0d(n, extensive, intensive)
-        elif self.particles.mesh.dimension == 2:
-            self.create_state_2d(extensive, intensive, spatial_discretisation, spectral_discretisation,
-                                 spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
-                                 enable_temperatures)
-        else:
-            NotImplementedError("Implemented dimensions: [0D, 2D]")
+    def request_attribute(self, attribute):
+        if attribute not in self.req_attr:
+            self.req_attr[attribute] = attr_class(attribute)(self)
 
-    def create_state_0d(self, n, extensive, intensive):
-        n = discretise_n(n)
-        cell_id = np.zeros_like(n, dtype=np.int64)
-        self.particles.state = StateFactory.state(n=n,
-                                                  intensive=intensive,
-                                                  extensive=extensive,
-                                                  cell_id=cell_id,
-                                                  cell_origin=None,
-                                                  position_in_cell=None,
-                                                  particles=self.particles)
-
-        products = [
-            TotalParticleConcentration(self.particles),
-            TotalParticleSpecificConcentration(self.particles),
-            ParticleMeanRadius(self.particles),
-            SuperDropletCount(self.particles),
-            ParticlesSizeSpectrum(self.particles),
-            ParticlesVolumeSpectrum(self.particles)
-        ]
-
-        for product in products:
-            self.register_product(product)
-
-    def create_state_2d(self, extensive, intensive, spatial_discretisation, spectral_discretisation,
-                        spectrum_per_mass_of_dry_air, r_range, kappa, radius_threshold,
-                        enable_temperatures: bool = False):
-
-        with np.errstate(all='raise'):
-            positions = spatial_discretisation(self.particles.mesh.grid, self.particles.n_sd)
-            cell_id, cell_origin, position_in_cell = self.particles.mesh.cellular_attributes(positions)
-            r_dry, n_per_kg = spectral_discretisation(self.particles.n_sd, spectrum_per_mass_of_dry_air, r_range)
-            r_wet = r_wet_init(r_dry, self.particles.environment, cell_id, kappa)
-            n_per_m3 = n_init(n_per_kg, self.particles.environment, self.particles.mesh, cell_id)
-            n = discretise_n(n_per_m3)
-
-        if enable_temperatures:
-            T_i = temperature_init(self.particles.environment, cell_id)
-            intensive['temperature'] = T_i
-            self.register_product(ParticleTemperature(self.particles))
-
-        extensive['volume'] = phys.volume(radius=r_wet)
-        extensive['dry volume'] = phys.volume(radius=r_dry)
-
-        self.particles.state = StateFactory.state(n, intensive, extensive,
-                                                  cell_id, cell_origin, position_in_cell,
-                                                  self.particles)
-        products = [
-            TotalParticleConcentration(self.particles),
-            TotalParticleSpecificConcentration(self.particles),
-            AerosolConcentration(self.particles, radius_threshold),
-            AerosolSpecificConcentration(self.particles, radius_threshold),
-            ParticleMeanRadius(self.particles),
-            SuperDropletCount(self.particles)
-        ]
-
-        for product in products:
-            self.register_product(product)
-
-    def get_particles(self, attributes=None):
+    def get_particles(self, attributes: dict, products: dict = {}):
         if attributes is None:
             assert_not_none(self.particles.state)
         else:
@@ -150,17 +77,9 @@ class ParticlesBuilder:
             if self.particles.mesh.dimension == 0:
                 attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
             self.particles.state = StateFactory.attributes(self.particles, self.req_attr, attributes)
-            products = [  # TODO: move somewhere
-                TotalParticleConcentration(self.particles),
-                TotalParticleSpecificConcentration(self.particles),
-                ParticleMeanRadius(self.particles),
-                SuperDropletCount(self.particles),
-                ParticlesSizeSpectrum(self.particles),
-                ParticlesVolumeSpectrum(self.particles)
-            ]
 
-            for product in products:
-                self.register_product(product)
+            for product_class, args in products.items():
+                self.register_product(product_class(self, **args))
 
         return self.particles
 

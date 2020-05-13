@@ -23,6 +23,14 @@ def run(setup):
     attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
                                                                   (setup.init_x_min, setup.init_x_max))
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
+    products = [
+        TotalParticleConcentration(self.particles),
+        TotalParticleSpecificConcentration(self.particles),
+        ParticleMeanRadius(self.particles),
+        SuperDropletCount(self.particles),
+        ParticlesSizeSpectrum(self.particles),
+        ParticlesVolumeSpectrum(self.particles)
+    ]
     particles = particles_builder.get_particles(attributes)
 
     vals = {}

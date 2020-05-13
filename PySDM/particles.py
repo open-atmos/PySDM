@@ -26,7 +26,6 @@ class Particles:
 
         self.croupier = 'local'
         self.sorting_scheme = 'default'
-        self.terminal_velocity = None
         self.condensation_solver = None
 
     @property
