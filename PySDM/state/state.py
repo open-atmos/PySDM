@@ -23,14 +23,14 @@ class State:
         self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
 
-        self.n = n.get() if whole_attributes is not None else self.__backend.from_ndarray(n)
+        self.n = n.get()
         self.attributes = attributes
         self.keys = keys
         self.intensive_start = intensive_start
 
-        self.position_in_cell = None if position_in_cell is None else self.__backend.from_ndarray(position_in_cell)
-        self.cell_origin = None if cell_origin is None else self.__backend.from_ndarray(cell_origin)
-        self.cell_id = cell_id.get() if whole_attributes is not None else self.__backend.from_ndarray(cell_id)
+        self.position_in_cell = position_in_cell.get()
+        self.cell_origin = cell_origin.get()
+        self.cell_id = cell_id.get()
         self.__cell_start = self.__backend.from_ndarray(cell_start)
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                    scheme=particles.sorting_scheme)
@@ -119,18 +119,18 @@ class State:
                                   self.__idx,
                                   self.SD_num)
 
-    def sum_pair(self, output, x, is_first_in_pair):
-        self.__backend.sum_pair(output, self.get_backend_storage(x),
+    def sum_pair(self, output, x: str, is_first_in_pair):
+        self.__backend.sum_pair(output, self[x],
                                 is_first_in_pair,
                                 self.__idx,
                                 self.SD_num)
 
     def max_pair(self, prob, is_first_in_pair):
-        self.__backend.max_pair(prob, self.n, is_first_in_pair, self.__idx, self.SD_num)
+        self.__backend.max_pair(prob, self['n'], is_first_in_pair, self.__idx, self.SD_num)
 
     def coalescence(self, gamma):
         self.__backend.coalescence(n=self.n,
-                                   volume=self.get_backend_storage('volume'),
+                                   volume=self['volume'],
                                    idx=self.__idx,
                                    length=self.SD_num,
                                    intensive=self.get_intensive_attrs(),

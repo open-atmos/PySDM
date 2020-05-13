@@ -29,7 +29,7 @@ class Gravitational:
 
     def collection_efficiency(self, output, is_first_in_pair):
         backend = self.particles.backend
-        self.particles.sum_pair(output, self.particles.state['radius'], is_first_in_pair)
+        self.particles.sum_pair(output, 'radius', is_first_in_pair)
         backend.power(output, 2)
         backend.multiply(output, const.pi * self.collection_efficiency)
 
