@@ -138,6 +138,7 @@ class State:
                                    gamma=gamma,
                                    healthy=self.__healthy_memory)
         self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
+        self.whole_attributes['volume'].mark_updated()
 
     def has_attribute(self, attr):
         return attr in self.keys

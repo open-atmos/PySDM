@@ -13,7 +13,7 @@ from PySDM.physics import constants as const
 class TerminalVelocity(DerivedAttribute):
 
     def __init__(self, particles_builder):
-        self.radius = particles_builder.get_instance(Radius)
+        self.radius = particles_builder.get_attribute('radius')
         dependencies = [self.radius]
         super().__init__(particles_builder, name='terminal velocity', dependencies=dependencies)
         self.k1 = 1.19e6 / const.si.centimetre / const.si.second
@@ -29,11 +29,11 @@ class TerminalVelocity(DerivedAttribute):
 # TODO: move to backend
 import numba
 @numba.njit()
-def numba_term_vel(values, radius, k1, k2, k3, v1, v2):
+def numba_term_vel(values, radius, k1, k2, k3, r1, r2):
     for i in range(len(values)):
-        if radius[i] < v1:
+        if radius[i] < r1:
             values[i] = k1 * radius[i] ** 2
-        elif radius[i] < v2:
+        elif radius[i] < r2:
             values[i] = k2 * radius[i]
         else:
             values[i] = k3 * radius[i] ** (1 / 2)

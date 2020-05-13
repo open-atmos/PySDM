@@ -14,7 +14,7 @@ class SDM:
     def __init__(self, particles_builder: ParticlesBuilder, kernel, seed=None):
         self.particles = particles_builder.particles
 
-        kernel.particles = self.particles
+        kernel.register(particles_builder)
         self.kernel = kernel
 
         self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)

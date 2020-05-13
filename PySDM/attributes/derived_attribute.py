@@ -14,13 +14,11 @@ class DerivedAttribute(Attribute):
         super().__init__(particles_builder, name)
         self.dependencies = dependencies
 
-    def get(self):
-        self.update()
-        return self.data
-
     def update(self):
         if self.data is None:
             self.allocate()
+        for dependency in self.dependencies:
+            dependency.update()
         dependencies_timestamp = sum(dependency.timestamp for dependency in self.dependencies)
         if self.timestamp < dependencies_timestamp:
             self.timestamp = dependencies_timestamp

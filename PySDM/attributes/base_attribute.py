@@ -17,4 +17,4 @@ class BaseAttribute(Attribute):
         if self.data is None:
             self.allocate()
         self.particles.backend.upload(data, self.data)
-        self.update()
+        self.mark_updated()

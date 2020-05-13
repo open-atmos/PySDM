@@ -27,7 +27,7 @@ class Setup:
     seed = 44
     steps = [200 * i for i in range(10)]
 
-    kernel = Gravitational(collection_efficiency=None)
+    kernel = Gravitational(collection_efficiency=1)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
     radius_bins_edges = np.logspace(np.log10(3.94 * si.um), np.log10(200 * si.um), num=128, endpoint=True)

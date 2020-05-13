@@ -26,9 +26,13 @@ class Attribute:
             self.data = data
 
     def get(self):
+        self.update()
         return self.data
 
     def update(self):
+        pass
+
+    def mark_updated(self):
         self.timestamp += 1
 
     def __str__(self):
