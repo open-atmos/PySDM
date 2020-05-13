@@ -12,6 +12,8 @@ from .droplet.radius import Radius
 from .droplet.dry_radius import DryRadius
 from .droplet.terminal_velocity import TerminalVelocity
 from .cell.cell_id import CellID
+from .cell.cell_origin import CellOrigin
+from .cell.position_in_cell import PositionInCell
 
 # TODO doubled information
 attributes = {
@@ -21,7 +23,9 @@ attributes = {
     'radius': Radius,
     'dry radius': DryRadius,
     'terminal velocity': TerminalVelocity,
-    'cell id': CellID
+    'cell id': CellID,
+    'cell origin': CellOrigin,
+    'position in cell': PositionInCell
 }
 
 
