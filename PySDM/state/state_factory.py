@@ -10,7 +10,6 @@ from PySDM.state.state import State
 from PySDM.attributes.tensive_attribute import TensiveAttribute
 
 
-
 class StateFactory:
 
     @staticmethod
@@ -58,7 +57,7 @@ class StateFactory:
 
         cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
 
-        state = State(n, base_attributes, keys, len(extensive_attr) + 1,
+        state = State(n, base_attributes, keys, len(extensive_attr),
                       cell_id, cell_start, cell_origin, position_in_cell, particles, req_attr)
         state.recalculate_cell_id()
 

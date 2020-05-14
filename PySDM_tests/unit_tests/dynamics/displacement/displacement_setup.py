@@ -31,12 +31,8 @@ class Setup:
                                    'courant_field_data': self.courant_field_data})
         positions = Default.from_ndarray(np.array(self.positions))
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)
-        particles.state = StateFactory.state(n=self.n,
-                                             intensive={}, extensive={},
-                                             cell_id=cell_id,
-                                             cell_origin=cell_origin,
-                                             position_in_cell=position_in_cell,
-                                             particles=particles)
+        attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
+        particles.get_particles(attributes)
         sut = Displacement(particles_builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
 
         return sut, particles

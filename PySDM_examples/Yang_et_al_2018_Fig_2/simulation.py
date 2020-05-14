@@ -13,6 +13,7 @@ from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
+from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
 
 # TODO: the q1 logic from PyCloudParcel?
 
@@ -37,7 +38,6 @@ class Simulation:
         })
 
         r_wet = r_wet_init(setup.r_dry, particles_builder.particles.environment, np.zeros_like(setup.n), setup.kappa)
-        attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
             "coord": setup.coord,
@@ -45,7 +45,9 @@ class Simulation:
             "rtol_x": setup.rtol_x,
             "rtol_thd": setup.rtol_thd,
         })
-        self.particles = particles_builder.get_particles(attributes)
+        attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
+        products = {ParticlesSizeSpectrum: {}}
+        self.particles = particles_builder.get_particles(attributes, products)
 
         self.n_steps = setup.n_steps
 
@@ -53,7 +55,7 @@ class Simulation:
     def save(self, output):
         cell_id = 0
         output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get(self.bins_edges))
-        volume = self.particles.state.get_backend_storage('volume')
+        volume = self.particles.state['volume']
         volume = self.particles.backend.to_ndarray(volume)  # TODO
         output["r"].append(phys.radius(volume=volume))
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)

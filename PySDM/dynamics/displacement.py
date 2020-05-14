@@ -41,8 +41,8 @@ class Displacement:
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
         displacement = self.displacement
-        cell_origin = self.particles.state.cell_origin
-        position_in_cell = self.particles.state.position_in_cell
+        cell_origin = self.particles.state['cell origin']
+        position_in_cell = self.particles.state['position in cell']
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)

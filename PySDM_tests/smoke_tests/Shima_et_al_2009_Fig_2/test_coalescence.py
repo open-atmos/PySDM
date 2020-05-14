@@ -27,11 +27,11 @@ def check(n_part, dv, n_sd, rho, state, step):
 
     # multiplicities
     if step == 0:
-        np.testing.assert_approx_equal(np.amin(state.n), np.amax(state.n), 1)
-        np.testing.assert_approx_equal(state.n[0], check_ksi, 1)
+        np.testing.assert_approx_equal(np.amin(state['n']), np.amax(state['n']), 1)
+        np.testing.assert_approx_equal(state['n'][0], check_ksi, 1)
 
     # liquid water content
-    LWC = rho * np.dot(state.n, state.get_backend_storage('volume')) / dv
+    LWC = rho * np.dot(state['n'], state['volume']) / dv
     np.testing.assert_approx_equal(LWC, check_LWC, 3)
 
 
@@ -53,10 +53,10 @@ def test_coalescence(croupier):
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
     particles_builder = ParticlesBuilder(n_sd=n_sd, backend=backend)
     particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
-    v, n = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles_builder.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    attributes = {}
+    attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
     particles_builder.register_dynamic(Coalescence, {"kernel": kernel})
-    particles = particles_builder.get_particles()
+    particles = particles_builder.get_particles(attributes)
     particles.croupier = croupier
 
     class Seed:

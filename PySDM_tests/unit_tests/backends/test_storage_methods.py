@@ -97,14 +97,15 @@ class TestStorageMethods:
 
     @staticmethod
     def test_shuffle_global(sut, shape_1d, length):
-        params = [{'name': "idx",
-                   'details': {'shape': shape_1d}},
-                  {'name': "length",
-                   'details': {'length': length, 'shape': shape_1d}},
-                  {'name': "u01",
-                   'details': {'shape': shape_1d, 'dtype': float, 'factor': 1}}
-                  ]
-        universal_test("shuffle_global", sut, params)
+        assert False
+        # params = [{'name': "idx",
+        #            'details': {'shape': shape_1d}},
+        #           {'name': "length",
+        #            'details': {'length': length, 'shape': shape_1d}},
+        #           {'name': "u01",
+        #            'details': {'shape': shape_1d, 'dtype': float, 'factor': 1}}
+        #           ]
+        # universal_test("shuffle_global", sut, params)
 
     @staticmethod
     def test_shuffle_local(sut, shape_1d, length):

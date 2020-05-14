@@ -23,7 +23,9 @@ class TestState:
     def test_housekeeping(self, volume, n):
         # Arrange
         particles = DummyParticles(backend, n_sd=len(n))
-        sut = TestableStateFactory.state_0d(n=n, extensive={'volume': volume}, intensive={}, particles=particles)
+        attributes = {'n': n, 'volume': volume}
+        particles.get_particles(attributes)
+        sut = particles.state
         # TODO
         sut.healthy = TestState.storage([0])
 
@@ -49,10 +51,11 @@ class TestState:
     def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
-        sut = TestableStateFactory.empty_state(particles)
-        sut.n = TestState.storage(n)
+        particles.get_particles(attributes={'n': np.zeros(n_sd)})
+        sut = particles.state
+        sut.whole_attributes['n'].data = TestState.storage(n)
         n_cell = max(cells) + 1
-        sut.cell_id = TestState.storage(cells)
+        sut.whole_attributes['cell id'].data = TestState.storage(cells)
         sut._State__idx = TestState.storage(idx)
         idx_length = len(sut._State__idx)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
@@ -75,17 +78,19 @@ class TestState:
         grid = (1, 1)
         particles = DummyParticles(backend, n_sd=1)
         particles.set_environment(DummyEnvironment, {'grid': grid})
-        sut = TestableStateFactory.state_2d(n=n, intensive={}, extensive={},
-                                            particles=particles, positions=initial_position)
-        sut.cell_origin[droplet_id, 0] = .1
-        sut.cell_origin[droplet_id, 1] = .2
-        sut.cell_id[droplet_id] = -1
+        cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(initial_position)
+        attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
+        particles.get_particles(attribute)
+        sut = particles.state
+        sut['cell origin'][droplet_id, 0] = .1
+        sut['cell origin'][droplet_id, 1] = .2
+        sut['cell id'][droplet_id] = -1
 
         # Act
         sut.recalculate_cell_id()
 
         # Assert
-        assert sut.cell_id[droplet_id] == 0
+        assert sut['cell id'][droplet_id] == 0
 
     def test_permutation_global(self):
         n_sd = 8
@@ -169,14 +174,15 @@ class TestState:
 
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
-        sut = TestableStateFactory.empty_state(particles)
+        particles.get_particles(attributes={'n': np.zeros(n_sd)})
+        sut = particles.state
         sut._State__idx = TestState.storage(idx)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         cell_id = []
         for i in range(len(cell_start) - 1):
             cell_id = cell_id + [i] * cell_start[i+1]
-        sut.cell_id = TestState.storage(cell_id)
+        sut.whole_attributes['cell id'].data = TestState.storage(cell_id)
         sut._State__cell_start = TestState.storage(cell_start)
         sut._State__sorted = True
         sut._State__n_sd = particles.n_sd

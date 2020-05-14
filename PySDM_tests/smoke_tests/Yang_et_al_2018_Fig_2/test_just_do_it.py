@@ -49,7 +49,7 @@ def test_just_do_it(scheme, coord, adaptive): #, enable_particle_temperatures): 
     assert .14 * n_unit < min(N2) < .15 * n_unit
     assert .3 * n_unit < max(N2) < .37 * n_unit
     assert .08 * n_unit < min(N3) < .083 * n_unit
-    assert .27 * n_unit <max(N3) < .4 * n_unit
+    assert .27 * n_unit < max(N3) < .4 * n_unit
 
 
 
