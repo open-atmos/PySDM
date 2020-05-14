@@ -10,18 +10,18 @@ import numpy as np
 
 
 class ParticlesSizeSpectrum(MomentProduct):
-    def __init__(self, particles):
+    def __init__(self, particles_builder):
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='Particles Size Spectrum',
             unit='cm-3',  # TODO!!!
             description='Particles size spectrum',  # TODO
             scale='linear',
             range=[20, 50]
         )
-        self.moment_0 = particles.backend.array(1, dtype=int)
-        self.moments = particles.backend.array((1, 1), dtype=float)
+        self.moment_0 = particles_builder.particles.backend.array(1, dtype=int)
+        self.moments = particles_builder.particles.backend.array((1, 1), dtype=float)
 
     def get(self, v_bins):
         vals = np.empty(len(v_bins) - 1)
