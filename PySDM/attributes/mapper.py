@@ -14,6 +14,7 @@ from .droplet.terminal_velocity import TerminalVelocity
 from .cell.cell_id import CellID
 from .cell.cell_origin import CellOrigin
 from .cell.position_in_cell import PositionInCell
+from .droplet.temperature import Temperature
 
 # TODO doubled information
 attributes = {
@@ -25,7 +26,8 @@ attributes = {
     'terminal velocity': TerminalVelocity,
     'cell id': CellID,
     'cell origin': CellOrigin,
-    'position in cell': PositionInCell
+    'position in cell': PositionInCell,
+    'temperature': Temperature
 }
 
 
