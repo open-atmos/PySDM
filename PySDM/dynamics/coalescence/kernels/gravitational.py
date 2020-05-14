@@ -23,8 +23,8 @@ class Gravitational:
 
     def register(self, particles_builder):
         self.particles = particles_builder.particles
-        particles_builder.get_attribute('radius')
-        particles_builder.get_attribute('terminal velocity')
+        particles_builder.request_attribute('radius')
+        particles_builder.request_attribute('terminal velocity')
         self.__tmp = self.particles.backend.array(self.particles.n_sd, dtype=float)
 
     def collection_efficiency(self, output, is_first_in_pair):
@@ -39,7 +39,7 @@ class Gravitational:
 
     def linear_collection_efficiency(self, output, is_first_in_pair):
         backend = self.particles.backend
-        x = self.particles.state.get_backend_storage(self.x)
+        x = self.particles.state[self.x]
 
         backend.multiply_out_of_place(self.__tmp, x, (3 / 4 / const.pi))
         backend.power(self.__tmp, (1 / 3))
