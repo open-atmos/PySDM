@@ -14,6 +14,7 @@ from PySDM.initialisation.spectral_sampling import constant_multiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from PySDM_examples.Shima_et_al_2009_Fig_2.plotter import Plotter
+from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
 def run(setup):
@@ -23,15 +24,8 @@ def run(setup):
     attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
                                                                   (setup.init_x_min, setup.init_x_max))
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
-    products = [
-        TotalParticleConcentration(self.particles),
-        TotalParticleSpecificConcentration(self.particles),
-        ParticleMeanRadius(self.particles),
-        SuperDropletCount(self.particles),
-        ParticlesSizeSpectrum(self.particles),
-        ParticlesVolumeSpectrum(self.particles)
-    ]
-    particles = particles_builder.get_particles(attributes)
+    products = {ParticlesVolumeSpectrum: {}}
+    particles = particles_builder.get_particles(attributes, products)
 
     vals = {}
     for step in setup.steps:
