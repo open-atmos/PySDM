@@ -49,7 +49,7 @@ class Gravitational:
         backend.multiply(output, const.pi)
         backend.multiply(output, self.__tmp)
 
-        backend.distance_pair(self.__tmp, self.particles.terminal_velocity.values, is_first_in_pair,
+        backend.distance_pair(self.__tmp, self.particles.state['terminal velocity'], is_first_in_pair,
                               self.particles.state._State__idx, self.particles.state.SD_num)
         backend.multiply(self.__tmp, output)
         sort(output, self.__tmp, self.particles.state._State__idx, self.particles.state.SD_num)
