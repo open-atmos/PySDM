@@ -35,8 +35,9 @@ class TestMaths:
         T = np.full_like(v, 300.)
         n = discretise_n(n)
         particles = DummyParticles(backend, n_sd)
-        state = TestableStateFactory.state_0d(n=n, extensive={'volume': v}, intensive={'temperature': T}, 
-                                              particles=particles)
+        attribute = {'n': n, 'volume': v, 'temperature': T}
+        particles.get_particles(attribute)
+        state = particles.state
 
         true_mean, true_var = spectrum.stats(moments='mv')
 

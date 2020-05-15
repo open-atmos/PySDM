@@ -5,7 +5,6 @@ Created at 24.10.2019
 @author: Sylwester Arabas
 """
 
-from .products.condensation_timestep import CondensationTimestep
 from ...particles_builder import ParticlesBuilder
 import numpy as np
 
@@ -34,8 +33,6 @@ class Condensation:
 
         self.substeps = self.particles.backend.array(self.particles.mesh.n_cell, dtype=int)
         self.substeps[:] = np.maximum(1, int(self.particles.dt))
-
-        self.products = [CondensationTimestep(self), ]
 
     def __call__(self):
         if self.do_advection:

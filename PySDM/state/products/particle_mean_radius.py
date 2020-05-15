@@ -11,10 +11,10 @@ from PySDM.physics import formulae as phys
 
 
 class ParticleMeanRadius(MomentProduct):
-    def __init__(self, particles):
+    def __init__(self, particles_builder):
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='radius_m1',
             unit='um',
             description='mean radius',

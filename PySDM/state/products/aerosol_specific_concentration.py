@@ -11,11 +11,11 @@ from PySDM.physics import formulae as phys
 
 
 class AerosolSpecificConcentration(MomentProduct):
-    def __init__(self, particles, radius_threshold):
+    def __init__(self, particles_builder, radius_threshold):
         self.radius_threshold = radius_threshold
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='n_a_mg',
             unit='mg-1',
             description='Aerosol specific concentration',

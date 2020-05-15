@@ -89,14 +89,13 @@ class StorageMethods:
     @staticmethod
     # void(int64[:], int64, float64[:])
     def shuffle_global(idx, length, u01):
-        pass
-        # raise NotImplementedError()
+        # WARNING: ineffective implementation
+        trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     @staticmethod
     # void(int64[:], float64[:], int64[:])
     def shuffle_local(idx, u01, cell_start):
-        # TODO
-        print("Numba import!")
+        # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
 
         from PySDM.backends.numba.numba import Numba
         host_idx = StorageMethods.to_ndarray(idx)
@@ -141,5 +140,9 @@ class StorageMethods:
             shape = (shape,)
         data.shape = shape
         data.dtype = dtype
-        data.get = lambda index: trtc.Reduce(data.range(index, index + 1))
+
+        def get(index):
+            return trtc.Reduce(data.range(index, index + 1))
+
+        data.get = get
 

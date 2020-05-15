@@ -37,7 +37,7 @@ class TestExplicitEulerWithInterpolation:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(particles.state.cell_origin[0, :], np.array([2, 1]))
+        np.testing.assert_array_equal(particles.state['cell origin'][0, :], np.array([2, 1]))
 
     def test_calculate_displacement(self):
         # Arrange
@@ -52,7 +52,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   particles.state.cell_origin, particles.state.position_in_cell)
+                                   particles.state['cell origin'], particles.state['position in cell'])
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
@@ -70,7 +70,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   particles.state.cell_origin, particles.state.position_in_cell)
+                                   particles.state['cell origin'], particles.state['position in cell'])
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 1], (1 - w) * a + w * b)
@@ -88,11 +88,11 @@ class TestExplicitEulerWithInterpolation:
         sut.displacement[droplet_id, 1] = .2
 
         # Act
-        sut.update_position(particles.state.position_in_cell, sut.displacement)
+        sut.update_position(particles.state['position in cell'], sut.displacement)
 
         # Assert
         for d in range(2):
-            assert particles.state.position_in_cell[droplet_id, d] == (
+            assert particles.state['position in cell'][droplet_id, d] == (
                    setup.positions[droplet_id][d] + sut.displacement[droplet_id, d]
             )
 
@@ -103,17 +103,17 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = particles.state
-        state.position_in_cell[droplet_id, 0] = 1.1
-        state.position_in_cell[droplet_id, 1] = 1.2
+        state['position in cell'][droplet_id, 0] = 1.1
+        state['position in cell'][droplet_id, 1] = 1.2
 
         # Act
-        sut.update_cell_origin(state.cell_origin, state.position_in_cell)
+        sut.update_cell_origin(state['cell origin'], state['position in cell'])
 
         # Assert
         for d in range(2):
-            assert state.cell_origin[droplet_id, d] == setup.positions[droplet_id][d] + 1
-            assert state.position_in_cell[droplet_id, d] == (state.position_in_cell[droplet_id, d]
-                                                             - np.floor(state.position_in_cell[droplet_id, d]))
+            assert state['cell origin'][droplet_id, d] == setup.positions[droplet_id][d] + 1
+            assert state['position in cell'][droplet_id, d] == (state['position in cell'][droplet_id, d]
+                                                             - np.floor(state['position in cell'][droplet_id, d]))
 
     def test_boundary_condition(self):
         # Arrange
@@ -122,12 +122,12 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = particles.state
-        state.cell_origin[droplet_id, 0] = 1.1
-        state.cell_origin[droplet_id, 1] = 1.2
+        state['cell origin'][droplet_id, 0] = 1.1
+        state['cell origin'][droplet_id, 1] = 1.2
 
         # Act
-        sut.boundary_condition(state.cell_origin)
+        sut.boundary_condition(state['cell origin'])
 
         # Assert
-        assert state.cell_origin[droplet_id, 0] == 0
-        assert state.cell_origin[droplet_id, 1] == 0
+        assert state['cell origin'][droplet_id, 0] == 0
+        assert state['cell origin'][droplet_id, 1] == 0

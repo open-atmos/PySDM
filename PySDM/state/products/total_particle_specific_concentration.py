@@ -10,11 +10,11 @@ from PySDM.physics import constants as const
 
 
 class TotalParticleSpecificConcentration(MomentProduct):
-    def __init__(self, particles):
+    def __init__(self, particles_builder):
 
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='n_mg',
             unit='mg-1',
             description='Total particle specific concentration',

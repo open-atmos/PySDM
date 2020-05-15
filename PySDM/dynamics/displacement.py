@@ -12,6 +12,7 @@ from PySDM.particles_builder import ParticlesBuilder
 
 class Displacement:
     def __init__(self, particles_builder: ParticlesBuilder, scheme='FTBS', sedimentation=False):
+        particles_builder.request_attribute('terminal velocity')
         self.particles = particles_builder.particles
         courant_field = self.particles.environment.get_courant_field_data()
 
@@ -40,8 +41,8 @@ class Displacement:
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
         displacement = self.displacement
-        cell_origin = self.particles.state.cell_origin
-        position_in_cell = self.particles.state.position_in_cell
+        cell_origin = self.particles.state['cell origin']
+        position_in_cell = self.particles.state['position in cell']
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
@@ -58,7 +59,7 @@ class Displacement:
             displacement_z = displacement[:, -1]
             dt_over_dz = self.particles.dt / self.particles.mesh.dz
             self.particles.backend.multiply(displacement_z, 1 / dt_over_dz)
-            self.particles.backend.subtract(displacement_z, self.particles.terminal_velocity.values)
+            self.particles.backend.subtract(displacement_z, self.particles.state['terminal velocity'])
             self.particles.backend.multiply(displacement_z, dt_over_dz)
 
     def update_position(self, position_in_cell, displacement):

@@ -9,10 +9,10 @@ import numpy as np
 def ql(simulation: Simulation):
     backend = simulation.particles.backend
 
-    droplet_volume = simulation.particles.state.get_backend_storage('volume')
+    droplet_volume = simulation.particles.state['volume']
     droplet_volume = backend.to_ndarray(droplet_volume)[0]
 
-    droplet_number = simulation.particles.state.n
+    droplet_number = simulation.particles.state['n']
     droplet_number = backend.to_ndarray(droplet_number)[0]
 
     droplet_mass = droplet_number * droplet_volume * const.rho_w
