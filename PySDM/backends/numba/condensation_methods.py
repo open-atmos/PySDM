@@ -20,8 +20,8 @@ class CondensationMethods:
                   rtol_x, rtol_thd, dt, n_substeps):
             args = (v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
-                n_substeps = adapt_substeps(n_substeps, dt, thd, rtol_thd, args)
-            qv, thd = step(dt, n_substeps, args)
+                n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
+            qv, thd = step(args, dt, n_substeps)
 
             return qv, thd, n_substeps
 
@@ -29,36 +29,35 @@ class CondensationMethods:
         multiplier = 2
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def adapt_substeps(n_substeps, dt, thd, rtol_thd, args):
+        def adapt_substeps(args, n_substeps, dt, thd, rtol_thd):
             n_substeps = np.maximum(1, n_substeps // multiplier)
-            thd_new_long = step_fake(dt, n_substeps, args)
+            thd_new_long = step_fake(args, dt, n_substeps)
             for burnout in range(fuse + 1):
                 if burnout == fuse:
                     raise RuntimeError("Cannot find solution!")
-                n_substeps *= multiplier
-                thd_new_short = step_fake(dt, n_substeps, args)
+                thd_new_short = step_fake(args, dt, n_substeps * multiplier)
                 dthd_long = thd_new_long - thd
                 dthd_short = thd_new_short - thd
                 error_estimate = np.abs(dthd_long - multiplier * dthd_short)
-                if not adaptive or within_tolerance(error_estimate, thd, rtol_thd):
-                    break
                 thd_new_long = thd_new_short
+                if within_tolerance(error_estimate, thd, rtol_thd):
+                    break
+                n_substeps *= multiplier
             return n_substeps
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def step_fake(dt, n_substeps, args):
+        def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new = step_impl(dt, 1, True, *args)
+            _, thd_new = step_impl(*args, dt, 1, True)
             return thd_new
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def step(dt, n_substeps, args):
-            return step_impl(dt, n_substeps, False, *args)
-
+        def step(args, dt, n_substeps):
+            return step_impl(*args, dt, n_substeps, False)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def step_impl(dt, n_substeps, fake, v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
-                      m_d, rhod_mean, rtol_x):
+        def step_impl(v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
+                      m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
             for t in range(n_substeps):
