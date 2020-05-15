@@ -10,18 +10,18 @@ import numpy as np
 @pytest.mark.parametrize("scheme", ['default',  'BDF'])
 @pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
 @pytest.mark.parametrize("adaptive", [True, False])
-#@pytest.mark.parametrize("enable_particle_temperatures", [False, True]) # TODO !
-def test_just_do_it(scheme, coord, adaptive): #, enable_particle_temperatures):    # Arrange
+@pytest.mark.parametrize("enable_particle_temperatures", [False, True])
+def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    # Arrange
     if scheme == 'BDF' and not adaptive:
         return
     if scheme == 'BDF' and coord == 'volume':
         return
 
     # Setup.total_time = 15 * si.minute
-    setup = Setup(dt_output = 10 * si.second)
+    setup = Setup(dt_output=10 * si.second)
     setup.coord = coord
     setup.adaptive = adaptive
-    #setup.enable_particle_temperatures = enable_particle_temperatures
+    setup.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
         setup.dt_max = setup.dt_output
     elif not adaptive:
@@ -34,7 +34,7 @@ def test_just_do_it(scheme, coord, adaptive): #, enable_particle_temperatures): 
     # Act
     output = simulation.run()
     r = np.array(output['r']).T * si.metres
-    n = setup.n / (setup.mass_of_dry_air  * si.kilogram)
+    n = setup.n / (setup.mass_of_dry_air * si.kilogram)
 
     # Assert
     condition = (r > 1 * si.micrometre)
