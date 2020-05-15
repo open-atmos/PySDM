@@ -75,10 +75,11 @@ from PySDM.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.formulae import volume
 
-n_sd = 2**17
+n_sd = 2**13
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
 sampling_range = (volume(radius=10 * si.um), volume(radius=100 * si.um))
-v, n = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+attributes = {}
+attributes['volume'], attributes['n'] = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
 ```
 
 The key element of the PySDM interface is the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
@@ -94,9 +95,8 @@ from PySDM.backends import Numba
 
 particles_builder = ParticlesBuilder(n_sd=n_sd, backend=Numba)
 particles_builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
-particles_builder.set_attributes(n=n, extensive={'volume': v}, intensive={})
 particles_builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
-particles = particles_builder.get_particles()
+particles = particles_builder.get_particles(attributes)
 ```
 The ``backend`` argument may be set to ``Numba``, ``Pythran`` or ``ThrustRTC``
   what translates to choosing one of the multi-threaded backend or the 
