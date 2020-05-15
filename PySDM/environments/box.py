@@ -1,3 +1,7 @@
+"""
+Created at 28.11.2019
+"""
+
 from PySDM.mesh import Mesh
 from PySDM.particles_builder import ParticlesBuilder
 
