@@ -178,7 +178,7 @@ class AlgorithmicMethods:
         trtc.Sort(idx.range(0, length))
 
         result = trtc.Find(idx.range(0, length), idx_length)
-        if result == -1:
+        if result is None:
             result = length
 
         return result
