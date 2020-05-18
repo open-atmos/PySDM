@@ -44,9 +44,7 @@ class State:
     @property
     def SD_num(self):
         if not self.healthy:
-            print("preremove")
             self.__n_sd = self.__backend.remove_zeros(self['n'], self.__idx, length=self.__n_sd)
-            print("remove")
             self.healthy = True
             self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
             self.__sorted = False
@@ -59,14 +57,14 @@ class State:
         """
         apply Fisher-Yates algorithm to all super-droplets
         """
-        # self.__backend.shuffle_global(idx=self.__idx, length=self.SD_num, u01=u01)
-        # self.__sorted = False
+        self.__backend.shuffle_global(idx=self.__idx, length=self.SD_num, u01=u01)
+        self.__sorted = False
 
     def permutation_local(self, u01):
         """
         apply Fisher-Yates algorithm per cell
         """
-        # self.__backend.shuffle_local(idx=self.__idx, u01=u01, cell_start=self.cell_start)
+        self.__backend.shuffle_local(idx=self.__idx, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
         self.__idx = self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
