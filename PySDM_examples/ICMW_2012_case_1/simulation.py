@@ -93,8 +93,9 @@ class Simulation:
                 Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
         if self.setup.processes["coalescence"]:
             particles_builder.register_dynamic(Coalescence, {"kernel": self.setup.kernel})
-        if self.setup.processes["relaxation"]:
-            raise NotImplementedError()
+        # TODO
+        # if self.setup.processes["relaxation"]:
+        #     raise NotImplementedError()
 
         attributes = {}
         moist_environment_init(attributes, particles_builder.particles.environment,
