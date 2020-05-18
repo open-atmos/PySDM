@@ -164,7 +164,7 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob, cell_id, norm_factor])
 
     __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
-        if (data[idx[i]] == 0)
+        if (idx[i] != idx_length && data[idx[i]] == 0)
             idx[i] = idx_length;
         ''')
 

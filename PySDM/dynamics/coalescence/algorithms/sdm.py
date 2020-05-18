@@ -25,6 +25,7 @@ class SDM:
 
     def __call__(self):
         self.particles.backend.urand(self.temp, self.seed())
+
         self.toss_pairs(self.is_first_in_pair, self.temp)
 
         self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
