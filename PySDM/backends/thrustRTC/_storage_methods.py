@@ -92,18 +92,28 @@ class StorageMethods:
         # WARNING: ineffective implementation
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
+    __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "c", '''
+        for (int i=cell_start[c+1]-1; i < cell_start[c]; i--) {
+            int j = cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]);
+            int tmp = idx[i];
+            idx[i] = idx[j];
+            idx[j] = tmp;
+        }
+        ''')
+
     @staticmethod
     # void(int64[:], float64[:], int64[:])
     def shuffle_local(idx, u01, cell_start):
-        # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
+        StorageMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
 
-        from PySDM.backends.numba.numba import Numba
-        host_idx = StorageMethods.to_ndarray(idx)
-        host_u01 = StorageMethods.to_ndarray(u01)
-        host_cell_start = StorageMethods.to_ndarray(cell_start)
-        Numba.shuffle_local(host_idx, host_u01, host_cell_start)
-        device_idx = StorageMethods.from_ndarray(host_idx)
-        trtc.Copy(device_idx, idx)
+        # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
+        # from PySDM.backends.numba.numba import Numba
+        # host_idx = StorageMethods.to_ndarray(idx)
+        # host_u01 = StorageMethods.to_ndarray(u01)
+        # host_cell_start = StorageMethods.to_ndarray(cell_start)
+        # Numba.shuffle_local(host_idx, host_u01, host_cell_start)
+        # device_idx = StorageMethods.from_ndarray(host_idx)
+        # trtc.Copy(device_idx, idx)
 
     @staticmethod
     def to_ndarray(data):

@@ -117,16 +117,16 @@ class MathsMethods:
     def subtract(output, subtrahend):
         trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
 
-    __urand_body_1 = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
-        //RNGState state;
-        //rng.state_init(1234, idx, 0, state);  // initialize a state using the rng object
-        //for (int i=0; i<{chunks}; i++)
-        //   vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
+    __urand_body_1 = trtc.For(['rng', 'vec_rnd', 'seed'], 'idx', f'''
+        RNGState state;
+        rng.state_init(seed, idx, 0, state);  // initialize a state using the rng object
+        for (int i=0; i<{chunks}; i++)
+           vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
         ''')
 
     __urand_body_2 = trtc.For(['rng', 'vec_rnd', 'seed', 'start'], 'idx', '''
         RNGState state;
-        rng.state_init(1234, start+idx, 0, state);  // initialize a state using the rng object
+        rng.state_init(seed, start+idx, 0, state);  // initialize a state using the rng object
         vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
         ''')
     rng = rndrtc.DVRNG()
@@ -139,7 +139,7 @@ class MathsMethods:
             seed = np.random.randint(2**16)
         seed = trtc.DVInt64(seed)
 
-        MathsMethods.__urand_body_1.launch_n(data.size() // MathsMethods.chunks, [MathsMethods.rng, data])
+        MathsMethods.__urand_body_1.launch_n(data.size() // MathsMethods.chunks, [MathsMethods.rng, data, seed])
 
         if data.size() % MathsMethods.chunks != 0:
             start = data.size() - (data.size() % MathsMethods.chunks)
