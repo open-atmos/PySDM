@@ -68,7 +68,7 @@ class Particles:
     def remove_precipitated(self):
         self.state.remove_precipitated()
 
-    def condensation(self, kappa, rtol_x, rtol_thd, substeps):
+    def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \
             self.state["temperature"] if self.state.has_attribute("temperature") else \
             self.backend.array(0, dtype=float)
@@ -94,7 +94,8 @@ class Particles:
                 rtol_thd=rtol_thd,
                 dt=self.dt,
                 substeps=substeps,
-                cell_order=np.argsort(substeps)  # TODO: check if better than regular order
+                cell_order=np.argsort(substeps),  # TODO: check if better than regular order
+                ripening_flags=ripening_flags
             )
 
     def run(self, steps):

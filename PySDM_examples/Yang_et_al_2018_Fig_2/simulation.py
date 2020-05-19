@@ -14,6 +14,7 @@ from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 
 # TODO: the q1 logic from PyCloudParcel?
 
@@ -37,10 +38,7 @@ class Simulation:
             "z0": setup.z0
         })
 
-        v_dry = phys.volume(radius=setup.r_dry)
         r_wet = r_wet_init(setup.r_dry, particles_builder.particles.environment, np.zeros_like(setup.n), setup.kappa)
-        v_wet = phys.volume(radius=r_wet)
-        particles_builder.create_state_0d(n=setup.n, extensive={'dry volume': v_dry, 'volume': v_wet}, intensive={})
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
             "coord": setup.coord,
@@ -49,10 +47,8 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        products = {ParticlesSizeSpectrum: {}}
+        products = {ParticlesSizeSpectrum: {}, CondensationTimestep: {}}
         self.particles = particles_builder.get_particles(attributes, products)
-
-        self.particles = particles_builder.get_particles()
         self.particles.products['dt_cond'].debug = True
         self.n_steps = setup.n_steps
 

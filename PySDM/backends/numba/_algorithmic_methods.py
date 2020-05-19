@@ -77,13 +77,13 @@ class AlgorithmicMethods:
             solver,
             n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
         )
 
     @staticmethod
@@ -168,7 +168,7 @@ class AlgorithmicMethods:
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
@@ -193,6 +193,7 @@ class AlgorithmicMethods:
                 )
 
                 substeps[cell_id] = substeps_hint
+                ripening_flags[cell_id] = ripening_flags
 
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new

@@ -21,9 +21,9 @@ class CondensationMethods:
             args = (v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
-            qv, thd = step(args, dt, n_substeps)
+            qv, thd, ripenings = step(args, dt, n_substeps)
 
-            return qv, thd, n_substeps
+            return qv, thd, n_substeps, ripenings
 
         fuse = 100
         multiplier = 2
@@ -48,7 +48,7 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new = step_impl(*args, dt, 1, True)
+            _, thd_new, _ = step_impl(*args, dt, 1, True)
             return thd_new
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
@@ -60,19 +60,21 @@ class CondensationMethods:
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
+            ripenings = 0
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO: test showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
-                ml_new = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, n, vdry, cell_idx, kappa, qv, rtol_x)
+                ml_new, ripening = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, n, vdry, cell_idx, kappa, qv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
                 thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
+                ripenings += ripening
 
-            return qv, thd
+            return qv, thd, ripenings
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_old(v, n, cell_idx):
@@ -87,6 +89,8 @@ class CondensationMethods:
         def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
             using_drop_temperatures = len(particle_T) > 0  # TODO: move outside numba
+            growing = 0
+            decreasing = 0
             for drop in cell_idx:
                 x_old = x(v[drop])
                 if using_drop_temperatures:
@@ -113,9 +117,14 @@ class CondensationMethods:
                     if using_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
+                    if v_new > 4/3 * np.pi * (1e-6)**3:
+                        if v_new - v[drop] > 0:
+                            growing += 1
+                        else:
+                            decreasing += 1
                     v[drop] = v_new
                 result += n[drop] * v_new * const.rho_w
-            return result
+            return result, (growing > 0 and decreasing > 0 )
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def _minfun_FF(x_new, x_old, dt, T, p, qv, kappa, rd, T_i):

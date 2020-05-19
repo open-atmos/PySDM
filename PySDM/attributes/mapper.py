@@ -27,8 +27,7 @@ attributes = {
     'cell id': CellID,
     'cell origin': CellOrigin,
     'position in cell': PositionInCell,
-    'temperature': Temperature
-}
+    'temperature': Temperature}
 
 
 def get_class(name):
