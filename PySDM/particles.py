@@ -26,7 +26,6 @@ class Particles:
 
         self.croupier = 'local'
         self.sorting_scheme = 'default'
-        self.terminal_velocity = None
         self.condensation_solver = None
 
     @property
@@ -52,7 +51,7 @@ class Particles:
             raise NotImplementedError()
 
     def normalize(self, prob, norm_factor):
-        self.backend.normalize(prob, self.state.cell_id, self.state.cell_start, norm_factor, self.dt / self.mesh.dv)
+        self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, self.dt / self.mesh.dv)
 
     def find_pairs(self, cell_start, is_first_in_pair):
         self.state.find_pairs(cell_start, is_first_in_pair)
@@ -71,17 +70,17 @@ class Particles:
 
     def condensation(self, kappa, rtol_x, rtol_thd, substeps):
         particle_temperatures = \
-            self.state.get_backend_storage("temperature") if self.state.has_attribute("temperature") else \
+            self.state["temperature"] if self.state.has_attribute("temperature") else \
             self.backend.array(0, dtype=float)
 
         self.backend.condensation(
                 solver=self.condensation_solver,
                 n_cell=self.mesh.n_cell,
                 cell_start_arg=self.state.cell_start,
-                v=self.state.get_backend_storage("volume"),
+                v=self.state["volume"],
                 particle_temperatures=particle_temperatures,
-                n=self.state.n,
-                vdry=self.state.get_backend_storage("dry volume"),
+                n=self.state['n'],
+                vdry=self.state["dry volume"],
                 idx=self.state._State__idx,
                 rhod=self.environment["rhod"],
                 thd=self.environment["thd"],
@@ -95,7 +94,7 @@ class Particles:
                 rtol_thd=rtol_thd,
                 dt=self.dt,
                 substeps=substeps,
-                cell_order=np.argsort(substeps)
+                cell_order=np.argsort(substeps)  # TODO: check if better than regular order
             )
 
     def run(self, steps):

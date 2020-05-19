@@ -9,10 +9,10 @@ from PySDM.product import Product
 
 
 class SuperDropletCount(Product):
-    def __init__(self, particles):
+    def __init__(self, particles_builder):
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='n_sd',
             unit='#/gridbox',
             description='Super droplet count',

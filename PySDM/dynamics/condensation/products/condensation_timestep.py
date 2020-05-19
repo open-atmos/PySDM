@@ -6,16 +6,14 @@ Created at 05.02.2020
 """
 
 from PySDM.product import Product
+from PySDM.dynamics.condensation.condensation import Condensation
 import numpy as np
 
 
 class CondensationTimestep(Product):
-    def __init__(self, condensation):
-        particles = condensation.particles
-
-        self.debug = False
-
-        self.condensation = condensation
+    def __init__(self, particles_builder):
+        particles = particles_builder.particles
+        self.condensation = particles.dynamics[str(Condensation)]
 
         super().__init__(
             particles=particles,

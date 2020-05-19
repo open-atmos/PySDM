@@ -34,9 +34,8 @@ class TestSDMSingleCell:
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': v_2},
-                                                        intensive={'temperature': T_2},
-                                                        particles=particles)
+        attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
+        particles.get_particles(attributes)
 
         # Act
         sut()
@@ -61,16 +60,14 @@ class TestSDMSingleCell:
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(2)
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
-        particles.state = TestableStateFactory.state_0d(n=np.full(2, n_in),
-                                                        extensive={'volume': np.full(2, 1.)},
-                                                        intensive={},
-                                                        particles=particles)
+        attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
+        particles.get_particles(attributes)
 
         # Act
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particles.backend.to_ndarray(particles.state.n)), sorted(n_out))
+        np.testing.assert_array_equal(sorted(particles.backend.to_ndarray(particles.state['n'])), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -82,8 +79,8 @@ class TestSDMSingleCell:
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
-        particles.state = TestableStateFactory.state_0d(n=n_2, extensive={'volume': v_2}, intensive={},
-                                                        particles=particles)
+        attributes = {'n': n_2, 'volume': v_2}
+        particles.get_particles(attributes)
 
         # Act
         sut()
@@ -97,31 +94,31 @@ class TestSDMSingleCell:
         assert np.amax(state['volume']) == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
         assert np.amax(state['n']) == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
 
-    @pytest.mark.parametrize("x, n, p", [
+    @pytest.mark.parametrize("v, n, p", [
         pytest.param(np.array([1., 1, 1]), np.array([1, 1, 1]), 2),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
     ])
-    def test_multi_droplet(self, x, n, p):
+    def test_multi_droplet(self, v, n, p):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, True)
-        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={},
-                                                        particles=particles)
+        attributes = {'n': n, 'volume': v}
+        particles.get_particles(attributes)
 
         # Act
         sut()
 
         # Assert
         assert np.amin(particles.state['n']) >= 0
-        assert np.sum(particles.state['n'] * particles.state['volume']) == np.sum(n * x)
+        assert np.sum(particles.state['n'] * particles.state['volume']) == np.sum(n * v)
 
     # TODO integration test?
     def test_multi_step(self):
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
-        x = np.random.uniform(size=n_sd)
+        v = np.random.uniform(size=n_sd)
 
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(n_sd)
 
@@ -131,8 +128,8 @@ class TestSDMSingleCell:
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True
         )
-        particles.state = TestableStateFactory.state_0d(n=n, extensive={'volume': x}, intensive={},
-                                                        particles=particles)
+        attributes = {'n': n, 'volume': v}
+        particles.get_particles(attributes)
 
         # Act
         for _ in range(32):
@@ -141,7 +138,7 @@ class TestSDMSingleCell:
         # Assert
         assert np.amin(particles.state['n']) >= 0
         actual = np.sum(particles.state['n'] * particles.state['volume'])
-        desired = np.sum(n * x)
+        desired = np.sum(n * v)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 
     # TODO: move to backend tests

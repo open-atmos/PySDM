@@ -5,8 +5,9 @@ from PySDM.backends.numba.numba_helpers import radius
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def x(volume):
-    return volume
+def dx_dt(x, dr_dt):
+    r = radius(x)
+    return 4 * np.pi * r**2 * dr_dt
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -15,7 +16,6 @@ def volume(x):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def dx_dt(x, dr_dt):
-    r = radius(x)
-    return 4 * np.pi * r**2 * dr_dt
+def x(volume):
+    return volume
 

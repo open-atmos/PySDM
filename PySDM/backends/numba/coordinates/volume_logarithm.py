@@ -7,8 +7,9 @@ volume0 = 1.
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def x(volume):
-    return np.log(volume / volume0)
+def dx_dt(x, dr_dt):
+    r = radius(volume(x))
+    return 3 / r * dr_dt
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -17,6 +18,5 @@ def volume(x):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def dx_dt(x, dr_dt):
-    r = radius(volume(x))
-    return 3 / r * dr_dt
+def x(volume):
+    return np.log(volume / volume0)

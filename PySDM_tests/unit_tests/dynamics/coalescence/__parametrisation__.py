@@ -14,6 +14,9 @@ class StubKernel:
         self.returned_value = returned_value
         self.backend = backend
 
+    def register(self, particles_builder):
+        pass
+
     def __call__(self, output, is_first_in_pair):
         backend_fill(self.backend, output, self.returned_value)
 

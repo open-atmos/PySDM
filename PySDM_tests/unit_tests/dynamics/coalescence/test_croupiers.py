@@ -31,21 +31,19 @@ def test_final_state(croupier):
     x = 4
     y = 4
 
+    attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    v, n = linear(n_sd, spectrum, (v_min, v_max))
-    n = discretise_n(n)
+    attributes['volume'], attributes['n'] = linear(n_sd, spectrum, (v_min, v_max))
     particles = DummyParticles(backend, n_sd)
     particles.set_environment(DummyEnvironment, {'grid': (x, y)})
     particles.croupier = croupier
 
-    cell_id = backend.array((n_sd,), dtype=int)
+    attributes['cell id'] = backend.array((n_sd,), dtype=int)
     cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((-1, 2))
-    cell_origin = backend.from_ndarray(cell_origin_np)
+    attributes['cell origin'] = backend.from_ndarray(cell_origin_np)
     position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((-1, 2))
-    position_in_cell = backend.from_ndarray(position_in_cell_np)
-    state = TestableStateFactory.state(n=n, extensive={'volume': v}, intensive={}, cell_id=cell_id,
-                                       cell_origin=cell_origin, position_in_cell=position_in_cell, particles=particles)
-    particles.state = state
+    attributes['position in cell'] = backend.from_ndarray(position_in_cell_np)
+    particles.get_particles(attributes)
 
     # Act
     u01 = backend.from_ndarray(np.random.random(n_sd))
@@ -53,4 +51,4 @@ def test_final_state(croupier):
     _ = particles.state.cell_start
 
     # Assert
-    assert (np.diff(state.cell_id[state._State__idx]) >= 0).all()
+    assert (np.diff(particles.state['cell id'][particles.state._State__idx]) >= 0).all()

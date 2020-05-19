@@ -9,7 +9,7 @@ import numpy as np
 def test_dry_spectrum_x():
     setup = Setup()
     simulation = Simulation(setup)
-    dry_volume = simulation.particles.state.get_backend_storage('dry volume')
+    dry_volume = simulation.particles.state['dry volume']
     dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
     rd = phys.radius(volume=dry_volume) / si.nanometre
 
@@ -23,10 +23,10 @@ def test_dry_spectrum_x():
 def test_dry_spectrum_y(plot=False):
     setup = Setup()
     simulation = Simulation(setup)
-    dry_volume = simulation.particles.state.get_backend_storage('dry volume')
+    dry_volume = simulation.particles.state['dry volume']
     dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
     rd = phys.radius(volume=dry_volume) / si.nanometre
-    nd = simulation.particles.backend.to_ndarray(simulation.particles.state.n)
+    nd = simulation.particles.backend.to_ndarray(simulation.particles.state['n'])
 
     dr = (rd[1:] - rd[0:-1])
     env = simulation.particles.environment
@@ -55,12 +55,12 @@ def test_wet_vs_dry_spectrum(plot=False):
 
     # Act
     simulation = Simulation(setup)
-    wet_volume = simulation.particles.state.get_backend_storage('volume')
+    wet_volume = simulation.particles.state['volume']
     wet_volume = simulation.particles.backend.to_ndarray(wet_volume)
     r_wet = phys.radius(volume=wet_volume) / si.nanometre
-    n = simulation.particles.backend.to_ndarray(simulation.particles.state.n)
+    n = simulation.particles.backend.to_ndarray(simulation.particles.state['n'])
 
-    dry_volume = simulation.particles.state.get_backend_storage('dry volume')
+    dry_volume = simulation.particles.state['dry volume']
     dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
     r_dry = phys.radius(volume=dry_volume) / si.nanometre
 

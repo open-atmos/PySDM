@@ -53,7 +53,7 @@ class Setup:
         "coalescence": False,
         "condensation": True,
         "sedimentation": False,
-        "relaxation": False
+#        "relaxation": False # TODO
     }
 
     enable_particle_temperatures = False
@@ -104,5 +104,5 @@ class Setup:
     r_min = .01 * si.micrometre
     r_max = 5 * si.micrometre
 
-    kernel = Gravitational(collection_efficiency=10)  # [s-1] # TODO!
+    kernel = Gravitational(collection_efficiency=1)  # [s-1] # TODO!
     aerosol_radius_threshold = 1 * si.micrometre

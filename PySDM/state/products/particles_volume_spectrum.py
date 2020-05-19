@@ -11,18 +11,18 @@ import numpy as np
 
 
 class ParticlesVolumeSpectrum(MomentProduct):
-    def __init__(self, particles):
+    def __init__(self, particles_builder):
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
+            particles=particles_builder.particles,
+            shape=particles_builder.particles.mesh.grid,
             name='dv/dlnr',
             unit='1/(unit dr/r)',
             description='Particles volume distribution',
             scale='linear',
             range=[20, 50]
         )
-        self.moment_0 = particles.backend.array(1, dtype=int)
-        self.moments = particles.backend.array((1, 1), dtype=float)
+        self.moment_0 = particles_builder.particles.backend.array(1, dtype=int)
+        self.moments = particles_builder.particles.backend.array((1, 1), dtype=float)
 
     def get(self, radius_bins_edges):
         volume_bins_edges = phys.volume(radius_bins_edges)

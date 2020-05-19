@@ -12,10 +12,6 @@ from MPyDATA.arakawa_c.discretisation import z_vec_coord, x_vec_coord
 from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
-from .products.relative_humidity import RelativeHumidity
-from .products.dry_air_potential_temperature import DryAirPotentialTemperature
-from .products.water_vapour_mixing_ratio import WaterVapourMixingRatio
-from .products.dry_air_density import DryAirDensity
 from PySDM.mesh import Mesh
 
 from PySDM import ParticlesBuilder
@@ -54,7 +50,6 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         rhod = particles_builder.particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
-        self.products = [DryAirDensity(self), RelativeHumidity(self), DryAirPotentialTemperature(self), WaterVapourMixingRatio(self)]
         self.thread: Thread = None
 
         super().sync()

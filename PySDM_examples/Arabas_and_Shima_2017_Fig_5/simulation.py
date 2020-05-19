@@ -14,6 +14,7 @@ from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
+from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
 
 
 class Simulation:
@@ -35,18 +36,22 @@ class Simulation:
             "w": setup.w
         })
 
-        r_dry = np.array([setup.r_dry])
-        x_dry = phys.volume(radius=r_dry)
-        n = np.array([setup.n_in_dv], dtype=np.int64)
-        r_wet = r_wet_init(r_dry, particles_builder.particles.environment, np.zeros_like(n), setup.kappa)
-        v_wet = phys.volume(radius=r_wet)
-        particles_builder.create_state_0d(n=n, extensive={'dry volume': x_dry, 'volume': v_wet}, intensive={})
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,
             "rtol_x": setup.rtol_x,
             "rtol_thd": setup.rtol_thd,
         })
-        self.particles = particles_builder.get_particles()
+        attributes = {}
+        r_dry = np.array([setup.r_dry])
+        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['n'] = np.array([setup.n_in_dv], dtype=np.int64)
+        r_wet = r_wet_init(r_dry, particles_builder.particles.environment, np.zeros_like(attributes['n']), setup.kappa)
+        attributes['volume'] = phys.volume(radius=r_wet)
+        products = {
+            ParticleMeanRadius: {}
+        }
+
+        self.particles = particles_builder.get_particles(attributes, products)
 
         self.n_output = setup.n_output
 
