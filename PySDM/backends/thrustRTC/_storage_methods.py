@@ -93,7 +93,7 @@ class StorageMethods:
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "c", '''
-        for (int i=cell_start[c+1]-1; i < cell_start[c]; i--) {
+        for (int i=cell_start[c+1]-1; i > cell_start[c]; i--) {
             int j = cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]);
             int tmp = idx[i];
             idx[i] = idx[j];
