@@ -19,8 +19,13 @@ def moist_environment_init(attributes, environment, spatial_discretisation, spec
         attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
             environment.mesh.cellular_attributes(positions)
         r_dry, n_per_kg = spectral_discretisation(environment.particles.n_sd, spectrum_per_mass_of_dry_air, r_range)
-        r_wet = r_wet_init(r_dry, environment, attributes['cell id'], kappa)
-        n_per_m3 = n_init(n_per_kg, environment, environment.mesh, attributes['cell id'])
+        backend = environment.particles.backend
+        T = backend.to_ndarray(environment['T'])
+        p = backend.to_ndarray(environment['p'])
+        RH = backend.to_ndarray(environment['RH'])
+        r_wet = r_wet_init(r_dry, T, p, RH, attributes['cell id'], kappa)
+        rhod = backend.to_ndarray(environment['rhod'])
+        n_per_m3 = n_init(n_per_kg, rhod, environment.mesh, attributes['cell id'])
 
     if enable_temperatures:
         attributes['temperature'] = temperature_init(environment, attributes['cell id'])

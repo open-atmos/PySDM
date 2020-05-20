@@ -8,8 +8,8 @@ Created at 16.01.2020
 import numpy as np
 
 
-def n_init(n_per_kg, ambient_air, mesh, cell_id: np.ndarray):
-    n_per_m3 = n_per_kg * ambient_air["rhod"][cell_id]
+def n_init(n_per_kg, rhod, mesh, cell_id: np.ndarray):
+    n_per_m3 = n_per_kg * rhod[cell_id]
     domain_volume = np.prod(np.array(mesh.size))
     return n_per_m3 * domain_volume
 
