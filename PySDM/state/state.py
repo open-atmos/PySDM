@@ -22,6 +22,7 @@ class State:
         self.healthy = True
         self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
         self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
+        self.__strides = self.__backend.from_ndarray(self.particles.mesh.strides)
 
         # Dived into 2 arrays
         self.attributes = attributes
@@ -90,7 +91,7 @@ class State:
         if 'cell origin' not in self.whole_attributes:
             return
         else:
-            self.__backend.cell_id(self['cell id'], self['cell origin'], self.particles.mesh.strides)
+            self.__backend.cell_id(self['cell id'], self['cell origin'], self.__strides)
             self.__sorted = False
 
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
