@@ -7,6 +7,8 @@ Created at 10.12.2019
 
 import ThrustRTC as trtc
 import numpy as np
+from .nice_thrust import nice_thrust
+from .conf import NICE_THRUST_FLAGS
 
 
 class StorageMethods:
@@ -16,6 +18,7 @@ class StorageMethods:
     double = np.float64
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def array(shape, dtype):
         if dtype in (float, StorageMethods.double):
             elem_cls = 'double'
@@ -33,6 +36,7 @@ class StorageMethods:
         return data
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def download(backend_data, numpy_target):
         if isinstance(backend_data, StorageMethods.storage):
             numpy_target[:] = np.reshape(backend_data.to_host(), backend_data.shape)
@@ -40,6 +44,7 @@ class StorageMethods:
             numpy_target[:] = StorageMethods.to_ndarray(backend_data)
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def from_ndarray(array):
         shape = array.shape
 
@@ -61,6 +66,7 @@ class StorageMethods:
         return result
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def range(array, start=0, stop=None):
         if stop is None:
             stop = array.shape[0]
@@ -77,6 +83,7 @@ class StorageMethods:
         return result
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def read_row(array, i):
         row_length = array.shape[1]
         start = row_length * i
@@ -87,7 +94,7 @@ class StorageMethods:
         return result
 
     @staticmethod
-    # void(int64[:], int64, float64[:])
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_global(idx, length, u01):
         # WARNING: ineffective implementation
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
@@ -102,10 +109,9 @@ class StorageMethods:
         ''')
 
     @staticmethod
-    # void(int64[:], float64[:], int64[:])
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
         StorageMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
-
         # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
         # from PySDM.backends.numba.numba import Numba
         # host_idx = StorageMethods.to_ndarray(idx)
@@ -116,6 +122,7 @@ class StorageMethods:
         # trtc.Copy(device_idx, idx)
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def to_ndarray(data):
         # TODO: move to __equip??
         if isinstance(data, StorageMethods.storage):
@@ -132,16 +139,17 @@ class StorageMethods:
         return result
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def upload(numpy_data, backend_target):
         tmp = trtc.device_vector_from_numpy(numpy_data.flatten())
         trtc.Swap(tmp, backend_target)
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def write_row(array, i, row):
         row_length = array.shape[1]
         start = row_length * i
         stop = start + row_length
-
         trtc.Copy(row, array.range(start, stop))
 
     @staticmethod

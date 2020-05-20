@@ -9,12 +9,15 @@ import numpy as np
 import ThrustRTC as trtc
 import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
+from .nice_thrust import nice_thrust
+from .conf import NICE_THRUST_FLAGS
 
 
 class MathsMethods:
-    chunks = 32
+    chunks = 32 * 12  # TODO: check CUDA cores
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def add(output, addend):
         trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
@@ -24,6 +27,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def column_modulo(output, divisor):
         col_num = trtc.DVInt64(divisor.size())
         MathsMethods.__column_modulo_body.launch_n(output.size(), [output, divisor, col_num])
@@ -41,6 +45,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def floor(output):
         MathsMethods.__floor_body.launch_n(output.size(), [output])
 
@@ -56,6 +61,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def floor_out_of_place(output, input_data):
         MathsMethods.__floor_out_of_place_body.launch_n(output.size(), [output, input_data])
 
@@ -68,6 +74,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def multiply(output, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
             loop = MathsMethods.__multiply_elementwise_body
@@ -91,6 +98,7 @@ class MathsMethods:
             ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def multiply_out_of_place(output, multiplicand, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
             loop = MathsMethods.__multiply_out_of_place_elementwise_body
@@ -107,19 +115,26 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def power(output, exponent):
         if exponent == 1:
             return
         device_multiplier = trtc.DVDouble(exponent)
         MathsMethods.__power_body.launch_n(output.size(), [output, device_multiplier])
 
+    __subract_body = trtc.For(['output', 'subtrahend'], 'i', '''
+            output[i] -= subtrahend[i];
+        ''')
+
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def subtract(output, subtrahend):
-        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
+        MathsMethods.__subract_body.launch_n(output.size(), [output, subtrahend])
+        # trtc.Transform_Binary(output, subtrahend, output, trtc.Minus())
 
     __urand_body_1 = trtc.For(['rng', 'vec_rnd', 'seed'], 'idx', f'''
         RNGState state;
-        rng.state_init(seed, idx, 0, state);  // initialize a state using the rng object
+        rng.state_init(1234*seed, idx, 0, state);  // initialize a state using the rng object
         for (int i=0; i<{chunks}; i++)
            vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
         ''')
@@ -132,6 +147,7 @@ class MathsMethods:
     rng = rndrtc.DVRNG()
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def urand(data, seed=None):
         # TODO: print("Numpy import!: ThrustRTC.urand(...)")
 
@@ -141,13 +157,13 @@ class MathsMethods:
 
         MathsMethods.__urand_body_1.launch_n(data.size() // MathsMethods.chunks, [MathsMethods.rng, data, seed])
 
-        if data.size() % MathsMethods.chunks != 0:
-            start = data.size() - (data.size() % MathsMethods.chunks)
-            stop = data.size()
-            data_tail = data.range(start, stop)
-            start_device = trtc.DVInt64(start)
-
-            MathsMethods.__urand_body_2.launch_n(stop - start, [MathsMethods.rng, data_tail, seed, start_device])
+        # if data.size() % MathsMethods.chunks != 0:
+        #     start = data.size() - (data.size() % MathsMethods.chunks)
+        #     stop = data.size()
+        #     data_tail = data.range(start, stop)
+        #     start_device = trtc.DVInt64(start)
+        #
+        #     MathsMethods.__urand_body_2.launch_n(stop - start, [MathsMethods.rng, data_tail, seed, start_device])
 
         # np.random.seed(0)
         # output = np.random.uniform(0, 1, data.shape)
