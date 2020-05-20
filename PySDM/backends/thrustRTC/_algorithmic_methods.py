@@ -211,7 +211,7 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
-        trtc.Sort_By_Key(idx.range(0, length), cell_id.range(0, length))
+        trtc.Sort_By_Key(cell_id.range(0, length), idx.range(0, length))
         trtc.Fill(cell_start, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1, [cell_id, cell_start, idx])
         return idx
