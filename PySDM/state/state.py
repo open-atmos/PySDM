@@ -44,12 +44,15 @@ class State:
 
     @property
     def SD_num(self):
+        self.sanitize()  # TODO: remove
+        return self.__n_sd
+
+    def sanitize(self):
         if not self.healthy:
             self.__n_sd = self.__backend.remove_zeros(self['n'], self.__idx, length=self.__n_sd)
             self.healthy = True
             self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
             self.__sorted = False
-        return self.__n_sd
 
     def __getitem__(self, item):
         return self.whole_attributes[item].get()

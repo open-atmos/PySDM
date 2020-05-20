@@ -24,6 +24,8 @@ class SDM:
         self.seed = seed or Incrementation()
 
     def __call__(self):
+        self.particles.state.sanitize()
+
         self.particles.backend.urand(self.temp, self.seed())
 
         self.toss_pairs(self.is_first_in_pair, self.temp)
