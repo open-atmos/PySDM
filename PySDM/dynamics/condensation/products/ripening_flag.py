@@ -10,7 +10,7 @@ from PySDM.dynamics.condensation.condensation import Condensation
 import numpy as np
 
 
-class CondensationTimestep(Product):
+class RipeningFlag(Product):
     def __init__(self, particles_builder):
         particles = particles_builder.particles
         self.condensation = particles.dynamics[str(Condensation)]
@@ -25,8 +25,8 @@ class CondensationTimestep(Product):
 
 
     def get(self):
-        self.download_to_buffer(self.condensation.ripening_flag)
-        self.particles.backend.fill(self.buffer, 0)
+        self.download_to_buffer(self.condensation.ripening_flags)
+        self.particles.backend.fill(self.condensation.ripening_flags, 0)
         return self.buffer
 
 

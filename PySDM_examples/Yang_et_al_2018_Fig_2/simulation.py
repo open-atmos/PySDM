@@ -15,6 +15,7 @@ from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.dynamics.condensation.products.ripening_flag import RipeningFlag
 
 # TODO: the q1 logic from PyCloudParcel?
 
@@ -47,7 +48,7 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        products = {ParticlesSizeSpectrum: {}, CondensationTimestep: {}}
+        products = {ParticlesSizeSpectrum: {}, CondensationTimestep: {}, RipeningFlag: {}}
         self.particles = particles_builder.get_particles(attributes, products)
         self.particles.products['dt_cond'].debug = True
         self.n_steps = setup.n_steps
@@ -67,11 +68,12 @@ class Simulation:
         output["dt_cond_max"].append(self.particles.products["dt_cond"].get_max().copy())
         output["dt_cond_min"].append(self.particles.products["dt_cond"].get_min().copy())
         self.particles.products["dt_cond"].reset()
+        output['ripening_flags'].append(self.particles.products['ripening_flag'].get()[cell_id].copy())
 
 
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": [], "ripening_flags": []}
 
         self.save(output)
         for step in range(self.n_steps):

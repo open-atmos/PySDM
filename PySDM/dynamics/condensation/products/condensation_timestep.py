@@ -11,9 +11,10 @@ import numpy as np
 
 
 class CondensationTimestep(Product):
-    def __init__(self, particles_builder):
+    def __init__(self, particles_builder, debug = False):
         particles = particles_builder.particles
         self.condensation = particles.dynamics[str(Condensation)]
+        self.debug = debug
 
         super().__init__(
             particles=particles,

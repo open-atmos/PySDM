@@ -29,6 +29,7 @@ from PySDM.environments.products.dry_air_potential_temperature import DryAirPote
 from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from PySDM.environments.products.dry_air_density import DryAirDensity
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.dynamics.condensation.products.ripening_flag import RipeningFlag
 
 
 class DummyController:
@@ -115,7 +116,8 @@ class Simulation:
             WaterVapourMixingRatio: {},
             DryAirDensity: {},
             DryAirPotentialTemperature: {},
-            CondensationTimestep: {}
+            CondensationTimestep: {},
+            RipeningFlag: {}
         }
         self.particles = particles_builder.get_particles(attributes, products)
 

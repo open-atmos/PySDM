@@ -22,7 +22,6 @@ class CondensationMethods:
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
             qv, thd, ripenings = step(args, dt, n_substeps)
-
             return qv, thd, n_substeps, ripenings
 
         fuse = 100
@@ -73,7 +72,6 @@ class CondensationMethods:
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
                 ripenings += ripening
-
             return qv, thd, ripenings
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})

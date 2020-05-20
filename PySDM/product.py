@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Product:
-    def __init__(self, particles, shape, name, unit, description, scale, range):
+    def __init__(self, particles, shape, name, unit = None, description = None, scale = None, range = [0, 100]):
         self.name = name
         self.unit = unit
         self.description = description

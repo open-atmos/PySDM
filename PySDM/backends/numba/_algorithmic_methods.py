@@ -185,7 +185,7 @@ class AlgorithmicMethods:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 md = rhod_mean * dv_mean
 
-                qv_new, thd_new, substeps_hint = solver(
+                qv_new, thd_new, substeps_hint, ripening_flag = solver(
                     v, particle_temperatures, n, vdry,
                     idx[cell_start:cell_end],  # TODO
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
@@ -193,7 +193,7 @@ class AlgorithmicMethods:
                 )
 
                 substeps[cell_id] = substeps_hint
-                ripening_flags[cell_id] = ripening_flags
+                ripening_flags[cell_id] += ripening_flag
 
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new
