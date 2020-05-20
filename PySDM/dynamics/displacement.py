@@ -20,6 +20,7 @@ class Displacement:
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
+        # TODO: replace with make_calculate_displacement
         if scheme == 'FTFS':
             method = self.particles.backend.explicit_in_space
         elif scheme == 'FTBS':
@@ -31,7 +32,7 @@ class Displacement:
         self.sedimentation = sedimentation
 
         self.dimension = len(courant_field)
-        self.grid = np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64)
+        self.grid = self.particles.backend.from_ndarray(np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
 
         self.courant = [self.particles.backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
 
@@ -66,7 +67,7 @@ class Displacement:
         self.particles.backend.add(position_in_cell, displacement)
 
     def update_cell_origin(self, cell_origin, position_in_cell):
-        floor_of_position = self.temp[:position_in_cell.shape[0]]
+        floor_of_position = self.particles.backend.range(self.temp, stop=position_in_cell.shape[0])
         self.particles.backend.floor_out_of_place(floor_of_position, position_in_cell)
         self.particles.backend.add(cell_origin, floor_of_position)
         self.particles.backend.subtract(position_in_cell, floor_of_position)
