@@ -76,13 +76,13 @@ class AlgorithmicMethods:
     def condensation(
             solver,
             n_cell, cell_start_arg,
-            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
         )
 
@@ -167,7 +167,7 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
         for thread_id in numba.prange(n_threads):
@@ -186,7 +186,7 @@ class AlgorithmicMethods:
                 md = rhod_mean * dv_mean
 
                 qv_new, thd_new, substeps_hint, ripening_flag = solver(
-                    v, particle_temperatures, n, vdry,
+                    v, particle_temperatures, r_cr, n, vdry,
                     idx[cell_start:cell_end],  # TODO
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, substeps[cell_id]

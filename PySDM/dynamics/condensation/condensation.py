@@ -27,6 +27,7 @@ class Condensation:
         self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
+        self.r_cr = particles_builder.get_attribute('critical radius')
 
         self.do_advection = do_advection
         self.do_condensation = do_condensation

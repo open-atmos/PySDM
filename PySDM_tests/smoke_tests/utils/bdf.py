@@ -26,7 +26,7 @@ def patch_particles(particles, coord, rtol=1e-3):
 
 def bdf_condensation(particles,
                      kappa,
-                     rtol_x, rtol_thd, substeps, ripening_flags
+                     rtol_x, rtol_thd, substeps, ripening_flags, r_cr=0 #TODO !!!!!!
                      ):
     n_threads = 1
     if particles.state.has_attribute("temperature"):
@@ -55,7 +55,8 @@ def bdf_condensation(particles,
         dt=particles.dt,
         substeps=substeps,
         cell_order=np.argsort(substeps),
-        ripening_flags=ripening_flags
+        ripening_flags=ripening_flags,
+        r_cr=r_cr
     )
 
 

@@ -16,9 +16,9 @@ class CondensationMethods:
     def make_condensation_solver(coord='volume logarithm', adaptive=True):
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def solve(v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
+        def solve(v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
                   rtol_x, rtol_thd, dt, n_substeps):
-            args = (v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
+            args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
             qv, thd, ripenings = step(args, dt, n_substeps)
@@ -55,7 +55,7 @@ class CondensationMethods:
             return step_impl(*args, dt, n_substeps, False)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def step_impl(v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
+        def step_impl(v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
@@ -64,7 +64,7 @@ class CondensationMethods:
                 thd += dt * dthd_dt_pred / 2  # TODO: test showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
-                ml_new, ripening = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, n, vdry, cell_idx, kappa, qv, rtol_x)
+                ml_new, ripening = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
@@ -84,7 +84,7 @@ class CondensationMethods:
         dx_dt, volume, x = coordinates.get(coord)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, n, vdry, cell_idx, kappa, qv, rtol_x):
+        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
             using_drop_temperatures = len(particle_T) > 0  # TODO: move outside numba
             growing = 0
@@ -115,7 +115,8 @@ class CondensationMethods:
                     if using_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    if v_new > 4/3 * np.pi * (1e-6)**3:
+                    # print(r_cr[drop]) # TODO : delete this line, only for test
+                    if v_new > 4/3 * np.pi * (r_cr[drop])**3:
                         if v_new - v[drop] > 0:
                             growing += 1
                         else:

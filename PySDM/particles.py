@@ -92,6 +92,7 @@ class Particles:
                 kappa=kappa,
                 rtol_x=rtol_x,
                 rtol_thd=rtol_thd,
+                r_cr=self.state["critical radius"],
                 dt=self.dt,
                 substeps=substeps,
                 cell_order=np.argsort(substeps),  # TODO: check if better than regular order
