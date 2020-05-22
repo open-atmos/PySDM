@@ -23,6 +23,7 @@ class Setup:
 
     condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
+    adaptive = True
 
     grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)

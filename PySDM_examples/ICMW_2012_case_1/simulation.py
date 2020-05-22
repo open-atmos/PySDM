@@ -29,7 +29,7 @@ from PySDM.environments.products.dry_air_potential_temperature import DryAirPote
 from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from PySDM.environments.products.dry_air_density import DryAirDensity
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
-from PySDM.dynamics.condensation.products.ripening_flag import RipeningFlag
+from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
 
 
 class DummyController:
@@ -84,6 +84,7 @@ class Simulation:
             "rtol_x": self.setup.condensation_rtol_x,
             "rtol_thd": self.setup.condensation_rtol_thd,
             "coord": self.setup.condensation_coord,
+            "adaptive": self.setup.adaptive,
             "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
             "do_condensation": self.setup.processes["condensation"]  # do somthing with that
         })
@@ -117,7 +118,7 @@ class Simulation:
             DryAirDensity: {},
             DryAirPotentialTemperature: {},
             CondensationTimestep: {},
-            RipeningFlag: {}
+            RipeningRate: {}
         }
         self.particles = particles_builder.get_particles(attributes, products)
 

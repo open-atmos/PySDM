@@ -4,7 +4,7 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion
+from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 import numpy as np
 
@@ -71,8 +71,21 @@ class DemoSetup(Setup):
     def condensation_rtol_thd(self):
         return 10**self.ui_condensation_rtol_thd.value
 
-    ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
+    ui_adaptive = Checkbox(value=Setup.adaptive, description='adaptive timestep')
+
+    @property
+    def adaptive(self):
+        return self.ui_adaptive.value
+
+    ui_condensation_coord = Dropdown(options=['volume', 'volume logarithm'], value=Setup.condensation_coord, description='condensational variable coordinate')
+
+    @property
+    def condensation_coord(self):
+        return self.ui_condensation_coord.value
+
 # TODO    ui_ept = Checkbox(value=Setup.enable_particle_temperatures, description="enable particle temperatures")
+
+    ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
 
     @property
     def processes(self):
@@ -138,6 +151,7 @@ class DemoSetup(Setup):
                   ]),
             VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_n_steps,
                   self.ui_condensation_rtol_x, self.ui_condensation_rtol_thd,
+                  self.ui_adaptive, self.ui_condensation_coord,
                   *self.ui_mpdata_options]),
 #            VBox([])  # TODO
         ])

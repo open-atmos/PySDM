@@ -115,8 +115,8 @@ class CondensationMethods:
                     if using_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    # print(r_cr[drop]) # TODO : delete this line, only for test
-                    if v_new > 4/3 * np.pi * (r_cr[drop])**3:
+                    # if v_new > 4/3 * np.pi * (r_cr[drop])**3: # TODO: difference if r<r_cr, filter out noise
+                    if abs((v_new-v[drop])/v_new) > 0.01:
                         if v_new - v[drop] > 0:
                             growing += 1
                         else:

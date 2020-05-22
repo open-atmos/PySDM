@@ -10,7 +10,7 @@ from PySDM.dynamics.condensation.condensation import Condensation
 import numpy as np
 
 
-class RipeningFlag(Product):
+class RipeningRate(Product):
     def __init__(self, particles_builder):
         particles = particles_builder.particles
         self.condensation = particles.dynamics[str(Condensation)]
@@ -18,13 +18,13 @@ class RipeningFlag(Product):
         super().__init__(
             particles=particles,
             shape=particles.mesh.grid,
-            name='ripening_flag',
-            description='ripening flag'
+            name='ripening_rate',
+            description='ripening rate'
         )
 
 
 
-    def get(self):
+    def get(self): # TODO: take into account NUMBER of substeps (?)
         self.download_to_buffer(self.condensation.ripening_flags)
         self.particles.backend.fill(self.condensation.ripening_flags, 0)
         return self.buffer
