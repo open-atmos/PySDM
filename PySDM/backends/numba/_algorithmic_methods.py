@@ -17,13 +17,13 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
-        length = displacement.shape[0]
+        length = displacement.shape[1]
         for droplet in prange(length):
             # Arakawa-C grid
-            _l = (cell_origin[droplet, 0], cell_origin[droplet, 1])
-            _r = (cell_origin[droplet, 0] + 1 * (dim == 0), cell_origin[droplet, 1] + 1 * (dim == 1))
-            omega = position_in_cell[droplet, dim]
-            displacement[droplet, dim] = scheme(omega, courant[_l], courant[_r])
+            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _r = (cell_origin[0, droplet] + 1 * (dim == 0), cell_origin[1, droplet] + 1 * (dim == 1))
+            omega = position_in_cell[dim, droplet]
+            displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
     @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
@@ -90,7 +90,7 @@ class AlgorithmicMethods:
     @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         for i in range(length):
-            if cell_origin[i, -1] == 0 and position_in_cell[i, -1] < 0:
+            if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
                 idx[i] = len(idx)
                 healthy[0] = 0
 

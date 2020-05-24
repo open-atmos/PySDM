@@ -17,7 +17,7 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         dim = trtc.DVInt64(dim)
-        idx_length = trtc.DVInt64(position_in_cell.shape[0])
+        idx_length = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
         loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "droplet", f'''
             // Arakawa-C grid
@@ -32,7 +32,7 @@ class AlgorithmicMethods:
             int c_l = courant[_l];
             displacement[droplet, dim] = {scheme(None, None, None)}
             ''')
-        loop.launch_n(displacement.shape[0], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
+        loop.launch_n(displacement.shape[1], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
 
     __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0)
@@ -121,7 +121,7 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         idx_length = trtc.DVInt64(idx.size())
-        n_dims = len(cell_origin.shape)
+        n_dims = trtc.DVInt64(len(cell_origin.shape))
         AlgorithmicMethods.__flag_precipitated_body.launch_n(length, [idx, idx_length, n_dims, healthy, cell_origin, position_in_cell])
 
     @staticmethod
@@ -188,10 +188,12 @@ class AlgorithmicMethods:
 
         trtc.Sort(idx)
 
-        result = trtc.Find(idx, idx_length)
-        if result is None:
-            result = length
-
+        # result = trtc.Find(idx, idx_length)
+        # if result is None:
+        #     result = length
+        result = idx.size() - trtc.Count(idx, idx_length)
+        if result < idx.size():
+            print("undertaker")
         return result
 
     ___sort_by_cell_id_and_update_cell_start_body = trtc.For(['cell_id', 'cell_start', 'idx'], "i", '''
@@ -211,7 +213,7 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
-        trtc.Sort_By_Key(cell_id.range(0, length), idx.range(0, length))
+        trtc.Sort_By_Key(cell_id, idx)
         trtc.Fill(cell_start, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1, [cell_id, cell_start, idx])
         return idx

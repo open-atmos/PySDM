@@ -17,9 +17,9 @@ def grid(grid, n_sd):
 
 def pseudorandom(grid, n_sd):
     dimension = len(grid)
-    positions = np.random.rand(n_sd, dimension)
-    for i in range(dimension):
-        positions[:, i] *= grid[i]
+    positions = np.random.rand(dimension, n_sd)
+    for dim in range(dimension):
+        positions[dim, :] *= grid[dim]
     return positions
 
 

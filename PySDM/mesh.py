@@ -45,7 +45,7 @@ class Mesh:
         return strides
 
     def cellular_attributes(self, positions):
-        n = positions.shape[0]
+        n = positions.shape[1]
         cell_origin = positions.astype(dtype=np.int64)
         position_in_cell = positions - np.floor(positions)
 
