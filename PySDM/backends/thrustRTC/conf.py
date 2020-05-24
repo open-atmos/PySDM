@@ -7,6 +7,6 @@ Created at 20.05.2020
 
 
 NICE_THRUST_FLAGS = dict(
-    wait=True,
+    wait=False,
     debug_print=False
 )

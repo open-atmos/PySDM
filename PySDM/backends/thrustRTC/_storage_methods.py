@@ -78,7 +78,7 @@ class StorageMethods:
             result = array.range(array.shape[1] * start, array.shape[1] * stop)
             new_shape = (stop - start, array.shape[1])
         else:
-            raise NotImplementedError("Only 3 or more dimensions array is supported.")
+            raise NotImplementedError("Only 2 or less dimensions array is supported.")
         StorageMethods.__equip(result, shape=new_shape, dtype=array.dtype)
         return result
 
