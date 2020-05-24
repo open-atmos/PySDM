@@ -50,6 +50,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         rhod = particles_builder.particles.backend.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
+        self.asynchronous = False
         self.thread: Thread = None
 
         super().sync()
@@ -67,15 +68,16 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
     def step(self):
         # TODO
-        # self.thread = Thread(target=self.__mpdata_step, args=())
-        # self.thread.start()
-        self.__mpdata_step()
-        pass
+        if self.asynchronous:
+            self.thread = Thread(target=self.__mpdata_step, args=())
+            self.thread.start()
+        else:
+            self.__mpdata_step()
 
     def wait(self):
-        # if self.thread is not None:
-        #     self.thread.join()
-        pass
+        if self.asynchronous:
+            if self.thread is not None:
+                self.thread.join()
 
     def sync(self):
         self.wait()
