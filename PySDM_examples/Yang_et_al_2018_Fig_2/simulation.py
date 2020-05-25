@@ -48,7 +48,7 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        products = {ParticlesSizeSpectrum: {}, CondensationTimestep: {}, RipeningRate: {}}
+        products = {ParticlesSizeSpectrum: {'v_bins': phys.volume(setup.r_bins_edges)}, CondensationTimestep: {}, RipeningRate: {}}
         self.particles = particles_builder.get_particles(attributes, products)
         self.particles.products['dt_cond'].debug = True
         self.n_steps = setup.n_steps
@@ -56,7 +56,7 @@ class Simulation:
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get(self.bins_edges))
+        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get())
         volume = self.particles.state['volume']
         volume = self.particles.backend.to_ndarray(volume)  # TODO
         output["r"].append(phys.radius(volume=volume))

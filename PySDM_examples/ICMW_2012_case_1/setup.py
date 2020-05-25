@@ -28,12 +28,14 @@ class Setup:
     grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-    w_max = .6 * si.metres / si.seconds
+    rho_w_max = .6 * si.metres / si.seconds * (si.kilogram / si.metre ** 3)
 
     # output steps
     n_steps = 3600
     outfreq = 60
     dt = 1 * si.seconds
+
+    v_bins = phys.volume(np.linspace(0 * si.micrometre, 20 * si.micrometre, 101, endpoint=True))
 
     @property
     def steps(self):
@@ -82,7 +84,7 @@ class Setup:
 
     def stream_function(self, xX, zZ):
         X = self.size[0]
-        return - self.w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
+        return - self.rho_w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
         Z = self.size[1]
@@ -100,6 +102,7 @@ class Setup:
         rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)
 
         return rhod
+
 
     # initial dry radius discretisation range
     r_min = .01 * si.micrometre

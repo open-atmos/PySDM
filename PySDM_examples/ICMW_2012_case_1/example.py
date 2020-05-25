@@ -11,6 +11,8 @@ from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
 import numpy as np
 
+import os
+os.environ["NUMBA_DISABLE_JIT"] = "1"
 
 def main():
     with np.errstate(all='ignore'):

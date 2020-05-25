@@ -6,6 +6,7 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
+
 import time
 
 from PySDM.particles_builder import ParticlesBuilder
@@ -30,6 +31,7 @@ from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMix
 from PySDM.environments.products.dry_air_density import DryAirDensity
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
+from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
 
 
 class DummyController:
@@ -107,6 +109,7 @@ class Simulation:
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
         products = {
+            ParticlesSizeSpectrum: {'v_bins': self.setup.v_bins},
             TotalParticleConcentration: {},
             TotalParticleSpecificConcentration: {},
             AerosolConcentration: {'radius_threshold': self.setup.aerosol_radius_threshold},

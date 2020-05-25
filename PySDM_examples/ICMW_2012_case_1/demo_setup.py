@@ -34,11 +34,11 @@ class DemoSetup(Setup):
     def kappa(self):
         return self.ui_kappa.value
 
-    ui_w_max = FloatSlider(description="w_max [m/s]", value=Setup.w_max, min=-1, max=1)
+    ui_amplitude = FloatSlider(description="amplitude [kg s^-1 m^-2]", value=Setup.rho_w_max, min=-1, max=1)
 
     @property
-    def w_max(self):
-        return self.ui_w_max.value
+    def amplitude(self):
+        return self.ui_amplitude.value
 
     ui_nx = IntSlider(value=Setup.grid[0], min=10, max=100, description="nx")
     ui_nz = IntSlider(value=Setup.grid[1], min=10, max=100, description="nz")
@@ -145,7 +145,7 @@ class DemoSetup(Setup):
 
     def box(self):
         layout = Accordion(children=[
-            VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_w_max]),
+            VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_amplitude]),
             VBox([*self.ui_processes
                   #   , self.ui_ept  # TODO
                   ]),
@@ -155,7 +155,7 @@ class DemoSetup(Setup):
                   *self.ui_mpdata_options]),
 #            VBox([])  # TODO
         ])
-        layout.set_title(0, 'parameters')
+        layout.set_title(0, 'environment parameters')
         layout.set_title(1, 'processes')
         layout.set_title(2, 'discretisation')
 #        layout.set_title(3, 'parallelisation')  # TODO
