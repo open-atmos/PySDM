@@ -4,7 +4,7 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-from ipywidgets import VBox, Box, Play, Output, IntSlider, jslink, Layout
+from ipywidgets import VBox, Box, Play, Output, IntSlider, jslink, Layout, HBox
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 from PySDM_examples.ICMW_2012_case_1 import plotter
@@ -53,12 +53,17 @@ class DemoViewer:
             self.plots[var] = Output()
         self.ims = {}
         self.axs = {}
+        self.spectrum = Output()
         self.xslider1.max = self.setup.grid[0] - 1
         self.yslider1.max = self.setup.grid[1] - 1
         self.xslider2.max = self.setup.grid[0] - 1
         self.yslider2.max = self.setup.grid[1] - 1
 
-        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)  # TODO: np.nan
+        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)# TODO: np.nan
+        with self.spectrum:
+            self.spectrum_figure, ax = plt.subplots(1,1)
+            self.spectrum_plot =  ax.step(self.setup.v_bins[:-1], np.full_like(self.setup.v_bins[:-1], np.nan), where='post')[0]
+            plt.show()
         self.vlines1, self.hlines1, self.vlines2, self.hlines2 = {},{},{},{}
         for key in self.plots.keys():
             with self.plots[key]:
@@ -102,18 +107,35 @@ class DemoViewer:
             self.vlines2[key].set_xdata(x=self.xslider2.value * self.setup.size[0]/self.setup.grid[0])
             self.hlines2[key].set_ydata(y=self.yslider2.value * self.setup.size[1]/self.setup.grid[1])
 
-
+        self.plot_spectra()
         for key in self.plots.keys():
             with self.plots[key]:
                 clear_output(wait=True)
                 display(self.ims[key].figure)
 
     def plot_spectra(self):
-        xrange = [self.xslider1.value, self.xslider2.value]
-        yrange = [self.yslider1.value, self.yslider2.value]
-        data = self.storage.load(self.setup.steps[self.step_slider.value], 'Particles Size Spectrum')
-        plt.plot()
-        pass
+        step = self.step_slider.value
+        xrange = slice(self.xslider1.value, self.xslider2.value)
+        yrange = slice(self.yslider1.value, self.yslider2.value)
+        vbins = self.setup.v_bins
+
+        try:
+            data = self.storage.load(self.setup.steps[step], 'Particles Size Spectrum')[xrange, yrange,:]
+            data = np.mean(np.mean(data, axis=0), axis=0)
+        except self.storage.Exception:
+            data = np.full_like(vbins[:-1], np.nan)
+        plt.step(vbins[:-1], data)
+        plt.xscale('log')
+        plt.xlabel('r')
+        plt.ylabel('n')
+        # self.spectrum_plot.set_xdata(x = vbins[:-1])
+        # self.spectrum_plot.set_ydata(y = data)
+        with self.spectrum:
+            clear_output(wait=True)
+            display(self.spectrum_figure)
+
+
+
 
 
     def box(self):
@@ -126,7 +148,7 @@ class DemoViewer:
         self.yslider2.observe(self.replot, 'value')
         return VBox([
             Box([self.play, self.step_slider, self.fps_slider]),
-            self.plots_box
+            self.plots_box, self.spectrum
         ])
 
 

@@ -6,10 +6,6 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
-
-import os
-os.environ["NUMBA_DISABLE_JIT"] = "1"
-
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
