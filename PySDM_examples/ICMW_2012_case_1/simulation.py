@@ -109,7 +109,7 @@ class Simulation:
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
         products = {
-            ParticlesSizeSpectrum: {'v_bins': self.setup.v_bins},
+            # ParticlesSizeSpectrum: {'v_bins': self.setup.v_bins},
             TotalParticleConcentration: {},
             TotalParticleSpecificConcentration: {},
             AerosolConcentration: {'radius_threshold': self.setup.aerosol_radius_threshold},
