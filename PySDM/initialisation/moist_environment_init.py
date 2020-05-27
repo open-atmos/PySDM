@@ -6,7 +6,7 @@ Created at 13.05.2020
 """
 
 import numpy as np
-from .r_wet_init import r_wet_init
+from .r_wet_init import r_wet_init_impl
 from .multiplicities import n_init
 from .temperature_init import temperature_init
 from PySDM.physics import formulae as phys
@@ -23,7 +23,7 @@ def moist_environment_init(attributes, environment, spatial_discretisation, spec
         T = backend.to_ndarray(environment['T'])
         p = backend.to_ndarray(environment['p'])
         RH = backend.to_ndarray(environment['RH'])
-        r_wet = r_wet_init(r_dry, T, p, RH, attributes['cell id'], kappa)
+        r_wet = r_wet_init_impl(r_dry, T, p, RH, attributes['cell id'], kappa)
         rhod = backend.to_ndarray(environment['rhod'])
         n_per_m3 = n_init(n_per_kg, rhod, environment.mesh, attributes['cell id'])
 

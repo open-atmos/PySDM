@@ -15,7 +15,14 @@ class _MinFun:
         return formulae.dr_dt_MM(r_w, self.T, self.p, self.RH, self.kappa, self.r_d)
 
 
-def r_wet_init(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa):
+def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa):
+    T = environment["T"]
+    p = environment["p"]
+    RH = environment["RH"]
+    return r_wet_init_impl(r_dry, T, p, RH, cell_id, kappa)
+
+
+def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa):
     r_wet = np.empty_like(r_dry)
 
     for i, r_d in enumerate(r_dry):
