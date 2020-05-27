@@ -47,8 +47,6 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        if setup.enable_particle_temperatures:
-            attributes['temperature'] = np.full(setup.n_sd, setup.T0)
         products = {ParticlesSizeSpectrum: {}}
         self.particles = particles_builder.get_particles(attributes, products)
 
