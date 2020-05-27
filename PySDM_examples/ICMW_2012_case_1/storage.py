@@ -28,7 +28,7 @@ class Storage:
         return path
 
     def save(self, data: np.ndarray, step: int, name: str):
-        assert data.shape == self.grid
+        assert (data.shape[0:2] == self.grid)
         np.save(self._filepath(step, name), data.astype(self.dtype))
 
     def load(self, step: int, name: str) -> np.ndarray:

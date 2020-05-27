@@ -14,6 +14,8 @@ from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
 
 # TODO: the q1 logic from PyCloudParcel?
 
@@ -49,15 +51,15 @@ class Simulation:
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         if setup.enable_particle_temperatures:
             attributes['temperature'] = np.full(setup.n_sd, setup.T0)
-        products = {ParticlesSizeSpectrum: {}}
+        products = {ParticlesSizeSpectrum: {'v_bins': phys.volume(setup.r_bins_edges)}, CondensationTimestep: {}, RipeningRate: {}}
         self.particles = particles_builder.get_particles(attributes, products)
-
+        self.particles.products['dt_cond'].debug = True
         self.n_steps = setup.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get(self.bins_edges))
+        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get())
         volume = self.particles.state['volume']
         volume = self.particles.backend.to_ndarray(volume)  # TODO
         output["r"].append(phys.radius(volume=volume))
@@ -66,9 +68,15 @@ class Simulation:
         output["T"].append(self.particles.environment["T"][cell_id])
         output["z"].append(self.particles.environment["z"][cell_id])
         output["t"].append(self.particles.environment["t"][cell_id])
+        output["dt_cond_max"].append(self.particles.products["dt_cond"].get_max().copy())
+        output["dt_cond_min"].append(self.particles.products["dt_cond"].get_min().copy())
+        self.particles.products["dt_cond"].reset()
+        output['ripening_rate'].append(self.particles.products['ripening_rate'].get()[cell_id].copy())
+
+
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": [], "ripening_rate": []}
 
         self.save(output)
         for step in range(self.n_steps):

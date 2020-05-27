@@ -23,16 +23,19 @@ class Setup:
 
     condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
+    adaptive = True
 
     grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)
     n_sd_per_gridbox = 20
-    w_max = .6 * si.metres / si.seconds
+    rho_w_max = .6 * si.metres / si.seconds * (si.kilogram / si.metre ** 3)
 
     # output steps
     n_steps = 3600
     outfreq = 60
     dt = 1 * si.seconds
+
+    v_bins = phys.volume(np.linspace(0 * si.micrometre, 20 * si.micrometre, 101, endpoint=True))
 
     @property
     def steps(self):
@@ -53,7 +56,7 @@ class Setup:
         "coalescence": False,
         "condensation": True,
         "sedimentation": False,
-        "relaxation": False
+#        "relaxation": False # TODO
     }
 
     enable_particle_temperatures = False
@@ -81,7 +84,7 @@ class Setup:
 
     def stream_function(self, xX, zZ):
         X = self.size[0]
-        return - self.w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
+        return - self.rho_w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
         Z = self.size[1]
@@ -100,11 +103,12 @@ class Setup:
 
         return rhod
 
+
     # initial dry radius discretisation range
     r_min = .01 * si.micrometre
     r_max = 5 * si.micrometre
 
-    kernel = Gravitational(collection_efficiency=10)  # [s-1] # TODO!
+    kernel = Gravitational(collection_efficiency=1)  # [s-1] # TODO!
     aerosol_radius_threshold = 1 * si.micrometre
 
     n_spin_up = 1 * si.hour / dt

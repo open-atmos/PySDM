@@ -9,7 +9,7 @@ import numpy as np
 
 
 class Product:
-    def __init__(self, particles, shape, name, unit, description, scale, range):
+    def __init__(self, particles, shape, name, unit = None, description = None, scale = None, range = [0, 100]):
         self.name = name
         self.unit = unit
         self.description = description
@@ -21,6 +21,9 @@ class Product:
 
     def download_to_buffer(self, storage):
         self.particles.backend.download(storage, self.buffer.ravel())
+
+    def poll(self):
+        pass
 
 
 class MomentProduct(Product):
