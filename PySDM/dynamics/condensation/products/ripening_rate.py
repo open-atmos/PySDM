@@ -22,8 +22,6 @@ class RipeningRate(Product):
             description='ripening rate'
         )
 
-
-
     def get(self): # TODO: take into account NUMBER of substeps (?)
         self.download_to_buffer(self.condensation.ripening_flags)
         self.particles.backend.fill(self.condensation.ripening_flags, 0)

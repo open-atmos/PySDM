@@ -153,13 +153,13 @@ class CondensationMethods:
         step = CondensationMethods.make_step(step_impl)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def solve(v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
+        def solve(v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
                   rtol_x, rtol_thd, dt, n_substeps):
-            args = (v, particle_T, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
+            args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
-            qv, thd = step(args, dt, n_substeps)
+            qv, thd, ripenings = step(args, dt, n_substeps)
 
-            return qv, thd, n_substeps
+            return qv, thd, n_substeps, ripenings
 
         return solve

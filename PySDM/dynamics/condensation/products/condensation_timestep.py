@@ -13,8 +13,8 @@ import numpy as np
 class CondensationTimestep(Product):
     def __init__(self, particles_builder, debug = False):
         particles = particles_builder.particles
+        particles.observers.append(self)
         self.condensation = particles.dynamics[str(Condensation)]
-        self.debug = debug
 
         super().__init__(
             particles=particles,
@@ -43,20 +43,14 @@ class CondensationTimestep(Product):
         self.buffer[:] = self.condensation.particles.dt / self.buffer
         return self.buffer
 
-
-    def poll(self):
-        if self.debug:
-            self.download_to_buffer(self.condensation.substeps)
-            self.count[:] += self.buffer
-            self.buffer[:] = self.condensation.particles.dt / self.buffer
-            self.minimum = np.minimum(self.buffer, self.minimum)
-            self.maximum = np.maximum(self.buffer, self.maximum)
+    def notify(self):
+        self.download_to_buffer(self.condensation.substeps)
+        self.count[:] += self.buffer
+        self.buffer[:] = self.condensation.particles.dt / self.buffer
+        self.minimum = np.minimum(self.buffer, self.minimum)
+        self.maximum = np.maximum(self.buffer, self.maximum)
 
     def reset(self):
         self.minimum[:] = np.inf
         self.maximum[:] = -np.inf
         self.count[:] = 0
-
-
-
-
