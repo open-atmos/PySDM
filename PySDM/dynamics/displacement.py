@@ -29,7 +29,7 @@ class Displacement:
             raise NotImplementedError()
 
         self.scheme = method
-        self.sedimentation = sedimentation
+        self.enable_sedimentation = sedimentation
 
         self.dimension = len(courant_field)
         self.grid = self.particles.backend.from_ndarray(np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
@@ -47,7 +47,7 @@ class Displacement:
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
-        if self.sedimentation:
+        if self.enable_sedimentation:
             self.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
@@ -56,7 +56,7 @@ class Displacement:
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
             self.particles.backend.calculate_displacement(dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
-        if self.sedimentation:
+        if self.enable_sedimentation:
             displacement_z = self.particles.backend.read_row(displacement, self.dimension-1)
             dt_over_dz = self.particles.dt / self.particles.mesh.dz
             self.particles.backend.multiply(displacement_z, 1 / dt_over_dz)

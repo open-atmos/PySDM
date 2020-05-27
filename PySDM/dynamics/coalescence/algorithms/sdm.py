@@ -23,19 +23,22 @@ class SDM:
         self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
         self.seed = seed or Incrementation()
 
+        self.enable = True
+
     def __call__(self):
-        self.particles.state.sanitize()
+        if self.enable:
+            self.particles.state.sanitize()
 
-        self.particles.backend.urand(self.temp, self.seed())
+            self.particles.backend.urand(self.temp, self.seed())
 
-        self.toss_pairs(self.is_first_in_pair, self.temp)
+            self.toss_pairs(self.is_first_in_pair, self.temp)
 
-        self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
+            self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
 
-        self.particles.backend.urand(self.rand, self.seed())
-        self.compute_gamma(self.prob, self.rand)
+            self.particles.backend.urand(self.rand, self.seed())
+            self.compute_gamma(self.prob, self.rand)
 
-        self.particles.coalescence(gamma=self.prob)
+            self.particles.coalescence(gamma=self.prob)
 
     def compute_gamma(self, prob, rand):
         self.particles.backend.compute_gamma(prob, rand)

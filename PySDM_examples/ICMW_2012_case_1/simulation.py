@@ -16,6 +16,7 @@ from PySDM.dynamics import Coalescence
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.environments import MoistEulerian2DKinematic
 from PySDM.initialisation.moist_environment_init import moist_environment_init
+from .spin_up import SpinUp
 
 from PySDM.state.products.aerosol_concentration import AerosolConcentration
 from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
@@ -117,7 +118,7 @@ class Simulation:
             CondensationTimestep: {}
         }
         self.particles = particles_builder.get_particles(attributes, products)
-
+        SpinUp(self.particles, self.setup.n_spin_up)
         # TODO
         if self.storage is not None:
             self.storage.init(self.setup)

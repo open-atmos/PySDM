@@ -54,7 +54,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.thread: Thread = None
 
         super().sync()
-        self.post_step()
+        self.notify()
 
     def _get_thd(self):
         return self.__mpdatas['th'].curr.get()
