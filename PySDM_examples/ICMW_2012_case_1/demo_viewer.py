@@ -4,12 +4,11 @@ Created at 02.10.2019
 @author: Sylwester Arabas
 """
 
-from ipywidgets import VBox, Box, Play, Output, IntSlider, jslink, Layout, HBox
+from ipywidgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, Layout, HBox
 import matplotlib.pyplot as plt
 from IPython.display import clear_output, display
 from PySDM_examples.ICMW_2012_case_1 import plotter
 import numpy as np
-
 
 
 class DemoViewer:
@@ -29,16 +28,12 @@ class DemoViewer:
             layout=Layout(display='flex', flex_flow='column')
         )
 
-        self.xslider1 = IntSlider(min=0, max=0, description='spectrum_x1')
-        self.yslider1 = IntSlider(min=0, max=0, description='spectrum_y1')
-        self.xslider2 = IntSlider(min=0, max=0, description='spectrum_x2')
-        self.yslider2 = IntSlider(min=0, max=0, description='spectrum_y2')
-        self.coordinate_select1 = VBox([self.xslider1, self.yslider1])
-        self.coordinate_select2 = VBox([self.xslider2, self.yslider2])
-
+        self.slider = {}
+        self.lines = {'x': [{}, {}], 'y': [{}, {}]}
+        for xy in ('x', 'y'):
+            self.slider[xy] = (IntRangeSlider(min=0, max=0, description=f'spectrum_{xy}'))
 
         self.reinit({})
-
 
     def clear(self):
         self.plots_box.children = ()
@@ -48,23 +43,20 @@ class DemoViewer:
 
         self.plots.clear()
         for var in products.keys():
-            if var == 'Particles Size Spectrum': # TODO check dimensionality of product to be 2d instead
+            if var == 'Particles Size Spectrum':  # TODO check dimensionality of product to be 2d instead
                 continue
             self.plots[var] = Output()
         self.ims = {}
         self.axs = {}
         self.spectrum = Output()
-        self.xslider1.max = self.setup.grid[0] - 1
-        self.yslider1.max = self.setup.grid[1] - 1
-        self.xslider2.max = self.setup.grid[0] - 1
-        self.yslider2.max = self.setup.grid[1] - 1
+        for j, xy in enumerate(('x', 'y')):
+            self.slider[xy].max = self.setup.grid[j]
 
-        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)# TODO: np.nan
+        self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)  # TODO: np.nan
         with self.spectrum:
             self.spectrum_figure, ax = plt.subplots(1,1)
             self.spectrum_plot =  ax.step(self.setup.v_bins[:-1], np.full_like(self.setup.v_bins[:-1], np.nan), where='post')[0]
             plt.show()
-        self.vlines1, self.hlines1, self.vlines2, self.hlines2 = {},{},{},{}
         for key in self.plots.keys():
             with self.plots[key]:
                 clear_output()
@@ -76,22 +68,24 @@ class DemoViewer:
                                               scale=product.scale
                                               )
                 self.ims[key].set_clim(vmin=product.range[0], vmax=product.range[1])
-                self.vlines1[key] = self.axs[key].axvline(x=self.xslider1.value * self.setup.size[0]/self.setup.grid[0], color='red')
-                self.hlines1[key] = self.axs[key].axhline(y=self.yslider1.value * self.setup.size[1]/self.setup.grid[1], color='red')
 
-                self.vlines2[key] = self.axs[key].axvline(x=self.xslider2.value * self.setup.size[0]/self.setup.grid[0], color='red')
-                self.hlines2[key] = self.axs[key].axhline(y=self.yslider2.value * self.setup.size[1]/self.setup.grid[1], color='red')
+                x = self.slider['x'].value[0] * self.setup.size[0] / self.setup.grid[0]
+                y = self.slider['y'].value[0] * self.setup.size[1] / self.setup.grid[1]
+                self.lines['x'][0][key] = self.axs[key].axvline(x=x, color='red')
+                self.lines['y'][0][key] = self.axs[key].axhline(y=y, color='red')
+                x = self.slider['x'].value[1] * self.setup.size[0]/self.setup.grid[0]
+                y = self.slider['y'].value[1] * self.setup.size[1]/self.setup.grid[1]
+                self.lines['x'][1][key] = self.axs[key].axvline(x=x, color='red')
+                self.lines['y'][1][key] = self.axs[key].axhline(y=y, color='red')
                 plt.show()
 
-        self.plots_box.children = [self.coordinate_select1, self.coordinate_select2, *self.plots.values()]
+        self.plots_box.children = [*self.slider.values(), *self.plots.values()]
         n_steps = len(self.setup.steps)
         self.step_slider.max = n_steps - 1
         self.play.max = n_steps - 1
         self.play.value = 0
         self.step_slider.value = 0
         self.replot()
-
-
 
     def replot(self, _ = None):
         step = self.step_slider.value
@@ -102,10 +96,10 @@ class DemoViewer:
                 data = self.nans
             plotter.image_update(self.ims[key], self.axs[key], data)
 
-            self.vlines1[key].set_xdata(x=self.xslider1.value * self.setup.size[0]/self.setup.grid[0])
-            self.hlines1[key].set_ydata(y=self.yslider1.value * self.setup.size[1]/self.setup.grid[1])
-            self.vlines2[key].set_xdata(x=self.xslider2.value * self.setup.size[0]/self.setup.grid[0])
-            self.hlines2[key].set_ydata(y=self.yslider2.value * self.setup.size[1]/self.setup.grid[1])
+            self.lines['x'][0][key].set_xdata(x=self.slider['x'].value[0] * self.setup.size[0]/self.setup.grid[0])
+            self.lines['y'][0][key].set_ydata(y=self.slider['y'].value[0] * self.setup.size[1]/self.setup.grid[1])
+            self.lines['x'][1][key].set_xdata(x=self.slider['x'].value[1] * self.setup.size[0]/self.setup.grid[0])
+            self.lines['y'][1][key].set_ydata(y=self.slider['y'].value[1] * self.setup.size[1]/self.setup.grid[1])
 
         self.plot_spectra()
         for key in self.plots.keys():
@@ -115,8 +109,8 @@ class DemoViewer:
 
     def plot_spectra(self):
         step = self.step_slider.value
-        xrange = slice(self.xslider1.value, self.xslider2.value)
-        yrange = slice(self.yslider1.value, self.yslider2.value)
+        xrange = slice(*self.slider['x'].value)
+        yrange = slice(*self.slider['y'].value)
         vbins = self.setup.v_bins
 
         try:
@@ -134,22 +128,14 @@ class DemoViewer:
             clear_output(wait=True)
             display(self.spectrum_figure)
 
-
-
-
-
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         jslink((self.play, 'interval'), (self.fps_slider, 'value'))
         self.play.observe(self.replot, 'value')
-        self.xslider1.observe(self.replot, 'value')
-        self.yslider1.observe(self.replot, 'value')
-        self.xslider2.observe(self.replot, 'value')
-        self.yslider2.observe(self.replot, 'value')
+        for xy in ('x', 'y'):
+            for i in range(2):
+                self.slider[xy].observe(self.replot, 'value')
         return VBox([
             Box([self.play, self.step_slider, self.fps_slider]),
             self.plots_box, self.spectrum
         ])
-
-
-
