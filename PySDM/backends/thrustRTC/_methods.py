@@ -20,8 +20,8 @@ class Methods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def first_element_is_zero(arr):
-        first_elem = arr.get(0)
-        return first_elem == 0
+        # first_elem = arr.get(0)
+        return arr.to_host()[0] == 0
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

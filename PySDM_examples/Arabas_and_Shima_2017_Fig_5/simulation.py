@@ -45,7 +45,12 @@ class Simulation:
         r_dry = np.array([setup.r_dry])
         attributes['dry volume'] = phys.volume(radius=r_dry)
         attributes['n'] = np.array([setup.n_in_dv], dtype=np.int64)
-        r_wet = r_wet_init(r_dry, particles_builder.particles.environment, np.zeros_like(attributes['n']), setup.kappa)
+        # TODO: move init somewhere
+        environment = particles_builder.particles.environment
+        T = environment["T"]
+        p = environment["p"]
+        RH = environment["RH"]
+        r_wet = r_wet_init(r_dry, T, p, RH, np.zeros_like(attributes['n']), setup.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
         products = {
             ParticleMeanRadius: {}

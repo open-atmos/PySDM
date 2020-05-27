@@ -39,9 +39,9 @@ def test_final_state(croupier):
     particles.croupier = croupier
 
     attributes['cell id'] = backend.array((n_sd,), dtype=int)
-    cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((-1, 2))
+    cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((2, -1))
     attributes['cell origin'] = backend.from_ndarray(cell_origin_np)
-    position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((-1, 2))
+    position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((2, -1))
     attributes['position in cell'] = backend.from_ndarray(position_in_cell_np)
     particles.get_particles(attributes)
 
