@@ -34,7 +34,7 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
         self.sync_parcel_vars()
         _Moist.sync(self)
-        self.post_step()
+        self.notify()
 
     def advance_parcel_vars(self):
         dt = self.particles.dt

@@ -20,6 +20,7 @@ class Particles:
         self.state: (State, None) = None
         self.dynamics = {}
         self.products = {}
+        self.observers = []
 
         self.n_steps = 0
         self.stats = stats or Stats()
@@ -102,5 +103,6 @@ class Particles:
             for _ in range(steps):
                 for dynamic in self.dynamics.values():
                     dynamic()
-                self.environment.post_step()
-        self.n_steps += steps
+                self.n_steps += 1
+                for observer in self.observers:
+                    observer.notify()

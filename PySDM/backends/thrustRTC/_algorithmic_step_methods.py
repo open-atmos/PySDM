@@ -6,11 +6,14 @@ Created at 20.03.2020
 """
 
 import ThrustRTC as trtc
+from .nice_thrust import nice_thrust
+from .conf import NICE_THRUST_FLAGS
 
 
 class AlgorithmicStepMethods:
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def amax(row, idx, length):
         perm_in = trtc.DVPermutation(row, idx)
         index = trtc.Max_Element(perm_in.range(0, length))
@@ -19,6 +22,7 @@ class AlgorithmicStepMethods:
         return result
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def amin(row, idx, length):
         perm_in = trtc.DVPermutation(row, idx)
         index = trtc.Min_Element(perm_in.range(0, length))
@@ -35,9 +39,10 @@ class AlgorithmicStepMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def cell_id(cell_id, cell_origin, strides):
         n_dims = trtc.DVInt64(strides.shape[1])
-        size = trtc.DVInt64(cell_origin.shape[1])
+        size = trtc.DVInt64(cell_origin.shape[0])
         AlgorithmicStepMethods.__cell_id_body.launch_n(cell_id.size(), [cell_id, cell_origin, strides, n_dims, size])
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
@@ -50,6 +55,7 @@ class AlgorithmicStepMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
@@ -64,6 +70,7 @@ class AlgorithmicStepMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def find_pairs(cell_start, is_first_in_pair, cell_id, idx, length):
         perm_cell_id = trtc.DVPermutation(cell_id, idx)
         if length > 1:
@@ -79,6 +86,7 @@ class AlgorithmicStepMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
@@ -95,6 +103,7 @@ class AlgorithmicStepMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)

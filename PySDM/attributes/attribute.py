@@ -19,7 +19,7 @@ class Attribute:
     def allocate(self, data=None):
         if data is None:
             if self.size > 1:
-                self.data = self.particles.backend.array((self.particles.n_sd, self.size), dtype=self.dtype)
+                self.data = self.particles.backend.array((self.size, self.particles.n_sd), dtype=self.dtype)
             else:
                 self.data = self.particles.backend.array((self.particles.n_sd,), dtype=self.dtype)
         else:

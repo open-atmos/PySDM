@@ -74,7 +74,7 @@ class TestState:
         # Arrange
         n = np.ones(1, dtype=np.int64)
         droplet_id = 0
-        initial_position = Default.from_ndarray(np.array([[0, 0]]))
+        initial_position = Default.from_ndarray(np.array([[0], [0]]))
         grid = (1, 1)
         particles = DummyParticles(backend, n_sd=1)
         particles.set_environment(DummyEnvironment, {'grid': grid})
@@ -82,8 +82,8 @@ class TestState:
         attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
         particles.get_particles(attribute)
         sut = particles.state
-        sut['cell origin'][droplet_id, 0] = .1
-        sut['cell origin'][droplet_id, 1] = .2
+        sut['cell origin'][0, droplet_id] = .1
+        sut['cell origin'][1, droplet_id] = .2
         sut['cell id'][droplet_id] = -1
 
         # Act

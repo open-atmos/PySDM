@@ -14,6 +14,7 @@ class _Moist:
     def __init__(self, particles_builder: ParticlesBuilder, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles_builder.particles
+        self.particles.observers.append(self)
         self.dt = dt
         self.mesh = mesh
         self._values = {
@@ -51,7 +52,7 @@ class _Moist:
     def _get_qv(self) -> np.ndarray: raise NotImplemented()
     def _get_thd(self) -> np.ndarray: raise NotImplemented()
 
-    def post_step(self):
+    def notify(self):
         if self._values["predicted"] is None:
             return
 

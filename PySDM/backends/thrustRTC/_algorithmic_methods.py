@@ -7,13 +7,17 @@ Created at 10.12.2019
 
 import ThrustRTC as trtc
 from ._maths_methods import MathsMethods
+from .nice_thrust import nice_thrust
+from .conf import NICE_THRUST_FLAGS
 
 
 class AlgorithmicMethods:
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
-        idx_length = trtc.DVInt64(position_in_cell.shape[0])
+        dim = trtc.DVInt64(dim)
+        idx_length = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
         loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "droplet", f'''
             // Arakawa-C grid
@@ -28,7 +32,7 @@ class AlgorithmicMethods:
             int c_l = courant[_l];
             displacement[droplet, dim] = {scheme(None, None, None)}
             ''')
-        loop.launch_n(displacement.shape[0], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
+        loop.launch_n(displacement.shape[1], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
 
     __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0)
@@ -77,6 +81,7 @@ class AlgorithmicMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         idx_length = trtc.DVInt64(idx.size())
         intensive_length = trtc.DVInt64(intensive.size())
@@ -88,6 +93,7 @@ class AlgorithmicMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(prob, rand):
         MathsMethods.multiply(prob, -1.)
         AlgorithmicMethods.__compute_gamma_body.launch_n(prob.size(), [prob, rand])
@@ -95,6 +101,7 @@ class AlgorithmicMethods:
         MathsMethods.multiply(prob, -1.)
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
             solver,
             n_cell, cell_start_arg,
@@ -111,9 +118,10 @@ class AlgorithmicMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         idx_length = trtc.DVInt64(idx.size())
-        n_dims = len(cell_origin.shape)
+        n_dims = trtc.DVInt64(len(cell_origin.shape))
         AlgorithmicMethods.__flag_precipitated_body.launch_n(length, [idx, idx_length, n_dims, healthy, cell_origin, position_in_cell])
 
     @staticmethod
@@ -121,6 +129,7 @@ class AlgorithmicMethods:
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         # TODO print("Numba import!: ThrustRTC.moments(...)")
 
@@ -157,6 +166,7 @@ class AlgorithmicMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = trtc.DVDouble(dt_div_dv)
@@ -164,23 +174,26 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob, cell_id, norm_factor])
 
     __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
-        if (data[idx[i]] == 0)
+        if (idx[i] < idx_length && data[idx[i]] == 0)
             idx[i] = idx_length;
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def remove_zeros(data, idx, length) -> int:
         idx_length = trtc.DVInt64(idx.size())
 
         # Warning: (potential bug source): reading from outside of array
         AlgorithmicMethods.__remove_zeros_body.launch_n(length, [data, idx, idx_length])
 
-        trtc.Sort(idx.range(0, length))
+        trtc.Sort(idx)
 
-        result = trtc.Find(idx.range(0, length), idx_length)
-        if result == -1:
-            result = length
-
+        # result = trtc.Find(idx, idx_length)
+        # if result is None:
+        #     result = length
+        result = idx.size() - trtc.Count(idx, idx_length)
+        if result < idx.size():
+            print("undertaker")
         return result
 
     ___sort_by_cell_id_and_update_cell_start_body = trtc.For(['cell_id', 'cell_start', 'idx'], "i", '''
@@ -198,9 +211,9 @@ class AlgorithmicMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
-        trtc.Sort_By_Key(idx.range(0, length), cell_id.range(0, length))
+        trtc.Sort_By_Key(cell_id, idx)
         trtc.Fill(cell_start, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1, [cell_id, cell_start, idx])
-
         return idx

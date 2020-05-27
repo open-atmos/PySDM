@@ -23,9 +23,10 @@ class ParticlesBuilder:
         self.particles = Particles(n_sd, backend, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
+        self.condensation_params = None
 
     def _set_condensation_parameters(self, coord, adaptive=True):
-        self.particles.condensation_solver = self.particles.backend.make_condensation_solver(coord, adaptive)
+        self.condensation_params = {'coord': coord, 'adaptive': adaptive}
 
     def set_environment(self, environment_class, params: dict):
         assert_none(self.particles.environment)
@@ -49,18 +50,19 @@ class ParticlesBuilder:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
     def get_particles(self, attributes: dict, products: dict = {}):
-        if attributes is None:
-            assert_not_none(self.particles.state)
-        else:
-            for attribute in attributes:
-                self.request_attribute(attribute)
-            attributes['n'] = discretise_n(attributes['n'])
-            if self.particles.mesh.dimension == 0:
-                attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
-            self.particles.state = StateFactory.attributes(self.particles, self.req_attr, attributes)
+        for attribute in attributes:
+            self.request_attribute(attribute)
+        if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.particles.dynamics:  # TODO: mapper?
+            self.particles.condensation_solver = \
+                self.particles.backend.make_condensation_solver(**self.condensation_params,
+                                                                enable_drop_temperatures='temperatures' in self.req_attr)
+        attributes['n'] = discretise_n(attributes['n'])
+        if self.particles.mesh.dimension == 0:
+            attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
+        self.particles.state = StateFactory.attributes(self.particles, self.req_attr, attributes)
 
-            for product_class, args in products.items():
-                self.register_product(product_class(self, **args))
+        for product_class, args in products.items():
+            self.register_product(product_class(self, **args))
 
         return self.particles
 

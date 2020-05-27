@@ -16,9 +16,10 @@ def run(setup):
     particles_building = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
     particles_building.set_environment(Box, {'dv': setup.dv, 'dt': setup.dt})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
-    particles_building.create_state_0d(n=n, extensive={'volume': v}, intensive={})
+    attributes = {'n': n, 'volume': v}
     particles_building.register_dynamic(Coalescence, {"kernel": setup.kernel})
-    particles = particles_building.get_particles()
+
+    particles = particles_building.get_particles(attributes)
 
     states = {}
     for step in setup.steps:
@@ -35,9 +36,9 @@ setup = SetupA()
 setup.steps = [100, 3600]
 
 times = {}
-for backend in (Numba, ThrustRTC):
+for backend in (ThrustRTC, Numba):
     setup.backend = backend
-    nsds = [2 ** n for n in range(12, 22, 3)]
+    nsds = [2 ** n for n in range(12, 19, 3)]
     key = backend.__name__
     times[key] = []
     for sd in nsds:

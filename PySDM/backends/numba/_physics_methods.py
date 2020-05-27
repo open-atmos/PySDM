@@ -3,6 +3,7 @@ Created at 11.2019
 """
 
 import numba
+from numba import prange
 from PySDM.backends.numba import conf
 from .numba_helpers import temperature_pressure_RH, radius, dthd_dt, dr_dt_MM, dr_dt_FF
 
@@ -26,6 +27,17 @@ class PhysicsMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def temperature_pressure_RH(rhod, thd, qv):
         return temperature_pressure_RH(rhod, thd, qv)
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def terminal_velocity(values, radius, k1, k2, k3, r1, r2):
+        for i in prange(len(values)):
+            if radius[i] < r1:
+                values[i] = k1 * radius[i] ** 2
+            elif radius[i] < r2:
+                values[i] = k2 * radius[i]
+            else:
+                values[i] = k3 * radius[i] ** (1 / 2)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

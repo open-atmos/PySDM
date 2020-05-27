@@ -23,17 +23,4 @@ class TerminalVelocity(DerivedAttribute):
         self.r2 = 600 * const.si.um
 
     def recalculate(self):
-        numba_term_vel(self.data, self.radius.get(), self.k1, self.k2, self.k3, self.r1, self.r2)
-
-
-# TODO: move to backend
-import numba
-@numba.njit()
-def numba_term_vel(values, radius, k1, k2, k3, r1, r2):
-    for i in range(len(values)):
-        if radius[i] < r1:
-            values[i] = k1 * radius[i] ** 2
-        elif radius[i] < r2:
-            values[i] = k2 * radius[i]
-        else:
-            values[i] = k3 * radius[i] ** (1 / 2)
+        self.particles.backend.terminal_velocity(self.data, self.radius.get(), self.k1, self.k2, self.k3, self.r1, self.r2)

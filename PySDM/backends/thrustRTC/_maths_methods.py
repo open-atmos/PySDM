@@ -7,26 +7,29 @@ Created at 10.12.2019
 
 import numpy as np
 import ThrustRTC as trtc
-# TODO import CURandRTC as rndrtc
+import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
+from .nice_thrust import nice_thrust
+from .conf import NICE_THRUST_FLAGS
 
 
 class MathsMethods:
-    chunks = 32
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def add(output, addend):
         trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
-    __column_modulo_body = trtc.For(['output', 'divisor', 'col_num'], "i", '''
-        int d = i % col_num;
+    __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
+        int d = i / length;
         output[i] %= divisor[d];
         ''')
 
     @staticmethod
-    def column_modulo(output, divisor):
-        col_num = trtc.DVInt64(divisor.size())
-        MathsMethods.__column_modulo_body.launch_n(output.size(), [output, divisor, col_num])
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def row_modulo(output, divisor):
+        length = trtc.DVInt64(output.shape[1])
+        MathsMethods.__row_modulo_body.launch_n(output.size(), [output, divisor, length])
 
     __floor_body = trtc.For(['arr'], "i", '''
         if (arr[i] >= 0) 
@@ -41,6 +44,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def floor(output):
         MathsMethods.__floor_body.launch_n(output.size(), [output])
 
@@ -56,6 +60,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def floor_out_of_place(output, input_data):
         MathsMethods.__floor_out_of_place_body.launch_n(output.size(), [output, input_data])
 
@@ -68,6 +73,7 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def multiply(output, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
             loop = MathsMethods.__multiply_elementwise_body
@@ -91,6 +97,7 @@ class MathsMethods:
             ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def multiply_out_of_place(output, multiplicand, multiplier):
         if isinstance(multiplier, StorageMethods.storage):
             loop = MathsMethods.__multiply_out_of_place_elementwise_body
@@ -107,46 +114,46 @@ class MathsMethods:
         ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def power(output, exponent):
         if exponent == 1:
             return
         device_multiplier = trtc.DVDouble(exponent)
         MathsMethods.__power_body.launch_n(output.size(), [output, device_multiplier])
 
-    @staticmethod
-    def subtract(output, subtrahend):
-        trtc.Transform_Binary(subtrahend, output, output, trtc.Minus())
+    __subract_body = trtc.For(['output', 'subtrahend'], 'i', '''
+            output[i] -= subtrahend[i];
+        ''')
 
     @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def subtract(output, subtrahend):
+        MathsMethods.__subract_body.launch_n(output.size(), [output, subtrahend])
+        # trtc.Transform_Binary(output, subtrahend, output, trtc.Minus())
+
+    __urand_init_rng_state_body = trtc.For(['rng', 'states', 'seed'], 'i', '''
+        rng.state_init(1234, i, 0, states[i]);
+        ''')
+
+    __urand_body = trtc.For(['states', 'vec_rnd'], 'i', '''
+        vec_rnd[i]=states[i].rand01();
+        ''')
+
+    __rng = rndrtc.DVRNG()
+    states = trtc.device_vector('RNGState', 2**19)
+    __urand_init_rng_state_body.launch_n(states.size(), [__rng, states, trtc.DVInt64(12)])
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def urand(data, seed=None):
         # TODO: print("Numpy import!: ThrustRTC.urand(...)")
 
-        np.random.seed(seed)
-        output = np.random.uniform(0, 1, data.shape)
-        StorageMethods.upload(output, data)
-
-        # if seed is None:
-        #     seed = np.random.randint(2**16)
-        # rng = rndrtc.DVRNG()
-        #
-        # chunks = MathsMethods.chunks
-        # ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
-        #     RNGState state;
-        #     rng.state_init({seed}, idx, 0, state);  // initialize a state using the rng object
-        #     for (int i=0; i<{chunks}; i++)
-        #        vec_rnd[i+idx*{chunks}]=(float)state.rand01();  // generate random number using the rng object
-        #     ''')
-        #
-        # ker.launch_n(data.size() // chunks, [rng, data])
-        #
-        # if data.size() % MathsMethods.chunks != 0:
-        #     start = data.size() - (data.size() % MathsMethods.chunks)
-        #     stop = data.size()
-        #     data_tail = data.range(start, stop)
-        #     ker = trtc.For(['rng', 'vec_rnd'], 'idx', f'''
-        #         RNGState state;
-        #         rng.state_init({seed}, {start}+idx, 0, state);  // initialize a state using the rng object
-        #         vec_rnd[idx]=(float)state.rand01();  // generate random number using the rng object
-        #         ''')
-        #
-        #     ker.launch_n(stop - start, [rng, data_tail])
+        seed = seed or np.random.randint(2**16)
+        dseed = trtc.DVInt64(seed)
+        # MathsMethods.__urand_init_rng_state_body.launch_n(MathsMethods.states.size(), [MathsMethods.__rng, MathsMethods.states, dseed])
+        MathsMethods.__urand_body.launch_n(data.size(), [MathsMethods.states, data])
+        # hdata = data.to_host()
+        # print(np.mean(hdata))
+        # np.random.seed(seed)
+        # output = np.random.uniform(0, 1, data.shape)
+        # StorageMethods.upload(output, data)

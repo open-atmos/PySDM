@@ -106,3 +106,5 @@ class Setup:
 
     kernel = Gravitational(collection_efficiency=1)  # [s-1] # TODO!
     aerosol_radius_threshold = 1 * si.micrometre
+
+    n_spin_up = 1 * si.hour / dt

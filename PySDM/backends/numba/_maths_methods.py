@@ -24,10 +24,10 @@ class MathsMethods:
 
     @staticmethod
     @numba.njit(void(int64[:, :], int64[:]), **conf.JIT_FLAGS)
-    def column_modulo(output, divisor):
+    def row_modulo(output, divisor):
         for d in range(len(divisor)):
-            for i in prange(output.shape[0]):
-                output[i, d] %= divisor[d]
+            for i in prange(output.shape[1]):
+                output[d, i] %= divisor[d]
 
     @staticmethod
     @numba.njit(void(float64[:]), **conf.JIT_FLAGS)

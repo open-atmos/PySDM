@@ -18,7 +18,7 @@ class Setup:
         self.n = np.ones(1, dtype=np.int64)
         self.grid = (1, 1)
         self.courant_field_data = (np.array([[0, 0]]).T, np.array([[0, 0]]))
-        self.positions = [[0, 0]]
+        self.positions = [[0], [0]]
         self.scheme = 'FTBS'
         self.sedimentation = False
         self.dt = None
