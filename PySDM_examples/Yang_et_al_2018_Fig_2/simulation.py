@@ -49,11 +49,9 @@ class Simulation:
             "rtol_thd": setup.rtol_thd,
         })
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        if setup.enable_particle_temperatures:
-            attributes['temperature'] = np.full(setup.n_sd, setup.T0)
         products = {ParticlesSizeSpectrum: {'v_bins': phys.volume(setup.r_bins_edges)}, CondensationTimestep: {}, RipeningRate: {}}
         self.particles = particles_builder.get_particles(attributes, products)
-        self.particles.products['dt_cond'].debug = True
+
         self.n_steps = setup.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
