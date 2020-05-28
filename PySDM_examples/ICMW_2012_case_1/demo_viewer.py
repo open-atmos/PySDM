@@ -54,9 +54,10 @@ class DemoViewer:
 
         self.nans = np.full((self.setup.grid[0], self.setup.grid[1]), np.nan)  # TODO: np.nan
         with self.spectrum:
-            self.spectrum_figure, ax = plt.subplots(1,1)
-            self.spectrum_plot =  ax.step(self.setup.v_bins[:-1], np.full_like(self.setup.v_bins[:-1], np.nan), where='post')[0]
-            plt.show()
+            self.spectrum_figure, self.spectrum_ax = plt.subplots(1, 1)
+            self.spectrum_plot, = self.spectrum_ax.plot(
+                self.setup.v_bins[:-1], np.full_like(self.setup.v_bins[:-1], np.nan))
+            # plt.show()
         for key in self.plots.keys():
             with self.plots[key]:
                 clear_output()
@@ -116,14 +117,18 @@ class DemoViewer:
         try:
             data = self.storage.load(self.setup.steps[step], 'Particles Size Spectrum')[xrange, yrange,:]
             data = np.mean(np.mean(data, axis=0), axis=0)
+            ylim = max(data) * 1.1
+            if np.isfinite(ylim):
+                print("ylim", ylim)
+                self.spectrum_ax.set_ylim((0, ylim))
         except self.storage.Exception:
             data = np.full_like(vbins[:-1], np.nan)
-        plt.step(vbins[:-1], data)
-        plt.xscale('log')
-        plt.xlabel('r')
-        plt.ylabel('n')
-        # self.spectrum_plot.set_xdata(x = vbins[:-1])
-        # self.spectrum_plot.set_ydata(y = data)
+        # plt.step(vbins[:-1], data)
+        # plt.xscale('log')
+        # plt.xlabel('r')
+        # plt.ylabel('n')
+        self.spectrum_plot.set_xdata(x=vbins[:-1])
+        self.spectrum_plot.set_ydata(y=np.full_like(vbins[:-1], 0.02))
         with self.spectrum:
             clear_output(wait=True)
             display(self.spectrum_figure)
