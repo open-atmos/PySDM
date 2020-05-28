@@ -14,7 +14,7 @@ class Methods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def apply(function, args, output):
-        pass
+        raise NotImplementedError()
 
     # Warning (potentially inefficient): reduction
     @staticmethod
