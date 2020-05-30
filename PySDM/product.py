@@ -9,21 +9,18 @@ import numpy as np
 
 
 class Product:
-    def __init__(self, particles, shape, name, unit = None, description = None, scale = None, range = [0, 100]):
+    def __init__(self, particles, shape, name, unit=None, description=None, scale=None, range=(0, 100)):
         self.name = name
         self.unit = unit
         self.description = description
         self.scale = scale
         self.range = range  # TODO: move out (maybe inject based on setup) and rename to something like plot_hint_range
-
-        self.buffer = np.empty(shape)
+        self.shape = shape
+        self.buffer = np.empty(particles.mesh.grid)
         self.particles = particles
 
     def download_to_buffer(self, storage):
         self.particles.backend.download(storage, self.buffer.ravel())
-
-    def poll(self):
-        pass
 
 
 class MomentProduct(Product):
