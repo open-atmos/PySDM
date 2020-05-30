@@ -19,10 +19,9 @@ class ParticlesSizeSpectrum(MomentProduct):
             range=[20, 50]
         )
 
-
     def get(self):
-        vals = np.empty([self.moment_0.shape[0], len(self.v_bins) - 1])
+        vals = np.empty((self.moment_0.shape[0], len(self.v_bins) - 1))
         for i in range(len(self.v_bins) - 1):
             self.download_moment_to_buffer(attr='volume', rank=0, attr_range=(self.v_bins[i], self.v_bins[i + 1]))
             vals[:, i] = self.buffer.ravel()
-        return np.squeeze(vals.reshape(list(self.buffer.shape) + [vals.shape[-1]]))
+        return np.squeeze(vals.reshape(*self.buffer.shape, vals.shape[-1]))

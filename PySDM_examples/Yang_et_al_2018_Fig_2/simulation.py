@@ -71,10 +71,9 @@ class Simulation:
         self.particles.products["dt_cond"].reset()
         output['ripening_rate'].append(self.particles.products['ripening_rate'].get()[cell_id].copy())
 
-
-
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [], "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": [], "ripening_rate": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [],
+                  "r_bins_values": [], "dt_cond_max": [], "dt_cond_min": [], "ripening_rate": []}
 
         self.save(output)
         for step in range(self.n_steps):
