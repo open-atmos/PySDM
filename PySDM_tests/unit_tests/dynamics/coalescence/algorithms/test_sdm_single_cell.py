@@ -5,17 +5,16 @@ Created at 06.06.2019
 @author: Sylwester Arabas
 """
 
-from PySDM.dynamics import Coalescence
-from PySDM_tests.unit_tests.state.testable_state_factory import TestableStateFactory
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
-from PySDM.backends.default import Default
-from PySDM.environments import Box
 import numpy as np
 import pytest
-from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 
+from PySDM.backends.default import Default
+from PySDM.dynamics import Coalescence
+from PySDM.environments import Box
+from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
+from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
 
 backend = Default
 

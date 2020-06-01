@@ -12,6 +12,7 @@ c_p = physics.c_p
 dthd_dt = physics.dthd_dt
 temperature_pressure_RH = physics.temperature_pressure_RH
 radius = physics.radius
+RH_eq = physics.RH_eq
 
 
 def th_dry(th_std, qv):

@@ -15,6 +15,7 @@ from .cell.cell_id import CellID
 from .cell.cell_origin import CellOrigin
 from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
+from .droplet.critical_radius import CriticalRadius
 
 # TODO doubled information
 attributes = {
@@ -27,8 +28,8 @@ attributes = {
     'cell id': CellID,
     'cell origin': CellOrigin,
     'position in cell': PositionInCell,
-    'temperature': Temperature
-}
+    'temperature': Temperature,
+    'critical radius': CriticalRadius}
 
 
 def get_class(name):

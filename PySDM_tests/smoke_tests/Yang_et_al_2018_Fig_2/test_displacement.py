@@ -1,3 +1,7 @@
+"""
+Created at 2020
+"""
+
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
 import matplotlib.pyplot as plt
@@ -5,6 +9,7 @@ from scipy import signal
 import numpy as np
 
 
+# Warning: setup dependent
 def test_displacement(plot=False):
     # Arrange
     setup = Setup(n_sd=0)

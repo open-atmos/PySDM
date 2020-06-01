@@ -1,12 +1,11 @@
 import numpy as np
-from matplotlib import pyplot
+
+from PySDM.physics.constants import si
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
-from PySDM_examples.ICMW_2012_case_1 import plotter
-from PySDM.physics.constants import si
 
 
-def test_environment(plot=False):
+def test_environment():
     # Arrange
     setup = Setup()
     setup.n_steps = -1
@@ -16,12 +15,6 @@ def test_environment(plot=False):
     # Act
     simulation.run()
     rhod = setup.backend.to_ndarray(simulation.particles.environment["rhod"]).reshape(setup.grid)
-
-    # Plot
-    if plot:
-        fig, ax = pyplot.subplots(1, 1)
-        plotter.image(ax, rhod, setup.size, label='rho_d [kg/m^3]')
-        pyplot.show()
 
     # Assert - same in all columns
     for column in range(setup.grid[0]):
