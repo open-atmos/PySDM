@@ -78,3 +78,7 @@ class StorageMethods:
     @staticmethod
     def write_row(array, i, row):
         array[i, :] = row
+
+    @staticmethod
+    def fill(array, value):
+        array[:] = value

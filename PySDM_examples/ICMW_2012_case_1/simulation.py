@@ -6,6 +6,7 @@ Created at 25.09.2019
 @author: Sylwester Arabas
 """
 
+
 import time
 
 from PySDM.particles_builder import ParticlesBuilder
@@ -30,6 +31,8 @@ from PySDM.environments.products.dry_air_potential_temperature import DryAirPote
 from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from PySDM.environments.products.dry_air_density import DryAirDensity
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
+from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
 
 
 class DummyController:
@@ -84,6 +87,7 @@ class Simulation:
             "rtol_x": self.setup.condensation_rtol_x,
             "rtol_thd": self.setup.condensation_rtol_thd,
             "coord": self.setup.condensation_coord,
+            "adaptive": self.setup.adaptive,
             "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
             "do_condensation": self.setup.processes["condensation"]  # do somthing with that
         })
@@ -106,6 +110,7 @@ class Simulation:
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
         products = {
+            ParticlesSizeSpectrum: {'v_bins': self.setup.v_bins},
             TotalParticleConcentration: {},
             TotalParticleSpecificConcentration: {},
             AerosolConcentration: {'radius_threshold': self.setup.aerosol_radius_threshold},
@@ -116,7 +121,8 @@ class Simulation:
             WaterVapourMixingRatio: {},
             DryAirDensity: {},
             DryAirPotentialTemperature: {},
-            CondensationTimestep: {}
+            CondensationTimestep: {},
+            RipeningRate: {}
         }
         self.particles = particles_builder.get_particles(attributes, products)
         SpinUp(self.particles, self.setup.n_spin_up)

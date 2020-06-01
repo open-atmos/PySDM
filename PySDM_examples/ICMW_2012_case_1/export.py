@@ -23,6 +23,7 @@ class netCDF:
         ncdf.createDimension("T", len(self.setup.steps))
         ncdf.createDimension("X", self.setup.grid[0])
         ncdf.createDimension("Z", self.setup.grid[1])
+        ncdf.createDimension("Volume", len(self.setup.v_bins) - 1)
 
     def _create_variables(self, ncdf):
         self.vars["T"] = ncdf.createVariable("T", "f", ["T"])
@@ -38,11 +39,14 @@ class netCDF:
 
         for var in self.simulator.products.keys():
             # TODO: write unit, description
-            self.vars[var] = ncdf.createVariable(var, "f", ["T", "X", "Z"])
+            dimensions = ("T", "X", "Z", "Volume") if var == "Particles Size Spectrum" else ("T", "X", "Z")
+            self.vars[var] = ncdf.createVariable(var, "f", dimensions)
 
     def _write_variables(self, i):
         self.vars["T"][i] = self.setup.steps[i] * self.setup.dt
         for var in self.simulator.products.keys():
+            if var == "Particles Size Spectrum":
+                self.vars[var][i, :, :, :] = self.storage.load(self.setup.steps[i], var)
             self.vars[var][i, :, :] = self.storage.load(self.setup.steps[i], var)
 
     def run(self, controller):

@@ -26,7 +26,7 @@ def patch_particles(particles, coord, rtol=1e-3):
 
 def bdf_condensation(particles,
                      kappa,
-                     rtol_x, rtol_thd, substeps,
+                     rtol_x, rtol_thd, substeps, ripening_flags
                      ):
     n_threads = 1
     if particles.state.has_attribute("temperature"):
@@ -39,6 +39,7 @@ def bdf_condensation(particles,
         cell_start_arg=particles.state.cell_start,
         v=particles.state["volume"],
         particle_temperatures=np.empty(0),
+        r_cr=None,
         n=particles.state['n'],
         vdry=particles.state["dry volume"],
         idx=particles.state._State__idx,
@@ -54,7 +55,8 @@ def bdf_condensation(particles,
         rtol_thd=rtol_thd,
         dt=particles.dt,
         substeps=substeps,
-        cell_order=np.argsort(substeps)
+        cell_order=np.argsort(substeps),
+        ripening_flags=ripening_flags
     )
 
 
@@ -70,7 +72,7 @@ def make_solve(coord, rtol):
     volume = coord.volume
     dx_dt = coord.dx_dt
 
-    def solve(v, particle_temperatures, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
+    def solve(v, particle_temperatures, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
               rtol_x, rtol_thd, dt, substeps
               ):
         n_sd_in_cell = len(cell_idx)
@@ -106,7 +108,7 @@ def make_solve(coord, rtol):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 0  # TODO: how to get the number of timesteps?
+        return qt - m_new / m_d_mean, y1[idx_thd], 0, 0  # TODO: how to get the number of timesteps?
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):

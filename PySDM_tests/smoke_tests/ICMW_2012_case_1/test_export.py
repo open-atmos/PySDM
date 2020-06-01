@@ -1,8 +1,6 @@
 """
 Created at 07.02.2020
 
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM_examples.ICMW_2012_case_1.export import netCDF
@@ -31,4 +29,3 @@ def test_export():
     sut.run(controller=controller)
 
     # Assert
-    pass
