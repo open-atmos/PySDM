@@ -15,15 +15,12 @@ class Product:
         self.description = description
         self.scale = scale
         self.range = range  # TODO: move out (maybe inject based on setup) and rename to something like plot_hint_range
-
-        self.buffer = np.empty(shape)
+        self.shape = shape
+        self.buffer = np.empty(particles.mesh.grid)
         self.particles = particles
 
     def download_to_buffer(self, storage):
         self.particles.backend.download(storage, self.buffer.ravel())
-
-    def poll(self):
-        pass
 
 
 class MomentProduct(Product):
