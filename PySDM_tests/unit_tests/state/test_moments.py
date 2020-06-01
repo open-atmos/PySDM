@@ -7,12 +7,11 @@ Created at 05.08.2019
 
 import numpy as np
 
-from PySDM_tests.unit_tests.state.testable_state_factory import TestableStateFactory
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
-from PySDM.initialisation.spectra import Lognormal
-from PySDM.initialisation.spectral_sampling import linear
 from PySDM.backends.default import Default
 from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.spectral_sampling import linear
+from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
 
 backend = Default
 

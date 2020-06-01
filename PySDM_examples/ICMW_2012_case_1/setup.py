@@ -35,7 +35,7 @@ class Setup:
     outfreq = 60
     dt = 1 * si.seconds
 
-    v_bins = phys.volume(np.linspace(0 * si.micrometre, 20 * si.micrometre, 101, endpoint=True))
+    v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
     @property
     def steps(self):

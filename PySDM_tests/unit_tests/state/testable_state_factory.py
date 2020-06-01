@@ -36,12 +36,6 @@ class TestableStateFactory(StateFactory):
         return TestableStateFactory.state(n, intensive, extensive, np.zeros_like(n), None, None, particles)
 
     @staticmethod
-    def state_2d(n: np.ndarray, intensive: dict, extensive: dict, positions: np.ndarray, particles) \
-            -> State:
-
-        return TestableStateFactory.state(n, intensive, extensive, cell_id, cell_origin, position_in_cell, particles)
-
-    @staticmethod
     def empty_state(particles) -> State:
         return State(n=np.zeros(0), attributes={}, keys={}, intensive_start=-1,
                      cell_id=np.zeros(0, dtype=np.int64), cell_start=np.zeros(0, dtype=np.int64),
