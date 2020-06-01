@@ -12,7 +12,6 @@ from PySDM.backends.numba import conf
 
 
 class StorageMethods:
-    storage = np.ndarray
     integer = np.int64
     double = np.float64
 

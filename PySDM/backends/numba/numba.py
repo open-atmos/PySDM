@@ -11,7 +11,8 @@ from ._algorithmic_step_methods import AlgorithmicStepMethods
 from ._storage_methods import StorageMethods
 from ._maths_methods import MathsMethods
 from ._physics_methods import PhysicsMethods
-from.condensation_methods import CondensationMethods
+from .condensation_methods import CondensationMethods
+from .storage import Storage
 
 
 class Numba(
@@ -23,4 +24,4 @@ class Numba(
     PhysicsMethods,
     CondensationMethods
 ):
-    pass
+    storage = Storage

@@ -74,14 +74,6 @@ class State:
         self.__idx = self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
-    # def min(self, item):
-    #     result = self.__backend.amin(self[item], self.__idx, self.SD_num)
-    #     return result
-    #
-    # def max(self, item):
-    #     result = self.__backend.amax(self[item], self.__idx, self.SD_num)
-    #     return result
-
     def get_extensive_attrs(self):
         result = self.__backend.range(self.attributes, stop=self.intensive_start)
         return result

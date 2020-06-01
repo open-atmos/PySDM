@@ -11,6 +11,7 @@ from ._algorithmic_step_methods import AlgorithmicStepMethods
 from ._storage_methods import StorageMethods
 from ._maths_methods import MathsMethods
 from ._physics_methods import PhysicsMethods
+from .storage import Storage
 
 
 class ThrustRTC(
@@ -21,4 +22,4 @@ class ThrustRTC(
     MathsMethods,
     PhysicsMethods,
 ):
-    pass
+    storage = Storage

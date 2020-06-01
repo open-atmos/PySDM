@@ -1,0 +1,114 @@
+"""
+Created at 30.05.2020
+"""
+
+import numpy as np
+from ._maths_methods import MathsMethods
+
+
+class Storage:
+
+    FLOAT = np.float64
+    INT = np.int64
+
+    def __init__(self, data, shape, dtype):
+        self.data = data
+        self.shape = shape
+        self.dtype = dtype
+
+    def __getitem__(self, item):
+        if isinstance(item, slice):
+            dim = len(self.shape)
+            if dim == 1:
+                result_data = self.data[item.start, item.stop]
+                result_shape = (item.stop - item.start,)
+            elif dim == 2:
+                result_data = self.data[self.shape[1] * item.start, self.shape[1] * item.stop]
+                result_shape = (item.stop - item.start, self.shape[1])
+            else:
+                raise NotImplementedError("Only 2 or less dimensions array is supported.")
+            result = Storage(result_data, result_shape, self.dtype)
+        else:
+            result = self.data[item]
+        return result
+
+    def __add__(self, other):
+        raise NotImplementedError("Use +=")
+
+    def __iadd__(self, other):
+        MathsMethods.add(self.data, other.data)
+
+    def __sub__(self, other):
+        raise NotImplementedError("Use -=")
+
+    def __isub__(self, other):
+        MathsMethods.subtract(self.data, other.data)
+
+    def __mul__(self, other):
+        raise NotImplementedError("Use *=")
+
+    def __imul__(self, other):
+        MathsMethods.multiply(self.data, other.data)
+
+    def __mod__(self, other):
+        raise NotImplementedError("Use %=")
+
+    def __imod__(self, other):
+        # TODO
+        MathsMethods.row_modulo(self.data, other.data)
+
+    def __pow__(self, other):
+        raise NotImplementedError("Use **=")
+
+    def __ipow__(self, other):
+        MathsMethods.power(self.data, other.data)
+
+    def detach(self):
+        if self.data.base is not None:
+            self.data = np.array(self.data)
+
+    def download(self, target):
+        np.copyto(target, self.data, casting='safe')
+
+    @staticmethod
+    def empty(shape, dtype):
+        if dtype in (float, Storage.FLOAT):
+            data = np.full(shape, -1., dtype=Storage.FLOAT)
+            dtype = Storage.FLOAT
+        elif dtype in (int, Storage.INT):
+            data = np.full(shape, -1, dtype=Storage.INT)
+            dtype = Storage.INT
+        else:
+            raise NotImplementedError()
+
+        result = Storage(data, shape, dtype)
+        return result
+
+    @staticmethod
+    def from_ndarray(array):
+        if str(array.dtype).startswith('int'):
+            dtype = Storage.INT
+        elif str(array.dtype).startswith('float'):
+            dtype = Storage.FLOAT
+        else:
+            raise NotImplementedError()
+
+        data = array.astype(dtype).copy()
+        result = Storage(data, array.shape, dtype)
+        return result
+
+    def read_row(self, i):
+        result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
+        return result
+
+    def to_ndarray(self):
+        return self.data.copy()
+
+    def upload(self, data):
+        np.copyto(self.data, data, casting='safe')
+
+    def write_row(self, i, row):
+        self.data[i, :] = row
+
+    def fill(self, value):
+        self.data[:] = value
