@@ -9,30 +9,28 @@ Created at 25.09.2019
 
 import time
 
-from PySDM.particles_builder import ParticlesBuilder
-from PySDM.dynamics import Displacement
-from PySDM.dynamics import Condensation
-from PySDM.dynamics import EulerianAdvection
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation import spectral_sampling, spatial_sampling
-from PySDM.environments import MoistEulerian2DKinematic
-from PySDM.initialisation.moist_environment_init import moist_environment_init
-from .spin_up import SpinUp
-
-from PySDM.state.products.aerosol_concentration import AerosolConcentration
-from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
-from PySDM.state.products.total_particle_concentration import TotalParticleConcentration
-from PySDM.state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
-from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
-from PySDM.state.products.super_droplet_count import SuperDropletCount
-from PySDM.state.products.particle_temperature import ParticleTemperature
-from PySDM.environments.products.relative_humidity import RelativeHumidity
-from PySDM.environments.products.dry_air_potential_temperature import DryAirPotentialTemperature
-from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
-from PySDM.environments.products.dry_air_density import DryAirDensity
+from PySDM.dynamics import Condensation
+from PySDM.dynamics import Displacement
+from PySDM.dynamics import EulerianAdvection
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
+from PySDM.environments import MoistEulerian2DKinematic
+from PySDM.environments.products.dry_air_density import DryAirDensity
+from PySDM.environments.products.dry_air_potential_temperature import DryAirPotentialTemperature
+from PySDM.environments.products.relative_humidity import RelativeHumidity
+from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
+from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.initialisation.moist_environment_init import moist_environment_init
+from PySDM.particles_builder import ParticlesBuilder
+from PySDM.state.products.aerosol_concentration import AerosolConcentration
+from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
+from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
 from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from PySDM.state.products.super_droplet_count import SuperDropletCount
+from PySDM.state.products.total_particle_concentration import TotalParticleConcentration
+from PySDM.state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
+from .spin_up import SpinUp
 
 
 class DummyController:
