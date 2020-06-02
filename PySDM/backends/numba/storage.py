@@ -17,14 +17,17 @@ class Storage:
         self.dtype = dtype
 
     def __getitem__(self, item):
+        start = item.start or 0
         if isinstance(item, slice):
             dim = len(self.shape)
             if dim == 1:
-                result_data = self.data[item.start, item.stop]
-                result_shape = (item.stop - item.start,)
+                stop = item.stop or len(self)
+                result_data = self.data[item]
+                result_shape = (stop - start,)
             elif dim == 2:
-                result_data = self.data[self.shape[1] * item.start, self.shape[1] * item.stop]
-                result_shape = (item.stop - item.start, self.shape[1])
+                stop = item.stop or self.shape[1]
+                result_data = self.data[item]
+                result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
@@ -37,18 +40,24 @@ class Storage:
 
     def __iadd__(self, other):
         MathsMethods.add(self.data, other.data)
+        return self
 
     def __sub__(self, other):
         raise NotImplementedError("Use -=")
 
     def __isub__(self, other):
         MathsMethods.subtract(self.data, other.data)
+        return self
 
     def __mul__(self, other):
         raise NotImplementedError("Use *=")
 
     def __imul__(self, other):
-        MathsMethods.multiply(self.data, other.data)
+        if hasattr(other, 'data'):
+            MathsMethods.multiply(self.data, other.data)
+        else:
+            MathsMethods.multiply(self.data, other)
+        return self
 
     def __mod__(self, other):
         raise NotImplementedError("Use %=")
@@ -56,12 +65,24 @@ class Storage:
     def __imod__(self, other):
         # TODO
         MathsMethods.row_modulo(self.data, other.data)
+        return self
 
     def __pow__(self, other):
         raise NotImplementedError("Use **=")
 
     def __ipow__(self, other):
         MathsMethods.power(self.data, other.data)
+        return self
+
+    def __len__(self):
+        return self.data.size
+
+    def __bool__(self):
+        if len(self) == 1:
+            result = bool(self.data[0] != 0)
+        else:
+            raise NotImplementedError("Logic value of array is ambiguous.")
+        return result
 
     def detach(self):
         if self.data.base is not None:
@@ -96,6 +117,15 @@ class Storage:
         data = array.astype(dtype).copy()
         result = Storage(data, array.shape, dtype)
         return result
+
+    def floor(self, other=None):
+        if other is None:
+            MathsMethods.floor(self.data)
+        else:
+            MathsMethods.floor_out_of_place(self.data, other.data)
+
+    def product(self, multiplicand, multiplier):
+        MathsMethods.multiply_out_of_place(self, multiplicand, multiplier)
 
     def read_row(self, i):
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
