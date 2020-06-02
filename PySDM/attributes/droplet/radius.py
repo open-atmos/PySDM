@@ -16,5 +16,5 @@ class Radius(DerivedAttribute):
         super().__init__(particles_builder, name='radius', dependencies=dependencies)
 
     def recalculate(self):
-        self.particles.backend.multiply_out_of_place(self.data, self.volume.get(), (3 / 4 / const.pi))
-        self.particles.backend.power(self.data, (1 / 3))
+        self.data.product(self.volume.get(), (3 / 4 / const.pi))
+        self.data **= 1 / 3

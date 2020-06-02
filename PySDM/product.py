@@ -20,7 +20,7 @@ class Product:
         self.particles = particles
 
     def download_to_buffer(self, storage):
-        self.particles.backend.download(storage, self.buffer.ravel())
+        storage.download(self.buffer.ravel())
 
 
 class MomentProduct(Product):
@@ -28,14 +28,14 @@ class MomentProduct(Product):
         super().__init__(particles, shape, name, unit, description, scale, range)
         self.particles = particles
         # TODO
-        self.moment_0 = particles.backend.array(particles.mesh.n_cell, dtype=int)
-        self.moments = particles.backend.array((1, particles.mesh.n_cell), dtype=float)
+        self.moment_0 = particles.backend.storage.empty(particles.mesh.n_cell, dtype=int)
+        self.moments = particles.backend.storage.empty((1, particles.mesh.n_cell), dtype=float)
 
     def download_moment_to_buffer(self, attr, rank, attr_range=(-np.inf, np.inf)):
         self.particles.state.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_range=attr_range)
         if rank == 0:  # TODO
             self.download_to_buffer(self.moment_0)
         else:
-            self.download_to_buffer(self.particles.backend.read_row(self.moments, 0))
+            self.download_to_buffer(self.moments.read_row(0))
 
 

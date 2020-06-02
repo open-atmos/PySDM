@@ -32,12 +32,12 @@ class StateFactory:
         tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
-        base_attributes = particles.backend.array((len(tensive_attr), particles.n_sd), float)  # TODO: divide
+        base_attributes = particles.backend.storage.empty((len(tensive_attr), particles.n_sd), float)  # TODO: divide
 
         keys = {}
         for i, attr in enumerate(extensive_attr + intensive_attr):
             keys[str(attr)] = i
-            req_attr[attr].allocate(particles.backend.read_row(base_attributes, i))
+            req_attr[attr].allocate(base_attributes.read_row(i))
             req_attr[attr].init(attributes[attr])
 
         n = req_attr['n']

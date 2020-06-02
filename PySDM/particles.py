@@ -54,8 +54,8 @@ class Particles:
     def normalize(self, prob, norm_factor):
         self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, self.dt / self.mesh.dv)
 
-    def find_pairs(self, cell_start, is_first_in_pair):
-        self.state.find_pairs(cell_start, is_first_in_pair)
+    def find_pairs(self, is_first_in_pair):
+        self.state.find_pairs(is_first_in_pair)
 
     def sum_pair(self, output, x, is_first_in_pair):
         self.state.sum_pair(output, x, is_first_in_pair)

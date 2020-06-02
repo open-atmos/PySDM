@@ -16,5 +16,5 @@ class BaseAttribute(Attribute):
     def init(self, data=None):
         if self.data is None:
             self.allocate()
-        self.particles.backend.upload(data, self.data)
+        self.data.upload(data)
         self.mark_updated()

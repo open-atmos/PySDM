@@ -16,7 +16,7 @@ class Golovin:
 
     def __call__(self, output, is_first_in_pair):
         self.particles.sum_pair(output, 'volume', is_first_in_pair)
-        self.particles.backend.multiply(output, self.b)
+        output *= self.b
 
     def register(self, particles_builder):
         self.particles = particles_builder.particles

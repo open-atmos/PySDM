@@ -11,25 +11,26 @@ from PySDM.attributes.attribute import Attribute
 
 class State:
 
-    def __init__(self, n: (np.ndarray, Attribute), attributes: dict, keys: dict, intensive_start: int,
+    def __init__(self, n: (np.ndarray, Attribute), attributes, keys: dict, intensive_start: int,
                  cell_id: (np.ndarray, Attribute), cell_start: np.ndarray,
                  cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None),
                  particles, whole_attributes=None):
         self.particles = particles
         self.__backend = particles.backend
+        self.storage = self.__backend.storage
 
         self.__n_sd = particles.n_sd
         self.healthy = True
-        self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
-        self.__idx = self.__backend.from_ndarray(np.arange(self.SD_num))
-        self.__strides = self.__backend.from_ndarray(self.particles.mesh.strides)
+        self.__healthy_memory = self.storage.from_ndarray(np.full((1,), 1))
+        self.__idx = self.storage.from_ndarray(np.arange(self.SD_num))
+        self.__strides = self.storage.from_ndarray(self.particles.mesh.strides)
 
         # Dived into 2 arrays
         self.attributes = attributes
         self.keys = keys
         self.intensive_start = intensive_start
 
-        self.__cell_start = self.__backend.from_ndarray(cell_start)
+        self.__cell_start = self.storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                    scheme=particles.sorting_scheme)
         self.__sorted = False
@@ -71,15 +72,15 @@ class State:
         self.__backend.shuffle_local(idx=self.__idx, u01=u01, cell_start=self.cell_start)
 
     def __sort_by_cell_id(self):
-        self.__idx = self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
+        self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
     def get_extensive_attrs(self):
-        result = self.__backend.range(self.attributes, stop=self.intensive_start)
+        result = self.attributes[:self.intensive_start]
         return result
 
     def get_intensive_attrs(self):
-        result = self.__backend.range(self.attributes, start=self.intensive_start)
+        result = self.attributes[self.intensive_start:]
         return result
 
     def recalculate_cell_id(self):
@@ -101,8 +102,8 @@ class State:
                                self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                                self.keys[attr_name])
 
-    def find_pairs(self, cell_start, is_first_in_pair):
-        self.__backend.find_pairs(cell_start, is_first_in_pair,
+    def find_pairs(self, is_first_in_pair):
+        self.__backend.find_pairs(self.cell_start, is_first_in_pair,
                                   self['cell id'],
                                   self.__idx,
                                   self.SD_num)
@@ -125,7 +126,7 @@ class State:
                                    extensive=self.get_extensive_attrs(),
                                    gamma=gamma,
                                    healthy=self.__healthy_memory)
-        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
+        self.healthy = bool(self.__healthy_memory)
         self.whole_attributes['volume'].mark_updated()
 
     def has_attribute(self, attr):

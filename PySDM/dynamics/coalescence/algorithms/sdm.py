@@ -17,10 +17,10 @@ class SDM:
         kernel.register(particles_builder)
         self.kernel = kernel
 
-        self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)
-        self.rand = self.particles.backend.array(self.particles.n_sd // 2, dtype=float)
-        self.prob = self.particles.backend.array(self.particles.n_sd, dtype=float)
-        self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
+        self.temp = self.particles.backend.storage.empty(self.particles.n_sd, dtype=float)
+        self.rand = self.particles.backend.storage.empty(self.particles.n_sd // 2, dtype=float)
+        self.prob = self.particles.backend.storage.empty(self.particles.n_sd, dtype=float)
+        self.is_first_in_pair = self.particles.backend.storage.empty(self.particles.n_sd, dtype=int)  # TODO bool
         self.seed = seed or Incrementation()
 
         self.enable = True
@@ -47,13 +47,13 @@ class SDM:
         kernel_temp = temp
         self.kernel(kernel_temp, is_first_in_pair)
         self.particles.max_pair(prob, is_first_in_pair)
-        self.particles.backend.multiply(prob, kernel_temp)
+        prob *= kernel_temp
 
         norm_factor = temp
         self.particles.normalize(prob, norm_factor)
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.particles.permute(u01)
-        self.particles.find_pairs(self.particles.state.cell_start, is_first_in_pair)
+        self.particles.find_pairs(is_first_in_pair)
 
 

@@ -9,7 +9,7 @@ import numpy as np
 import numba
 from numba import void, float64, int64, prange
 from PySDM.backends.numba import conf
-from PySDM.backends.numba._storage_methods import StorageMethods
+from PySDM.backends.numba.storage import Storage
 
 
 class AlgorithmicMethods:
@@ -29,7 +29,7 @@ class AlgorithmicMethods:
     @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: waits for https://github.com/numba/numba/issues/5279
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy):
         for i in prange(length - 1):
             if gamma[i] == 0:
                 continue
@@ -59,8 +59,12 @@ class AlgorithmicMethods:
                 healthy[0] = 0
 
     @staticmethod
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+        return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data, extensive.data, gamma.data, healthy.data)
+
+    @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def compute_gamma(prob, rand):
+    def compute_gamma_body(prob, rand):
         """
         return in "prob" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
@@ -71,6 +75,10 @@ class AlgorithmicMethods:
             prob[i] *= -1.
             prob[i] += rand[i//2]
             prob[i] = -np.floor(prob[i])
+
+    @staticmethod
+    def compute_gamma(prob, rand):
+        return AlgorithmicMethods.compute_gamma_body(prob.data, rand.data)
 
     @staticmethod
     def condensation(
@@ -102,29 +110,24 @@ class AlgorithmicMethods:
                     scheme = "counting_sort"
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
-                    self.idx = idx
-                    self.tmp_idx = StorageMethods.array(idx.shape, idx.dtype)
+                    self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
                 if scheme == "counting_sort_parallel":
-                    self.cell_starts = StorageMethods.array((numba.config.NUMBA_NUM_THREADS, len(cell_start)),
-                                                            dtype=int)
+                    self.cell_starts = Storage.empty((numba.config.NUMBA_NUM_THREADS, len(cell_start)), dtype=int)
 
             def __call__(self, cell_id, cell_start, idx, length):
                 if self.scheme == "counting_sort":
-                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(self.tmp_idx, idx, cell_id, length, cell_start)
-                    self.idx, self.tmp_idx = self.tmp_idx, self.idx
+                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
+                        self.tmp_idx.data, idx.data, cell_id.data, length, cell_start.data)
                 elif self.scheme == "counting_sort_parallel":
-                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(self.tmp_idx, idx, cell_id, length,
-                                                                                                cell_start,
-                                                                                                self.cell_starts)
-                    self.idx, self.tmp_idx = self.tmp_idx, self.idx
-
-                return self.idx
+                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
+                        self.tmp_idx.data, idx.data, cell_id.data, length, cell_start.data, self.cell_starts.data)
+                idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
         return CellCaretaker(idx, cell_start, scheme)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
+    def moments_body(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         moment_0[:] = 0
         moments[:, :] = 0
         for i in idx[:length]:
@@ -137,8 +140,12 @@ class AlgorithmicMethods:
                 moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
 
     @staticmethod
+    def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
+        return AlgorithmicMethods.moments_body(moment_0.data, moments.data, n.data, attr.data, cell_id.data, idx.data, length, specs_idx, specs_rank, min_x, max_x, x_id)
+
+    @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+    def normalize_body(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
@@ -148,6 +155,10 @@ class AlgorithmicMethods:
                 norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
             prob[d] *= norm_factor[cell_id[d]]
+
+    @staticmethod
+    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+        return AlgorithmicMethods.normalize_body(prob.data, cell_id.data, cell_start.data, norm_factor.data, dt_div_dv)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
