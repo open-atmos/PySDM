@@ -92,11 +92,13 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.backends import Numba
+from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 particles_builder = ParticlesBuilder(n_sd=n_sd, backend=Numba)
 particles_builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
 particles_builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
-particles = particles_builder.get_particles(attributes)
+products = {ParticlesVolumeSpectrum: {}}
+particles = particles_builder.get_particles(attributes, products)
 ```
 The ``backend`` argument may be set to ``Numba``, ``Pythran`` or ``ThrustRTC``
   what translates to choosing one of the multi-threaded backend or the 
