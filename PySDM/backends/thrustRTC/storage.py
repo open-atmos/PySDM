@@ -3,7 +3,7 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from ._maths_methods import MathsMethods
+from . import storage_impl as impl
 import ThrustRTC as trtc
 
 
@@ -37,32 +37,42 @@ class Storage:
         raise NotImplementedError("Use +=")
 
     def __iadd__(self, other):
-        MathsMethods.add(self.data, other.data)
+        impl.add(self, other)
 
     def __sub__(self, other):
         raise NotImplementedError("Use -=")
 
     def __isub__(self, other):
-        MathsMethods.subtract(self.data, other.data)
+        impl.subtract(self, other)
 
     def __mul__(self, other):
         raise NotImplementedError("Use *=")
 
     def __imul__(self, other):
-        MathsMethods.multiply(self.data, other.data)
+        impl.multiply(self, other)
 
     def __mod__(self, other):
         raise NotImplementedError("Use %=")
 
     def __imod__(self, other):
         # TODO
-        MathsMethods.row_modulo(self.data, other.data)
+        impl.row_modulo(self, other)
 
     def __pow__(self, other):
         raise NotImplementedError("Use **=")
 
     def __ipow__(self, other):
-        MathsMethods.power(self.data, other.data)
+        impl.power(self, other)
+
+    def __len__(self):
+        return self.data.size()
+
+    def __bool__(self):
+        if len(self) == 1:
+            result = self.data.to_host()[0] != 0
+        else:
+            raise NotImplementedError("Logic value of array is ambiguous.")
+        return result
 
     def detach(self):
         if isinstance(self.data, trtc.DVVector.DVRange):
@@ -110,6 +120,16 @@ class Storage:
         result = Storage(data, array.shape, dtype)
         return result
 
+    def floor(self, other=None):
+        if other is None:
+            impl.floor(self.data)
+        else:
+            impl.floor_out_of_place(self.data, other.data)
+
+    def product(self, multiplicand, multiplier):
+        impl.multiply_out_of_place(self, multiplicand, multiplier)
+
+    # TODO: handle by getitem
     def read_row(self, i):
         start = self.shape[1] * i
         stop = start + self.shape[1]

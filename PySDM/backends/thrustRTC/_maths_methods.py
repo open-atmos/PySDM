@@ -121,14 +121,14 @@ class MathsMethods:
         device_multiplier = trtc.DVDouble(exponent)
         MathsMethods.__power_body.launch_n(output.size(), [output, device_multiplier])
 
-    __subract_body = trtc.For(['output', 'subtrahend'], 'i', '''
+    __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
             output[i] -= subtrahend[i];
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def subtract(output, subtrahend):
-        MathsMethods.__subract_body.launch_n(output.size(), [output, subtrahend])
+        MathsMethods.__subtract_body.launch_n(output.size(), [output, subtrahend])
         # trtc.Transform_Binary(output, subtrahend, output, trtc.Minus())
 
     __urand_init_rng_state_body = trtc.For(['rng', 'states', 'seed'], 'i', '''
