@@ -38,18 +38,21 @@ class Storage:
 
     def __iadd__(self, other):
         impl.add(self, other)
+        return self
 
     def __sub__(self, other):
         raise NotImplementedError("Use -=")
 
     def __isub__(self, other):
         impl.subtract(self, other)
+        return self
 
     def __mul__(self, other):
         raise NotImplementedError("Use *=")
 
     def __imul__(self, other):
         impl.multiply(self, other)
+        return self
 
     def __mod__(self, other):
         raise NotImplementedError("Use %=")
@@ -57,12 +60,14 @@ class Storage:
     def __imod__(self, other):
         # TODO
         impl.row_modulo(self, other)
+        return self
 
     def __pow__(self, other):
         raise NotImplementedError("Use **=")
 
     def __ipow__(self, other):
         impl.power(self, other)
+        return self
 
     def __len__(self):
         return self.data.size()
@@ -125,9 +130,11 @@ class Storage:
             impl.floor(self.data)
         else:
             impl.floor_out_of_place(self.data, other.data)
+        return self
 
     def product(self, multiplicand, multiplier):
         impl.multiply_out_of_place(self, multiplicand, multiplier)
+        return self
 
     # TODO: handle by getitem
     def read_row(self, i):
@@ -153,3 +160,4 @@ class Storage:
 
     def fill(self, value):
         trtc.Fill(self.data, value)
+        return self

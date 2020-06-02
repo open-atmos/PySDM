@@ -123,13 +123,21 @@ class Storage:
             MathsMethods.floor(self.data)
         else:
             MathsMethods.floor_out_of_place(self.data, other.data)
+        return self
 
     def product(self, multiplicand, multiplier):
         MathsMethods.multiply_out_of_place(self, multiplicand, multiplier)
+        return self
 
     def read_row(self, i):
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
         return result
+
+    def shuffle(self, generator=None, parts=None):
+        raise NotImplementedError()
+
+    def urand(self, generator=None):
+        raise NotImplementedError()
 
     def to_ndarray(self):
         return self.data.copy()
@@ -142,3 +150,4 @@ class Storage:
 
     def fill(self, value):
         self.data[:] = value
+        return self
