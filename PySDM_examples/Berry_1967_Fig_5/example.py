@@ -11,6 +11,7 @@ from PySDM.particles_builder import ParticlesBuilder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.dynamics.coalescence.kernels import Golovin, Gravitational
 
 from PySDM_examples.Berry_1967_Fig_5.setup import Setup
 from PySDM_examples.Berry_1967_Fig_5.plotter import Plotter
@@ -26,6 +27,7 @@ def run(setup):
                                                                   (setup.init_x_min, setup.init_x_max))
     products = {ParticlesVolumeSpectrum: {}}
     particles = particles_builder.get_particles(attributes, products)
+    particles.state.whole_attributes['terminal velocity'].atype = setup.atype
 
     vals = {}
     for step in setup.steps:
@@ -38,18 +40,60 @@ def run(setup):
 
 def main(plot: bool):
     with np.errstate(all='raise'):
-        setup = Setup()
-        setup.steps = [int(200 / setup.dt * i) for i in range(5)]
-        setup.n_sd = 2**13
+        # golovin = Setup()
+        # golovin.kernel = Golovin(b=1500)
+        # golovin.steps = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800]
+        # golovin.steps = [int(step / golovin.dt) for step in golovin.steps]
 
-        states, _ = run(setup)
+        atypes = ('inter',)
+        dts = (1,)
+        setups = {}
+
+        for atype in atypes:
+            setups[atype] = {}
+            for dt in dts:
+                setups[atype][dt] = {}
+
+                # sweepout = Setup()
+                # sweepout.atype = atype
+                # sweepout.dt = dt
+                # sweepout.kernel = Gravitational(collection_efficiency=1)
+                # sweepout.steps = [0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850]
+                # sweepout.steps = [int(step/sweepout.dt) for step in sweepout.steps]
+                # setups[atype][dt]['sweepout'] = sweepout
+
+                # electro = Setup()
+                # electro.atype = atype
+                # electro.dt = dt
+                # electro.kernel = Gravitational(collection_efficiency='3000V/cm')
+                # electro.steps = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+                # electro.steps = [int(step / electro.dt) for step in electro.steps]
+                # setups[atype][dt]['3000V/cm'] = electro
+                #
+                hydro = Setup()
+                hydro.atype = atype
+                hydro.dt = dt
+                hydro.kernel = Gravitational(collection_efficiency='hydrodynamic')
+                hydro.steps = [1600, 1800, 2000, 2200]
+                hydro.steps = [int(step / hydro.dt) for step in hydro.steps]
+                setups[atype][dt]['hydrodynamic'] = hydro
+
+        states = {}
+        for atype in setups:
+            states[atype] = {}
+            for dt in setups[atype]:
+                states[atype][dt] = {}
+                for kernel in setups[atype][dt]:
+                    states[atype][dt][kernel] = run(setups[atype][dt][kernel])[0]
 
     with np.errstate(invalid='ignore'):
-        plotter = Plotter(setup)
-        for step, vals in states.items():
-            plotter.plot(vals, step * setup.dt)
-        if plot:
-            plotter.show()
+        for atype in setups:
+            for dt in setups[atype]:
+                for kernel in setups[atype][dt]:
+                    plotter = Plotter(setups[atype][dt][kernel])
+                    for step, vals in states[atype][dt][kernel].items():
+                        plotter.plot(vals, step * setups[atype][dt][kernel].dt)
+                    plotter.show(f"{atype[:3]}{dt}{kernel[:3]}")
 
 
 if __name__ == '__main__':
