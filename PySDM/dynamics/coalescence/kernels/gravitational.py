@@ -15,8 +15,14 @@ class Gravitational:
 
         self.particles = None
         self.__tmp = None
-
-        self.call = Gravitational.collection_efficiency if collection_efficiency else Gravitational.linear_collection_efficiency
+        if collection_efficiency == "hydrodynamic":
+            self.params = (1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, .004, 4, 8)
+            self.call = Gravitational.linear_collection_efficiency
+        elif collection_efficiency == "3000V/cm":
+            self.params = (1, 1, -7, 1.78, -20.5, 1.73, .26, 1.47, 1, .82, -0.003, 4.4, 8)
+            self.call = Gravitational.linear_collection_efficiency
+        else:
+            self.call = Gravitational.collection_efficiency
 
     def __call__(self, output, is_first_in_pair):
         self.call(self, output, is_first_in_pair)
@@ -38,21 +44,19 @@ class Gravitational:
         backend.multiply(output, self.__tmp)
 
     def linear_collection_efficiency(self, output, is_first_in_pair):
+        idx = self.particles.state._State__idx
+        length = self.particles.state.SD_num
         backend = self.particles.backend
-        x = self.particles.state[self.x]
 
-        backend.multiply_out_of_place(self.__tmp, x, (3 / 4 / const.pi))
-        backend.power(self.__tmp, (1 / 3))
-        linear_collection_efficiency(output, self.__tmp, is_first_in_pair,
-                                     self.particles.state._State__idx, self.particles.state.SD_num)
-        backend.power(self.__tmp, 2)
+        sort_pair(self.__tmp, self.particles.state['radius'], is_first_in_pair, idx, length)
+        linear_collection_efficiency(self.params, output, self.__tmp, is_first_in_pair, length)
+        backend.power(output, 2)
         backend.multiply(output, const.pi)
+        backend.power(self.__tmp, 2)
         backend.multiply(output, self.__tmp)
 
-        backend.distance_pair(self.__tmp, self.particles.state['terminal velocity'], is_first_in_pair,
-                              self.particles.state._State__idx, self.particles.state.SD_num)
-        backend.multiply(self.__tmp, output)
-        sort(output, self.__tmp, self.particles.state._State__idx, self.particles.state.SD_num)
+        backend.distance_pair(self.__tmp, self.particles.state['terminal velocity'], is_first_in_pair, idx, length)
+        backend.multiply(output, self.__tmp)
 
     # TODO: cleanup
     def analytic_solution(self, x, t, x_0, N_0):
@@ -61,38 +65,24 @@ class Gravitational:
 # TODO
 
 import numba
-from numba import  void, float64, int64, prange
+from numba import void, float64, int64, prange
 from PySDM.backends.numba import conf
 
-A = 1
-B = 1
-D1 = -27
-D2 = 1.65
-E1 = -58
-E2 = 1.9
-F1 = 15
-F2 = 1.13
-G1 = 16.7
-G2 = 1
-G3 = 0.004
-Mf = 4
-Mg = 8
 um = const.si.um
 
 
 @numba.njit()
-def linear_collection_efficiency(output, radii, is_first_in_pair, idx, length):
-    sort_pair(radii, is_first_in_pair, idx, length)
+def linear_collection_efficiency(x, output, radii, is_first_in_pair, length):
     for i in prange(length - 1):
         if is_first_in_pair[i]:
-            output[idx[i]] = __linear_collection_efficiency(radii[idx[i]], radii[idx[i+1]])
+            output[i] = __linear_collection_efficiency(radii[i], radii[i+1], x)
         else:
-            output[idx[i]] = 0
-
+            output[i] = 0
 
 
 @numba.njit()
-def __linear_collection_efficiency(r, r_s):
+def __linear_collection_efficiency(r, r_s, x):
+    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = x
     r /= um
     r_s /= um
     p = r_s / r
@@ -100,18 +90,24 @@ def __linear_collection_efficiency(r, r_s):
     E = E1/ r ** E2
     F = (F1 / r) ** Mf + F2
     G = (G1 / r) ** Mg + G2 + G3 * r
-    if (1 - p) ** G == 0:  # TODO!
+    if (1 - p) ** G == 0 or p == 0:  # TODO!
         result = 0
     else:
         result = A + B * p + D / p ** F + E / (1 - p) ** G
-    return max(0, result)
+    result = max(0, result)
+    return result
 
 
-@numba.njit(void(float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-def sort_pair(data_in, is_first_in_pair, idx, length):
+@numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
+    data_out[:] = 0
     for i in prange(length - 1):
-        if is_first_in_pair[i] and data_in[idx[i]] < data_in[idx[i + 1]]:
-            data_in[idx[i]], data_in[idx[i + 1]] = data_in[idx[i + 1]], data_in[idx[i]]
+        if is_first_in_pair[i]:
+            if data_in[idx[i]] < data_in[idx[i + 1]]:
+                data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
+            else:
+                data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
+
 
 @numba.njit()
 def sort(data_out, data_in, idx, length):
