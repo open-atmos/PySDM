@@ -1,8 +1,5 @@
 """
 Created at 12.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -14,8 +11,16 @@ from PySDM.physics import formulae as phys
 class Plotter:
     def __init__(self, setup):
         self.setup = setup
+        self.color = 'grey'
+        self.smooth = False
+        self.smooth_scope = 2
 
-    def show(self):
+    def show(self, title=None, grid=True, legend=True):
+        if legend:
+            pyplot.legend()
+        if grid:
+            pyplot.grid()
+        pyplot.title(title)
         pyplot.show()
 
     def save(self, file):
@@ -47,14 +52,30 @@ class Plotter:
             color='black'
         )
 
-        pyplot.step(
-            setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
-            vals * si.kilograms / si.grams,
-            where='post',
-            label=f"t = {t}s"
-        )
-        pyplot.grid()
+        if self.smooth:
+            scope = self.smooth_scope
+            if t != 0:
+                new = np.copy(vals)
+                for _ in range(2):
+                    for i in range(scope, len(vals) - scope):
+                        new[i] = np.mean(vals[i - scope:i + scope + 1])
+                    scope = 1
+                    for i in range(scope, len(vals) - scope):
+                        vals[i] = np.mean(new[i - scope:i + scope + 1])
+
+            pyplot.plot(
+                setup.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
+                vals[:-scope] * si.kilograms / si.grams,
+                label=f"{t}",
+                color=self.color
+            )
+        else:
+            pyplot.step(
+                setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
+                vals * si.kilograms / si.grams,
+                where='post',
+                label=f"t = {t}s"
+            )
         pyplot.xscale('log')
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-        pyplot.legend()
