@@ -34,8 +34,9 @@ class AlgorithmicMethods:
             ''')
         loop.launch_n(displacement.shape[1], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
 
-    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
+    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
         if (gamma[i] == 0)
+            adaptive_memory[i] = 1;
             return;
 
         int j = idx[i];
@@ -46,6 +47,8 @@ class AlgorithmicMethods:
             k = idx[i];
         }
         int g = (int)(n[j] / n[k]);
+        //if (adaptive) 
+        adaptive_memory[i] = 5;//int(gamma[i] * subs / g);
         if (g > gamma[i])
             g = gamma[i];
         if (g == 0)
@@ -82,23 +85,23 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
         idx_length = trtc.DVInt64(idx.size())
         intensive_length = trtc.DVInt64(intensive.size())
         extensive_length = trtc.DVInt64(extensive.size())
-        AlgorithmicMethods.__coalescence_body.launch_n(length - 1, [n, volume, idx, idx_length, intensive, intensive_length, extensive, extensive_length, gamma, healthy])
+        adaptive_device = trtc.DVBool(adaptive)
+        subs_device = trtc.DVInt64(subs)
+        AlgorithmicMethods.__coalescence_body.launch_n(length - 1, [n, volume, idx, idx_length, intensive, intensive_length, extensive, extensive_length, gamma, healthy, adaptive_device, subs_device, adaptive_memory])
+        return trtc.Reduce(adaptive_memory.range(0, length), trtc.DVInt64(0), trtc.Minimum())
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] += rand[int(i / 2)];
+        prob[i] = -floor(-prob[i] + rand[int(i / 2)]);
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(prob, rand):
-        MathsMethods.multiply(prob, -1.)
         AlgorithmicMethods.__compute_gamma_body.launch_n(prob.size(), [prob, rand])
-        MathsMethods.floor(prob)
-        MathsMethods.multiply(prob, -1.)
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

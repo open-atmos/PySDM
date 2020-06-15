@@ -26,12 +26,14 @@ class AlgorithmicMethods:
             displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
-    @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+    @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: waits for https://github.com/numba/numba/issues/5279
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+        result = 1
         for i in prange(length - 1):
             if gamma[i] == 0:
+                # adaptive_memory[i] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -39,7 +41,11 @@ class AlgorithmicMethods:
 
             if n[j] < n[k]:
                 j, k = k, j
-            g = int(min(gamma[i], n[j] // n[k]))
+            prop = int(n[j] / n[k])
+            if adaptive:
+                result = max(result, int(((gamma[i])*subs) / prop))
+                # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
+            g = min(int(gamma[i]), prop)
             if g == 0:
                 continue
 
@@ -57,6 +63,7 @@ class AlgorithmicMethods:
                 extensive[:, k] = extensive[:, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
+        return result  # np.amax(adaptive_memory[:length-1])
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
