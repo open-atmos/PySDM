@@ -6,7 +6,6 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
-from PySDM.physics import constants as const
 from .gunn_and_kinzer import Approximation
 
 

@@ -19,11 +19,13 @@ class Interpolated:
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation_small = TpDependent.make(only_small=True)
 
+    # TODO: implement in backend logic
     def __call__(self, output, radius):
         output[:] = self.rbf(radius)
         self.approximation_small(output, radius, self.small_r_limit)
 
 
+# TODO: implement in backend logic
 class TpDependent:
     def __init__(self, particles, small_r_limit):
         si = const.si
