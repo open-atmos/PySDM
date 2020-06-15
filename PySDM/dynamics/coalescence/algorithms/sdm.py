@@ -19,8 +19,8 @@ class SDM:
 
         self.stats_steps = 0
         self.enable = True
-        self.adaptive = True
-        self.max_substeps = 100
+        self.adaptive = False
+        self.max_substeps = 1
         self.subs = 1
 
         self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)
@@ -54,8 +54,11 @@ class SDM:
             if self.adaptive:
                 self.subs = min(self.max_substeps, int(((subs/self.subs) + msub)/2))
 
-    def coalescence(self, prob, rand, adaptive, subs):
+    def compute_gamma(self, prob, rand):
         self.particles.backend.compute_gamma(prob, rand)
+
+    def coalescence(self, prob, rand, adaptive, subs):
+        self.compute_gamma(prob, rand)
         return self.particles.coalescence(gamma=prob, adaptive=adaptive, subs=subs, adaptive_memory=self.temp)
 
     def compute_probability(self, prob, is_first_in_pair, subs):
