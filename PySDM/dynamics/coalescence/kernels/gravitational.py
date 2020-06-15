@@ -107,16 +107,3 @@ def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
                 data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
             else:
                 data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
-
-
-@numba.njit()
-def sort(data_out, data_in, idx, length):
-    for i in prange(length):
-        data_out[i] = data_in[idx[i]]
-
-
-@numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-def ratio_pair(data_out, data_in, is_first_in_pair, idx, length):
-    for i in prange(length - 1):
-        data_out[idx[i]] = (data_in[idx[i + 1]] / data_in[idx[i]]) if is_first_in_pair[i] else 0
-
