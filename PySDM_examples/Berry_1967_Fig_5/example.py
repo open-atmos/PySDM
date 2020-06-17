@@ -14,7 +14,7 @@ from PySDM.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.dynamics.coalescence.kernels import Golovin, Gravitational
 
 from PySDM_examples.Berry_1967_Fig_5.setup import Setup
-from PySDM_examples.Berry_1967_Fig_5.plotter import Plotter
+from PySDM_examples.Berry_1967_Fig_5.spectrum_plotter import SpectrumPlotter
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
@@ -40,10 +40,6 @@ def run(setup):
 
 def main(plot: bool):
     with np.errstate(all='raise'):
-        # golovin = Setup()
-        # golovin.kernel = Golovin(b=1500)
-        # golovin.steps = [0, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800]
-        # golovin.steps = [int(step / golovin.dt) for step in golovin.steps]
 
         atypes = ('inter',)
         dts = (1,)
@@ -54,22 +50,22 @@ def main(plot: bool):
             for dt in dts:
                 setups[atype][dt] = {}
 
-                # sweepout = Setup()
-                # sweepout.atype = atype
-                # sweepout.dt = dt
-                # sweepout.kernel = Gravitational(collection_efficiency=1)
-                # sweepout.steps = [0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850]
-                # sweepout.steps = [int(step/sweepout.dt) for step in sweepout.steps]
-                # setups[atype][dt]['sweepout'] = sweepout
+                sweepout = Setup()
+                sweepout.atype = atype
+                sweepout.dt = dt
+                sweepout.kernel = Gravitational(collection_efficiency=1)
+                sweepout.steps = [0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850]
+                sweepout.steps = [int(step/sweepout.dt) for step in sweepout.steps]
+                setups[atype][dt]['sweepout'] = sweepout
 
-                # electro = Setup()
-                # electro.atype = atype
-                # electro.dt = dt
-                # electro.kernel = Gravitational(collection_efficiency='3000V/cm')
-                # electro.steps = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
-                # electro.steps = [int(step / electro.dt) for step in electro.steps]
-                # setups[atype][dt]['3000V/cm'] = electro
-                #
+                electro = Setup()
+                electro.atype = atype
+                electro.dt = dt
+                electro.kernel = Gravitational(collection_efficiency='3000V/cm')
+                electro.steps = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+                electro.steps = [int(step / electro.dt) for step in electro.steps]
+                setups[atype][dt]['3000V/cm'] = electro
+
                 hydro = Setup()
                 hydro.atype = atype
                 hydro.dt = dt
@@ -90,10 +86,10 @@ def main(plot: bool):
         for atype in setups:
             for dt in setups[atype]:
                 for kernel in setups[atype][dt]:
-                    plotter = Plotter(setups[atype][dt][kernel])
+                    plotter = SpectrumPlotter(setups[atype][dt][kernel])
                     for step, vals in states[atype][dt][kernel].items():
                         plotter.plot(vals, step * setups[atype][dt][kernel].dt)
-                    plotter.show(f"{atype[:3]}{dt}{kernel[:3]}")
+                    plotter.show(title=f"{atype[:3]}{dt}{kernel[:3]}", legend=True)
 
 
 if __name__ == '__main__':

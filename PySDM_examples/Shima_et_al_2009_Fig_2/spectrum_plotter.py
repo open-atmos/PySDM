@@ -8,7 +8,7 @@ from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 
 
-class Plotter:
+class SpectrumPlotter:
     def __init__(self, setup):
         self.setup = setup
         self.color = 'grey'
@@ -16,6 +16,9 @@ class Plotter:
         self.smooth_scope = 2
 
     def show(self, title=None, grid=True, legend=True):
+        pyplot.xscale('log')
+        pyplot.xlabel('particle radius [µm]')
+        pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
         if legend:
             pyplot.legend()
         if grid:
@@ -26,9 +29,13 @@ class Plotter:
     def save(self, file):
         pyplot.savefig(file)
 
-    def plot(self, vals, t):
+    def plot(self, spectrum, t):
         setup = self.setup
+        self.plot_analytic_solution(setup, t)
+        self.plot_data(setup, t, spectrum)
 
+    @staticmethod
+    def plot_analytic_solution(setup, t):
         if t == 0:
             analytic_solution = setup.spectrum.size_distribution
         else:
@@ -52,30 +59,28 @@ class Plotter:
             color='black'
         )
 
+    def plot_data(self, setup, t, spectrum):
         if self.smooth:
             scope = self.smooth_scope
             if t != 0:
-                new = np.copy(vals)
+                new = np.copy(spectrum)
                 for _ in range(2):
-                    for i in range(scope, len(vals) - scope):
-                        new[i] = np.mean(vals[i - scope:i + scope + 1])
+                    for i in range(scope, len(spectrum) - scope):
+                        new[i] = np.mean(spectrum[i - scope:i + scope + 1])
                     scope = 1
-                    for i in range(scope, len(vals) - scope):
-                        vals[i] = np.mean(new[i - scope:i + scope + 1])
+                    for i in range(scope, len(spectrum) - scope):
+                        spectrum[i] = np.mean(new[i - scope:i + scope + 1])
 
             pyplot.plot(
                 setup.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
-                vals[:-scope] * si.kilograms / si.grams,
+                spectrum[:-scope] * si.kilograms / si.grams,
                 label=f"{t}",
                 color=self.color
             )
         else:
             pyplot.step(
                 setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
-                vals * si.kilograms / si.grams,
+                spectrum * si.kilograms / si.grams,
                 where='post',
                 label=f"t = {t}s"
             )
-        pyplot.xscale('log')
-        pyplot.xlabel('particle radius [µm]')
-        pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')

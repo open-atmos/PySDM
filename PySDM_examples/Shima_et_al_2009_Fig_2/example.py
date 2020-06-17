@@ -13,7 +13,7 @@ from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from PySDM_examples.Shima_et_al_2009_Fig_2.plotter import Plotter
+from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
@@ -45,7 +45,7 @@ def main(plot: bool):
         states, _ = run(setup)
 
     with np.errstate(invalid='ignore'):
-        plotter = Plotter(setup)
+        plotter = SpectrumPlotter(setup)
         for step, vals in states.items():
             plotter.plot(vals, step * setup.dt)
         if plot:

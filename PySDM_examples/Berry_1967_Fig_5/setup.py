@@ -17,7 +17,7 @@ class Setup:
     init_x_min = phys.volume(radius=3.94 * si.micrometre)
     init_x_max = phys.volume(radius=25 * si.micrometres)
 
-    n_sd = 2 ** 18
+    n_sd = 2 ** 13
     n_part = 239 / si.cm**3
     X0 = 4 / 3 * np.pi * (10 * si.micrometres) ** 3
     dv = 1e1 * si.metres**3
