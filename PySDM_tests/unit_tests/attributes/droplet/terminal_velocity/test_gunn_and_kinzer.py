@@ -3,7 +3,7 @@ Created at 10.06.2020
 """
 
 from PySDM.physics import constants as const
-from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import Approximation, Interpolated, TpDependent
+from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation, TpDependent
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -20,9 +20,9 @@ def test_approximation(plot=False):
     # particles = DummyParticles(Default, n_sd=n_sd)
     # u_term = particles.backend.array((n_sd,), float)
     # radius = np.linspace(4e-6, 200e-6, 1000, endpoint=True)
-    # Approximation(particles)(u_term, radius)
+    # RogersYau(particles)(u_term, radius)
     # u_term_2 = np.copy(u_term)
-    # Interpolated(None)(u_term_2, radius)
+    # Interpolation(None)(u_term_2, radius)
     #
     # r, u = r[:5], u[:5]
     # if plot:

@@ -9,7 +9,7 @@ from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
 
 
-class Interpolated:
+class Interpolation:
     def __init__(self, particles, small_r_limit=None):
         ir = np.array([.078, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.2, 1.4, 1.6]) * 1e-3 / 2
         iu = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]) / 100
@@ -84,7 +84,7 @@ class TpDependent:
         return terminal_velocity
 
 
-class Approximation:
+class RogersYau:
     """
     Rogers & Yau, equations: (8.5), (8.6), (8.8)
     """

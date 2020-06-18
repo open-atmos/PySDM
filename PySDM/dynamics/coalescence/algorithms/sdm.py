@@ -1,8 +1,5 @@
 """
 Created at 07.06.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.particles_builder import ParticlesBuilder
@@ -11,24 +8,24 @@ from PySDM.dynamics.coalescence.seeds.incrementation import Incrementation
 
 class SDM:
 
-    def __init__(self, particles_builder: ParticlesBuilder, kernel, seed=None):
+    def __init__(self, particles_builder: ParticlesBuilder, kernel, seed=None, max_substeps=128):
         self.particles = particles_builder.particles
 
         kernel.register(particles_builder)
         self.kernel = kernel
 
-        self.stats_steps = 0
         self.enable = True
+        self.stats_steps = 0
         self.adaptive = False
-        self.max_substeps = 1
+        self.max_substeps = max_substeps
         self.subs = 1
+        self.seed = seed or Incrementation(123)
 
         self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)
         self.pairs_rand = self.particles.backend.array(self.particles.n_sd + self.max_substeps, dtype=float)
         self.rand = self.particles.backend.array(self.particles.n_sd // 2, dtype=float)
         self.prob = self.particles.backend.array(self.particles.n_sd, dtype=float)
         self.is_first_in_pair = self.particles.backend.array(self.particles.n_sd, dtype=int)  # TODO bool
-        self.seed = seed or Incrementation(123)
 
     def __call__(self):
         if self.enable:
@@ -73,5 +70,3 @@ class SDM:
         self.particles.state.sanitize()
         self.particles.permute(u01)
         self.particles.find_pairs(self.particles.state.cell_start, is_first_in_pair)
-
-
