@@ -48,8 +48,8 @@ class Gravitational:
         length = self.particles.state.SD_num
         backend = self.particles.backend
 
-        sort_pair(self.__tmp, self.particles.state['radius'], is_first_in_pair, idx, length)
-        linear_collection_efficiency(self.params, output, self.__tmp, is_first_in_pair, length)
+        backend.sort_pair(self.__tmp, self.particles.state['radius'], is_first_in_pair, idx, length)
+        backend.linear_collection_efficiency(self.params, output, self.__tmp, is_first_in_pair, length, const.si.um)
         backend.power(output, 2)
         backend.multiply(output, const.pi)
         backend.power(self.__tmp, 2)
@@ -61,49 +61,3 @@ class Gravitational:
     # TODO: cleanup
     def analytic_solution(self, x, t, x_0, N_0):
         return x * 0
-
-# TODO
-
-import numba
-from numba import void, float64, int64, prange
-from PySDM.backends.numba import conf
-
-um = const.si.um
-
-
-@numba.njit()
-def linear_collection_efficiency(x, output, radii, is_first_in_pair, length):
-    for i in prange(length - 1):
-        if is_first_in_pair[i]:
-            output[i] = __linear_collection_efficiency(radii[i], radii[i+1], x)
-        else:
-            output[i] = 0
-
-
-@numba.njit()
-def __linear_collection_efficiency(r, r_s, x):
-    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = x
-    r /= um
-    r_s /= um
-    p = r_s / r
-    D = D1 / r ** D2
-    E = E1/ r ** E2
-    F = (F1 / r) ** Mf + F2
-    G = (G1 / r) ** Mg + G2 + G3 * r
-    if (1 - p) ** G == 0 or p == 0:  # TODO!
-        result = 0
-    else:
-        result = A + B * p + D / p ** F + E / (1 - p) ** G
-    result = max(0, result)
-    return result
-
-
-@numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
-    data_out[:] = 0
-    for i in prange(length - 1):
-        if is_first_in_pair[i]:
-            if data_in[idx[i]] < data_in[idx[i + 1]]:
-                data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
-            else:
-                data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]

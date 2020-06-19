@@ -102,6 +102,27 @@ class AlgorithmicMethods:
                 healthy[0] = 0
 
     @staticmethod
+    @numba.njit()
+    def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
+        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        for i in prange(length - 1):
+            output[i] = 0
+            if is_first_in_pair[i]:
+                r = radii[i] / unit
+                r_s = radii[i + 1] / unit
+                p = r_s / r
+                if p != 0 and p != 1:
+                    G = (G1 / r) ** Mg + G2 + G3 * r
+                    Gp = (1 - p) ** G
+                    if Gp != 0:
+                        D = D1 / r ** D2
+                        E = E1 / r ** E2
+                        F = (F1 / r) ** Mf + F2
+                        output[i] = A + B * p + D / p ** F + E / Gp
+                        output[i] = max(0, output[i])
+
+
+    @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):

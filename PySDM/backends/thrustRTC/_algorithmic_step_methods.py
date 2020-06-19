@@ -93,6 +93,29 @@ class AlgorithmicStepMethods:
         if length > 1:
             AlgorithmicStepMethods.__max_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
 
+    __sort_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
+        if (is_first_in_pair[i]) {
+            if (data_in[i] < data_in[i + 1]) {
+                data_out[i] = data_in[i + 1];
+                data_out[i + 1] = data_in[i];
+            } else {
+                data_out[i] = data_in[i];
+                data_out[i + 1] = data_in[i + 1];
+            }
+        } else {
+            data_out[i] = 0;
+        }
+        ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
+        # note: silently assumes that data_out is not permuted (i.e. not part of state)
+        perm_in = trtc.DVPermutation(data_in, idx)
+        trtc.Fill(data_out, trtc.DVDouble(0))
+        if length > 1:
+            AlgorithmicStepMethods.__sort_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) 
         {
