@@ -13,7 +13,7 @@ class Storage:
 
     def __init__(self, data, shape, dtype):
         self.data = data
-        self.shape = shape
+        self.shape = (shape,) if isinstance(shape, int) else shape
         self.dtype = dtype
 
     def __getitem__(self, item):
@@ -75,7 +75,7 @@ class Storage:
         return self
 
     def __len__(self):
-        return self.data.size
+        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:
@@ -145,8 +145,9 @@ class Storage:
     def upload(self, data):
         np.copyto(self.data, data, casting='safe')
 
+    # TODO: optimize
     def write_row(self, i, row):
-        self.data[i, :] = row
+        self.data[i, :] = row.data
 
     def fill(self, value):
         self.data[:] = value

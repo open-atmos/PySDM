@@ -21,8 +21,8 @@ class ParticlesVolumeSpectrum(MomentProduct):
             scale='linear',
             range=[20, 50]
         )
-        self.moment_0 = particles_builder.particles.backend.storage.empty(1, dtype=int)
-        self.moments = particles_builder.particles.backend.storage.empty((1, 1), dtype=float)
+        self.moment_0 = particles_builder.particles.backend.Storage.empty(1, dtype=int)
+        self.moments = particles_builder.particles.backend.Storage.empty((1, 1), dtype=float)
 
     def get(self, radius_bins_edges):
         volume_bins_edges = phys.volume(radius_bins_edges)

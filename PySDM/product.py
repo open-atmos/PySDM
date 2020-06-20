@@ -28,8 +28,8 @@ class MomentProduct(Product):
         super().__init__(particles, shape, name, unit, description, scale, range)
         self.particles = particles
         # TODO
-        self.moment_0 = particles.backend.storage.empty(particles.mesh.n_cell, dtype=int)
-        self.moments = particles.backend.storage.empty((1, particles.mesh.n_cell), dtype=float)
+        self.moment_0 = particles.backend.Storage.empty(particles.mesh.n_cell, dtype=int)
+        self.moments = particles.backend.Storage.empty((1, particles.mesh.n_cell), dtype=float)
 
     def download_moment_to_buffer(self, attr, rank, attr_range=(-np.inf, np.inf)):
         self.particles.state.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_range=attr_range)
