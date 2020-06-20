@@ -11,26 +11,26 @@ from PySDM.attributes.attribute import Attribute
 
 class State:
 
-    def __init__(self, n: (np.ndarray, Attribute), attributes, keys: dict, intensive_start: int,
+    def __init__(self, idx, n: (np.ndarray, Attribute), attributes, keys: dict, intensive_start: int,
                  cell_id: (np.ndarray, Attribute), cell_start: np.ndarray,
                  cell_origin: (np.ndarray, None), position_in_cell: (np.ndarray, None),
                  particles, whole_attributes=None):
         self.particles = particles
         self.__backend = particles.backend
-        self.storage = self.__backend.storage
+        Storage = self.__backend.Storage
 
         self.__n_sd = particles.n_sd
         self.healthy = True
-        self.__healthy_memory = self.storage.from_ndarray(np.full((1,), 1))
-        self.__idx = self.storage.from_ndarray(np.arange(self.SD_num))
-        self.__strides = self.storage.from_ndarray(self.particles.mesh.strides)
+        self.__healthy_memory = Storage.from_ndarray(np.full((1,), 1))
+        self.__idx = idx
+        self.__strides = Storage.from_ndarray(self.particles.mesh.strides)
 
         # Dived into 2 arrays
         self.attributes = attributes
         self.keys = keys
         self.intensive_start = intensive_start
 
-        self.__cell_start = self.storage.from_ndarray(cell_start)
+        self.__cell_start = Storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                    scheme=particles.sorting_scheme)
         self.__sorted = False
@@ -46,11 +46,11 @@ class State:
     @property
     def SD_num(self):
         self.sanitize()  # TODO: remove
-        return self.__n_sd
+        return len(self.__idx)
 
     def sanitize(self):
         if not self.healthy:
-            self.__n_sd = self.__backend.remove_zeros(self['n'], self.__idx, length=self.__n_sd)
+            self['n'].remove_zeros()
             self.healthy = True
             self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
             self.__sorted = False
@@ -103,19 +103,13 @@ class State:
                                self.keys[attr_name])
 
     def find_pairs(self, is_first_in_pair):
-        self.__backend.find_pairs(self.cell_start, is_first_in_pair,
-                                  self['cell id'],
-                                  self.__idx,
-                                  self.SD_num)
+        is_first_in_pair.find_pairs(self.cell_start, self['cell id'])
 
     def sum_pair(self, output, x: str, is_first_in_pair):
-        self.__backend.sum_pair(output, self[x],
-                                is_first_in_pair,
-                                self.__idx,
-                                self.SD_num)
+        output.sum_pair(self[x], is_first_in_pair)
 
     def max_pair(self, prob, is_first_in_pair):
-        self.__backend.max_pair(prob, self['n'], is_first_in_pair, self.__idx, self.SD_num)
+        prob.max_pair(self['n'], is_first_in_pair)
 
     def coalescence(self, gamma):
         self.__backend.coalescence(n=self['n'],

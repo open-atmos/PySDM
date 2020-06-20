@@ -32,7 +32,9 @@ class StateFactory:
         tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
-        base_attributes = particles.backend.storage.empty((len(tensive_attr), particles.n_sd), float)  # TODO: divide
+        idx = particles.backend.IndexedStorage.from_ndarray(np.arange(particles.n_sd))
+        base_attributes = particles.backend.IndexedStorage.empty((len(tensive_attr), particles.n_sd), float)  # TODO: divide
+        base_attributes = particles.backend.IndexedStorage.indexed(idx, base_attributes)
 
         keys = {}
         for i, attr in enumerate(extensive_attr + intensive_attr):
@@ -42,22 +44,26 @@ class StateFactory:
 
         n = req_attr['n']
         n.init(attributes['n'])
+        req_attr['n'].data = particles.backend.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr['cell id']
         cell_id.init(attributes['cell id'])
+        req_attr['cell id'].data = particles.backend.IndexedStorage.indexed(idx, cell_id.data)
         try:
             cell_origin = req_attr['cell origin']
             cell_origin.init(attributes['cell origin'])
+            req_attr['cell origin'].data = particles.backend.IndexedStorage.indexed(idx, cell_origin.data)
         except KeyError:
             cell_origin = None
         try:
             position_in_cell = req_attr['position in cell']
             position_in_cell.init(attributes['position in cell'])
+            req_attr['position in cell'].data = particles.backend.IndexedStorage.indexed(idx, position_in_cell.data)
         except KeyError:
             position_in_cell = None
 
         cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
 
-        state = State(n, base_attributes, keys, len(extensive_attr),
+        state = State(idx, n, base_attributes, keys, len(extensive_attr),
                       cell_id, cell_start, cell_origin, position_in_cell, particles, req_attr)
         state.recalculate_cell_id()
 

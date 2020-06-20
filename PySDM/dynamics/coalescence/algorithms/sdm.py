@@ -17,10 +17,10 @@ class SDM:
         kernel.register(particles_builder)
         self.kernel = kernel
 
-        self.temp = self.particles.backend.storage.empty(self.particles.n_sd, dtype=float)
-        self.rand = self.particles.backend.storage.empty(self.particles.n_sd // 2, dtype=float)
-        self.prob = self.particles.backend.storage.empty(self.particles.n_sd, dtype=float)
-        self.is_first_in_pair = self.particles.backend.storage.empty(self.particles.n_sd, dtype=int)  # TODO bool
+        self.temp = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
+        self.rand = self.particles.backend.Storage.empty(self.particles.n_sd // 2, dtype=float)
+        self.prob = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
+        self.is_first_in_pair = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=int)  # TODO bool
         self.seed = seed or Incrementation()
 
         self.enable = True

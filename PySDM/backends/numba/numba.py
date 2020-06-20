@@ -1,8 +1,5 @@
 """
 Created at 24.07.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from ._methods import Methods
@@ -12,7 +9,8 @@ from ._storage_methods import StorageMethods
 from ._maths_methods import MathsMethods
 from ._physics_methods import PhysicsMethods
 from .condensation_methods import CondensationMethods
-from .storage import Storage
+from .storage import Storage as ImportedStorage
+from .indexed_storage import IndexedStorage as ImportedIndexedStorage
 
 
 class Numba(
@@ -24,4 +22,5 @@ class Numba(
     PhysicsMethods,
     CondensationMethods
 ):
-    storage = Storage
+    Storage = ImportedStorage
+    IndexedStorage = ImportedIndexedStorage
