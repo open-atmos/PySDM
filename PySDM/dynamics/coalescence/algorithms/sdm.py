@@ -1,4 +1,6 @@
 """
+
+
 Created at 07.06.2019
 """
 
@@ -19,7 +21,7 @@ class SDM:
         self.adaptive = False
         self.max_substeps = max_substeps
         self.subs = 1
-        self.seed = seed or Incrementation(123)
+        self.seed = seed or Incrementation(1)
 
         self.temp = self.particles.backend.array(self.particles.n_sd, dtype=float)
         self.pairs_rand = self.particles.backend.array(self.particles.n_sd + self.max_substeps, dtype=float)

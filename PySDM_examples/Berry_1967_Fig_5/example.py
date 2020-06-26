@@ -36,7 +36,7 @@ def run(setup):
     return vals, particles.stats
 
 
-def main(plot: bool):
+def main(plot: bool, save: bool):
     with np.errstate(all='ignore'):
 
         u_term_approxs = (gunn_and_kinzer.Interpolation,)
@@ -71,7 +71,7 @@ def main(plot: bool):
                 hydro.dt = 10 if dt == 'adaptive' else dt
                 hydro.adaptive = dt == 'adaptive'
                 hydro.kernel = Gravitational(collection_efficiency='hydrodynamic')
-                hydro.steps = [1600, 1800, 2000, 2200]
+                hydro.steps = [0, 1600, 1800, 2000, 2200]
                 hydro.steps = [int(step / hydro.dt) for step in hydro.steps]
                 setups[u_term_approx][dt]['hydrodynamic'] = hydro
 
@@ -83,15 +83,19 @@ def main(plot: bool):
                 for kernel in setups[u_term_approx][dt]:
                     states[u_term_approx][dt][kernel] = run(setups[u_term_approx][dt][kernel])[0]
 
-    if plot:
+    if plot or save:
         for u_term_approx in setups:
             for dt in setups[u_term_approx]:
                 for kernel in setups[u_term_approx][dt]:
-                    plotter = SpectrumPlotter(setups[u_term_approx][dt][kernel])
+                    plotter = SpectrumPlotter(setups[u_term_approx][dt][kernel], legend=True)
                     for step, vals in states[u_term_approx][dt][kernel].items():
                         plotter.plot(vals, step * setups[u_term_approx][dt][kernel].dt)
-                    plotter.show(title=f"{u_term_approx.__name__} {dt} {kernel}", legend=True)
+                    if save:
+                        n_sd = setups[u_term_approx][dt][kernel].n_sd
+                        plotter.save(f"results/{n_sd}_{u_term_approx.__name__}_{dt}_{kernel.replace('/', 'per')}.pdf")
+                    if plot:
+                        plotter.show()
 
 
 if __name__ == '__main__':
-    main(plot=True)
+    main(plot=True, save=True)
