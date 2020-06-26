@@ -74,14 +74,6 @@ class State:
         self.__idx = self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
-    # def min(self, item):
-    #     result = self.__backend.amin(self[item], self.__idx, self.SD_num)
-    #     return result
-    #
-    # def max(self, item):
-    #     result = self.__backend.amax(self[item], self.__idx, self.SD_num)
-    #     return result
-
     def get_extensive_attrs(self):
         result = self.__backend.range(self.attributes, stop=self.intensive_start)
         return result
@@ -124,17 +116,21 @@ class State:
     def max_pair(self, prob, is_first_in_pair):
         self.__backend.max_pair(prob, self['n'], is_first_in_pair, self.__idx, self.SD_num)
 
-    def coalescence(self, gamma):
-        self.__backend.coalescence(n=self['n'],
-                                   volume=self['volume'],
-                                   idx=self.__idx,
-                                   length=self.SD_num,
-                                   intensive=self.get_intensive_attrs(),
-                                   extensive=self.get_extensive_attrs(),
-                                   gamma=gamma,
-                                   healthy=self.__healthy_memory)
+    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
+        result = self.__backend.coalescence(n=self['n'],
+                                            volume=self['volume'],
+                                            idx=self.__idx,
+                                            length=self.SD_num,
+                                            intensive=self.get_intensive_attrs(),
+                                            extensive=self.get_extensive_attrs(),
+                                            gamma=gamma,
+                                            healthy=self.__healthy_memory,
+                                            adaptive=adaptive,
+                                            subs=subs,
+                                            adaptive_memory=adaptive_memory)
         self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
         self.whole_attributes['volume'].mark_updated()
+        return result
 
     def has_attribute(self, attr):
         return attr in self.keys

@@ -26,12 +26,14 @@ class AlgorithmicMethods:
             displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
     @staticmethod
-    @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+    @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: waits for https://github.com/numba/numba/issues/5279
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+        result = 1
         for i in prange(length - 1):
             if gamma[i] == 0:
+                # adaptive_memory[i] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -39,7 +41,11 @@ class AlgorithmicMethods:
 
             if n[j] < n[k]:
                 j, k = k, j
-            g = int(min(gamma[i], n[j] // n[k]))
+            prop = int(n[j] / n[k])
+            if adaptive:
+                result = max(result, int(((gamma[i])*subs) / prop))
+                # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
+            g = min(int(gamma[i]), prop)
             if g == 0:
                 continue
 
@@ -57,6 +63,7 @@ class AlgorithmicMethods:
                 extensive[:, k] = extensive[:, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
+        return result  # np.amax(adaptive_memory[:length-1])
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -93,6 +100,27 @@ class AlgorithmicMethods:
             if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
                 idx[i] = len(idx)
                 healthy[0] = 0
+
+    @staticmethod
+    @numba.njit()
+    def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
+        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        for i in prange(length - 1):
+            output[i] = 0
+            if is_first_in_pair[i]:
+                r = radii[i] / unit
+                r_s = radii[i + 1] / unit
+                p = r_s / r
+                if p != 0 and p != 1:
+                    G = (G1 / r) ** Mg + G2 + G3 * r
+                    Gp = (1 - p) ** G
+                    if Gp != 0:
+                        D = D1 / r ** D2
+                        E = E1 / r ** E2
+                        F = (F1 / r) ** Mf + F2
+                        output[i] = A + B * p + D / p ** F + E / Gp
+                        output[i] = max(0, output[i])
+
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
