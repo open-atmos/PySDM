@@ -1,8 +1,5 @@
 """
 Created at 08.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -36,7 +33,7 @@ def run(setup):
     return vals, particles.stats
 
 
-def main(plot: bool):
+def main(plot: bool, save: bool):
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -46,11 +43,15 @@ def main(plot: bool):
 
     with np.errstate(invalid='ignore'):
         plotter = SpectrumPlotter(setup)
+        plotter.smooth = True
         for step, vals in states.items():
             plotter.plot(vals, step * setup.dt)
+        if save:
+            n_sd = setup.n_sd
+            plotter.save(f"results/{n_sd}_shima_fig_2.pdf")
         if plot:
             plotter.show()
 
 
 if __name__ == '__main__':
-    main(plot=True)
+    main(plot=True, save=True)

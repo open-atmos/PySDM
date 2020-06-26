@@ -8,26 +8,46 @@ from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 
 
+class SpectrumColors:
+    def __init__(self, begining='#2cbdfe', end='#b317b1'):
+        self.b = begining
+        self.e = end
+
+    def __call__(self, value: float):
+        bR, bG, bB = int(self.b[1:3], 16), int(self.b[3:5], 16), int(self.b[5:7], 16)
+        eR, eG, eB = int(self.e[1:3], 16), int(self.e[3:5], 16), int(self.e[5:7], 16)
+        R, G, B = bR + int((eR - bR) * value), bG + int((eG - bG) * value), bB + int((eB - bB) * value)
+        result = f"#{hex(R)[2:4]}{hex(G)[2:4]}{hex(B)[2:4]}"
+        return result
+
+
 class SpectrumPlotter:
-    def __init__(self, setup):
+    def __init__(self, setup, title=None, grid=True, legend=True):
         self.setup = setup
-        self.color = 'grey'
+        self.format = 'pdf'
+        self.colors = SpectrumColors()
         self.smooth = False
         self.smooth_scope = 2
-
-    def show(self, title=None, grid=True, legend=True):
+        self.legend = legend
+        self.grid = grid
+        if self.grid:
+            pyplot.grid()
         pyplot.xscale('log')
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-        if legend:
-            pyplot.legend()
-        if grid:
-            pyplot.grid()
         pyplot.title(title)
+
+    def finish(self):
+        if self.legend:
+            pyplot.legend()
+
+    def show(self):
+        self.finish()
         pyplot.show()
 
     def save(self, file):
-        pyplot.savefig(file)
+        self.finish()
+        pyplot.savefig(file, format=self.format)
 
     def plot(self, spectrum, t):
         setup = self.setup
@@ -74,13 +94,14 @@ class SpectrumPlotter:
             pyplot.plot(
                 setup.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
                 spectrum[:-scope] * si.kilograms / si.grams,
-                label=f"{t}",
-                color=self.color
+                label=f"t = {t}s",
+                color=self.colors(t / (self.setup.steps[-1] * self.setup.dt))
             )
         else:
             pyplot.step(
                 setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
                 spectrum * si.kilograms / si.grams,
                 where='post',
-                label=f"t = {t}s"
+                label=f"t = {t}s",
+                color=self.colors(t / (self.setup.steps[-1] * self.setup.dt))
             )

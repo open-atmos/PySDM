@@ -34,6 +34,6 @@ class SetupA:
     kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
-    radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=100, endpoint=True)
+    radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True)
 
     backend = Default
