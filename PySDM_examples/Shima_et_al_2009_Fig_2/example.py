@@ -24,6 +24,9 @@ def run(setup, observers=()):
     products = {ParticlesVolumeSpectrum: {}}
     particles = particles_builder.get_particles(attributes, products)
     particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
+    if hasattr(setup, 'u_term'):
+        particles.state.whole_attributes['terminal velocity'].approximation = setup.u_term(particles)
+
     for observer in observers:
         particles.observers.append(observer)
 
