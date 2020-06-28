@@ -24,6 +24,7 @@ class SetupA:
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
     dt = 1 * si.seconds
+    adaptive = False
     seed = 44
     _steps = [0, 1200, 2400, 3600]
 

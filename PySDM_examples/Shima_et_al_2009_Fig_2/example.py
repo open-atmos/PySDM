@@ -23,6 +23,7 @@ def run(setup, observers=()):
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
     products = {ParticlesVolumeSpectrum: {}}
     particles = particles_builder.get_particles(attributes, products)
+    particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
     for observer in observers:
         particles.observers.append(observer)
 
