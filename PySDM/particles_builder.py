@@ -20,13 +20,12 @@ from PySDM.attributes.cell.cell_id import CellID
 
 class ParticlesBuilder:
 
-    def __init__(self, n_sd, backend, stats=None, planet="Earth"):
-        self.particles = Particles(n_sd, backend, PlanetDataFactory.create(planet), stats)
+    def __init__(self, n_sd, backend, stats=None, planet_name="Earth"):
+        self.particles = Particles(n_sd, backend, planet_name, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
-        self.planet_name = planet
 
     def _set_condensation_parameters(self, coord, adaptive=True):
         self.condensation_params = {'coord': coord, 'adaptive': adaptive}
