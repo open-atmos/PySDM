@@ -14,7 +14,7 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlott
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
-def run(setup):
+def run(setup, observers=()):
     particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
     particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
     attributes = {}
@@ -23,6 +23,8 @@ def run(setup):
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
     products = {ParticlesVolumeSpectrum: {}}
     particles = particles_builder.get_particles(attributes, products)
+    for observer in observers:
+        particles.observers.append(observer)
 
     vals = {}
     for step in setup.steps:
@@ -33,7 +35,7 @@ def run(setup):
     return vals, particles.stats
 
 
-def main(plot: bool, save: bool):
+def main(plot: bool, save):
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -46,12 +48,14 @@ def main(plot: bool, save: bool):
         plotter.smooth = True
         for step, vals in states.items():
             plotter.plot(vals, step * setup.dt)
-        if save:
+        if save is not None:
             n_sd = setup.n_sd
-            plotter.save(f"results/{n_sd}_shima_fig_2.pdf")
+            plotter.save(save + "/" +
+                         f"{n_sd}_shima_fig_2" +
+                         "." + plotter.format)
         if plot:
             plotter.show()
 
 
 if __name__ == '__main__':
-    main(plot=True, save=True)
+    main(plot=True, save=None)

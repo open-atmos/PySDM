@@ -8,4 +8,5 @@ import os
 try:
     from .thrustRTC.thrustRTC import ThrustRTC
 except ImportError:
-    pass  # TODO: debug info/warning
+    class ThrustRTC:
+        ENABLE = False
