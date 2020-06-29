@@ -49,7 +49,7 @@ class AlgorithmicMethods:
         }
         int g = (int)(n[j] / n[k]);
         if (adaptive) 
-            adaptive_memory[i] = int(gamma[i] * subs / g);
+            adaptive_memory[i] = (int)(gamma[i] * subs / g);
         if (g > gamma[i])
             g = gamma[i];
         if (g == 0)
@@ -93,7 +93,7 @@ class AlgorithmicMethods:
         adaptive_device = trtc.DVBool(adaptive)
         subs_device = trtc.DVInt64(subs)
         AlgorithmicMethods.__coalescence_body.launch_n(length - 1, [n, volume, idx, idx_length, intensive, intensive_length, extensive, extensive_length, gamma, healthy, adaptive_device, subs_device, adaptive_memory])
-        return trtc.Reduce(adaptive_memory.range(0, length), trtc.DVInt64(0), trtc.Maximum())
+        return trtc.Reduce(adaptive_memory.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
         prob[i] = -floor(-prob[i] + rand[int(i / 2)]);
@@ -152,13 +152,6 @@ class AlgorithmicMethods:
 
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
-        # from PySDM.backends import Numba
-        # from ._storage_methods import StorageMethods
-        # houtput = StorageMethods.to_ndarray(output)
-        # hradii = StorageMethods.to_ndarray(radii)
-        # his_first_in_pair = StorageMethods.to_ndarray(is_first_in_pair)
-        # Numba.linear_collection_efficiency(params, houtput, hradii, his_first_in_pair, length, unit)
-        # StorageMethods.upload(houtput, output)
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = trtc.DVDouble(A)
         dB = trtc.DVDouble(B)
@@ -176,6 +169,18 @@ class AlgorithmicMethods:
         dunit = trtc.DVDouble(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(length - 1,
             [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output, radii, is_first_in_pair, dunit])
+
+    __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
+        int r_id = (int)(factor * radius[i]);
+        auto r_rest = (factor * radius[i] - r_id) / factor;
+        output[i] = a[r_id] + r_rest * b[r_id];
+    ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def interpolation(output, radius, factor, a, b):
+        factor_device = trtc.DVInt64(factor)
+        AlgorithmicMethods.__interpolation_body.launch_n(radius.size(), [output, radius, factor_device, a, b])
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme):
