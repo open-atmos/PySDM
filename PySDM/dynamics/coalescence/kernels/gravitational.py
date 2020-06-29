@@ -15,12 +15,15 @@ class Gravitational:
 
         self.particles = None
         self.__tmp = None
-        if collection_efficiency == "hydrodynamic":
+        if collection_efficiency == "hydrodynamic capture":
             self.params = (1, 1, -27, 1.65, -58, 1.9, 15, 1.13, 16.7, 1, .004, 4, 8)
             self.call = Gravitational.linear_collection_efficiency
-        elif collection_efficiency == "3000V/cm":
+        elif collection_efficiency == "electric field 3000V/cm":
             self.params = (1, 1, -7, 1.78, -20.5, 1.73, .26, 1.47, 1, .82, -0.003, 4.4, 8)
             self.call = Gravitational.linear_collection_efficiency
+        elif collection_efficiency == "geometric sweep-out":
+            self.collection_efficiency = 1
+            self.call = Gravitational.collection_efficiency
         else:
             self.call = Gravitational.collection_efficiency
 
