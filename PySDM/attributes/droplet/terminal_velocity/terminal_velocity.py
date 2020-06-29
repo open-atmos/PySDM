@@ -3,7 +3,7 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
-from .gunn_and_kinzer import RogersYau
+from .gunn_and_kinzer import Interpolation
 
 
 class TerminalVelocity(DerivedAttribute):
@@ -13,7 +13,7 @@ class TerminalVelocity(DerivedAttribute):
         dependencies = [self.radius]
         super().__init__(particles_builder, name='terminal velocity', dependencies=dependencies)
 
-        self.approximation = RogersYau(particles_builder.particles)
+        self.approximation = Interpolation(particles_builder.particles)
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())
