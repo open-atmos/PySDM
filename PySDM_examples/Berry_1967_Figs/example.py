@@ -5,8 +5,8 @@ Created at 08.08.2019
 import numpy as np
 
 from PySDM.dynamics.coalescence.kernels import Gravitational
-from PySDM_examples.Berry_1967_Fig_5.setup import Setup
-from PySDM_examples.Berry_1967_Fig_5.spectrum_plotter import SpectrumPlotter
+from PySDM_examples.Berry_1967_Figs.setup import Setup
+from PySDM_examples.Berry_1967_Figs.spectrum_plotter import SpectrumPlotter
 from PySDM.attributes.droplet.terminal_velocity import gunn_and_kinzer
 from PySDM_examples.Shima_et_al_2009_Fig_2.example import run
 
@@ -15,10 +15,11 @@ def main(plot: bool, save):
     with np.errstate(all='ignore'):
 
         u_term_approxs = (gunn_and_kinzer.Interpolation,)
-        dts = ('adaptive',)
-        setup_prop = {'sweepout': (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
-                      '3000V/cm': (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
-                      'hydrodynamic': (0, 1600, 1800, 2000, 2200)}
+        dts = (1, 10, 'adaptive')
+        setup_prop = {'geometric sweep-out': (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
+                      'electric field 3000V/cm': (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
+                      'hydrodynamic capture': (0, 1600, 1800, 2000, 2200)
+                      }
         setups = {}
 
         for u_term_approx in u_term_approxs:
@@ -31,8 +32,8 @@ def main(plot: bool, save):
                     s.u_term = u_term_approx
                     s.dt = 10 if dt == 'adaptive' else dt
                     s.adaptive = dt == 'adaptive'
-                    s.kernel = Gravitational(collection_efficiency=setup_name if setup_name != 'sweepout' else 1)
-                    s.steps = [int(step / s.dt) for step in setup_prop[setup_name]]
+                    s.kernel = Gravitational(setup_name)
+                    s._steps = setup_prop[setup_name]
                     setups[u_term_approx][dt][setup_name] = s
 
         states = {}
@@ -60,4 +61,5 @@ def main(plot: bool, save):
 
 
 if __name__ == '__main__':
+
     main(plot=True, save=None)
