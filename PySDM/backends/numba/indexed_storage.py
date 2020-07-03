@@ -3,6 +3,7 @@ Created at 03.06.2020
 """
 
 from .storage import Storage
+from ._storage_methods import StorageMethods
 from ._algorithmic_step_methods import AlgorithmicStepMethods
 from ._algorithmic_methods import AlgorithmicMethods
 
@@ -63,3 +64,9 @@ class IndexedStorage(Storage):
     def remove_zeros(self):
         self.idx.length = AlgorithmicMethods.remove_zeros(self.data, self.idx.data, self.length)
         self.idx = None
+
+    def shuffle(self, temporary, parts=None):
+        if parts is None:
+            StorageMethods.shuffle_global(idx=self.data, length=self.length, u01=temporary.data)
+        else:
+            StorageMethods.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)

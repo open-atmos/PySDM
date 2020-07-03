@@ -11,6 +11,7 @@ from ._physics_methods import PhysicsMethods
 from .condensation_methods import CondensationMethods
 from .storage import Storage as ImportedStorage
 from .indexed_storage import IndexedStorage as ImportedIndexedStorage
+from .random import Random as ImportedRandom
 
 
 class Numba(
@@ -24,3 +25,4 @@ class Numba(
 ):
     Storage = ImportedStorage
     IndexedStorage = ImportedIndexedStorage
+    Random = ImportedRandom

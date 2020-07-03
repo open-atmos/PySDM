@@ -6,7 +6,6 @@ Created at 07.06.2019
 """
 
 from PySDM.particles_builder import ParticlesBuilder
-from PySDM.dynamics.coalescence.seeds.incrementation import Incrementation
 
 
 class SDM:
@@ -21,7 +20,7 @@ class SDM:
         self.rand = self.particles.backend.Storage.empty(self.particles.n_sd // 2, dtype=float)
         self.prob = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
         self.is_first_in_pair = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=int)  # TODO bool
-        self.seed = seed or Incrementation()
+        self.rnd = self.particles.backend.Random(self.particles.n_sd, seed)
 
         self.enable = True
 
@@ -29,13 +28,13 @@ class SDM:
         if self.enable:
             self.particles.state.sanitize()
 
-            self.particles.backend.urand(self.temp, self.seed())
+            self.temp.urand(self.rnd)
 
             self.toss_pairs(self.is_first_in_pair, self.temp)
 
             self.compute_probability(self.prob, self.temp, self.is_first_in_pair)
 
-            self.particles.backend.urand(self.rand, self.seed())
+            self.rand.urand(self.rnd)
             self.compute_gamma(self.prob, self.rand)
 
             self.particles.coalescence(gamma=self.prob)

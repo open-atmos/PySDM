@@ -60,15 +60,11 @@ class StorageMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], float64[:], int64[:]), **conf.JIT_FLAGS)
-    def shuffle_local_body(idx, u01, cell_start):
+    def shuffle_local(idx, u01, cell_start):
         for c in prange(len(cell_start) - 1):
             for i in range(cell_start[c+1]-1, cell_start[c], -1):
                 j = int(cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]))
                 idx[i], idx[j] = idx[j], idx[i]
-
-    @staticmethod
-    def shuffle_local(idx, u01, cell_start):
-        return StorageMethods.shuffle_local_body(idx.data, u01.data, cell_start.data)
 
     @staticmethod
     def to_ndarray(data):

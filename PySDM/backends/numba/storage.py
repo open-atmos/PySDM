@@ -17,8 +17,8 @@ class Storage:
         self.dtype = dtype
 
     def __getitem__(self, item):
-        start = item.start or 0
         if isinstance(item, slice):
+            start = item.start or 0
             dim = len(self.shape)
             if dim == 1:
                 stop = item.stop or len(self)
@@ -126,18 +126,15 @@ class Storage:
         return self
 
     def product(self, multiplicand, multiplier):
-        MathsMethods.multiply_out_of_place(self, multiplicand, multiplier)
+        MathsMethods.multiply_out_of_place(self, multiplicand.data, multiplier.data)
         return self
 
     def read_row(self, i):
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
         return result
 
-    def shuffle(self, generator=None, parts=None):
-        raise NotImplementedError()
-
     def urand(self, generator=None):
-        raise NotImplementedError()
+        generator(self)
 
     def to_ndarray(self):
         return self.data.copy()
