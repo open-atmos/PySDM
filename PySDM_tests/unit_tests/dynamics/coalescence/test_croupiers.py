@@ -44,7 +44,7 @@ def test_final_state(croupier):
     particles.get_particles(attributes)
 
     # Act
-    u01 = backend.from_ndarray(np.random.random(n_sd))
+    u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
     particles.permute(u01)
     _ = particles.state.cell_start
 

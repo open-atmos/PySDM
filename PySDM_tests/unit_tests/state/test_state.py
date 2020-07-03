@@ -13,7 +13,7 @@ class TestState:
 
     @staticmethod
     def storage(iterable):
-        return backend.from_ndarray(np.array(iterable))
+        return backend.Storage.from_ndarray(np.array(iterable))
 
     @pytest.mark.parametrize("volume, n", [
         pytest.param(np.array([1., 1, 1, 1]), np.array([1, 1, 1, 1])),
@@ -67,8 +67,8 @@ class TestState:
 
         # Assert
         assert len(sut._State__idx) == idx_length
-        np.testing.assert_array_equal(np.array(new_idx), backend.to_ndarray(sut._State__idx[:sut.SD_num]))
-        np.testing.assert_array_equal(np.array(cell_start), backend.to_ndarray(sut._State__cell_start))
+        np.testing.assert_array_equal(np.array(new_idx), sut._State__idx[:sut.SD_num].to_ndarray())
+        np.testing.assert_array_equal(np.array(cell_start), sut._State__cell_start.to_ndarray())
 
     def test_recalculate_cell_id(self):
         # Arrange

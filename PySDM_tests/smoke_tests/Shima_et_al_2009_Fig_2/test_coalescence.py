@@ -55,7 +55,7 @@ def test_coalescence(croupier):
     particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": kernel})
+    particles_builder.register_dynamic(Coalescence, {"kernel": kernel, "seed": 256})
     particles = particles_builder.get_particles(attributes)
     particles.croupier = croupier
 
@@ -78,6 +78,6 @@ def test_coalescence(croupier):
     # Assert
     x_max = 0
     for state in states.values():
-        assert x_max < np.amax(backend.to_ndarray(state['volume']))
-        x_max = np.amax(backend.to_ndarray(state['volume']))
+        assert x_max < np.amax(state['volume'].to_ndarray())
+        x_max = np.amax(state['volume'].to_ndarray())
 

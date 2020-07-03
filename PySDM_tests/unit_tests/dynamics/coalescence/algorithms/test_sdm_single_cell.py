@@ -32,7 +32,7 @@ class TestSDMSingleCell:
     def test_single_collision(self, v_2, T_2, n_2):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
+        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         particles.get_particles(attributes)
 
@@ -58,7 +58,7 @@ class TestSDMSingleCell:
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(2)
-        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, 1)
+        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         particles.get_particles(attributes)
 
@@ -77,7 +77,7 @@ class TestSDMSingleCell:
     def test_multi_collision(self, v_2, n_2, p):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p)
+        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
         particles.get_particles(attributes)
 
@@ -101,7 +101,7 @@ class TestSDMSingleCell:
     def test_multi_droplet(self, v, n, p):
         # Arrange
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n))
-        sut.compute_gamma = lambda prob, rand: backend_fill(backend, prob, p, True)
+        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
         particles.get_particles(attributes)
 
@@ -122,7 +122,6 @@ class TestSDMSingleCell:
         particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
-            backend,
             prob,
             backend.to_ndarray(rand) > 0.5,
             odd_zeros=True

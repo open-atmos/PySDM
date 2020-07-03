@@ -50,6 +50,6 @@ class Mesh:
         position_in_cell = positions - np.floor(positions)
 
         cell_id = np.empty(n, dtype=np.int64)
-        Numba.cell_id(cell_id, cell_origin, self.strides)
+        cell_id[:] = np.dot(self.strides, cell_origin)
 
         return cell_id, cell_origin, position_in_cell

@@ -30,7 +30,7 @@ class AlgorithmicStepMethods:
     @staticmethod
     # @numba.njit(**conf.JIT_FLAGS)  # TODO: "np.dot() only supported on float and complex arrays"
     def cell_id(cell_id, cell_origin, strides):
-        cell_id[:] = np.dot(strides, cell_origin)
+        cell_id.data[:] = np.dot(strides.data, cell_origin.data)
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)

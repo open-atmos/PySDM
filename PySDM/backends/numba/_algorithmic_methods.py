@@ -16,7 +16,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-    def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement_body(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[1]
         for droplet in prange(length):
             # Arakawa-C grid
@@ -24,6 +24,10 @@ class AlgorithmicMethods:
             _r = (cell_origin[0, droplet] + 1 * (dim == 0), cell_origin[1, droplet] + 1 * (dim == 1))
             omega = position_in_cell[dim, droplet]
             displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
+
+    @staticmethod
+    def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+        AlgorithmicMethods.calculate_displacement_body(dim, scheme, displacement.data, courant.data, cell_origin.data, position_in_cell.data)
 
     @staticmethod
     @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),

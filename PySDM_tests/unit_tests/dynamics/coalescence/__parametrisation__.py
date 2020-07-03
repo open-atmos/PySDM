@@ -18,10 +18,10 @@ class StubKernel:
         pass
 
     def __call__(self, output, is_first_in_pair):
-        backend_fill(self.backend, output, self.returned_value)
+        backend_fill(output, self.returned_value)
 
 
-def backend_fill(backend, array, value, odd_zeros=False):
+def backend_fill(array, value, odd_zeros=False):
     if odd_zeros:
         if isinstance(value, np.ndarray):
             full_ndarray = insert_zeros(value).astype(np.float64)
@@ -33,9 +33,7 @@ def backend_fill(backend, array, value, odd_zeros=False):
     else:
         full_ndarray = np.full(array.shape, value).astype(np.float64)
 
-    full_backend = backend.from_ndarray(full_ndarray)
-    backend.multiply(array, 0.)
-    backend.add(array, full_backend)
+    array.upload(full_ndarray)
 
 
 def insert_zeros(array):
