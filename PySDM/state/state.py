@@ -52,7 +52,7 @@ class State:
         if not self.healthy:
             self['n'].remove_zeros()
             self.healthy = True
-            self.__healthy_memory = self.__backend.from_ndarray(np.full((1,), 1))
+            self.__healthy_memory.fill(1)
             self.__sorted = False
 
     def __getitem__(self, item):
@@ -96,8 +96,8 @@ class State:
             for rank in specs[attr]:
                 specs_idx.append(self.keys[attr])
                 specs_rank.append(rank)
-        specs_idx = self.__backend.from_ndarray(np.array(specs_idx, dtype=int))
-        specs_rank = self.__backend.from_ndarray(np.array(specs_rank, dtype=float))
+        specs_idx = self.__backend.Storage.from_ndarray(np.array(specs_idx, dtype=int))
+        specs_rank = self.__backend.Storage.from_ndarray(np.array(specs_rank, dtype=float))
         self.__backend.moments(moment_0, moments, self['n'], self.attributes, self['cell id'], self.__idx,
                                self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                                self.keys[attr_name])
@@ -129,4 +129,4 @@ class State:
     def remove_precipitated(self):
         self.__backend.flag_precipitated(self['cell origin'], self['position in cell'],
                                          self.__idx, self.SD_num, self.__healthy_memory)
-        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
+        self.healthy = bool(self.__healthy_memory)

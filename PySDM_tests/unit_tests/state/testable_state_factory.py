@@ -36,8 +36,9 @@ class TestableStateFactory(StateFactory):
         return TestableStateFactory.state(n, intensive, extensive, np.zeros_like(n), None, None, particles)
 
     @staticmethod
-    def empty_state(particles) -> State:
-        return State(n=np.zeros(0), attributes={}, keys={}, intensive_start=-1,
+    def empty_state(particles, n_sd) -> State:
+        idx = particles.backend.IndexedStorage.from_ndarray(np.arange(n_sd))
+        return State(idx=idx, n=np.zeros(0), attributes={}, keys={}, intensive_start=-1,
                      cell_id=np.zeros(0, dtype=np.int64), cell_start=np.zeros(0, dtype=np.int64),
                      position_in_cell=None, cell_origin=None,
                      particles=particles)

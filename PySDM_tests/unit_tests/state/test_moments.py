@@ -41,8 +41,8 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO: add a moments_0 wrapper
-        moment_0 = np.empty((1,), dtype=int)
-        moments = np.empty((1, 1), dtype=float)
+        moment_0 = particles.backend.Storage.empty((1,), dtype=int)
+        moments = particles.backend.Storage.empty((1, 1), dtype=float)
 
         # Act
         state.moments(moment_0, moments, specs={'volume': (0,)})
