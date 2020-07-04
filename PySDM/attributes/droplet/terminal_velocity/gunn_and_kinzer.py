@@ -4,7 +4,6 @@ Created at 10.06.2020
 
 import numpy as np
 import numba
-from numba import prange
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
 
@@ -87,7 +86,7 @@ class TpDependent:
 
         @numba.njit()
         def terminal_velocity(values, radius, threshold):
-            for i in prange(len(values)):
+            for i in range(len(values)):
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:
