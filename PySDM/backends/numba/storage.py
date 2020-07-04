@@ -16,30 +16,40 @@ class Storage:
         self.shape = (shape,) if isinstance(shape, int) else shape
         self.dtype = dtype
 
-    def __getitem__(self, item):
-        if isinstance(item, slice):
-            start = item.start or 0
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            start = key.start or 0
             dim = len(self.shape)
             if dim == 1:
-                stop = item.stop or len(self)
-                result_data = self.data[item]
+                stop = key.stop or len(self)
+                result_data = self.data[key]
                 result_shape = (stop - start,)
             elif dim == 2:
-                stop = item.stop or self.shape[1]
-                result_data = self.data[item]
+                stop = key.stop or self.shape[1]
+                result_data = self.data[key]
                 result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
         else:
-            result = self.data[item]
+            result = self.data[key]
         return result
+
+    def __setitem__(self, key, value):
+        if hasattr(value, 'data'):
+            self.data[key] = value.data
+        else:
+            self.data[key] = value
+        return self
 
     def __add__(self, other):
         raise NotImplementedError("Use +=")
 
     def __iadd__(self, other):
-        MathsMethods.add(self.data, other.data)
+        if isinstance(other, Storage):
+            MathsMethods.add(self.data, other.data)
+        else:
+            MathsMethods.add(self.data, other)
         return self
 
     def __sub__(self, other):
@@ -71,7 +81,7 @@ class Storage:
         raise NotImplementedError("Use **=")
 
     def __ipow__(self, other):
-        MathsMethods.power(self.data, other.data)
+        MathsMethods.power(self.data, other)
         return self
 
     def __len__(self):
@@ -126,12 +136,21 @@ class Storage:
         return self
 
     def product(self, multiplicand, multiplier):
-        MathsMethods.multiply_out_of_place(self, multiplicand.data, multiplier.data)
+        if hasattr(multiplier, 'data'):
+            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
+        else:
+            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier)
         return self
 
     def read_row(self, i):
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
         return result
+
+    def ravel(self, other):
+        if isinstance(other, Storage):
+            self.data[:] = other.data.ravel()
+        else:
+            self.data[:] = other.ravel()
 
     def urand(self, generator=None):
         generator(self)
@@ -145,7 +164,3 @@ class Storage:
     # TODO: optimize
     def write_row(self, i, row):
         self.data[i, :] = row.data
-
-    def fill(self, value):
-        self.data[:] = value
-        return self
