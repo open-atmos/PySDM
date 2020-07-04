@@ -100,7 +100,7 @@ products = {ParticlesVolumeSpectrum: {}}
 particles = particles_builder.get_particles(attributes, products)
 ```
 The ``backend`` argument may be set to ``Numba`` or ``ThrustRTC``
-  what translates to choosing one of the multi-threaded backend or the 
+  what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
 The employed ``Box`` environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
