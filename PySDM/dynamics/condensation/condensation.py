@@ -1,8 +1,5 @@
 """
 Created at 24.10.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from ...particles_builder import ParticlesBuilder
@@ -31,6 +28,7 @@ class Condensation:
 
         self.do_advection = do_advection
         self.do_condensation = do_condensation
+        self.max_substeps = int(self.particles.dt)
 
         self.substeps = self.particles.backend.array(self.particles.mesh.n_cell, dtype=int)
         self.substeps[:] = np.maximum(1, int(self.particles.dt))
@@ -49,4 +47,5 @@ class Condensation:
                 substeps=self.substeps,
                 ripening_flags=self.ripening_flags
             )
+            self.substeps[:] = np.maximum(self.substeps[:], int(self.particles.dt))
 
