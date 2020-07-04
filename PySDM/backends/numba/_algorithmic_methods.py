@@ -121,6 +121,14 @@ class AlgorithmicMethods:
                         output[i] = A + B * p + D / p ** F + E / Gp
                         output[i] = max(0, output[i])
 
+    @staticmethod
+    @numba.njit()
+    def interpolation(output, radius, factor, b, c):
+        for i in range(len(radius)):
+            r_id = int(factor * radius[i])
+            r_rest = ((factor * radius[i]) % 1) / factor
+            output[i] = b[r_id] + r_rest * c[r_id]
+
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):

@@ -21,4 +21,4 @@ class ThrustRTC(
     MathsMethods,
     PhysicsMethods,
 ):
-    pass
+    ENABLE = True

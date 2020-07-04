@@ -45,8 +45,13 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 
 ## Demos:
 - [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)   
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Shima_et_al_2009_Fig_2/demo.ipynb)    
   (Box model, coalescence only, test case employing Golovin analytical solution)
+- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) Figs. 6, 8, 10 
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FBerry_1967_Figs/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Berry_1967_Figs/demo.ipynb)    
+  (Box model, coalescence only, test cases for realistic kernels)
 - [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)   
   (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)

@@ -17,12 +17,17 @@ class Setup:
     n_sd = 2 ** 13
     n_part = 239 / si.cm**3
     X0 = 4 / 3 * np.pi * (10 * si.micrometres) ** 3
-    dv = 1e6 * si.metres**3
+    dv = 1e1 * si.metres**3  # 1e6 do not work with ThrustRTC (overflow?)
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
-    dt = 5 * si.seconds
+    dt = 1 * si.seconds
+    adaptive = False
     seed = 44
-    steps = [200 * i for i in range(10)]
+    _steps = [200 * i for i in range(10)]
+
+    @property
+    def steps(self):
+        return [int(step / self.dt) for step in self._steps]
 
     kernel = Gravitational(collection_efficiency=1)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
