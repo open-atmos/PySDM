@@ -32,11 +32,11 @@ class Condensation:
         self.do_advection = do_advection
         self.do_condensation = do_condensation
 
-        self.substeps = self.particles.backend.array(self.particles.mesh.n_cell, dtype=int)
+        self.substeps = self.particles.backend.Storage.empty(self.particles.mesh.n_cell, dtype=int)
         self.substeps[:] = np.maximum(1, int(self.particles.dt))
         # TODO: reset substeps
-        self.ripening_flags = self.particles.backend.array(self.particles.mesh.n_cell, dtype=int)
-        self.particles.backend.fill(self.ripening_flags, 0)
+        self.ripening_flags = self.particles.backend.Storage.empty(self.particles.mesh.n_cell, dtype=int)
+        self.ripening_flags[:] = 0
 
     def __call__(self):
         if self.do_advection:

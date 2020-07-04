@@ -1,8 +1,5 @@
 """
 Created at 23.04.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 
@@ -59,7 +56,7 @@ class Simulation:
         cell_id = 0
         output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get())
         volume = self.particles.state['volume']
-        volume = self.particles.backend.to_ndarray(volume)  # TODO
+        volume = volume.to_ndarray()  # TODO
         output["r"].append(phys.radius(volume=volume))
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)
         output["qv"].append(self.particles.environment["qv"][cell_id])

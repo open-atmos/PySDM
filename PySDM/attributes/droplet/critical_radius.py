@@ -1,8 +1,5 @@
 """
 Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
@@ -23,6 +20,6 @@ class CriticalRadius(DerivedAttribute):
         r_d = self.r_dry.get()
         T = self.environment['T']
         cell = self.cell_id.get()
-        for i in range(len(self.data)):
-            self.data[i] = phys.r_cr(kp=kappa, rd=r_d[i], T=T[cell[i]])
+        for i in range(len(self.data)):  # TODO: move to backend
+            self.data.data[i] = phys.r_cr(kp=kappa, rd=r_d[i], T=T[cell[i]])
 
