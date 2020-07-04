@@ -1,8 +1,5 @@
 """
 Created at 03.06.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -52,7 +49,7 @@ class State:
         if not self.healthy:
             self['n'].remove_zeros()
             self.healthy = True
-            self.__healthy_memory.fill(1)
+            self.__healthy_memory[:] = 1
             self.__sorted = False
 
     def __getitem__(self, item):

@@ -1,9 +1,5 @@
 """
 Created at 23.10.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -32,12 +28,12 @@ class Displacement:
         self.enable_sedimentation = sedimentation
 
         self.dimension = len(courant_field)
-        self.grid = self.particles.backend.from_ndarray(np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
+        self.grid = self.particles.backend.Storage.from_ndarray(np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
 
-        self.courant = [self.particles.backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
+        self.courant = [self.particles.backend.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension)]
 
-        self.displacement = self.particles.backend.from_ndarray(np.zeros((self.dimension, self.particles.n_sd)))
-        self.temp = self.particles.backend.from_ndarray(np.zeros((self.dimension, self.particles.n_sd), dtype=np.int64))
+        self.displacement = self.particles.backend.Storage.from_ndarray(np.zeros((self.dimension, self.particles.n_sd)))
+        self.temp = self.particles.backend.Storage.from_ndarray(np.zeros((self.dimension, self.particles.n_sd), dtype=np.int64))
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
@@ -64,16 +60,16 @@ class Displacement:
             self.particles.backend.multiply(displacement_z, dt_over_dz)
 
     def update_position(self, position_in_cell, displacement):
-        self.particles.backend.add(position_in_cell, displacement)
+        position_in_cell += displacement
 
     def update_cell_origin(self, cell_origin, position_in_cell):
         # floor_of_position = self.particles.backend.range(self.temp, stop=position_in_cell.shape[1])
         floor_of_position = self.temp
-        self.particles.backend.floor_out_of_place(floor_of_position, position_in_cell)
-        self.particles.backend.add(cell_origin, floor_of_position)
-        self.particles.backend.subtract(position_in_cell, floor_of_position)
+        floor_of_position.floor(position_in_cell)
+        cell_origin += floor_of_position
+        position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic
         # TODO: particles above the mesh
-        self.particles.backend.row_modulo(cell_origin, self.grid)
+        cell_origin %= self.grid

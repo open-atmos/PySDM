@@ -1,8 +1,5 @@
 """
 Created at 28.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -26,7 +23,7 @@ class _Moist:
     def _allocate(self, variables):
         result = {}
         for var in variables:
-            result[var] = self.particles.backend.array((self.mesh.n_cell,), float)
+            result[var] = self.particles.backend.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, index):
@@ -39,8 +36,8 @@ class _Moist:
 
     def sync(self):
         target = self._tmp
-        self.particles.backend.upload(self._get_qv().ravel(), target['qv'])
-        self.particles.backend.upload(self._get_thd().ravel(), target['thd'])
+        target['qv'].ravel(self._get_qv())
+        target['thd'].ravel(self._get_thd())
 
         self.particles.backend.apply(
             function=self.particles.backend.temperature_pressure_RH,

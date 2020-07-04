@@ -1,9 +1,5 @@
 """
 Created at 06.11.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -47,7 +43,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             )
         )
 
-        rhod = particles_builder.particles.backend.from_ndarray(rhod.ravel())
+        rhod = particles_builder.particles.backend.Storage.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
         self.asynchronous = False

@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
 from PySDM.physics import formulae as phys
@@ -21,9 +25,9 @@ def test_initialisation(setup_idx):
 
     # Assert
     env = simulation.particles.environment
-    np.testing.assert_approx_equal(env['T'][:], setup.T0)
-    np.testing.assert_approx_equal(env['RH'][:], pv0 / phys.pvs(setup.T0))
-    np.testing.assert_approx_equal(env['p'][:], setup.p0)
-    np.testing.assert_approx_equal(env['qv'][:], setup.q0)
-    np.testing.assert_approx_equal(env['rhod'][:], rhod0)
-    np.testing.assert_approx_equal(env['thd'][:], thd0)
+    np.testing.assert_approx_equal(env['T'].to_ndarray(), setup.T0)
+    np.testing.assert_approx_equal(env['RH'].to_ndarray(), pv0 / phys.pvs(setup.T0))
+    np.testing.assert_approx_equal(env['p'].to_ndarray(), setup.p0)
+    np.testing.assert_approx_equal(env['qv'].to_ndarray(), setup.q0)
+    np.testing.assert_approx_equal(env['rhod'].to_ndarray(), rhod0)
+    np.testing.assert_approx_equal(env['thd'].to_ndarray(), thd0)

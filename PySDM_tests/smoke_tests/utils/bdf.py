@@ -1,8 +1,5 @@
 """
 Created at 09.01.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.physics.constants import rho_w
@@ -36,27 +33,27 @@ def bdf_condensation(particles,
         solver=particles.condensation_solver,
         n_threads=n_threads,
         n_cell=particles.mesh.n_cell,
-        cell_start_arg=particles.state.cell_start,
-        v=particles.state["volume"],
+        cell_start_arg=particles.state.cell_start.data,
+        v=particles.state["volume"].data,
         particle_temperatures=np.empty(0),
         r_cr=None,
-        n=particles.state['n'],
-        vdry=particles.state["dry volume"],
-        idx=particles.state._State__idx,
-        rhod=particles.environment["rhod"],
-        thd=particles.environment["thd"],
-        qv=particles.environment["qv"],
+        n=particles.state['n'].data,
+        vdry=particles.state["dry volume"].data,
+        idx=particles.state._State__idx.data,
+        rhod=particles.environment["rhod"].data,
+        thd=particles.environment["thd"].data,
+        qv=particles.environment["qv"].data,
         dv_mean=particles.environment.dv,
-        prhod=particles.environment.get_predicted("rhod"),
-        pthd=particles.environment.get_predicted("thd"),
-        pqv=particles.environment.get_predicted("qv"),
+        prhod=particles.environment.get_predicted("rhod").data,
+        pthd=particles.environment.get_predicted("thd").data,
+        pqv=particles.environment.get_predicted("qv").data,
         kappa=kappa,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
         dt=particles.dt,
-        substeps=substeps,
+        substeps=substeps.data,
         cell_order=np.argsort(substeps),
-        ripening_flags=ripening_flags
+        ripening_flags=ripening_flags.data
     )
 
 

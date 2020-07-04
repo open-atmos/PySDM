@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs
@@ -9,11 +13,9 @@ import numpy as np
 def ql(simulation: Simulation):
     backend = simulation.particles.backend
 
-    droplet_volume = simulation.particles.state['volume']
-    droplet_volume = backend.to_ndarray(droplet_volume)[0]
+    droplet_volume = simulation.particles.state['volume'].to_ndarray()[0]
 
-    droplet_number = simulation.particles.state['n']
-    droplet_number = backend.to_ndarray(droplet_number)[0]
+    droplet_number = simulation.particles.state['n'].to_ndarray()[0]
 
     droplet_mass = droplet_number * droplet_volume * const.rho_w
 
@@ -41,7 +43,7 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
     simulation.run()
 
     # Assert
-    qt = simulation.particles.environment["qv"] + ql(simulation)
+    qt = simulation.particles.environment["qv"].to_ndarray() + ql(simulation)
     np.testing.assert_approx_equal(qt, qt0, 14)  # TODO: was 15 at some point...
 
 
@@ -63,4 +65,4 @@ def test_energy_conservation(setup_idx, mass_of_dry_air):
     simulation.run()
 
     # Assert
-    np.testing.assert_approx_equal(thd0, env['thd'])
+    np.testing.assert_approx_equal(thd0.to_ndarray(), env['thd'].to_ndarray())

@@ -1,8 +1,5 @@
 """
 Created at 13.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -19,12 +16,11 @@ def moist_environment_init(attributes, environment, spatial_discretisation, spec
         attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
             environment.mesh.cellular_attributes(positions)
         r_dry, n_per_kg = spectral_discretisation(environment.particles.n_sd, spectrum_per_mass_of_dry_air, r_range)
-        backend = environment.particles.backend
-        T = backend.to_ndarray(environment['T'])
-        p = backend.to_ndarray(environment['p'])
-        RH = backend.to_ndarray(environment['RH'])
+        T = environment['T'].to_ndarray()
+        p = environment['p'].to_ndarray()
+        RH = environment['RH'].to_ndarray()
         r_wet = r_wet_init_impl(r_dry, T, p, RH, attributes['cell id'], kappa)
-        rhod = backend.to_ndarray(environment['rhod'])
+        rhod = environment['rhod'].to_ndarray()
         n_per_m3 = n_init(n_per_kg, rhod, environment.mesh, attributes['cell id'])
 
     if enable_temperatures:

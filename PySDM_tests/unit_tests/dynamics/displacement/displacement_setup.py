@@ -29,7 +29,7 @@ class Setup:
                                   {'dt': self.dt,
                                    'grid': self.grid,
                                    'courant_field_data': self.courant_field_data})
-        positions = Default.from_ndarray(np.array(self.positions))
+        positions = np.array(self.positions)
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
         particles.get_particles(attributes)
