@@ -57,13 +57,15 @@ class IndexedStorage(Storage):
         AlgorithmicStepMethods.sum_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
         self.idx = None
 
+    def to_ndarray(self):
+        return self.data[:self.length].copy()
+
     def read_row(self, i):
         result = IndexedStorage(self.idx, self.data[i, :], *self.shape[1:], self.dtype)
         return result
 
     def remove_zeros(self):
-        self.idx.length = AlgorithmicMethods.remove_zeros(self.data, self.idx.data, self.length)
-        self.idx = None
+        self.idx.length = AlgorithmicMethods.remove_zeros(self.data, self.idx.data, self.idx.length)
 
     def shuffle(self, temporary, parts=None):
         if parts is None:
