@@ -1,8 +1,5 @@
 """
 Created at 04.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -27,7 +24,8 @@ class AlgorithmicMethods:
 
     @staticmethod
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
-        AlgorithmicMethods.calculate_displacement_body(dim, scheme, displacement.data, courant.data, cell_origin.data, position_in_cell.data)
+        AlgorithmicMethods.calculate_displacement_body(dim, scheme, displacement.data, courant.data, cell_origin.data,
+                                                       position_in_cell.data)
 
     @staticmethod
     @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
@@ -50,12 +48,14 @@ class AlgorithmicMethods:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
-                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
+                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (
+                            volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (volume[k] + g * volume[j])
+                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (
+                            volume[k] + g * volume[j])
                 intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
@@ -64,7 +64,8 @@ class AlgorithmicMethods:
 
     @staticmethod
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
-        return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data, extensive.data, gamma.data, healthy.data)
+        return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
+                                                   extensive.data, gamma.data, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -77,7 +78,7 @@ class AlgorithmicMethods:
         """
         for i in prange(len(prob)):
             prob[i] *= -1.
-            prob[i] += rand[i//2]
+            prob[i] += rand[i // 2]
             prob[i] = -np.floor(prob[i])
 
     @staticmethod
@@ -93,18 +94,24 @@ class AlgorithmicMethods:
     ):
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         AlgorithmicMethods._condensation(
-            solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
+            solver, n_threads, n_cell, cell_start_arg.data,
+            v.data, particle_temperatures, r_cr.data, n.data, vdry.data, idx.data,
+            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
+            rtol_x, rtol_thd, dt, substeps.data, cell_order, ripening_flags.data
         )
 
     @staticmethod
     @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
-    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
+    def flag_precipitated_body(cell_origin, position_in_cell, idx, length, healthy):
         for i in range(length):
             if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
                 idx[i] = len(idx)
                 healthy[0] = 0
+
+    @staticmethod
+    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
+        AlgorithmicMethods.flag_precipitated_body(
+            cell_origin.data, position_in_cell.data, idx.data, length, healthy.data)
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
@@ -145,7 +152,10 @@ class AlgorithmicMethods:
 
     @staticmethod
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
-        return AlgorithmicMethods.moments_body(moment_0.data, moments.data, n.data, attr.data, cell_id.data, idx.data, length, specs_idx, specs_rank, min_x, max_x, x_id)
+        return AlgorithmicMethods.moments_body(
+            moment_0.data, moments.data, n.data, attr.data, cell_id.data,
+            idx.data, length, specs_idx.data, specs_rank.data, min_x, max_x, x_id
+        )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -229,7 +239,8 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
-    def _parallel_counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start, cell_start_p):
+    def _parallel_counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start,
+                                                                 cell_start_p):
         cell_end_thread = cell_start_p
         # Warning: Assuming len(cell_end) == n_cell+1
         thread_num = cell_end_thread.shape[0]

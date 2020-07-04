@@ -1,8 +1,5 @@
 """
 Created at 04.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -72,7 +69,7 @@ class StorageMethods:
 
     @staticmethod
     def upload(numpy_data, backend_target):
-        np.copyto(backend_target, numpy_data, casting='safe')
+        np.copyto(backend_target.data, numpy_data, casting='safe')
 
     @staticmethod
     def write_row(array, i, row):

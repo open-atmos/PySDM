@@ -1,8 +1,5 @@
 """
 Created at 18.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from . import conf
@@ -16,16 +13,11 @@ class Methods:
     def apply(function, args, output):
         if len(args) == 3:
             if len(output) == 3:
-                Methods._apply_f_3_3(function, *args, *output)
+                Methods._apply_f_3_3(function, *(arg.data for arg in args), *(out.data for out in output))
             else:
                 raise NotImplementedError()
         else:
             raise NotImplementedError()
-
-    @staticmethod
-    @numba.njit(boolean(int64[:]), **{**conf.JIT_FLAGS, **{'parallel': False}})
-    def first_element_is_zero(array):
-        return array[0] == 0
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})

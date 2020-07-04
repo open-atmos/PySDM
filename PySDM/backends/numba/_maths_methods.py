@@ -1,8 +1,5 @@
 """
 Created at 04.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -17,10 +14,11 @@ class MathsMethods:
                  void(float64[:, :], float64[:, :]),
                  void(int64[:, :], int64[:, :]),
                  void(int64[:], int64[:]),
-                 void(float64[:, :], int64[:, :])],
+                 void(float64[:, :], int64[:, :]),
+                 void(float64[:], float64)],
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
     def add(output, addend):
-        output[:] += addend[:]
+        output += addend
 
     @staticmethod
     @numba.njit(void(int64[:, :], int64[:]), **conf.JIT_FLAGS)
