@@ -1,8 +1,5 @@
 """
 Created at 28.04.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import MomentProduct
@@ -11,6 +8,7 @@ import numpy as np
 
 
 class ParticlesVolumeSpectrum(MomentProduct):
+
     def __init__(self, particles_builder):
         super().__init__(
             particles=particles_builder.particles,

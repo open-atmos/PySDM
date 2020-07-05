@@ -1,14 +1,12 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import Product
 
 
 class SuperDropletCount(Product):
+
     def __init__(self, particles_builder):
         super().__init__(
             particles=particles_builder.particles,

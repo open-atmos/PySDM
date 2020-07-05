@@ -1,14 +1,12 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
 
 
 class Product:
+
     def __init__(self, particles, shape, name, unit=None, description=None, scale=None, range=(0, 100)):
         self.name = name
         self.unit = unit
@@ -24,6 +22,7 @@ class Product:
 
 
 class MomentProduct(Product):
+
     def __init__(self, particles, shape, name, unit, description, scale, range):
         super().__init__(particles, shape, name, unit, description, scale, range)
         self.particles = particles

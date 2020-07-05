@@ -6,6 +6,7 @@ import numpy as np
 
 
 class State:
+
     def __init__(
             self, particles,
             idx,
@@ -13,7 +14,7 @@ class State:
             keys: dict,
             intensive_start: int,
             cell_start,
-            whole_attributes: dict
+            attributes: dict
     ):
         self.particles = particles
         self.__backend = particles.backend
@@ -34,7 +35,7 @@ class State:
         self.__cell_caretaker = self.__backend.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                    scheme=particles.sorting_scheme)
         self.__sorted = False
-        self.whole_attributes = whole_attributes
+        self.attributes = attributes
 
         self.recalculate_cell_id()
 
@@ -57,7 +58,7 @@ class State:
             self.__sorted = False
 
     def __getitem__(self, item):
-        return self.whole_attributes[item].get()
+        return self.attributes[item].get()
 
     def permutation_global(self, u01):
         """
@@ -85,7 +86,7 @@ class State:
         return result
 
     def recalculate_cell_id(self):
-        if 'cell origin' not in self.whole_attributes:
+        if 'cell origin' not in self.attributes:
             return
         else:
             self.__backend.cell_id(self['cell id'], self['cell origin'], self.__strides)
@@ -116,7 +117,7 @@ class State:
                                             subs=subs,
                                             adaptive_memory=adaptive_memory)
         self.healthy = bool(self.__healthy_memory)
-        self.whole_attributes['volume'].mark_updated()
+        self.attributes['volume'].mark_updated()
         return result
 
     def has_attribute(self, attr):

@@ -1,8 +1,5 @@
 """
 Created at 09.07.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import time

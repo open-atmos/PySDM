@@ -9,6 +9,7 @@ from PySDM.physics import formulae as phys
 
 
 class ParticlesSizeSpectrum(MomentProduct):
+
     def __init__(self, particles_builder, v_bins, normalise_by_dv=False):
         self.v_bins = v_bins
         self.normalise_by_dv = normalise_by_dv

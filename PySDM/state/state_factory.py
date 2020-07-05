@@ -54,4 +54,4 @@ class StateFactory:
         idx = particles.backend.IndexedStorage.from_ndarray(np.arange(n_sd))
         return State(
             particles=particles, idx=idx, keys={}, intensive_start=-1,
-            cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, whole_attributes={})
+            cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, attributes={})

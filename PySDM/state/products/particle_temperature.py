@@ -1,14 +1,12 @@
 """
 Created at 17.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import MomentProduct
 
 
 class ParticleTemperature(MomentProduct):
+
     def __init__(self, particles_builder):
         particles_builder.request_attribute('temperature')
         super().__init__(

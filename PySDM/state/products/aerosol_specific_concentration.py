@@ -1,8 +1,5 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import MomentProduct
@@ -11,6 +8,7 @@ from PySDM.physics import formulae as phys
 
 
 class AerosolSpecificConcentration(MomentProduct):
+
     def __init__(self, particles_builder, radius_threshold):
         self.radius_threshold = radius_threshold
         super().__init__(
