@@ -61,5 +61,4 @@ def main(plot: bool, save):
 
 
 if __name__ == '__main__':
-
     main(plot=True, save=None)

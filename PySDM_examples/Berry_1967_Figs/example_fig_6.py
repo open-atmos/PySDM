@@ -30,7 +30,7 @@ def print_collection_efficiency_portrait(params):
         pair[0] = r
         for i in range(len(p)):
             pair[1] = p[i] * r
-            backend.linear_collection_efficiency(params=full_params(params),
+            backend.linear_collection_efficiency_body(params=full_params(params),
                                                  output=Y_c[i:i + 1], radii=pair,
                                                  is_first_in_pair=is_first_in_pair, length=2, unit=1 * um)
         plt.plot(p, Y_c, label=f'{r / const.si.um}um')
@@ -63,7 +63,7 @@ def Y_c_portrait(params, ):
         pair[0] = radii[i]
         for j in range(len(p)):
             pair[1] = p[j] * radii[i]
-            backend.linear_collection_efficiency(params=full_params(params),
+            backend.linear_collection_efficiency_body(params=full_params(params),
                                                  output=Y_c[i:i + 1, j], radii=pair,
                                                  is_first_in_pair=is_first_in_pair, length=2, unit=1 * um)
     return Y_c
