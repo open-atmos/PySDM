@@ -1,11 +1,15 @@
+"""
+Created at 18.05.2020
+
+@author: Grzegorz Łazarski
+"""
+
 import numpy as np
 
-from PySDM.dynamics.chemical_reaction.oxidation.constants import (
-    DRY_RHO, DRY_SUBSTANCE, gpm_u)
 from PySDM.physics import formulae as fml
 from PySDM.physics.constants import R_str, pi
 
-from .constants import K_H2O, ROOM_TEMP
+from .constants import K_H2O, ROOM_TEMP, DRY_RHO, DRY_SUBSTANCE, gpm_u, M
 
 
 def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
@@ -43,7 +47,7 @@ class EqConst:
         else:
             return self.K * other
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, self.__class__):
             return self.K / other.K
         else:
@@ -58,7 +62,7 @@ class EqConst:
         else:
             return other - self.K
 
-    def __rdiv__(self, other):
+    def __rtruediv__(self, other):
         if isinstance(other, self.__class__):
             return other.K / self.K
         else:
@@ -107,12 +111,13 @@ def hydrogen_conc_factory(*, NH3, HNO3, CO2, SO2, HSO4m, K_HNO3, K_SO2,
         sulfuric = S_VI * (H + 2 * K_HSO4) / (H + K_HSO4)
         carbonic = C * K_CO2 * (H + 2 * K_HCO3) / \
             (H * H + H * K_CO2 + K_CO2 * K_HCO3)
-        return H + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
+        result = H + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
+        return result
 
     return concentration
 
 
-def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13, **kwargs):
+def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13 / M, **kwargs):
     # NB: magic_const in the paper is k4.
     # The value is fixed at 13 M^-1 (from dr Jaruga's Thesis)
 
@@ -136,14 +141,46 @@ def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13, **kwargs
     return oxidation
 
 
-def henry_factory(Da, a_Ma, Ma, Heff):
-    def henry(A, *, T, cinf, V_w):
+def henry_factory(Da, a_Ma, Ma, Henry, hconcdep):
+    def henry(A, cinf, *, T, V_w, H, dt):
+        Heff = Henry.at(T) * hconcdep(H)
         r_w = fml.radius(V_w)
         v_avg = np.sqrt(8 * R_str * T / (pi * Ma))
         scale = (4 * r_w / (3 * v_avg * a_Ma) + r_w ** 2 / (3 * Da))
-        cadj = (A / (Heff.at(T) * R_str * T))
-        return (cinf - cadj) / scale
+        new_A = (A + dt * cinf / scale) / (1 + dt / (scale * Heff * R_str * T))
+        return new_A
     return henry
+
+
+def calc_ionic_strength(*, Hp, NH3, HNO3, CO2, SO2, HSO4m, K_HNO3, K_SO2,
+                        K_NH3, K_CO2, K_HSO3, K_HCO3, K_HSO4, **kwargs):
+    N_III, N_V, C_IV, S_IV, S_VI = NH3, HNO3, CO2, SO2, HSO4m
+
+    # Directly adapted
+    # https://github.com/igfuw/libcloudphxx/blob/0b4e2455fba4f95c7387623fc21481a85e7b151f/src/impl/particles_impl_chem_strength.ipp#L50
+    # https://en.wikipedia.org/wiki/Ionic_strength
+
+    # H+ and OH-
+    water = Hp + K_H2O / Hp
+
+    # HSO4- and SO4 2-
+    czS_VI = Hp * S_VI / (Hp + K_HSO4) + 4 * K_HSO4 * S_VI / (Hp + K_HSO4)
+
+    # HCO3- and CO3 2-
+    cz_CO2 = K_CO2 * Hp * C_IV / (Hp * Hp + K_CO2 * Hp + K_CO2 * K_HCO3) + \
+        4 * K_CO2 * K_HCO3 * C_IV / (Hp * Hp + K_CO2 * Hp + K_CO2 * K_HCO3)
+
+    # HSO3- and HSO4 2-
+    cz_SO2 = K_SO2 * Hp * S_IV / (Hp * Hp + K_SO2 * Hp + K_SO2 * K_HSO3) + \
+        4 * K_SO2 * K_HSO3 * S_IV / (Hp * Hp + K_SO2 * Hp + K_SO2 * K_HSO3)
+
+    # NO3-
+    cz_HNO3 = K_HNO3 * N_V / (Hp + K_HNO3)
+
+    # NH4+
+    cz_NH3 = K_NH3 * Hp * N_III / (K_H2O + K_NH3 * Hp)
+
+    return 0.5 * (water + czS_VI + cz_CO2 + cz_SO2 + cz_HNO3 + cz_NH3)
 
 
 def dry_v_to_amount(v):
@@ -152,11 +189,3 @@ def dry_v_to_amount(v):
 
 def amount_to_dry_v(amnt):
     return ((amnt * DRY_SUBSTANCE.mass * gpm_u) / DRY_RHO)
-
-
-def subst_conc(wet_r, dry_r, rho):
-    return fml.volume(dry_r) * rho / (fml.volume(wet_r) * DRY_SUBSTANCE.mass * gpm_u)
-
-
-def subst_conc(wet_r, dry_r, rho):
-    return fml.volume(dry_r) * rho / (fml.volume(wet_r) * DRY_SUBSTANCE.mass * gpm_u)

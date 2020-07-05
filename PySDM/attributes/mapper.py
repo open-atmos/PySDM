@@ -17,6 +17,8 @@ from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
 from .droplet.critical_radius import CriticalRadius
 
+from .chemistry.molar_concentration import register_concentrations
+
 # TODO doubled information
 attributes = {
     'n': Multiplicities,
@@ -29,7 +31,9 @@ attributes = {
     'cell origin': CellOrigin,
     'position in cell': PositionInCell,
     'temperature': Temperature,
-    'critical radius': CriticalRadius}
+    'critical radius': CriticalRadius,
+    **register_concentrations()
+}
 
 
 def get_class(name):

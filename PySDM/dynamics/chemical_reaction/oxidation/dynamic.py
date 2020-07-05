@@ -1,33 +1,36 @@
+"""
+Created at 18.05.2020
+
+@author: Grzegorz Łazarski
+"""
+
+
 import time
 from collections import OrderedDict
 
 import numpy as np
-import scipy.integrate as integrate
 import scipy.optimize as optim
 
+import PySDM.physics.constants as const
 from chempy import Substance
-from PySDM.dynamics.chemical_reaction.oxidation.constants import (ROOM_TEMP, M,
-                                                                  depint,
-                                                                  gpm_u)
-from PySDM.dynamics.chemical_reaction.oxidation.reaction_data import (
-    DIFFUSION_CONST, ENVIRONMENT_AMOUNTS, EQUILIBRIUM_CONST, HENRY_CONST,
-    KINETIC_CONST)
-from PySDM.dynamics.chemical_reaction.oxidation.support import (
-    amount_to_dry_v, dry_v_to_amount)
-from PySDM.dynamics.chemical_reaction.products.particles_dry_volume_spectrum import \
-    ParticlesDryVolumeSpectrum
+
+
 from PySDM.physics.constants import si
 
-from .support import henry_factory, hydrogen_conc_factory, oxidation_factory
+from .constants import (ROOM_TEMP, M, dry_air_d, gpm_u, depint)
+from .reaction_data import (DIFFUSION_CONST, ENVIRONMENT_AMOUNTS,
+                            EQUILIBRIUM_CONST, HENRY_CONST, HENRY_PH_DEP, KINETIC_CONST)
+from .support import (henry_factory, hydrogen_conc_factory, oxidation_factory,
+                      amount_to_dry_v, calc_ionic_strength, dry_v_to_amount)
 
-PROPERTIES = ["dry volume", "volume"]
+PROPERTIES = ["n", "dry volume", "volume"]
 
 
-def default_init(dry_v):
+def default_init(dry_v, wet_v):
     return np.zeros_like(dry_v)
 
 
-def compound_init(dry_v):
+def compound_init(dry_v, wet_v):
     return dry_v_to_amount(dry_v)
 
 
@@ -39,15 +42,16 @@ COMPOUNDS = OrderedDict({
     "HNO3": default_init,
     "NH3": compound_init,
     "HSO4m": compound_init,
-    "H+": lambda x: np.full_like(x, 0)
+    # "Hp": lambda d, w: default_init(d, w) + 1e-7 * M * w,
+    "Hp": compound_init,
 })
 
 
 class SDChemistry:
 
-    OXIDATION = ["H+", "O3", "SO2", "H2O2", "HSO4m"]
+    OXIDATION = ["Hp", "O3", "SO2", "H2O2", "HSO4m"]
 
-    def __init__(self, compounds):
+    def __init__(self, compounds, dv):
 
         self._indices = list(compounds)
         self._map = {v: i for i, v in enumerate(self._indices)}
@@ -56,123 +60,178 @@ class SDChemistry:
             henry_factory(
                 *DIFFUSION_CONST[k],
                 Substance.from_formula(k).mass * gpm_u,
-                v)
+                v,
+                HENRY_PH_DEP[k])
             for k, v in HENRY_CONST.items() if k in self._indices
         ]
 
-        # TODO: dynamic envorinemnt concentrations
-        self.environment = [ENVIRONMENT_AMOUNTS[k] * M
-                            for k in self._indices if k in ENVIRONMENT_AMOUNTS]
-
-        self.hindex = self._map["H+"]
+        self.hindex = self._map["Hp"]
         self.gas_indices = np.array([self._map[k]
                                      for k, _ in HENRY_CONST.items()])
         self.oxidation_indices = [self._map[k] for k in SDChemistry.OXIDATION]
 
-        self.depint_equilib = {k: depint(v.K)
-                               for k, v in EQUILIBRIUM_CONST.items()}
+        # Properly initialized in update_conditions
+        self.ideal_gas_volume = None
+        self.dv = dv
+        self.update_conditions()
+
+        self.environment_indices = dict()
+        i = 0
+        for k in self.gas_indices:
+            if self._indices[k] in ENVIRONMENT_AMOUNTS:
+                self.environment_indices[self._indices[k]] = i
+                i += 1
+
+        # Converting from volume ppb to molarity (M)
+        self.environment = np.array([
+                    ENVIRONMENT_AMOUNTS[name]
+                        / self.ideal_gas_volume
+                        for name, idex in self.environment_indices.items()
+                ])
 
     def dict(self, amounts):
         return {k: v for k, v in zip(self._indices, amounts)}
 
-    def dissolve_env_gases(self, amounts, V_w, T=ROOM_TEMP, *, t_interval):
-        environment = self.environment
+    def update_conditions(self, T=const.T_STP, p=const.p_STP):
+        self.ideal_gas_volume = const.R_str * T / p
+        self.eq_const_temp = {k: v.at(T)
+                              for k, v in EQUILIBRIUM_CONST.items()}
 
-        def f(As, t, T, V_w):
-            return [depint(
-                proc(A * M, T=T, cinf=env, V_w=V_w))
-                for proc, A, env in zip(self.henry_processes, As, environment)]
-        raw_result = integrate.odeint(
-            f, amounts[self.gas_indices], t_interval, args=(T, V_w))[-1]
+    def dissolve_env_gases(self, amounts, V_w, n, *, dt, steps=1, T=ROOM_TEMP):
+        hconc = amounts[self.hindex]
+        for henry, gasi, envi in zip(self.henry_processes,
+                                     self.gas_indices,
+                                     self.environment_indices.values()):
+            A = amounts[gasi]
+            c = self.environment[envi]
+            for i in range(steps):
+                A = henry(A, c, T=T, V_w=V_w, H=hconc, dt=dt)
 
-        sanit_indices = np.full_like(raw_result, True).astype(np.int32)
-        # sanit_indices = raw_result > amounts[self.gas_indices]
-        amounts[self.gas_indices[sanit_indices]] = raw_result[sanit_indices]
+                # Don't accumulate to avoid numerical errors
+                # We multiply by n, since all the droplets suck in the gases
+                c = (self.environment[envi]
+                     - (A - amounts[gasi]) * V_w / self.dv)
+
+                # Ensure we do not take too much
+                if A < 0:
+                    print(f"Borrowed gas: {self._indices[gasi]}")
+                    A = 0
+                if c < 0:
+                    print(f"Borrowed gas: {self._indices[gasi]}")
+                    c = 0
+            amounts[gasi] = A
+            self.environment[envi] = c
 
         return amounts
 
     def equilibriate_ph(self, amounts):
-        f = hydrogen_conc_factory(
-            **self.dict(amounts), **self.depint_equilib)
+        f = hydrogen_conc_factory(**self.dict(amounts), **self.eq_const_temp)
         result = optim.root_scalar(
-            f, x0=depint(1e-7 * M), x1=depint(10 * M))
+            f, x0=depint(1e-10 * M), x1=depint(10 * M))
         if not result.converged:
-            raise ValueError("H+ concentration failed to find a root.")
+            raise ValueError("Hp concentration failed to find a root.")
         amounts[self.hindex] = result.root
         return amounts
 
-    def oxidize(self, amounts, T=ROOM_TEMP, *, t_interval):
-        ks = {k: depint(v.at(T)) for k, v in KINETIC_CONST.items()}
+    def oxidize(self, amounts, T=ROOM_TEMP, *, dt, steps):
+        ks = {k: v.at(T) for k, v in KINETIC_CONST.items()}
         fraw = oxidation_factory(
-            **ks, **self.depint_equilib)
+            **ks, **{k: EQUILIBRIUM_CONST[k].at(T)
+                     for k in ["K_SO2", "K_HSO3"]})
 
-        def f(x, t):
-            return fraw(x)
+        new_amounts = amounts[self.oxidation_indices]
+        for i in range(steps):
+            new_amounts += np.array(fraw(new_amounts)) * dt
 
-        raw_res = integrate.odeint(
-            f, amounts[self.oxidation_indices], t_interval)[-1]
-        raw_res[raw_res < 0] = 0
-        amounts[self.oxidation_indices] = raw_res
+            # Ensure we do not take too much
+            new_amounts[new_amounts < 0] = 0
+
+        amounts[self.oxidation_indices] = new_amounts
         return amounts
+
+    def skip_chemistry(self, amounts):
+        stren = calc_ionic_strength(**self.dict(amounts),
+                                    **self.eq_const_temp)
+        return stren >= 0.02 * M
 
 
 class ChemicalReaction:
-    def __init__(self, particles_builder, *, dissolve_steps=10, oxidize_steps=10):
+    def __init__(self, particles_builder, *,
+                 dissolve_steps=5, oxidize_steps=5, oxidize_timestep=None, dissolve_timestep=None, air_d=dry_air_d):
         self.particles = particles_builder.particles
 
-        self.dissolve_t = np.linspace(
-            0, self.particles.dt/2, num=dissolve_steps)
-        self.oxidize_t = np.linspace(0, self.particles.dt/2, num=oxidize_steps)
+        self.dissolve_steps = dissolve_steps
+        self.oxidize_steps = oxidize_steps
 
-        self.sdchem = SDChemistry(COMPOUNDS.keys())
+        if dissolve_timestep is None:
+            self.dissolve_timestep = self.particles.dt / 2
+        else:
+            self.dissolve_timestep = dissolve_timestep
 
-        self.products = [ParticlesDryVolumeSpectrum(self.particles), ]
+        if oxidize_timestep is None:
+            self.oxidize_timestep = self.particles.dt / 2
+        else:
+            self.oxidize_timestep = oxidize_timestep
+
+        self.sdchem = SDChemistry(
+            COMPOUNDS.keys(),
+            self.particles.environment.mass_of_dry_air / air_d)
+        # 1 * si.kg / (1.2250 * si.kg / si.m ** 3))
 
     def __call__(self):
         t0 = time.perf_counter_ns()
-        data = [self.particles.state.get_backend_storage(x)
+
+        data = [self.particles.state[x]
                 for x in PROPERTIES]
-        amounts = [self.particles.state.get_backend_storage(
-            x) for x in COMPOUNDS.keys()]
+        amounts = [self.particles.state[x] for x in COMPOUNDS.keys()]
 
-        # print(len(list(zip(*amounts))))
-        for i, (dry, wet, amount) in enumerate(zip(*data, zip(*amounts))):
-            amount = np.array(amount) / wet
-            # print(dry, wet, amount)
-            # print(self.sdchem.dict(amount))
-            amount = self.sdchem.dissolve_env_gases(
-                amount, wet, t_interval=self.dissolve_t)
-            # print(self.sdchem.dict(amount))
-            amount = self.sdchem.equilibriate_ph(amount)
-            # print(amount[self.sdchem.hindex], "- pH:",
-            #       - np.log10(amount[self.sdchem.hindex]))
-            # print(*zip(SDChemistry.OXIDATION,
-            #            amount[self.sdchem.oxidation_indices]))
-            amount = self.sdchem.oxidize(amount, t_interval=self.oxidize_t)
-            # print(*zip(SDChemistry.OXIDATION,
-            #            amount[self.sdchem.oxidation_indices]))
+        skipped = 0
 
-            # print({k: amount[i] for i, k in enumerate(self.sdchem._indices)})
+        for i, n, dry, wet, amount in zip(
+                self.particles.state._State__idx, *data, zip(*amounts)):
 
-            if i == 0:
-                print(
-                    f"Was @ {i}: {data[0][i]}")
+            concentrations = np.array(amount) / wet
 
-            dict_amounts = self.sdchem.dict(amount)
+            if self.sdchem.skip_chemistry(concentrations):
+                skipped += 1
+            else:
+
+                concentrations = self.sdchem.dissolve_env_gases(
+                    concentrations,
+                    wet,
+                    n,
+                    dt=self.dissolve_timestep / self.dissolve_steps,
+                    steps=self.dissolve_steps)
+
+                if concentrations[self.sdchem.hindex]:
+                    concentrations[self.sdchem.hindex] = 1e-7 * M
+
+                concentrations = self.sdchem.equilibriate_ph(concentrations)
+
+                if concentrations[self.sdchem.hindex]:
+                    concentrations[self.sdchem.hindex] = 1e-7 * M
+
+                concentrations = self.sdchem.oxidize(
+                    concentrations,
+                    dt=self.oxidize_timestep / self.oxidize_steps,
+                    steps=self.oxidize_steps)
+
+                if concentrations[self.sdchem.hindex]:
+                    concentrations[self.sdchem.hindex] = 1e-7 * M
+
+            dict_amounts = self.sdchem.dict(concentrations)
             new_dry_conc = min(dict_amounts["NH3"], dict_amounts["HSO4m"])
             new_dry_v = amount_to_dry_v(new_dry_conc * wet)
 
-            data[0][i] = new_dry_v
-            for j, v in enumerate(amount):
-                amounts[j][i] = v * wet
+            # TODO verify indexing is correct
+            self.particles.state["dry volume"][i] = new_dry_v
+            for k, v in dict_amounts.items():
+                self.particles.state[k][i] = v * wet
 
-            if i == 0:
-                print(
-                    f"Calculated @ {i}: {data[0][i]}")
-                print(
-                    f"Chemistry step took {(time.perf_counter_ns() - t0) * si.ns}s")
-        print(f"Chemistry total took {(time.perf_counter_ns() - t0) * si.ns}s")
+        t1 = time.perf_counter_ns()
+        print(f"Chemistry total took {(t1 - t0) * si.ns :0.3f}s,"
+              f" skipped {skipped}/{self.particles.n_sd}")
 
     @staticmethod
-    def get_starting_amounts(dry_v):
-        return {k: v(dry_v) for k, v in COMPOUNDS.items()}
+    def get_starting_amounts(dry_v, wet_v):
+        return {k: v(dry_v, wet_v) for k, v in COMPOUNDS.items()}
