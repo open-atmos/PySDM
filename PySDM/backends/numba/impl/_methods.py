@@ -2,7 +2,7 @@
 Created at 18.03.2020
 """
 
-from . import conf
+from PySDM.backends.numba import conf
 import numba
 from numba import boolean, int64
 

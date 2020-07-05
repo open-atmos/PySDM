@@ -3,7 +3,7 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from ._maths_methods import MathsMethods
+from PySDM.backends.numba.impl._maths_methods import MathsMethods
 
 
 class Storage:

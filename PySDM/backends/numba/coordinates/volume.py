@@ -1,3 +1,7 @@
+"""
+Created at 2020
+"""
+
 import numba
 from PySDM.backends.numba import conf
 import numpy as np

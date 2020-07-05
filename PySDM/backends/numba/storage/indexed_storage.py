@@ -2,10 +2,10 @@
 Created at 03.06.2020
 """
 
-from .storage import Storage
-from ._storage_methods import StorageMethods
-from ._algorithmic_step_methods import AlgorithmicStepMethods
-from ._algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.numba.storage.storage import Storage
+from PySDM.backends.numba.impl._storage_methods import StorageMethods
+from PySDM.backends.numba.impl._algorithmic_step_methods import AlgorithmicStepMethods
+from PySDM.backends.numba.impl._algorithmic_methods import AlgorithmicMethods
 
 
 class IndexedStorage(Storage):

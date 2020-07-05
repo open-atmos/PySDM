@@ -4,7 +4,7 @@ Created at 03.07.2020
 
 import numpy as np
 
-from PySDM.backends.numba.incrementation import Incrementation
+from PySDM.backends.numba.random.incrementation import Incrementation
 
 
 #  TIP: can be call asynchronous

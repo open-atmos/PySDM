@@ -1,8 +1,5 @@
 """
 Created at 06.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from . import volume as coord_volume
