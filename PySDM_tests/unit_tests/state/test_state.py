@@ -61,9 +61,9 @@ class TestState:
         particles.get_particles(attributes={'n': np.zeros(n_sd)})
         sut = particles.state
         sut._State__idx = TestState.storage(idx)
-        sut.whole_attributes['n'].data = TestState.storage(n, sut._State__idx)
+        sut.attributes['n'].data = TestState.storage(n, sut._State__idx)
         n_cell = max(cells) + 1
-        sut.whole_attributes['cell id'].data = TestState.storage(cells, sut._State__idx)
+        sut.attributes['cell id'].data = TestState.storage(cells, sut._State__idx)
         idx_length = len(sut._State__idx)
         sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
         sut._State__n_sd = particles.n_sd
@@ -184,7 +184,7 @@ class TestState:
         cell_id = []
         for i in range(len(cell_start) - 1):
             cell_id = cell_id + [i] * cell_start[i+1]
-        sut.whole_attributes['cell id'].data = TestState.storage(cell_id)
+        sut.attributes['cell id'].data = TestState.storage(cell_id)
         sut._State__cell_start = TestState.storage(cell_start)
         sut._State__sorted = True
         sut._State__n_sd = particles.n_sd

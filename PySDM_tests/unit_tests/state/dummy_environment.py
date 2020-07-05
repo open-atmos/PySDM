@@ -1,8 +1,5 @@
 """
 Created at 21.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.mesh import Mesh

@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 from PySDM.initialisation.spectra import Lognormal, Exponential
 
 import numpy as np

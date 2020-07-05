@@ -1,8 +1,5 @@
 """
 Created at 27.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles

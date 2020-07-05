@@ -1,8 +1,5 @@
 """
 Created at 05.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -74,5 +71,3 @@ class TestMaths:
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.
         assert discr_mean_T_squared == 300. ** 2
-
-

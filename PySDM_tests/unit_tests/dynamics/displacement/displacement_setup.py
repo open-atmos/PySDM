@@ -1,8 +1,5 @@
 """
 Created at 29.04.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.backends.default import Default
