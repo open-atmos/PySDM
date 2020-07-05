@@ -1,8 +1,5 @@
 """
 Created at 24.01.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.physics import constants as const
@@ -34,33 +31,23 @@ class Gravitational:
         self.particles = particles_builder.particles
         particles_builder.request_attribute('radius')
         particles_builder.request_attribute('terminal velocity')
-        self.__tmp = self.particles.backend.array(self.particles.n_sd, dtype=float)
+        self.__tmp = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
 
     def collection_efficiency(self, output, is_first_in_pair):
-        backend = self.particles.backend
-        self.particles.sum_pair(output, 'radius', is_first_in_pair)
-        backend.power(output, 2)
-        backend.multiply(output, const.pi * self.collection_efficiency)
-
-        backend.distance_pair(self.__tmp, self.particles.state['terminal velocity'], is_first_in_pair,
-                              self.particles.state._State__idx, self.particles.state.SD_num)
-        backend.multiply(output, self.__tmp)
+        output.sum_pair(self.particles.state['radius'], is_first_in_pair)
+        output **= 2
+        output *= const.pi * self.collection_efficiency
+        self.__tmp.distance_pair(self.particles.state['terminal velocity'], is_first_in_pair)
+        output *= self.__tmp
 
     def linear_collection_efficiency(self, output, is_first_in_pair):
-        idx = self.particles.state._State__idx
-        length = self.particles.state.SD_num
-        backend = self.particles.backend
+        self.__tmp.sort_pair(self.particles.state['radius'], is_first_in_pair)
+        self.particles.backend.linear_collection_efficiency(
+            self.params, output, self.__tmp, is_first_in_pair, const.si.um)
+        output **= 2
+        output *= const.pi
+        self.__tmp **= 2
+        output *= self.__tmp
 
-        backend.sort_pair(self.__tmp, self.particles.state['radius'], is_first_in_pair, idx, length)
-        backend.linear_collection_efficiency(self.params, output, self.__tmp, is_first_in_pair, length, const.si.um)
-        backend.power(output, 2)
-        backend.multiply(output, const.pi)
-        backend.power(self.__tmp, 2)
-        backend.multiply(output, self.__tmp)
-
-        backend.distance_pair(self.__tmp, self.particles.state['terminal velocity'], is_first_in_pair, idx, length)
-        backend.multiply(output, self.__tmp)
-
-    # TODO: cleanup
-    def analytic_solution(self, x, t, x_0, N_0):
-        return x * 0
+        self.__tmp.distance_pair(self.particles.state['terminal velocity'], is_first_in_pair)
+        output *= self.__tmp

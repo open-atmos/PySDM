@@ -1,8 +1,5 @@
 """
 Created at 07.06.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import mpmath
@@ -15,7 +12,7 @@ class Golovin:
         self.particles = None
 
     def __call__(self, output, is_first_in_pair):
-        self.particles.sum_pair(output, 'volume', is_first_in_pair)
+        output.sum_pair(self.particles.state['volume'], is_first_in_pair)
         output *= self.b
 
     def register(self, particles_builder):

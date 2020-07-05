@@ -53,6 +53,9 @@ class IndexedStorage(Storage):
         AlgorithmicStepMethods.max_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
         self.idx = None
 
+    def sort_pair(self, other, is_first_in_pair):
+        AlgorithmicStepMethods.sort_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+
     def sum_pair(self, other, is_first_in_pair):
         AlgorithmicStepMethods.sum_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
         self.idx = None

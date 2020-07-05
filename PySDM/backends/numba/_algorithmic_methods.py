@@ -142,9 +142,9 @@ class AlgorithmicMethods:
                         output[i] = max(0, output[i])
 
     @staticmethod
-    def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
+    def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         return AlgorithmicMethods.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.data, length, unit)
+            params, output.data, radii.data, is_first_in_pair.data, len(is_first_in_pair), unit)
 
     @staticmethod
     @numba.njit()
