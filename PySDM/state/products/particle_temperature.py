@@ -10,8 +10,8 @@ class ParticleTemperature(MomentProduct):
     def __init__(self, particles_builder):
         particles_builder.request_attribute('temperature')
         super().__init__(
-            particles=particles_builder.particles,
-            shape=particles_builder.particles.mesh.grid,
+            core=particles_builder.core,
+            shape=particles_builder.core.mesh.grid,
             name='T',
             unit='K',
             description='Particle temperature',

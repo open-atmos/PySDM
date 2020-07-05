@@ -9,11 +9,11 @@ from PySDM.dynamics.condensation.condensation import Condensation
 class RipeningRate(Product):
 
     def __init__(self, particles_builder):
-        particles = particles_builder.particles
+        particles = particles_builder.core
         self.condensation = particles.dynamics[str(Condensation)]
 
         super().__init__(
-            particles=particles,
+            core=particles,
             shape=particles.mesh.grid,
             name='ripening_rate',
             description='ripening rate'

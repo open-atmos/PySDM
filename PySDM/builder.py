@@ -17,7 +17,7 @@ from PySDM.attributes.cell.cell_id import CellID
 class Builder:
 
     def __init__(self, n_sd, backend, stats=None):
-        self.particles = Core(n_sd, backend, stats)
+        self.core = Core(n_sd, backend, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
@@ -26,17 +26,17 @@ class Builder:
         self.condensation_params = {'coord': coord, 'adaptive': adaptive}
 
     def set_environment(self, environment_class, params: dict):
-        assert_none(self.particles.environment)
-        self.particles.environment = environment_class(self, **params)
+        assert_none(self.core.environment)
+        self.core.environment = environment_class(self, **params)
 
     def register_dynamic(self, dynamic_class, params: dict):
         instance = (dynamic_class(self, **params))
-        self.particles.dynamics[str(dynamic_class)] = instance
+        self.core.dynamics[str(dynamic_class)] = instance
 
     def register_product(self, product):
-        if product.name in self.particles.products:
+        if product.name in self.core.products:
             raise Exception(f'product name "{product.name}" already registered')
-        self.particles.products[product.name] = product
+        self.core.products[product.name] = product
 
     def get_attribute(self, attribute_name):
         self.request_attribute(attribute_name)
@@ -49,19 +49,19 @@ class Builder:
     def get_particles(self, attributes: dict, products: dict = {}):
         for attribute in attributes:
             self.request_attribute(attribute)
-        if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.particles.dynamics:  # TODO: mapper?
-            self.particles.condensation_solver = \
-                self.particles.backend.make_condensation_solver(**self.condensation_params,
-                                                                enable_drop_temperatures='temperatures' in self.req_attr)
+        if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.core.dynamics:  # TODO: mapper?
+            self.core.condensation_solver = \
+                self.core.backend.make_condensation_solver(**self.condensation_params,
+                                                           enable_drop_temperatures='temperatures' in self.req_attr)
         attributes['n'] = discretise_n(attributes['n'])
-        if self.particles.mesh.dimension == 0:
+        if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
-        self.particles.state = StateFactory.attributes(self.particles, self.req_attr, attributes)
+        self.core.state = StateFactory.attributes(self.core, self.req_attr, attributes)
 
         for product_class, args in products.items():
             self.register_product(product_class(self, **args))
 
-        return self.particles
+        return self.core
 
 
 def assert_none(*params):

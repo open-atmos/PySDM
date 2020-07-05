@@ -8,7 +8,7 @@ from PySDM.backends.default import Default
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import linear
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 
 backend = Default
 

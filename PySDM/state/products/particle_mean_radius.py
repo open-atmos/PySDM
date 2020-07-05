@@ -11,8 +11,8 @@ class ParticleMeanRadius(MomentProduct):
 
     def __init__(self, particles_builder):
         super().__init__(
-            particles=particles_builder.particles,
-            shape=particles_builder.particles.mesh.grid,
+            core=particles_builder.core,
+            shape=particles_builder.core.mesh.grid,
             name='radius_m1',
             unit='um',
             description='mean radius',

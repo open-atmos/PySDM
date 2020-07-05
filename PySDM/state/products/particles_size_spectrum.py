@@ -14,8 +14,8 @@ class ParticlesSizeSpectrum(MomentProduct):
         self.v_bins = v_bins
         self.normalise_by_dv = normalise_by_dv
         super().__init__(
-            particles=particles_builder.particles,
-            shape=(*particles_builder.particles.mesh.grid, len(self.v_bins) - 1),
+            core=particles_builder.core,
+            shape=(*particles_builder.core.mesh.grid, len(self.v_bins) - 1),
             name='Particles Size Spectrum',
             unit=f"mg-1 μm-1{'' if normalise_by_dv else ' m^3'}",
             description='Specific concentration density',

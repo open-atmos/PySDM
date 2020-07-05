@@ -7,8 +7,8 @@ from ._moist_lagrangian import _MoistLagrangian
 
 class _MoistLagrangianParcel(_MoistLagrangian):
 
-    def __init__(self, particles, dt, mesh, variables, mass_of_dry_air):
-        super().__init__(particles, dt, mesh, variables, mass_of_dry_air)
+    def __init__(self, core, dt, mesh, variables, mass_of_dry_air):
+        super().__init__(core, dt, mesh, variables, mass_of_dry_air)
         self.parcel_vars = variables
 
     def _get_thd(self):

@@ -99,7 +99,7 @@ class Simulation:
         #     raise NotImplementedError()
 
         attributes = {}
-        moist_environment_init(attributes, particles_builder.particles.environment,
+        moist_environment_init(attributes, particles_builder.core.environment,
                                spatial_discretisation=spatial_sampling.pseudorandom,
                                spectral_discretisation=spectral_sampling.constant_multiplicity,  # TODO: random
                                spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,

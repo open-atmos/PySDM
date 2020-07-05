@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 
 
 def test_approximation(plot=False):

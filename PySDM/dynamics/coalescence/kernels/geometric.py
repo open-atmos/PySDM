@@ -15,8 +15,8 @@ class Geometric(Gravitational):
         self.collection_efficiency = 1
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.particles.state['radius'], is_first_in_pair)
+        output.sum_pair(self.core.state['radius'], is_first_in_pair)
         output **= 2
         output *= const.pi * self.collection_efficiency
-        self.tmp.distance_pair(self.particles.state['terminal velocity'], is_first_in_pair)
+        self.tmp.distance_pair(self.core.state['terminal velocity'], is_first_in_pair)
         output *= self.tmp

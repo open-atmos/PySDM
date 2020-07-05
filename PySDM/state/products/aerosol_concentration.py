@@ -13,8 +13,8 @@ class AerosolConcentration(MomentProduct):
         self.radius_threshold = radius_threshold
 
         super().__init__(
-            particles=particles_builder.particles,
-            shape=particles_builder.particles.mesh.grid,
+            core=particles_builder.core,
+            shape=particles_builder.core.mesh.grid,
             name='n_a_cm3',
             unit='cm-3',
             description='Aerosol concentration',

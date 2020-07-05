@@ -10,10 +10,10 @@ from PySDM.physics import constants as const
 
 
 class Radius(DerivedAttribute):
-    def __init__(self, particles_builder):
-        self.volume = particles_builder.get_attribute('volume')
+    def __init__(self, builder):
+        self.volume = builder.get_attribute('volume')
         dependencies = [self.volume]
-        super().__init__(particles_builder, name='radius', dependencies=dependencies)
+        super().__init__(builder, name='radius', dependencies=dependencies)
 
     def recalculate(self):
         self.data.idx = self.volume.data.idx

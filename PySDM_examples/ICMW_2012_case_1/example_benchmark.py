@@ -47,7 +47,7 @@ def main():
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
-                # simulation.particles.croupier = method
+                # simulation.core.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
 

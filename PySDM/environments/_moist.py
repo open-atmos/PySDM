@@ -8,10 +8,10 @@ from PySDM.builder import Builder
 
 class _Moist:
 
-    def __init__(self, particles_builder: Builder, dt, mesh, variables):
+    def __init__(self, builder: Builder, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
-        self.particles = particles_builder.particles
-        self.particles.observers.append(self)
+        self.core = builder.core
+        self.core.observers.append(self)
         self.dt = dt
         self.mesh = mesh
         self._values = {
@@ -23,7 +23,7 @@ class _Moist:
     def _allocate(self, variables):
         result = {}
         for var in variables:
-            result[var] = self.particles.backend.Storage.empty((self.mesh.n_cell,), float)
+            result[var] = self.core.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, index):
@@ -39,8 +39,8 @@ class _Moist:
         target['qv'].ravel(self._get_qv())
         target['thd'].ravel(self._get_thd())
 
-        self.particles.backend.apply(
-            function=self.particles.backend.temperature_pressure_RH,
+        self.core.backend.apply(
+            function=self.core.backend.temperature_pressure_RH,
             args=(target['rhod'], target['thd'], target['qv']),
             output=(target['T'], target['p'], target['RH'])
         )

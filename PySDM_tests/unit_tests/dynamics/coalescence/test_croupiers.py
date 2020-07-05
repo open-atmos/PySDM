@@ -9,7 +9,7 @@ from PySDM.backends.default import Default
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 
 backend = Default
 
@@ -42,7 +42,7 @@ def test_final_state(croupier):
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
-    particles.permute(u01)
+    particles.state.permute(u01)
     _ = particles.state.cell_start
 
     # Assert

@@ -22,9 +22,28 @@ class Core:
         self.n_steps = 0
         self.stats = stats or Stats()
 
-        self.croupier = 'local'
         self.sorting_scheme = 'default'
         self.condensation_solver = None
+
+    @property
+    def env(self):
+        return self.environment
+
+    @property
+    def bck(self):
+        return self.backend
+
+    @property
+    def Storage(self):
+        return self.backend.Storage
+
+    @property
+    def IndexedStorage(self):
+        return self.backend.IndexedStorage
+
+    @property
+    def Random(self):
+        return  self.backend.Random
 
     @property
     def n_sd(self) -> int:
@@ -40,14 +59,6 @@ class Core:
         if self.environment is not None:
             return self.environment.mesh
 
-    def permute(self, u01):
-        if self.croupier == 'global':
-            self.state.permutation_global(u01)
-        elif self.croupier == 'local':
-            self.state.permutation_local(u01)
-        else:
-            raise NotImplementedError()
-
     def normalize(self, prob, norm_factor, subs):
         factor = self.dt/subs/self.mesh.dv
         self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, factor)
@@ -55,13 +66,10 @@ class Core:
     def coalescence(self, gamma, adaptive, subs, adaptive_memory):
         return self.state.coalescence(gamma, adaptive, subs, adaptive_memory)
 
-    def remove_precipitated(self):
-        self.state.remove_precipitated()
-
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \
             self.state["temperature"] if self.state.has_attribute("temperature") else \
-            self.backend.array(0, dtype=float)
+            self.Storage.empty(0, dtype=float)
 
         self.backend.condensation(
                 solver=self.condensation_solver,
@@ -72,13 +80,13 @@ class Core:
                 n=self.state['n'],
                 vdry=self.state["dry volume"],
                 idx=self.state._State__idx,
-                rhod=self.environment["rhod"],
-                thd=self.environment["thd"],
-                qv=self.environment["qv"],
-                dv=self.environment.dv,
-                prhod=self.environment.get_predicted("rhod"),
-                pthd=self.environment.get_predicted("thd"),
-                pqv=self.environment.get_predicted("qv"),
+                rhod=self.env["rhod"],
+                thd=self.env["thd"],
+                qv=self.env["qv"],
+                dv=self.env.dv,
+                prhod=self.env.get_predicted("rhod"),
+                pthd=self.env.get_predicted("thd"),
+                pqv=self.env.get_predicted("qv"),
                 kappa=kappa,
                 rtol_x=rtol_x,
                 rtol_thd=rtol_thd,

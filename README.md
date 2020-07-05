@@ -86,7 +86,7 @@ The key element of the PySDM interface is the [``Core``](https://github.com/atmo
 Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
 ```Python
-from PySDM.builder import Builder
+from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin

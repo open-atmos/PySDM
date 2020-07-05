@@ -8,11 +8,11 @@ from PySDM.builder import Builder
 
 class EulerianAdvection:
 
-    def __init__(self, particles_builder: Builder):
-        self.particles = particles_builder.particles
+    def __init__(self, builder: Builder):
+        self.core = builder.core
 
     def __call__(self):
-        env: MoistEulerianInterface = self.particles.environment
+        env: MoistEulerianInterface = self.core.environment
         env.get_predicted('qv').download(env.get_qv().ravel())
         env.get_predicted('thd').download(env.get_thd().ravel())
 

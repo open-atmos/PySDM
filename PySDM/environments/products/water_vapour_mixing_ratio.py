@@ -10,10 +10,10 @@ from PySDM.environments._moist import _Moist
 class WaterVapourMixingRatio(Product):
 
     def __init__(self, particles_builder):
-        particles = particles_builder.particles
+        particles = particles_builder.core
         assert isinstance(particles.environment, _Moist)
         self.environment = particles.environment
-        super().__init__(particles=particles,
+        super().__init__(core=particles,
                          description="Water vapour mixing ratio",
                          name="qv",
                          unit="g/kg",

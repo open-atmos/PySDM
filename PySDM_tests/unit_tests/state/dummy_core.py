@@ -13,7 +13,7 @@ class DummyCore(Builder, Core):
 
     def __init__(self, backend, n_sd):
         Core.__init__(self, n_sd, backend)
-        self.particles = self
+        self.core = self
         self.environment = DummyEnvironment(self)
         self.req_attr = {'n': Multiplicities(self), 'cell id': CellID(self)}
         self.state = None

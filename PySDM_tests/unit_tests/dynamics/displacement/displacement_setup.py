@@ -3,7 +3,7 @@ Created at 29.04.2020
 """
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
 from PySDM.state.state_factory import StateFactory
 import numpy as np
@@ -30,6 +30,6 @@ class Setup:
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
         particles.get_particles(attributes)
-        sut = Displacement(particles_builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
+        sut = Displacement(builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
 
         return sut, particles

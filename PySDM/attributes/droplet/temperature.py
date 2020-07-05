@@ -7,5 +7,5 @@ from PySDM.attributes.tensive_attribute import TensiveAttribute
 
 class Temperature(TensiveAttribute):
 
-    def __init__(self, particles_builder):
-        super().__init__(particles_builder, name='temperature', extensive=False)
+    def __init__(self, builder):
+        super().__init__(builder, name='temperature', extensive=False)

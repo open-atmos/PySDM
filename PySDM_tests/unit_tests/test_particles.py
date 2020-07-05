@@ -2,7 +2,7 @@
 Created at 27.05.2020
 """
 
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 from PySDM.backends.default import Default
 
 

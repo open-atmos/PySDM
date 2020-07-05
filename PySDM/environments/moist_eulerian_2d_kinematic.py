@@ -14,9 +14,9 @@ from PySDM import Builder
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles_builder: Builder, dt, grid, size, stream_function, field_values, rhod_of,
+    def __init__(self, builder: Builder, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
-        super().__init__(particles_builder, dt, Mesh(grid, size), [])
+        super().__init__(builder, dt, Mesh(grid, size), [])
 
         self.__rhod_of = rhod_of
 
@@ -42,7 +42,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             )
         )
 
-        rhod = particles_builder.particles.backend.Storage.from_ndarray(rhod.ravel())
+        rhod = builder.core.Storage.from_ndarray(rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
         self.asynchronous = False
@@ -80,8 +80,8 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def get_courant_field_data(self):
         result = [
             self.__GC.get_component(0) / self.__rhod_of(
-                x_vec_coord(self.particles.mesh.grid)[1]),
+                x_vec_coord(self.core.mesh.grid)[1]),
             self.__GC.get_component(1) / self.__rhod_of(
-                z_vec_coord(self.particles.mesh.grid)[1])
+                z_vec_coord(self.core.mesh.grid)[1])
         ]
         return result

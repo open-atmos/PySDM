@@ -3,7 +3,7 @@ Created at 2019
 """
 
 from PySDM.state.state_factory import StateFactory
-from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
+from PySDM_tests.unit_tests.state.dummy_core import DummyCore
 from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
@@ -114,7 +114,7 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation_global(u01)
+        sut.permutation(u01)
 
         # Assert
         expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
@@ -137,7 +137,7 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation_local(u01)
+        sut.permutation(u01, local=True)
 
         # Assert
         expected = np.array([1, 0, 2, 3, 4, 5, 6, 7])
@@ -158,11 +158,11 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation_global(u01)
+        sut.permutation(u01)
         expected = sut._State__idx.to_ndarray()
         sut._State__sorted = True
         sut._State__idx = TestState.storage(range(n_sd))
-        sut.permutation_global(u01)
+        sut.permutation(u01)
 
         # Assert
         np.testing.assert_array_equal(sut._State__idx, expected)

@@ -10,15 +10,15 @@ class Golovin:
 
     def __init__(self, b):
         self.b = b
-        self.particles = None
+        self.core = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.particles.state['volume'], is_first_in_pair)
+        output.sum_pair(self.core.state['volume'], is_first_in_pair)
         output *= self.b
 
-    def register(self, particles_builder):
-        self.particles = particles_builder.particles
-        particles_builder.request_attribute('volume')
+    def register(self, builder):
+        self.core = builder.core
+        builder.request_attribute('volume')
 
     def analytic_solution(self, x, t, x_0, N_0):
         tau = 1 - mpmath.exp(-N_0 * self.b * x_0 * t)

@@ -7,13 +7,13 @@ from PySDM.physics import formulae as phys
 
 
 class CriticalRadius(DerivedAttribute):
-    def __init__(self, particles_builder):
-        self.cell_id = particles_builder.get_attribute('cell id')
-        self.r_dry = particles_builder.get_attribute('dry radius')
-        self.environment = particles_builder.particles.environment
-        self.particles = particles_builder.particles
+    def __init__(self, builder):
+        self.cell_id = builder.get_attribute('cell id')
+        self.r_dry = builder.get_attribute('dry radius')
+        self.environment = builder.core.environment
+        self.particles = builder.core
         dependencies = [self.r_dry, self.cell_id]
-        super().__init__(particles_builder, name='critical radius', dependencies=dependencies)
+        super().__init__(builder, name='critical radius', dependencies=dependencies)
 
     def recalculate(self):
         kappa = self.particles.dynamics["<class 'PySDM.dynamics.condensation.condensation.Condensation'>"].kappa

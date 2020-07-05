@@ -20,10 +20,10 @@ def moist_environment_init(
         enable_temperatures=False
 ):
     with np.errstate(all='raise'):
-        positions = spatial_discretisation(environment.mesh.grid, environment.particles.n_sd)
+        positions = spatial_discretisation(environment.mesh.grid, environment.core.n_sd)
         attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
             environment.mesh.cellular_attributes(positions)
-        r_dry, n_per_kg = spectral_discretisation(environment.particles.n_sd, spectrum_per_mass_of_dry_air, r_range)
+        r_dry, n_per_kg = spectral_discretisation(environment.core.n_sd, spectrum_per_mass_of_dry_air, r_range)
         T = environment['T'].to_ndarray()
         p = environment['p'].to_ndarray()
         RH = environment['RH'].to_ndarray()

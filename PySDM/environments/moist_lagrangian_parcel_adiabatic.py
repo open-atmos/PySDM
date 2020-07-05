@@ -12,10 +12,10 @@ from PySDM.mesh import Mesh
 
 class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
-    def __init__(self, particles: Core, dt,
+    def __init__(self, core: Core, dt,
                  mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
 
-        super().__init__(particles, dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
+        super().__init__(core, dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
 
         # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w
@@ -33,7 +33,7 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
         self.notify()
 
     def advance_parcel_vars(self):
-        dt = self.particles.dt
+        dt = self.core.dt
         qv = self['qv'][0]
         T = self['T'][0]
         p = self['p'][0]

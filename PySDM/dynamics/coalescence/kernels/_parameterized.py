@@ -13,13 +13,13 @@ class Parameterized(Gravitational):
         self.params = params
 
     def __call__(self, output, is_first_in_pair):
-        self.tmp.sort_pair(self.particles.state['radius'], is_first_in_pair)
-        self.particles.backend.linear_collection_efficiency(
+        self.tmp.sort_pair(self.core.state['radius'], is_first_in_pair)
+        self.core.backend.linear_collection_efficiency(
             self.params, output, self.tmp, is_first_in_pair, const.si.um)
         output **= 2
         output *= const.pi
         self.tmp **= 2
         output *= self.tmp
 
-        self.tmp.distance_pair(self.particles.state['terminal velocity'], is_first_in_pair)
+        self.tmp.distance_pair(self.core.state['terminal velocity'], is_first_in_pair)
         output *= self.tmp

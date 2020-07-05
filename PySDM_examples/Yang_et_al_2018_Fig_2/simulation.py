@@ -37,7 +37,7 @@ class Simulation:
             "z0": setup.z0
         })
 
-        environment = particles_builder.particles.environment
+        environment = particles_builder.core.environment
         r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
         particles_builder.register_dynamic(Condensation, {
             "kappa": setup.kappa,

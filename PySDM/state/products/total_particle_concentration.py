@@ -10,8 +10,8 @@ class TotalParticleConcentration(MomentProduct):
 
     def __init__(self, particles_builder):
         super().__init__(
-            particles=particles_builder.particles,
-            shape=particles_builder.particles.mesh.grid,
+            core=particles_builder.core,
+            shape=particles_builder.core.mesh.grid,
             name='n_cm3',
             unit='cm-3',
             description='Total particle concentration',
