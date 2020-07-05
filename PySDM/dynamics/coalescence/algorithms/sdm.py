@@ -61,7 +61,7 @@ class SDM:
 
     def compute_probability(self, prob, is_first_in_pair, subs):
         self.kernel(self.temp, is_first_in_pair)
-        self.particles.max_pair(prob, is_first_in_pair)
+        prob.max_pair(self.particles.state['n'], is_first_in_pair)
         prob *= self.temp
 
         norm_factor = self.temp
@@ -70,4 +70,4 @@ class SDM:
     def toss_pairs(self, is_first_in_pair, u01):
         self.particles.state.sanitize()
         self.particles.permute(u01)
-        self.particles.find_pairs(is_first_in_pair)
+        is_first_in_pair.find_pairs(self.particles.state['cell start'], self.particles.state['cell id'])

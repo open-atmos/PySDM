@@ -1,4 +1,8 @@
-from PySDM_tests.unit_tests.state.testable_state_factory import TestableStateFactory
+"""
+Created at 2019
+"""
+
+from PySDM.state.state_factory import StateFactory
 from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
 from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
@@ -102,7 +106,7 @@ class TestState:
 
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
-        sut = TestableStateFactory.empty_state(particles, n_sd)
+        sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__sorted = True
@@ -124,7 +128,7 @@ class TestState:
 
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
-        sut = TestableStateFactory.empty_state(particles, n_sd)
+        sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__cell_start = TestState.storage(cell_start)
@@ -146,7 +150,7 @@ class TestState:
 
         # Arrange
         particles = DummyParticles(backend, n_sd=n_sd)
-        sut = TestableStateFactory.empty_state(particles, n_sd)
+        sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
         sut._State__sorted = True

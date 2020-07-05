@@ -1,8 +1,5 @@
 """
 Created at 09.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -11,21 +8,6 @@ from PySDM.attributes.tensive_attribute import TensiveAttribute
 
 
 class StateFactory:
-
-    @staticmethod
-    def state(n: np.ndarray, intensive: dict, extensive: dict, cell_id, cell_origin, position_in_cell,
-              particles) -> State:
-        assert StateFactory.check_args(n, intensive, extensive)
-        sd_num = len(n)
-        attributes, keys, intensive_start = StateFactory.init_attributes_and_keys(
-            particles, intensive, extensive, sd_num)
-
-        cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
-        state = State(n, attributes, keys, intensive_start,
-                      cell_id, cell_start, cell_origin, position_in_cell, particles)
-        state.recalculate_cell_id()
-
-        return state
 
     @staticmethod
     def attributes(particles, req_attr, attributes):
@@ -63,41 +45,13 @@ class StateFactory:
 
         cell_start = np.empty(particles.mesh.n_cell + 1, dtype=int)
 
-        state = State(idx, n, base_attributes, keys, len(extensive_attr),
-                      cell_id, cell_start, cell_origin, position_in_cell, particles, req_attr)
-        state.recalculate_cell_id()
+        state = State(particles, idx, base_attributes, keys, len(extensive_attr), cell_start, req_attr)
 
         return state
 
     @staticmethod
-    def check_args(n: np.ndarray, intensive: dict, extensive: dict) -> bool:
-        assert n.dtype == np.int64 or n.dtype == np.int32
-
-        result = True
-        if n.ndim != 1:
-            result = False
-
-        # https://en.wikipedia.org/wiki/Intensive_and_extensive_properties
-        for attribute in (*intensive.values(), *extensive.values()):
-            if attribute.shape != n.shape:
-                result = False
-                break
-        return result
-
-    @staticmethod
-    def init_attributes_and_keys(particles, intensive: dict, extensive: dict, SD_num) -> (np.ndarray, dict, int):
-        attributes = particles.backend.array((len(intensive) + len(extensive), SD_num), float)
-        keys = {}
-        intensive_start = len(extensive)
-
-        idx = 0
-        for tensive in ['extensive', 'intensive']:
-            for key, array in {'intensive': intensive, 'extensive': extensive}[tensive].items():
-                if key in keys:
-                    raise ValueError("Non-unique attribute name: " + key)
-                keys[key] = idx
-                particles.backend.write_row(attributes, idx, particles.backend.from_ndarray(array))
-                idx += 1
-
-        return attributes, keys, intensive_start
-
+    def empty_state(particles, n_sd) -> State:
+        idx = particles.backend.IndexedStorage.from_ndarray(np.arange(n_sd))
+        return State(
+            particles=particles, idx=idx, keys={}, intensive_start=-1,
+            cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, whole_attributes={})
