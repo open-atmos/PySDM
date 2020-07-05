@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs
 import pytest

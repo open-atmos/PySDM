@@ -1,9 +1,5 @@
 """
 Created at 22.11.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
@@ -74,8 +70,3 @@ def test_multi_timestep(plot=False):
         prev = storage.profiles[step]["qv"]
         eps = 1e-5
         assert ((prev + eps) >= next).all()
-
-
-
-
-

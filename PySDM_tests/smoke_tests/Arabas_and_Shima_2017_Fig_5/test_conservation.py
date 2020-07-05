@@ -12,8 +12,6 @@ import numpy as np
 
 
 def ql(simulation: Simulation):
-    backend = simulation.particles.backend
-
     droplet_volume = simulation.particles.state['volume'].to_ndarray()[0]
 
     droplet_number = simulation.particles.state['n'].to_ndarray()[0]
@@ -25,7 +23,7 @@ def ql(simulation: Simulation):
 
 
 @pytest.mark.parametrize("setup_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air", [1, 10000]) # [1, 10, 100, 1000, 10000])
+@pytest.mark.parametrize("mass_of_dry_air", [1, 10000])
 @pytest.mark.parametrize("scheme", ['BDF', 'default'])
 def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
     # Arrange
@@ -51,7 +49,7 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
 
 
 @pytest.mark.parametrize("setup_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air",  [1, 10000]) # [1, 10, 100, 1000, 10000])
+@pytest.mark.parametrize("mass_of_dry_air",  [1, 10000])
 def test_energy_conservation(setup_idx, mass_of_dry_air):
     # Arrange
     setup = Setup(
