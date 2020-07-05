@@ -5,7 +5,7 @@ Created at 07.06.2019
 from PySDM.particles_builder import ParticlesBuilder
 
 
-class SDM:
+class Coalescence:
 
     def __init__(self, particles_builder: ParticlesBuilder, kernel, seed=None, max_substeps=128):
         self.particles = particles_builder.particles
@@ -70,4 +70,4 @@ class SDM:
     def toss_pairs(self, is_first_in_pair, u01):
         self.particles.state.sanitize()
         self.particles.permute(u01)
-        is_first_in_pair.find_pairs(self.particles.state['cell start'], self.particles.state['cell id'])
+        is_first_in_pair.find_pairs(self.particles.state.cell_start, self.particles.state['cell id'])

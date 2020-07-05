@@ -11,6 +11,7 @@ default_rtol_thd = 1e-8
 
 
 class Condensation:
+
     def __init__(self, particles_builder: ParticlesBuilder, kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
@@ -48,4 +49,3 @@ class Condensation:
                 ripening_flags=self.ripening_flags
             )
             self.substeps[:] = np.maximum(self.substeps[:], int(self.particles.dt))
-

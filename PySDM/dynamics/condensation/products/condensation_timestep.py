@@ -1,8 +1,5 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import Product
@@ -11,6 +8,7 @@ import numpy as np
 
 
 class CondensationTimestep(Product):
+
     def __init__(self, particles_builder, debug = False):
         particles = particles_builder.particles
         particles.observers.append(self)

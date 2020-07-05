@@ -7,6 +7,7 @@ import numpy as np
 
 
 class Golovin:
+
     def __init__(self, b):
         self.b = b
         self.particles = None
