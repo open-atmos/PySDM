@@ -7,7 +7,7 @@ from PySDM.state.state import State
 from PySDM.stats import Stats
 
 
-class Particles:
+class Core:
 
     def __init__(self, n_sd, backend, stats=None):
         self.__n_sd = n_sd

@@ -2,17 +2,17 @@
 Created at 19.11.2019
 """
 
-from PySDM.particles_builder import ParticlesBuilder
-from PySDM.particles import Particles
+from PySDM.builder import Builder
+from PySDM.core import Core
 from .dummy_environment import DummyEnvironment
 from PySDM.attributes.droplet.multiplicities import Multiplicities
 from PySDM.attributes.cell.cell_id import CellID
 
 
-class DummyParticles(ParticlesBuilder, Particles):
+class DummyCore(Builder, Core):
 
     def __init__(self, backend, n_sd):
-        Particles.__init__(self, n_sd, backend)
+        Core.__init__(self, n_sd, backend)
         self.particles = self
         self.environment = DummyEnvironment(self)
         self.req_attr = {'n': Multiplicities(self), 'cell id': CellID(self)}

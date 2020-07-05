@@ -11,7 +11,7 @@ from PySDM.environments import Box
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
 
 backend = Default
 
@@ -20,7 +20,7 @@ class TestSDMSingleCell:
 
     @staticmethod
     def get_dummy_particles_and_sdm(n_length):
-        particles = DummyParticles(backend, n_sd=n_length)
+        particles = DummyCore(backend, n_sd=n_length)
         dv = 1
         particles.set_environment(Box, {'dv': dv, 'dt': 0})
         sdm = Coalescence(particles, StubKernel(particles.backend))

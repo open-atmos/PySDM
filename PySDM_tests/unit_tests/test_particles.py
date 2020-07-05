@@ -2,7 +2,7 @@
 Created at 27.05.2020
 """
 
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
 from PySDM.backends.default import Default
 
 
@@ -20,7 +20,7 @@ class TestParticles:
                 assert self.steps == self.particles.n_steps
 
         steps = 33
-        particles = DummyParticles(Default, 44)
+        particles = DummyCore(Default, 44)
         observer = Observer(particles)
         particles.run(steps)
 

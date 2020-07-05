@@ -9,12 +9,12 @@ from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from PySDM.mesh import Mesh
-from PySDM import ParticlesBuilder
+from PySDM import Builder
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles_builder: ParticlesBuilder, dt, grid, size, stream_function, field_values, rhod_of,
+    def __init__(self, particles_builder: Builder, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
         super().__init__(particles_builder, dt, Mesh(grid, size), [])
 

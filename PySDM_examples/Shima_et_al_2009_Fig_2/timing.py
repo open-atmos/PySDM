@@ -2,7 +2,7 @@
 Created at 08.08.2019
 """
 
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
@@ -10,7 +10,7 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 
 
 def run(setup):
-    particles_building = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
+    particles_building = Builder(n_sd=setup.n_sd, backend=setup.backend)
     particles_building.set_environment(Box, {'dv': setup.dv, 'dt': setup.dt})
     v, n = constant_multiplicity(setup.n_sd, setup.spectrum, (setup.init_x_min, setup.init_x_max))
     attributes = {'n': n, 'volume': v}

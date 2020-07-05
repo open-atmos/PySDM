@@ -9,7 +9,7 @@ from PySDM.backends.default import Default
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
 
 backend = Default
 
@@ -29,7 +29,7 @@ def test_final_state(croupier):
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
     attributes['volume'], attributes['n'] = linear(n_sd, spectrum, (v_min, v_max))
-    particles = DummyParticles(backend, n_sd)
+    particles = DummyCore(backend, n_sd)
     particles.set_environment(DummyEnvironment, {'grid': (x, y)})
     particles.croupier = croupier
 

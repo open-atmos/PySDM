@@ -5,4 +5,4 @@ Created at 30.04.2020
 @author: Sylwester Arabas
 """
 
-from .particles_builder import ParticlesBuilder
+from .builder import Builder

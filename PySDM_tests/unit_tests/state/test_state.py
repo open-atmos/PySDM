@@ -3,7 +3,7 @@ Created at 2019
 """
 
 from PySDM.state.state_factory import StateFactory
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
 from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
@@ -29,7 +29,7 @@ class TestState:
     ])
     def test_housekeeping(self, volume, n):
         # Arrange
-        particles = DummyParticles(backend, n_sd=len(n))
+        particles = DummyCore(backend, n_sd=len(n))
         attributes = {'n': n, 'volume': volume}
         particles.get_particles(attributes)
         sut = particles.state
@@ -57,7 +57,7 @@ class TestState:
     ])
     def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
-        particles = DummyParticles(backend, n_sd=n_sd)
+        particles = DummyCore(backend, n_sd=n_sd)
         particles.get_particles(attributes={'n': np.zeros(n_sd)})
         sut = particles.state
         sut._State__idx = TestState.storage(idx)
@@ -84,7 +84,7 @@ class TestState:
         droplet_id = 0
         initial_position = Default.from_ndarray(np.array([[0], [0]]))
         grid = (1, 1)
-        particles = DummyParticles(backend, n_sd=1)
+        particles = DummyCore(backend, n_sd=1)
         particles.set_environment(DummyEnvironment, {'grid': grid})
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(initial_position)
         cell_origin[0, droplet_id] = .1
@@ -105,7 +105,7 @@ class TestState:
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
         # Arrange
-        particles = DummyParticles(backend, n_sd=n_sd)
+        particles = DummyCore(backend, n_sd=n_sd)
         sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
@@ -127,7 +127,7 @@ class TestState:
         cell_start = [0, 0, 2, 5, 7, n_sd]
 
         # Arrange
-        particles = DummyParticles(backend, n_sd=n_sd)
+        particles = DummyCore(backend, n_sd=n_sd)
         sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
@@ -149,7 +149,7 @@ class TestState:
         u01 = np.random.random(n_sd)
 
         # Arrange
-        particles = DummyParticles(backend, n_sd=n_sd)
+        particles = DummyCore(backend, n_sd=n_sd)
         sut = StateFactory.empty_state(particles, n_sd)
         idx_length = len(sut._State__idx)
         sut._State__tmp_idx = TestState.storage([0] * idx_length)
@@ -175,7 +175,7 @@ class TestState:
         cell_start = [0, 0, 20, 250, 700, n_sd]
 
         # Arrange
-        particles = DummyParticles(backend, n_sd=n_sd)
+        particles = DummyCore(backend, n_sd=n_sd)
         particles.get_particles(attributes={'n': np.zeros(n_sd)})
         sut = particles.state
         sut._State__idx = TestState.storage(idx)

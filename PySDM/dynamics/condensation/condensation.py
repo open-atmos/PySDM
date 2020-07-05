@@ -2,7 +2,7 @@
 Created at 24.10.2019
 """
 
-from ...particles_builder import ParticlesBuilder
+from ...builder import Builder
 import numpy as np
 
 
@@ -12,7 +12,7 @@ default_rtol_thd = 1e-8
 
 class Condensation:
 
-    def __init__(self, particles_builder: ParticlesBuilder, kappa,
+    def __init__(self, particles_builder: Builder, kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  coord='volume logarithm', adaptive=True,

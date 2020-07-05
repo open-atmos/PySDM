@@ -4,7 +4,7 @@ Created at 09.11.2019
 
 import numpy as np
 
-from PySDM.particles import Particles
+from PySDM.core import Core
 from PySDM.initialisation.multiplicities import discretise_n  # TODO
 from PySDM.state.state_factory import StateFactory
 
@@ -14,10 +14,10 @@ from PySDM.attributes.droplet.volume import Volume
 from PySDM.attributes.cell.cell_id import CellID
 
 
-class ParticlesBuilder:
+class Builder:
 
     def __init__(self, n_sd, backend, stats=None):
-        self.particles = Particles(n_sd, backend, stats)
+        self.particles = Core(n_sd, backend, stats)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None

@@ -3,12 +3,12 @@ Created at 28.11.2019
 """
 
 import numpy as np
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 
 
 class _Moist:
 
-    def __init__(self, particles_builder: ParticlesBuilder, dt, mesh, variables):
+    def __init__(self, particles_builder: Builder, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
         self.particles = particles_builder.particles
         self.particles.observers.append(self)

@@ -3,7 +3,7 @@ Created at 29.04.2020
 """
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.state.dummy_particles import DummyCore
 from PySDM.dynamics import Displacement
 from PySDM.state.state_factory import StateFactory
 import numpy as np
@@ -21,7 +21,7 @@ class Setup:
         self.dt = None
 
     def get_displacement(self):
-        particles = DummyParticles(Default, n_sd=len(self.n))
+        particles = DummyCore(Default, n_sd=len(self.n))
         particles.set_environment(DummyEnvironment,
                                   {'dt': self.dt,
                                    'grid': self.grid,

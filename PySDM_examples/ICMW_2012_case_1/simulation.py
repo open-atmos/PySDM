@@ -18,7 +18,7 @@ from PySDM.environments.products.relative_humidity import RelativeHumidity
 from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.initialisation.moist_environment_init import moist_environment_init
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.state.products.aerosol_concentration import AerosolConcentration
 from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
@@ -63,7 +63,7 @@ class Simulation:
 
     def reinit(self):
 
-        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, backend=self.setup.backend)
+        particles_builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
         particles_builder.set_environment(MoistEulerian2DKinematic, {
             "dt": self.setup.dt,
             "grid": self.setup.grid,

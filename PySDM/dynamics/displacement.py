@@ -3,12 +3,12 @@ Created at 23.10.2019
 """
 
 import numpy as np
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 
 
 class Displacement:
 
-    def __init__(self, particles_builder: ParticlesBuilder, scheme='FTBS', sedimentation=False):
+    def __init__(self, particles_builder: Builder, scheme='FTBS', sedimentation=False):
         particles_builder.request_attribute('terminal velocity')
         self.particles = particles_builder.particles
         courant_field = self.particles.environment.get_courant_field_data()

@@ -3,12 +3,12 @@ Created at 29.11.2019
 """
 
 from PySDM.environments import MoistEulerianInterface
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 
 
 class EulerianAdvection:
 
-    def __init__(self, particles_builder: ParticlesBuilder):
+    def __init__(self, particles_builder: Builder):
         self.particles = particles_builder.particles
 
     def __call__(self):

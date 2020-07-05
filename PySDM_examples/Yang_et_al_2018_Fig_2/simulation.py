@@ -5,7 +5,7 @@ Created at 23.04.2020
 
 import numpy as np
 
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
@@ -26,7 +26,7 @@ class Simulation:
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
-        particles_builder = ParticlesBuilder(backend=setup.backend, n_sd=setup.n_sd)
+        particles_builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
         particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
             "dt": dt_output / self.n_substeps,
             "mass_of_dry_air": setup.mass_of_dry_air,
