@@ -1,3 +1,7 @@
+"""
+Crated at 2019
+"""
+
 # https://github.com/ptooley/numbasub/blob/master/src/numbasub/nonumba.py
 
 import functools
@@ -17,4 +21,4 @@ def optional_arg_decorator(fn):
 
 @optional_arg_decorator
 def njit(func, *args, **kwargs):
-    return(func)
+    return func
