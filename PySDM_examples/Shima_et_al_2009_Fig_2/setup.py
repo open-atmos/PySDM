@@ -24,12 +24,17 @@ class SetupA:
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3
     dt = 1 * si.seconds
+    adaptive = False
     seed = 44
-    steps = [0, 1200, 2400, 3600]
+    _steps = [0, 1200, 2400, 3600]
+
+    @property
+    def steps(self):
+        return [int(step/self.dt) for step in self._steps]
 
     kernel = Golovin(b=1.5e3 / si.second)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
-    radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True)
+    radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True)
 
     backend = Default

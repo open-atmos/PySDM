@@ -1,8 +1,5 @@
 """
 Created at 08.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -13,11 +10,11 @@ from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
-from PySDM_examples.Shima_et_al_2009_Fig_2.plotter import Plotter
+from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 
-def run(setup):
+def run(setup, observers=()):
     particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
     particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
     attributes = {}
@@ -26,6 +23,12 @@ def run(setup):
     particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
     products = {ParticlesVolumeSpectrum: {}}
     particles = particles_builder.get_particles(attributes, products)
+    particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
+    if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.whole_attributes:
+        particles.state.whole_attributes['terminal velocity'].approximation = setup.u_term(particles)
+
+    for observer in observers:
+        particles.observers.append(observer)
 
     vals = {}
     for step in setup.steps:
@@ -36,7 +39,7 @@ def run(setup):
     return vals, particles.stats
 
 
-def main(plot: bool):
+def main(plot: bool, save):
     with np.errstate(all='raise'):
         setup = SetupA()
 
@@ -45,12 +48,18 @@ def main(plot: bool):
         states, _ = run(setup)
 
     with np.errstate(invalid='ignore'):
-        plotter = Plotter(setup)
+        plotter = SpectrumPlotter(setup)
+        plotter.smooth = True
         for step, vals in states.items():
             plotter.plot(vals, step * setup.dt)
+        if save is not None:
+            n_sd = setup.n_sd
+            plotter.save(save + "/" +
+                         f"{n_sd}_shima_fig_2" +
+                         "." + plotter.format)
         if plot:
             plotter.show()
 
 
 if __name__ == '__main__':
-    main(plot=True)
+    main(plot=True, save=None)

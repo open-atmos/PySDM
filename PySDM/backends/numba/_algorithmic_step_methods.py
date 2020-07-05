@@ -1,8 +1,5 @@
 """
 Created at 18.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from . import conf
@@ -63,6 +60,23 @@ class AlgorithmicStepMethods:
     @staticmethod
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         return AlgorithmicStepMethods.max_pair_body(data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+
+    @staticmethod
+    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
+        data_out[:] = 0
+        for i in prange(length - 1):
+            if is_first_in_pair[i]:
+                if data_in[idx[i]] < data_in[idx[i + 1]]:
+                    data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
+                else:
+                    data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
+
+    @staticmethod
+    def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
+        return AlgorithmicStepMethods.sort_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)

@@ -51,8 +51,8 @@ class Particles:
         else:
             raise NotImplementedError()
 
-    def normalize(self, prob, norm_factor):
-        self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, self.dt / self.mesh.dv)
+    def normalize(self, prob, norm_factor, subs):
+        self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, self.dt/subs/self.mesh.dv)
 
     def find_pairs(self, is_first_in_pair):
         self.state.find_pairs(is_first_in_pair)
@@ -63,8 +63,8 @@ class Particles:
     def max_pair(self, prob, is_first_in_pair):
         self.state.max_pair(prob, is_first_in_pair)
 
-    def coalescence(self, gamma):
-        self.state.coalescence(gamma)
+    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
+        return self.state.coalescence(gamma, adaptive, subs, adaptive_memory)
 
     def remove_precipitated(self):
         self.state.remove_precipitated()

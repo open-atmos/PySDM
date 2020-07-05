@@ -28,12 +28,14 @@ class AlgorithmicMethods:
                                                        position_in_cell.data)
 
     @staticmethod
-    @numba.njit(void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+    @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: waits for https://github.com/numba/numba/issues/5279
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+        result = 1
         for i in prange(length - 1):
             if gamma[i] == 0:
+                # adaptive_memory[i] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -41,31 +43,37 @@ class AlgorithmicMethods:
 
             if n[j] < n[k]:
                 j, k = k, j
-            g = int(min(gamma[i], n[j] // n[k]))
+            prop = int(n[j] / n[k])
+            if adaptive:
+                result = max(result, int(((gamma[i])*subs) / prop))
+                # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
+            g = min(int(gamma[i]), prop)
             if g == 0:
                 continue
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
-                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (
-                            volume[k] + g * volume[j])
+                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) \
+                                  / (volume[k] + g * volume[j])
                 extensive[:, k] += g * extensive[:, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) / (
-                            volume[k] + g * volume[j])
+                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) \
+                                  / (volume[k] + g * volume[j])
                 intensive[:, k] = intensive[:, j]
                 extensive[:, j] = g * extensive[:, j] + extensive[:, k]
                 extensive[:, k] = extensive[:, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
+        return result  # np.amax(adaptive_memory[:length-1])
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
         return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                                   extensive.data, gamma.data, healthy.data)
+                                                   extensive.data, gamma.data, healthy.data,
+                                                   adaptive, subs, adaptive_memory.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -112,6 +120,43 @@ class AlgorithmicMethods:
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
         AlgorithmicMethods.flag_precipitated_body(
             cell_origin.data, position_in_cell.data, idx.data, length, healthy.data)
+
+    @staticmethod
+    @numba.njit()
+    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, length, unit):
+        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        for i in prange(length - 1):
+            output[i] = 0
+            if is_first_in_pair[i]:
+                r = radii[i] / unit
+                r_s = radii[i + 1] / unit
+                p = r_s / r
+                if p != 0 and p != 1:
+                    G = (G1 / r) ** Mg + G2 + G3 * r
+                    Gp = (1 - p) ** G
+                    if Gp != 0:
+                        D = D1 / r ** D2
+                        E = E1 / r ** E2
+                        F = (F1 / r) ** Mf + F2
+                        output[i] = A + B * p + D / p ** F + E / Gp
+                        output[i] = max(0, output[i])
+
+    @staticmethod
+    def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
+        return AlgorithmicMethods.linear_collection_efficiency_body(
+            params, output.data, radii.data, is_first_in_pair.data, length, unit)
+
+    @staticmethod
+    @numba.njit()
+    def interpolation_body(output, radius, factor, b, c):
+        for i in range(len(radius)):
+            r_id = int(factor * radius[i])
+            r_rest = ((factor * radius[i]) % 1) / factor
+            output[i] = b[r_id] + r_rest * c[r_id]
+
+    @staticmethod
+    def interpolation(output, radius, factor, b, c):
+        return AlgorithmicMethods.interpolation_body(output.data, radius.data, factor, b, c)
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
@@ -239,8 +284,8 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
-    def _parallel_counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start,
-                                                                 cell_start_p):
+    def _parallel_counting_sort_by_cell_id_and_update_cell_start(
+            new_idx, idx, cell_id, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p
         # Warning: Assuming len(cell_end) == n_cell+1
         thread_num = cell_end_thread.shape[0]

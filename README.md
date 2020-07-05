@@ -8,10 +8,9 @@ PySDM is a package for simulating the dynamics of population of particles
 The package core is a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
-PySDM has three alternative parallel number-crunching backends 
-  available: multi-threaded CPU backends based on [Numba](http://numba.pydata.org/) 
-  and [Pythran](https://pythran.readthedocs.io/en/latest/), and a GPU-resident
-  backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
+PySDM has two alternative parallel number-crunching backends 
+  available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
+  and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
 
 ## Dependencies and installation
 
@@ -25,14 +24,9 @@ The **Numba backend** is the default, and features multi-threaded parallelism fo
   multi-core CPUs. 
 It uses the just-in-time compilation technique based on the LLVM infrastructure.
 
-The **Pythran backend** uses the ahead-of-time compilation approach (also using LLVM) and
-  offers an alternative implementation of the multi-threaded parallelism in PySDM.
-
 The **ThrustRTC** backend offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
-Note that, as of ThrustRTC v0.2.1, only Python 3.7 is supported by the ThrustRTC PyPI package
-  (i.e., manual installation is needed for other versions of Python).
 
 The dependencies of PySDM examples and test subpackages are summarised in
   the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
@@ -45,8 +39,13 @@ Hints on the installation workflow can be sought in the [.travis.yml](https://gi
 
 ## Demos:
 - [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)   
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Shima_et_al_2009_Fig_2/demo.ipynb)    
   (Box model, coalescence only, test case employing Golovin analytical solution)
+- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) Figs. 6, 8, 10 
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FBerry_1967_Figs/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Berry_1967_Figs/demo.ipynb)    
+  (Box model, coalescence only, test cases for realistic kernels)
 - [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)   
   (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)
@@ -92,14 +91,16 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.backends import Numba
+from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 particles_builder = ParticlesBuilder(n_sd=n_sd, backend=Numba)
 particles_builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
 particles_builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
-particles = particles_builder.get_particles(attributes)
+products = {ParticlesVolumeSpectrum: {}}
+particles = particles_builder.get_particles(attributes, products)
 ```
-The ``backend`` argument may be set to ``Numba``, ``Pythran`` or ``ThrustRTC``
-  what translates to choosing one of the multi-threaded backend or the 
+The ``backend`` argument may be set to ``Numba`` or ``ThrustRTC``
+  what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
 The employed ``Box`` environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
@@ -145,9 +146,7 @@ The resultant plot looks as follows:
     - [Numba](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/numba): 
       multi-threaded CPU backend using LLVM-powered just-in-time compilation
     - [ThrustRTC](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/thrustRTC): 
-      GPU-resident backend using real-time compilation 
-    - [Pythran](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/pythran.py): 
-      multi-threaded CPU backend using LLVM-powered ahead-of-time compilation 
+      GPU-resident backend using NVRTC runtime compilation library for CUDA 
 - [initialisation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/initialisation):
     - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/multiplicities.py): 
       integer-valued discretisation with sanity checks for errors due to type casting 

@@ -49,14 +49,7 @@ class MathsMethods:
         MathsMethods.__floor_body.launch_n(output.size(), [output])
 
     __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
-        if (input_data[i] >= 0) 
-            output[i] = (long) input_data[i];
-        else
-        {
-            output[i] = (long) input_data[i];
-            if (input_data[i] != output[i])
-                output[i] -= 1;
-        }
+        output[i] = (long) floor(input_data[i]);
         ''')
 
     @staticmethod

@@ -52,7 +52,7 @@ script:
       done;
   - |
       if [[ $TRAVIS_OS_NAME == linux ]]; then
-        for i in PySDM_examples/*/example.py; do
+        for i in PySDM_examples/*/example*.py; do
           echo $i
           PYTHONPATH=. travis_wait 15 python$PY_SFX $i
         done;

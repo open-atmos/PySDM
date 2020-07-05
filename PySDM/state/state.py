@@ -108,17 +108,21 @@ class State:
     def max_pair(self, prob, is_first_in_pair):
         prob.max_pair(self['n'], is_first_in_pair)
 
-    def coalescence(self, gamma):
-        self.__backend.coalescence(n=self['n'],
-                                   volume=self['volume'],
-                                   idx=self.__idx,
-                                   length=self.SD_num,
-                                   intensive=self.get_intensive_attrs(),
-                                   extensive=self.get_extensive_attrs(),
-                                   gamma=gamma,
-                                   healthy=self.__healthy_memory)
-        self.healthy = bool(self.__healthy_memory)
+    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
+        result = self.__backend.coalescence(n=self['n'],
+                                            volume=self['volume'],
+                                            idx=self.__idx,
+                                            length=self.SD_num,
+                                            intensive=self.get_intensive_attrs(),
+                                            extensive=self.get_extensive_attrs(),
+                                            gamma=gamma,
+                                            healthy=self.__healthy_memory,
+                                            adaptive=adaptive,
+                                            subs=subs,
+                                            adaptive_memory=adaptive_memory)
+        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
         self.whole_attributes['volume'].mark_updated()
+        return result
 
     def has_attribute(self, attr):
         return attr in self.keys
