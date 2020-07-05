@@ -1,8 +1,13 @@
+"""
+Created at 2020
+"""
+
 from ...product import Product
 from PySDM.environments._moist import _Moist
 
 
 class DryAirDensity(Product):
+
     def __init__(self, particles_builder):
         particles = particles_builder.particles
         assert isinstance(particles.environment, _Moist)

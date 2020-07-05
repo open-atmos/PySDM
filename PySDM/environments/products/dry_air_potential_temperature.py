@@ -1,8 +1,5 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from ...product import Product
@@ -10,6 +7,7 @@ from PySDM.environments._moist import _Moist
 
 
 class DryAirPotentialTemperature(Product):
+
     def __init__(self, particles_builder):
         particles = particles_builder.particles
         assert isinstance(particles.environment, _Moist)

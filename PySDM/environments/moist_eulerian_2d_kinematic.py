@@ -9,7 +9,6 @@ from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from PySDM.mesh import Mesh
-
 from PySDM import ParticlesBuilder
 
 
@@ -47,7 +46,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
         self.asynchronous = False
-        self.thread: Thread = None
+        self.thread: (Thread, None) = None
 
         super().sync()
         self.notify()
@@ -63,7 +62,6 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             mpdata.advance(1)
 
     def step(self):
-        # TODO
         if self.asynchronous:
             self.thread = Thread(target=self.__mpdata_step, args=())
             self.thread.start()
