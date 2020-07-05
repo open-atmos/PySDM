@@ -12,13 +12,13 @@ import os
 
 
 # TODO: run for different atol, rtol, dt_max
-if os.environ.get('TRAVIS') == 'true' or os.environ.get('FULL_TESTS'):
+if os.environ.get('TRAVIS') == 'true' and not os.environ.get('FAST_TESTS') == 'true':
     scheme = ('default',  'BDF')
     coord = ('volume logarithm', 'volume')
     adaptive = (True, False)
     enable_particle_temperatures = (False, True)
 else:
-    schemes = ('default',)
+    scheme = ('default',)
     coord = ('volume logarithm',)
     adaptive = (True,)
     enable_particle_temperatures = (False,)
