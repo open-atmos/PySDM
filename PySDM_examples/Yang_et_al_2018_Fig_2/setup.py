@@ -1,8 +1,5 @@
 """
 Created at 25.11.2019
-
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 from PySDM.initialisation.spectra import Lognormal
@@ -15,6 +12,7 @@ import numpy as np
 
 
 class Setup:
+
     def __init__(self, n_sd=100, dt_output = 1 * si.second, dt_max=1 * si.second):
         self.n_steps = int(self.total_time / (5 * si.second) )  # TODO: rename to n_output
         self.n_sd = n_sd
@@ -52,4 +50,5 @@ class Setup:
 
     @staticmethod
     def w(t):
-        return .5 * (np.where(t < Setup.t0, 1, np.sign(-np.sin(2*np.pi * Setup.f0 * (t-Setup.t0))))) * si.metre / si.second
+        return .5 * (np.where(t < Setup.t0, 1, np.sign(-np.sin(2*np.pi * Setup.f0 * (t-Setup.t0))))) \
+               * si.metre / si.second

@@ -1,8 +1,5 @@
 """
 Created at 08.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -14,6 +11,7 @@ from PySDM.physics import formulae as phys
 
 
 class SetupA:
+
     init_x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
     init_x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
 

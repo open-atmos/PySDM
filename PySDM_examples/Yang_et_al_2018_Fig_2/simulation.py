@@ -18,6 +18,7 @@ from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
 
 
 class Simulation:
+
     def __init__(self, setup):
 
         dt_output = setup.total_time / setup.n_steps  # TODO: overwritten in jupyter example
