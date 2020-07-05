@@ -1,8 +1,5 @@
 """
 Created at 14.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.attributes.tensive_attribute import TensiveAttribute

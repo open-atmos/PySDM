@@ -4,7 +4,7 @@ Created at 11.05.2020
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
 from PySDM.physics import formulae as phys
-# from PySDM.dynamics import Condensation
+
 
 class CriticalRadius(DerivedAttribute):
     def __init__(self, particles_builder):

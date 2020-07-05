@@ -1,8 +1,5 @@
 """
 Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
@@ -16,5 +13,6 @@ class DryRadius(DerivedAttribute):
         super().__init__(particles_builder, name='dry radius', dependencies=dependencies)
 
     def recalculate(self):
+        self.data.idx = self.volume_dry.data.idx
         self.data.product(self.volume_dry.get(), (3 / 4 / const.pi))
         self.data **= 1 / 3

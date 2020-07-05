@@ -1,8 +1,5 @@
 """
 Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 
@@ -19,9 +16,10 @@ class Attribute:
     def allocate(self, data=None):
         if data is None:
             if self.size > 1:
-                self.data = self.particles.backend.Storage.empty((self.size, self.particles.n_sd), dtype=self.dtype)
+                self.data = self.particles.backend.IndexedStorage.empty(
+                    (self.size, self.particles.n_sd), dtype=self.dtype)
             else:
-                self.data = self.particles.backend.Storage.empty((self.particles.n_sd,), dtype=self.dtype)
+                self.data = self.particles.backend.IndexedStorage.empty((self.particles.n_sd,), dtype=self.dtype)
         else:
             self.data = data
 

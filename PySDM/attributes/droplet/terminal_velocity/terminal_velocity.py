@@ -16,5 +16,6 @@ class TerminalVelocity(DerivedAttribute):
         self.approximation = Interpolation(particles_builder.particles)
 
     def recalculate(self):
+        self.data.idx = self.radius.data.idx
         self.approximation(self.data, self.radius.get())
 
