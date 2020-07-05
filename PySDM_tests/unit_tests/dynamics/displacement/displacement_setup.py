@@ -22,10 +22,10 @@ class Setup:
 
     def get_displacement(self):
         core = DummyCore(Default, n_sd=len(self.n))
-        core.set_environment(DummyEnvironment,
-                                  {'dt': self.dt,
-                                   'grid': self.grid,
-                                   'courant_field_data': self.courant_field_data})
+        core.environment = DummyEnvironment(
+            dt=self.dt,
+            grid=self.grid,
+            courant_field_data=self.courant_field_data)
         positions = np.array(self.positions)
         cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}

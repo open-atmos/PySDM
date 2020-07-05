@@ -30,7 +30,7 @@ def test_final_state(croupier):
     spectrum = Lognormal(n_part, v_mean, d)
     attributes['volume'], attributes['n'] = linear(n_sd, spectrum, (v_min, v_max))
     core = DummyCore(backend, n_sd)
-    core.set_environment(DummyEnvironment, {'grid': (x, y)})
+    core.environment = DummyEnvironment(grid=(x, y))
     core.croupier = croupier
 
     attributes['cell id'] = backend.array((n_sd,), dtype=int)

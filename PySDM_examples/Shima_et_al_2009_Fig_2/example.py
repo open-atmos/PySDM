@@ -20,10 +20,11 @@ def run(setup, observers=()):
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
                                                                   (setup.init_x_min, setup.init_x_max))
-    builder.add_dynamic(Coalescence(setup.kernel))
+    coalescence = Coalescence(setup.kernel)
+    coalescence.adaptive = setup.adaptive
+    builder.add_dynamic(coalescence)
     products = {ParticlesVolumeSpectrum: {}}
     particles = builder.get_particles(attributes, products)
-    particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
     if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.attributes:
         particles.state.attributes['terminal velocity'].approximation = setup.u_term(particles)
 

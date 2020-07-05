@@ -85,7 +85,7 @@ class TestState:
         initial_position = Default.from_ndarray(np.array([[0], [0]]))
         grid = (1, 1)
         particles = DummyCore(backend, n_sd=1)
-        particles.set_environment(DummyEnvironment, {'grid': grid})
+        particles.environment = DummyEnvironment(grid=grid)
         cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(initial_position)
         cell_origin[0, droplet_id] = .1
         cell_origin[1, droplet_id] = .2

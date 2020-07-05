@@ -22,7 +22,7 @@ class TestSDMSingleCell:
     def get_dummy_core_and_sdm(n_length):
         core = DummyCore(backend, n_sd=n_length)
         dv = 1
-        core.environment = Box(dv, 0)
+        core.environment = Box(dv=dv, dt=0)
         sdm = Coalescence(StubKernel(core.backend))
         sdm.register(core)
         return core, sdm
