@@ -5,6 +5,7 @@ Created at 2019
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import Setup, w_avgs
+from PySDM_tests.smoke_tests.utils import bdf
 from PySDM.physics import constants as const
 import pytest
 import numpy as np
@@ -24,8 +25,8 @@ def ql(simulation: Simulation):
 
 
 @pytest.mark.parametrize("setup_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air", [1, 10, 100, 1000, 10000])
-@pytest.mark.parametrize("scheme", ['BDF', 'libcloud'])
+@pytest.mark.parametrize("mass_of_dry_air", [1, 10000]) # [1, 10, 100, 1000, 10000])
+@pytest.mark.parametrize("scheme", ['BDF', 'default'])
 def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
     # Arrange
     setup = Setup(
@@ -38,6 +39,8 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
     setup.scheme = scheme
     simulation = Simulation(setup)
     qt0 = setup.q0 + ql(simulation)
+    if scheme == 'BDF':
+        bdf.patch_particles(simulation.particles)
 
     # Act
     simulation.run()
@@ -48,7 +51,7 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
 
 
 @pytest.mark.parametrize("setup_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air",  [1, 10, 100, 1000, 10000])
+@pytest.mark.parametrize("mass_of_dry_air",  [1, 10000]) # [1, 10, 100, 1000, 10000])
 def test_energy_conservation(setup_idx, mass_of_dry_air):
     # Arrange
     setup = Setup(

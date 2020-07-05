@@ -50,7 +50,7 @@ class Setup:
 
 w_avgs = (
     100 * si.centimetre / si.second,
-    50 * si.centimetre / si.second,
+    # 50 * si.centimetre / si.second,
     .2 * si.centimetre / si.second
 )
 

@@ -7,10 +7,14 @@ import numpy as np
 
 
 # TODO: run for different atol, rtol, dt_max
-@pytest.mark.parametrize("scheme", ['default',  'BDF'])
-@pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
-@pytest.mark.parametrize("adaptive", [True, False])
-@pytest.mark.parametrize("enable_particle_temperatures", [False, True])
+# @pytest.mark.parametrize("scheme", ['default',  'BDF'])
+# @pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
+# @pytest.mark.parametrize("adaptive", [True, False])
+# @pytest.mark.parametrize("enable_particle_temperatures", [False, True])
+@pytest.mark.parametrize("scheme", ['default', ])
+@pytest.mark.parametrize("coord", ['volume logarithm',])
+@pytest.mark.parametrize("adaptive", [True,])
+@pytest.mark.parametrize("enable_particle_temperatures", [True,])
 def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    # Arrange
     if scheme == 'BDF' and not adaptive:
         return

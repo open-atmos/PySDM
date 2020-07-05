@@ -120,7 +120,7 @@ class State:
                                             adaptive=adaptive,
                                             subs=subs,
                                             adaptive_memory=adaptive_memory)
-        self.healthy = not self.__backend.first_element_is_zero(self.__healthy_memory)
+        self.healthy = bool(self.__healthy_memory)
         self.whole_attributes['volume'].mark_updated()
         return result
 

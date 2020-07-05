@@ -20,7 +20,7 @@ class SDM:
         self.subs = 1
 
         self.temp = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
-        self.pairs_rand = self.particles.backend.array(self.particles.n_sd + self.max_substeps, dtype=float)
+        self.pairs_rand = self.particles.backend.Storage.empty(self.particles.n_sd + self.max_substeps, dtype=float)
         self.rand = self.particles.backend.Storage.empty(self.particles.n_sd // 2, dtype=float)
         self.prob = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=float)
         self.is_first_in_pair = self.particles.backend.IndexedStorage.empty(self.particles.n_sd, dtype=int)  # TODO bool
