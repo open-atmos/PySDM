@@ -110,7 +110,7 @@ class SDChemistry:
                 # Don't accumulate to avoid numerical errors
                 # We multiply by n, since all the droplets suck in the gases
                 c = (self.environment[envi]
-                     - (A - amounts[gasi]) * V_w / self.dv)
+                     - (A - amounts[gasi]) * n * V_w / self.dv)
 
                 # Ensure we do not take too much
                 if A < 0:
