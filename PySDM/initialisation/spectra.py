@@ -1,8 +1,5 @@
 """
 Created at 03.06.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from scipy.stats import lognorm
@@ -11,6 +8,7 @@ import math
 
 
 class Spectrum:
+
     def __init__(self, distribution, distribution_params, norm_factor):
         self.distribution_params = distribution_params  # (loc, scale)
         self.norm_factor = norm_factor
@@ -34,6 +32,7 @@ class Spectrum:
 
 
 class Exponential(Spectrum):
+
     def __init__(self, norm_factor, scale):
         super().__init__(expon, (
             0,     # loc
@@ -42,12 +41,14 @@ class Exponential(Spectrum):
 
 
 class Lognormal(Spectrum):
+
     def __init__(self, norm_factor: float, m_mode: float, s_geom: float):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
 
 
 # TODO
 class Sum:
+
     def __init__(self, spectra: tuple):
         self.spectra = spectra
 

@@ -1,8 +1,5 @@
 """
 Created at 16.01.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
