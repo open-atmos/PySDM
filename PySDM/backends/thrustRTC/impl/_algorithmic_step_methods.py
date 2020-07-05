@@ -1,13 +1,10 @@
 """
 Created at 20.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import ThrustRTC as trtc
-from .nice_thrust import nice_thrust
-from .conf import NICE_THRUST_FLAGS
+from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
+from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 
 class AlgorithmicStepMethods:

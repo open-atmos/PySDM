@@ -6,7 +6,7 @@ import numpy as np
 import numba
 from numba import void, float64, int64, prange
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.storage import Storage
+from PySDM.backends.numba.storage.storage import Storage
 
 
 class AlgorithmicMethods:

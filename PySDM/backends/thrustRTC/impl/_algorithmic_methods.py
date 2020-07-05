@@ -1,14 +1,10 @@
 """
 Created at 10.12.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import ThrustRTC as trtc
-from ._maths_methods import MathsMethods
-from .nice_thrust import nice_thrust
-from .conf import NICE_THRUST_FLAGS
+from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
+from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 
 class AlgorithmicMethods:
@@ -192,7 +188,7 @@ class AlgorithmicMethods:
         # TODO print("Numba import!: ThrustRTC.moments(...)")
 
         from PySDM.backends.numba.numba import Numba
-        from PySDM.backends.thrustRTC._storage_methods import StorageMethods
+        from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
         host_moment_0 = StorageMethods.to_ndarray(moment_0)
         host_moments = StorageMethods.to_ndarray(moments)
         host_n = StorageMethods.to_ndarray(n)
