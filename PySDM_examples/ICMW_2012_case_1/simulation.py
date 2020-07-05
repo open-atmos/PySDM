@@ -1,9 +1,5 @@
 """
 Created at 25.09.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 
@@ -34,6 +30,7 @@ from .spin_up import SpinUp
 
 
 class DummyController:
+
     def __init__(self):
         self.panic = False
         self.t_last = self.__times()
@@ -54,6 +51,7 @@ class DummyController:
 
 
 class Simulation:
+
     def __init__(self, setup, storage):
         self.setup = setup
         self.storage = storage

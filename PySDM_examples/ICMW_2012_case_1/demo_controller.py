@@ -1,7 +1,5 @@
 """
 Created at 02.10.2019
-
-@author: Sylwester Arabas
 """
 
 from ipywidgets import FloatProgress, Button, HBox, HTML

@@ -1,8 +1,5 @@
 """
 Created at 16.12.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM_examples.ICMW_2012_case_1.setup import Setup

@@ -1,15 +1,11 @@
 """
 Created at 25.09.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
 
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.dynamics.coalescence.kernels import Gravitational
+from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.backends.default import Default
 from PySDM.dynamics.condensation import condensation
 from PySDM.physics import formulae as phys
@@ -105,7 +101,7 @@ class Setup:
     r_min = .01 * si.micrometre
     r_max = 5 * si.micrometre
 
-    kernel = Gravitational(collection_efficiency=1)  # [s-1]  # TODO!
+    kernel = Geometric(collection_efficiency=1 / si.s)
     aerosol_radius_threshold = 1 * si.micrometre
 
     n_spin_up = 1 * si.hour / dt

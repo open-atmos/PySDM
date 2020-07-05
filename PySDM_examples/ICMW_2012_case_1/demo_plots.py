@@ -1,9 +1,14 @@
+"""
+Created at 2019
+"""
+
 import matplotlib.pyplot as plt
 import matplotlib
 import numpy as np
 
 
 class _Plot:
+
     def __init__(self):
         self.fig, self.ax = plt.subplots(1, 1)
         self.ax.set_title(' ')
@@ -65,6 +70,7 @@ class _ImagePlot(_Plot):
 
 
 class _SpectrumPlot(_Plot):
+
     def __init__(self, r_bins):
         super().__init__()
         self.ax.set_xlim(np.amin(r_bins), np.amax(r_bins))

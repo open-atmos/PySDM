@@ -1,8 +1,5 @@
 """
 Created at 27.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.dynamics import Displacement
@@ -10,6 +7,7 @@ from PySDM.dynamics import Coalescence
 
 
 class SpinUp:
+
     def __init__(self, particles, spin_up_steps):
         self.spin_up_steps = spin_up_steps
         particles.observers.append(self)
