@@ -27,25 +27,26 @@ class Simulation:
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
         particles_builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
-        particles_builder.set_environment(MoistLagrangianParcelAdiabatic, {
-            "dt": dt_output / self.n_substeps,
-            "mass_of_dry_air": setup.mass_of_dry_air,
-            "p0": setup.p0,
-            "q0": setup.q0,
-            "T0": setup.T0,
-            "w": setup.w,
-            "z0": setup.z0
-        })
+        particles_builder.set_environment(MoistLagrangianParcelAdiabatic(
+            dt=dt_output / self.n_substeps,
+            mass_of_dry_air=setup.mass_of_dry_air,
+            p0=setup.p0,
+            q0=setup.q0,
+            T0=setup.T0,
+            w=setup.w,
+            z0=setup.z0
+        ))
 
         environment = particles_builder.core.environment
         r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
-        particles_builder.register_dynamic(Condensation, {
-            "kappa": setup.kappa,
-            "coord": setup.coord,
-            "adaptive": setup.adaptive,
-            "rtol_x": setup.rtol_x,
-            "rtol_thd": setup.rtol_thd,
-        })
+        condensation = Condensation(
+            kappa=setup.kappa,
+            coord=setup.coord,
+            adaptive=setup.adaptive,
+            rtol_x=setup.rtol_x,
+            rtol_thd=setup.rtol_thd
+        )
+        particles_builder.add_dynamic(condensation)
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         products = {ParticlesSizeSpectrum: {'v_bins': phys.volume(setup.r_bins_edges)}, CondensationTimestep: {}, RipeningRate: {}}
         self.particles = particles_builder.get_particles(attributes, products)

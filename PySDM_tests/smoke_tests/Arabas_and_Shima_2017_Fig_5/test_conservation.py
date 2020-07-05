@@ -12,13 +12,13 @@ import numpy as np
 
 
 def ql(simulation: Simulation):
-    droplet_volume = simulation.particles.state['volume'].to_ndarray()[0]
+    droplet_volume = simulation.core.state['volume'].to_ndarray()[0]
 
-    droplet_number = simulation.particles.state['n'].to_ndarray()[0]
+    droplet_number = simulation.core.state['n'].to_ndarray()[0]
 
     droplet_mass = droplet_number * droplet_volume * const.rho_w
 
-    env = simulation.particles.environment
+    env = simulation.core.environment
     return droplet_mass / env.mass_of_dry_air
 
 
@@ -38,13 +38,13 @@ def test_water_mass_conservation(setup_idx, mass_of_dry_air, scheme):
     simulation = Simulation(setup)
     qt0 = setup.q0 + ql(simulation)
     if scheme == 'BDF':
-        bdf.patch_particles(simulation.particles)
+        bdf.patch_core(simulation.core)
 
     # Act
     simulation.run()
 
     # Assert
-    qt = simulation.particles.environment["qv"].to_ndarray() + ql(simulation)
+    qt = simulation.core.environment["qv"].to_ndarray() + ql(simulation)
     np.testing.assert_approx_equal(qt, qt0, 14)  # TODO: was 15 at some point...
 
 
@@ -59,7 +59,7 @@ def test_energy_conservation(setup_idx, mass_of_dry_air):
         mass_of_dry_air=mass_of_dry_air,
     )
     simulation = Simulation(setup)
-    env = simulation.particles.environment
+    env = simulation.core.environment
     thd0 = env['thd']
 
     # Act

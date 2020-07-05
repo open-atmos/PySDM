@@ -21,15 +21,16 @@ class Setup:
         self.dt = None
 
     def get_displacement(self):
-        particles = DummyCore(Default, n_sd=len(self.n))
-        particles.set_environment(DummyEnvironment,
+        core = DummyCore(Default, n_sd=len(self.n))
+        core.set_environment(DummyEnvironment,
                                   {'dt': self.dt,
                                    'grid': self.grid,
                                    'courant_field_data': self.courant_field_data})
         positions = np.array(self.positions)
-        cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)
+        cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
-        particles.get_particles(attributes)
-        sut = Displacement(builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
+        core.get_particles(attributes)
+        sut = Displacement(scheme=self.scheme, sedimentation=self.sedimentation)
+        sut.register(core)
 
-        return sut, particles
+        return sut, core

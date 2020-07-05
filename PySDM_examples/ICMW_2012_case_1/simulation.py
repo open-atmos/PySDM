@@ -64,36 +64,35 @@ class Simulation:
     def reinit(self):
 
         particles_builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
-        particles_builder.set_environment(MoistEulerian2DKinematic, {
-            "dt": self.setup.dt,
-            "grid": self.setup.grid,
-            "size": self.setup.size,
-            "stream_function": self.setup.stream_function,
-            "field_values": self.setup.field_values,
-            "rhod_of": self.setup.rhod,
-            "mpdata_iga": self.setup.mpdata_iga,
-            "mpdata_tot": self.setup.mpdata_tot,
-            "mpdata_fct": self.setup.mpdata_fct,
-            "mpdata_iters": self.setup.mpdata_iters
-        })
+        particles_builder.set_environment(MoistEulerian2DKinematic(
+            dt=self.setup.dt,
+            grid=self.setup.grid,
+            size=self.setup.size,
+            stream_function=self.setup.stream_function,
+            field_values=self.setup.field_values,
+            rhod_of=self.setup.rhod,
+            mpdata_iga=self.setup.mpdata_iga,
+            mpdata_tot=self.setup.mpdata_tot,
+            mpdata_fct=self.setup.mpdata_fct,
+            mpdata_iters=self.setup.mpdata_iters
+        ))
 
-
-        particles_builder.register_dynamic(Condensation, {
-            "kappa": self.setup.kappa,
-            "rtol_x": self.setup.condensation_rtol_x,
-            "rtol_thd": self.setup.condensation_rtol_thd,
-            "coord": self.setup.condensation_coord,
-            "adaptive": self.setup.adaptive,
-            "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
-            "do_condensation": self.setup.processes["condensation"]  # do somthing with that
-        })
-        particles_builder.register_dynamic(EulerianAdvection, {})
+        condensation = Condensation(
+            kappa=self.setup.kappa,
+            rtol_x=self.setup.condensation_rtol_x,
+            rtol_thd=self.setup.condensation_rtol_thd,
+            coord=self.setup.condensation_coord,
+            adaptive=self.setup.adaptive,
+            do_advection=self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
+            do_condensation=self.setup.processes["condensation"])  # do somthing with that)
+        particles_builder.add_dynamic(condensation)
+        particles_builder.add_dynamic(EulerianAdvection())
 
         if self.setup.processes["particle advection"]:
-            particles_builder.register_dynamic(
-                Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
+            displacement = Displacement(scheme='FTBS', sedimentation=self.setup.processes["sedimentation"])
+            particles_builder.add_dynamic(displacement)
         if self.setup.processes["coalescence"]:
-            particles_builder.register_dynamic(Coalescence, {"kernel": self.setup.kernel})
+            particles_builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
         # TODO
         # if self.setup.processes["relaxation"]:
         #     raise NotImplementedError()

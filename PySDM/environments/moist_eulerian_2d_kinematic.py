@@ -14,14 +14,14 @@ from PySDM import Builder
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, builder: Builder, dt, grid, size, stream_function, field_values, rhod_of,
+    def __init__(self, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
-        super().__init__(builder, dt, Mesh(grid, size), [])
+        super().__init__(dt, Mesh(grid, size), [])
 
         self.__rhod_of = rhod_of
 
         grid = self.mesh.grid
-        rhod = np.repeat(
+        self.rhod = np.repeat(
             rhod_of(
                 (np.arange(grid[1]) + 1 / 2) / grid[1]
             ).reshape((1, grid[1])),
@@ -33,7 +33,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
-            g_factor=rhod,
+            g_factor=self.rhod,
             options=Options(
                 n_iters=mpdata_iters,
                 infinite_gauge=mpdata_iga,
@@ -42,11 +42,15 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             )
         )
 
-        rhod = builder.core.Storage.from_ndarray(rhod.ravel())
-        self._values["current"]["rhod"] = rhod
-        self._tmp["rhod"] = rhod
         self.asynchronous = False
         self.thread: (Thread, None) = None
+
+    def register(self, builder):
+        _MoistEulerian.register(self, builder)
+        rhod = builder.core.Storage.from_ndarray(self.rhod.ravel())
+        self._values["current"]["rhod"] = rhod
+        self._tmp["rhod"] = rhod
+        delattr(self, 'rhod')
 
         super().sync()
         self.notify()

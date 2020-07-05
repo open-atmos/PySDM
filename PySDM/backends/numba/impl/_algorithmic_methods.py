@@ -103,7 +103,7 @@ class AlgorithmicMethods:
         n_threads = min(numba.config.NUMBA_NUM_THREADS, n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg.data,
-            v.data, particle_temperatures, r_cr.data, n.data, vdry.data, idx.data,
+            v.data, particle_temperatures.data, r_cr.data, n.data, vdry.data, idx.data,
             rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
             rtol_x, rtol_thd, dt, substeps.data, cell_order, ripening_flags.data
         )

@@ -19,16 +19,17 @@ backend = Default
 class TestSDMSingleCell:
 
     @staticmethod
-    def get_dummy_particles_and_sdm(n_length):
-        particles = DummyCore(backend, n_sd=n_length)
+    def get_dummy_core_and_sdm(n_length):
+        core = DummyCore(backend, n_sd=n_length)
         dv = 1
-        particles.set_environment(Box, {'dv': dv, 'dt': 0})
-        sdm = Coalescence(particles, StubKernel(particles.backend))
-        return particles, sdm
+        core.environment = Box(dv, 0)
+        sdm = Coalescence(StubKernel(core.backend))
+        sdm.register(core)
+        return core, sdm
 
     def test_single_collision(self, v_2, T_2, n_2):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         particles.get_particles(attributes)
@@ -54,7 +55,7 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(self, n_in, n_out):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(2)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(2)
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         particles.get_particles(attributes)
@@ -73,7 +74,7 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(self, v_2, n_2, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n_2))
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
         particles.get_particles(attributes)
@@ -97,7 +98,7 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(self, v, n, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(len(n))
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
         particles.get_particles(attributes)
@@ -116,7 +117,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_particles_and_sdm(n_sd)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             prob,

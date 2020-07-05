@@ -24,7 +24,7 @@ def test_initialisation(setup_idx):
     simulation = Simulation(setup)
 
     # Assert
-    env = simulation.particles.environment
+    env = simulation.core.environment
     np.testing.assert_approx_equal(env['T'].to_ndarray(), setup.T0)
     np.testing.assert_approx_equal(env['RH'].to_ndarray(), pv0 / phys.pvs(setup.T0))
     np.testing.assert_approx_equal(env['p'].to_ndarray(), setup.p0)

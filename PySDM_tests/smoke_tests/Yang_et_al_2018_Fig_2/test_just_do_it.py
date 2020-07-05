@@ -46,7 +46,7 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    #
 
     simulation = Simulation(setup)
     if scheme == 'BDF':
-        bdf.patch_particles(simulation.particles, setup.coord)
+        bdf.patch_core(simulation.particles, setup.coord)
 
     # Act
     output = simulation.run()

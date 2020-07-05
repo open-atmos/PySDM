@@ -114,7 +114,7 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation(u01)
+        sut.permutation(u01, local=False)
 
         # Assert
         expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
@@ -158,11 +158,11 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation(u01)
+        sut.permutation(u01, local=False)
         expected = sut._State__idx.to_ndarray()
         sut._State__sorted = True
         sut._State__idx = TestState.storage(range(n_sd))
-        sut.permutation(u01)
+        sut.permutation(u01, local=False)
 
         # Assert
         np.testing.assert_array_equal(sut._State__idx, expected)
@@ -191,10 +191,10 @@ class TestState:
         u01 = TestState.storage(u01)
 
         # Act
-        sut.permutation_local(u01)
+        sut.permutation(u01, local=True)
         expected = sut._State__idx.to_ndarray()
         sut._State__idx = TestState.storage(idx)
-        sut.permutation_local(u01)
+        sut.permutation(u01, local=True)
 
         # Assert
         np.testing.assert_array_equal(sut._State__idx, expected)

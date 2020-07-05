@@ -3,37 +3,44 @@ Created at 23.10.2019
 """
 
 import numpy as np
-from PySDM.builder import Builder
 
 
 class Displacement:
 
-    def __init__(self, builder: Builder, scheme='FTBS', sedimentation=False):
+    def __init__(self, scheme='FTBS', sedimentation=False):
+        self.core = None
+        self.scheme = scheme
+        self.enable_sedimentation = sedimentation
+        self.dimension = None
+        self.grid = None
+        self.courant = None
+        self.displacement = None
+        self.temp = None
+
+    def register(self, builder):
         builder.request_attribute('terminal velocity')
         self.core = builder.core
-        courant_field = self.core.environment.get_courant_field_data()
-        Storage = self.core.Storage
 
+        # TODO: replace with make_calculate_displacement
+        if self.scheme == 'FTFS':
+            method = self.core.backend.explicit_in_space
+        elif self.scheme == 'FTBS':
+            method = self.core.backend.implicit_in_space
+        else:
+            raise NotImplementedError()
+        self.scheme = method
+
+        courant_field = self.core.environment.get_courant_field_data()
         # CFL # TODO: this should be done by MPyDATA
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
-        # TODO: replace with make_calculate_displacement
-        if scheme == 'FTFS':
-            method = self.core.backend.explicit_in_space
-        elif scheme == 'FTBS':
-            method = self.core.backend.implicit_in_space
-        else:
-            raise NotImplementedError()
-
-        self.scheme = method
-        self.enable_sedimentation = sedimentation
         self.dimension = len(courant_field)
-        self.grid = Storage.from_ndarray(
+        self.grid = self.core.Storage.from_ndarray(
             np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
-        self.courant = [Storage.from_ndarray(courant_field[i]) for i in range(self.dimension)]
-        self.displacement = Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
-        self.temp = Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
+        self.courant = [self.core.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension)]
+        self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
+        self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]

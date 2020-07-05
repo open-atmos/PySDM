@@ -8,8 +8,8 @@ import numpy as np
 
 class _MoistEulerian(_Moist):
 
-    def __init__(self, core, dt, mesh, variables):
-        super().__init__(core, dt, mesh, variables)
+    def __init__(self, dt, mesh, variables):
+        super().__init__(dt, mesh, variables)
 
     @property
     def dv(self):

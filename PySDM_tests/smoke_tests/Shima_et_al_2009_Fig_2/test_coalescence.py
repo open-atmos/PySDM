@@ -49,10 +49,10 @@ def test_coalescence(croupier):
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
     particles_builder = Builder(n_sd=n_sd, backend=backend)
-    particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
+    particles_builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": kernel, "seed": 256})
+    particles_builder.add_dynamic(Coalescence(kernel, seed=256))
     particles = particles_builder.get_particles(attributes)
     particles.croupier = croupier
 

@@ -2,30 +2,35 @@
 Created at 07.06.2019
 """
 
-from PySDM.builder import Builder
-
-
 class Coalescence:
 
-    def __init__(self, builder: Builder, kernel, seed=None, max_substeps=128):
-        self.core = builder.core
-
-        kernel.register(builder)
+    def __init__(self, kernel, seed=None, max_substeps=128):
+        self.core = None
         self.kernel = kernel
-
         self.enable = True
         self.stats_steps = 0
         self.adaptive = False
         self.max_substeps = max_substeps
         self.subs = 1
         self.croupier = 'local'
+        self.seed = seed
 
+        self.temp = None
+        self.pairs_rand = None
+        self.rand = None
+        self.prob = None
+        self.is_first_in_pair = None
+        self.rnd = None
+
+    def register(self, builder):
+        self.core = builder.core
         self.temp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         self.pairs_rand = self.core.Storage.empty(self.core.n_sd + self.max_substeps, dtype=float)
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
         self.prob = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.IndexedStorage.empty(self.core.n_sd, dtype=int)  # TODO bool
-        self.rnd = self.core.Random(self.core.n_sd, seed)
+        self.rnd = self.core.Random(self.core.n_sd, self.seed)
+        self.kernel.register(builder)
 
     def __call__(self):
         if self.enable:

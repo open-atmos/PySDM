@@ -8,17 +8,23 @@ from PySDM.builder import Builder
 
 class _Moist:
 
-    def __init__(self, builder: Builder, dt, mesh, variables):
+    def __init__(self, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
-        self.core = builder.core
-        self.core.observers.append(self)
+        self.core = None
         self.dt = dt
         self.mesh = mesh
+        self.variables = variables
+        self._values = None
+        self._tmp = None
+
+    def register(self, builder):
+        self.core = builder.core
+        self.core.observers.append(self)
         self._values = {
             "predicted": None,
-            "current": self._allocate(variables)
+            "current": self._allocate(self.variables)
         }
-        self._tmp = self._allocate(variables)
+        self._tmp = self._allocate(self.variables)
 
     def _allocate(self, variables):
         result = {}

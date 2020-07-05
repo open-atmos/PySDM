@@ -16,41 +16,41 @@ idx_thd = 0
 idx_x = 1
 
 
-def patch_particles(particles, coord='volume logarithm', rtol=1e-3):
-    particles.condensation_solver = make_solve(coord, rtol)
-    particles.condensation = types.MethodType(bdf_condensation, particles)
+def patch_core(core, coord='volume logarithm', rtol=1e-3):
+    core.condensation_solver = make_solve(coord, rtol)
+    core.condensation = types.MethodType(bdf_condensation, core)
 
 
-def bdf_condensation(particles,
+def bdf_condensation(core,
                      kappa,
                      rtol_x, rtol_thd, substeps, ripening_flags
                      ):
     n_threads = 1
-    if particles.state.has_attribute("temperature"):
+    if core.state.has_attribute("temperature"):
         raise NotImplementedError()
 
     Numba._condensation.py_func(
-        solver=particles.condensation_solver,
+        solver=core.condensation_solver,
         n_threads=n_threads,
-        n_cell=particles.mesh.n_cell,
-        cell_start_arg=particles.state.cell_start.data,
-        v=particles.state["volume"].data,
+        n_cell=core.mesh.n_cell,
+        cell_start_arg=core.state.cell_start.data,
+        v=core.state["volume"].data,
         particle_temperatures=np.empty(0),
         r_cr=None,
-        n=particles.state['n'].data,
-        vdry=particles.state["dry volume"].data,
-        idx=particles.state._State__idx.data,
-        rhod=particles.environment["rhod"].data,
-        thd=particles.environment["thd"].data,
-        qv=particles.environment["qv"].data,
-        dv_mean=particles.environment.dv,
-        prhod=particles.environment.get_predicted("rhod").data,
-        pthd=particles.environment.get_predicted("thd").data,
-        pqv=particles.environment.get_predicted("qv").data,
+        n=core.state['n'].data,
+        vdry=core.state["dry volume"].data,
+        idx=core.state._State__idx.data,
+        rhod=core.env["rhod"].data,
+        thd=core.env["thd"].data,
+        qv=core.env["qv"].data,
+        dv_mean=core.env.dv,
+        prhod=core.env.get_predicted("rhod").data,
+        pthd=core.env.get_predicted("thd").data,
+        pqv=core.env.get_predicted("qv").data,
         kappa=kappa,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
-        dt=particles.dt,
+        dt=core.dt,
         substeps=substeps.data,
         cell_order=np.argsort(substeps),
         ripening_flags=ripening_flags.data

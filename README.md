@@ -94,8 +94,8 @@ from PySDM.backends import Numba
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
 builder = Builder(n_sd=n_sd, backend=Numba)
-builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
-builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
+builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = {ParticlesVolumeSpectrum: {}}
 particles = builder.get_particles(attributes, products)
 ```

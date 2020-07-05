@@ -12,27 +12,37 @@ default_rtol_thd = 1e-8
 
 class Condensation:
 
-    def __init__(self, builder: Builder, kappa,
+    def __init__(self, kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  coord='volume logarithm', adaptive=True,
                  do_advection: bool = True,
                  do_condensation: bool = True,
                  ):
-        self.core = builder.core
-        builder._set_condensation_parameters(coord, adaptive)
+        self.core = None
         self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
-        self.r_cr = builder.get_attribute('critical radius')
+        self.r_cr = None
 
         self.do_advection = do_advection
         self.do_condensation = do_condensation
-        self.max_substeps = int(self.core.dt)
+        self.max_substeps = None
 
+        self.substeps = None
+        self.ripening_flags = None
+
+        self.coord = coord
+        self.adaptive = adaptive
+
+    def register(self, builder):
+        self.core = builder.core
+        builder._set_condensation_parameters(self.coord, self.adaptive)
+        self.r_cr = builder.get_attribute('critical radius')
+        self.max_substeps = int(self.core.dt)
+        self.max_substeps = int(self.core.dt)
         self.substeps = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.substeps[:] = np.maximum(1, int(self.core.dt))
-        # TODO: reset substeps
+        self.substeps[:] = np.maximum(1, int(self.core.dt))  # TODO: reset substeps
         self.ripening_flags = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.ripening_flags[:] = 0
 

@@ -8,7 +8,10 @@ from PySDM.builder import Builder
 
 class EulerianAdvection:
 
-    def __init__(self, builder: Builder):
+    def __init__(self):
+        self.core = None
+
+    def register(self, builder):
         self.core = builder.core
 
     def __call__(self):

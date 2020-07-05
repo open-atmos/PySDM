@@ -15,14 +15,14 @@ from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectr
 
 
 def run(setup, observers=()):
-    particles_builder = Builder(n_sd=setup.n_sd, backend=setup.backend)
-    particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
+    builder = Builder(n_sd=setup.n_sd, backend=setup.backend)
+    builder.set_environment(Box(dv=setup.dv, dt=setup.dt))
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
                                                                   (setup.init_x_min, setup.init_x_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
+    builder.add_dynamic(Coalescence(setup.kernel))
     products = {ParticlesVolumeSpectrum: {}}
-    particles = particles_builder.get_particles(attributes, products)
+    particles = builder.get_particles(attributes, products)
     particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
     if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.attributes:
         particles.state.attributes['terminal velocity'].approximation = setup.u_term(particles)

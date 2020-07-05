@@ -37,7 +37,7 @@ def data():
                 setup.n_output = 20
                 simulation = Simulation(setup)
                 if scheme == 'BDF':
-                    bdf.patch_particles(simulation.particles, setup.coord, rtol=1e-4)
+                    bdf.patch_core(simulation.core, setup.coord, rtol=1e-4)
                 results = simulation.run()
                 data[scheme][rtol].append(results)
     return data

@@ -17,6 +17,3 @@ class DummyCore(Builder, Core):
         self.environment = DummyEnvironment(self)
         self.req_attr = {'n': Multiplicities(self), 'cell id': CellID(self)}
         self.state = None
-
-    def set_environment(self, environment_class, params):
-        self.environment = environment_class(None, **params)

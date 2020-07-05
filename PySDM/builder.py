@@ -25,13 +25,13 @@ class Builder:
     def _set_condensation_parameters(self, coord, adaptive=True):
         self.condensation_params = {'coord': coord, 'adaptive': adaptive}
 
-    def set_environment(self, environment_class, params: dict):
+    def set_environment(self, environment):
         assert_none(self.core.environment)
-        self.core.environment = environment_class(self, **params)
+        self.core.environment = environment
+        self.core.environment.register(self)
 
-    def register_dynamic(self, dynamic_class, params: dict):
-        instance = (dynamic_class(self, **params))
-        self.core.dynamics[str(dynamic_class)] = instance
+    def add_dynamic(self, dynamic):
+        self.core.dynamics[str(dynamic.__class__)] = dynamic
 
     def register_product(self, product):
         if product.name in self.core.products:
@@ -47,6 +47,9 @@ class Builder:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
     def get_particles(self, attributes: dict, products: dict = {}):
+        for dynamic in self.core.dynamics.values():
+            dynamic.register(self)
+
         for attribute in attributes:
             self.request_attribute(attribute)
         if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.core.dynamics:  # TODO: mapper?
