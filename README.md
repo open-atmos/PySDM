@@ -97,7 +97,7 @@ builder = Builder(n_sd=n_sd, backend=Numba)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = {ParticlesVolumeSpectrum: {}}
-particles = builder.get_particles(attributes, products)
+particles = builder.build(attributes, products)
 ```
 The ``backend`` argument may be set to ``Numba`` or ``ThrustRTC``
   what translates to choosing the multi-threaded backend or the 

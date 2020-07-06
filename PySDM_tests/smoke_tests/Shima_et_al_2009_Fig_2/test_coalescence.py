@@ -53,7 +53,7 @@ def test_coalescence(croupier):
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
     particles_builder.add_dynamic(Coalescence(kernel, seed=256))
-    particles = particles_builder.get_particles(attributes)
+    particles = particles_builder.build(attributes)
     particles.croupier = croupier
 
     class Seed:

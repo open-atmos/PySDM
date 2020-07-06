@@ -31,7 +31,7 @@ class TestState:
         # Arrange
         particles = DummyCore(backend, n_sd=len(n))
         attributes = {'n': n, 'volume': volume}
-        particles.get_particles(attributes)
+        particles.build(attributes)
         sut = particles.state
         # TODO
         sut.healthy = TestState.storage([0])
@@ -58,7 +58,7 @@ class TestState:
     def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
         particles = DummyCore(backend, n_sd=n_sd)
-        particles.get_particles(attributes={'n': np.zeros(n_sd)})
+        particles.build(attributes={'n': np.zeros(n_sd)})
         sut = particles.state
         sut._State__idx = TestState.storage(idx)
         sut.attributes['n'].data = TestState.storage(n, sut._State__idx)
@@ -91,7 +91,7 @@ class TestState:
         cell_origin[1, droplet_id] = .2
         cell_id[droplet_id] = -1
         attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
-        particles.get_particles(attribute)
+        particles.build(attribute)
         sut = particles.state
 
         # Act
@@ -176,7 +176,7 @@ class TestState:
 
         # Arrange
         particles = DummyCore(backend, n_sd=n_sd)
-        particles.get_particles(attributes={'n': np.zeros(n_sd)})
+        particles.build(attributes={'n': np.zeros(n_sd)})
         sut = particles.state
         sut._State__idx = TestState.storage(idx)
         idx_length = len(sut._State__idx)

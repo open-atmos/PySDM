@@ -32,7 +32,7 @@ class TestMaths:
         n = discretise_n(n)
         particles = DummyCore(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T}
-        particles.get_particles(attribute)
+        particles.build(attribute)
         state = particles.state
 
         true_mean, true_var = spectrum.stats(moments='mv')

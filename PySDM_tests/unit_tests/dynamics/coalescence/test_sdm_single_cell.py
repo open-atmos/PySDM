@@ -32,7 +32,7 @@ class TestSDMSingleCell:
         particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
-        particles.get_particles(attributes)
+        particles.build(attributes)
 
         # Act
         sut()
@@ -58,7 +58,7 @@ class TestSDMSingleCell:
         particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(2)
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
-        particles.get_particles(attributes)
+        particles.build(attributes)
 
         # Act
         sut()
@@ -77,7 +77,7 @@ class TestSDMSingleCell:
         particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
-        particles.get_particles(attributes)
+        particles.build(attributes)
 
         # Act
         sut()
@@ -101,7 +101,7 @@ class TestSDMSingleCell:
         particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
-        particles.get_particles(attributes)
+        particles.build(attributes)
 
         # Act
         sut()
@@ -125,7 +125,7 @@ class TestSDMSingleCell:
             odd_zeros=True
         )
         attributes = {'n': n, 'volume': v}
-        particles.get_particles(attributes)
+        particles.build(attributes)
 
         # Act
         for _ in range(32):

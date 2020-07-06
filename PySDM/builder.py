@@ -47,7 +47,7 @@ class Builder:
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
-    def get_particles(self, attributes: dict, products: list = ()):
+    def build(self, attributes: dict, products: list = ()):
         for dynamic in self.core.dynamics.values():
             dynamic.register(self)
 

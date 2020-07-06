@@ -53,7 +53,7 @@ class Simulation:
             CondensationTimestep(),
             RipeningRate()
         ]
-        self.particles = particles_builder.get_particles(attributes, products)
+        self.particles = particles_builder.build(attributes, products)
 
         self.n_steps = setup.n_steps
 

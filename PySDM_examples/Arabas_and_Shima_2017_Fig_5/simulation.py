@@ -46,7 +46,7 @@ class Simulation:
         attributes['volume'] = phys.volume(radius=r_wet)
         products = [ParticleMeanRadius()]
 
-        self.core = builder.get_particles(attributes, products)
+        self.core = builder.build(attributes, products)
 
         self.n_output = setup.n_output
 

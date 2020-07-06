@@ -16,7 +16,7 @@ def run(setup):
     attributes = {'n': n, 'volume': v}
     builder.add_dynamic(Coalescence(setup.kernel))
 
-    particles = builder.get_particles(attributes)
+    particles = builder.build(attributes)
 
     states = {}
     for step in setup.steps:

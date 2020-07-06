@@ -38,7 +38,7 @@ def test_final_state(croupier):
     attributes['cell origin'] = backend.from_ndarray(cell_origin_np)
     position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((2, -1))
     attributes['position in cell'] = backend.from_ndarray(position_in_cell_np)
-    core.get_particles(attributes)
+    core.build(attributes)
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))

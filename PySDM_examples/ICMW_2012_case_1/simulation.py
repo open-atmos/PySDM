@@ -119,7 +119,7 @@ class Simulation:
             CondensationTimestep(),
             RipeningRate()
         ]
-        self.core = builder.get_particles(attributes, products)
+        self.core = builder.build(attributes, products)
         SpinUp(self.core, self.setup.n_spin_up)
         # TODO
         if self.storage is not None:
