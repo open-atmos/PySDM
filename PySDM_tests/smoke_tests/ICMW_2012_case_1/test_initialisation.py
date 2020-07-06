@@ -44,8 +44,8 @@ def test_initialisation(plot=False):
 
     # Act (moments)
     simulation.run()
-    particles = simulation.particles
-    environment = simulation.particles.environment
+    particles = simulation.core
+    environment = simulation.core.environment
     rhod = setup.backend.to_ndarray(environment["rhod"]).reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):

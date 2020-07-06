@@ -8,10 +8,8 @@ from PySDM.physics import constants as const
 
 class TotalParticleConcentration(MomentProduct):
 
-    def __init__(self, particles_builder):
+    def __init__(self):
         super().__init__(
-            core=particles_builder.core,
-            shape=particles_builder.core.mesh.grid,
             name='n_cm3',
             unit='cm-3',
             description='Total particle concentration',
@@ -21,6 +19,6 @@ class TotalParticleConcentration(MomentProduct):
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0)
-        self.buffer[:] /= self.particles.mesh.dv
+        self.buffer[:] /= self.core.mesh.dv
         const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer

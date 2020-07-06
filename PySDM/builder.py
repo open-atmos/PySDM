@@ -36,6 +36,7 @@ class Builder:
     def register_product(self, product):
         if product.name in self.core.products:
             raise Exception(f'product name "{product.name}" already registered')
+        product.register(self)
         self.core.products[product.name] = product
 
     def get_attribute(self, attribute_name):
@@ -46,9 +47,12 @@ class Builder:
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
-    def get_particles(self, attributes: dict, products: dict = {}):
+    def get_particles(self, attributes: dict, products: list = ()):
         for dynamic in self.core.dynamics.values():
             dynamic.register(self)
+
+        for product in products:
+            self.register_product(product)
 
         for attribute in attributes:
             self.request_attribute(attribute)
@@ -60,9 +64,6 @@ class Builder:
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
         self.core.state = StateFactory.attributes(self.core, self.req_attr, attributes)
-
-        for product_class, args in products.items():
-            self.register_product(product_class(self, **args))
 
         return self.core
 

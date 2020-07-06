@@ -48,7 +48,11 @@ class Simulation:
         )
         particles_builder.add_dynamic(condensation)
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
-        products = {ParticlesSizeSpectrum: {'v_bins': phys.volume(setup.r_bins_edges)}, CondensationTimestep: {}, RipeningRate: {}}
+        products = [
+            ParticlesSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
+            CondensationTimestep(),
+            RipeningRate()
+        ]
         self.particles = particles_builder.get_particles(attributes, products)
 
         self.n_steps = setup.n_steps

@@ -18,7 +18,7 @@ def test_environment():
 
     # Act
     simulation.run()
-    rhod = simulation.particles.environment["rhod"].to_ndarray().reshape(setup.grid)
+    rhod = simulation.core.environment["rhod"].to_ndarray().reshape(setup.grid)
 
     # Assert - same in all columns
     for column in range(setup.grid[0]):

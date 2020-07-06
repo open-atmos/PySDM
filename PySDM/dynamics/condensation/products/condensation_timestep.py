@@ -9,20 +9,24 @@ import numpy as np
 
 class CondensationTimestep(Product):
 
-    def __init__(self, particles_builder, debug = False):
-        particles = particles_builder.core
-        particles.observers.append(self)
-        self.condensation = particles.dynamics[str(Condensation)]
-
+    def __init__(self, debug=False):
         super().__init__(
-            core=particles,
-            shape=particles.mesh.grid,
             name='dt_cond',
             unit='s',
             description='condensation timestep',
             scale='log',
-            range=[1e-5, particles.dt]
+            range=None
         )
+        self.minimum = None
+        self.maximum = None
+        self.count = None
+        self.condensation = None
+
+    def register(self, builder):
+        super().register(builder)
+        self.core.observers.append(self)
+        self.condensation = self.core.dynamics[str(Condensation)]
+        self.range = (1e-5, self.core.dt)
         self.minimum = np.full_like(self.buffer, np.nan)
         self.maximum = np.full_like(self.buffer, np.nan)
         self.count = np.full_like(self.buffer, np.nan)

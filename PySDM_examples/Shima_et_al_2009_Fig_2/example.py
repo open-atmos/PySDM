@@ -23,7 +23,7 @@ def run(setup, observers=()):
     coalescence = Coalescence(setup.kernel)
     coalescence.adaptive = setup.adaptive
     builder.add_dynamic(coalescence)
-    products = {ParticlesVolumeSpectrum: {}}
+    products = [ParticlesVolumeSpectrum()]
     particles = builder.get_particles(attributes, products)
     if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.attributes:
         particles.state.attributes['terminal velocity'].approximation = setup.u_term(particles)

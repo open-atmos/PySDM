@@ -44,9 +44,7 @@ class Simulation:
         environment = builder.core.environment
         r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), setup.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
-        products = {
-            ParticleMeanRadius: {}
-        }
+        products = [ParticleMeanRadius()]
 
         self.core = builder.get_particles(attributes, products)
 
