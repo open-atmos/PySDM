@@ -51,7 +51,9 @@ class SDChemistry:
 
     OXIDATION = ["Hp", "O3", "SO2", "H2O2", "HSO4m"]
 
-    def __init__(self, compounds, dv):
+    def __init__(self, compounds, particle):
+
+        self.particles = particle
 
         self._indices = list(compounds)
         self._map = {v: i for i, v in enumerate(self._indices)}
@@ -72,8 +74,8 @@ class SDChemistry:
 
         # Properly initialized in update_conditions
         self.ideal_gas_volume = None
-        self.dv = dv
-        self.update_conditions()
+        self.update_conditions(self.particles.environment["T"],
+                               self.particles.environment["p"])
 
         self.environment_indices = dict()
         i = 0
@@ -110,7 +112,7 @@ class SDChemistry:
                 # Don't accumulate to avoid numerical errors
                 # We multiply by n, since all the droplets suck in the gases
                 c = (self.environment[envi]
-                     - (A - amounts[gasi]) * n * V_w / self.dv)
+                     - (A - amounts[gasi]) * n * V_w / self.particles.environment.dv)
 
                 # Ensure we do not take too much
                 if A < 0:
@@ -157,7 +159,7 @@ class SDChemistry:
 
 class ChemicalReaction:
     def __init__(self, particles_builder, *,
-                 dissolve_steps=5, oxidize_steps=5, oxidize_timestep=None, dissolve_timestep=None, air_d=dry_air_d):
+                 dissolve_steps=5, oxidize_steps=5, oxidize_timestep=None, dissolve_timestep=None):
         self.particles = particles_builder.particles
 
         self.dissolve_steps = dissolve_steps
@@ -173,9 +175,7 @@ class ChemicalReaction:
         else:
             self.oxidize_timestep = oxidize_timestep
 
-        self.sdchem = SDChemistry(
-            COMPOUNDS.keys(),
-            self.particles.environment.mass_of_dry_air / air_d)
+        self.sdchem = SDChemistry(COMPOUNDS.keys(), self.particles)
         # 1 * si.kg / (1.2250 * si.kg / si.m ** 3))
 
     def __call__(self):
@@ -186,6 +186,9 @@ class ChemicalReaction:
         amounts = [self.particles.state[x] for x in COMPOUNDS.keys()]
 
         skipped = 0
+
+        self.sdchem.update_conditions(self.particles.environment["T"],
+                                      self.particles.environment["p"])
 
         for i, n, dry, wet, amount in zip(
                 self.particles.state._State__idx, *data, zip(*amounts)):
@@ -223,6 +226,8 @@ class ChemicalReaction:
             new_dry_conc = min(dict_amounts["NH3"], dict_amounts["HSO4m"])
             new_dry_v = amount_to_dry_v(new_dry_conc * wet)
 
+            # assert(new_dry_v >= dry)
+
             # TODO verify indexing is correct
             self.particles.state["dry volume"][i] = new_dry_v
             for k, v in dict_amounts.items():
@@ -231,6 +236,7 @@ class ChemicalReaction:
         t1 = time.perf_counter_ns()
         print(f"Chemistry total took {(t1 - t0) * si.ns :0.3f}s,"
               f" skipped {skipped}/{self.particles.n_sd}")
+        # print(f"Ammonium conc: {np.mean(self.particles.state['NH3'])}")
 
     @staticmethod
     def get_starting_amounts(dry_v, wet_v):
