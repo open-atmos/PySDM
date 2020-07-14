@@ -19,26 +19,7 @@ class DummyStorage:
             self.profiles[step] = {"qv": np.mean(data, axis=0)}
 
 
-def test_single_timestep():
-    # Arrange
-    Setup.n_steps = 1
-    Setup.outfreq = 1
-    setup = Setup()
-    for key in setup.processes.keys():
-        setup.processes[key] = True
-    setup.processes["condensation"] = True
-    setup.processes["relaxation"] = False
-
-    simulation = Simulation(setup, DummyStorage())
-    simulation.reinit()
-
-    # Act
-    simulation.run()
-
-    # Assert
-
-
-def test_multi_timestep(plot=False):
+def test_multi_timestep(plot=True):
     # Arrange
     Setup.n_steps = 20
     Setup.outfreq = 1
@@ -65,8 +46,10 @@ def test_multi_timestep(plot=False):
         pyplot.show()
 
     # Assert
-    for step in range(len(storage.profiles)-1):
+    step_num = len(storage.profiles) - 1
+    for step in range(step_num):
         next = storage.profiles[step+Setup.outfreq]["qv"]
         prev = storage.profiles[step]["qv"]
         eps = 1e-5
         assert ((prev + eps) >= next).all()
+    assert storage.profiles[step_num]["qv"][-1] < 7.

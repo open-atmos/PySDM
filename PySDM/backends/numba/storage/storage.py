@@ -98,8 +98,12 @@ class Storage:
         if self.data.base is not None:
             self.data = np.array(self.data)
 
-    def download(self, target):
-        np.copyto(target, self.data, casting='safe')
+    def download(self, target, reshape=False):
+        if reshape:
+            data = self.data.reshape(target.shape)
+        else:
+            data = self.data
+        np.copyto(target, data, casting='safe')
 
     @staticmethod
     def empty(shape, dtype):
@@ -146,6 +150,7 @@ class Storage:
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
         return result
 
+    # TODO: rename (different logic than np.ravel())
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
