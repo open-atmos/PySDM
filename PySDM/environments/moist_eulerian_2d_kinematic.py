@@ -46,7 +46,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.thread: (Thread, None) = None
 
     def register(self, builder):
-        _MoistEulerian.register(self, builder)
+        super().register(builder)
         rhod = builder.core.Storage.from_ndarray(self.rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod

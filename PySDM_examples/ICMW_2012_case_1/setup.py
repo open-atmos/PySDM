@@ -15,7 +15,7 @@ from PySDM.physics.constants import si
 
 class Setup:
     backend = Default
-    condensation_coord = 'volume'
+    condensation_coord = 'volume logarithm'
 
     condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
@@ -47,9 +47,9 @@ class Setup:
     processes = {
         "particle advection": True,
         "fluid advection": True,
-        "coalescence": False,
+        "coalescence": True,
         "condensation": True,
-        "sedimentation": False,
+        "sedimentation": True,
         # "relaxation": False  # TODO
     }
 
