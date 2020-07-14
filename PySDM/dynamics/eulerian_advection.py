@@ -16,7 +16,7 @@ class EulerianAdvection:
 
     def __call__(self):
         env: MoistEulerianInterface = self.core.environment
-        env.get_predicted('qv').download(env.get_qv().ravel())
-        env.get_predicted('thd').download(env.get_thd().ravel())
+        env.get_predicted('qv').download(env.get_qv(), reshape=True)
+        env.get_predicted('thd').download(env.get_thd(), reshape=True)
 
         env.step()
