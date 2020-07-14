@@ -19,7 +19,7 @@ class DummyStorage:
             self.profiles[step] = {"qv": np.mean(data, axis=0)}
 
 
-def test_multi_timestep(plot=True):
+def test_spin_up(plot=False):
     # Arrange
     Setup.n_steps = 20
     Setup.outfreq = 1
