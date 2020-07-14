@@ -11,7 +11,7 @@ from PySDM.environments import Box
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
-from PySDM_tests.unit_tests.state.dummy_core import DummyCore
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 backend = Default
 

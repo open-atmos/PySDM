@@ -3,12 +3,12 @@ Created at 10.06.2020
 """
 
 from PySDM.physics import constants as const
-from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation, TpDependent
+from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
 import matplotlib.pyplot as plt
 import numpy as np
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.state.dummy_core import DummyCore
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
 def test_approximation(plot=False):

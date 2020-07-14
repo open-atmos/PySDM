@@ -3,8 +3,8 @@ Created at 2019
 """
 
 from PySDM.state.state_factory import StateFactory
-from PySDM_tests.unit_tests.state.dummy_core import DummyCore
-from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.dummy_core import DummyCore
+from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM.backends.default import Default
 
 import numpy as np
