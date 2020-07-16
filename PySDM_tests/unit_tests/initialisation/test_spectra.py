@@ -64,6 +64,11 @@ class TestSum:
     n_part = 256
     exponential = Exponential(n_part, scale)
 
+    s = 1.001
+    r_mode = 1e-6
+    lognormal = Lognormal(1, r_mode, s)
+
+
     def test_size_distribution(self):
         # Arrange
         sut = Sum((TestSum.exponential,))
@@ -89,8 +94,9 @@ class TestSum:
         np.testing.assert_array_equal(sut_c, exp_c)
 
     @pytest.mark.parametrize("distributions", [
-        pytest.param((exponential,), id="single distribution"),
-        pytest.param((exponential, exponential), id="2 distributions")
+        pytest.param((exponential,), id="single exponential"),
+        pytest.param((lognormal,), id="single lognormal"),
+        pytest.param((exponential, exponential), id="2 exponentials")
     ])
     def test_percentiles(self, distributions):
         # Arrange
@@ -99,8 +105,8 @@ class TestSum:
         # Act
         cdf_values = np.linspace(0, .999)
         sut_p = sut.percentiles(cdf_values)
-        exp_p = TestSum.exponential.percentiles(cdf_values)
+        exp_p = distributions[0].percentiles(cdf_values)
 
         # Assert
-        np.testing.assert_array_almost_equal(sut_p, exp_p, decimal=2)
+        np.testing.assert_array_almost_equal(sut_p, exp_p, decimal=3)
 

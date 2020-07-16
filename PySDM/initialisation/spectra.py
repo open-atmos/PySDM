@@ -6,7 +6,7 @@ from scipy.stats import lognorm
 from scipy.stats import expon
 import math
 import numpy as np
-from scipy.interpolate import Rbf
+from scipy.interpolate import interp1d
 
 
 class Spectrum:
@@ -52,10 +52,13 @@ class Sum:
 
     def __init__(self, spectra: tuple):
         self.spectra = spectra
-        max_p = max((s.percentiles(0.999) for s in self.spectra))
-        x = np.linspace(0, max_p, 1000)
+        percentile = .001
+        num = 999
+        p = [s.percentiles(np.linspace(percentile, 1-percentile, num)) for s in self.spectra]
+        x = np.zeros(num * len(self.spectra) + 1)
+        x[1:] = np.concatenate(p)
         y = self.cumulative(x) / sum((s.norm_factor for s in self.spectra))
-        self.inverse_cdf = Rbf(y, x)
+        self.inverse_cdf = interp1d(y, x)
 
     def size_distribution(self, x):
         result = 0.
