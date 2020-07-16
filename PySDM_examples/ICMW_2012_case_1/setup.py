@@ -5,6 +5,7 @@ Created at 25.09.2019
 import numpy as np
 
 from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.spectra import Sum
 from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.backends.default import Default
 from PySDM.dynamics.condensation import condensation
@@ -37,12 +38,18 @@ class Setup:
     def steps(self):
         return np.arange(0, self.n_steps+1, self.outfreq)
 
-    # TODO: second mode
-    spectrum_per_mass_of_dry_air = Lognormal(
+    mode_1 = Lognormal(
+        norm_factor=60 / si.centimetre ** 3 / const.rho_STP,
+        m_mode=0.04 * si.micrometre,
+        s_geom=1.4
+    )
+    mode_2 = Lognormal(
       norm_factor=40 / si.centimetre**3 / const.rho_STP,
       m_mode=0.15 * si.micrometre,
       s_geom=1.6
     )
+    spectrum_per_mass_of_dry_air = Sum((mode_1, mode_2))
+
 
     processes = {
         "particle advection": True,
@@ -98,8 +105,8 @@ class Setup:
         return rhod
 
     # initial dry radius discretisation range
-    r_min = .01 * si.micrometre
-    r_max = 5 * si.micrometre
+    r_min = spectrum_per_mass_of_dry_air.percentiles(.01)
+    r_max = spectrum_per_mass_of_dry_air.percentiles(.99)
 
     kernel = Geometric(collection_efficiency=1 / si.s)
     aerosol_radius_threshold = 1 * si.micrometre

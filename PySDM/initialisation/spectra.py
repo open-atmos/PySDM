@@ -50,14 +50,14 @@ class Lognormal(Spectrum):
 
 class Sum:
 
-    def __init__(self, spectra: tuple):
+    def __init__(self, spectra: tuple, percentile=.001):
         self.spectra = spectra
-        percentile = .001
+        self.norm_factor = sum((s.norm_factor for s in self.spectra))
         num = 999
         p = [s.percentiles(np.linspace(percentile, 1-percentile, num)) for s in self.spectra]
         x = np.zeros(num * len(self.spectra) + 1)
         x[1:] = np.concatenate(p)
-        y = self.cumulative(x) / sum((s.norm_factor for s in self.spectra))
+        y = self.cumulative(x) / self.norm_factor
         self.inverse_cdf = interp1d(y, x)
 
     def size_distribution(self, x):
