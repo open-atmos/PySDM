@@ -5,6 +5,8 @@ Created at 03.06.2019
 from scipy.stats import lognorm
 from scipy.stats import expon
 import math
+import numpy as np
+from scipy.interpolate import Rbf
 
 
 class Spectrum:
@@ -14,20 +16,20 @@ class Spectrum:
         self.norm_factor = norm_factor
         self.distribution = distribution
 
-    def size_distribution(self, m):
-        result = self.norm_factor * self.distribution.pdf(m, *self.distribution_params)
+    def size_distribution(self, x):
+        result = self.norm_factor * self.distribution.pdf(x, *self.distribution_params)
         return result
 
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
         return result
 
-    def cumulative(self, m):
-        result = self.norm_factor * self.distribution.cdf(m, *self.distribution_params)
+    def cumulative(self, x):
+        result = self.norm_factor * self.distribution.cdf(x, *self.distribution_params)
         return result
 
-    def percentiles(self, cdf_arg):
-        result = self.distribution.ppf(cdf_arg, *self.distribution_params)
+    def percentiles(self, cdf_values):
+        result = self.distribution.ppf(cdf_values, *self.distribution_params)
         return result
 
 
@@ -46,21 +48,26 @@ class Lognormal(Spectrum):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
 
 
-# TODO
 class Sum:
 
     def __init__(self, spectra: tuple):
         self.spectra = spectra
+        max_p = max((s.percentiles(0.999) for s in self.spectra))
+        x = np.linspace(0, max_p, 1000)
+        y = self.cumulative(x) / sum((s.norm_factor for s in self.spectra))
+        self.inverse_cdf = Rbf(y, x)
 
-    def size_distribution(self, m):
+    def size_distribution(self, x):
         result = 0.
         for spectrum in self.spectra:
-            result += spectrum.size_distribution(m)
+            result += spectrum.size_distribution(x)
         return result
 
-    def cumulative(self, m):
+    def cumulative(self, x):
         result = 0.
         for spectrum in self.spectra:
-            result += spectrum.cumulative(m)
+            result += spectrum.cumulative(x)
         return result
 
+    def percentiles(self, cdf_values):
+        return self.inverse_cdf(cdf_values)
