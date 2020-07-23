@@ -1,79 +1,82 @@
 """
 Created at 23.10.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
-from PySDM.particles_builder import ParticlesBuilder
 
 
 class Displacement:
-    def __init__(self, particles_builder: ParticlesBuilder, scheme='FTBS', sedimentation=False):
-        particles_builder.request_attribute('terminal velocity')
-        self.particles = particles_builder.particles
-        courant_field = self.particles.environment.get_courant_field_data()
 
+    def __init__(self, scheme='FTBS', sedimentation=False):
+        self.core = None
+        self.scheme = scheme
+        self.enable_sedimentation = sedimentation
+        self.dimension = None
+        self.grid = None
+        self.courant = None
+        self.displacement = None
+        self.temp = None
+
+    def register(self, builder):
+        builder.request_attribute('terminal velocity')
+        self.core = builder.core
+
+        # TODO: replace with make_calculate_displacement
+        if self.scheme == 'FTFS':
+            method = self.core.backend.explicit_in_space
+        elif self.scheme == 'FTBS':
+            method = self.core.backend.implicit_in_space
+        else:
+            raise NotImplementedError()
+        self.scheme = method
+
+        courant_field = self.core.environment.get_courant_field_data()
         # CFL # TODO: this should be done by MPyDATA
         for d in range(len(courant_field)):
             assert np.amax(abs(courant_field[d])) <= 1
 
-        # TODO: replace with make_calculate_displacement
-        if scheme == 'FTFS':
-            method = self.particles.backend.explicit_in_space
-        elif scheme == 'FTBS':
-            method = self.particles.backend.implicit_in_space
-        else:
-            raise NotImplementedError()
-
-        self.scheme = method
-        self.enable_sedimentation = sedimentation
-
         self.dimension = len(courant_field)
-        self.grid = self.particles.backend.from_ndarray(np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
-
-        self.courant = [self.particles.backend.from_ndarray(courant_field[i]) for i in range(self.dimension)]
-
-        self.displacement = self.particles.backend.from_ndarray(np.zeros((self.dimension, self.particles.n_sd)))
-        self.temp = self.particles.backend.from_ndarray(np.zeros((self.dimension, self.particles.n_sd), dtype=np.int64))
+        self.grid = self.core.Storage.from_ndarray(
+            np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
+        self.courant = [self.core.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension)]
+        self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
+        self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
         displacement = self.displacement
-        cell_origin = self.particles.state['cell origin']
-        position_in_cell = self.particles.state['position in cell']
+        cell_origin = self.core.state['cell origin']
+        position_in_cell = self.core.state['position in cell']
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
         if self.enable_sedimentation:
-            self.particles.remove_precipitated()
+            self.core.state.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
-        self.particles.state.recalculate_cell_id()
+        self.core.state.recalculate_cell_id()
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
-            self.particles.backend.calculate_displacement(dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
+            self.core.bck.calculate_displacement(
+                dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
         if self.enable_sedimentation:
-            displacement_z = self.particles.backend.read_row(displacement, self.dimension-1)
-            dt_over_dz = self.particles.dt / self.particles.mesh.dz
-            self.particles.backend.multiply(displacement_z, 1 / dt_over_dz)
-            self.particles.backend.subtract(displacement_z, self.particles.state['terminal velocity'])
-            self.particles.backend.multiply(displacement_z, dt_over_dz)
+            displacement_z = displacement.read_row(self.dimension - 1)
+            dt_over_dz = self.core.dt / self.core.mesh.dz
+            displacement_z *= 1 / dt_over_dz
+            displacement_z -= self.core.state['terminal velocity']
+            displacement_z *= dt_over_dz
 
     def update_position(self, position_in_cell, displacement):
-        self.particles.backend.add(position_in_cell, displacement)
+        position_in_cell += displacement
 
     def update_cell_origin(self, cell_origin, position_in_cell):
-        # floor_of_position = self.particles.backend.range(self.temp, stop=position_in_cell.shape[1])
         floor_of_position = self.temp
-        self.particles.backend.floor_out_of_place(floor_of_position, position_in_cell)
-        self.particles.backend.add(cell_origin, floor_of_position)
-        self.particles.backend.subtract(position_in_cell, floor_of_position)
+        floor_of_position.floor(position_in_cell)
+        cell_origin += floor_of_position
+        position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
         # TODO: hardcoded periodic
-        # TODO: particles above the mesh
-        self.particles.backend.row_modulo(cell_origin, self.grid)
+        # TODO: droplets above the mesh
+        cell_origin %= self.grid

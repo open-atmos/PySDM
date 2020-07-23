@@ -1,8 +1,5 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import Product
@@ -11,20 +8,25 @@ import numpy as np
 
 
 class CondensationTimestep(Product):
-    def __init__(self, particles_builder, debug = False):
-        particles = particles_builder.particles
-        particles.observers.append(self)
-        self.condensation = particles.dynamics[str(Condensation)]
 
+    def __init__(self, debug=False):
         super().__init__(
-            particles=particles,
-            shape=particles.mesh.grid,
             name='dt_cond',
             unit='s',
             description='condensation timestep',
             scale='log',
-            range=[1e-5, particles.dt]
+            range=None
         )
+        self.minimum = None
+        self.maximum = None
+        self.count = None
+        self.condensation = None
+
+    def register(self, builder):
+        super().register(builder)
+        self.core.observers.append(self)
+        self.condensation = self.core.dynamics[str(Condensation)]
+        self.range = (1e-5, self.core.dt)
         self.minimum = np.full_like(self.buffer, np.nan)
         self.maximum = np.full_like(self.buffer, np.nan)
         self.count = np.full_like(self.buffer, np.nan)
@@ -40,13 +42,13 @@ class CondensationTimestep(Product):
 
     def get(self):
         self.download_to_buffer(self.condensation.substeps)
-        self.buffer[:] = self.condensation.particles.dt / self.buffer
+        self.buffer[:] = self.condensation.core.dt / self.buffer
         return self.buffer
 
     def notify(self):
         self.download_to_buffer(self.condensation.substeps)
         self.count[:] += self.buffer
-        self.buffer[:] = self.condensation.particles.dt / self.buffer
+        self.buffer[:] = self.condensation.core.dt / self.buffer
         self.minimum = np.minimum(self.buffer, self.minimum)
         self.maximum = np.maximum(self.buffer, self.maximum)
 

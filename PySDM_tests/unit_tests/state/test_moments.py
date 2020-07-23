@@ -1,8 +1,5 @@
 """
 Created at 05.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -11,7 +8,7 @@ from PySDM.backends.default import Default
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import linear
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 backend = Default
 
@@ -33,16 +30,16 @@ class TestMaths:
         v, n = linear(n_sd, spectrum, (v_min, v_max))
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyParticles(backend, n_sd)
+        particles = DummyCore(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T}
-        particles.get_particles(attribute)
+        particles.build(attribute)
         state = particles.state
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO: add a moments_0 wrapper
-        moment_0 = np.empty((1,), dtype=int)
-        moments = np.empty((1, 1), dtype=float)
+        moment_0 = particles.backend.Storage.empty((1,), dtype=int)
+        moments = particles.backend.Storage.empty((1, 1), dtype=float)
 
         # Act
         state.moments(moment_0, moments, specs={'volume': (0,)})
@@ -74,5 +71,3 @@ class TestMaths:
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.
         assert discr_mean_T_squared == 300. ** 2
-
-

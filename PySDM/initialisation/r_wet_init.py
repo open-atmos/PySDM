@@ -1,9 +1,14 @@
+"""
+Crated at 2019
+"""
+
 import numpy as np
 from scipy import optimize as root
 from PySDM.physics import formulae
 
 
 class _MinFun:
+
     def __init__(self, T, p, RH, kappa, r_d):
         self.T = T
         self.p = p

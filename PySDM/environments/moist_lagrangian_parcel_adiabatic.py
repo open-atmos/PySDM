@@ -1,12 +1,8 @@
 """
 Created at 25.11.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
-from PySDM.particles import Particles
+from PySDM.core import Core
 from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
@@ -16,28 +12,36 @@ from PySDM.mesh import Mesh
 
 class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
-    def __init__(self, particles: Particles, dt,
-                 mass_of_dry_air: float, p0: float, q0: float, T0: float, w: callable, z0: float = 0):
+    def __init__(
+            self, dt,
+            mass_of_dry_air: float,
+            p0: float, q0: float, T0: float,
+            w: callable, z0: float = 0):
 
-        super().__init__(particles, dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
+        super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
 
         # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w
 
         pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
 
-        self['qv'][:] = q0
-        self['thd'][:] = phys.th_std(pd0, T0)
-        self['rhod'][:] = pd0 / const.Rd / T0
-        self['z'][:] = z0
-        self['t'][:] = 0
+        self.params = (q0, phys.th_std(pd0, T0), pd0 / const.Rd / T0, z0, 0)
+
+    def register(self, builder):
+        _MoistLagrangianParcel.register(self, builder)
+        self['qv'][:] = self.params[0]
+        self['thd'][:] = self.params[1]
+        self['rhod'][:] = self.params[2]
+        self['z'][:] = self.params[3]
+        self['t'][:] = self.params[4]
+        delattr(self, 'params')
 
         self.sync_parcel_vars()
         _Moist.sync(self)
         self.notify()
 
     def advance_parcel_vars(self):
-        dt = self.particles.dt
+        dt = self.core.dt
         qv = self['qv'][0]
         T = self['T'][0]
         p = self['p'][0]

@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 import numpy as np
 
 from PySDM.physics.constants import si
@@ -14,7 +18,7 @@ def test_environment():
 
     # Act
     simulation.run()
-    rhod = setup.backend.to_ndarray(simulation.particles.environment["rhod"]).reshape(setup.grid)
+    rhod = simulation.core.environment["rhod"].to_ndarray().reshape(setup.grid)
 
     # Assert - same in all columns
     for column in range(setup.grid[0]):

@@ -1,3 +1,7 @@
+"""
+Crated at 2019
+"""
+
 import numpy as np
 
 
@@ -44,6 +48,3 @@ def constant_multiplicity(n_sd, spectrum, range):
     assert np.isfinite(grid).all()
 
     return __sample(grid, spectrum)
-
-
-# TODO: sample randomly

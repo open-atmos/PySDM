@@ -4,7 +4,7 @@ Created at 08.08.2019
 
 import numpy as np
 from PySDM.initialisation.spectra import Exponential
-from PySDM.dynamics.coalescence.kernels import Gravitational
+from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.backends import Default
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
@@ -29,7 +29,7 @@ class Setup:
     def steps(self):
         return [int(step / self.dt) for step in self._steps]
 
-    kernel = Gravitational(collection_efficiency=1)
+    kernel = Geometric(collection_efficiency=1)
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
     # TODO 220 instead of 200 to smoothing

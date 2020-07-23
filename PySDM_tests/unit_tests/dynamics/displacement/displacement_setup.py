@@ -1,16 +1,12 @@
 """
 Created at 29.04.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.backends.default import Default
-from PySDM_tests.unit_tests.state.dummy_particles import DummyParticles
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
-from PySDM.state.state_factory import StateFactory
 import numpy as np
-from PySDM_tests.unit_tests.state.dummy_environment import DummyEnvironment
+from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 
 
 class Setup:
@@ -24,15 +20,16 @@ class Setup:
         self.dt = None
 
     def get_displacement(self):
-        particles = DummyParticles(Default, n_sd=len(self.n))
-        particles.set_environment(DummyEnvironment,
-                                  {'dt': self.dt,
-                                   'grid': self.grid,
-                                   'courant_field_data': self.courant_field_data})
-        positions = Default.from_ndarray(np.array(self.positions))
-        cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(positions)
+        core = DummyCore(Default, n_sd=len(self.n))
+        core.environment = DummyEnvironment(
+            dt=self.dt,
+            grid=self.grid,
+            courant_field_data=self.courant_field_data)
+        positions = np.array(self.positions)
+        cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
-        particles.get_particles(attributes)
-        sut = Displacement(particles_builder=particles, scheme=self.scheme, sedimentation=self.sedimentation)
+        core.build(attributes)
+        sut = Displacement(scheme=self.scheme, sedimentation=self.sedimentation)
+        sut.register(core)
 
-        return sut, particles
+        return sut, core

@@ -14,6 +14,7 @@ from .demo_plots import _ImagePlot, _SpectrumPlot
 
 
 class DemoViewer:
+
     def __init__(self, storage, setup):
         self.storage = storage
         self.setup = setup

@@ -9,12 +9,11 @@ from PySDM.physics import formulae as phys
 
 
 class ParticlesSizeSpectrum(MomentProduct):
-    def __init__(self, particles_builder, v_bins, normalise_by_dv=False):
+
+    def __init__(self, v_bins, normalise_by_dv=False):
         self.v_bins = v_bins
         self.normalise_by_dv = normalise_by_dv
         super().__init__(
-            particles=particles_builder.particles,
-            shape=(*particles_builder.particles.mesh.grid, len(self.v_bins) - 1),
             name='Particles Size Spectrum',
             unit=f"mg-1 μm-1{'' if normalise_by_dv else ' m^3'}",
             description='Specific concentration density',
@@ -22,8 +21,12 @@ class ParticlesSizeSpectrum(MomentProduct):
             range=[20, 50]
         )
 
+    def register(self, builder):
+        super().register(builder)
+        self.shape = (*builder.core.mesh.grid, len(self.v_bins) - 1)
+
     def get(self):
-        vals = np.empty([self.particles.mesh.n_cell, len(self.v_bins) - 1])
+        vals = np.empty([self.core.mesh.n_cell, len(self.v_bins) - 1])
         for i in range(len(self.v_bins) - 1):
             self.download_moment_to_buffer(
                 attr='volume', rank=0, attr_range=(self.v_bins[i], self.v_bins[i + 1])
@@ -31,9 +34,9 @@ class ParticlesSizeSpectrum(MomentProduct):
             vals[:, i] = self.buffer.ravel()
 
         if self.normalise_by_dv:
-            vals[:] /= self.particles.mesh.dv
+            vals[:] /= self.core.mesh.dv
 
-        self.download_to_buffer(self.particles.environment['rhod'])
+        self.download_to_buffer(self.core.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.v_bins) - 1):
             dr = phys.radius(volume=self.v_bins[i + 1]) - phys.radius(volume=self.v_bins[i])

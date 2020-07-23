@@ -81,23 +81,23 @@ attributes = {}
 attributes['volume'], attributes['n'] = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
 ```
 
-The key element of the PySDM interface is the [``Particles``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
+The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
   class which instances are used to manage the system state and control the simulation.
-Instantiation of the ``Particles`` class is handled by the ``ParticlesBuilder``
+Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
 ```Python
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.backends import Numba
 from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
 
-particles_builder = ParticlesBuilder(n_sd=n_sd, backend=Numba)
-particles_builder.set_environment(Box, {"dt": 1 * si.s, "dv": 1e6 * si.m**3})
-particles_builder.register_dynamic(Coalescence, {"kernel": Golovin(b=1.5e3 / si.s)})
+builder = Builder(n_sd=n_sd, backend=Numba)
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
+builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = {ParticlesVolumeSpectrum: {}}
-particles = particles_builder.get_particles(attributes, products)
+particles = builder.build(attributes, products)
 ```
 The ``backend`` argument may be set to ``Numba`` or ``ThrustRTC``
   what translates to choosing the multi-threaded backend or the 
@@ -106,11 +106,11 @@ The employed ``Box`` environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
   used to initialise super-droplet attributes.
-The ``SDM`` Monte-Carlo coalescence algorithm is registered as the only
+The ``Coalescence`` Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system (other available dynamics representing
   condensational growth and particle displacement).
 Finally, the ``get_particles()`` method is used to obtain an instance
-  of ``Particles`` which can then be used to control time-stepping and
+  of ``Core`` which can then be used to control time-stepping and
   access simulation state.
 
 The ``run(nt)`` method advances the simulation by ``nt`` timesteps.

@@ -1,9 +1,5 @@
 """
 Created at 18.11.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -15,7 +11,7 @@ from matplotlib import pyplot
 import pytest
 
 
-@pytest.mark.skip # TODO: sometimes fails... (https://travis-ci.org/atmos-cloud-sim-uj/PySDM/jobs/651243742#L454)
+@pytest.mark.skip  # TODO: sometimes fails... (https://travis-ci.org/atmos-cloud-sim-uj/PySDM/jobs/651243742#L454)
 def test_initialisation(plot=False):
     # TODO: seed as a part of setup?
     setup = Setup()
@@ -48,16 +44,18 @@ def test_initialisation(plot=False):
 
     # Act (moments)
     simulation.run()
-    particles = simulation.particles
-    environment = simulation.particles.environment
+    particles = simulation.core
+    environment = simulation.core.environment
     rhod = setup.backend.to_ndarray(environment["rhod"]).reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
-        particles.state.moments(moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
+        particles.state.moments(
+            moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
         histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
-        particles.state.moments(moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
+        particles.state.moments(
+            moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         particles.backend.download(moment_0, tmp)
         histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
@@ -108,4 +106,3 @@ def test_initialisation(plot=False):
         total_below = np.sum(histogram_dry[:, level])
         assert total_below > total_above
         total_above = total_below
-

@@ -4,7 +4,7 @@ Created at 08.08.2019
 
 import numpy as np
 
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
@@ -15,17 +15,18 @@ from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectr
 
 
 def run(setup, observers=()):
-    particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
-    particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
+    builder = Builder(n_sd=setup.n_sd, backend=setup.backend)
+    builder.set_environment(Box(dv=setup.dv, dt=setup.dt))
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
                                                                   (setup.init_x_min, setup.init_x_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
-    products = {ParticlesVolumeSpectrum: {}}
-    particles = particles_builder.get_particles(attributes, products)
-    particles.dynamics[str(Coalescence)].adaptive = setup.adaptive
-    if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.whole_attributes:
-        particles.state.whole_attributes['terminal velocity'].approximation = setup.u_term(particles)
+    coalescence = Coalescence(setup.kernel)
+    coalescence.adaptive = setup.adaptive
+    builder.add_dynamic(coalescence)
+    products = [ParticlesVolumeSpectrum()]
+    particles = builder.build(attributes, products)
+    if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.attributes:
+        particles.state.attributes['terminal velocity'].approximation = setup.u_term(particles)
 
     for observer in observers:
         particles.observers.append(observer)

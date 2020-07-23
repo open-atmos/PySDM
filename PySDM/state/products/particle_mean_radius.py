@@ -1,8 +1,5 @@
 """
 Created at 05.02.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.product import MomentProduct
@@ -11,10 +8,9 @@ from PySDM.physics import formulae as phys
 
 
 class ParticleMeanRadius(MomentProduct):
-    def __init__(self, particles_builder):
+
+    def __init__(self):
         super().__init__(
-            particles=particles_builder.particles,
-            shape=particles_builder.particles.mesh.grid,
             name='radius_m1',
             unit='um',
             description='mean radius',

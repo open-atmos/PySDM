@@ -1,3 +1,7 @@
+"""
+Created at 2019
+"""
+
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis, formulae
 from PySDM.physics import constants
 

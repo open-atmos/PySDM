@@ -9,6 +9,7 @@ from PySDM.physics import formulae as phys
 
 
 class SpectrumColors:
+
     def __init__(self, begining='#2cbdfe', end='#b317b1'):
         self.b = begining
         self.e = end
@@ -22,6 +23,7 @@ class SpectrumColors:
 
 
 class SpectrumPlotter:
+
     def __init__(self, setup, title=None, grid=True, legend=True):
         self.setup = setup
         self.format = 'pdf'

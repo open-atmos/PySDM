@@ -1,8 +1,5 @@
 """
 Created at 16.12.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
@@ -11,17 +8,17 @@ from PySDM_examples.ICMW_2012_case_1.storage import Storage
 import PySDM.backends.numba.conf
 import importlib
 from PySDM.backends.numba import numba as backend
-import PySDM.backends.numba._maths_methods
-import PySDM.backends.numba._algorithmic_methods
-import PySDM.backends.numba._storage_methods
-import PySDM.backends.numba._physics_methods
+import PySDM.backends.numba.impl._maths_methods
+import PySDM.backends.numba.impl._algorithmic_methods
+import PySDM.backends.numba.impl._storage_methods
+import PySDM.backends.numba.impl._physics_methods
 
 
 def reload_backend():
-    importlib.reload(PySDM.backends.numba._maths_methods)
-    importlib.reload(PySDM.backends.numba._algorithmic_methods)
-    importlib.reload(PySDM.backends.numba._storage_methods)
-    importlib.reload(PySDM.backends.numba._physics_methods)
+    importlib.reload(PySDM.backends.numba.impl._maths_methods)
+    importlib.reload(PySDM.backends.numba.impl._algorithmic_methods)
+    importlib.reload(PySDM.backends.numba.impl._storage_methods)
+    importlib.reload(PySDM.backends.numba.impl._physics_methods)
     importlib.reload(backend)
 
 
@@ -50,7 +47,7 @@ def main():
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
-                # simulation.particles.croupier = method
+                # simulation.core.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
 

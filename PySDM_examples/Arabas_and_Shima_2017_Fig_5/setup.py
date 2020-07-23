@@ -1,9 +1,5 @@
 """
 Created at 29.11.2019
-
-@author: Michael Olesik
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.backends.default import Default
@@ -50,7 +46,7 @@ class Setup:
 
 w_avgs = (
     100 * si.centimetre / si.second,
-    50 * si.centimetre / si.second,
+    # 50 * si.centimetre / si.second,
     .2 * si.centimetre / si.second
 )
 

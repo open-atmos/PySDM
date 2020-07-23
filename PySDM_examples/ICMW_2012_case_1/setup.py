@@ -1,15 +1,12 @@
 """
 Created at 25.09.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
 
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.dynamics.coalescence.kernels import Gravitational
+from PySDM.initialisation.spectra import Sum
+from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.backends.default import Default
 from PySDM.dynamics.condensation import condensation
 from PySDM.physics import formulae as phys
@@ -19,7 +16,7 @@ from PySDM.physics.constants import si
 
 class Setup:
     backend = Default
-    condensation_coord = 'volume'
+    condensation_coord = 'volume logarithm'
 
     condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
@@ -41,19 +38,25 @@ class Setup:
     def steps(self):
         return np.arange(0, self.n_steps+1, self.outfreq)
 
-    # TODO: second mode
-    spectrum_per_mass_of_dry_air = Lognormal(
+    mode_1 = Lognormal(
+        norm_factor=60 / si.centimetre ** 3 / const.rho_STP,
+        m_mode=0.04 * si.micrometre,
+        s_geom=1.4
+    )
+    mode_2 = Lognormal(
       norm_factor=40 / si.centimetre**3 / const.rho_STP,
       m_mode=0.15 * si.micrometre,
       s_geom=1.6
     )
+    spectrum_per_mass_of_dry_air = Sum((mode_1, mode_2))
+
 
     processes = {
         "particle advection": True,
         "fluid advection": True,
-        "coalescence": False,
+        "coalescence": True,
         "condensation": True,
-        "sedimentation": False,
+        "sedimentation": True,
         # "relaxation": False  # TODO
     }
 
@@ -102,10 +105,10 @@ class Setup:
         return rhod
 
     # initial dry radius discretisation range
-    r_min = .01 * si.micrometre
-    r_max = 5 * si.micrometre
+    r_min = spectrum_per_mass_of_dry_air.percentiles(.01)
+    r_max = spectrum_per_mass_of_dry_air.percentiles(.99)
 
-    kernel = Gravitational(collection_efficiency=1)  # [s-1]  # TODO!
+    kernel = Geometric(collection_efficiency=1 / si.s)
     aerosol_radius_threshold = 1 * si.micrometre
 
     n_spin_up = 1 * si.hour / dt

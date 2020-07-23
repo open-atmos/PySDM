@@ -1,16 +1,33 @@
+"""
+Created at 2020
+"""
+
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
 from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
 from PySDM.physics.constants import si
 from PySDM_tests.smoke_tests.utils import bdf
 import pytest
 import numpy as np
+import os
 
 
 # TODO: run for different atol, rtol, dt_max
-@pytest.mark.parametrize("scheme", ['default',  'BDF'])
-@pytest.mark.parametrize("coord", ['volume logarithm', 'volume'])
-@pytest.mark.parametrize("adaptive", [True, False])
-@pytest.mark.parametrize("enable_particle_temperatures", [False, True])
+if os.environ.get('TRAVIS') == 'true' and not os.environ.get('FAST_TESTS') == 'true':
+    scheme = ('default',  'BDF')
+    coord = ('volume logarithm', 'volume')
+    adaptive = (True, False)
+    enable_particle_temperatures = (False, True)
+else:
+    scheme = ('default',)
+    coord = ('volume logarithm',)
+    adaptive = (True,)
+    enable_particle_temperatures = (False,)
+
+
+@pytest.mark.parametrize("scheme", scheme)
+@pytest.mark.parametrize("coord", coord)
+@pytest.mark.parametrize("adaptive", adaptive)
+@pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
 def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    # Arrange
     if scheme == 'BDF' and not adaptive:
         return
@@ -29,7 +46,7 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    #
 
     simulation = Simulation(setup)
     if scheme == 'BDF':
-        bdf.patch_particles(simulation.particles, setup.coord)
+        bdf.patch_core(simulation.particles, setup.coord)
 
     # Act
     output = simulation.run()
@@ -50,7 +67,6 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    #
     assert .3 * n_unit < max(N2) < .37 * n_unit
     assert .08 * n_unit < min(N3) < .083 * n_unit
     assert .27 * n_unit < max(N3) < .4 * n_unit
-
 
 
 def n_tot(n, condition):

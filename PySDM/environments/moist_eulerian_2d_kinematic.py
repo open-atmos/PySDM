@@ -1,9 +1,5 @@
 """
 Created at 06.11.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -13,20 +9,19 @@ from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from PySDM.mesh import Mesh
-
-from PySDM import ParticlesBuilder
+from PySDM import Builder
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
 
-    def __init__(self, particles_builder: ParticlesBuilder, dt, grid, size, stream_function, field_values, rhod_of,
+    def __init__(self, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
-        super().__init__(particles_builder, dt, Mesh(grid, size), [])
+        super().__init__(dt, Mesh(grid, size), [])
 
         self.__rhod_of = rhod_of
 
         grid = self.mesh.grid
-        rhod = np.repeat(
+        self.rhod = np.repeat(
             rhod_of(
                 (np.arange(grid[1]) + 1 / 2) / grid[1]
             ).reshape((1, grid[1])),
@@ -38,7 +33,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
-            g_factor=rhod,
+            g_factor=self.rhod,
             options=Options(
                 n_iters=mpdata_iters,
                 infinite_gauge=mpdata_iga,
@@ -47,11 +42,15 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             )
         )
 
-        rhod = particles_builder.particles.backend.from_ndarray(rhod.ravel())
+        self.asynchronous = False
+        self.thread: (Thread, None) = None
+
+    def register(self, builder):
+        super().register(builder)
+        rhod = builder.core.Storage.from_ndarray(self.rhod.ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
-        self.asynchronous = False
-        self.thread: Thread = None
+        delattr(self, 'rhod')
 
         super().sync()
         self.notify()
@@ -67,7 +66,6 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             mpdata.advance(1)
 
     def step(self):
-        # TODO
         if self.asynchronous:
             self.thread = Thread(target=self.__mpdata_step, args=())
             self.thread.start()
@@ -86,8 +84,8 @@ class MoistEulerian2DKinematic(_MoistEulerian):
     def get_courant_field_data(self):
         result = [
             self.__GC.get_component(0) / self.__rhod_of(
-                x_vec_coord(self.particles.mesh.grid)[1]),
+                x_vec_coord(self.core.mesh.grid)[1]),
             self.__GC.get_component(1) / self.__rhod_of(
-                z_vec_coord(self.particles.mesh.grid)[1])
+                z_vec_coord(self.core.mesh.grid)[1])
         ]
         return result

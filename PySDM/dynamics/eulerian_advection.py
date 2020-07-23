@@ -1,22 +1,18 @@
 """
 Created at 29.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
-
-from PySDM.environments import MoistEulerianInterface
-from PySDM.particles_builder import ParticlesBuilder
 
 
 class EulerianAdvection:
 
-    def __init__(self, particles_builder: ParticlesBuilder):
-        self.particles = particles_builder.particles
+    def __init__(self):
+        self.core = None
+
+    def register(self, builder):
+        self.core = builder.core
 
     def __call__(self):
-        env: MoistEulerianInterface = self.particles.environment
-        self.particles.backend.download(env.get_predicted('qv').reshape(self.particles.mesh.grid), env.get_qv())
-        self.particles.backend.download(env.get_predicted('thd').reshape(self.particles.mesh.grid), env.get_thd())
+        self.core.env.get_predicted('qv').download(self.core.env.get_qv(), reshape=True)
+        self.core.env.get_predicted('thd').download(self.core.env.get_thd(), reshape=True)
 
-        env.step()
+        self.core.env.step()

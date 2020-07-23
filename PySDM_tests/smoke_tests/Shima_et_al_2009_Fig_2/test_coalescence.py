@@ -1,15 +1,12 @@
 """
 Created at 08.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
 import copy
 import pytest
 from PySDM.backends.default import Default
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
 from PySDM.dynamics.coalescence.kernels import Golovin
@@ -51,12 +48,12 @@ def test_coalescence(croupier):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    particles_builder = ParticlesBuilder(n_sd=n_sd, backend=backend)
-    particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
+    particles_builder = Builder(n_sd=n_sd, backend=backend)
+    particles_builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": kernel})
-    particles = particles_builder.get_particles(attributes)
+    particles_builder.add_dynamic(Coalescence(kernel, seed=256))
+    particles = particles_builder.build(attributes)
     particles.croupier = croupier
 
     class Seed:
@@ -78,6 +75,6 @@ def test_coalescence(croupier):
     # Assert
     x_max = 0
     for state in states.values():
-        assert x_max < np.amax(backend.to_ndarray(state['volume']))
-        x_max = np.amax(backend.to_ndarray(state['volume']))
+        assert x_max < np.amax(state['volume'].to_ndarray())
+        x_max = np.amax(state['volume'].to_ndarray())
 

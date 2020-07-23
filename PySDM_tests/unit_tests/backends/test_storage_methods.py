@@ -1,8 +1,5 @@
 """
 Created at 21.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import pytest

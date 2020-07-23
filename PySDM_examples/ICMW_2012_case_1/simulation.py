@@ -1,9 +1,5 @@
 """
 Created at 25.09.2019
-
-@author: Piotr Bartman
-@author: Michael Olesik
-@author: Sylwester Arabas
 """
 
 
@@ -22,7 +18,7 @@ from PySDM.environments.products.relative_humidity import RelativeHumidity
 from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.initialisation.moist_environment_init import moist_environment_init
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 from PySDM.state.products.aerosol_concentration import AerosolConcentration
 from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
@@ -34,6 +30,7 @@ from .spin_up import SpinUp
 
 
 class DummyController:
+
     def __init__(self):
         self.panic = False
         self.t_last = self.__times()
@@ -54,76 +51,76 @@ class DummyController:
 
 
 class Simulation:
+
     def __init__(self, setup, storage):
         self.setup = setup
         self.storage = storage
-        self.particles = None
+        self.core = None
 
     @property
     def products(self):
-        return self.particles.products
+        return self.core.products
 
     def reinit(self):
 
-        particles_builder = ParticlesBuilder(n_sd=self.setup.n_sd, backend=self.setup.backend)
-        particles_builder.set_environment(MoistEulerian2DKinematic, {
-            "dt": self.setup.dt,
-            "grid": self.setup.grid,
-            "size": self.setup.size,
-            "stream_function": self.setup.stream_function,
-            "field_values": self.setup.field_values,
-            "rhod_of": self.setup.rhod,
-            "mpdata_iga": self.setup.mpdata_iga,
-            "mpdata_tot": self.setup.mpdata_tot,
-            "mpdata_fct": self.setup.mpdata_fct,
-            "mpdata_iters": self.setup.mpdata_iters
-        })
+        builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
+        builder.set_environment(MoistEulerian2DKinematic(
+            dt=self.setup.dt,
+            grid=self.setup.grid,
+            size=self.setup.size,
+            stream_function=self.setup.stream_function,
+            field_values=self.setup.field_values,
+            rhod_of=self.setup.rhod,
+            mpdata_iga=self.setup.mpdata_iga,
+            mpdata_tot=self.setup.mpdata_tot,
+            mpdata_fct=self.setup.mpdata_fct,
+            mpdata_iters=self.setup.mpdata_iters
+        ))
 
-
-        particles_builder.register_dynamic(Condensation, {
-            "kappa": self.setup.kappa,
-            "rtol_x": self.setup.condensation_rtol_x,
-            "rtol_thd": self.setup.condensation_rtol_thd,
-            "coord": self.setup.condensation_coord,
-            "adaptive": self.setup.adaptive,
-            "do_advection": self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
-            "do_condensation": self.setup.processes["condensation"]  # do somthing with that
-        })
-        particles_builder.register_dynamic(EulerianAdvection, {})
+        condensation = Condensation(
+            kappa=self.setup.kappa,
+            rtol_x=self.setup.condensation_rtol_x,
+            rtol_thd=self.setup.condensation_rtol_thd,
+            coord=self.setup.condensation_coord,
+            adaptive=self.setup.adaptive,
+            do_advection=self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
+            do_condensation=self.setup.processes["condensation"])  # do somthing with that)
+        builder.add_dynamic(condensation)
+        builder.add_dynamic(EulerianAdvection())
 
         if self.setup.processes["particle advection"]:
-            particles_builder.register_dynamic(
-                Displacement, {"scheme": 'FTBS', "sedimentation": self.setup.processes["sedimentation"]})
+            displacement = Displacement(scheme='FTBS', sedimentation=self.setup.processes["sedimentation"])
+            builder.add_dynamic(displacement)
         if self.setup.processes["coalescence"]:
-            particles_builder.register_dynamic(Coalescence, {"kernel": self.setup.kernel})
+            builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
         # TODO
         # if self.setup.processes["relaxation"]:
         #     raise NotImplementedError()
 
         attributes = {}
-        moist_environment_init(attributes, particles_builder.particles.environment,
+        moist_environment_init(attributes, builder.core.environment,
                                spatial_discretisation=spatial_sampling.pseudorandom,
                                spectral_discretisation=spectral_sampling.constant_multiplicity,  # TODO: random
                                spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
-        products = {
-            ParticlesSizeSpectrum: {'v_bins': self.setup.v_bins, 'normalise_by_dv': True},
-            TotalParticleConcentration: {},
-            TotalParticleSpecificConcentration: {},
-            AerosolConcentration: {'radius_threshold': self.setup.aerosol_radius_threshold},
-            AerosolSpecificConcentration: {'radius_threshold': self.setup.aerosol_radius_threshold},
-            ParticleMeanRadius: {},
-            SuperDropletCount: {},
-            RelativeHumidity: {},
-            WaterVapourMixingRatio: {},
-            DryAirDensity: {},
-            DryAirPotentialTemperature: {},
-            CondensationTimestep: {},
-            RipeningRate: {}
-        }
-        self.particles = particles_builder.get_particles(attributes, products)
-        SpinUp(self.particles, self.setup.n_spin_up)
+        products = [
+            ParticlesSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
+            TotalParticleConcentration(),
+            TotalParticleSpecificConcentration(),
+            AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            ParticleMeanRadius(),
+            SuperDropletCount(),
+            RelativeHumidity(),
+            WaterVapourMixingRatio(),
+            DryAirDensity(),
+            DryAirPotentialTemperature(),
+            CondensationTimestep(),
+            RipeningRate()
+        ]
+        self.core = builder.build(attributes, products)
+        SpinUp(self.core, self.setup.n_spin_up)
         # TODO
         if self.storage is not None:
             self.storage.init(self.setup)
@@ -134,14 +131,14 @@ class Simulation:
                 if controller.panic:
                     break
 
-                self.particles.run(step - self.particles.n_steps)
+                self.core.run(step - self.core.n_steps)
 
                 self.store(step)
 
                 controller.set_percent(step / self.setup.steps[-1])
 
-        return self.particles.stats
+        return self.core.stats
 
     def store(self, step):
-        for name, product in self.particles.products.items():
+        for name, product in self.core.products.items():
             self.storage.save(product.get(), step, name)

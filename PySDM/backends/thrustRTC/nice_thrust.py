@@ -1,8 +1,5 @@
 """
 Created at 18.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import ThrustRTC as trtc

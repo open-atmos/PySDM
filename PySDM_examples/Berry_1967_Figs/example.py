@@ -4,7 +4,7 @@ Created at 08.08.2019
 
 import numpy as np
 
-from PySDM.dynamics.coalescence.kernels import Gravitational
+from PySDM.dynamics.coalescence.kernels import Geometric, Hydrodynamic, Electric
 from PySDM_examples.Berry_1967_Figs.setup import Setup
 from PySDM_examples.Berry_1967_Figs.spectrum_plotter import SpectrumPlotter
 from PySDM.attributes.droplet.terminal_velocity import gunn_and_kinzer
@@ -16,9 +16,9 @@ def main(plot: bool, save):
 
         u_term_approxs = (gunn_and_kinzer.Interpolation,)
         dts = (1, 10, 'adaptive')
-        setup_prop = {'geometric sweep-out': (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
-                      'electric field 3000V/cm': (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
-                      'hydrodynamic capture': (0, 1600, 1800, 2000, 2200)
+        setup_prop = {Geometric: (0, 100, 200, 300, 400, 500, 600, 700, 750, 800, 850),
+                      Electric: (0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000),
+                      Hydrodynamic: (0, 1600, 1800, 2000, 2200)
                       }
         setups = {}
 
@@ -27,14 +27,14 @@ def main(plot: bool, save):
             for dt in dts:
                 setups[u_term_approx][dt] = {}
 
-                for setup_name in setup_prop:
+                for kernel in setup_prop:
                     s = Setup()
                     s.u_term = u_term_approx
                     s.dt = 10 if dt == 'adaptive' else dt
                     s.adaptive = dt == 'adaptive'
-                    s.kernel = Gravitational(setup_name)
-                    s._steps = setup_prop[setup_name]
-                    setups[u_term_approx][dt][setup_name] = s
+                    s.kernel = kernel()
+                    s._steps = setup_prop[kernel]
+                    setups[u_term_approx][dt][kernel] = s
 
         states = {}
         for u_term_approx in setups:
@@ -54,12 +54,11 @@ def main(plot: bool, save):
                     if save is not None:
                         n_sd = setups[u_term_approx][dt][kernel].n_sd
                         plotter.save(save + "/" +
-                                     f"{n_sd}_{u_term_approx.__name__}_{dt}_{kernel.replace('/', 'per')}" +
+                                     f"{n_sd}_{u_term_approx.__name__}_{dt}_{kernel.__name__}" +
                                      "." + plotter.format)
                     if plot:
                         plotter.show()
 
 
 if __name__ == '__main__':
-
     main(plot=True, save=None)

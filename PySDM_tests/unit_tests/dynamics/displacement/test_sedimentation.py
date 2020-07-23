@@ -1,8 +1,5 @@
 """
 Created at 12.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -26,7 +23,7 @@ class TestSedimentation:
         setup.sedimentation = True
         sut, particles = setup.get_displacement()
 
-        particles.state.whole_attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
+        particles.state.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
 
         # Act
         sut()

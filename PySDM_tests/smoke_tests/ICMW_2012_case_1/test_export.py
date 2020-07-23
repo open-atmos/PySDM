@@ -1,6 +1,5 @@
 """
 Created at 07.02.2020
-
 """
 
 from PySDM_examples.ICMW_2012_case_1.export import netCDF

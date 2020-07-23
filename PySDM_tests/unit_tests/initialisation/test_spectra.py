@@ -1,4 +1,8 @@
-from PySDM.initialisation.spectra import Lognormal, Exponential
+"""
+Created at 2019
+"""
+
+from PySDM.initialisation.spectra import Lognormal, Exponential, Sum
 
 import numpy as np
 from numpy.testing import assert_approx_equal
@@ -53,3 +57,56 @@ class TestExponential:
 
         # Assert
         assert_approx_equal(np.sum(sd) * dm, n_part, 2)
+
+
+class TestSum:
+    scale = 1
+    n_part = 256
+    exponential = Exponential(n_part, scale)
+
+    s = 1.001
+    r_mode = 1e-6
+    lognormal = Lognormal(1, r_mode, s)
+
+
+    def test_size_distribution(self):
+        # Arrange
+        sut = Sum((TestSum.exponential,))
+
+        # Act
+        x = np.linspace(0, 1)
+        sut_sd = sut.size_distribution(x)
+        exp_sd = TestSum.exponential.size_distribution(x)
+
+        # Assert
+        np.testing.assert_array_equal(sut_sd, exp_sd)
+
+    def test_cumulative(self):
+        # Arrange
+        sut = Sum((TestSum.exponential,))
+
+        # Act
+        x = np.linspace(0, 1)
+        sut_c = sut.cumulative(x)
+        exp_c = TestSum.exponential.cumulative(x)
+
+        # Assert
+        np.testing.assert_array_equal(sut_c, exp_c)
+
+    @pytest.mark.parametrize("distributions", [
+        pytest.param((exponential,), id="single exponential"),
+        pytest.param((lognormal,), id="single lognormal"),
+        pytest.param((exponential, exponential), id="2 exponentials")
+    ])
+    def test_percentiles(self, distributions):
+        # Arrange
+        sut = Sum(distributions)
+
+        # Act
+        cdf_values = np.linspace(0, .999)
+        sut_p = sut.percentiles(cdf_values)
+        exp_p = distributions[0].percentiles(cdf_values)
+
+        # Assert
+        np.testing.assert_array_almost_equal(sut_p, exp_p, decimal=3)
+

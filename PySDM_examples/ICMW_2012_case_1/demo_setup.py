@@ -1,7 +1,5 @@
 """
 Created at 02.10.2019
-
-@author: Sylwester Arabas
 """
 
 from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
@@ -83,7 +81,7 @@ class DemoSetup(Setup):
     def condensation_coord(self):
         return self.ui_condensation_coord.value
 
-# TODO    ui_ept = Checkbox(value=Setup.enable_particle_temperatures, description="enable particle temperatures")
+    # TODO ui_ept = Checkbox(value=Setup.enable_particle_temperatures, description="enable particle temperatures")
 
     ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
 
@@ -153,10 +151,10 @@ class DemoSetup(Setup):
                   self.ui_condensation_rtol_x, self.ui_condensation_rtol_thd,
                   self.ui_adaptive, self.ui_condensation_coord,
                   *self.ui_mpdata_options]),
-#            VBox([])  # TODO
+            # VBox([])  # TODO
         ])
         layout.set_title(0, 'environment parameters')
         layout.set_title(1, 'processes')
         layout.set_title(2, 'discretisation')
-#        layout.set_title(3, 'parallelisation')  # TODO
+        # layout.set_title(3, 'parallelisation')  # TODO
         return layout

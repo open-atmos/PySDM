@@ -1,14 +1,10 @@
 """
 Created at 24.10.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
-import numpy as np
-
-
 # http://ww2.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
+
+import numpy as np
 
 
 def grid(grid, n_sd):
