@@ -28,7 +28,7 @@ class Setup:
     rho_w_max = .6 * si.metres / si.seconds * (si.kilogram / si.metre ** 3)
 
     # output steps
-    n_steps = 3600
+    n_steps = 5400
     outfreq = 60
     dt = 1 * si.seconds
 
@@ -108,7 +108,8 @@ class Setup:
     r_min = spectrum_per_mass_of_dry_air.percentiles(.01)
     r_max = spectrum_per_mass_of_dry_air.percentiles(.99)
 
-    kernel = Geometric(collection_efficiency=1 / si.s)
-    aerosol_radius_threshold = 1 * si.micrometre
+    kernel = Geometric(collection_efficiency=.5 / si.s)
+    aerosol_radius_threshold = .5 * si.micrometre
+    drizzle_radius_threshold = 25 * si.micrometre
 
     n_spin_up = 1 * si.hour / dt
