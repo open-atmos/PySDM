@@ -19,7 +19,7 @@ from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMix
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.initialisation.moist_environment_init import moist_environment_init
 from PySDM.builder import Builder
-from PySDM.state.products.aerosol_concentration import AerosolConcentration
+from PySDM.state.products.particles_concentration import AerosolConcentration, CloudConcentration, DrizzleConcentration
 from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
 from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
@@ -109,6 +109,8 @@ class Simulation:
             TotalParticleConcentration(),
             TotalParticleSpecificConcentration(),
             AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            CloudConcentration(radius_range=(self.setup.aerosol_radius_threshold, self.setup.drizzle_radius_threshold)),
+            DrizzleConcentration(radius_threshold=self.setup.drizzle_radius_threshold),
             AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
             ParticleMeanRadius(),
             SuperDropletCount(),
@@ -117,7 +119,7 @@ class Simulation:
             DryAirDensity(),
             DryAirPotentialTemperature(),
             CondensationTimestep(),
-            RipeningRate()
+            # RipeningRate()
         ]
         self.core = builder.build(attributes, products)
         SpinUp(self.core, self.setup.n_spin_up)
