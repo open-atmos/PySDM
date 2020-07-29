@@ -60,7 +60,7 @@ class Simulation:
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get())
+        output["r_bins_values"].append(self.particles.products["Particles Wet Size Spectrum"].get())
         volume = self.particles.state['volume']
         volume = volume.to_ndarray()  # TODO
         output["r"].append(phys.radius(volume=volume))
