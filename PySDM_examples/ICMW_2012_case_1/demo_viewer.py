@@ -19,7 +19,7 @@ class DemoViewer:
         self.storage = storage
         self.setup = setup
 
-        self.play = Play(interval=10000)
+        self.play = Play(interval=1000)
         self.step_slider = IntSlider(continuous_update=False)
         self.product_select = Dropdown()
         self.plots_box = Box()
@@ -48,8 +48,8 @@ class DemoViewer:
         const.convert_to(r_bins, const.si.micrometres)
         self.spectrumOutput = Output()
         with self.spectrumOutput:
-            clear_output()
             self.spectrumPlot = _SpectrumPlot(r_bins)
+            clear_output()
 
         self.plots = {}
         self.outputs = {}
@@ -57,8 +57,8 @@ class DemoViewer:
             if len(product.shape) == 2:
                 self.outputs[key] = Output()
                 with self.outputs[key]:
-                    clear_output()
                     self.plots[key] = _ImagePlot(self.setup.grid, self.setup.size, product)
+                    clear_output()
 
         self.plot_box = Box()
         if len(products.keys()) > 0:
@@ -107,10 +107,21 @@ class DemoViewer:
         display(make_link(self.spectrumPlot.fig))
 
     def replot(self, *args, **kwargs):
-        self.replot_image()
-        self.replot_spectra()
+        selected = self.product_select.value
+        if selected is None or selected not in self.plots:
+            return
 
-    def replot_spectra(self, *args, **kwargs):
+        self.update_image()
+        self.update_spectra()
+
+        self.outputs[selected].clear_output(wait=True)
+        self.spectrumOutput.clear_output(wait=True)
+        with self.outputs[selected]:
+            display(self.plots[selected].fig)
+        with self.spectrumOutput:
+            display(self.spectrumPlot.fig)
+
+    def update_spectra(self):
         step = self.step_slider.value
 
         xrange = slice(*self.slider['x'].value)
@@ -129,26 +140,24 @@ class DemoViewer:
             except self.storage.Exception:
                 pass
 
-        with self.spectrumOutput:
-            clear_output(wait=True)
-            display(self.spectrumPlot.fig)
+    def replot_spectra(self, *args, **kwargs):
+        self.update_spectra()
+        step = self.step_slider.value
 
         selected = self.product_select.value
         if selected is None or selected not in self.plots:
             return
-
         self.plots[selected].update(None, self.slider['x'].value, self.slider['y'].value, step)
 
-        for key in self.outputs.keys():
-            with self.outputs[key]:
-                clear_output(wait=True)
-                display(self.plots[key].fig)
+        self.outputs[selected].clear_output(wait=True)
+        self.spectrumOutput.clear_output(wait=True)
+        with self.outputs[selected]:
+            display(self.plots[selected].fig)
+        with self.spectrumOutput:
+            display(self.spectrumPlot.fig)
 
-    def replot_image(self, *args, **kwargs):
+    def update_image(self):
         selected = self.product_select.value
-
-        if selected is None or selected not in self.plots:
-            return
 
         if selected in self.outputs:
             self.plot_box.children = [self.outputs[selected]]
@@ -161,10 +170,15 @@ class DemoViewer:
 
         self.plots[selected].update(data, self.slider['x'].value, self.slider['y'].value, step)
 
-        for key in self.outputs.keys():
-            with self.outputs[key]:
-                clear_output(wait=True)
-                display(self.plots[key].fig)
+    def replot_image(self, *args, **kwargs):
+        selected = self.product_select.value
+        if selected is None or selected not in self.plots:
+            return
+
+        self.update_image()
+        self.outputs[selected].clear_output(wait=True)
+        with self.outputs[selected]:
+            display(self.plots[selected].fig)
 
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))
