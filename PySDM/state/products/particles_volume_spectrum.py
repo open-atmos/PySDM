@@ -30,10 +30,10 @@ class ParticlesVolumeSpectrum(MomentProduct):
         vals = np.empty(len(volume_bins_edges) - 1)
         for i in range(len(vals)):
             self.download_moment_to_buffer(attr='volume', rank=1,
-                                           attr_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
+                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
             vals[i] = self.buffer[0]
             self.download_moment_to_buffer(attr='volume', rank=0,
-                                           attr_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
+                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
             vals[i] *= self.buffer[0]
         vals *= 1 / np.diff(np.log(radius_bins_edges)) / self.core.mesh.dv
         return vals

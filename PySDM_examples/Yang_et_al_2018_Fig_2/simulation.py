@@ -10,7 +10,7 @@ from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
-from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from PySDM.state.products.particles_size_spectrum import ParticlesWetSizeSpectrum
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
 
@@ -49,7 +49,7 @@ class Simulation:
         particles_builder.add_dynamic(condensation)
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         products = [
-            ParticlesSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
+            ParticlesWetSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
             CondensationTimestep(),
             RipeningRate()
         ]
@@ -60,7 +60,7 @@ class Simulation:
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Size Spectrum"].get())
+        output["r_bins_values"].append(self.particles.products["Particles Wet Size Spectrum"].get())
         volume = self.particles.state['volume']
         volume = volume.to_ndarray()  # TODO
         output["r"].append(phys.radius(volume=volume))
