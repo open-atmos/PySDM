@@ -38,8 +38,8 @@ class MomentProduct(Product):
         self.moment_0 = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.moments = self.core.Storage.empty((1, self.core.mesh.n_cell), dtype=float)
 
-    def download_moment_to_buffer(self, attr, rank, attr_range=(-np.inf, np.inf)):
-        self.core.state.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_range=attr_range)
+    def download_moment_to_buffer(self, attr, rank, filter_attr='volume', filter_range=(-np.inf, np.inf)):
+        self.core.state.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_name=filter_attr, attr_range=filter_range)
         if rank == 0:  # TODO
             self.download_to_buffer(self.moment_0)
         else:

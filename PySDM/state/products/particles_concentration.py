@@ -23,8 +23,8 @@ class ParticlesConcentration(MomentProduct):
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0,
-                                       attr_range=(phys.volume(self.radius_range[0]),
-                                                   phys.volume(self.radius_range[1])))
+                                       filter_range=(phys.volume(self.radius_range[0]),
+                                                     phys.volume(self.radius_range[1])))
         self.buffer[:] /= self.core.mesh.dv
         const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer

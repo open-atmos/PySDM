@@ -22,7 +22,7 @@ from PySDM.builder import Builder
 from PySDM.state.products.particles_concentration import AerosolConcentration, CloudConcentration, DrizzleConcentration
 from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
-from PySDM.state.products.particles_size_spectrum import ParticlesSizeSpectrum
+from PySDM.state.products.particles_size_spectrum import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum
 from PySDM.state.products.super_droplet_count import SuperDropletCount
 from PySDM.state.products.total_particle_concentration import TotalParticleConcentration
 from PySDM.state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
@@ -105,7 +105,8 @@ class Simulation:
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
         products = [
-            ParticlesSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
+            ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
+            ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins
             TotalParticleConcentration(),
             TotalParticleSpecificConcentration(),
             AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
