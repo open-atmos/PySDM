@@ -43,22 +43,22 @@ class DemoViewer:
             for key, val in products.items()
             if len(val.shape) == 2
         ]
+
+        r_bins = phys.radius(volume=self.setup.v_bins)
+        const.convert_to(r_bins, const.si.micrometres)
+        self.spectrumOutput = Output()
+        with self.spectrumOutput:
+            clear_output()
+            self.spectrumPlot = _SpectrumPlot(r_bins)
+
         self.plots = {}
         self.outputs = {}
-        for key in products.keys():
-            self.outputs[key] = Output()
-
-            with self.outputs[key]:
-                clear_output()
-                product = self.products[key]
-                if len(product.shape) == 2:
+        for key, product in products.items():
+            if len(product.shape) == 2:
+                self.outputs[key] = Output()
+                with self.outputs[key]:
+                    clear_output()
                     self.plots[key] = _ImagePlot(self.setup.grid, self.setup.size, product)
-                elif len(product.shape) == 3:
-                    r_bins = phys.radius(volume=self.setup.v_bins)
-                    const.convert_to(r_bins, const.si.micrometres)
-                    self.plots[key] = _SpectrumPlot(r_bins)
-                else:
-                    raise NotImplementedError()
 
         self.plot_box = Box()
         if len(products.keys()) > 0:
@@ -82,7 +82,7 @@ class DemoViewer:
                         ),
                         VBox(
                             layout=Layout(),
-                            children=(save_spe, self.outputs['Particles Size Spectrum'])
+                            children=(save_spe, self.spectrumOutput)
                         )
                     )
                 ),
@@ -104,39 +104,62 @@ class DemoViewer:
         display(make_link(self.plots[self.product_select.value].fig))
 
     def handle_save_spe(self, _):
-        display(make_link(self.plots['Particles Size Spectrum'].fig))
+        display(make_link(self.spectrumPlot.fig))
 
-    def replot(self, _=None):
+    def replot(self, *args, **kwargs):
+        self.replot_image()
+        self.replot_spectra()
+
+    def replot_spectra(self, *args, **kwargs):
+        step = self.step_slider.value
+
+        xrange = slice(*self.slider['x'].value)
+        yrange = slice(*self.slider['y'].value)
+
+        for key in ('Particles Wet Size Spectrum', 'Particles Dry Size Spectrum'):
+            try:
+                data = self.storage.load(self.setup.steps[step], key)
+                data = data[xrange, yrange, :]
+                data = np.mean(np.mean(data, axis=0), axis=0)
+                data = np.concatenate(((0,), data))
+                if key == 'Particles Wet Size Spectrum':
+                    self.spectrumPlot.update_wet(data)
+                if key == 'Particles Dry Size Spectrum':
+                    self.spectrumPlot.update_dry(data)
+            except self.storage.Exception:
+                pass
+
+        with self.spectrumOutput:
+            clear_output(wait=True)
+            display(self.spectrumPlot.fig)
+
         selected = self.product_select.value
+        if selected is None or selected not in self.plots:
+            return
+
+        self.plots[selected].update(None, self.slider['x'].value, self.slider['y'].value)
+
+        for key in self.outputs.keys():
+            with self.outputs[key]:
+                clear_output(wait=True)
+                display(self.plots[key].fig)
+
+    def replot_image(self, *args, **kwargs):
+        selected = self.product_select.value
+
+        if selected is None or selected not in self.plots:
+            return
 
         if selected in self.outputs:
             self.plot_box.children = [self.outputs[selected]]
 
         step = self.step_slider.value
-        for key in self.outputs.keys():
-            if len(self.products[key].shape) == 2:
-                if key != selected:
-                    continue
+        try:
+            data = self.storage.load(self.setup.steps[step], selected)
+        except self.storage.Exception:
+            data = None
 
-                try:
-                    data = self.storage.load(self.setup.steps[step], key)
-                except self.storage.Exception:
-                    data = None
-
-                self.plots[key].update(data, self.slider['x'].value, self.slider['y'].value)
-            elif len(self.products[key].shape) == 3:
-                xrange = slice(*self.slider['x'].value)
-                yrange = slice(*self.slider['y'].value)
-                try:
-                    data = self.storage.load(self.setup.steps[step], key)
-                    data = data[xrange, yrange, :]
-                    data = np.mean(np.mean(data, axis=0), axis=0)
-                    data = np.concatenate(((0,), data))
-                    self.plots[key].update(data)
-                except self.storage.Exception:
-                    pass
-            else:
-                raise NotImplementedError()
+        self.plots[selected].update(data, self.slider['x'].value, self.slider['y'].value)
 
         for key in self.outputs.keys():
             with self.outputs[key]:
@@ -146,9 +169,9 @@ class DemoViewer:
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         self.play.observe(self.replot, 'value')
-        self.product_select.observe(self.replot, 'value')
+        self.product_select.observe(self.replot_image, 'value')
         for xy in ('x', 'y'):
-            self.slider[xy].observe(self.replot, 'value')
+            self.slider[xy].observe(self.replot_spectra, 'value')
         return VBox([
             Box([self.play, self.step_slider, self.product_select]),
             self.plots_box
