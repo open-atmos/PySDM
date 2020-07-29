@@ -19,7 +19,7 @@ class DemoViewer:
         self.storage = storage
         self.setup = setup
 
-        self.play = Play(interval=1000)
+        self.play = Play(interval=10000)
         self.step_slider = IntSlider(continuous_update=False)
         self.product_select = Dropdown()
         self.plots_box = Box()
@@ -123,7 +123,7 @@ class DemoViewer:
                 data = np.mean(np.mean(data, axis=0), axis=0)
                 data = np.concatenate(((0,), data))
                 if key == 'Particles Wet Size Spectrum':
-                    self.spectrumPlot.update_wet(data)
+                    self.spectrumPlot.update_wet(data, step)
                 if key == 'Particles Dry Size Spectrum':
                     self.spectrumPlot.update_dry(data)
             except self.storage.Exception:
@@ -137,7 +137,7 @@ class DemoViewer:
         if selected is None or selected not in self.plots:
             return
 
-        self.plots[selected].update(None, self.slider['x'].value, self.slider['y'].value)
+        self.plots[selected].update(None, self.slider['x'].value, self.slider['y'].value, step)
 
         for key in self.outputs.keys():
             with self.outputs[key]:
@@ -159,7 +159,7 @@ class DemoViewer:
         except self.storage.Exception:
             data = None
 
-        self.plots[selected].update(data, self.slider['x'].value, self.slider['y'].value)
+        self.plots[selected].update(data, self.slider['x'].value, self.slider['y'].value, step)
 
         for key in self.outputs.keys():
             with self.outputs[key]:
@@ -168,7 +168,7 @@ class DemoViewer:
 
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))
-        self.play.observe(self.replot, 'value')
+        self.step_slider.observe(self.replot, 'value')
         self.product_select.observe(self.replot_image, 'value')
         for xy in ('x', 'y'):
             self.slider[xy].observe(self.replot_spectra, 'value')
