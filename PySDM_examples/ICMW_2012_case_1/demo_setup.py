@@ -8,31 +8,31 @@ import numpy as np
 
 
 class DemoSetup(Setup):
-    ui_th_std0 = FloatSlider(description="th0 [K]", value=Setup.th_std0, min=280, max=300)
+    ui_th_std0 = FloatSlider(description="$\\theta_0$ [K]", value=Setup.th_std0, min=280, max=300)
 
     @property
     def th_std0(self):
         return self.ui_th_std0.value
 
-    ui_qv0 = FloatSlider(description="qv0 [g/kg]", value=Setup.qv0*1000, min=5, max=10)
+    ui_qv0 = FloatSlider(description="q$_{v0}$ [g/kg]", value=Setup.qv0*1000, min=5, max=10)
 
     @property
     def qv0(self):
         return self.ui_qv0.value/1000
 
-    ui_p0 = FloatSlider(description="p0 [hPa]", value=Setup.p0/100, min=900, max=1100)
+    ui_p0 = FloatSlider(description="p$_0$ [hPa]", value=Setup.p0/100, min=900, max=1100)
 
     @property
     def p0(self):
         return self.ui_p0.value*100
 
-    ui_kappa = FloatSlider(description="kappa [1]", value=Setup.kappa, min=0, max=1.5)
+    ui_kappa = FloatSlider(description="$\kappa$ [1]", value=Setup.kappa, min=0, max=1.5)
 
     @property
     def kappa(self):
         return self.ui_kappa.value
 
-    ui_amplitude = FloatSlider(description="amplitude [kg s^-1 m^-2]", value=Setup.rho_w_max, min=-1, max=1)
+    ui_amplitude = FloatSlider(description="$\psi_{_{mx}}$[kg/s/m$^{_2}$]", value=Setup.rho_w_max, min=-1, max=1)
 
     @property
     def amplitude(self):
@@ -57,13 +57,13 @@ class DemoSetup(Setup):
     def n_steps(self):
         return self.ui_n_steps.value
 
-    ui_condensation_rtol_x = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log_10(rtol_x)")
+    ui_condensation_rtol_x = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_x$)")
 
     @property
     def condensation_rtol_x(self):
         return 10**self.ui_condensation_rtol_x.value
 
-    ui_condensation_rtol_thd = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log_10(rtol_thd)")
+    ui_condensation_rtol_thd = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_\\theta$)")
 
     @property
     def condensation_rtol_thd(self):

@@ -13,7 +13,7 @@ class CondensationTimestep(Product):
         super().__init__(
             name='dt_cond',
             unit='s',
-            description='condensation timestep',
+            description='Condensation timestep',
             scale='log',
             range=None
         )
