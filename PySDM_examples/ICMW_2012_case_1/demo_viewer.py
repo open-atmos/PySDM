@@ -20,16 +20,16 @@ class DemoViewer:
         self.setup = setup
 
         self.play = Play(interval=1000)
-        self.step_slider = IntSlider(continuous_update=False)
+        self.step_slider = IntSlider(continuous_update=False, description='t/dt:')
         self.product_select = Dropdown()
         self.plots_box = Box()
 
         self.slider = {}
-        self.lines = {'x': [{}, {}], 'y': [{}, {}]}
-        for xy in ('x', 'y'):
-            self.slider[xy] = IntRangeSlider(min=0, max=1, description=f'spectrum_{xy}',
+        self.lines = {'X': [{}, {}], 'Z': [{}, {}]}
+        for xz in ('X', 'Z'):
+            self.slider[xz] = IntRangeSlider(min=0, max=1, description=f'{xz}',
                                              continuous_update=False,
-                                             orientation='horizontal' if xy == 'x' else 'vertical')
+                                             orientation='horizontal' if xz == 'X' else 'vertical')
 
         self.reinit({})
 
@@ -76,8 +76,8 @@ class DemoViewer:
                                     layout=layout_flex_end,
                                     children=(save_map,)
                                 ),
-                                HBox((self.slider['y'], self.plot_box)),
-                                HBox((self.slider['x'],), layout=layout_flex_end)
+                                HBox((self.slider['Z'], self.plot_box)),
+                                HBox((self.slider['X'],), layout=layout_flex_end)
                             )
                         ),
                         VBox(
@@ -92,8 +92,8 @@ class DemoViewer:
             widget.value = 0
             widget.max = len(self.setup.steps) - 1
 
-        for j, xy in enumerate(('x', 'y')):
-            slider = self.slider[xy]
+        for j, xz in enumerate(('X', 'Z')):
+            slider = self.slider[xz]
             mx = self.setup.grid[j]
             slider.max = mx
             slider.value = (0, mx)
@@ -124,8 +124,8 @@ class DemoViewer:
     def update_spectra(self):
         step = self.step_slider.value
 
-        xrange = slice(*self.slider['x'].value)
-        yrange = slice(*self.slider['y'].value)
+        xrange = slice(*self.slider['X'].value)
+        yrange = slice(*self.slider['Z'].value)
 
         for key in ('Particles Wet Size Spectrum', 'Particles Dry Size Spectrum'):
             try:
@@ -147,7 +147,7 @@ class DemoViewer:
         selected = self.product_select.value
         if selected is None or selected not in self.plots:
             return
-        self.plots[selected].update(None, self.slider['x'].value, self.slider['y'].value, step)
+        self.plots[selected].update(None, self.slider['X'].value, self.slider['Z'].value, step)
 
         self.outputs[selected].clear_output(wait=True)
         self.spectrumOutput.clear_output(wait=True)
@@ -168,7 +168,7 @@ class DemoViewer:
         except self.storage.Exception:
             data = None
 
-        self.plots[selected].update(data, self.slider['x'].value, self.slider['y'].value, step)
+        self.plots[selected].update(data, self.slider['X'].value, self.slider['Z'].value, step)
 
     def replot_image(self, *args, **kwargs):
         selected = self.product_select.value
@@ -184,8 +184,8 @@ class DemoViewer:
         jslink((self.play, 'value'), (self.step_slider, 'value'))
         self.step_slider.observe(self.replot, 'value')
         self.product_select.observe(self.replot_image, 'value')
-        for xy in ('x', 'y'):
-            self.slider[xy].observe(self.replot_spectra, 'value')
+        for xz in ('X', 'Z'):
+            self.slider[xz].observe(self.replot_spectra, 'value')
         return VBox([
             Box([self.play, self.step_slider, self.product_select]),
             self.plots_box

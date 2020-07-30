@@ -13,7 +13,7 @@ class ParticleMeanRadius(MomentProduct):
         super().__init__(
             name='radius_m1',
             unit='um',
-            description='mean radius',
+            description='Mean radius',
             scale='linear',
             range=[1, 50]
         )

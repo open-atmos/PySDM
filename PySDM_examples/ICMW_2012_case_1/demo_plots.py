@@ -22,19 +22,19 @@ class _ImagePlot(_Plot):
         self.nans = np.full(grid, np.nan)
 
         self.dx = size[0] / grid[0]
-        self.dy = size[1] / grid[1]
+        self.dz = size[1] / grid[1]
 
         xlim = (0, size[0])
-        ylim = (0, size[1])
+        zlim = (0, size[1])
 
         self.ax.set_xlim(xlim)
-        self.ax.set_ylim(ylim)
+        self.ax.set_ylim(zlim)
 
-        self.lines = {'x': [None]*2, 'y': [None]*2}
-        self.lines['x'][0] = plt.plot([-1] * 2, ylim, **self.line_args)[0]
-        self.lines['y'][0] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
-        self.lines['x'][1] = plt.plot([-1] * 2, ylim, **self.line_args)[0]
-        self.lines['y'][1] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
+        self.lines = {'X': [None]*2, 'Z': [None]*2}
+        self.lines['X'][0] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
+        self.lines['Z'][0] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
+        self.lines['X'][1] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
+        self.lines['Z'][1] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
 
         data = self.nans
         cmap = 'YlGnBu'
@@ -46,7 +46,7 @@ class _ImagePlot(_Plot):
 
         self.im = self.ax.imshow(self._transform(data),
             origin='lower',
-            extent=(*xlim, *ylim),
+            extent=(*xlim, *zlim),
             cmap=cmap,
             norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(data).all() else None
         )
@@ -60,16 +60,16 @@ class _ImagePlot(_Plot):
         if data is not None:
             return data.T
 
-    def update(self, data, focus_x, focus_y, step):
+    def update(self, data, focus_x, focus_z, step):
         data = self._transform(data)
         if data is not None:
             self.im.set_data(data)
             self.ax.set_title(f"min:{np.amin(data):.4g}    max:{np.amax(data):.4g}    t/dt:{step}")
 
-        self.lines['x'][0].set_xdata(x=focus_x[0] * self.dx)
-        self.lines['y'][0].set_ydata(y=focus_y[0] * self.dy)
-        self.lines['x'][1].set_xdata(x=focus_x[1] * self.dx)
-        self.lines['y'][1].set_ydata(y=focus_y[1] * self.dy)
+        self.lines['X'][0].set_xdata(x=focus_x[0] * self.dx)
+        self.lines['Z'][0].set_ydata(y=focus_z[0] * self.dz)
+        self.lines['X'][1].set_xdata(x=focus_x[1] * self.dx)
+        self.lines['Z'][1].set_ydata(y=focus_z[1] * self.dz)
 
 
 class _SpectrumPlot(_Plot):
@@ -83,8 +83,9 @@ class _SpectrumPlot(_Plot):
         self.ax.set_yscale('log')
         self.ax.set_ylim(1, 5e3)
         self.ax.grid(True)
-        self.spec_wet = self.ax.step(r_bins, np.full_like(r_bins, np.nan))[0]
-        self.spec_dry = self.ax.step(r_bins, np.full_like(r_bins, np.nan))[0]
+        self.spec_wet = self.ax.step(r_bins, np.full_like(r_bins, np.nan), label='wet')[0]
+        self.spec_dry = self.ax.step(r_bins, np.full_like(r_bins, np.nan), label='dry')[0]
+        self.ax.legend()
         plt.show()
 
     def update_wet(self, data, step):
