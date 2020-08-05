@@ -1,7 +1,7 @@
 numpy==1.18.1
 scipy==1.4.1
 mpmath==1.1.0
-numba==0.49.0
+numba==0.50.1
 matplotlib==3.2.1
 ThrustRTC==0.3.5
 CURandRTC==0.1.2
