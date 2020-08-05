@@ -10,6 +10,7 @@ import pytest
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
+from matplotlib.collections import LineCollection
 
 
 rtols = [1e-3, 1e-7]
@@ -43,10 +44,22 @@ def data():
     return data
 
 
+def add_color_line(ax, x, y, z):
+    points = np.array([x, y]).T.reshape(-1, 1, 2)
+    segments = np.concatenate([points[:-1], points[1:]], axis=1)
+    lc = LineCollection(segments, cmap=plt.get_cmap('plasma'), norm=plt.Normalize(-10, 0))
+    z = np.log2(np.array(z))
+    lc.set_array(z)
+    lc.set_linewidth(3)
+
+    ax.add_collection(lc)
+    return lc
+
+
 def test_plot(data, plot=False, save=False):
     if plot:
         fig, axs = plt.subplots(setups_num, len(rtols),
-                                sharex=True, sharey=True, figsize=(10, 15))
+                                sharex=True, sharey=True, figsize=(10, 13))
         for setup_idx in range(setups_num):
             for rtol_idx in range(len(rtols)):
                 ax = axs[setup_idx, rtol_idx]
@@ -54,12 +67,19 @@ def test_plot(data, plot=False, save=False):
                     datum = data[scheme][rtols[rtol_idx]][setup_idx]
                     S = datum['S']
                     z = datum['z']
-                    ax.plot(S, z, label=scheme, color='Black' if scheme == 'BDF' else 'grey')
+                    dt = datum['dt']
+                    if scheme == 'BDF':
+                        ax.plot(S, z, label=scheme, color='grey')
+                    else:
+                        lc = add_color_line(ax, S, z, dt)
                 _rtol = '$r_{tol}$'
                 ax.set_title(f"setup: {setup_idx}; {_rtol}: {rtols[rtol_idx]}")
                 ax.set_xlim(-7.5e-3, 7.5e-3)
+                ax.set_ylim(0, 180)
                 ax.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
                 plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
+        fig.colorbar(lc, ax=axs.flat, orientation='horizontal')
+
         if save:
             plt.savefig('ADAPTIVEvsBDF.pdf', format='pdf')
         plt.show()
