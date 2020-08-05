@@ -36,6 +36,8 @@ bibliography: paper.bib
 # Summary
 
 TODO
+Linux, OSX, Windows
+Travis
 
 # Statement of need 
 
@@ -73,7 +75,6 @@ for n in range(10):
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 # References
