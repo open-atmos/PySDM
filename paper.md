@@ -1,5 +1,5 @@
 ---
-title: 'PySDM: Pythonic particle-based cloud microphysics package'
+title: 'PySDM: Pythonic GPU-enabled particle-based cloud microphysics package'
 tags:
   - Python
   - physics-simulation 
@@ -19,7 +19,7 @@ authors:
   - name: Michael Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "1"
-  - name: Grzegorz 	Łazarski
+  - name: Grzegorz Łazarski
     affiliation: "1"
   - name: Aleksandra Talar
     affiliation: "1"
