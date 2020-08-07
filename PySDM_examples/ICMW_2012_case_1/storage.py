@@ -5,25 +5,31 @@ Created at 02.10.2019
 import os
 import tempfile
 import numpy as np
+from pathlib import Path
 
 
 class Storage:
     class Exception(BaseException):
         pass
 
-    def __init__(self, dtype=np.float32):
-        self.createdir()
+    def __init__(self, dtype=np.float32, path=None):
+        if path is None:
+            self.temp_dir = tempfile.TemporaryDirectory()
+            self.dir_path = self.temp_dir.name
+        else:
+            Path(path).mkdir(parents=True, exist_ok=True)
+            self.dir_path = Path(path).absolute()
         self.dtype = dtype
 
+    def __del__(self):
+        if hasattr(self, 'temp_dir'):
+            self.temp_dir.cleanup()
+
     def init(self, setup):
-        self.createdir()
         self.grid = setup.grid
 
-    def createdir(self):
-        self.tempdir = tempfile.TemporaryDirectory()
-
     def _filepath(self, step: int, name: str):
-        path = os.path.join(self.tempdir.name, f"{step:06}_{name}.npy")
+        path = os.path.join(self.dir_path, f"{step:06}_{name}.npy")
         return path
 
     def save(self, data: np.ndarray, step: int, name: str):
