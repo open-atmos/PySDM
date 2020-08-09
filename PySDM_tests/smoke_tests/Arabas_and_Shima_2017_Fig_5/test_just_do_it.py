@@ -78,7 +78,7 @@ def test_plot(data, plot=False, save=False):
                 ax.set_ylim(0, 180)
                 ax.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
                 plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
-        fig.colorbar(lc, ax=axs.flat, orientation='horizontal')
+        fig.colorbar(lc, ax=axs.flat)
 
         if save:
             plt.savefig('ADAPTIVEvsBDF.pdf', format='pdf')
