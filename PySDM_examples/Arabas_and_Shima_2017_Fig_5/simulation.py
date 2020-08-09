@@ -11,6 +11,7 @@ from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
 from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
+from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 
 
 class Simulation:
@@ -44,7 +45,7 @@ class Simulation:
         environment = builder.core.environment
         r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), setup.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
-        products = [ParticleMeanRadius()]
+        products = [ParticleMeanRadius(), CondensationTimestep()]
 
         self.core = builder.build(attributes, products)
 
@@ -56,9 +57,10 @@ class Simulation:
         output["S"].append(self.core.environment["RH"][cell_id] - 1)
         output["z"].append(self.core.environment["z"][cell_id])
         output["t"].append(self.core.environment["t"][cell_id])
+        output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "dt": []}
 
         self.save(output)
         for step in range(self.n_output):
