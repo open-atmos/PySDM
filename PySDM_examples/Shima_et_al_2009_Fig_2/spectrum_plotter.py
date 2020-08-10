@@ -6,6 +6,7 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
+from .error_measure import error_measure
 
 
 class SpectrumColors:
@@ -24,7 +25,7 @@ class SpectrumColors:
 
 class SpectrumPlotter:
 
-    def __init__(self, setup, title=None, grid=True, legend=True):
+    def __init__(self, setup, grid=True, legend=True):
         self.setup = setup
         self.format = 'pdf'
         self.colors = SpectrumColors()
@@ -37,7 +38,6 @@ class SpectrumPlotter:
         pyplot.xscale('log')
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-        pyplot.title(title)
 
     def finish(self):
         if self.legend:
@@ -53,11 +53,11 @@ class SpectrumPlotter:
 
     def plot(self, spectrum, t):
         setup = self.setup
-        self.plot_analytic_solution(setup, t)
+        self.plot_analytic_solution(setup, t, spectrum)
         self.plot_data(setup, t, spectrum)
 
     @staticmethod
-    def plot_analytic_solution(setup, t):
+    def plot_analytic_solution(setup, t, spectrum=None):
         if t == 0:
             analytic_solution = setup.spectrum.size_distribution
         else:
@@ -75,11 +75,15 @@ class SpectrumPlotter:
         pdf_r_x = setup.radius_bins_edges[:-1] + dr / 2
         pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
 
-        pyplot.plot(
-            pdf_r_x * si.metres / si.micrometres,
-            pdf_r_y * phys.volume(radius=pdf_r_x) * setup.rho / setup.dv * si.kilograms / si.grams,
-            color='black'
-        )
+        x = pdf_r_x * si.metres / si.micrometres
+        y_true = pdf_r_y * phys.volume(radius=pdf_r_x) * setup.rho / setup.dv * si.kilograms / si.grams
+
+        pyplot.plot(x, y_true, color='black')
+
+        if spectrum is not None:
+            y = spectrum * si.kilograms / si.grams
+            error = error_measure(y, y_true, x)
+            pyplot.title(f'error: {error:.2f}')
 
     def plot_data(self, setup, t, spectrum):
         if self.smooth:

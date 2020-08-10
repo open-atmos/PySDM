@@ -40,7 +40,7 @@ def run(setup, observers=()):
     return vals, particles.stats
 
 
-def main(plot: bool, save):
+def main(plot: bool, save: str):
     with np.errstate(all='raise'):
         setup = SetupA()
 
