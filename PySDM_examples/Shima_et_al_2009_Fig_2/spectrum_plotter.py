@@ -25,7 +25,7 @@ class SpectrumColors:
 
 class SpectrumPlotter:
 
-    def __init__(self, setup, grid=True, legend=True):
+    def __init__(self, setup, title=None, grid=True, legend=True):
         self.setup = setup
         self.format = 'pdf'
         self.colors = SpectrumColors()
@@ -35,6 +35,7 @@ class SpectrumPlotter:
         self.grid = grid
         if self.grid:
             pyplot.grid()
+        pyplot.title(title)
         pyplot.xscale('log')
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
