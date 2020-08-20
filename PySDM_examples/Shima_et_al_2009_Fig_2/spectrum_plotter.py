@@ -33,16 +33,20 @@ class SpectrumPlotter:
         self.smooth_scope = 2
         self.legend = legend
         self.grid = grid
-        if self.grid:
-            pyplot.grid()
-        pyplot.title(title)
-        pyplot.xscale('log')
-        pyplot.xlabel('particle radius [µm]')
-        pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
+        self.title = title
+        self.ax = pyplot
+        self.fig = pyplot
 
     def finish(self):
+        if self.grid:
+            self.ax.grid()
+        if self.title is not None:
+            self.ax.title(self.title)
+        self.ax.xscale('log')
+        self.ax.xlabel('particle radius [µm]')
+        self.ax.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
         if self.legend:
-            pyplot.legend()
+            self.ax.legend()
 
     def show(self):
         self.finish()
@@ -57,8 +61,7 @@ class SpectrumPlotter:
         self.plot_analytic_solution(setup, t, spectrum)
         self.plot_data(setup, t, spectrum)
 
-    @staticmethod
-    def plot_analytic_solution(setup, t, spectrum=None):
+    def plot_analytic_solution(self, setup, t, spectrum=None):
         if t == 0:
             analytic_solution = setup.spectrum.size_distribution
         else:
@@ -79,12 +82,12 @@ class SpectrumPlotter:
         x = pdf_r_x * si.metres / si.micrometres
         y_true = pdf_r_y * phys.volume(radius=pdf_r_x) * setup.rho / setup.dv * si.kilograms / si.grams
 
-        pyplot.plot(x, y_true, color='black')
+        self.ax.plot(x, y_true, color='black')
 
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            pyplot.title(f'error: {error:.2f}')
+            self.ax.title(f'error: {error:.2f}')
 
     def plot_data(self, setup, t, spectrum):
         if self.smooth:
@@ -98,14 +101,14 @@ class SpectrumPlotter:
                     for i in range(scope, len(spectrum) - scope):
                         spectrum[i] = np.mean(new[i - scope:i + scope + 1])
 
-            pyplot.plot(
+            self.ax.plot(
                 setup.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
                 spectrum[:-scope] * si.kilograms / si.grams,
                 label=f"t = {t}s",
                 color=self.colors(t / (self.setup.steps[-1] * self.setup.dt))
             )
         else:
-            pyplot.step(
+            self.ax.step(
                 setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
                 spectrum * si.kilograms / si.grams,
                 where='post',
