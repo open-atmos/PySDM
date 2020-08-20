@@ -97,13 +97,13 @@ def plot(data, rtols, schemes, setups_num, path=None):
     plt.show()
 
 
-def main(save=False):
+def main(save=None):
     rtols = [1e-7, 1e-11]
     schemes = ['default', 'BDF']
     setups_num = len(setups)
     input_data = data(80, rtols, schemes, setups_num)
-    plot(input_data, rtols, schemes, setups_num, 'BDF_VS_ADAPTIVE')
+    plot(input_data, rtols, schemes, setups_num, save)
 
 
 if __name__ == '__main__':
-    main()
+    main('BDF_VS_ADAPTIVE')
