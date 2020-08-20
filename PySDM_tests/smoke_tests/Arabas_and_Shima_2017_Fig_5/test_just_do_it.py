@@ -44,15 +44,19 @@ def data():
     return data
 
 
-def add_color_line(ax, x, y, z):
+def add_color_line(fig, ax, x, y, z):
     points = np.array([x, y]).T.reshape(-1, 1, 2)
     segments = np.concatenate([points[:-1], points[1:]], axis=1)
-    lc = LineCollection(segments, cmap=plt.get_cmap('plasma'), norm=plt.Normalize(-10, 0))
-    z = np.log2(np.array(z))
+    z = np.array(z)
+    vmin = min(np.amin(z), np.amax(z)/100)
+    lc = LineCollection(segments, cmap=plt.get_cmap('plasma'),
+                        norm=matplotlib.colors.LogNorm(vmax=1, vmin=vmin))
+    # z = np.log2(np.array(z))
     lc.set_array(z)
     lc.set_linewidth(3)
 
     ax.add_collection(lc)
+    fig.colorbar(lc, ax=ax)
     return lc
 
 
@@ -70,15 +74,19 @@ def test_plot(data, plot=False, save=False):
                     dt = datum['dt']
                     if scheme == 'BDF':
                         ax.plot(S, z, label=scheme, color='grey')
+                        BDF_S = np.array(S)
                     else:
-                        lc = add_color_line(ax, S, z, dt)
+                        lc = add_color_line(fig, ax, S, z, dt)
+                        PySDM_S = np.array(S)
+                mse = np.mean(np.abs(BDF_S - PySDM_S))
                 _rtol = '$r_{tol}$'
-                ax.set_title(f"setup: {setup_idx}; {_rtol}: {rtols[rtol_idx]}")
+                ax.set_title(f"setup: {setup_idx}; MAE: {mse:.3E}")#{_rtol}: {rtols[rtol_idx]}")
                 ax.set_xlim(-7.5e-3, 7.5e-3)
                 ax.set_ylim(0, 180)
                 ax.get_xaxis().set_minor_locator(matplotlib.ticker.AutoMinorLocator())
+                ax.grid()
                 plt.setp(ax.get_xticklabels(), rotation=30, horizontalalignment='right')
-        fig.colorbar(lc, ax=axs.flat)
+        # fig.colorbar(lc, ax=axs.flat)
 
         if save:
             plt.savefig('ADAPTIVEvsBDF.pdf', format='pdf')
