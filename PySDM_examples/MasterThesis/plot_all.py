@@ -2,8 +2,10 @@
 Created at 20.08.2020
 """
 
-from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import main
+from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import main as fig_5
+from PySDM_examples.MasterThesis.fig_4_adaptive_sdm import main as fig_4
 
 
 if __name__ == '__main__':
-    main()
+    fig_4()
+    fig_5()
