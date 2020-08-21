@@ -34,22 +34,37 @@ class SpectrumPlotter:
         self.legend = legend
         self.grid = grid
         self.title = title
+        self.xlabel = 'particle radius [µm]'
+        self.ylabel = 'dm/dlnr [g/m^3/(unit dr/r)]'
         self.ax = pyplot
         self.fig = pyplot
+        self.finished = False
 
     def finish(self):
+        if self.finished:
+            return
+        self.finished = True
         if self.grid:
             self.ax.grid()
         if self.title is not None:
-            self.ax.title(self.title)
-        self.ax.xscale('log')
-        self.ax.xlabel('particle radius [µm]')
-        self.ax.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
+            try:
+                self.ax.title(self.title)
+            except TypeError:
+                self.ax.set_title(self.title)
+        try:
+            self.ax.xscale('log')
+            self.ax.xlabel(self.xlabel)
+            self.ax.ylabel(self.ylabel)
+        except AttributeError:
+            self.ax.set_xscale('log')
+            self.ax.set_xlabel(self.xlabel)
+            self.ax.set_ylabel(self.ylabel)
         if self.legend:
             self.ax.legend()
 
     def show(self):
         self.finish()
+        pyplot.tight_layout()
         pyplot.show()
 
     def save(self, file):
@@ -57,9 +72,8 @@ class SpectrumPlotter:
         pyplot.savefig(file, format=self.format)
 
     def plot(self, spectrum, t):
-        setup = self.setup
-        self.plot_analytic_solution(setup, t, spectrum)
-        self.plot_data(setup, t, spectrum)
+        self.plot_analytic_solution(self.setup, t, spectrum)
+        self.plot_data(self.setup, t, spectrum)
 
     def plot_analytic_solution(self, setup, t, spectrum=None):
         if t == 0:
@@ -87,7 +101,7 @@ class SpectrumPlotter:
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            self.ax.title(f'error: {error:.2f}')
+            self.title = f'error: {error:.2f}'
 
     def plot_data(self, setup, t, spectrum):
         if self.smooth:
