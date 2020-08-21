@@ -2,7 +2,6 @@
 Created at 20.08.2020
 """
 
-import numpy as np
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from PySDM_examples.Shima_et_al_2009_Fig_2.example import run
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
@@ -49,14 +48,14 @@ def main(plot: bool = True, save: str = None):
 
             plotter.ylabel = r'$\bf{dt: ' + str(dt) + '}$\ndm/dlnr [g/m^3/(unit dr/r)]' if j == 0 else None
             plotter.xlabel = 'particle radius [µm]\n' \
-                             + r'$\bf{n_{sd}: 2^' + str(n_sd) + '}$' if i == len(dts) - 1 else None
+                             + r'$\bf{n_{sd}: 2^{' + str(n_sd) + '}}$' if i == len(dts) - 1 else None
             plotter.title = f'norm. time: {norm_time:.2f}; ' + plotter.title
             plotter.finished = False
             plotter.finish()
     if save is not None:
         n_sd = setup.n_sd
         plotter.save(save + "/" +
-                     f"{n_sd}_shima_fig_2_10" +
+                     f"{n_sd}_shima_fig_2" +
                      "." + plotter.format)
     if plot:
         plotter.show()
