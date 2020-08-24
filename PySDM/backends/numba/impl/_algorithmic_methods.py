@@ -85,9 +85,11 @@ class AlgorithmicMethods:
               = floor(prob)     if rand >= prob - floor(prob)
         """
         for i in prange(len(prob)):
-            prob[i] *= -1.
-            prob[i] += rand[i // 2]
-            prob[i] = -np.floor(prob[i])
+            prob[i] = np.ceil(prob[i] - rand[i // 2])
+            # TODO: same in Thrust?
+#             prob[i] *= -1.
+#             prob[i] += rand[i // 2]
+#             prob[i] = -np.floor(prob[i])
 
     @staticmethod
     def compute_gamma(prob, rand):
