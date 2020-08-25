@@ -51,12 +51,13 @@ class Coalescence:
                     shift = s
                 else:
                     shift = 0
-                    self.pairs_rand.urand(self.rnd)
-                    self.rand.urand(self.rnd)
+                    if s < self.subs-1:
+                        self.pairs_rand.urand(self.rnd)
+                        self.rand.urand(self.rnd)
                 sub = self.coalescence(self.prob, self.rand, self.adaptive, self.subs)
                 subs += sub
                 msub = max(msub, sub)
-                if shift < self.subs-1:
+                if s < self.subs-1:
                     self.toss_pairs(self.is_first_in_pair, self.pairs_rand[shift:self.core.n_sd + shift])
                     self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
 
