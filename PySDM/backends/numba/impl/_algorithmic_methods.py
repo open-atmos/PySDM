@@ -158,7 +158,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     def interpolation(output, radius, factor, b, c):
-        return AlgorithmicMethods.interpolation_body(output.data, radius.data, factor, b, c)
+        return AlgorithmicMethods.interpolation_body(output.data, radius.data, factor, b.data, c.data)
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):

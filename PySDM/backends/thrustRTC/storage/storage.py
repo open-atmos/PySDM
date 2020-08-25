@@ -14,18 +14,20 @@ class Storage:
 
     def __init__(self, data, shape, dtype):
         self.data = data
-        self.shape = shape
+        self.shape = (shape,) if isinstance(shape, int) else shape
         self.dtype = dtype
 
     def __getitem__(self, item):
         if isinstance(item, slice):
             dim = len(self.shape)
+            start = item.start or 0
+            stop = item.stop or self.shape[0]
             if dim == 1:
-                result_data = self.data.range(item.start, item.stop)
-                result_shape = (item.stop - item.start,)
+                result_data = self.data.range(start, stop)
+                result_shape = (stop - start,)
             elif dim == 2:
-                result_data = self.data.range(self.shape[1] * item.start, self.shape[1] * item.stop)
-                result_shape = (item.stop - item.start, self.shape[1])
+                result_data = self.data.range(self.shape[1] * start, self.shape[1] * stop)
+                result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
@@ -37,7 +39,13 @@ class Storage:
         if hasattr(value, 'data'):
             trtc.Copy(value.data, self.data)
         else:
-            trtc.Fill(self.data, value)
+            if isinstance(value, int):
+                dvalue = trtc.DVInt64(value)
+            elif isinstance(value, float):
+                dvalue = trtc.DVDouble(value)
+            else:
+                raise TypeError("Only Storage, int and float are supported.")
+            trtc.Fill(self.data, dvalue)
         return self
 
     def __add__(self, other):
@@ -77,11 +85,11 @@ class Storage:
         return self
 
     def __len__(self):
-        return self.data.size()
+        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:
-            result = self.data.to_host()[0] != 0
+            result = bool(self.data.to_host()[0] != 0)
         else:
             raise NotImplementedError("Logic value of array is ambiguous.")
         return result
@@ -128,7 +136,7 @@ class Storage:
         else:
             raise NotImplementedError()
 
-        data = array.astype(dtype).copy()
+        data = trtc.device_vector_from_numpy(array.astype(dtype))
         result = Storage(data, array.shape, dtype)
         return result
 
@@ -162,6 +170,9 @@ class Storage:
         result = self.data.to_host()
         result = np.reshape(result, self.shape)
         return result
+
+    def urand(self, generator=None):
+        generator(self)
 
     def upload(self, data):
         self.data = trtc.device_vector_from_numpy(data.flatten())

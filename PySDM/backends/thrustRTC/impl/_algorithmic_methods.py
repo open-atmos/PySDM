@@ -83,13 +83,14 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
-        idx_length = trtc.DVInt64(idx.size())
-        intensive_length = trtc.DVInt64(intensive.size())
-        extensive_length = trtc.DVInt64(extensive.size())
+        idx_length = trtc.DVInt64(len(idx))
+        intensive_length = trtc.DVInt64(len(intensive))
+        extensive_length = trtc.DVInt64(len(extensive))
         adaptive_device = trtc.DVBool(adaptive)
         subs_device = trtc.DVInt64(subs)
-        AlgorithmicMethods.__coalescence_body.launch_n(length - 1, [n, volume, idx, idx_length, intensive, intensive_length, extensive, extensive_length, gamma, healthy, adaptive_device, subs_device, adaptive_memory])
-        return trtc.Reduce(adaptive_memory.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+        AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
+            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
+        return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
         prob[i] = -floor(-prob[i] + rand[int(i / 2)]);
@@ -98,7 +99,7 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(prob, rand):
-        AlgorithmicMethods.__compute_gamma_body.launch_n(prob.size(), [prob, rand])
+        AlgorithmicMethods.__compute_gamma_body.launch_n(len(prob), [prob.data, rand.data])
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -174,9 +175,10 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def interpolation(output, radius, factor, a, b):
+    def interpolation(output, radius, factor, b, c):
         factor_device = trtc.DVInt64(factor)
-        AlgorithmicMethods.__interpolation_body.launch_n(radius.size(), [output, radius, factor_device, a, b])
+        AlgorithmicMethods.__interpolation_body.launch_n(len(radius),
+                                                         [output.data, radius.data, factor_device, b.data, c.data])
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme):
@@ -189,20 +191,18 @@ class AlgorithmicMethods:
 
         from PySDM.backends.numba.numba import Numba
         from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
-        host_moment_0 = StorageMethods.to_ndarray(moment_0)
-        host_moments = StorageMethods.to_ndarray(moments)
-        host_n = StorageMethods.to_ndarray(n)
-        host_attr = StorageMethods.to_ndarray(attr)
-        host_cell_id = StorageMethods.to_ndarray(cell_id)
-        host_idx = StorageMethods.to_ndarray(idx)
-        host_specs_idx = StorageMethods.to_ndarray(specs_idx)
-        host_specs_rank = StorageMethods.to_ndarray(specs_rank)
-        Numba.moments(host_moment_0, host_moments, host_n, host_attr, host_cell_id, host_idx, length,
-                      host_specs_idx, host_specs_rank, min_x, max_x, x_id)
-        device_moment_0 = StorageMethods.from_ndarray(host_moment_0)
-        device_moments = StorageMethods.from_ndarray(host_moments)
-        trtc.Copy(device_moment_0, moment_0)
-        trtc.Copy(device_moments, moments)
+        host_moment_0 = moment_0.to_ndarray()
+        host_moments = moments.to_ndarray()
+        host_n = n.to_ndarray()
+        host_attr = attr.to_ndarray()
+        host_cell_id = cell_id.to_ndarray()
+        host_idx = idx.to_ndarray()
+        host_specs_idx = specs_idx.to_ndarray()
+        host_specs_rank = specs_rank.to_ndarray()
+        Numba.moments_body(host_moment_0, host_moments, host_n, host_attr, host_cell_id, host_idx, length,
+                           host_specs_idx, host_specs_rank, min_x, max_x, x_id)
+        moment_0.upload(host_moment_0)
+        moments.upload(host_moments)
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
         int sd_num = cell_start[i + 1] - cell_start[i];
@@ -224,8 +224,8 @@ class AlgorithmicMethods:
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = trtc.DVDouble(dt_div_dv)
-        AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start, norm_factor, device_dt_div_dv])
-        AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob, cell_id, norm_factor])
+        AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
+        AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
     __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
         if (idx[i] < idx_length && data[idx[i]] == 0)
@@ -262,7 +262,8 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
-        trtc.Sort_By_Key(cell_id, idx)
-        trtc.Fill(cell_start, trtc.DVInt64(length))
-        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1, [cell_id, cell_start, idx])
+        trtc.Sort_By_Key(cell_id.data, idx.data)
+        trtc.Fill(cell_start.data, trtc.DVInt64(length))
+        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
+                                                                                  [cell_id.data, cell_start.data, idx.data])
         return idx
