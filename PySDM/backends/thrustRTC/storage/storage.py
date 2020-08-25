@@ -33,6 +33,13 @@ class Storage:
             result = self.data.to_host()[item]
         return result
 
+    def __setitem__(self, key, value):
+        if hasattr(value, 'data'):
+            trtc.Copy(value.data, self.data)
+        else:
+            trtc.Fill(self.data, value)
+        return self
+
     def __add__(self, other):
         raise NotImplementedError("Use +=")
 
@@ -136,6 +143,12 @@ class Storage:
         impl.multiply_out_of_place(self, multiplicand, multiplier)
         return self
 
+    def ravel(self, other):
+        if isinstance(other, Storage):
+            trtc.Copy(other.data, self.data)
+        else:
+            self.data = trtc.device_vector_from_numpy(other.ravel())
+
     # TODO: handle by getitem
     def read_row(self, i):
         start = self.shape[1] * i
@@ -157,7 +170,3 @@ class Storage:
         start = self.shape[1] * i
         stop = start + self.shape[1]
         trtc.Copy(row.data, self.data.range(start, stop))
-
-    def fill(self, value):
-        trtc.Fill(self.data, value)
-        return self
