@@ -2,6 +2,7 @@
 Created at 07.06.2019
 """
 
+
 class Coalescence:
 
     def __init__(self, kernel, seed=None, max_substeps=128):
@@ -10,6 +11,7 @@ class Coalescence:
         self.enable = True
         self.stats_steps = 0
         self.adaptive = False
+        self.optimized_random = True
         self.max_substeps = max_substeps
         self.subs = 1
         self.croupier = 'local'
@@ -25,7 +27,8 @@ class Coalescence:
     def register(self, builder):
         self.core = builder.core
         self.temp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
-        self.pairs_rand = self.core.Storage.empty(self.core.n_sd + self.max_substeps, dtype=float)
+        shift = self.max_substeps if self.optimized_random else 0
+        self.pairs_rand = self.core.Storage.empty(self.core.n_sd + shift, dtype=float)
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
         self.prob = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.IndexedStorage.empty(self.core.n_sd, dtype=int)  # TODO bool
@@ -44,12 +47,18 @@ class Coalescence:
             subs = 0
             msub = 1
             for s in range(self.subs):
+                if self.optimized_random:
+                    shift = s
+                else:
+                    shift = 0
+                    if s < self.subs-1:
+                        self.pairs_rand.urand(self.rnd)
+                        self.rand.urand(self.rnd)
                 sub = self.coalescence(self.prob, self.rand, self.adaptive, self.subs)
                 subs += sub
                 msub = max(msub, sub)
                 if s < self.subs-1:
-                    self.toss_pairs(self.is_first_in_pair,
-                                    self.core.backend.range(self.pairs_rand, start=s, stop=self.core.n_sd + s))
+                    self.toss_pairs(self.is_first_in_pair, self.pairs_rand[shift:self.core.n_sd + shift])
                     self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
 
             self.stats_steps += self.subs

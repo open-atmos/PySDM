@@ -6,7 +6,7 @@ import numpy as np
 
 
 #  TIP: can be call asynchronous
-#  TIP: sometimes only halve array is needed
+#  TIP: sometimes only half array is needed
 
 class Random:
     def __init__(self, size, seed=None):
