@@ -14,3 +14,4 @@ pytest-cov
 codecov
 nbconvert
 jupyter_client
+git+git://github.com/atmos-cloud-sim-uj/MPyDATA@d4d28e4#egg=MPyDATA
