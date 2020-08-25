@@ -38,8 +38,6 @@ jobs:
 
 install:
   - pip$PY_SFX install -U -r requirements.txt
-  - pip$PY_SFX install -r submodules/MPyDATA/requirements.txt
-  - pip$PY_SFX install submodules/MPyDATA
 
 script:
   - python$PY_SFX -m pytest --ignore submodules --cov-report term --cov=PySDM
