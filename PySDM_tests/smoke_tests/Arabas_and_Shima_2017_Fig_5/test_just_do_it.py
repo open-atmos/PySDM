@@ -20,11 +20,6 @@ def data():
     return data_method(n_output=20, rtols=rtols, schemes=schemes, setups_num=setups_num)
 
 
-def test_plot(data, plot=True):
-    if plot:
-        plot_method(data, rtols, schemes, setups_num, None)
-
-
 def split(arg1, arg2):
     return arg1[0:np.argmax(arg2)+1], arg1[np.argmax(arg2):-1]
 
