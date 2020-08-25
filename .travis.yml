@@ -12,7 +12,7 @@ jobs:
       before_install:
         - sudo `which pip` install --upgrade pip
       before_script:
-        - pip install -U $(cat requirements.txt | cut -d '=' -f 1)
+        - pip install -U $(cat requirements.txt | awk -F '==|>=' {'print $1'})
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
@@ -37,9 +37,8 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
+  - pip$PY_SFX install -U ipykernel pytest pytest-cov codecov nbconvert jupyter_client
   - pip$PY_SFX install -U -r requirements.txt
-  - pip$PY_SFX install -r submodules/MPyDATA/requirements.txt
-  - pip$PY_SFX install submodules/MPyDATA
 
 script:
   - python$PY_SFX -m pytest --ignore submodules --cov-report term --cov=PySDM
