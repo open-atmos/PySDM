@@ -37,6 +37,7 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
+  - pip$PY_SFX install -U ipykernel pytest pytest-cov codecov nbconvert jupyter_client
   - pip$PY_SFX install -U -r requirements.txt
 
 script:
