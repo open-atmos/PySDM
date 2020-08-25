@@ -136,7 +136,7 @@ pyplot.show()
 ```
 The resultant plot looks as follows:
 
-![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/readme.png)
+![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.png)
 
 ## Package structure and API
 
