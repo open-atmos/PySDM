@@ -79,7 +79,7 @@ attributes = {}
 attributes['volume'], attributes['n'] = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
 ```
 
-The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/particles.py) 
+The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/core.py) 
   class which instances are used to manage the system state and control the simulation.
 Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
@@ -107,7 +107,7 @@ The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
 The ``Coalescence`` Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system (other available dynamics representing
   condensational growth and particle displacement).
-Finally, the ``get_particles()`` method is used to obtain an instance
+Finally, the ``build()`` method is used to obtain an instance
   of ``Core`` which can then be used to control time-stepping and
   access simulation state.
 
