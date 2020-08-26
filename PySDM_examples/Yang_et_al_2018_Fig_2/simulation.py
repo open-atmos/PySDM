@@ -22,7 +22,7 @@ class Simulation:
     def __init__(self, setup):
 
         dt_output = setup.total_time / setup.n_steps  # TODO: overwritten in jupyter example
-        self.n_substeps = 1  # TODO:
+        self.n_substeps = 1  # TODO
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
@@ -61,8 +61,7 @@ class Simulation:
     def save(self, output):
         cell_id = 0
         output["r_bins_values"].append(self.particles.products["Particles Wet Size Spectrum"].get())
-        volume = self.particles.state['volume']
-        volume = volume.to_ndarray()  # TODO
+        volume = self.particles.state['volume'].to_ndarray()
         output["r"].append(phys.radius(volume=volume))
         output["S"].append(self.particles.environment["RH"][cell_id] - 1)
         output["qv"].append(self.particles.environment["qv"][cell_id])

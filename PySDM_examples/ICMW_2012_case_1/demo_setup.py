@@ -81,8 +81,6 @@ class DemoSetup(Setup):
     def condensation_coord(self):
         return self.ui_condensation_coord.value
 
-    # TODO ui_ept = Checkbox(value=Setup.enable_particle_temperatures, description="enable particle temperatures")
-
     ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
 
     @property
@@ -144,17 +142,13 @@ class DemoSetup(Setup):
     def box(self):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_amplitude]),
-            VBox([*self.ui_processes
-                  #   , self.ui_ept  # TODO
-                  ]),
+            VBox([*self.ui_processes]),
             VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_n_steps,
                   self.ui_condensation_rtol_x, self.ui_condensation_rtol_thd,
                   self.ui_adaptive, self.ui_condensation_coord,
                   *self.ui_mpdata_options]),
-            # VBox([])  # TODO
         ])
         layout.set_title(0, 'environment parameters')
         layout.set_title(1, 'processes')
         layout.set_title(2, 'discretisation')
-        # layout.set_title(3, 'parallelisation')  # TODO
         return layout

@@ -19,7 +19,7 @@ class TestExplicitEulerWithInterpolation:
         sut()
 
         # Assert
-        # TODO
+        pass
 
     def test_advection(self):
         # Arrange

@@ -33,12 +33,4 @@ def test_spectral_discretisation(discretisation):
 	actual = np.sum(n)
 	desired = spectrum.cumulative(m_range[1]) - spectrum.cumulative(m_range[0])
 	quotient = actual / desired
-	# TODO relative error
 	np.testing.assert_almost_equal(actual=quotient, desired=1.0, decimal=2)
-
-
-# TODO test_linear()
-
-# TODO test_logarithmic()
-
-# TODO test_constant_multiplicity()

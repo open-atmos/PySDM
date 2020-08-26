@@ -166,6 +166,6 @@ class Storage:
     def upload(self, data):
         np.copyto(self.data, data, casting='safe')
 
-    # TODO: optimize
+    # TODO: remove
     def write_row(self, i, row):
         self.data[i, :] = row.data

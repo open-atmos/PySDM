@@ -42,7 +42,7 @@ class Condensation:
         self.max_substeps = int(self.core.dt)
         self.max_substeps = int(self.core.dt)
         self.substeps = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.substeps[:] = np.maximum(1, int(self.core.dt))  # TODO: reset substeps
+        self.substeps[:] = np.maximum(1, int(self.core.dt))  # TODO: min substep length
         self.ripening_flags = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.ripening_flags[:] = 0
 

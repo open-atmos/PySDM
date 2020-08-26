@@ -9,7 +9,6 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 
 class StorageMethods:
-    # TODO check static For
     storage = trtc.DVVector.DVVector
     integer = np.int64
     double = np.float64
@@ -27,7 +26,6 @@ class StorageMethods:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
-        # TODO: trtc.Fill(data, trtc.DVConstant(np.nan))
 
         StorageMethods.__equip(data, shape, elem_dtype)
         return data
@@ -109,19 +107,10 @@ class StorageMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
         StorageMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
-        # TODO: print("Numba import!: ThrustRTC.shuffle_local(...)")
-        # from PySDM.backends.numba.numba import Numba
-        # host_idx = StorageMethods.to_ndarray(idx)
-        # host_u01 = StorageMethods.to_ndarray(u01)
-        # host_cell_start = StorageMethods.to_ndarray(cell_start)
-        # Numba.shuffle_local(host_idx, host_u01, host_cell_start)
-        # device_idx = StorageMethods.from_ndarray(host_idx)
-        # trtc.Copy(device_idx, idx)
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def to_ndarray(data):
-        # TODO: move to __equip??
         if isinstance(data, StorageMethods.storage):
             pass
         elif isinstance(data, trtc.DVVector.DVRange):

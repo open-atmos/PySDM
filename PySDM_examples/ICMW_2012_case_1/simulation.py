@@ -93,14 +93,11 @@ class Simulation:
             builder.add_dynamic(displacement)
         if self.setup.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
-        # TODO
-        # if self.setup.processes["relaxation"]:
-        #     raise NotImplementedError()
 
         attributes = {}
         moist_environment_init(attributes, builder.core.environment,
                                spatial_discretisation=spatial_sampling.pseudorandom,
-                               spectral_discretisation=spectral_sampling.constant_multiplicity,  # TODO: random
+                               spectral_discretisation=spectral_sampling.constant_multiplicity,
                                spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
