@@ -64,7 +64,8 @@ class IndexedStorage(Storage):
         return self.data[:self.length].copy()
 
     def read_row(self, i):
-        result = IndexedStorage(self.idx, self.data[i, :], (1, *self.shape[1:]), self.dtype)
+        # TODO: shape like in ThrustRTC
+        result = IndexedStorage(self.idx, self.data[i, :], *self.shape[1:], self.dtype)
         return result
 
     def remove_zeros(self):
