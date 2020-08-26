@@ -110,7 +110,6 @@ class TestSDMSingleCell:
         assert np.amin(particles.state['n'].to_ndarray()) >= 0
         assert np.sum(particles.state['n'].to_ndarray() * particles.state['volume'].to_ndarray()) == np.sum(n * v)
 
-    # TODO integration test?
     def test_multi_step(self):
         # Arrange
         n_sd = 256
@@ -137,7 +136,6 @@ class TestSDMSingleCell:
         desired = np.sum(n * v)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 
-    # TODO: move to backend tests
     @staticmethod
     def test_compute_gamma():
         # Arrange
@@ -159,8 +157,6 @@ class TestSDMSingleCell:
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
-
-    # TODO test_compute_probability
 
     @staticmethod
     @pytest.mark.parametrize("optimized_random", (True, False))

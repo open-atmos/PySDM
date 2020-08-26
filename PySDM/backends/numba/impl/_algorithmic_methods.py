@@ -30,7 +30,7 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
                 **{**conf.JIT_FLAGS, **{'parallel': False}})
-    # TODO: waits for https://github.com/numba/numba/issues/5279
+    # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
         result = 1
         for i in prange(length - 1):
@@ -86,10 +86,6 @@ class AlgorithmicMethods:
         """
         for i in prange(len(prob)):
             prob[i] = np.ceil(prob[i] - rand[i // 2])
-            # TODO: same in Thrust?
-#             prob[i] *= -1.
-#             prob[i] += rand[i // 2]
-#             prob[i] = -np.floor(prob[i])
 
     @staticmethod
     def compute_gamma(prob, rand):

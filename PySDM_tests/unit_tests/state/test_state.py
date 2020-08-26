@@ -33,8 +33,7 @@ class TestState:
         attributes = {'n': n, 'volume': volume}
         particles.build(attributes)
         sut = particles.state
-        # TODO
-        sut.healthy = TestState.storage([0])
+        sut.healthy = False
 
         # Act
         n_sd = sut.SD_num

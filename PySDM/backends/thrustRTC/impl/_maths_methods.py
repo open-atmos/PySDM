@@ -2,9 +2,7 @@
 Created at 10.12.2019
 """
 
-import numpy as np
 import ThrustRTC as trtc
-import CURandRTC as rndrtc
 from ._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
@@ -119,31 +117,3 @@ class MathsMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def subtract(output, subtrahend):
         MathsMethods.__subtract_body.launch_n(output.size(), [output, subtrahend])
-        # trtc.Transform_Binary(output, subtrahend, output, trtc.Minus())
-
-    __urand_init_rng_state_body = trtc.For(['rng', 'states', 'seed'], 'i', '''
-        rng.state_init(1234, i, 0, states[i]);
-        ''')
-
-    __urand_body = trtc.For(['states', 'vec_rnd'], 'i', '''
-        vec_rnd[i]=states[i].rand01();
-        ''')
-
-    __rng = rndrtc.DVRNG()
-    states = trtc.device_vector('RNGState', 2**19)
-    __urand_init_rng_state_body.launch_n(states.size(), [__rng, states, trtc.DVInt64(12)])
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def urand(data, seed=None):
-        # TODO: print("Numpy import!: ThrustRTC.urand(...)")
-
-        seed = seed or np.random.randint(2**16)
-        dseed = trtc.DVInt64(seed)
-        # MathsMethods.__urand_init_rng_state_body.launch_n(MathsMethods.states.size(), [MathsMethods.__rng, MathsMethods.states, dseed])
-        MathsMethods.__urand_body.launch_n(data.size(), [MathsMethods.states, data])
-        # hdata = data.to_host()
-        # print(np.mean(hdata))
-        # np.random.seed(seed)
-        # output = np.random.uniform(0, 1, data.shape)
-        # StorageMethods.upload(output, data)

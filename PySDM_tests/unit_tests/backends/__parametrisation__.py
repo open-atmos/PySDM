@@ -3,14 +3,13 @@ Created at 03.08.2019
 """
 
 import pytest
-import os
+from PySDM.backends import ThrustRTC
 
 from PySDM.backends.default import Default
 
 backend = Default()
-backends = []  # TODO: add Pythran
-if os.environ.get('TRAVIS') != 'true':
-    from PySDM.backends import ThrustRTC
+backends = []
+if ThrustRTC.ENABLE:
     backends.append(ThrustRTC())
 
 

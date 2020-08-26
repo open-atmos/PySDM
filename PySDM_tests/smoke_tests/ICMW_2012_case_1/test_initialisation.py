@@ -37,8 +37,8 @@ def test_initialisation(plot=False):
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
 
-    moment_0 = setup.backend.array(n_cell, dtype=int)
-    moments = setup.backend.array((n_moments, n_cell), dtype=float)
+    moment_0 = setup.backend.Storage.empty(n_cell, dtype=int)
+    moments = setup.backend.Storage.empty((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
     simulation.reinit()
 
@@ -46,17 +46,17 @@ def test_initialisation(plot=False):
     simulation.run()
     particles = simulation.core
     environment = simulation.core.environment
-    rhod = setup.backend.to_ndarray(environment["rhod"]).reshape(setup.grid).mean(axis=0)
+    rhod = environment["rhod"].to_ndarray().reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
         particles.state.moments(
             moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
-        particles.backend.download(moment_0, tmp)
+        moment_0.download(tmp)
         histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
         particles.state.moments(
             moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
-        particles.backend.download(moment_0, tmp)
+        moment_0.download(tmp)
         histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
     # Plot

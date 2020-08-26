@@ -96,8 +96,6 @@ class Setup:
         arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)
         p = const.p1000 * np.power(arg, 1/kappa)
 
-        # np.testing.assert_array_less(p, Setup.p0)  # TODO: less or equal
-
         # density using "dry" potential temp.
         pd = p * (1 - self.qv0 / (self.qv0 + const.eps))
         rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)

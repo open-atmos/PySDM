@@ -37,7 +37,7 @@ class Mesh:
 
     @staticmethod
     def __strides(grid):
-        domain = np.empty(tuple(grid))  # TODO optimize
+        domain = np.empty(tuple(grid))
         strides = np.array(domain.strides).reshape(1, -1) // domain.itemsize
         return strides
 

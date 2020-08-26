@@ -19,7 +19,7 @@ class TotalParticleSpecificConcentration(MomentProduct):
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0)
-        result = self.buffer.copy()  # TODO !!!
+        result = self.buffer.copy()  # TODO
         self.download_to_buffer(self.core.environment['rhod'])
         result[:] /= self.core.mesh.dv
         result[:] /= self.buffer

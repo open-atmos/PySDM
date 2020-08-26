@@ -22,7 +22,7 @@ class AerosolSpecificConcentration(MomentProduct):
     def get(self):
         self.download_moment_to_buffer('volume', rank=0,
                                        filter_range=[0, phys.volume(self.radius_threshold)])
-        result = self.buffer.copy()  # TODO !!!
+        result = self.buffer.copy()  # TODO
         self.download_to_buffer(self.core.environment['rhod'])
         result[:] /= self.core.mesh.dv
         result[:] /= self.buffer
