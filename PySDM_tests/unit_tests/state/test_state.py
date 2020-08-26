@@ -40,7 +40,6 @@ class TestState:
         n_sd = sut.SD_num
 
         # Assert
-        assert sut['volume'].shape == sut['n'].shape
         assert sut.SD_num == (n != 0).sum()
         assert sut['n'].to_ndarray().sum() == n.sum()
         assert (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum() == (volume * n).sum()

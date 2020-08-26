@@ -9,8 +9,8 @@ from PySDM.physics import constants as const
 
 
 class Interpolation:
-    def __init__(self, particles, small_r_limit=None):
-        self.particles = particles
+    def __init__(self, core, small_r_limit=None):
+        self.core = core
 
         '''
         Gunn & Kinzer 1949, Table 2
@@ -34,12 +34,12 @@ class Interpolation:
         approximation_small = TpDependent.make(only_small=True)
         small_r_limit = small_r_limit or 40 * const.si.um
         approximation_small(u[1:], space[1:], small_r_limit)
-        self.a = particles.backend.from_ndarray(u)
+        self.a = core.bck.Storage.from_ndarray(u)
         b = np.append(np.diff(u), [u[-1] - u[-2]]) / step
-        self.b = particles.backend.from_ndarray(b)
+        self.b = core.bck.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
-        self.particles.backend.interpolation(output, radius, self.factor, self.a, self.b)
+        self.core.backend.interpolation(output, radius, self.factor, self.a, self.b)
 
 
 class RogersYau:

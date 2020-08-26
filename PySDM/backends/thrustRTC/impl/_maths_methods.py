@@ -108,8 +108,8 @@ class MathsMethods:
     def power(output, exponent):
         if exponent == 1:
             return
-        device_multiplier = trtc.DVDouble(exponent)
-        MathsMethods.__power_body.launch_n(output.size(), [output, device_multiplier])
+        device_exponent = trtc.DVDouble(exponent)
+        MathsMethods.__power_body.launch_n(output.size(), [output, device_exponent])
 
     __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
             output[i] -= subtrahend[i];

@@ -119,7 +119,7 @@ __power_body = trtc.For(['output', 'exponent'], "i", '''
 def power(output, exponent: int):
     if exponent == 1:
         return
-    __power_body.launch_n(len(output), thrust([output, exponent]))
+    __power_body.launch_n(len(output), thrust([output, float(exponent)]))
 
 
 __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
