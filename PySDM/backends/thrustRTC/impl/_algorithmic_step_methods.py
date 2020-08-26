@@ -11,20 +11,20 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def amax(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Max_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
+    def amax(row, idx):
+        perm_in = trtc.DVPermutation(row.data, idx.data)
+        index = trtc.Max_Element(perm_in.range(0, len(row)))
+        row_idx = idx[index]
+        result = row[row_idx]
         return result
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def amin(row, idx, length):
-        perm_in = trtc.DVPermutation(row, idx)
-        index = trtc.Min_Element(perm_in.range(0, length))
-        row_idx = idx.get(index)
-        result = row.get(row_idx)
+    def amin(row, idx):
+        perm_in = trtc.DVPermutation(row.data, idx.data)
+        index = trtc.Min_Element(perm_in.range(0, len(row)))
+        row_idx = idx[index]
+        result = row[row_idx]
         return result
 
     __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''

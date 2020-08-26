@@ -38,10 +38,10 @@ class IndexedStorage(Storage):
         return result
 
     def amax(self):
-        return AlgorithmicStepMethods.amax(self.data, self.idx.data, self.length)
+        return AlgorithmicStepMethods.amax(self, self.idx)
 
     def amin(self):
-        return AlgorithmicStepMethods.amin(self.data, self.idx.data, self.length)
+        return AlgorithmicStepMethods.amin(self, self.idx)
 
     def distance_pair(self, other, is_first_in_pair):
         AlgorithmicStepMethods.distance_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
@@ -70,7 +70,8 @@ class IndexedStorage(Storage):
         return result[:self.length]
 
     def read_row(self, i):
-        result = IndexedStorage(self.idx, self[i:i+1].data, *self.shape[1:], self.dtype)
+        result_data = self.data.range(self.shape[1] * i, self.shape[1] * (i+1))
+        result = IndexedStorage(self.idx, result_data, (1, *self.shape[1:]), self.dtype)
         return result
 
     def remove_zeros(self):

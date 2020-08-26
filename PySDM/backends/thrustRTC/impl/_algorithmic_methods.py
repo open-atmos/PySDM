@@ -43,7 +43,7 @@ class AlgorithmicMethods:
             j = idx[i + 1];
             k = idx[i];
         }
-        int g = (int)(n[j] / n[k]);
+        int g = n[j] / n[k];
         if (adaptive) 
             adaptive_memory[i] = (int)(gamma[i] * subs / g);
         if (g > gamma[i])
@@ -148,7 +148,7 @@ class AlgorithmicMethods:
     ''')
 
     @staticmethod
-    def linear_collection_efficiency(params, output, radii, is_first_in_pair, length, unit):
+    def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = trtc.DVDouble(A)
         dB = trtc.DVDouble(B)
@@ -164,8 +164,8 @@ class AlgorithmicMethods:
         dMf = trtc.DVDouble(Mf)
         dMg = trtc.DVDouble(Mg)
         dunit = trtc.DVDouble(unit)
-        AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(length - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output, radii, is_first_in_pair, dunit])
+        AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
+            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
 
     __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
         int r_id = (int)(factor * radius[i]);
@@ -190,7 +190,6 @@ class AlgorithmicMethods:
         # TODO print("Numba import!: ThrustRTC.moments(...)")
 
         from PySDM.backends.numba.numba import Numba
-        from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
         host_moment_0 = moment_0.to_ndarray()
         host_moments = moments.to_ndarray()
         host_n = n.to_ndarray()
