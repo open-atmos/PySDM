@@ -3,7 +3,6 @@ Created at 05.02.2020
 """
 
 from PySDM.product import Product
-from PySDM.dynamics.condensation.condensation import Condensation
 import numpy as np
 
 
@@ -25,7 +24,7 @@ class CondensationTimestep(Product):
     def register(self, builder):
         super().register(builder)
         self.core.observers.append(self)
-        self.condensation = self.core.dynamics[str(Condensation)]
+        self.condensation = self.core.dynamics['Condensation']
         self.range = (1e-5, self.core.dt)
         self.minimum = np.full_like(self.buffer, np.nan)
         self.maximum = np.full_like(self.buffer, np.nan)

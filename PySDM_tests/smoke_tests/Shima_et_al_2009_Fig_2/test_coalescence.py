@@ -62,7 +62,7 @@ def test_coalescence(croupier):
         def __call__(self):
             Seed.seed += 1
             return Seed.seed
-    particles.dynamics[str(Coalescence)].seed = Seed()
+    particles.dynamics['Coalescence'].seed = Seed()
 
     states = {}
 

@@ -8,7 +8,7 @@ from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectra import Sum
 from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.backends.default import Default
-from PySDM.dynamics.condensation import condensation
+from PySDM.dynamics import condensation
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from PySDM.physics.constants import si

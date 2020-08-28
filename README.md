@@ -89,7 +89,7 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.backends import Numba
-from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
+from PySDM.products.state import ParticlesVolumeSpectrum
 
 builder = Builder(n_sd=n_sd, backend=Numba)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
@@ -197,9 +197,9 @@ The resultant plot looks as follows:
         - [critical_radius](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/critical_radius.py)
         - ...
 - Products (selected):
-    - [SuperDropletCount](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/state/products/super_droplet_count.py)
-    - [ParticlesVolumeSpectrum](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/state/products/particles_volume_spectrum.py)
-    - [CondensationTimestep](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/condensation/products/condensation_timestep.py)    
+    - [SuperDropletCount](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/state/super_droplet_count.py)
+    - [ParticlesVolumeSpectrum](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/state/particles_volume_spectrum.py)
+    - [CondensationTimestep](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/dynamics/condensation/condensation_timestep.py)    
     - ...
 
 ## Credits:

@@ -2,7 +2,6 @@
 Created at 24.10.2019
 """
 
-from ...builder import Builder
 import numpy as np
 
 

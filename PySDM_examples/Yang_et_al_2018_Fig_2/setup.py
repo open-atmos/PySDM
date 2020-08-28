@@ -7,7 +7,7 @@ from PySDM.backends.default import Default
 from PySDM.physics.constants import si
 from PySDM.initialisation import spectral_sampling
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.dynamics.condensation import condensation
+from PySDM.dynamics import condensation
 import numpy as np
 
 

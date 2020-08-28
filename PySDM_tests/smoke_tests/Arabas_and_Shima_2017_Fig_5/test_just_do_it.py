@@ -3,7 +3,6 @@ Created at 2019
 """
 
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
-from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import plot as plot_method
 from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
 
 import pytest
@@ -39,8 +38,3 @@ def test_vs_BDF(setup_idx, data, rtol, leg):
     desired = np.array(supersaturation['BDF'])
     actual = np.array(supersaturation['default'])
     assert np.mean((desired - actual)**2) < rtol
-    # np.testing.assert_allclose(
-    #     desired=supersaturation['BDF'],
-    #     actual=supersaturation['default'],
-    #     rtol=rtol*1e3
-    # )

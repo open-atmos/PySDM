@@ -10,9 +10,9 @@ from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
-from PySDM.state.products.particles_size_spectrum import ParticlesWetSizeSpectrum
-from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
-from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
+from PySDM.products.state import ParticlesWetSizeSpectrum
+from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
 
 # TODO: the q1 logic from PyCloudParcel?
 

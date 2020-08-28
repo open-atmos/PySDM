@@ -11,7 +11,7 @@ from PySDM.initialisation.spectral_sampling import constant_multiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
-from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
+from PySDM.state.products import ParticlesVolumeSpectrum
 
 
 def run(setup, observers=()):
