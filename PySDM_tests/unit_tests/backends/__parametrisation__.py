@@ -3,14 +3,13 @@ Created at 03.08.2019
 """
 
 import pytest
-from PySDM.backends import ThrustRTC
+from PySDM.backends import GPU
+from PySDM.backends import CPU
 
-from PySDM.backends.default import Default
-
-backend = Default()
+backend = CPU
 backends = []
-if ThrustRTC.ENABLE:
-    backends.append(ThrustRTC())
+if GPU.ENABLE:
+    backends.append(GPU)
 
 
 '''
