@@ -29,7 +29,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
             axis=0
         )
 
-        self.__GC, self.__mpdatas = Factories.stream_function_2d(
+        self.__advector, self.__mpdatas = Factories.stream_function_2d(
             grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
             stream_function=stream_function,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
@@ -56,10 +56,10 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.notify()
 
     def _get_thd(self):
-        return self.__mpdatas['th'].curr.get()
+        return self.__mpdatas['th'].advectee.get()
 
     def _get_qv(self):
-        return self.__mpdatas['qv'].curr.get()
+        return self.__mpdatas['qv'].advectee.get()
 
     def __mpdata_step(self):
         for mpdata in self.__mpdatas.values():
@@ -83,9 +83,9 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
     def get_courant_field_data(self):
         result = [
-            self.__GC.get_component(0) / self.__rhod_of(
+            self.__advector.get_component(0) / self.__rhod_of(
                 x_vec_coord(self.core.mesh.grid)[1]),
-            self.__GC.get_component(1) / self.__rhod_of(
+            self.__advector.get_component(1) / self.__rhod_of(
                 z_vec_coord(self.core.mesh.grid)[1])
         ]
         return result
