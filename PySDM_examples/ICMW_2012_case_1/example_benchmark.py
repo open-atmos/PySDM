@@ -26,18 +26,21 @@ def main():
     setup = Setup()
 
     setup.grid = (75, 75)
-    setup.steps = [1] + list(range(10, 100, 10))#[100, 3600]
+    setup.n_steps = 100
+    setup.outfreq = 10
     setup.processes = {
-        "advection": True,
+        "particle advection": True,
+        "fluid advection": True,
         "coalescence": True,
-        "condensation": True
+        "condensation": True,
+        "sedimentation": False,
     }
     setup.condensation_dt_max = .2
 
-    n_sd = range(50, 51, 10)
+    n_sd = range(50, 52, 1)
 
     times = {}
-    for parallel in (False,):
+    for parallel in (True,):
         PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
         reload_backend()
         for method in ('local',):
@@ -47,6 +50,7 @@ def main():
                 setup.n_sd_per_gridbox = sd
                 storage = Storage()
                 simulation = Simulation(setup, storage)
+                simulation.reinit()
                 # simulation.core.croupier = method
                 stats = simulation.run()
                 times[key].append(stats.wall_times[-1])
