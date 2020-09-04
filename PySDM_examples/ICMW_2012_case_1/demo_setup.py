@@ -5,6 +5,8 @@ Created at 02.10.2019
 from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 import numpy as np
+import numba
+import os
 
 
 class DemoSetup(Setup):
@@ -152,3 +154,13 @@ class DemoSetup(Setup):
         layout.set_title(1, 'processes')
         layout.set_title(2, 'discretisation')
         return layout
+
+    @staticmethod
+    def handle_n_threads(change):
+        numba.set_num_threads(change['new'])
+
+    def __init__(self):
+        self.ui_n_threads = IntSlider(min=1, max=os.cpu_count(), value=numba.get_num_threads())
+        self.ui_n_threads.observe(DemoSetup.handle_n_threads, 'value')
+
+

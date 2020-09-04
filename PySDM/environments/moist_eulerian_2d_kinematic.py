@@ -3,17 +3,16 @@ Created at 06.11.2019
 """
 
 import numpy as np
-from MPyDATA.factories import Factories
 from MPyDATA.arakawa_c.discretisation import z_vec_coord, x_vec_coord
-from MPyDATA.options import Options
 from ._moist_eulerian import _MoistEulerian
 from threading import Thread
 from PySDM.mesh import Mesh
-from PySDM import Builder
+from .kinematic_2d.arakawa_c import nondivergent_vector_field_2d, make_rhod
+
+from .kinematic_2d.mpdata import make_advection_solver
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
-
     def __init__(self, dt, grid, size, stream_function, field_values, rhod_of,
                  mpdata_iters, mpdata_iga, mpdata_fct, mpdata_tot):
         super().__init__(dt, Mesh(grid, size), [])
@@ -21,25 +20,17 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self.__rhod_of = rhod_of
 
         grid = self.mesh.grid
-        self.rhod = np.repeat(
-            rhod_of(
-                (np.arange(grid[1]) + 1 / 2) / grid[1]
-            ).reshape((1, grid[1])),
-            grid[0],
-            axis=0
-        )
-
-        self.__advector, self.__mpdatas = Factories.stream_function_2d(
-            grid=self.mesh.grid, size=self.mesh.size, dt=self.dt,
-            stream_function=stream_function,
+        self.rhod = make_rhod(grid, rhod_of)
+        rho_times_courant = nondivergent_vector_field_2d(grid, size, dt, stream_function)
+        self.__advector, self.__mpdatas = make_advection_solver(
+            grid=self.mesh.grid, dt=self.dt,
             field_values=dict((key, np.full(grid, value)) for key, value in field_values.items()),
             g_factor=self.rhod,
-            options=Options(
-                n_iters=mpdata_iters,
-                infinite_gauge=mpdata_iga,
-                flux_corrected_transport=mpdata_fct,
-                third_order_terms=mpdata_tot
-            )
+            rho_times_courant=rho_times_courant,
+            mpdata_iters=mpdata_iters,
+            mpdata_infinite_gauge=mpdata_iga,
+            mpdata_flux_corrected_transport=mpdata_fct,
+            mpdata_third_order_terms=mpdata_tot
         )
 
         self.asynchronous = False
@@ -82,10 +73,13 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         super().sync()
 
     def get_courant_field_data(self):
-        result = [
-            self.__advector.get_component(0) / self.__rhod_of(
-                x_vec_coord(self.core.mesh.grid)[1]),
-            self.__advector.get_component(1) / self.__rhod_of(
-                z_vec_coord(self.core.mesh.grid)[1])
-        ]
+        rho_times_courant = (
+            self.__advector.get_component(0),
+            self.__advector.get_component(1)
+        )
+        Z_COORD=1
+        result = (
+            rho_times_courant[0] / self.__rhod_of(zZ=x_vec_coord(self.core.mesh.grid)[Z_COORD]),
+            rho_times_courant[1] / self.__rhod_of(zZ=z_vec_coord(self.core.mesh.grid)[Z_COORD])
+        )
         return result
