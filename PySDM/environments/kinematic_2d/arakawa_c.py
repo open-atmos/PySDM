@@ -29,3 +29,12 @@ def make_rhod(grid, rhod_of):
         grid[0],
         axis=0
     )
+
+
+def courant_field(rho_times_courant, rhod_of, grid):
+    Z_COORD = 1
+    result = (
+        rho_times_courant[0] / rhod_of(zZ=x_vec_coord(grid)[Z_COORD]),
+        rho_times_courant[1] / rhod_of(zZ=z_vec_coord(grid)[Z_COORD])
+    )
+    return result

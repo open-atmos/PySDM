@@ -7,14 +7,15 @@ from MPyDATA.arakawa_c.boundary_condition.periodic_boundary_condition import Per
 
 
 def make_advection_solver(*, grid, dt, field_values, g_factor: np.ndarray, rho_times_courant,
-                          mpdata_iters, mpdata_infinite_gauge, mpdata_flux_corrected_transport, mpdata_third_order_terms):
+                          mpdata_iters, mpdata_infinite_gauge, mpdata_flux_corrected_transport,
+                          mpdata_third_order_terms, mpdata_n_threads):
     options = Options(
         n_iters=mpdata_iters,
         infinite_gauge=mpdata_infinite_gauge,
         flux_corrected_transport=mpdata_flux_corrected_transport,
         third_order_terms=mpdata_third_order_terms
     )
-    stepper = Stepper(options=options, grid=grid, non_unit_g_factor=True)
+    stepper = Stepper(options=options, grid=grid, non_unit_g_factor=True, n_threads=mpdata_n_threads)
 
     # CFL condition
     for d in range(len(rho_times_courant)):
