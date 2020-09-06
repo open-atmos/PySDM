@@ -5,7 +5,7 @@ Created at 08.08.2019
 import numpy as np
 from PySDM.initialisation.spectra import Exponential
 from PySDM.dynamics.coalescence.kernels import Geometric
-from PySDM.backends import Default
+from PySDM.backends import CPU
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 
@@ -35,4 +35,4 @@ class Setup:
     # TODO 220 instead of 200 to smoothing
     radius_bins_edges = np.logspace(np.log10(3.94 * si.um), np.log10(220 * si.um), num=100, endpoint=True)
 
-    backend = Default
+    backend = CPU
