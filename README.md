@@ -20,11 +20,11 @@ It is worth here to distinguish the dependencies of the PySDM core subpackage
 PySDM core subpackage dependencies are all available through [PyPI](https://pypi.org), 
   the key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
 
-The **Numba backend** is the default, and features multi-threaded parallelism for 
+The **Numba backend** named ``CPU`` is the default, and features multi-threaded parallelism for 
   multi-core CPUs. 
 It uses the just-in-time compilation technique based on the LLVM infrastructure.
 
-The **ThrustRTC** backend offers GPU-resident operation of PySDM
+The **ThrustRTC** backend named ``GPU`` offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 
@@ -88,16 +88,16 @@ from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
-from PySDM.backends import Numba
+from PySDM.backends import CPU
 from PySDM.products.state import ParticlesVolumeSpectrum
 
-builder = Builder(n_sd=n_sd, backend=Numba)
+builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum()]
 particles = builder.build(attributes, products)
 ```
-The ``backend`` argument may be set to ``Numba`` or ``ThrustRTC``
+The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
 The employed ``Box`` environment corresponds to a zero-dimensional framework
@@ -141,9 +141,9 @@ The resultant plot looks as follows:
 ## Package structure and API
 
 - [backends](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/backends):
-    - [Numba](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/numba): 
+    - [CPU=Numba](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/numba): 
       multi-threaded CPU backend using LLVM-powered just-in-time compilation
-    - [ThrustRTC](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/thrustRTC): 
+    - [GPU=ThrustRTC](https://github.com/piotrbartman/PySDM/tree/master/PySDM/backends/thrustRTC): 
       GPU-resident backend using NVRTC runtime compilation library for CUDA 
 - [initialisation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/initialisation):
     - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/multiplicities.py): 
