@@ -3,12 +3,12 @@ Created at 06.06.2020
 """
 
 from PySDM.physics import constants as const
-from PySDM.backends import Default
+from PySDM.backends import CPU
 from matplotlib import pyplot as plt
 import numpy as np
 from scipy.optimize import minimize
 
-backend = Default()
+backend = CPU
 um = const.si.um
 
 
