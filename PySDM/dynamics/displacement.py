@@ -7,10 +7,10 @@ import numpy as np
 
 class Displacement:
 
-    def __init__(self, scheme='FTBS', sedimentation=False):
+    def __init__(self, scheme='FTBS', enable_sedimentation=False):
         self.core = None
         self.scheme = scheme
-        self.enable_sedimentation = sedimentation
+        self.enable_sedimentation = enable_sedimentation
         self.dimension = None
         self.grid = None
         self.courant = None
@@ -31,9 +31,6 @@ class Displacement:
         self.scheme = method
 
         courant_field = self.core.environment.get_courant_field_data()
-        # CFL # TODO: this should be done by MPyDATA
-        for d in range(len(courant_field)):
-            assert np.amax(abs(courant_field[d])) <= 1
 
         self.dimension = len(courant_field)
         self.grid = self.core.Storage.from_ndarray(

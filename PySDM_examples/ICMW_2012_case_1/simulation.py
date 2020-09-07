@@ -87,19 +87,18 @@ class Simulation:
             eulerian_advection_solvers=mpdatas
         ))
 
-        condensation = Condensation(
-            kappa=self.setup.kappa,
-            rtol_x=self.setup.condensation_rtol_x,
-            rtol_thd=self.setup.condensation_rtol_thd,
-            coord=self.setup.condensation_coord,
-            adaptive=self.setup.adaptive,
-            do_advection=self.setup.processes["fluid advection"],  # TODO req. EulerianAdvection
-            do_condensation=self.setup.processes["condensation"])  # do somthing with that)
-        builder.add_dynamic(condensation)
-        builder.add_dynamic(EulerianAdvection())
-
+        if self.setup.processes["condensation"]:
+            condensation = Condensation(
+                kappa=self.setup.kappa,
+                rtol_x=self.setup.condensation_rtol_x,
+                rtol_thd=self.setup.condensation_rtol_thd,
+                coord=self.setup.condensation_coord,
+                adaptive=self.setup.adaptive)
+            builder.add_dynamic(condensation)
+        if self.setup.processes['fluid advection']:
+            builder.add_dynamic(EulerianAdvection())
         if self.setup.processes["particle advection"]:
-            displacement = Displacement(scheme='FTBS', sedimentation=self.setup.processes["sedimentation"])
+            displacement = Displacement(scheme='FTBS', enable_sedimentation=self.setup.processes["sedimentation"])
             builder.add_dynamic(displacement)
         if self.setup.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.setup.kernel))

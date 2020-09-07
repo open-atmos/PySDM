@@ -13,7 +13,7 @@ class MPDATA:
                  mpdata_iters, mpdata_infinite_gauge, mpdata_flux_corrected_transport,
                  mpdata_third_order_terms):
 
-        self.asynchronous = True
+        self.asynchronous = False
         self.thread: (Thread, None) = None
 
         options = Options(
