@@ -9,6 +9,7 @@ from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
+from PySDM.dynamics import LagrangianAdvection
 from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
 from PySDM.environments.kinematic_2d.arakawa_c import nondivergent_vector_field_2d, make_rhod, courant_field
 from PySDM.environments.kinematic_2d.mpdata import MPDATA
@@ -87,6 +88,8 @@ class Simulation:
             eulerian_advection_solvers=mpdatas
         ))
 
+        if self.setup.processes['fluid advection']:
+            builder.add_dynamic(LagrangianAdvection())
         if self.setup.processes["condensation"]:
             condensation = Condensation(
                 kappa=self.setup.kappa,

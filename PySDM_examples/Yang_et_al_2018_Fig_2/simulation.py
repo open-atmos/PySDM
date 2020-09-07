@@ -6,6 +6,7 @@ Created at 23.04.2020
 import numpy as np
 
 from PySDM.builder import Builder
+from PySDM.dynamics import LagrangianAdvection
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
@@ -26,8 +27,8 @@ class Simulation:
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
-        particles_builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
-        particles_builder.set_environment(MoistLagrangianParcelAdiabatic(
+        builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
+        builder.set_environment(MoistLagrangianParcelAdiabatic(
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=setup.mass_of_dry_air,
             p0=setup.p0,
@@ -37,8 +38,9 @@ class Simulation:
             z0=setup.z0
         ))
 
-        environment = particles_builder.core.environment
+        environment = builder.core.environment
         r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
+        builder.add_dynamic(LagrangianAdvection())
         condensation = Condensation(
             kappa=setup.kappa,
             coord=setup.coord,
@@ -46,14 +48,14 @@ class Simulation:
             rtol_x=setup.rtol_x,
             rtol_thd=setup.rtol_thd
         )
-        particles_builder.add_dynamic(condensation)
+        builder.add_dynamic(condensation)
         attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
         products = [
             ParticlesWetSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
             CondensationTimestep(),
             RipeningRate()
         ]
-        self.particles = particles_builder.build(attributes, products)
+        self.particles = builder.build(attributes, products)
 
         self.n_steps = setup.n_steps
 
