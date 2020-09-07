@@ -60,7 +60,7 @@ def main():
         plt.plot(n_sd, t, label=method)
     plt.legend()
     plt.loglog()
-    plt.show()
+    plt.savefig("benchamrk.pdf", format="pdf")
 
 
 if __name__ == '__main__':
