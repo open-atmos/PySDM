@@ -13,7 +13,7 @@ um = const.si.um
 
 
 def full_params(params):
-    return 1, 1, *params
+    return (1, 1, *params)
 
 
 def print_collection_efficiency_portrait(params):

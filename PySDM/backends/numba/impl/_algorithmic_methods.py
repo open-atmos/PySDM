@@ -120,7 +120,7 @@ class AlgorithmicMethods:
             cell_origin.data, position_in_cell.data, idx.data, length, healthy.data)
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**conf.JIT_FLAGS)
     def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, length, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         for i in prange(length - 1):
@@ -145,7 +145,7 @@ class AlgorithmicMethods:
             params, output.data, radii.data, is_first_in_pair.data, len(is_first_in_pair), unit)
 
     @staticmethod
-    @numba.njit()
+    @numba.njit(**conf.JIT_FLAGS)
     def interpolation_body(output, radius, factor, b, c):
         for i in range(len(radius)):
             r_id = int(factor * radius[i])
