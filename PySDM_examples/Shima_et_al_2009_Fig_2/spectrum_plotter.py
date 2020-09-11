@@ -101,7 +101,7 @@ class SpectrumPlotter:
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            self.title = f'error: {error:.2f}'
+            self.title = f'error: {error:.2f}' # TODO: rename "error measure" + unit
 
     def plot_data(self, setup, t, spectrum):
         if self.smooth:

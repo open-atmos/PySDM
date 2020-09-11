@@ -13,7 +13,7 @@ um = const.si.um
 
 
 def full_params(params):
-    return 1, 1, *params
+    return (1, 1, *params)
 
 
 def print_collection_efficiency_portrait(params):
@@ -39,7 +39,7 @@ def print_collection_efficiency_portrait(params):
     plt.xticks(xticks, xticks)
     plt.yticks(yticks, yticks)
     plt.grid()
-    plt.show()
+    plt.savefig("berry_fig_6.pdf", format="pdf")
 
 
 p = np.array((.2, .4, .6, .8, .9, 1.))

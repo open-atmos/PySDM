@@ -25,7 +25,7 @@ def reload_backend():
 def main():
     setup = Setup()
 
-    setup.grid = (75, 75)
+    setup.grid = (25, 25)
     setup.n_steps = 100
     setup.outfreq = 10
     setup.processes = {
@@ -37,7 +37,7 @@ def main():
     }
     setup.condensation_dt_max = .2
 
-    n_sd = range(50, 52, 1)
+    n_sd = range(15, 17, 1)
 
     times = {}
     for parallel in (True,):
@@ -60,7 +60,7 @@ def main():
         plt.plot(n_sd, t, label=method)
     plt.legend()
     plt.loglog()
-    plt.show()
+    plt.savefig("benchamrk.pdf", format="pdf")
 
 
 if __name__ == '__main__':

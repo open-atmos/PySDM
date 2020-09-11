@@ -10,7 +10,6 @@ from .kinematic_2d.arakawa_c import nondivergent_vector_field_2d, make_rhod, cou
 class MoistEulerian2DKinematic(_MoistEulerian):
     def __init__(self, dt, grid, size, rhod_of, eulerian_advection_solvers):
         super().__init__(dt, Mesh(grid, size), [])
-
         self.rhod_of = rhod_of
         self.eulerian_advection_solvers = eulerian_advection_solvers
 
