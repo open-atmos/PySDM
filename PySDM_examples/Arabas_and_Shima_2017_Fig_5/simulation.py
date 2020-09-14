@@ -5,6 +5,7 @@ Created at 29.11.2019
 import numpy as np
 
 from PySDM.builder import Builder
+from PySDM.dynamics import LagrangianAdvection
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
@@ -33,6 +34,7 @@ class Simulation:
             w=setup.w
         ))
 
+        builder.add_dynamic(LagrangianAdvection())
         builder.add_dynamic(Condensation(
             kappa=setup.kappa,
             rtol_x=setup.rtol_x,

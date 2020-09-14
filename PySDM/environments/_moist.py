@@ -37,7 +37,7 @@ class _Moist:
 
     def get_predicted(self, index):
         if self._values['predicted'] is None:
-            raise AssertionError("Condensation not called.")
+            raise AssertionError("Environment is not synchronized.")
         return self._values['predicted'][index]
 
     def sync(self):

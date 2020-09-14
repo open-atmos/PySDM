@@ -14,5 +14,4 @@ class EulerianAdvection:
     def __call__(self):
         self.core.env.get_predicted('qv').download(self.core.env.get_qv(), reshape=True)
         self.core.env.get_predicted('thd').download(self.core.env.get_thd(), reshape=True)
-
         self.core.env.step()

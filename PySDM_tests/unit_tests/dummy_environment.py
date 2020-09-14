@@ -43,5 +43,8 @@ class DummyEnvironment:
     def get_thd(self):
         return self.thd[self.halo:-self.halo, self.halo:-self.halo]
 
+    def sync(self):
+        pass
+
     def step(self):
         self.step_counter += 1

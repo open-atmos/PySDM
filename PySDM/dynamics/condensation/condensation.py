@@ -16,8 +16,6 @@ class Condensation:
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  coord='volume logarithm', adaptive=True,
-                 do_advection: bool = True,
-                 do_condensation: bool = True,
                  ):
         self.core = None
         self.kappa = kappa
@@ -25,10 +23,7 @@ class Condensation:
         self.rtol_thd = rtol_thd
         self.r_cr = None
 
-        self.do_advection = do_advection
-        self.do_condensation = do_condensation
         self.max_substeps = None
-
         self.substeps = None
         self.ripening_flags = None
 
@@ -47,14 +42,11 @@ class Condensation:
         self.ripening_flags[:] = 0
 
     def __call__(self):
-        if self.do_advection:
-            self.core.env.sync()
-        if self.do_condensation:
-            self.core.condensation(
-                kappa=self.kappa,
-                rtol_x=self.rtol_x,
-                rtol_thd=self.rtol_thd,
-                substeps=self.substeps,
-                ripening_flags=self.ripening_flags
-            )
-            self.substeps[:] = np.maximum(self.substeps[:], int(self.core.dt))
+        self.core.condensation(
+            kappa=self.kappa,
+            rtol_x=self.rtol_x,
+            rtol_thd=self.rtol_thd,
+            substeps=self.substeps,
+            ripening_flags=self.ripening_flags
+        )
+        self.substeps[:] = np.maximum(self.substeps[:], int(self.core.dt))

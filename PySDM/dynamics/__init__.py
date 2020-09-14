@@ -6,4 +6,4 @@ from .coalescence.coalescence import Coalescence
 from .condensation.condensation import Condensation
 from .displacement import Displacement
 from .eulerian_advection import EulerianAdvection
-
+from .lagrangian_advection import LagrangianAdvection

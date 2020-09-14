@@ -29,7 +29,7 @@ class Setup:
         cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
         attributes = {'n': self.n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
         core.build(attributes)
-        sut = Displacement(scheme=self.scheme, sedimentation=self.sedimentation)
+        sut = Displacement(scheme=self.scheme, enable_sedimentation=self.sedimentation)
         sut.register(core)
 
         return sut, core
