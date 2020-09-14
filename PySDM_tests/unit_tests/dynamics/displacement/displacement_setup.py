@@ -2,7 +2,7 @@
 Created at 29.04.2020
 """
 
-from PySDM.backends.default import Default
+from PySDM.backends import CPU
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
 import numpy as np
@@ -20,7 +20,7 @@ class Setup:
         self.dt = None
 
     def get_displacement(self):
-        core = DummyCore(Default, n_sd=len(self.n))
+        core = DummyCore(CPU, n_sd=len(self.n))
         core.environment = DummyEnvironment(
             dt=self.dt,
             grid=self.grid,

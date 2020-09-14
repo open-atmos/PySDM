@@ -4,30 +4,27 @@ Created at 25.09.2019
 
 
 import time
-import numpy as np
+
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
-from PySDM.dynamics import LagrangianAdvection
-from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
-from PySDM.environments.kinematic_2d.arakawa_c import nondivergent_vector_field_2d, make_rhod, courant_field
-from PySDM.environments.kinematic_2d.mpdata import MPDATA
+from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.environments import MoistEulerian2DKinematic
-from PySDM.environments.products.dry_air_density import DryAirDensity
-from PySDM.environments.products.dry_air_potential_temperature import DryAirPotentialTemperature
-from PySDM.environments.products.relative_humidity import RelativeHumidity
-from PySDM.environments.products.water_vapour_mixing_ratio import WaterVapourMixingRatio
+from PySDM.products.environments import DryAirDensity
+from PySDM.products.environments import DryAirPotentialTemperature
+from PySDM.products.environments import RelativeHumidity
+from PySDM.products.environments import WaterVapourMixingRatio
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.initialisation.moist_environment_init import moist_environment_init
 from PySDM.builder import Builder
-from PySDM.state.products.particles_concentration import AerosolConcentration, CloudConcentration, DrizzleConcentration
-from PySDM.state.products.aerosol_specific_concentration import AerosolSpecificConcentration
-from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
-from PySDM.state.products.particles_size_spectrum import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum
-from PySDM.state.products.super_droplet_count import SuperDropletCount
-from PySDM.state.products.total_particle_concentration import TotalParticleConcentration
-from PySDM.state.products.total_particle_specific_concentration import TotalParticleSpecificConcentration
+from PySDM.products.state import AerosolConcentration, CloudConcentration, DrizzleConcentration
+from PySDM.products.state import AerosolSpecificConcentration
+from PySDM.products.state import ParticleMeanRadius
+from PySDM.products.state import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum
+from PySDM.products.state import SuperDropletCount
+from PySDM.products.state import TotalParticleConcentration
+from PySDM.products.state import TotalParticleSpecificConcentration
 from .spin_up import SpinUp
 
 

@@ -11,8 +11,8 @@ from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
-from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
-from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.products.state import ParticleMeanRadius
+from PySDM.products.dynamics.condensation import CondensationTimestep
 
 
 class Simulation:

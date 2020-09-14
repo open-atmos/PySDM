@@ -2,7 +2,7 @@
 Created at 2020
 """
 
-from ...product import Product
+from PySDM.product import Product
 from PySDM.environments._moist import _Moist
 
 

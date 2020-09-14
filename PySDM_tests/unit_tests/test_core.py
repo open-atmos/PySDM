@@ -3,7 +3,7 @@ Created at 27.05.2020
 """
 
 from PySDM_tests.unit_tests.dummy_core import DummyCore
-from PySDM.backends.default import Default
+from PySDM.backends import CPU
 
 
 class TestCore:
@@ -20,7 +20,7 @@ class TestCore:
                 assert self.steps == self.core.n_steps
 
         steps = 33
-        core = DummyCore(Default, 44)
+        core = DummyCore(CPU, 44)
         observer = Observer(core)
         core.run(steps)
 

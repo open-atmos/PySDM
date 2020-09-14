@@ -5,13 +5,13 @@ Created at 13.01.2020
 import numpy as np
 import pytest
 
-from PySDM.backends.default import Default
+from PySDM.backends import CPU
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
-backend = Default
+backend = CPU
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])

@@ -4,6 +4,7 @@ Created at 11.05.2020
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
 from PySDM.physics import formulae as phys
+from PySDM.dynamics import Condensation
 
 
 class CriticalRadius(DerivedAttribute):
@@ -16,7 +17,7 @@ class CriticalRadius(DerivedAttribute):
         super().__init__(builder, name='critical radius', dependencies=dependencies)
 
     def recalculate(self):
-        kappa = self.particles.dynamics["<class 'PySDM.dynamics.condensation.condensation.Condensation'>"].kappa
+        kappa = self.particles.dynamics['Condensation'].kappa
         r_d = self.r_dry.get()
         T = self.environment['T']
         cell = self.cell_id.get()
