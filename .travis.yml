@@ -41,7 +41,8 @@ install:
   - pip$PY_SFX install -U -r requirements.txt
 
 script:
-  - python$PY_SFX -m pytest --ignore submodules --cov-report term --cov=PySDM
+  - NUMBA_DISABLE_JIT=1 python$PY_SFX -m pytest PySDM_tests/unit_tests
+  - python$PY_SFX -m pytest --cov-report term --cov=PySDM
   - |
       python$PY_SFX -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do

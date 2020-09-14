@@ -5,6 +5,7 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
+from PySDM.backends.numba.random import Random
 from PySDM.backends.default import Default
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
@@ -170,13 +171,14 @@ class TestSDMSingleCell:
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
-        class Counter:
+        class CountingRandom(Random):
             calls = 0
 
-            def __call__(self, _):
-                Counter.calls += 1
+            def __call__(self, storage):
+                CountingRandom.calls += 1
+                super(CountingRandom, self).__call__(storage)
 
-        sut.rnd = Counter()
+        sut.rnd = CountingRandom(n_sd)
         sut.optimized_random = optimized_random
         sut.subs = 100
 
@@ -185,6 +187,6 @@ class TestSDMSingleCell:
 
         # Assert
         if sut.optimized_random:
-            assert Counter.calls == 2
+            assert CountingRandom.calls == 2
         else:
-            assert Counter.calls == 2 * sut.subs
+            assert CountingRandom.calls == 2 * sut.subs
