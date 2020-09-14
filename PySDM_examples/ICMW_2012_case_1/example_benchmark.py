@@ -7,19 +7,19 @@ from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
 import PySDM.backends.numba.conf
 import importlib
-from PySDM.backends.numba import numba as backend
+from PySDM.backends import CPU, GPU
 import PySDM.backends.numba.impl._maths_methods
 import PySDM.backends.numba.impl._algorithmic_methods
 import PySDM.backends.numba.impl._storage_methods
 import PySDM.backends.numba.impl._physics_methods
 
 
-def reload_backend():
+def reload_CPU_backend():
     importlib.reload(PySDM.backends.numba.impl._maths_methods)
     importlib.reload(PySDM.backends.numba.impl._algorithmic_methods)
     importlib.reload(PySDM.backends.numba.impl._storage_methods)
     importlib.reload(PySDM.backends.numba.impl._physics_methods)
-    importlib.reload(backend)
+    importlib.reload(CPU)
 
 
 def main():

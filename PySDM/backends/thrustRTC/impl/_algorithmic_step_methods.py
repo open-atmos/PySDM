@@ -40,7 +40,7 @@ class AlgorithmicStepMethods:
     def cell_id(cell_id, cell_origin, strides):
         n_dims = trtc.DVInt64(strides.shape[1])
         size = trtc.DVInt64(cell_origin.shape[0])
-        AlgorithmicStepMethods.__cell_id_body.launch_n(cell_id.size(), [cell_id, cell_origin, strides, n_dims, size])
+        AlgorithmicStepMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) 

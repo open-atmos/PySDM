@@ -89,6 +89,23 @@ class Simulation:
             eulerian_advection_solvers=mpdatas
         ))
 
+        products = [
+            ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
+            ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins
+            TotalParticleConcentration(),
+            TotalParticleSpecificConcentration(),
+            AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            CloudConcentration(radius_range=(self.setup.aerosol_radius_threshold, self.setup.drizzle_radius_threshold)),
+            DrizzleConcentration(radius_threshold=self.setup.drizzle_radius_threshold),
+            AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            ParticleMeanRadius(),
+            SuperDropletCount(),
+            RelativeHumidity(),
+            WaterVapourMixingRatio(),
+            DryAirDensity(),
+            DryAirPotentialTemperature()
+        ]
+
         if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
         if self.setup.processes["condensation"]:
@@ -99,6 +116,7 @@ class Simulation:
                 coord=self.setup.condensation_coord,
                 adaptive=self.setup.adaptive)
             builder.add_dynamic(condensation)
+            products.append(CondensationTimestep())
         if self.setup.processes['fluid advection']:
             builder.add_dynamic(EulerianAdvection())
         if self.setup.processes["particle advection"]:
@@ -114,24 +132,7 @@ class Simulation:
                                spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
                                r_range=(self.setup.r_min, self.setup.r_max),
                                kappa=self.setup.kappa)
-        products = [
-            ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
-            ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins
-            TotalParticleConcentration(),
-            TotalParticleSpecificConcentration(),
-            AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
-            CloudConcentration(radius_range=(self.setup.aerosol_radius_threshold, self.setup.drizzle_radius_threshold)),
-            DrizzleConcentration(radius_threshold=self.setup.drizzle_radius_threshold),
-            AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
-            ParticleMeanRadius(),
-            SuperDropletCount(),
-            RelativeHumidity(),
-            WaterVapourMixingRatio(),
-            DryAirDensity(),
-            DryAirPotentialTemperature(),
-            CondensationTimestep(),
-            # RipeningRate()
-        ]
+
         self.core = builder.build(attributes, products)
         SpinUp(self.core, self.setup.n_spin_up)
         # TODO

@@ -25,8 +25,9 @@ class PhysicsMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def temperature_pressure_RH(rhod, thd, qv):
-        return temperature_pressure_RH(rhod, thd, qv)
+    def temperature_pressure_RH(rhod, thd, qv, T, p, RH):
+        for i in range(T.shape[0]):
+            T[i], p[i], RH[i] = temperature_pressure_RH(rhod[i], thd[i], qv[i])
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
