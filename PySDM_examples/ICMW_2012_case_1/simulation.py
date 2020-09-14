@@ -4,12 +4,16 @@ Created at 25.09.2019
 
 
 import time
+import numpy as np
 
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.environments.kinematic_2d.arakawa_c import make_rhod, nondivergent_vector_field_2d
+from PySDM.environments.kinematic_2d.mpdata import MPDATA
 from PySDM.environments import MoistEulerian2DKinematic
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
@@ -85,8 +89,8 @@ class Simulation:
             eulerian_advection_solvers=mpdatas
         ))
 
-        if self.setup.processes['fluid advection']:
-            builder.add_dynamic(LagrangianAdvection())
+        if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
+            builder.add_dynamic(AmbientThermodynamics())
         if self.setup.processes["condensation"]:
             condensation = Condensation(
                 kappa=self.setup.kappa,

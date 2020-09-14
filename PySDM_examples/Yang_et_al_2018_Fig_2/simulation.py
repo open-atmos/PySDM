@@ -6,7 +6,7 @@ Created at 23.04.2020
 import numpy as np
 
 from PySDM.builder import Builder
-from PySDM.dynamics import LagrangianAdvection
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
@@ -40,7 +40,7 @@ class Simulation:
 
         environment = builder.core.environment
         r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
-        builder.add_dynamic(LagrangianAdvection())
+        builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             kappa=setup.kappa,
             coord=setup.coord,
