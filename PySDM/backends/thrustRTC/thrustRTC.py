@@ -25,3 +25,6 @@ class ThrustRTC(
     Storage = ImportedStorage
     IndexedStorage = ImportedIndexedStorage
     Random = ImportedRandom
+
+    def __init__(self):
+        raise Exception("Backend is stateless.")

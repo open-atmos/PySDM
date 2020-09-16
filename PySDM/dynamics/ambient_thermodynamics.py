@@ -3,7 +3,7 @@ Created at 07.09.2020
 """
 
 
-class LagrangianAdvection:
+class AmbientThermodynamics:
 
     def __init__(self):
         self.core = None

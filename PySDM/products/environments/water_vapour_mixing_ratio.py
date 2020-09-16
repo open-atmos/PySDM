@@ -2,8 +2,8 @@
 Created at 05.02.2020
 """
 
-from ...product import Product
-from ...physics import constants as const
+from PySDM.product import Product
+from PySDM.physics import constants as const
 from PySDM.environments._moist import _Moist
 
 

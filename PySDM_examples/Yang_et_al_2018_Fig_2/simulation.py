@@ -6,14 +6,14 @@ Created at 23.04.2020
 import numpy as np
 
 from PySDM.builder import Builder
-from PySDM.dynamics import LagrangianAdvection
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
-from PySDM.state.products.particles_size_spectrum import ParticlesWetSizeSpectrum
-from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
-from PySDM.dynamics.condensation.products.ripening_rate import RipeningRate
+from PySDM.products.state import ParticlesWetSizeSpectrum
+from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
 
 # TODO: the q1 logic from PyCloudParcel?
 
@@ -40,7 +40,7 @@ class Simulation:
 
         environment = builder.core.environment
         r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
-        builder.add_dynamic(LagrangianAdvection())
+        builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             kappa=setup.kappa,
             coord=setup.coord,

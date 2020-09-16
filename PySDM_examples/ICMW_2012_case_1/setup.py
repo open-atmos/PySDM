@@ -7,15 +7,15 @@ import numpy as np
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectra import Sum
 from PySDM.dynamics.coalescence.kernels import Geometric
-from PySDM.backends.default import Default
-from PySDM.dynamics.condensation import condensation
+from PySDM.backends import CPU
+from PySDM.dynamics import condensation
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from PySDM.physics.constants import si
 
 
 class Setup:
-    backend = Default
+    backend = CPU
     condensation_coord = 'volume logarithm'
 
     condensation_rtol_x = condensation.default_rtol_x

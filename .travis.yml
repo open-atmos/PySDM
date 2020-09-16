@@ -41,14 +41,19 @@ install:
   - pip$PY_SFX install -U -r requirements.txt
 
 script:
+  - NBCONVERT="jupyter nbconvert --to markdown --stdout"
   - NUMBA_DISABLE_JIT=1 python$PY_SFX -m pytest PySDM_tests/unit_tests
   - python$PY_SFX -m pytest --cov-report term --cov=PySDM
   - |
       python$PY_SFX -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do
-         jupyter nbconvert --to markdown --stdout $i > $i.md.repo || exit 1;
-         jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis || exit 1;
-         # diff $i.md.repo $i.md.travis  # does not make sense with ipywidgets
+         $NBCONVERT $i > $i.md.repo;
+         $NBCONVERT --execute --ExecutePreprocessor.timeout=1800 $i || exit 1;
+      done;
+      for i in PySDM_tutorials/*/*.ipynb; do
+         $NBCONVERT $i > $i.md.repo;
+         $NBCONVERT --execute $i > $i.md.travis || exit 1;
+         diff --ignore-all-space $i.md.repo $i.md.travis
       done;
   - |
       if [[ $TRAVIS_OS_NAME == linux ]]; then

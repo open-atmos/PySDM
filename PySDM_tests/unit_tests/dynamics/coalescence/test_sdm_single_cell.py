@@ -5,8 +5,8 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
+from PySDM.backends import CPU as BACKEND
 from PySDM.backends.numba.random import Random
-from PySDM.backends.default import Default
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
@@ -14,14 +14,12 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import Stub
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
-backend = Default
-
 
 class TestSDMSingleCell:
 
     @staticmethod
     def get_dummy_core_and_sdm(n_length):
-        core = DummyCore(backend, n_sd=n_length)
+        core = DummyCore(BACKEND, n_sd=n_length)
         dv = 1
         core.environment = Box(dv=dv, dt=0)
         sdm = Coalescence(StubKernel(core.backend))
@@ -144,17 +142,14 @@ class TestSDMSingleCell:
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
 
-        from PySDM.backends.default import Default
-        backend = Default()
-
         expected = lambda p, r: p // 1 + (r < p - p // 1)
 
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = backend.Storage.from_ndarray(np.full((1,), p))
-                rand_arr = backend.Storage.from_ndarray(np.full((1,), r))
-                backend.compute_gamma(prob_arr, rand_arr)
+                prob_arr = BACKEND.Storage.from_ndarray(np.full((1,), p))
+                rand_arr = BACKEND.Storage.from_ndarray(np.full((1,), r))
+                BACKEND.compute_gamma(prob_arr, rand_arr)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]

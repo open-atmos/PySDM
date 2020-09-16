@@ -2,10 +2,14 @@
 Created at 24.07.2019
 """
 
-from .default import Default
 from .numba.numba import Numba
-try:
+from numba import cuda
+
+if cuda.is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
-except ImportError:
+else:
     class ThrustRTC:
         ENABLE = False
+   
+CPU = Numba
+GPU = ThrustRTC

@@ -5,14 +5,14 @@ Created at 29.11.2019
 import numpy as np
 
 from PySDM.builder import Builder
-from PySDM.dynamics import LagrangianAdvection
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
-from PySDM.state.products.particle_mean_radius import ParticleMeanRadius
-from PySDM.dynamics.condensation.products.condensation_timestep import CondensationTimestep
+from PySDM.products.state import ParticleMeanRadius
+from PySDM.products.dynamics.condensation import CondensationTimestep
 
 
 class Simulation:
@@ -34,7 +34,7 @@ class Simulation:
             w=setup.w
         ))
 
-        builder.add_dynamic(LagrangianAdvection())
+        builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(
             kappa=setup.kappa,
             rtol_x=setup.rtol_x,

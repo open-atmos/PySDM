@@ -31,7 +31,7 @@ class Builder:
         self.core.environment.register(self)
 
     def add_dynamic(self, dynamic):
-        self.core.dynamics[str(dynamic.__class__)] = dynamic
+        self.core.dynamics[dynamic.__class__.__name__] = dynamic
 
     def register_product(self, product):
         if product.name in self.core.products:
@@ -56,7 +56,7 @@ class Builder:
 
         for attribute in attributes:
             self.request_attribute(attribute)
-        if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.core.dynamics:  # TODO: mapper?
+        if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
                 self.core.backend.make_condensation_solver(**self.condensation_params,
                                                            enable_drop_temperatures='temperatures' in self.req_attr)

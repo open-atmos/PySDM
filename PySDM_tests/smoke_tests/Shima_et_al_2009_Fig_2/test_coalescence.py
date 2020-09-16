@@ -5,7 +5,7 @@ Created at 08.08.2019
 import numpy as np
 import copy
 import pytest
-from PySDM.backends.default import Default
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import constant_multiplicity
@@ -15,7 +15,7 @@ from PySDM.environments import Box
 from PySDM.physics.constants import si
 
 
-backend = Default
+backend = CPU
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -62,7 +62,7 @@ def test_coalescence(croupier):
         def __call__(self):
             Seed.seed += 1
             return Seed.seed
-    particles.dynamics[str(Coalescence)].seed = Seed()
+    particles.dynamics['Coalescence'].seed = Seed()
 
     states = {}
 

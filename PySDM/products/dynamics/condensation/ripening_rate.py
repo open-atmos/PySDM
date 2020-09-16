@@ -3,7 +3,7 @@ Created at 05.02.2020
 """
 
 from PySDM.product import Product
-from PySDM.dynamics.condensation.condensation import Condensation
+from PySDM.dynamics.condensation import Condensation
 
 
 class RipeningRate(Product):
@@ -17,7 +17,7 @@ class RipeningRate(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.condensation = self.core.dynamics[str(Condensation)]
+        self.condensation = self.core.dynamics['Condensation']
 
     def get(self):  # TODO: take into account NUMBER of substeps (?)
         self.download_to_buffer(self.condensation.ripening_flags)

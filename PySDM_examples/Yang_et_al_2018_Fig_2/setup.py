@@ -3,11 +3,11 @@ Created at 25.11.2019
 """
 
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.backends.default import Default
+from PySDM.backends import CPU
 from PySDM.physics.constants import si
 from PySDM.initialisation import spectral_sampling
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.dynamics.condensation import condensation
+from PySDM.dynamics import condensation
 import numpy as np
 
 
@@ -31,7 +31,7 @@ class Setup:
         self.dt_output = dt_output
         self.r_bins_edges = np.linspace(0 * si.micrometre, 20 * si.micrometre, 101, endpoint=True)
 
-    backend = Default
+    backend = CPU
     coord = 'volume logarithm'
     adaptive = True
     rtol_x = condensation.default_rtol_x
