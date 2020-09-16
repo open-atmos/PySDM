@@ -24,8 +24,10 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
         self.w = w
 
         pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
+        rhod0 = pd0 / const.Rd / T0
 
-        self.params = (q0, phys.th_std(pd0, T0), pd0 / const.Rd / T0, z0, 0)
+        self.params = (q0, phys.th_std(pd0, T0), rhod0, z0, 0)
+        self.mesh.dv = mass_of_dry_air / rhod0
 
     def register(self, builder):
         _MoistLagrangianParcel.register(self, builder)
@@ -64,3 +66,6 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
                 dpd_dt / const.Rd / T +
                 -dT_dt * pd / const.Rd / T**2
         )
+
+        rhod_mean = (self._tmp['rhod'][0] + self["rhod"][0]) / 2
+        self.mesh.dv = self.mass_of_dry_air / rhod_mean

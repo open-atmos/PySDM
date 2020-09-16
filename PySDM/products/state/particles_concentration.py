@@ -10,12 +10,12 @@ import numpy as np
 
 class ParticlesConcentration(MomentProduct):
 
-    def __init__(self, radius_range):
+    def __init__(self, radius_range, specific=False):
         self.radius_range = radius_range
 
         super().__init__(
             name='n_a_cm3',
-            unit='cm-3',
+            unit='mg-1' if specific else 'cm-3',
             description='Particles concentration',
             scale='linear',
             range=[1e0, 1e2]
