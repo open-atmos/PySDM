@@ -5,7 +5,7 @@ Created at 03.07.2020
 import numpy as np
 
 
-#  TIP: can be call asynchronous
+#  TIP: can be called asynchronously
 #  TIP: sometimes only half array is needed
 
 class Random:
