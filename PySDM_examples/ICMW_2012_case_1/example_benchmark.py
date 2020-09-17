@@ -42,7 +42,7 @@ def main():
     times = {}
     for parallel in (True,):
         PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
-        reload_backend()
+        reload_CPU_backend()
         for method in ('local',):
             key = f"{method} (parallel={parallel})"
             times[key] = []
