@@ -15,7 +15,6 @@ from .utils import universal_test
 
 
 # TODO: not implemented
-@pytest.mark.skip()
 @pytest.mark.parametrize('sut', backends)
 class TestAlgorithmicStepMethods:
 
@@ -34,11 +33,11 @@ class TestAlgorithmicStepMethods:
     @staticmethod
     def test_cell_id(sut, shape_2d):
         params = [{'name': "cell_id",
-                   'details': {'shape': (shape_2d[0],), 'dtype': int}},
+                   'details': {'shape': (shape_2d[1],), 'dtype': int}},
                   {'name': "cell_origin",
                    'details': {'shape': shape_2d, 'dtype': int}},
                   {'name': "strides",
-                   'details': {'shape': (1, shape_2d[1]), 'dtype': int}}
+                   'details': {'shape': (1, shape_2d[0]), 'dtype': int}}
                   ]
         universal_test("cell_id", sut, params)
 

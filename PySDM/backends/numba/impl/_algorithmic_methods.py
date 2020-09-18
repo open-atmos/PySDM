@@ -180,7 +180,7 @@ class AlgorithmicMethods:
         return CellCaretaker(idx, cell_start, scheme)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
+    # @numba.njit(**conf.JIT_FLAGS)
     def moments_body(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
         moment_0[:] = 0
         moments[:, :] = 0

@@ -25,9 +25,13 @@ class AlgorithmicStepMethods:
         return result
 
     @staticmethod
+    def cell_id_body(cell_id, cell_origin, strides):
+        cell_id[:] = np.dot(strides, cell_origin)
+
+    @staticmethod
     # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
     def cell_id(cell_id, cell_origin, strides):
-        cell_id.data[:] = np.dot(strides.data, cell_origin.data)
+        return AlgorithmicStepMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)

@@ -2,7 +2,6 @@
 Created at 16.12.2019
 """
 
-from types import ModuleType
 from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
@@ -26,10 +25,10 @@ def main():
     setup.n_steps = 100
     setup.outfreq = 10
     setup.processes = {
-        "particle advection": True,
-        "fluid advection": True,
-        "coalescence": True,
-        "condensation": True,
+        "particle advection": False,
+        "fluid advection": False,
+        "coalescence": False,
+        "condensation": False,
         "sedimentation": False,
     }
     setup.condensation_dt_max = .2
@@ -38,8 +37,10 @@ def main():
 
     times = {}
     for parallel in (True,):
-        PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
-        reload_CPU_backend()
+        # PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
+        # reload_CPU_backend()
+        from PySDM.backends import GPU
+        setup.backend = GPU
         for method in ('local',):
             key = f"{method} (parallel={parallel})"
             times[key] = []
@@ -57,7 +58,7 @@ def main():
         plt.plot(n_sd, t, label=method)
     plt.legend()
     plt.loglog()
-    plt.savefig("benchamrk.pdf", format="pdf")
+    plt.savefig("benchmark.pdf", format="pdf")
 
 
 if __name__ == '__main__':
