@@ -92,25 +92,26 @@ class TpDependent:
         c4 = np.array([10.5035, 1.08750, -0.133245, -0.00659969])
 
         import numba
+        from numba import prange
         from PySDM.backends.numba import conf
 
-        @numba.njit(**conf.JIT_FLAGS)
+        @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
         c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
 
-        @numba.njit(**conf.JIT_FLAGS)
+        @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f8(r):
             result = (1.058 * ec - 1.104 * es)
             result *= (6.21 + np.log(r)) / 5.01
             result += 1.104 * es
             result += 1
-            return  result
+            return result
 
-        @numba.njit(**conf.JIT_FLAGS)
+        @numba.njit(**{**conf.JIT_FLAGS, "cache": False})
         def terminal_velocity(values, radius, threshold):
-            for i in range(len(values)):
+            for i in prange(len(values)):
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:
