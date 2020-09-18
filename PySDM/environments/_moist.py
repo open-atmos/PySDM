@@ -45,10 +45,9 @@ class _Moist:
         target['qv'].ravel(self._get_qv())
         target['thd'].ravel(self._get_thd())
 
-        self.core.backend.apply(
-            function=self.core.backend.temperature_pressure_RH,
-            args=(target['rhod'], target['thd'], target['qv']),
-            output=(target['T'], target['p'], target['RH'])
+        self.core.backend.temperature_pressure_RH(
+            target['rhod'], target['thd'], target['qv'],
+            target['T'], target['p'], target['RH']
         )
         self._values["predicted"] = target
 

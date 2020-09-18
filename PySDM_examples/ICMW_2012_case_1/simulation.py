@@ -2,6 +2,7 @@
 Created at 25.09.2019
 """
 
+
 import time
 import numpy as np
 
@@ -77,29 +78,6 @@ class Simulation:
         environment.set_advection_solver(mpdatas)
         builder.set_environment(environment)
 
-        if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
-            builder.add_dynamic(AmbientThermodynamics())
-        if self.setup.processes["condensation"]:
-            condensation = Condensation(
-                kappa=self.setup.kappa,
-                rtol_x=self.setup.condensation_rtol_x,
-                rtol_thd=self.setup.condensation_rtol_thd,
-                coord=self.setup.condensation_coord,
-                adaptive=self.setup.adaptive)
-            builder.add_dynamic(condensation)
-        if self.setup.processes['fluid advection']:
-            builder.add_dynamic(EulerianAdvection())
-        if self.setup.processes["particle advection"]:
-            displacement = Displacement(scheme='FTBS', enable_sedimentation=self.setup.processes["sedimentation"])
-            builder.add_dynamic(displacement)
-        if self.setup.processes["coalescence"]:
-            builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
-
-        attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.pseudorandom,
-                                                 spectral_discretisation=spectral_sampling.ConstantMultiplicity(
-                                                     spectrum=self.setup.spectrum_per_mass_of_dry_air
-                                                 ),
-                                                 kappa=self.setup.kappa)
         products = [
             ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
             ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins
@@ -114,10 +92,34 @@ class Simulation:
             RelativeHumidity(),
             WaterVapourMixingRatio(),
             DryAirDensity(),
-            DryAirPotentialTemperature(),
-            CondensationTimestep(),
-            # RipeningRate()
+            DryAirPotentialTemperature()
         ]
+
+        if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
+            builder.add_dynamic(AmbientThermodynamics())
+        if self.setup.processes["condensation"]:
+            condensation = Condensation(
+                kappa=self.setup.kappa,
+                rtol_x=self.setup.condensation_rtol_x,
+                rtol_thd=self.setup.condensation_rtol_thd,
+                coord=self.setup.condensation_coord,
+                adaptive=self.setup.adaptive)
+            builder.add_dynamic(condensation)
+            products.append(CondensationTimestep())
+        if self.setup.processes['fluid advection']:
+            builder.add_dynamic(EulerianAdvection())
+        if self.setup.processes["particle advection"]:
+            displacement = Displacement(scheme='FTBS', enable_sedimentation=self.setup.processes["sedimentation"])
+            builder.add_dynamic(displacement)
+        if self.setup.processes["coalescence"]:
+            builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
+
+        attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.pseudorandom,
+                                                 spectral_discretisation=spectral_sampling.ConstantMultiplicity(
+                                                     spectrum=self.setup.spectrum_per_mass_of_dry_air
+                                                 ),
+                                                 kappa=self.setup.kappa)
+
         self.core = builder.build(attributes, products)
         SpinUp(self.core, self.setup.n_spin_up)
         # TODO
