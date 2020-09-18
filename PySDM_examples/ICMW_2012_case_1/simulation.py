@@ -2,7 +2,6 @@
 Created at 25.09.2019
 """
 
-
 import time
 import numpy as np
 
@@ -20,7 +19,6 @@ from PySDM.products.environments import DryAirPotentialTemperature
 from PySDM.products.environments import RelativeHumidity
 from PySDM.products.environments import WaterVapourMixingRatio
 from PySDM.initialisation import spectral_sampling, spatial_sampling
-from PySDM.initialisation.moist_environment_init import moist_environment_init
 from PySDM.builder import Builder
 from PySDM.products.state import AerosolConcentration, CloudConcentration, DrizzleConcentration
 from PySDM.products.state import AerosolSpecificConcentration
@@ -71,23 +69,13 @@ class Simulation:
         advector = nondivergent_vector_field_2d(
             self.setup.grid, self.setup.size, self.setup.dt, self.setup.stream_function)
         advectees = dict((key, np.full(self.setup.grid, value)) for key, value in self.setup.field_values.items())
-        mpdatas = MPDATA(
-            grid=self.setup.grid, dt=self.setup.dt,
-            field_values=advectees,
-            g_factor=rhod,
-            advector=advector,
-            mpdata_iters=self.setup.mpdata_iters,
-            mpdata_infinite_gauge=self.setup.mpdata_iga,
-            mpdata_flux_corrected_transport=self.setup.mpdata_fct,
-            mpdata_third_order_terms=self.setup.mpdata_tot
-        )
-        builder.set_environment(MoistEulerian2DKinematic(
-            dt=self.setup.dt,
-            grid=self.setup.grid,
-            size=self.setup.size,
-            rhod_of=self.setup.rhod,
-            eulerian_advection_solvers=mpdatas
-        ))
+        mpdatas = MPDATA(advectees=advectees, g_factor=rhod, advector=advector, n_iters=self.setup.mpdata_iters,
+                         infinite_gauge=self.setup.mpdata_iga, flux_corrected_transport=self.setup.mpdata_fct,
+                         third_order_terms=self.setup.mpdata_tot)
+        environment = MoistEulerian2DKinematic(dt=self.setup.dt, grid=self.setup.grid,
+                                               size=self.setup.size, rhod_of=self.setup.rhod)
+        environment.set_advection_solver(mpdatas)
+        builder.set_environment(environment)
 
         if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
@@ -107,13 +95,11 @@ class Simulation:
         if self.setup.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
 
-        attributes = {}
-        moist_environment_init(attributes, builder.core.environment,
-                               spatial_discretisation=spatial_sampling.pseudorandom,
-                               spectral_discretisation=spectral_sampling.constant_multiplicity,
-                               spectrum_per_mass_of_dry_air=self.setup.spectrum_per_mass_of_dry_air,
-                               r_range=(self.setup.r_min, self.setup.r_max),
-                               kappa=self.setup.kappa)
+        attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.pseudorandom,
+                                                 spectral_discretisation=spectral_sampling.ConstantMultiplicity(
+                                                     spectrum=self.setup.spectrum_per_mass_of_dry_air
+                                                 ),
+                                                 kappa=self.setup.kappa)
         products = [
             ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
             ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins

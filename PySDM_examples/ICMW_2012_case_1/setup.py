@@ -89,8 +89,9 @@ class Setup:
 
     def rhod(self, zZ):
         Z = self.size[1]
-        z = zZ * Z  # :)
+        z = zZ * Z  # :(!
 
+        # TODO: move to PySDM/physics
         # hydrostatic profile
         kappa = const.Rd / const.c_pd
         arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)
@@ -101,10 +102,6 @@ class Setup:
         rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)
 
         return rhod
-
-    # initial dry radius discretisation range
-    r_min = spectrum_per_mass_of_dry_air.percentiles(.01)
-    r_max = spectrum_per_mass_of_dry_air.percentiles(.99)
 
     kernel = Geometric(collection_efficiency=.5 / si.s)
     aerosol_radius_threshold = .5 * si.micrometre

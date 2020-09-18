@@ -6,7 +6,6 @@ from PySDM.initialisation.spectra import Lognormal
 from PySDM.backends import CPU
 from PySDM.physics.constants import si
 from PySDM.initialisation import spectral_sampling
-from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.dynamics import condensation
 import numpy as np
 
@@ -25,7 +24,6 @@ class Setup:
             ),
             range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         )
-        self.n = discretise_n(self.n)
         self.dt_max = dt_max
 
         self.dt_output = dt_output

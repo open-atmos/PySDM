@@ -10,7 +10,6 @@ from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import MoistLagrangianParcelAdiabatic
 from PySDM.physics import formulae as phys
-from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.products.state import ParticlesWetSizeSpectrum
 from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
@@ -39,7 +38,6 @@ class Simulation:
         ))
 
         environment = builder.core.environment
-        r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
         builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             kappa=setup.kappa,
@@ -49,12 +47,19 @@ class Simulation:
             rtol_thd=setup.rtol_thd
         )
         builder.add_dynamic(condensation)
-        attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
+
         products = [
             ParticlesWetSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
             CondensationTimestep(),
             RipeningRate()
         ]
+
+        attributes = environment.init_attributes(
+            n_in_dv=setup.n,
+            kappa=setup.kappa,
+            r_dry=setup.r_dry
+        )
+
         self.particles = builder.build(attributes, products)
 
         self.n_steps = setup.n_steps

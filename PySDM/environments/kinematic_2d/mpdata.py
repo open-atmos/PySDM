@@ -9,20 +9,20 @@ from MPyDATA.arakawa_c.boundary_condition.periodic_boundary_condition import Per
 
 
 class MPDATA:
-    def __init__(self, *, grid, dt, field_values, g_factor: np.ndarray, advector,
-                 mpdata_iters, mpdata_infinite_gauge, mpdata_flux_corrected_transport,
-                 mpdata_third_order_terms):
-
+    def __init__(self, *, advectees: dict, g_factor: np.ndarray, advector: np.ndarray,
+                 n_iters=2, infinite_gauge=True,
+                 flux_corrected_transport=True, third_order_terms=False):
+        self.grid = g_factor.shape
         self.asynchronous = False
         self.thread: (Thread, None) = None
 
         options = Options(
-            n_iters=mpdata_iters,
-            infinite_gauge=mpdata_infinite_gauge,
-            flux_corrected_transport=mpdata_flux_corrected_transport,
-            third_order_terms=mpdata_third_order_terms
+            n_iters=n_iters,
+            infinite_gauge=infinite_gauge,
+            flux_corrected_transport=flux_corrected_transport,
+            third_order_terms=third_order_terms
         )
-        stepper = Stepper(options=options, grid=grid, non_unit_g_factor=True)
+        stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True)
 
         # CFL condition
         for d in range(len(advector)):
@@ -32,15 +32,15 @@ class MPDATA:
         advector_impl = VectorField(advector, halo=options.n_halo,
                                     boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
 
-        # nondivergence (of velocity field, hence dt)
-        assert np.amax(abs(advector_impl.div((dt, dt)).get())) < 5e-9
+        # nondivergence (of velocity field, hence dt)  # TODO: move to better place
+        # assert np.amax(abs(advector_impl.div((dt, dt)).get())) < 5e-9
 
         self.g_factor = g_factor
         g_factor_impl = ScalarField(g_factor.astype(dtype=options.dtype), halo=options.n_halo,
                                boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
         self.mpdatas = {}
-        for k, v in field_values.items():
-            advectee = ScalarField(np.full(grid, v, dtype=options.dtype), halo=options.n_halo,
+        for k, v in advectees.items():
+            advectee = ScalarField(np.full(self.grid, v, dtype=options.dtype), halo=options.n_halo,
                                    boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
             self.mpdatas[k] = Solver(stepper=stepper, advectee=advectee, advector=advector_impl, g_factor=g_factor_impl)
 

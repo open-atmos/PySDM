@@ -7,7 +7,7 @@ import pytest
 
 from PySDM.backends import CPU
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.initialisation.spectral_sampling import linear
+from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
@@ -28,7 +28,7 @@ def test_final_state(croupier):
 
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    attributes['volume'], attributes['n'] = linear(n_sd, spectrum, (v_min, v_max))
+    attributes['volume'], attributes['n'] = Linear(spectrum, (v_min, v_max)).sample(n_sd)
     core = DummyCore(backend, n_sd)
     core.environment = DummyEnvironment(grid=(x, y))
     core.croupier = croupier

@@ -2,7 +2,9 @@
 Created at 25.11.2019
 """
 
-from PySDM.core import Core
+import numpy as np
+from PySDM.initialisation import r_wet_init
+from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
@@ -41,6 +43,18 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
         self.sync_parcel_vars()
         _Moist.sync(self)
         self.notify()
+
+    def init_attributes(self, *, n_in_dv: [float, np.ndarray], kappa: float, r_dry: [float, np.ndarray]):
+        if not isinstance(n_in_dv, np.ndarray):
+            r_dry = np.array([r_dry])
+            n_in_dv = np.array([n_in_dv])
+
+        attributes = {}
+        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['n'] = discretise_n(n_in_dv)
+        r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa)
+        attributes['volume'] = phys.volume(radius=r_wet)
+        return attributes
 
     def advance_parcel_vars(self):
         dt = self.core.dt

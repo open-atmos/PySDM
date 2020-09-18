@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.backends import CPU as BACKEND
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectra import Lognormal
-from PySDM.initialisation.spectral_sampling import linear
+from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
@@ -25,7 +25,7 @@ class TestMaths:
         n_sd = 32
 
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = linear(n_sd, spectrum, (v_min, v_max))
+        v, n = Linear(spectrum, (v_min, v_max)).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
         particles = DummyCore(BACKEND, n_sd)

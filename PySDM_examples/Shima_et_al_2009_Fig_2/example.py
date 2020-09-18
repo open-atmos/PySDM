@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 
 from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
@@ -18,8 +18,7 @@ def run(setup, observers=()):
     builder = Builder(n_sd=setup.n_sd, backend=setup.backend)
     builder.set_environment(Box(dv=setup.dv, dt=setup.dt))
     attributes = {}
-    attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
-                                                                  (setup.init_x_min, setup.init_x_max))
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(setup.spectrum).sample(setup.n_sd)
     coalescence = Coalescence(setup.kernel)
     coalescence.adaptive = setup.adaptive
     builder.add_dynamic(coalescence)
