@@ -8,7 +8,7 @@ import pytest
 from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.initialisation.spectra import Exponential
 from PySDM.environments import Box
@@ -51,7 +51,7 @@ def test_coalescence(croupier):
     particles_builder = Builder(n_sd=n_sd, backend=backend)
     particles_builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum, (v_min, v_max)).sample(n_sd)
     particles_builder.add_dynamic(Coalescence(kernel, seed=256))
     particles = particles_builder.build(attributes)
     particles.croupier = croupier

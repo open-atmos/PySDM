@@ -6,7 +6,7 @@ import numpy as np
 
 
 class Displacement:
-
+    # TODO: create a separate Sedimentation dynamic that links in to Displacement
     def __init__(self, scheme='FTBS', enable_sedimentation=False):
         self.core = None
         self.scheme = scheme
