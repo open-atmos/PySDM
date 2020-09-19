@@ -68,15 +68,14 @@ It is a coalescence-only set-up in which the initial particle size
   the condition of each super-droplet having equal initial multiplicity:
 ```Python
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.formulae import volume
 
 n_sd = 2**13
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
-sampling_range = (volume(radius=10 * si.um), volume(radius=100 * si.um))
 attributes = {}
-attributes['volume'], attributes['n'] = constant_multiplicity(n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 
 The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/simulation/core.py) 
