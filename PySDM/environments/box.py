@@ -17,8 +17,7 @@ class Box:
     def register(self, builder: Builder):
         self.core = builder.core
 
-    def init_attributes(self, *, initial_spectrum: Spectrum, sampling_scheme: callable, sampling_range: tuple):
+    def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes['volume'], attributes['n'] = sampling_scheme(
-             n_sd=self.core.n_sd, spectrum=initial_spectrum, range=sampling_range)
+        attributes['volume'], attributes['n'] = spectral_discretisation.sample(self.core.n_sd)
         return attributes
