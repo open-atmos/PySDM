@@ -10,7 +10,7 @@ default_cdf_range = (.01, .99)
 
 
 class SpectralSampling:
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]]):
+    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
         self.spectrum = spectrum
 
         if size_range is None:
@@ -31,7 +31,7 @@ class SpectralSampling:
 
 
 class Linear(SpectralSampling):
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]]):
+    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
         super().__init__(spectrum, size_range)
 
     def sample(self, n_sd):
@@ -40,7 +40,7 @@ class Linear(SpectralSampling):
 
 
 class Logarithmic(SpectralSampling):
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]]):
+    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
         super().__init__(spectrum, size_range)
         self.start = np.log10(size_range[0])
         self.stop = np.log10(size_range[1])
@@ -51,7 +51,7 @@ class Logarithmic(SpectralSampling):
 
 
 class ConstantMultiplicity(SpectralSampling):
-    def __init__(self, spectrum, size_range):
+    def __init__(self, spectrum, size_range = None):
         super().__init__(spectrum, size_range)
 
         self.cdf_range = (
