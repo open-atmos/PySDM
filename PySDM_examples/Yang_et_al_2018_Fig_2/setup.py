@@ -21,7 +21,7 @@ class Setup:
                 m_mode=50 * si.nanometre,
                 s_geom=1.4
             ),
-            range=(10.633 * si.nanometre, 513.06 * si.nanometre)
+            size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         ).sample(n_sd)
         self.dt_max = dt_max
 
