@@ -136,7 +136,7 @@ class Storage:
         else:
             raise NotImplementedError()
 
-        data = trtc.device_vector_from_numpy(array.astype(dtype))
+        data = trtc.device_vector_from_numpy(array.astype(dtype).ravel())
         result = Storage(data, array.shape, dtype)
         return result
 

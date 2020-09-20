@@ -88,6 +88,7 @@ def generate_data(sut_backend, shape=None, dtype=None, value=None, array=None, s
     else:
         raise ValueError()
 
+    np.testing.assert_array_equal(result_sut.to_ndarray(), result_default.to_ndarray())
     return result_sut, result_default
 
 

@@ -31,15 +31,18 @@ class AlgorithmicStepMethods:
         cell_id[i] = 0;
         for (int j = 0; j < n_dims; j++) 
         {
-            cell_id[i] += cell_origin[size * i + j] * strides[j];
+            cell_id[i] += cell_origin[size * j + i] * strides[j];
         }
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def cell_id(cell_id, cell_origin, strides):
-        n_dims = trtc.DVInt64(strides.shape[1])
-        size = trtc.DVInt64(cell_origin.shape[0])
+        assert cell_origin.shape[0] == strides.shape[1]
+        assert len(cell_id) == cell_origin.shape[1]
+        assert strides.shape[0] == 1
+        n_dims = trtc.DVInt64(cell_origin.shape[0])
+        size = trtc.DVInt64(cell_origin.shape[1])
         AlgorithmicStepMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
