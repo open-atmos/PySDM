@@ -6,6 +6,7 @@ from PySDM_examples.ICMW_2012_case_1.setup import Setup
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM_examples.ICMW_2012_case_1.storage import Storage
 import PySDM.backends.numba.conf
+from PySDM.backends import CPU, GPU
 import importlib
 
 
@@ -25,37 +26,38 @@ def main():
     setup.n_steps = 100
     setup.outfreq = 10
     setup.processes = {
-        "particle advection": False,
-        "fluid advection": False,
-        "coalescence": False,
+        "particle advection": True,
+        "fluid advection": True,
+        "coalescence": True,
         "condensation": False,
-        "sedimentation": False,
+        "sedimentation": True,
     }
     setup.condensation_dt_max = .2
 
-    n_sd = range(15, 17, 1)
+    n_sd = range(15, 16, 1)
 
     times = {}
-    for parallel in (True,):
-        # PySDM.backends.numba.conf.NUMBA_PARALLEL = parallel
-        # reload_CPU_backend()
-        from PySDM.backends import GPU
-        setup.backend = GPU
-        for method in ('local',):
-            key = f"{method} (parallel={parallel})"
-            times[key] = []
-            for sd in n_sd:
-                setup.n_sd_per_gridbox = sd
-                storage = Storage()
-                simulation = Simulation(setup, storage)
-                simulation.reinit()
-                # simulation.core.croupier = method
-                stats = simulation.run()
-                times[key].append(stats.wall_times[-1])
+    backends = [(CPU, "sync"), (CPU, "async")]
+    if GPU.ENABLE:
+        backends.append((GPU, "async"))
+    for backend, mode in backends:
+        if backend is CPU:
+            PySDM.backends.numba.conf.NUMBA_PARALLEL = mode
+            reload_CPU_backend()
+        setup.backend = backend
+        key = f"{backend} (mode={mode})"
+        times[key] = []
+        for sd in n_sd:
+            setup.n_sd_per_gridbox = sd
+            storage = Storage()
+            simulation = Simulation(setup, storage)
+            simulation.reinit()
+            stats = simulation.run()
+            times[key].append(stats.wall_times[-1])
 
     from matplotlib import pyplot as plt
-    for method, t in times.items():
-        plt.plot(n_sd, t, label=method)
+    for parallelization, t in times.items():
+        plt.plot(n_sd, t, label=parallelization)
     plt.legend()
     plt.loglog()
     plt.savefig("benchmark.pdf", format="pdf")

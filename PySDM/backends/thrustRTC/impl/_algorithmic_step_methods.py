@@ -39,7 +39,7 @@ class AlgorithmicStepMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def cell_id(cell_id, cell_origin, strides):
         assert cell_origin.shape[0] == strides.shape[1]
-        assert len(cell_id) == cell_origin.shape[1]
+        assert cell_id.shape[0] == cell_origin.shape[1]
         assert strides.shape[0] == 1
         n_dims = trtc.DVInt64(cell_origin.shape[0])
         size = trtc.DVInt64(cell_origin.shape[1])

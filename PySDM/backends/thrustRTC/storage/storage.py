@@ -108,9 +108,10 @@ class Storage:
             trtc.Copy(self.data, data)
             self.data = data
 
-    def download(self, target):
+    def download(self, target, reshape=False):
+        shape = target.shape if reshape else self.shape
         self.detach()
-        target[:] = np.reshape(self.data.to_host(), self.shape)
+        target[:] = np.reshape(self.data.to_host(), shape)
 
     @staticmethod
     def empty(shape, dtype):
@@ -144,7 +145,7 @@ class Storage:
         if other is None:
             impl.floor(self.data)
         else:
-            impl.floor_out_of_place(self.data, other.data)
+            impl.floor_out_of_place(self, other)
         return self
 
     def product(self, multiplicand, multiplier):

@@ -28,7 +28,9 @@ class AlgorithmicMethods:
             int c_l = courant[_l];
             displacement[droplet, dim] = {scheme(None, None, None)}
             ''')
-        loop.launch_n(displacement.shape[1], [dim, idx_length, displacement, courant, courant_length, cell_origin, position_in_cell])
+        loop.launch_n(
+            displacement.shape[1],
+            [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
     __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
         if (gamma[i] == 0) {
@@ -121,9 +123,10 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
-        idx_length = trtc.DVInt64(idx.size())
+        idx_length = trtc.DVInt64(len(idx))
         n_dims = trtc.DVInt64(len(cell_origin.shape))
-        AlgorithmicMethods.__flag_precipitated_body.launch_n(length, [idx, idx_length, n_dims, healthy, cell_origin, position_in_cell])
+        AlgorithmicMethods.__flag_precipitated_body.launch_n(
+            length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data])
 
     __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
