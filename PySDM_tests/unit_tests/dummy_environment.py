@@ -45,6 +45,3 @@ class DummyEnvironment:
 
     def sync(self):
         pass
-
-    def step(self):
-        self.step_counter += 1

@@ -4,7 +4,7 @@ Created at 06.11.2019
 
 from ._moist_eulerian import _MoistEulerian
 from PySDM.mesh import Mesh
-from .kinematic_2d.arakawa_c import courant_field
+from .kinematic_2d import arakawa_c
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init_impl
 from PySDM.initialisation.temperature_init import temperature_init
@@ -13,23 +13,16 @@ from PySDM.physics import formulae as phys
 
 
 class MoistEulerian2DKinematic(_MoistEulerian):
-    def __init__(self, dt, grid, size, rhod_of):
+    def __init__(self, dt, grid, size, rhod_of, field_values):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
-        self.eulerian_advection_solvers = None
-
-    def set_advection_solver(self, eulerian_advection_solvers):
-        self.eulerian_advection_solvers = eulerian_advection_solvers
+        self.field_values = field_values
 
     def register(self, builder):
-        assert self.eulerian_advection_solvers is not None
         super().register(builder)
-        rhod = builder.core.Storage.from_ndarray(self.eulerian_advection_solvers.g_factor.ravel())
+        rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
-
-        super().sync()
-        self.notify()
 
     def init_attributes(self, *,
         spatial_discretisation,
@@ -37,6 +30,10 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         kappa,
         enable_temperatures=False
         ):
+        # TODO move to one method
+        super().sync()
+        self.notify()
+
         attributes = {}
         with np.errstate(all='raise'):
             positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
@@ -59,19 +56,12 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
         return attributes
 
-
     def _get_thd(self):
-        return self.eulerian_advection_solvers['th'].advectee.get()
+        return self.core.dynamics['EulerianAdvection'].solvers['th'].advectee.get()
 
     def _get_qv(self):
-        return self.eulerian_advection_solvers['qv'].advectee.get()
-
-    def step(self):
-        self.eulerian_advection_solvers()
+        return self.core.dynamics['EulerianAdvection'].solvers['qv'].advectee.get()
 
     def sync(self):
-        self.eulerian_advection_solvers.wait()
+        self.core.dynamics['EulerianAdvection'].solvers.wait()
         super().sync()
-
-    def get_courant_field_data(self):
-        return courant_field(self.eulerian_advection_solvers.advector, self.rhod_of, self.core.mesh.grid)

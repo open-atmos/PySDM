@@ -9,10 +9,10 @@ from MPyDATA.arakawa_c.boundary_condition.periodic_boundary_condition import Per
 
 
 class MPDATA:
-    def __init__(self, *, advectees: dict, g_factor: np.ndarray, advector: np.ndarray,
+    def __init__(self, *, fields,
                  n_iters=2, infinite_gauge=True,
                  flux_corrected_transport=True, third_order_terms=False):
-        self.grid = g_factor.shape
+        self.grid = fields.g_factor.shape
         self.asynchronous = False
         self.thread: (Thread, None) = None
 
@@ -25,21 +25,21 @@ class MPDATA:
         stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True)
 
         # CFL condition
-        for d in range(len(advector)):
-            np.testing.assert_array_less(np.abs(advector[d]), 1)
+        for d in range(len(fields.advector)):
+            np.testing.assert_array_less(np.abs(fields.advector[d]), 1)
 
-        self.advector = advector
-        advector_impl = VectorField(advector, halo=options.n_halo,
+        self.advector = fields.advector
+        advector_impl = VectorField(fields.advector, halo=options.n_halo,
                                     boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
 
         # nondivergence (of velocity field, hence dt)  # TODO: move to better place
         # assert np.amax(abs(advector_impl.div((dt, dt)).get())) < 5e-9
 
-        self.g_factor = g_factor
-        g_factor_impl = ScalarField(g_factor.astype(dtype=options.dtype), halo=options.n_halo,
+        self.g_factor = fields.g_factor
+        g_factor_impl = ScalarField(fields.g_factor.astype(dtype=options.dtype), halo=options.n_halo,
                                boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
         self.mpdatas = {}
-        for k, v in advectees.items():
+        for k, v in fields.advectees.items():
             advectee = ScalarField(np.full(self.grid, v, dtype=options.dtype), halo=options.n_halo,
                                    boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
             self.mpdatas[k] = Solver(stepper=stepper, advectee=advectee, advector=advector_impl, g_factor=g_factor_impl)

@@ -7,7 +7,7 @@ import numpy as np
 
 class Displacement:
     # TODO: create a separate Sedimentation dynamic that links in to Displacement
-    def __init__(self, scheme='FTBS', enable_sedimentation=False):
+    def __init__(self, courant_field, scheme='FTBS', enable_sedimentation=False):
         self.core = None
         self.scheme = scheme
         self.enable_sedimentation = enable_sedimentation
@@ -16,6 +16,7 @@ class Displacement:
         self.courant = None
         self.displacement = None
         self.temp = None
+        self.courant_field = courant_field
 
     def register(self, builder):
         builder.request_attribute('terminal velocity')
@@ -30,12 +31,11 @@ class Displacement:
             raise NotImplementedError()
         self.scheme = method
 
-        courant_field = self.core.environment.get_courant_field_data()
-
-        self.dimension = len(courant_field)
+        self.dimension = len(self.courant_field)
+        # TODO: simplification
         self.grid = self.core.Storage.from_ndarray(
-            np.array([courant_field[1].shape[0], courant_field[0].shape[1]], dtype=np.int64))
-        self.courant = [self.core.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension)]
+            np.array([self.courant_field[1].shape[0], self.courant_field[0].shape[1]], dtype=np.int64))
+        self.courant = [self.core.Storage.from_ndarray(self.courant_field[i]) for i in range(self.dimension)]
         self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
         self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
 

@@ -4,7 +4,6 @@ Created at 25.09.2019
 
 
 import time
-import numpy as np
 
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
@@ -12,8 +11,8 @@ from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.environments.kinematic_2d.arakawa_c import make_rhod, nondivergent_vector_field_2d
-from PySDM.environments.kinematic_2d.mpdata import MPDATA
+from PySDM.environments.kinematic_2d.arakawa_c import Fields
+from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
 from PySDM.environments import MoistEulerian2DKinematic
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
@@ -66,16 +65,8 @@ class Simulation:
     def reinit(self):
 
         builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
-        rhod = make_rhod(self.setup.grid, self.setup.rhod)
-        advector = nondivergent_vector_field_2d(
-            self.setup.grid, self.setup.size, self.setup.dt, self.setup.stream_function)
-        advectees = dict((key, np.full(self.setup.grid, value)) for key, value in self.setup.field_values.items())
-        mpdatas = MPDATA(advectees=advectees, g_factor=rhod, advector=advector, n_iters=self.setup.mpdata_iters,
-                         infinite_gauge=self.setup.mpdata_iga, flux_corrected_transport=self.setup.mpdata_fct,
-                         third_order_terms=self.setup.mpdata_tot)
         environment = MoistEulerian2DKinematic(dt=self.setup.dt, grid=self.setup.grid,
                                                size=self.setup.size, rhod_of=self.setup.rhod)
-        environment.set_advection_solver(mpdatas)
         builder.set_environment(environment)
 
         products = [
@@ -95,6 +86,7 @@ class Simulation:
             DryAirPotentialTemperature()
         ]
 
+        fields = Fields(environment, self.setup.stream_function)
         if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
         if self.setup.processes["condensation"]:
@@ -107,9 +99,17 @@ class Simulation:
             builder.add_dynamic(condensation)
             products.append(CondensationTimestep())
         if self.setup.processes['fluid advection']:
-            builder.add_dynamic(EulerianAdvection())
+            mpdatas = MPDATA(fields=fields,
+                             n_iters=self.setup.mpdata_iters,
+                             infinite_gauge=self.setup.mpdata_iga,
+                             flux_corrected_transport=self.setup.mpdata_fct,
+                             third_order_terms=self.setup.mpdata_tot)
+            builder.add_dynamic(EulerianAdvection(mpdatas))
         if self.setup.processes["particle advection"]:
-            displacement = Displacement(scheme='FTBS', enable_sedimentation=self.setup.processes["sedimentation"])
+            displacement = Displacement(
+                courant_field=fields.courant_field,
+                scheme='FTBS',
+                enable_sedimentation=self.setup.processes["sedimentation"])
             builder.add_dynamic(displacement)
         if self.setup.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
