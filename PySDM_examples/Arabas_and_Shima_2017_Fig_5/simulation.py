@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
-from PySDM.environments import MoistLagrangianParcelAdiabatic
+from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
@@ -25,7 +25,7 @@ class Simulation:
             self.n_substeps += 1
 
         builder = Builder(backend=setup.backend, n_sd=1)
-        builder.set_environment(MoistLagrangianParcelAdiabatic(
+        builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=setup.mass_of_dry_air,
             p0=setup.p0,

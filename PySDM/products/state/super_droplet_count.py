@@ -17,7 +17,7 @@ class SuperDropletCount(Product):
         )
 
     def get(self):
-        cell_start = self.core.state.cell_start
+        cell_start = self.core.particles.cell_start
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             self.buffer.ravel()[i] = cell_start[i + 1] - cell_start[i]

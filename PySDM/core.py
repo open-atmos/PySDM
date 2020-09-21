@@ -3,7 +3,7 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM.state.state import State
+from PySDM.state.particles import Particles
 from PySDM.stats import Stats
 
 
@@ -14,7 +14,7 @@ class Core:
 
         self.backend = backend
         self.environment = None
-        self.state: (State, None) = None
+        self.particles: (Particles, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
@@ -61,25 +61,25 @@ class Core:
 
     def normalize(self, prob, norm_factor, subs):
         factor = self.dt/subs/self.mesh.dv
-        self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, factor)
+        self.backend.normalize(prob, self.particles['cell id'], self.particles.cell_start, norm_factor, factor)
 
     def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        return self.state.coalescence(gamma, adaptive, subs, adaptive_memory)
+        return self.particles.coalescence(gamma, adaptive, subs, adaptive_memory)
 
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \
-            self.state["temperature"] if self.state.has_attribute("temperature") else \
+            self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
 
         self.backend.condensation(
                 solver=self.condensation_solver,
                 n_cell=self.mesh.n_cell,
-                cell_start_arg=self.state.cell_start,
-                v=self.state["volume"],
+                cell_start_arg=self.particles.cell_start,
+                v=self.particles["volume"],
                 particle_temperatures=particle_temperatures,
-                n=self.state['n'],
-                vdry=self.state["dry volume"],
-                idx=self.state._State__idx,
+                n=self.particles['n'],
+                vdry=self.particles["dry volume"],
+                idx=self.particles._Particles__idx,
                 rhod=self.env["rhod"],
                 thd=self.env["thd"],
                 qv=self.env["qv"],
@@ -90,7 +90,7 @@ class Core:
                 kappa=kappa,
                 rtol_x=rtol_x,
                 rtol_thd=rtol_thd,
-                r_cr=self.state["critical radius"],
+                r_cr=self.particles["critical radius"],
                 dt=self.dt,
                 substeps=substeps,
                 cell_order=np.argsort(substeps),  # TODO: check if better than regular order

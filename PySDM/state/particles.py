@@ -5,7 +5,7 @@ Created at 03.06.2019
 import numpy as np
 
 
-class State:
+class Particles:
 
     def __init__(
             self, core,

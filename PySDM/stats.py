@@ -5,6 +5,7 @@ Created at 09.07.2019
 import time
 
 
+# TODO as a Product
 class Stats:
 
     def __init__(self):

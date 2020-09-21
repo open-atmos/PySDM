@@ -2,7 +2,7 @@
 Created at 21.11.2019
 """
 
-from PySDM.mesh import Mesh
+from PySDM.state.mesh import Mesh
 import numpy as np
 
 
@@ -45,6 +45,3 @@ class DummyEnvironment:
 
     def sync(self):
         pass
-
-    def step(self):
-        self.step_counter += 1

@@ -23,10 +23,10 @@ class TestSedimentation:
         setup.sedimentation = True
         sut, particles = setup.get_displacement()
 
-        particles.state.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
+        particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
 
         # Act
         sut()
 
         # Assert
-        assert particles.state.SD_num == 0
+        assert particles.particles.SD_num == 0

@@ -8,9 +8,8 @@ import numpy as np
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
-from PySDM.environments import MoistLagrangianParcelAdiabatic
+from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
-from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.products.state import ParticlesWetSizeSpectrum
 from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
@@ -28,7 +27,7 @@ class Simulation:
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
         builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
-        builder.set_environment(MoistLagrangianParcelAdiabatic(
+        builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=setup.mass_of_dry_air,
             p0=setup.p0,
@@ -39,7 +38,6 @@ class Simulation:
         ))
 
         environment = builder.core.environment
-        r_wet = r_wet_init(setup.r_dry, environment, np.zeros_like(setup.n), setup.kappa)
         builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
             kappa=setup.kappa,
@@ -49,31 +47,38 @@ class Simulation:
             rtol_thd=setup.rtol_thd
         )
         builder.add_dynamic(condensation)
-        attributes = {'n': setup.n, 'dry volume': phys.volume(radius=setup.r_dry), 'volume': phys.volume(radius=r_wet)}
+
         products = [
             ParticlesWetSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
             CondensationTimestep(),
             RipeningRate()
         ]
-        self.particles = builder.build(attributes, products)
+
+        attributes = environment.init_attributes(
+            n_in_dv=setup.n,
+            kappa=setup.kappa,
+            r_dry=setup.r_dry
+        )
+
+        self.core = builder.build(attributes, products)
 
         self.n_steps = setup.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Wet Size Spectrum"].get())
-        volume = self.particles.state['volume'].to_ndarray()
+        output["r_bins_values"].append(self.core.products["Particles Wet Size Spectrum"].get())
+        volume = self.core.particles['volume'].to_ndarray()
         output["r"].append(phys.radius(volume=volume))
-        output["S"].append(self.particles.environment["RH"][cell_id] - 1)
-        output["qv"].append(self.particles.environment["qv"][cell_id])
-        output["T"].append(self.particles.environment["T"][cell_id])
-        output["z"].append(self.particles.environment["z"][cell_id])
-        output["t"].append(self.particles.environment["t"][cell_id])
-        output["dt_cond_max"].append(self.particles.products["dt_cond"].get_max().copy())
-        output["dt_cond_min"].append(self.particles.products["dt_cond"].get_min().copy())
-        self.particles.products["dt_cond"].reset()
-        output['ripening_rate'].append(self.particles.products['ripening_rate'].get()[cell_id].copy())
+        output["S"].append(self.core.environment["RH"][cell_id] - 1)
+        output["qv"].append(self.core.environment["qv"][cell_id])
+        output["T"].append(self.core.environment["T"][cell_id])
+        output["z"].append(self.core.environment["z"][cell_id])
+        output["t"].append(self.core.environment["t"][cell_id])
+        output["dt_cond_max"].append(self.core.products["dt_cond"].get_max().copy())
+        output["dt_cond_min"].append(self.core.products["dt_cond"].get_min().copy())
+        self.core.products["dt_cond"].reset()
+        output['ripening_rate'].append(self.core.products['ripening_rate'].get()[cell_id].copy())
 
     def run(self):
         output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [],
@@ -81,6 +86,6 @@ class Simulation:
 
         self.save(output)
         for step in range(self.n_steps):
-            self.particles.run(self.n_substeps)
+            self.core.run(self.n_substeps)
             self.save(output)
         return output

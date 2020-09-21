@@ -6,7 +6,6 @@ from PySDM.initialisation.spectra import Lognormal
 from PySDM.backends import CPU
 from PySDM.physics.constants import si
 from PySDM.initialisation import spectral_sampling
-from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.dynamics import condensation
 import numpy as np
 
@@ -16,16 +15,14 @@ class Setup:
     def __init__(self, n_sd=100, dt_output = 1 * si.second, dt_max=1 * si.second):
         self.n_steps = int(self.total_time / (5 * si.second) )  # TODO: rename to n_output
         self.n_sd = n_sd
-        self.r_dry, self.n = spectral_sampling.logarithmic(
-            n_sd=n_sd,
+        self.r_dry, self.n = spectral_sampling.Logarithmic(
             spectrum=Lognormal(
                 norm_factor=1000 / si.milligram * self.mass_of_dry_air,
                 m_mode=50 * si.nanometre,
                 s_geom=1.4
             ),
-            range=(10.633 * si.nanometre, 513.06 * si.nanometre)
-        )
-        self.n = discretise_n(self.n)
+            size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
+        ).sample(n_sd)
         self.dt_max = dt_max
 
         self.dt_output = dt_output

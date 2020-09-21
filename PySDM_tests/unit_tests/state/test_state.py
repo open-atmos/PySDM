@@ -2,7 +2,7 @@
 Created at 2019
 """
 
-from PySDM.state.state_factory import StateFactory
+from PySDM.state.particles_factory import ParticlesFactory
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM.backends import CPU as BACKEND
@@ -11,7 +11,7 @@ import numpy as np
 import pytest
 
 
-class TestState:
+class TestParticles:
 
     @staticmethod
     def storage(iterable, idx=None):
@@ -27,10 +27,10 @@ class TestState:
     ])
     def test_housekeeping(self, volume, n):
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=len(n))
+        core = DummyCore(BACKEND, n_sd=len(n))
         attributes = {'n': n, 'volume': volume}
-        particles.build(attributes)
-        sut = particles.state
+        core.build(attributes)
+        sut = core.particles
         sut.healthy = False
 
         # Act
@@ -53,26 +53,26 @@ class TestState:
     ])
     def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=n_sd)
-        particles.build(attributes={'n': np.zeros(n_sd)})
-        sut = particles.state
-        sut._State__idx = TestState.storage(idx)
-        sut.attributes['n'].data = TestState.storage(n, sut._State__idx)
+        core = DummyCore(BACKEND, n_sd=n_sd)
+        core.build(attributes={'n': np.zeros(n_sd)})
+        sut = core.particles
+        sut._Particles__idx = TestParticles.storage(idx)
+        sut.attributes['n'].data = TestParticles.storage(n, sut._Particles__idx)
         n_cell = max(cells) + 1
-        sut.attributes['cell id'].data = TestState.storage(cells, sut._State__idx)
-        idx_length = len(sut._State__idx)
-        sut._State__cell_start = TestState.storage([0] * (n_cell + 1))
-        sut._State__n_sd = particles.n_sd
+        sut.attributes['cell id'].data = TestParticles.storage(cells, sut._Particles__idx)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__cell_start = TestParticles.storage([0] * (n_cell + 1))
+        sut._Particles__n_sd = core.n_sd
         sut.healthy = 0 not in n
-        sut._State__cell_caretaker = BACKEND.make_cell_caretaker(sut._State__idx, sut._State__cell_start)
+        sut._Particles__cell_caretaker = BACKEND.make_cell_caretaker(sut._Particles__idx, sut._Particles__cell_start)
 
         # Act
         sut.sanitize()
-        sut._State__sort_by_cell_id()
+        sut._Particles__sort_by_cell_id()
 
         # Assert
-        np.testing.assert_array_equal(np.array(new_idx), sut._State__idx[:sut.SD_num].to_ndarray())
-        np.testing.assert_array_equal(np.array(cell_start), sut._State__cell_start.to_ndarray())
+        np.testing.assert_array_equal(np.array(new_idx), sut._Particles__idx[:sut.SD_num].to_ndarray())
+        np.testing.assert_array_equal(np.array(cell_start), sut._Particles__cell_start.to_ndarray())
 
     def test_recalculate_cell_id(self):
         # Arrange
@@ -80,15 +80,15 @@ class TestState:
         droplet_id = 0
         initial_position = BACKEND.from_ndarray(np.array([[0], [0]]))
         grid = (1, 1)
-        particles = DummyCore(BACKEND, n_sd=1)
-        particles.environment = DummyEnvironment(grid=grid)
-        cell_id, cell_origin, position_in_cell = particles.mesh.cellular_attributes(initial_position)
+        core = DummyCore(BACKEND, n_sd=1)
+        core.environment = DummyEnvironment(grid=grid)
+        cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(initial_position)
         cell_origin[0, droplet_id] = .1
         cell_origin[1, droplet_id] = .2
         cell_id[droplet_id] = -1
         attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
-        particles.build(attribute)
-        sut = particles.state
+        core.build(attribute)
+        sut = core.particles
 
         # Act
         sut.recalculate_cell_id()
@@ -101,21 +101,21 @@ class TestState:
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=n_sd)
-        sut = StateFactory.empty_state(particles, n_sd)
-        idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
-        sut._State__sorted = True
-        sut._State__n_sd = particles.n_sd
-        u01 = TestState.storage(u01)
+        core = DummyCore(BACKEND, n_sd=n_sd)
+        sut = ParticlesFactory.empty_particles(core, n_sd)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.storage([0] * idx_length)
+        sut._Particles__sorted = True
+        sut._Particles__n_sd = core.n_sd
+        u01 = TestParticles.storage(u01)
 
         # Act
         sut.permutation(u01, local=False)
 
         # Assert
         expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
-        np.testing.assert_array_equal(sut._State__idx, expected)
-        assert not sut._State__sorted
+        np.testing.assert_array_equal(sut._Particles__idx, expected)
+        assert not sut._Particles__sorted
 
     def test_permutation_local(self):
         n_sd = 8
@@ -123,46 +123,46 @@ class TestState:
         cell_start = [0, 0, 2, 5, 7, n_sd]
 
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=n_sd)
-        sut = StateFactory.empty_state(particles, n_sd)
-        idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
-        sut._State__cell_start = TestState.storage(cell_start)
-        sut._State__sorted = True
-        sut._State__n_sd = particles.n_sd
-        u01 = TestState.storage(u01)
+        core = DummyCore(BACKEND, n_sd=n_sd)
+        sut = ParticlesFactory.empty_particles(core, n_sd)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.storage([0] * idx_length)
+        sut._Particles__cell_start = TestParticles.storage(cell_start)
+        sut._Particles__sorted = True
+        sut._Particles__n_sd = core.n_sd
+        u01 = TestParticles.storage(u01)
 
         # Act
         sut.permutation(u01, local=True)
 
         # Assert
         expected = np.array([1, 0, 2, 3, 4, 5, 6, 7])
-        np.testing.assert_array_equal(sut._State__idx, expected)
-        assert sut._State__sorted
+        np.testing.assert_array_equal(sut._Particles__idx, expected)
+        assert sut._Particles__sorted
 
     def test_permutation_global_repeatable(self):
         n_sd = 800
         u01 = np.random.random(n_sd)
 
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=n_sd)
-        sut = StateFactory.empty_state(particles, n_sd)
-        idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
-        sut._State__sorted = True
-        sut._State__n_sd = particles.n_sd
-        u01 = TestState.storage(u01)
+        core = DummyCore(BACKEND, n_sd=n_sd)
+        sut = ParticlesFactory.empty_particles(core, n_sd)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.storage([0] * idx_length)
+        sut._Particles__sorted = True
+        sut._Particles__n_sd = core.n_sd
+        u01 = TestParticles.storage(u01)
 
         # Act
         sut.permutation(u01, local=False)
-        expected = sut._State__idx.to_ndarray()
-        sut._State__sorted = True
-        sut._State__idx = TestState.storage(range(n_sd))
+        expected = sut._Particles__idx.to_ndarray()
+        sut._Particles__sorted = True
+        sut._Particles__idx = TestParticles.storage(range(n_sd))
         sut.permutation(u01, local=False)
 
         # Assert
-        np.testing.assert_array_equal(sut._State__idx, expected)
-        assert not sut._State__sorted
+        np.testing.assert_array_equal(sut._Particles__idx, expected)
+        assert not sut._Particles__sorted
 
     def test_permutation_local_repeatable(self):
         n_sd = 800
@@ -171,29 +171,29 @@ class TestState:
         cell_start = [0, 0, 20, 250, 700, n_sd]
 
         # Arrange
-        particles = DummyCore(BACKEND, n_sd=n_sd)
-        particles.build(attributes={'n': np.zeros(n_sd)})
-        sut = particles.state
-        sut._State__idx = TestState.storage(idx)
-        idx_length = len(sut._State__idx)
-        sut._State__tmp_idx = TestState.storage([0] * idx_length)
+        core = DummyCore(BACKEND, n_sd=n_sd)
+        core.build(attributes={'n': np.zeros(n_sd)})
+        sut = core.particles
+        sut._Particles__idx = TestParticles.storage(idx)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.storage([0] * idx_length)
         cell_id = []
         for i in range(len(cell_start) - 1):
             cell_id = cell_id + [i] * cell_start[i + 1]
-        sut.attributes['cell id'].data = TestState.storage(cell_id)
-        sut._State__cell_start = TestState.storage(cell_start)
-        sut._State__sorted = True
-        sut._State__n_sd = particles.n_sd
-        u01 = TestState.storage(u01)
+        sut.attributes['cell id'].data = TestParticles.storage(cell_id)
+        sut._Particles__cell_start = TestParticles.storage(cell_start)
+        sut._Particles__sorted = True
+        sut._Particles__n_sd = core.n_sd
+        u01 = TestParticles.storage(u01)
 
         # Act
         sut.permutation(u01, local=True)
-        expected = sut._State__idx.to_ndarray()
-        sut._State__idx = TestState.storage(idx)
+        expected = sut._Particles__idx.to_ndarray()
+        sut._Particles__idx = TestParticles.storage(idx)
         sut.permutation(u01, local=True)
 
         # Assert
-        np.testing.assert_array_equal(sut._State__idx, expected)
-        assert sut._State__sorted
-        sut._State__sort_by_cell_id()
-        np.testing.assert_array_equal(sut._State__idx[:50], expected[:50])
+        np.testing.assert_array_equal(sut._Particles__idx, expected)
+        assert sut._Particles__sorted
+        sut._Particles__sort_by_cell_id()
+        np.testing.assert_array_equal(sut._Particles__idx[:50], expected[:50])

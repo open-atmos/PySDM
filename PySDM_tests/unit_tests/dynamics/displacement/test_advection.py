@@ -27,13 +27,13 @@ class TestExplicitEulerWithInterpolation:
         setup.grid = (3, 3)
         setup.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         setup.positions = [[1.5], [1.5]]
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         # Act
         sut()
 
         # Assert
-        np.testing.assert_array_equal(particles.state['cell origin'][:, 0], np.array([2, 1]))
+        np.testing.assert_array_equal(core.particles['cell origin'][:, 0], np.array([2, 1]))
 
     def test_calculate_displacement(self):
         # Arrange
@@ -44,11 +44,11 @@ class TestExplicitEulerWithInterpolation:
         setup.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         setup.positions = [[w], [0]]
         setup.scheme = 'FTFS'
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   particles.state['cell origin'], particles.state['position in cell'])
+                                   core.particles['cell origin'], core.particles['position in cell'])
 
         # Assert
         np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
@@ -62,11 +62,11 @@ class TestExplicitEulerWithInterpolation:
         setup.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         setup.positions = [[0], [w]]
         setup.scheme = 'FTFS'
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   particles.state['cell origin'], particles.state['position in cell'])
+                                   core.particles['cell origin'], core.particles['position in cell'])
 
         # Assert
         np.testing.assert_equal(sut.displacement[1, 0], (1 - w) * a + w * b)
@@ -77,28 +77,28 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         setup.positions = [[px], [py]]
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         droplet_id = 0
         sut.displacement[0, droplet_id] = .1
         sut.displacement[1, droplet_id] = .2
 
         # Act
-        sut.update_position(particles.state['position in cell'], sut.displacement)
+        sut.update_position(core.particles['position in cell'], sut.displacement)
 
         # Assert
         for d in range(2):
-            assert particles.state['position in cell'][d, droplet_id] == (
+            assert core.particles['position in cell'][d, droplet_id] == (
                     setup.positions[d][droplet_id] + sut.displacement[d, droplet_id]
             )
 
     def test_update_cell_origin(self):
         # Arrange
         setup = Setup()
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         droplet_id = 0
-        state = particles.state
+        state = core.particles
         state['position in cell'][0, droplet_id] = 1.1
         state['position in cell'][1, droplet_id] = 1.2
 
@@ -114,10 +114,10 @@ class TestExplicitEulerWithInterpolation:
     def test_boundary_condition(self):
         # Arrange
         setup = Setup()
-        sut, particles = setup.get_displacement()
+        sut, core = setup.get_displacement()
 
         droplet_id = 0
-        state = particles.state
+        state = core.particles
         state['cell origin'][0, droplet_id] = 1.1
         state['cell origin'][1, droplet_id] = 1.2
 
