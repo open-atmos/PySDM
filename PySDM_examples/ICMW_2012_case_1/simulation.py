@@ -13,7 +13,7 @@ from PySDM.dynamics import AmbientThermodynamics
 from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.state.arakawa_c import Fields
 from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
-from PySDM.environments import MoistEulerian2DKinematic
+from PySDM.environments import Kinematic2D
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
 from PySDM.products.environments import RelativeHumidity
@@ -65,11 +65,11 @@ class Simulation:
     def reinit(self):
 
         builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
-        environment = MoistEulerian2DKinematic(dt=self.setup.dt,
-                                               grid=self.setup.grid,
-                                               size=self.setup.size,
-                                               rhod_of=self.setup.rhod,
-                                               field_values=self.setup.field_values)
+        environment = Kinematic2D(dt=self.setup.dt,
+                                  grid=self.setup.grid,
+                                  size=self.setup.size,
+                                  rhod_of=self.setup.rhod,
+                                  field_values=self.setup.field_values)
         builder.set_environment(environment)
 
         products = [

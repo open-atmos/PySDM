@@ -8,11 +8,10 @@ from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
-from ._moist_lagrangian_parcel import _MoistLagrangianParcel
 from PySDM.state.mesh import Mesh
 
 
-class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
+class Parcel(_Moist):
 
     def __init__(
             self, dt,
@@ -20,9 +19,8 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
             p0: float, q0: float, T0: float,
             w: callable, z0: float = 0):
 
-        super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'], mass_of_dry_air)
+        super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
 
-        # TODO: move w-related logic to _MoistLagrangianParcel
         self.w = w
 
         pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
@@ -31,8 +29,15 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
         self.params = (q0, phys.th_std(pd0, T0), rhod0, z0, 0)
         self.mesh.dv = mass_of_dry_air / rhod0
 
+        self.mass_of_dry_air = mass_of_dry_air
+
+    @property
+    def dv(self):
+        rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
+        return self.mass_of_dry_air / rhod_mean
+
     def register(self, builder):
-        _MoistLagrangianParcel.register(self, builder)
+        _Moist.register(self, builder)
         self['qv'][:] = self.params[0]
         self['thd'][:] = self.params[1]
         self['rhod'][:] = self.params[2]
@@ -83,3 +88,18 @@ class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):
 
         rhod_mean = (self._tmp['rhod'][0] + self["rhod"][0]) / 2
         self.mesh.dv = self.mass_of_dry_air / rhod_mean
+
+    def get_thd(self):
+        return self['thd']
+
+    def get_qv(self):
+        return self['qv']
+
+    def sync_parcel_vars(self):
+        for var in self.variables:
+            self._tmp[var][:] = self[var][:]
+
+    def sync(self):
+        self.sync_parcel_vars()
+        self.advance_parcel_vars()
+        super().sync()

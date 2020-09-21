@@ -42,8 +42,8 @@ class _Moist:
 
     def sync(self):
         target = self._tmp
-        target['qv'].ravel(self._get_qv())
-        target['thd'].ravel(self._get_thd())
+        target['qv'].ravel(self.get_qv())
+        target['thd'].ravel(self.get_thd())
 
         self.core.backend.temperature_pressure_RH(
             target['rhod'], target['thd'], target['qv'],
@@ -51,8 +51,8 @@ class _Moist:
         )
         self._values["predicted"] = target
 
-    def _get_qv(self) -> np.ndarray: raise NotImplemented()
-    def _get_thd(self) -> np.ndarray: raise NotImplemented()
+    def get_qv(self) -> np.ndarray: raise NotImplemented()
+    def get_thd(self) -> np.ndarray: raise NotImplemented()
 
     def notify(self):
         if self._values["predicted"] is None:

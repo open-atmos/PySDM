@@ -2,7 +2,7 @@
 Created at 06.11.2019
 """
 
-from ._moist_eulerian import _MoistEulerian
+from ._moist import _Moist
 from PySDM.state.mesh import Mesh
 from ..state import arakawa_c
 import numpy as np
@@ -12,7 +12,7 @@ from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.physics import formulae as phys
 
 
-class MoistEulerian2DKinematic(_MoistEulerian):
+class Kinematic2D(_Moist):
     def __init__(self, dt, grid, size, rhod_of, field_values):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
@@ -24,12 +24,16 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
+    @property
+    def dv(self):
+        return self.mesh.dv
+
     def init_attributes(self, *,
-        spatial_discretisation,
-        spectral_discretisation,
-        kappa,
-        enable_temperatures=False
-        ):
+                        spatial_discretisation,
+                        spectral_discretisation,
+                        kappa,
+                        enable_temperatures=False
+                        ):
         # TODO move to one method
         super().sync()
         self.notify()
@@ -56,10 +60,10 @@ class MoistEulerian2DKinematic(_MoistEulerian):
 
         return attributes
 
-    def _get_thd(self):
+    def get_thd(self):
         return self.core.dynamics['EulerianAdvection'].solvers['th'].advectee.get()
 
-    def _get_qv(self):
+    def get_qv(self):
         return self.core.dynamics['EulerianAdvection'].solvers['qv'].advectee.get()
 
     def sync(self):
