@@ -147,7 +147,7 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def interpolation_body(output, radius, factor, b, c):
-        for i in range(len(radius)):
+        for i in prange(len(radius)):
             r_id = int(factor * radius[i])
             r_rest = ((factor * radius[i]) % 1) / factor
             output[i] = b[r_id] + r_rest * c[r_id]
