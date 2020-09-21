@@ -114,7 +114,7 @@ class Simulation:
         if self.setup.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
 
-        attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.pseudorandom,
+        attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.Pseudorandom(),
                                                  spectral_discretisation=spectral_sampling.ConstantMultiplicity(
                                                      spectrum=self.setup.spectrum_per_mass_of_dry_air
                                                  ),

@@ -39,7 +39,7 @@ class MoistEulerian2DKinematic(_MoistEulerian):
         ):
         attributes = {}
         with np.errstate(all='raise'):
-            positions = spatial_discretisation(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
