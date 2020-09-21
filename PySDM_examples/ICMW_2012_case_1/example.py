@@ -14,6 +14,8 @@ def main():
 
         setup.n_sd_per_gridbox = 25
         setup.grid = (25, 25)
+        setup.n_steps = 1200
+        setup.n_spin_up = setup.n_steps // 2
         for key in setup.processes.keys():
             setup.processes[key] = True
         setup.processes["relaxation"] = False
