@@ -13,16 +13,17 @@ from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 def test_approximation(plot=False):
     r = np.array([.078, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.2, 1.4, 1.6]) * const.si.mm / 2
+    r = CPU.Storage.from_ndarray(r)
     u = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]) / 100
     n_sd = len(r)
-    particles = DummyCore(CPU, n_sd=n_sd)
+    core = DummyCore(CPU, n_sd=n_sd)
     # radius = np.linspace(4e-6, 200e-6, 1000, endpoint=True)
 
-    u_term_ry = particles.backend.array((len(u),), float)
-    RogersYau(particles)(u_term_ry, r)
+    u_term_ry = core.backend.Storage.empty((len(u),), float)
+    RogersYau(core)(u_term_ry, r)
 
-    u_term_inter = np.copy(u_term_ry)
-    Interpolation(particles)(u_term_inter, r)
+    u_term_inter = CPU.Storage.from_ndarray(u_term_ry.to_ndarray())
+    Interpolation(core)(u_term_inter, r)
 
     assert np.mean((u - u_term_ry)**2) < 2e-2
     assert np.mean((u - u_term_inter) ** 2) < 1e-6

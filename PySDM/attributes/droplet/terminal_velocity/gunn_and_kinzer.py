@@ -55,7 +55,7 @@ class RogersYau:
         self.medium_r_limit = medium_r_limit or 600 * si.um
 
     def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(output, radius, self.small_k, self.medium_k, self.large_k,
+        self.particles.backend.terminal_velocity(output.data, radius.data, self.small_k, self.medium_k, self.large_k,
                                                  self.small_r_limit, self.medium_r_limit)
 
 

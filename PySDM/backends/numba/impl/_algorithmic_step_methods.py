@@ -26,8 +26,12 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
+    def cell_id_body(cell_id, cell_origin, strides):
+        cell_id[:] = np.dot(strides, cell_origin)
+
+    @staticmethod
     def cell_id(cell_id, cell_origin, strides):
-        cell_id.data[:] = np.dot(strides.data, cell_origin.data)
+        return AlgorithmicStepMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
     @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
@@ -41,8 +45,8 @@ class AlgorithmicStepMethods:
     def find_pairs_body(cell_start, is_first_in_pair, cell_id, idx, length):
         for i in prange(length - 1):
             is_first_in_pair[i] = (
-                cell_id[idx[i]] == cell_id[idx[i+1]] and
-                (i - cell_start[cell_id[idx[i]]]) % 2 == 0
+                    cell_id[idx[i]] == cell_id[idx[i+1]] and
+                    (i - cell_start[cell_id[idx[i]]]) % 2 == 0
             )
 
     @staticmethod
