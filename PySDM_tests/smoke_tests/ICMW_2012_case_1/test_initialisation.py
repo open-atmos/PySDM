@@ -49,12 +49,12 @@ def test_initialisation(plot=False):
     rhod = environment["rhod"].to_ndarray().reshape(setup.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
-        particles.state.moments(
+        particles.particles.moments(
             moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
         histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
 
-        particles.state.moments(
+        particles.particles.moments(
             moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
         histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])

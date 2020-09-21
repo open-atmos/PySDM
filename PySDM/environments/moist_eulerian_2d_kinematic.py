@@ -3,8 +3,8 @@ Created at 06.11.2019
 """
 
 from ._moist_eulerian import _MoistEulerian
-from PySDM.mesh import Mesh
-from .kinematic_2d import arakawa_c
+from PySDM.state.mesh import Mesh
+from ..state import arakawa_c
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init_impl
 from PySDM.initialisation.temperature_init import temperature_init

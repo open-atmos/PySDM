@@ -2,7 +2,7 @@
 Created at 21.11.2019
 """
 
-from PySDM.mesh import Mesh
+from PySDM.state.mesh import Mesh
 import numpy as np
 
 

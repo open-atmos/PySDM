@@ -23,20 +23,20 @@ def run(setup, observers=()):
     coalescence.adaptive = setup.adaptive
     builder.add_dynamic(coalescence)
     products = [ParticlesVolumeSpectrum()]
-    particles = builder.build(attributes, products)
-    if hasattr(setup, 'u_term') and 'terminal velocity' in particles.state.attributes:
-        particles.state.attributes['terminal velocity'].approximation = setup.u_term(particles)
+    core = builder.build(attributes, products)
+    if hasattr(setup, 'u_term') and 'terminal velocity' in core.particles.attributes:
+        core.particles.attributes['terminal velocity'].approximation = setup.u_term(core)
 
     for observer in observers:
-        particles.observers.append(observer)
+        core.observers.append(observer)
 
     vals = {}
     for step in setup.steps:
-        particles.run(step - particles.n_steps)
-        vals[step] = particles.products['dv/dlnr'].get(setup.radius_bins_edges)
+        core.run(step - core.n_steps)
+        vals[step] = core.products['dv/dlnr'].get(setup.radius_bins_edges)
         vals[step][:] *= setup.rho
 
-    return vals, particles.stats
+    return vals, core.stats
 
 
 def main(plot: bool, save: str):

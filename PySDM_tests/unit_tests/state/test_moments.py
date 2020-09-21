@@ -31,7 +31,7 @@ class TestMaths:
         particles = DummyCore(BACKEND, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T}
         particles.build(attribute)
-        state = particles.state
+        state = particles.particles
 
         true_mean, true_var = spectrum.stats(moments='mv')
 

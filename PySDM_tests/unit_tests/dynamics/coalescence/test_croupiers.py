@@ -42,8 +42,8 @@ def test_final_state(croupier):
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
-    core.state.permutation(u01)
-    _ = core.state.cell_start
+    core.particles.permutation(u01)
+    _ = core.particles.cell_start
 
     # Assert
-    assert (np.diff(core.state['cell id'][core.state._State__idx]) >= 0).all()
+    assert (np.diff(core.particles['cell id'][core.particles._Particles__idx]) >= 0).all()

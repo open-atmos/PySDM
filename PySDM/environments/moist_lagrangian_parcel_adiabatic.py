@@ -9,7 +9,7 @@ from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
 from ._moist_lagrangian_parcel import _MoistLagrangianParcel
-from PySDM.mesh import Mesh
+from PySDM.state.mesh import Mesh
 
 
 class MoistLagrangianParcelAdiabatic(_MoistLagrangianParcel):

@@ -42,16 +42,16 @@ class Displacement:
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
         displacement = self.displacement
-        cell_origin = self.core.state['cell origin']
-        position_in_cell = self.core.state['position in cell']
+        cell_origin = self.core.particles['cell origin']
+        position_in_cell = self.core.particles['position in cell']
 
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
         if self.enable_sedimentation:
-            self.core.state.remove_precipitated()
+            self.core.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
-        self.core.state.recalculate_cell_id()
+        self.core.particles.recalculate_cell_id()
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
@@ -61,7 +61,7 @@ class Displacement:
             displacement_z = displacement.read_row(self.dimension - 1)
             dt_over_dz = self.core.dt / self.core.mesh.dz
             displacement_z *= 1 / dt_over_dz
-            displacement_z -= self.core.state['terminal velocity']
+            displacement_z -= self.core.particles['terminal velocity']
             displacement_z *= dt_over_dz
 
     def update_position(self, position_in_cell, displacement):

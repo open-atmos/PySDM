@@ -2,9 +2,8 @@
 Created at 2019
 """
 
-from PySDM.mesh import Mesh
+from PySDM.state.mesh import Mesh
 from PySDM.builder import Builder
-from PySDM.initialisation.spectra import Spectrum
 
 
 class Box:

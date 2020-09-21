@@ -28,24 +28,24 @@ class TestSDMSingleCell:
 
     def test_single_collision(self, v_2, T_2, n_2):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
-        particles.build(attributes)
+        core.build(attributes)
 
         # Act
         sut()
 
         # Assert
-        state = particles.state
-        assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray() * state['temperature'].to_ndarray()) == np.sum(n_2 * T_2 * v_2)
+        particles = core.particles
+        assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()) == np.sum(n_2 * T_2 * v_2)
         new_T = np.sum(T_2 * v_2) / np.sum(v_2)
-        assert np.isin(round(new_T, 10), np.round(state['temperature'].to_ndarray(), 10))
+        assert np.isin(round(new_T, 10), np.round(particles['temperature'].to_ndarray(), 10))
 
-        assert np.sum(particles.state['n'].to_ndarray() * particles.state['volume'].to_ndarray()) == np.sum(n_2 * v_2)
-        assert np.sum(particles.state['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
-        if np.amin(n_2) > 0: assert np.amax(particles.state['volume'].to_ndarray()) == np.sum(v_2)
-        assert np.amax(particles.state['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+        assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray()) == np.sum(n_2 * v_2)
+        assert np.sum(core.particles['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
+        if np.amin(n_2) > 0: assert np.amax(core.particles['volume'].to_ndarray()) == np.sum(v_2)
+        assert np.amax(core.particles['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
@@ -63,7 +63,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particles.state['n'].to_ndarray()), sorted(n_out))
+        np.testing.assert_array_equal(sorted(particles.particles['n'].to_ndarray()), sorted(n_out))
 
     @pytest.mark.parametrize("p", [
         pytest.param(2),
@@ -82,7 +82,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        state = particles.state
+        state = particles.particles
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
         assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray()) == np.sum(n_2 * v_2)
@@ -106,8 +106,8 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        assert np.amin(particles.state['n'].to_ndarray()) >= 0
-        assert np.sum(particles.state['n'].to_ndarray() * particles.state['volume'].to_ndarray()) == np.sum(n * v)
+        assert np.amin(particles.particles['n'].to_ndarray()) >= 0
+        assert np.sum(particles.particles['n'].to_ndarray() * particles.particles['volume'].to_ndarray()) == np.sum(n * v)
 
     def test_multi_step(self):
         # Arrange
@@ -130,8 +130,8 @@ class TestSDMSingleCell:
             sut()
 
         # Assert
-        assert np.amin(particles.state['n'].to_ndarray()) >= 0
-        actual = np.sum(particles.state['n'].to_ndarray() * particles.state['volume'].to_ndarray())
+        assert np.amin(particles.particles['n'].to_ndarray()) >= 0
+        actual = np.sum(particles.particles['n'].to_ndarray() * particles.particles['volume'].to_ndarray())
         desired = np.sum(n * v)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 

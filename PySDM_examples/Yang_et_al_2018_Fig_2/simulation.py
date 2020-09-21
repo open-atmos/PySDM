@@ -60,25 +60,25 @@ class Simulation:
             r_dry=setup.r_dry
         )
 
-        self.particles = builder.build(attributes, products)
+        self.core = builder.build(attributes, products)
 
         self.n_steps = setup.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
-        output["r_bins_values"].append(self.particles.products["Particles Wet Size Spectrum"].get())
-        volume = self.particles.state['volume'].to_ndarray()
+        output["r_bins_values"].append(self.core.products["Particles Wet Size Spectrum"].get())
+        volume = self.core.particles['volume'].to_ndarray()
         output["r"].append(phys.radius(volume=volume))
-        output["S"].append(self.particles.environment["RH"][cell_id] - 1)
-        output["qv"].append(self.particles.environment["qv"][cell_id])
-        output["T"].append(self.particles.environment["T"][cell_id])
-        output["z"].append(self.particles.environment["z"][cell_id])
-        output["t"].append(self.particles.environment["t"][cell_id])
-        output["dt_cond_max"].append(self.particles.products["dt_cond"].get_max().copy())
-        output["dt_cond_min"].append(self.particles.products["dt_cond"].get_min().copy())
-        self.particles.products["dt_cond"].reset()
-        output['ripening_rate'].append(self.particles.products['ripening_rate'].get()[cell_id].copy())
+        output["S"].append(self.core.environment["RH"][cell_id] - 1)
+        output["qv"].append(self.core.environment["qv"][cell_id])
+        output["T"].append(self.core.environment["T"][cell_id])
+        output["z"].append(self.core.environment["z"][cell_id])
+        output["t"].append(self.core.environment["t"][cell_id])
+        output["dt_cond_max"].append(self.core.products["dt_cond"].get_max().copy())
+        output["dt_cond_min"].append(self.core.products["dt_cond"].get_min().copy())
+        self.core.products["dt_cond"].reset()
+        output['ripening_rate'].append(self.core.products['ripening_rate'].get()[cell_id].copy())
 
     def run(self):
         output = {"r": [], "S": [], "z": [], "t": [], "qv": [], "T": [],
@@ -86,6 +86,6 @@ class Simulation:
 
         self.save(output)
         for step in range(self.n_steps):
-            self.particles.run(self.n_substeps)
+            self.core.run(self.n_substeps)
             self.save(output)
         return output
