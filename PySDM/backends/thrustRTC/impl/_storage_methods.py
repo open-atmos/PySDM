@@ -2,7 +2,7 @@
 Created at 10.12.2019
 """
 
-import ThrustRTC as trtc
+from ..conf import trtc
 import numpy as np
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
@@ -94,11 +94,11 @@ class StorageMethods:
         # WARNING: ineffective implementation
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
-    __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "c", '''
-        for (int i=cell_start[c+1]-1; i > cell_start[c]; i--) {
-            int j = cell_start[c] + u01[i] * (cell_start[c+1] - cell_start[c]);
-            int tmp = idx[i];
-            idx[i] = idx[j];
+    __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "i", '''
+        for (int k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
+            int j = cell_start[i] + u01[k] * (cell_start[i+1] - cell_start[i]);
+            int tmp = idx[k];
+            idx[k] = idx[j];
             idx[j] = tmp;
         }
         ''')

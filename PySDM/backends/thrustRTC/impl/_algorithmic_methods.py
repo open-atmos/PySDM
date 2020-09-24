@@ -2,7 +2,7 @@
 Created at 10.12.2019
 """
 
-import ThrustRTC as trtc
+from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
@@ -45,16 +45,18 @@ class AlgorithmicMethods:
             j = idx[i + 1];
             k = idx[i];
         }
-        int g = n[j] / n[k];
-        if (adaptive) 
+        int g = (int)(n[j] / n[k]);
+        if (adaptive) {
             adaptive_memory[i] = (int)(gamma[i] * subs / g);
-        if (g > gamma[i])
+        }
+        if (g > gamma[i]) {
             g = gamma[i];
-        if (g == 0)
+        }
+        if (g == 0) {
             return;
+        }
             
         int new_n = n[j] - g * n[k];
-        
         if (new_n > 0) {
             n[j] = new_n;
             
@@ -85,6 +87,8 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+        print("in", length)
+        import numpy as np; print(np.amax(gamma.data.ndarray))
         idx_length = trtc.DVInt64(len(idx))
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
@@ -217,8 +221,8 @@ class AlgorithmicMethods:
         }
         ''')
 
-    __normalize_body_1 = trtc.For(['prob', 'cell_id', 'norm_factor'], "d", '''
-        prob[d] *= norm_factor[cell_id[d]];
+    __normalize_body_1 = trtc.For(['prob', 'cell_id', 'norm_factor'], "i", '''
+        prob[i] *= norm_factor[cell_id[i]];
         ''')
 
     @staticmethod
@@ -230,8 +234,9 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
     __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
-        if (idx[i] < idx_length && data[idx[i]] == 0)
+        if (idx[i] < idx_length && data[idx[i]] == 0) {
             idx[i] = idx_length;
+        }
         ''')
 
     @staticmethod
@@ -255,7 +260,7 @@ class AlgorithmicMethods:
             int cell_id_curr = cell_id[idx[i]];
             int cell_id_next = cell_id[idx[i + 1]];
             int diff = (cell_id_next - cell_id_curr);
-            for (int j = 1; j <= diff; j++) {
+            for (int j = 1; j < diff + 1; j += 1) {
                 cell_start[cell_id_curr + j] = idx[i + 1];
             }
         }

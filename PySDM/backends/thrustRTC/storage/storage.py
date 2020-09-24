@@ -4,7 +4,7 @@ Created at 30.05.2020
 
 import numpy as np
 from PySDM.backends.thrustRTC.storage import storage_impl as impl
-import ThrustRTC as trtc
+from ..conf import trtc
 
 
 class Storage:
@@ -98,7 +98,7 @@ class Storage:
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
                 elem_cls = 'double'
-            elif self.dtype in Storage.INT:
+            elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
             else:
                 raise NotImplementedError()
