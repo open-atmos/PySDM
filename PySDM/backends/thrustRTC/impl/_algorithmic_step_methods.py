@@ -58,8 +58,7 @@ class AlgorithmicStepMethods:
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
-        if length > 1:
-            AlgorithmicStepMethods.__distance_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+        AlgorithmicStepMethods.__distance_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
 
     __find_pairs_body = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'], "i", '''
         is_first_in_pair[i] = (
@@ -90,8 +89,7 @@ class AlgorithmicStepMethods:
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
         # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
-        if length > 1:
-            AlgorithmicStepMethods.__max_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+        AlgorithmicStepMethods.__max_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
 
     __sort_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {

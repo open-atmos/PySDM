@@ -18,7 +18,8 @@ cppython = {
     "&&": "and",
     "(long)": "",
     "floor": "np.floor",
-    "return": "continue"
+    "ceil": "np.ceil",
+    "return": "continue",
 }
 
 
@@ -115,8 +116,7 @@ class DVRange:
         self.range = lambda start, stop: DVRange(self.ndarray[start: stop])
 
     def __setitem__(self, key, value):
-        # key = key if isinstance(key, slice) else int(key)
-        self.ndarray[key] = value  # TODO
+        self.ndarray[key] = value
 
     def __getitem__(self, item):
         return self.ndarray[item]
@@ -134,12 +134,10 @@ class DVVector:
         self.to_host = lambda: self.ndarray
 
     def __setitem__(self, key, value):
-        key = key if isinstance(key, slice) else int(key)
-        self.ndarray[key] = value  # TODO
+        self.ndarray[key] = value
 
     def __getitem__(self, item):
-        item = item if isinstance(item, slice) else int(item)
-        return self.ndarray[int(item)]  # TODO
+        return self.ndarray[item]
 
 import numba
 
@@ -179,7 +177,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def Sort(dvvector):
-        np.sort(dvvector.ndarray)
+        dvvector.ndarray[:] = np.sort(dvvector.ndarray)
 
     @staticmethod
     def Copy(vector_in, vector_out):
@@ -213,7 +211,10 @@ class FakeThrustRTC:
 
     @staticmethod
     def DVPermutation(dvvector, idx):
-        return dvvector.ndarray[idx.ndarray]
+        _length = np.where(idx.ndarray == idx.size())[0]  # TODO why it works with Thrust!?
+        length = _length[0] if len(_length) != 0 else idx.size()
+        result = dvvector.ndarray[idx.ndarray[:length]]
+        return result
 
     @staticmethod
     def Sort_By_Key(dvvector, key):

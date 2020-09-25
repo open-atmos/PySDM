@@ -87,8 +87,6 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
-        print("in", length)
-        import numpy as np; print(np.amax(gamma.data.ndarray))
         idx_length = trtc.DVInt64(len(idx))
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
@@ -99,7 +97,7 @@ class AlgorithmicMethods:
         return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] = -floor(-prob[i] + rand[int(i / 2)]);
+        prob[i] = ceil(prob[i] - rand[(int)(i / 2)]);
         ''')
 
     @staticmethod

@@ -96,7 +96,7 @@ class StorageMethods:
 
     __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "i", '''
         for (int k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
-            int j = cell_start[i] + u01[k] * (cell_start[i+1] - cell_start[i]);
+            int j = cell_start[i] + (int)(u01[k] * (cell_start[i+1]) - cell_start[i]);
             int tmp = idx[k];
             idx[k] = idx[j];
             idx[j] = tmp;
