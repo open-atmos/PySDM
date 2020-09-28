@@ -141,3 +141,7 @@ class FakeThrustRTC:
             vec_out.ndarray[:] = vec_in1.ndarray + vec_in2.ndarray
         if op == "-":
             vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray
+
+    @staticmethod
+    def Wait():
+        pass
