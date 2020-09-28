@@ -3,6 +3,7 @@ Created at 22.09.2020
 """
 
 import types
+import numpy as np
 
 
 cppython = {
@@ -75,11 +76,10 @@ def to_python(name, args, body):
     result = f'''
 def make(self):
     import numpy as np
-    #import numba
-    #from numba import prange
-    #@numba.njit(parallel=True)
+    import numba
+    @numba.njit(parallel=True)
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
-        for i in range(__python_n__):
+        for i in numba.prange(__python_n__):
             {body}
 
     return {name}
@@ -96,17 +96,7 @@ class For:
         self.__internal_python_method__ = self.make()
 
     def launch_n(self, size, args):
-        return self.__internal_python_method__(size, *args)
-
-# __subtract_body = For(['output', 'subtrahend'], 'i', '''
-#         output[i] -= subtrahend[i];
-#     ''')
-#
-import numpy as np
-# output = np.array([4, 2, 4, 2])
-# subtrahend = np.array([5, 5, 5, 5])
-# __subtract_body.launch_n(len(output), [output, subtrahend])
-# print(output, subtrahend)
+        return self.__internal_python_method__(size, *(arg.ndarray for arg in args))
 
 
 class DVRange:
@@ -134,18 +124,18 @@ class DVVector:
         self.to_host = lambda: np.copy(self.ndarray)
 
     def __setitem__(self, key, value):
+        if isinstance(value, FakeThrustRTC.Number):
+            value = value.ndarray
         self.ndarray[key] = value
 
     def __getitem__(self, item):
         return self.ndarray[item]
 
-import numba
-
 
 class FakeRandRTC:
     class DVRNG:
         def __init__(self):
-            pass
+            self.ndarray = self
 
         def state_init(self, seed, seed_i, _, states):
             pass
@@ -153,25 +143,33 @@ class FakeRandRTC:
 
 class RNGState:
     def __init__(self):
-        pass
+        self.ndarray = self
 
     def rand01(self):
         return np.random.uniform(0, 1)
 
+    def __getitem__(self, item):
+        return self
+
+
 class FakeThrustRTC:
     DVVector = DVVector
 
+    class Number:
+        def __init__(self, number):
+            self.ndarray = number
+
     @staticmethod
     def DVInt64(number: int):
-        return number
+        return FakeThrustRTC.Number(number)
 
     @staticmethod
     def DVDouble(number: float):
-        return number
+        return FakeThrustRTC.Number(number)
 
     @staticmethod
     def DVBool(number: int):
-        return number
+        return FakeThrustRTC.Number(number)
 
     For = For
 
@@ -191,7 +189,7 @@ class FakeThrustRTC:
     @staticmethod
     def device_vector(elem_cls, size):
         if elem_cls == 'RNGState':
-            return [RNGState() for _ in range(size)]
+            return RNGState()
         else:
             dtype = float if elem_cls == 'double' else np.int64
             result = np.empty(size, dtype=dtype)
@@ -215,7 +213,7 @@ class FakeThrustRTC:
         _length = np.where(idx.ndarray == idx.size())[0]  # TODO why it works with Thrust!?
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
-        return result
+        return DVVector(result)
 
     @staticmethod
     def Sort_By_Key(dvvector, key):
@@ -229,11 +227,11 @@ class FakeThrustRTC:
     @staticmethod
     def Reduce(dvvector, start, operator):
         if operator == "+":
-            return start + dvvector.ndarray.sum()
+            return start.ndarray + dvvector.ndarray.sum()
         if operator == "-":
-            return start - dvvector.ndarray.sum()
+            return start.ndarray - dvvector.ndarray.sum()
         if operator == "max":
-            return max(start, np.amax(dvvector.ndarray))
+            return max(start.ndarray, np.amax(dvvector.ndarray))
 
     @staticmethod
     def Plus():
