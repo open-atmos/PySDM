@@ -131,7 +131,7 @@ class DVVector:
         self.ndarray = ndarray
         self.size = lambda: len(self.ndarray)
         self.range = lambda start, stop: DVRange(self.ndarray[start: stop])
-        self.to_host = lambda: self.ndarray
+        self.to_host = lambda: np.copy(self.ndarray)
 
     def __setitem__(self, key, value):
         self.ndarray[key] = value
@@ -181,6 +181,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def Copy(vector_in, vector_out):
+        assert vector_out.ndarray.dtype == vector_in.ndarray.dtype
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
@@ -192,7 +193,7 @@ class FakeThrustRTC:
         if elem_cls == 'RNGState':
             return [RNGState() for _ in range(size)]
         else:
-            dtype = float if elem_cls == 'double' else int
+            dtype = float if elem_cls == 'double' else np.int64
             result = np.empty(size, dtype=dtype)
             return DVVector(result)
 

@@ -176,7 +176,7 @@ class Storage:
         generator(self)
 
     def upload(self, data):
-        trtc.Copy(trtc.device_vector_from_numpy(data.flatten()), self.data)
+        trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)
 
     def write_row(self, i, row):
         start = self.shape[1] * i
