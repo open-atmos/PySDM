@@ -26,20 +26,20 @@ def bdf_condensation(core,
                      rtol_x, rtol_thd, substeps, ripening_flags
                      ):
     n_threads = 1
-    if core.state.has_attribute("temperature"):
+    if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
 
     Numba._condensation.py_func(
         solver=core.condensation_solver,
         n_threads=n_threads,
         n_cell=core.mesh.n_cell,
-        cell_start_arg=core.state.cell_start.data,
-        v=core.state["volume"].data,
+        cell_start_arg=core.particles.cell_start.data,
+        v=core.particles["volume"].data,
         particle_temperatures=np.empty(0),
         r_cr=None,
-        n=core.state['n'].data,
-        vdry=core.state["dry volume"].data,
-        idx=core.state._State__idx.data,
+        n=core.particles['n'].data,
+        vdry=core.particles["dry volume"].data,
+        idx=core.particles._Particles__idx.data,
         rhod=core.env["rhod"].data,
         thd=core.env["thd"].data,
         qv=core.env["qv"].data,

@@ -12,9 +12,6 @@ from PySDM.physics import formulae as phys
 
 class SetupA:
 
-    init_x_min = phys.volume(radius=10 * si.micrometres)  # not given in the paper
-    init_x_max = phys.volume(radius=100 * si.micrometres)  # not given in the paper
-
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
     X0 = 4 / 3 * np.pi * (30.531 * si.micrometres) ** 3

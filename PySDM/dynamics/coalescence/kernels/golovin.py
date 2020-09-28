@@ -13,7 +13,7 @@ class Golovin:
         self.core = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.core.state['volume'], is_first_in_pair)
+        output.sum_pair(self.core.particles['volume'], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):
