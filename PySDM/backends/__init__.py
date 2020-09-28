@@ -8,7 +8,8 @@ from numba import cuda
 if cuda.is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
 else:
-    from .thrustRTC import _flag
+    from .thrustRTC.fakeThrustRTC import _flag
+
     _flag.fakeThrustRTC = True
 
     import numpy as np
