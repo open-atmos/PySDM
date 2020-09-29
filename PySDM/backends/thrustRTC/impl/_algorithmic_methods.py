@@ -15,18 +15,18 @@ class AlgorithmicMethods:
         dim = trtc.DVInt64(dim)
         idx_length = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
-        loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "droplet", f'''
+        loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i", f'''
             // Arakawa-C grid
-            int _l_0 = cell_origin[droplet + 0];
-            int _l_1 = cell_origin[droplet + idx_length];
+            int _l_0 = cell_origin[i + 0];
+            int _l_1 = cell_origin[i + idx_length];
             int _l = _l_0 + _l_1 * courant_length;
-            int _r_0 = cell_origin[droplet + 0] + 1 * (dim == 0);
-            int _r_1 = cell_origin[droplet + idx_length] + 1 * (dim == 1);
+            int _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
+            int _r_1 = cell_origin[i + idx_length] + 1 * (dim == 1);
             int _r = _r_0 + _r_1 * courant_length;
-            int omega = position_in_cell[droplet + idx_length * dim];
+            int omega = position_in_cell[i + idx_length * dim];
             int c_r = courant[_r];
             int c_l = courant[_l];
-            displacement[droplet, dim] = {scheme(None, None, None)}
+            displacement[i, dim] = {scheme(None, None, None)}
             ''')
         loop.launch_n(
             displacement.shape[1],
@@ -186,7 +186,7 @@ class AlgorithmicMethods:
                                                          [output.data, radius.data, factor_device, b.data, c.data])
 
     @staticmethod
-    def make_cell_caretaker(idx, cell_start, scheme):
+    def make_cell_caretaker(idx, cell_start, scheme=None):
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
     @staticmethod
@@ -269,6 +269,6 @@ class AlgorithmicMethods:
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
         trtc.Sort_By_Key(cell_id.data, idx.data)
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
-        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
-                                                                                  [cell_id.data, cell_start.data, idx.data])
+        # AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
+        #                                                                           [cell_id.data, cell_start.data, idx.data])
         return idx

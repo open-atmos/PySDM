@@ -106,8 +106,8 @@ class FakeThrustRTC:
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
-    def Sort_By_Key(dvvector, key):
-        dvvector.ndarray[:] = dvvector.ndarray[np.argsort(key)]
+    def Sort_By_Key(key, dvvector):
+        dvvector.ndarray[:] = dvvector.ndarray[np.argsort(key.ndarray)]
 
 
     @staticmethod

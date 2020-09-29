@@ -41,17 +41,17 @@ class TestParticles:
         assert sut['n'].to_ndarray().sum() == n.sum()
         assert (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum() == (volume * n).sum()
 
-    @staticmethod
-    @pytest.fixture(params=[1, 2, 3, 4, 5, 8, 9, 16])
-    def thread_number(request):
-        return request.param
+    # @staticmethod
+    # @pytest.fixture(params=[1, 2, 3, 4, 5, 8, 9, 16])
+    # def thread_number(request):
+    #     return request.param
 
     @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
         ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
         ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
         ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
     ])
-    def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start, thread_number):
+    def test_sort_by_cell_id(self, n, cells, n_sd, idx, new_idx, cell_start):#, thread_number):
         # Arrange
         core = DummyCore(BACKEND, n_sd=n_sd)
         core.build(attributes={'n': np.zeros(n_sd)})
@@ -71,14 +71,14 @@ class TestParticles:
         sut._Particles__sort_by_cell_id()
 
         # Assert
-        np.testing.assert_array_equal(np.array(new_idx), sut._Particles__idx[:sut.SD_num].to_ndarray())
+        np.testing.assert_array_equal(np.array(new_idx), sut._Particles__idx.to_ndarray()[:sut.SD_num])
         np.testing.assert_array_equal(np.array(cell_start), sut._Particles__cell_start.to_ndarray())
 
     def test_recalculate_cell_id(self):
         # Arrange
         n = np.ones(1, dtype=np.int64)
         droplet_id = 0
-        initial_position = BACKEND.from_ndarray(np.array([[0], [0]]))
+        initial_position = np.array([[0], [0]])
         grid = (1, 1)
         core = DummyCore(BACKEND, n_sd=1)
         core.environment = DummyEnvironment(grid=grid)
@@ -196,4 +196,4 @@ class TestParticles:
         np.testing.assert_array_equal(sut._Particles__idx, expected)
         assert sut._Particles__sorted
         sut._Particles__sort_by_cell_id()
-        np.testing.assert_array_equal(sut._Particles__idx[:50], expected[:50])
+        np.testing.assert_array_equal(sut._Particles__idx.to_ndarray()[:50], expected[:50])
