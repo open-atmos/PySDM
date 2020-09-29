@@ -27,8 +27,8 @@ class SpectralSampling:
         cdf = spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
 
-        percent_diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
-        if percent_diff > .01:
+        percent_diff = 100 * abs(1 - np.sum(y_float) / spectrum.norm_factor)
+        if percent_diff > 1:
             raise Exception(f"{percent_diff}% error in total real-droplet number due to sampling")
 
         return x, y_float
