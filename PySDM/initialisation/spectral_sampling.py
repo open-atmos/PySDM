@@ -6,7 +6,7 @@ import numpy as np
 from typing import Tuple
 
 
-default_cdf_range = (.01, .99)
+default_cdf_range = (.00001, .99999)
 
 
 class SpectralSampling:
