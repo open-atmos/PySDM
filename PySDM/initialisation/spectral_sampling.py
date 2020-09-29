@@ -6,7 +6,7 @@ import numpy as np
 from typing import Tuple
 
 
-default_cdf_range = (.01, .99)
+default_cdf_range = (.00001, .99999)
 
 
 class SpectralSampling:
@@ -26,6 +26,10 @@ class SpectralSampling:
         x = grid[1: -1: 2]
         cdf = spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
+
+        percent_diff = 100 * abs(1 - np.sum(y_float) / spectrum.norm_factor)
+        if percent_diff > 1:
+            raise Exception(f"{percent_diff}% error in total real-droplet number due to sampling")
 
         return x, y_float
 
@@ -51,7 +55,7 @@ class Logarithmic(SpectralSampling):
 
 
 class ConstantMultiplicity(SpectralSampling):
-    def __init__(self, spectrum, size_range = None):
+    def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
         self.cdf_range = (

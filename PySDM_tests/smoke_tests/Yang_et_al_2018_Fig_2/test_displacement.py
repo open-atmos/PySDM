@@ -12,7 +12,7 @@ import numpy as np
 # Warning: setup dependent
 def test_displacement(plot=False):
     # Arrange
-    setup = Setup(n_sd=0)
+    setup = Setup(n_sd=1)
     simulation = Simulation(setup)
 
     # Act
