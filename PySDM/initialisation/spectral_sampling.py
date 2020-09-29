@@ -27,6 +27,10 @@ class SpectralSampling:
         cdf = spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
 
+        percent_diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
+        if percent_diff > .01:
+            raise Exception(f"{percent_diff}% error in total real-droplet number due to sampling")
+
         return x, y_float
 
 
@@ -51,7 +55,7 @@ class Logarithmic(SpectralSampling):
 
 
 class ConstantMultiplicity(SpectralSampling):
-    def __init__(self, spectrum, size_range = None):
+    def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
         self.cdf_range = (

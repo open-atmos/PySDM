@@ -2,7 +2,7 @@
 Created at 2019
 """
 
-from PySDM.initialisation.spectra import Lognormal, Exponential, Sum
+from PySDM.initialisation.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 import numpy as np
 from numpy.testing import assert_approx_equal
@@ -103,7 +103,7 @@ class TestSum:
         sut = Sum(distributions)
 
         # Act
-        cdf_values = np.linspace(0, .999)
+        cdf_values = default_interpolation_grid
         sut_p = sut.percentiles(cdf_values)
         exp_p = distributions[0].percentiles(cdf_values)
 

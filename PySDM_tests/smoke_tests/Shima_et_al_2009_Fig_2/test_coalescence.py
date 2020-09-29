@@ -35,8 +35,6 @@ def check(n_part, dv, n_sd, rho, state, step):
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(croupier):
     # Arrange
-    v_min = 4.186e-15
-    v_max = 4.186e-12
     n_sd = 2 ** 13
     steps = [0, 30, 60]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
@@ -51,7 +49,7 @@ def test_coalescence(croupier):
     builder = Builder(n_sd=n_sd, backend=backend)
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum, (v_min, v_max)).sample(n_sd)
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
     builder.add_dynamic(Coalescence(kernel, seed=256))
     core = builder.build(attributes)
     core.croupier = croupier
