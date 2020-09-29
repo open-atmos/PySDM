@@ -3,8 +3,7 @@ Created at 23.04.2020
 """
 
 
-import numpy as np
-
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
@@ -14,19 +13,17 @@ from PySDM.products.state import ParticlesWetSizeSpectrum
 from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
 
-# TODO: the q1 logic from PyCloudParcel?
-
 
 class Simulation:
 
-    def __init__(self, setup):
+    def __init__(self, setup, backend=CPU):
 
         dt_output = setup.total_time / setup.n_steps  # TODO: overwritten in jupyter example
         self.n_substeps = 1  # TODO
         while (dt_output / self.n_substeps >= setup.dt_max):
             self.n_substeps += 1
         self.bins_edges = phys.volume(setup.r_bins_edges)
-        builder = Builder(backend=setup.backend, n_sd=setup.n_sd)
+        builder = Builder(backend=backend, n_sd=setup.n_sd)
         builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=setup.mass_of_dry_air,

@@ -267,8 +267,10 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
+        # TODO !!!
+        assert max(cell_id.to_ndarray()) == 0
         trtc.Sort_By_Key(cell_id.data, idx.data)
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
-        # AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
-        #                                                                           [cell_id.data, cell_start.data, idx.data])
+        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
+                                                                                  [cell_id.data, cell_start.data, idx.data])
         return idx

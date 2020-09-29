@@ -5,8 +5,8 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU as BACKEND
-from PySDM.backends.numba.random import Random
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
@@ -18,17 +18,18 @@ from PySDM_tests.unit_tests.dummy_core import DummyCore
 class TestSDMSingleCell:
 
     @staticmethod
-    def get_dummy_core_and_sdm(n_length):
-        core = DummyCore(BACKEND, n_sd=n_length)
+    def get_dummy_core_and_sdm(backend, n_length):
+        core = DummyCore(backend, n_sd=n_length)
         dv = 1
         core.environment = Box(dv=dv, dt=0)
         sdm = Coalescence(StubKernel(core.backend))
         sdm.register(core)
         return core, sdm
 
-    def test_single_collision(self, v_2, T_2, n_2):
+    @staticmethod
+    def test_single_collision(backend, v_2, T_2, n_2):
         # Arrange
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         core.build(attributes)
@@ -47,14 +48,15 @@ class TestSDMSingleCell:
         if np.amin(n_2) > 0: assert np.amax(core.particles['volume'].to_ndarray()) == np.sum(v_2)
         assert np.amax(core.particles['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
+    @staticmethod
     @pytest.mark.parametrize("n_in, n_out", [
         pytest.param(1, np.array([1, 0])),
         pytest.param(2, np.array([1, 1])),
         pytest.param(3, np.array([2, 1])),
     ])
-    def test_single_collision_same_n(self, n_in, n_out):
+    def test_single_collision_same_n(backend, n_in, n_out):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(2)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, 2)
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         particles.build(attributes)
@@ -65,15 +67,16 @@ class TestSDMSingleCell:
         # Assert
         np.testing.assert_array_equal(sorted(particles.particles['n'].to_ndarray()), sorted(n_out))
 
+    @staticmethod
     @pytest.mark.parametrize("p", [
         pytest.param(2),
         pytest.param(4),
         pytest.param(5),
         pytest.param(7),
     ])
-    def test_multi_collision(self, v_2, n_2, p):
+    def test_multi_collision(backend, v_2, n_2, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n_2))
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
         particles.build(attributes)
@@ -90,14 +93,15 @@ class TestSDMSingleCell:
         assert np.amax(state['volume'].to_ndarray()) == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
         assert np.amax(state['n'].to_ndarray()) == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
 
+    @staticmethod
     @pytest.mark.parametrize("v, n, p", [
         pytest.param(np.array([1., 1, 1]), np.array([1, 1, 1]), 2),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
     ])
-    def test_multi_droplet(self, v, n, p):
+    def test_multi_droplet(backend, v, n, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(len(n))
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
@@ -109,13 +113,14 @@ class TestSDMSingleCell:
         assert np.amin(particles.particles['n'].to_ndarray()) >= 0
         assert np.sum(particles.particles['n'].to_ndarray() * particles.particles['volume'].to_ndarray()) == np.sum(n * v)
 
-    def test_multi_step(self):
+    @staticmethod
+    def test_multi_step(backend):
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(n_sd)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             prob,
@@ -136,7 +141,7 @@ class TestSDMSingleCell:
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 
     @staticmethod
-    def test_compute_gamma():
+    def test_compute_gamma(backend):
         # Arrange
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
@@ -147,26 +152,30 @@ class TestSDMSingleCell:
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = BACKEND.Storage.from_ndarray(np.full((1,), p))
-                rand_arr = BACKEND.Storage.from_ndarray(np.full((1,), r))
-                BACKEND.compute_gamma(prob_arr, rand_arr)
+                prob_arr = backend.Storage.from_ndarray(np.full((1,), p))
+                rand_arr = backend.Storage.from_ndarray(np.full((1,), r))
+                backend.compute_gamma(prob_arr, rand_arr)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod
     @pytest.mark.parametrize("optimized_random", (True, False))
-    def test_rnd_reuse(optimized_random):
+    def test_rnd_reuse(backend, optimized_random):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(n_sd)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
-        class CountingRandom(Random):
+        class CountingRandom(backend.Random):
             calls = 0
 
             def __call__(self, storage):

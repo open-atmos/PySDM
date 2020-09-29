@@ -11,11 +11,16 @@ from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
-backend = CPU
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_final_state(croupier):
+def test_final_state(croupier, backend):
+    from PySDM.backends import ThrustRTC
+    if backend is ThrustRTC:
+        return  # TODO
+
     # Arrange
     n_part = 10000
     v_mean = 2e-6

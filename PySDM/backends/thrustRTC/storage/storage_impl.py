@@ -131,4 +131,4 @@ __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def subtract(output, subtrahend):
-    __subtract_body.launch_n(len(output), thrust([output, subtrahend]))
+    __subtract_body.launch_n(len(output), thrust([output.data, subtrahend.data]))

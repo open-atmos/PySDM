@@ -32,7 +32,7 @@ class Storage:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
         else:
-            result = self.data.to_host()[item]
+            result = self.to_ndarray()[item]
         return result
 
     def __setitem__(self, key, value):

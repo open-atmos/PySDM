@@ -9,7 +9,9 @@ from PySDM.physics import constants
 
 
 class TestDimensionalAnalysis:
-    def test_fake_units(self):
+
+    @staticmethod
+    def test_fake_units():
         # Arrange
         sut = DimensionalAnalysis()
 
@@ -20,8 +22,9 @@ class TestDimensionalAnalysis:
             assert type(constants.D0.magnitude) == float
         assert type(constants.D0) == float
 
+    @staticmethod
     @pytest.mark.skipif("'NUMBA_DISABLE_JIT' in os.environ and os.environ['NUMBA_DISABLE_JIT'] != '0'")
-    def test_fake_numba(self):
+    def test_fake_numba():
         # Arrange
         sut = DimensionalAnalysis()
 

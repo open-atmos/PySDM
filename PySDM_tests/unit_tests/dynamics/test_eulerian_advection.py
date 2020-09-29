@@ -6,14 +6,16 @@ from PySDM.dynamics import EulerianAdvection
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 import numpy as np
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 class TestEulerianAdvection:
 
     @staticmethod
-    def test_update():
+    def test_update(backend):
         # Arrange
-        core = DummyCore()
+        core = DummyCore(backend)
         halo = 3
         grid = (11, 13)
         env = DummyEnvironment(grid=grid, halo=halo)

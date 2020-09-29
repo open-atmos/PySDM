@@ -5,9 +5,7 @@ Created at 08.08.2019
 import numpy as np
 from PySDM.initialisation.spectra import Exponential
 from PySDM.dynamics.coalescence.kernels import Golovin
-from PySDM.backends import CPU
 from PySDM.physics.constants import si
-from PySDM.physics import formulae as phys
 
 
 class SetupA:
@@ -31,5 +29,3 @@ class SetupA:
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
 
     radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True)
-
-    backend = CPU

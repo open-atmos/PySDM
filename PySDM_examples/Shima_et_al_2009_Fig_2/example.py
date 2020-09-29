@@ -4,6 +4,7 @@ Created at 08.08.2019
 
 import numpy as np
 
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
@@ -14,8 +15,8 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlott
 from PySDM.products.state import ParticlesVolumeSpectrum
 
 
-def run(setup, observers=()):
-    builder = Builder(n_sd=setup.n_sd, backend=setup.backend)
+def run(setup, backend=CPU, observers=()):
+    builder = Builder(n_sd=setup.n_sd, backend=backend)
     builder.set_environment(Box(dv=setup.dv, dt=setup.dt))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(setup.spectrum).sample(setup.n_sd)

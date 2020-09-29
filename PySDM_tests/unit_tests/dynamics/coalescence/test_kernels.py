@@ -2,18 +2,20 @@
 Created at 07.06.2019
 """
 
-from PySDM.dynamics.coalescence.kernels import Golovin
 import numpy as np
 import pytest
+
+from PySDM.dynamics.coalescence.kernels import Golovin
 
 
 class TestGolovin:
 
+    @staticmethod
     @pytest.mark.parametrize("x", [
         pytest.param(5e-10),
         pytest.param(np.full(10, 5e-10))
     ])
-    def test_analytic_solution_underflow(self, x):
+    def test_analytic_solution_underflow(x):
         # Arrange
         b = 1.5e3
         x_0 = 4 / 3 * np.pi * 30.531e-6 ** 3

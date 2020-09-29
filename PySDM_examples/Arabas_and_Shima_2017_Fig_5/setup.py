@@ -2,7 +2,6 @@
 Created at 29.11.2019
 """
 
-from PySDM.backends import CPU
 from PySDM.physics.constants import si
 from PySDM.physics import constants as const, formulae as phys
 from PySDM.dynamics import condensation
@@ -25,8 +24,6 @@ class Setup:
         if result < 1 * si.centimetre / si.second:
             result /= 100  # TODO
         return result
-
-    backend = CPU
 
     n_output = 500
 

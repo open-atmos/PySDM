@@ -3,17 +3,24 @@ Created at 23.10.2019
 """
 
 import numpy as np
-from .displacement_setup import Setup
+from .displacement_setup import TestSetup
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 class TestExplicitEulerWithInterpolation:
 
-    def test_single_cell(self):
+    @staticmethod
+    def test_single_cell(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         setup.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
         setup.positions = [[0.5], [0.5]]
-        sut, _ = setup.get_displacement()
+        sut, _ = setup.get_displacement(backend)
 
         # Act
         sut()
@@ -21,13 +28,18 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         pass
 
-    def test_advection(self):
+    @staticmethod
+    def test_advection(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         setup.grid = (3, 3)
         setup.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         setup.positions = [[1.5], [1.5]]
-        sut, core = setup.get_displacement()
+        sut, core = setup.get_displacement(backend)
 
         # Act
         sut()
@@ -35,16 +47,21 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_array_equal(core.particles['cell origin'][:, 0], np.array([2, 1]))
 
-    def test_calculate_displacement(self):
+    @staticmethod
+    def test_calculate_displacement(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         a = .1
         b = .2
         w = .25
         setup.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         setup.positions = [[w], [0]]
         setup.scheme = 'FTFS'
-        sut, core = setup.get_displacement()
+        sut, core = setup.get_displacement(backend)
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -53,16 +70,21 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
 
-    def test_calculate_displacement_dim1(self):
+    @staticmethod
+    def test_calculate_displacement_dim1(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         a = .1
         b = .2
         w = .25
         setup.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         setup.positions = [[0], [w]]
         setup.scheme = 'FTFS'
-        sut, core = setup.get_displacement()
+        sut, core = setup.get_displacement(backend)
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -71,13 +93,18 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_equal(sut.displacement[1, 0], (1 - w) * a + w * b)
 
-    def test_update_position(self):
+    @staticmethod
+    def test_update_position(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         px = .1
         py = .2
         setup.positions = [[px], [py]]
-        sut, core = setup.get_displacement()
+        sut, core = setup.get_displacement(backend)
 
         droplet_id = 0
         sut.displacement[0, droplet_id] = .1
@@ -92,10 +119,15 @@ class TestExplicitEulerWithInterpolation:
                     setup.positions[d][droplet_id] + sut.displacement[d, droplet_id]
             )
 
-    def test_update_cell_origin(self):
+    @staticmethod
+    def test_update_cell_origin(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
-        sut, core = setup.get_displacement()
+        setup = TestSetup()
+        sut, core = setup.get_displacement(backend)
 
         droplet_id = 0
         state = core.particles
@@ -111,10 +143,15 @@ class TestExplicitEulerWithInterpolation:
             assert state['position in cell'][d, droplet_id] == (state['position in cell'][d, droplet_id]
                                                                 - np.floor(state['position in cell'][d, droplet_id]))
 
-    def test_boundary_condition(self):
+    @staticmethod
+    def test_boundary_condition(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
-        sut, core = setup.get_displacement()
+        setup = TestSetup()
+        sut, core = setup.get_displacement(backend)
 
         droplet_id = 0
         state = core.particles
