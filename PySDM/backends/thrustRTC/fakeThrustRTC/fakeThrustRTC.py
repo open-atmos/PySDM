@@ -4,7 +4,7 @@ Created at 22.09.2020
 
 import types
 import numpy as np
-from .cpp2python import to_python
+from .cpp2python import to_numba
 
 
 class FakeThrustRTC:
@@ -59,7 +59,7 @@ class FakeThrustRTC:
     class For:
         def __init__(self, args, _, body):
             d = dict()
-            exec(to_python("__internal_python_method__", args, body), d)
+            exec(to_numba("__internal_python_method__", args, body), d)
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = self.make()
 
@@ -107,12 +107,16 @@ class FakeThrustRTC:
 
     @staticmethod
     def Sort_By_Key(key, dvvector):
-        dvvector.ndarray[:] = dvvector.ndarray[np.argsort(key.ndarray)]
-
+        dvvector.ndarray[:] = np.argsort(key.ndarray)
 
     @staticmethod
     def Count(dvvector, value):
-        return np.count_nonzero((dvvector.ndarray == value))
+        unique, counts = np.unique(dvvector.ndarray, return_counts=True)
+        results = dict(zip(unique, counts))
+        if value.ndarray in results:
+            return results[value.ndarray]
+        else:
+            return 0
 
     @staticmethod
     def Reduce(dvvector, start, operator):

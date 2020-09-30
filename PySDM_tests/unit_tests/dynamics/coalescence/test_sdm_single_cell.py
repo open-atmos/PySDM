@@ -56,16 +56,16 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(backend, n_in, n_out):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, 2)
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, 2)
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
-        particles.build(attributes)
+        core.build(attributes)
 
         # Act
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particles.particles['n'].to_ndarray()), sorted(n_out))
+        np.testing.assert_array_equal(sorted(core.particles['n'].to_ndarray()), sorted(n_out))
 
     @staticmethod
     @pytest.mark.parametrize("p", [
@@ -76,16 +76,16 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(backend, v_2, n_2, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
-        particles.build(attributes)
+        core.build(attributes)
 
         # Act
         sut()
 
         # Assert
-        state = particles.particles
+        state = core.particles
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
         assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray()) == np.sum(n_2 * v_2)
@@ -101,17 +101,17 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(backend, v, n, p):
         # Arrange
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n))
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
-        particles.build(attributes)
+        core.build(attributes)
 
         # Act
         sut()
 
         # Assert
-        assert np.amin(particles.particles['n'].to_ndarray()) >= 0
-        assert np.sum(particles.particles['n'].to_ndarray() * particles.particles['volume'].to_ndarray()) == np.sum(n * v)
+        assert np.amin(core.particles['n'].to_ndarray()) >= 0
+        assert np.sum(core.particles['n'].to_ndarray() * core.particles['volume'].to_ndarray()) == np.sum(n * v)
 
     @staticmethod
     def test_multi_step(backend):
@@ -120,7 +120,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
+        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             prob,
@@ -128,15 +128,16 @@ class TestSDMSingleCell:
             odd_zeros=True
         )
         attributes = {'n': n, 'volume': v}
-        particles.build(attributes)
+        core.build(attributes)
 
         # Act
         for _ in range(32):
             sut()
+            core.particles.sanitize()
 
         # Assert
-        assert np.amin(particles.particles['n'].to_ndarray()) >= 0
-        actual = np.sum(particles.particles['n'].to_ndarray() * particles.particles['volume'].to_ndarray())
+        assert np.amin(core.particles['n'].to_ndarray()) >= 0
+        actual = np.sum(core.particles['n'].to_ndarray() * core.particles['volume'].to_ndarray())
         desired = np.sum(n * v)
         np.testing.assert_almost_equal(actual=actual, desired=desired)
 

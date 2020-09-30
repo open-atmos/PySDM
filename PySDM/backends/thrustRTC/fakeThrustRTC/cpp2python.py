@@ -65,7 +65,7 @@ def replace_fors(cpp):
     return cpp.replace("__python_token__", "for")
 
 
-def to_python(name, args, body):
+def to_numba(name, args, body):
     body = body.replace("\n", "\n    ")
     for cpp, python in cppython.items():
         body = body.replace(cpp, python)
