@@ -45,6 +45,9 @@ class AlgorithmicMethods:
             j = idx[i + 1];
             k = idx[i];
         }
+        if (n[k] == 0) {
+            return;
+        }
         int g = (int)(n[j] / n[k]);
         if (adaptive) {
             adaptive_memory[i] = (int)(gamma[i] * subs / g);
