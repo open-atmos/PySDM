@@ -4,7 +4,8 @@ Created at 05.08.2019
 
 import numpy as np
 
-from PySDM.backends import CPU as BACKEND
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
@@ -14,7 +15,7 @@ from PySDM_tests.unit_tests.dummy_core import DummyCore
 class TestMaths:
 
     @staticmethod
-    def test_moment_0d():
+    def test_moment_0d(backend):
         # Arrange
         n_part = 10000
         v_mean = 2e-6
@@ -28,7 +29,7 @@ class TestMaths:
         v, n = Linear(spectrum, (v_min, v_max)).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyCore(BACKEND, n_sd)
+        particles = DummyCore(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T}
         particles.build(attribute)
         state = particles.particles

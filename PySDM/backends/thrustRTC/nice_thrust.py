@@ -2,7 +2,7 @@
 Created at 18.05.2020
 """
 
-import ThrustRTC as trtc
+from .conf import trtc
 
 
 def nice_thrust(*, wait=False, debug_print=False):

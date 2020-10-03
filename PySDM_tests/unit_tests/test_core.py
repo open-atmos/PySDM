@@ -3,12 +3,14 @@ Created at 27.05.2020
 """
 
 from PySDM_tests.unit_tests.dummy_core import DummyCore
-from PySDM.backends import CPU
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 class TestCore:
 
-    def test_observer(self):
+    @staticmethod
+    def test_observer(backend):
         class Observer:
             def __init__(self, core):
                 self.steps = 0
@@ -20,7 +22,7 @@ class TestCore:
                 assert self.steps == self.core.n_steps
 
         steps = 33
-        core = DummyCore(CPU, 44)
+        core = DummyCore(backend, 44)
         observer = Observer(core)
         core.run(steps)
 

@@ -4,7 +4,7 @@ Created at 30.05.2020
 
 import numpy as np
 from PySDM.backends.thrustRTC.storage import storage_impl as impl
-import ThrustRTC as trtc
+from ..conf import trtc
 
 
 class Storage:
@@ -32,7 +32,7 @@ class Storage:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
         else:
-            result = self.data.to_host()[item]
+            result = self.to_ndarray()[item]
         return result
 
     def __setitem__(self, key, value):
@@ -98,7 +98,7 @@ class Storage:
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
                 elem_cls = 'double'
-            elif self.dtype in Storage.INT:
+            elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
             else:
                 raise NotImplementedError()
@@ -176,7 +176,7 @@ class Storage:
         generator(self)
 
     def upload(self, data):
-        trtc.Copy(trtc.device_vector_from_numpy(data.flatten()), self.data)
+        trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)
 
     def write_row(self, i, row):
         start = self.shape[1] * i

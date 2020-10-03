@@ -2,14 +2,13 @@
 Created at 29.04.2020
 """
 
-from PySDM.backends import CPU
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
 import numpy as np
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 
 
-class Setup:
+class TestSetup:
     def __init__(self):
         self.n = np.ones(1, dtype=np.int64)
         self.grid = (1, 1)
@@ -19,8 +18,8 @@ class Setup:
         self.sedimentation = False
         self.dt = None
 
-    def get_displacement(self):
-        core = DummyCore(CPU, n_sd=len(self.n))
+    def get_displacement(self, backend):
+        core = DummyCore(backend, n_sd=len(self.n))
         core.environment = DummyEnvironment(
             dt=self.dt,
             grid=self.grid,

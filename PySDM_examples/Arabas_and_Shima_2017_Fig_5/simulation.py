@@ -4,6 +4,7 @@ Created at 29.11.2019
 
 import numpy as np
 
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
@@ -16,7 +17,7 @@ from PySDM.products.dynamics.condensation import CondensationTimestep
 
 
 class Simulation:
-    def __init__(self, setup):
+    def __init__(self, setup, backend=CPU):
         t_half = setup.z_half / setup.w_avg
 
         dt_output = (2 * t_half) / setup.n_output
@@ -24,7 +25,7 @@ class Simulation:
         while dt_output / self.n_substeps >= setup.dt_max:  # TODO dt_max
             self.n_substeps += 1
 
-        builder = Builder(backend=setup.backend, n_sd=1)
+        builder = Builder(backend=backend, n_sd=1)
         builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
             mass_of_dry_air=setup.mass_of_dry_air,

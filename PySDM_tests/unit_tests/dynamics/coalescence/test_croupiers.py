@@ -11,11 +11,16 @@ from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
-backend = CPU
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_final_state(croupier):
+def test_final_state(croupier, backend):
+    from PySDM.backends import ThrustRTC
+    if backend is ThrustRTC:
+        return  # TODO
+
     # Arrange
     n_part = 10000
     v_mean = 2e-6
@@ -33,11 +38,11 @@ def test_final_state(croupier):
     core.environment = DummyEnvironment(grid=(x, y))
     core.croupier = croupier
 
-    attributes['cell id'] = backend.array((n_sd,), dtype=int)
+    attributes['cell id'] = np.array((n_sd,), dtype=int)
     cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((2, -1))
-    attributes['cell origin'] = backend.from_ndarray(cell_origin_np)
+    attributes['cell origin'] = cell_origin_np
     position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((2, -1))
-    attributes['position in cell'] = backend.from_ndarray(position_in_cell_np)
+    attributes['position in cell'] = position_in_cell_np
     core.build(attributes)
 
     # Act

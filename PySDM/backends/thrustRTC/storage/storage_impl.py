@@ -2,7 +2,7 @@
 Created at 02.06.2020
 """
 
-import ThrustRTC as trtc
+from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
@@ -27,8 +27,8 @@ def add(output, addend):
 
 
 __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
-    int d = i / length;
-    output[i] %= divisor[d];
+        int d = i / length;
+        output[i] %= divisor[d];
     ''')
 
 
@@ -38,15 +38,16 @@ def row_modulo(output, divisor):
 
 
 __floor_body = trtc.For(['arr'], "i", '''
-    if (arr[i] >= 0) 
-        arr[i] = (long) arr[i];
-    else
-    {
-        auto old = arr[i];
-        arr[i] = (long) arr[i];
-        if (old != arr[i])
-            arr[i] -= 1;
-    }
+        if (arr[i] >= 0) {
+            arr[i] = (long) arr[i];
+        }
+        else {
+            auto old = arr[i];
+            arr[i] = (long) arr[i];
+            if (old != arr[i]) {
+                arr[i] -= 1;
+            }
+        }
     ''')
 
 
@@ -56,14 +57,15 @@ def floor(output):
 
 
 __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
-    if (input_data[i] >= 0) 
-        output[i] = (long) input_data[i];
-    else
-    {
-        output[i] = (long) input_data[i];
-        if (input_data[i] != output[i])
-            output[i] -= 1;
-    }
+        if (input_data[i] >= 0) {
+            output[i] = (long) input_data[i];
+        }
+        else {
+            output[i] = (long) input_data[i];
+            if (input_data[i] != output[i]) {
+                output[i] -= 1;
+            }
+        }
     ''')
 
 
@@ -73,11 +75,11 @@ def floor_out_of_place(output, input_data):
 
 
 __multiply_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
-    output[i] *= multiplier[i];
+        output[i] *= multiplier[i];
     ''')
 
 __multiply_body = trtc.For(['output', 'multiplier'], "i", '''
-    output[i] *= multiplier;
+        output[i] *= multiplier;
     ''')
 
 
@@ -91,12 +93,12 @@ def multiply(output, multiplier):
 
 
 __multiply_out_of_place_elementwise_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
-    output[i] = multiplicand[i] * multiplier[i];
+        output[i] = multiplicand[i] * multiplier[i];
     ''')
 
 __multiply_out_of_place_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
         output[i] = multiplicand[i] * multiplier;
-        ''')
+    ''')
 
 
 @nice_thrust(**NICE_THRUST_FLAGS)
@@ -111,7 +113,7 @@ def multiply_out_of_place(output, multiplicand, multiplier):
 
 
 __power_body = trtc.For(['output', 'exponent'], "i", '''
-    output[i] = pow(output[i], exponent);
+        output[i] = pow(output[i], exponent);
     ''')
 
 
@@ -129,4 +131,4 @@ __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def subtract(output, subtrahend):
-    __subtract_body.launch_n(len(output), thrust([output, subtrahend]))
+    __subtract_body.launch_n(len(output), thrust([output.data, subtrahend.data]))

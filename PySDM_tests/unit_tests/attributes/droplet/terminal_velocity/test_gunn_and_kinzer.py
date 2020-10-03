@@ -2,27 +2,30 @@
 Created at 10.06.2020
 """
 
-from PySDM.physics import constants as const
-from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
+
 import matplotlib.pyplot as plt
 import numpy as np
 
-from PySDM.backends import CPU
+from PySDM.physics import constants as const
+from PySDM.attributes.droplet.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
+
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
-def test_approximation(plot=False):
+def test_approximation(backend, plot=False):
     r = np.array([.078, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.2, 1.4, 1.6]) * const.si.mm / 2
-    r = CPU.Storage.from_ndarray(r)
+    r = backend.Storage.from_ndarray(r)
     u = np.array([18, 27, 72, 117, 162, 206, 247, 287, 327, 367, 403, 464, 517, 565]) / 100
     n_sd = len(r)
-    core = DummyCore(CPU, n_sd=n_sd)
+    core = DummyCore(backend, n_sd=n_sd)
     # radius = np.linspace(4e-6, 200e-6, 1000, endpoint=True)
 
     u_term_ry = core.backend.Storage.empty((len(u),), float)
     RogersYau(core)(u_term_ry, r)
 
-    u_term_inter = CPU.Storage.from_ndarray(u_term_ry.to_ndarray())
+    u_term_inter = backend.Storage.from_ndarray(u_term_ry.to_ndarray())
     Interpolation(core)(u_term_inter, r)
 
     assert np.mean((u - u_term_ry)**2) < 2e-2

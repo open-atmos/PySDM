@@ -2,7 +2,7 @@
 Created at 20.03.2020
 """
 
-import ThrustRTC as trtc
+from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 import PySDM.physics.constants as const
@@ -45,17 +45,17 @@ class PhysicsMethods:
             T.shape[0], (rhod.data, thd.data, qv.data, T.data, p.data, RH.data))
 
     __terminal_velocity_body = trtc.For(["values", "radius", "k1", "k2", "k3", "r1", "r2"], "i", '''
-            if (radius[i] < r1) {
-                values[i] = k1 * radius[i] * radius[i];
+        if (radius[i] < r1) {
+            values[i] = k1 * radius[i] * radius[i];
+        }
+        else {
+            if (radius[i] < r2) {
+                values[i] = k2 * radius[i];
             }
             else {
-                if (radius[i] < r2) {
-                    values[i] = k2 * radius[i];
-                }
-                else {
-                    values[i] = k3 * pow(radius[i], .5);
-                }
+                values[i] = k3 * pow(radius[i], .5);
             }
+        }
         ''')
 
     @staticmethod

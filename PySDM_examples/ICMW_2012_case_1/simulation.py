@@ -5,6 +5,7 @@ Created at 25.09.2019
 
 import time
 
+from PySDM.backends import CPU
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
@@ -53,10 +54,11 @@ class DummyController:
 
 class Simulation:
 
-    def __init__(self, setup, storage):
+    def __init__(self, setup, storage, backend=CPU):
         self.setup = setup
         self.storage = storage
         self.core = None
+        self.backend = backend
 
     @property
     def products(self):
@@ -64,7 +66,7 @@ class Simulation:
 
     def reinit(self):
 
-        builder = Builder(n_sd=self.setup.n_sd, backend=self.setup.backend)
+        builder = Builder(n_sd=self.setup.n_sd, backend=self.backend)
         environment = Kinematic2D(dt=self.setup.dt,
                                   grid=self.setup.grid,
                                   size=self.setup.size,

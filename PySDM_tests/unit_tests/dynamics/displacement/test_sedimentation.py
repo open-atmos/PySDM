@@ -4,7 +4,9 @@ Created at 12.03.2020
 
 import numpy as np
 
-from .displacement_setup import Setup
+from .displacement_setup import TestSetup
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 class ConstantTerminalVelocity:
@@ -16,12 +18,18 @@ class ConstantTerminalVelocity:
 
 
 class TestSedimentation:
-    def test_boundary_condition(self):
+
+    @staticmethod
+    def test_boundary_condition(backend):
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO!!!
+
         # Arrange
-        setup = Setup()
+        setup = TestSetup()
         setup.dt = 1
         setup.sedimentation = True
-        sut, particles = setup.get_displacement()
+        sut, particles = setup.get_displacement(backend)
 
         particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
 

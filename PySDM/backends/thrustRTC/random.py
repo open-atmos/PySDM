@@ -3,8 +3,7 @@ Created at 25.08.2020
 """
 
 import numpy as np
-import ThrustRTC as trtc
-import CURandRTC as rndrtc
+from .conf import trtc, rndrtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
@@ -30,4 +29,5 @@ class Random:
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def __call__(self, storage):
-        Random.__urand_body.launch_n(self.size, [self.generator, storage.data])
+        assert len(storage) <= self.size
+        Random.__urand_body.launch_n(len(storage), [self.generator, storage.data])

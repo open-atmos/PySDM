@@ -2,7 +2,7 @@
 Created at 10.12.2019
 """
 
-import ThrustRTC as trtc
+from ..conf import trtc
 from ._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
@@ -27,14 +27,15 @@ class MathsMethods:
         MathsMethods.__row_modulo_body.launch_n(output.size(), [output, divisor, length])
 
     __floor_body = trtc.For(['arr'], "i", '''
-        if (arr[i] >= 0) 
+        if (arr[i] >= 0) {
             arr[i] = (long) arr[i];
-        else
-        {
+        }
+        else {
             auto old = arr[i];
             arr[i] = (long) arr[i];
-            if (old != arr[i])
+            if (old != arr[i]) {
                 arr[i] -= 1;
+            }
         }
         ''')
 
@@ -81,8 +82,8 @@ class MathsMethods:
         ''')
 
     __multiply_out_of_place_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
-            output[i] = multiplicand[i] * multiplier;
-            ''')
+        output[i] = multiplicand[i] * multiplier;
+        ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -110,7 +111,7 @@ class MathsMethods:
         MathsMethods.__power_body.launch_n(output.size(), [output, device_exponent])
 
     __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
-            output[i] -= subtrahend[i];
+        output[i] -= subtrahend[i];
         ''')
 
     @staticmethod
