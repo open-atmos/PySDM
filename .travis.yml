@@ -5,10 +5,10 @@ os: linux
 
 jobs:
   include:
-    - name: "Python 3.8.2 with newest packages on Linux"
+    - name: "Python 3.8 with newest packages on Linux"
       os: linux
       language: python
-      python: "3.8.2"
+      python: "3.8"
       before_install:
         - sudo `which pip` install --upgrade pip
       before_script:
