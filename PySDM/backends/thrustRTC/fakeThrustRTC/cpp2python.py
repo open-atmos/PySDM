@@ -74,7 +74,7 @@ def to_numba(name, args, body):
 def make(self):
     import numpy as np
     import numba
-    @numba.njit(parallel=False, error_model='numpy', fastmath=True)
+    @numba.njit(parallel=True, error_model='numpy', fastmath=True)
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
         for i in numba.prange(__python_n__):
             {body}
