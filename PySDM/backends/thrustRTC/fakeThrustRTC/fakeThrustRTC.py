@@ -3,7 +3,9 @@ Created at 22.09.2020
 """
 
 import types
+
 import numpy as np
+
 from .cpp2python import to_numba
 
 
@@ -104,10 +106,6 @@ class FakeThrustRTC:
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
         return FakeThrustRTC.DVVector(result)
-
-    @staticmethod
-    def Sort_By_Key(key, dvvector):
-        dvvector.ndarray[:] = np.argsort(key.ndarray)
 
     @staticmethod
     def Count(dvvector, value):
