@@ -3,6 +3,8 @@ Created at 05.10.2020
 """
 
 import numpy as np
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 class TestIndexedStorage:
