@@ -2,9 +2,9 @@
 Created at 10.12.2019
 """
 
-from ..conf import trtc
-from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
+from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
+from ..conf import trtc
 
 
 class AlgorithmicMethods:
@@ -44,9 +44,6 @@ class AlgorithmicMethods:
         if (n[j] < n[k]) {
             j = idx[i + 1];
             k = idx[i];
-        }
-        if (n[k] == 0) {
-            return;
         }
         int g = (int)(n[j] / n[k]);
         if (adaptive) {
@@ -272,7 +269,6 @@ class AlgorithmicMethods:
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
         # TODO !!!
         assert max(cell_id.to_ndarray()) == 0
-        trtc.Sort_By_Key(cell_id.data, idx.data)
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
                                                                                   [cell_id.data, cell_start.data, idx.data])
