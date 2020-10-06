@@ -2,7 +2,7 @@
 Created at 17.02.2020
 """
 
-from PySDM.product import MomentProduct
+from PySDM.products.product import MomentProduct
 
 
 class ParticleTemperature(MomentProduct):

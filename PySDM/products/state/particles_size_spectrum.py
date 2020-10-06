@@ -2,10 +2,11 @@
 Created at 23.04.2020
 """
 
-from PySDM.product import MomentProduct
 import numpy as np
+
 from PySDM.physics import constants as const
 from PySDM.physics import formulae as phys
+from PySDM.products.product import MomentProduct
 
 
 class ParticlesSizeSpectrum(MomentProduct):
