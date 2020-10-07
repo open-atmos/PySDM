@@ -2,8 +2,8 @@
 Created at 2019
 """
 
-import matplotlib.pyplot as plt
 import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -44,24 +44,25 @@ class _ImagePlot(_Plot):
         self.ax.set_xlabel('X [m]')
         self.ax.set_ylabel('Z [m]')
 
-        self.im = self.ax.imshow(self._transform(data),
-            origin='lower',
-            extent=(*xlim, *zlim),
-            cmap=cmap,
-            norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(data).all() else None
-        )
+        self.im = self.ax.imshow(self._transpose(data),
+                                 origin='lower',
+                                 extent=(*xlim, *zlim),
+                                 cmap=cmap,
+                                 norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(
+                                     data).all() else None
+                                 )
         plt.colorbar(self.im, ax=self.ax).set_label(label)
         self.im.set_clim(vmin=product.range[0], vmax=product.range[1])
 
         plt.show()
 
     @staticmethod
-    def _transform(data):
+    def _transpose(data):
         if data is not None:
             return data.T
 
     def update(self, data, focus_x, focus_z, step):
-        data = self._transform(data)
+        data = self._transpose(data)
         if data is not None:
             self.im.set_data(data)
             self.ax.set_title(f"min:{np.amin(data):.4g}    max:{np.amax(data):.4g}    t/dt:{step}")
