@@ -31,7 +31,7 @@ The **ThrustRTC** backend named ``GPU`` offers GPU-resident operation of PySDM
 The dependencies of PySDM examples and test subpackages are summarised in
   the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
   file.
-Noteworthy, one of the examples (``ICMW_2012_case_1``) uses [MPyDATA](https://github.com/atmos-cloud-sim-uj/MPyDATA),
+Noteworthy, one of the examples (``ICMW_2012_case_1``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
   a concurently developed sister project to PySDM.
 Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
   used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
@@ -168,7 +168,7 @@ The resultant plot looks as follows:
     - [MoistLagrangianParcelAdiabatic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_lagrangian_parcel_adiabatic.py): 
       zero-dimensional adiabatic parcel framework
     - [MoistEulerian2DKinematic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_eulerian_2d_kinematic.py): 
-      two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [MPyDATA](http://github.com/atmos-cloud-sim-uj/MPyDATA/)
+      two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 - [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
     - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence)
         - [coalescence.kernels (selected)](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence/kernels)
@@ -206,8 +206,7 @@ The resultant plot looks as follows:
 Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 copyright: Jagiellonian University   
-code licence: GPL v3   
-tutorials licence: CC-BY
+licence: GPL v3   
 
 ## Other open-source SDM implementations:
 - SCALE-SDM (Fortran):    
