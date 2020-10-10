@@ -4,8 +4,8 @@ Created at 04.09.2020
 
 import numpy as np
 from threading import Thread
-from MPyDATA import Options, Stepper, VectorField, ScalarField, Solver
-from MPyDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
+from PyMPDATA import Options, Stepper, VectorField, ScalarField, Solver
+from PyMPDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
 
 
 class MPDATA:
