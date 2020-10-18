@@ -14,7 +14,7 @@ from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
 from PySDM.environments import Kinematic2D
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
-from PySDM.products.environments import RelativeHumidity
+from PySDM.products.environments import RelativeHumidity, Pressure, Temperature
 from PySDM.products.environments import WaterVapourMixingRatio
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.builder import Builder
@@ -62,7 +62,7 @@ class Simulation:
             AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
             ParticleMeanRadius(),
             SuperDropletCount(),
-            RelativeHumidity(),
+            RelativeHumidity(), Pressure(), Temperature(),
             WaterVapourMixingRatio(),
             DryAirDensity(),
             DryAirPotentialTemperature()
