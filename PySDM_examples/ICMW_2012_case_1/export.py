@@ -1,6 +1,7 @@
 import tempfile, os
 import numpy as np
 from scipy.io.netcdf import netcdf_file
+from .dummy_controller import DummyController
 
 
 class netCDF:
@@ -50,7 +51,9 @@ class netCDF:
             else:
                 self.vars[var][i, :, :] = self.storage.load(self.setup.steps[i], var)
 
-    def run(self, controller):
+    def run(self, controller=None):
+        if controller is None:
+            controller = DummyController()
         with controller:
             controller.set_percent(0)
             with netcdf_file(self.tempfile_fd, mode='w') as ncdf:
