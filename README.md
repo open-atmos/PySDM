@@ -208,6 +208,12 @@ Development of PySDM is supported by the EU through a grant of the Foundation fo
 copyright: Jagiellonian University   
 licence: GPL v3   
 
+## PySDM patents (some expired, some withdrawn):
+- https://patents.google.com/patent/US7756693B2
+- https://patents.google.com/patent/EP1847939A3
+- https://patents.google.com/patent/JP4742387B2
+- https://patents.google.com/patent/CN101059821B
+
 ## Other open-source SDM implementations:
 - SCALE-SDM (Fortran):    
   https://github.com/Shima-Lab/SCALE-SDM_BOMEX_Sato2018/blob/master/contrib/SDM/sdm_coalescence.f90
