@@ -161,7 +161,7 @@ class AlgorithmicMethods:
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
-                    scheme = "counting_sort"
+                    scheme = "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
@@ -281,7 +281,7 @@ class AlgorithmicMethods:
             new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
             new_idx, idx, cell_id, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p
