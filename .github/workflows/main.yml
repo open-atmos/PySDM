@@ -24,7 +24,12 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.8
+      - run: |
+          pip install pytest
+
+      - run: |
+          pip install -r PySDM/requirements.txt
 
       - run: |
           cd PySDM
-          python -m pytest
+          pytest
