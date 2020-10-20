@@ -24,9 +24,11 @@ install:
         $env:PYTHON="C:\Python38-x64\python"
       }
 
-  - $env:PYTHON -m pip install --upgrade pip
-  - $env:PYTHON -m pip install pytest
-  - $env:PYTHON -m pip install -r requirements.txt
+  - ps: |
+      $env:PYTHON -m pip install --upgrade pip
+      $env:PYTHON -m pip install pytest
+      $env:PYTHON -m pip install -r requirements.txt
 
 test_script:
-  - $env:PYTHON -m pytest
+  - ps: |
+      $env:PYTHON -m pytest
