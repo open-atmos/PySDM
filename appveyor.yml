@@ -3,19 +3,30 @@ branches:
     - master
 environment:
   matrix:
-  - platform: mingw64630x8664
-  - platform: mingw64630i686
+  - platform: x86
+  - platform: x64
   
 build: false
-
+fast_finish: true 
 skip_tags: true
 
 install:
   - echo Installed Pythons
   - dir c:\Python*
 
-  - C:\Python36\python -m pip install --upgrade pip
-  - C:\Python36\python -m pip install -r requirements.txt
+  - ps: |
+      if ($env:platform -Match "x86") 
+      {
+        $env:PYTHON="C:\Python38\python"
+      }
+      elseif ($env:platform -Match "x64") 
+      {
+        $env:PYTHON="C:\Python38-x64\python"
+      }
+
+  - $env:PYTHON -m pip install --upgrade pip
+  - $env:PYTHON -m pip install pytest
+  - $env:PYTHON -m pip install -r requirements.txt
 
 test_script:
-  - C:\Python36\python -m pytest
+  - $env:PYTHON -m pytest
