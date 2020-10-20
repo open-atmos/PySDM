@@ -3,7 +3,6 @@ name: Build Status
 defaults:
   run:
     shell: bash
-    working-directory: .
 
 on:
   push:
@@ -31,4 +30,4 @@ jobs:
           pip install -r requirements.txt
 
       - run: |
-          pytest
+          PYTHONPATH=. pytest
