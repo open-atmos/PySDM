@@ -1,0 +1,21 @@
+branches:
+  only:
+    - master
+environment:
+  matrix:
+  - platform: mingw64630x8664
+  - platform: mingw64630i686
+  
+build: false
+
+skip_tags: true
+
+install:
+  - echo Installed Pythons
+  - dir c:\Python*
+
+  - C:\Python36\python -m pip install --upgrade pip
+  - C:\Python36\python -m pip install -r requirements.txt
+
+test_script:
+  - C:\Python36\python -m pytest
