@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/atmos-cloud-sim-uj/PySDM.svg?branch=master)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
+[![Travis Build Status](https://travis-ci.org/atmos-cloud-sim-uj/PySDM.svg?branch=master)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
+[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/Build%20Status/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
 [![Coverage Status](https://img.shields.io/codecov/c/github/atmos-cloud-sim-uj/PySDM/master.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
 
 # PySDM
