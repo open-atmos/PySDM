@@ -28,8 +28,7 @@ jobs:
           pip install pytest
 
       - run: |
-          pip install -r PySDM/requirements.txt
+          pip install -r requirements.txt
 
       - run: |
-          cd PySDM
           pytest
