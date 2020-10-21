@@ -6,6 +6,7 @@ import numpy as np
 from threading import Thread
 from PyMPDATA import Options, Stepper, VectorField, ScalarField, Solver
 from PyMPDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
+from ...backends.numba import conf
 
 
 class MPDATA:
@@ -22,7 +23,11 @@ class MPDATA:
             flux_corrected_transport=flux_corrected_transport,
             third_order_terms=third_order_terms
         )
-        stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True)
+        disable_threads_if_needed = {}
+        if not conf.JIT_FLAGS['parallel']:
+            disable_threads_if_needed['n_threads'] = 1
+
+        stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True, **disable_threads_if_needed)
 
         # CFL condition
         for d in range(len(fields.advector)):
