@@ -161,7 +161,7 @@ class AlgorithmicMethods:
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
-                    scheme = "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
+                    scheme = "counting_sort" # TODO: "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
