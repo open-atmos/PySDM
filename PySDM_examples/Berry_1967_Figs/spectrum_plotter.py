@@ -10,7 +10,7 @@ class SpectrumPlotter(SuperSpectrumPlotter):
     def __init__(self, setup, title=None, grid=True, legend=False):
         size = 2 * 5.236
         pyplot.figure(num=1, figsize=(size, size * 0.54))
-        pyplot.xscale('log', basex=2)
+        pyplot.xscale('log', base=2)
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
         super().__init__(setup, title=title, grid=grid, legend=legend)
