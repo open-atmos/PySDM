@@ -8,6 +8,11 @@ from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 from .error_measure import error_measure
 
+from distutils.version import StrictVersion
+import matplotlib
+_matplotlib_version_3_3_3 = StrictVersion("3.3.0")
+_matplotlib_version_actual = StrictVersion(matplotlib.__version__)
+
 
 class SpectrumColors:
 
@@ -24,8 +29,7 @@ class SpectrumColors:
 
 
 class SpectrumPlotter:
-
-    def __init__(self, setup, title=None, grid=True, legend=True):
+    def __init__(self, setup, title=None, grid=True, legend=True, log_base=10):
         self.setup = setup
         self.format = 'pdf'
         self.colors = SpectrumColors()
@@ -36,6 +40,7 @@ class SpectrumPlotter:
         self.title = title
         self.xlabel = 'particle radius [µm]'
         self.ylabel = 'dm/dlnr [g/m^3/(unit dr/r)]'
+        self.log_base = log_base
         self.ax = pyplot
         self.fig = pyplot
         self.finished = False
@@ -46,17 +51,19 @@ class SpectrumPlotter:
         self.finished = True
         if self.grid:
             self.ax.grid()
+
+        base_arg = {"base" + ("x" if _matplotlib_version_actual < _matplotlib_version_3_3_3 else ""): self.log_base}
         if self.title is not None:
             try:
                 self.ax.title(self.title)
             except TypeError:
                 self.ax.set_title(self.title)
         try:
-            self.ax.xscale('log')
+            self.ax.xscale('log', **base_arg)
             self.ax.xlabel(self.xlabel)
             self.ax.ylabel(self.ylabel)
         except AttributeError:
-            self.ax.set_xscale('log')
+            self.ax.set_xscale('log', **base_arg)
             self.ax.set_xlabel(self.xlabel)
             self.ax.set_ylabel(self.ylabel)
         if self.legend:

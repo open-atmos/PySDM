@@ -10,13 +10,11 @@ class SpectrumPlotter(SuperSpectrumPlotter):
     def __init__(self, setup, title=None, grid=True, legend=False):
         size = 2 * 5.236
         pyplot.figure(num=1, figsize=(size, size * 0.54))
-        pyplot.xscale('log', base=2)
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-        super().__init__(setup, title=title, grid=grid, legend=legend)
+        super().__init__(setup, title=title, grid=grid, legend=legend, log_base=2)
         self.color = None
         self.smooth = True
-        self.ticks()
 
     def ticks(self):
         xticks = [4, 6.25, 12.5, 25, 50, 100, 200]
@@ -25,6 +23,7 @@ class SpectrumPlotter(SuperSpectrumPlotter):
 
     def show(self):
         self.finish()
+        self.ticks()
         pyplot.show()
 
     def plot(self, spectrum, t):
