@@ -16,7 +16,7 @@ def make_link(fig, filename=None):
         )
     else:
         tempfile_path = os.path.join(outdir, filename)
-    fig.savefig(tempfile_path, format='pdf')
+    fig.savefig(tempfile_path)
     basename = os.path.basename(tempfile_path)
     if 'google.colab' in sys.modules:
         link = Button(description=filename)
