@@ -20,7 +20,7 @@ def make_link(fig, filename=None):
     basename = os.path.basename(tempfile_path)
     if 'google.colab' in sys.modules:
         link = Button(description=filename)
-        link.on_click(lambda _:colab.files.download('/content/PySDM/PySDM_examples/utils/output/', basename))
+        link.on_click(lambda _:colab.files.download(os.path.join('/content/PySDM/PySDM_examples/utils/output/', basename)))
     else:
         link = HTML()
         filename = str(os.path.join('../utils/output', basename))
