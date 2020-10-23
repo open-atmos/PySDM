@@ -29,10 +29,8 @@ def make_link(fig, filename=None):
 
 
 def show_plot(filename=None):
-    pyplot.legend(loc = 'best')
-
+    link = make_link(pyplot, filename)
     output = Output()
     with output:
         pyplot.show()
-    link = make_link(pyplot, filename)
     display(VBox([output, link]))
