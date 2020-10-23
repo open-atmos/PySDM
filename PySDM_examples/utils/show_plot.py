@@ -13,7 +13,7 @@ def make_link(fig, filename=None):
         )
     else:
         tempfile_path = os.path.join(outdir, filename)
-    fig.savefig(tempfile_path, type='pdf')
+    fig.savefig(tempfile_path, format='pdf')
     link = HTML()
     filename = str(os.path.join('../utils/output', os.path.basename(tempfile_path)))
     link.value = FileLink(filename)._format_path()
