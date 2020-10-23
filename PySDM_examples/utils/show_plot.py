@@ -1,7 +1,10 @@
-import tempfile, os
+import tempfile, os, sys
 from IPython.display import FileLink, display
-from ipywidgets import HTML, VBox, Output
+from ipywidgets import HTML, VBox, Output, Button
 from matplotlib import pyplot
+if 'google.colab' in sys.modules:
+    from google import colab
+
 
 
 def make_link(fig, filename=None):
@@ -14,9 +17,14 @@ def make_link(fig, filename=None):
     else:
         tempfile_path = os.path.join(outdir, filename)
     fig.savefig(tempfile_path, format='pdf')
-    link = HTML()
-    filename = str(os.path.join('../utils/output', os.path.basename(tempfile_path)))
-    link.value = FileLink(filename)._format_path()
+    basename = os.path.basename(tempfile_path)
+    if 'google.colab' in sys.modules:
+        link = Button(description=filename)
+        link.on_click(lambda _:colab.files.download('/content/PySDM/PySDM_examples/utils/output/', basename))
+    else:
+        link = HTML()
+        filename = str(os.path.join('../utils/output', basename))
+        link.value = FileLink(filename)._format_path()
     return link
 
 
