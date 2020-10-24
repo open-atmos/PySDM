@@ -1,10 +1,9 @@
 import tempfile, os, sys
 from IPython.display import FileLink, display
-from ipywidgets import HTML, VBox, Output, Button
+from ipywidgets import HTML, Button
 from matplotlib import pyplot
 if 'google.colab' in sys.modules:
     from google import colab
-
 
 
 def make_link(fig, filename=None):
@@ -30,7 +29,5 @@ def make_link(fig, filename=None):
 
 def show_plot(filename=None):
     link = make_link(pyplot, filename)
-    output = Output()
-    with output:
-        pyplot.show()
-    display(VBox([output, link]))
+    pyplot.show()
+    display(link)
