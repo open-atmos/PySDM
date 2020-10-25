@@ -10,51 +10,51 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 
-from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
+from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
 from PySDM.products.state import ParticlesVolumeSpectrum
 
 
-def run(setup, backend=CPU, observers=()):
-    builder = Builder(n_sd=setup.n_sd, backend=backend)
-    builder.set_environment(Box(dv=setup.dv, dt=setup.dt))
+def run(settings, backend=CPU, observers=()):
+    builder = Builder(n_sd=settings.n_sd, backend=backend)
+    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
-    attributes['volume'], attributes['n'] = ConstantMultiplicity(setup.spectrum).sample(setup.n_sd)
-    coalescence = Coalescence(setup.kernel)
-    coalescence.adaptive = setup.adaptive
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(settings.spectrum).sample(settings.n_sd)
+    coalescence = Coalescence(settings.kernel)
+    coalescence.adaptive = settings.adaptive
     builder.add_dynamic(coalescence)
     products = [ParticlesVolumeSpectrum()]
     core = builder.build(attributes, products)
-    if hasattr(setup, 'u_term') and 'terminal velocity' in core.particles.attributes:
-        core.particles.attributes['terminal velocity'].approximation = setup.u_term(core)
+    if hasattr(settings, 'u_term') and 'terminal velocity' in core.particles.attributes:
+        core.particles.attributes['terminal velocity'].approximation = settings.u_term(core)
 
     for observer in observers:
         core.observers.append(observer)
 
     vals = {}
-    for step in setup.steps:
+    for step in settings.steps:
         core.run(step - core.n_steps)
-        vals[step] = core.products['dv/dlnr'].get(setup.radius_bins_edges)
-        vals[step][:] *= setup.rho
+        vals[step] = core.products['dv/dlnr'].get(settings.radius_bins_edges)
+        vals[step][:] *= settings.rho
 
     return vals, core.stats
 
 
 def main(plot: bool, save: str):
     with np.errstate(all='raise'):
-        setup = SetupA()
+        settings = Settings()
 
-        setup.n_sd = 2 ** 15
+        settings.n_sd = 2 ** 15
 
-        states, _ = run(setup)
+        states, _ = run(settings)
 
     with np.errstate(invalid='ignore'):
-        plotter = SpectrumPlotter(setup)
+        plotter = SpectrumPlotter(settings)
         plotter.smooth = True
         for step, vals in states.items():
-            plotter.plot(vals, step * setup.dt)
+            plotter.plot(vals, step * settings.dt)
         if save is not None:
-            n_sd = setup.n_sd
+            n_sd = settings.n_sd
             plotter.save(save + "/" +
                          f"{n_sd}_shima_fig_2" +
                          "." + plotter.format)

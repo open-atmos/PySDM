@@ -8,7 +8,7 @@ import numpy as np
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 
 
-class TestSetup:
+class DisplacementSettings:
     def __init__(self):
         self.n = np.ones(1, dtype=np.int64)
         self.grid = (1, 1)

@@ -7,12 +7,12 @@ from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlott
 
 
 class SpectrumPlotter(SuperSpectrumPlotter):
-    def __init__(self, setup, title=None, grid=True, legend=False):
+    def __init__(self, settings, title=None, grid=True, legend=False):
         size = 2 * 5.236
         pyplot.figure(num=1, figsize=(size, size * 0.54))
         pyplot.xlabel('particle radius [µm]')
         pyplot.ylabel('dm/dlnr [g/m^3/(unit dr/r)]')
-        super().__init__(setup, title=title, grid=grid, legend=legend, log_base=2)
+        super().__init__(settings, title=title, grid=grid, legend=legend, log_base=2)
         self.color = None
         self.smooth = True
 
@@ -27,7 +27,7 @@ class SpectrumPlotter(SuperSpectrumPlotter):
         pyplot.show()
 
     def plot(self, spectrum, t):
-        setup = self.setup
-        self.plot_data(setup, t, spectrum)
+        settings = self.settings
+        self.plot_data(settings, t, spectrum)
 
 

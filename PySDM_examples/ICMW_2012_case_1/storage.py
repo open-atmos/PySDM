@@ -25,8 +25,8 @@ class Storage:
         if hasattr(self, 'temp_dir'):
             self.temp_dir.cleanup()
 
-    def init(self, setup):
-        self.grid = setup.grid
+    def init(self, settings):
+        self.grid = settings.grid
 
     def _filepath(self, step: int, name: str):
         path = os.path.join(self.dir_path, f"{step:06}_{name}.npy")

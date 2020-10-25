@@ -13,7 +13,7 @@ from PySDM.physics import constants as const
 from PySDM.physics.constants import si
 
 
-class Setup:
+class Settings:
     condensation_coord = 'volume logarithm'
 
     condensation_rtol_x = condensation.default_rtol_x

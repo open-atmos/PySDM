@@ -9,7 +9,7 @@ from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 
 
-class Setup:
+class Settings:
     init_x_min = phys.volume(radius=3.94 * si.micrometre)
     init_x_max = phys.volume(radius=25 * si.micrometres)
 

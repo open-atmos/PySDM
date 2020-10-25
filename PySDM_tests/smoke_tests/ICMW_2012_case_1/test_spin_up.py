@@ -3,7 +3,7 @@ Created at 22.11.2019
 """
 
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
-from PySDM_examples.ICMW_2012_case_1.setup import Setup
+from PySDM_examples.ICMW_2012_case_1.settings import Settings
 import numpy as np
 from matplotlib import pyplot
 
@@ -21,17 +21,17 @@ class DummyStorage:
 
 def test_spin_up(plot=False):
     # Arrange
-    Setup.n_steps = 20
-    Setup.outfreq = 1
-    setup = Setup()
+    Settings.n_steps = 20
+    Settings.outfreq = 1
+    settings = Settings()
 
-    for key in setup.processes.keys():
-        setup.processes[key] = False
-    setup.processes["condensation"] = True
-    setup.processes["fluid advection"] = True
+    for key in settings.processes.keys():
+        settings.processes[key] = False
+    settings.processes["condensation"] = True
+    settings.processes["fluid advection"] = True
 
     storage = DummyStorage()
-    simulation = Simulation(setup, storage)
+    simulation = Simulation(settings, storage)
     simulation.reinit()
 
     # Act
@@ -39,7 +39,7 @@ def test_spin_up(plot=False):
 
     # Plot
     if plot:
-        levels = np.arange(setup.grid[1])
+        levels = np.arange(settings.grid[1])
         for step, datum in storage.profiles.items():
             pyplot.plot(datum["qv"], levels, label=str(step))
         pyplot.legend()
@@ -48,7 +48,7 @@ def test_spin_up(plot=False):
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next = storage.profiles[step+Setup.outfreq]["qv"]
+        next = storage.profiles[step + Settings.outfreq]["qv"]
         prev = storage.profiles[step]["qv"]
         eps = 1e-5
         assert ((prev + eps) >= next).all()

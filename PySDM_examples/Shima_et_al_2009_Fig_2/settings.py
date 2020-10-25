@@ -8,7 +8,7 @@ from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.physics.constants import si
 
 
-class SetupA:
+class Settings:
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
