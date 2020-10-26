@@ -3,7 +3,7 @@ Created at 18.11.2019
 """
 
 import numpy as np
-from PySDM_examples.ICMW_2012_case_1.setup import Setup
+from PySDM_examples.ICMW_2012_case_1.settings import Settings
 from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
@@ -13,22 +13,22 @@ import pytest
 
 @pytest.mark.skip  # TODO: sometimes fails... (https://travis-ci.org/atmos-cloud-sim-uj/PySDM/jobs/651243742#L454)
 def test_initialisation(plot=False):
-    # TODO: seed as a part of setup?
-    setup = Setup()
-    setup.n_steps = -1
-    setup.grid = (10, 5)
-    setup.n_sd_per_gridbox = 2000
+    # TODO: seed as a part of settings?
+    settings = Settings()
+    settings.n_steps = -1
+    settings.grid = (10, 5)
+    settings.n_sd_per_gridbox = 2000
 
-    simulation = Simulation(setup, None)
+    simulation = Simulation(settings, None)
 
     n_bins = 32
-    n_levels = setup.grid[1]
-    n_cell = np.prod(np.array(setup.grid))
+    n_levels = settings.grid[1]
+    n_cell = np.prod(np.array(settings.grid))
     n_moments = 1
 
     v_bins = np.logspace(
-        (np.log10(phys.volume(radius=setup.r_min))),
-        (np.log10(phys.volume(radius=10*setup.r_max))),
+        (np.log10(phys.volume(radius=settings.r_min))),
+        (np.log10(phys.volume(radius=10*settings.r_max))),
         num=n_bins,
         endpoint=True
     )
@@ -37,8 +37,8 @@ def test_initialisation(plot=False):
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
 
-    moment_0 = setup.backend.Storage.empty(n_cell, dtype=int)
-    moments = setup.backend.Storage.empty((n_moments, n_cell), dtype=float)
+    moment_0 = settings.backend.Storage.empty(n_cell, dtype=int)
+    moments = settings.backend.Storage.empty((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
     simulation.reinit()
 
@@ -46,18 +46,18 @@ def test_initialisation(plot=False):
     simulation.run()
     particles = simulation.core
     environment = simulation.core.environment
-    rhod = environment["rhod"].to_ndarray().reshape(setup.grid).mean(axis=0)
+    rhod = environment["rhod"].to_ndarray().reshape(settings.grid).mean(axis=0)
 
     for i in range(len(histogram_dry)):
         particles.particles.moments(
             moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_dry[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
+        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particles.mesh.dv * settings.grid[0])
 
         particles.particles.moments(
             moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_wet[i, :] = tmp.reshape(setup.grid).sum(axis=0) / (particles.mesh.dv * setup.grid[0])
+        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particles.mesh.dv * settings.grid[0])
 
     # Plot
     if plot:
@@ -86,7 +86,7 @@ def test_initialisation(plot=False):
 
     # Assert - location of maximum
     for level in range(n_levels):
-        real_max = setup.spectrum_per_mass_of_dry_air.distribution_params[2]
+        real_max = settings.spectrum_per_mass_of_dry_air.distribution_params[2]
         idx_max_dry = np.argmax(histogram_dry[:, level])
         idx_max_wet = np.argmax(histogram_wet[:, level])
         assert r_bins[idx_max_dry] < real_max < r_bins[idx_max_dry+1]
@@ -96,7 +96,7 @@ def test_initialisation(plot=False):
     for level in reversed(range(n_levels)):
         mass_conc_dry = np.sum(histogram_dry[:, level]) / rhod[level]
         mass_conc_wet = np.sum(histogram_wet[:, level]) / rhod[level]
-        mass_conc_STP = setup.spectrum_per_mass_of_dry_air.norm_factor
+        mass_conc_STP = settings.spectrum_per_mass_of_dry_air.norm_factor
         assert .5 * mass_conc_STP < mass_conc_dry < 1.5 * mass_conc_STP
         np.testing.assert_approx_equal(mass_conc_dry, mass_conc_wet)
 

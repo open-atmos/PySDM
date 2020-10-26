@@ -3,87 +3,87 @@ Created at 02.10.2019
 """
 
 from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
-from PySDM_examples.ICMW_2012_case_1.setup import Setup
+from PySDM_examples.ICMW_2012_case_1.settings import Settings
 import numpy as np
 import numba
 import os
 
 
-class DemoSetup(Setup):
-    ui_th_std0 = FloatSlider(description="$\\theta_0$ [K]", value=Setup.th_std0, min=280, max=300)
+class DemoSettings(Settings):
+    ui_th_std0 = FloatSlider(description="$\\theta_0$ [K]", value=Settings.th_std0, min=280, max=300)
 
     @property
     def th_std0(self):
         return self.ui_th_std0.value
 
-    ui_qv0 = FloatSlider(description="q$_{v0}$ [g/kg]", value=Setup.qv0*1000, min=5, max=10)
+    ui_qv0 = FloatSlider(description="q$_{v0}$ [g/kg]", value=Settings.qv0 * 1000, min=5, max=10)
 
     @property
     def qv0(self):
         return self.ui_qv0.value/1000
 
-    ui_p0 = FloatSlider(description="p$_0$ [hPa]", value=Setup.p0/100, min=900, max=1100)
+    ui_p0 = FloatSlider(description="p$_0$ [hPa]", value=Settings.p0 / 100, min=900, max=1100)
 
     @property
     def p0(self):
         return self.ui_p0.value*100
 
-    ui_kappa = FloatSlider(description="$\kappa$ [1]", value=Setup.kappa, min=0, max=1.5)
+    ui_kappa = FloatSlider(description="$\kappa$ [1]", value=Settings.kappa, min=0, max=1.5)
 
     @property
     def kappa(self):
         return self.ui_kappa.value
 
-    ui_amplitude = FloatSlider(description="$\psi_{_{mx}}$[kg/s/m$^{_2}$]", value=Setup.rho_w_max, min=-1, max=1)
+    ui_amplitude = FloatSlider(description="$\psi_{_{mx}}$[kg/s/m$^{_2}$]", value=Settings.rho_w_max, min=-1, max=1)
 
     @property
     def amplitude(self):
         return self.ui_amplitude.value
 
-    ui_nx = IntSlider(value=Setup.grid[0], min=10, max=100, description="nx")
-    ui_nz = IntSlider(value=Setup.grid[1], min=10, max=100, description="nz")
+    ui_nx = IntSlider(value=Settings.grid[0], min=10, max=100, description="nx")
+    ui_nz = IntSlider(value=Settings.grid[1], min=10, max=100, description="nz")
 
     @property
     def grid(self):
         return self.ui_nx.value, self.ui_nz.value
 
-    ui_dt = FloatSlider(value=Setup.dt, min=.5, max=5, description="dt (Eulerian)")
+    ui_dt = FloatSlider(value=Settings.dt, min=.5, max=5, description="dt (Eulerian)")
 
     @property
     def dt(self):
         return self.ui_dt.value
 
-    ui_n_steps = IntSlider(value=Setup.n_steps, min=1800, max=7200, description="# steps")
+    ui_n_steps = IntSlider(value=Settings.n_steps, min=1800, max=7200, description="# steps")
 
     @property
     def n_steps(self):
         return self.ui_n_steps.value
 
-    ui_condensation_rtol_x = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_x$)")
+    ui_condensation_rtol_x = IntSlider(value=np.log10(Settings.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_x$)")
 
     @property
     def condensation_rtol_x(self):
         return 10**self.ui_condensation_rtol_x.value
 
-    ui_condensation_rtol_thd = IntSlider(value=np.log10(Setup.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_\\theta$)")
+    ui_condensation_rtol_thd = IntSlider(value=np.log10(Settings.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_\\theta$)")
 
     @property
     def condensation_rtol_thd(self):
         return 10**self.ui_condensation_rtol_thd.value
 
-    ui_adaptive = Checkbox(value=Setup.adaptive, description='adaptive timestep')
+    ui_adaptive = Checkbox(value=Settings.adaptive, description='adaptive timestep')
 
     @property
     def adaptive(self):
         return self.ui_adaptive.value
 
-    ui_condensation_coord = Dropdown(options=['volume', 'volume logarithm'], value=Setup.condensation_coord, description='condensational variable coordinate')
+    ui_condensation_coord = Dropdown(options=['volume', 'volume logarithm'], value=Settings.condensation_coord, description='condensational variable coordinate')
 
     @property
     def condensation_coord(self):
         return self.ui_condensation_coord.value
 
-    ui_processes = [Checkbox(value=Setup.processes[key], description=key) for key in Setup.processes.keys()]
+    ui_processes = [Checkbox(value=Settings.processes[key], description=key) for key in Settings.processes.keys()]
 
     @property
     def processes(self):
@@ -96,7 +96,7 @@ class DemoSetup(Setup):
     # def enable_particle_temperatures(self):
     #     return self.ui_ept.value
 
-    ui_sdpg = IntSlider(value=Setup.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=1000)
+    ui_sdpg = IntSlider(value=Settings.n_sd_per_gridbox, description="n_sd/gridbox", min=1, max=1000)
 
     @property
     def n_sd_per_gridbox(self):
@@ -107,10 +107,10 @@ class DemoSetup(Setup):
     iga_description = "MPDATA: infinite gauge option"
     nit_description = "MPDATA: number of iterations (1=UPWIND)"
     ui_mpdata_options = [
-        Checkbox(value=Setup.mpdata_fct, description=fct_description),
-        Checkbox(value=Setup.mpdata_tot, description=tot_description),
-        Checkbox(value=Setup.mpdata_iga, description=iga_description),
-        IntSlider(value=Setup.mpdata_iters, description=nit_description, min=1, max=5)
+        Checkbox(value=Settings.mpdata_fct, description=fct_description),
+        Checkbox(value=Settings.mpdata_tot, description=tot_description),
+        Checkbox(value=Settings.mpdata_iga, description=iga_description),
+        IntSlider(value=Settings.mpdata_iters, description=nit_description, min=1, max=5)
     ]
 
     @property
@@ -161,6 +161,6 @@ class DemoSetup(Setup):
 
     def __init__(self):
         self.ui_n_threads = IntSlider(min=1, max=os.cpu_count(), value=numba.get_num_threads())
-        self.ui_n_threads.observe(DemoSetup.handle_n_threads, 'value')
+        self.ui_n_threads.observe(DemoSettings.handle_n_threads, 'value')
 
 

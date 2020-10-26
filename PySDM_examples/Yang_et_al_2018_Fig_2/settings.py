@@ -10,7 +10,7 @@ from PySDM.dynamics import condensation
 import numpy as np
 
 
-class Setup:
+class Settings:
 
     def __init__(self, n_sd=100, dt_output = 1 * si.second, dt_max=1 * si.second):
         self.n_steps = int(self.total_time / (5 * si.second) )  # TODO: rename to n_output
@@ -47,5 +47,5 @@ class Setup:
 
     @staticmethod
     def w(t):
-        return .5 * (np.where(t < Setup.t0, 1, np.sign(-np.sin(2*np.pi * Setup.f0 * (t-Setup.t0))))) \
+        return .5 * (np.where(t < Settings.t0, 1, np.sign(-np.sin(2 * np.pi * Settings.f0 * (t - Settings.t0))))) \
                * si.metre / si.second

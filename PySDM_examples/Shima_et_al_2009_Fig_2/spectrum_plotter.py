@@ -29,8 +29,8 @@ class SpectrumColors:
 
 
 class SpectrumPlotter:
-    def __init__(self, setup, title=None, grid=True, legend=True, log_base=10):
-        self.setup = setup
+    def __init__(self, settings, title=None, grid=True, legend=True, log_base=10):
+        self.settings = settings
         self.format = 'pdf'
         self.colors = SpectrumColors()
         self.smooth = False
@@ -79,29 +79,29 @@ class SpectrumPlotter:
         pyplot.savefig(file, format=self.format)
 
     def plot(self, spectrum, t):
-        self.plot_analytic_solution(self.setup, t, spectrum)
-        self.plot_data(self.setup, t, spectrum)
+        self.plot_analytic_solution(self.settings, t, spectrum)
+        self.plot_data(self.settings, t, spectrum)
 
-    def plot_analytic_solution(self, setup, t, spectrum=None):
+    def plot_analytic_solution(self, settings, t, spectrum=None):
         if t == 0:
-            analytic_solution = setup.spectrum.size_distribution
+            analytic_solution = settings.spectrum.size_distribution
         else:
-            analytic_solution = lambda x: setup.norm_factor * setup.kernel.analytic_solution(
-                x=x, t=t, x_0=setup.X0, N_0=setup.n_part
+            analytic_solution = lambda x: settings.norm_factor * settings.kernel.analytic_solution(
+                x=x, t=t, x_0=settings.X0, N_0=settings.n_part
             )
 
-        volume_bins_edges = phys.volume(setup.radius_bins_edges)
+        volume_bins_edges = phys.volume(settings.radius_bins_edges)
         dm = np.diff(volume_bins_edges)
-        dr = np.diff(setup.radius_bins_edges)
+        dr = np.diff(settings.radius_bins_edges)
 
         pdf_m_x = volume_bins_edges[:-1] + dm / 2
         pdf_m_y = analytic_solution(pdf_m_x)
 
-        pdf_r_x = setup.radius_bins_edges[:-1] + dr / 2
+        pdf_r_x = settings.radius_bins_edges[:-1] + dr / 2
         pdf_r_y = pdf_m_y * dm / dr * pdf_r_x
 
         x = pdf_r_x * si.metres / si.micrometres
-        y_true = pdf_r_y * phys.volume(radius=pdf_r_x) * setup.rho / setup.dv * si.kilograms / si.grams
+        y_true = pdf_r_y * phys.volume(radius=pdf_r_x) * settings.rho / settings.dv * si.kilograms / si.grams
 
         self.ax.plot(x, y_true, color='black')
 
@@ -110,7 +110,7 @@ class SpectrumPlotter:
             error = error_measure(y, y_true, x)
             self.title = f'error: {error:.2f}' # TODO: rename "error measure" + unit
 
-    def plot_data(self, setup, t, spectrum):
+    def plot_data(self, settings, t, spectrum):
         if self.smooth:
             scope = self.smooth_scope
             if t != 0:
@@ -123,16 +123,16 @@ class SpectrumPlotter:
                         spectrum[i] = np.mean(new[i - scope:i + scope + 1])
 
             self.ax.plot(
-                setup.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
+                settings.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
                 spectrum[:-scope] * si.kilograms / si.grams,
                 label=f"t = {t}s",
-                color=self.colors(t / (self.setup.steps[-1] * self.setup.dt))
+                color=self.colors(t / (self.settings.steps[-1] * self.settings.dt))
             )
         else:
             self.ax.step(
-                setup.radius_bins_edges[:-1] * si.metres / si.micrometres,
+                settings.radius_bins_edges[:-1] * si.metres / si.micrometres,
                 spectrum * si.kilograms / si.grams,
                 where='post',
                 label=f"t = {t}s",
-                color=self.colors(t / (self.setup.steps[-1] * self.setup.dt))
+                color=self.colors(t / (self.settings.steps[-1] * self.settings.dt))
             )

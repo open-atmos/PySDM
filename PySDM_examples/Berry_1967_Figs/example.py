@@ -5,7 +5,7 @@ Created at 08.08.2019
 import numpy as np
 
 from PySDM.dynamics.coalescence.kernels import Geometric, Hydrodynamic, Electric
-from PySDM_examples.Berry_1967_Figs.setup import Setup
+from PySDM_examples.Berry_1967_Figs.settings import Settings
 from PySDM_examples.Berry_1967_Figs.spectrum_plotter import SpectrumPlotter
 from PySDM.attributes.droplet.terminal_velocity import gunn_and_kinzer
 from PySDM_examples.Shima_et_al_2009_Fig_2.example import run
@@ -28,7 +28,7 @@ def main(plot: bool, save):
                 setups[u_term_approx][dt] = {}
 
                 for kernel in setup_prop:
-                    s = Setup()
+                    s = Settings()
                     s.u_term = u_term_approx
                     s.dt = 10 if dt == 'adaptive' else dt
                     s.adaptive = dt == 'adaptive'

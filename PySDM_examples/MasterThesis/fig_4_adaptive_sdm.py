@@ -2,7 +2,7 @@
 Created at 20.08.2020
 """
 
-from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
+from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM_examples.Shima_et_al_2009_Fig_2.example import run
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
 from matplotlib import pyplot as plt
@@ -22,13 +22,13 @@ def main(plot: bool = True, save: str = None):
             outputs = []
             exec_time = 0
             for iter in range(iters):
-                setup = SetupA()
+                settings = Settings()
 
-                setup.n_sd = 2 ** n_sd
-                setup.dt = dt if dt != 'adaptive' else 10
-                setup.adaptive = dt == 'adaptive'
+                settings.n_sd = 2 ** n_sd
+                settings.dt = dt if dt != 'adaptive' else 10
+                settings.adaptive = dt == 'adaptive'
 
-                states, stats = run(setup)
+                states, stats = run(settings)
                 outputs.append(states)
                 exec_time += sum(stats.wall_times)
             mean_time = exec_time / iters
@@ -39,12 +39,12 @@ def main(plot: bool = True, save: str = None):
             for key in outputs[0].keys():
                 mean_output[key] = sum((output[key] for output in outputs)) / len(outputs)
 
-            plotter = SpectrumPlotter(setup, legend=False)
+            plotter = SpectrumPlotter(settings, legend=False)
             plotter.fig = fig
             plotter.ax = axs[i, j]
             plotter.smooth = True
             for step, vals in mean_output.items():
-                plotter.plot(vals, step * setup.dt)
+                plotter.plot(vals, step * settings.dt)
 
             plotter.ylabel = r'$\bf{dt: ' + str(dt) + '}$\ndm/dlnr [g/m^3/(unit dr/r)]' if j == 0 else None
             plotter.xlabel = 'particle radius [µm]\n' \
@@ -53,7 +53,7 @@ def main(plot: bool = True, save: str = None):
             plotter.finished = False
             plotter.finish()
     if save is not None:
-        n_sd = setup.n_sd
+        n_sd = settings.n_sd
         plotter.save(save + "/" +
                      f"{n_sd}_shima_fig_2" +
                      "." + plotter.format)

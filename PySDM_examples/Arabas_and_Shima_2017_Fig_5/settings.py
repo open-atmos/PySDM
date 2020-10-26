@@ -8,7 +8,7 @@ from PySDM.dynamics import condensation
 import numpy as np
 
 
-class Setup:
+class Settings:
     def __init__(self, w_avg, N_STP, r_dry, mass_of_dry_air):
         self.q0 = const.eps / (self.p0 / self.RH0 / phys.pvs(self.T0) - 1)
         self.w_avg = w_avg
@@ -19,8 +19,8 @@ class Setup:
 
     @property
     def dt_max(self):
-        t_total = 2 * Setup.z_half / self.w_avg
-        result = t_total / Setup.n_output
+        t_total = 2 * Settings.z_half / self.w_avg
+        result = t_total / Settings.n_output
         if result < 1 * si.centimetre / si.second:
             result /= 100  # TODO
         return result
@@ -62,7 +62,7 @@ for w_i in range(len(w_avgs)):
     for N_i in range(len(N_STPs)):
         for rd_i in range(len(r_drys)):
             if not rd_i == N_i == 1:
-                setups.append(Setup(
+                setups.append(Settings(
                     w_avg=w_avgs[w_i],
                     N_STP=N_STPs[N_i],
                     r_dry=r_drys[rd_i],

@@ -31,8 +31,8 @@ from .spin_up import SpinUp
 
 class Simulation:
 
-    def __init__(self, setup, storage, backend=CPU):
-        self.setup = setup
+    def __init__(self, settings, storage, backend=CPU):
+        self.settings = settings
         self.storage = storage
         self.core = None
         self.backend = backend
@@ -43,23 +43,23 @@ class Simulation:
 
     def reinit(self):
 
-        builder = Builder(n_sd=self.setup.n_sd, backend=self.backend)
-        environment = Kinematic2D(dt=self.setup.dt,
-                                  grid=self.setup.grid,
-                                  size=self.setup.size,
-                                  rhod_of=self.setup.rhod,
-                                  field_values=self.setup.field_values)
+        builder = Builder(n_sd=self.settings.n_sd, backend=self.backend)
+        environment = Kinematic2D(dt=self.settings.dt,
+                                  grid=self.settings.grid,
+                                  size=self.settings.size,
+                                  rhod_of=self.settings.rhod,
+                                  field_values=self.settings.field_values)
         builder.set_environment(environment)
 
         products = [
-            ParticlesWetSizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),
-            ParticlesDrySizeSpectrum(v_bins=self.setup.v_bins, normalise_by_dv=True),  # Note: better v_bins
+            ParticlesWetSizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),
+            ParticlesDrySizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),  # Note: better v_bins
             TotalParticleConcentration(),
             TotalParticleSpecificConcentration(),
-            AerosolConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
-            CloudConcentration(radius_range=(self.setup.aerosol_radius_threshold, self.setup.drizzle_radius_threshold)),
-            DrizzleConcentration(radius_threshold=self.setup.drizzle_radius_threshold),
-            AerosolSpecificConcentration(radius_threshold=self.setup.aerosol_radius_threshold),
+            AerosolConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
+            CloudConcentration(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
+            DrizzleConcentration(radius_threshold=self.settings.drizzle_radius_threshold),
+            AerosolSpecificConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
             ParticleMeanRadius(),
             SuperDropletCount(),
             RelativeHumidity(), Pressure(), Temperature(),
@@ -68,49 +68,49 @@ class Simulation:
             DryAirPotentialTemperature()
         ]
 
-        fields = Fields(environment, self.setup.stream_function)
-        if self.setup.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
+        fields = Fields(environment, self.settings.stream_function)
+        if self.settings.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
-        if self.setup.processes["condensation"]:
+        if self.settings.processes["condensation"]:
             condensation = Condensation(
-                kappa=self.setup.kappa,
-                rtol_x=self.setup.condensation_rtol_x,
-                rtol_thd=self.setup.condensation_rtol_thd,
-                coord=self.setup.condensation_coord,
-                adaptive=self.setup.adaptive)
+                kappa=self.settings.kappa,
+                rtol_x=self.settings.condensation_rtol_x,
+                rtol_thd=self.settings.condensation_rtol_thd,
+                coord=self.settings.condensation_coord,
+                adaptive=self.settings.adaptive)
             builder.add_dynamic(condensation)
             products.append(CondensationTimestep())
-        if self.setup.processes['fluid advection']:
+        if self.settings.processes['fluid advection']:
             mpdatas = MPDATA(fields=fields,
-                             n_iters=self.setup.mpdata_iters,
-                             infinite_gauge=self.setup.mpdata_iga,
-                             flux_corrected_transport=self.setup.mpdata_fct,
-                             third_order_terms=self.setup.mpdata_tot)
+                             n_iters=self.settings.mpdata_iters,
+                             infinite_gauge=self.settings.mpdata_iga,
+                             flux_corrected_transport=self.settings.mpdata_fct,
+                             third_order_terms=self.settings.mpdata_tot)
             builder.add_dynamic(EulerianAdvection(mpdatas))
-        if self.setup.processes["particle advection"]:
+        if self.settings.processes["particle advection"]:
             displacement = Displacement(
                 courant_field=fields.courant_field,
                 scheme='FTBS',
-                enable_sedimentation=self.setup.processes["sedimentation"])
+                enable_sedimentation=self.settings.processes["sedimentation"])
             builder.add_dynamic(displacement)
-        if self.setup.processes["coalescence"]:
-            builder.add_dynamic(Coalescence(kernel=self.setup.kernel))
+        if self.settings.processes["coalescence"]:
+            builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
 
         attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.Pseudorandom(),
                                                  spectral_discretisation=spectral_sampling.ConstantMultiplicity(
-                                                     spectrum=self.setup.spectrum_per_mass_of_dry_air
+                                                     spectrum=self.settings.spectrum_per_mass_of_dry_air
                                                  ),
-                                                 kappa=self.setup.kappa)
+                                                 kappa=self.settings.kappa)
 
         self.core = builder.build(attributes, products)
-        SpinUp(self.core, self.setup.n_spin_up)
+        SpinUp(self.core, self.settings.n_spin_up)
         # TODO
         if self.storage is not None:
-            self.storage.init(self.setup)
+            self.storage.init(self.settings)
 
     def run(self, controller=DummyController()):
         with controller:
-            for step in self.setup.steps:  # TODO: rename output_steps
+            for step in self.settings.steps:  # TODO: rename output_steps
                 if controller.panic:
                     break
 
@@ -118,7 +118,7 @@ class Simulation:
 
                 self.store(step)
 
-                controller.set_percent(step / self.setup.steps[-1])
+                controller.set_percent(step / self.settings.steps[-1])
 
         return self.core.stats
 

@@ -12,7 +12,7 @@ class Product:
         self.unit = unit
         self.description = description
         self.scale = scale
-        self.range = range  # TODO: move out (maybe inject based on setup) and rename to something like plot_hint_range
+        self.range = range  # TODO: move out (maybe inject based on settings) and rename to something like plot_hint_range
         self.shape = None
         self.buffer = None
         self.core = None

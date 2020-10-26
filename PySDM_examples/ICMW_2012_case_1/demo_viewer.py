@@ -15,9 +15,9 @@ from .demo_plots import _ImagePlot, _SpectrumPlot
 
 class DemoViewer:
 
-    def __init__(self, storage, setup):
+    def __init__(self, storage, settings):
         self.storage = storage
-        self.setup = setup
+        self.settings = settings
 
         self.play = Play(interval=1000)
         self.step_slider = IntSlider(continuous_update=False, description='t/dt:')
@@ -44,7 +44,7 @@ class DemoViewer:
             if len(val.shape) == 2
         ]
 
-        r_bins = phys.radius(volume=self.setup.v_bins)
+        r_bins = phys.radius(volume=self.settings.v_bins)
         const.convert_to(r_bins, const.si.micrometres)
         self.spectrumOutput = Output()
         with self.spectrumOutput:
@@ -57,7 +57,7 @@ class DemoViewer:
             if len(product.shape) == 2:
                 self.outputs[key] = Output()
                 with self.outputs[key]:
-                    self.plots[key] = _ImagePlot(self.setup.grid, self.setup.size, product)
+                    self.plots[key] = _ImagePlot(self.settings.grid, self.settings.size, product)
                     clear_output()
 
         self.plot_box = Box()
@@ -90,11 +90,11 @@ class DemoViewer:
 
         for widget in (self.step_slider, self.play):
             widget.value = 0
-            widget.max = len(self.setup.steps) - 1
+            widget.max = len(self.settings.steps) - 1
 
         for j, xz in enumerate(('X', 'Z')):
             slider = self.slider[xz]
-            mx = self.setup.grid[j]
+            mx = self.settings.grid[j]
             slider.max = mx
             slider.value = (0, mx)
 
@@ -129,7 +129,7 @@ class DemoViewer:
 
         for key in ('Particles Wet Size Spectrum', 'Particles Dry Size Spectrum'):
             try:
-                data = self.storage.load(self.setup.steps[step], key)
+                data = self.storage.load(self.settings.steps[step], key)
                 data = data[xrange, yrange, :]
                 data = np.mean(np.mean(data, axis=0), axis=0)
                 data = np.concatenate(((0,), data))
@@ -164,7 +164,7 @@ class DemoViewer:
 
         step = self.step_slider.value
         try:
-            data = self.storage.load(self.setup.steps[step], selected)
+            data = self.storage.load(self.settings.steps[step], selected)
         except self.storage.Exception:
             data = None
 
