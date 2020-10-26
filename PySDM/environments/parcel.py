@@ -3,7 +3,7 @@ Created at 25.11.2019
 """
 
 import numpy as np
-from PySDM.initialisation import r_wet_init
+from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.physics import formulae as phys
 from ..physics import constants as const
@@ -49,7 +49,8 @@ class Parcel(_Moist):
         _Moist.sync(self)
         self.notify()
 
-    def init_attributes(self, *, n_in_dv: [float, np.ndarray], kappa: float, r_dry: [float, np.ndarray]):
+    def init_attributes(self, *, n_in_dv: [float, np.ndarray], kappa: float, r_dry: [float, np.ndarray],
+                        rtol=default_rtol):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
@@ -57,7 +58,7 @@ class Parcel(_Moist):
         attributes = {}
         attributes['dry volume'] = phys.volume(radius=r_dry)
         attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa)
+        r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa, rtol)
         attributes['volume'] = phys.volume(radius=r_wet)
         return attributes
 
