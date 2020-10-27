@@ -1,9 +1,8 @@
 ThrustRTC==0.3.8
 CURandRTC==0.1.6
 numba==0.51.2
-git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@10641ea#egg=PyMPDATA
+git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@907355f#egg=PyMPDATA
 
-mpmath>=1.1.0
 Pint>=0.11
 scipy>=1.4.1
 mendeleev>=0.6.0
