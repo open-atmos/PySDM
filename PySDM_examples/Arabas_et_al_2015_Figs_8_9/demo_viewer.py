@@ -8,7 +8,7 @@ from IPython.display import clear_output, display
 import numpy as np
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
-from ..utils.show_plot import make_link
+from ..utils.show_plot import save_and_make_link
 
 from .demo_plots import _ImagePlot, _SpectrumPlot
 
@@ -101,10 +101,10 @@ class DemoViewer:
         self.replot()
 
     def handle_save_map(self, _):
-        display(make_link(self.plots[self.product_select.value].fig))
+        display(save_and_make_link(self.plots[self.product_select.value].fig))
 
     def handle_save_spe(self, _):
-        display(make_link(self.spectrumPlot.fig))
+        display(save_and_make_link(self.spectrumPlot.fig))
 
     def replot(self, *args, **kwargs):
         selected = self.product_select.value

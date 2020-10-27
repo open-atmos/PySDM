@@ -2,8 +2,8 @@
 Created at 22.11.2019
 """
 
-from PySDM_examples.ICMW_2012_case_1.simulation import Simulation
-from PySDM_examples.ICMW_2012_case_1.settings import Settings
+from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
+from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
 import numpy as np
 from matplotlib import pyplot
 

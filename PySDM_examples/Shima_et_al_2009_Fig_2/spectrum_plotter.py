@@ -7,7 +7,7 @@ from matplotlib import pyplot
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 from .error_measure import error_measure
-
+from ..utils.show_plot import show_plot
 from distutils.version import StrictVersion
 import matplotlib
 _matplotlib_version_3_3_3 = StrictVersion("3.3.0")
@@ -72,7 +72,7 @@ class SpectrumPlotter:
     def show(self):
         self.finish()
         pyplot.tight_layout()
-        pyplot.show()
+        show_plot()
 
     def save(self, file):
         self.finish()

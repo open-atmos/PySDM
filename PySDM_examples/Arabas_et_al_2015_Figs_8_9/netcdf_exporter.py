@@ -1,24 +1,16 @@
-import tempfile, os
+import os
 import numpy as np
 from scipy.io.netcdf import netcdf_file
 from .dummy_controller import DummyController
 
 
-class netCDF:
-    def __init__(self, storage, settings, simulator):
+class NetCDFExporter:
+    def __init__(self, storage, settings, simulator, filename):
         self.storage = storage
         self.settings = settings
         self.simulator = simulator
         self.vars = {}
-
-        self.tempfile_fd, self.tempfile_path = tempfile.mkstemp(
-            dir=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'output'),
-            suffix='.nc'
-        )
-
-    @property
-    def filename(self):
-        return str(os.path.join('output', os.path.basename(self.tempfile_path)))
+        self.filename = filename
 
     def _create_dimensions(self, ncdf):
         ncdf.createDimension("T", len(self.settings.steps))
@@ -56,7 +48,7 @@ class netCDF:
             controller = DummyController()
         with controller:
             controller.set_percent(0)
-            with netcdf_file(self.tempfile_fd, mode='w') as ncdf:
+            with netcdf_file(self.filename, mode='w') as ncdf:
                 self._create_dimensions(ncdf)
                 self._create_variables(ncdf)
                 for i in range(len(self.settings.steps)):

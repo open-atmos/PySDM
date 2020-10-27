@@ -2,23 +2,21 @@
 Created at 02.10.2019
 """
 
-from ipywidgets import FloatProgress, Button, HBox, HTML
-from IPython.display import FileLink
+from ipywidgets import FloatProgress, Button, HBox
 from time import sleep
 from threading import Thread
 
 
 class DemoController:
-    progress = FloatProgress(value=0.0, min=0.0, max=1.0)
-    button = Button()
-    link = HTML()
-    panic = False
-    thread = None
-
-    def __init__(self, simulator, viewer, exporter):
+    def __init__(self, simulator, viewer, exporter, ncdf_file):
+        self.progress = FloatProgress(value=0.0, min=0.0, max=1.0)
+        self.button = Button()
+        self.link = HBox()
+        self.panic = False
+        self.thread = None
         self.simulator = simulator
         self.exporter = exporter
-        self.ncdf_filename = exporter.filename
+        self.ncdf_file = ncdf_file
         self.viewer = viewer
         self._setup_play()
 
@@ -40,7 +38,7 @@ class DemoController:
         self.progress.value = 0
         self.progress.description = ' '
         self.viewer.clear()
-        self.link.value = ''
+        self.link.children = ()
 
     def box(self):
         return HBox([self.progress, self.button, self.link])
@@ -74,7 +72,7 @@ class DemoController:
     def _handle_play(self, _):
         self._setup_stop()
 
-        self.link.value = ''
+        self.link.children = ()
         self.progress.description = 'initialisation'
 
         self.thread = Thread(target=self.simulator.run, args=(self,))
@@ -86,5 +84,5 @@ class DemoController:
     def _handle_ncdf(self, _):
         self.thread = Thread(target=self.exporter.run, args=(self,))
         self.thread.start()
-        self.link.value = FileLink(self.ncdf_filename)._format_path()
+        self.link.children = (self.ncdf_file.make_link_widget(),)
         self._setup_stop()
