@@ -1,8 +1,9 @@
-[![Travis Build Status](https://travis-ci.org/atmos-cloud-sim-uj/PySDM.svg?branch=master)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
+[![Travis Build Status](https://img.shields.io/travis/atmos-cloud-sim-uj/PySDM/master.svg?logo=travis)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
 [![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/Build%20Status/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=master&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/master)
-[![Coverage Status](https://img.shields.io/codecov/c/github/atmos-cloud-sim-uj/PySDM/master.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html)
+[![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/master/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
 
 # PySDM
 PySDM is a package for simulating the dynamics of population of particles 
@@ -36,8 +37,6 @@ The dependencies of PySDM examples and test subpackages are summarised in
   file.
 Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
   a concurrently developed sister project to PySDM.
-Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
-  used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
 
 ## Demo notebooks reproducing results from literature:
 #### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
@@ -170,9 +169,9 @@ The resultant plot looks as follows:
 - [environments](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/environments):
     - [Box](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/box.py): 
       bare zero-dimensional framework 
-    - [MoistLagrangianParcelAdiabatic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_lagrangian_parcel_adiabatic.py): 
+    - [Parcel](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/parcel.py): 
       zero-dimensional adiabatic parcel framework
-    - [MoistEulerian2DKinematic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_eulerian_2d_kinematic.py): 
+    - [Kinematic2D](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/kinematic_2d.py): 
       two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 - [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
     - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence)
@@ -181,7 +180,7 @@ The resultant plot looks as follows:
             - [Geometric](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/geometric.py)
             - [Hydrodynamic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/hydrodynamic.py)
             - ...
-    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation)
+    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation.py)
         - solvers (working in arbitrary spectral coordinate specified through external class, defaults to logarithm of volume): 
             - [default](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/impl/condensation_methods.py):
               bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
@@ -189,7 +188,7 @@ The resultant plot looks as follows:
               black-box SciPy-based solver for benchmarking (Numba backend only)
     - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
       includes advection with the flow & sedimentation)
-    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py)
+    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection)
 - Attributes (selected):
     - [cell](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/cell):
         - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/cell/position_in_cell.py)
@@ -197,7 +196,7 @@ The resultant plot looks as follows:
         - ...
     - [droplet](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/droplet):
         - [volume](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/volume.py)
-        - [multiplicity](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/multiplicity.py)
+        - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/multiplicities.py)
         - [critical_radius](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/critical_radius.py)
         - ...
 - Products (selected):
@@ -228,5 +227,5 @@ licence: GPL v3
   https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):    
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
-- LCM1D (Python)
+- LCM1D (Python)    
   https://github.com/SimonUnterstrasser/ColumnModel
