@@ -1,5 +1,6 @@
 from .temporary_file import TemporaryFile
 from matplotlib import pyplot
+from IPython.display import display
 
 
 def show_plot(filename=None):
