@@ -3,7 +3,7 @@ Created at 2019
 """
 
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
-from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
+from PySDM_examples.Bartman_2020_MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
 
 import pytest
 import numpy as np

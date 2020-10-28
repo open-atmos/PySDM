@@ -34,34 +34,37 @@ The **ThrustRTC** backend named ``GPU`` offers GPU-resident operation of PySDM
 The dependencies of PySDM examples and test subpackages are summarised in
   the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
   file.
-Noteworthy, one of the examples (``ICMW_2012_case_1``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
-  a concurently developed sister project to PySDM.
+Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
+  a concurrently developed sister project to PySDM.
 Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
   used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
 
-## Demos:
+## Demo notebooks reproducing results from literature:
+#### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
 - [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FShima_et_al_2009_Fig_2/demo.ipynb)
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Shima_et_al_2009_Fig_2/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Shima_et_al_2009_Fig_2/demo.ipynb)    
   (Box model, coalescence only, test case employing Golovin analytical solution)
-- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) Figs. 6, 8, 10 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FBerry_1967_Figs/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Berry_1967_Figs/demo.ipynb)    
+- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) Figs. 5, 8 & 10 
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Berry_1967_Figs_5_8_10/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Berry_1967_Figs_5_8_10/demo.ipynb)    
   (Box model, coalescence only, test cases for realistic kernels)
+#### 0D parcel-model condensation only examples (work with CPU backend only)
 - [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FArabas_and_Shima_2017_Fig_5/demo.ipynb)
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_and_Shima_2017_Fig_5/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_and_Shima_2017_Fig_5/demo.ipynb)    
   (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)
-- [Yang et al. 2018](http://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FYang_et_al_2018_Fig_2/demo.ipynb)
+- [Yang et al. 2018](https://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)    
   (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
-- ICMW 2012 case 1
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples%2FICMW_2012_case_1/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/ICMW_2012_case_1/demo.ipynb)       
-  (2D prescripted flow stratocumulus-mimicking aerosol collisional processing test case)
+#### 2D kinematic-flow warm-rain example (works with CPU backend only)
+- [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) Figs. 8 & 9:
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)       
+  (2D prescribed-flow stratocumulus-mimicking aerosol collisional processing test case)
   
-## Usage example
+## Hello-world example
 
 In order to depict the PySDM API with a practical example, the following
   listings provide a sample code roughly reproducing the 
@@ -75,7 +78,7 @@ from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
 from PySDM.physics.formulae import volume
 
-n_sd = 2**13
+n_sd = 2**15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
 attributes = {}
 attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
@@ -138,7 +141,7 @@ pyplot.savefig('readme.svg')
 ```
 The resultant plot looks as follows:
 
-![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.png)
+![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.svg)
 
 ## Package structure and API
 

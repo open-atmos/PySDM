@@ -4,6 +4,7 @@ Created at 12.08.2019
 
 from matplotlib import pyplot
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter as SuperSpectrumPlotter
+from PySDM_examples.utils.show_plot import show_plot
 
 
 class SpectrumPlotter(SuperSpectrumPlotter):
@@ -24,7 +25,7 @@ class SpectrumPlotter(SuperSpectrumPlotter):
     def show(self):
         self.finish()
         self.ticks()
-        pyplot.show()
+        show_plot()
 
     def plot(self, spectrum, t):
         settings = self.settings
