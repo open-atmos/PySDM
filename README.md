@@ -76,7 +76,6 @@ It is a coalescence-only set-up in which the initial particle size
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
-from PySDM.physics.formulae import volume
 
 n_sd = 2**15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
