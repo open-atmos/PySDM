@@ -1,8 +1,20 @@
-[![Travis Build Status](https://travis-ci.org/atmos-cloud-sim-uj/PySDM.svg?branch=master)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
+![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)
+![Linux OK](https://img.shields.io/static/v1?label=Linux&logo=Linux&color=yellow&message=%E2%9C%93)
+![OSX OK](https://img.shields.io/static/v1?label=OSX&logo=Apple&color=silver&message=%E2%9C%93)
+![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)
+![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=%E2%9C%93)
+![CUDA](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)   
+[![Travis Build Status](https://img.shields.io/travis/atmos-cloud-sim-uj/PySDM/master.svg?logo=travis)](https://travis-ci.org/atmos-cloud-sim-uj/PySDM)
 [![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/Build%20Status/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=master&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/master)
-[![Coverage Status](https://img.shields.io/codecov/c/github/atmos-cloud-sim-uj/PySDM/master.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-3.0.en.html)
+[![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/master/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)   
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![GitHub issues](https://img.shields.io/github/issues/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=)
+[![GitHub issues](https://img.shields.io/github/issues-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=)
+[![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)   
+[![EU Funding](https://img.shields.io/static/v1?label=EU%20Funding%20by&color=103069&message=FNP&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAeCAYAAABTwyyaAAAEzklEQVRYw9WYS2yUVRiGn3P5ZzozpZ3aUsrNgoKlKBINmkhpCCwwxIAhsDCpBBIWhmCMMYTEhSJ4i9EgBnSBEm81MRrFBhNXEuUSMCopiRWLQqEGLNgr085M5//POS46NNYFzHQ6qGc1i5nzP/P973m/9ztCrf7A8T9csiibCocUbvTzfxLcAcaM3cY3imXz25lT3Y34G7gQYAKV3+bFAHcATlBTPogJNADG92iY28FHW97kyPbnuW/W7xgzAhukQ9xe04PJeOT0HkQRwK0TlEeGWb/kOO9v3kdD3a8YK9GhDMfa6mg9fxunOm/lWPtcpDI4K7n/jnN8+uQbrFrUSiwU/DtSEUB/MsKKBT+zYslJqiYNgVE4JwhHkzy86wlWvrKVWDSZ/YFjZlU39yw4y/rGoyQGowWB67zl4QQue+jssMdXrQvZ/00jyeHwqCgDKwnsiJjSvkYAxsG5K9WsenYbJdqAtAjhCIxCSZt/4fK1w5A2WCvxrUAKCHwNVoA2aGmvq11jJQQapEXrgMBKqmJJugejKGWLIxXrBPFoigfv/omd675gRkU/xgqUDlAhH3UDaAAlLSqUQekAYyVTyhLs3tDMsvntlIYzOFcEcOcEGd9jx9oDbGs6QO0t/Tijxi9S4bhzxiWaVh5m94Zm0n7oui4ybo0raUlcncQnxx+g+WgDF/vLoYDmoqSl/dJUnt7XRCoTZjij0Z6Pc2LiNS4EBBkNvoeOJXN+yPWWSZeANOhwJq/98nKVwNdoL8B5AROxBKBL0gjh8DMhdCh3eJnrA0yqhLpplwmyup6IajvAOIGfKGVx3VmCRGnOMpe5QAdG0bT8CAeeep0d6z6nqjSJnQiZWEllLMWrmz6k+fE9rGk8MVqYgsGv5ZH2i1Opr+9kajzB5d74hKQ+KS3d/WVMLhtgdu1lriRiOR/4nDVunaR24x7qp3UV5Cb/fJvC83nv26W81LIK58SYNFmwq4hsGx/5BwKlzYRma2NUthgOJSew4i7ru9nJYCQF5tApb2yvjiDQKJV/IfJKh0o6qssSLKv/jcAoRKHQQzE2Lj2OMV5OkWFc4MZIpsev8uXWXRx6ZicbGk8QZLxxgwe+x/rlR3h3816+f2E7lbEU+ZDn3vKVpePCdFovzCISHqbl5EIoQOteKMPB1rto65zNyfOz+KOrGl06lHPQyi/WOohH0/T0l1MZH6A3GUEKl7Pmr2la6wBrBWWRDP2DUcqjKVKBGom9RZmABAykwnglafpSJSPQvsfiOR0EQ7ExVmazA8cY6N4K1iw6RdAXRwi4mgrheT5Dvs4LeuS81a15Ll/3dQisFVSVpnj7sf1sX/sZvhAc+6UOrQyBVUQ8gx/orFmDsZqtaw/y1qZ9zKjp5vDpenyjcNe+cLNmTiUdf/bEOddVQ0VpgsOn54ET+EYxvWKALSu+5tGG76it7MNaiZKGQ23zCIcMfUMxBnrjN3fmHHvCAlp+vJcXWx6itqoXpAEnUNLx8iMfo5Xh1i17R3PJYCpC2cZ3qK3sQ8WGEDDuXlAQuFKGHzpmopXhTNfk0bmxs7uC1w6uJul79AxFkMIiBJy5UoUWjrZLU5DCFdTARDHuDqVw+OkSwI0MCEW4gtNF2BPrBCo8fKNbtILWX9aUDqFqHnn7AAAAAElFTkSuQmCC)](https://www.fnp.org.pl/en/)
+[![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://www.uj.edu.pl/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # PySDM
 PySDM is a package for simulating the dynamics of population of particles 
@@ -36,8 +48,6 @@ The dependencies of PySDM examples and test subpackages are summarised in
   file.
 Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
   a concurrently developed sister project to PySDM.
-Hints on the installation workflow can be sought in the [.travis.yml](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/.travis.yml) file
-  used in the continuous integration workflow of PySDM for Linux, OSX and Windows.
 
 ## Demo notebooks reproducing results from literature:
 #### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
@@ -76,7 +86,6 @@ It is a coalescence-only set-up in which the initial particle size
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
-from PySDM.physics.formulae import volume
 
 n_sd = 2**15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
@@ -171,9 +180,9 @@ The resultant plot looks as follows:
 - [environments](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/environments):
     - [Box](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/box.py): 
       bare zero-dimensional framework 
-    - [MoistLagrangianParcelAdiabatic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_lagrangian_parcel_adiabatic.py): 
+    - [Parcel](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/parcel.py): 
       zero-dimensional adiabatic parcel framework
-    - [MoistEulerian2DKinematic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/moist_eulerian_2d_kinematic.py): 
+    - [Kinematic2D](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/kinematic_2d.py): 
       two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 - [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
     - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence)
@@ -182,7 +191,7 @@ The resultant plot looks as follows:
             - [Geometric](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/geometric.py)
             - [Hydrodynamic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/hydrodynamic.py)
             - ...
-    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation)
+    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation.py)
         - solvers (working in arbitrary spectral coordinate specified through external class, defaults to logarithm of volume): 
             - [default](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/impl/condensation_methods.py):
               bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
@@ -190,7 +199,7 @@ The resultant plot looks as follows:
               black-box SciPy-based solver for benchmarking (Numba backend only)
     - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
       includes advection with the flow & sedimentation)
-    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py)
+    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection)
 - Attributes (selected):
     - [cell](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/cell):
         - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/cell/position_in_cell.py)
@@ -198,7 +207,7 @@ The resultant plot looks as follows:
         - ...
     - [droplet](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/droplet):
         - [volume](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/volume.py)
-        - [multiplicity](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/multiplicity.py)
+        - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/multiplicities.py)
         - [critical_radius](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/critical_radius.py)
         - ...
 - Products (selected):
@@ -229,5 +238,5 @@ licence: GPL v3
   https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90
 - libcloudph++ (C++):    
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
-- LCM1D (Python)
+- LCM1D (Python)    
   https://github.com/SimonUnterstrasser/ColumnModel
