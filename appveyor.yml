@@ -31,6 +31,7 @@ install:
       iex "$env:PYTHON -m pip install pytest"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
+      Add-Content requirements.txt "`ngit+git://github.com/mhammond/pywin32@df02a16#egg=pywin32"
       iex "$env:PYTHON -m pip install -r requirements.txt"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
