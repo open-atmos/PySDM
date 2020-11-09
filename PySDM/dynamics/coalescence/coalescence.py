@@ -13,7 +13,7 @@ class Coalescence:
         self.adaptive = False
         self.optimized_random = True
         self.max_substeps = max_substeps
-        self.subs = 1
+        self.subs = None
         self.croupier = 'local'
         self.seed = seed
 
@@ -29,6 +29,8 @@ class Coalescence:
         self.temp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         shift = self.max_substeps if self.optimized_random else 0
         self.pairs_rand = self.core.Storage.empty(self.core.n_sd + shift, dtype=float)
+        self.subs = self.core.Storage.empty(len(self.core.particles["cell id"]), dtype=int)
+        self.subs = 1  # TODO
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
         self.prob = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.IndexedStorage.empty(self.core.n_sd, dtype=int)  # TODO bool

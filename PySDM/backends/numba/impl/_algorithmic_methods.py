@@ -2,9 +2,10 @@
 Created at 04.11.2019
 """
 
-import numpy as np
 import numba
+import numpy as np
 from numba import void, float64, int64, prange
+
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
 
@@ -28,10 +29,13 @@ class AlgorithmicMethods:
                                                        position_in_cell.data)
 
     @staticmethod
-    @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
-                **{**conf.JIT_FLAGS, **{'parallel': False}})
+    @numba.njit(
+        int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean,
+              int64[:], int64[:], float64[:]),
+        **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell, subs,
+                         adaptive_memory):
         result = 1
         for i in prange(length - 1):
             if gamma[i] == 0:
