@@ -2,6 +2,8 @@
 Created at 07.06.2019
 """
 
+from .random_generator_optimizer import RandomGeneratorOptimizer
+
 
 class Coalescence:
 
@@ -18,8 +20,7 @@ class Coalescence:
         self.seed = seed
 
         self.temp = None
-        self.pairs_rand = None
-        self.rand = None
+        self.rnd_opt = None
         self.prob = None
         self.is_first_in_pair = None
         self.rnd = None
@@ -27,39 +28,22 @@ class Coalescence:
     def register(self, builder):
         self.core = builder.core
         self.temp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
-        shift = self.max_substeps if self.optimized_random else 0
-        self.pairs_rand = self.core.Storage.empty(self.core.n_sd + shift, dtype=float)
-        self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
+        self.rnd_opt = RandomGeneratorOptimizer(self.core, self.optimized_random, self.max_substeps, self.seed)
         self.prob = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.IndexedStorage.empty(self.core.n_sd, dtype=int)  # TODO bool
-        self.rnd = self.core.Random(self.core.n_sd + shift, self.seed)
         self.kernel.register(builder)
 
     def __call__(self):
         if self.enable:
-            self.pairs_rand.urand(self.rnd)
-            self.rand.urand(self.rnd)
-
-            self.toss_pairs(self.is_first_in_pair,
-                            self.pairs_rand[:self.core.n_sd])
-            self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
-
             subs = 0
             msub = 1
             for s in range(self.subs):
-                if self.optimized_random:
-                    shift = s
-                else:
-                    shift = 0
-                    if s < self.subs-1:
-                        self.pairs_rand.urand(self.rnd)
-                        self.rand.urand(self.rnd)
-                sub = self.coalescence(self.prob, self.rand, self.adaptive, self.subs)
+                pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
+                self.toss_pairs(self.is_first_in_pair, pairs_rand)
+                self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
+                sub = self.coalescence(self.prob, rand, self.adaptive, self.subs)
                 subs += sub
                 msub = max(msub, sub)
-                if s < self.subs-1:
-                    self.toss_pairs(self.is_first_in_pair, self.pairs_rand[shift:self.core.n_sd + shift])
-                    self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
 
             self.stats_steps += self.subs
             if self.adaptive:
