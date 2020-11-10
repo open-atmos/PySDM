@@ -38,23 +38,26 @@ class Coalescence:
             subs = 0
             msub = 1
             for s in range(self.subs):
-                pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
-                self.toss_pairs(self.is_first_in_pair, pairs_rand)
-                self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
-                sub = self.coalescence(self.prob, rand, self.adaptive, self.subs)
+                sub = self.step(s)
                 subs += sub
                 msub = max(msub, sub)
 
             self.stats_steps += self.subs
             if self.adaptive:
-                self.subs = min(self.max_substeps, int(((subs/self.subs) + msub)/2))
+                self.subs = min(self.max_substeps, int(((subs / self.subs) + msub) / 2))
 
-    def compute_gamma(self, prob, rand):
-        self.core.backend.compute_gamma(prob, rand)
+    def step(self, s):
+        pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
+        self.toss_pairs(self.is_first_in_pair, pairs_rand)
+        self.compute_probability(self.prob, self.is_first_in_pair, self.subs)
+        self.compute_gamma(self.prob, rand)
+        sub = self.core.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.subs, adaptive_memory=self.temp)
+        return sub
 
-    def coalescence(self, prob, rand, adaptive, subs):
-        self.compute_gamma(prob, rand)
-        return self.core.coalescence(gamma=prob, adaptive=adaptive, subs=subs, adaptive_memory=self.temp)
+    def toss_pairs(self, is_first_in_pair, u01):
+        self.core.particles.sanitize()
+        self.core.particles.permutation(u01, self.croupier == 'local')
+        is_first_in_pair.find_pairs(self.core.particles.cell_start, self.core.particles['cell id'])
 
     def compute_probability(self, prob, is_first_in_pair, subs):
         self.kernel(self.temp, is_first_in_pair)
@@ -64,7 +67,5 @@ class Coalescence:
         norm_factor = self.temp
         self.core.normalize(prob, norm_factor, subs)
 
-    def toss_pairs(self, is_first_in_pair, u01):
-        self.core.particles.sanitize()
-        self.core.particles.permutation(u01, self.croupier == 'local')
-        is_first_in_pair.find_pairs(self.core.particles.cell_start, self.core.particles['cell id'])
+    def compute_gamma(self, prob, rand):
+        self.core.backend.compute_gamma(prob, rand)
