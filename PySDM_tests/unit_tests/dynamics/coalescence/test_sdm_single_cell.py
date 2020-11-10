@@ -185,7 +185,7 @@ class TestSDMSingleCell:
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
         sut.rnd_opt.optimized_random = optimized_random
-        sut.subs = 100
+        sut.substep_num = 100
 
         # Act
         sut()
@@ -194,4 +194,4 @@ class TestSDMSingleCell:
         if sut.rnd_opt.optimized_random:
             assert CountingRandom.calls == 2
         else:
-            assert CountingRandom.calls == 2 * sut.subs
+            assert CountingRandom.calls == 2 * sut.substep_num
