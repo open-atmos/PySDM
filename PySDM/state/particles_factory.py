@@ -3,8 +3,9 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM.state.particles import Particles
+
 from PySDM.attributes.tensive_attribute import TensiveAttribute
+from PySDM.state.particles import Particles
 
 
 class ParticlesFactory:
@@ -14,7 +15,7 @@ class ParticlesFactory:
         tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
-        idx = core.backend.IndexedStorage.from_ndarray(np.arange(core.n_sd))
+        idx = core.backend.Index.from_ndarray(np.arange(core.n_sd))
         base_attributes = core.backend.IndexedStorage.empty((len(tensive_attr), core.n_sd), float)  # TODO: divide
         base_attributes = core.backend.IndexedStorage.indexed(idx, base_attributes)
 
@@ -51,7 +52,7 @@ class ParticlesFactory:
 
     @staticmethod
     def empty_particles(particles, n_sd) -> Particles:
-        idx = particles.backend.IndexedStorage.from_ndarray(np.arange(n_sd))
+        idx = particles.backend.Index.from_ndarray(np.arange(n_sd))
         return Particles(
             core=particles, idx=idx, keys={}, intensive_start=-1,
             cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, attributes={})

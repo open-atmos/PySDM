@@ -22,13 +22,37 @@ class PairwiseStorage(Storage):
         return result
 
     def distance(self, other, is_first_in_pair):
-        AlgorithmicStepMethods.distance_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+        AlgorithmicStepMethods.distance_pair(
+            self.data,
+            other.data,
+            is_first_in_pair.indicator.data,
+            other.idx.data,
+            len(other)
+        )
 
     def max(self, other, is_first_in_pair):
-        AlgorithmicStepMethods.max_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+        AlgorithmicStepMethods.max_pair_body(
+            self.data,
+            other.data,
+            is_first_in_pair.indicator.data,
+            other.idx.data,
+            len(other)
+        )
 
     def sort(self, other, is_first_in_pair):
-        AlgorithmicStepMethods.sort_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+        AlgorithmicStepMethods.sort_pair_body(
+            self.data,
+            other.data,
+            is_first_in_pair.indicator.data,
+            other.idx.data,
+            len(other)
+        )
 
     def sum(self, other, is_first_in_pair):
-        AlgorithmicStepMethods.sum_pair_body(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+        AlgorithmicStepMethods.sum_pair_body(
+            self.data,
+            other.data,
+            is_first_in_pair.indicator.data,
+            other.idx.data,
+            len(other)
+        )

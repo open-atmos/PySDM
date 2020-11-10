@@ -18,7 +18,7 @@ class TestIndex:
         data = np.ones(n_sd).astype(np.int64)
         data[0], data[n_sd // 2], data[-1] = 0, 0, 0
         data = backend.Storage.from_ndarray(data)
-        data = backend.Index.indexed(storage=data, idx=idx)
+        data = backend.IndexedStorage.indexed(storage=data, idx=idx)
 
         # Act
         new_n_sd = backend.remove_zeros(data.data, idx.data, n_sd)

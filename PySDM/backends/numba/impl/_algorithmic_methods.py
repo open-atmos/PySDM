@@ -219,8 +219,8 @@ class AlgorithmicMethods:
 
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
-        return AlgorithmicMethods.normalize_body(prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv,
-                                                 subs)
+        return AlgorithmicMethods.normalize_body(
+            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, subs)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

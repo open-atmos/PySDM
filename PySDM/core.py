@@ -39,12 +39,24 @@ class Core:
         return self.backend.Storage
 
     @property
+    def Index(self):
+        return self.backend.Index
+
+    @property
     def IndexedStorage(self):
         return self.backend.IndexedStorage
 
     @property
+    def PairIndicator(self):
+        return self.backend.PairIndicator
+
+    @property
+    def PairwiseStorage(self):
+        return self.backend.PairwiseStorage
+
+    @property
     def Random(self):
-        return  self.backend.Random
+        return self.backend.Random
 
     @property
     def n_sd(self) -> int:

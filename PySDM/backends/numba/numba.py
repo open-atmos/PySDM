@@ -12,7 +12,8 @@ from PySDM.backends.numba.random import Random as ImportedRandom
 from PySDM.backends.numba.storage.index import Index as ImportedIndex
 from PySDM.backends.numba.storage.indexed_storage import IndexedStorage as ImportedIndexedStorage
 from PySDM.backends.numba.storage.pair_indicator import PairIndicator as ImportedPairIndicator
-from .storage.storage import Storage as ImportedStorage
+from PySDM.backends.numba.storage.pairwise_storage import PairwiseStorage as ImportedPairwiseStorage
+from PySDM.backends.numba.storage.storage import Storage as ImportedStorage
 
 
 class Numba(
@@ -25,8 +26,9 @@ class Numba(
 ):
     Storage = ImportedStorage
     Index = ImportedIndex
-    PairIndicator = ImportedPairIndicator
     IndexedStorage = ImportedIndexedStorage
+    PairIndicator = ImportedPairIndicator
+    PairwiseStorage = ImportedPairwiseStorage
     Random = ImportedRandom
 
     def __init__(self):

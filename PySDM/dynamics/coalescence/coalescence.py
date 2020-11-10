@@ -29,8 +29,8 @@ class Coalescence:
         self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         shift = self.max_substeps if self.optimized_random else 0
         self.pairs_rand = self.core.Storage.empty(self.core.n_sd + shift, dtype=float)
-        self.subs = self.core.Storage.empty(len(self.core.particles["cell id"]), dtype=int)
-        self.subs = 1  # TODO
+        self.subs = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.subs[:] = 1  # TODO
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
@@ -76,7 +76,7 @@ class Coalescence:
 
     def compute_probability(self, prob, is_first_in_pair, subs):
         self.kernel(self.temp, is_first_in_pair)
-        prob.max_pair(self.core.particles['n'], is_first_in_pair)
+        prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.temp
 
         norm_factor = self.temp
@@ -85,4 +85,4 @@ class Coalescence:
     def toss_pairs(self, is_first_in_pair, u01):
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
-        is_first_in_pair.find_pairs(self.core.particles.cell_start, self.core.particles['cell id'])
+        is_first_in_pair.update(self.core.particles.cell_start, self.core.particles['cell id'])
