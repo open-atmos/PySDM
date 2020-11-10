@@ -50,7 +50,7 @@ class Particles:
 
     def sanitize(self):
         if not self.healthy:
-            self['n'].remove_zeros()
+            self.__idx.remove_zeros(self['n'])
             self.healthy = True
             self.__healthy_memory[:] = 1
             self.__sorted = False

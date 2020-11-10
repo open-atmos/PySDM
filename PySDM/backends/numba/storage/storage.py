@@ -3,6 +3,7 @@ Created at 30.05.2020
 """
 
 import numpy as np
+
 from PySDM.backends.numba.impl._maths_methods import MathsMethods
 
 
@@ -43,7 +44,7 @@ class Storage:
         return self
 
     def __add__(self, other):
-        raise NotImplementedError("Use +=")
+        raise TypeError("Use +=")
 
     def __iadd__(self, other):
         if isinstance(other, Storage):
@@ -53,14 +54,14 @@ class Storage:
         return self
 
     def __sub__(self, other):
-        raise NotImplementedError("Use -=")
+        raise TypeError("Use -=")
 
     def __isub__(self, other):
         MathsMethods.subtract(self.data, other.data)
         return self
 
     def __mul__(self, other):
-        raise NotImplementedError("Use *=")
+        raise TypeError("Use *=")
 
     def __imul__(self, other):
         if hasattr(other, 'data'):
@@ -70,7 +71,7 @@ class Storage:
         return self
 
     def __mod__(self, other):
-        raise NotImplementedError("Use %=")
+        raise TypeError("Use %=")
 
     def __imod__(self, other):
         # TODO
@@ -78,7 +79,7 @@ class Storage:
         return self
 
     def __pow__(self, other):
-        raise NotImplementedError("Use **=")
+        raise TypeError("Use **=")
 
     def __ipow__(self, other):
         MathsMethods.power(self.data, other)
@@ -106,7 +107,7 @@ class Storage:
         np.copyto(target, data, casting='safe')
 
     @staticmethod
-    def empty(shape, dtype):
+    def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
             data = np.full(shape, -1., dtype=Storage.FLOAT)
             dtype = Storage.FLOAT
@@ -116,11 +117,15 @@ class Storage:
         else:
             raise NotImplementedError()
 
-        result = Storage(data, shape, dtype)
+        return data, shape, dtype
+
+    @staticmethod
+    def empty(shape, dtype):
+        result = Storage(*Storage._get_empty_data(shape, dtype))
         return result
 
     @staticmethod
-    def from_ndarray(array):
+    def _get_data_from_ndarray(array):
         if str(array.dtype).startswith('int'):
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
@@ -129,7 +134,12 @@ class Storage:
             raise NotImplementedError()
 
         data = array.astype(dtype).copy()
-        result = Storage(data, array.shape, dtype)
+
+        return data, array.shape, dtype
+
+    @staticmethod
+    def from_ndarray(array):
+        result = Storage(*Storage._get_data_from_ndarray(array))
         return result
 
     def floor(self, other=None):

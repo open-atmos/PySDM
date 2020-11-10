@@ -3,6 +3,7 @@ Created at 09.11.2019
 """
 
 import numpy as np
+
 from PySDM.state.particles import Particles
 from PySDM.stats import Stats
 
@@ -60,8 +61,8 @@ class Core:
             return self.environment.mesh
 
     def normalize(self, prob, norm_factor, subs):
-        factor = self.dt/subs/self.mesh.dv
-        self.backend.normalize(prob, self.particles['cell id'], self.particles.cell_start, norm_factor, factor)
+        self.backend.normalize(
+            prob, self.particles['cell id'], self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
 
     def coalescence(self, gamma, adaptive, subs, adaptive_memory):
         return self.particles.coalescence(gamma, adaptive, subs, adaptive_memory)

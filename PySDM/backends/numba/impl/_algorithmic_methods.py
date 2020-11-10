@@ -34,7 +34,7 @@ class AlgorithmicMethods:
               int64[:], int64[:], float64[:]),
         **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell, subs,
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, subs,
                          adaptive_memory):
         result = 1
         for i in prange(length - 1):
@@ -49,7 +49,7 @@ class AlgorithmicMethods:
                 j, k = k, j
             prop = int(n[j] / n[k])
             if adaptive:
-                result = max(result, int(((gamma[i])*subs) / prop))
+                result = max(result, int(((gamma[i]) * subs[cell_id[j]]) / prop))
                 # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
             g = min(int(gamma[i]), prop)
             if g == 0:
@@ -206,20 +206,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+    def normalize_body(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = dt / subs[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        return AlgorithmicMethods.normalize_body(prob.data, cell_id.data, cell_start.data, norm_factor.data, dt_div_dv)
+    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
+        return AlgorithmicMethods.normalize_body(prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv,
+                                                 subs)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

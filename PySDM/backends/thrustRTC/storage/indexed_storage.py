@@ -2,13 +2,12 @@
 Created at 25.08.2020
 """
 
-
 import numpy as np
 
-from PySDM.backends.thrustRTC.storage.storage import Storage
-from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
-from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
 from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
+from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
+from PySDM.backends.thrustRTC.storage.storage import Storage
 
 
 class IndexedStorage(Storage):
@@ -58,6 +57,7 @@ class IndexedStorage(Storage):
 
     def sort_pair(self, other, is_first_in_pair):
         AlgorithmicStepMethods.sort_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
+        self.idx = None
 
     def sum_pair(self, other, is_first_in_pair):
         AlgorithmicStepMethods.sum_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))

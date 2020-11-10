@@ -26,14 +26,14 @@ class Coalescence:
 
     def register(self, builder):
         self.core = builder.core
-        self.temp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
+        self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         shift = self.max_substeps if self.optimized_random else 0
         self.pairs_rand = self.core.Storage.empty(self.core.n_sd + shift, dtype=float)
         self.subs = self.core.Storage.empty(len(self.core.particles["cell id"]), dtype=int)
         self.subs = 1  # TODO
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
-        self.prob = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
-        self.is_first_in_pair = self.core.IndexedStorage.empty(self.core.n_sd, dtype=int)  # TODO bool
+        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
+        self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.rnd = self.core.Random(self.core.n_sd + shift, self.seed)
         self.kernel.register(builder)
 
