@@ -3,10 +3,10 @@ Created at 22.09.2020
 """
 
 import types
-
 import numpy as np
-
 from .cpp2python import to_numba
+from numba.core.errors import NumbaError
+import warnings
 
 
 class FakeThrustRTC:
@@ -61,12 +61,18 @@ class FakeThrustRTC:
     class For:
         def __init__(self, args, _, body):
             d = dict()
-            exec(to_numba("__internal_python_method__", args, body), d)
+            self.code = to_numba("__internal_python_method__", args, body)
+            exec(self.code, d)
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = self.make()
 
         def launch_n(self, size, args):
-            return self.__internal_python_method__(size, *(arg.ndarray for arg in args))
+            try:
+                result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
+            except NumbaError as error:
+                warnings.warn(f"NumbaError occurred while JIT-compiling: {self.code}")
+                raise error
+            return result
 
     @staticmethod
     def Sort(dvvector):
