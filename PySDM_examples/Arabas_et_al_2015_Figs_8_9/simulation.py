@@ -25,6 +25,7 @@ from PySDM.products.state import ParticlesWetSizeSpectrum, ParticlesDrySizeSpect
 from PySDM.products.state import SuperDropletCount
 from PySDM.products.state import TotalParticleConcentration
 from PySDM.products.state import TotalParticleSpecificConcentration
+from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from .dummy_controller import DummyController
 from .spin_up import SpinUp
 
@@ -65,7 +66,8 @@ class Simulation:
             RelativeHumidity(), Pressure(), Temperature(),
             WaterVapourMixingRatio(),
             DryAirDensity(),
-            DryAirPotentialTemperature()
+            DryAirPotentialTemperature(),
+            SurfacePrecipitation()
         ]
 
         fields = Fields(environment, self.settings.stream_function)
