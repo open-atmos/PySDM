@@ -5,6 +5,7 @@ Created at 16.12.2019
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.storage import Storage
+from PySDM.products.stats.timers import WallTime
 import PySDM.backends.numba.conf
 from PySDM.backends import CPU, GPU
 import importlib
@@ -51,9 +52,9 @@ def main():
             settings.n_sd_per_gridbox = sd
             storage = Storage()
             simulation = Simulation(settings, storage)
-            simulation.reinit()
-            stats = simulation.run()
-            times[key].append(stats.wall_times[-1])
+            simulation.reinit(products=(WallTime(),))
+            simulation.run()
+            times[key].append(storage.load('wall_time')[-1])
 
     from matplotlib import pyplot as plt
     for parallelization, t in times.items():
