@@ -5,14 +5,14 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
-# noinspection PyUnresolvedReferences
-from PySDM_tests.backends_fixture import backend
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
-from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
 class TestSDMSingleCell:
@@ -183,15 +183,15 @@ class TestSDMSingleCell:
                 CountingRandom.calls += 1
                 super(CountingRandom, self).__call__(storage)
 
-        sut.rnd = CountingRandom(n_sd)
-        sut.optimized_random = optimized_random
-        sut.subs = 100
+        sut.rnd_opt.rnd = CountingRandom(n_sd)
+        sut.rnd_opt.optimized_random = optimized_random
+        sut.substep_num = 100
 
         # Act
         sut()
 
         # Assert
-        if sut.optimized_random:
+        if sut.rnd_opt.optimized_random:
             assert CountingRandom.calls == 2
         else:
-            assert CountingRandom.calls == 2 * sut.subs
+            assert CountingRandom.calls == 2 * sut.substep_num
