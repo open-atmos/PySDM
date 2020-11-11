@@ -53,7 +53,7 @@ class Simulation:
                                   field_values=self.settings.field_values)
         builder.set_environment(environment)
 
-        products = list(products) or [
+        products = products or [
             ParticlesWetSizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),
             ParticlesDrySizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),  # Note: better v_bins
             TotalParticleConcentration(),
@@ -85,12 +85,14 @@ class Simulation:
             builder.add_dynamic(condensation)
             products.append(CondensationTimestep())
         if self.settings.processes['fluid advection']:
-            mpdatas = MPDATA(fields=fields,
-                             n_iters=self.settings.mpdata_iters,
-                             infinite_gauge=self.settings.mpdata_iga,
-                             flux_corrected_transport=self.settings.mpdata_fct,
-                             third_order_terms=self.settings.mpdata_tot)
-            builder.add_dynamic(EulerianAdvection(mpdatas))
+            solver = MPDATA(
+                fields=fields,
+                n_iters=self.settings.mpdata_iters,
+                infinite_gauge=self.settings.mpdata_iga,
+                flux_corrected_transport=self.settings.mpdata_fct,
+                third_order_terms=self.settings.mpdata_tot
+            )
+            builder.add_dynamic(EulerianAdvection(solver))
         if self.settings.processes["particle advection"]:
             displacement = Displacement(
                 courant_field=fields.courant_field,
