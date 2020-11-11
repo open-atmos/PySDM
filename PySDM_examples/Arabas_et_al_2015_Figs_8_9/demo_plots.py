@@ -9,8 +9,8 @@ import numpy as np
 
 class _Plot:
 
-    def __init__(self):
-        self.fig, self.ax = plt.subplots(1, 1)
+    def __init__(self, *, fig_kw={}):
+        self.fig, self.ax = plt.subplots(1, 1, **fig_kw)
         self.ax.set_title(' ')
 
 
@@ -96,3 +96,21 @@ class _SpectrumPlot(_Plot):
     def update_dry(self, dry):
         self.spec_dry.set_ydata(dry)
 
+
+class _TimeseriesPlot(_Plot):
+
+    def __init__(self, steps, dt):
+        default_figsize = matplotlib.rcParams["figure.figsize"]
+        super().__init__(fig_kw={'figsize': (2.25*default_figsize[0], default_figsize[1]/2)})
+        self.ax.set_xlim(0, dt * steps[-1])
+        self.ax.set_xlabel("time [s]")
+        self.ax.set_ylabel("rainfall [mm/day]")
+        self.ax.set_ylim(0, 1e-1)
+        self.ax.grid(True)
+        self.ydata = np.full_like(steps, np.nan, dtype=float)
+        self.timeseries = self.ax.step(steps, self.ydata, where='pre')[0]
+        plt.show()
+
+    def update(self, data):
+        self.ydata[0:len(data)] = data[:]
+        self.timeseries.set_ydata(self.ydata)

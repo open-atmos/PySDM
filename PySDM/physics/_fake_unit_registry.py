@@ -17,5 +17,5 @@ class FakeUnitRegistry:
                 self.__setattr__(prefix+unit + "s", fake(si.__getattr__(prefix+unit + "s")))
 
         for prefix in ("n", "u", "m", "c", "", "h", "k"):
-            for unit in ("m", "g", "Hz", "mol", "J", "K", "s", "min", "Pa", "l", "h"):
+            for unit in ("m", "g", "Hz", "mol", "J", "K", "s", "min", "day", "Pa", "l", "h"):
                 self.__setattr__(prefix+unit, fake(si.__getattr__(prefix+unit)))

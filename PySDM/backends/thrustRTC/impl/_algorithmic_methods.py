@@ -115,7 +115,8 @@ class AlgorithmicMethods:
     ):
         raise NotImplementedError()
 
-    __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell'], "i", '''
+    __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
+                                         'volume', 'n'], "i", '''
         if (cell_origin[idx_length * (n_dims-1) + i] == 0 && position_in_cell[idx_length * (n_dims-1) + i] < 0) {
             idx[i] = idx_length;
             healthy[0] = 0;
@@ -124,11 +125,13 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
+    def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy):
         idx_length = trtc.DVInt64(len(idx))
         n_dims = trtc.DVInt64(len(cell_origin.shape))
         AlgorithmicMethods.__flag_precipitated_body.launch_n(
-            length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data])
+            length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
+                     volume.data, n.data])
+        return 0 # TODO
 
     __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
