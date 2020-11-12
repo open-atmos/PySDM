@@ -31,6 +31,8 @@ PySDM has two alternative parallel number-crunching backends
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
 
+For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
+
 ## Dependencies and installation
 
 It is worth here to distinguish the dependencies of the PySDM core subpackage 
