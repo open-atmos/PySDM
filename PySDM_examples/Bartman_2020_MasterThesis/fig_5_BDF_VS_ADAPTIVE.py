@@ -88,7 +88,7 @@ def plot(data, rtols, schemes, setups_num, path=None):
     for i, ax in enumerate(axs[:, 0]):
         ax.set(ylabel=r'$\bf{settings: ' + str(i) + '}$\ndisplacement [m]')
     for i, ax in enumerate(axs[-1, :]):
-        ax.set(Xlabel='supersaturation\n' + r'$\bf{r_{tol}: ' + str(rtols[i]) + '}$')
+        ax.set(xlabel='supersaturation\n' + r'$\bf{r_{tol}: ' + str(rtols[i]) + '}$')
 
     plt.tight_layout()
 

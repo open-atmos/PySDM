@@ -13,6 +13,7 @@ from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
 from PySDM.products.state import ParticlesVolumeSpectrum
+from PySDM.products.stats.timers import WallTime
 
 
 def run(settings, backend=CPU, observers=()):
@@ -23,7 +24,7 @@ def run(settings, backend=CPU, observers=()):
     coalescence = Coalescence(settings.kernel)
     coalescence.adaptive = settings.adaptive
     builder.add_dynamic(coalescence)
-    products = [ParticlesVolumeSpectrum()]
+    products = [ParticlesVolumeSpectrum(), WallTime()]
     core = builder.build(attributes, products)
     if hasattr(settings, 'u_term') and 'terminal velocity' in core.particles.attributes:
         core.particles.attributes['terminal velocity'].approximation = settings.u_term(core)
@@ -32,12 +33,14 @@ def run(settings, backend=CPU, observers=()):
         core.observers.append(observer)
 
     vals = {}
+    core.products['wall_time'].reset()
     for step in settings.steps:
         core.run(step - core.n_steps)
         vals[step] = core.products['dv/dlnr'].get(settings.radius_bins_edges)
         vals[step][:] *= settings.rho
 
-    return vals
+    exec_time = core.products['wall_time'].get()
+    return vals, exec_time
 
 
 def main(plot: bool, save: str):
@@ -46,7 +49,7 @@ def main(plot: bool, save: str):
 
         settings.n_sd = 2 ** 15
 
-        states = run(settings)
+        states, _ = run(settings)
 
     with np.errstate(invalid='ignore'):
         plotter = SpectrumPlotter(settings)

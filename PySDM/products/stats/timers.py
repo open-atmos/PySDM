@@ -12,9 +12,9 @@ class _Timer(Product):
             scale='linear',
             range=None
         )
-        self._reset_counters()
+        self.reset()
 
-    def _reset_counters(self):
+    def reset(self):
         self._time = self.clock()
 
     def register(self, builder):
@@ -23,7 +23,7 @@ class _Timer(Product):
 
     def get(self) -> float:
         result = -self._time
-        self._reset_counters()
+        self.reset()
         result += self._time
         return result
 
