@@ -16,8 +16,8 @@ from PySDM.attributes.cell.cell_id import CellID
 
 class Builder:
 
-    def __init__(self, n_sd, backend, stats=None):
-        self.core = Core(n_sd, backend, stats)
+    def __init__(self, n_sd, backend):
+        self.core = Core(n_sd, backend)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None

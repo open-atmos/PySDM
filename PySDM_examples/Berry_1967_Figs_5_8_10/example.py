@@ -42,7 +42,7 @@ def main(plot: bool, save):
             for dt in setups[u_term_approx]:
                 states[u_term_approx][dt] = {}
                 for kernel in setups[u_term_approx][dt]:
-                    states[u_term_approx][dt][kernel] = run(setups[u_term_approx][dt][kernel])[0]
+                    states[u_term_approx][dt][kernel] = run(setups[u_term_approx][dt][kernel])
 
     if plot or save is not None:
         for u_term_approx in setups:

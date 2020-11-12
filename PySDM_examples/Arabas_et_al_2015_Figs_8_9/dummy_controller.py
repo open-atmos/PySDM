@@ -1,4 +1,4 @@
-import time
+from PySDM.products.stats.timers import CPUTime, WallTime
 
 
 class DummyController:
@@ -7,8 +7,9 @@ class DummyController:
         self.panic = False
         self.t_last = self.__times()
 
-    def __times(self):
-        return time.perf_counter(), time.process_time()
+    @staticmethod
+    def __times():
+        return WallTime.clock(), CPUTime.clock()
 
     def set_percent(self, value):
         t_curr = self.__times()
