@@ -28,9 +28,8 @@ def main(plot: bool = True, save: str = None):
                 settings.dt = dt if dt != 'adaptive' else 10
                 settings.adaptive = dt == 'adaptive'
 
-                states, stats = run(settings)
+                states, exec_time = run(settings)
                 outputs.append(states)
-                exec_time += sum(stats.wall_times)
             mean_time = exec_time / iters
             if base_time is None:
                 base_time = mean_time
