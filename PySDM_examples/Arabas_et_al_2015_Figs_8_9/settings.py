@@ -11,9 +11,13 @@ from PySDM.dynamics import condensation
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from PySDM.physics.constants import si
+from typing import Iterable
 
 
 class Settings:
+    def __dir__(self) -> Iterable[str]:
+        return 'dt', 'grid', 'n_spin_up'
+
     # TODO: ctor + self.* variables
 
     condensation_coord = 'volume logarithm'

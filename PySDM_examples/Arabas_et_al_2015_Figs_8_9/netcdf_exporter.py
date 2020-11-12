@@ -13,6 +13,10 @@ class NetCDFExporter:
         self.filename = filename
         self.XZ = ('X', 'Z')
 
+    def _write_settings(self, ncdf):
+        for setting in dir(self.settings):
+            setattr(ncdf, setting, getattr(self.settings, setting))
+
     def _create_dimensions(self, ncdf):
         ncdf.createDimension("T", len(self.settings.steps))
         for index, label in enumerate(self.XZ):
@@ -68,6 +72,7 @@ class NetCDFExporter:
         with controller:
             controller.set_percent(0)
             with netcdf_file(self.filename, mode='w') as ncdf:
+                self._write_settings(ncdf)
                 self._create_dimensions(ncdf)
                 self._create_variables(ncdf)
                 for i in range(len(self.settings.steps)):
