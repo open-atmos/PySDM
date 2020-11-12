@@ -37,7 +37,7 @@ def run(settings, backend=CPU, observers=()):
         vals[step] = core.products['dv/dlnr'].get(settings.radius_bins_edges)
         vals[step][:] *= settings.rho
 
-    return vals, core.stats
+    return vals
 
 
 def main(plot: bool, save: str):
@@ -46,7 +46,7 @@ def main(plot: bool, save: str):
 
         settings.n_sd = 2 ** 15
 
-        states, _ = run(settings)
+        states = run(settings)
 
     with np.errstate(invalid='ignore'):
         plotter = SpectrumPlotter(settings)
