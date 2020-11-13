@@ -2,7 +2,7 @@
 Created at 02.10.2019
 """
 
-from ipywidgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
+from ..utils.widgets import IntSlider, FloatSlider, VBox, Checkbox, Accordion, Dropdown
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
 import numpy as np
 import numba

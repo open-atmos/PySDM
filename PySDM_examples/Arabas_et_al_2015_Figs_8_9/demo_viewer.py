@@ -2,14 +2,12 @@
 Created at 02.10.2019
 """
 
-from ipywidgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, \
-    HBox, Dropdown, Button, Layout
-from IPython.display import clear_output, display
 import numpy as np
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from ..utils.show_plot import save_and_make_link
-
+from ..utils.widgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, \
+    HBox, Dropdown, Button, Layout, clear_output, display
 from .demo_plots import _ImagePlot, _SpectrumPlot, _TimeseriesPlot
 
 
