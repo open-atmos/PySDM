@@ -14,6 +14,9 @@ class Index(Storage):
         super().__init__(data, shape, dtype)
         self.length = shape[0]
 
+    def __len__(self):
+        return self.length
+
     @staticmethod
     def empty(shape, dtype):
         result = Index(*Storage._get_empty_data(shape, dtype))
