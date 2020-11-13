@@ -63,11 +63,12 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
+        n_cell = max(cells) + 1
+        core.environment.mesh.n_cell = n_cell
         core.build(attributes={'n': np.zeros(n_sd)})
         sut = core.particles
         sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
-        n_cell = max(cells) + 1
         sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cells, sut._Particles__idx)
         sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, [0] * (n_cell + 1))
         sut._Particles__n_sd = core.n_sd

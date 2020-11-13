@@ -7,13 +7,13 @@ from .random_generator_optimizer import RandomGeneratorOptimizer
 
 class Coalescence:
 
-    def __init__(self, kernel, seed=None, max_substeps=128):
+    def __init__(self, kernel, seed=None, max_substeps=128, optimized_random=False):
         self.core = None
         self.kernel = kernel
-        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=True, max_substeps=max_substeps, seed=seed)
+        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random, max_substeps=max_substeps, seed=seed)
         self.enable = True
         self.adaptive = False
-        self.substep_num = 1
+        self.n_substep = None
         self.croupier = 'local'
 
         self.temp = None
@@ -25,6 +25,8 @@ class Coalescence:
         self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
+        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.n_substep[:] = 1
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
 
@@ -36,27 +38,27 @@ class Coalescence:
         if self.enable:
             subs = 0
             msub = 1
-            for s in range(self.substep_num):
+            for s in range(self.n_substep[0]):
                 sub = self.step(s)
                 subs += sub
                 msub = max(msub, sub)
 
             if self.adaptive:
-                self.substep_num = min(self.max_substeps, int(((subs / self.substep_num) + msub) / 2))
+                self.n_substep = min(self.max_substeps, int(((subs / self.n_substep) + msub) / 2))
 
     def step(self, s):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
-        self.compute_probability(self.prob, self.is_first_in_pair, self.substep_num)
+        self.compute_probability(self.prob, self.is_first_in_pair, self.n_substep)
         self.compute_gamma(self.prob, rand)
-        sub = self.core.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.substep_num,
+        sub = self.core.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
                                     adaptive_memory=self.temp)
         return sub
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
-        is_first_in_pair.find_pairs(self.core.particles.cell_start, self.core.particles['cell id'])
+        is_first_in_pair.update(self.core.particles.cell_start, self.core.particles['cell id'])
 
     def compute_probability(self, prob, is_first_in_pair, subs):
         self.kernel(self.temp, is_first_in_pair)

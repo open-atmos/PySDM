@@ -29,6 +29,7 @@ class Particles:
         self.keys = keys
         self.intensive_start = intensive_start
 
+        self.cell_prior = self.core.Storage.from_ndarray(np.arange(self.core.mesh.n_cell))
         self.__cell_start = self.core.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                   scheme=core.sorting_scheme)
@@ -72,7 +73,7 @@ class Particles:
             self.__sorted = False
 
     def __sort_by_cell_id(self):
-        self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
+        self.__cell_caretaker(self['cell id'], self.cell_prior, self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
     def get_extensive_attrs(self):
@@ -112,6 +113,7 @@ class Particles:
                                            gamma=gamma,
                                            healthy=self.__healthy_memory,
                                            adaptive=adaptive,
+                                           cell_id=self["cell id"],
                                            subs=subs,
                                            adaptive_memory=adaptive_memory)
         self.healthy = bool(self.__healthy_memory)
