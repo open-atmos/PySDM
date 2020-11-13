@@ -20,10 +20,6 @@ class Coalescence:
         self.prob = None
         self.is_first_in_pair = None
 
-    @property
-    def max_substeps(self):
-        return self.rnd_opt.max_substeps
-
     def register(self, builder):
         self.core = builder.core
         self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
@@ -31,6 +27,10 @@ class Coalescence:
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
+
+    @property
+    def max_substeps(self):
+        return self.rnd_opt.max_substeps
 
     def __call__(self):
         if self.enable:
