@@ -7,6 +7,7 @@ from threading import Thread
 from PyMPDATA import Options, Stepper, VectorField, ScalarField, Solver
 from PyMPDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
 from ...backends.numba import conf
+from numba.core.errors import NumbaExperimentalFeatureWarning
 
 
 class MPDATA:
@@ -65,5 +66,8 @@ class MPDATA:
                 self.thread.join()
 
     def step(self):
-        for mpdata in self.mpdatas.values():
-            mpdata.advance(1)
+        try:
+            for mpdata in self.mpdatas.values():
+                mpdata.advance(1)
+        except NumbaExperimentalFeatureWarning:
+            pass
