@@ -5,6 +5,8 @@ Created at 10.12.2019
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from ..conf import trtc
+from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
+
 
 
 class AlgorithmicMethods:
@@ -155,19 +157,19 @@ class AlgorithmicMethods:
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        dA = trtc.DVDouble(A)
-        dB = trtc.DVDouble(B)
-        dD1 = trtc.DVDouble(D1)
-        dD2 = trtc.DVDouble(D2)
-        dE1 = trtc.DVDouble(E1)
-        dE2 = trtc.DVDouble(E2)
-        dF1 = trtc.DVDouble(F1)
-        dF2 = trtc.DVDouble(F2)
-        dG1 = trtc.DVDouble(G1)
-        dG2 = trtc.DVDouble(G2)
-        dG3 = trtc.DVDouble(G3)
-        dMf = trtc.DVDouble(Mf)
-        dMg = trtc.DVDouble(Mg)
+        dA = PrecisionResolver.get_floating_point(A)
+        dB = PrecisionResolver.get_floating_point(B)
+        dD1 = PrecisionResolver.get_floating_point(D1)
+        dD2 = PrecisionResolver.get_floating_point(D2)
+        dE1 = PrecisionResolver.get_floating_point(E1)
+        dE2 = PrecisionResolver.get_floating_point(E2)
+        dF1 = PrecisionResolver.get_floating_point(F1)
+        dF2 = PrecisionResolver.get_floating_point(F2)
+        dG1 = PrecisionResolver.get_floating_point(G1)
+        dG2 = PrecisionResolver.get_floating_point(G2)
+        dG3 = PrecisionResolver.get_floating_point(G3)
+        dMf = PrecisionResolver.get_floating_point(Mf)
+        dMg = PrecisionResolver.get_floating_point(Mg)
         dunit = trtc.DVDouble(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
             [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])

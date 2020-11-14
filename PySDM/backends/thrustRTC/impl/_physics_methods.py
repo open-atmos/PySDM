@@ -6,6 +6,7 @@ from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 import PySDM.physics.constants as const
+from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
 
 
 class PhysicsMethods:
@@ -61,11 +62,11 @@ class PhysicsMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def terminal_velocity(values, radius, k1, k2, k3, r1, r2):
-        k1 = trtc.DVDouble(k1)
-        k2 = trtc.DVDouble(k2)
-        k3 = trtc.DVDouble(k3)
-        r1 = trtc.DVDouble(r1)
-        r2 = trtc.DVDouble(r2)
+        k1 = PrecisionResolver.get_floating_point(k1)
+        k2 = PrecisionResolver.get_floating_point(k2)
+        k3 = PrecisionResolver.get_floating_point(k3)
+        r1 = PrecisionResolver.get_floating_point(r1)
+        r2 = PrecisionResolver.get_floating_point(r2)
         PhysicsMethods.__terminal_velocity_body.launch_n(values.size(), [values, radius, k1, k2, k3, r1, r2])
 
     @staticmethod

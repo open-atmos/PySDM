@@ -10,7 +10,7 @@ if cuda.is_available():
 else:
     from .thrustRTC.fakeThrustRTC import _flag
 
-    _flag.fakeThrustRTC = True
+    #_flag.fakeThrustRTC = True
 
     import numpy as np
 

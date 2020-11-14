@@ -2,7 +2,7 @@
 Created at 25.09.2019
 """
 
-from PySDM.backends import CPU
+from PySDM.backends import CPU, GPU
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
@@ -31,7 +31,7 @@ from .spin_up import SpinUp
 
 class Simulation:
 
-    def __init__(self, settings, storage, backend=CPU):
+    def __init__(self, settings, storage, backend=GPU):
         self.settings = settings
         self.storage = storage
         self.core = None
