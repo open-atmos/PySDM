@@ -78,7 +78,7 @@ class AlgorithmicMethods:
                     adaptive_memory):
         return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
                                                    extensive.data, gamma.data, healthy.data,
-                                                   adaptive, cell_id, subs, adaptive_memory.data)
+                                                   adaptive, cell_id.data, subs.data, adaptive_memory.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -222,7 +222,7 @@ class AlgorithmicMethods:
     @staticmethod
     def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, subs)
+            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, subs.data)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

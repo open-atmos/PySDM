@@ -2,8 +2,8 @@
 Created at 05.07.2020
 """
 
-from ._gravitational import Gravitational
 from PySDM.physics import constants as const
+from ._gravitational import Gravitational
 
 
 class Geometric(Gravitational):
@@ -15,8 +15,8 @@ class Geometric(Gravitational):
         self.collection_efficiency = 1
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.core.particles['radius'], is_first_in_pair)
+        output.sum(self.core.particles['radius'], is_first_in_pair)
         output **= 2
         output *= const.pi * self.collection_efficiency
-        self.tmp.distance_pair(self.core.particles['terminal velocity'], is_first_in_pair)
+        self.tmp.distance(self.core.particles['terminal velocity'], is_first_in_pair)
         output *= self.tmp
