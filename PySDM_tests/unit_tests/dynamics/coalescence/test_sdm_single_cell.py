@@ -18,11 +18,11 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2,
 class TestSDMSingleCell:
 
     @staticmethod
-    def get_dummy_core_and_sdm(backend, n_length):
+    def get_dummy_core_and_sdm(backend, n_length, optimized_random=False):
         core = DummyCore(backend, n_sd=n_length)
         dv = 1
         core.environment = Box(dv=dv, dt=0)
-        sdm = Coalescence(StubKernel(core.backend))
+        sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random)
         sdm.register(core)
         return core, sdm
 
@@ -172,7 +172,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
+        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
@@ -184,7 +184,6 @@ class TestSDMSingleCell:
                 super(CountingRandom, self).__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
-        sut.rnd_opt.optimized_random = optimized_random
         sut.n_substep[:] = 100
 
         # Act

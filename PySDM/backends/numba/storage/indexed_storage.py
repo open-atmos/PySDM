@@ -58,7 +58,7 @@ class IndexedStorage(Storage):
     #     self.idx = None
 
     def to_ndarray(self):
-        return self.data[self.idx[:len(self)]].copy()
+        return self.data[self.idx.data[:len(self)]].copy()
 
     def read_row(self, i):
         # TODO: shape like in ThrustRTC
