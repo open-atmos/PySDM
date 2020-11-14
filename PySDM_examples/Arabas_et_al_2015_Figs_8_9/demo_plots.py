@@ -17,7 +17,7 @@ class _Plot:
 class _ImagePlot(_Plot):
     line_args = {'color': 'red', 'alpha': .75, 'linestyle': ':', 'linewidth': 5}
 
-    def __init__(self, grid, size, product):
+    def __init__(self, grid, size, product, show=True):
         super().__init__()
         self.nans = np.full(grid, np.nan)
 
@@ -53,8 +53,8 @@ class _ImagePlot(_Plot):
                                  )
         plt.colorbar(self.im, ax=self.ax).set_label(label)
         self.im.set_clim(vmin=product.range[0], vmax=product.range[1])
-
-        plt.show()
+        if show:
+            plt.show()
 
     @staticmethod
     def _transpose(data):
@@ -75,7 +75,7 @@ class _ImagePlot(_Plot):
 
 class _SpectrumPlot(_Plot):
 
-    def __init__(self, r_bins):
+    def __init__(self, r_bins, show=True):
         super().__init__()
         self.ax.set_xlim(np.amin(r_bins), np.amax(r_bins))
         self.ax.set_xlabel("particle radius [μm]")
@@ -87,7 +87,8 @@ class _SpectrumPlot(_Plot):
         self.spec_wet = self.ax.step(r_bins, np.full_like(r_bins, np.nan), label='wet')[0]
         self.spec_dry = self.ax.step(r_bins, np.full_like(r_bins, np.nan), label='dry')[0]
         self.ax.legend()
-        plt.show()
+        if show:
+            plt.show()
 
     def update_wet(self, data, step):
         self.spec_wet.set_ydata(data)
@@ -99,7 +100,7 @@ class _SpectrumPlot(_Plot):
 
 class _TimeseriesPlot(_Plot):
 
-    def __init__(self, steps, dt):
+    def __init__(self, steps, dt, show=True):
         default_figsize = matplotlib.rcParams["figure.figsize"]
         super().__init__(fig_kw={'figsize': (2.25*default_figsize[0], default_figsize[1]/2)})
         self.ax.set_xlim(0, dt * steps[-1])
@@ -109,7 +110,8 @@ class _TimeseriesPlot(_Plot):
         self.ax.grid(True)
         self.ydata = np.full_like(steps, np.nan, dtype=float)
         self.timeseries = self.ax.step(steps, self.ydata, where='pre')[0]
-        plt.show()
+        if show:
+            plt.show()
 
     def update(self, data):
         self.ydata[0:len(data)] = data[:]

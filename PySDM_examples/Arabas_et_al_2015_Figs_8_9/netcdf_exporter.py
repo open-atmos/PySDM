@@ -3,7 +3,6 @@ import numpy as np
 from scipy.io.netcdf import netcdf_file
 from .dummy_controller import DummyController
 
-
 class NetCDFExporter:
     def __init__(self, storage, settings, simulator, filename):
         self.storage = storage
