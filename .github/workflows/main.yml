@@ -18,18 +18,17 @@ jobs:
         python-version: [3.6, 3.7, 3.8]
     runs-on: ${{ matrix.platform }}
 
+    # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
+    if: matrix.platform == 'ubuntu-latest'
+    env: 
+      NUMBA_THREADING_LAYER: omp
+
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
-
-      # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
-      - name: TBB workaround
-        if: matrix.platform == 'ubuntu-latest'
-        env: 
-          NUMBA_THREADING_LAYER: omp
 
       - run: |
           pip install pytest
