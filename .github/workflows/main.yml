@@ -25,11 +25,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: uninstall tbb
+      - name: TBB workaround # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
         if: matrix.platform == 'ubuntu-latest'
-        run: |
-          export NUMBA_THREADING_LAYER=omp   # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
- 
+        env: 
+          NUMBA_THREADING_LAYER: omp
 
       - run: |
           pip install pytest
