@@ -26,7 +26,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: uninstall tbb
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.platform == 'ubuntu-latest'
         run: |
           apt list --installed
           sudo apt-get remove libtbb-dev   # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
