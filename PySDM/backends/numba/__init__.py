@@ -7,5 +7,5 @@ from numba.core.errors import NumbaWarning
 
 try:
     _launch_threads()
-except (NumbaWarning)
+except (NumbaWarning):
     pass
