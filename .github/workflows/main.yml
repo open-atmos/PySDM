@@ -25,12 +25,18 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: uninstall tbb
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          apt list --installed
+          sudo apt-get remove libtbb-dev   # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
+ 
+
       - run: |
           pip install pytest
 
       - run: |
           pip install -r requirements.txt
-          pip uninstall -y intel-tbb  # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
 
       - run: |
           PYTHONPATH=. pytest -We
