@@ -28,8 +28,7 @@ jobs:
       - name: uninstall tbb
         if: matrix.platform == 'ubuntu-latest'
         run: |
-          apt list --installed
-          sudo apt-get remove libtbb-dev   # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
+          export NUMBA_THREADING_LAYER=omp   # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
  
 
       - run: |
