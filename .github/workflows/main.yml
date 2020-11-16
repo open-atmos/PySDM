@@ -30,6 +30,7 @@ jobs:
 
       - run: |
           pip install -r requirements.txt
+          pip uninstall -y intel-tbb  # TODO (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
 
       - run: |
           PYTHONPATH=. pytest -We
