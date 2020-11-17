@@ -136,7 +136,10 @@ def make_solve(coord, rtol):
         @staticmethod
         # @numba.njit()
         def ql(n, x, m_d_mean):
-            return np.sum(n * volume(x)) * rho_w / m_d_mean
+            res = volume(x)
+            res = n * res
+            res = np.sum(res) * rho_w / m_d_mean
+            return res
 
         @staticmethod
         @numba.njit()
