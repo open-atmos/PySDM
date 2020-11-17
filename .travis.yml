@@ -13,17 +13,19 @@ jobs:
         - sudo `which pip` install --upgrade pip
       before_script:
         - pip install -U $(cat requirements.txt | awk -F '==|>=' {'print $1'})
-        - sed -i s/open\(filename,\ \"rU\"\)/open\(filename,\ \"r\"\)/g /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+        # https://github.com/pypa/virtualenv/pull/1064/files
+        - sed -i 's/open(filename, "rU")/open(filename, "r")/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+        - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
-        - sed -i s/open\(filename,\ \"rU\"\)/open\(filename,\ \"r\"\)/g /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
+        - sed -i 's/open(filename, "rU")/open(filename, "r")/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
       after_success:
         - codecov
     - name: "Python 3.7 on Linux numba::parallel=True"
       before_script:
         - sed -i s/parallel=False/parallel=True/g PySDM/backends/numba/conf.py
-        - sed -i s/open\(filename,\ \"rU\"\)/open\(filename,\ \"r\"\)/g /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
+        - sed -i sed -i 's/open(filename, "rU")/open(filename, "r")/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
     - name: "Python 3.7 on OSX"
       language: shell
       os: osx
