@@ -45,10 +45,10 @@ install:
 
 script:
   - export PY_FLAGS="-We"
-  - NBCONVERT="python $PY_FLAGS -m nbconvert --to markdown --stdout"
-  - PYTEST="pytest $PY_FLAGS"
-  - NUMBA_DISABLE_JIT=1 python$PY_SFX -m $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
-  - python$PY_SFX $PY_FLAGS -m $PYTEST
+  - NBCONVERT="python$PY_SFX $PY_FLAGS -m nbconvert --to markdown --stdout"
+  - PYTEST="python$PY_SFX $PY_FLAGS -m pytest $PY_FLAGS"
+  - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
+  - $PYTEST
   - |
       python$PY_SFX $PY_FLAGS -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do
