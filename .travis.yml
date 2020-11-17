@@ -25,7 +25,7 @@ jobs:
     - name: "Python 3.7 on Linux numba::parallel=True"
       before_script:
         - sed -i s/parallel=False/parallel=True/g PySDM/backends/numba/conf.py
-        - sed -i sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
+        - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
     - name: "Python 3.7 on OSX"
       language: shell
       os: osx
@@ -55,7 +55,7 @@ script:
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
   - $PYTEST
   - |
-      python$PY_SFX $PY_FLAGS -m ipykernel install --user
+      python$PY_SFX -m ipykernel install --user  # TODO: https://github.com/ipython/ipykernel/issues/560
       for i in PySDM_examples/*/demo.ipynb; do
          $NBCONVERT $i > $i.md.repo;
          $NBCONVERT --execute --ExecutePreprocessor.timeout=1800 $i || exit 1;
