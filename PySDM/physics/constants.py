@@ -2,7 +2,7 @@
 Crated at 2019
 """
 
-import mendeleev as atoms
+import molmass
 import pint
 from scipy import constants as sci
 from PySDM.physics._fake_unit_registry import FakeUnitRegistry
@@ -14,7 +14,7 @@ if not DIMENSIONAL_ANALYSIS:
 
 
 def _weight(x):
-    return x.atomic_weight * si.gram / si.mole
+    return molmass.Formula(x).mass * si.gram / si.mole
 
 
 def convert_to(value, unit):
@@ -23,8 +23,8 @@ def convert_to(value, unit):
 
 pi = sci.pi
 
-Md = 0.78 * _weight(atoms.N) * 2 + 0.21 * _weight(atoms.O) * 2 + 0.01 * _weight(atoms.Ar)
-Mv = _weight(atoms.O) + _weight(atoms.H) * 2
+Md = 0.78 * _weight('N2') + 0.21 * _weight('O2') + 0.01 * _weight('Ar')
+Mv = _weight('H2O')
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 eps = Mv / Md

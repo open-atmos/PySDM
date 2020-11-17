@@ -5,7 +5,7 @@ git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@f33d602#egg=PyMPDATA
 
 Pint>=0.11
 scipy>=1.4.1
-mendeleev>=0.6.0
+molmass>=2020.6.10
 numpy>=1.18.1
 matplotlib>=3.2.2
 ipywidgets>=7.5.1
