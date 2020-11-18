@@ -104,21 +104,20 @@ class Particles:
                               self.keys[attr_name])
 
     def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        result = self.core.bck.coalescence(n=self['n'],
-                                           volume=self['volume'],
-                                           idx=self.__idx,
-                                           length=self.SD_num,
-                                           intensive=self.get_intensive_attrs(),
-                                           extensive=self.get_extensive_attrs(),
-                                           gamma=gamma,
-                                           healthy=self.__healthy_memory,
-                                           adaptive=adaptive,
-                                           cell_id=self["cell id"],
-                                           subs=subs,
-                                           adaptive_memory=adaptive_memory)
+        self.core.bck.coalescence(n=self['n'],
+                                  volume=self['volume'],
+                                  idx=self.__idx,
+                                  length=self.SD_num,
+                                  intensive=self.get_intensive_attrs(),
+                                  extensive=self.get_extensive_attrs(),
+                                  gamma=gamma,
+                                  healthy=self.__healthy_memory,
+                                  adaptive=adaptive,
+                                  cell_id=self["cell id"],
+                                  subs=subs,
+                                  adaptive_memory=adaptive_memory)
         self.healthy = bool(self.__healthy_memory)
         self.attributes['volume'].mark_updated()
-        return result
 
     def has_attribute(self, attr):
         return attr in self.keys

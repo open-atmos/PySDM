@@ -2,6 +2,8 @@
 Created at 07.06.2019
 """
 
+import numpy as np
+
 from .random_generator_optimizer import RandomGeneratorOptimizer
 
 
@@ -36,28 +38,41 @@ class Coalescence:
 
     def __call__(self):
         if self.enable:
-            subs = 0
-            msub = 1
+            adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+            subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+            msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+            length_cache = self.core.particles._Particles__idx.length
             for s in range(self.n_substep[0]):
-                sub = self.step(s)
-                subs += sub
-                msub = max(msub, sub)
+                self.step(s, adaptive_memory)
+                subs[:] += adaptive_memory
+                for i in range(len(adaptive_memory)):
+                    msub.data[i] = max(msub.data[i], adaptive_memory.data[i])
+            self.core.particles._Particles__idx.length = length_cache
 
             if self.adaptive:
                 self.n_substep = min(self.max_substeps, int(((subs / self.n_substep) + msub) / 2))
 
-    def step(self, s):
+    def step(self, s, adaptive_memory):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
-        self.toss_pairs(self.is_first_in_pair, pairs_rand)
+        self.toss_pairs(self.is_first_in_pair, pairs_rand, s)
         self.compute_probability(self.prob, self.is_first_in_pair, self.n_substep)
         self.compute_gamma(self.prob, rand)
-        sub = self.core.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
-                                    adaptive_memory=self.temp)
-        return sub
+        self.temp[:] = 0
+        self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
+                                        adaptive_memory=adaptive_memory)
 
-    def toss_pairs(self, is_first_in_pair, u01):
+    def toss_pairs(self, is_first_in_pair, u01, s):
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
+        if s == 0:
+            self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
+        end = 0
+        for i in range(self.core.mesh.n_cell - 1, -1, -1):
+            if self.n_substep.data[i] < s:
+                continue
+            else:
+                end = self.core.particles.cell_start[self.core.particles.cell_idx.data[i] + 1]
+        self.core.particles._Particles__idx.length = end
         is_first_in_pair.update(
             self.core.particles.cell_start,
             self.core.particles.cell_idx,

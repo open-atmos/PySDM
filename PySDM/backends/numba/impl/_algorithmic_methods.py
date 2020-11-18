@@ -30,16 +30,15 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean,
-              int64[:], int64[:], float64[:]),
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
+             numba.boolean, int64[:], int64[:], int64[:]),
         **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, subs,
-                         adaptive_memory):
-        result = 1
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
+                         adaptive, cell_id, subs, adaptive_memory):
         for i in prange(length - 1):
             if gamma[i] == 0:
-                # adaptive_memory[i] = 1  # TODO parallelization
+                adaptive_memory[cell_id[i]] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -49,8 +48,8 @@ class AlgorithmicMethods:
                 j, k = k, j
             prop = int(n[j] / n[k])
             if adaptive:
-                result = max(result, int(((gamma[i]) * subs[cell_id[j]]) / prop))
-                # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
+                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
+                                                  int(((gamma[i]) * subs[cell_id[j]]) / prop))
             g = min(int(gamma[i]), prop)
             if g == 0:
                 continue
@@ -71,14 +70,13 @@ class AlgorithmicMethods:
                 extensive[:, k] = extensive[:, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
-        return result  # np.amax(adaptive_memory[:length-1])
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, subs,
-                    adaptive_memory):
-        return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                                   extensive.data, gamma.data, healthy.data,
-                                                   adaptive, cell_id.data, subs.data, adaptive_memory.data)
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy,
+                    adaptive, cell_id, subs, adaptive_memory):
+        AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
+                                            extensive.data, gamma.data, healthy.data,
+                                            adaptive, cell_id.data, subs.data, adaptive_memory.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -248,9 +246,10 @@ class AlgorithmicMethods:
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
                 cell_id = cell_order[i]
+                # cell_id = i  TODO!!!!
 
-                cell_start = cell_start_arg[cell_id]
-                cell_end = cell_start_arg[cell_id + 1]
+                cell_start = cell_start_arg[i]
+                cell_end = cell_start_arg[i + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
