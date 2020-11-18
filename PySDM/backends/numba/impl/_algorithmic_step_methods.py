@@ -2,10 +2,11 @@
 Created at 18.03.2020
 """
 
-from PySDM.backends.numba import conf
 import numba
-from numba import float64, int64, void, prange
 import numpy as np
+from numba import float64, int64, void, prange
+
+from PySDM.backends.numba import conf
 
 
 class AlgorithmicStepMethods:
@@ -42,17 +43,17 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
-    def find_pairs_body(cell_start, is_first_in_pair, cell_id, idx, length):
+    def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
         for i in prange(length - 1):
             is_first_in_pair[i] = (
-                    cell_id[idx[i]] == cell_id[idx[i+1]] and
-                    (i - cell_start[cell_id[idx[i]]]) % 2 == 0
+                    cell_id[idx[i]] == cell_id[idx[i + 1]] and
+                    (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
 
     @staticmethod
-    def find_pairs(cell_start, is_first_in_pair, cell_id, idx, length):
+    def find_pairs(cell_start, cell_prior, is_first_in_pair, cell_id, idx, length):
         return AlgorithmicStepMethods.find_pairs_body(
-            cell_start.data, is_first_in_pair.data, cell_id.data, idx.data, length)
+            cell_start.data, cell_prior.data, is_first_in_pair.data, cell_id.data, idx.data, length)
 
     @staticmethod
     @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)

@@ -12,7 +12,7 @@ class PairIndicator:
         self.indicator = Storage.empty(length, dtype=int)  # TODO bool
         self.length = length
 
-    def update(self, cell_start, cell_id):
+    def update(self, cell_start, cell_idx, cell_id):
         AlgorithmicStepMethods.find_pairs_body(
-            cell_start.data, self.indicator.data, cell_id.data, cell_id.idx.data, len(cell_id))
+            cell_start.data, self.indicator.data, cell_id.data, cell_idx.data, cell_id.idx.data, len(cell_id))
         self.length = len(cell_id)

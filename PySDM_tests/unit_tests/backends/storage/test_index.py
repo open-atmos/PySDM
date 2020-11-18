@@ -14,7 +14,7 @@ class TestIndex:
     def test_remove_zeros(backend):
         # Arrange
         n_sd = 44
-        idx = backend.Index.from_ndarray(np.arange(0, n_sd).astype(np.int64))
+        idx = backend.Index.empty(n_sd)
         data = np.ones(n_sd).astype(np.int64)
         data[0], data[n_sd // 2], data[-1] = 0, 0, 0
         data = backend.Storage.from_ndarray(data)

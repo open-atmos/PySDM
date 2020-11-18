@@ -16,7 +16,7 @@ class ParticlesFactory:
         tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
-        idx = core.backend.Index.from_ndarray(np.arange(core.n_sd))
+        idx = core.backend.Index.empty(core.n_sd)
         base_attributes = core.backend.IndexedStorage.empty(idx, (len(tensive_attr), core.n_sd), float)  # TODO: divide
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
@@ -59,7 +59,7 @@ class ParticlesFactory:
 
     @staticmethod
     def empty_particles(particles, n_sd) -> Particles:
-        idx = particles.backend.Index.from_ndarray(np.arange(n_sd))
+        idx = particles.backend.Index.empty(n_sd)
         return Particles(
             core=particles, idx=idx, keys={}, intensive_start=-1,
             cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, attributes={})

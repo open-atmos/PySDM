@@ -58,7 +58,11 @@ class Coalescence:
     def toss_pairs(self, is_first_in_pair, u01):
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
-        is_first_in_pair.update(self.core.particles.cell_start, self.core.particles['cell id'])
+        is_first_in_pair.update(
+            self.core.particles.cell_start,
+            self.core.particles.cell_idx,
+            self.core.particles['cell id']
+        )
 
     def compute_probability(self, prob, is_first_in_pair, subs):
         self.kernel(self.temp, is_first_in_pair)

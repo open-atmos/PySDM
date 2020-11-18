@@ -2,6 +2,8 @@
 Created at 09.11.2020
 """
 
+import numpy as np
+
 from PySDM.backends.numba.impl._algorithmic_methods import AlgorithmicMethods
 from PySDM.backends.numba.impl._storage_methods import StorageMethods
 from PySDM.backends.numba.storage.storage import Storage
@@ -9,22 +11,23 @@ from PySDM.backends.numba.storage.storage import Storage
 
 class Index(Storage):
 
-    def __init__(self, data, shape, dtype):
-        assert len(shape) == 1
-        super().__init__(data, shape, dtype)
-        self.length = shape[0]
+    def __init__(self, data, length):
+        assert isinstance(length, int)
+        super().__init__(data, length, int)
+        self.length = length
 
     def __len__(self):
         return self.length
 
     @staticmethod
-    def empty(shape, dtype):
-        result = Index(*Storage._get_empty_data(shape, dtype))
+    def empty(length):
+        result = Index(np.arange(length, dtype=Storage.INT), length)
         return result
 
     @staticmethod
     def from_ndarray(array):
-        result = Index(*Storage._get_data_from_ndarray(array))
+        data, array.shape, _ = Storage._get_data_from_ndarray(array)
+        result = Index(data, array.shape[0])
         return result
 
     def shuffle(self, temporary, parts=None):
