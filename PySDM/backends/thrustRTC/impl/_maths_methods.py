@@ -1,7 +1,7 @@
 """
 Created at 10.12.2019
 """
-
+from .precision_s_wicher import PrecisionResolver
 from ..conf import trtc
 from ._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
@@ -69,7 +69,7 @@ class MathsMethods:
             device_multiplier = multiplier
         elif isinstance(multiplier, float):
             loop = MathsMethods.__multiply_body
-            device_multiplier = trtc.DVDouble(multiplier)
+            device_multiplier = PrecisionResolver.get_floating_point(multiplier)
         elif isinstance(multiplier, int):
             loop = MathsMethods.__multiply_body
             device_multiplier = trtc.DVInt64(multiplier)
@@ -93,7 +93,7 @@ class MathsMethods:
             device_multiplier = multiplier
         elif isinstance(multiplier, float):
             loop = MathsMethods.__multiply_out_of_place_body
-            device_multiplier = trtc.DVDouble(multiplier)
+            device_multiplier = PrecisionResolver.get_floating_point(multiplier)
         else:
             raise NotImplementedError()
         loop.launch_n(output.size(), [output, multiplicand, device_multiplier])
@@ -107,7 +107,7 @@ class MathsMethods:
     def power(output, exponent):
         if exponent == 1:
             return
-        device_exponent = trtc.DVDouble(exponent)
+        device_exponent = PrecisionResolver.get_floating_point(exponent)
         MathsMethods.__power_body.launch_n(output.size(), [output, device_exponent])
 
     __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''

@@ -170,7 +170,7 @@ class AlgorithmicMethods:
         dG3 = PrecisionResolver.get_floating_point(G3)
         dMf = PrecisionResolver.get_floating_point(Mf)
         dMg = PrecisionResolver.get_floating_point(Mg)
-        dunit = trtc.DVDouble(unit)
+        dunit = PrecisionResolver.get_floating_point(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
             [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
 
@@ -229,7 +229,7 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0] - 1
-        device_dt_div_dv = trtc.DVDouble(dt_div_dv)
+        device_dt_div_dv = PrecisionResolver.get_floating_point(dt_div_dv)
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 

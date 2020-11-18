@@ -5,6 +5,7 @@ Created at 02.06.2020
 from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
+from ..impl.precision_s_wicher import PrecisionResolver
 
 
 def thrust(obj):
@@ -13,7 +14,7 @@ def thrust(obj):
     elif hasattr(obj, 'data'):
         result = obj.data
     elif isinstance(obj, float):
-        result = trtc.DVDouble(obj)
+        result = PrecisionResolver.get_floating_point(obj)
     elif isinstance(obj, int):
         result = trtc.DVInt64(obj)
     else:
