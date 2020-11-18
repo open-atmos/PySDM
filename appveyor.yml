@@ -31,7 +31,7 @@ install:
       iex "$env:PYTHON -m pip install pytest"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
-      Add-Content requirements.txt "`npywin32==300"
+      # Add-Content requirements.txt "`npywin32>=300"
       iex "$env:PYTHON -m pip install -r requirements.txt"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
