@@ -206,21 +206,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
+    def normalize_body(prob, cell_id, cell_start, norm_factor, dt, dv, n_substeps):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt / subs[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = dt / n_substeps[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, subs):
+    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, n_substep):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, subs.data)
+            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

@@ -184,7 +184,8 @@ class TestSDMSingleCell:
                 super(CountingRandom, self).__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
-        sut.n_substep[:] = 100
+        n_substeps = 100
+        sut.n_substep[:] = n_substeps
 
         # Act
         sut()
@@ -193,4 +194,4 @@ class TestSDMSingleCell:
         if sut.rnd_opt.optimized_random:
             assert CountingRandom.calls == 2
         else:
-            assert CountingRandom.calls == 2 * sut.n_substep[0]
+            assert CountingRandom.calls == 2 * n_substeps

@@ -70,6 +70,16 @@ class Storage:
             MathsMethods.multiply(self.data, other)
         return self
 
+    def __truediv__(self, other):
+        raise TypeError("Use /=")
+
+    def __itruediv__(self, other):
+        if hasattr(other, 'data'):
+            self.data[:] /= other.data[:]
+        else:
+            self.data[:] /= other
+        return self
+
     def __mod__(self, other):
         raise TypeError("Use %=")
 
