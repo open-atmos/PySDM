@@ -7,7 +7,7 @@ class TestNumbaHelpers:
     @staticmethod
     def test_bisec():
         # arrange
-        sut = bisec.py_func if 'NUMBA_DISABLE_JIT' in os.environ else bisec
+        sut = bisec if 'NUMBA_DISABLE_JIT' in os.environ else bisec.py_func
 
         def f(x):
             return x
