@@ -5,6 +5,14 @@ os: linux
 
 jobs:
   include:
+    - name: "check links in README"
+      before_script:
+        - |
+            pip install markdown-link-extractor || exit 1
+            for i in `python3 -m markdown_link_extractor README.md`; do 
+              echo $i; 
+              [[ `curl -sL -w "%{http_code}" -I $i -o /dev/null` == 200 ]] || exit 1; 
+            done;
     - name: "Python 3.8 with newest packages on Linux"
       os: linux
       language: python
