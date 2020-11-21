@@ -172,27 +172,32 @@ def within_tolerance(error_estimate, value, rtol):
 def bisec(minfun, a, interval, args, rtol):
     b = a + interval
 
+    fa = minfun(a, *args)
+    fb = minfun(b, *args)
+
     counter = 0
-    while minfun(a, *args) * minfun(b, *args) > 0:
+    while fa * fb > 0:
         counter += 1
         if counter > 100:
             raise RuntimeError("Cannot find interval!")
         b = a + interval * 2**counter
+        fb = minfun(b, *args)
 
     if b < a:
         a, b = b, a
+        fa, fb = fb, fa
 
-    fa = minfun(a, *args) # TODO: computed above
+    fb = None
 
-    iter = 0
-    while not within_tolerance(error_estimate=(b-a), value=(a+b)/2, rtol=rtol):
+    while True:
         x_new = (a + b) / 2
-        f = minfun(x_new, *args)
-        if f * fa > 0:
+        if within_tolerance(error_estimate=(b - a), value=x_new, rtol=rtol):
+            break
+
+        f_new = minfun(x_new, *args)
+        if f_new * fa > 0:
             a = x_new
+            fa = f_new
         else:
             b = x_new
-        iter += 1
-    x_new = (a + b) / 2
-
     return x_new
