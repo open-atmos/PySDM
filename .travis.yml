@@ -13,6 +13,7 @@ jobs:
               echo $i; 
               [[ `curl -sL -w "%{http_code}" -I $i -o /dev/null` == 200 ]] || exit 1; 
             done;
+            exit 0
     - name: "Python 3.8 with newest packages on Linux"
       os: linux
       language: python
