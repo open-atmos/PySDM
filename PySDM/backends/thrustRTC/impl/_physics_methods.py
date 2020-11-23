@@ -26,18 +26,18 @@ class PhysicsMethods:
 
     __temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
         // equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-        double exponent = {const.Rd} / {const.c_pd};
-        double pd = pow((rhod[i] * {const.Rd} * thd[i]) / pow({const.p1000}, exponent), 1 / (1 - exponent));
+        real_type exponent = {const.Rd} / {const.c_pd};
+        real_type pd = pow((rhod[i] * {const.Rd} * thd[i]) / pow({const.p1000}, exponent), 1 / (1 - exponent));
         T[i] = thd[i] * pow((pd / {const.p1000}), exponent);
     
-        double R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
+        real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
         p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
     
         // August-Roche-Magnus formula
-        double pvs = {const.ARM_C1} * exp(({const.ARM_C2} * (T[i] - {const.T0})) / (T[i] - {const.T0} + {const.ARM_C3}));
+        real_type pvs = {const.ARM_C1} * exp(({const.ARM_C2} * (T[i] - {const.T0})) / (T[i] - {const.T0} + {const.ARM_C3}));
     
         RH[i] = (p[i] - pd) / pvs;
-    ''')
+    '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

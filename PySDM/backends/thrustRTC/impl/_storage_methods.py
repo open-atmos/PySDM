@@ -1,7 +1,7 @@
 """
 Created at 10.12.2019
 """
-
+from .precision_s_wicher import PrecisionResolver
 from ..conf import trtc
 import numpy as np
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
@@ -12,12 +12,13 @@ class StorageMethods:
     storage = trtc.DVVector.DVVector
     integer = np.int64
     double = np.float64
+    float = np.float32
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def array(shape, dtype):
         if dtype in (float, StorageMethods.double):
-            elem_cls = 'double'
+            elem_cls = PrecisionResolver.get_C_type()
             elem_dtype = StorageMethods.double
         elif dtype in (int, StorageMethods.integer):
             elem_cls = 'int64_t'

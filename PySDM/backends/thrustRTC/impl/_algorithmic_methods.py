@@ -135,16 +135,16 @@ class AlgorithmicMethods:
     __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
         if (is_first_in_pair[i]) {
-            double r = radii[i] / unit;
-            double r_s = radii[i + 1] / unit;
-            double p = r_s / r;
+            real_type r = radii[i] / unit;
+            real_type r_s = radii[i + 1] / unit;
+            real_type p = r_s / r;
             if (p != 0 && p != 1) {
-                double G = pow((G1 / r), Mg) + G2 + G3 * r;
-                double Gp = pow((1 - p), G);
+                real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
+                real_type Gp = pow((1 - p), G);
                 if (Gp != 0) {
-                    double D = D1 / pow(r, D2);
-                    double E = E1 / pow(r, E2);
-                    double F = pow((F1 / r), Mf) + F2;
+                    real_type D = D1 / pow(r, D2);
+                    real_type E = E1 / pow(r, E2);
+                    real_type F = pow((F1 / r), Mf) + F2;
                     output[i] = A + B * p + D / pow(p, F) + E / Gp;
                     if (output[i] < 0) {
                         output[i] = 0;
@@ -152,7 +152,7 @@ class AlgorithmicMethods:
                 }
             }
         }
-    ''')
+    '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):

@@ -98,7 +98,7 @@ class Storage:
     def detach(self):
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
-                elem_cls = 'double'
+                elem_cls = PrecisionResolver.get_C_type()
             elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
             else:
@@ -117,7 +117,7 @@ class Storage:
     @staticmethod
     def empty(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            elem_cls = 'double'
+            elem_cls = PrecisionResolver.get_C_type()
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             elem_cls = 'int64_t'
