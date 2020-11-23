@@ -4,7 +4,7 @@ Created at 29.11.2019
 
 import numpy as np
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
@@ -17,7 +17,7 @@ from PySDM.products.dynamics.condensation import CondensationTimestep
 
 
 class Simulation:
-    def __init__(self, settings, backend=GPU):
+    def __init__(self, settings, backend=CPU):
         t_half = settings.z_half / settings.w_avg
 
         dt_output = (2 * t_half) / settings.n_output
