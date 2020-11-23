@@ -32,6 +32,10 @@ class Coalescence:
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
 
+        self.adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+
     @property
     def max_substeps(self):
         return self.rnd_opt.max_substeps
@@ -39,20 +43,16 @@ class Coalescence:
     def __call__(self):
         # TODO dt
         if self.enable:
-            adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-            subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-            msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+
             length_cache = self.core.particles._Particles__idx.length
             for s in range(self.n_substep[0]):
-                self.step(s, adaptive_memory)
-                subs[:] += adaptive_memory
-                for i in range(len(adaptive_memory)):
-                    msub.data[i] = max(msub.data[i], adaptive_memory.data[i])
+                self.step(s, self.adaptive_memory)
+                self.subs[:] += self.adaptive_memory
+                method1(self.adaptive_memory.data, self.msub.data)
             self.core.particles._Particles__idx.length = length_cache
 
             if self.adaptive:
-                for i in range(len(self.n_substep)):
-                    self.n_substep[i] = min(self.max_substeps, int(((subs[i] / self.n_substep[i]) + msub[i]) / 2))
+                method2(self.n_substep.data, self.msub.data, self.max_substeps, self.subs.data)
 
     def step(self, s, adaptive_memory):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
@@ -67,13 +67,11 @@ class Coalescence:
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
         if s == 0:
+            print("in")
             self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
-        end = 0
-        for i in range(self.core.mesh.n_cell - 1, -1, -1):
-            if self.n_substep.data[i] < s:
-                continue
-            else:
-                end = self.core.particles.cell_start[self.core.particles.cell_idx.data[i] + 1]
+            print("out")
+        end = method3(self.n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data,
+                      self.core.particles.cell_idx.data, s)
         self.core.particles._Particles__idx.length = end
         is_first_in_pair.update(
             self.core.particles.cell_start,
@@ -91,3 +89,29 @@ class Coalescence:
 
     def compute_gamma(self, prob, rand):
         self.core.backend.compute_gamma(prob, rand)
+
+
+import numba
+
+
+@numba.njit()
+def method1(adaptive_memory, msub):
+    for i in range(len(adaptive_memory)):
+        msub[i] = max(msub[i], adaptive_memory[i])
+
+
+@numba.njit()
+def method2(n_substep, msub, max_substeps, subs):
+    for i in range(len(n_substep)):
+        n_substep[i] = min(max_substeps, int(((subs[i] / n_substep[i]) + msub[i]) / 2))
+
+
+@numba.njit()
+def method3(n_substep, n_cell, cell_start, cell_idx, s):
+    end = 0
+    for i in range(n_cell - 1, -1, -1):
+        if n_substep[i] < s:
+            continue
+        else:
+            end = cell_start[cell_idx[i] + 1]
+    return end

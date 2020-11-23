@@ -3,21 +3,22 @@ Created at 25.09.2019
 """
 
 from PySDM.backends import CPU
+from PySDM.builder import Builder
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
-from PySDM.dynamics import AmbientThermodynamics
-from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.state.arakawa_c import Fields
 from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
 from PySDM.environments import Kinematic2D
+from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.products.dynamics.coalescence import CoalescenceTimestep
+from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
 from PySDM.products.environments import RelativeHumidity, Pressure, Temperature
 from PySDM.products.environments import WaterVapourMixingRatio
-from PySDM.initialisation import spectral_sampling, spatial_sampling
-from PySDM.builder import Builder
 from PySDM.products.state import AerosolConcentration, CloudConcentration, DrizzleConcentration
 from PySDM.products.state import AerosolSpecificConcentration
 from PySDM.products.state import ParticleMeanRadius
@@ -25,8 +26,8 @@ from PySDM.products.state import ParticlesWetSizeSpectrum, ParticlesDrySizeSpect
 from PySDM.products.state import SuperDropletCount
 from PySDM.products.state import TotalParticleConcentration
 from PySDM.products.state import TotalParticleSpecificConcentration
-from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from PySDM.products.stats.timers import CPUTime, WallTime
+from PySDM.state.arakawa_c import Fields
 from .dummy_controller import DummyController
 from .spin_up import SpinUp
 
@@ -102,6 +103,7 @@ class Simulation:
             products.append(SurfacePrecipitation())
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
+            products.append(CoalescenceTimestep())
 
         attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.Pseudorandom(),
                                                  spectral_discretisation=spectral_sampling.ConstantMultiplicity(

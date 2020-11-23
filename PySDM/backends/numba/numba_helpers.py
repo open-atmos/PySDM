@@ -3,12 +3,12 @@ Created at 17.02.2020
 """
 
 import numpy as np
-
-from . import conf
-import PySDM.physics.constants as const
 from numba import float64
 
+import PySDM.physics.constants as const
 from PySDM.physics import _flag
+from . import conf
+
 if _flag.DIMENSIONAL_ANALYSIS:
     import PySDM.physics._fake_numba as numba
 else:
@@ -186,8 +186,6 @@ def bisec(minfun, a, interval, args, rtol):
     if b < a:
         a, b = b, a
         fa, fb = fb, fa
-
-    fb = None
 
     while True:
         x_new = (a + b) / 2
