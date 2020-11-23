@@ -2,15 +2,13 @@
 Created at 02.10.2019
 """
 
-from ipywidgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, \
-    HBox, Dropdown, Button, Layout
-from IPython.display import clear_output, display
 import numpy as np
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from ..utils.show_plot import save_and_make_link
-
-from .demo_plots import _ImagePlot, _SpectrumPlot
+from ..utils.widgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, \
+    HBox, Dropdown, Button, Layout, clear_output, display
+from .demo_plots import _ImagePlot, _SpectrumPlot, _TimeseriesPlot
 
 
 class DemoViewer:
@@ -51,6 +49,11 @@ class DemoViewer:
             self.spectrumPlot = _SpectrumPlot(r_bins)
             clear_output()
 
+        self.timeseriesOutput = Output()
+        with self.timeseriesOutput:
+            self.timeseriesPlot = _TimeseriesPlot(self.settings.steps, self.settings.dt)
+            clear_output()
+
         self.plots = {}
         self.outputs = {}
         for key, product in products.items():
@@ -68,24 +71,27 @@ class DemoViewer:
             save_spe = Button(icon='save')
             save_spe.on_click(self.handle_save_spe)
             self.plots_box.children = (
-                HBox(
-                    children=(
-                        VBox(
-                            children=(
-                                Box(
-                                    layout=layout_flex_end,
-                                    children=(save_map,)
-                                ),
-                                HBox((self.slider['Z'], self.plot_box)),
-                                HBox((self.slider['X'],), layout=layout_flex_end)
+                VBox(children=(
+                    HBox(
+                        children=(
+                            VBox(
+                                children=(
+                                    Box(
+                                        layout=layout_flex_end,
+                                        children=(save_map,)
+                                    ),
+                                    HBox((self.slider['Z'], self.plot_box)),
+                                    HBox((self.slider['X'],), layout=layout_flex_end)
+                                )
+                            ),
+                            VBox(
+                                layout=Layout(),
+                                children=(save_spe, self.spectrumOutput)
                             )
-                        ),
-                        VBox(
-                            layout=Layout(),
-                            children=(save_spe, self.spectrumOutput)
                         )
-                    )
-                ),
+                    ),
+                    HBox((self.timeseriesOutput,))
+                )),
             )
 
         for widget in (self.step_slider, self.play):
@@ -113,13 +119,17 @@ class DemoViewer:
 
         self.update_image()
         self.update_spectra()
+        self.update_timeseries()
 
         self.outputs[selected].clear_output(wait=True)
         self.spectrumOutput.clear_output(wait=True)
+        self.timeseriesOutput.clear_output(wait=True)
         with self.outputs[selected]:
             display(self.plots[selected].fig)
         with self.spectrumOutput:
             display(self.spectrumPlot.fig)
+        with self.timeseriesOutput:
+            display(self.timeseriesPlot.fig)
 
     def update_spectra(self):
         step = self.step_slider.value
@@ -129,7 +139,7 @@ class DemoViewer:
 
         for key in ('Particles Wet Size Spectrum', 'Particles Dry Size Spectrum'):
             try:
-                data = self.storage.load(self.settings.steps[step], key)
+                data = self.storage.load(key, self.settings.steps[step])
                 data = data[xrange, yrange, :]
                 data = np.mean(np.mean(data, axis=0), axis=0)
                 data = np.concatenate(((0,), data))
@@ -164,7 +174,7 @@ class DemoViewer:
 
         step = self.step_slider.value
         try:
-            data = self.storage.load(self.settings.steps[step], selected)
+            data = self.storage.load(selected, self.settings.steps[step])
         except self.storage.Exception:
             data = None
 
@@ -179,6 +189,19 @@ class DemoViewer:
         self.outputs[selected].clear_output(wait=True)
         with self.outputs[selected]:
             display(self.plots[selected].fig)
+
+    def update_timeseries(self):
+        try:
+            data = self.storage.load('surf_precip')
+        except self.storage.Exception:
+            data = None
+        self.timeseriesPlot.update(data)
+
+    def replot_timeseries(self):
+        self.update_timeseries()
+        self.timeseriesOutput.clear_output(wait=True)
+        with self.timeseriesOutput:
+            display(self.timeseriesPlot.fig)
 
     def box(self):
         jslink((self.play, 'value'), (self.step_slider, 'value'))

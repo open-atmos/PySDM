@@ -108,7 +108,7 @@ def make_solve(coord, rtol):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 0, 0  # TODO: how to get the number of timesteps?
+        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1  # TODO: how to get the number of timesteps?
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
@@ -134,7 +134,7 @@ def make_solve(coord, rtol):
             return dy_dt
 
         @staticmethod
-        # @numba.njit()
+        @numba.njit()
         def ql(n, x, m_d_mean):
             return np.sum(n * volume(x)) * rho_w / m_d_mean
 

@@ -65,7 +65,7 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         n_cell = max(cells) + 1
         core.environment.mesh.n_cell = n_cell
-        core.build(attributes={'n': np.zeros(n_sd)})
+        core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
         sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
@@ -203,7 +203,7 @@ class TestParticles:
         for i in range(core.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        core.build(attributes={'n': np.zeros(n_sd)})
+        core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
         sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         idx_length = len(sut._Particles__idx)

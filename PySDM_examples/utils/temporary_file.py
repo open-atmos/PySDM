@@ -1,7 +1,6 @@
 import os, sys
 import tempfile
-from IPython.display import FileLink
-from ipywidgets import HTML, Button
+from .widgets import FileLink, HTML, Button
 if 'google.colab' in sys.modules:
     from google import colab
 

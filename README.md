@@ -31,6 +31,8 @@ PySDM has two alternative parallel number-crunching backends
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
 
+For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
+
 ## Dependencies and installation
 
 It is worth here to distinguish the dependencies of the PySDM core subpackage 
@@ -176,7 +178,7 @@ The resultant plot looks as follows:
         linear, logarithmic and constant_multiplicity classes
 - [physics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/physics):
     - [constants](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/constants.py): 
-      physical constants partly imported from [SciPy](https://www.scipy.org/) and [mendeleev](https://pypi.org/project/mendeleev/) packages
+      physical constants partly imported from [SciPy](https://www.scipy.org/) and [molmass](https://pypi.org/project/molmass/) packages
     - [dimensional_analysis](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/dimensional_analysis.py): 
       tool for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
     - [formulae](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/formulae.py): 

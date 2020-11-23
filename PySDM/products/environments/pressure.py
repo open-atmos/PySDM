@@ -12,7 +12,7 @@ class Pressure(Product):
     def __init__(self):
         super().__init__(
             description="Pressure",
-            name="p",
+            name="p_ambient",
             unit="Pa",
             range=(90000, 100000),
             scale="linear",

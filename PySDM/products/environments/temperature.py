@@ -12,7 +12,7 @@ class Temperature(Product):
     def __init__(self):
         super().__init__(
             description="Temperature",
-            name="T",
+            name="T_ambient",
             unit="K",
             range=(275,305),
             scale="linear",

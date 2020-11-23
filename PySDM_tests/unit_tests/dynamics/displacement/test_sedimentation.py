@@ -32,9 +32,11 @@ class TestSedimentation:
         sut, particles = settings.get_displacement(backend)
 
         particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
+        assert sut.precipitation_in_last_step == 0
 
         # Act
         sut()
 
         # Assert
         assert particles.particles.SD_num == 0
+        assert sut.precipitation_in_last_step != 0

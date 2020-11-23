@@ -13,7 +13,7 @@ def test_displacement(w_idx):
     # Arrange
     settings = Settings(
         w_avg=w_avgs[w_idx],
-        N_STP=0,
+        N_STP=44,
         r_dry=1,
         mass_of_dry_air=1
     )
