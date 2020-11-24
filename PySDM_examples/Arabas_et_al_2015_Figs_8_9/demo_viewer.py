@@ -9,6 +9,7 @@ from ..utils.show_plot import save_and_make_link
 from ..utils.widgets import VBox, Box, Play, Output, IntSlider, IntRangeSlider, jslink, \
     HBox, Dropdown, Button, Layout, clear_output, display
 from .demo_plots import _ImagePlot, _SpectrumPlot, _TimeseriesPlot
+from matplotlib import pyplot, rcParams
 
 
 class DemoViewer:
@@ -51,7 +52,10 @@ class DemoViewer:
 
         self.timeseriesOutput = Output()
         with self.timeseriesOutput:
-            self.timeseriesPlot = _TimeseriesPlot(self.settings.steps, self.settings.dt)
+            default_figsize = rcParams["figure.figsize"]
+            fig_kw = {'figsize': (2.25 * default_figsize[0], default_figsize[1] / 2)}
+            fig, ax = pyplot.subplots(1, 1, **fig_kw)
+            self.timeseriesPlot = _TimeseriesPlot(fig, ax, self.settings.steps * self.settings.dt)
             clear_output()
 
         self.plots = {}
@@ -60,7 +64,8 @@ class DemoViewer:
             if len(product.shape) == 2:
                 self.outputs[key] = Output()
                 with self.outputs[key]:
-                    self.plots[key] = _ImagePlot(self.settings.grid, self.settings.size, product)
+                    fig, ax = pyplot.subplots(1, 1)
+                    self.plots[key] = _ImagePlot(fig, ax, self.settings.grid, self.settings.size, product)
                     clear_output()
 
         self.plot_box = Box()
@@ -152,12 +157,11 @@ class DemoViewer:
 
     def replot_spectra(self, *args, **kwargs):
         self.update_spectra()
-        step = self.step_slider.value
 
         selected = self.product_select.value
         if selected is None or selected not in self.plots:
             return
-        self.plots[selected].update(None, self.slider['X'].value, self.slider['Z'].value, step)
+        self.plots[selected].update_lines(self.slider['X'].value, self.slider['Z'].value)
 
         self.outputs[selected].clear_output(wait=True)
         self.spectrumOutput.clear_output(wait=True)
@@ -178,7 +182,7 @@ class DemoViewer:
         except self.storage.Exception:
             data = None
 
-        self.plots[selected].update(data, self.slider['X'].value, self.slider['Z'].value, step)
+        self.plots[selected].update(data, step)
 
     def replot_image(self, *args, **kwargs):
         selected = self.product_select.value

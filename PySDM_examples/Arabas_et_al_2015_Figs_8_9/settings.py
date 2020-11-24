@@ -18,7 +18,7 @@ import PySDM, numba, numpy, scipy
 
 class Settings:
     def __dir__(self) -> Iterable[str]:
-        return 'dt', 'grid', 'n_spin_up', 'versions'
+        return 'dt', 'grid', 'size', 'n_spin_up', 'versions', 'outfreq'
 
     def __init__(self):
         key_packages = (PySDM, numba, numpy, scipy)
@@ -41,6 +41,8 @@ class Settings:
     n_steps = 5400
     outfreq = 60
     dt = 1 * si.seconds
+
+    n_spin_up = 1 * si.hour / dt
 
     v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
@@ -113,8 +115,6 @@ class Settings:
 
         return rhod
 
-    kernel = Geometric(collection_efficiency=.5 / si.s)
+    kernel = Geometric(collection_efficiency=1)
     aerosol_radius_threshold = .5 * si.micrometre
     drizzle_radius_threshold = 25 * si.micrometre
-
-    n_spin_up = 1 * si.hour / dt

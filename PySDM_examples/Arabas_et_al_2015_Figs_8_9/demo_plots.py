@@ -9,16 +9,16 @@ import numpy as np
 
 class _Plot:
 
-    def __init__(self, *, fig_kw={}):
-        self.fig, self.ax = plt.subplots(1, 1, **fig_kw)
+    def __init__(self, fig, ax):
+        self.fig, self.ax = fig, ax
         self.ax.set_title(' ')
 
 
 class _ImagePlot(_Plot):
     line_args = {'color': 'red', 'alpha': .75, 'linestyle': ':', 'linewidth': 5}
 
-    def __init__(self, grid, size, product, show=True):
-        super().__init__()
+    def __init__(self, fig, ax, grid, size, product, show=True, lines=True):
+        super().__init__(fig, ax)
         self.nans = np.full(grid, np.nan)
 
         self.dx = size[0] / grid[0]
@@ -30,11 +30,12 @@ class _ImagePlot(_Plot):
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(zlim)
 
-        self.lines = {'X': [None]*2, 'Z': [None]*2}
-        self.lines['X'][0] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
-        self.lines['Z'][0] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
-        self.lines['X'][1] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
-        self.lines['Z'][1] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
+        if lines:
+            self.lines = {'X': [None]*2, 'Z': [None]*2}
+            self.lines['X'][0] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
+            self.lines['Z'][0] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
+            self.lines['X'][1] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
+            self.lines['Z'][1] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
 
         data = self.nans
         cmap = 'YlGnBu'
@@ -49,7 +50,7 @@ class _ImagePlot(_Plot):
                                  extent=(*xlim, *zlim),
                                  cmap=cmap,
                                  norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(
-                                     data).all() else None
+                                     data).all() else None # TODO: this is always None!!!
                                  )
         plt.colorbar(self.im, ax=self.ax).set_label(label)
         self.im.set_clim(vmin=product.range[0], vmax=product.range[1])
@@ -61,12 +62,13 @@ class _ImagePlot(_Plot):
         if data is not None:
             return data.T
 
-    def update(self, data, focus_x, focus_z, step):
+    def update(self, data,  step):
         data = self._transpose(data)
         if data is not None:
             self.im.set_data(data)
-            self.ax.set_title(f"min:{np.amin(data):.4g}    max:{np.amax(data):.4g}    t/dt:{step}")
+            self.ax.set_title(f"min:{np.amin(data): .2g}    max:{np.amax(data): .2g}    t/dt:{step: >4}")
 
+    def update_lines(self, focus_x, focus_z):
         self.lines['X'][0].set_xdata(x=focus_x[0] * self.dx)
         self.lines['Z'][0].set_ydata(y=focus_z[0] * self.dz)
         self.lines['X'][1].set_xdata(x=focus_x[1] * self.dx)
@@ -76,7 +78,7 @@ class _ImagePlot(_Plot):
 class _SpectrumPlot(_Plot):
 
     def __init__(self, r_bins, show=True):
-        super().__init__()
+        super().__init__(*plt.subplots(1, 1))
         self.ax.set_xlim(np.amin(r_bins), np.amax(r_bins))
         self.ax.set_xlabel("particle radius [μm]")
         self.ax.set_ylabel("specific concentration density [mg$^{-1}$ μm$^{-1}$]")
@@ -100,16 +102,15 @@ class _SpectrumPlot(_Plot):
 
 class _TimeseriesPlot(_Plot):
 
-    def __init__(self, steps, dt, show=True):
-        default_figsize = matplotlib.rcParams["figure.figsize"]
-        super().__init__(fig_kw={'figsize': (2.25*default_figsize[0], default_figsize[1]/2)})
-        self.ax.set_xlim(0, dt * steps[-1])
+    def __init__(self, fig, ax, times, show=True):
+        super().__init__(fig, ax)
+        self.ax.set_xlim(0, times[-1])
         self.ax.set_xlabel("time [s]")
         self.ax.set_ylabel("rainfall [mm/day]")
         self.ax.set_ylim(0, 1e-1)
         self.ax.grid(True)
-        self.ydata = np.full_like(steps, np.nan, dtype=float)
-        self.timeseries = self.ax.step(steps, self.ydata, where='pre')[0]
+        self.ydata = np.full_like(times, np.nan, dtype=float)
+        self.timeseries = self.ax.step(times, self.ydata, where='pre')[0]
         if show:
             plt.show()
 
