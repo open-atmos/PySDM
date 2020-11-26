@@ -15,7 +15,7 @@ class ParticleMeanRadius(MomentProduct):
             unit='um',
             description='Mean radius',
             scale='linear',
-            range=[1, 50]
+            range=[1, 25]
         )
 
     def get(self, unit=const.si.micrometre):

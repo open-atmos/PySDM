@@ -83,7 +83,7 @@ class Simulation:
                 coord=self.settings.condensation_coord,
                 adaptive=self.settings.adaptive)
             builder.add_dynamic(condensation)
-            products.append(CondensationTimestep())
+            products.append(CondensationTimestep())  # TODO: and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:
             solver = MPDATA(
                 fields=fields,
@@ -99,7 +99,7 @@ class Simulation:
                 scheme='FTBS',
                 enable_sedimentation=self.settings.processes["sedimentation"])
             builder.add_dynamic(displacement)
-            products.append(SurfacePrecipitation())
+            products.append(SurfacePrecipitation())  # TODO: ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
 
