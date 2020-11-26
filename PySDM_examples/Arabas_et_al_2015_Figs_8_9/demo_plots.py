@@ -17,7 +17,7 @@ class _Plot:
 class _ImagePlot(_Plot):
     line_args = {'color': 'red', 'alpha': .75, 'linestyle': ':', 'linewidth': 5}
 
-    def __init__(self, fig, ax, grid, size, product, show=True, lines=True):
+    def __init__(self, fig, ax, grid, size, product, show=False, lines=False, cmap='YlGnBu'):
         super().__init__(fig, ax)
         self.nans = np.full(grid, np.nan)
 
@@ -37,8 +37,7 @@ class _ImagePlot(_Plot):
             self.lines['X'][1] = plt.plot([-1] * 2, zlim, **self.line_args)[0]
             self.lines['Z'][1] = plt.plot(xlim, [-1] * 2, **self.line_args)[0]
 
-        data = self.nans
-        cmap = 'YlGnBu'
+        data = np.full_like(self.nans, product.range[0])
         label = f"{product.description} [{product.unit}]"
         scale = product.scale
 
@@ -66,7 +65,7 @@ class _ImagePlot(_Plot):
         data = self._transpose(data)
         if data is not None:
             self.im.set_data(data)
-            self.ax.set_title(f"min:{np.amin(data): .2g}    max:{np.amax(data): .2g}    t/dt:{step: >4}")
+            self.ax.set_title(f"min:{np.amin(data): .3g}    max:{np.amax(data): .3g}    t/dt:{step: >6}")
 
     def update_lines(self, focus_x, focus_z):
         self.lines['X'][0].set_xdata(x=focus_x[0] * self.dx)

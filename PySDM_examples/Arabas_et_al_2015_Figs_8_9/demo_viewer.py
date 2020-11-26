@@ -65,7 +65,7 @@ class DemoViewer:
                 self.outputs[key] = Output()
                 with self.outputs[key]:
                     fig, ax = pyplot.subplots(1, 1)
-                    self.plots[key] = _ImagePlot(fig, ax, self.settings.grid, self.settings.size, product)
+                    self.plots[key] = _ImagePlot(fig, ax, self.settings.grid, self.settings.size, product, show=True, lines=True)
                     clear_output()
 
         self.plot_box = Box()
