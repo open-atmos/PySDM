@@ -54,4 +54,4 @@ class DrizzleConcentration(ParticlesConcentration):
         self.name = 'n_d_cm3'
         self.description = 'Drizzle droplets concentration'
         self.scale = 'log'
-        self.range = (1e-2, 1e1)
+        self.range = (1e-3, 1e1)
