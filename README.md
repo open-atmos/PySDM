@@ -79,7 +79,9 @@ Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA]
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)       
   (2D prescribed-flow stratocumulus-mimicking aerosol collisional processing test case)
-  
+
+![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
+
 ## Hello-world example
 
 In order to depict the PySDM API with a practical example, the following
