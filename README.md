@@ -21,8 +21,13 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # PySDM
-PySDM is a package for simulating the dynamics of population of particles 
-  immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
+PySDM is a package for simulating the dynamics of population of particles. 
+It is intended to serve as a building block for simulation systems modelling
+  fluid flows involving a dispersed phase,
+  with PySDM being responsible for representation of the dispersed phase.
+Currently, the development is focused on representation of atmospheric cloud physics
+  applications, in particular on modelling the dynamics of particles immersed in moist air 
+  using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
 The package core is a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
