@@ -107,17 +107,20 @@ class AlgorithmicMethods:
         )
 
     @staticmethod
-    @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
-    def flag_precipitated_body(cell_origin, position_in_cell, idx, length, healthy):
+    @numba.njit(float64(int64[:, :], float64[:, :], float64[:], int64[:], int64[:], int64, int64[:]))
+    def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
+        rainfall = 0.
         for i in range(length):
             if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
+                rainfall += volume[i] * n[i]
                 idx[i] = len(idx)
                 healthy[0] = 0
+        return rainfall
 
     @staticmethod
-    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
-        AlgorithmicMethods.flag_precipitated_body(
-            cell_origin.data, position_in_cell.data, idx.data, length, healthy.data)
+    def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy) -> float:
+        return AlgorithmicMethods.flag_precipitated_body(
+            cell_origin.data, position_in_cell.data, volume.data, n.data, idx.data, length, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

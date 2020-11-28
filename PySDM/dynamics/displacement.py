@@ -17,6 +17,7 @@ class Displacement:
         self.displacement = None
         self.temp = None
         self.courant_field = courant_field
+        self.precipitation_in_last_step = 0
 
     def register(self, builder):
         builder.request_attribute('terminal velocity')
@@ -48,7 +49,7 @@ class Displacement:
         self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, displacement)
         if self.enable_sedimentation:
-            self.core.particles.remove_precipitated()
+            self.precipitation_in_last_step = self.core.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
         self.core.particles.recalculate_cell_id()

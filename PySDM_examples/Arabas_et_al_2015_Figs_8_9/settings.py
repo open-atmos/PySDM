@@ -11,9 +11,21 @@ from PySDM.dynamics import condensation
 from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from PySDM.physics.constants import si
+from typing import Iterable
+import PySDM, numba, numpy, scipy
+#from PyMPDATA import __version__ as TODO
 
 
 class Settings:
+    def __dir__(self) -> Iterable[str]:
+        return 'dt', 'grid', 'size', 'n_spin_up', 'versions', 'outfreq'
+
+    def __init__(self):
+        key_packages = (PySDM, numba, numpy, scipy)
+        self.versions = str({pkg.__name__: pkg.__version__ for pkg in key_packages})
+
+    # TODO: move all below into __init__ as self.* variables
+
     condensation_coord = 'volume logarithm'
 
     condensation_rtol_x = condensation.default_rtol_x
@@ -29,6 +41,8 @@ class Settings:
     n_steps = 5400
     outfreq = 60
     dt = 1 * si.seconds
+
+    n_spin_up = 1 * si.hour / dt
 
     v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
@@ -101,8 +115,6 @@ class Settings:
 
         return rhod
 
-    kernel = Geometric(collection_efficiency=.5 / si.s)
+    kernel = Geometric(collection_efficiency=1)
     aerosol_radius_threshold = .5 * si.micrometre
     drizzle_radius_threshold = 25 * si.micrometre
-
-    n_spin_up = 1 * si.hour / dt

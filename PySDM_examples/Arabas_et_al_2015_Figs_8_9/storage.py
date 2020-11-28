@@ -20,6 +20,7 @@ class Storage:
             Path(path).mkdir(parents=True, exist_ok=True)
             self.dir_path = Path(path).absolute()
         self.dtype = dtype
+        self.grid = None
 
     def __del__(self):
         if hasattr(self, 'temp_dir'):
@@ -28,17 +29,26 @@ class Storage:
     def init(self, settings):
         self.grid = settings.grid
 
-    def _filepath(self, step: int, name: str):
-        path = os.path.join(self.dir_path, f"{step:06}_{name}.npy")
+    def _filepath(self, name: str, step: int = None):
+        if step is None:
+            filename = f"{name}.npy"
+        else:
+            filename = f"{name}_{step:06}.npy"
+        path = os.path.join(self.dir_path, filename)
         return path
 
-    def save(self, data: np.ndarray, step: int, name: str):
-        assert (data.shape[0:2] == self.grid)
-        np.save(self._filepath(step, name), data.astype(self.dtype))
+    def save(self, data: (float, np.ndarray), step: int, name: str):
+        if isinstance(data, (int, float)):
+            path = self._filepath(name)
+            np.save(path, np.concatenate((() if step == 0 else np.load(path), (self.dtype(data),))))
+        elif data.shape[0:2] == self.grid:
+            np.save(self._filepath(name, step), data.astype(self.dtype))
+        else:
+            raise NotImplementedError()
 
-    def load(self, step: int, name: str) -> np.ndarray:
+    def load(self, name: str, step: int = None) -> np.ndarray:
         try:
-            data = np.load(self._filepath(step, name))
+            data = np.load(self._filepath(name, step))
         except FileNotFoundError:
             raise Storage.Exception()
         return data

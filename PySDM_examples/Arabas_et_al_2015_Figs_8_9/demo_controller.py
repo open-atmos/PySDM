@@ -2,7 +2,7 @@
 Created at 02.10.2019
 """
 
-from ipywidgets import FloatProgress, Button, HBox
+from ..utils.widgets import FloatProgress, Button, HBox
 from time import sleep
 from threading import Thread
 

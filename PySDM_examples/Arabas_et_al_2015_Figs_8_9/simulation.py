@@ -25,6 +25,8 @@ from PySDM.products.state import ParticlesWetSizeSpectrum, ParticlesDrySizeSpect
 from PySDM.products.state import SuperDropletCount
 from PySDM.products.state import TotalParticleConcentration
 from PySDM.products.state import TotalParticleSpecificConcentration
+from PySDM.products.dynamics.displacement import SurfacePrecipitation
+from PySDM.products.stats.timers import CPUTime, WallTime
 from .dummy_controller import DummyController
 from .spin_up import SpinUp
 
@@ -41,7 +43,7 @@ class Simulation:
     def products(self):
         return self.core.products
 
-    def reinit(self):
+    def reinit(self, products=None):
 
         builder = Builder(n_sd=self.settings.n_sd, backend=self.backend)
         environment = Kinematic2D(dt=self.settings.dt,
@@ -51,7 +53,7 @@ class Simulation:
                                   field_values=self.settings.field_values)
         builder.set_environment(environment)
 
-        products = [
+        products = products or [
             ParticlesWetSizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),
             ParticlesDrySizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),  # Note: better v_bins
             TotalParticleConcentration(),
@@ -65,7 +67,9 @@ class Simulation:
             RelativeHumidity(), Pressure(), Temperature(),
             WaterVapourMixingRatio(),
             DryAirDensity(),
-            DryAirPotentialTemperature()
+            DryAirPotentialTemperature(),
+            CPUTime(),
+            WallTime()
         ]
 
         fields = Fields(environment, self.settings.stream_function)
@@ -79,20 +83,23 @@ class Simulation:
                 coord=self.settings.condensation_coord,
                 adaptive=self.settings.adaptive)
             builder.add_dynamic(condensation)
-            products.append(CondensationTimestep())
+            products.append(CondensationTimestep())  # TODO: and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:
-            mpdatas = MPDATA(fields=fields,
-                             n_iters=self.settings.mpdata_iters,
-                             infinite_gauge=self.settings.mpdata_iga,
-                             flux_corrected_transport=self.settings.mpdata_fct,
-                             third_order_terms=self.settings.mpdata_tot)
-            builder.add_dynamic(EulerianAdvection(mpdatas))
+            solver = MPDATA(
+                fields=fields,
+                n_iters=self.settings.mpdata_iters,
+                infinite_gauge=self.settings.mpdata_iga,
+                flux_corrected_transport=self.settings.mpdata_fct,
+                third_order_terms=self.settings.mpdata_tot
+            )
+            builder.add_dynamic(EulerianAdvection(solver))
         if self.settings.processes["particle advection"]:
             displacement = Displacement(
                 courant_field=fields.courant_field,
                 scheme='FTBS',
                 enable_sedimentation=self.settings.processes["sedimentation"])
             builder.add_dynamic(displacement)
+            products.append(SurfacePrecipitation())  # TODO: ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
 
@@ -119,8 +126,6 @@ class Simulation:
                 self.store(step)
 
                 controller.set_percent(step / self.settings.steps[-1])
-
-        return self.core.stats
 
     def store(self, step):
         for name, product in self.core.products.items():

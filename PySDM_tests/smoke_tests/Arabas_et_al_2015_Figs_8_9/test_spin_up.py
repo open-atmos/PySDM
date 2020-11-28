@@ -25,11 +25,6 @@ def test_spin_up(plot=False):
     Settings.outfreq = 1
     settings = Settings()
 
-    for key in settings.processes.keys():
-        settings.processes[key] = False
-    settings.processes["condensation"] = True
-    settings.processes["fluid advection"] = True
-
     storage = DummyStorage()
     simulation = Simulation(settings, storage)
     simulation.reinit()
@@ -50,6 +45,6 @@ def test_spin_up(plot=False):
     for step in range(step_num):
         next = storage.profiles[step + Settings.outfreq]["qv"]
         prev = storage.profiles[step]["qv"]
-        eps = 1e-5
+        eps = 1e-3
         assert ((prev + eps) >= next).all()
     assert storage.profiles[step_num]["qv"][-1] < 7.

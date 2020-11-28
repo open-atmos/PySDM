@@ -8,10 +8,9 @@ from PySDM.backends.numba.impl._storage_methods import StorageMethods
 from PySDM.backends.numba.impl._maths_methods import MathsMethods
 from PySDM.backends.numba.impl._physics_methods import PhysicsMethods
 from PySDM.backends.numba.impl.condensation_methods import CondensationMethods
-from .storage.storage import Storage as ImportedStorage
+from PySDM.backends.numba.storage.storage import Storage as ImportedStorage
 from PySDM.backends.numba.storage.indexed_storage import IndexedStorage as ImportedIndexedStorage
 from PySDM.backends.numba.random import Random as ImportedRandom
-
 
 class Numba(
     AlgorithmicMethods,

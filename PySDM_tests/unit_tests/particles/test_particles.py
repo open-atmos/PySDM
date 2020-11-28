@@ -61,7 +61,7 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
-        core.build(attributes={'n': np.zeros(n_sd)})
+        core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
         sut._Particles__idx = TestParticles.make_storage(backend, idx)
         sut.attributes['n'].data = TestParticles.make_storage(backend, n, sut._Particles__idx)
@@ -195,7 +195,7 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
-        core.build(attributes={'n': np.zeros(n_sd)})
+        core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
         sut._Particles__idx = TestParticles.make_storage(backend, idx)
         idx_length = len(sut._Particles__idx)

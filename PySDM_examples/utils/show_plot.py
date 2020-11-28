@@ -1,10 +1,10 @@
 from .temporary_file import TemporaryFile
 from matplotlib import pyplot
-from IPython.display import display
+from .widgets import display
 
 
-def show_plot(filename=None):
-    link = save_and_make_link(pyplot, filename)
+def show_plot(filename=None, fig=pyplot):
+    link = save_and_make_link(fig, filename)
     pyplot.show()
     display(link)
 
