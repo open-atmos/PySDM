@@ -28,7 +28,9 @@ else:
 @pytest.mark.parametrize("coord", coord)
 @pytest.mark.parametrize("adaptive", adaptive)
 @pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
-def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    # Arrange
+def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
+    # Arrange
+    # TODO: encode it in params
     if scheme == 'BDF' and not adaptive:
         return
     if scheme == 'BDF' and coord == 'volume':
@@ -62,10 +64,10 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    #
     n_unit = 1/si.microgram
     assert min(N1) == 0.0 * n_unit
     assert .63 * n_unit < max(N1) < .68 * n_unit
-    assert .14 * n_unit < min(N2) < .15 * n_unit
+    assert .17 * n_unit < min(N2) < .18 * n_unit
     assert .3 * n_unit < max(N2) < .37 * n_unit
-    assert .08 * n_unit < min(N3) < .083 * n_unit
-    assert .27 * n_unit < max(N3) < .4 * n_unit
+    assert .12 * n_unit < min(N3) < .13 * n_unit
+    assert .207 * n_unit < max(N3) < .4 * n_unit
 
 
 def n_tot(n, condition):
