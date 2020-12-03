@@ -253,3 +253,5 @@ licence: GPL v3
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
 - LCM1D (Python)    
   https://github.com/SimonUnterstrasser/ColumnModel
+- superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)
+  https://github.com/darothen/superdroplet
