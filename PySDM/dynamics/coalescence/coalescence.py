@@ -67,9 +67,7 @@ class Coalescence:
         self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
         if s == 0:
-            print("in")
             self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
-            print("out")
         end = method3(self.n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data,
                       self.core.particles.cell_idx.data, s)
         self.core.particles._Particles__idx.length = end
