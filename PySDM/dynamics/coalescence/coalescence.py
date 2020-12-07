@@ -22,6 +22,8 @@ class Coalescence:
         self.prob = None
         self.is_first_in_pair = None
 
+        self.actual_length = None
+
     def register(self, builder):
         self.core = builder.core
         self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
@@ -43,13 +45,12 @@ class Coalescence:
     def __call__(self):
         # TODO dt
         if self.enable:
-
-            length_cache = self.core.particles._Particles__idx.length
+            self.actual_length = self.core.particles._Particles__idx.length
             for s in range(self.n_substep[0]):
                 self.step(s, self.adaptive_memory)
                 self.subs[:] += self.adaptive_memory
                 method1(self.adaptive_memory.data, self.msub.data)
-            self.core.particles._Particles__idx.length = length_cache
+            self.core.particles._Particles__idx.length = self.actual_length
 
             if self.adaptive:
                 method2(self.n_substep.data, self.msub.data, self.max_substeps, self.subs.data)
@@ -64,7 +65,9 @@ class Coalescence:
                                         adaptive_memory=adaptive_memory)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
+        self.core.particles._Particles__idx.length = self.actual_length
         self.core.particles.sanitize()
+        self.actual_length = self.core.particles._Particles__idx.length
         self.core.particles.permutation(u01, self.croupier == 'local')
         if s == 0:
             self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
