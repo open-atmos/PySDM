@@ -21,12 +21,17 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 # PySDM
-PySDM is a package for simulating the dynamics of population of particles 
-  immersed in moist air using the particle-based (a.k.a. super-droplet) approach 
+PySDM is a package for simulating the dynamics of population of particles. 
+It is intended to serve as a building block for simulation systems modelling
+  fluid flows involving a dispersed phase,
+  with PySDM being responsible for representation of the dispersed phase.
+Currently, the development is focused on atmospheric cloud physics
+  applications, in particular on modelling the dynamics of particles immersed in moist air 
+  using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
 The package core is a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
-  ([Shima et al. 2009](http://doi.org/10.1002/qj.441)), hence the name. 
+  ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
@@ -79,7 +84,9 @@ Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA]
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)       
   (2D prescribed-flow stratocumulus-mimicking aerosol collisional processing test case)
-  
+
+![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
+
 ## Hello-world example
 
 In order to depict the PySDM API with a practical example, the following
@@ -246,3 +253,5 @@ licence: GPL v3
   https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp
 - LCM1D (Python)    
   https://github.com/SimonUnterstrasser/ColumnModel
+- superdroplet (Cython/Numba/C++11/Fortran 2008/Julia)   
+  https://github.com/darothen/superdroplet
