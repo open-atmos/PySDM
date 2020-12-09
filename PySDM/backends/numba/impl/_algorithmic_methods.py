@@ -249,10 +249,9 @@ class AlgorithmicMethods:
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
                 cell_id = cell_order[i]
-                # cell_id = i  TODO!!!!
 
-                cell_start = cell_start_arg[i]
-                cell_end = cell_start_arg[i + 1]
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
                 n_sd_in_cell = cell_end - cell_start
                 if n_sd_in_cell == 0:
                     continue
