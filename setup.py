@@ -10,7 +10,7 @@ setup(
     description='Pythonic particle-based (super-droplet) cloud microphysics modelling with Jupyter examples',
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
-    install_requires=['numpy','numba','pint','molmass'],
+    install_requires=['numpy','numba','pint','molmass','scipy'],
     author='https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors',
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
