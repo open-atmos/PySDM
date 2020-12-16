@@ -2,6 +2,7 @@
 Created at 10.12.2019
 """
 
+from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from ..conf import trtc
@@ -192,24 +193,49 @@ class AlgorithmicMethods:
     def make_cell_caretaker(idx, cell_start, scheme=None):
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
+    __loop_reset = trtc.For(['vector_to_clean'], "i",
+    '''
+        vector_to_clean[i] = 0;
+    ''')
+
+    __moments_body_0 = trtc.For(['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
+                                 'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
+    '''
+        auto i = idx[fake_i];
+        if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
+            atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
+            for (int k = 0; k < specs_idx_shape; ++k) {
+                atomicAdd((double*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((double)attr[attr_shape * specs_idx[k] + i], (double)specs_rank[k]));
+            }
+        }
+    ''')
+
+    __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
+    '''
+        for (int k = 0; k < specs_idx_shape; ++k) {
+        if (moment_0[c_id] == 0) {
+            moments[moments_shape * k  + c_id] = 0;
+            } else {
+                moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
+            }
+        }
+    ''')
+
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
-        # TODO print("Numba import!: ThrustRTC.moments(...)")
+        AlgorithmicMethods.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
+        AlgorithmicMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
-        from PySDM.backends.numba.numba import Numba
-        host_moment_0 = moment_0.to_ndarray()
-        host_moments = moments.to_ndarray()
-        host_n = n.to_ndarray()
-        host_attr = attr.to_ndarray()
-        host_cell_id = cell_id.to_ndarray()
-        host_idx = idx.to_ndarray()
-        host_specs_idx = specs_idx.to_ndarray()
-        host_specs_rank = specs_rank.to_ndarray()
-        Numba.moments_body(host_moment_0, host_moments, host_n, host_attr, host_cell_id, host_idx, length,
-                           host_specs_idx, host_specs_rank, min_x, max_x, x_id)
-        moment_0.upload(host_moment_0)
-        moments.upload(host_moments)
+        AlgorithmicMethods.__moments_body_0.launch_n(length,
+                           [idx.data, trtc.DVDouble(min_x), attr.data, trtc.DVInt64(x_id), trtc.DVDouble(max_x),
+                            moment_0.data, cell_id.data, n.data, trtc.DVInt64(specs_idx.shape[0]), moments.data,
+                            specs_idx.data, specs_rank.data, trtc.DVInt64(attr.shape[1]),
+                            trtc.DVInt64(moments.shape[1])])
+
+        AlgorithmicMethods.__moments_body_1.launch_n(moment_0.shape[0], [trtc.DVInt64(specs_idx.shape[0]), moments.data, moment_0.data,
+                           trtc.DVInt64(moments.shape[1])])
+
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
         int sd_num = cell_start[i + 1] - cell_start[i];
