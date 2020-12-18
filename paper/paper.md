@@ -40,6 +40,13 @@ bibliography: paper.bib
 
 # Summary
 
+`PySDM` is a package for simulating the dynamics of population of particles. 
+It is intended to serve as a building block for simulation systems modelling fluid flows involving a dispersed phase, with `PySDM` being responsible for representation of the dispersed phase. 
+Currently, the development is focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics. 
+
+The package core is a Pythonic high-performance implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth [@Shima_et_al_2009], hence the name. 
+`PySDM` has two alternative parallel number-crunching backends available: multi-threaded CPU backend based on `Numba` [@Numba] and GPU-resident backend built on top of `ThrustRTC` [@ThrustRTC].
+
 TODO
 Linux, OSX, Windows
 Travis
@@ -81,7 +88,7 @@ for n in range(10):
 ```	
 
 # Acknowledgements
-
+We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support.
 Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 # References
