@@ -16,19 +16,24 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "1"
-  - name: Michael Olesik
-    orcid: 0000-0002-6319-9358
+  - name: Sylwester Arabas
+    orcid: 0000-0003-2361-0082
+    affiliation: "1"
+  - name: Kamil Górski
     affiliation: "1"
   - name: Grzegorz Łazarski
     affiliation: "1"
-  - name: Aleksandra Talar
+  - name: Michael Olesik
+    orcid: 0000-0002-6319-9358
     affiliation: "1"
-  - name: Sylwester Arabas
+  - name: Bartosz Piasecki
+    affiliation: "1"
+  - name: Aleksandra Talar
     affiliation: "1"
 affiliations:
  - name: Jagiellonian University
    index: 1
-date: 30 September 2020
+date: 30 December 2020
 bibliography: paper.bib
 
 ---
@@ -61,6 +66,8 @@ For a quick reference, the following citation commands can be used:
 - `[@author:2001]` -> "(Author et al., 2001)"
 - `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
+@Shima_et_al_2009
+
 # Figures
 
 Figures can be included like this:
@@ -75,6 +82,6 @@ for n in range(10):
 
 # Acknowledgements
 
-Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
+Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 # References
