@@ -39,7 +39,7 @@ bibliography: paper.bib
 
 # Summary
 
-`PySDM` is a Python package for simulating the dynamics of population of particles. 
+`PySDM` is an open-source Python package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling fluid flows involving a dispersed phase, with `PySDM` being responsible for representation of the dispersed phase. 
 So far, the development has been focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics. 
 
@@ -47,14 +47,16 @@ The package core is a Pythonic high-performance implementation of the Super-Drop
 `PySDM` has two alternative parallel number-crunching backends available: multi-threaded CPU backend based on `Numba` [@Numba] and GPU-resident backend built on top of `ThrustRTC` [@ThrustRTC].
 
 PySDM together with a set of bundled usage examples constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modelling methods.
-The usage examples were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser
+The usage examples were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
 
+PySDM is released under the GNU GPL v3 license.
 
 TODO
 license
 Linux, OSX, Windows
 test coverage
-dependencies
+dependencies (separate for core and examples)
+setup.py
 Travis, GA, Appveyor
 Matlab, Julia
 dynamics:
@@ -62,36 +64,9 @@ dynamics:
   - condensation
   - 
   - 
-examples (add one figure per each example): 
-  - box: Shima [@Shima_et_al_2009], Berry [@Berry_1966]
-  - parcel: AS [@Arabas_and_Shima_2017], Yang [@Yang_et_al_2018]
-  - kinematic: ICMW [@Arabas_et_al_2015]
 other packages
 SDM patents?
-
-# Statement of need 
-
-TODO
-
-# Mathematics
-
-TODO?
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-@Shima_et_al_2009
+colab, Jupyter
 
 # Figures
 
@@ -99,11 +74,6 @@ Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
 and referenced from text using \autoref{fig:example}.
 
-Fenced code blocks are rendered with syntax highlighting:
-```python
-for n in range(10):
-    yield f(n)
-```	
 
 # API in brief
 
@@ -113,6 +83,18 @@ for n in range(10):
 `PySDM.products`
 `PySDM.attributes`
 `PySDM.environments`
+
+```python
+for n in range(10):
+    yield f(n)
+```
+
+# Examples
+
+examples (add one figure per each example): 
+  - box: Shima [@Shima_et_al_2009], Berry [@Berry_1966]
+  - parcel: AS [@Arabas_and_Shima_2017], Yang [@Yang_et_al_2018]
+  - kinematic: ICMW [@Arabas_et_al_2015]
 
 # Author contributions
 
@@ -126,7 +108,7 @@ The paper was composed by SA and PB and is based on the content of the PySDM REA
 
 # Acknowledgements
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support.
-TODO: Numba and ThrustRTC developers!
+We thank Fei Yang for addressing several issues reported in ThrustRTC during the development of PySDM.
 Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 # References
