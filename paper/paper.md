@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v1: particle-based warm-rain cloud microphysics ~Python~ ~package~ ~with~ ~0D~ ~box/parcel~ ~and~ ~2D~ ~prescribed-flow~ ~examples~ ~for~ ~Python,~ ~Julia~ ~and~ ~Matlab~'
+title: 'PySDM v1: particle-based warm-rain cloud microphysics Python package with 0D box/parcel and 2D prescribed-flow examples'
 tags:
   - Python
   - physics-simulation 
