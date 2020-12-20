@@ -51,7 +51,7 @@ The usage examples were developed embracing the `Jupyter` interactive platform a
 
 All examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
 The packages ships with tutorial code depicting how `PySDM` can be used from `Python`, `Julia` and `Matlab` (`PySDM_tutorials` subpackage).
-Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyor`) has been used to reflect the targetted full usability on Linux, macOS and Windows environments (with Python versions 3.7 and above and on 32- and 64-bit architectures).
+Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyor`) assures the targetted full usability on Linux, macOS and Windows environments (with Python versions 3.7 and above and on 32- and 64-bit architectures).
 Test coverage for PySDM is reported using the `codecov.io` platform.
 
 PySDM essential dependencies (`numpy`, `numba`, `pint`, `molmass`, `scipy`) are free and open-sourse and are all available via the PyPI platform.
@@ -61,10 +61,88 @@ The optional GPU backend relies on proprietary vendor-specific CUDA technology a
 The GPU backend is implemented using open-source `ThrustRTC` and `CURandRTC` packages released under the Anti-996 license.
 PySDM is released under the GNU GPL v3 license.
 
+Subsequent sections of this paper provide: an outline of PySDM programming interface; an index of 
+examples and tutorials included as of v1.1; an overview of selected relevant open-source software packages; 
+and a description of a set of technical solutions introduced in PySDM that are of potential interest to
+the wider research software engineering community. 
+
 # API in brief
 
-PySDM interface design is domain-driven.
 Its core is represented with the `PySDM.Core` class which instances are built using the `PySDM.Builder`.
+
+ design is domain-driven.
+
+In order to depict PySDM API with a practical example, the following listings provide sample code roughly reproducing the Figure 2 from [@Shima_et_al_2009]. 
+
+
+
+It is a coalescence-only set-up in which the initial particle size spectrum is exponential and is deterministically sampled to match the condition of each super-droplet having equal initial multiplicity:
+
+```python
+from PySDM.physics import si
+from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.formulae import volume
+
+n_sd = 2 ** 17
+initial_spectrum = Exponential(
+    norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
+sampling_range = (volume(radius=10 * si.um),
+                  volume(radius=100 * si.um))
+attributes = {}
+attributes['volume'], attributes['n'] = constant_multiplicity(
+    n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+```
+
+```python
+from PySDM.builder import Builder
+from PySDM.environments import Box
+from PySDM.dynamics import Coalescence
+from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.backends import Numba
+from PySDM.state.products import ParticlesVolumeSpectrum
+
+builder = Builder(n_sd=n_sd, backend=Numba)
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
+builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+products = [ParticlesVolumeSpectrum()]
+core = builder.build(attributes, products)
+```
+
+The `backend` argument may be set to `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
+The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
+The vectors of particle multiplicities `n` and particle volumes `v` are used to initialize super-droplet attributes.
+The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of v1.1 represent condensational growth and particle displacement). 
+Finally, the `build()` method is used to obtain an instance of `Core` which can then be used to control time-stepping and access simulation state.
+
+```python
+from PySDM.physics.constants import rho_w
+from matplotlib import pyplot
+import numpy as np
+
+radius_bins_edges = np.logspace(
+    np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+
+for step in [0, 1200, 2400, 3600]:
+    core.run(step - core.n_steps)
+    pyplot.step(
+        x=radius_bins_edges[:-1] / si.um,
+        y=core.products['dv/dlnr'].get(radius_bins_edges) * rho_w/si.g,
+        where='post', label=f"t = {step}s")
+
+pyplot.xscale('log')
+pyplot.xlabel('particle radius [$\mu$ m]')
+pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
+pyplot.legend()
+pyplot.show()
+```
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.75\textwidth]{pics/readme}
+    \caption{Solution for size spectrum evolution with Golovin kernel.}
+    \label{fig:readme_fig_1}
+\end{figure}
 
 
 `PySDM.backends`
@@ -136,7 +214,7 @@ The paper was composed by SA and PB and is based on the content of the PySDM REA
 
 # Acknowledgements
 
-We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support.
+We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
 We thank Fei Yang (https://github.com/fynv/) for addressing several issues reported in ThrustRTC during the development of PySDM.
 Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
