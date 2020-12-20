@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v1: Pythonic GPU-enabled particle-based cloud microphysics package'
+title: 'PySDM v1: particle-based cloud microphysics package with 0D box/parcel-model and 2D prescribed-flow examples for Python, Julia and Matlab'
 tags:
   - Python
   - physics-simulation 
@@ -41,7 +41,7 @@ bibliography: paper.bib
 
 `PySDM` is an open-source Python package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling fluid flows involving a dispersed phase, with `PySDM` being responsible for representation of the dispersed phase. 
-So far, the development has been focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet) approach to represent aerosol/cloud/rain microphysics. 
+As of major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet/moving-sectional/discrete-point Lagrangian) approach to represent the evolution of size spectrum of aerosol/cloud/rain particles. 
 
 The package core is a Pythonic high-performance implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth [@Shima_et_al_2009], hence the name. 
 `PySDM` has two alternative parallel number-crunching backends available: multi-threaded CPU backend based on `Numba` [@Numba] and GPU-resident backend built on top of `ThrustRTC` [@ThrustRTC].
@@ -50,8 +50,8 @@ PySDM together with a set of bundled usage examples (`PySDM_examples` subpackage
 The usage examples were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
 
 All examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
-The packages ships with tutorial code depicting how `PySDM` can be used from `Matlab` and `Julia` (`PySDM_tutorials` subpackage).
-Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyors`) has been used to reflect targetting full usability on Linux, macOS and Windows environments; Python versions 3.7 and 3.8; and 32- and 64-bit architectures.
+The packages ships with tutorial code depicting how `PySDM` can be used from `Python`, `Julia` and `Matlab` (`PySDM_tutorials` subpackage).
+Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyor`) has been used to reflect the targetted full usability on Linux, macOS and Windows environments (with Python versions 3.7 and above and on 32- and 64-bit architectures).
 Test coverage for PySDM is reported using the `codecov.io` platform.
 
 PySDM essential dependencies (`numpy`, `numba`, `pint`, `molmass`, `scipy`) are free and open-sourse and are all available via the PyPI platform.
@@ -61,34 +61,11 @@ The optional GPU backend relies on proprietary vendor-specific CUDA technology a
 The GPU backend is implemented using open-source `ThrustRTC` and `CURandRTC` packages released under the Anti-996 license.
 PySDM is released under the GNU GPL v3 license.
 
-# Physical processes represented
-
-dynamics:
-  - coalescence
-  - condensation
-  - 
-  - 
-
-# Selected relevant recent open-source developments
-
-SDM patents?
-
-  - SDM algorithm implementations are part of the following packages:
-    - `SCALE-SDM` (`Fortran`, \url{https://github.com/Shima-Lab}) [@Sato_et_al_2018]
-    - `superdroplet` (`Cython`, `Numba`, `C++11`, `Fortran 2008`, `Julia`, \url{https://github.com/darothen/superdroplet})
-    - `Pencil Code` (`Fortran`, \url{https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90}) [@Li_et_al_2017]
-    - `PALM LES` (`Fortran`, \url{https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90}) [@Maronga_et_al_2020]
-    - `libcloudph++` (`C++`, \url{https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp}) [@Arabas_et_al_2015]
-    - `LCM1D` (`Python`, \url{https://github.com/SimonUnterstrasser/ColumnModel/blob/master/AON_Alg.gcc.py}) [@Unterstrasser_et_al_2020]
-  - Python packages for solving dynamics of particles with sectional representation of the size spectrum:
- (all requireing the `Assimulo` package for solving ODEs, while PySDM offers a bespoke adaptive-timestep condensation solver):
-    - `pyrcel` (\url{https://github.com/darothen/pyrcel}) [@Rothenberg_and_Wang_2017]
-    - `py-cloud-parcel-model` (\url{http://github.com/emmasimp/py-cloud-parcel-model}) [@]
-    - `PyBox` (\url{https://github.com/loftytopping/PyBox}) [@Topping_et_al_2018]
-
-
-
 # API in brief
+
+PySDM interface design is domain-driven.
+Its core is represented with the `PySDM.Core` class which instances are built using the `PySDM.Builder`.
+
 
 `PySDM.backends`
 `PySDM.Builder` and ``PySDM.Core
@@ -110,13 +87,42 @@ examples (add one figure per each example):
   - kinematic: ICMW [@Arabas_et_al_2015]
 
 Figures can be included like this:
-![Caption for example figure.\label{fig:example}](test.pdf)
-and referenced from text using \autoref{fig:example}.
+
+\begin{figure}[!htbp]
+  \includegraphics[width=\linewidth]{test} 
+
+  \caption{\label{fig:TODO}
+    ...
+  }
+\end{figure}
+
+and referenced from text using \autoref{fig:TODO}.
 
 # Notable hacks
 
+During development of PySDM, ...
+
 FakeThrust
 FakeUnits
+nicethrust
+closure pattern
+
+# Selected relevant recent open-source developments
+
+SDM patents?
+
+  - SDM algorithm implementations are part of the following packages:
+    - `SCALE-SDM` (`Fortran`, \url{https://github.com/Shima-Lab}) [@Sato_et_al_2018]
+    - `superdroplet` (`Cython`, `Numba`, `C++11`, `Fortran 2008`, `Julia`, \url{https://github.com/darothen/superdroplet})
+    - `Pencil Code` (`Fortran`, \url{https://github.com/pencil-code/pencil-code/blob/master/src/particles_coagulation.f90}) [@Li_et_al_2017]
+    - `PALM LES` (`Fortran`, \url{https://palm.muk.uni-hannover.de/trac/browser/palm/trunk/SOURCE/lagrangian_particle_model_mod.f90}) [@Maronga_et_al_2020]
+    - `libcloudph++` (C++ with Python bindings, \url{https://github.com/igfuw/libcloudphxx/blob/master/src/impl/particles_impl_coal.ipp}) [@Arabas_et_al_2015,@Jarecka_et_al_2015,@Jaruga_and_Pawlowska_2018]
+    - `LCM1D` (`Python`, \url{https://github.com/SimonUnterstrasser/ColumnModel/blob/master/AON_Alg.gcc.py}) [@Unterstrasser_et_al_2020]
+  - Python packages for solving dynamics of particles with sectional representation of the size spectrum:
+ (all requireing the `Assimulo` package for solving ODEs, while PySDM offers a bespoke adaptive-timestep condensation solver):
+    - `pyrcel` (\url{https://github.com/darothen/pyrcel}) [@Rothenberg_and_Wang_2017]
+    - `py-cloud-parcel-model` (\url{http://github.com/emmasimp/py-cloud-parcel-model}) [@]
+    - `PyBox` (\url{https://github.com/loftytopping/PyBox}) [@Topping_et_al_2018]
 
 # Author contributions
 
@@ -129,6 +135,7 @@ AT contributed to the examples.
 The paper was composed by SA and PB and is based on the content of the PySDM README file and PB's MSc thesis.
 
 # Acknowledgements
+
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support.
 We thank Fei Yang (https://github.com/fynv/) for addressing several issues reported in ThrustRTC during the development of PySDM.
 Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
