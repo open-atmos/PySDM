@@ -2,6 +2,11 @@
 #Pkg.add("PyCall")
 #Pkg.add("Plots")
 
+# Pkg.add("Conda")
+# using Conda
+# Conda.pip_interop(true)
+# Conda.pip("install --pre", "git+https://github.com/atmos-cloud-sim-uj/PySDM.git")
+
 using PyCall
 PySDM = pyimport("PySDM")
 PySDM_backends = pyimport("PySDM.backends")
