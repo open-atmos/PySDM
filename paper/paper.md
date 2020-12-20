@@ -83,7 +83,7 @@ SDM patents?
   - Python packages for solving dynamics of particles with sectional representation of the size spectrum:
  (all requireing the `Assimulo` package for solving ODEs, while PySDM offers a bespoke adaptive-timestep condensation solver):
     - `pyrcel` (\url{https://github.com/darothen/pyrcel}) [@Rothenberg_and_Wang_2017]
-    - `py-cloud-parcel-model` (\rul{http://github.com/emmasimp/py-cloud-parcel-model}) [@]
+    - `py-cloud-parcel-model` (\url{http://github.com/emmasimp/py-cloud-parcel-model}) [@]
     - `PyBox` (\url{https://github.com/loftytopping/PyBox}) [@Topping_et_al_2018]
 
 
