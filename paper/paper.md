@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v1: particle-based cloud microphysics package with 0D box/parcel-model and 2D prescribed-flow examples for Python, Julia and Matlab'
+title: 'PySDM v1: particle-based cloud microphysics package with 0D box/parcel and 2D prescribed-flow examples for Python, Julia and Matlab'
 tags:
   - Python
   - physics-simulation 
@@ -144,20 +144,13 @@ pyplot.show()
     \label{fig:readme_fig_1}
 \end{figure}
 
+# Examples and tutorials
 
 `PySDM.backends`
-`PySDM.Builder` and ``PySDM.Core
 `PySDM.dynamics`
 `PySDM.products`
 `PySDM.attributes`
 `PySDM.environments`
-
-```python
-for n in range(10):
-    yield f(n)
-```
-
-# Examples and tutorials
 
 examples (add one figure per each example): 
   - box: Shima [@Shima_et_al_2009], Berry [@Berry_1966]
@@ -175,6 +168,14 @@ Figures can be included like this:
 \end{figure}
 
 and referenced from text using \autoref{fig:TODO}.
+
+\begin{figure}[!htbp]
+  \includegraphics[width=\linewidth]{spectrum} 
+
+  \caption{\label{fig:TODO}
+    ...
+  }
+\end{figure}
 
 # Notable hacks
 
