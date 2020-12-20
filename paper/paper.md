@@ -139,7 +139,7 @@ pyplot.show()
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{pics/readme}
+    \includegraphics[width=0.75\textwidth]{readme}
     \caption{Solution for size spectrum evolution with Golovin kernel.}
     \label{fig:readme_fig_1}
 \end{figure}
