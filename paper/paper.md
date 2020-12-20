@@ -41,25 +41,25 @@ bibliography: paper.bib
 
 `PySDM` is an open-source Python package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling fluid flows involving a dispersed phase, with `PySDM` being responsible for representation of the dispersed phase. 
-As of major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet/moving-sectional/discrete-point Lagrangian) approach to represent the *evolution of size spectrum of aerosol/cloud/rain particles*. 
+As of major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on modelling the dynamics of particles immersed in moist air using the particle-based (a.k.a. super-droplet/moving-sectional/discrete-point Lagrangian) approach to represent the **evolution of size spectrum of aerosol/cloud/rain particles**. 
 
 The package core is a Pythonic high-performance implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth [@Shima_et_al_2009], hence the name. 
-`PySDM` has two alternative parallel number-crunching backends available: *multi-threaded CPU backend* based on `Numba` [@Numba] and *GPU-resident backend* built on top of `ThrustRTC` [@ThrustRTC].
+`PySDM` has two alternative parallel number-crunching backends available: **multi-threaded CPU backend** based on `Numba` [@Numba] and **GPU-resident backend** built on top of `ThrustRTC` [@ThrustRTC].
 
 PySDM together with a set of bundled usage examples (`PySDM_examples` subpackage) constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modelling methods.
 The usage examples were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
 
 All examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
-The packages ships with tutorial code depicting how *`PySDM` can be used from `Python`, `Julia` and `Matlab`* (`PySDM_tutorials` subpackage).
-Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyor`) assures the targetted full usability on *Linux, macOS and Windows* environments (with Python versions 3.7 and above and on 32- and 64-bit architectures).
+The packages ships with tutorial code depicting how **`PySDM` can be used from `Python`, `Julia` and `Matlab`** (`PySDM_tutorials` subpackage).
+Coninuous integration infrastructure used in the development of PySDM (`Travis`, `Github Actions` and `Appveyor`) assures the targetted full usability on **Linux, macOS and Windows** environments (with Python versions 3.7 and above and on 32- and 64-bit architectures).
 Test coverage for PySDM is reported using the `codecov.io` platform.
 
 PySDM essential dependencies (`numpy`, `numba`, `pint`, `molmass`, `scipy`) are free and open-sourse and are all available via the PyPI platform.
-PySDM ships with a setup.py file allowing *installation using the `pip` package manager* (i.e., `pip install --pre git+https://github.com/atmos-cloud-sim-uj/PySDM.git`).
+PySDM ships with a setup.py file allowing **installation using the `pip` package manager** (i.e., `pip install --pre git+https://github.com/atmos-cloud-sim-uj/PySDM.git`).
 Selected examples have additional dependencies (listed in the `requitrements.txt` file). 
 The optional GPU backend relies on proprietary vendor-specific CUDA technology and the accompanying non-free software libraries. 
 The GPU backend is implemented using open-source `ThrustRTC` and `CURandRTC` packages released under the Anti-996 license.
-PySDM is released under the *GNU GPL v3 license*.
+PySDM is released under the **GNU GPL v3 license**.
 
 Subsequent sections of this paper provide: an outline of PySDM programming interface; an index of 
 examples and tutorials included as of v1.1; an overview of selected relevant open-source software packages; 
