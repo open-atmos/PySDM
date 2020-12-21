@@ -112,19 +112,3 @@ def make(self):
 '''
 
     return result
-
-
-if __name__ == '__main__':
-    print(to_numba("moments",
-                   ['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
-                    'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
-                   '''
-                           auto i = idx[fake_i];
-                           if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
-                               atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-                               for (int k = 0; k < specs_idx_shape; ++k) {
-                                   atomicAdd((double*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((double)attr[attr_shape * specs_idx[k] + i], (double)specs_rank[k]));
-                               }
-                           }
-                   '''
-                   ))
