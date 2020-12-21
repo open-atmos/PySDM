@@ -25,7 +25,7 @@ def extract_var(cpp, start_position, end_char):
     return cpp[start_position + 1: stop].strip()
 
 
-def for_to_python(cpp: str):
+def for_to_python(cpp: str) -> str:
     """
     need ';' in code and be running after removing types
 
@@ -54,32 +54,77 @@ def for_to_python(cpp: str):
     return f"for {var} in range({range_start}, {range_stop}, {sign}{range_step}):"
 
 
-def replace_fors(cpp):
+def replace_fors(cpp) -> str:
     start = cpp.find("for ")
     while start > -1:
         stop = cpp.find(":", start)
-        cpp_for = cpp[start:stop+1]
+        cpp_for = cpp[start:stop + 1]
         python_for = for_to_python(cpp_for)
         cpp = cpp.replace(cpp_for, python_for.replace("for", "__python_token__"))
         start = cpp.find("for ", start + len(python_for))
     return cpp.replace("__python_token__", "for")
 
 
-def to_numba(name, args, body):
+def atomic_add_to_python(cpp: str) -> str:
+    cpp = cpp.replace("atomicAdd", "") \
+              .replace("unsigned", "") \
+              .replace("long", "") \
+              .replace("int*", "") \
+              .replace("int", "") \
+              .replace("double*", "") \
+              .replace("double", "") \
+              .replace(" ", "") \
+              .replace("()", "") \
+              .replace("&", "") \
+              .replace(",", "+=", 1) \
+        [1:-2]  # remove '(' and ');'
+    return cpp
+
+
+def replace_atomic_adds(cpp: str) -> (str, bool):
+    start = cpp.find("atomicAdd")
+    parallel = start == -1
+    while start > -1:
+        stop = cpp.find(";", start)
+        cpp_atomic_add = cpp[start:stop + 1]
+        python_atomic_add = atomic_add_to_python(cpp_atomic_add)
+        cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
+        start = cpp.find("atomicAdd", start + len(python_atomic_add))
+    return cpp, parallel
+
+
+def to_numba(name, args, iter_var, body):
     body = body.replace("\n", "\n    ")
     for cpp, python in cppython.items():
         body = body.replace(cpp, python)
     body = replace_fors(body)
+    body, parallel = replace_atomic_adds(body)
     result = f'''
 def make(self):
     import numpy as np
     import numba
-    @numba.njit(parallel=True, error_model='numpy', fastmath=True)
+    @numba.njit(parallel={parallel}, error_model='numpy', fastmath=True)
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
-        for i in numba.prange(__python_n__):
+        for {iter_var} in numba.prange(__python_n__):
             {body}
 
     return {name}
 '''
 
     return result
+
+
+if __name__ == '__main__':
+    print(to_numba("moments",
+                   ['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
+                    'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
+                   '''
+                           auto i = idx[fake_i];
+                           if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
+                               atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
+                               for (int k = 0; k < specs_idx_shape; ++k) {
+                                   atomicAdd((double*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((double)attr[attr_shape * specs_idx[k] + i], (double)specs_rank[k]));
+                               }
+                           }
+                   '''
+                   ))

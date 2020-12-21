@@ -59,9 +59,9 @@ class FakeThrustRTC:
         return FakeThrustRTC.Number(number)
 
     class For:
-        def __init__(self, args, _, body):
+        def __init__(self, args, iter_var, body):
             d = dict()
-            exec(to_numba("__internal_python_method__", args, body), d)
+            exec(to_numba("__internal_python_method__", args, iter_var, body), d)
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = self.make()
 
