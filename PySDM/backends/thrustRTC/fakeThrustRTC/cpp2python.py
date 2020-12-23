@@ -2,6 +2,8 @@
 Created at 28.09.2020
 """
 
+from ...numba.conf import JIT_FLAGS
+
 cppython = {
     "int ": "",
     "double ": "",
@@ -64,7 +66,6 @@ def replace_fors(cpp) -> str:
         start = cpp.find("for ", start + len(python_for))
     return cpp.replace("__python_token__", "for")
 
-
 def atomic_add_to_python(cpp: str) -> str:
     cpp = cpp.replace("atomicAdd", "") \
               .replace("unsigned", "") \
@@ -103,7 +104,7 @@ def to_numba(name, args, iter_var, body):
 def make(self):
     import numpy as np
     import numba
-    @numba.njit(parallel={parallel}, error_model='numpy', fastmath=True)
+    @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, error_model='numpy', fastmath=True)
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
         for {iter_var} in numba.prange(__python_n__):
             {body}

@@ -17,42 +17,42 @@ from PySDM.products.dynamics.condensation import CondensationTimestep
 
 
 class Simulation:
-    def __init__(self, setup, backend=CPU):
-        t_half = setup.z_half / setup.w_avg
+    def __init__(self, settings, backend=CPU):
+        t_half = settings.z_half / settings.w_avg
 
-        dt_output = (2 * t_half) / setup.n_output
+        dt_output = (2 * t_half) / settings.n_output
         self.n_substeps = 1
-        while dt_output / self.n_substeps >= setup.dt_max:  # TODO dt_max
+        while dt_output / self.n_substeps >= settings.dt_max:  # TODO dt_max
             self.n_substeps += 1
 
         builder = Builder(backend=backend, n_sd=1)
         builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
-            mass_of_dry_air=setup.mass_of_dry_air,
-            p0=setup.p0,
-            q0=setup.q0,
-            T0=setup.T0,
-            w=setup.w
+            mass_of_dry_air=settings.mass_of_dry_air,
+            p0=settings.p0,
+            q0=settings.q0,
+            T0=settings.T0,
+            w=settings.w
         ))
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(
-            kappa=setup.kappa,
-            rtol_x=setup.rtol_x,
-            rtol_thd=setup.rtol_thd,
+            kappa=settings.kappa,
+            rtol_x=settings.rtol_x,
+            rtol_thd=settings.rtol_thd,
         ))
         attributes = {}
-        r_dry = np.array([setup.r_dry])
+        r_dry = np.array([settings.r_dry])
         attributes['dry volume'] = phys.volume(radius=r_dry)
-        attributes['n'] = np.array([setup.n_in_dv], dtype=np.int64)
+        attributes['n'] = np.array([settings.n_in_dv], dtype=np.int64)
         environment = builder.core.environment
-        r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), setup.kappa)
+        r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), settings.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
         products = [ParticleMeanRadius(), CondensationTimestep()]
 
         self.core = builder.build(attributes, products)
 
-        self.n_output = setup.n_output
+        self.n_output = settings.n_output
 
     def save(self, output):
         cell_id = 0

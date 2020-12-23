@@ -2,9 +2,9 @@
 Created at 05.02.2020
 """
 
-from PySDM.product import MomentProduct
 from PySDM.physics import constants as const
 from PySDM.physics import formulae as phys
+from PySDM.products.product import MomentProduct
 
 
 class AerosolSpecificConcentration(MomentProduct):
@@ -16,7 +16,7 @@ class AerosolSpecificConcentration(MomentProduct):
             unit='mg-1',
             description='Aerosol specific concentration',
             scale='linear',
-            range=[1e1, 1e2]
+            range=[0, 1e2]
         )
 
     def get(self):

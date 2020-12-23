@@ -2,8 +2,8 @@
 Created at 2019
 """
 
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.setup import setups
-from PySDM_examples.MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
+from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
+from PySDM_examples.Bartman_2020_MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
 
 import pytest
 import numpy as np
@@ -23,14 +23,14 @@ def split(arg1, arg2):
     return arg1[0:np.argmax(arg2)+1], arg1[np.argmax(arg2):-1]
 
 
-@pytest.mark.parametrize("setup_idx", range(setups_num))
+@pytest.mark.parametrize("settings_idx", range(setups_num))
 @pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
-def test_vs_BDF(setup_idx, data, rtol, leg):
+def test_vs_BDF(settings_idx, data, rtol, leg):
     # Arrange
     supersaturation = {}
     for scheme in schemes:
-        sut = data[scheme][rtol][setup_idx]
+        sut = data[scheme][rtol][settings_idx]
         ascent, descent = split(sut['S'], sut['z'])
         supersaturation[scheme] = ascent if leg == 'ascent' else descent
 

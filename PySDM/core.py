@@ -4,12 +4,11 @@ Created at 09.11.2019
 
 import numpy as np
 from PySDM.state.particles import Particles
-from PySDM.stats import Stats
 
 
 class Core:
 
-    def __init__(self, n_sd, backend, stats=None):
+    def __init__(self, n_sd, backend):
         self.__n_sd = n_sd
 
         self.backend = backend
@@ -20,7 +19,6 @@ class Core:
         self.observers = []
 
         self.n_steps = 0
-        self.stats = stats or Stats()
 
         self.sorting_scheme = 'default'
         self.condensation_solver = None
@@ -98,10 +96,9 @@ class Core:
             )
 
     def run(self, steps):
-        with self.stats:
-            for _ in range(steps):
-                for dynamic in self.dynamics.values():
-                    dynamic()
-                self.n_steps += 1
-                for observer in self.observers:
-                    observer.notify()
+        for _ in range(steps):
+            for dynamic in self.dynamics.values():
+                dynamic()
+            self.n_steps += 1
+            for observer in self.observers:
+                observer.notify()

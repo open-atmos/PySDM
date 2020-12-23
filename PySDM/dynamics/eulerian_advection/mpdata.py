@@ -4,8 +4,10 @@ Created at 04.09.2020
 
 import numpy as np
 from threading import Thread
-from MPyDATA import Options, Stepper, VectorField, ScalarField, Solver
-from MPyDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
+from PyMPDATA import Options, Stepper, VectorField, ScalarField, Solver
+from PyMPDATA.arakawa_c.boundary_condition.periodic_boundary_condition import PeriodicBoundaryCondition
+from ...backends.numba import conf
+from numba.core.errors import NumbaExperimentalFeatureWarning
 
 
 class MPDATA:
@@ -22,7 +24,11 @@ class MPDATA:
             flux_corrected_transport=flux_corrected_transport,
             third_order_terms=third_order_terms
         )
-        stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True)
+        disable_threads_if_needed = {}
+        if not conf.JIT_FLAGS['parallel']:
+            disable_threads_if_needed['n_threads'] = 1
+
+        stepper = Stepper(options=options, grid=self.grid, non_unit_g_factor=True, **disable_threads_if_needed)
 
         # CFL condition
         for d in range(len(fields.advector)):
@@ -60,5 +66,8 @@ class MPDATA:
                 self.thread.join()
 
     def step(self):
-        for mpdata in self.mpdatas.values():
-            mpdata.advance(1)
+        try:
+            for mpdata in self.mpdatas.values():
+                mpdata.advance(1)
+        except NumbaExperimentalFeatureWarning:
+            pass

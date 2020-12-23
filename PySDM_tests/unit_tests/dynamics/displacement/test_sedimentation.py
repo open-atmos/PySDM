@@ -4,7 +4,7 @@ Created at 12.03.2020
 
 import numpy as np
 
-from .displacement_setup import TestSetup
+from .displacement_settings import DisplacementSettings
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
@@ -26,15 +26,17 @@ class TestSedimentation:
             return  # TODO!!!
 
         # Arrange
-        setup = TestSetup()
-        setup.dt = 1
-        setup.sedimentation = True
-        sut, particles = setup.get_displacement(backend)
+        settings = DisplacementSettings()
+        settings.dt = 1
+        settings.sedimentation = True
+        sut, particles = settings.get_displacement(backend)
 
         particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
+        assert sut.precipitation_in_last_step == 0
 
         # Act
         sut()
 
         # Assert
         assert particles.particles.SD_num == 0
+        assert sut.precipitation_in_last_step != 0

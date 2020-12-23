@@ -3,7 +3,7 @@ Created at 2019
 """
 
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
-from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
+from PySDM_examples.Yang_et_al_2018_Fig_2.settings import Settings
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 import matplotlib.pyplot as plt
@@ -11,8 +11,8 @@ import numpy as np
 
 
 def test_dry_spectrum_x():
-    setup = Setup()
-    simulation = Simulation(setup)
+    settings = Settings()
+    simulation = Simulation(settings)
     dry_volume = simulation.core.particles['dry volume'].to_ndarray()
     rd = phys.radius(volume=dry_volume) / si.nanometre
 
@@ -24,8 +24,8 @@ def test_dry_spectrum_x():
 
 
 def test_dry_spectrum_y(plot=False):
-    setup = Setup()
-    simulation = Simulation(setup)
+    settings = Settings()
+    simulation = Simulation(settings)
     dry_volume = simulation.core.particles['dry volume'].to_ndarray()
     rd = phys.radius(volume=dry_volume) / si.nanometre
     nd = simulation.core.particles['n'].to_ndarray()
@@ -53,10 +53,10 @@ def test_dry_spectrum_y(plot=False):
 
 def test_wet_vs_dry_spectrum(plot=False):
     # Arrange
-    setup = Setup()
+    settings = Settings()
 
     # Act
-    simulation = Simulation(setup)
+    simulation = Simulation(settings)
     wet_volume = simulation.core.particles['volume'].to_ndarray()
     r_wet = phys.radius(volume=wet_volume) / si.nanometre
     n = simulation.core.particles['n'].to_ndarray()
@@ -78,10 +78,10 @@ def test_wet_vs_dry_spectrum(plot=False):
 
 def test_RH():
     # Arrange
-    setup = Setup()
+    settings = Settings()
 
     # Act
-    simulation = Simulation(setup)
+    simulation = Simulation(settings)
 
     # Assert
     assert round(simulation.core.environment["RH"][0], 3) == 0.856

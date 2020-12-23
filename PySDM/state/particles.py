@@ -121,7 +121,9 @@ class Particles:
     def has_attribute(self, attr):
         return attr in self.keys
 
-    def remove_precipitated(self):
-        self.core.bck.flag_precipitated(self['cell origin'], self['position in cell'],
-                                        self.__idx, self.SD_num, self.__healthy_memory)
+    def remove_precipitated(self) -> float:
+        res = self.core.bck.flag_precipitated(self['cell origin'], self['position in cell'],
+                                              self['volume'], self['n'],
+                                              self.__idx, self.SD_num, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
+        return res

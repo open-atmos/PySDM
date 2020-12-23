@@ -2,9 +2,9 @@
 Created at 05.02.2020
 """
 
-from PySDM.product import Product
-from PySDM.physics import constants as const
 from PySDM.environments._moist import _Moist
+from PySDM.physics import constants as const
+from PySDM.products.product import Product
 
 
 class WaterVapourMixingRatio(Product):

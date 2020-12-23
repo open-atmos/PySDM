@@ -16,50 +16,50 @@ from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
 
 class Simulation:
 
-    def __init__(self, setup, backend=CPU):
+    def __init__(self, settings, backend=CPU):
 
-        dt_output = setup.total_time / setup.n_steps  # TODO: overwritten in jupyter example
+        dt_output = settings.total_time / settings.n_steps  # TODO: overwritten in jupyter example
         self.n_substeps = 1  # TODO
-        while (dt_output / self.n_substeps >= setup.dt_max):
+        while (dt_output / self.n_substeps >= settings.dt_max):
             self.n_substeps += 1
-        self.bins_edges = phys.volume(setup.r_bins_edges)
-        builder = Builder(backend=backend, n_sd=setup.n_sd)
+        self.bins_edges = phys.volume(settings.r_bins_edges)
+        builder = Builder(backend=backend, n_sd=settings.n_sd)
         builder.set_environment(Parcel(
             dt=dt_output / self.n_substeps,
-            mass_of_dry_air=setup.mass_of_dry_air,
-            p0=setup.p0,
-            q0=setup.q0,
-            T0=setup.T0,
-            w=setup.w,
-            z0=setup.z0
+            mass_of_dry_air=settings.mass_of_dry_air,
+            p0=settings.p0,
+            q0=settings.q0,
+            T0=settings.T0,
+            w=settings.w,
+            z0=settings.z0
         ))
 
         environment = builder.core.environment
         builder.add_dynamic(AmbientThermodynamics())
         condensation = Condensation(
-            kappa=setup.kappa,
-            coord=setup.coord,
-            adaptive=setup.adaptive,
-            rtol_x=setup.rtol_x,
-            rtol_thd=setup.rtol_thd
+            kappa=settings.kappa,
+            coord=settings.coord,
+            adaptive=settings.adaptive,
+            rtol_x=settings.rtol_x,
+            rtol_thd=settings.rtol_thd
         )
         builder.add_dynamic(condensation)
 
         products = [
-            ParticlesWetSizeSpectrum(v_bins=phys.volume(setup.r_bins_edges)),
+            ParticlesWetSizeSpectrum(v_bins=phys.volume(settings.r_bins_edges)),
             CondensationTimestep(),
             RipeningRate()
         ]
 
         attributes = environment.init_attributes(
-            n_in_dv=setup.n,
-            kappa=setup.kappa,
-            r_dry=setup.r_dry
+            n_in_dv=settings.n,
+            kappa=settings.kappa,
+            r_dry=settings.r_dry
         )
 
         self.core = builder.build(attributes, products)
 
-        self.n_steps = setup.n_steps
+        self.n_steps = settings.n_steps
 
     # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):

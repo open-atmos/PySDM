@@ -3,7 +3,7 @@ Created at 2019
 """
 
 import pytest
-import os
+import numba
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis, formulae
 from PySDM.physics import constants
 
@@ -23,7 +23,7 @@ class TestDimensionalAnalysis:
         assert type(constants.D0) == float
 
     @staticmethod
-    @pytest.mark.skipif("'NUMBA_DISABLE_JIT' in os.environ and os.environ['NUMBA_DISABLE_JIT'] != '0'")
+    @pytest.mark.skipif("numba.config.DISABLE_JIT")
     def test_fake_numba():
         # Arrange
         sut = DimensionalAnalysis()

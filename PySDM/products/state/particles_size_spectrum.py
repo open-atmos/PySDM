@@ -2,10 +2,11 @@
 Created at 23.04.2020
 """
 
-from PySDM.product import MomentProduct
 import numpy as np
+
 from PySDM.physics import constants as const
 from PySDM.physics import formulae as phys
+from PySDM.products.product import MomentProduct
 
 
 class ParticlesSizeSpectrum(MomentProduct):
@@ -16,7 +17,7 @@ class ParticlesSizeSpectrum(MomentProduct):
         self.normalise_by_dv = normalise_by_dv
         super().__init__(
             name=name,
-            unit=f"mg-1 μm-1{'' if normalise_by_dv else ' m^3'}",
+            unit=f"mg-1 um-1{'' if normalise_by_dv else ' m^3'}",
             description='Specific concentration density',
             scale='linear',
             range=[20, 50]

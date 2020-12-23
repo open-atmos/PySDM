@@ -107,17 +107,20 @@ class AlgorithmicMethods:
         )
 
     @staticmethod
-    @numba.njit(void(int64[:, :], float64[:, :], int64[:], int64, int64[:]))
-    def flag_precipitated_body(cell_origin, position_in_cell, idx, length, healthy):
+    @numba.njit(float64(int64[:, :], float64[:, :], float64[:], int64[:], int64[:], int64, int64[:]))
+    def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
+        rainfall = 0.
         for i in range(length):
             if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
+                rainfall += volume[i] * n[i]
                 idx[i] = len(idx)
                 healthy[0] = 0
+        return rainfall
 
     @staticmethod
-    def flag_precipitated(cell_origin, position_in_cell, idx, length, healthy):
-        AlgorithmicMethods.flag_precipitated_body(
-            cell_origin.data, position_in_cell.data, idx.data, length, healthy.data)
+    def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy) -> float:
+        return AlgorithmicMethods.flag_precipitated_body(
+            cell_origin.data, position_in_cell.data, volume.data, n.data, idx.data, length, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -161,7 +164,7 @@ class AlgorithmicMethods:
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
-                    scheme = "counting_sort"
+                    scheme = "counting_sort" # TODO: "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
@@ -281,7 +284,7 @@ class AlgorithmicMethods:
             new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), parallel=True)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
             new_idx, idx, cell_id, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p

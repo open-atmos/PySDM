@@ -2,8 +2,9 @@
 Created at 05.02.2020
 """
 
-from PySDM.product import Product
 import numpy as np
+
+from PySDM.products.product import Product
 
 
 class CondensationTimestep(Product):

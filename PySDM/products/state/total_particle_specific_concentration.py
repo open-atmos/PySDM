@@ -2,8 +2,8 @@
 Created at 05.02.2020
 """
 
-from PySDM.product import MomentProduct
 from PySDM.physics import constants as const
+from PySDM.products.product import MomentProduct
 
 
 class TotalParticleSpecificConcentration(MomentProduct):

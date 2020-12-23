@@ -2,8 +2,7 @@
 Created at 05.02.2020
 """
 
-from PySDM.product import Product
-from PySDM.dynamics.condensation import Condensation
+from PySDM.products.product import Product
 
 
 class RipeningRate(Product):

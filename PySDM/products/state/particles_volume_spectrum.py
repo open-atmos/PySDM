@@ -2,9 +2,10 @@
 Created at 28.04.2020
 """
 
-from PySDM.product import MomentProduct
-from PySDM.physics import formulae as phys
 import numpy as np
+
+from PySDM.physics import formulae as phys
+from PySDM.products.product import MomentProduct
 
 
 class ParticlesVolumeSpectrum(MomentProduct):
