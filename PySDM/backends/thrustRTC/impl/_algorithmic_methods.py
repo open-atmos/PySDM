@@ -213,9 +213,10 @@ class AlgorithmicMethods:
     __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
     '''
         for (int k = 0; k < specs_idx_shape; k+=1) {
-        if (moment_0[c_id] == 0) {
-            moments[moments_shape * k  + c_id] = 0;
-            } else {
+            if (moment_0[c_id] == 0) {
+                moments[moments_shape * k  + c_id] = 0;
+            } 
+            else {
                 moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
             }
         }
