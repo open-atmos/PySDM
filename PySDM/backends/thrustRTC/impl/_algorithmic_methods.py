@@ -204,7 +204,7 @@ class AlgorithmicMethods:
         auto i = idx[fake_i];
         if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
             atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-            for (int k = 0; k < specs_idx_shape; ++k) {
+            for (int k = 0; k < specs_idx_shape; k+=1) {
                 atomicAdd((double*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((double)attr[attr_shape * specs_idx[k] + i], (double)specs_rank[k]));
             }
         }
@@ -212,7 +212,7 @@ class AlgorithmicMethods:
 
     __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
     '''
-        for (int k = 0; k < specs_idx_shape; ++k) {
+        for (int k = 0; k < specs_idx_shape; k+=1) {
         if (moment_0[c_id] == 0) {
             moments[moments_shape * k  + c_id] = 0;
             } else {
