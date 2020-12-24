@@ -5,12 +5,10 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
-from PySDM.dynamics import Coalescence
-from PySDM.environments import Box
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
-from PySDM_tests.unit_tests.dummy_core import DummyCore
-from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import StubKernel, backend_fill
+from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import backend_fill
+from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_dummy_core_and_sdm
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 
@@ -18,18 +16,9 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2,
 class TestSDMSingleCell:
 
     @staticmethod
-    def get_dummy_core_and_sdm(backend, n_length, optimized_random=False):
-        core = DummyCore(backend, n_sd=n_length)
-        dv = 1
-        core.environment = Box(dv=dv, dt=0)
-        sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random)
-        sdm.register(core)
-        return core, sdm
-
-    @staticmethod
     def test_single_collision(backend, v_2, T_2, n_2):
         # Arrange
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
+        core, sut = get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         core.build(attributes)
@@ -56,7 +45,7 @@ class TestSDMSingleCell:
     ])
     def test_single_collision_same_n(backend, n_in, n_out):
         # Arrange
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, 2)
+        core, sut = get_dummy_core_and_sdm(backend, 2)
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         core.build(attributes)
@@ -76,7 +65,7 @@ class TestSDMSingleCell:
     ])
     def test_multi_collision(backend, v_2, n_2, p):
         # Arrange
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n_2))
+        core, sut = get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
         attributes = {'n': n_2, 'volume': v_2}
         core.build(attributes)
@@ -101,7 +90,7 @@ class TestSDMSingleCell:
     ])
     def test_multi_droplet(backend, v, n, p):
         # Arrange
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, len(n))
+        core, sut = get_dummy_core_and_sdm(backend, len(n))
         sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
         attributes = {'n': n, 'volume': v}
         core.build(attributes)
@@ -120,7 +109,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        core, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd)
+        core, sut = get_dummy_core_and_sdm(backend, n_sd)
 
         sut.compute_gamma = lambda prob, rand: backend_fill(
             prob,
@@ -172,7 +161,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particles, sut = TestSDMSingleCell.get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random)
+        particles, sut = get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
