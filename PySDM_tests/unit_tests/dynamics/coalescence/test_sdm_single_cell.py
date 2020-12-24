@@ -54,7 +54,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(core.particles['n'].to_ndarray()), sorted(n_out))
+        np.testing.assert_array_equal(sorted(core.particles['n'].to_ndarray(raw=True)), sorted(n_out))
 
     @staticmethod
     @pytest.mark.parametrize("p", [

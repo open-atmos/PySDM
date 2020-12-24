@@ -2,7 +2,11 @@
 Created at 03.06.2019
 """
 
+from typing import Dict
+
 import numpy as np
+
+from PySDM.attributes.attribute import Attribute
 
 
 class Particles:
@@ -14,7 +18,7 @@ class Particles:
             keys: dict,
             intensive_start: int,
             cell_start,
-            attributes: dict
+            attributes: Dict[str, Attribute]
     ):
         self.core = core
 

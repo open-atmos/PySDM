@@ -38,7 +38,7 @@ class AlgorithmicMethods:
                          adaptive, cell_id, subs, adaptive_memory):
         for i in prange(length - 1):
             if gamma[i] == 0:
-                adaptive_memory[cell_id[i]] = 1  # TODO parallelization
+                # adaptive_memory[cell_id[i]] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -276,17 +276,17 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
-    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, cell_prior, length, cell_start):
+    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, cell_idx, length, cell_start):
         cell_end = cell_start
         # Warning: Assuming len(cell_end) == n_cell+1
         cell_end[:] = 0
         for i in range(length):
-            cell_end[cell_prior[cell_id[idx[i]]]] += 1
+            cell_end[cell_idx[cell_id[idx[i]]]] += 1
         for i in range(1, len(cell_end)):
             cell_end[i] += cell_end[i - 1]
         for i in range(length - 1, -1, -1):
-            cell_end[cell_prior[cell_id[idx[i]]]] -= 1
-            new_idx[cell_end[cell_prior[cell_id[idx[i]]]]] = idx[i]
+            cell_end[cell_idx[cell_id[idx[i]]]] -= 1
+            new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
 
     @staticmethod
     @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
