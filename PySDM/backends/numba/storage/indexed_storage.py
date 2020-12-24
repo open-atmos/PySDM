@@ -38,8 +38,11 @@ class IndexedStorage(Storage):
     def amin(self):
         return AlgorithmicStepMethods.amin(self.data, self.idx.data, len(self))
 
-    def to_ndarray(self):
-        return self.data[self.idx.data[:len(self)]].copy()
+    def to_ndarray(self, *, raw=False):
+        if raw:
+            return self.data.copy()
+        else:
+            return self.data[self.idx.data[:len(self)]].copy()
 
     def read_row(self, i):
         # TODO: shape like in ThrustRTC
