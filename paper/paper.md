@@ -184,7 +184,7 @@ During development of PySDM, ...
 FakeThrust
 FakeUnits
 nicethrust
-closure pattern
+closure pattern + profiling tradeoff
 
 # Selected relevant recent open-source developments
 
