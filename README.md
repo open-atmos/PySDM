@@ -38,13 +38,14 @@ PySDM has two alternative parallel number-crunching backends
 
 For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
 
-## Dependencies and installation
+## Dependencies 
 
 It is worth here to distinguish the dependencies of the PySDM core subpackage 
-(named simply ``PySDM``) vs. ``PySDM_examples`` and ``PySDM_tests`` subpackages.
+(named simply ``PySDM``) indicated in the ``setup.py`` file vs. the dependencies of
+``PySDM_examples`` and ``PySDM_tests`` subpackages indicated in the ``requirements.txt`` file.
 
-PySDM core subpackage dependencies are all available through [PyPI](https://pypi.org), 
-  the key dependencies are [Numba](http://numba.pydata.org/) and [Numpy](https://numpy.org/).
+PySDM core subpackage dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
+[Pint](https://pint.readthedocs.io/) and [molmass](https://pypi.org/project/molmass/).
 
 The **Numba backend** named ``CPU`` is the default, and features multi-threaded parallelism for 
   multi-core CPUs. 
@@ -53,12 +54,14 @@ It uses the just-in-time compilation technique based on the LLVM infrastructure.
 The **ThrustRTC** backend named ``GPU`` offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
+Using the ``GPU`` backend requires nVidia hardware, [CUDA driver](https://developer.nvidia.com/cuda-downloads) and the 
+  [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC) Python packages.
 
-The dependencies of PySDM examples and test subpackages are summarised in
-  the [requirements.txt](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/requirements.txt) 
-  file.
-Noteworthy, one of the examples (``Arabas_et_al_2015_Figs_8_9``) uses [PyMPDATA](https://github.com/atmos-cloud-sim-uj/PyMPDATA),
-  a concurrently developed sister project to PySDM.
+PySDM ships with [tutorial files](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM_tutorials/environments) depicting how to use the package from Julia and Matlab. These depend on [Matlab-Python interface](https://www.mathworks.com/help/matlab/call-python-libraries.html) and on [PyCall.jl](https://github.com/JuliaPy/PyCall.jl), respectively.
+
+## Installation
+
+To install PySDM, one may use: ``pip install --pre git+https://github.com/atmos-cloud-sim-uj/PySDM.git``.
 
 ## Demo notebooks reproducing results from literature:
 #### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
