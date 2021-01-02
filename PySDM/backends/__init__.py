@@ -3,9 +3,34 @@ Created at 24.07.2019
 """
 
 from .numba.numba import Numba
-from numba import cuda
+import ctypes
+import warnings
 
-if cuda.is_available():
+
+# https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
+def cuda_is_available():
+    libnames = ('libcuda.so', 'libcuda.dylib', 'cuda.dll')
+    for libname in libnames:
+        try:
+            cuda = ctypes.CDLL(libname)
+        except OSError:
+            continue
+        else:
+            break
+    else:
+        return False
+
+    result = cuda.cuInit(0)
+    if result != 0:  # cuda.h: CUDA_SUCCESS = 0
+        error_str = ctypes.c_char_p()
+        cuda.cuGetErrorString(result, ctypes.byref(error_str))
+        warnings.warn("CUDA library found but cuInit() failed (error code: %d; message: %s)" % (result, error_str.value.decode()))
+        return False
+
+    return True
+
+
+if cuda_is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
 else:
     from .thrustRTC.fakeThrustRTC import _flag
