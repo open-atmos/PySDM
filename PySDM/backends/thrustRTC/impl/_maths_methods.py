@@ -1,7 +1,7 @@
 """
 Created at 10.12.2019
 """
-from .precision_s_wicher import PrecisionResolver
+from .precision_resolver import PrecisionResolver
 from ..conf import trtc
 from ._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust

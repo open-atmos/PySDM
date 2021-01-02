@@ -6,7 +6,7 @@ from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 import PySDM.physics.constants as const
-from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
+from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
 class PhysicsMethods:
@@ -54,10 +54,10 @@ class PhysicsMethods:
                 values[i] = k2 * radius[i];
             }
             else {
-                values[i] = k3 * pow(radius[i], .5);
+                values[i] = k3 * pow(radius[i], (real_type).5);
             }
         }
-        ''')
+        '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

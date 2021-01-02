@@ -93,7 +93,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        dtype = float if elem_cls == 'double' else np.int64
+        dtype = float if (elem_cls == 'double' or elem_cls == 'float') else np.int64
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 

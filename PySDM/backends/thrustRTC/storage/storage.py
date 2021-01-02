@@ -3,14 +3,14 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from PySDM.backends.thrustRTC.storage import storage_impl as impl
-from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
+from . import storage_impl as impl
 from ..conf import trtc
+from ..impl.precision_resolver import PrecisionResolver
 
 
 class Storage:
 
-    FLOAT = np.float64
+    FLOAT = PrecisionResolver.get_np_dtype()
     INT = np.int64
 
     def __init__(self, data, shape, dtype):

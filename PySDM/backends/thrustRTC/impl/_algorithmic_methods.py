@@ -6,8 +6,7 @@ from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from ..conf import trtc
-from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
-
+from .precision_resolver import PrecisionResolver
 
 
 class AlgorithmicMethods:
@@ -207,10 +206,10 @@ class AlgorithmicMethods:
         if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
             atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
             for (int k = 0; k < specs_idx_shape; k+=1) {
-                atomicAdd((double*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((double)attr[attr_shape * specs_idx[k] + i], (double)specs_rank[k]));
+                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)attr[attr_shape * specs_idx[k] + i], (real_type)specs_rank[k]));
             }
         }
-    ''')
+    '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
     '''
@@ -231,7 +230,8 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
         AlgorithmicMethods.__moments_body_0.launch_n(length,
-                           [idx.data, trtc.DVDouble(min_x), attr.data, trtc.DVInt64(x_id), trtc.DVDouble(max_x),
+                           [idx.data, PrecisionResolver.get_floating_point(min_x), attr.data, trtc.DVInt64(x_id),
+                            PrecisionResolver.get_floating_point(max_x),
                             moment_0.data, cell_id.data, n.data, trtc.DVInt64(specs_idx.shape[0]), moments.data,
                             specs_idx.data, specs_rank.data, trtc.DVInt64(attr.shape[1]),
                             trtc.DVInt64(moments.shape[1])])
