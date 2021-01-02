@@ -4,6 +4,7 @@ Created at 30.05.2020
 
 import numpy as np
 from PySDM.backends.thrustRTC.storage import storage_impl as impl
+from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
 from ..conf import trtc
 
 
@@ -42,7 +43,7 @@ class Storage:
             if isinstance(value, int):
                 dvalue = trtc.DVInt64(value)
             elif isinstance(value, float):
-                dvalue = trtc.DVDouble(value)
+                dvalue = PrecisionResolver.get_floating_point(value)
             else:
                 raise TypeError("Only Storage, int and float are supported.")
             trtc.Fill(self.data, dvalue)
@@ -97,7 +98,7 @@ class Storage:
     def detach(self):
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
-                elem_cls = 'double'
+                elem_cls = PrecisionResolver.get_C_type()
             elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
             else:
@@ -116,7 +117,7 @@ class Storage:
     @staticmethod
     def empty(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            elem_cls = 'double'
+            elem_cls = PrecisionResolver.get_C_type()
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             elem_cls = 'int64_t'

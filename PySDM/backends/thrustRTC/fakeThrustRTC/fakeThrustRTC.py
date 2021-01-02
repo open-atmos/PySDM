@@ -58,6 +58,10 @@ class FakeThrustRTC:
     def DVBool(number: int):
         return FakeThrustRTC.Number(number)
 
+    @staticmethod
+    def DVFloat(number: float):
+        return FakeThrustRTC.Number(number)
+
     class For:
         def __init__(self, args, iter_var, body):
             d = dict()

@@ -6,6 +6,8 @@ from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from ..conf import trtc
+from PySDM.backends.thrustRTC.impl.precision_s_wicher import PrecisionResolver
+
 
 
 class AlgorithmicMethods:
@@ -137,16 +139,16 @@ class AlgorithmicMethods:
     __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
         if (is_first_in_pair[i]) {
-            double r = radii[i] / unit;
-            double r_s = radii[i + 1] / unit;
-            double p = r_s / r;
+            real_type r = radii[i] / unit;
+            real_type r_s = radii[i + 1] / unit;
+            real_type p = r_s / r;
             if (p != 0 && p != 1) {
-                double G = pow((G1 / r), Mg) + G2 + G3 * r;
-                double Gp = pow((1 - p), G);
+                real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
+                real_type Gp = pow((1 - p), G);
                 if (Gp != 0) {
-                    double D = D1 / pow(r, D2);
-                    double E = E1 / pow(r, E2);
-                    double F = pow((F1 / r), Mf) + F2;
+                    real_type D = D1 / pow(r, D2);
+                    real_type E = E1 / pow(r, E2);
+                    real_type F = pow((F1 / r), Mf) + F2;
                     output[i] = A + B * p + D / pow(p, F) + E / Gp;
                     if (output[i] < 0) {
                         output[i] = 0;
@@ -154,25 +156,25 @@ class AlgorithmicMethods:
                 }
             }
         }
-    ''')
+    '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        dA = trtc.DVDouble(A)
-        dB = trtc.DVDouble(B)
-        dD1 = trtc.DVDouble(D1)
-        dD2 = trtc.DVDouble(D2)
-        dE1 = trtc.DVDouble(E1)
-        dE2 = trtc.DVDouble(E2)
-        dF1 = trtc.DVDouble(F1)
-        dF2 = trtc.DVDouble(F2)
-        dG1 = trtc.DVDouble(G1)
-        dG2 = trtc.DVDouble(G2)
-        dG3 = trtc.DVDouble(G3)
-        dMf = trtc.DVDouble(Mf)
-        dMg = trtc.DVDouble(Mg)
-        dunit = trtc.DVDouble(unit)
+        dA = PrecisionResolver.get_floating_point(A)
+        dB = PrecisionResolver.get_floating_point(B)
+        dD1 = PrecisionResolver.get_floating_point(D1)
+        dD2 = PrecisionResolver.get_floating_point(D2)
+        dE1 = PrecisionResolver.get_floating_point(E1)
+        dE2 = PrecisionResolver.get_floating_point(E2)
+        dF1 = PrecisionResolver.get_floating_point(F1)
+        dF2 = PrecisionResolver.get_floating_point(F2)
+        dG1 = PrecisionResolver.get_floating_point(G1)
+        dG2 = PrecisionResolver.get_floating_point(G2)
+        dG3 = PrecisionResolver.get_floating_point(G3)
+        dMf = PrecisionResolver.get_floating_point(Mf)
+        dMg = PrecisionResolver.get_floating_point(Mg)
+        dunit = PrecisionResolver.get_floating_point(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
             [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
 
@@ -257,7 +259,7 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
         n_cell = cell_start.shape[0] - 1
-        device_dt_div_dv = trtc.DVDouble(dt_div_dv)
+        device_dt_div_dv = PrecisionResolver.get_floating_point(dt_div_dv)
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
