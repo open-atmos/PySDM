@@ -16,6 +16,8 @@ cppython = {
     "||": "or",
     "&&": "and",
     "(long)": "",
+    "(double)": "",
+    "(float)": "",
     "floor": "np.floor",
     "ceil": "np.ceil",
     "return": "continue",
@@ -66,6 +68,7 @@ def replace_fors(cpp) -> str:
         start = cpp.find("for ", start + len(python_for))
     return cpp.replace("__python_token__", "for")
 
+
 def atomic_add_to_python(cpp: str) -> str:
     cpp = cpp.replace("atomicAdd", "") \
               .replace("unsigned", "") \
@@ -74,6 +77,8 @@ def atomic_add_to_python(cpp: str) -> str:
               .replace("int", "") \
               .replace("double*", "") \
               .replace("double", "") \
+              .replace("float*", "") \
+              .replace("float", "") \
               .replace(" ", "") \
               .replace("()", "") \
               .replace("&", "") \

@@ -58,6 +58,10 @@ class FakeThrustRTC:
     def DVBool(number: int):
         return FakeThrustRTC.Number(number)
 
+    @staticmethod
+    def DVFloat(number: float):
+        return FakeThrustRTC.Number(number)
+
     class For:
         def __init__(self, args, iter_var, body):
             d = dict()
@@ -89,7 +93,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        dtype = float if elem_cls == 'double' else np.int64
+        dtype = float if (elem_cls == 'double' or elem_cls == 'float') else np.int64
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 
