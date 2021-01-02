@@ -96,7 +96,10 @@ class AlgorithmicMethods:
         subs_device = trtc.DVInt64(subs)
         AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
             [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
-        return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+        if adaptive:
+            return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+        else:
+            return 1
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
         prob[i] = ceil(prob[i] - rand[(int)(i / 2)]);
