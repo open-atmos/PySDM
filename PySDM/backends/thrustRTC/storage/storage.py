@@ -115,7 +115,7 @@ class Storage:
         target[:] = np.reshape(self.data.to_host(), shape)
 
     @staticmethod
-    def empty(shape, dtype):
+    def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
             elem_cls = PrecisionResolver.get_C_type()
             dtype = Storage.FLOAT
@@ -126,11 +126,15 @@ class Storage:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
-        result = Storage(data, shape, dtype)
+        return data, shape, dtype
+
+    @staticmethod
+    def empty(shape, dtype):
+        result = Storage(*Storage._get_empty_data(shape, dtype))
         return result
 
     @staticmethod
-    def from_ndarray(array):
+    def _get_data_from_ndarray(array):
         if str(array.dtype).startswith('int'):
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
@@ -139,7 +143,11 @@ class Storage:
             raise NotImplementedError()
 
         data = trtc.device_vector_from_numpy(array.astype(dtype).ravel())
-        result = Storage(data, array.shape, dtype)
+        return data, array.shape, dtype
+
+    @staticmethod
+    def from_ndarray(array):
+        result = Storage(*Storage._get_data_from_ndarray(array))
         return result
 
     def floor(self, other=None):

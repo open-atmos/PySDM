@@ -88,15 +88,18 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, subs, adaptive_memory):
         idx_length = trtc.DVInt64(len(idx))
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
         adaptive_device = trtc.DVBool(adaptive)
-        subs_device = trtc.DVInt64(subs)
+        subs_device = trtc.DVInt64(subs[0])  # TODO
         AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
             [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
-        return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+        if adaptive:
+            return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+        else:
+            return 1
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
         prob[i] = ceil(prob[i] - rand[(int)(i / 2)]);
@@ -257,9 +260,9 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, n_substeps):
         n_cell = cell_start.shape[0] - 1
-        device_dt_div_dv = PrecisionResolver.get_floating_point(dt_div_dv)
+        device_dt_div_dv = PrecisionResolver.get_floating_point(dt / dv)
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
@@ -298,9 +301,10 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def _sort_by_cell_id_and_update_cell_start(cell_id, cell_start, idx, length):
+    def _sort_by_cell_id_and_update_cell_start(cell_id, cell_idx, cell_start, idx, length):
         # TODO !!!
-        assert max(cell_id.to_ndarray()) == 0
+        max_cell_id = max(cell_id.to_ndarray())
+        assert max_cell_id == 0
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
                                                                                   [cell_id.data, cell_start.data, idx.data])

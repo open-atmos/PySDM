@@ -51,9 +51,9 @@ class AlgorithmicStepMethods:
             )
 
     @staticmethod
-    def find_pairs(cell_start, cell_prior, is_first_in_pair, cell_id, idx, length):
+    def find_pairs(cell_start, cell_idx, is_first_in_pair, cell_id, idx, length):
         return AlgorithmicStepMethods.find_pairs_body(
-            cell_start.data, cell_prior.data, is_first_in_pair.data, cell_id.data, idx.data, length)
+            cell_start.data, cell_idx.data, is_first_in_pair.data, cell_id.data, idx.data, length)
 
     @staticmethod
     @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)

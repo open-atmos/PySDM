@@ -15,6 +15,7 @@ from PySDM.backends.numba.storage.pair_indicator import PairIndicator as Importe
 from PySDM.backends.numba.storage.pairwise_storage import PairwiseStorage as ImportedPairwiseStorage
 from PySDM.backends.numba.storage.storage import Storage as ImportedStorage
 
+
 class Numba(
     AlgorithmicMethods,
     AlgorithmicStepMethods,

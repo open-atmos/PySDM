@@ -174,13 +174,13 @@ class AlgorithmicMethods:
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty((numba.config.NUMBA_NUM_THREADS, len(cell_start)), dtype=int)
 
-            def __call__(self, cell_id, cell_prior, cell_start, idx, length):
+            def __call__(self, cell_id, cell_idx, cell_start, idx, length):
                 if self.scheme == "counting_sort":
                     AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, cell_prior.data, length, cell_start.data)
+                        self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data, length, cell_start.data)
                 elif self.scheme == "counting_sort_parallel":
                     AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, cell_prior.data, length, cell_start.data,
+                        self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data, length, cell_start.data,
                         self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 

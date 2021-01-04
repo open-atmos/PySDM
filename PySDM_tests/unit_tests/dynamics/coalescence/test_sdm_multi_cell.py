@@ -13,7 +13,7 @@ from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_dummy_core_and_sdm
 
 
-class TestSDMSingleCell:
+class TestSDMMultiCell:
 
     @staticmethod
     @pytest.mark.parametrize("adaptive", [False, True])  # TODO: + False
