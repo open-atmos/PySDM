@@ -13,6 +13,8 @@ from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
 from PySDM.environments import Kinematic2D
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.products.dynamics.coalescence import CoalescenceTimestep
+from PySDM.products.dynamics.coalescence import CollisionRate
+from PySDM.products.dynamics.coalescence import CollisionRateDeficit
 from PySDM.products.dynamics.condensation import CondensationTimestep
 from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from PySDM.products.environments import DryAirDensity
@@ -104,6 +106,8 @@ class Simulation:
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
             products.append(CoalescenceTimestep())
+            products.append(CollisionRate())
+            products.append(CollisionRateDeficit())
 
         attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.Pseudorandom(),
                                                  spectral_discretisation=spectral_sampling.ConstantMultiplicity(

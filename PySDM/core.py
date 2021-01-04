@@ -74,9 +74,6 @@ class Core:
         self.backend.normalize(
             prob, self.particles['cell id'], self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
 
-    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        return self.particles.coalescence(gamma, adaptive, subs, adaptive_memory)
-
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \

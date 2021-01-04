@@ -9,7 +9,7 @@ from .random_generator_optimizer import RandomGeneratorOptimizer
 
 class Coalescence:
 
-    def __init__(self, kernel, seed=None, croupier='local', adaptive=True, max_substeps=128, optimized_random=False):
+    def __init__(self, kernel, seed=None, croupier='local', adaptive=False, max_substeps=128, optimized_random=False):
         self.core = None
         self.kernel = kernel
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random, max_substeps=max_substeps, seed=seed)
@@ -37,6 +37,9 @@ class Coalescence:
         self.adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+
+        self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
 
     @property
     def max_substeps(self):
@@ -73,7 +76,9 @@ class Coalescence:
         if self.adaptive:
             adaptive_memory[:] = 1
         self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
-                                        adaptive_memory=adaptive_memory)
+                                        adaptive_memory=adaptive_memory,
+                                        collision_rate=self.collision_rate,
+                                        collision_rate_deficit=self.collision_rate_deficit)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:
