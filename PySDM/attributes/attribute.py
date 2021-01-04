@@ -13,15 +13,15 @@ class Attribute:
         self.size = size
         self.name = name
 
-    def allocate(self, data=None):
-        if data is None:
-            if self.size > 1:
-                self.data = self.core.IndexedStorage.empty(
-                    (self.size, self.core.n_sd), dtype=self.dtype)
-            else:
-                self.data = self.core.IndexedStorage.empty((self.core.n_sd,), dtype=self.dtype)
+    def allocate(self, idx):
+        if self.size > 1:
+            self.data = self.core.IndexedStorage.empty(
+                idx, (self.size, self.core.n_sd), dtype=self.dtype)
         else:
-            self.data = data
+            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
+
+    def set_data(self, data):
+        self.data = data
 
     def get(self):
         self.update()

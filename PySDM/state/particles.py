@@ -2,7 +2,11 @@
 Created at 03.06.2019
 """
 
+from typing import Dict
+
 import numpy as np
+
+from PySDM.attributes.attribute import Attribute
 
 
 class Particles:
@@ -14,7 +18,7 @@ class Particles:
             keys: dict,
             intensive_start: int,
             cell_start,
-            attributes: dict
+            attributes: Dict[str, Attribute]
     ):
         self.core = core
 
@@ -29,6 +33,7 @@ class Particles:
         self.keys = keys
         self.intensive_start = intensive_start
 
+        self.cell_idx = self.core.Index.empty(len(cell_start) - 1)
         self.__cell_start = self.core.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                   scheme=core.sorting_scheme)
@@ -50,7 +55,7 @@ class Particles:
 
     def sanitize(self):
         if not self.healthy:
-            self['n'].remove_zeros()
+            self.__idx.remove_zeros(self['n'])
             self.healthy = True
             self.__healthy_memory[:] = 1
             self.__sorted = False
@@ -72,7 +77,7 @@ class Particles:
             self.__sorted = False
 
     def __sort_by_cell_id(self):
-        self.__cell_caretaker(self['cell id'], self.__cell_start, self.__idx, self.SD_num)
+        self.__cell_caretaker(self['cell id'], self.cell_idx, self.__cell_start, self.__idx, self.SD_num)
         self.__sorted = True
 
     def get_extensive_attrs(self):
@@ -103,20 +108,20 @@ class Particles:
                               self.keys[attr_name])
 
     def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        result = self.core.bck.coalescence(n=self['n'],
-                                           volume=self['volume'],
-                                           idx=self.__idx,
-                                           length=self.SD_num,
-                                           intensive=self.get_intensive_attrs(),
-                                           extensive=self.get_extensive_attrs(),
-                                           gamma=gamma,
-                                           healthy=self.__healthy_memory,
-                                           adaptive=adaptive,
-                                           subs=subs,
-                                           adaptive_memory=adaptive_memory)
+        self.core.bck.coalescence(n=self['n'],
+                                  volume=self['volume'],
+                                  idx=self.__idx,
+                                  length=self.SD_num,
+                                  intensive=self.get_intensive_attrs(),
+                                  extensive=self.get_extensive_attrs(),
+                                  gamma=gamma,
+                                  healthy=self.__healthy_memory,
+                                  adaptive=adaptive,
+                                  cell_id=self["cell id"],
+                                  subs=subs,
+                                  adaptive_memory=adaptive_memory)
         self.healthy = bool(self.__healthy_memory)
         self.attributes['volume'].mark_updated()
-        return result
 
     def has_attribute(self, attr):
         return attr in self.keys

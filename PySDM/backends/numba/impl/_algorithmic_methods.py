@@ -2,9 +2,10 @@
 Created at 04.11.2019
 """
 
-import numpy as np
 import numba
+import numpy as np
 from numba import void, float64, int64, prange
+
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
 
@@ -28,14 +29,16 @@ class AlgorithmicMethods:
                                                        position_in_cell.data)
 
     @staticmethod
-    @numba.njit(int64(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], numba.boolean, int64, float64[:]),
-                **{**conf.JIT_FLAGS, **{'parallel': False}})
+    @numba.njit(
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
+             numba.boolean, int64[:], int64[:], int64[:]),
+        **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
-        result = 1
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
+                         adaptive, cell_id, subs, adaptive_memory):
         for i in prange(length - 1):
             if gamma[i] == 0:
-                # adaptive_memory[i] = 1  # TODO parallelization
+                # adaptive_memory[cell_id[i]] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -45,8 +48,8 @@ class AlgorithmicMethods:
                 j, k = k, j
             prop = int(n[j] / n[k])
             if adaptive:
-                result = max(result, int(((gamma[i])*subs) / prop))
-                # adaptive_memory[i] = int(((gamma[i])*subs) / prop)
+                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
+                                                  int(((gamma[i]) * subs[cell_id[j]]) / prop))
             g = min(int(gamma[i]), prop)
             if g == 0:
                 continue
@@ -67,13 +70,13 @@ class AlgorithmicMethods:
                 extensive[:, k] = extensive[:, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
-        return result  # np.amax(adaptive_memory[:length-1])
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, subs, adaptive_memory):
-        return AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                                   extensive.data, gamma.data, healthy.data,
-                                                   adaptive, subs, adaptive_memory.data)
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy,
+                    adaptive, cell_id, subs, adaptive_memory):
+        AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
+                                            extensive.data, gamma.data, healthy.data,
+                                            adaptive, cell_id.data, subs.data, adaptive_memory.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -171,13 +174,14 @@ class AlgorithmicMethods:
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty((numba.config.NUMBA_NUM_THREADS, len(cell_start)), dtype=int)
 
-            def __call__(self, cell_id, cell_start, idx, length):
+            def __call__(self, cell_id, cell_prior, cell_start, idx, length):
                 if self.scheme == "counting_sort":
                     AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, length, cell_start.data)
+                        self.tmp_idx.data, idx.data, cell_id.data, cell_prior.data, length, cell_start.data)
                 elif self.scheme == "counting_sort_parallel":
                     AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, length, cell_start.data, self.cell_starts.data)
+                        self.tmp_idx.data, idx.data, cell_id.data, cell_prior.data, length, cell_start.data,
+                        self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
         return CellCaretaker(idx, cell_start, scheme)
@@ -205,20 +209,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_start, norm_factor, dt_div_dv):
+    def normalize_body(prob, cell_id, cell_start, norm_factor, dt, dv, n_substeps):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = dt / n_substeps[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
             prob[d] *= norm_factor[cell_id[d]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_start, norm_factor, dt_div_dv):
-        return AlgorithmicMethods.normalize_body(prob.data, cell_id.data, cell_start.data, norm_factor.data, dt_div_dv)
+    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, n_substep):
+        return AlgorithmicMethods.normalize_body(
+            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -270,23 +275,23 @@ class AlgorithmicMethods:
                 pthd[cell_id] = thd_new
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
-    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, length, cell_start):
+    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
+    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, cell_idx, length, cell_start):
         cell_end = cell_start
         # Warning: Assuming len(cell_end) == n_cell+1
         cell_end[:] = 0
         for i in range(length):
-            cell_end[cell_id[idx[i]]] += 1
+            cell_end[cell_idx[cell_id[idx[i]]]] += 1
         for i in range(1, len(cell_end)):
             cell_end[i] += cell_end[i - 1]
         for i in range(length - 1, -1, -1):
-            cell_end[cell_id[idx[i]]] -= 1
-            new_idx[cell_end[cell_id[idx[i]]]] = idx[i]
+            cell_end[cell_idx[cell_id[idx[i]]]] -= 1
+            new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
+    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
-            new_idx, idx, cell_id, length, cell_start, cell_start_p):
+            new_idx, idx, cell_id, cell_prior, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p
         # Warning: Assuming len(cell_end) == n_cell+1
         thread_num = cell_end_thread.shape[0]
@@ -294,7 +299,7 @@ class AlgorithmicMethods:
             cell_end_thread[t, :] = 0
             for i in range(t * length // thread_num,
                            (t + 1) * length // thread_num if t < thread_num - 1 else length):
-                cell_end_thread[t, cell_id[idx[i]]] += 1
+                cell_end_thread[t, cell_prior[cell_id[idx[i]]]] += 1
 
         cell_start[:] = np.sum(cell_end_thread, axis=0)
         for i in range(1, len(cell_start)):
@@ -312,7 +317,7 @@ class AlgorithmicMethods:
             for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
                            t * length // thread_num - 1,
                            -1):
-                cell_end_thread[t, cell_id[idx[i]]] -= 1
-                new_idx[cell_end_thread[t, cell_id[idx[i]]]] = idx[i]
+                cell_end_thread[t, cell_prior[cell_id[idx[i]]]] -= 1
+                new_idx[cell_end_thread[t, cell_prior[cell_id[idx[i]]]]] = idx[i]
 
         cell_start[:] = cell_end_thread[0, :]

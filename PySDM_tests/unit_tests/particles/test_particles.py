@@ -2,23 +2,25 @@
 Created at 2019
 """
 
-from PySDM.state.particles_factory import ParticlesFactory
-from PySDM_tests.unit_tests.dummy_core import DummyCore
-from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
-# noinspection PyUnresolvedReferences
-from PySDM_tests.backends_fixture import backend
-
 import numpy as np
 import pytest
+
+from PySDM.state.particles_factory import ParticlesFactory
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
+from PySDM_tests.unit_tests.dummy_core import DummyCore
+from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 
 
 class TestParticles:
 
     @staticmethod
-    def make_storage(backend, iterable, idx=None):
-        result = backend.IndexedStorage.from_ndarray(np.array(iterable))
+    def make_indexed_storage(backend, iterable, idx=None):
+        index = backend.Index.from_ndarray(np.array(iterable))
         if idx is not None:
-            result = backend.IndexedStorage.indexed(idx, result)
+            result = backend.IndexedStorage.indexed(idx, index)
+        else:
+            result = index
         return result
 
     @staticmethod
@@ -61,13 +63,14 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
+        n_cell = max(cells) + 1
+        core.environment.mesh.n_cell = n_cell
         core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
-        sut.attributes['n'].data = TestParticles.make_storage(backend, n, sut._Particles__idx)
-        n_cell = max(cells) + 1
-        sut.attributes['cell id'].data = TestParticles.make_storage(backend, cells, sut._Particles__idx)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, [0] * (n_cell + 1))
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
+        sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cells, sut._Particles__idx)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, [0] * (n_cell + 1))
         sut._Particles__n_sd = core.n_sd
         sut.healthy = 0 not in n
         sut._Particles__cell_caretaker = backend.make_cell_caretaker(sut._Particles__idx, sut._Particles__cell_start)
@@ -116,10 +119,10 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=False)
@@ -139,11 +142,11 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, cell_start)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
@@ -166,16 +169,16 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=False)
         expected = sut._Particles__idx.to_ndarray()
         sut._Particles__sorted = True
-        sut._Particles__idx = TestParticles.make_storage(backend, range(n_sd))
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, range(n_sd))
         sut.permutation(u01, local=False)
 
         # Assert
@@ -195,25 +198,26 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
-        core.build(attributes={'n': np.ones(n_sd)})
-        sut = core.particles
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
-        idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
         cell_id = []
-        for i in range(len(cell_start) - 1):
+        core.environment.mesh.n_cell = len(cell_start) - 1
+        for i in range(core.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        sut.attributes['cell id'].data = TestParticles.make_storage(backend, cell_id)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, cell_start)
+        core.build(attributes={'n': np.ones(n_sd)})
+        sut = core.particles
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cell_id)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
         expected = sut._Particles__idx.to_ndarray()
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         sut.permutation(u01, local=True)
 
         # Assert

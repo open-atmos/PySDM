@@ -1,5 +1,5 @@
 """
-Created at 05.02.2020
+Created at 23.11.2020
 """
 
 import numpy as np
@@ -7,25 +7,25 @@ import numpy as np
 from PySDM.products.product import Product
 
 
-class CondensationTimestep(Product):
+class CoalescenceTimestep(Product):
 
     def __init__(self, debug=False):
         super().__init__(
-            name='dt_cond',
+            name='dt_coal',
             unit='s',
-            description='Condensation timestep',
+            description='Coalescence timestep',
             scale='log',
             range=None
         )
         self.minimum = None
         self.maximum = None
         self.count = None
-        self.condensation = None
+        self.coalescence = None
 
     def register(self, builder):
         super().register(builder)
         self.core.observers.append(self)
-        self.condensation = self.core.dynamics['Condensation']
+        self.coalescence = self.core.dynamics['Coalescence']
         self.range = (1e-5, self.core.dt)
         self.minimum = np.full_like(self.buffer, np.nan)
         self.maximum = np.full_like(self.buffer, np.nan)
@@ -41,14 +41,14 @@ class CondensationTimestep(Product):
         return self.count
 
     def get(self):
-        self.download_to_buffer(self.condensation.n_substep)
-        self.buffer[:] = self.condensation.core.dt / self.buffer
+        self.download_to_buffer(self.coalescence.n_substep)
+        self.buffer[:] = self.coalescence.core.dt / self.buffer
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.n_substep)
+        self.download_to_buffer(self.coalescence.n_substep)
         self.count[:] += self.buffer
-        self.buffer[:] = self.condensation.core.dt / self.buffer
+        self.buffer[:] = self.coalescence.core.dt / self.buffer
         self.minimum = np.minimum(self.buffer, self.minimum)
         self.maximum = np.maximum(self.buffer, self.maximum)
 

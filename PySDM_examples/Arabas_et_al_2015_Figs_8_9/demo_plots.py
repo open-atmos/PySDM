@@ -114,5 +114,8 @@ class _TimeseriesPlot(_Plot):
             plt.show()
 
     def update(self, data):
-        self.ydata[0:len(data)] = data[:]
+        if data is not None:
+            self.ydata[0:len(data)] = data[:]
+        else:
+            self.ydata[0:len(data)] = np.nan
         self.timeseries.set_ydata(self.ydata)

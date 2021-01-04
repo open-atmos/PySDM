@@ -2,18 +2,24 @@
 Created at 25.09.2019
 """
 
-import numpy as np
+from typing import Iterable
 
+import numba
+import numpy
+import numpy as np
+import scipy
+
+import PySDM
+from PySDM.dynamics import condensation
+from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectra import Sum
-from PySDM.dynamics.coalescence.kernels import Geometric
-from PySDM.dynamics import condensation
-from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
+from PySDM.physics import formulae as phys
 from PySDM.physics.constants import si
-from typing import Iterable
-import PySDM, numba, numpy, scipy
-#from PyMPDATA import __version__ as TODO
+
+
+# from PyMPDATA import __version__ as TODO
 
 
 class Settings:
@@ -41,14 +47,17 @@ class Settings:
     n_steps = 5400
     outfreq = 60
     dt = 1 * si.seconds
+    spin_up_time = 1 * si.hour
 
-    n_spin_up = 1 * si.hour / dt
+    @property
+    def n_spin_up(self):
+        return self.spin_up_time / self.dt
 
     v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
     @property
     def steps(self):
-        return np.arange(0, self.n_steps+1, self.outfreq)
+        return np.arange(0, self.n_steps + 1, self.outfreq)
 
     mode_1 = Lognormal(
         norm_factor=60 / si.centimetre ** 3 / const.rho_STP,
