@@ -1,8 +1,5 @@
 """
 Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from .attribute import Attribute
@@ -10,8 +7,8 @@ from .attribute import Attribute
 
 class DerivedAttribute(Attribute):
 
-    def __init__(self, particles_builder, name, dependencies):
-        super().__init__(particles_builder, name)
+    def __init__(self, builder, name, dependencies):
+        super().__init__(builder, name)
         self.dependencies = dependencies
 
     def update(self):

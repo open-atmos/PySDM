@@ -1,29 +1,27 @@
 """
 Created at 07.06.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
-import mpmath
 import numpy as np
+from scipy import special
 
 
 class Golovin:
+
     def __init__(self, b):
         self.b = b
-        self.particles = None
+        self.core = None
 
     def __call__(self, output, is_first_in_pair):
-        self.particles.sum_pair(output, 'volume', is_first_in_pair)
-        self.particles.backend.multiply(output, self.b)
+        output.sum_pair(self.core.particles['volume'], is_first_in_pair)
+        output *= self.b
 
-    def register(self, particles_builder):
-        self.particles = particles_builder.particles
-        particles_builder.request_attribute('volume')
+    def register(self, builder):
+        self.core = builder.core
+        builder.request_attribute('volume')
 
     def analytic_solution(self, x, t, x_0, N_0):
-        tau = 1 - mpmath.exp(-N_0 * self.b * x_0 * t)
+        tau = 1 - np.exp(-N_0 * self.b * x_0 * t)
 
         if isinstance(x, np.ndarray):
             func = np.vectorize(lambda i: Golovin.analytic_solution_helper(x[int(i)], tau, x_0))
@@ -34,10 +32,11 @@ class Golovin:
 
     @staticmethod
     def analytic_solution_helper(x, tau, x_0):
+        sqrt_tau = np.sqrt(tau)
         result = float(
             (1 - tau) *
-            1 / (x * mpmath.sqrt(tau)) *
-            mpmath.besseli(1, 2 * x / x_0 * mpmath.sqrt(tau)) *
-            mpmath.exp(-(1 + tau) * x / x_0)
+            1 / (x * np.sqrt(tau)) *
+            special.ive(1, 2 * x / x_0 * sqrt_tau) *
+            np.exp(-(1 + tau -2 * sqrt_tau) * x / x_0)
         )
         return result

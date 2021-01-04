@@ -1,8 +1,5 @@
 """
 Created at 09.01.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.physics.constants import rho_w
@@ -19,44 +16,44 @@ idx_thd = 0
 idx_x = 1
 
 
-def patch_particles(particles, coord, rtol=1e-3):
-    particles.condensation_solver = make_solve(coord, rtol)
-    particles.condensation = types.MethodType(bdf_condensation, particles)
+def patch_core(core, coord='volume logarithm', rtol=1e-3):
+    core.condensation_solver = make_solve(coord, rtol)
+    core.condensation = types.MethodType(bdf_condensation, core)
 
 
-def bdf_condensation(particles,
+def bdf_condensation(core,
                      kappa,
                      rtol_x, rtol_thd, substeps, ripening_flags
                      ):
     n_threads = 1
-    if particles.state.has_attribute("temperature"):
+    if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
 
     Numba._condensation.py_func(
-        solver=particles.condensation_solver,
+        solver=core.condensation_solver,
         n_threads=n_threads,
-        n_cell=particles.mesh.n_cell,
-        cell_start_arg=particles.state.cell_start,
-        v=particles.state["volume"],
+        n_cell=core.mesh.n_cell,
+        cell_start_arg=core.particles.cell_start.data,
+        v=core.particles["volume"].data,
         particle_temperatures=np.empty(0),
         r_cr=None,
-        n=particles.state['n'],
-        vdry=particles.state["dry volume"],
-        idx=particles.state._State__idx,
-        rhod=particles.environment["rhod"],
-        thd=particles.environment["thd"],
-        qv=particles.environment["qv"],
-        dv_mean=particles.environment.dv,
-        prhod=particles.environment.get_predicted("rhod"),
-        pthd=particles.environment.get_predicted("thd"),
-        pqv=particles.environment.get_predicted("qv"),
+        n=core.particles['n'].data,
+        vdry=core.particles["dry volume"].data,
+        idx=core.particles._Particles__idx.data,
+        rhod=core.env["rhod"].data,
+        thd=core.env["thd"].data,
+        qv=core.env["qv"].data,
+        dv_mean=core.env.dv,
+        prhod=core.env.get_predicted("rhod").data,
+        pthd=core.env.get_predicted("thd").data,
+        pqv=core.env.get_predicted("qv").data,
         kappa=kappa,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
-        dt=particles.dt,
-        substeps=substeps,
+        dt=core.dt,
+        substeps=substeps.data,
         cell_order=np.argsort(substeps),
-        ripening_flags=ripening_flags
+        ripening_flags=ripening_flags.data
     )
 
 
@@ -72,9 +69,12 @@ def make_solve(coord, rtol):
     volume = coord.volume
     dx_dt = coord.dx_dt
 
-    def solve(v, particle_temperatures, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d_mean, rhod_mean,
-              rtol_x, rtol_thd, dt, substeps
-              ):
+    def solve(
+            v, particle_temperatures, r_cr, n, vdry,
+            cell_idx, kappa, thd, qv,
+            dthd_dt, dqv_dt, m_d_mean, rhod_mean,
+            rtol_x, rtol_thd, dt, substeps
+    ):
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
         y0[idx_thd] = thd
@@ -108,7 +108,7 @@ def make_solve(coord, rtol):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 0, 0  # TODO: how to get the number of timesteps?
+        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1  # TODO: how to get the number of timesteps?
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
@@ -134,7 +134,7 @@ def make_solve(coord, rtol):
             return dy_dt
 
         @staticmethod
-        # @numba.njit()
+        @numba.njit()
         def ql(n, x, m_d_mean):
             return np.sum(n * volume(x)) * rho_w / m_d_mean
 

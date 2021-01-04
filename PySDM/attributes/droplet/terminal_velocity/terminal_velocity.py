@@ -3,18 +3,19 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
-from .gunn_and_kinzer import RogersYau
+from .gunn_and_kinzer import Interpolation
 
 
 class TerminalVelocity(DerivedAttribute):
 
-    def __init__(self, particles_builder):
-        self.radius = particles_builder.get_attribute('radius')
+    def __init__(self, builder):
+        self.radius = builder.get_attribute('radius')
         dependencies = [self.radius]
-        super().__init__(particles_builder, name='terminal velocity', dependencies=dependencies)
+        super().__init__(builder, name='terminal velocity', dependencies=dependencies)
 
-        self.approximation = RogersYau(particles_builder.particles)
+        self.approximation = Interpolation(builder.core)
 
     def recalculate(self):
+        self.data.idx = self.radius.data.idx
         self.approximation(self.data, self.radius.get())
 

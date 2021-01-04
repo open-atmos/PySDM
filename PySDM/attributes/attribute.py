@@ -1,15 +1,12 @@
 """
 Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 
 class Attribute:
 
-    def __init__(self, particles_builder, name, dtype=float, size=1):
-        self.particles = particles_builder.particles
+    def __init__(self, builder, name, dtype=float, size=1):
+        self.core = builder.core
         self.timestamp: int = 0
         self.data = None
         self.dtype = dtype
@@ -19,9 +16,10 @@ class Attribute:
     def allocate(self, data=None):
         if data is None:
             if self.size > 1:
-                self.data = self.particles.backend.array((self.size, self.particles.n_sd), dtype=self.dtype)
+                self.data = self.core.IndexedStorage.empty(
+                    (self.size, self.core.n_sd), dtype=self.dtype)
             else:
-                self.data = self.particles.backend.array((self.particles.n_sd,), dtype=self.dtype)
+                self.data = self.core.IndexedStorage.empty((self.core.n_sd,), dtype=self.dtype)
         else:
             self.data = data
 

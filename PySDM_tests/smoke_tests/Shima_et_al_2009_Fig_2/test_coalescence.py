@@ -1,24 +1,21 @@
 """
 Created at 08.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
 import copy
 import pytest
-from PySDM.backends.default import Default
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.backends import CPU
+from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.initialisation.spectra import Exponential
 from PySDM.environments import Box
 from PySDM.physics.constants import si
 
 
-backend = Default
+backend = CPU
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -38,8 +35,6 @@ def check(n_part, dv, n_sd, rho, state, step):
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(croupier):
     # Arrange
-    v_min = 4.186e-15
-    v_max = 4.186e-12
     n_sd = 2 ** 13
     steps = [0, 30, 60]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
@@ -51,13 +46,13 @@ def test_coalescence(croupier):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    particles_builder = ParticlesBuilder(n_sd=n_sd, backend=backend)
-    particles_builder.set_environment(Box, {"dt": dt, "dv": dv})
+    builder = Builder(n_sd=n_sd, backend=backend)
+    builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = constant_multiplicity(n_sd, spectrum, (v_min, v_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": kernel})
-    particles = particles_builder.get_particles(attributes)
-    particles.croupier = croupier
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
+    builder.add_dynamic(Coalescence(kernel, seed=256))
+    core = builder.build(attributes)
+    core.croupier = croupier
 
     class Seed:
         seed = 0
@@ -65,19 +60,19 @@ def test_coalescence(croupier):
         def __call__(self):
             Seed.seed += 1
             return Seed.seed
-    particles.dynamics[str(Coalescence)].seed = Seed()
+    core.dynamics['Coalescence'].seed = Seed()
 
     states = {}
 
     # Act
     for step in steps:
-        particles.run(step - particles.n_steps)
-        check(n_part, dv, n_sd, rho, particles.state, step)
-        states[particles.n_steps] = copy.deepcopy(particles.state)
+        core.run(step - core.n_steps)
+        check(n_part, dv, n_sd, rho, core.particles, step)
+        states[core.n_steps] = copy.deepcopy(core.particles)
 
     # Assert
     x_max = 0
     for state in states.values():
-        assert x_max < np.amax(backend.to_ndarray(state['volume']))
-        x_max = np.amax(backend.to_ndarray(state['volume']))
+        assert x_max < np.amax(state['volume'].to_ndarray())
+        x_max = np.amax(state['volume'].to_ndarray())
 

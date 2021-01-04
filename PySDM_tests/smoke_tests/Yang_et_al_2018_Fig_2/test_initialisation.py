@@ -1,5 +1,9 @@
+"""
+Created at 2019
+"""
+
 from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
-from PySDM_examples.Yang_et_al_2018_Fig_2.setup import Setup
+from PySDM_examples.Yang_et_al_2018_Fig_2.settings import Settings
 from PySDM.physics.constants import si
 from PySDM.physics import formulae as phys
 import matplotlib.pyplot as plt
@@ -7,10 +11,9 @@ import numpy as np
 
 
 def test_dry_spectrum_x():
-    setup = Setup()
-    simulation = Simulation(setup)
-    dry_volume = simulation.particles.state['dry volume']
-    dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
+    settings = Settings()
+    simulation = Simulation(settings)
+    dry_volume = simulation.core.particles['dry volume'].to_ndarray()
     rd = phys.radius(volume=dry_volume) / si.nanometre
 
     rd = rd[::-1]
@@ -21,15 +24,14 @@ def test_dry_spectrum_x():
 
 
 def test_dry_spectrum_y(plot=False):
-    setup = Setup()
-    simulation = Simulation(setup)
-    dry_volume = simulation.particles.state['dry volume']
-    dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
+    settings = Settings()
+    simulation = Simulation(settings)
+    dry_volume = simulation.core.particles['dry volume'].to_ndarray()
     rd = phys.radius(volume=dry_volume) / si.nanometre
-    nd = simulation.particles.backend.to_ndarray(simulation.particles.state['n'])
+    nd = simulation.core.particles['n'].to_ndarray()
 
     dr = (rd[1:] - rd[0:-1])
-    env = simulation.particles.environment
+    env = simulation.core.environment
     dn_dr = (nd[0:-1] / env.mass_of_dry_air * env["rhod"] / dr)
     dn_dr /= (1/si.centimetre**3)
 
@@ -51,17 +53,15 @@ def test_dry_spectrum_y(plot=False):
 
 def test_wet_vs_dry_spectrum(plot=False):
     # Arrange
-    setup = Setup()
+    settings = Settings()
 
     # Act
-    simulation = Simulation(setup)
-    wet_volume = simulation.particles.state['volume']
-    wet_volume = simulation.particles.backend.to_ndarray(wet_volume)
+    simulation = Simulation(settings)
+    wet_volume = simulation.core.particles['volume'].to_ndarray()
     r_wet = phys.radius(volume=wet_volume) / si.nanometre
-    n = simulation.particles.backend.to_ndarray(simulation.particles.state['n'])
+    n = simulation.core.particles['n'].to_ndarray()
 
-    dry_volume = simulation.particles.state['dry volume']
-    dry_volume = simulation.particles.backend.to_ndarray(dry_volume)
+    dry_volume = simulation.core.particles['dry volume'].to_ndarray()
     r_dry = phys.radius(volume=dry_volume) / si.nanometre
 
     # Plot
@@ -78,10 +78,10 @@ def test_wet_vs_dry_spectrum(plot=False):
 
 def test_RH():
     # Arrange
-    setup = Setup()
+    settings = Settings()
 
     # Act
-    simulation = Simulation(setup)
+    simulation = Simulation(settings)
 
     # Assert
-    assert round(simulation.particles.environment["RH"][0], 3) == 0.856
+    assert round(simulation.core.environment["RH"][0], 3) == 0.856

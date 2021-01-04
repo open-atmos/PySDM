@@ -1,8 +1,5 @@
 """
 Created at 21.03.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
@@ -37,8 +34,8 @@ def universal_test(method_name, sut, params):
         if 'value' in param['details'].keys() or param['name'] == 'length':
             assert sut_params[param['name']] == default_params[param['name']]
         else:
-            sut_param = sut.to_ndarray(sut_params[param['name']])
-            default_param = backend.to_ndarray(default_params[param['name']])
+            sut_param = sut_params[param['name']].to_ndarray()
+            default_param = default_params[param['name']].to_ndarray()
             if 'checking' in param.keys():
                 if 'length_valid' in param['checking']:
                     sut_param = sut_param[:default_params['length']]
@@ -74,8 +71,8 @@ def generate_data(sut_backend, shape=None, dtype=None, value=None, array=None, s
         if negative:
             rand_ndarray = (rand_ndarray - factor / 2) * 2
 
-        result_sut = sut_backend.from_ndarray(rand_ndarray)
-        result_default = backend.from_ndarray(rand_ndarray)
+        result_sut = sut_backend.Storage.from_ndarray(rand_ndarray)
+        result_default = backend.Storage.from_ndarray(rand_ndarray)
     elif array is None and shape is None and dtype is None:
         if isinstance(value, (float, int, bool)):
             result_sut = value
@@ -84,13 +81,14 @@ def generate_data(sut_backend, shape=None, dtype=None, value=None, array=None, s
             raise ValueError()
     elif value is None and shape is None and dtype is None:
         if isinstance(array, np.ndarray):
-            result_sut = sut_backend.from_ndarray(array)
-            result_default = backend.from_ndarray(array)
+            result_sut = sut_backend.Storage.from_ndarray(array)
+            result_default = backend.Storage.from_ndarray(array)
         else:
             raise ValueError()
     else:
         raise ValueError()
 
+    np.testing.assert_array_equal(result_sut.to_ndarray(), result_default.to_ndarray())
     return result_sut, result_default
 
 
@@ -115,8 +113,8 @@ def generate_idx(sut_backend, shape, order='asc', seed=0):
     elif order == 'random':
         np.random.permutation(idx_ndarray)
 
-    result_sut = sut_backend.from_ndarray(idx_ndarray)
-    result_default = backend.from_ndarray(idx_ndarray)
+    result_sut = sut_backend.Storage.from_ndarray(idx_ndarray)
+    result_default = backend.Storage.from_ndarray(idx_ndarray)
 
     return result_sut, result_default
 
@@ -150,7 +148,7 @@ def generate_is_first_in_pair(_sut_backend, shape, pairs='random', seed=0):
         is_first_in_pair = np.zeros(idx_len, dtype=np.int64)
         is_first_in_pair[:-1:2] = 1
 
-    result_sut = _sut_backend.from_ndarray(is_first_in_pair)
-    result_default = backend.from_ndarray(is_first_in_pair)
+    result_sut = _sut_backend.Storage.from_ndarray(is_first_in_pair)
+    result_default = backend.Storage.from_ndarray(is_first_in_pair)
 
     return result_sut, result_default

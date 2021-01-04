@@ -1,13 +1,17 @@
-from PySDM.initialisation.spectral_sampling import *
+"""
+Created at 2019
+"""
+
+from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity
 from PySDM.initialisation.spectra import Lognormal
 import numpy as np
 import pytest
 
 
 @pytest.mark.parametrize("discretisation", [
-	pytest.param(linear),
-	pytest.param(logarithmic),
-	pytest.param(constant_multiplicity)
+	pytest.param(Linear),
+	pytest.param(Logarithmic),
+	pytest.param(ConstantMultiplicity)
 ])
 def test_spectral_discretisation(discretisation):
 	# Arrange
@@ -19,7 +23,7 @@ def test_spectral_discretisation(discretisation):
 	m_range = (.1e-6, 100e-6)
 
 	# Act
-	m, n = discretisation(n_sd, spectrum, m_range)
+	m, n = discretisation(spectrum, m_range).sample(n_sd)
 
 	# Assert
 	assert m.shape == n.shape
@@ -29,12 +33,4 @@ def test_spectral_discretisation(discretisation):
 	actual = np.sum(n)
 	desired = spectrum.cumulative(m_range[1]) - spectrum.cumulative(m_range[0])
 	quotient = actual / desired
-	# TODO relative error
 	np.testing.assert_almost_equal(actual=quotient, desired=1.0, decimal=2)
-
-
-# TODO test_linear()
-
-# TODO test_logarithmic()
-
-# TODO test_constant_multiplicity()

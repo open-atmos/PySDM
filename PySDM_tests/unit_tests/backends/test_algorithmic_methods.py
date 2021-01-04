@@ -1,8 +1,5 @@
 """
 Created at 20.04.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import pytest
@@ -19,6 +16,8 @@ from .utils import universal_test, generate_is_first_in_pair, generate_data
 from .__parametrisation__ import backend
 
 
+# TODO: not implemented
+@pytest.mark.skip()
 @pytest.mark.parametrize('sut', backends)
 class TestAlgorithmicMethods:
 

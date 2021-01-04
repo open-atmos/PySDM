@@ -1,24 +1,28 @@
 """
 Created at 01.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
-from ._methods import Methods
-from ._algorithmic_methods import AlgorithmicMethods
-from ._algorithmic_step_methods import AlgorithmicStepMethods
-from ._storage_methods import StorageMethods
-from ._maths_methods import MathsMethods
-from ._physics_methods import PhysicsMethods
+from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
+from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
+from PySDM.backends.thrustRTC.impl._maths_methods import MathsMethods
+from PySDM.backends.thrustRTC.impl._physics_methods import PhysicsMethods
+from .storage.storage import Storage as ImportedStorage
+from PySDM.backends.thrustRTC.storage.indexed_storage import IndexedStorage as ImportedIndexedStorage
+from PySDM.backends.thrustRTC.random import Random as ImportedRandom
 
 
 class ThrustRTC(
-    Methods,
     AlgorithmicMethods,
     AlgorithmicStepMethods,
     StorageMethods,
     MathsMethods,
     PhysicsMethods,
 ):
-    pass
+    ENABLE = True
+    Storage = ImportedStorage
+    IndexedStorage = ImportedIndexedStorage
+    Random = ImportedRandom
+
+    def __init__(self):
+        raise Exception("Backend is stateless.")

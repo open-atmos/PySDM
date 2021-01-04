@@ -4,54 +4,66 @@ Created at 08.08.2019
 
 import numpy as np
 
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.backends import CPU
+from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 
-from PySDM_examples.Shima_et_al_2009_Fig_2.setup import SetupA
+from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM_examples.Shima_et_al_2009_Fig_2.spectrum_plotter import SpectrumPlotter
-from PySDM.state.products.particles_volume_spectrum import ParticlesVolumeSpectrum
+from PySDM.products.state import ParticlesVolumeSpectrum
+from PySDM.products.stats.timers import WallTime
 
 
-def run(setup):
-    particles_builder = ParticlesBuilder(n_sd=setup.n_sd, backend=setup.backend)
-    particles_builder.set_environment(Box, {"dv": setup.dv, "dt": setup.dt})
+def run(settings, backend=CPU, observers=()):
+    builder = Builder(n_sd=settings.n_sd, backend=backend)
+    builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
-    attributes['volume'], attributes['n'] = constant_multiplicity(setup.n_sd, setup.spectrum,
-                                                                  (setup.init_x_min, setup.init_x_max))
-    particles_builder.register_dynamic(Coalescence, {"kernel": setup.kernel})
-    products = {ParticlesVolumeSpectrum: {}}
-    particles = particles_builder.get_particles(attributes, products)
+    attributes['volume'], attributes['n'] = ConstantMultiplicity(settings.spectrum).sample(settings.n_sd)
+    coalescence = Coalescence(settings.kernel)
+    coalescence.adaptive = settings.adaptive
+    builder.add_dynamic(coalescence)
+    products = [ParticlesVolumeSpectrum(), WallTime()]
+    core = builder.build(attributes, products)
+    if hasattr(settings, 'u_term') and 'terminal velocity' in core.particles.attributes:
+        core.particles.attributes['terminal velocity'].approximation = settings.u_term(core)
+
+    for observer in observers:
+        core.observers.append(observer)
 
     vals = {}
-    for step in setup.steps:
-        particles.run(step - particles.n_steps)
-        vals[step] = particles.products['dv/dlnr'].get(setup.radius_bins_edges)
-        vals[step][:] *= setup.rho
+    core.products['wall_time'].reset()
+    for step in settings.steps:
+        core.run(step - core.n_steps)
+        vals[step] = core.products['dv/dlnr'].get(settings.radius_bins_edges)
+        vals[step][:] *= settings.rho
 
-    return vals, particles.stats
+    exec_time = core.products['wall_time'].get()
+    return vals, exec_time
 
 
-def main(plot: bool, save: bool):
+def main(plot: bool, save: str):
     with np.errstate(all='raise'):
-        setup = SetupA()
+        settings = Settings()
 
-        setup.n_sd = 2 ** 15
+        settings.n_sd = 2 ** 15
 
-        states, _ = run(setup)
+        states, _ = run(settings)
 
     with np.errstate(invalid='ignore'):
-        plotter = SpectrumPlotter(setup)
+        plotter = SpectrumPlotter(settings)
         plotter.smooth = True
         for step, vals in states.items():
-            plotter.plot(vals, step * setup.dt)
-        if save:
-            n_sd = setup.n_sd
-            plotter.save(f"results/{n_sd}_shima_fig_2.pdf")
+            plotter.plot(vals, step * settings.dt)
+        if save is not None:
+            n_sd = settings.n_sd
+            plotter.save(save + "/" +
+                         f"{n_sd}_shima_fig_2" +
+                         "." + plotter.format)
         if plot:
             plotter.show()
 
 
 if __name__ == '__main__':
-    main(plot=True, save=True)
+    main(plot=True, save=None)

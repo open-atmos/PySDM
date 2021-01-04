@@ -1,3 +1,7 @@
+"""
+Crated at 2019
+"""
+
 from PySDM.backends.numba import numba_helpers as physics
 from PySDM.physics import constants as const
 
@@ -25,5 +29,3 @@ def th_std(p, T):
 
 def volume(radius):
     return 4 / 3 * np.pi * radius ** 3
-
-

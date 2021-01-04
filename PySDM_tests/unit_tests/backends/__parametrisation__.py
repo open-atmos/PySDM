@@ -1,20 +1,15 @@
 """
 Created at 03.08.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import pytest
-import os
+from PySDM.backends import GPU
+from PySDM.backends import CPU
 
-from PySDM.backends.default import Default
-
-backend = Default()
-backends = []  # TODO: add Pythran
-if os.environ.get('TRAVIS') != 'true':
-    from PySDM.backends import ThrustRTC
-    backends.append(ThrustRTC())
+backend = CPU
+backends = []
+if GPU.ENABLE:
+    backends.append(GPU)
 
 
 '''

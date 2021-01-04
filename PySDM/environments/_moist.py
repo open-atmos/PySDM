@@ -1,32 +1,35 @@
 """
 Created at 28.11.2019
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 import numpy as np
-from PySDM.particles_builder import ParticlesBuilder
+from PySDM.builder import Builder
 
 
 class _Moist:
 
-    def __init__(self, particles_builder: ParticlesBuilder, dt, mesh, variables):
+    def __init__(self, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
-        self.particles = particles_builder.particles
-        self.particles.observers.append(self)
+        self.core = None
         self.dt = dt
         self.mesh = mesh
+        self.variables = variables
+        self._values = None
+        self._tmp = None
+
+    def register(self, builder):
+        self.core = builder.core
+        self.core.observers.append(self)
         self._values = {
             "predicted": None,
-            "current": self._allocate(variables)
+            "current": self._allocate(self.variables)
         }
-        self._tmp = self._allocate(variables)
+        self._tmp = self._allocate(self.variables)
 
     def _allocate(self, variables):
         result = {}
         for var in variables:
-            result[var] = self.particles.backend.array((self.mesh.n_cell,), float)
+            result[var] = self.core.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, index):
@@ -34,23 +37,22 @@ class _Moist:
 
     def get_predicted(self, index):
         if self._values['predicted'] is None:
-            raise AssertionError("Condensation not called.")
+            raise AssertionError("Environment is not synchronized.")
         return self._values['predicted'][index]
 
     def sync(self):
         target = self._tmp
-        self.particles.backend.upload(self._get_qv().ravel(), target['qv'])
-        self.particles.backend.upload(self._get_thd().ravel(), target['thd'])
+        target['qv'].ravel(self.get_qv())
+        target['thd'].ravel(self.get_thd())
 
-        self.particles.backend.apply(
-            function=self.particles.backend.temperature_pressure_RH,
-            args=(target['rhod'], target['thd'], target['qv']),
-            output=(target['T'], target['p'], target['RH'])
+        self.core.backend.temperature_pressure_RH(
+            target['rhod'], target['thd'], target['qv'],
+            target['T'], target['p'], target['RH']
         )
         self._values["predicted"] = target
 
-    def _get_qv(self) -> np.ndarray: raise NotImplemented()
-    def _get_thd(self) -> np.ndarray: raise NotImplemented()
+    def get_qv(self) -> np.ndarray: raise NotImplemented()
+    def get_thd(self) -> np.ndarray: raise NotImplemented()
 
     def notify(self):
         if self._values["predicted"] is None:

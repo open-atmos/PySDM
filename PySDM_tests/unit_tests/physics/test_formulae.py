@@ -1,9 +1,15 @@
+"""
+Created at 2019
+"""
+
 from PySDM.physics import constants, formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
 class TestFormulae:
-    def test_pvs(self):
+
+    @staticmethod
+    def test_pvs():
         with DimensionalAnalysis():
             # Arrange
             si = constants.si
@@ -16,7 +22,8 @@ class TestFormulae:
             # Assert
             assert pvs.units == si.hectopascals
 
-    def test_r_cr(self):
+    @staticmethod
+    def test_r_cr():
         with DimensionalAnalysis():
             # Arrange
             si = constants.si

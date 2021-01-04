@@ -1,11 +1,8 @@
 """
 Created at 18.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
-import ThrustRTC as trtc
+from .conf import trtc
 
 
 def nice_thrust(*, wait=False, debug_print=False):
