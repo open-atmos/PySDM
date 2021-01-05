@@ -70,7 +70,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):  # TODO: handle cell_idx
         perm_cell_id = trtc.DVPermutation(cell_id, idx)
         dvlength = trtc.DVInt64(length)
         AlgorithmicStepMethods.__find_pairs_body.launch_n(length, [cell_start, perm_cell_id, is_first_in_pair, dvlength])
