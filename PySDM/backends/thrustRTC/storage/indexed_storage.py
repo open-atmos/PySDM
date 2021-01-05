@@ -66,7 +66,7 @@ class IndexedStorage(Storage):
     def to_ndarray(self, *, raw=False):
         self.detach()
         result = self.data.to_host()
-        result = np.reshape(result, self.shape)
+        result = np.reshape(result, self.shape).squeeze()
 
         if raw:
             return result
