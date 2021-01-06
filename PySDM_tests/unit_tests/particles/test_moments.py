@@ -69,4 +69,4 @@ class TestMaths:
         
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.
-        assert discr_mean_T_squared == 300. ** 2
+        np.testing.assert_approx_equal(discr_mean_T_squared, 300. ** 2)

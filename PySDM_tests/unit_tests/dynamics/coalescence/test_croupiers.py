@@ -47,7 +47,7 @@ def test_final_state(croupier, backend):
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
-    core.particles.permutation(u01)
+    core.particles.permutation(u01, local=core.croupier == 'local')
     _ = core.particles.cell_start
 
     # Assert

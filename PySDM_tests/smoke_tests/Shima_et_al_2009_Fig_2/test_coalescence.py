@@ -66,7 +66,6 @@ def test_coalescence(croupier):
     # Assert
     x_max = 0
     for state in states.values():
-        print(x_max)
         assert x_max < np.amax(state['volume'].to_ndarray())
         x_max = np.amax(state['volume'].to_ndarray())
 

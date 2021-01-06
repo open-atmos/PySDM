@@ -28,9 +28,13 @@ class TestSDMSingleCell:
 
         # Assert
         particles = core.particles
-        assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()) == np.sum(n_2 * T_2 * v_2)
+        np.testing.assert_approx_equal(
+            np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()),
+            np.sum(n_2 * T_2 * v_2),
+            significant=7
+        )
         new_T = np.sum(T_2 * v_2) / np.sum(v_2)
-        assert np.isin(round(new_T, 10), np.round(particles['temperature'].to_ndarray(), 10))
+        assert np.isin(round(new_T, 7), np.round(particles['temperature'].to_ndarray().astype(float), 7))
 
         assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray()) == np.sum(n_2 * v_2)
         assert np.sum(core.particles['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
@@ -128,7 +132,7 @@ class TestSDMSingleCell:
         assert np.amin(core.particles['n'].to_ndarray()) >= 0
         actual = np.sum(core.particles['n'].to_ndarray() * core.particles['volume'].to_ndarray())
         desired = np.sum(n * v)
-        np.testing.assert_almost_equal(actual=actual, desired=desired)
+        np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
     def test_compute_gamma(backend):
