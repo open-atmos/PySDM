@@ -63,7 +63,7 @@ class Particles:
     def __getitem__(self, item):
         return self.attributes[item].get()
 
-    def permutation(self, u01, local=True):
+    def permutation(self, u01, local):
         if local:
             """
             apply Fisher-Yates algorithm per cell

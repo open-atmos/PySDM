@@ -9,7 +9,7 @@ from .random_generator_optimizer import RandomGeneratorOptimizer
 
 class Coalescence:
 
-    def __init__(self, kernel, seed=None, croupier='local', adaptive=True, max_substeps=128, optimized_random=False):
+    def __init__(self, kernel, seed=None, croupier=None, adaptive=False, max_substeps=128, optimized_random=False):
         self.core = None
         self.kernel = kernel
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random, max_substeps=max_substeps, seed=seed)
@@ -37,6 +37,9 @@ class Coalescence:
         self.adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+
+        if self.croupier is None:
+            self.croupier = self.core.backend.default_croupier
 
     @property
     def max_substeps(self):

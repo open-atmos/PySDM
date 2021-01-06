@@ -92,8 +92,8 @@ class StorageMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_global(idx, length, u01):
         # WARNING: ineffective implementation
-        raise NotImplementedError()
-        # trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
+        # TODO: generate u01
+        trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "i", '''
         for (int k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {

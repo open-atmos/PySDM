@@ -30,5 +30,7 @@ class ThrustRTC(
     PairwiseStorage = ImportedPairwiseStorage
     Index = ImportedIndex
 
+    default_croupier = 'global'
+
     def __init__(self):
         raise Exception("Backend is stateless.")

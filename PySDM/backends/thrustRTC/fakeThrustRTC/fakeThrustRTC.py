@@ -157,3 +157,7 @@ class FakeThrustRTC:
     @staticmethod
     def Wait():
         pass
+
+    @staticmethod
+    def Sort_By_Key(keys, values):
+        values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]

@@ -31,5 +31,7 @@ class Numba(
     PairwiseStorage = ImportedPairwiseStorage
     Random = ImportedRandom
 
+    default_croupier = 'local'
+
     def __init__(self):
         raise Exception("Backend is stateless.")
