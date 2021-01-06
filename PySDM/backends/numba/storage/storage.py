@@ -177,7 +177,7 @@ class Storage:
         else:
             self.data[:] = other.ravel()
 
-    def urand(self, generator=None):
+    def urand(self, generator):
         generator(self)
 
     def to_ndarray(self):
