@@ -175,6 +175,7 @@ class TestSDMSingleCell:
         sut.rnd_opt.rnd = CountingRandom(n_sd)
         n_substeps = 100
         sut.n_substep[:] = n_substeps
+        sut.adaptive = True  # TODO: do we want substeps working without adaptive flag?
 
         # Act
         sut()
