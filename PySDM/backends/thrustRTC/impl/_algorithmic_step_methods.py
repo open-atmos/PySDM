@@ -29,7 +29,7 @@ class AlgorithmicStepMethods:
 
     __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
         cell_id[i] = 0;
-        for (int j = 0; j < n_dims; j += 1) {
+        for (auto j = 0; j < n_dims; j += 1) {
             cell_id[i] += cell_origin[size * j + i] * strides[j];
         }
         ''')

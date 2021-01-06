@@ -19,15 +19,15 @@ class AlgorithmicMethods:
         courant_length = trtc.DVInt64(courant.shape[0])
         loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i", f'''
             // Arakawa-C grid
-            int _l_0 = cell_origin[i + 0];
-            int _l_1 = cell_origin[i + idx_length];
-            int _l = _l_0 + _l_1 * courant_length;
-            int _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
-            int _r_1 = cell_origin[i + idx_length] + 1 * (dim == 1);
-            int _r = _r_0 + _r_1 * courant_length;
-            int omega = position_in_cell[i + idx_length * dim];
-            int c_r = courant[_r];
-            int c_l = courant[_l];
+            auto _l_0 = cell_origin[i + 0];
+            auto _l_1 = cell_origin[i + idx_length];
+            auto _l = _l_0 + _l_1 * courant_length;
+            auto _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
+            auto _r_1 = cell_origin[i + idx_length] + 1 * (dim == 1);
+            auto _r = _r_0 + _r_1 * courant_length;
+            auto omega = position_in_cell[i + idx_length * dim];
+            auto c_r = courant[_r];
+            auto c_l = courant[_l];
             displacement[i, dim] = {scheme(None, None, None)}
             ''')
         loop.launch_n(
@@ -36,20 +36,22 @@ class AlgorithmicMethods:
 
     __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
         if (gamma[i] == 0) {
-            adaptive_memory[i] = 1;
+            if (adaptive) {
+                adaptive_memory[i] = 1;
+            }
             return;
         }
 
-        int j = idx[i];
-        int k = idx[i + 1];
+        auto j = idx[i];
+        auto k = idx[i + 1];
 
         if (n[j] < n[k]) {
             j = idx[i + 1];
             k = idx[i];
         }
-        int g = (int)(n[j] / n[k]);
+        auto g = (int64_t)(n[j] / n[k]);
         if (adaptive) {
-            adaptive_memory[i] = (int)(gamma[i] * subs / g);
+            adaptive_memory[i] = (int64_t)(gamma[i] * subs / g);
         }
         if (g > gamma[i]) {
             g = gamma[i];
@@ -58,25 +60,25 @@ class AlgorithmicMethods:
             return;
         }
             
-        int new_n = n[j] - g * n[k];
+        auto new_n = n[j] - g * n[k];
         if (new_n > 0) {
             n[j] = new_n;
             
-            for (int attr = 0; attr < intensive_length; attr+=idx_length) {
+            for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
                 intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
             }
-            for (int attr = 0; attr < extensive_length; attr+=idx_length) {
+            for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
                 extensive[attr + k] += g * extensive[attr + j];
             }
         }
         else {  // new_n == 0
-            n[j] = (int)(n[k] / 2);
+            n[j] = (int64_t)(n[k] / 2);
             n[k] = n[k] - n[j];
-            for (int attr = 0; attr < intensive_length; attr+=idx_length) {
+            for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
                 intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
                 intensive[attr + k] = intensive[attr + j];
             }
-            for (int attr = 0; attr < extensive_length; attr+=idx_length) {
+            for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
                 extensive[attr + j] = g * extensive[attr + j] + extensive[attr + k];
                 extensive[attr + k] = extensive[attr + j];
             }
@@ -102,7 +104,7 @@ class AlgorithmicMethods:
             return 1
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] = ceil(prob[i] - rand[(int)(i / 2)]);
+        prob[i] = ceil(prob[i] - rand[(int64_t)(i / 2)]);
         ''')
 
     @staticmethod
@@ -181,7 +183,7 @@ class AlgorithmicMethods:
             [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
 
     __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
-        int r_id = (int)(factor * radius[i]);
+        auto r_id = (int64_t)(factor * radius[i]);
         auto r_rest = (factor * radius[i] - r_id) / factor;
         output[i] = a[r_id] + r_rest * b[r_id];
     ''')
@@ -208,15 +210,15 @@ class AlgorithmicMethods:
         auto i = idx[fake_i];
         if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
             atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-            for (int k = 0; k < specs_idx_shape; k+=1) {
-                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)attr[attr_shape * specs_idx[k] + i], (real_type)specs_rank[k]));
+            for (auto k = 0; k < specs_idx_shape; k+=1) {
+                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)(attr[attr_shape * specs_idx[k] + i]), (real_type)(specs_rank[k])));
             }
         }
     '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
     '''
-        for (int k = 0; k < specs_idx_shape; k+=1) {
+        for (auto k = 0; k < specs_idx_shape; k+=1) {
             if (moment_0[c_id] == 0) {
                 moments[moments_shape * k  + c_id] = 0;
             } 
@@ -244,12 +246,12 @@ class AlgorithmicMethods:
 
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
-        int sd_num = cell_start[i + 1] - cell_start[i];
+        auto sd_num = cell_start[i + 1] - cell_start[i];
         if (sd_num < 2) {
             norm_factor[i] = 0;
         }
         else {
-            int half_sd_num = sd_num / 2;
+            auto half_sd_num = sd_num / 2;
             norm_factor[i] = dt_div_dv * sd_num * (sd_num - 1) / 2 / half_sd_num;
         }
         ''')
@@ -290,10 +292,10 @@ class AlgorithmicMethods:
             cell_start[cell_id[idx[0]]] = 0;
         } 
         else {
-            int cell_id_curr = cell_id[idx[i]];
-            int cell_id_next = cell_id[idx[i + 1]];
-            int diff = (cell_id_next - cell_id_curr);
-            for (int j = 1; j < diff + 1; j += 1) {
+            auto cell_id_curr = cell_id[idx[i]];
+            auto cell_id_next = cell_id[idx[i + 1]];
+            auto diff = (cell_id_next - cell_id_curr);
+            for (auto j = 1; j < diff + 1; j += 1) {
                 cell_start[cell_id_curr + j] = idx[i + 1];
             }
         }
