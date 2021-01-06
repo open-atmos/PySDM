@@ -73,7 +73,7 @@ class FakeThrustRTC:
         def launch_n(self, size, args):
             try:
                 result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
-            except NumbaError as error:
+            except (NumbaError, IndexError) as error:
                 warnings.warn(f"NumbaError occurred while JIT-compiling: {self.code}")
                 raise error
             return result
