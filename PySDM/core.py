@@ -72,7 +72,8 @@ class Core:
 
     def normalize(self, prob, norm_factor, subs):
         self.backend.normalize(
-            prob, self.particles['cell id'], self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
+            prob, self.particles['cell id'], self.particles.cell_idx,
+            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
 
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \

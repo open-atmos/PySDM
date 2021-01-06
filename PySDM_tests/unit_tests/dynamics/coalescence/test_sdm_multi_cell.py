@@ -36,4 +36,4 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(cell_id), core.particles['cell id'].to_ndarray())
+        np.testing.assert_array_equal(cell_id, core.particles['cell id'].to_ndarray(raw=True))

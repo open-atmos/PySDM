@@ -118,6 +118,7 @@ class Particles:
                                   healthy=self.__healthy_memory,
                                   adaptive=adaptive,
                                   cell_id=self["cell id"],
+                                  cell_idx=self.cell_idx,
                                   subs=subs,
                                   adaptive_memory=adaptive_memory,
                                   collision_rate=collision_rate,
