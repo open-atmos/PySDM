@@ -4,9 +4,7 @@ Created at 25.08.2020
 
 import numpy as np
 
-from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethods
 from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
-from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.storage.storage import Storage
 
 
@@ -42,27 +40,6 @@ class IndexedStorage(Storage):
     def amin(self):
         return AlgorithmicStepMethods.amin(self, self.idx)
 
-    # def distance_pair(self, other, is_first_in_pair):
-    #     AlgorithmicStepMethods.distance_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
-    #     self.idx = None
-    #
-    # def find_pairs(self, cell_start, cell_id):
-    #     AlgorithmicStepMethods.find_pairs(cell_start.data, self.data, cell_id.data, cell_id.idx.data, len(cell_id))
-    #     self.idx = None
-    #     self.length = len(cell_id)
-    #
-    # def max_pair(self, other, is_first_in_pair):
-    #     AlgorithmicStepMethods.max_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
-    #     self.idx = None
-    #
-    # def sort_pair(self, other, is_first_in_pair):
-    #     AlgorithmicStepMethods.sort_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
-    #     self.idx = None
-    #
-    # def sum_pair(self, other, is_first_in_pair):
-    #     AlgorithmicStepMethods.sum_pair(self.data, other.data, is_first_in_pair.data, other.idx.data, len(other))
-    #     self.idx = None
-
     def to_ndarray(self, *, raw=False):
         self.detach()
         result = self.data.to_host()
@@ -74,19 +51,9 @@ class IndexedStorage(Storage):
             return result
         else:
             idx = self.idx.to_ndarray()
-            return result[idx[0:len(self)]]
+            return result[idx[:len(self)]]
 
     def read_row(self, i):
         result_data = self.data.range(self.shape[1] * i, self.shape[1] * (i+1))
         result = IndexedStorage(self.idx, result_data, (1, *self.shape[1:]), self.dtype)
         return result
-
-    def remove_zeros(self):
-        self.idx.length = AlgorithmicMethods.remove_zeros(self.data, self.idx.data, self.idx.length)
-
-    def shuffle(self, temporary, parts=None):
-        if parts is None:
-            StorageMethods.shuffle_global(idx=self.data, length=len(self), u01=temporary.data)
-        else:
-            StorageMethods.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
-

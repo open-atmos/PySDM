@@ -5,7 +5,6 @@ Created at 13.01.2020
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
