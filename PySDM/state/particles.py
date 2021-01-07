@@ -107,7 +107,7 @@ class Particles:
                               self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                               self.keys[attr_name])
 
-    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
+    def coalescence(self, gamma, adaptive, subs, adaptive_memory, collision_rate, collision_rate_deficit):
         self.core.bck.coalescence(n=self['n'],
                                   volume=self['volume'],
                                   idx=self.__idx,
@@ -118,8 +118,12 @@ class Particles:
                                   healthy=self.__healthy_memory,
                                   adaptive=adaptive,
                                   cell_id=self["cell id"],
+                                  cell_idx=self.cell_idx,
                                   subs=subs,
-                                  adaptive_memory=adaptive_memory)
+                                  adaptive_memory=adaptive_memory,
+                                  collision_rate=collision_rate,
+                                  collision_rate_deficit=collision_rate_deficit
+                                  )
         self.healthy = bool(self.__healthy_memory)
         self.attributes['volume'].mark_updated()
 

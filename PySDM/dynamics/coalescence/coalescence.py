@@ -41,6 +41,9 @@ class Coalescence:
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
 
+        self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+
     @property
     def max_substeps(self):
         return self.rnd_opt.max_substeps
@@ -76,7 +79,9 @@ class Coalescence:
         if self.adaptive:
             adaptive_memory[:] = 1
         self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
-                                        adaptive_memory=adaptive_memory)
+                                        adaptive_memory=adaptive_memory,
+                                        collision_rate=self.collision_rate,
+                                        collision_rate_deficit=self.collision_rate_deficit)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:

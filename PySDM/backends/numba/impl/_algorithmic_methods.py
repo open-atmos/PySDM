@@ -31,11 +31,11 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(
         void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
-             numba.boolean, int64[:], int64[:], int64[:]),
+             numba.boolean, int64[:], int64[:], int64[:], int64[:], int64[:], int64[:]),
         **{**conf.JIT_FLAGS, **{'parallel': False}})
     # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                         adaptive, cell_id, subs, adaptive_memory):
+                         adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
         for i in prange(length - 1):
             if gamma[i] == 0:
                 # adaptive_memory[cell_id[i]] = 1  # TODO parallelization
@@ -47,12 +47,17 @@ class AlgorithmicMethods:
             if n[j] < n[k]:
                 j, k = k, j
             prop = int(n[j] / n[k])
+
             if adaptive:
-                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
-                                                  int(((gamma[i]) * subs[cell_id[j]]) / prop))
+                adaptive_memory[cell_idx[cell_id[j]]] = max(adaptive_memory[cell_idx[cell_id[j]]],
+                                                            int(((gamma[i]) * subs[cell_idx[cell_id[j]]]) / prop))
             g = min(int(gamma[i]), prop)
+            collision_rate_deficit[cell_idx[cell_id[j]]] += (int(gamma[i]) - prop) * n[k]
+
             if g == 0:
                 continue
+
+            collision_rate[cell_idx[cell_id[j]]] += g * n[k]
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
@@ -73,10 +78,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                    adaptive, cell_id, subs, adaptive_memory):
+                    adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
         AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
                                             extensive.data, gamma.data, healthy.data,
-                                            adaptive, cell_id.data, subs.data, adaptive_memory.data)
+                                            adaptive, cell_id.data, cell_idx.data, subs.data, adaptive_memory.data,
+                                            collision_rate.data, collision_rate_deficit.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -209,7 +215,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_start, norm_factor, dt, dv, n_substeps):
+    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
@@ -218,12 +224,12 @@ class AlgorithmicMethods:
             else:
                 norm_factor[i] = dt / n_substeps[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
-            prob[d] *= norm_factor[cell_id[d]]
+            prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_start, norm_factor, dt, dv, n_substep):
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substep):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
+            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
