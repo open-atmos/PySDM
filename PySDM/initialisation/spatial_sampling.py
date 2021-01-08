@@ -4,7 +4,7 @@ Created at 24.10.2019
 
 import numpy as np
 
-# TODO QUASIRANDOM & GRID
+# TODO #305 QUASIRANDOM & GRID
 #  http://ww2.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
 
 

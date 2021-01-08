@@ -18,7 +18,7 @@ from PySDM_tests.backends_fixture import backend
 def test_final_state(croupier, backend):
     from PySDM.backends import ThrustRTC
     if backend is ThrustRTC:
-        return  # TODO
+        return  # TODO #330
 
     # Arrange
     n_part = 10000

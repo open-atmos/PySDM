@@ -76,7 +76,7 @@ class Simulation:
         ]
 
         fields = Fields(environment, self.settings.stream_function)
-        if self.settings.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
+        if self.settings.processes['fluid advection']:  # TODO #37 ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
         if self.settings.processes["condensation"]:
             condensation = Condensation(
@@ -86,7 +86,7 @@ class Simulation:
                 coord=self.settings.condensation_coord,
                 adaptive=self.settings.adaptive)
             builder.add_dynamic(condensation)
-            products.append(CondensationTimestep())  # TODO: and what if a user doesn't want it?
+            products.append(CondensationTimestep())  # TODO #37 and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:
             solver = MPDATA(
                 fields=fields,
@@ -102,7 +102,7 @@ class Simulation:
                 scheme='FTBS',
                 enable_sedimentation=self.settings.processes["sedimentation"])
             builder.add_dynamic(displacement)
-            products.append(SurfacePrecipitation())  # TODO: ditto
+            products.append(SurfacePrecipitation())  # TODO #37 ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
             products.append(CoalescenceTimestep())
@@ -117,13 +117,12 @@ class Simulation:
 
         self.core = builder.build(attributes, products)
         SpinUp(self.core, self.settings.n_spin_up)
-        # TODO
         if self.storage is not None:
             self.storage.init(self.settings)
 
     def run(self, controller=DummyController()):
         with controller:
-            for step in self.settings.steps:  # TODO: rename output_steps
+            for step in self.settings.output_steps:
                 if controller.panic:
                     break
 
@@ -131,7 +130,7 @@ class Simulation:
 
                 self.store(step)
 
-                controller.set_percent(step / self.settings.steps[-1])
+                controller.set_percent(step / self.settings.output_steps[-1])
 
     def store(self, step):
         for name, product in self.core.products.items():

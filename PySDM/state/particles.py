@@ -50,7 +50,7 @@ class Particles:
 
     @property
     def SD_num(self):
-        self.sanitize()  # TODO: remove
+        self.sanitize()  # TODO #343 remove
         return len(self.__idx)
 
     def sanitize(self):

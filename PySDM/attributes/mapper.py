@@ -14,7 +14,7 @@ from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
 from .droplet.critical_radius import CriticalRadius
 
-# TODO doubled information
+# TODO #157
 attributes = {
     'n': Multiplicities,
     'volume': Volume,

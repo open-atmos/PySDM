@@ -59,7 +59,7 @@ class RogersYau:
                                                  self.small_r_limit, self.medium_r_limit)
 
 
-# TODO: implement in backend logic
+# TODO #348 implement in backend logic
 class TpDependent:
     def __init__(self, particles, small_r_limit):
         si = const.si
@@ -71,8 +71,8 @@ class TpDependent:
 
     @staticmethod
     def make(only_small=False):
-        # TODO: T, p dependence
-        # TODO: move constants to physics.constants
+        # TODO #348 T, p dependence
+        # TODO #348 move constants to physics.constants
 
         si = const.si
         cm = si.cm
@@ -81,11 +81,11 @@ class TpDependent:
 
         p0 = 1013.25 * si.hPa
         rho0 = 1.204 * si.kg * si.m ** (-3)
-        n = 1.832e-5  # * (1 + 0.00266 * (T - 296)) #* si.kg * si.m**(-1) * si.s**(-1)  # TODO
+        n = 1.832e-5  # * (1 + 0.00266 * (T - 296)) #* si.kg * si.m**(-1) * si.s**(-1)  # TODO #348
         rho = 0.348 * p / T  # * si.kg * si.m ** (-3)
         l0 = 6.62e-6 * si.cm
         n0 = 1.818e-5 * si.kg * si.m ** (-1) * si.s ** (-1)
-        l = l0 * (n / n0) * (p0 * rho0 / p * rho) ** (1 / 2)  # TODO
+        l = l0 * (n / n0) * (p0 * rho0 / p * rho) ** (1 / 2)  # TODO #348
         es = (n0 / n) - 1
         ec = ((rho0 / rho) ** (1 / 2)) - 1
 

@@ -6,7 +6,6 @@ import numpy as np
 
 
 class Displacement:
-    # TODO: create a separate Sedimentation dynamic that links in to Displacement
     def __init__(self, courant_field, scheme='FTBS', enable_sedimentation=False):
         self.core = None
         self.scheme = scheme
@@ -23,7 +22,7 @@ class Displacement:
         builder.request_attribute('terminal velocity')
         self.core = builder.core
 
-        # TODO: replace with make_calculate_displacement
+        # TODO #332 replace with make_calculate_displacement
         if self.scheme == 'FTFS':
             method = self.core.backend.explicit_in_space
         elif self.scheme == 'FTBS':
@@ -33,7 +32,7 @@ class Displacement:
         self.scheme = method
 
         self.dimension = len(self.courant_field)
-        # TODO: simplification
+        # TODO #346 simplification
         self.grid = self.core.Storage.from_ndarray(
             np.array([self.courant_field[1].shape[0], self.courant_field[0].shape[1]], dtype=np.int64))
         self.courant = [self.core.Storage.from_ndarray(self.courant_field[i]) for i in range(self.dimension)]
@@ -75,6 +74,6 @@ class Displacement:
         position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
-        # TODO: hardcoded periodic
-        # TODO: droplets above the mesh
+        # TODO #346 hardcoded periodic
+        # TODO #346 droplets above the mesh
         cell_origin %= self.grid

@@ -95,7 +95,7 @@ class AlgorithmicMethods:
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
         adaptive_device = trtc.DVBool(adaptive)
-        subs_device = trtc.DVInt64(subs[0])  # TODO
+        subs_device = trtc.DVInt64(subs[0])  # TODO #330
         AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
             [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
         if adaptive:
@@ -138,7 +138,7 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__flag_precipitated_body.launch_n(
             length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
                      volume.data, n.data])
-        return 0 # TODO
+        return 0  # TODO #332
 
     __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
@@ -304,10 +304,10 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_idx, cell_start, idx, length):
-        # TODO !!!
-        # if length > 0:
-        #     max_cell_id = max(cell_id.to_ndarray())
-        #     assert max_cell_id == 0
+        # TODO #69
+        if length > 0:
+            max_cell_id = max(cell_id.to_ndarray())
+            assert max_cell_id == 0
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
                                                                                   [cell_id.data, cell_start.data, idx.data])

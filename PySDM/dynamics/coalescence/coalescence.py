@@ -79,7 +79,7 @@ class Coalescence:
                 self.msub[:] = 0
 
                 self.core.particles.cell_idx.data = np.arange(len(self.core.particles.cell_idx.data)).astype(
-                    dtype=np.int64)  # TODO
+                    dtype=np.int64)
                 self.core.particles._Particles__sort_by_cell_id()
 
     def step(self, s, adaptive_memory):

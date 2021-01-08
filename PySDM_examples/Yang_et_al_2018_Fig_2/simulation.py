@@ -17,9 +17,8 @@ from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
 class Simulation:
 
     def __init__(self, settings, backend=CPU):
-
-        dt_output = settings.total_time / settings.n_steps  # TODO: overwritten in jupyter example
-        self.n_substeps = 1  # TODO
+        dt_output = settings.total_time / settings.n_steps  # TODO #334 overwritten in jupyter example
+        self.n_substeps = 1  # TODO #334 use condensation substeps
         while (dt_output / self.n_substeps >= settings.dt_max):
             self.n_substeps += 1
         self.bins_edges = phys.volume(settings.r_bins_edges)
@@ -61,7 +60,6 @@ class Simulation:
 
         self.n_steps = settings.n_steps
 
-    # TODO: make it common with Arabas_and_Shima_2017
     def save(self, output):
         cell_id = 0
         output["r_bins_values"].append(self.core.products["Particles Wet Size Spectrum"].get())

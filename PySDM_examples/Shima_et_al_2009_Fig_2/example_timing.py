@@ -19,7 +19,7 @@ def run(settings):
     particles = builder.build(attributes, products=[WallTime()])
 
     states = {}
-    for step in settings.steps:
+    for step in settings.output_steps:
         particles.run(step - particles.n_steps)
         last_wall_time = particles.products['wall_time'].get()
 

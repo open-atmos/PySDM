@@ -84,7 +84,6 @@ class Storage:
         raise TypeError("Use %=")
 
     def __imod__(self, other):
-        # TODO
         MathsMethods.row_modulo(self.data, other.data)
         return self
 
@@ -170,7 +169,7 @@ class Storage:
         result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
         return result
 
-    # TODO: rename (different logic than np.ravel())
+    # TODO #352 rename (different logic than np.ravel())
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
@@ -186,6 +185,6 @@ class Storage:
     def upload(self, data):
         np.copyto(self.data, data, casting='safe')
 
-    # TODO: remove
+    # TODO #342 remove
     def write_row(self, i, row):
         self.data[i, :] = row.data

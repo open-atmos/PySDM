@@ -102,7 +102,7 @@ class Core:
                 r_cr=self.particles["critical radius"],
                 dt=self.dt,
                 substeps=substeps,
-                cell_order=np.argsort(substeps),  # TODO: check if better than regular order
+                cell_order=np.argsort(substeps),  # TODO #341 check if better than regular order
                 ripening_flags=ripening_flags
             )
 

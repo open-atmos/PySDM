@@ -74,7 +74,6 @@ class Storage:
         raise NotImplementedError("Use %=")
 
     def __imod__(self, other):
-        # TODO
         impl.row_modulo(self, other)
         return self
 
@@ -168,7 +167,7 @@ class Storage:
         else:
             self.data = trtc.device_vector_from_numpy(other.ravel())
 
-    # TODO: handle by getitem
+    # TODO #342 handle by getitem
     def read_row(self, i):
         start = self.shape[1] * i
         stop = start + self.shape[1]

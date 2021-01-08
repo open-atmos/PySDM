@@ -14,10 +14,9 @@ from PySDM_tests.unit_tests.backends.__parametrisation__ import backends
 from .utils import universal_test
 
 
-# TODO: not implemented
+# TODO #333 not implemented
 @pytest.mark.skip()
 @pytest.mark.parametrize('sut', backends)
-@pytest.mark.skip()
 class TestAlgorithmicStepMethods:
 
     @staticmethod
@@ -63,7 +62,7 @@ class TestAlgorithmicStepMethods:
         params = TestAlgorithmicStepMethods.pair_params(shape_1d, pairs, order, length)
         universal_test("distance_pair", sut, params)
 
-    # TODO (FUTURE): better test cases
+    # TODO #333 better test cases
     @staticmethod
     def test_find_pairs(sut, shape_1d, pairs, order, length):
         cell_num = 3

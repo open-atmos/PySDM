@@ -22,7 +22,7 @@ class Simulation:
 
         dt_output = (2 * t_half) / settings.n_output
         self.n_substeps = 1
-        while dt_output / self.n_substeps >= settings.dt_max:  # TODO dt_max
+        while dt_output / self.n_substeps >= settings.dt_max:  # TODO #334 dt_max
             self.n_substeps += 1
 
         builder = Builder(backend=backend, n_sd=1)

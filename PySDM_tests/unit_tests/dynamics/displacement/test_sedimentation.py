@@ -23,7 +23,7 @@ class TestSedimentation:
     def test_boundary_condition(backend):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO!!!
+            return  # TODO #332
 
         # Arrange
         settings = DisplacementSettings()

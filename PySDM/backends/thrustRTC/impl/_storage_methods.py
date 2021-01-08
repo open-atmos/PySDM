@@ -92,7 +92,12 @@ class StorageMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_global(idx, length, u01):
         # WARNING: ineffective implementation
-        # TODO: generate u01
+
+        # TODO #328 : Thrust modifies key array, conflicts with rand_reuse logic
+        # tmpu01 = trtc.device_vector(u01.name_elem_cls(), u01.size())
+        # trtc.Copy(u01, tmpu01)
+        # trtc.Sort_By_Key(tmpu01.range(0, length), idx.range(0, length))
+
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "i", '''

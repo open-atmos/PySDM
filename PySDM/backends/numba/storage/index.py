@@ -20,7 +20,7 @@ class Index(Storage):
         return self.length
 
     @staticmethod
-    def empty(length):  # TODO
+    def empty(length):  # TODO #353 better name
         result = Index(np.arange(length, dtype=Storage.INT), length)
         return result
 
