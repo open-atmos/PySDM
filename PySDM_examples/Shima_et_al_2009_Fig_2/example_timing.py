@@ -48,9 +48,12 @@ def main():
 
     from matplotlib import pyplot as plt
     for backend, t in times.items():
-        plt.plot(nsds, t, label=backend)
+        plt.plot(nsds, t, label=backend, linestyle='--', marker='o')
+    plt.ylabel("wall time [s]")
+    plt.xlabel("number of particles")
+    plt.grid()
     plt.legend()
-    plt.loglog()
+    plt.loglog(base=2)
     plt.show()
 
 
