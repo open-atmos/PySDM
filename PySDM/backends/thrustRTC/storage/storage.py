@@ -95,7 +95,7 @@ class Storage:
             raise NotImplementedError("Logic value of array is ambiguous.")
         return result
 
-    def detach(self):
+    def _to_host(self):
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
                 elem_cls = PrecisionResolver.get_C_type()
@@ -107,12 +107,13 @@ class Storage:
             data = trtc.device_vector(elem_cls, self.data.size())
 
             trtc.Copy(self.data, data)
-            self.data = data
+        else:
+            data = self.data
+        return data.to_host()
 
     def download(self, target, reshape=False):
         shape = target.shape if reshape else self.shape
-        self.detach()
-        target[:] = np.reshape(self.data.to_host(), shape)
+        target[:] = np.reshape(self._to_host(), shape)
 
     @staticmethod
     def _get_empty_data(shape, dtype):
@@ -176,8 +177,7 @@ class Storage:
         return result
 
     def to_ndarray(self):
-        self.detach()
-        result = self.data.to_host()
+        result = self._to_host()
         result = np.reshape(result, self.shape)
         return result
 

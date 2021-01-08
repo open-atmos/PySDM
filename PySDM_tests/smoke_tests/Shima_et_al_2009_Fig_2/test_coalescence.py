@@ -15,8 +15,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectra import Exponential
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
-
-backend = CPU
+from PySDM_tests.backends_fixture import backend
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -34,7 +33,7 @@ def check(n_part, dv, n_sd, rho, state, step):
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_coalescence(croupier):
+def test_coalescence(backend, croupier):
     # Arrange
     n_sd = 2 ** 13
     steps = [0, 30, 60]
@@ -55,17 +54,17 @@ def test_coalescence(croupier):
     core = builder.build(attributes)
     core.croupier = croupier
 
-    states = {}
+    volumes = {}
 
     # Act
     for step in steps:
         core.run(step - core.n_steps)
         check(n_part, dv, n_sd, rho, core.particles, step)
-        states[core.n_steps] = copy.deepcopy(core.particles)
+        volumes[core.n_steps] = core.particles['volume'].to_ndarray()
 
     # Assert
     x_max = 0
-    for state in states.values():
-        assert x_max < np.amax(state['volume'].to_ndarray())
-        x_max = np.amax(state['volume'].to_ndarray())
+    for volume in volumes.values():
+        assert x_max < np.amax(volume)
+        x_max = np.amax(volume)
 
