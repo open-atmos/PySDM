@@ -14,8 +14,8 @@ class Coalescence:
         self.kernel = kernel
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random, max_substeps=max_substeps, seed=seed)
         self.enable = True
-        self.adaptive = adaptive
-        self.n_substep = None
+        self.__adaptive = adaptive
+        self.__n_substep = None
         self.croupier = croupier
 
         self.temp = None
@@ -24,13 +24,25 @@ class Coalescence:
 
         self.actual_length = None
 
+    # TODO #69
+    @property
+    def adaptive(self):
+        return self.__adaptive
+
+    # TODO #69
+    @adaptive.setter
+    def adaptive(self, value):
+        if value and self.core.mesh.dim != 0:
+            raise NotImplementedError()
+        self.__adaptive = value
+
     def register(self, builder):
         self.core = builder.core
         self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
-        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.n_substep[:] = 1
+        self.__n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.__n_substep[:] = 1
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
 
@@ -49,21 +61,20 @@ class Coalescence:
         return self.rnd_opt.max_substeps
 
     def __call__(self):
-        # TODO dt
         if self.enable:
             if not self.adaptive:
                 self.step(0, self.adaptive_memory)
             else:
                 self.actual_length = self.core.particles._Particles__idx.length
-                self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
-                for s in range(max(self.n_substep.data)):  # range(self.n_substep[0]):
+                self.core.particles.cell_idx.data = self.__n_substep.data.argsort(kind="stable")[::-1]
+                for s in range(max(self.__n_substep.data)):  # range(self.n_substep[0]):
                     self.step(s, self.adaptive_memory)
                     self.subs[:] += self.adaptive_memory
                     method1(self.adaptive_memory.data, self.msub.data)
 
                 self.core.particles._Particles__idx.length = self.actual_length
 
-                method2(self.n_substep.data, self.msub.data, self.max_substeps, self.subs.data)
+                method2(self.__n_substep.data, self.msub.data, self.max_substeps, self.subs.data)
                 self.subs[:] = 0
                 self.msub[:] = 0
 
@@ -78,7 +89,7 @@ class Coalescence:
         self.compute_gamma(self.prob, rand)
         if self.adaptive:
             adaptive_memory[:] = 1
-        self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
+        self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.__n_substep,
                                         adaptive_memory=adaptive_memory,
                                         collision_rate=self.collision_rate,
                                         collision_rate_deficit=self.collision_rate_deficit)
@@ -93,7 +104,7 @@ class Coalescence:
         self.core.particles.permutation(u01, self.croupier == 'local')
 
         if self.adaptive:
-            end = method3(self.n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data,
+            end = method3(self.__n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data,
                           self.core.particles.cell_idx.data, s)
             self.core.particles._Particles__idx.length = end
 
@@ -109,12 +120,13 @@ class Coalescence:
         prob *= self.temp
 
         norm_factor = self.temp
-        self.core.normalize(prob, norm_factor, self.n_substep)
+        self.core.normalize(prob, norm_factor, self.__n_substep)
 
     def compute_gamma(self, prob, rand):
         self.core.backend.compute_gamma(prob, rand)
 
 
+# TODO #69
 import numba
 
 

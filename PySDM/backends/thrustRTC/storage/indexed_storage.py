@@ -41,8 +41,7 @@ class IndexedStorage(Storage):
         return AlgorithmicStepMethods.amin(self, self.idx)
 
     def to_ndarray(self, *, raw=False):
-        self.detach()
-        result = self.data.to_host()
+        result = self._to_host()
         result = np.reshape(result, self.shape)
         if len(result.shape) > 1:
             result = result.squeeze()

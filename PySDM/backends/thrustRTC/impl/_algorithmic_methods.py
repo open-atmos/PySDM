@@ -262,7 +262,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):  # TODO #69
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = PrecisionResolver.get_floating_point(dt / dv)
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
