@@ -14,7 +14,6 @@ def main():
 
     settings.n_sd_per_gridbox = 25
     settings.grid = (25, 25)
-    settings.dt = 10
     settings.n_steps = 5400
 
     storage = Storage()

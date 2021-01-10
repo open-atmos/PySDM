@@ -156,9 +156,9 @@ class TestSDMSingleCell:
     @staticmethod
     @pytest.mark.parametrize("optimized_random", (True, False))
     def test_rnd_reuse(backend, optimized_random):
-        # from PySDM.backends import ThrustRTC
-        # if backend is ThrustRTC:
-        #     return  # TODO #330
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return  # TODO #330
 
         # Arrange
         n_sd = 256
