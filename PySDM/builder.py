@@ -5,7 +5,7 @@ Created at 09.11.2019
 import numpy as np
 
 from PySDM.core import Core
-from PySDM.initialisation.multiplicities import discretise_n  # TODO
+from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
 from PySDM.state.particles_factory import ParticlesFactory
 
 from PySDM.attributes.mapper import get_class as attr_class
@@ -62,7 +62,7 @@ class Builder:
                                                            enable_drop_temperatures='temperatures' in self.req_attr)
         attributes['n'] = discretise_n(attributes['n'])
         if self.core.mesh.dimension == 0:
-            attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
+            attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
         self.core.particles = ParticlesFactory.attributes(self.core, self.req_attr, attributes)
 
         return self.core

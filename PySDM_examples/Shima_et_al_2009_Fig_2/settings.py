@@ -22,7 +22,7 @@ class Settings:
     _steps = [0, 1200, 2400, 3600]
 
     @property
-    def steps(self):
+    def output_steps(self):
         return [int(step/self.dt) for step in self._steps]
 
     kernel = Golovin(b=1.5e3 / si.second)

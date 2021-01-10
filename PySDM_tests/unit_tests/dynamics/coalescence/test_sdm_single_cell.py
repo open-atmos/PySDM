@@ -156,9 +156,9 @@ class TestSDMSingleCell:
     @staticmethod
     @pytest.mark.parametrize("optimized_random", (True, False))
     def test_rnd_reuse(backend, optimized_random):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO!!!
+        # from PySDM.backends import ThrustRTC
+        # if backend is ThrustRTC:
+        #     return  # TODO #330
 
         # Arrange
         n_sd = 256
@@ -179,7 +179,7 @@ class TestSDMSingleCell:
         sut.rnd_opt.rnd = CountingRandom(n_sd)
         n_substeps = 100
         sut._Coalescence__n_substep[:] = n_substeps
-        sut.adaptive = True  # TODO: do we want substeps working without adaptive flag?
+        sut.adaptive = True  # TODO #331
 
         # Act
         sut()

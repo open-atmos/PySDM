@@ -3,7 +3,7 @@ import numpy as np
 
 
 class PrecisionResolver:
-    _double_precision = False
+    _double_precision = True
     _conv_function = trtc.DVDouble if _double_precision else trtc.DVFloat
     _real_type = "double" if _double_precision else "float"
     _np_dtype = np.float64 if _double_precision else np.float32

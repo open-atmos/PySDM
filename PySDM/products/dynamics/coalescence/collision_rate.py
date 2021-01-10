@@ -18,7 +18,7 @@ class CollisionRate(Product):
         super().register(builder)
         self.coalescence = self.core.dynamics['Coalescence']
 
-    def get(self):  # TODO: take into account NUMBER of substeps (?)
+    def get(self):  # TODO #345 take into account NUMBER of substeps (?)
         self.download_to_buffer(self.coalescence.collision_rate)
         self.coalescence.collision_rate[:] = 0
         return self.buffer

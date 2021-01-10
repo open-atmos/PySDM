@@ -10,6 +10,7 @@ from PySDM.state.particles_factory import ParticlesFactory
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
+from PySDM.backends import CPU
 
 
 class TestParticles:
@@ -45,21 +46,16 @@ class TestParticles:
         assert sut['n'].to_ndarray().sum() == n.sum()
         assert (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum() == (volume * n).sum()
 
-    # @staticmethod
-    # @pytest.fixture(params=[1, 2, 3, 4, 5, 8, 9, 16])
-    # def thread_number(request):
-    #     return request.param
-
     @staticmethod
     @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
         ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
         ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
         ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
     ])
-    def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):#, thread_number):
+    def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO
+            return  # TODO #69
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
@@ -107,22 +103,18 @@ class TestParticles:
         assert sut['cell id'][droplet_id] == 0
 
     @staticmethod
-    def test_permutation_global(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO
-
+    def test_permutation_global_as_implemented_in_Numba():
         n_sd = 8
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
         # Arrange
-        core = DummyCore(backend, n_sd=n_sd)
+        core = DummyCore(CPU, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(CPU, [0] * idx_length)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_indexed_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(CPU, u01)
 
         # Act
         sut.permutation(u01, local=False)
@@ -160,7 +152,7 @@ class TestParticles:
     def test_permutation_global_repeatable(backend):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO
+            return  # TODO #328
 
         n_sd = 800
         u01 = np.random.random(n_sd)
@@ -171,7 +163,7 @@ class TestParticles:
         idx_length = len(sut._Particles__idx)
         sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
         sut._Particles__sorted = True
-        sut._Particles__n_sd = core.n_sd
+        #sut._Particles__n_sd = core.n_sd
         u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
@@ -187,10 +179,6 @@ class TestParticles:
 
     @staticmethod
     def test_permutation_local_repeatable(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO
-
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)

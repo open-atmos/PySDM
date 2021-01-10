@@ -17,7 +17,7 @@ class ParticlesFactory:
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
         idx = core.backend.Index.empty(core.n_sd)
-        base_attributes = core.backend.IndexedStorage.empty(idx, (len(tensive_attr), core.n_sd), float)  # TODO: divide
+        base_attributes = core.backend.IndexedStorage.empty(idx, (len(tensive_attr), core.n_sd), float)  # TODO #342
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
                 attr.allocate(idx)

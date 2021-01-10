@@ -16,7 +16,6 @@ def main():
     settings.grid = (25, 25)
     settings.dt = 10
     settings.n_steps = 5400
-    settings.n_spin_up = settings.n_steps // 2
 
     storage = Storage()
     simulation = Simulation(settings, storage)

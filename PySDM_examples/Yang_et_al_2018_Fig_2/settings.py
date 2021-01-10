@@ -13,7 +13,7 @@ import numpy as np
 class Settings:
 
     def __init__(self, n_sd=100, dt_output = 1 * si.second, dt_max=1 * si.second):
-        self.n_steps = int(self.total_time / (5 * si.second) )  # TODO: rename to n_output
+        self.n_steps = int(self.total_time / (5 * si.second) )  # TODO #334 rename to n_output
         self.n_sd = n_sd
         self.r_dry, self.n = spectral_sampling.Logarithmic(
             spectrum=Lognormal(
@@ -34,7 +34,7 @@ class Settings:
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
 
-    mass_of_dry_air = 100 * si.kilogram  # TODO: doubled with jupyter si unit
+    mass_of_dry_air = 100 * si.kilogram  # TODO #335 doubled with jupyter si unit
     total_time = 3 * si.hours
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram

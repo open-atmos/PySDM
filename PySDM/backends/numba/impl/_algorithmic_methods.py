@@ -33,12 +33,11 @@ class AlgorithmicMethods:
         void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
              numba.boolean, int64[:], int64[:], int64[:], int64[:], int64[:], int64[:]),
         **{**conf.JIT_FLAGS, **{'parallel': False}})
-    # TODO: reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
+    # TODO #195 reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
                          adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
         for i in prange(length - 1):
             if gamma[i] == 0:
-                # adaptive_memory[cell_id[i]] = 1  # TODO parallelization
                 continue
 
             j = idx[i]
@@ -173,7 +172,7 @@ class AlgorithmicMethods:
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
-                    scheme = "counting_sort" # TODO: "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
+                    scheme = "counting_sort" # TODO #354 "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
@@ -200,7 +199,7 @@ class AlgorithmicMethods:
         for i in idx[:length]:
             if min_x < attr[x_id][i] < max_x:
                 moment_0[cell_id[i]] += n[i]
-                for k in range(specs_idx.shape[0]):
+                for k in range(specs_idx.shape[0]):  # TODO #315 (AtomicAdd)
                     moments[k, cell_id[i]] += n[i] * attr[specs_idx[k], i] ** specs_rank[k]
         for c_id in range(moment_0.shape[0]):
             for k in range(specs_idx.shape[0]):
@@ -253,7 +252,7 @@ class AlgorithmicMethods:
             rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
         for thread_id in numba.prange(n_threads):
-            for i in range(thread_id, n_cell, n_threads):  # TODO: at least show that it is not slower :)
+            for i in range(thread_id, n_cell, n_threads):  # TODO #341 at least show that it is not slower :)
                 cell_id = cell_order[i]
 
                 cell_start = cell_start_arg[cell_id]
@@ -269,7 +268,7 @@ class AlgorithmicMethods:
 
                 qv_new, thd_new, substeps_hint, ripening_flag = solver(
                     v, particle_temperatures, r_cr, n, vdry,
-                    idx[cell_start:cell_end],  # TODO
+                    idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, substeps[cell_id]
                 )

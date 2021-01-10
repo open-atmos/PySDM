@@ -55,7 +55,7 @@ class DemoViewer:
             default_figsize = rcParams["figure.figsize"]
             fig_kw = {'figsize': (2.25 * default_figsize[0], default_figsize[1] / 2)}
             fig, ax = pyplot.subplots(1, 1, **fig_kw)
-            self.timeseriesPlot = _TimeseriesPlot(fig, ax, self.settings.steps * self.settings.dt)
+            self.timeseriesPlot = _TimeseriesPlot(fig, ax, self.settings.output_steps * self.settings.dt)
             clear_output()
 
         self.plots = {}
@@ -101,7 +101,7 @@ class DemoViewer:
 
         for widget in (self.step_slider, self.play):
             widget.value = 0
-            widget.max = len(self.settings.steps) - 1
+            widget.max = len(self.settings.output_steps) - 1
 
         for j, xz in enumerate(('X', 'Z')):
             slider = self.slider[xz]
@@ -144,7 +144,7 @@ class DemoViewer:
 
         for key in ('Particles Wet Size Spectrum', 'Particles Dry Size Spectrum'):
             try:
-                data = self.storage.load(key, self.settings.steps[step])
+                data = self.storage.load(key, self.settings.output_steps[step])
                 data = data[xrange, yrange, :]
                 data = np.mean(np.mean(data, axis=0), axis=0)
                 data = np.concatenate(((0,), data))
@@ -178,7 +178,7 @@ class DemoViewer:
 
         step = self.step_slider.value
         try:
-            data = self.storage.load(selected, self.settings.steps[step])
+            data = self.storage.load(selected, self.settings.output_steps[step])
         except self.storage.Exception:
             data = None
 

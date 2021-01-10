@@ -15,7 +15,7 @@ cppython = {
     "//": "#",
     "||": "or",
     "&&": "and",
-    "(int64_t)": "np.int64",  # TODO: unit test depicting what fails when this is changed to int16
+    "(int64_t)": "np.int64",  # TODO #324 unit test depicting what fails when this is changed to int16
     "(double)": "np.float64",
     "(float)": "np.float32",
     "floor": "np.floor",

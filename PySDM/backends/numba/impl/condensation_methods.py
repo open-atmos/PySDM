@@ -61,7 +61,7 @@ class CondensationMethods:
             ml_old = calculate_ml_old(v, n, cell_idx)
             ripenings = 0
             for t in range(n_substeps):
-                thd += dt * dthd_dt_pred / 2  # TODO: test showing that it makes sense
+                thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
                 ml_new, ripening = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
@@ -130,7 +130,7 @@ class CondensationMethods:
                     if enable_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    # if v_new > 4/3 * np.pi * (r_cr[drop])**3: # TODO: difference if r<r_cr, filter out noise
+                    # if v_new > 4/3 * np.pi * (r_cr[drop])**3: # TODO #347 difference if r<r_cr, filter out noise
                     if abs((v_new-v[drop])/v_new) > .5:
                         if v_new - v[drop] > 0:
                             growing += 1

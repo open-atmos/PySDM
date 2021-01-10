@@ -45,6 +45,6 @@ class IndexedStorage(Storage):
             return self.data[self.idx.data[:len(self)]].copy()
 
     def read_row(self, i):
-        # TODO: shape like in ThrustRTC
+        # TODO #342 shape like in ThrustRTC
         result = IndexedStorage(self.idx, self.data[i, :], *self.shape[1:], self.dtype)
         return result
