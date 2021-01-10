@@ -34,13 +34,9 @@ def check(n_part, dv, n_sd, rho, state, step):
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 def test_coalescence(backend, croupier):
-    # TODO #329
-    from PySDM.backends import ThrustRTC
-    if backend is ThrustRTC and croupier == 'global':
-        return
     # Arrange
-    n_sd = 2 ** 13
-    steps = [0, 30, 60]
+    n_sd = 2 ** 14
+    steps = [0, 100, 200]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
     n_part = 2 ** 23 / si.metre ** 3
     dv = 1e6 * si.metres ** 3

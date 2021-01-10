@@ -53,7 +53,7 @@ class Settings:
     def n_spin_up(self):
         return self.spin_up_time / self.dt
 
-    v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
+    v_bins = phys.volume(np.logspace(np.log10(0.001 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
     @property
     def output_steps(self):
