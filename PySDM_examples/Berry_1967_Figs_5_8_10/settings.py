@@ -25,7 +25,7 @@ class Settings:
     _steps = [200 * i for i in range(10)]
 
     @property
-    def steps(self):
+    def output_steps(self):
         return [int(step / self.dt) for step in self._steps]
 
     kernel = Geometric(collection_efficiency=1)
