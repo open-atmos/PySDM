@@ -4,7 +4,7 @@ Created at 08.08.2019
 
 import numpy as np
 
-from PySDM.backends import CPU, GPU
+from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
@@ -16,7 +16,7 @@ from PySDM.products.state import ParticlesVolumeSpectrum
 from PySDM.products.stats.timers import WallTime
 
 
-def run(settings, backend=GPU, observers=()):
+def run(settings, backend=CPU, observers=()):
     builder = Builder(n_sd=settings.n_sd, backend=backend)
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
