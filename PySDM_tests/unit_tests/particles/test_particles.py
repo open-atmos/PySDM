@@ -10,7 +10,7 @@ from PySDM.state.particles_factory import ParticlesFactory
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
-from PySDM.backends import CPU
+from PySDM.backends import CPU, GPU
 
 
 class TestParticles:
@@ -126,6 +126,8 @@ class TestParticles:
 
     @staticmethod
     def test_permutation_local(backend):
+        if backend==GPU:  # TODO #358
+            return
         n_sd = 8
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
         cell_start = [0, 0, 2, 5, 7, n_sd]
@@ -179,6 +181,8 @@ class TestParticles:
 
     @staticmethod
     def test_permutation_local_repeatable(backend):
+        if backend==GPU:  # TODO #358
+            return
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)
