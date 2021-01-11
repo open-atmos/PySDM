@@ -180,7 +180,7 @@ class AlgorithmicMethods:
         dMg = PrecisionResolver.get_floating_point(Mg)
         dunit = PrecisionResolver.get_floating_point(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
+            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.indicator.data, dunit])
 
     __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
         auto r_id = (int64_t)(factor * radius[i]);
