@@ -112,7 +112,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def DVPermutation(dvvector, idx):
-        _length = np.where(idx.ndarray == idx.size())[0]  # TODO #351 why it works with Thrust!?
+        _length = np.where(idx.ndarray == idx.size())[0]
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
         return FakeThrustRTC.DVVector(result)
