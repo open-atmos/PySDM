@@ -4,7 +4,6 @@ Created at 08.08.2019
 
 import numpy as np
 
-from PySDM.backends import GPU
 from PySDM.dynamics.coalescence.kernels import Geometric, Hydrodynamic, Electric
 from PySDM_examples.Berry_1967_Figs_5_8_10.settings import Settings
 from PySDM_examples.Berry_1967_Figs_5_8_10.spectrum_plotter import SpectrumPlotter
@@ -43,7 +42,7 @@ def main(plot: bool, save):
             for dt in setups[u_term_approx]:
                 states[u_term_approx][dt] = {}
                 for kernel in setups[u_term_approx][dt]:
-                    states[u_term_approx][dt][kernel], _ = run(setups[u_term_approx][dt][kernel], backend=GPU)
+                    states[u_term_approx][dt][kernel], _ = run(setups[u_term_approx][dt][kernel])
 
     if plot or save is not None:
         for u_term_approx in setups:
