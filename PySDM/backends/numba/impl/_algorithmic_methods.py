@@ -32,7 +32,7 @@ class AlgorithmicMethods:
     @numba.njit(
         void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
              numba.boolean, int64[:], int64[:], int64[:], int64[:], int64[:], int64[:]),
-        **{**conf.JIT_FLAGS, **{'parallel': False}})
+        **conf.JIT_FLAGS)
     # TODO #195 reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
                          adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
@@ -61,17 +61,21 @@ class AlgorithmicMethods:
             new_n = n[j] - g * n[k]
             if new_n > 0:
                 n[j] = new_n
-                intensive[:, k] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) \
-                                  / (volume[k] + g * volume[j])
-                extensive[:, k] += g * extensive[:, j]
+                for ii in range(0, len(intensive)):
+                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
+                                      / (volume[k] + g * volume[j])
+                for ie in range(0, len(extensive)):
+                    extensive[ie, k] += g * extensive[ie, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                intensive[:, j] = (intensive[:, k] * volume[k] + intensive[:, j] * g * volume[j]) \
-                                  / (volume[k] + g * volume[j])
-                intensive[:, k] = intensive[:, j]
-                extensive[:, j] = g * extensive[:, j] + extensive[:, k]
-                extensive[:, k] = extensive[:, j]
+                for ii in range(0, len(intensive)):
+                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
+                                      / (volume[k] + g * volume[j])
+                    intensive[ii, k] = intensive[ii, j]
+                for ie in range(0, len(extensive)):
+                    extensive[ie, j] = g * extensive[ie, j] + extensive[ie, k]
+                    extensive[ie, k] = extensive[ie, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
@@ -172,7 +176,7 @@ class AlgorithmicMethods:
         class CellCaretaker:
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
-                    scheme = "counting_sort" # TODO #354 "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
+                    scheme = "counting_sort_parallel" # TODO #354 "counting_sort_parallel" if conf.JIT_FLAGS['parallel'] else 'counting_sort'
                 self.scheme = scheme
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
