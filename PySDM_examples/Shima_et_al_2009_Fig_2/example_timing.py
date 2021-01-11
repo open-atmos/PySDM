@@ -8,7 +8,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM.products.stats.timers import WallTime
-
+import os
 
 def run(settings):
     builder = Builder(n_sd=settings.n_sd, backend=settings.backend)
@@ -33,7 +33,7 @@ from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
 
 def main():
     settings = Settings()
-    settings._steps = [100, 3600]
+    settings._steps = [100, 3600] if 'CI' not in os.environ else [1, 2]
 
     times = {}
     for backend in (ThrustRTC, Numba):

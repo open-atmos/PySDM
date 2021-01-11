@@ -48,7 +48,7 @@ def main(plot: bool, save: str):
 
         settings.n_sd = 2 ** 15
 
-        states, _ = run(settings, backend=GPU)
+        states, _ = run(settings)
 
     with np.errstate(invalid='ignore'):
         plotter = SpectrumPlotter(settings)
