@@ -14,7 +14,7 @@ class IndexedStorage(Storage):
         self.idx = idx
 
     def __len__(self):
-        return self.idx.length
+        return len(self.idx)
 
     @staticmethod
     def indexed(idx, storage):

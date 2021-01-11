@@ -12,9 +12,8 @@ from PySDM.backends.numba.storage.storage import Storage
 class Index(Storage):
 
     def __init__(self, data, length):
-        assert isinstance(length, int)
-        super().__init__(data, length, int)
-        self.length = length
+        super().__init__(data, length, Storage.INT)
+        self.length = Storage.INT(length)
 
     def __len__(self):
         return self.length
