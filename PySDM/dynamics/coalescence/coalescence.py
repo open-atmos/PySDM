@@ -66,7 +66,7 @@ class Coalescence:
                 self.step(0, self.adaptive_memory)
             else:
                 self.actual_length = self.core.particles._Particles__idx.length
-                self.core.particles.cell_idx.data = self.__n_substep.data.argsort(kind="stable")[::-1]
+                self.core.particles.cell_idx.data[:] = self.__n_substep.data.argsort(kind="stable")[::-1]
                 for s in range(max(self.__n_substep.data)):  # range(self.n_substep[0]):
                     self.step(s, self.adaptive_memory)
                     self.subs[:] += self.adaptive_memory
@@ -78,7 +78,7 @@ class Coalescence:
                 self.subs[:] = 0
                 self.msub[:] = 0
 
-                self.core.particles.cell_idx.data = np.arange(len(self.core.particles.cell_idx.data)).astype(
+                self.core.particles.cell_idx.data[:] = np.arange(len(self.core.particles.cell_idx.data)).astype(
                     dtype=np.int64)
                 self.core.particles._Particles__sort_by_cell_id()
 
