@@ -6,7 +6,7 @@ from PySDM.backends.thrustRTC.fakeThrustRTC._flag import fakeThrustRTC
 import os
 import warnings
 
-allowFakeThrustRTC = 'CI' in os.environ
+allowFakeThrustRTC = True  #'CI' in os.environ
 
 if not fakeThrustRTC:
     # noinspection PyUnresolvedReferences
