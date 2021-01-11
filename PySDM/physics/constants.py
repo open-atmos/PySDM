@@ -46,7 +46,7 @@ ARM_C2 = 17.625 * si.dimensionless
 ARM_C3 = 243.04 * si.kelvin
 
 rho_w = 1 * si.kilograms / si.litres
-sgm = 0.072 * si.joule / si.metre ** 2  # TODO: temperature dependence
+sgm = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence
 
 p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin

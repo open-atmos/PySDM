@@ -22,13 +22,13 @@ class RandomGeneratorOptimizer:
         self.rnd = self.core.Random(self.core.n_sd + shift, self.seed)
 
     def get_random_arrays(self, s):
-        shift = 0
         if self.optimized_random:
             shift = s
             if s == 0:
                 self.pairs_rand.urand(self.rnd)
                 self.rand.urand(self.rnd)
         else:
+            shift = 0
             self.pairs_rand.urand(self.rnd)
             self.rand.urand(self.rnd)
         return self.pairs_rand[shift:self.core.n_sd + shift], self.rand

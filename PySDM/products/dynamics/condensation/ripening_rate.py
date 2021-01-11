@@ -18,7 +18,7 @@ class RipeningRate(Product):
         super().register(builder)
         self.condensation = self.core.dynamics['Condensation']
 
-    def get(self):  # TODO: take into account NUMBER of substeps (?)
+    def get(self):  # TODO #345 take into account NUMBER of substeps (?)
         self.download_to_buffer(self.condensation.ripening_flags)
         self.condensation.ripening_flags[:] = 0
         return self.buffer

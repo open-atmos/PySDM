@@ -38,9 +38,6 @@ class MPDATA:
         advector_impl = VectorField(fields.advector, halo=options.n_halo,
                                     boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))
 
-        # nondivergence (of velocity field, hence dt)  # TODO: move to better place
-        # assert np.amax(abs(advector_impl.div((dt, dt)).get())) < 5e-9
-
         self.g_factor = fields.g_factor
         g_factor_impl = ScalarField(fields.g_factor.astype(dtype=options.dtype), halo=options.n_halo,
                                boundary_conditions=(PeriodicBoundaryCondition(), PeriodicBoundaryCondition()))

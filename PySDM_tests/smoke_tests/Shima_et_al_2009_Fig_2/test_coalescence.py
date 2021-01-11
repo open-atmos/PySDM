@@ -2,20 +2,20 @@
 Created at 08.08.2019
 """
 
-import numpy as np
 import copy
+
+import numpy as np
 import pytest
+
 from PySDM.backends import CPU
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.dynamics.coalescence.kernels import Golovin
-from PySDM.initialisation.spectra import Exponential
 from PySDM.environments import Box
+from PySDM.initialisation.spectra import Exponential
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
-
-
-backend = CPU
+from PySDM_tests.backends_fixture import backend
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -33,10 +33,10 @@ def check(n_part, dv, n_sd, rho, state, step):
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_coalescence(croupier):
+def test_coalescence(backend, croupier):
     # Arrange
-    n_sd = 2 ** 13
-    steps = [0, 30, 60]
+    n_sd = 2 ** 14
+    steps = [0, 100, 200]
     X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
     n_part = 2 ** 23 / si.metre ** 3
     dv = 1e6 * si.metres ** 3
@@ -50,29 +50,20 @@ def test_coalescence(croupier):
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
-    builder.add_dynamic(Coalescence(kernel, seed=256))
+    builder.add_dynamic(Coalescence(kernel, seed=256, croupier=croupier))
     core = builder.build(attributes)
-    core.croupier = croupier
 
-    class Seed:
-        seed = 0
-
-        def __call__(self):
-            Seed.seed += 1
-            return Seed.seed
-    core.dynamics['Coalescence'].seed = Seed()
-
-    states = {}
+    volumes = {}
 
     # Act
     for step in steps:
         core.run(step - core.n_steps)
         check(n_part, dv, n_sd, rho, core.particles, step)
-        states[core.n_steps] = copy.deepcopy(core.particles)
+        volumes[core.n_steps] = core.particles['volume'].to_ndarray()
 
     # Assert
     x_max = 0
-    for state in states.values():
-        assert x_max < np.amax(state['volume'].to_ndarray())
-        x_max = np.amax(state['volume'].to_ndarray())
+    for volume in volumes.values():
+        assert x_max < np.amax(volume)
+        x_max = np.amax(volume)
 

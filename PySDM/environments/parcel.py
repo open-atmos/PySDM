@@ -17,11 +17,11 @@ class Parcel(_Moist):
             self, dt,
             mass_of_dry_air: float,
             p0: float, q0: float, T0: float,
-            w: callable, z0: float = 0):
+            w: [float, callable], z0: float = 0):
 
         super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
 
-        self.w = w
+        self.w = w if callable(w) else lambda _: w
 
         pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
         rhod0 = pd0 / const.Rd / T0

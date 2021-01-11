@@ -5,6 +5,7 @@ Created at 02.06.2020
 from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
+from ..impl.precision_resolver import PrecisionResolver
 
 
 def thrust(obj):
@@ -13,7 +14,7 @@ def thrust(obj):
     elif hasattr(obj, 'data'):
         result = obj.data
     elif isinstance(obj, float):
-        result = trtc.DVDouble(obj)
+        result = PrecisionResolver.get_floating_point(obj)
     elif isinstance(obj, int):
         result = trtc.DVInt64(obj)
     else:
@@ -39,11 +40,11 @@ def row_modulo(output, divisor):
 
 __floor_body = trtc.For(['arr'], "i", '''
         if (arr[i] >= 0) {
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
         }
         else {
             auto old = arr[i];
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
             if (old != arr[i]) {
                 arr[i] -= 1;
             }
@@ -58,10 +59,10 @@ def floor(output):
 
 __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
         if (input_data[i] >= 0) {
-            output[i] = (long) input_data[i];
+            output[i] = (int64_t)(input_data[i]);
         }
         else {
-            output[i] = (long) input_data[i];
+            output[i] = (int64_t)(input_data[i]);
             if (input_data[i] != output[i]) {
                 output[i] -= 1;
             }

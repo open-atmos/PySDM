@@ -8,7 +8,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM_examples.Shima_et_al_2009_Fig_2.settings import Settings
 from PySDM.products.stats.timers import WallTime
-
+import os
 
 def run(settings):
     builder = Builder(n_sd=settings.n_sd, backend=settings.backend)
@@ -19,7 +19,7 @@ def run(settings):
     particles = builder.build(attributes, products=[WallTime()])
 
     states = {}
-    for step in settings.steps:
+    for step in settings.output_steps:
         particles.run(step - particles.n_steps)
         last_wall_time = particles.products['wall_time'].get()
 
@@ -33,7 +33,7 @@ from PySDM.backends.thrustRTC.thrustRTC import ThrustRTC
 
 def main():
     settings = Settings()
-    settings._steps = [100, 3600]
+    settings._steps = [100, 3600] if 'CI' not in os.environ else [1, 2]
 
     times = {}
     for backend in (ThrustRTC, Numba):
@@ -48,9 +48,12 @@ def main():
 
     from matplotlib import pyplot as plt
     for backend, t in times.items():
-        plt.plot(nsds, t, label=backend)
+        plt.plot(nsds, t, label=backend, linestyle='--', marker='o')
+    plt.ylabel("wall time [s]")
+    plt.xlabel("number of particles")
+    plt.grid()
     plt.legend()
-    plt.loglog()
+    plt.loglog(base=2)
     plt.show()
 
 

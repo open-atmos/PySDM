@@ -1,7 +1,7 @@
 """
 Created at 10.12.2019
 """
-
+from .precision_resolver import PrecisionResolver
 from ..conf import trtc
 import numpy as np
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
@@ -11,14 +11,14 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 class StorageMethods:
     storage = trtc.DVVector.DVVector
     integer = np.int64
-    double = np.float64
+
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def array(shape, dtype):
-        if dtype in (float, StorageMethods.double):
-            elem_cls = 'double'
-            elem_dtype = StorageMethods.double
+        if dtype in (float, PrecisionResolver.get_np_dtype()):
+            elem_cls = PrecisionResolver.get_C_type()
+            elem_dtype = PrecisionResolver.get_np_dtype()
         elif dtype in (int, StorageMethods.integer):
             elem_cls = 'int64_t'
             elem_dtype = StorageMethods.integer
@@ -46,7 +46,7 @@ class StorageMethods:
         if str(array.dtype).startswith('int'):
             dtype = StorageMethods.integer
         elif str(array.dtype).startswith('float'):
-            dtype = StorageMethods.double
+            dtype = PrecisionResolver.get_np_dtype()
         else:
             raise NotImplementedError
 
@@ -92,13 +92,18 @@ class StorageMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_global(idx, length, u01):
         # WARNING: ineffective implementation
-        raise NotImplementedError()
-        # trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
+
+        # TODO #328 : Thrust modifies key array, conflicts with rand_reuse logic
+        # tmpu01 = trtc.device_vector(u01.name_elem_cls(), u01.size())
+        # trtc.Copy(u01, tmpu01)
+        # trtc.Sort_By_Key(tmpu01.range(0, length), idx.range(0, length))
+
+        trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(['cell_start', 'u01', 'idx'], "i", '''
-        for (int k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
-            int j = cell_start[i] + (int)( u01[k] * (cell_start[i+1] - cell_start[i]) );
-            int tmp = idx[k];
+        for (auto k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
+            auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
+            auto tmp = idx[k];
             idx[k] = idx[j];
             idx[j] = tmp;
         }

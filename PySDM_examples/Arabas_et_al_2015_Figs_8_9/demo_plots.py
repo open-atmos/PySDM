@@ -49,7 +49,7 @@ class _ImagePlot(_Plot):
                                  extent=(*xlim, *zlim),
                                  cmap=cmap,
                                  norm=matplotlib.colors.LogNorm() if scale == 'log' and np.isfinite(
-                                     data).all() else None # TODO: this is always None!!!
+                                     data).all() else None  # TODO #37 this is always None!!!
                                  )
         plt.colorbar(self.im, ax=self.ax).set_label(label)
         self.im.set_clim(vmin=product.range[0], vmax=product.range[1])
@@ -114,5 +114,8 @@ class _TimeseriesPlot(_Plot):
             plt.show()
 
     def update(self, data):
-        self.ydata[0:len(data)] = data[:]
+        if data is not None:
+            self.ydata[0:len(data)] = data[:]
+        else:
+            self.ydata[0:len(data)] = np.nan
         self.timeseries.set_ydata(self.ydata)

@@ -1,7 +1,7 @@
 """
 Created at 10.12.2019
 """
-
+from .precision_resolver import PrecisionResolver
 from ..conf import trtc
 from ._storage_methods import StorageMethods
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
@@ -16,7 +16,7 @@ class MathsMethods:
         trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
     __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
-        int d = i / length;
+        auto d = (int64_t)(i / length);
         output[i] %= divisor[d];
         ''')
 
@@ -28,11 +28,11 @@ class MathsMethods:
 
     __floor_body = trtc.For(['arr'], "i", '''
         if (arr[i] >= 0) {
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
         }
         else {
             auto old = arr[i];
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
             if (old != arr[i]) {
                 arr[i] -= 1;
             }
@@ -45,7 +45,7 @@ class MathsMethods:
         MathsMethods.__floor_body.launch_n(output.size(), [output])
 
     __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
-        output[i] = (long) floor(input_data[i]);
+        output[i] = (int64_t)(floor(input_data[i]));
         ''')
 
     @staticmethod
@@ -69,7 +69,7 @@ class MathsMethods:
             device_multiplier = multiplier
         elif isinstance(multiplier, float):
             loop = MathsMethods.__multiply_body
-            device_multiplier = trtc.DVDouble(multiplier)
+            device_multiplier = PrecisionResolver.get_floating_point(multiplier)
         elif isinstance(multiplier, int):
             loop = MathsMethods.__multiply_body
             device_multiplier = trtc.DVInt64(multiplier)
@@ -93,7 +93,7 @@ class MathsMethods:
             device_multiplier = multiplier
         elif isinstance(multiplier, float):
             loop = MathsMethods.__multiply_out_of_place_body
-            device_multiplier = trtc.DVDouble(multiplier)
+            device_multiplier = PrecisionResolver.get_floating_point(multiplier)
         else:
             raise NotImplementedError()
         loop.launch_n(output.size(), [output, multiplicand, device_multiplier])
@@ -107,7 +107,7 @@ class MathsMethods:
     def power(output, exponent):
         if exponent == 1:
             return
-        device_exponent = trtc.DVDouble(exponent)
+        device_exponent = PrecisionResolver.get_floating_point(exponent)
         MathsMethods.__power_body.launch_n(output.size(), [output, device_exponent])
 
     __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''

@@ -21,8 +21,7 @@ def run(settings, backend=CPU, observers=()):
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(settings.spectrum).sample(settings.n_sd)
-    coalescence = Coalescence(settings.kernel)
-    coalescence.adaptive = settings.adaptive
+    coalescence = Coalescence(settings.kernel, adaptive=settings.adaptive, croupier='local')
     builder.add_dynamic(coalescence)
     products = [ParticlesVolumeSpectrum(), WallTime()]
     core = builder.build(attributes, products)
@@ -34,7 +33,7 @@ def run(settings, backend=CPU, observers=()):
 
     vals = {}
     core.products['wall_time'].reset()
-    for step in settings.steps:
+    for step in settings.output_steps:
         core.run(step - core.n_steps)
         vals[step] = core.products['dv/dlnr'].get(settings.radius_bins_edges)
         vals[step][:] *= settings.rho
@@ -55,7 +54,8 @@ def main(plot: bool, save: str):
         plotter = SpectrumPlotter(settings)
         plotter.smooth = True
         for step, vals in states.items():
-            plotter.plot(vals, step * settings.dt)
+            error = plotter.plot(vals, step * settings.dt)
+            #assert error < 200
         if save is not None:
             n_sd = settings.n_sd
             plotter.save(save + "/" +

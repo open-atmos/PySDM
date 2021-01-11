@@ -11,7 +11,7 @@ import numpy as np
 import os
 
 
-# TODO: run for different atol, rtol, dt_max
+# TODO #304 run for different atol, rtol, dt_max
 if os.environ.get('CI') == 'true' and not os.environ.get('FAST_TESTS') == 'true':
     scheme = ('default',  'BDF')
     coord = ('volume logarithm', 'volume')

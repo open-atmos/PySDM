@@ -58,10 +58,14 @@ class FakeThrustRTC:
     def DVBool(number: int):
         return FakeThrustRTC.Number(number)
 
+    @staticmethod
+    def DVFloat(number: float):
+        return FakeThrustRTC.Number(number)
+
     class For:
-        def __init__(self, args, _, body):
+        def __init__(self, args, iter_var, body):
             d = dict()
-            self.code = to_numba("__internal_python_method__", args, body)
+            self.code = to_numba("__internal_python_method__", args, iter_var, body)
             exec(self.code, d)
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = self.make()
@@ -69,7 +73,7 @@ class FakeThrustRTC:
         def launch_n(self, size, args):
             try:
                 result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
-            except NumbaError as error:
+            except (NumbaError, IndexError) as error:
                 warnings.warn(f"NumbaError occurred while JIT-compiling: {self.code}")
                 raise error
             return result
@@ -89,7 +93,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        dtype = float if elem_cls == 'double' else np.int64
+        dtype = float if (elem_cls == 'double' or elem_cls == 'float') else np.int64
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 
@@ -108,7 +112,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def DVPermutation(dvvector, idx):
-        _length = np.where(idx.ndarray == idx.size())[0]  # TODO why it works with Thrust!?
+        _length = np.where(idx.ndarray == idx.size())[0]
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
         return FakeThrustRTC.DVVector(result)
@@ -153,3 +157,8 @@ class FakeThrustRTC:
     @staticmethod
     def Wait():
         pass
+
+    @staticmethod
+    def Sort_By_Key(keys, values):
+        values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
+        # TODO #328 Thrust sorts keys as well

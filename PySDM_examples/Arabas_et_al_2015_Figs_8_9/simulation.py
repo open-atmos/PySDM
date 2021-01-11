@@ -3,21 +3,24 @@ Created at 25.09.2019
 """
 
 from PySDM.backends import CPU
+from PySDM.builder import Builder
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics import Condensation
 from PySDM.dynamics import Displacement
 from PySDM.dynamics import EulerianAdvection
-from PySDM.dynamics import AmbientThermodynamics
-from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.state.arakawa_c import Fields
 from PySDM.dynamics.eulerian_advection.mpdata import MPDATA
 from PySDM.environments import Kinematic2D
+from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.products.dynamics.coalescence import CoalescenceTimestep
+from PySDM.products.dynamics.coalescence import CollisionRate
+from PySDM.products.dynamics.coalescence import CollisionRateDeficit
+from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from PySDM.products.environments import DryAirDensity
 from PySDM.products.environments import DryAirPotentialTemperature
 from PySDM.products.environments import RelativeHumidity, Pressure, Temperature
 from PySDM.products.environments import WaterVapourMixingRatio
-from PySDM.initialisation import spectral_sampling, spatial_sampling
-from PySDM.builder import Builder
 from PySDM.products.state import AerosolConcentration, CloudConcentration, DrizzleConcentration
 from PySDM.products.state import AerosolSpecificConcentration
 from PySDM.products.state import ParticleMeanRadius
@@ -25,8 +28,8 @@ from PySDM.products.state import ParticlesWetSizeSpectrum, ParticlesDrySizeSpect
 from PySDM.products.state import SuperDropletCount
 from PySDM.products.state import TotalParticleConcentration
 from PySDM.products.state import TotalParticleSpecificConcentration
-from PySDM.products.dynamics.displacement import SurfacePrecipitation
 from PySDM.products.stats.timers import CPUTime, WallTime
+from PySDM.state.arakawa_c import Fields
 from .dummy_controller import DummyController
 from .spin_up import SpinUp
 
@@ -73,7 +76,7 @@ class Simulation:
         ]
 
         fields = Fields(environment, self.settings.stream_function)
-        if self.settings.processes['fluid advection']:  # TODO: ambient thermodynamics checkbox
+        if self.settings.processes['fluid advection']:  # TODO #37 ambient thermodynamics checkbox
             builder.add_dynamic(AmbientThermodynamics())
         if self.settings.processes["condensation"]:
             condensation = Condensation(
@@ -83,7 +86,7 @@ class Simulation:
                 coord=self.settings.condensation_coord,
                 adaptive=self.settings.adaptive)
             builder.add_dynamic(condensation)
-            products.append(CondensationTimestep())  # TODO: and what if a user doesn't want it?
+            products.append(CondensationTimestep())  # TODO #37 and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:
             solver = MPDATA(
                 fields=fields,
@@ -99,9 +102,12 @@ class Simulation:
                 scheme='FTBS',
                 enable_sedimentation=self.settings.processes["sedimentation"])
             builder.add_dynamic(displacement)
-            products.append(SurfacePrecipitation())  # TODO: ditto
+            products.append(SurfacePrecipitation())  # TODO #37 ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
+            products.append(CoalescenceTimestep())
+            products.append(CollisionRate())
+            products.append(CollisionRateDeficit())
 
         attributes = environment.init_attributes(spatial_discretisation=spatial_sampling.Pseudorandom(),
                                                  spectral_discretisation=spectral_sampling.ConstantMultiplicity(
@@ -111,13 +117,12 @@ class Simulation:
 
         self.core = builder.build(attributes, products)
         SpinUp(self.core, self.settings.n_spin_up)
-        # TODO
         if self.storage is not None:
             self.storage.init(self.settings)
 
     def run(self, controller=DummyController()):
         with controller:
-            for step in self.settings.steps:  # TODO: rename output_steps
+            for step in self.settings.output_steps:
                 if controller.panic:
                     break
 
@@ -125,7 +130,7 @@ class Simulation:
 
                 self.store(step)
 
-                controller.set_percent(step / self.settings.steps[-1])
+                controller.set_percent(step / self.settings.output_steps[-1])
 
     def store(self, step):
         for name, product in self.core.products.items():

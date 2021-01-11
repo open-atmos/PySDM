@@ -3,13 +3,14 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from PySDM.backends.thrustRTC.storage import storage_impl as impl
+from . import storage_impl as impl
 from ..conf import trtc
+from ..impl.precision_resolver import PrecisionResolver
 
 
 class Storage:
 
-    FLOAT = np.float64
+    FLOAT = PrecisionResolver.get_np_dtype()
     INT = np.int64
 
     def __init__(self, data, shape, dtype):
@@ -42,7 +43,7 @@ class Storage:
             if isinstance(value, int):
                 dvalue = trtc.DVInt64(value)
             elif isinstance(value, float):
-                dvalue = trtc.DVDouble(value)
+                dvalue = PrecisionResolver.get_floating_point(value)
             else:
                 raise TypeError("Only Storage, int and float are supported.")
             trtc.Fill(self.data, dvalue)
@@ -73,7 +74,6 @@ class Storage:
         raise NotImplementedError("Use %=")
 
     def __imod__(self, other):
-        # TODO
         impl.row_modulo(self, other)
         return self
 
@@ -94,10 +94,10 @@ class Storage:
             raise NotImplementedError("Logic value of array is ambiguous.")
         return result
 
-    def detach(self):
+    def _to_host(self):
         if isinstance(self.data, trtc.DVVector.DVRange):
             if self.dtype is Storage.FLOAT:
-                elem_cls = 'double'
+                elem_cls = PrecisionResolver.get_C_type()
             elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
             else:
@@ -106,17 +106,18 @@ class Storage:
             data = trtc.device_vector(elem_cls, self.data.size())
 
             trtc.Copy(self.data, data)
-            self.data = data
+        else:
+            data = self.data
+        return data.to_host()
 
     def download(self, target, reshape=False):
         shape = target.shape if reshape else self.shape
-        self.detach()
-        target[:] = np.reshape(self.data.to_host(), shape)
+        target[:] = np.reshape(self._to_host(), shape)
 
     @staticmethod
-    def empty(shape, dtype):
+    def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            elem_cls = 'double'
+            elem_cls = PrecisionResolver.get_C_type()
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             elem_cls = 'int64_t'
@@ -125,11 +126,15 @@ class Storage:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
-        result = Storage(data, shape, dtype)
+        return data, shape, dtype
+
+    @staticmethod
+    def empty(shape, dtype):
+        result = Storage(*Storage._get_empty_data(shape, dtype))
         return result
 
     @staticmethod
-    def from_ndarray(array):
+    def _get_data_from_ndarray(array):
         if str(array.dtype).startswith('int'):
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
@@ -138,7 +143,11 @@ class Storage:
             raise NotImplementedError()
 
         data = trtc.device_vector_from_numpy(array.astype(dtype).ravel())
-        result = Storage(data, array.shape, dtype)
+        return data, array.shape, dtype
+
+    @staticmethod
+    def from_ndarray(array):
+        result = Storage(*Storage._get_data_from_ndarray(array))
         return result
 
     def floor(self, other=None):
@@ -158,7 +167,7 @@ class Storage:
         else:
             self.data = trtc.device_vector_from_numpy(other.ravel())
 
-    # TODO: handle by getitem
+    # TODO #342 handle by getitem
     def read_row(self, i):
         start = self.shape[1] * i
         stop = start + self.shape[1]
@@ -167,8 +176,7 @@ class Storage:
         return result
 
     def to_ndarray(self):
-        self.detach()
-        result = self.data.to_host()
+        result = self._to_host()
         result = np.reshape(result, self.shape)
         return result
 
