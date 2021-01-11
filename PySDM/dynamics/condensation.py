@@ -23,7 +23,7 @@ class Condensation:
         self.r_cr = None
 
         self.max_substeps = None
-        self.substeps = None
+        self.n_substep = None
         self.ripening_flags = None
 
         self.coord = coord
@@ -35,8 +35,8 @@ class Condensation:
         self.r_cr = builder.get_attribute('critical radius')
         self.max_substeps = int(self.core.dt)
         self.max_substeps = int(self.core.dt)
-        self.substeps = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.substeps[:] = int(np.maximum(1, int(self.core.dt)))  # TODO: min substep length
+        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.n_substep[:] = int(np.maximum(1, int(self.core.dt)))  # TODO #341 min substep length
         self.ripening_flags = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.ripening_flags[:] = 0
 
@@ -45,7 +45,7 @@ class Condensation:
             kappa=self.kappa,
             rtol_x=self.rtol_x,
             rtol_thd=self.rtol_thd,
-            substeps=self.substeps,
+            substeps=self.n_substep,
             ripening_flags=self.ripening_flags
         )
-        self.substeps[:] = np.maximum(self.substeps[:], int(self.core.dt))
+        self.n_substep[:] = np.maximum(self.n_substep[:], int(self.core.dt))

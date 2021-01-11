@@ -3,6 +3,7 @@ Created at 09.11.2019
 """
 
 import numpy as np
+
 from PySDM.state.particles import Particles
 
 
@@ -36,12 +37,24 @@ class Core:
         return self.backend.Storage
 
     @property
+    def Index(self):
+        return self.backend.Index
+
+    @property
     def IndexedStorage(self):
         return self.backend.IndexedStorage
 
     @property
+    def PairIndicator(self):
+        return self.backend.PairIndicator
+
+    @property
+    def PairwiseStorage(self):
+        return self.backend.PairwiseStorage
+
+    @property
     def Random(self):
-        return  self.backend.Random
+        return self.backend.Random
 
     @property
     def n_sd(self) -> int:
@@ -58,11 +71,9 @@ class Core:
             return self.environment.mesh
 
     def normalize(self, prob, norm_factor, subs):
-        factor = self.dt/subs/self.mesh.dv
-        self.backend.normalize(prob, self.particles['cell id'], self.particles.cell_start, norm_factor, factor)
-
-    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        return self.particles.coalescence(gamma, adaptive, subs, adaptive_memory)
+        self.backend.normalize(
+            prob, self.particles['cell id'], self.particles.cell_idx,
+            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
 
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \
@@ -91,7 +102,7 @@ class Core:
                 r_cr=self.particles["critical radius"],
                 dt=self.dt,
                 substeps=substeps,
-                cell_order=np.argsort(substeps),  # TODO: check if better than regular order
+                cell_order=np.argsort(substeps),  # TODO #341 check if better than regular order
                 ripening_flags=ripening_flags
             )
 

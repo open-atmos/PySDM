@@ -2,18 +2,24 @@
 Created at 25.09.2019
 """
 
-import numpy as np
+from typing import Iterable
 
+import numba
+import numpy
+import numpy as np
+import scipy
+
+import PySDM
+from PySDM.dynamics import condensation
+from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectra import Sum
-from PySDM.dynamics.coalescence.kernels import Geometric
-from PySDM.dynamics import condensation
-from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
+from PySDM.physics import formulae as phys
 from PySDM.physics.constants import si
-from typing import Iterable
-import PySDM, numba, numpy, scipy
-#from PyMPDATA import __version__ as TODO
+
+
+# from PyMPDATA import __version__ as TODO #339
 
 
 class Settings:
@@ -24,7 +30,7 @@ class Settings:
         key_packages = (PySDM, numba, numpy, scipy)
         self.versions = str({pkg.__name__: pkg.__version__ for pkg in key_packages})
 
-    # TODO: move all below into __init__ as self.* variables
+    # TODO #308 move all below into __init__ as self.* variables
 
     condensation_coord = 'volume logarithm'
 
@@ -41,14 +47,17 @@ class Settings:
     n_steps = 5400
     outfreq = 60
     dt = 1 * si.seconds
-
-    n_spin_up = 1 * si.hour / dt
-
-    v_bins = phys.volume(np.logspace(np.log10(0.01 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
+    spin_up_time = 1 * si.hour
 
     @property
-    def steps(self):
-        return np.arange(0, self.n_steps+1, self.outfreq)
+    def n_spin_up(self):
+        return self.spin_up_time / self.dt
+
+    v_bins = phys.volume(np.logspace(np.log10(0.001 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
+
+    @property
+    def output_steps(self):
+        return np.arange(0, self.n_steps + 1, self.outfreq)
 
     mode_1 = Lognormal(
         norm_factor=60 / si.centimetre ** 3 / const.rho_STP,
@@ -69,7 +78,7 @@ class Settings:
         "coalescence": True,
         "condensation": True,
         "sedimentation": True,
-        # "relaxation": False  # TODO
+        # "relaxation": False  # TODO #338
     }
 
     enable_particle_temperatures = False
@@ -103,7 +112,7 @@ class Settings:
         Z = self.size[1]
         z = zZ * Z  # :(!
 
-        # TODO: move to PySDM/physics
+        # TODO #337 move to PySDM/physics
         # hydrostatic profile
         kappa = const.Rd / const.c_pd
         arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)

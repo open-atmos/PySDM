@@ -54,7 +54,7 @@ class PhysicsMethods:
                 values[i] = k2 * radius[i];
             }
             else {
-                values[i] = k3 * pow(radius[i], (real_type).5);
+                values[i] = k3 * pow(radius[i], (real_type)(.5));
             }
         }
         '''.replace("real_type", PrecisionResolver.get_C_type()))

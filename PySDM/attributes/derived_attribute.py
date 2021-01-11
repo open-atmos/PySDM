@@ -12,8 +12,6 @@ class DerivedAttribute(Attribute):
         self.dependencies = dependencies
 
     def update(self):
-        if self.data is None:
-            self.allocate()
         for dependency in self.dependencies:
             dependency.update()
         dependencies_timestamp = sum(dependency.timestamp for dependency in self.dependencies)

@@ -16,7 +16,7 @@ class MathsMethods:
         trtc.Transform_Binary(addend, output, output, trtc.Plus())
 
     __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
-        int d = i / length;
+        auto d = (int64_t)(i / length);
         output[i] %= divisor[d];
         ''')
 
@@ -28,11 +28,11 @@ class MathsMethods:
 
     __floor_body = trtc.For(['arr'], "i", '''
         if (arr[i] >= 0) {
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
         }
         else {
             auto old = arr[i];
-            arr[i] = (long) arr[i];
+            arr[i] = (int64_t)(arr[i]);
             if (old != arr[i]) {
                 arr[i] -= 1;
             }
@@ -45,7 +45,7 @@ class MathsMethods:
         MathsMethods.__floor_body.launch_n(output.size(), [output])
 
     __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
-        output[i] = (long) floor(input_data[i]);
+        output[i] = (int64_t)(floor(input_data[i]));
         ''')
 
     @staticmethod

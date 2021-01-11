@@ -21,6 +21,6 @@ class CriticalRadius(DerivedAttribute):
         r_d = self.r_dry.get()
         T = self.environment['T']
         cell = self.cell_id.get()
-        for i in range(len(self.data)):  # TODO: move to backend
+        for i in range(len(self.data)):  # TODO #347 move to backend
             self.data.data[i] = phys.r_cr(kp=kappa, rd=r_d[i], T=T[cell[i]])
 

@@ -2,23 +2,26 @@
 Created at 2019
 """
 
-from PySDM.state.particles_factory import ParticlesFactory
-from PySDM_tests.unit_tests.dummy_core import DummyCore
-from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
-# noinspection PyUnresolvedReferences
-from PySDM_tests.backends_fixture import backend
-
 import numpy as np
 import pytest
+
+from PySDM.state.particles_factory import ParticlesFactory
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
+from PySDM_tests.unit_tests.dummy_core import DummyCore
+from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
+from PySDM.backends import CPU
 
 
 class TestParticles:
 
     @staticmethod
-    def make_storage(backend, iterable, idx=None):
-        result = backend.IndexedStorage.from_ndarray(np.array(iterable))
+    def make_indexed_storage(backend, iterable, idx=None):
+        index = backend.Index.from_ndarray(np.array(iterable))
         if idx is not None:
-            result = backend.IndexedStorage.indexed(idx, result)
+            result = backend.IndexedStorage.indexed(idx, index)
+        else:
+            result = index
         return result
 
     @staticmethod
@@ -43,31 +46,27 @@ class TestParticles:
         assert sut['n'].to_ndarray().sum() == n.sum()
         assert (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum() == (volume * n).sum()
 
-    # @staticmethod
-    # @pytest.fixture(params=[1, 2, 3, 4, 5, 8, 9, 16])
-    # def thread_number(request):
-    #     return request.param
-
     @staticmethod
     @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
         ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
         ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
         ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
     ])
-    def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):#, thread_number):
+    def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO
+            return  # TODO #69
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
+        n_cell = max(cells) + 1
+        core.environment.mesh.n_cell = n_cell
         core.build(attributes={'n': np.ones(n_sd)})
         sut = core.particles
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
-        sut.attributes['n'].data = TestParticles.make_storage(backend, n, sut._Particles__idx)
-        n_cell = max(cells) + 1
-        sut.attributes['cell id'].data = TestParticles.make_storage(backend, cells, sut._Particles__idx)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, [0] * (n_cell + 1))
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
+        sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cells, sut._Particles__idx)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, [0] * (n_cell + 1))
         sut._Particles__n_sd = core.n_sd
         sut.healthy = 0 not in n
         sut._Particles__cell_caretaker = backend.make_cell_caretaker(sut._Particles__idx, sut._Particles__cell_start)
@@ -104,22 +103,18 @@ class TestParticles:
         assert sut['cell id'][droplet_id] == 0
 
     @staticmethod
-    def test_permutation_global(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO
-
+    def test_permutation_global_as_implemented_in_Numba():
         n_sd = 8
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
         # Arrange
-        core = DummyCore(backend, n_sd=n_sd)
+        core = DummyCore(CPU, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(CPU, [0] * idx_length)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(CPU, u01)
 
         # Act
         sut.permutation(u01, local=False)
@@ -139,11 +134,11 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, cell_start)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
@@ -157,7 +152,7 @@ class TestParticles:
     def test_permutation_global_repeatable(backend):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO
+            return  # TODO #328
 
         n_sd = 800
         u01 = np.random.random(n_sd)
@@ -166,16 +161,16 @@ class TestParticles:
         core = DummyCore(backend, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(core, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
         sut._Particles__sorted = True
-        sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        #sut._Particles__n_sd = core.n_sd
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=False)
         expected = sut._Particles__idx.to_ndarray()
         sut._Particles__sorted = True
-        sut._Particles__idx = TestParticles.make_storage(backend, range(n_sd))
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, range(n_sd))
         sut.permutation(u01, local=False)
 
         # Assert
@@ -184,10 +179,6 @@ class TestParticles:
 
     @staticmethod
     def test_permutation_local_repeatable(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO
-
         n_sd = 800
         idx = range(n_sd)
         u01 = np.random.random(n_sd)
@@ -195,25 +186,26 @@ class TestParticles:
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
-        core.build(attributes={'n': np.ones(n_sd)})
-        sut = core.particles
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
-        idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_storage(backend, [0] * idx_length)
         cell_id = []
-        for i in range(len(cell_start) - 1):
+        core.environment.mesh.n_cell = len(cell_start) - 1
+        for i in range(core.environment.mesh.n_cell):
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
-        sut.attributes['cell id'].data = TestParticles.make_storage(backend, cell_id)
-        sut._Particles__cell_start = TestParticles.make_storage(backend, cell_start)
+        core.build(attributes={'n': np.ones(n_sd)})
+        sut = core.particles
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
+        idx_length = len(sut._Particles__idx)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cell_id)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = core.n_sd
-        u01 = TestParticles.make_storage(backend, u01)
+        u01 = TestParticles.make_indexed_storage(backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
         expected = sut._Particles__idx.to_ndarray()
-        sut._Particles__idx = TestParticles.make_storage(backend, idx)
+        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         sut.permutation(u01, local=True)
 
         # Assert

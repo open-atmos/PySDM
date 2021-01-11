@@ -5,7 +5,6 @@ Created at 13.01.2020
 import numpy as np
 import pytest
 
-from PySDM.backends import CPU
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
@@ -19,7 +18,7 @@ from PySDM_tests.backends_fixture import backend
 def test_final_state(croupier, backend):
     from PySDM.backends import ThrustRTC
     if backend is ThrustRTC:
-        return  # TODO
+        return  # TODO #330
 
     # Arrange
     n_part = 10000
@@ -47,7 +46,7 @@ def test_final_state(croupier, backend):
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
-    core.particles.permutation(u01)
+    core.particles.permutation(u01, local=core.croupier == 'local')
     _ = core.particles.cell_start
 
     # Assert

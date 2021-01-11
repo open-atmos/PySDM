@@ -13,6 +13,4 @@ class Gravitational:
         self.core = builder.core
         builder.request_attribute('radius')
         builder.request_attribute('terminal velocity')
-        self.tmp = self.core.IndexedStorage.empty(self.core.n_sd, dtype=float)
-
-
+        self.tmp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)

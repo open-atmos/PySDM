@@ -12,7 +12,7 @@ class Product:
         self.unit = unit
         self.description = description
         self.scale = scale
-        self.range = range  # TODO: move out (maybe inject based on settings) and rename to something like plot_hint_range
+        self.range = range  # TODO #344 move out (maybe inject based on settings) and rename to something like plot_hint_range
         self.shape = None
         self.buffer = None
         self.core = None
@@ -40,7 +40,7 @@ class MomentProduct(Product):
 
     def download_moment_to_buffer(self, attr, rank, filter_attr='volume', filter_range=(-np.inf, np.inf)):
         self.core.particles.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_name=filter_attr, attr_range=filter_range)
-        if rank == 0:  # TODO
+        if rank == 0:  # TODO #217
             self.download_to_buffer(self.moment_0)
         else:
             self.download_to_buffer(self.moments.read_row(0))

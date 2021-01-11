@@ -79,8 +79,9 @@ class SpectrumPlotter:
         pyplot.savefig(file, format=self.format)
 
     def plot(self, spectrum, t):
-        self.plot_analytic_solution(self.settings, t, spectrum)
+        error = self.plot_analytic_solution(self.settings, t, spectrum)
         self.plot_data(self.settings, t, spectrum)
+        return error
 
     def plot_analytic_solution(self, settings, t, spectrum=None):
         if t == 0:
@@ -108,7 +109,8 @@ class SpectrumPlotter:
         if spectrum is not None:
             y = spectrum * si.kilograms / si.grams
             error = error_measure(y, y_true, x)
-            self.title = f'error: {error:.2f}' # TODO: rename "error measure" + unit
+            self.title = f'error measure: {error:.2f}' # TODO #327 relative error
+            return error
 
     def plot_data(self, settings, t, spectrum):
         if self.smooth:
@@ -126,7 +128,7 @@ class SpectrumPlotter:
                 settings.radius_bins_edges[:-scope - 1] * si.metres / si.micrometres,
                 spectrum[:-scope] * si.kilograms / si.grams,
                 label=f"t = {t}s",
-                color=self.colors(t / (self.settings.steps[-1] * self.settings.dt))
+                color=self.colors(t / (self.settings.output_steps[-1] * self.settings.dt))
             )
         else:
             self.ax.step(
@@ -134,5 +136,5 @@ class SpectrumPlotter:
                 spectrum * si.kilograms / si.grams,
                 where='post',
                 label=f"t = {t}s",
-                color=self.colors(t / (self.settings.steps[-1] * self.settings.dt))
+                color=self.colors(t / (self.settings.output_steps[-1] * self.settings.dt))
             )

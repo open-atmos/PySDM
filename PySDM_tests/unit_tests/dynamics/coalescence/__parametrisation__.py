@@ -2,8 +2,12 @@
 Created at 04.11.2019
 """
 
-import pytest
 import numpy as np
+import pytest
+
+from PySDM.dynamics import Coalescence
+from PySDM.environments import Box
+from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
 class StubKernel:
@@ -36,6 +40,14 @@ def backend_fill(array, value, odd_zeros=False):
 def insert_zeros(array):
     result = np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
     return result
+
+
+def get_dummy_core_and_sdm(backend, n_length, optimized_random=False, environment=None):
+    core = DummyCore(backend, n_sd=n_length)
+    core.environment = environment or Box(dv=1, dt=0)
+    sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random)
+    sdm.register(core)
+    return core, sdm
 
 
 '''

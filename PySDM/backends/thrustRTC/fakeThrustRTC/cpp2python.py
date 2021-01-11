@@ -15,9 +15,9 @@ cppython = {
     "//": "#",
     "||": "or",
     "&&": "and",
-    "(long)": "",
-    "(double)": "",
-    "(float)": "",
+    "(int64_t)": "np.int64",  # TODO #324 unit test depicting what fails when this is changed to int16
+    "(double)": "np.float64",
+    "(float)": "np.float32",
     "floor": "np.floor",
     "ceil": "np.ceil",
     "return": "continue",
@@ -71,14 +71,10 @@ def replace_fors(cpp) -> str:
 
 def atomic_add_to_python(cpp: str) -> str:
     cpp = cpp.replace("atomicAdd", "") \
-              .replace("unsigned", "") \
-              .replace("long", "") \
-              .replace("int*", "") \
-              .replace("int", "") \
+              .replace("unsigned long long int*", "") \
+              .replace("unsigned long long int", "") \
               .replace("double*", "") \
-              .replace("double", "") \
               .replace("float*", "") \
-              .replace("float", "") \
               .replace(" ", "") \
               .replace("()", "") \
               .replace("&", "") \

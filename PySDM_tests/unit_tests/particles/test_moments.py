@@ -36,7 +36,7 @@ class TestMaths:
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
-        # TODO: add a moments_0 wrapper
+        # TODO #217 : add a moments_0 wrapper
         moment_0 = particles.backend.Storage.empty((1,), dtype=int)
         moments = particles.backend.Storage.empty((1, 1), dtype=float)
 
@@ -69,4 +69,4 @@ class TestMaths:
         
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.
-        assert discr_mean_T_squared == 300. ** 2
+        np.testing.assert_approx_equal(discr_mean_T_squared, 300. ** 2)

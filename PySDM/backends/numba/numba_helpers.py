@@ -3,12 +3,12 @@ Created at 17.02.2020
 """
 
 import numpy as np
-
-from . import conf
-import PySDM.physics.constants as const
 from numba import float64
 
+import PySDM.physics.constants as const
 from PySDM.physics import _flag
+from . import conf
+
 if _flag.DIMENSIONAL_ANALYSIS:
     import PySDM.physics._fake_numba as numba
 else:
@@ -70,7 +70,7 @@ def beta(Kn):
 
 @numba.njit(float64(float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
 def D(r, T):
-    Kn = lambdaD(T) / r  # TODO: optional
+    Kn = lambdaD(T) / r  # TODO #57 optional
     return const.D0 * beta(Kn)
 
 
@@ -140,7 +140,7 @@ def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def dT_i_dt_FF(r, T, p, T_i, dr_dt):
     return 3 / r / const.c_pw * (
-        K(r, T, p) / const.rho_w / r * (T - T_i) +  # TODO: K(T) vs. K(Td) ???
+        K(r, T, p) / const.rho_w / r * (T - T_i) +  # TODO #57 K(T) vs. K(Td) ???
         lv(T_i) * dr_dt
     )
 
@@ -186,8 +186,6 @@ def bisec(minfun, a, interval, args, rtol):
     if b < a:
         a, b = b, a
         fa, fb = fb, fa
-
-    fb = None
 
     while True:
         x_new = (a + b) / 2

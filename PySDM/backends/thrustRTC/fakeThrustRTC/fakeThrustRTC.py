@@ -73,7 +73,7 @@ class FakeThrustRTC:
         def launch_n(self, size, args):
             try:
                 result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
-            except NumbaError as error:
+            except (NumbaError, IndexError) as error:
                 warnings.warn(f"NumbaError occurred while JIT-compiling: {self.code}")
                 raise error
             return result
@@ -112,7 +112,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def DVPermutation(dvvector, idx):
-        _length = np.where(idx.ndarray == idx.size())[0]  # TODO why it works with Thrust!?
+        _length = np.where(idx.ndarray == idx.size())[0]
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
         return FakeThrustRTC.DVVector(result)
@@ -157,3 +157,8 @@ class FakeThrustRTC:
     @staticmethod
     def Wait():
         pass
+
+    @staticmethod
+    def Sort_By_Key(keys, values):
+        values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
+        # TODO #328 Thrust sorts keys as well
