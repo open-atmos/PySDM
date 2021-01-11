@@ -35,3 +35,7 @@ class Numba(
 
     def __init__(self):
         raise Exception("Backend is stateless.")
+
+    @staticmethod
+    def sanity_check():
+        pass

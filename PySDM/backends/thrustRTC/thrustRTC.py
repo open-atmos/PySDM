@@ -2,6 +2,8 @@
 Created at 01.08.2019
 """
 
+import os
+import warnings
 from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethods
 from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
 from PySDM.backends.thrustRTC.impl._storage_methods import StorageMethods
@@ -34,3 +36,9 @@ class ThrustRTC(
 
     def __init__(self):
         raise Exception("Backend is stateless.")
+
+    @staticmethod
+    def sanity_check():
+        if not ThrustRTC.ENABLE \
+           and 'CI' not in os.environ:
+            warnings.warn('CUDA is not available, using FakeThrustRTC!')

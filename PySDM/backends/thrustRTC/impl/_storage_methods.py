@@ -112,6 +112,7 @@ class StorageMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
+        raise NotImplementedError("Unpredictable behavior")
         StorageMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
 
     @staticmethod
