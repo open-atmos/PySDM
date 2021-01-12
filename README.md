@@ -76,7 +76,7 @@ repository and install the package using ``pip -e`` or simply adjust the ``PYTHO
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Berry_1967_Figs_5_8_10/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Berry_1967_Figs_5_8_10/demo.ipynb)    
   (Box model, coalescence only, test cases for realistic kernels)
-#### 0D parcel-model condensation only examples (work with CPU backend only)
+#### 0D parcel-model condensation only examples (work with CPU backend only for now, stay tuned...)
 - [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_and_Shima_2017_Fig_5/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_and_Shima_2017_Fig_5/demo.ipynb)    
@@ -85,11 +85,15 @@ repository and install the package using ``pip -e`` or simply adjust the ``PYTHO
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)    
   (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
-#### 2D kinematic-flow warm-rain example (works with CPU backend only)
+#### 2D kinematic-flow Sc-mimicking aerosol collisional processing (warm-rain) example (work with CPU backend only for now, stay tuned...)
 - [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) Figs. 8 & 9:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)       
-  (2D prescribed-flow stratocumulus-mimicking aerosol collisional processing test case)
+  (interactive web-GUI with product selection, parameter sliders and netCDF/plot export buttons)
+- Bartman et al. 2021 (in preparation):
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Bartman_et_al_2021/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Bartman_et_al_2021/demo.ipynb)       
+  (default-settings based script generating a netCDF file and loading it subsequently to create the animation below)
 
 ![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
 
