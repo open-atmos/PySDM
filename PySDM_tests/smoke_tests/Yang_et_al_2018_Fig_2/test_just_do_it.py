@@ -12,7 +12,7 @@ import os
 
 
 # TODO #304 run for different atol, rtol, dt_max
-if os.environ.get('TRAVIS') == 'true' and not os.environ.get('FAST_TESTS') == 'true':
+if 'CI' in os.environ and not os.environ.get('FAST_TESTS') == 'true':
     scheme = ('default',  'BDF')
     coord = ('volume logarithm', 'volume')
     adaptive = (True, False)
@@ -28,7 +28,8 @@ else:
 @pytest.mark.parametrize("coord", coord)
 @pytest.mark.parametrize("adaptive", adaptive)
 @pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
-def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):    # Arrange
+def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
+    # Arrange
     if scheme == 'BDF' and not adaptive:
         return
     if scheme == 'BDF' and coord == 'volume':

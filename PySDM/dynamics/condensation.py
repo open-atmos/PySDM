@@ -5,8 +5,8 @@ Created at 24.10.2019
 import numpy as np
 
 
-default_rtol_x = 1e-8
-default_rtol_thd = 1e-8
+default_rtol_x = 1e-6
+default_rtol_thd = 1e-6
 
 
 class Condensation:

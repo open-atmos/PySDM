@@ -1,5 +1,5 @@
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
-[![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://www.numba.org)
+[![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
 [![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
 [![Linux OK](https://img.shields.io/static/v1?label=Linux&logo=Linux&color=yellow&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Linux)
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
@@ -61,7 +61,10 @@ PySDM ships with [tutorial files](https://github.com/atmos-cloud-sim-uj/PySDM/tr
 
 ## Installation
 
-To install PySDM, one may use: ``pip install --pre git+https://github.com/atmos-cloud-sim-uj/PySDM.git``.
+To install PySDM using ``pip``, one may use: ``pip install --pre git+https://github.com/atmos-cloud-sim-uj/PySDM.git``.
+
+Note that this does not include installation of tests or examples. To use the examples, it is suggested to clone the 
+repository and install the package using ``pip -e`` or simply adjust the ``PYTHONPATH`` env var accordingly.
 
 ## Demo notebooks reproducing results from literature:
 #### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
