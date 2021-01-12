@@ -6,7 +6,7 @@ from .numba.numba import Numba
 import ctypes
 import warnings
 from numba import cuda
-
+import sys
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
 def cuda_is_available():
@@ -27,6 +27,9 @@ def cuda_is_available():
         cuda_lib.cuGetErrorString(result, ctypes.byref(error_str))
         warnings.warn(
             "CUDA library found but cuInit() failed (error code: %d; message: %s)" % (result, error_str.value.decode()))
+        if 'google.colab' in sys.modules:
+            warning.warn("to use GPU on Colab set hardware accelerator to 'GPU' before session start"
+                         'in the "Runtime :: Change runtime type :: Hardware accelerator" menu')
         return False
 
     return True
