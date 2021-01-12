@@ -21,7 +21,7 @@ def run(settings, backend=CPU, observers=()):
     builder.set_environment(Box(dv=settings.dv, dt=settings.dt))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(settings.spectrum).sample(settings.n_sd)
-    coalescence = Coalescence(settings.kernel, adaptive=settings.adaptive, croupier='local')
+    coalescence = Coalescence(settings.kernel, adaptive=settings.adaptive)
     builder.add_dynamic(coalescence)
     products = [ParticlesVolumeSpectrum(), WallTime()]
     core = builder.build(attributes, products)

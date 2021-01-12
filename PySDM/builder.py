@@ -48,6 +48,8 @@ class Builder:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
     def build(self, attributes: dict, products: list = ()):
+        self.core.backend.sanity_check()
+
         for dynamic in self.core.dynamics.values():
             dynamic.register(self)
 
