@@ -3,7 +3,6 @@ Created at 01.08.2019
 """
 
 import os
-import sys
 import warnings
 from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethods
 from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
@@ -42,8 +41,4 @@ class ThrustRTC(
     def sanity_check():
         if not ThrustRTC.ENABLE \
            and 'CI' not in os.environ:
-            if 'google.colab' in sys.modules:
-                raise RuntimeError("to use GPU on Colab set hardware accelerator to 'GPU' before session start"
-                                   'in the "Runtime :: Change runtime type :: Hardware accelerator" menu')
-            else:
-                warnings.warn('CUDA is not available, using FakeThrustRTC!')
+            warnings.warn('CUDA is not available, using FakeThrustRTC!')
