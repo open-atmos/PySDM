@@ -28,7 +28,7 @@ def cuda_is_available():
         warnings.warn(
             "CUDA library found but cuInit() failed (error code: %d; message: %s)" % (result, error_str.value.decode()))
         if 'google.colab' in sys.modules:
-            warning.warn("to use GPU on Colab set hardware accelerator to 'GPU' before session start"
+            warnings.warn("to use GPU on Colab set hardware accelerator to 'GPU' before session start"
                          'in the "Runtime :: Change runtime type :: Hardware accelerator" menu')
         return False
 
