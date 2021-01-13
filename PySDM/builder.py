@@ -57,9 +57,7 @@ class Builder:
         for attribute in attributes:
             self.request_attribute(attribute)
         if 'Condensation' in self.core.dynamics:
-            self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(**self.condensation_params,
-                                                           enable_drop_temperatures='temperatures' in self.req_attr)
+            self.core.condensation_solver = self.core.backend.make_condensation_solver(**self.condensation_params, enable_drop_temperatures='temperatures' in self.req_attr)
         attributes['n'] = discretise_n(attributes['n'])
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO

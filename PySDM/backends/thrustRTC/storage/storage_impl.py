@@ -11,10 +11,10 @@ from ..impl.precision_resolver import PrecisionResolver
 def thrust(obj):
     if isinstance(obj, list):
         result = [thrust(o) for o in obj]
-    elif hasattr(obj, 'data'):
-        result = obj.data
     elif isinstance(obj, float):
         result = PrecisionResolver.get_floating_point(obj)
+    elif hasattr(obj, 'data'):
+        result = obj.data
     elif isinstance(obj, int):
         result = trtc.DVInt64(obj)
     else:

@@ -17,7 +17,9 @@ class AlgorithmicMethods:
         dim = trtc.DVInt64(dim)
         idx_length = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
-        loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i", f'''
+        loop = trtc.For(
+            ['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i",
+            f'''
             // Arakawa-C grid
             int _l_0 = cell_origin[i + 0];
             int _l_1 = cell_origin[i + idx_length];
@@ -34,7 +36,9 @@ class AlgorithmicMethods:
             displacement.shape[1],
             [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
-    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
+    __coalescence_body = trtc.For(
+        ['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma',
+         'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
         if (gamma[i] == 0) {
             adaptive_memory[i] = 1;
             return;
@@ -95,8 +99,11 @@ class AlgorithmicMethods:
         adaptive_device = trtc.DVBool(adaptive)
         subs_device = trtc.DVInt64(subs)
         AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
-            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
-        return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
+                                                       [n.data, volume.data, idx.data, idx_length, intensive.data,
+                                                        intensive_length, extensive.data, extensive_length, gamma.data,
+                                                        healthy.data, adaptive_device, subs_device,
+                                                        adaptive_memory.data])
+        return trtc.Reduce(adaptive_memory.data.range(0, length - 1), trtc.DVInt64(0), trtc.Maximum())
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
         prob[i] = ceil(prob[i] - rand[(int)(i / 2)]);
@@ -107,15 +114,126 @@ class AlgorithmicMethods:
     def compute_gamma(prob, rand):
         AlgorithmicMethods.__compute_gamma_body.launch_n(len(prob), [prob.data, rand.data])
 
+
+    __solve_lambda = """
+        auto solver = [](
+            double v,
+            double particles_temperatures,
+            int n,
+            double vdry,
+            int idx, // TO BEDZIE JAKAS TABLICA RACZEJ !
+            double kappa,
+            double thd,
+            double qv,
+            double dthd_dt,
+            double dqv_dt,
+            double m_d,
+            double rhod_mean
+            double rtol_x,
+            double rtol_thd,
+            double dt,
+            int n_substeps
+        ){
+            int ripenings = 0;
+            std::tie(qv, thd, ripenings) = std::make_tuple(0,0,0) // step(v, particle_t,n,vdry,cell_idx,kappa, thd, qv, dthd_dt, dqv_dt, m_d ,rhod_mea, rtol_x, n_substeps, dt, thd, rtol_thd) 
+            return std::make_tuple(qv, thd, n_substeps, ripenings);
+        }
+    """
+
+
+    __condensation_main_body = '''
+    
+        ##Solve_Lambda_Declaration##
+    
+        //Thread id to będzie iterator od thrusta, n_threads trzeba bedzie podac
+        for (int i = thread_id ; i < n_cell ; i+= n_threads){
+            int cell_id = cell_order[i];
+
+            int cell_start = cell_start_arg[cell_id];
+            int cell_end = cell_start_arg[cell_id + 1];
+            int n_sd_in_cell = cell_end - cell_start;
+            if (n_sd_in_cell == 0):
+               continue;
+
+            double dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt;
+            double dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt;
+            double rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2;
+            double md = rhod_mean * dv_mean;
+
+            double qv_new;
+            double thd_new;
+            int substeps_hint;
+            int ripening_flag;
+            
+            
+            //HACK
+            
+            int idx_start_end = idx[cell_start];
+
+            std::tie(qv_new, thd_new, substeps_hint, ripening_flag) = solver(
+                v, particle_temperatures, n, vdry,
+                idx_start_end, kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
+                rtol_x, rtol_thd, dt, substeps[cell_id]
+            )
+
+            substeps[cell_id] = substeps_hint
+            ripening_flags[cell_id] += ripening_flag
+
+            pqv[cell_id] = qv_new
+            pthd[cell_id] = thd_new
+        }
+    '''.replace('##Solve_Lambda_Declaration##', __solve_lambda)
+
+
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
             solver,
             n_cell, cell_start_arg,
             v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order
+            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags
     ):
-        raise NotImplementedError()
+        n_threads = 64*2000 ; #TODO Wykrywanie, ja daje z palca
+
+        threads_as_trtc = trtc.DVInt64(n_threads)
+        cell_as_trtc = trtc.DVInt64(n_cell)
+        dv_as_trtc=trtc.DVDouble(dv)
+        kappa_as_trtc = trtc.DVDouble(kappa)
+        rtol_x_as_trtc = trtc.DVDouble(rtol_x)
+        rtol_thd_as_trtc = trtc.DVDouble(rtol_thd)
+        dt_as_trtc = trtc.DVDouble(dt)
+        cell_order_as_trtc = trtc.device_vector_from_numpy(cell_order)
+
+
+        trtc.For(['n_threads', 'n_cell', 'cell_start_arg', 'v', 'particle_temperatures'
+                  'n', 'vdry','idx','rhod','thd' 'qv','dv_mean','prhod','pthd','pqv','kappa',
+                  'rtol_x', 'rtol_thd', 'dt', 'substeps', 'cell_order','ripening_flags'],
+                 "thread_id" , AlgorithmicMethods.__condensation_main_body).launch_n(n_threads,
+                                                                  [threads_as_trtc,
+                                                                   cell_as_trtc,
+                                                                   cell_start_arg.data,
+                                                                   v.data,
+                                                                   particle_temperatures.data,
+                                                                   n.data,
+                                                                   vdry.data,
+                                                                   idx.data,
+                                                                   rhod.data,
+                                                                   thd.data,
+                                                                   qv.data,
+                                                                   dv_as_trtc,
+                                                                   prhod.data,
+                                                                   pthd.data,
+                                                                   pqv.data,
+                                                                   kappa_as_trtc,
+                                                                   rtol_x_as_trtc,
+                                                                   rtol_thd_as_trtc,
+                                                                   dt_as_trtc,
+                                                                   substeps.data,
+                                                                   cell_order_as_trtc,
+                                                                   ripening_flags.data])
+
+
+
 
     __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
                                          'volume', 'n'], "i", '''
@@ -133,9 +251,11 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__flag_precipitated_body.launch_n(
             length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
                      volume.data, n.data])
-        return 0 # TODO
+        return 0  # TODO
 
-    __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
+    __linear_collection_efficiency_body = trtc.For(
+        ['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii',
+         'is_first_in_pair', 'unit'], "i", '''
         output[i] = 0;
         if (is_first_in_pair[i]) {
             real_type r = radii[i] / unit;
@@ -175,7 +295,9 @@ class AlgorithmicMethods:
         dMg = PrecisionResolver.get_floating_point(Mg)
         dunit = PrecisionResolver.get_floating_point(unit)
         AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.data, dunit])
+                                                                        [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2,
+                                                                         dG3, dMf, dMg, output.data, radii.data,
+                                                                         is_first_in_pair.data, dunit])
 
     __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
         int r_id = (int)(factor * radius[i]);
@@ -195,33 +317,34 @@ class AlgorithmicMethods:
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
     __loop_reset = trtc.For(['vector_to_clean'], "i",
-    '''
-        vector_to_clean[i] = 0;
-    ''')
+                            '''
+                                vector_to_clean[i] = 0;
+                            ''')
 
-    __moments_body_0 = trtc.For(['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
-                                 'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
-    '''
-        auto i = idx[fake_i];
-        if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
-            atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-            for (int k = 0; k < specs_idx_shape; k+=1) {
-                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)attr[attr_shape * specs_idx[k] + i], (real_type)specs_rank[k]));
+    __moments_body_0 = trtc.For(
+        ['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
+         'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
+        '''
+            auto i = idx[fake_i];
+            if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
+                atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
+                for (int k = 0; k < specs_idx_shape; k+=1) {
+                    atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)attr[attr_shape * specs_idx[k] + i], (real_type)specs_rank[k]));
+                }
             }
-        }
-    '''.replace("real_type", PrecisionResolver.get_C_type()))
+        '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
-    '''
-        for (int k = 0; k < specs_idx_shape; k+=1) {
-            if (moment_0[c_id] == 0) {
-                moments[moments_shape * k  + c_id] = 0;
-            } 
-            else {
-                moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
-            }
-        }
-    ''')
+                                '''
+                                    for (int k = 0; k < specs_idx_shape; k+=1) {
+                                        if (moment_0[c_id] == 0) {
+                                            moments[moments_shape * k  + c_id] = 0;
+                                        } 
+                                        else {
+                                            moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
+                                        }
+                                    }
+                                ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -230,15 +353,17 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
         AlgorithmicMethods.__moments_body_0.launch_n(length,
-                           [idx.data, PrecisionResolver.get_floating_point(min_x), attr.data, trtc.DVInt64(x_id),
-                            PrecisionResolver.get_floating_point(max_x),
-                            moment_0.data, cell_id.data, n.data, trtc.DVInt64(specs_idx.shape[0]), moments.data,
-                            specs_idx.data, specs_rank.data, trtc.DVInt64(attr.shape[1]),
-                            trtc.DVInt64(moments.shape[1])])
+                                                     [idx.data, PrecisionResolver.get_floating_point(min_x), attr.data,
+                                                      trtc.DVInt64(x_id),
+                                                      PrecisionResolver.get_floating_point(max_x),
+                                                      moment_0.data, cell_id.data, n.data,
+                                                      trtc.DVInt64(specs_idx.shape[0]), moments.data,
+                                                      specs_idx.data, specs_rank.data, trtc.DVInt64(attr.shape[1]),
+                                                      trtc.DVInt64(moments.shape[1])])
 
-        AlgorithmicMethods.__moments_body_1.launch_n(moment_0.shape[0], [trtc.DVInt64(specs_idx.shape[0]), moments.data, moment_0.data,
-                           trtc.DVInt64(moments.shape[1])])
-
+        AlgorithmicMethods.__moments_body_1.launch_n(moment_0.shape[0],
+                                                     [trtc.DVInt64(specs_idx.shape[0]), moments.data, moment_0.data,
+                                                      trtc.DVInt64(moments.shape[1])])
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
         int sd_num = cell_start[i + 1] - cell_start[i];
@@ -303,5 +428,6 @@ class AlgorithmicMethods:
         assert max(cell_id.to_ndarray()) == 0
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
-                                                                                  [cell_id.data, cell_start.data, idx.data])
+                                                                                  [cell_id.data, cell_start.data,
+                                                                                   idx.data])
         return idx

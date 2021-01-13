@@ -26,3 +26,7 @@ class ThrustRTC(
 
     def __init__(self):
         raise Exception("Backend is stateless.")
+
+    @staticmethod
+    def make_condensation_solver(coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
+        return None

@@ -13,6 +13,11 @@ import matplotlib
 _matplotlib_version_3_3_3 = StrictVersion("3.3.0")
 _matplotlib_version_actual = StrictVersion(matplotlib.__version__)
 
+from matplotlib import rc
+
+#hack na czcionke
+rc('font',**{'family':'serif','serif':['Palatino']})
+pyplot.rcParams['pdf.fonttype'] = 42
 
 class SpectrumColors:
 

@@ -36,7 +36,7 @@ def bdf_condensation(core,
         cell_start_arg=core.particles.cell_start.data,
         v=core.particles["volume"].data,
         particle_temperatures=np.empty(0),
-        r_cr=None,
+        #r_cr=None,
         n=core.particles['n'].data,
         vdry=core.particles["dry volume"].data,
         idx=core.particles._Particles__idx.data,
@@ -70,7 +70,7 @@ def make_solve(coord, rtol):
     dx_dt = coord.dx_dt
 
     def solve(
-            v, particle_temperatures, r_cr, n, vdry,
+            v, particle_temperatures, n, vdry,
             cell_idx, kappa, thd, qv,
             dthd_dt, dqv_dt, m_d_mean, rhod_mean,
             rtol_x, rtol_thd, dt, substeps

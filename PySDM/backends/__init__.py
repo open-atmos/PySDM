@@ -24,14 +24,16 @@ def cuda_is_available():
     if result != 0:  # cuda.h: CUDA_SUCCESS = 0
         error_str = ctypes.c_char_p()
         cuda.cuGetErrorString(result, ctypes.byref(error_str))
-        warnings.warn("CUDA library found but cuInit() failed (error code: %d; message: %s)" % (result, error_str.value.decode()))
+        warnings.warn(
+            "CUDA library found but cuInit() failed (error code: %d; message: %s)" % (result, error_str.value.decode()))
         return False
 
     return True
 
 
-if cuda_is_available():
+if True:  # cuda_is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
+
 else:
     from .thrustRTC.fakeThrustRTC import _flag
 
@@ -40,7 +42,9 @@ else:
     import numpy as np
 
     from .thrustRTC.thrustRTC import ThrustRTC
+
     ThrustRTC.ENABLE = False
+
 
     class Random:
         def __init__(self, size, seed=None):
@@ -51,7 +55,8 @@ else:
         def __call__(self, storage):
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
+
     ThrustRTC.Random = Random
-   
+
 CPU = Numba
 GPU = ThrustRTC
