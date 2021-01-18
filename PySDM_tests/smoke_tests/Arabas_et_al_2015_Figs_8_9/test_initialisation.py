@@ -17,7 +17,7 @@ def test_initialisation(plot=False):
     settings = Settings()
     settings.n_steps = -1
     settings.grid = (10, 5)
-    settings.n_sd_per_gridbox = 2000
+    settings.n_sd_per_gridbox = 5000
 
     simulation = Simulation(settings, None)
 
@@ -56,7 +56,7 @@ def test_initialisation(plot=False):
     # Plot
     if plot:
         for level in range(0, n_levels):
-            color = str(.5 * (2 + (level / (n_levels - 1))))
+            color = str(.75 * (level / (n_levels - 1)))
             pyplot.step(
                 r_bins[:-1] * si.metres / si.micrometres,
                 histogram_dry[:, level] / si.metre ** 3 * si.centimetre ** 3,

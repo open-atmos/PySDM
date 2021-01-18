@@ -29,6 +29,7 @@ jobs:
     - name: "Python 3.7 on OSX"
       language: shell
       os: osx
+      osx_image: xcode11.3
       before_install:
         - export PY_SFX=3
     - name: "Python 3.7 on Windows"
