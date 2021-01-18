@@ -26,7 +26,7 @@ class Storage:
                 result_data = self.data[key]
                 result_shape = (stop - start,)
             elif dim == 2:
-                stop = key.stop or self.shape[1]
+                stop = key.stop or self.shape[0]
                 result_data = self.data[key]
                 result_shape = (stop - start, self.shape[1])
             else:
