@@ -101,16 +101,6 @@ def make_solve(coord, rtol):
                 method="BDF"
             )
         except RuntimeWarning:
-            print("kappa", kappa)
-            print("vdry", vdry[cell_idx])
-            print("n", n[cell_idx])
-            print("dthd_dt", dthd_dt)
-            print("dqv_dt", dqv_dt)
-            print("m_d_mean", m_d_mean)
-            print("qt", qt)
-            print("t_span", [0, dt])
-            print("y0", y0)
-            print("rtol", rtol)
             raise Exception("scipy.integrate.solve_ivp failed!")
         assert integ.success, integ.message
         y1 = integ.y[:, 0]
