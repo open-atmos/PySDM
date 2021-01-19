@@ -101,7 +101,7 @@ def make_solve(coord, rtol):
                 method="BDF"
             )
         except RuntimeWarning:
-            raise Exception("scipy.integrate.solve_ivp failed!")
+            raise Exception("warning thrown within scipy.integrate.solve_ivp (python -We ?)")
         assert integ.success, integ.message
         y1 = integ.y[:, 0]
 
