@@ -47,7 +47,7 @@ class Builder:
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
-    def build(self, attributes: dict, products: list = ()):
+    def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         self.core.backend.sanity_check()
 
         for dynamic in self.core.dynamics.values():
@@ -62,7 +62,7 @@ class Builder:
             self.core.condensation_solver = \
                 self.core.backend.make_condensation_solver(**self.condensation_params,
                                                            enable_drop_temperatures='temperatures' in self.req_attr)
-        attributes['n'] = discretise_n(attributes['n'])
+        attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
         self.core.particles = ParticlesFactory.attributes(self.core, self.req_attr, attributes)

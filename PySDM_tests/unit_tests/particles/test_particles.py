@@ -34,7 +34,7 @@ class TestParticles:
         # Arrange
         core = DummyCore(backend, n_sd=len(n))
         attributes = {'n': n, 'volume': volume}
-        core.build(attributes)
+        core.build(attributes, int_caster=lambda x: np.int64(x))
         sut = core.particles
         sut.healthy = False
 

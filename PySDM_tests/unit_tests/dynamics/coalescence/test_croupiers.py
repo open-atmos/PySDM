@@ -21,18 +21,16 @@ def test_final_state(croupier, backend):
         return  # TODO #330
 
     # Arrange
-    n_part = 10000
+    n_part = 100000
     v_mean = 2e-6
     d = 1.2
-    v_min = 0.01e-6
-    v_max = 10e-6
-    n_sd = 64
+    n_sd = 32
     x = 4
     y = 4
 
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    attributes['volume'], attributes['n'] = Linear(spectrum, (v_min, v_max)).sample(n_sd)
+    attributes['volume'], attributes['n'] = Linear(spectrum).sample(n_sd)
     core = DummyCore(backend, n_sd)
     core.environment = DummyEnvironment(grid=(x, y))
     core.croupier = croupier
