@@ -81,24 +81,27 @@ def make_solve(coord, rtol):
         y0[idx_x:] = x(v[cell_idx])
         qt = qv + _ODESystem.ql(n[cell_idx], y0[idx_x:], m_d_mean)
 
-        integ = scipy.integrate.solve_ivp(
-            _ODESystem(
-                kappa,
-                vdry[cell_idx],
-                n[cell_idx],
-                dthd_dt,
-                dqv_dt,
-                m_d_mean,
-                rhod_mean,
-                qt
-            ),
-            t_span=[0, dt],
-            t_eval=[dt],
-            y0=y0,
-            rtol=rtol,
-            atol=0,
-            method="BDF"
-        )
+        try:
+            integ = scipy.integrate.solve_ivp(
+                _ODESystem(
+                    kappa,
+                    vdry[cell_idx],
+                    n[cell_idx],
+                    dthd_dt,
+                    dqv_dt,
+                    m_d_mean,
+                    rhod_mean,
+                    qt
+                ),
+                t_span=[0, dt],
+                t_eval=[dt],
+                y0=y0,
+                rtol=rtol,
+                atol=0,
+                method="BDF"
+            )
+        except RuntimeWarning:
+            raise Exception("warning thrown within scipy.integrate.solve_ivp (python -We ?)")
         assert integ.success, integ.message
         y1 = integ.y[:, 0]
 

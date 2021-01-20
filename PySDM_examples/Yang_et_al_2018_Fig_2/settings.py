@@ -34,7 +34,7 @@ class Settings:
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
 
-    mass_of_dry_air = 100 * si.kilogram  # TODO #335 doubled with jupyter si unit
+    mass_of_dry_air = 1000 * si.kilogram  # TODO #335 doubled with jupyter si unit
     total_time = 3 * si.hours
     T0 = 284.3 * si.kelvin
     q0 = 7.6 * si.grams / si.kilogram

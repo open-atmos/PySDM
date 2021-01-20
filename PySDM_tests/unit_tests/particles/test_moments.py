@@ -17,16 +17,13 @@ class TestMaths:
     @staticmethod
     def test_moment_0d(backend):
         # Arrange
-        n_part = 10000
+        n_part = 100000
         v_mean = 2e-6
         d = 1.2
-
-        v_min = 0.01e-6
-        v_max = 10e-6
         n_sd = 32
 
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = Linear(spectrum, (v_min, v_max)).sample(n_sd)
+        v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
         particles = DummyCore(backend, n_sd)
