@@ -51,12 +51,12 @@ class AlgorithmicMethods:
                 adaptive_memory[cell_idx[cell_id[j]]] = max(adaptive_memory[cell_idx[cell_id[j]]],
                                                             int(((gamma[i]) * subs[cell_idx[cell_id[j]]]) / prop))
             g = min(int(gamma[i]), prop)
-            collision_rate_deficit[cell_idx[cell_id[j]]] += (int(gamma[i]) - prop) * n[k]
+            collision_rate_deficit[cell_id[j]] += (int(gamma[i]) - prop) * n[k]
 
             if g == 0:
                 continue
 
-            collision_rate[cell_idx[cell_id[j]]] += g * n[k]
+            collision_rate[cell_id[j]] += g * n[k]
 
             new_n = n[j] - g * n[k]
             if new_n > 0:
