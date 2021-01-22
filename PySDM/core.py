@@ -3,6 +3,8 @@ Created at 09.11.2019
 """
 
 import numpy as np
+
+from PySDM.dynamics import AmbientThermodynamics
 from PySDM.state.particles import Particles
 
 
@@ -98,7 +100,7 @@ class Core:
     def run(self, steps):
         for _ in range(steps):
             for dynamic in self.dynamics.values():
-                dynamic()
+                    dynamic()
             self.n_steps += 1
             for observer in self.observers:
                 observer.notify()

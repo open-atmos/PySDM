@@ -63,29 +63,34 @@ class Parcel(_Moist):
         return attributes
 
     def advance_parcel_vars(self):
-        dt = self.core.dt
-        qv = self['qv'][0]
-        T = self['T'][0]
-        p = self['p'][0]
-        t = self['t'][0]
+        dt = float(self.core.dt)
+        qv = float(self['qv'][0])
+        T = float(self['T'][0])
+        p = float(self['p'][0])
+        t = float(self['t'][0])
 
         rho = p / phys.R(qv) / T
         pd = p * (1 - 1 / (1 + const.eps / qv))
 
         # mid-point value for w
         dz_dt = self.w(t + dt/2)
+        dz_dt = float(dz_dt)
 
         # Explicit Euler for p,T (predictor step assuming dq=0)
         dp_dt = - rho * const.g * dz_dt
         dpd_dt = dp_dt  # dq=0
         dT_dt = dp_dt / rho / phys.c_p(qv)
 
-        self._tmp['t'][:] += dt
-        self._tmp['z'][:] += dt * dz_dt
-        self._tmp['rhod'][:] += dt * (
+        dt_as_storage = self.core.Storage.from_ndarray(np.array([dt]))
+
+        dt_dzdt =  self.core.Storage.from_ndarray(np.array([dt*dz_dt]))
+        rhodRightSide = self.core.Storage.from_ndarray(np.array([(dt * (
                 dpd_dt / const.Rd / T +
-                -dT_dt * pd / const.Rd / T**2
-        )
+                -dT_dt * pd / const.Rd / T**2))]))
+
+        self._tmp['t'][:] += dt_as_storage
+        self._tmp['z'][:] += dt_dzdt
+        self._tmp['rhod'][:] += rhodRightSide
 
         rhod_mean = (self._tmp['rhod'][0] + self["rhod"][0]) / 2
         self.mesh.dv = self.mass_of_dry_air / rhod_mean

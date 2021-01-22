@@ -48,4 +48,4 @@ class Condensation:
             substeps=self.substeps,
             ripening_flags=self.ripening_flags
         )
-        self.substeps[:] = np.maximum(self.substeps[:], int(self.core.dt))
+        self.substeps[:] = np.maximum(self.substeps.data[:], self.core.dt)

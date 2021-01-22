@@ -114,36 +114,355 @@ class AlgorithmicMethods:
     def compute_gamma(prob, rand):
         AlgorithmicMethods.__compute_gamma_body.launch_n(len(prob), [prob.data, rand.data])
 
+    __radius_lambda = """
+        auto radius = [](double f01_volume){
+            return pow( (f01_volume * 3 /4 / 3.1415926535897932384626) , (1/3));
+        };
+    """
 
-    __solve_lambda = """
-        auto solver = [](
-            double v,
-            double particles_temperatures,
-            int n,
-            double vdry,
-            int idx, // TO BEDZIE JAKAS TABLICA RACZEJ !
-            double kappa,
-            double thd,
-            double qv,
-            double dthd_dt,
-            double dqv_dt,
-            double m_d,
-            double rhod_mean
-            double rtol_x,
-            double rtol_thd,
-            double dt,
-            int n_substeps
-        ){
-            int ripenings = 0;
-            std::tie(qv, thd, ripenings) = std::make_tuple(0,0,0) // step(v, particle_t,n,vdry,cell_idx,kappa, thd, qv, dthd_dt, dqv_dt, m_d ,rhod_mea, rtol_x, n_substeps, dt, thd, rtol_thd) 
-            return std::make_tuple(qv, thd, n_substeps, ripenings);
-        }
+    __volume_lambda = """
+        auto volume = [](double f02_x){
+            return exp(f02_x);
+        };
+    """
+
+    __x_lambda = """
+        auto x = [](double f03_volume){
+            return log(f03_volume);
+        };
+    """
+
+    __dx_dt_lambda = """
+        ##radius_lambda##
+        ##volume_lambda##
+    
+        auto dx_dt = [radius, volume] (double f04_x, double f04_dr_dt){
+            auto r = radius(volume(f04_x));
+            return 3/ r * f04_dr_dt;
+        };
+    """.replace("##radius_lambda##", __radius_lambda)\
+       .replace("##volume_lambda##", __volume_lambda)
+
+
+    __dr_dt_MM_lambda = """ // CALOSC WYZBYTA CONSTOW, MAJOR ISSUE
+        auto dr_dt_MM = [](double f05_r, double f05_T, double f05_p, double f05_RH, double f05_kp, double f05_rd){
+            
+            auto RH_eq = [](double f06_r, double f06_T, double f06_kp, double f06_rd){
+                auto B = [](double f07_kp, double f07_rd){
+                    return 1;
+                };
+                auto A = [](double f08_T){
+                    return 1;
+                };
+            
+                return 1;
+            };
+            
+            auto Fd = [](double f09_T, double f09_DResult){
+                return 1;
+            };
+            
+            auto Fk = [](double f10_T, double f10_K, double f10_lv){
+                return 1;
+            };
+            
+            auto lv = [](double f11_T)
+            {
+                return 1;
+            };
+            
+            auto K = [](double f05_1_r, double f05_1_T, double f05_1_p)
+            {
+                return 1;
+            };
+            
+            auto D = [](double f05_2_r, double f05_2_T)
+            {
+                return 1;
+            };
+            
+            auto nom = (f05_RH - RH_eq(f05_r, f05_T, f05_kp, f05_rd));
+            auto den =   Fd(f05_T, D(f05_r, f05_T)) +Fk(f05_T, K(f05_r, f05_T, f05_p), lv(f05_T));
+            
+            return 1 / f05_r * nom / den;
+        };
+    """
+
+    __minfun_lambda = """
+        auto minfun = [volume,radius,dr_dt_MM, dx_dt](double f12_x_new, double f12_x_old, double f12_dt, double f12_T, double f12_p, double f12_RH, double f12_kappa, double f12_rd){
+            auto r_new = radius(volume(f12_x_new));
+            auto dr_dt = dr_dt_MM(r_new, f12_T,f12_p,f12_RH,f12_kappa,f12_rd);
+            return f12_x_old - f12_x_new + f12_dt * dx_dt(f12_x_new, dr_dt);
+        };
+        """
+
+    __bisec_lambda = """
+        auto bisec = [volume, radius, dx_dt] (
+        double f_13_a,
+        double f_13_interval,
+        double f_13_x_old,
+        double f_13_dt,
+        double f_13_T,
+        double f_13_p, 
+        double f_13_RH,
+        double f_13_kappa,
+        double f_13_rd,
+        double f_13_rtol){
+            auto b = f_13_a + f_13_interval;
+        
+            ##dr_dt_MM_lambda##
+            ##min_fun##
+        
+            auto fa = minfun(f_13_a, f_13_x_old, f_13_dt, f_13_T, f_13_p, f_13_RH, f_13_kappa, f_13_rd);
+            auto fb = minfun(b, f_13_x_old, f_13_dt, f_13_T, f_13_p, f_13_RH, f_13_kappa, f_13_rd);
+            
+            auto counter = 0;
+            while ( fa * fb > 0){
+                counter++;
+                if (counter > 100)
+                    auto z = 1/0; // wyjatek
+                
+                b = f_13_a + f_13_interval * pow((double)2, counter);
+                fb = minfun(b, f_13_x_old, f_13_dt, f_13_T, f_13_p, f_13_RH, f_13_kappa, f_13_rd);
+            
+            }
+            if (b<f_13_a){
+                auto tmp = b;
+                b = f_13_a;
+                f_13_a = tmp;
+                
+                tmp = fb;
+                fb = fa;
+                fa = tmp;
+            }
+            
+            
+            auto x_new = (f_13_a+b)/2;        
+            while(1){
+                if ( (b-f_13_a) < f_13_rtol * abs(x_new))
+                    break;
+            
+                auto f_new = minfun(x_new, f_13_x_old, f_13_dt, f_13_T, f_13_p, f_13_RH, f_13_kappa, f_13_rd);
+                
+                if (f_new * fa > 0){
+                    f_13_a = x_new;
+                    fa= f_new;
+                }else{
+                    b = x_new;
+                }
+            }
+            
+            return x_new;
+        };
+    """.replace("##dr_dt_MM_lambda##", __dr_dt_MM_lambda)\
+       .replace("##min_fun##", __minfun_lambda)
+
+
+    __calculate_ml_old_lambda = """
+        auto calculate_ml_old = []( 
+        VectorView<double> f_14_v, 
+        VectorView<int64_t> f_14_n,
+        int f_14_cell_idx){
+            auto result = 0;
+            // TODO: to for po cell_idx, tutaj narazie przekazuje 1 !!!!     
+            int drop = f_14_cell_idx;
+            result += f_14_n[drop] * f_14_v[drop] *  1 /* const.rho_w */;
+             
+            return result;
+        };
+    """
+
+    __calculate_ml_new_lambda = """ // FUNKCJA BEZ OBSLUGI DROP TEMPERATURE
+        auto calculate_ml_new = [&ml_new, &ripening](
+        double f_15_dt,
+        double f_15_T,
+        double f_15_p,
+        double f_15_RH,
+        VectorView<double> f_15_v,
+        VectorView<double> f_15_particle_T,
+        VectorView<int64_t> f_15_n,
+        VectorView<double> f_15_vdry,
+        int f_15_cell_idx,
+        double f_15_kappa,
+        double f_15_qv,
+        double f_15_rtol_x){
+        
+            double result = 0;
+            auto growing = 0;
+            auto decreasing = 0;
+        
+            //for na krople :) 
+        
+            int drop = f_15_cell_idx;
+                { 
+                    ##x_lambda##
+                    ##dx_dt_lambda##
+                
+                    auto x_old = x(f_15_v[drop]);
+                    auto r_old = radius(f_15_v[drop]);
+                    auto rd = radius(f_15_vdry[drop]);
+                
+                    ##__dr_dt_MM_lambda##
+                
+                    auto dr_dt_old = dr_dt_MM(r_old,f_15_T,f_15_p,f_15_RH, f_15_kappa, rd);
+                    auto dx_old = f_15_dt * dx_dt(x_old, dr_dt_old);
+                    
+                    if(dx_old <0){
+                        if( dx_old < x(f_15_vdry[drop]) - x_old) //maximum
+                            dx_old = x(f_15_vdry[drop]) - x_old;
+                    }
+                    
+                    
+                    auto a = x_old;
+                    auto interval = dx_old;
+                    
+                    ##bisec_lambda##
+                    
+                    auto x_new = bisec(a, interval, x_old, f_15_dt, f_15_T, f_15_p, f_15_RH, f_15_kappa, rd, f_15_rtol_x);
+                    auto v_new = volume(x_new);
+                    
+                    if ( (abs(v_new - f_15_v[drop]) / v_new ) > 0.5 ){
+                        if (v_new - f_15_v[drop] > 0){
+                            growing++;
+                        }else{
+                            decreasing++;
+                        }
+                    }
+                    f_15_v[drop] = v_new;
+                    result += f_15_n[drop] * v_new * /* const.rho_w */ 1;
+                    
+                    ml_new = result;
+                    ripening = (growing > 0 && decreasing > 0) ? 1 : 0;
+                }
+        };
+    
+    """.replace("##bisec_lambda##", __bisec_lambda)\
+       .replace("##x_lambda##", __x_lambda)\
+       .replace("##radius_lambda##", __radius_lambda)\
+       .replace("##dx_dt_lambda##", __dx_dt_lambda)\
+       .replace("##__dr_dt_MM_lambda##", __dr_dt_MM_lambda)
+
+    __temperature_pressure_RH_lambda = """
+        auto temperature_pressure_RH = [&T,&p,&RH](
+        double f16_rhod,
+        double f16_thd,
+        double f16_qv){
+            auto exponent = 1; // const.Rd / const.c_pd;
+            auto pd = pow( (double)((f16_rhod * 1 * f16_thd) / pow((double)1000 , exponent)), (double)(1 / (1 - exponent))); //ODPOWIEDNIE consty, wyrzucilem wewnetrzne komentarze bo nie dzialalo
+            auto R = /* const.Rv */ 1 / (1 / f16_qv + 1) +  1 /* const.Rd */ / (1 + f16_qv);
+
+            auto T = pow( f16_thd * (pd / 1000 /* const.p1000 */) , exponent);
+            auto p = f16_rhod * (1 + f16_qv) * R * T;
+            
+            auto pvs = [] (double f_16_1_T){
+                return 1; // const :/
+            };
+            
+            auto RH = (p - pd) / pvs(T);
+        };
+
     """
 
 
+    __step_lambda = """
+            auto step = [&qv_new, &thd_new, &ripening_flag](
+            VectorView<double> f17_v,
+            VectorView<double> f17_particle_T,
+            VectorView<int64_t> f17_n,
+            VectorView<double> f17_vdry,
+            int64_t f17_cell_idx, // TO BEDZIE JAKAS TABLICA RACZEJ !
+            double f17_kappa,
+            double f17_thd,
+            double f17_qv,
+            double f17_dthd_dt,
+            double f17_dqv_dt,
+            double f17_m_d,
+            double f17_rhod_mean,
+            double f17_rtol_x,
+            double f17_dt,
+            int64_t f17_n_substeps)
+            {
+                f17_dt /= f17_n_substeps;
+                
+                ##Calculate_ml_old_Lambda_Declaration##
+                
+                auto ml_old = calculate_ml_old(f17_v, f17_n, f17_cell_idx);
+                
+                auto ripenings = 0;
+                for(int t=0; t<f17_n_substeps;t++){
+                    f17_thd += f17_dt * f17_dthd_dt / 2;
+                    f17_qv += f17_dt * f17_dqv_dt / 2;
+                    
+                    double T;
+                    double p;
+                    double RH;
+                    
+                    ##Temperature_pressure_RH_Lambda_Declaration##
+                    temperature_pressure_RH(f17_rhod_mean, f17_thd, f17_qv);
+                    
+                    
+                    double ml_new = 0; 
+                    int ripening = 0; 
+                    ##calculate_ml_new_Lambda_Declaration##
+                    calculate_ml_new(f17_dt, T, p, RH, f17_v, f17_particle_T, f17_n, f17_vdry, f17_cell_idx, f17_kappa, f17_qv, f17_rtol_x);
+                    
+                    auto dml_dt = (ml_new - ml_old) / f17_dt;
+                    auto dqv_dt_corr = - dml_dt / f17_m_d;
+                    
+                    auto dthd_dt = [](double f21_rhod, double f21_thd, double f21_T, double f21_sqv_dt){
+                        return 1; //TODO
+                    };
+                    
+                    auto dthd_dt_corr = dthd_dt(f17_rhod_mean, f17_thd, T, dqv_dt_corr);
+                    f17_thd += f17_dt * (f17_dthd_dt / 2 + dthd_dt_corr);
+                    f17_qv += f17_dt * (f17_dqv_dt / 2 + dqv_dt_corr);
+                    ml_old = ml_new;
+                    ripenings += ripening;
+                }
+                
+                qv_new = f17_qv;
+                thd_new = f17_thd;
+                ripening_flag = ripenings;
+            };
+    """.replace("##Temperature_pressure_RH_Lambda_Declaration##", __temperature_pressure_RH_lambda)\
+       .replace("##calculate_ml_new_Lambda_Declaration##", __calculate_ml_new_lambda)\
+       .replace("##Calculate_ml_old_Lambda_Declaration##", __calculate_ml_old_lambda)
+
+
+    __solve_lambda = """
+        auto solver = [&qv_new,&thd_new,&substeps_hint,&ripening_flag](
+            VectorView<double> f18_v,
+            VectorView<double> f18_particles_temperatures,
+            VectorView<int64_t> f18_n,
+            VectorView<double> f18_vdry,
+            int64_t f18_idx, // TO BEDZIE JAKAS TABLICA RACZEJ !
+            double f18_kappa,
+            double f18_thd,
+            double f18_qv,
+            double f18_dthd_dt,
+            double f18_dqv_dt,
+            double f18_m_d,
+            double f18_rhod_mean,
+            double f18_rtol_x,
+            double f18_rtol_thd,
+            double f18_dt,
+            int64_t f18_n_substeps
+        ){
+           qv_new = 0;
+           thd_new = 0;
+           substeps_hint = 0;
+           ripening_flag = 0;
+           
+           ##Step_Lambda_Declaration##
+           
+           step(f18_v, f18_particles_temperatures, f18_n, f18_vdry, f18_idx, f18_kappa, f18_thd, f18_qv, f18_dthd_dt, f18_dqv_dt, f18_m_d, f18_rhod_mean, f18_rtol_x, f18_dt, f18_n_substeps);
+           
+           substeps_hint = f18_n_substeps;
+        }
+    """.replace('##Step_Lambda_Declaration##', __step_lambda)
+
+
     __condensation_main_body = '''
-    
-        ##Solve_Lambda_Declaration##
     
         //Thread id to będzie iterator od thrusta, n_threads trzeba bedzie podac
         for (int i = thread_id ; i < n_cell ; i+= n_threads){
@@ -152,35 +471,37 @@ class AlgorithmicMethods:
             int cell_start = cell_start_arg[cell_id];
             int cell_end = cell_start_arg[cell_id + 1];
             int n_sd_in_cell = cell_end - cell_start;
-            if (n_sd_in_cell == 0):
+            if (n_sd_in_cell == 0)
                continue;
 
             double dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt;
             double dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt;
             double rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2;
             double md = rhod_mean * dv_mean;
-
+            
             double qv_new;
             double thd_new;
             int substeps_hint;
             int ripening_flag;
             
+            ##Solve_Lambda_Declaration## ;
+
             
             //HACK
             
             int idx_start_end = idx[cell_start];
 
-            std::tie(qv_new, thd_new, substeps_hint, ripening_flag) = solver(
+            solver(
                 v, particle_temperatures, n, vdry,
                 idx_start_end, kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                 rtol_x, rtol_thd, dt, substeps[cell_id]
-            )
+            );
 
-            substeps[cell_id] = substeps_hint
-            ripening_flags[cell_id] += ripening_flag
+            substeps[cell_id] = substeps_hint;
+            ripening_flags[cell_id] += ripening_flag;
 
-            pqv[cell_id] = qv_new
-            pthd[cell_id] = thd_new
+            pqv[cell_id] = qv_new;
+            pthd[cell_id] = thd_new;
         }
     '''.replace('##Solve_Lambda_Declaration##', __solve_lambda)
 
@@ -204,9 +525,8 @@ class AlgorithmicMethods:
         dt_as_trtc = trtc.DVDouble(dt)
         cell_order_as_trtc = trtc.device_vector_from_numpy(cell_order)
 
-
-        trtc.For(['n_threads', 'n_cell', 'cell_start_arg', 'v', 'particle_temperatures'
-                  'n', 'vdry','idx','rhod','thd' 'qv','dv_mean','prhod','pthd','pqv','kappa',
+        trtc.For(['n_threads', 'n_cell', 'cell_start_arg', 'v', 'particle_temperatures',
+                  'n', 'vdry', 'idx', 'rhod', 'thd', 'qv','dv_mean','prhod','pthd','pqv','kappa',
                   'rtol_x', 'rtol_thd', 'dt', 'substeps', 'cell_order','ripening_flags'],
                  "thread_id" , AlgorithmicMethods.__condensation_main_body).launch_n(n_threads,
                                                                   [threads_as_trtc,
@@ -231,7 +551,6 @@ class AlgorithmicMethods:
                                                                    substeps.data,
                                                                    cell_order_as_trtc,
                                                                    ripening_flags.data])
-
 
 
 
