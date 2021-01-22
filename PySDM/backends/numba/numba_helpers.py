@@ -175,19 +175,23 @@ def bisec(minfun, a, interval, args, rtol):
     fa = minfun(a, *args)
     fb = minfun(b, *args)
 
-    counter = 0
+    fuse = 100
     while fa * fb > 0:
-        counter += 1
-        if counter > 100:
+        fuse -= 1
+        if fuse == 0:
             raise RuntimeError("Cannot find interval!")
-        b = a + interval * 2**counter
+        b = a + interval * 2**fuse
         fb = minfun(b, *args)
 
     if b < a:
         a, b = b, a
         fa, fb = fb, fa
 
+    fuse = 10000
     while True:
+        fuse -= 1
+        if fuse == 0:
+            raise RuntimeError("Cannot find solution!")
         x_new = (a + b) / 2
         if within_tolerance(error_estimate=(b - a), value=x_new, rtol=rtol):
             break
