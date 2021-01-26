@@ -36,7 +36,9 @@ class Settings:
 
     condensation_rtol_x = condensation.default_rtol_x
     condensation_rtol_thd = condensation.default_rtol_thd
-    adaptive = True
+    condensation_adaptive = True
+
+    coalescence_adaptive = True
 
     grid = (25, 25)
     size = (1500 * si.metres, 1500 * si.metres)
@@ -51,7 +53,7 @@ class Settings:
 
     @property
     def n_steps(self) -> int:
-        return int(self.simulation_time / self.dt)
+        return int(self.simulation_time / self.dt) #TODO
 
     @property
     def steps_per_output_interval(self) -> int:
