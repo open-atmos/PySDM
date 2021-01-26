@@ -44,20 +44,28 @@ class Settings:
     rho_w_max = .6 * si.metres / si.seconds * (si.kilogram / si.metre ** 3)
 
     # output steps
-    n_steps = 5400
-    outfreq = 60
-    dt = 1 * si.seconds
+    simulation_time = 90 * si.minute
+    output_interval = 1 * si.minute
+    dt = 10 * si.seconds
     spin_up_time = 1 * si.hour
 
     @property
-    def n_spin_up(self):
-        return self.spin_up_time / self.dt
+    def n_steps(self) -> int:
+        return int(self.simulation_time / self.dt)
+
+    @property
+    def steps_per_output_interval(self) -> int:
+        return int(self.output_interval / self.dt)
+
+    @property
+    def n_spin_up(self) -> int:
+        return int(self.spin_up_time / self.dt)
 
     v_bins = phys.volume(np.logspace(np.log10(0.001 * si.micrometre), np.log10(100 * si.micrometre), 101, endpoint=True))
 
     @property
-    def output_steps(self):
-        return np.arange(0, self.n_steps + 1, self.outfreq)
+    def output_steps(self) -> np.ndarray:
+        return np.arange(0, self.n_steps + 1, self.steps_per_output_interval)
 
     mode_1 = Lognormal(
         norm_factor=60 / si.centimetre ** 3 / const.rho_STP,

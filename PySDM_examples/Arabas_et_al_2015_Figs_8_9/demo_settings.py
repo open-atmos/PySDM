@@ -47,17 +47,17 @@ class DemoSettings(Settings):
     def grid(self):
         return self.ui_nx.value, self.ui_nz.value
 
-    ui_dt = FloatSlider(value=Settings.dt, min=.5, max=5, description="dt (Eulerian)")
+    ui_dt = FloatSlider(value=Settings.dt, min=.5, max=10, description="dt (Eulerian)")
 
     @property
     def dt(self):
         return self.ui_dt.value
 
-    ui_n_steps = IntSlider(value=Settings.n_steps, min=1800, max=7200, description="# steps")
+    ui_simulation_time = IntSlider(value=Settings.simulation_time, min=1800, max=7200, description="simulation time $[s]$")
 
     @property
     def n_steps(self):
-        return self.ui_n_steps.value
+        return int(self.ui_simulation_time.value / self.ui_dt.value)
 
     ui_condensation_rtol_x = IntSlider(value=np.log10(Settings.condensation_rtol_thd), min=-9, max=-3, description="log$_{10}$(rtol$_x$)")
 
@@ -145,7 +145,7 @@ class DemoSettings(Settings):
         layout = Accordion(children=[
             VBox([self.ui_th_std0, self.ui_qv0, self.ui_p0, self.ui_kappa, self.ui_amplitude]),
             VBox([*self.ui_processes]),
-            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_n_steps,
+            VBox([self.ui_nx, self.ui_nz, self.ui_sdpg, self.ui_dt, self.ui_simulation_time,
                   self.ui_condensation_rtol_x, self.ui_condensation_rtol_thd,
                   self.ui_adaptive, self.ui_condensation_coord,
                   *self.ui_mpdata_options]),
