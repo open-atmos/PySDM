@@ -36,20 +36,20 @@ class AlgorithmicMethods:
     # TODO #195 reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
                          adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
-        for i in prange(length - 1):
+        for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
 
-            j = idx[i]
-            k = idx[i + 1]
+            j = idx[2 * i]
+            k = idx[2 * i + 1]
 
             if n[j] < n[k]:
                 j, k = k, j
             prop = int(n[j] / n[k])
 
             if adaptive:
-                adaptive_memory[cell_idx[cell_id[j]]] = max(adaptive_memory[cell_idx[cell_id[j]]],
-                                                            int(((gamma[i]) * subs[cell_idx[cell_id[j]]]) / prop))
+                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
+                                                            int(((gamma[i]) * subs[cell_id[j]]) / prop))
             g = min(int(gamma[i]), prop)
             collision_rate_deficit[cell_id[j]] += (int(gamma[i]) - g) * n[k]
 
@@ -97,7 +97,7 @@ class AlgorithmicMethods:
               = floor(prob)     if rand >= prob - floor(prob)
         """
         for i in prange(len(prob)):
-            prob[i] = np.ceil(prob[i] - rand[i // 2])
+            prob[i] = np.ceil(prob[i] - rand[i])
 
     @staticmethod
     def compute_gamma(prob, rand):

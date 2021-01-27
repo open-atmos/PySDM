@@ -42,12 +42,12 @@ class AlgorithmicMethods:
             return;
         }
 
-        auto j = idx[i];
-        auto k = idx[i + 1];
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
 
         if (n[j] < n[k]) {
-            j = idx[i + 1];
-            k = idx[i];
+            j = idx[2 * i + 1];
+            k = idx[2 * i];
         }
         auto g = (int64_t)(n[j] / n[k]);
         if (adaptive) {
@@ -96,7 +96,7 @@ class AlgorithmicMethods:
         extensive_length = trtc.DVInt64(len(extensive))
         adaptive_device = trtc.DVBool(adaptive)
         subs_device = trtc.DVInt64(subs[0])  # TODO #330
-        AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
+        AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
             [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
         if adaptive:
             return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
@@ -104,7 +104,7 @@ class AlgorithmicMethods:
             return 1
 
     __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] = ceil(prob[i] - rand[(int64_t)(i / 2)]);
+        prob[i] = ceil(prob[i] - rand[(int64_t)(i)]);
         ''')
 
     @staticmethod

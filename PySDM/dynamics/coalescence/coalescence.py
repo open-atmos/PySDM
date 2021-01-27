@@ -36,7 +36,7 @@ class Coalescence:
         self.n_substep = None
         self.dt_coal_range = dt_coal_range
 
-        self.temp = None
+        self.kernel_temp = None
         self.prob = None
         self.is_first_in_pair = None
 
@@ -44,8 +44,9 @@ class Coalescence:
 
     def register(self, builder):
         self.core = builder.core
-        self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
-        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
+        self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.norm_factor_temp = self.core.Storage.empty(self.core.n_sd, dtype=float)  # TODO #372
+        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
 
         self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
@@ -119,12 +120,11 @@ class Coalescence:
         )
 
     def compute_probability(self, prob, is_first_in_pair):
-        self.kernel(self.temp, is_first_in_pair)
+        self.kernel(self.kernel_temp, is_first_in_pair)
         prob.max(self.core.particles['n'], is_first_in_pair)
-        prob *= self.temp
+        prob *= self.kernel_temp
 
-        norm_factor = self.temp
-        self.core.normalize(prob, norm_factor, self.n_substep)
+        self.core.normalize(prob, self.norm_factor_temp, self.n_substep)
 
     def compute_gamma(self, prob, rand):
         self.core.backend.compute_gamma(prob, rand)

@@ -46,18 +46,15 @@ class AlgorithmicStepMethods:
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i] = abs(data_in[i] - data_in[i + 1]);
-        } 
-        else {
-            data_out[i] = 0;
+            data_out[i/2] = abs(data_in[i] - data_in[i + 1]);
         }
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
+        trtc.Fill(data_out, trtc.DVDouble(0))
         AlgorithmicStepMethods.__distance_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
 
     __find_pairs_body = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'], "i", '''
@@ -77,18 +74,15 @@ class AlgorithmicStepMethods:
 
     __max_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i] = max(perm_in[i], perm_in[i + 1]);
-        } 
-        else {
-            data_out[i] = 0;
+            data_out[i/2] = max(perm_in[i], perm_in[i + 1]);
         }
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
+        trtc.Fill(data_out, trtc.DVDouble(0))
         AlgorithmicStepMethods.__max_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
 
     __sort_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
@@ -110,7 +104,6 @@ class AlgorithmicStepMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
         trtc.Fill(data_out, trtc.DVDouble(0))
         if length > 1:
@@ -118,16 +111,13 @@ class AlgorithmicStepMethods:
 
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i] = perm_in[i] + perm_in[i + 1];
-        } 
-        else {
-            data_out[i] = 0;
+            data_out[i/2] = perm_in[i] + perm_in[i + 1];
         }
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
-        # note: silently assumes that data_out is not permuted (i.e. not part of state)
         perm_in = trtc.DVPermutation(data_in, idx)
+        trtc.Fill(data_out, trtc.DVDouble(0))
         AlgorithmicStepMethods.__sum_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
