@@ -41,12 +41,12 @@ class CoalescenceTimestep(Product):
         return self.count
 
     def get(self):
-        self.download_to_buffer(self.coalescence._Coalescence__n_substep)
+        self.download_to_buffer(self.coalescence.n_substep)
         self.buffer[:] = self.coalescence.core.dt / self.buffer
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.coalescence._Coalescence__n_substep)
+        self.download_to_buffer(self.coalescence.n_substep)
         self.count[:] += self.buffer
         self.buffer[:] = self.coalescence.core.dt / self.buffer
         self.minimum = np.minimum(self.buffer, self.minimum)
