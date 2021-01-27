@@ -95,10 +95,7 @@ class Coalescence:
         self.compute_gamma(self.prob, rand)
         if self.adaptive:
             adaptive_memory[:] = 1
-        self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.n_substep,
-                                        adaptive_memory=adaptive_memory,
-                                        collision_rate=self.collision_rate,
-                                        collision_rate_deficit=self.collision_rate_deficit)
+        self.core.particles.coalescence(gamma=self.prob)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:
@@ -129,7 +126,9 @@ class Coalescence:
         self.core.normalize(prob, self.norm_factor_temp, self.n_substep)
 
     def compute_gamma(self, prob, rand):
-        self.core.backend.compute_gamma(prob, rand)
+        self.core.backend.compute_gamma(prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
+                                        self.adaptive, self.adaptive_memory, self.core.particles["cell id"], self.subs,
+                                        self.collision_rate_deficit, self.collision_rate)
 
 
 # TODO #69
