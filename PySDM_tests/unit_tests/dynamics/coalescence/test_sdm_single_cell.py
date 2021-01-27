@@ -178,7 +178,7 @@ class TestSDMSingleCell:
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
         n_substeps = 100
-        sut._Coalescence__n_substep[:] = n_substeps
+        sut.n_substep[:] = n_substeps
         sut.adaptive = True  # TODO #331
 
         # Act

@@ -15,7 +15,7 @@ backend = CPU
 
 def test_initialisation(plot=False):
     settings = Settings()
-    settings.n_steps = -1
+    settings.simulation_time = -1 * settings.dt
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 

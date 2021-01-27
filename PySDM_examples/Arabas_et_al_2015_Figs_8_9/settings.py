@@ -48,7 +48,7 @@ class Settings:
     # output steps
     simulation_time = 90 * si.minute
     output_interval = 1 * si.minute
-    dt = 10 * si.seconds
+    dt = 1 * si.second
     spin_up_time = 1 * si.hour
 
     @property
