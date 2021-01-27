@@ -86,6 +86,19 @@ class AlgorithmicStepMethods:
             data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
 
     @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
+        for i in prange(length - 1):
+            if is_first_in_pair[i]:
+                if attr[idx[i]] < attr[idx[i + 1]]:
+                    idx[i], idx[i + 1] = idx[i + 1], idx[i]
+
+    @staticmethod
+    def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
+        AlgorithmicStepMethods.sort_within_pair_by_attr_body(
+            idx.data, length, is_first_in_pair.indicator.data, attr.data)
+
+    @staticmethod
     @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0

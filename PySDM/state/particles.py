@@ -95,6 +95,9 @@ class Particles:
             self.core.bck.cell_id(self['cell id'], self['cell origin'], self.__strides)
             self.__sorted = False
 
+    def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
+        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
         specs_idx, specs_rank = [], []
         for attr in specs:

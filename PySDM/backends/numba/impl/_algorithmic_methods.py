@@ -43,8 +43,6 @@ class AlgorithmicMethods:
             j = idx[2 * i]
             k = idx[2 * i + 1]
 
-            if n[j] < n[k]:
-                j, k = k, j
             prop = int(n[j] / n[k])
 
             if adaptive:

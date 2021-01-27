@@ -45,10 +45,6 @@ class AlgorithmicMethods:
         auto j = idx[2 * i];
         auto k = idx[2 * i + 1];
 
-        if (n[j] < n[k]) {
-            j = idx[2 * i + 1];
-            k = idx[2 * i];
-        }
         auto g = (int64_t)(n[j] / n[k]);
         if (adaptive) {
             adaptive_memory[i] = (int64_t)(gamma[i] * subs / g);

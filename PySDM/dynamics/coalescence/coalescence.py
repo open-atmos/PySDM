@@ -119,6 +119,8 @@ class Coalescence:
             self.core.particles['cell id']
         )
 
+        self.core.particles.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
         prob.max(self.core.particles['n'], is_first_in_pair)

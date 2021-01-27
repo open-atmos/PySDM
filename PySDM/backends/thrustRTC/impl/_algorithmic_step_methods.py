@@ -109,6 +109,21 @@ class AlgorithmicStepMethods:
         if length > 1:
             AlgorithmicStepMethods.__sort_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
 
+    __sort_within_pair_by_attr_body = trtc.For(["idx", "is_first_in_pair", "attr"], "i", '''
+        if (is_first_in_pair[i]) {
+            if (attr[idx[i]] < attr[idx[i + 1]]) {
+                auto tmp = idx[i];
+                idx[i] = idx[i + 1];
+                idx[i + 1] = tmp;
+            }
+        }
+        ''')
+
+    @staticmethod
+    def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
+        AlgorithmicStepMethods.__sort_within_pair_by_attr_body.launch_n(
+            length - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
+
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
             data_out[i/2] = perm_in[i] + perm_in[i + 1];
