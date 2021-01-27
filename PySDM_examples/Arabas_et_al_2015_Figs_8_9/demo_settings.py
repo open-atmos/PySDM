@@ -47,7 +47,7 @@ class DemoSettings(Settings):
     def grid(self):
         return self.ui_nx.value, self.ui_nz.value
 
-    ui_dt = FloatSlider(value=Settings.dt, min=.5, max=10, description="dt (Eulerian)")
+    ui_dt = FloatSlider(value=Settings.dt, min=.5, max=60, description="dt (Eulerian)")
 
     @property
     def dt(self):
