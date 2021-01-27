@@ -67,9 +67,13 @@ class AlgorithmicMethods:
                                             extensive.data, gamma.data, healthy.data)
 
     @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**conf.JIT_FLAGS)
     def compute_gamma_body(gamma, rand, idx, length, n, adaptive, adaptive_memory, cell_id, subs,
                            collision_rate_deficit, collision_rate):
+
+
+
+
         """
         return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
