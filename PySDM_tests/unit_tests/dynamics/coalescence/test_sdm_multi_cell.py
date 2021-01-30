@@ -8,6 +8,7 @@ import pytest
 from PySDM.environments import Box
 from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
+from PySDM.dynamics.coalescence.coalescence import default_dt_coal_range
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_dummy_core_and_sdm
@@ -21,7 +22,7 @@ class TestSDMMultiCell:
         # Arrange
         n = np.ones(8000)
         v = np.ones_like(n)
-        env = Box(dv=1, dt=0)
+        env = Box(dv=1, dt=default_dt_coal_range[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
         core, sut = get_dummy_core_and_sdm(backend, len(n), environment=env)

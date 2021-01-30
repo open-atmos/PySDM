@@ -5,13 +5,13 @@ Created at 04.11.2019
 import numpy as np
 import pytest
 
-from PySDM.dynamics import Coalescence
+from PySDM.dynamics.coalescence.coalescence import Coalescence, default_dt_coal_range
 from PySDM.environments import Box
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
 class StubKernel:
-    def __init__(self, backend, returned_value=-1):
+    def __init__(self, backend, returned_value=0):
         self.returned_value = returned_value
         self.backend = backend
 
@@ -44,7 +44,7 @@ def insert_zeros(array):
 
 def get_dummy_core_and_sdm(backend, n_length, optimized_random=False, environment=None):
     core = DummyCore(backend, n_sd=n_length)
-    core.environment = environment or Box(dv=1, dt=0)
+    core.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
     sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random)
     sdm.register(core)
     return core, sdm
