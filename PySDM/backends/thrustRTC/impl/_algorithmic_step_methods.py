@@ -46,7 +46,7 @@ class AlgorithmicStepMethods:
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i/2] = abs(data_in[i] - data_in[i + 1]);
+            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
         }
         ''')
 
@@ -74,7 +74,7 @@ class AlgorithmicStepMethods:
 
     __max_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i/2] = max(perm_in[i], perm_in[i + 1]);
+            data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
         }
         ''')
 
@@ -126,7 +126,7 @@ class AlgorithmicStepMethods:
 
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
-            data_out[i/2] = perm_in[i] + perm_in[i + 1];
+            data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
         ''')
 
