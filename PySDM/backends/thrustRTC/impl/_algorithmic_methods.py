@@ -34,52 +34,33 @@ class AlgorithmicMethods:
             displacement.shape[1],
             [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
-    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
+    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0) {
-            if (adaptive) {
-                adaptive_memory[i] = 1;
-            }
             return;
         }
-
-        auto j = idx[i];
-        auto k = idx[i + 1];
-
-        if (n[j] < n[k]) {
-            j = idx[i + 1];
-            k = idx[i];
-        }
-        auto g = (int64_t)(n[j] / n[k]);
-        if (adaptive) {
-            adaptive_memory[i] = (int64_t)(gamma[i] * subs / g);
-        }
-        if (g > gamma[i]) {
-            g = gamma[i];
-        }
-        if (g == 0) {
-            return;
-        }
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
             
-        auto new_n = n[j] - g * n[k];
+        auto new_n = n[j] - gamma[i] * n[k];
         if (new_n > 0) {
             n[j] = new_n;
             
             for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
             }
             for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + k] += g * extensive[attr + j];
+                extensive[attr + k] += gamma[i] * extensive[attr + j];
             }
         }
         else {  // new_n == 0
             n[j] = (int64_t)(n[k] / 2);
             n[k] = n[k] - n[j];
             for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
                 intensive[attr + k] = intensive[attr + j];
             }
             for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + j] = g * extensive[attr + j] + extensive[attr + k];
+                extensive[attr + j] = gamma[i] * extensive[attr + j] + extensive[attr + k];
                 extensive[attr + k] = extensive[attr + j];
             }
         }
@@ -90,27 +71,52 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         idx_length = trtc.DVInt64(len(idx))
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
-        adaptive_device = trtc.DVBool(adaptive)
-        subs_device = trtc.DVInt64(subs[0])  # TODO #330
-        AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
-            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
-        if adaptive:
-            return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
-        else:
-            return 1
+        AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
+            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length,
+             extensive.data, extensive_length, gamma.data, healthy.data])
 
-    __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] = ceil(prob[i] - rand[(int64_t)(i / 2)]);
+    __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "adaptive", "adaptive_memory", "cell_id", "subs",
+                           "collision_rate_deficit", "collision_rate"], "i", '''
+        gamma[i] = ceil(gamma[i] - rand[(int64_t)(i)]);
+        
+        if (gamma[i] == 0) {
+            if (adaptive) {
+                adaptive_memory[cell_id[i]] = 1;
+            }
+            return;
+        }
+
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
+
+        auto g = (int64_t)(n[j] / n[k]);
+        if (adaptive) {
+            adaptive_memory[cell_id[i]] = (int64_t)(gamma[i] * subs / g);
+        }
+        if (g > gamma[i]) {
+            g = gamma[i];
+        }
+        
+        gamma[i] = g;
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def compute_gamma(prob, rand):
-        AlgorithmicMethods.__compute_gamma_body.launch_n(len(prob), [prob.data, rand.data])
+    def compute_gamma(gamma, rand, idx, n, adaptive, adaptive_memory, cell_id, subs,
+                      collision_rate_deficit, collision_rate):
+        adaptive_device = trtc.DVBool(adaptive)
+        subs_device = trtc.DVInt64(subs[0])  # TODO #330
+        AlgorithmicMethods.__compute_gamma_body.launch_n(len(idx) // 2,
+            [gamma.data, rand.data, idx.data, n.data, adaptive_device, adaptive_memory.data, cell_id.data,
+             subs_device, collision_rate_deficit.data, collision_rate.data])
+        if adaptive:
+            return trtc.Reduce(adaptive_memory.data.range(0, len(idx)-1), trtc.DVInt64(0), trtc.Maximum())
+        else:
+            return 1
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

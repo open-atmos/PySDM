@@ -12,7 +12,7 @@ from PySDM_examples.utils.temporary_file import TemporaryFile
 def test_export():
     # Arrange
     settings = Settings()
-    settings.n_steps = 1
+    settings.simulation_time = settings.dt
     settings.outfreq = 1
 
     storage = Storage()

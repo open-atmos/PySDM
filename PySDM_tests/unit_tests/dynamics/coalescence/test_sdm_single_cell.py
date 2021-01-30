@@ -12,7 +12,6 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 
-
 class TestSDMSingleCell:
 
     @staticmethod
@@ -70,7 +69,14 @@ class TestSDMSingleCell:
     def test_multi_collision(backend, v_2, n_2, p):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
+
+        def _compute_gamma(prob, rand):
+            from PySDM.dynamics import Coalescence
+            backend_fill(prob, p)
+            Coalescence.compute_gamma(sut, prob, rand)
+
+        sut.compute_gamma = _compute_gamma
+
         attributes = {'n': n_2, 'volume': v_2}
         core.build(attributes)
 
@@ -95,7 +101,12 @@ class TestSDMSingleCell:
     def test_multi_droplet(backend, v, n, p):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
+
+        def _compute_gamma(prob, rand):
+            from PySDM.dynamics import Coalescence
+            backend_fill(prob, p, odd_zeros=True)
+            Coalescence.compute_gamma(sut, prob, rand)
+        sut.compute_gamma = _compute_gamma
         attributes = {'n': n, 'volume': v}
         core.build(attributes)
 
@@ -148,7 +159,14 @@ class TestSDMSingleCell:
                 # Act
                 prob_arr = backend.Storage.from_ndarray(np.full((1,), p))
                 rand_arr = backend.Storage.from_ndarray(np.full((1,), r))
-                backend.compute_gamma(prob_arr, rand_arr)
+                idx = backend.Storage.from_ndarray(np.arange(2))
+                mult = backend.Storage.from_ndarray(np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
+                _ = backend.Storage.from_ndarray(np.zeros(1))
+                cell_id = backend.Storage.from_ndarray(np.zeros(2, dtype=backend.Storage.INT))
+                backend.compute_gamma(prob_arr, rand_arr, idx, mult,
+                                      adaptive=False, adaptive_memory=_, cell_id=cell_id,
+                                      collision_rate=_, collision_rate_deficit=_,
+                                      subs=_)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
@@ -178,7 +196,7 @@ class TestSDMSingleCell:
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
         n_substeps = 100
-        sut._Coalescence__n_substep[:] = n_substeps
+        sut.n_substep[:] = n_substeps
         sut.adaptive = True  # TODO #331
 
         # Act

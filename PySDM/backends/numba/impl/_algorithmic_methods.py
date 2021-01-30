@@ -30,78 +30,84 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
-             numba.boolean, int64[:], int64[:], int64[:], int64[:], int64[:], int64[:]),
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
         **conf.JIT_FLAGS)
-    # TODO #195 reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                         adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
-        for i in prange(length - 1):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy):
+        for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
 
-            j = idx[i]
-            k = idx[i + 1]
+            j = idx[2 * i]
+            k = idx[2 * i + 1]
 
-            if n[j] < n[k]:
-                j, k = k, j
-            prop = int(n[j] / n[k])
-
-            if adaptive:
-                adaptive_memory[cell_idx[cell_id[j]]] = max(adaptive_memory[cell_idx[cell_id[j]]],
-                                                            int(((gamma[i]) * subs[cell_idx[cell_id[j]]]) / prop))
-            g = min(int(gamma[i]), prop)
-            collision_rate_deficit[cell_idx[cell_id[j]]] += (int(gamma[i]) - prop) * n[k]
-
-            if g == 0:
-                continue
-
-            collision_rate[cell_idx[cell_id[j]]] += g * n[k]
-
-            new_n = n[j] - g * n[k]
+            new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
                 n[j] = new_n
                 for ii in range(0, len(intensive)):
-                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
-                                      / (volume[k] + g * volume[j])
+                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
+                                      / (volume[k] + gamma[i] * volume[j])
                 for ie in range(0, len(extensive)):
-                    extensive[ie, k] += g * extensive[ie, j]
+                    extensive[ie, k] += gamma[i] * extensive[ie, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
                 for ii in range(0, len(intensive)):
-                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
-                                      / (volume[k] + g * volume[j])
+                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
+                                      / (volume[k] + gamma[i] * volume[j])
                     intensive[ii, k] = intensive[ii, j]
                 for ie in range(0, len(extensive)):
-                    extensive[ie, j] = g * extensive[ie, j] + extensive[ie, k]
+                    extensive[ie, j] = gamma[i] * extensive[ie, j] + extensive[ie, k]
                     extensive[ie, k] = extensive[ie, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                    adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
         AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                            extensive.data, gamma.data, healthy.data,
-                                            adaptive, cell_id.data, cell_idx.data, subs.data, adaptive_memory.data,
-                                            collision_rate.data, collision_rate_deficit.data)
+                                            extensive.data, gamma.data, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def compute_gamma_body(prob, rand):
+    def compute_gamma_body(gamma, rand, idx, length, n, adaptive, adaptive_memory, cell_id, subs,
+                           collision_rate_deficit, collision_rate):
+
+
+
+
         """
-        return in "prob" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+        return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
         gamma = floor(prob) + 1 if rand <  prob - floor(prob)
               = floor(prob)     if rand >= prob - floor(prob)
         """
-        for i in prange(len(prob)):
-            prob[i] = np.ceil(prob[i] - rand[i // 2])
+        for i in prange(length // 2):
+            gamma[i] = np.ceil(gamma[i] - rand[i])
+
+            if gamma[i] == 0:
+                continue
+
+            j = idx[2 * i]
+            k = idx[2 * i + 1]
+
+            prop = n[j] // n[k]
+
+            if adaptive:
+                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
+                                                  ((gamma[i]) * subs[cell_id[j]]) // prop)
+            g = min(int(gamma[i]), prop)
+
+            collision_rate[cell_id[j]] += g * n[k]
+
+            collision_rate_deficit[cell_id[j]] += (int(gamma[i]) - g) * n[k]
+
+            gamma[i] = g
 
     @staticmethod
-    def compute_gamma(prob, rand):
-        return AlgorithmicMethods.compute_gamma_body(prob.data, rand.data)
+    def compute_gamma(gamma, rand, idx, n, adaptive, adaptive_memory, cell_id, subs,
+                      collision_rate_deficit, collision_rate):
+        return AlgorithmicMethods.compute_gamma_body(
+            gamma.data, rand.data, idx.data, len(idx), n.data, adaptive, adaptive_memory.data, cell_id.data,
+            subs.data, collision_rate_deficit.data, collision_rate.data)
 
     @staticmethod
     def condensation(

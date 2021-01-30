@@ -25,7 +25,7 @@ class StubKernel:
 def backend_fill(array, value, odd_zeros=False):
     if odd_zeros:
         if isinstance(value, np.ndarray):
-            full_ndarray = insert_zeros(value).astype(np.float64)
+            full_ndarray = insert_zeros(value[::2]).astype(np.float64)
         else:
             full_ndarray = np.full(array.shape[0] // 2, value).astype(np.float64)
             full_ndarray = insert_zeros(full_ndarray)

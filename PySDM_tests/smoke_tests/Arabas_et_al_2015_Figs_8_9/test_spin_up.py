@@ -21,8 +21,8 @@ class DummyStorage:
 
 def test_spin_up(plot=False):
     # Arrange
-    Settings.n_steps = 20
-    Settings.outfreq = 1
+    Settings.simulation_time = 20 * Settings.dt
+    Settings.output_interval = 1 * Settings.dt
     settings = Settings()
 
     storage = DummyStorage()
@@ -43,7 +43,7 @@ def test_spin_up(plot=False):
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next = storage.profiles[step + Settings.outfreq]["qv"]
+        next = storage.profiles[step + settings.steps_per_output_interval]["qv"]
         prev = storage.profiles[step]["qv"]
         eps = 1e-3
         assert ((prev + eps) >= next).all()

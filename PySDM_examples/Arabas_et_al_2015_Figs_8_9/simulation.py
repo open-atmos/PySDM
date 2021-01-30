@@ -84,7 +84,7 @@ class Simulation:
                 rtol_x=self.settings.condensation_rtol_x,
                 rtol_thd=self.settings.condensation_rtol_thd,
                 coord=self.settings.condensation_coord,
-                adaptive=self.settings.adaptive)
+                adaptive=self.settings.condensation_adaptive)
             builder.add_dynamic(condensation)
             products.append(CondensationTimestep())  # TODO #37 and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:
@@ -104,7 +104,7 @@ class Simulation:
             builder.add_dynamic(displacement)
             products.append(SurfacePrecipitation())  # TODO #37 ditto
         if self.settings.processes["coalescence"]:
-            builder.add_dynamic(Coalescence(kernel=self.settings.kernel))
+            builder.add_dynamic(Coalescence(kernel=self.settings.kernel, adaptive=self.settings.coalescence_adaptive))
             products.append(CoalescenceTimestep())
             products.append(CollisionRate())
             products.append(CollisionRateDeficit())
