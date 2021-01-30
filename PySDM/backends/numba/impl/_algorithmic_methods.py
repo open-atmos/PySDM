@@ -69,9 +69,26 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def compute_gamma_body(gamma, rand, idx, length, n, adaptive, adaptive_memory, cell_id, subs,
-                           collision_rate_deficit, collision_rate):
+                           collision_rate_deficit, collision_rate, dt_left, dt):
+        if adaptive:
+            dt_todo = np.empty_like(dt_left)
+            dt_todo[:] = dt_left
+            for i in range(length // 2):
+                if gamma[i] == 0:
+                    continue
 
+                j = idx[2 * i]
+                k = idx[2 * i + 1]
+                cid = cell_id[j]
 
+                prop = n[j] // n[k]
+                dt_todo[cid] = min(dt_todo[cid], prop / np.ceil(gamma[i] / dt))
+# TODO: fuse
+            for i in prange(length // 2):
+                j = idx[2 * i]
+                cid = cell_id[j]
+                gamma[i] = gamma[i] * dt_todo[cid] / dt
+            dt_left -= dt_todo
 
 
         """
@@ -93,7 +110,7 @@ class AlgorithmicMethods:
 
             if adaptive:
                 adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
-                                                  ((gamma[i]) * subs[cell_id[j]]) // prop)
+                                                  (gamma[i] * subs[cell_id[j]]) // prop)
             g = min(int(gamma[i]), prop)
 
             collision_rate[cell_id[j]] += g * n[k]
@@ -104,10 +121,10 @@ class AlgorithmicMethods:
 
     @staticmethod
     def compute_gamma(gamma, rand, idx, n, adaptive, adaptive_memory, cell_id, subs,
-                      collision_rate_deficit, collision_rate):
+                      collision_rate_deficit, collision_rate, remaining_dt, dt):
         return AlgorithmicMethods.compute_gamma_body(
             gamma.data, rand.data, idx.data, len(idx), n.data, adaptive, adaptive_memory.data, cell_id.data,
-            subs.data, collision_rate_deficit.data, collision_rate.data)
+            subs.data, collision_rate_deficit.data, collision_rate.data, remaining_dt.data, dt)
 
     @staticmethod
     def condensation(
@@ -227,21 +244,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):
+    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt / n_substeps[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in range(prob.shape[0]):
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substep):
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
+            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

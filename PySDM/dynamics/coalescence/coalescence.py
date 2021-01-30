@@ -39,6 +39,7 @@ class Coalescence:
         self.kernel_temp = None
         self.prob = None
         self.is_first_in_pair = None
+        self.remaining_dt = None
 
         self.actual_length = None
 
@@ -48,6 +49,7 @@ class Coalescence:
         self.norm_factor_temp = self.core.Storage.empty(self.core.n_sd, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
+        self.remaining_dt = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
 
         self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.n_substep[:] = self.__substeps
@@ -70,20 +72,25 @@ class Coalescence:
             if not self.adaptive:
                 self.step(0, self.adaptive_memory)
             else:
+                self.remaining_dt[:] = self.core.dt
                 self.actual_length = self.core.particles._Particles__idx.length
                 self.actual_cell_idx = self.core.particles.cell_idx.data
-                self.core.particles.cell_idx.data = self.n_substep.data.argsort(kind="stable")[::-1]
+                self.core.particles.cell_idx.data = self.remaining_dt.data.argsort(kind="stable")[::-1]
 
-                for s in range(max(self.n_substep.data)):  # range(self.n_substep[0]):
+                # end = self.actual_length
+                s = 0
+                while self.core.particles._Particles__idx.length != 0:
                     self.step(s, self.adaptive_memory)
-                    self.subs[:] += self.adaptive_memory
-                    method1(self.adaptive_memory.data, self.msub.data)
+                    s += 1
+
+                    # self.subs[:] += self.adaptive_memory
+                    # method1(self.adaptive_memory.data, self.msub.data)
 
                 self.core.particles._Particles__idx.length = self.actual_length
 
-                method2(self.n_substep.data, self.msub.data, int(self.core.dt / self.dt_coal_range[0]), int(self.core.dt / self.dt_coal_range[1]), self.subs.data)
-                self.subs[:] = 0
-                self.msub[:] = 0
+                # method2(self.n_substep.data, self.msub.data, int(self.core.dt / self.dt_coal_range[0]), int(self.core.dt / self.dt_coal_range[1]), self.subs.data)
+                # self.subs[:] = 0
+                # self.msub[:] = 0
 
                 self.core.particles.cell_idx.data = self.actual_cell_idx
                 self.core.particles._Particles__sort_by_cell_id()
@@ -107,7 +114,7 @@ class Coalescence:
         self.core.particles.permutation(u01, self.croupier == 'local')
 
         if self.adaptive:
-            end = method3(self.n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data, s)
+            end = method3(self.remaining_dt.data, self.core.mesh.n_cell, self.core.particles.cell_start.data, s)
             self.core.particles._Particles__idx.length = end
 
         is_first_in_pair.update(
@@ -123,39 +130,39 @@ class Coalescence:
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
 
-        self.core.normalize(prob, self.norm_factor_temp, self.n_substep)
+        self.core.normalize(prob, self.norm_factor_temp)
 
     def compute_gamma(self, prob, rand):
         self.core.backend.compute_gamma(prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
                                         self.adaptive, self.adaptive_memory, self.core.particles["cell id"], self.subs,
-                                        self.collision_rate_deficit, self.collision_rate)
+                                        self.collision_rate_deficit, self.collision_rate, self.remaining_dt, self.core.dt)
 
 
 # TODO #69
 import numba
 
 
-@numba.njit()
-def method1(adaptive_memory, msub):
-    for i in range(len(adaptive_memory)):
-        msub[i] = max(msub[i], adaptive_memory[i])
+# @numba.njit()
+# def method1(adaptive_memory, msub):
+#     for i in range(len(adaptive_memory)):
+#         msub[i] = max(msub[i], adaptive_memory[i])
+#
+#
+# @numba.njit()
+# def method2(n_substep, msub, max_substeps, min_substeps, subs):
+#     for i in range(len(n_substep)):
+#         n_substep[i] = min(max_substeps, msub[i])#TODO ((subs[i] / n_substep[i]) + msub[i]) // 2)
+#         # n_substep[i] = max(min_substeps, n_substep[i])
+#     for i in range(len(n_substep)):
+#         if i % 25 != 0:
+#             n_substep[i] = max(n_substep[i], n_substep[i + 1])
 
 
 @numba.njit()
-def method2(n_substep, msub, max_substeps, min_substeps, subs):
-    for i in range(len(n_substep)):
-        n_substep[i] = min(max_substeps, msub[i])#TODO ((subs[i] / n_substep[i]) + msub[i]) // 2)
-        # n_substep[i] = max(min_substeps, n_substep[i])
-    for i in range(len(n_substep)):
-        if i % 25 != 0:
-            n_substep[i] = max(n_substep[i], n_substep[i + 1])
-
-
-@numba.njit()
-def method3(n_substep, n_cell, cell_start, s):
+def method3(remaining_dt, n_cell, cell_start, s):
     end = 0
     for i in range(n_cell - 1, -1, -1):
-        if n_substep[i] <= s:
+        if remaining_dt[i] == 0:
             continue
         else:
             end = cell_start[i + 1]
