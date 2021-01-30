@@ -81,21 +81,22 @@ def make_solve(coord, rtol):
         y0[idx_x:] = x(v[cell_idx])
         qt = qv + _ODESystem.ql(n[cell_idx], y0[idx_x:], m_d_mean)
 
-        if dthd_dt == 0 and dqv_dt == 0:
+        odesys = _ODESystem(
+            kappa,
+            vdry[cell_idx],
+            n[cell_idx],
+            dthd_dt,
+            dqv_dt,
+            m_d_mean,
+            rhod_mean,
+            qt
+        )
+        if (odesys(0, y0)[idx_x] == 0).all() and dthd_dt == 0 and dqv_dt == 0:
             y1 = y0
         else:
             try:
                 integ = scipy.integrate.solve_ivp(
-                    _ODESystem(
-                        kappa,
-                        vdry[cell_idx],
-                        n[cell_idx],
-                        dthd_dt,
-                        dqv_dt,
-                        m_d_mean,
-                        rhod_mean,
-                        qt
-                    ),
+                    fun=odesys,
                     t_span=[0, dt],
                     t_eval=[dt],
                     y0=y0,
