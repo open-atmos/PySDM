@@ -75,28 +75,20 @@ class Coalescence:
     def __call__(self):
         if self.enable:
             if not self.adaptive:
-                self.step(0, self.adaptive_memory)
+                for s in range(self.__substeps):  # TODO
+                    self.step(s, self.adaptive_memory)
             else:
                 self.remaining_dt[:] = self.core.dt
                 self.actual_length = self.core.particles._Particles__idx.length
                 self.actual_cell_idx = self.core.particles.cell_idx.data
                 self.core.particles.cell_idx.data = self.remaining_dt.data.argsort(kind="stable")[::-1]
 
-                # end = self.actual_length
                 s = 0
                 while self.core.particles._Particles__idx.length != 0:
                     self.step(s, self.adaptive_memory)
                     s += 1
 
-                    # self.subs[:] += self.adaptive_memory
-                    # method1(self.adaptive_memory.data, self.msub.data)
-
                 self.core.particles._Particles__idx.length = self.actual_length
-
-                # method2(self.n_substep.data, self.msub.data, int(self.core.dt / self.dt_coal_range[0]), int(self.core.dt / self.dt_coal_range[1]), self.subs.data)
-                # self.subs[:] = 0
-                # self.msub[:] = 0
-
                 self.core.particles.cell_idx.data = self.actual_cell_idx
                 self.core.particles._Particles__sort_by_cell_id()
 
@@ -145,23 +137,6 @@ class Coalescence:
 
 # TODO #69
 import numba
-
-
-# @numba.njit()
-# def method1(adaptive_memory, msub):
-#     for i in range(len(adaptive_memory)):
-#         msub[i] = max(msub[i], adaptive_memory[i])
-#
-#
-# @numba.njit()
-# def method2(n_substep, msub, max_substeps, min_substeps, subs):
-#     for i in range(len(n_substep)):
-#         n_substep[i] = min(max_substeps, msub[i])#TODO ((subs[i] / n_substep[i]) + msub[i]) // 2)
-#         # n_substep[i] = max(min_substeps, n_substep[i])
-#     for i in range(len(n_substep)):
-#         if i % 25 != 0:
-#             n_substep[i] = max(n_substep[i], n_substep[i + 1])
-
 
 @numba.njit()
 def method3(remaining_dt, n_cell, cell_start, s):

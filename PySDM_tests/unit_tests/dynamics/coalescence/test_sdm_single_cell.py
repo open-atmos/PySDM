@@ -166,14 +166,15 @@ class TestSDMSingleCell:
                 backend.compute_gamma(prob_arr, rand_arr, idx, mult,
                                       adaptive=False, adaptive_memory=_, cell_id=cell_id,
                                       collision_rate=_, collision_rate_deficit=_,
-                                      subs=_)
+                                      subs=_, remaining_dt=_, dt=-1)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod
-    @pytest.mark.parametrize("optimized_random", (True, False))
-    def test_rnd_reuse(backend, optimized_random):
+    @pytest.mark.parametrize("optimized_random", (pytest.param(True, id='optimized'), pytest.param(False, id='non-optimized')))
+    @pytest.mark.parametrize("adaptive", (pytest.param(True, id='adaptive_dt'), pytest.param(False, id='const_dt')))
+    def test_rnd_reuse(backend, optimized_random, adaptive):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
             return  # TODO #330
@@ -182,8 +183,9 @@ class TestSDMSingleCell:
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
+        n_substeps = 5
 
-        particles, sut = get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random)
+        particles, sut = get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random, substeps=n_substeps)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
@@ -195,9 +197,8 @@ class TestSDMSingleCell:
                 super(CountingRandom, self).__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
-        n_substeps = 100
-        sut.n_substep[:] = n_substeps
-        sut.adaptive = True  # TODO #331
+        sut.n_substep[:] = n_substeps  # TODO
+        sut.adaptive = adaptive
 
         # Act
         sut()
@@ -206,4 +207,7 @@ class TestSDMSingleCell:
         if sut.rnd_opt.optimized_random:
             assert CountingRandom.calls == 2
         else:
-            assert CountingRandom.calls == 2 * n_substeps
+            if adaptive:
+                assert 2 <= CountingRandom.calls <= 2 * n_substeps
+            else:
+                assert CountingRandom.calls == 2 * n_substeps
