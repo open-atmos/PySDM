@@ -27,7 +27,7 @@ class Coalescence:
         self.kernel = kernel
 
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random,
-                                                dt_coal_max=dt_coal_range[1],
+                                                dt_min=dt_coal_range[0],
                                                 seed=seed)
         self.croupier = croupier
 
@@ -45,6 +45,11 @@ class Coalescence:
 
     def register(self, builder):
         self.core = builder.core
+
+        if self.adaptive:
+            assert self.core.dt >= self.dt_coal_range[0]
+            assert self.core.dt >= self.dt_coal_range[1]
+
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.n_sd, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)

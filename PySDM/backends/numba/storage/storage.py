@@ -19,6 +19,9 @@ class Storage:
 
     def __getitem__(self, key):
         if isinstance(key, slice):
+            step = key.step or 1
+            if step != 1:
+                raise NotImplementedError("step != 1")
             start = key.start or 0
             dim = len(self.shape)
             if dim == 1:
@@ -31,6 +34,8 @@ class Storage:
                 result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
+            if stop > self.data.shape[0]:
+                raise IndexError(f"requested a slice ({start}:{stop}) of Storage with first dim of length {self.data.shape[0]}")
             result = Storage(result_data, result_shape, self.dtype)
         else:
             result = self.data[key]
