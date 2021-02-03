@@ -121,8 +121,6 @@ class AlgorithmicMethods:
             g = min(int(gamma[i]), prop)  # TODO: test asserting that min is not needed with adaptivity
             cid = cell_id[j]
             collision_rate[cid] += g * n[k]
-            if (int(gamma[i]) - g) * n[k] > 0:
-                print(gamma[i], prop)
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
             gamma[i] = g
 
