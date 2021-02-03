@@ -24,7 +24,7 @@ from PySDM.physics.constants import si
 
 class Settings:
     def __dir__(self) -> Iterable[str]:
-        return 'dt', 'grid', 'size', 'n_spin_up', 'versions', 'outfreq'
+        return 'dt', 'grid', 'size', 'n_spin_up', 'versions'
 
     def __init__(self):
         key_packages = (PySDM, numba, numpy, scipy)

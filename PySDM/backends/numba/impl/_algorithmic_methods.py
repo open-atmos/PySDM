@@ -8,6 +8,7 @@ from numba import void, float64, int64, prange
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
+from PySDM.backends.numba.numba_helpers import pair_indices
 
 
 class AlgorithmicMethods:
@@ -30,15 +31,13 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:]),
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], int64[:]),
         **conf.JIT_FLAGS)
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
-
-            j = idx[2 * i]
-            k = idx[2 * i + 1]
+            j, k = pair_indices(i, idx, is_first_in_pair)
 
             new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
@@ -62,34 +61,48 @@ class AlgorithmicMethods:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                            extensive.data, gamma.data, healthy.data)
+                                            extensive.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
+        end = 0
+        for i in range(n_cell - 1, -1, -1):
+            if dt_left[i] == 0:
+                continue
+            else:
+                end = cell_start[i + 1]
+                break
+        return end
+
+    @staticmethod
+    def adaptive_sdm_end(dt_left, n_cell, cell_start):
+        return AlgorithmicMethods.adaptive_sdm_end_body(dt_left.data, n_cell, cell_start.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def compute_gamma_body(gamma, rand, idx, length, n, adaptive, adaptive_memory, cell_id, subs,
-                           collision_rate_deficit, collision_rate, dt_left, dt):
-        if adaptive:
-            dt_todo = np.empty_like(dt_left)
-            dt_todo[:] = dt_left
-            for i in range(length // 2):
-                if gamma[i] == 0:
-                    continue
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, is_first_in_pair):
+        dt_todo = np.empty_like(dt_left)
+        dt_todo[:] = dt_left
+        for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
+            prop = n[j] // n[k]
+            dt_optimal = dt * prop / gamma[i]
+            cid = cell_id[j]
+            dt_todo[cid] = min(dt_todo[cid], dt_optimal)
+        for i in prange(length // 2):
+            j, _ = pair_indices(i, idx, is_first_in_pair)
+            gamma[i] = gamma[i] * (dt_todo[cell_id[j]] / dt)
+        dt_left -= dt_todo
 
-                j = idx[2 * i]
-                k = idx[2 * i + 1]
-                cid = cell_id[j]
-
-                prop = n[j] // n[k]
-                dt_todo[cid] = min(dt_todo[cid], prop / np.ceil(gamma[i] / dt))
-# TODO: fuse
-            for i in prange(length // 2):
-                j = idx[2 * i]
-                cid = cell_id[j]
-                gamma[i] = gamma[i] * dt_todo[cid] / dt
-            dt_left -= dt_todo
-
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def compute_gamma_body(gamma, rand, idx, length, n, cell_id,
+                           collision_rate_deficit, collision_rate, is_first_in_pair):
 
         """
         return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
@@ -103,28 +116,28 @@ class AlgorithmicMethods:
             if gamma[i] == 0:
                 continue
 
-            j = idx[2 * i]
-            k = idx[2 * i + 1]
-
+            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = n[j] // n[k]
-
-            if adaptive:
-                adaptive_memory[cell_id[j]] = max(adaptive_memory[cell_id[j]],
-                                                  (gamma[i] * subs[cell_id[j]]) // prop)
-            g = min(int(gamma[i]), prop)
-
-            collision_rate[cell_id[j]] += g * n[k]
-
-            collision_rate_deficit[cell_id[j]] += (int(gamma[i]) - g) * n[k]
-
+            g = min(int(gamma[i]), prop)  # TODO: test asserting that min is not needed with adaptivity
+            cid = cell_id[j]
+            collision_rate[cid] += g * n[k]
+            if (int(gamma[i]) - g) * n[k] > 0:
+                print(gamma[i], prop)
+            collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
             gamma[i] = g
 
     @staticmethod
-    def compute_gamma(gamma, rand, idx, n, adaptive, adaptive_memory, cell_id, subs,
-                      collision_rate_deficit, collision_rate, remaining_dt, dt):
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, remaining_dt, dt, is_first_in_pair):
+        return AlgorithmicMethods.adaptive_sdm_gamma_body(
+            gamma.data, idx.data, len(idx), n.data, cell_id.data,
+            remaining_dt.data, dt, is_first_in_pair.indicator.data)
+
+    @staticmethod
+    def compute_gamma(gamma, rand, idx, n, cell_id,
+                      collision_rate_deficit, collision_rate, is_first_in_pair):
         return AlgorithmicMethods.compute_gamma_body(
-            gamma.data, rand.data, idx.data, len(idx), n.data, adaptive, adaptive_memory.data, cell_id.data,
-            subs.data, collision_rate_deficit.data, collision_rate.data, remaining_dt.data, dt)
+            gamma.data, rand.data, idx.data, len(idx), n.data, cell_id.data,
+            collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     def condensation(

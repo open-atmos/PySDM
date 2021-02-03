@@ -110,7 +110,7 @@ class Particles:
                               self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
                               self.keys[attr_name])
 
-    def coalescence(self, gamma):
+    def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
                                   volume=self['volume'],
                                   idx=self.__idx,
@@ -118,10 +118,14 @@ class Particles:
                                   intensive=self.get_intensive_attrs(),
                                   extensive=self.get_extensive_attrs(),
                                   gamma=gamma,
-                                  healthy=self.__healthy_memory
+                                  healthy=self.__healthy_memory,
+                                  is_first_in_pair=is_first_in_pair
                                   )
         self.healthy = bool(self.__healthy_memory)
         self.attributes['volume'].mark_updated()
+
+    def adaptive_sdm_end(self, dt_left):
+        return self.core.bck.adaptive_sdm_end(dt_left, self.core.mesh.n_cell, self.core.particles.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.keys

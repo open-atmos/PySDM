@@ -18,7 +18,7 @@ class TestSDMSingleCell:
     def test_single_collision(backend, v_2, T_2, n_2):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         core.build(attributes)
 
@@ -49,7 +49,7 @@ class TestSDMSingleCell:
     def test_single_collision_same_n(backend, n_in, n_out):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, 2)
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         core.build(attributes)
 
@@ -70,10 +70,10 @@ class TestSDMSingleCell:
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
 
-        def _compute_gamma(prob, rand):
+        def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
             backend_fill(prob, p)
-            Coalescence.compute_gamma(sut, prob, rand)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
 
         sut.compute_gamma = _compute_gamma
 

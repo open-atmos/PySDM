@@ -39,7 +39,7 @@ class Coalescence:
         self.kernel_temp = None
         self.prob = None
         self.is_first_in_pair = None
-        self.remaining_dt = None
+        self.dt_left = None
 
         self.actual_length = None
 
@@ -54,17 +54,13 @@ class Coalescence:
         self.norm_factor_temp = self.core.Storage.empty(self.core.n_sd, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
-        self.remaining_dt = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
 
         self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.n_substep[:] = self.__substeps
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
-
-        self.adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
 
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
@@ -76,30 +72,28 @@ class Coalescence:
         if self.enable:
             if not self.adaptive:
                 for s in range(self.__substeps):  # TODO
-                    self.step(s, self.adaptive_memory)
+                    self.step(s)
             else:
-                self.remaining_dt[:] = self.core.dt
+                self.dt_left[:] = self.core.dt
                 self.actual_length = self.core.particles._Particles__idx.length
                 self.actual_cell_idx = self.core.particles.cell_idx.data
-                self.core.particles.cell_idx.data = self.remaining_dt.data.argsort(kind="stable")[::-1]
 
                 s = 0
                 while self.core.particles._Particles__idx.length != 0:
-                    self.step(s, self.adaptive_memory)
+                    self.core.particles.cell_idx.data = self.dt_left.data.argsort(kind="stable")[::-1]
+                    self.step(s)
                     s += 1
 
                 self.core.particles._Particles__idx.length = self.actual_length
                 self.core.particles.cell_idx.data = self.actual_cell_idx
                 self.core.particles._Particles__sort_by_cell_id()
 
-    def step(self, s, adaptive_memory):
+    def step(self, s):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
         self.toss_pairs(self.is_first_in_pair, pairs_rand, s)
         self.compute_probability(self.prob, self.is_first_in_pair)
-        self.compute_gamma(self.prob, rand)
-        if self.adaptive:
-            adaptive_memory[:] = 1
-        self.core.particles.coalescence(gamma=self.prob)
+        self.compute_gamma(self.prob, rand, self.is_first_in_pair)
+        self.core.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:
@@ -111,7 +105,8 @@ class Coalescence:
         self.core.particles.permutation(u01, self.croupier == 'local')
 
         if self.adaptive:
-            end = method3(self.remaining_dt.data, self.core.mesh.n_cell, self.core.particles.cell_start.data, s)
+            # TODO: compute it earlier
+            end = self.core.particles.adaptive_sdm_end(self.dt_left)
             self.core.particles._Particles__idx.length = end
 
         is_first_in_pair.update(
@@ -129,22 +124,15 @@ class Coalescence:
 
         self.core.normalize(prob, self.norm_factor_temp)
 
-    def compute_gamma(self, prob, rand):
+    def compute_gamma(self, prob, rand, is_first_in_pair):
+        if self.adaptive:
+            self.core.backend.adaptive_sdm_gamma(prob, self.core.particles._Particles__idx, self.core.particles['n'],
+                                        self.core.particles["cell id"],
+                                        self.dt_left, self.core.dt, is_first_in_pair)
+
         self.core.backend.compute_gamma(prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
-                                        self.adaptive, self.adaptive_memory, self.core.particles["cell id"], self.subs,
-                                        self.collision_rate_deficit, self.collision_rate, self.remaining_dt, self.core.dt)
+                                        self.core.particles["cell id"],
+                                        self.collision_rate_deficit, self.collision_rate, is_first_in_pair)
 
 
-# TODO #69
-import numba
 
-@numba.njit()
-def method3(remaining_dt, n_cell, cell_start, s):
-    end = 0
-    for i in range(n_cell - 1, -1, -1):
-        if remaining_dt[i] == 0:
-            continue
-        else:
-            end = cell_start[i + 1]
-            break
-    return end
