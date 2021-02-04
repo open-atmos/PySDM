@@ -16,10 +16,11 @@ class Coalescence:
                  seed=None,
                  croupier=None,
                  optimized_random=False,
-                 substeps: int = 1,  # TODO: meaning for adaptive=True?
+                 substeps: int = 1,
                  adaptive: bool = False,
                  dt_coal_range=default_dt_coal_range
                  ):
+        assert substeps == 1 or adaptive is False
 
         self.core = None
         self.enable = True
@@ -48,10 +49,8 @@ class Coalescence:
 
         if self.core.n_sd < 2:
             raise ValueError("No one to collide with!")
-        # TODO
-        # if self.adaptive:
-        #     assert self.core.dt >= self.dt_coal_range[0]
-        #     assert self.core.dt >= self.dt_coal_range[1]
+        if self.dt_coal_range[1] > self.core.dt:
+            self.dt_coal_range[1] = self.core.dt
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
@@ -60,7 +59,7 @@ class Coalescence:
         self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
 
         self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.n_substep[:] = self.__substeps
+        #self.n_substep[:] = self.__substeps
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
@@ -69,7 +68,7 @@ class Coalescence:
             self.croupier = self.core.backend.default_croupier
 
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))  # TODO: remove? (zero by definition if all works OK)
 
     def __call__(self):
         if self.enable:
@@ -97,6 +96,8 @@ class Coalescence:
         self.compute_probability(self.prob, self.is_first_in_pair)
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
         self.core.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
+        if self.adaptive:
+            self.core.particles._Particles__idx.length = self.core.particles.adaptive_sdm_end(self.dt_left)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:
@@ -106,11 +107,6 @@ class Coalescence:
             self.actual_length = self.core.particles._Particles__idx.length
 
         self.core.particles.permutation(u01, self.croupier == 'local')
-
-        if self.adaptive:
-            # TODO: compute it earlier
-            end = self.core.particles.adaptive_sdm_end(self.dt_left)
-            self.core.particles._Particles__idx.length = end
 
         is_first_in_pair.update(
             self.core.particles.cell_start,
@@ -129,10 +125,9 @@ class Coalescence:
 
     def compute_gamma(self, prob, rand, is_first_in_pair):
         if self.adaptive:
-            # TODO: take into account max_dt and min_dt range
             self.core.backend.adaptive_sdm_gamma(prob, self.core.particles._Particles__idx, self.core.particles['n'],
                                         self.core.particles["cell id"],
-                                        self.dt_left, self.core.dt, is_first_in_pair)
+                                        self.dt_left, self.core.dt, self.dt_coal_range[1], is_first_in_pair)
 
         self.core.backend.compute_gamma(prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
                                         self.core.particles["cell id"],

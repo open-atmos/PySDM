@@ -85,7 +85,8 @@ class AlgorithmicMethods:
     @numba.njit(**conf.JIT_FLAGS)
     def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
         dt_todo = np.empty_like(dt_left)
-        dt_todo[:] = min(dt_left, dt_max)
+        for i in prange(len(dt_todo)):
+            dt_todo[i] = min(dt_left[i], dt_max)
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
