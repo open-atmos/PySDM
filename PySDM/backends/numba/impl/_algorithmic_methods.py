@@ -265,7 +265,7 @@ class AlgorithmicMethods:
                 norm_factor[i] = 0
             else:
                 norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-        for d in range(prob.shape[0]):
+        for d in prange(prob.shape[0]):
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
