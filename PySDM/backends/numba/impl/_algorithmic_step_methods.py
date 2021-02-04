@@ -50,12 +50,12 @@ class AlgorithmicStepMethods:
                     cell_id[idx[i]] == cell_id[idx[i + 1]] and
                     (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
+        is_first_in_pair[-1] = False
 
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return AlgorithmicStepMethods.find_pairs_body(
             cell_start.data, is_first_in_pair.data, cell_id.data, cell_idx.data, idx.data, len(idx))
-
 
     @staticmethod
     @numba.njit(void(float64[:], int64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
