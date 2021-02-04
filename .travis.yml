@@ -12,7 +12,9 @@ jobs:
       before_install:
         - sudo `which pip` install --upgrade pip
       before_script:
+        - sed -i '/numba/d' requirements.txt
         - pip install -U $(cat requirements.txt | awk -F '==|>=' {'print $1'})
+        - pip install --pre git+https://github.com/numba/numba.git
         # https://github.com/pypa/virtualenv/pull/1064/files
         - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
         - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
