@@ -70,7 +70,7 @@ class AlgorithmicStepMethods:
         return AlgorithmicStepMethods.max_pair_body(data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
     def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
@@ -99,7 +99,7 @@ class AlgorithmicStepMethods:
             idx.data, length, is_first_in_pair.indicator.data, attr.data)
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
