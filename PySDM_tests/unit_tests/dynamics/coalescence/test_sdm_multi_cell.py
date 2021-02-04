@@ -18,7 +18,7 @@ class TestSDMMultiCell:
 
     @staticmethod
     @pytest.mark.parametrize("n_sd", [1, 2, 3, 8000])
-    @pytest.mark.parametrize("adaptive", [False, True])
+    @pytest.mark.parametrize("adaptive", [False])  # TODO
     def test_coalescence_call(n_sd, backend, adaptive):
         # TODO: #380
         from PySDM.backends import ThrustRTC
