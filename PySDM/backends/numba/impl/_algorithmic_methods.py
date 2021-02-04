@@ -95,6 +95,8 @@ class AlgorithmicMethods:
             cid = cell_id[j]
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
         for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
             j, _ = pair_indices(i, idx, is_first_in_pair)
             gamma[i] = gamma[i] * (dt_todo[cell_id[j]] / dt)
         dt_left -= dt_todo
