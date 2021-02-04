@@ -19,6 +19,11 @@ class TestSDMMultiCell:
     @staticmethod
     @pytest.mark.parametrize("adaptive", [False, True])
     def test_coalescence_call(backend, adaptive):
+        # TODO: #380
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return
+
         # Arrange
         n = np.ones(8000)
         v = np.ones_like(n)
@@ -31,13 +36,7 @@ class TestSDMMultiCell:
         core.build(attributes)
         u01, _ = sut.rnd_opt.get_random_arrays(s=0)
         sut.actual_length = core.particles._Particles__idx.length
-        try:
-            sut.adaptive = adaptive
-        except NotImplementedError:
-            if adaptive:
-                return
-            else:
-                assert False  # TODO #69
+        sut.adaptive = adaptive
 
         # Act
         sut()
