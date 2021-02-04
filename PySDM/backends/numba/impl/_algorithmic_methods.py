@@ -4,7 +4,7 @@ Created at 04.11.2019
 
 import numba
 import numpy as np
-from numba import void, float64, int64, prange
+from numba import void, float64, int64, prange, bool_
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
@@ -31,7 +31,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], int64[:]),
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], bool_[:]),
         **conf.JIT_FLAGS)
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):

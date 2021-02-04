@@ -4,7 +4,7 @@ Created at 18.03.2020
 
 import numba
 import numpy as np
-from numba import float64, int64, void, prange
+from numba import float64, int64, void, prange, bool_
 
 from PySDM.backends.numba import conf
 
@@ -43,7 +43,7 @@ class AlgorithmicStepMethods:
                 data_out[i//2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(int64[:], bool_[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
     def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
         for i in prange(length - 1):
             is_first_in_pair[i] = (
@@ -51,14 +51,14 @@ class AlgorithmicStepMethods:
                     (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
 
-    # @staticmethod
-    # def find_pairs(cell_start, cell_idx, is_first_in_pair, cell_id, idx, length):
-    #     return AlgorithmicStepMethods.find_pairs_body(
-    #         cell_start.data, cell_idx.data, is_first_in_pair.data, cell_id.data, idx.data, length)
-    #
+    @staticmethod
+    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+        return AlgorithmicStepMethods.find_pairs_body(
+            cell_start.data, is_first_in_pair.data, cell_id.data, cell_idx.data, idx.data, len(idx))
+
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(float64[:], int64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
     def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):

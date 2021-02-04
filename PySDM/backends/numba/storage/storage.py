@@ -11,6 +11,7 @@ class Storage:
 
     FLOAT = np.float64
     INT = np.int64
+    BOOL = np.bool_
 
     def __init__(self, data, shape, dtype):
         self.data = data
@@ -128,6 +129,9 @@ class Storage:
         elif dtype in (int, Storage.INT):
             data = np.full(shape, -1, dtype=Storage.INT)
             dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            data = np.full(shape, -1, dtype=Storage.BOOL)
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError()
 
