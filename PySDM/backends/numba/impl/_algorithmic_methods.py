@@ -83,9 +83,9 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, is_first_in_pair):
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
         dt_todo = np.empty_like(dt_left)
-        dt_todo[:] = dt_left
+        dt_todo[:] = min(dt_left, dt_max)
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -100,6 +100,12 @@ class AlgorithmicMethods:
             j, _ = pair_indices(i, idx, is_first_in_pair)
             gamma[i] = gamma[i] * (dt_todo[cell_id[j]] / dt)
         dt_left -= dt_todo
+
+    @staticmethod
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        return AlgorithmicMethods.adaptive_sdm_gamma_body(
+            gamma.data, idx.data, len(idx), n.data, cell_id.data,
+            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -125,12 +131,6 @@ class AlgorithmicMethods:
             collision_rate[cid] += g * n[k]
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
             gamma[i] = g
-
-    @staticmethod
-    def adaptive_sdm_gamma(gamma, idx, n, cell_id, remaining_dt, dt, is_first_in_pair):
-        return AlgorithmicMethods.adaptive_sdm_gamma_body(
-            gamma.data, idx.data, len(idx), n.data, cell_id.data,
-            remaining_dt.data, dt, is_first_in_pair.indicator.data)
 
     @staticmethod
     def compute_gamma(gamma, rand, idx, n, cell_id,
