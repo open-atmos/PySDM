@@ -35,7 +35,7 @@ class Coalescence:
         self.__substeps = substeps
         self.adaptive = adaptive
         self.n_substep = None
-        self.dt_coal_range = dt_coal_range
+        self.dt_coal_range = list(dt_coal_range)
 
         self.kernel_temp = None
         self.prob = None
