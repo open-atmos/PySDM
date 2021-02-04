@@ -17,15 +17,16 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_
 class TestSDMMultiCell:
 
     @staticmethod
+    @pytest.mark.parametrize("n_sd", [1, 2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
-    def test_coalescence_call(backend, adaptive):
+    def test_coalescence_call(n_sd, backend, adaptive):
         # TODO: #380
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
             return
 
         # Arrange
-        n = np.ones(8000)
+        n = np.ones(n_sd)
         v = np.ones_like(n)
         env = Box(dv=1, dt=default_dt_coal_range[1])
         grid = (25, 25)
