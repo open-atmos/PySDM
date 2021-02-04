@@ -16,7 +16,7 @@ class Coalescence:
                  seed=None,
                  croupier=None,
                  optimized_random=False,
-                 substeps: int = 1,
+                 substeps: int = 1,  # TODO: meaning for adaptive=True?
                  adaptive: bool = False,
                  dt_coal_range=default_dt_coal_range
                  ):
@@ -46,9 +46,10 @@ class Coalescence:
     def register(self, builder):
         self.core = builder.core
 
-        if self.adaptive:
-            assert self.core.dt >= self.dt_coal_range[0]
-            assert self.core.dt >= self.dt_coal_range[1]
+        # TODO
+        # if self.adaptive:
+        #     assert self.core.dt >= self.dt_coal_range[0]
+        #     assert self.core.dt >= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.n_sd, dtype=float)  # TODO #372
@@ -126,6 +127,7 @@ class Coalescence:
 
     def compute_gamma(self, prob, rand, is_first_in_pair):
         if self.adaptive:
+            # TODO: take into account max_dt and min_dt range
             self.core.backend.adaptive_sdm_gamma(prob, self.core.particles._Particles__idx, self.core.particles['n'],
                                         self.core.particles["cell id"],
                                         self.dt_left, self.core.dt, is_first_in_pair)
