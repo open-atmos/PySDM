@@ -35,7 +35,7 @@ class AlgorithmicStepMethods:
         return AlgorithmicStepMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):

@@ -13,7 +13,7 @@ def test_export():
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
-    settings.outfreq = 1
+    settings.output_interval = settings.dt
 
     storage = Storage()
     simulator = Simulation(settings, storage)
