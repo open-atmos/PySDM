@@ -102,10 +102,10 @@ class TestSDMSingleCell:
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n))
 
-        def _compute_gamma(prob, rand):
+        def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
             backend_fill(prob, p, odd_zeros=True)
-            Coalescence.compute_gamma(sut, prob, rand)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
         sut.compute_gamma = _compute_gamma
         attributes = {'n': n, 'volume': v}
         core.build(attributes)
@@ -126,7 +126,7 @@ class TestSDMSingleCell:
 
         core, sut = get_dummy_core_and_sdm(backend, n_sd)
 
-        sut.compute_gamma = lambda prob, rand: backend_fill(
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(
             prob,
             rand.to_ndarray() > 0.5,
             odd_zeros=True
@@ -153,20 +153,24 @@ class TestSDMSingleCell:
         rand = np.linspace(0, 1, n, endpoint=False)
 
         expected = lambda p, r: p // 1 + (r < p - p // 1)
-
+        n_sd = 2
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = backend.Storage.from_ndarray(np.full((1,), p))
-                rand_arr = backend.Storage.from_ndarray(np.full((1,), r))
-                idx = backend.Storage.from_ndarray(np.arange(2))
+                prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
+                rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
+                idx = backend.Storage.from_ndarray(np.arange(n_sd))
                 mult = backend.Storage.from_ndarray(np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
-                _ = backend.Storage.from_ndarray(np.zeros(1))
-                cell_id = backend.Storage.from_ndarray(np.zeros(2, dtype=backend.Storage.INT))
+                _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
+                cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
+
+                indicator = backend.PairIndicator(n_sd)
+                indicator.indicator.data[0] = 1
+                indicator.indicator.data[1] = 0
+
                 backend.compute_gamma(prob_arr, rand_arr, idx, mult,
-                                      adaptive=False, adaptive_memory=_, cell_id=cell_id,
-                                      collision_rate=_, collision_rate_deficit=_,
-                                      subs=_, remaining_dt=_, dt=-1)
+                                      cell_id=cell_id, is_first_in_pair=indicator,
+                                      collision_rate=_, collision_rate_deficit=_)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
