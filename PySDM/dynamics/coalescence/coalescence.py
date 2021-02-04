@@ -46,6 +46,8 @@ class Coalescence:
     def register(self, builder):
         self.core = builder.core
 
+        if self.core.n_sd < 2:
+            raise ValueError("No one to collide with!")
         # TODO
         # if self.adaptive:
         #     assert self.core.dt >= self.dt_coal_range[0]
