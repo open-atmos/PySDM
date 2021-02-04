@@ -4,6 +4,7 @@ Created at 22.11.2019
 
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
+from PySDM.physics import si
 import numpy as np
 from matplotlib import pyplot
 
@@ -21,6 +22,7 @@ class DummyStorage:
 
 def test_spin_up(plot=False):
     # Arrange
+    Settings.dt = .5 * si.second
     Settings.simulation_time = 20 * Settings.dt
     Settings.output_interval = 1 * Settings.dt
     settings = Settings()
