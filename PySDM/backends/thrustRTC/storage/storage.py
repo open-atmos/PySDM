@@ -12,6 +12,7 @@ class Storage:
 
     FLOAT = PrecisionResolver.get_np_dtype()
     INT = np.int64
+    BOOL = np.bool_
 
     def __init__(self, data, shape, dtype):
         self.data = data
@@ -122,6 +123,9 @@ class Storage:
         elif dtype in (int, Storage.INT):
             elem_cls = 'int64_t'
             dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            elem_cls = 'bool'
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError
 
