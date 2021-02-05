@@ -13,6 +13,58 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
+    def adaptive_sdm_end(dt_left, cell_start):
+        i = trtc.Find(dt_left.data, PrecisionResolver.get_floating_point(0))
+        if i is None:
+            i = len(dt_left)
+        return cell_start[i]
+
+    __adaptive_sdm_gamma_body_1 = trtc.For(['dt_todo', 'dt_left', 'dt', 'dt_max'], 'i', '''
+        dt_todo[i] = (min(dt_left[i], dt_max) / dt) * ULLONG_MAX;
+    ''')
+
+    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
+            if (gamma[i] == 0) {
+                return;
+            }
+            auto offset = 1 - is_first_in_pair[2 * i];
+            auto j = idx[2 * i + offset];
+            auto k = idx[2 * i + 1 + offset];
+            auto prop = (int64_t)(n[j] / n[k]);
+            auto dt_optimal = dt * prop / gamma[i];
+            auto cid = cell_id[j];
+            atomicMin((unsigned long long int*)&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
+    ''')
+
+    __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt','is_first_in_pair', 'dt_todo'], 'i', '''
+            if (gamma[i] == 0) {
+                return;
+            }
+            auto offset = 1 - is_first_in_pair[2 * i];
+            auto j = idx[2 * i + offset];
+            auto _dt_todo = (dt * dt_todo[cell_id[j]]) / ULLONG_MAX;
+            gamma[i] *= _dt_todo / dt;
+    ''')
+
+    __adaptive_sdm_gamma_body_4 = trtc.For(['dt_left', 'dt_todo', 'dt'], 'i', '''
+        dt_left[i] -= (dt * dt_todo[i]) / ULLONG_MAX;
+    ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        dt_todo = trtc.device_vector('uint64_t', len(dt_left))
+        d_dt_max = PrecisionResolver.get_floating_point(dt_max)
+        d_dt = PrecisionResolver.get_floating_point(dt)
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt, d_dt_max))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(len(idx) // 2,
+            (gamma.data, idx.data, n.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
+            len(idx) // 2, (gamma.data, idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         dim = trtc.DVInt64(dim)
         idx_length = trtc.DVInt64(position_in_cell.shape[1])

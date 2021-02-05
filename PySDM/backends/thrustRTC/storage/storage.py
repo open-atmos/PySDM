@@ -39,7 +39,11 @@ class Storage:
 
     def __setitem__(self, key, value):
         if hasattr(value, 'data'):
-            trtc.Copy(value.data, self.data)
+            if isinstance(value, np.ndarray):
+                vector = trtc.device_vector_from_numpy(value)
+                trtc.Copy(vector, self.data)
+            else:
+                trtc.Copy(value.data, self.data)
         else:
             if isinstance(value, int):
                 dvalue = trtc.DVInt64(value)
