@@ -8,10 +8,59 @@ from numba import void, float64, int64, prange, bool_
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
-from PySDM.backends.numba.numba_helpers import pair_indices
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def pair_indices(i, idx, is_first_in_pair):
+    offset = 1 - is_first_in_pair[2 * i]
+    j = idx[2 * i + offset]
+    k = idx[2 * i + 1 + offset]
+    return j, k
 
 
 class AlgorithmicMethods:
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
+        end = 0
+        for i in range(n_cell - 1, -1, -1):
+            if dt_left[i] == 0:
+                continue
+            else:
+                end = cell_start[i + 1]
+                break
+        return end
+
+    @staticmethod
+    def adaptive_sdm_end(dt_left, cell_start):
+        return AlgorithmicMethods.adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        dt_todo = np.empty_like(dt_left)
+        for i in prange(len(dt_todo)):
+            dt_todo[i] = min(dt_left[i], dt_max)
+        for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
+            prop = n[j] // n[k]
+            dt_optimal = dt * prop / gamma[i]
+            cid = cell_id[j]
+            dt_todo[cid] = min(dt_todo[cid], dt_optimal)
+        for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
+            j, _ = pair_indices(i, idx, is_first_in_pair)
+            gamma[i] *= dt_todo[cell_id[j]] / dt
+        dt_left -= dt_todo
+
+    @staticmethod
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        return AlgorithmicMethods.adaptive_sdm_gamma_body(
+            gamma.data, idx.data, len(idx), n.data, cell_id.data,
+            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
@@ -28,6 +77,15 @@ class AlgorithmicMethods:
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         AlgorithmicMethods.calculate_displacement_body(dim, scheme, displacement.data, courant.data, cell_origin.data,
                                                        position_in_cell.data)
+
+    @staticmethod
+    # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
+    def cell_id_body(cell_id, cell_origin, strides):
+        cell_id[:] = np.dot(strides, cell_origin)
+
+    @staticmethod
+    def cell_id(cell_id, cell_origin, strides):
+        return AlgorithmicMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
     @staticmethod
     @numba.njit(
@@ -64,49 +122,6 @@ class AlgorithmicMethods:
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
                                             extensive.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
-        end = 0
-        for i in range(n_cell - 1, -1, -1):
-            if dt_left[i] == 0:
-                continue
-            else:
-                end = cell_start[i + 1]
-                break
-        return end
-
-    @staticmethod
-    def adaptive_sdm_end(dt_left, n_cell, cell_start):
-        return AlgorithmicMethods.adaptive_sdm_end_body(dt_left.data, n_cell, cell_start.data)
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
-        dt_todo = np.empty_like(dt_left)
-        for i in prange(len(dt_todo)):
-            dt_todo[i] = min(dt_left[i], dt_max)
-        for i in prange(length // 2):
-            if gamma[i] == 0:
-                continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
-            prop = n[j] // n[k]
-            dt_optimal = dt * prop / gamma[i]
-            cid = cell_id[j]
-            dt_todo[cid] = min(dt_todo[cid], dt_optimal)
-        for i in prange(length // 2):
-            if gamma[i] == 0:
-                continue
-            j, _ = pair_indices(i, idx, is_first_in_pair)
-            gamma[i] = gamma[i] * (dt_todo[cell_id[j]] / dt)
-        dt_left -= dt_todo
-
-    @staticmethod
-    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
-        return AlgorithmicMethods.adaptive_sdm_gamma_body(
-            gamma.data, idx.data, len(idx), n.data, cell_id.data,
-            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -176,7 +191,7 @@ class AlgorithmicMethods:
     def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, length, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         for i in prange(length - 1):
-            output[i] = 0
+            output[i // 2] = 0
             if is_first_in_pair[i]:
                 r = radii[i] / unit
                 r_s = radii[i + 1] / unit
@@ -188,8 +203,8 @@ class AlgorithmicMethods:
                         D = D1 / r ** D2
                         E = E1 / r ** E2
                         F = (F1 / r) ** Mf + F2
-                        output[i] = A + B * p + D / p ** F + E / Gp
-                        output[i] = max(0, output[i])
+                        output[i // 2] = A + B * p + D / p ** F + E / Gp
+                        output[i // 2] = max(0, output[i // 2])
 
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):

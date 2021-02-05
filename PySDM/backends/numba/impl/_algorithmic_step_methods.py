@@ -12,29 +12,6 @@ from PySDM.backends.numba import conf
 class AlgorithmicStepMethods:
 
     @staticmethod
-    @numba.njit([float64(float64[:], int64[:], int64),
-                 int64(int64[:], int64[:], int64)], **conf.JIT_FLAGS)
-    def amax(row, idx, length):
-        result = np.amax(row[idx[:length]])
-        return result
-
-    @staticmethod
-    @numba.njit([float64(float64[:], int64[:], int64),
-                 int64(int64[:], int64[:], int64)], **conf.JIT_FLAGS)
-    def amin(row, idx, length):
-        result = np.amin(row[idx[:length]])
-        return result
-
-    @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
-    def cell_id_body(cell_id, cell_origin, strides):
-        cell_id[:] = np.dot(strides, cell_origin)
-
-    @staticmethod
-    def cell_id(cell_id, cell_origin, strides):
-        return AlgorithmicStepMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
-
-    @staticmethod
     @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
@@ -81,9 +58,9 @@ class AlgorithmicStepMethods:
                     data_out[i], data_out[i + 1] = data_in[idx[i]], data_in[idx[i + 1]]
 
     @staticmethod
-    def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
+    def sort_pair(data_out, data_in, is_first_in_pair, idx):
         return AlgorithmicStepMethods.sort_pair_body(
-            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+            data_out.data, data_in.data, is_first_in_pair.data, idx.data, len(idx))
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

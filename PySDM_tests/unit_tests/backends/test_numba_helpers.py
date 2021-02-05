@@ -1,7 +1,6 @@
-from PySDM.backends.numba.numba_helpers import bisec, pair_indices
+from PySDM.backends.numba.numba_helpers import bisec
 import os
 import numpy as np
-import pytest
 
 
 class TestNumbaHelpers:
@@ -18,20 +17,4 @@ class TestNumbaHelpers:
 
         # assert
         np.testing.assert_almost_equal(f(zero), 0)
-
-    @staticmethod
-    @pytest.mark.parametrize("i, idx, is_first_in_pair, expected", [
-        (0, (0, 1), (True, False), (0, 1)),
-        (0, (1, 0), (True, False), (1, 0)),
-        (0, (0, 1, 2), (False, True), (1, 2)),
-    ])
-    def test_pair_indices(i, idx, is_first_in_pair, expected):
-        # Arrange
-        sut = pair_indices if 'NUMBA_DISABLE_JIT' in os.environ else pair_indices.py_func
-
-        # Act
-        actual = sut(i, idx, is_first_in_pair)
-
-        # Assert
-        assert expected == actual
 

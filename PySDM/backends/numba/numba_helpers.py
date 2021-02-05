@@ -199,11 +199,3 @@ def bisec(minfun, a, interval, args, rtol):
         else:
             b = x_new
     return x_new
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def pair_indices(i, idx, is_first_in_pair):
-    offset = 1 - is_first_in_pair[2 * i]
-    j = idx[2 * i + offset]
-    k = idx[2 * i + 1 + offset]
-    return j, k

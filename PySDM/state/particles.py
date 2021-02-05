@@ -125,7 +125,7 @@ class Particles:
         self.attributes['volume'].mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
-        return self.core.bck.adaptive_sdm_end(dt_left, self.core.mesh.n_cell, self.core.particles.cell_start)
+        return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.keys
