@@ -5,18 +5,18 @@ os: linux
 
 jobs:
   include:
-# TODO: restore after numba stops to use np.long which causes warnings in new numpy
-#    - name: "Python 3.8 with newest packages on Linux"
-#      os: linux
-#      language: python
-#      python: "3.8.0"
-#      before_install:
-#        - sudo `which pip` install --upgrade pip
-#      before_script:
-#        - pip install -U $(cat requirements.txt | awk -F '==|>=' {'print $1'})
-#        # https://github.com/pypa/virtualenv/pull/1064/files
-#        - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
-#        - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+    - name: "Python 3.8 with newest packages on Linux"
+      os: linux
+      language: python
+      python: "3.8.0"
+      before_install:
+        - sudo `which pip` install --upgrade pip
+      before_script:
+        - pip install -U $(cat requirements.txt | awk -F '==|>=' {'print $1'})
+        # https://github.com/pypa/virtualenv/pull/1064/files
+        - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+        - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+        - export PY_FLAGS="" # TODO numba 0.52 triggers deprecation warnings with newest numpy
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
@@ -49,9 +49,9 @@ install:
         python$PY_SFX $PY_FLAGS -c 'import os, virtualenv; virtualenv.install_distutils(os.environ["VIRTUAL_ENV"])' || exit 1
       fi;
   - pip$PY_SFX install -U -r requirements.txt
+  - export PY_FLAGS="-We"
 
 script:
-  - export PY_FLAGS="-We"
   - NBCONVERT="python$PY_SFX $PY_FLAGS -m nbconvert --to markdown --stdout"
   - PYTEST="python$PY_SFX -m pytest $PY_FLAGS"
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM

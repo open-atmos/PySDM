@@ -3,7 +3,6 @@ Created at 17.02.2020
 """
 
 import numpy as np
-from numba import float64
 
 import PySDM.physics.constants as const
 from PySDM.physics import _flag
@@ -30,7 +29,7 @@ def temperature_pressure_RH(rhod, thd, qv):
     return T, p, RH
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def pvs(T):
     """
     August-Roche-Magnus formula
@@ -38,62 +37,59 @@ def pvs(T):
     return const.ARM_C1 * np.exp((const.ARM_C2 * (T - const.T0)) / (T - const.T0 + const.ARM_C3))
 
 
-@numba.njit(float64(float64, float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def _mix(q, dry, wet):
     return wet / (1 / q + 1) + dry / (1 + q)
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def c_p(q):
     return _mix(q, const.c_pd, const.c_pv)
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def R(q):
     return _mix(q, const.Rd, const.Rv)
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def lambdaD(T):
     return const.D0 / np.sqrt(2 * const.Rv * T)
 
 
-@numba.njit(float64(float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def lambdaK(T, p):
     return (4 / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def beta(Kn):
     return (1 + Kn) / (1 + 1.71 * Kn + 1.33 * Kn * Kn)
 
 
-@numba.njit(float64(float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def D(r, T):
     Kn = lambdaD(T) / r  # TODO #57 optional
     return const.D0 * beta(Kn)
 
 
-@numba.njit(float64(float64, float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def K(r, T, p):
     Kn = lambdaK(T, p) / r
     return const.K0 * beta(Kn)
 
 
-@numba.njit(float64(float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def Fd(T, D):
     return const.rho_w * const.Rv * T / D / pvs(T)
 
 
-@numba.njit(float64(float64, float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def Fk(T, K, lv):
     return const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
 
 
-@numba.njit([
-    float64(float64),
-    float64[:, :](float64[:, :])
-], **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def A(T):
     """
     Koehler curve (expressed in partial pressure)
@@ -101,15 +97,12 @@ def A(T):
     return 2 * const.sgm / const.Rv / T / const.rho_w
 
 
-@numba.njit(float64(float64, float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def B(kp, rd):
     return kp * rd ** 3
 
 
-@numba.njit([
-    float64(float64, float64, float64),
-    float64[:, :](float64, float64[:], float64[:, :])
-], **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def r_cr(kp, rd, T):
     # critical radius
     return np.sqrt(3 * kp * rd ** 3 / A(T))
@@ -155,7 +148,7 @@ def dthd_dt(rhod, thd, T, dqv_dt):
     return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
 
 
-@numba.njit(float64(float64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def lv(T):
     """
     latent heat of evaporation
