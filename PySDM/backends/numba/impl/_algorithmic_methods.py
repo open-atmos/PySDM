@@ -188,13 +188,17 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, length, unit):
+    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, idx, length, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        output[:] = 0
         for i in prange(length - 1):
-            output[i // 2] = 0
             if is_first_in_pair[i]:
-                r = radii[i] / unit
-                r_s = radii[i + 1] / unit
+                if radii[idx[i]] > radii[idx[i + 1]]:
+                    r = radii[idx[i]] / unit
+                    r_s = radii[idx[i + 1]] / unit
+                else:
+                    r = radii[idx[i + 1]] / unit
+                    r_s = radii[idx[i]] / unit
                 p = r_s / r
                 if p != 0 and p != 1:
                     G = (G1 / r) ** Mg + G2 + G3 * r
@@ -209,7 +213,7 @@ class AlgorithmicMethods:
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         return AlgorithmicMethods.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data, len(is_first_in_pair), unit)
+            params, output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, len(is_first_in_pair), unit)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

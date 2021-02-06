@@ -3,6 +3,7 @@ Created at 28.09.2020
 """
 
 from ...numba.conf import JIT_FLAGS
+import sys
 
 cppython = {
     "int ": "",
@@ -10,6 +11,7 @@ cppython = {
     "float ": "",
     "auto ": "",
     "bool ": "",
+    "ULLONG_MAX": f"{2*sys.maxsize+1}",
     " {": ":",
     "}": "",
     "//": "#",
@@ -69,6 +71,30 @@ def replace_fors(cpp) -> str:
     return cpp.replace("__python_token__", "for")
 
 
+def atomic_min_to_python(cpp: str) -> str:
+    cpp = cpp.replace("atomicMin", "min") \
+              .replace("unsigned long long int*", "") \
+              .replace("unsigned long long int", "") \
+              .replace("double*", "") \
+              .replace("float*", "") \
+              .replace(" ", "") \
+              .replace("()", "") \
+              .replace("&", "")
+    return cpp
+
+
+def replace_atomic_mins(cpp: str) -> (str, bool):
+    start = cpp.find("atomicMin")
+    parallel = start == -1
+    while start > -1:
+        stop = cpp.find(";", start)
+        cpp_atomic_add = cpp[start:stop + 1]
+        python_atomic_min = atomic_min_to_python(cpp_atomic_add)
+        cpp = cpp.replace(cpp_atomic_add, python_atomic_min)
+        start = cpp.find("atomicMin", start + len(python_atomic_min))
+    return cpp, parallel
+
+
 def atomic_add_to_python(cpp: str) -> str:
     cpp = cpp.replace("atomicAdd", "") \
               .replace("unsigned long long int*", "") \
@@ -79,7 +105,7 @@ def atomic_add_to_python(cpp: str) -> str:
               .replace("()", "") \
               .replace("&", "") \
               .replace(",", "+=", 1) \
-        [1:-2]  # remove '(' and ');'
+              [1:-2]  # remove '(' and ');'
     return cpp
 
 
@@ -100,7 +126,9 @@ def to_numba(name, args, iter_var, body):
     for cpp, python in cppython.items():
         body = body.replace(cpp, python)
     body = replace_fors(body)
-    body, parallel = replace_atomic_adds(body)
+    body, parallel_add = replace_atomic_adds(body)
+    body, parallel_min = replace_atomic_mins(body)
+    parallel = parallel_add and parallel_min
     result = f'''
 def make(self):
     import numpy as np

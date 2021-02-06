@@ -4,7 +4,7 @@ Created at 18.03.2020
 
 import numba
 import numpy as np
-from numba import float64, int64, void, prange, bool_
+from numba import f8, i8, void, prange, b1
 
 from PySDM.backends.numba import conf
 
@@ -12,7 +12,7 @@ from PySDM.backends.numba import conf
 class AlgorithmicStepMethods:
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
@@ -20,7 +20,7 @@ class AlgorithmicStepMethods:
                 data_out[i//2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
 
     @staticmethod
-    @numba.njit(void(int64[:], bool_[:], int64[:], int64[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(i8[:], b1[:], i8[:], i8[:], i8[:], i8), **conf.JIT_FLAGS)
     def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
         for i in prange(length - 1):
             is_first_in_pair[i] = (
@@ -35,7 +35,8 @@ class AlgorithmicStepMethods:
             cell_start.data, is_first_in_pair.data, cell_id.data, cell_idx.data, idx.data, len(idx))
 
     @staticmethod
-    @numba.njit(void(float64[:], int64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit([void(f8[:], i8[:], b1[:], i8[:], i8),
+                 void(f8[:], f8[:], b1[:], i8[:], i8)], **conf.JIT_FLAGS)
     def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
@@ -47,7 +48,7 @@ class AlgorithmicStepMethods:
         return AlgorithmicStepMethods.max_pair_body(data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
     def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
@@ -76,7 +77,7 @@ class AlgorithmicStepMethods:
             idx.data, length, is_first_in_pair.indicator.data, attr.data)
 
     @staticmethod
-    @numba.njit(void(float64[:], float64[:], bool_[:], int64[:], int64), **conf.JIT_FLAGS)
+    @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
