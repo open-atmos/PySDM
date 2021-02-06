@@ -3,6 +3,9 @@ language: python
 python: 3.7
 os: linux
 
+env: 
+  - PY_FLAGS="-We"
+
 jobs:
   include:
     - name: "Python 3.8 with newest packages on Linux"
@@ -16,6 +19,7 @@ jobs:
         # https://github.com/pypa/virtualenv/pull/1064/files
         - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
         - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
+        - export PY_FLAGS="" # TODO numba 0.52 triggers deprecation warnings with newest numpy
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
@@ -50,7 +54,6 @@ install:
   - pip$PY_SFX install -U -r requirements.txt
 
 script:
-  - export PY_FLAGS="-We"
   - NBCONVERT="python$PY_SFX $PY_FLAGS -m nbconvert --to markdown --stdout"
   - PYTEST="python$PY_SFX -m pytest $PY_FLAGS"
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
