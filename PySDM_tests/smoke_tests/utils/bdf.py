@@ -91,7 +91,7 @@ def make_solve(coord, rtol):
             rhod_mean,
             qt
         )
-        if (odesys(0, y0)[idx_x] == 0).all() and dthd_dt == 0 and dqv_dt == 0:
+        if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
             try:
