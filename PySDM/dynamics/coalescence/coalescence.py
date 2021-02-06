@@ -82,7 +82,7 @@ class Coalescence:
 
                 s = 0
                 while self.core.particles._Particles__idx.length != 0:
-                    self.core.particles.cell_idx.data = self.dt_left.data.argsort(kind="stable")[::-1]
+                    self.core.particles.cell_idx.sort_by_key(self.dt_left)
                     self.step(s)
                     s += 1
 

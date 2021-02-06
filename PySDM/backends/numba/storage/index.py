@@ -35,5 +35,8 @@ class Index(Storage):
         else:
             StorageMethods.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
 
+    def sort_by_key(self, keys):
+        StorageMethods.sort_by_key(self, keys)
+
     def remove_zeros(self, indexed_storage):
         self.length = AlgorithmicMethods.remove_zeros(indexed_storage.data, self.data, self.length)

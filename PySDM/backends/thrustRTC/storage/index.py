@@ -30,6 +30,9 @@ class Index(Storage):
         result = Index(data, array.shape[0])
         return result
 
+    def sort_by_key(self, keys):
+        StorageMethods.sort_by_key(self, keys)
+
     def shuffle(self, temporary, parts=None):
         if parts is None:
             StorageMethods.shuffle_global(idx=self.data, length=self.length, u01=temporary.data)
