@@ -6,6 +6,8 @@ import pytest
 import numpy as np
 from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
 import os
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 @pytest.mark.parametrize("i, idx, is_first_in_pair, expected", [
