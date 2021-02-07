@@ -83,7 +83,6 @@ def atomic_min_to_python(cpp: str) -> str:
     cpp = re.sub(
         r"atomicMin\((\w+)\[(\w+)],\s*\(np.uint64\)\(([^)]*)\)\);",
         r"np.minimum(\1[\2:\2+1], np.asarray(\3, dtype=np.uint64), \1[\2:\2+1]);", cpp)
-    print(cpp)
     return cpp
 
 
