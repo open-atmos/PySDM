@@ -36,7 +36,7 @@ class AlgorithmicMethods:
             atomicMin((unsigned long long int*)&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
     ''')
 
-    __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt','is_first_in_pair', 'dt_todo'], 'i', '''
+    __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
             if (gamma[i] == 0) {
                 return;
             }

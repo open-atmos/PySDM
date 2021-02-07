@@ -105,6 +105,8 @@ class Storage:
                 elem_cls = PrecisionResolver.get_C_type()
             elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
+            elif self.dtype is Storage.BOOL:
+                elem_cls = 'bool'
             else:
                 raise NotImplementedError()
 
@@ -147,6 +149,8 @@ class Storage:
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
             dtype = Storage.FLOAT
+        elif str(array.dtype).startswith('bool'):
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError()
 

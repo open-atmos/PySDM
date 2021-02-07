@@ -56,7 +56,7 @@ class FakeThrustRTC:
         return FakeThrustRTC.Number(number)
 
     @staticmethod
-    def DVBool(number: int):
+    def DVBool(number: bool):
         return FakeThrustRTC.Number(number)
 
     @staticmethod
@@ -101,7 +101,18 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        dtype = float if (elem_cls == 'double' or elem_cls == 'float') else np.int64
+        if elem_cls == 'double':
+            dtype = np.float64
+        elif elem_cls == 'float':
+            dtype = np.float32
+        elif elem_cls == 'int64_t':
+            dtype = np.int64
+        elif elem_cls == 'uint64_t':
+            dtype = np.uint64
+        elif elem_cls == 'bool':
+            dtype = np.bool_
+        else:
+            raise NotImplementedError(f'Unsupported type {elem_cls}')
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 

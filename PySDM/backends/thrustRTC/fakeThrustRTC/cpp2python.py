@@ -3,7 +3,8 @@ Created at 28.09.2020
 """
 
 from ...numba.conf import JIT_FLAGS
-import sys
+import re
+import numpy as np
 
 cppython = {
     "int ": "",
@@ -11,7 +12,7 @@ cppython = {
     "float ": "",
     "auto ": "",
     "bool ": "",
-    "ULLONG_MAX": f"{2*sys.maxsize+1}",
+    "ULLONG_MAX": f"{np.uint32(-1)}",  # note: would need more clever parsing to work with np.uint64(-1)
     " {": ":",
     "}": "",
     "//": "#",
@@ -72,14 +73,17 @@ def replace_fors(cpp) -> str:
 
 
 def atomic_min_to_python(cpp: str) -> str:
-    cpp = cpp.replace("atomicMin", "min") \
-              .replace("unsigned long long int*", "") \
-              .replace("unsigned long long int", "") \
+    cpp = cpp.replace("unsigned long long int*", "") \
+              .replace("unsigned long long int", "np.uint64") \
               .replace("double*", "") \
               .replace("float*", "") \
               .replace(" ", "") \
               .replace("()", "") \
               .replace("&", "")
+    cpp = re.sub(
+        r"atomicMin\((\w+)\[(\w+)],\s*\(np.uint64\)\(([^)]*)\)\);",
+        r"np.minimum(\1[\2:\2+1], np.asarray(\3, dtype=np.uint64), \1[\2:\2+1]);", cpp)
+    print(cpp)
     return cpp
 
 
@@ -88,9 +92,9 @@ def replace_atomic_mins(cpp: str) -> (str, bool):
     parallel = start == -1
     while start > -1:
         stop = cpp.find(";", start)
-        cpp_atomic_add = cpp[start:stop + 1]
-        python_atomic_min = atomic_min_to_python(cpp_atomic_add)
-        cpp = cpp.replace(cpp_atomic_add, python_atomic_min)
+        cpp_atomic_min = cpp[start:stop + 1]
+        python_atomic_min = atomic_min_to_python(cpp_atomic_min)
+        cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
         start = cpp.find("atomicMin", start + len(python_atomic_min))
     return cpp, parallel
 
