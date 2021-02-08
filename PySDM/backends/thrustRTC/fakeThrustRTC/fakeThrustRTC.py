@@ -85,7 +85,8 @@ class FakeThrustRTC:
 
     @staticmethod
     def Copy(vector_in, vector_out):
-        assert vector_out.ndarray.dtype == vector_in.ndarray.dtype
+        if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
+            raise ValueError(f"Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}")
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
@@ -101,10 +102,8 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        if elem_cls == 'double':
+        if elem_cls == 'double' or elem_cls == 'float':  # TODO: distinguish np.float32 and np.float64?
             dtype = np.float64
-        elif elem_cls == 'float':
-            dtype = np.float32
         elif elem_cls == 'int64_t':
             dtype = np.int64
         elif elem_cls == 'uint64_t':
