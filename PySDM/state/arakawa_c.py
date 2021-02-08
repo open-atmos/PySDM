@@ -42,7 +42,7 @@ def x_vec_coord(grid):
     assert np.amin(xX) == 0
     assert np.amax(xX) == 1
     assert xX.shape == (nx, nz)
-    zZ = np.repeat(np.linspace(1 / 2, grid[1] - 1/2, nz).reshape((1, nz)), nx, axis=0) / grid[1]
+    zZ = np.repeat(z_scalar_coord(grid).reshape((1, nz)), nx, axis=0) / grid[1]
     assert np.amin(zZ) >= 0
     assert np.amax(zZ) <= 1
     assert zZ.shape == (nx, nz)
@@ -63,10 +63,15 @@ def z_vec_coord(grid):
     return xX, zZ
 
 
+def z_scalar_coord(grid):
+    zZ = np.linspace(1/2, grid[-1]-1/2, grid[-1])
+    return zZ
+
+
 def make_rhod(grid, rhod_of):
     return np.repeat(
         rhod_of(
-            (np.arange(grid[1]) + 1 / 2) / grid[1]
+            z_scalar_coord(grid)
         ).reshape((1, grid[1])),
         grid[0],
         axis=0
