@@ -23,18 +23,18 @@ class Parcel(_Moist):
 
         self.w = w if callable(w) else lambda _: w
 
-        pd0 = p0 * (1 - (1 + const.eps / q0)**-1)
-        rhod0 = pd0 / const.Rd / T0
+        pd0 = phys.MoistAir.p_d(p0, q0)
+        rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, T0)
 
         self.params = (q0, phys.th_std(pd0, T0), rhod0, z0, 0)
-        self.mesh.dv = mass_of_dry_air / rhod0
+        self.mesh.dv = phys.Trivia.volume_of_density_mass(rhod0, mass_of_dry_air)
 
         self.mass_of_dry_air = mass_of_dry_air
 
     @property
     def dv(self):
         rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
-        return self.mass_of_dry_air / rhod_mean
+        return phys.Trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
 
     def register(self, builder):
         _Moist.register(self, builder)
@@ -68,27 +68,16 @@ class Parcel(_Moist):
         T = self['T'][0]
         p = self['p'][0]
         t = self['t'][0]
+        dz_dt = self.w(t + dt/2)  # "mid-point"
 
-        rho = p / phys.R(qv) / T
-        pd = p * (1 - 1 / (1 + const.eps / qv))
+        phys.explicit_euler(self._tmp['t'][:], dt, 1)
+        phys.explicit_euler(self._tmp['z'][:], dt, dz_dt)
+        phys.explicit_euler(self._tmp['rhod'][:], dt, dz_dt * phys.Hydrostatic.drhod_dz(p, T, qv))
 
-        # mid-point value for w
-        dz_dt = self.w(t + dt/2)
-
-        # Explicit Euler for p,T (predictor step assuming dq=0)
-        dp_dt = - rho * const.g * dz_dt
-        dpd_dt = dp_dt  # dq=0
-        dT_dt = dp_dt / rho / phys.c_p(qv)
-
-        self._tmp['t'][:] += dt
-        self._tmp['z'][:] += dt * dz_dt
-        self._tmp['rhod'][:] += dt * (
-                dpd_dt / const.Rd / T +
-                -dT_dt * pd / const.Rd / T**2
+        self.mesh.dv = phys.Trivia.volume_of_density_mass(
+            (self._tmp['rhod'][0] + self["rhod"][0]) / 2,
+            self.mass_of_dry_air
         )
-
-        rhod_mean = (self._tmp['rhod'][0] + self["rhod"][0]) / 2
-        self.mesh.dv = self.mass_of_dry_air / rhod_mean
 
     def get_thd(self):
         return self['thd']

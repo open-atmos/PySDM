@@ -29,3 +29,56 @@ def th_std(p, T):
 
 def volume(radius):
     return 4 / 3 * np.pi * radius ** 3
+
+
+class MoistAir:
+    @staticmethod
+    def rhod_of_rho_qv(rho, qv):
+        return rho / (1 + qv)
+
+    @staticmethod
+    def p_d(p, qv):
+        return p * (1 - 1 / (1 + const.eps / qv))
+
+    @staticmethod
+    def rhod_of_pd_T(pd, T):
+        return pd / const.Rd / T
+
+    @staticmethod
+    def rho_of_p_qv_T(p, qv, T):
+        return p / R(qv) / T
+
+
+class Trivia:
+    @staticmethod
+    def volume_of_density_mass(rho, m):
+        return m / rho
+
+
+class ThStd:
+    @staticmethod
+    def rho_d(p, qv, theta_std):
+        kappa = const.Rd / const.c_pd
+        pd = MoistAir.p_d(p, qv)
+        rho_d = pd / (np.power(p / const.p1000, kappa) * const.Rd * theta_std)
+        return rho_d
+
+
+class Hydrostatic:
+    # TODO: include assumptions in the name
+    @staticmethod
+    def drhod_dz(p, T, qv):
+        rho = MoistAir.rho_of_p_qv_T(p, qv, T)
+        pd = MoistAir.p_d(p, qv)  # TODO: why not p?!
+        return - const.g / const.Rd / T * (rho - pd / c_p(qv) / T)
+
+    # TODO: include assumptions in the name
+    @staticmethod
+    def p_of_p0_thstd_qv_z(p0, thstd, qv, z):
+        kappa = const.Rd / const.c_pd
+        arg = np.power(p0/const.p1000, kappa) - z * kappa * const.g / thstd / R(qv)
+        return const.p1000 * np.power(arg, 1/kappa)
+
+
+def explicit_euler(y, dt, dy_dt):
+    y += dt * dy_dt
