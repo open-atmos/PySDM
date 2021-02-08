@@ -23,6 +23,10 @@ def make_Index(backend):
             return result
 
         @staticmethod
+        def empty(*args, **kwargs):
+            raise TypeError("'Index' class cannot be instantiated as empty.")
+
+        @staticmethod
         def from_ndarray(array):
             data, array.shape, _ = backend.Storage._get_data_from_ndarray(array)
             result = Index(data, array.shape[0])
