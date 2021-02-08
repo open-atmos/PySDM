@@ -6,6 +6,7 @@ import numpy as np
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
+from PySDM.storages.index import make_Index
 
 
 class TestIndex:
@@ -14,7 +15,7 @@ class TestIndex:
     def test_remove_zeros(backend):
         # Arrange
         n_sd = 44
-        idx = backend.Index.empty(n_sd)
+        idx = make_Index(backend).identity_index(n_sd)
         data = np.ones(n_sd).astype(np.int64)
         data[0], data[n_sd // 2], data[-1] = 0, 0, 0
         data = backend.Storage.from_ndarray(data)

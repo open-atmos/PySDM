@@ -6,6 +6,7 @@ from PySDM.backends.numba.impl._algorithmic_step_methods import AlgorithmicStepM
 from PySDM.backends.numba.storage.storage import Storage
 
 
+
 class IndexedStorage(Storage):
 
     def __init__(self, idx, data, shape, dtype):
@@ -31,12 +32,6 @@ class IndexedStorage(Storage):
         storage = Storage.from_ndarray(array)
         result = IndexedStorage.indexed(idx, storage)
         return result
-
-    def amax(self):
-        return AlgorithmicStepMethods.amax(self.data, self.idx.data, len(self))
-
-    def amin(self):
-        return AlgorithmicStepMethods.amin(self.data, self.idx.data, len(self))
 
     def to_ndarray(self, *, raw=False):
         if raw:

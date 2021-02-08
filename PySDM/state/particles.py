@@ -33,7 +33,7 @@ class Particles:
         self.keys = keys
         self.intensive_start = intensive_start
 
-        self.cell_idx = self.core.Index.empty(len(cell_start) - 1)
+        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = self.core.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                   scheme=core.sorting_scheme)

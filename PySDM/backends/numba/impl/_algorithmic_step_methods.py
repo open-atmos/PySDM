@@ -32,7 +32,7 @@ class AlgorithmicStepMethods:
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return AlgorithmicStepMethods.find_pairs_body(
-            cell_start.data, is_first_in_pair.data, cell_id.data, cell_idx.data, idx.data, len(idx))
+            cell_start.data, is_first_in_pair.indicator.data, cell_id.data, cell_idx.data, idx.data, len(idx))
 
     @staticmethod
     @numba.njit([void(f8[:], i8[:], b1[:], i8[:], i8),
@@ -45,7 +45,8 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def max_pair(data_out, data_in, is_first_in_pair, idx, length):
-        return AlgorithmicStepMethods.max_pair_body(data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+        return AlgorithmicStepMethods.max_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
 
     @staticmethod
     @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
@@ -86,4 +87,5 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
-        return AlgorithmicStepMethods.sum_pair_body(data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+        return AlgorithmicStepMethods.sum_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)

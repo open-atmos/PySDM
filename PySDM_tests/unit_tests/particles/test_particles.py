@@ -5,6 +5,7 @@ Created at 2019
 import numpy as np
 import pytest
 
+from PySDM.storages.index import make_Index
 from PySDM.state.particles_factory import ParticlesFactory
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
@@ -17,7 +18,7 @@ class TestParticles:
 
     @staticmethod
     def make_indexed_storage(backend, iterable, idx=None):
-        index = backend.Index.from_ndarray(np.array(iterable))
+        index = make_Index(backend).from_ndarray(np.array(iterable))
         if idx is not None:
             result = backend.IndexedStorage.indexed(idx, index)
         else:

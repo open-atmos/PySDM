@@ -3,9 +3,11 @@ Created at 20.04.2020
 """
 
 import pytest
+import os
 import numpy as np
 from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
-import os
+from PySDM.storages.index import make_Index
+from PySDM.storages.pair_indicator import make_PairIndicator
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
@@ -54,11 +56,11 @@ class TestAlgorithmicMethods:
     def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected):
         # Arrange
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
-        _idx = backend.Index.from_ndarray(np.asarray(idx))
+        _idx = make_Index(backend).from_ndarray(np.asarray(idx))
         _n = backend.Storage.from_ndarray(np.asarray(n))
         _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
         _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
-        _is_first_in_pair = backend.PairIndicator(len(n))
+        _is_first_in_pair = make_PairIndicator(backend)(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
 
         # Act

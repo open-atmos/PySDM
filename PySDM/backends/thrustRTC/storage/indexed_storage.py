@@ -4,7 +4,6 @@ Created at 25.08.2020
 
 import numpy as np
 
-from PySDM.backends.thrustRTC.impl._algorithmic_step_methods import AlgorithmicStepMethods
 from PySDM.backends.thrustRTC.storage.storage import Storage
 
 
@@ -33,12 +32,6 @@ class IndexedStorage(Storage):
         storage = Storage.from_ndarray(array)
         result = IndexedStorage.indexed(None, storage)
         return result
-
-    def amax(self):
-        return AlgorithmicStepMethods.amax(self, self.idx)
-
-    def amin(self):
-        return AlgorithmicStepMethods.amin(self, self.idx)
 
     def to_ndarray(self, *, raw=False):
         result = self._to_host()

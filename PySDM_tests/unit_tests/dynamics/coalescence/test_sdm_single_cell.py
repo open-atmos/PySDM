@@ -5,6 +5,7 @@ Created at 06.06.2019
 import numpy as np
 import pytest
 
+from PySDM.storages.pair_indicator import make_PairIndicator
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import backend_fill
@@ -164,7 +165,7 @@ class TestSDMSingleCell:
                 _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
                 cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
 
-                indicator = backend.PairIndicator(n_sd)
+                indicator = make_PairIndicator(backend)(n_sd)
                 indicator.indicator[0] = 1
                 indicator.indicator[1] = 0
 

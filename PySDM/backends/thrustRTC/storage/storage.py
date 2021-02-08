@@ -55,35 +55,35 @@ class Storage:
         return self
 
     def __add__(self, other):
-        raise NotImplementedError("Use +=")
+        raise TypeError("Use +=")
 
     def __iadd__(self, other):
         impl.add(self, other)
         return self
 
     def __sub__(self, other):
-        raise NotImplementedError("Use -=")
+        raise TypeError("Use -=")
 
     def __isub__(self, other):
         impl.subtract(self, other)
         return self
 
     def __mul__(self, other):
-        raise NotImplementedError("Use *=")
+        raise TypeError("Use *=")
 
     def __imul__(self, other):
         impl.multiply(self, other)
         return self
 
     def __mod__(self, other):
-        raise NotImplementedError("Use %=")
+        raise TypeError("Use %=")
 
     def __imod__(self, other):
         impl.row_modulo(self, other)
         return self
 
     def __pow__(self, other):
-        raise NotImplementedError("Use **=")
+        raise TypeError("Use **=")
 
     def __ipow__(self, other):
         impl.power(self, other)

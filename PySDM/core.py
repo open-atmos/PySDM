@@ -5,6 +5,8 @@ Created at 09.11.2019
 import numpy as np
 
 from PySDM.state.particles import Particles
+from PySDM.storages.index import make_Index
+from PySDM.storages.pair_indicator import make_PairIndicator
 
 
 class Core:
@@ -24,6 +26,9 @@ class Core:
         self.sorting_scheme = 'default'
         self.condensation_solver = None
 
+        self.Index = make_Index(backend)
+        self.PairIndicator = make_PairIndicator(backend)
+
     @property
     def env(self):
         return self.environment
@@ -37,16 +42,8 @@ class Core:
         return self.backend.Storage
 
     @property
-    def Index(self):
-        return self.backend.Index
-
-    @property
     def IndexedStorage(self):
         return self.backend.IndexedStorage
-
-    @property
-    def PairIndicator(self):
-        return self.backend.PairIndicator
 
     @property
     def PairwiseStorage(self):

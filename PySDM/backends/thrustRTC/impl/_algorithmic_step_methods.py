@@ -9,24 +9,6 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 class AlgorithmicStepMethods:
 
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def amax(row, idx):
-        perm_in = trtc.DVPermutation(row.data, idx.data)
-        index = trtc.Max_Element(perm_in.range(0, len(row)))
-        row_idx = idx[index]
-        result = row[row_idx]
-        return result
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def amin(row, idx):
-        perm_in = trtc.DVPermutation(row.data, idx.data)
-        index = trtc.Min_Element(perm_in.range(0, len(row)))
-        row_idx = idx[index]
-        result = row[row_idx]
-        return result
-
     __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
         cell_id[i] = 0;
         for (auto j = 0; j < n_dims; j += 1) {
@@ -67,10 +49,11 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):  # TODO #330 handle cell_idx
-        perm_cell_id = trtc.DVPermutation(cell_id, idx)
-        dvlength = trtc.DVInt64(length)  # TODO #350 length-1 as we use i+1 in __find_pairs_body
-        AlgorithmicStepMethods.__find_pairs_body.launch_n(length, [cell_start, perm_cell_id, is_first_in_pair, dvlength])
+    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):  # TODO #330 handle cell_idx
+        perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
+        d_length = trtc.DVInt64(len(idx))  # TODO #350 length-1 as we use i+1 in __find_pairs_body
+        AlgorithmicStepMethods.__find_pairs_body.launch_n(
+            len(idx), [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length])
 
     __max_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
