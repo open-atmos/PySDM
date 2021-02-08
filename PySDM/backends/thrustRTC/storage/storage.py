@@ -12,6 +12,7 @@ class Storage:
 
     FLOAT = PrecisionResolver.get_np_dtype()
     INT = np.int64
+    BOOL = np.bool_
 
     def __init__(self, data, shape, dtype):
         self.data = data
@@ -38,7 +39,11 @@ class Storage:
 
     def __setitem__(self, key, value):
         if hasattr(value, 'data'):
-            trtc.Copy(value.data, self.data)
+            if isinstance(value, np.ndarray):
+                vector = trtc.device_vector_from_numpy(value)
+                trtc.Copy(vector, self.data)
+            else:
+                trtc.Copy(value.data, self.data)
         else:
             if isinstance(value, int):
                 dvalue = trtc.DVInt64(value)
@@ -100,6 +105,8 @@ class Storage:
                 elem_cls = PrecisionResolver.get_C_type()
             elif self.dtype is Storage.INT:
                 elem_cls = 'int64_t'
+            elif self.dtype is Storage.BOOL:
+                elem_cls = 'bool'
             else:
                 raise NotImplementedError()
 
@@ -122,6 +129,9 @@ class Storage:
         elif dtype in (int, Storage.INT):
             elem_cls = 'int64_t'
             dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            elem_cls = 'bool'
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError
 
@@ -139,6 +149,8 @@ class Storage:
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
             dtype = Storage.FLOAT
+        elif str(array.dtype).startswith('bool'):
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError()
 

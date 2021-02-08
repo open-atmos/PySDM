@@ -18,5 +18,5 @@ class Geometric(Gravitational):
         output.sum(self.core.particles['radius'], is_first_in_pair)
         output **= 2
         output *= const.pi * self.collection_efficiency
-        self.tmp.distance(self.core.particles['terminal velocity'], is_first_in_pair)
-        output *= self.tmp
+        self.pair_tmp.distance(self.core.particles['terminal velocity'], is_first_in_pair)
+        output *= self.pair_tmp

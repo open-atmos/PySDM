@@ -70,10 +70,10 @@ class Core:
         if self.environment is not None:
             return self.environment.mesh
 
-    def normalize(self, prob, norm_factor, subs):
+    def normalize(self, prob, norm_factor):
         self.backend.normalize(
             prob, self.particles['cell id'], self.particles.cell_idx,
-            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv, subs)
+            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
     def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
         particle_temperatures = \

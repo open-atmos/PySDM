@@ -3,96 +3,101 @@ Created at 07.06.2019
 """
 
 import numpy as np
-
+from PySDM.physics import si
 from .random_generator_optimizer import RandomGeneratorOptimizer
+
+default_dt_coal_range = (1 * si.second, 5 * si.second)
 
 
 class Coalescence:
 
-    def __init__(self, kernel, seed=None, croupier=None, adaptive=False, max_substeps=128, optimized_random=False):
+    def __init__(self,
+                 kernel,
+                 seed=None,
+                 croupier=None,
+                 optimized_random=False,
+                 substeps: int = 1,
+                 adaptive: bool = False,
+                 dt_coal_range=default_dt_coal_range
+                 ):
+        assert substeps == 1 or adaptive is False
+
         self.core = None
-        self.kernel = kernel
-        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random, max_substeps=max_substeps, seed=seed)
         self.enable = True
-        self.__adaptive = adaptive
-        self.__n_substep = None
+
+        self.kernel = kernel
+
+        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random,
+                                                dt_min=dt_coal_range[0],
+                                                seed=seed)
         self.croupier = croupier
 
-        self.temp = None
+        self.__substeps = substeps
+        self.adaptive = adaptive
+        self.n_substep = None
+        self.dt_coal_range = list(dt_coal_range)
+
+        self.kernel_temp = None
         self.prob = None
         self.is_first_in_pair = None
+        self.dt_left = None
 
         self.actual_length = None
 
-    # TODO #69
-    @property
-    def adaptive(self):
-        return self.__adaptive
-
-    # TODO #69
-    @adaptive.setter
-    def adaptive(self, value):
-        if value and self.core.mesh.dim != 0:
-            raise NotImplementedError()
-        self.__adaptive = value
-
     def register(self, builder):
         self.core = builder.core
-        self.temp = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
-        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd, dtype=float)
+
+        if self.core.n_sd < 2:
+            raise ValueError("No one to collide with!")
+        if self.dt_coal_range[1] > self.core.dt:
+            self.dt_coal_range[1] = self.core.dt
+
+        self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
+        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
-        self.__n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.__n_substep[:] = 1
+        self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+
+        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        #self.n_substep[:] = self.__substeps
+
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
-
-        self.adaptive_memory = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.subs = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.msub = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
 
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
 
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-
-    @property
-    def max_substeps(self):
-        return self.rnd_opt.max_substeps
+        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))  # TODO: remove? (zero by definition if all works OK)
 
     def __call__(self):
         if self.enable:
             if not self.adaptive:
-                self.step(0, self.adaptive_memory)
+                for s in range(self.__substeps):  # TODO
+                    self.step(s)
             else:
+                self.dt_left[:] = self.core.dt
                 self.actual_length = self.core.particles._Particles__idx.length
-                self.core.particles.cell_idx.data[:] = self.__n_substep.data.argsort(kind="stable")[::-1]
-                for s in range(max(self.__n_substep.data)):  # range(self.n_substep[0]):
-                    self.step(s, self.adaptive_memory)
-                    self.subs[:] += self.adaptive_memory
-                    method1(self.adaptive_memory.data, self.msub.data)
+                self.actual_cell_idx = self.core.particles.cell_idx.data
+
+                s = 0
+                while self.core.particles._Particles__idx.length != 0:
+                    self.core.particles.cell_idx.sort_by_key(self.dt_left)
+                    self.step(s)
+                    s += 1
 
                 self.core.particles._Particles__idx.length = self.actual_length
-
-                method2(self.__n_substep.data, self.msub.data, self.max_substeps, self.subs.data)
-                self.subs[:] = 0
-                self.msub[:] = 0
-
-                self.core.particles.cell_idx.data[:] = np.arange(len(self.core.particles.cell_idx.data)).astype(
-                    dtype=np.int64)
+                self.core.particles.cell_idx.data = self.actual_cell_idx
                 self.core.particles._Particles__sort_by_cell_id()
 
-    def step(self, s, adaptive_memory):
+    def step(self, s):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
         self.toss_pairs(self.is_first_in_pair, pairs_rand, s)
         self.compute_probability(self.prob, self.is_first_in_pair)
-        self.compute_gamma(self.prob, rand)
+        self.compute_gamma(self.prob, rand, self.is_first_in_pair)
+        self.core.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         if self.adaptive:
-            adaptive_memory[:] = 1
-        self.core.particles.coalescence(gamma=self.prob, adaptive=self.adaptive, subs=self.__n_substep,
-                                        adaptive_memory=adaptive_memory,
-                                        collision_rate=self.collision_rate,
-                                        collision_rate_deficit=self.collision_rate_deficit)
+            self.core.particles._Particles__idx.length = self.core.particles.adaptive_sdm_end(self.dt_left)
 
     def toss_pairs(self, is_first_in_pair, u01, s):
         if self.adaptive:
@@ -103,52 +108,30 @@ class Coalescence:
 
         self.core.particles.permutation(u01, self.croupier == 'local')
 
-        if self.adaptive:
-            end = method3(self.__n_substep.data, self.core.mesh.n_cell, self.core.particles.cell_start.data,
-                          self.core.particles.cell_idx.data, s)
-            self.core.particles._Particles__idx.length = end
-
         is_first_in_pair.update(
             self.core.particles.cell_start,
             self.core.particles.cell_idx,
             self.core.particles['cell id']
         )
 
+        self.core.particles.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+
     def compute_probability(self, prob, is_first_in_pair):
-        self.kernel(self.temp, is_first_in_pair)
+        self.kernel(self.kernel_temp, is_first_in_pair)
         prob.max(self.core.particles['n'], is_first_in_pair)
-        prob *= self.temp
+        prob *= self.kernel_temp
 
-        norm_factor = self.temp
-        self.core.normalize(prob, norm_factor, self.__n_substep)
+        self.core.normalize(prob, self.norm_factor_temp)
 
-    def compute_gamma(self, prob, rand):
-        self.core.backend.compute_gamma(prob, rand)
+    def compute_gamma(self, prob, rand, is_first_in_pair):
+        if self.adaptive:
+            self.core.backend.adaptive_sdm_gamma(prob, self.core.particles._Particles__idx, self.core.particles['n'],
+                                        self.core.particles["cell id"],
+                                        self.dt_left, self.core.dt, self.dt_coal_range[1], is_first_in_pair)
 
-
-# TODO #69
-import numba
-
-
-@numba.njit()
-def method1(adaptive_memory, msub):
-    for i in range(len(adaptive_memory)):
-        msub[i] = max(msub[i], adaptive_memory[i])
+        self.core.backend.compute_gamma(prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
+                                        self.core.particles["cell id"],
+                                        self.collision_rate_deficit, self.collision_rate, is_first_in_pair)
 
 
-@numba.njit()
-def method2(n_substep, msub, max_substeps, subs):
-    for i in range(len(n_substep)):
-        n_substep[i] = min(max_substeps, ((subs[i] / n_substep[i]) + msub[i]) // 2)
 
-
-@numba.njit()
-def method3(n_substep, n_cell, cell_start, cell_idx, s):
-    end = 0
-    for i in range(n_cell - 1, -1, -1):
-        if n_substep[i] <= s:
-            continue
-        else:
-            end = cell_start[cell_idx[i] + 1]
-            break
-    return end

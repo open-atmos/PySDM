@@ -24,8 +24,8 @@ def main():
     settings = Settings()
 
     settings.grid = (25, 25)
-    settings.n_steps = 100
-    settings.outfreq = 10
+    settings.simulation_time = settings.dt * 100
+    settings.output_interval = settings.dt * 10
     settings.processes = {
         "particle advection": True,
         "fluid advection": True,

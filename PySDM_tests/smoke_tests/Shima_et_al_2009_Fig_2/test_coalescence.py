@@ -33,8 +33,11 @@ def check(n_part, dv, n_sd, rho, state, step):
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_coalescence(backend, croupier):
+@pytest.mark.parametrize('adaptive', [True, False])
+def test_coalescence(backend, croupier, adaptive):
     if backend == ThrustRTC and croupier == 'local':  # TODO #358
+        return
+    if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #380
         return
     # Arrange
     n_sd = 2 ** 14
@@ -52,7 +55,7 @@ def test_coalescence(backend, croupier):
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
-    builder.add_dynamic(Coalescence(kernel, seed=256, croupier=croupier))
+    builder.add_dynamic(Coalescence(kernel, seed=256, croupier=croupier, adaptive=adaptive))
     core = builder.build(attributes)
 
     volumes = {}

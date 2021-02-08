@@ -12,7 +12,7 @@ from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
 def test_environment():
     # Arrange
     settings = Settings()
-    settings.n_steps = -1
+    settings.simulation_time = -1 * settings.dt
     simulation = Simulation(settings, None)
     simulation.reinit()
 

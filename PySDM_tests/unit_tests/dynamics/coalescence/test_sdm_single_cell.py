@@ -12,14 +12,13 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 
-
 class TestSDMSingleCell:
 
     @staticmethod
     def test_single_collision(backend, v_2, T_2, n_2):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
         core.build(attributes)
 
@@ -50,7 +49,7 @@ class TestSDMSingleCell:
     def test_single_collision_same_n(backend, n_in, n_out):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, 2)
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         core.build(attributes)
 
@@ -70,7 +69,14 @@ class TestSDMSingleCell:
     def test_multi_collision(backend, v_2, n_2, p):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p)
+
+        def _compute_gamma(prob, rand, is_first_in_pair):
+            from PySDM.dynamics import Coalescence
+            backend_fill(prob, p)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
+
+        sut.compute_gamma = _compute_gamma
+
         attributes = {'n': n_2, 'volume': v_2}
         core.build(attributes)
 
@@ -95,7 +101,12 @@ class TestSDMSingleCell:
     def test_multi_droplet(backend, v, n, p):
         # Arrange
         core, sut = get_dummy_core_and_sdm(backend, len(n))
-        sut.compute_gamma = lambda prob, rand: backend_fill(prob, p, True)
+
+        def _compute_gamma(prob, rand, is_first_in_pair):
+            from PySDM.dynamics import Coalescence
+            backend_fill(prob, p, odd_zeros=True)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
+        sut.compute_gamma = _compute_gamma
         attributes = {'n': n, 'volume': v}
         core.build(attributes)
 
@@ -115,7 +126,7 @@ class TestSDMSingleCell:
 
         core, sut = get_dummy_core_and_sdm(backend, n_sd)
 
-        sut.compute_gamma = lambda prob, rand: backend_fill(
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(
             prob,
             rand.to_ndarray() > 0.5,
             odd_zeros=True
@@ -142,20 +153,32 @@ class TestSDMSingleCell:
         rand = np.linspace(0, 1, n, endpoint=False)
 
         expected = lambda p, r: p // 1 + (r < p - p // 1)
-
+        n_sd = 2
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = backend.Storage.from_ndarray(np.full((1,), p))
-                rand_arr = backend.Storage.from_ndarray(np.full((1,), r))
-                backend.compute_gamma(prob_arr, rand_arr)
+                prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
+                rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
+                idx = backend.Storage.from_ndarray(np.arange(n_sd))
+                mult = backend.Storage.from_ndarray(np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
+                _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
+                cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
+
+                indicator = backend.PairIndicator(n_sd)
+                indicator.indicator[0] = 1
+                indicator.indicator[1] = 0
+
+                backend.compute_gamma(prob_arr, rand_arr, idx, mult,
+                                      cell_id=cell_id, is_first_in_pair=indicator,
+                                      collision_rate=_, collision_rate_deficit=_)
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod
-    @pytest.mark.parametrize("optimized_random", (True, False))
-    def test_rnd_reuse(backend, optimized_random):
+    @pytest.mark.parametrize("optimized_random", (pytest.param(True, id='optimized'), pytest.param(False, id='non-optimized')))
+    @pytest.mark.parametrize("adaptive", (pytest.param(True, id='adaptive_dt'), pytest.param(False, id='const_dt')))
+    def test_rnd_reuse(backend, optimized_random, adaptive):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
             return  # TODO #330
@@ -164,8 +187,9 @@ class TestSDMSingleCell:
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
+        n_substeps = 5
 
-        particles, sut = get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random)
+        particles, sut = get_dummy_core_and_sdm(backend, n_sd, optimized_random=optimized_random, substeps=n_substeps)
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
@@ -177,9 +201,8 @@ class TestSDMSingleCell:
                 super(CountingRandom, self).__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
-        n_substeps = 100
-        sut._Coalescence__n_substep[:] = n_substeps
-        sut.adaptive = True  # TODO #331
+        sut.n_substep[:] = n_substeps  # TODO
+        sut.adaptive = adaptive
 
         # Act
         sut()
@@ -188,4 +211,7 @@ class TestSDMSingleCell:
         if sut.rnd_opt.optimized_random:
             assert CountingRandom.calls == 2
         else:
-            assert CountingRandom.calls == 2 * n_substeps
+            if adaptive:
+                assert 2 <= CountingRandom.calls <= 2 * n_substeps
+            else:
+                assert CountingRandom.calls == 2 * n_substeps

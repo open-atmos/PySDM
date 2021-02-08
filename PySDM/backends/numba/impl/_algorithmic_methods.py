@@ -4,13 +4,63 @@ Created at 04.11.2019
 
 import numba
 import numpy as np
-from numba import void, float64, int64, prange
+from numba import void, float64, int64, prange, bool_
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage.storage import Storage
 
 
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def pair_indices(i, idx, is_first_in_pair):
+    offset = 1 - is_first_in_pair[2 * i]
+    j = idx[2 * i + offset]
+    k = idx[2 * i + 1 + offset]
+    return j, k
+
+
 class AlgorithmicMethods:
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
+        end = 0
+        for i in range(n_cell - 1, -1, -1):
+            if dt_left[i] == 0:
+                continue
+            else:
+                end = cell_start[i + 1]
+                break
+        return end
+
+    @staticmethod
+    def adaptive_sdm_end(dt_left, cell_start):
+        return AlgorithmicMethods.adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        dt_todo = np.empty_like(dt_left)
+        for i in prange(len(dt_todo)):
+            dt_todo[i] = min(dt_left[i], dt_max)
+        for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
+            prop = n[j] // n[k]
+            dt_optimal = dt * prop / gamma[i]
+            cid = cell_id[j]
+            dt_todo[cid] = min(dt_todo[cid], dt_optimal)
+        for i in prange(length // 2):
+            if gamma[i] == 0:
+                continue
+            j, _ = pair_indices(i, idx, is_first_in_pair)
+            gamma[i] *= dt_todo[cell_id[j]] / dt
+        dt_left -= dt_todo
+
+    @staticmethod
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        return AlgorithmicMethods.adaptive_sdm_gamma_body(
+            gamma.data, idx.data, len(idx), n.data, cell_id.data,
+            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
@@ -29,79 +79,81 @@ class AlgorithmicMethods:
                                                        position_in_cell.data)
 
     @staticmethod
+    # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
+    def cell_id_body(cell_id, cell_origin, strides):
+        cell_id[:] = np.dot(strides, cell_origin)
+
+    @staticmethod
+    def cell_id(cell_id, cell_origin, strides):
+        return AlgorithmicMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
+
+    @staticmethod
     @numba.njit(
-        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:],
-             numba.boolean, int64[:], int64[:], int64[:], int64[:], int64[:], int64[:]),
+        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], bool_[:]),
         **conf.JIT_FLAGS)
-    # TODO #195 reopen https://github.com/numba/numba/issues/5279 with minimal rep. ex.
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                         adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
-        for i in prange(length - 1):
+    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
+        for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
 
-            j = idx[i]
-            k = idx[i + 1]
-
-            if n[j] < n[k]:
-                j, k = k, j
-            prop = int(n[j] / n[k])
-
-            if adaptive:
-                adaptive_memory[cell_idx[cell_id[j]]] = max(adaptive_memory[cell_idx[cell_id[j]]],
-                                                            int(((gamma[i]) * subs[cell_idx[cell_id[j]]]) / prop))
-            g = min(int(gamma[i]), prop)
-            collision_rate_deficit[cell_idx[cell_id[j]]] += (int(gamma[i]) - prop) * n[k]
-
-            if g == 0:
-                continue
-
-            collision_rate[cell_idx[cell_id[j]]] += g * n[k]
-
-            new_n = n[j] - g * n[k]
+            new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
                 n[j] = new_n
                 for ii in range(0, len(intensive)):
-                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
-                                      / (volume[k] + g * volume[j])
+                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
+                                      / (volume[k] + gamma[i] * volume[j])
                 for ie in range(0, len(extensive)):
-                    extensive[ie, k] += g * extensive[ie, j]
+                    extensive[ie, k] += gamma[i] * extensive[ie, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
                 for ii in range(0, len(intensive)):
-                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * g * volume[j]) \
-                                      / (volume[k] + g * volume[j])
+                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
+                                      / (volume[k] + gamma[i] * volume[j])
                     intensive[ii, k] = intensive[ii, j]
                 for ie in range(0, len(extensive)):
-                    extensive[ie, j] = g * extensive[ie, j] + extensive[ie, k]
+                    extensive[ie, j] = gamma[i] * extensive[ie, j] + extensive[ie, k]
                     extensive[ie, k] = extensive[ie, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy,
-                    adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                            extensive.data, gamma.data, healthy.data,
-                                            adaptive, cell_id.data, cell_idx.data, subs.data, adaptive_memory.data,
-                                            collision_rate.data, collision_rate_deficit.data)
+                                            extensive.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def compute_gamma_body(prob, rand):
+    def compute_gamma_body(gamma, rand, idx, length, n, cell_id,
+                           collision_rate_deficit, collision_rate, is_first_in_pair):
+
         """
-        return in "prob" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+        return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
         gamma = floor(prob) + 1 if rand <  prob - floor(prob)
               = floor(prob)     if rand >= prob - floor(prob)
         """
-        for i in prange(len(prob)):
-            prob[i] = np.ceil(prob[i] - rand[i // 2])
+        for i in prange(length // 2):
+            gamma[i] = np.ceil(gamma[i] - rand[i])
+
+            if gamma[i] == 0:
+                continue
+
+            j, k = pair_indices(i, idx, is_first_in_pair)
+            prop = n[j] // n[k]
+            g = min(int(gamma[i]), prop)  # TODO: test asserting that min is not needed with adaptivity
+            cid = cell_id[j]
+            collision_rate[cid] += g * n[k]
+            collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
+            gamma[i] = g
 
     @staticmethod
-    def compute_gamma(prob, rand):
-        return AlgorithmicMethods.compute_gamma_body(prob.data, rand.data)
+    def compute_gamma(gamma, rand, idx, n, cell_id,
+                      collision_rate_deficit, collision_rate, is_first_in_pair):
+        return AlgorithmicMethods.compute_gamma_body(
+            gamma.data, rand.data, idx.data, len(idx), n.data, cell_id.data,
+            collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     def condensation(
@@ -136,13 +188,17 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, length, unit):
+    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, idx, length, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
+        output[:] = 0
         for i in prange(length - 1):
-            output[i] = 0
             if is_first_in_pair[i]:
-                r = radii[i] / unit
-                r_s = radii[i + 1] / unit
+                if radii[idx[i]] > radii[idx[i + 1]]:
+                    r = radii[idx[i]] / unit
+                    r_s = radii[idx[i + 1]] / unit
+                else:
+                    r = radii[idx[i + 1]] / unit
+                    r_s = radii[idx[i]] / unit
                 p = r_s / r
                 if p != 0 and p != 1:
                     G = (G1 / r) ** Mg + G2 + G3 * r
@@ -151,13 +207,13 @@ class AlgorithmicMethods:
                         D = D1 / r ** D2
                         E = E1 / r ** E2
                         F = (F1 / r) ** Mf + F2
-                        output[i] = A + B * p + D / p ** F + E / Gp
-                        output[i] = max(0, output[i])
+                        output[i // 2] = A + B * p + D / p ** F + E / Gp
+                        output[i // 2] = max(0, output[i // 2])
 
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         return AlgorithmicMethods.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data, len(is_first_in_pair), unit)
+            params, output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, len(is_first_in_pair), unit)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -221,21 +277,21 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):
+    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt / n_substeps[i] / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-        for d in range(prob.shape[0]):
+                norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+        for d in prange(prob.shape[0]):
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substep):
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv, n_substep.data)
+            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
 
     @staticmethod
     @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})

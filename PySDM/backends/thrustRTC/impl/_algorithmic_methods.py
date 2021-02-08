@@ -13,6 +13,58 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
+    def adaptive_sdm_end(dt_left, cell_start):
+        i = trtc.Find(dt_left.data, PrecisionResolver.get_floating_point(0))
+        if i is None:
+            i = len(dt_left)
+        return cell_start[i]
+
+    __adaptive_sdm_gamma_body_1 = trtc.For(['dt_todo', 'dt_left', 'dt', 'dt_max'], 'i', '''
+        dt_todo[i] = (min(dt_left[i], dt_max) / dt) * ULLONG_MAX;
+    ''')
+
+    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
+            if (gamma[i] == 0) {
+                return;
+            }
+            auto offset = 1 - is_first_in_pair[2 * i];
+            auto j = idx[2 * i + offset];
+            auto k = idx[2 * i + 1 + offset];
+            auto prop = (int64_t)(n[j] / n[k]);
+            auto dt_optimal = dt * prop / gamma[i];
+            auto cid = cell_id[j];
+            atomicMin((unsigned long long int*)&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
+    ''')
+
+    __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
+            if (gamma[i] == 0) {
+                return;
+            }
+            auto offset = 1 - is_first_in_pair[2 * i];
+            auto j = idx[2 * i + offset];
+            auto _dt_todo = (dt * dt_todo[cell_id[j]]) / ULLONG_MAX;
+            gamma[i] *= _dt_todo / dt;
+    ''')
+
+    __adaptive_sdm_gamma_body_4 = trtc.For(['dt_left', 'dt_todo', 'dt'], 'i', '''
+        dt_left[i] -= (dt * dt_todo[i]) / ULLONG_MAX;
+    ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+        dt_todo = trtc.device_vector('uint64_t', len(dt_left))
+        d_dt_max = PrecisionResolver.get_floating_point(dt_max)
+        d_dt = PrecisionResolver.get_floating_point(dt)
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt, d_dt_max))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(len(idx) // 2,
+            (gamma.data, idx.data, n.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
+            len(idx) // 2, (gamma.data, idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         dim = trtc.DVInt64(dim)
         idx_length = trtc.DVInt64(position_in_cell.shape[1])
@@ -34,52 +86,33 @@ class AlgorithmicMethods:
             displacement.shape[1],
             [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
-    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy', 'adaptive', 'subs', 'adaptive_memory'], "i", '''
+    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0) {
-            if (adaptive) {
-                adaptive_memory[i] = 1;
-            }
             return;
         }
-
-        auto j = idx[i];
-        auto k = idx[i + 1];
-
-        if (n[j] < n[k]) {
-            j = idx[i + 1];
-            k = idx[i];
-        }
-        auto g = (int64_t)(n[j] / n[k]);
-        if (adaptive) {
-            adaptive_memory[i] = (int64_t)(gamma[i] * subs / g);
-        }
-        if (g > gamma[i]) {
-            g = gamma[i];
-        }
-        if (g == 0) {
-            return;
-        }
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
             
-        auto new_n = n[j] - g * n[k];
+        auto new_n = n[j] - gamma[i] * n[k];
         if (new_n > 0) {
             n[j] = new_n;
             
             for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
             }
             for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + k] += g * extensive[attr + j];
+                extensive[attr + k] += gamma[i] * extensive[attr + j];
             }
         }
         else {  // new_n == 0
             n[j] = (int64_t)(n[k] / 2);
             n[k] = n[k] - n[j];
             for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * g * volume[j]) / (volume[k] + g * volume[j]);
+                intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
                 intensive[attr + k] = intensive[attr + j];
             }
             for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + j] = g * extensive[attr + j] + extensive[attr + k];
+                extensive[attr + j] = gamma[i] * extensive[attr + j] + extensive[attr + k];
                 extensive[attr + k] = extensive[attr + j];
             }
         }
@@ -90,27 +123,40 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, adaptive, cell_id, cell_idx, subs, adaptive_memory, collision_rate, collision_rate_deficit):
+    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         idx_length = trtc.DVInt64(len(idx))
         intensive_length = trtc.DVInt64(len(intensive))
         extensive_length = trtc.DVInt64(len(extensive))
-        adaptive_device = trtc.DVBool(adaptive)
-        subs_device = trtc.DVInt64(subs[0])  # TODO #330
-        AlgorithmicMethods.__coalescence_body.launch_n(length - 1,
-            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length, extensive.data, extensive_length, gamma.data, healthy.data, adaptive_device, subs_device, adaptive_memory.data])
-        if adaptive:
-            return trtc.Reduce(adaptive_memory.data.range(0, length-1), trtc.DVInt64(0), trtc.Maximum())
-        else:
-            return 1
+        AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
+            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length,
+             extensive.data, extensive_length, gamma.data, healthy.data])
 
-    __compute_gamma_body = trtc.For(['prob', 'rand'], "i", '''
-        prob[i] = ceil(prob[i] - rand[(int64_t)(i / 2)]);
+    __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
+                           "collision_rate_deficit", "collision_rate"], "i", '''
+        gamma[i] = ceil(gamma[i] - rand[i]);
+        
+        if (gamma[i] == 0) {
+            return;
+        }
+
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
+
+        auto prop = (int64_t)(n[j] / n[k]);
+        if (prop > gamma[i]) {
+            prop = gamma[i];
+        }
+        
+        gamma[i] = prop;
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def compute_gamma(prob, rand):
-        AlgorithmicMethods.__compute_gamma_body.launch_n(len(prob), [prob.data, rand.data])
+    def compute_gamma(gamma, rand, idx, n, cell_id,
+                      collision_rate_deficit, collision_rate, is_first_in_pair):
+        AlgorithmicMethods.__compute_gamma_body.launch_n(len(idx) // 2,
+            [gamma.data, rand.data, idx.data, n.data, cell_id.data,
+             collision_rate_deficit.data, collision_rate.data])
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -140,11 +186,18 @@ class AlgorithmicMethods:
                      volume.data, n.data])
         return 0  # TODO #332
 
-    __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'unit'], "i", '''
-        output[i] = 0;
+    __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'idx', 'unit'], "i", '''
         if (is_first_in_pair[i]) {
-            real_type r = radii[i] / unit;
-            real_type r_s = radii[i + 1] / unit;
+            real_type r = 0;
+            real_type r_s = 0;
+            if (radii[idx[i]] > radii[idx[i + 1]]) {
+                r = radii[idx[i]] / unit;
+                r_s = radii[idx[i + 1]] / unit;
+            }
+            else {
+                r = radii[idx[i + 1]] / unit;
+                r_s = radii[idx[i]] / unit;
+            }
             real_type p = r_s / r;
             if (p != 0 && p != 1) {
                 real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
@@ -153,9 +206,9 @@ class AlgorithmicMethods:
                     real_type D = D1 / pow(r, D2);
                     real_type E = E1 / pow(r, E2);
                     real_type F = pow((F1 / r), Mf) + F2;
-                    output[i] = A + B * p + D / pow(p, F) + E / Gp;
-                    if (output[i] < 0) {
-                        output[i] = 0;
+                    output[int(i / 2)] = A + B * p + D / pow(p, F) + E / Gp;
+                    if (output[int(i / 2)] < 0) {
+                        output[int(i / 2)] = 0;
                     }
                 }
             }
@@ -179,8 +232,11 @@ class AlgorithmicMethods:
         dMf = PrecisionResolver.get_floating_point(Mf)
         dMg = PrecisionResolver.get_floating_point(Mg)
         dunit = PrecisionResolver.get_floating_point(unit)
-        AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg, output.data, radii.data, is_first_in_pair.indicator.data, dunit])
+        trtc.Fill(output.data, trtc.DVDouble(0))
+        AlgorithmicMethods.__linear_collection_efficiency_body.launch_n(
+            len(is_first_in_pair) - 1,
+            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
+             output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])
 
     __interpolation_body = trtc.For(['output', 'radius', 'factor', 'a', 'b'], 'i', '''
         auto r_id = (int64_t)(factor * radius[i]);
@@ -262,7 +318,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv, n_substeps):  # TODO #69
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = PrecisionResolver.get_floating_point(dt / dv)
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
