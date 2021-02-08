@@ -15,8 +15,7 @@ class Attribute:
 
     def allocate(self, idx):
         if self.size > 1:
-            self.data = self.core.IndexedStorage.empty(
-                idx, (self.size, self.core.n_sd), dtype=self.dtype)
+            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
         else:
             self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
 

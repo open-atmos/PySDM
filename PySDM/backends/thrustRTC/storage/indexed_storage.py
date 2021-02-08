@@ -17,6 +17,13 @@ class IndexedStorage(Storage):
     def __len__(self):
         return self.idx.length
 
+    def __getitem__(self, item):
+        result = Storage.__getitem__(self, item)
+        if isinstance(result, Storage):
+            return IndexedStorage.indexed(self.idx, result)
+        else:
+            return result
+
     @staticmethod
     def indexed(idx, storage):
         return IndexedStorage(idx, storage.data, storage.shape, storage.dtype)
@@ -28,24 +35,15 @@ class IndexedStorage(Storage):
         return result
 
     @staticmethod
-    def from_ndarray(array):
+    def from_ndarray(idx, array):
         storage = Storage.from_ndarray(array)
-        result = IndexedStorage.indexed(None, storage)
+        result = IndexedStorage.indexed(idx, storage)
         return result
 
     def to_ndarray(self, *, raw=False):
-        result = self._to_host()
-        result = np.reshape(result, self.shape)
-        if len(result.shape) > 1:
-            result = result.squeeze()
-
+        result = Storage.to_ndarray(self)
         if raw:
             return result
         else:
             idx = self.idx.to_ndarray()
             return result[idx[:len(self)]]
-
-    def read_row(self, i):
-        result_data = self.data.range(self.shape[1] * i, self.shape[1] * (i+1))
-        result = IndexedStorage(self.idx, result_data, (1, *self.shape[1:]), self.dtype)
-        return result

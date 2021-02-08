@@ -17,15 +17,21 @@ class ParticlesFactory:
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
         idx = core.Index.identity_index(core.n_sd)
-        base_attributes = core.backend.IndexedStorage.empty(idx, (len(tensive_attr), core.n_sd), float)  # TODO #342
+        extensive_attributes = core.backend.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
+        intensive_attributes = core.backend.IndexedStorage.empty(idx, (len(intensive_attr), core.n_sd), float)
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
                 attr.allocate(idx)
 
-        keys = {}
-        for i, attr in enumerate(extensive_attr + intensive_attr):
-            keys[str(attr)] = i
-            req_attr[attr].set_data(base_attributes.read_row(i))
+        extensive_keys = {}
+        for i, attr in enumerate(extensive_attr):
+            extensive_keys[str(attr)] = i
+            req_attr[attr].set_data(extensive_attributes[i, :])
+            req_attr[attr].init(attributes[attr])
+        intensive_keys = {}
+        for i, attr in enumerate(intensive_attr):
+            intensive_keys[str(attr)] = i
+            req_attr[attr].set_data(intensive_attributes[i, :])
             req_attr[attr].init(attributes[attr])
 
         n = req_attr['n']
@@ -53,7 +59,14 @@ class ParticlesFactory:
 
         cell_start = np.empty(core.mesh.n_cell + 1, dtype=int)
 
-        state = Particles(core, idx, base_attributes, keys, len(extensive_attr), cell_start, req_attr)
+        state = Particles(
+            core,
+            idx,
+            extensive_attributes, extensive_keys,
+            intensive_attributes, intensive_keys,
+            cell_start,
+            req_attr
+        )
 
         return state
 
@@ -61,5 +74,7 @@ class ParticlesFactory:
     def empty_particles(particles, n_sd) -> Particles:
         idx = particles.Index.identity_index(n_sd)
         return Particles(
-            core=particles, idx=idx, keys={}, intensive_start=-1,
-            cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, attributes={})
+            core=particles, idx=idx,
+            extensive_attributes=None, extensive_keys={}, intensive_attributes=None, intensive_keys={},
+            cell_start=np.zeros(0, dtype=np.int64), attributes={}
+        )

@@ -58,7 +58,7 @@ class Displacement:
             self.core.bck.calculate_displacement(
                 dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
         if self.enable_sedimentation:
-            displacement_z = displacement.read_row(self.dimension - 1)
+            displacement_z = displacement[self.dimension - 1, :]
             dt_over_dz = self.core.dt / self.core.mesh.dz
             displacement_z *= 1 / dt_over_dz
             displacement_z -= self.core.particles['terminal velocity']
