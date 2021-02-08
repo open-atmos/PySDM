@@ -26,13 +26,14 @@ def print_collection_efficiency_portrait(params):
     p = np.linspace(0, 1, points)
     pair = np.array([0., 0.])
     is_first_in_pair = np.array([True, False])
+    idx = np.arange(len(is_first_in_pair))
     for r in radii:
         pair[0] = r
         for i in range(len(p)):
             pair[1] = p[i] * r
             backend.linear_collection_efficiency_body(params=full_params(params),
                                                  output=Y_c[i:i + 1], radii=pair,
-                                                 is_first_in_pair=is_first_in_pair, length=2, unit=1 * um)
+                                                 is_first_in_pair=is_first_in_pair, idx=idx, length=2, unit=1 * um)
         plt.plot(p, Y_c, label=f'{r / const.si.um}um')
     xticks = np.arange(11) / 10
     yticks = np.arange(21) / 10
@@ -58,6 +59,7 @@ radii = np.array((8 * um, 10 * um, 14 * um, 16 * um, 20 * um, 136 * um))
 def Y_c_portrait(params, ):
     Y_c = np.zeros(expected.shape)
     is_first_in_pair = np.array([True, False])
+    idx = np.arange(len(is_first_in_pair))
     pair = np.array([0., 0.])
     for i in range(len(radii)):
         pair[0] = radii[i]
@@ -65,7 +67,7 @@ def Y_c_portrait(params, ):
             pair[1] = p[j] * radii[i]
             backend.linear_collection_efficiency_body(params=full_params(params),
                                                  output=Y_c[i:i + 1, j], radii=pair,
-                                                 is_first_in_pair=is_first_in_pair, length=2, unit=1 * um)
+                                                 is_first_in_pair=is_first_in_pair, idx=idx,length=2, unit=1 * um)
     return Y_c
 
 
