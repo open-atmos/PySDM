@@ -26,13 +26,13 @@ class TestInitialCondition:
         # Assert
         assert output['RH'].shape == (settings.nz, 1)
 
-        assert 25 < np.amin(output['RH']) < 30
-        assert 90 < np.amax(output['RH']) < 100
+        assert 35 < np.amin(output['RH']) < 40
+        assert 110 < np.amax(output['RH']) < 115
 
-        assert 740 * si.hPa < np.amin(output['p_ambient']) < 750 * si.hPa
+        assert 700 * si.hPa < np.amin(output['p_ambient']) < 710 * si.hPa
         assert (np.diff(output['p_ambient']) < 0).all()
-        assert 1000 * si.hPa < np.amax(output['p_ambient']) < 1050 * si.hPa
+        assert 950 * si.hPa < np.amax(output['p_ambient']) < 1000 * si.hPa
 
-        assert 285 * si.K < np.amin(output['T_ambient']) < 286 * si.K
+        assert 280 * si.K < np.amin(output['T_ambient']) < 285 * si.K
         assert output['T_ambient'][0] > np.amin(output['T_ambient'])
-        assert 299 * si.K < np.amax(output['T_ambient']) < 300 * si.K
+        assert 295 * si.K < np.amax(output['T_ambient']) < 300 * si.K

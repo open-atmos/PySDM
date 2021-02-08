@@ -138,7 +138,7 @@ class CondensationMethods:
                             decreasing += 1
                     v[drop] = v_new
                 result += n[drop] * v_new * const.rho_w
-            return result, (growing > 0 and decreasing > 0 )
+            return result, (growing > 0 and decreasing > 0)
 
         return calculate_ml_new
 

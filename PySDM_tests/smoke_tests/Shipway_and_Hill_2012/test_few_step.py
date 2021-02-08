@@ -25,4 +25,4 @@ class TestFewTimesteps:
         # Assert
         ql = output['ql'][:, -1]
         assert min(ql) == 0
-        assert .4 < max(ql) < .5
+        assert .3 < max(ql) < .5
