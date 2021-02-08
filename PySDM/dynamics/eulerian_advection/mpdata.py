@@ -63,7 +63,7 @@ class MPDATA:
                 self.thread.join()
 
     def step(self):
-        try:
+        try: # TODO: move this to within PyMPDATA
             for mpdata in self.mpdatas.values():
                 mpdata.advance(1)
         except NumbaExperimentalFeatureWarning:
