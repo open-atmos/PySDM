@@ -44,8 +44,7 @@ class PairwiseStorage(Storage):
             self.data,
             other.data,
             is_first_in_pair.indicator.data,
-            other.idx.data,
-            len(other)
+            other.idx.data
         )
 
     def sum(self, other, is_first_in_pair):

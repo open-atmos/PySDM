@@ -17,3 +17,4 @@ class TestNumbaHelpers:
 
         # assert
         np.testing.assert_almost_equal(f(zero), 0)
+

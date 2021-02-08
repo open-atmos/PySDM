@@ -64,6 +64,10 @@ class StorageMethods:
                 idx[i], idx[j] = idx[j], idx[i]
 
     @staticmethod
+    def sort_by_key(idx, attr):
+        idx.data[:] = attr.data.argsort(kind="stable")[::-1]
+
+    @staticmethod
     def to_ndarray(data):
         return data.copy()
 

@@ -9,7 +9,7 @@ from .storage import Storage
 class PairIndicator:
 
     def __init__(self, length):
-        self.indicator = Storage.empty(length, dtype=int)  # TODO #349 bool
+        self.indicator = Storage.empty(length, dtype=bool)
         self.length = length
 
     def __len__(self):

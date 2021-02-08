@@ -11,6 +11,7 @@ class Storage:
 
     FLOAT = np.float64
     INT = np.int64
+    BOOL = np.bool_
 
     def __init__(self, data, shape, dtype):
         self.data = data
@@ -19,6 +20,9 @@ class Storage:
 
     def __getitem__(self, key):
         if isinstance(key, slice):
+            step = key.step or 1
+            if step != 1:
+                raise NotImplementedError("step != 1")
             start = key.start or 0
             dim = len(self.shape)
             if dim == 1:
@@ -31,6 +35,8 @@ class Storage:
                 result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
+            if stop > self.data.shape[0]:
+                raise IndexError(f"requested a slice ({start}:{stop}) of Storage with first dim of length {self.data.shape[0]}")
             result = Storage(result_data, result_shape, self.dtype)
         else:
             result = self.data[key]
@@ -123,6 +129,9 @@ class Storage:
         elif dtype in (int, Storage.INT):
             data = np.full(shape, -1, dtype=Storage.INT)
             dtype = Storage.INT
+        elif dtype in (bool, Storage.BOOL):
+            data = np.full(shape, -1, dtype=Storage.BOOL)
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError()
 
@@ -139,6 +148,8 @@ class Storage:
             dtype = Storage.INT
         elif str(array.dtype).startswith('float'):
             dtype = Storage.FLOAT
+        elif str(array.dtype).startswith('bool'):
+            dtype = Storage.BOOL
         else:
             raise NotImplementedError()
 

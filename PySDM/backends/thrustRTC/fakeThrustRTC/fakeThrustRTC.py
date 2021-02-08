@@ -34,6 +34,7 @@ class FakeThrustRTC:
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
 
+        # TODO: should not be needed
         def __setitem__(self, key, value):
             if isinstance(value, FakeThrustRTC.Number):
                 value = value.ndarray
@@ -55,7 +56,7 @@ class FakeThrustRTC:
         return FakeThrustRTC.Number(number)
 
     @staticmethod
-    def DVBool(number: int):
+    def DVBool(number: bool):
         return FakeThrustRTC.Number(number)
 
     @staticmethod
@@ -84,7 +85,8 @@ class FakeThrustRTC:
 
     @staticmethod
     def Copy(vector_in, vector_out):
-        assert vector_out.ndarray.dtype == vector_in.ndarray.dtype
+        if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
+            raise ValueError(f"Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}")
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
@@ -92,8 +94,24 @@ class FakeThrustRTC:
         vector[:] = value
 
     @staticmethod
+    def Find(vector, value):
+        for i in range(len(vector.ndarray)):
+            if vector[i] == value.ndarray:
+                return i
+        return None
+
+    @staticmethod
     def device_vector(elem_cls, size):
-        dtype = float if (elem_cls == 'double' or elem_cls == 'float') else np.int64
+        if elem_cls == 'double' or elem_cls == 'float':  # TODO: distinguish np.float32 and np.float64?
+            dtype = np.float64
+        elif elem_cls == 'int64_t':
+            dtype = np.int64
+        elif elem_cls == 'uint64_t':
+            dtype = np.uint64
+        elif elem_cls == 'bool':
+            dtype = np.bool_
+        else:
+            raise NotImplementedError(f'Unsupported type {elem_cls}')
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 

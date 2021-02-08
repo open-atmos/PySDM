@@ -8,6 +8,7 @@ import pytest
 from PySDM.environments import Box
 from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
+from PySDM.dynamics.coalescence.coalescence import default_dt_coal_range
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_dummy_core_and_sdm
@@ -16,12 +17,18 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_
 class TestSDMMultiCell:
 
     @staticmethod
+    @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
-    def test_coalescence_call(backend, adaptive):
+    def test_coalescence_call(n_sd, backend, adaptive):
+        # TODO: #380
+        from PySDM.backends import ThrustRTC
+        if backend is ThrustRTC:
+            return
+
         # Arrange
-        n = np.ones(8000)
+        n = np.ones(n_sd)
         v = np.ones_like(n)
-        env = Box(dv=1, dt=0)
+        env = Box(dv=1, dt=default_dt_coal_range[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
         core, sut = get_dummy_core_and_sdm(backend, len(n), environment=env)
@@ -30,13 +37,7 @@ class TestSDMMultiCell:
         core.build(attributes)
         u01, _ = sut.rnd_opt.get_random_arrays(s=0)
         sut.actual_length = core.particles._Particles__idx.length
-        try:
-            sut.adaptive = adaptive
-        except NotImplementedError:
-            if adaptive:
-                return
-            else:
-                assert False  # TODO #69
+        sut.adaptive = adaptive
 
         # Act
         sut()

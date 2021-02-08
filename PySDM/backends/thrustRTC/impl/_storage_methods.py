@@ -117,6 +117,12 @@ class StorageMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
+    def sort_by_key(idx, attr):
+        d_attr_data_copy, _, _ = attr._get_empty_data(attr.shape, attr.dtype)
+        trtc.Sort_By_Key(d_attr_data_copy, idx.data)
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
     def to_ndarray(data):
         if isinstance(data, StorageMethods.storage):
             pass

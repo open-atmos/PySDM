@@ -171,7 +171,7 @@ def bisec(minfun, a, interval, args, rtol):
     counter = 0
     while fa * fb > 0:
         counter += 1
-        if counter > 100:
+        if counter == 64:
             raise RuntimeError("Cannot find interval!")
         b = a + interval * 2**counter
         fb = minfun(b, *args)
