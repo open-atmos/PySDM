@@ -7,6 +7,7 @@ import numpy as np
 from PySDM.state.particles import Particles
 from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.pairwise_storage import make_PairwiseStorage
 
 
 class Core:
@@ -28,6 +29,7 @@ class Core:
 
         self.Index = make_Index(backend)
         self.PairIndicator = make_PairIndicator(backend)
+        self.PairwiseStorage = make_PairwiseStorage(backend)
 
     @property
     def env(self):
@@ -44,10 +46,6 @@ class Core:
     @property
     def IndexedStorage(self):
         return self.backend.IndexedStorage
-
-    @property
-    def PairwiseStorage(self):
-        return self.backend.PairwiseStorage
 
     @property
     def Random(self):

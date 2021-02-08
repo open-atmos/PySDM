@@ -12,7 +12,6 @@ from PySDM.backends.thrustRTC.impl._physics_methods import PhysicsMethods
 from .storage.storage import Storage as ImportedStorage
 from PySDM.backends.thrustRTC.storage.indexed_storage import IndexedStorage as ImportedIndexedStorage
 from PySDM.backends.thrustRTC.random import Random as ImportedRandom
-from .storage.pairwise_storage import PairwiseStorage as ImportedPairwiseStorage
 
 
 class ThrustRTC(
@@ -26,7 +25,6 @@ class ThrustRTC(
     Storage = ImportedStorage
     IndexedStorage = ImportedIndexedStorage
     Random = ImportedRandom
-    PairwiseStorage = ImportedPairwiseStorage
 
     default_croupier = 'global'
 

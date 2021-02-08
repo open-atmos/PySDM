@@ -13,11 +13,16 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
-    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
+    def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in prange(length - 1):
             if is_first_in_pair[i]:
                 data_out[i//2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
+
+    @staticmethod
+    def distance_pair(data_out, data_in, is_first_in_pair, idx):
+        return AlgorithmicStepMethods.distance_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
     @numba.njit(void(i8[:], b1[:], i8[:], i8[:], i8[:], i8), **conf.JIT_FLAGS)
@@ -44,9 +49,9 @@ class AlgorithmicStepMethods:
                 data_out[i//2] = max(data_in[idx[i]], data_in[idx[i + 1]])
 
     @staticmethod
-    def max_pair(data_out, data_in, is_first_in_pair, idx, length):
+    def max_pair(data_out, data_in, is_first_in_pair, idx):
         return AlgorithmicStepMethods.max_pair_body(
-            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
     @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
@@ -62,7 +67,7 @@ class AlgorithmicStepMethods:
     @staticmethod
     def sort_pair(data_out, data_in, is_first_in_pair, idx):
         return AlgorithmicStepMethods.sort_pair_body(
-            data_out.data, data_in.data, is_first_in_pair.data, idx.data, len(idx))
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -86,6 +91,6 @@ class AlgorithmicStepMethods:
                 data_out[i//2] = (data_in[idx[i]] + data_in[idx[i + 1]])
 
     @staticmethod
-    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
+    def sum_pair(data_out, data_in, is_first_in_pair, idx):
         return AlgorithmicStepMethods.sum_pair_body(
-            data_out.data, data_in.data, is_first_in_pair.data, idx.data, length)
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))

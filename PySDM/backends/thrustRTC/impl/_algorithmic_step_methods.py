@@ -34,10 +34,11 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def distance_pair(data_out, data_in, is_first_in_pair, idx, length):
-        perm_in = trtc.DVPermutation(data_in, idx)
-        trtc.Fill(data_out, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__distance_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
+    def distance_pair(data_out, data_in, is_first_in_pair, idx):
+        perm_in = trtc.DVPermutation(data_in.data, idx.data)
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        AlgorithmicStepMethods.__distance_pair_body.launch_n(
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __find_pairs_body = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'], "i", '''
         is_first_in_pair[i] = (
@@ -63,10 +64,11 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def max_pair(data_out, data_in, is_first_in_pair, idx, length):
-        perm_in = trtc.DVPermutation(data_in, idx)
-        trtc.Fill(data_out, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__max_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
+    def max_pair(data_out, data_in, is_first_in_pair, idx):
+        perm_in = trtc.DVPermutation(data_in.data, idx.data)
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        AlgorithmicStepMethods.__max_pair_body.launch_n(
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __sort_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
@@ -86,11 +88,12 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def sort_pair(data_out, data_in, is_first_in_pair, idx, length):
-        perm_in = trtc.DVPermutation(data_in, idx)
-        trtc.Fill(data_out, trtc.DVDouble(0))
-        if length > 1:
-            AlgorithmicStepMethods.__sort_pair_body.launch_n(length - 1, [data_out, perm_in, is_first_in_pair])
+    def sort_pair(data_out, data_in, is_first_in_pair, idx):
+        perm_in = trtc.DVPermutation(data_in.data, idx.data)
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        if len(idx) > 1:
+            AlgorithmicStepMethods.__sort_pair_body.launch_n(
+                len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __sort_within_pair_by_attr_body = trtc.For(["idx", "is_first_in_pair", "attr"], "i", '''
         if (is_first_in_pair[i]) {
@@ -115,7 +118,8 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def sum_pair(data_out, data_in, is_first_in_pair, idx, length):
-        perm_in = trtc.DVPermutation(data_in, idx)
-        trtc.Fill(data_out, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__sum_pair_body.launch_n(length, [data_out, perm_in, is_first_in_pair])
+    def sum_pair(data_out, data_in, is_first_in_pair, idx):
+        perm_in = trtc.DVPermutation(data_in.data, idx.data)
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        AlgorithmicStepMethods.__sum_pair_body.launch_n(
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
