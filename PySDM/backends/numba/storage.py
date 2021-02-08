@@ -3,8 +3,7 @@ Created at 30.05.2020
 """
 
 import numpy as np
-
-from PySDM.backends.numba.impl._maths_methods import MathsMethods
+from PySDM.backends.numba.impl import storage_impl as impl
 
 
 class Storage:
@@ -56,16 +55,16 @@ class Storage:
 
     def __iadd__(self, other):
         if isinstance(other, Storage):
-            MathsMethods.add(self.data, other.data)
+            impl.add(self.data, other.data)
         else:
-            MathsMethods.add(self.data, other)
+            impl.add(self.data, other)
         return self
 
     def __sub__(self, other):
         raise TypeError("Use -=")
 
     def __isub__(self, other):
-        MathsMethods.subtract(self.data, other.data)
+        impl.subtract(self.data, other.data)
         return self
 
     def __mul__(self, other):
@@ -73,9 +72,9 @@ class Storage:
 
     def __imul__(self, other):
         if hasattr(other, 'data'):
-            MathsMethods.multiply(self.data, other.data)
+            impl.multiply(self.data, other.data)
         else:
-            MathsMethods.multiply(self.data, other)
+            impl.multiply(self.data, other)
         return self
 
     def __truediv__(self, other):
@@ -92,14 +91,14 @@ class Storage:
         raise TypeError("Use %=")
 
     def __imod__(self, other):
-        MathsMethods.row_modulo(self.data, other.data)
+        impl.row_modulo(self.data, other.data)
         return self
 
     def __pow__(self, other):
         raise TypeError("Use **=")
 
     def __ipow__(self, other):
-        MathsMethods.power(self.data, other)
+        impl.power(self.data, other)
         return self
 
     def __len__(self):
@@ -166,16 +165,16 @@ class Storage:
 
     def floor(self, other=None):
         if other is None:
-            MathsMethods.floor(self.data)
+            impl.floor(self.data)
         else:
-            MathsMethods.floor_out_of_place(self.data, other.data)
+            impl.floor_out_of_place(self.data, other.data)
         return self
 
     def product(self, multiplicand, multiplier):
         if hasattr(multiplier, 'data'):
-            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
+            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
         else:
-            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier)
+            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier)
         return self
 
     # TODO #352 rename (different logic than np.ravel())

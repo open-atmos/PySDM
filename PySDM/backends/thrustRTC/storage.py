@@ -3,9 +3,9 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from . import storage_impl as impl
-from ..conf import trtc
-from ..impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrustRTC.impl import storage_impl as impl
+from PySDM.backends.thrustRTC.conf import trtc
+from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
 class Storage:

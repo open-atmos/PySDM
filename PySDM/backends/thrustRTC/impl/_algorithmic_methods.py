@@ -90,6 +90,29 @@ class AlgorithmicMethods:
             displacement.shape[1],
             [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
+    __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
+        cell_id[i] = 0;
+        for (auto j = 0; j < n_dims; j += 1) {
+            cell_id[i] += cell_origin[size * j + i] * strides[j];
+        }
+        ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def cell_id(cell_id, cell_origin, strides):
+        assert cell_origin.shape[0] == strides.shape[1]
+        assert cell_id.shape[0] == cell_origin.shape[1]
+        assert strides.shape[0] == 1
+        n_dims = trtc.DVInt64(cell_origin.shape[0])
+        size = trtc.DVInt64(cell_origin.shape[1])
+        AlgorithmicMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
+
+    __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
+        }
+        ''')
+
     __coalescence_body = trtc.For(
         ['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma',
          'healthy'], "i", '''

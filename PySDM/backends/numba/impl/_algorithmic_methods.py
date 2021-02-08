@@ -7,7 +7,7 @@ import numpy as np
 from numba import void, float64, int64, prange, bool_
 
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.storage.storage import Storage
+from PySDM.backends.numba.storage import Storage
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

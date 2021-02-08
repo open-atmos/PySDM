@@ -7,6 +7,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM.storages.index import make_Index
+from PySDM.storages.indexed_storage import make_IndexedStorage
 
 
 class TestIndex:
@@ -19,7 +20,7 @@ class TestIndex:
         data = np.ones(n_sd).astype(np.int64)
         data[0], data[n_sd // 2], data[-1] = 0, 0, 0
         data = backend.Storage.from_ndarray(data)
-        data = backend.IndexedStorage.indexed(storage=data, idx=idx)
+        data = make_IndexedStorage(backend).indexed(storage=data, idx=idx)
 
         # Act
         idx.remove_zeros(data)

@@ -7,37 +7,14 @@ from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 
-class AlgorithmicStepMethods:
-
-    __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
-        cell_id[i] = 0;
-        for (auto j = 0; j < n_dims; j += 1) {
-            cell_id[i] += cell_origin[size * j + i] * strides[j];
-        }
-        ''')
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def cell_id(cell_id, cell_origin, strides):
-        assert cell_origin.shape[0] == strides.shape[1]
-        assert cell_id.shape[0] == cell_origin.shape[1]
-        assert strides.shape[0] == 1
-        n_dims = trtc.DVInt64(cell_origin.shape[0])
-        size = trtc.DVInt64(cell_origin.shape[1])
-        AlgorithmicStepMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
-
-    __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
-        if (is_first_in_pair[i]) {
-            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
-        }
-        ''')
+class PairMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__distance_pair_body.launch_n(
+        PairMethods.__distance_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __find_pairs_body = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'], "i", '''
@@ -53,7 +30,7 @@ class AlgorithmicStepMethods:
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):  # TODO #330 handle cell_idx
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))  # TODO #350 length-1 as we use i+1 in __find_pairs_body
-        AlgorithmicStepMethods.__find_pairs_body.launch_n(
+        PairMethods.__find_pairs_body.launch_n(
             len(idx), [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length])
 
     __max_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
@@ -67,7 +44,7 @@ class AlgorithmicStepMethods:
     def max_pair(data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__max_pair_body.launch_n(
+        PairMethods.__max_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __sort_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
@@ -92,7 +69,7 @@ class AlgorithmicStepMethods:
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         if len(idx) > 1:
-            AlgorithmicStepMethods.__sort_pair_body.launch_n(
+            PairMethods.__sort_pair_body.launch_n(
                 len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
     __sort_within_pair_by_attr_body = trtc.For(["idx", "is_first_in_pair", "attr"], "i", '''
@@ -107,7 +84,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
-        AlgorithmicStepMethods.__sort_within_pair_by_attr_body.launch_n(
+        PairMethods.__sort_within_pair_by_attr_body.launch_n(
             length - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
 
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
@@ -121,5 +98,5 @@ class AlgorithmicStepMethods:
     def sum_pair(data_out, data_in, is_first_in_pair, idx):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
-        AlgorithmicStepMethods.__sum_pair_body.launch_n(
+        PairMethods.__sum_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])

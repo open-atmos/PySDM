@@ -9,7 +9,7 @@ from numba import f8, i8, void, prange, b1
 from PySDM.backends.numba import conf
 
 
-class AlgorithmicStepMethods:
+class PairMethods:
 
     @staticmethod
     @numba.njit(void(f8[:], f8[:], b1[:], i8[:], i8), **conf.JIT_FLAGS)
@@ -21,7 +21,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def distance_pair(data_out, data_in, is_first_in_pair, idx):
-        return AlgorithmicStepMethods.distance_pair_body(
+        return PairMethods.distance_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
@@ -36,7 +36,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
-        return AlgorithmicStepMethods.find_pairs_body(
+        return PairMethods.find_pairs_body(
             cell_start.data, is_first_in_pair.indicator.data, cell_id.data, cell_idx.data, idx.data, len(idx))
 
     @staticmethod
@@ -50,7 +50,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def max_pair(data_out, data_in, is_first_in_pair, idx):
-        return AlgorithmicStepMethods.max_pair_body(
+        return PairMethods.max_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
@@ -66,7 +66,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def sort_pair(data_out, data_in, is_first_in_pair, idx):
-        return AlgorithmicStepMethods.sort_pair_body(
+        return PairMethods.sort_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
 
     @staticmethod
@@ -79,7 +79,7 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
-        AlgorithmicStepMethods.sort_within_pair_by_attr_body(
+        PairMethods.sort_within_pair_by_attr_body(
             idx.data, length, is_first_in_pair.indicator.data, attr.data)
 
     @staticmethod
@@ -92,5 +92,5 @@ class AlgorithmicStepMethods:
 
     @staticmethod
     def sum_pair(data_out, data_in, is_first_in_pair, idx):
-        return AlgorithmicStepMethods.sum_pair_body(
+        return PairMethods.sum_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))

@@ -17,8 +17,8 @@ class ParticlesFactory:
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
         idx = core.Index.identity_index(core.n_sd)
-        extensive_attributes = core.backend.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
-        intensive_attributes = core.backend.IndexedStorage.empty(idx, (len(intensive_attr), core.n_sd), float)
+        extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
+        intensive_attributes = core.IndexedStorage.empty(idx, (len(intensive_attr), core.n_sd), float)
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
                 attr.allocate(idx)
@@ -37,23 +37,23 @@ class ParticlesFactory:
         n = req_attr['n']
         n.allocate(idx)
         n.init(attributes['n'])
-        req_attr['n'].data = core.backend.IndexedStorage.indexed(idx, n.data)
+        req_attr['n'].data = core.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr['cell id']
         cell_id.allocate(idx)
         cell_id.init(attributes['cell id'])
-        req_attr['cell id'].data = core.backend.IndexedStorage.indexed(idx, cell_id.data)
+        req_attr['cell id'].data = core.IndexedStorage.indexed(idx, cell_id.data)
         try:
             cell_origin = req_attr['cell origin']
             cell_origin.allocate(idx)
             cell_origin.init(attributes['cell origin'])
-            req_attr['cell origin'].data = core.backend.IndexedStorage.indexed(idx, cell_origin.data)
+            req_attr['cell origin'].data = core.IndexedStorage.indexed(idx, cell_origin.data)
         except KeyError:
             cell_origin = None
         try:
             position_in_cell = req_attr['position in cell']
             position_in_cell.allocate(idx)
             position_in_cell.init(attributes['position in cell'])
-            req_attr['position in cell'].data = core.backend.IndexedStorage.indexed(idx, position_in_cell.data)
+            req_attr['position in cell'].data = core.IndexedStorage.indexed(idx, position_in_cell.data)
         except KeyError:
             position_in_cell = None
 
