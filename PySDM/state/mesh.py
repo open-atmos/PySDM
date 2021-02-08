@@ -38,7 +38,7 @@ class Mesh:
     @staticmethod
     def __strides(grid):
         domain = np.empty(tuple(grid))
-        strides = np.array(domain.strides).reshape(1, -1) // domain.itemsize
+        strides = np.array(domain.strides).reshape((1,) * len(grid)) // domain.itemsize
         return strides
 
     def cellular_attributes(self, positions):
