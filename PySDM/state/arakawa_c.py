@@ -68,10 +68,10 @@ def z_scalar_coord(grid):
     return zZ
 
 
-def make_rhod(grid, rhod_of):
+def make_rhod(grid, rhod_of_zZ):
     return np.repeat(
-        rhod_of(
-            z_scalar_coord(grid)
+        rhod_of_zZ(
+            z_scalar_coord(grid) / grid[-1]
         ).reshape((1, grid[1])),
         grid[0],
         axis=0

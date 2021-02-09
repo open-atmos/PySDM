@@ -65,18 +65,18 @@ class ThStd:
 
 
 class Hydrostatic:
-    # TODO: include assumptions in the name
+    # TODO: include assumptions in the name (p vs. pd)
     @staticmethod
     def drhod_dz(p, T, qv):
         rho = MoistAir.rho_of_p_qv_T(p, qv, T)
-        pd = MoistAir.p_d(p, qv)  # TODO: why not p?!
+        pd = MoistAir.p_d(p, qv)
         return - const.g / const.Rd / T * (rho - pd / c_p(qv) / T)
 
-    # TODO: include assumptions in the name
     @staticmethod
-    def p_of_p0_thstd_qv_z(p0, thstd, qv, z):
+    def p_of_z_assuming_const_th_and_qv(p0, thstd, qv, z):
         kappa = const.Rd / const.c_pd
-        arg = np.power(p0/const.p1000, kappa) - z * kappa * const.g / thstd / R(qv)
+        z0 = 0
+        arg = np.power(p0/const.p1000, kappa) - (z-z0) * kappa * const.g / thstd / R(qv)
         return const.p1000 * np.power(arg, 1/kappa)
 
 
