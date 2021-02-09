@@ -79,14 +79,14 @@ class Coalescence:
                 self.dt_left[:] = self.core.dt
 
                 s = 0
-                while self.core.particles.SD_num != 0:
+                while len(self.core.particles._Particles__idx) != 0:
                     self.core.particles.cell_idx.sort_by_key(self.dt_left)
                     self.step(s)
                     s += 1
 
                 self.core.particles.reset_length()
                 self.core.particles.cell_idx.reset_index()
-                # self.core.particles._Particles__sort_by_cell_id()
+                self.core.particles._Particles__sort_by_cell_id()
 
     def step(self, s):
         pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
@@ -99,7 +99,6 @@ class Coalescence:
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.core.particles.sanitize()
-
         self.core.particles.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
             self.core.particles.cell_start,
