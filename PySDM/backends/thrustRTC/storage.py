@@ -78,6 +78,13 @@ class Storage:
         impl.multiply(self, other)
         return self
 
+    def __truediv__(self, other):
+        raise TypeError("Use /=")
+
+    def __itruediv__(self, other):
+        impl.truediv(self, other)
+        return self
+
     def __mod__(self, other):
         raise TypeError("Use %=")
 

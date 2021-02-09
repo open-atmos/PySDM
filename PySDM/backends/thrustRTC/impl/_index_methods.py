@@ -10,6 +10,15 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 class IndexMethods:
 
+    __identity_index_body = trtc.For(['idx'], 'i', '''
+        idx[i] = i;
+    ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def identity_index(idx):
+        IndexMethods.__identity_index_body.launch_n(idx.size(), (idx,))
+
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_global(idx, length, u01):
