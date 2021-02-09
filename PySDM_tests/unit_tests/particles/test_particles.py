@@ -41,6 +41,7 @@ class TestParticles:
         sut.healthy = False
 
         # Act
+        sut.sanitize()
         _ = sut.SD_num
 
         # Assert

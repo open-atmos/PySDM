@@ -24,6 +24,7 @@ class Particles:
         self.core = core
 
         self.__n_sd = core.n_sd
+        self.__valid_n_sd = core.n_sd
         self.healthy = True
         self.__healthy_memory = self.core.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
@@ -51,15 +52,24 @@ class Particles:
 
     @property
     def SD_num(self):
-        self.sanitize()  # TODO #343 remove
+        assert self.healthy
         return len(self.__idx)
 
     def sanitize(self):
         if not self.healthy:
+            self.__idx.length = self.__valid_n_sd
             self.__idx.remove_zeros(self['n'])
+            self.__valid_n_sd = self.__idx.length
             self.healthy = True
             self.__healthy_memory[:] = 1
             self.__sorted = False
+
+    def cut_length(self, length):
+        assert length < len(self.__idx)
+        self.__idx.length = length
+
+    def reset_length(self):
+        self.__idx.length = self.__valid_n_sd
 
     def __getitem__(self, item):
         return self.attributes[item].get()

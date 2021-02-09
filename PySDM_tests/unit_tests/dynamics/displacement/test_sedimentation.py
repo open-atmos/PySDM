@@ -36,6 +36,7 @@ class TestSedimentation:
 
         # Act
         sut()
+        particles.particles.sanitize()
 
         # Assert
         assert particles.particles.SD_num == 0
