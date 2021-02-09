@@ -119,19 +119,8 @@ class Settings:
         return - self.rho_w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
-        Z = self.size[1]
-        z = zZ * Z  # :(!
-
-        # TODO #337 move to PySDM/physics
-        # hydrostatic profile
-        kappa = const.Rd / const.c_pd
-        arg = np.power(self.p0/const.p1000, kappa) - z * kappa * const.g / self.th_std0 / phys.R(self.qv0)
-        p = const.p1000 * np.power(arg, 1/kappa)
-
-        # density using "dry" potential temp.
-        pd = p * (1 - self.qv0 / (self.qv0 + const.eps))
-        rhod = pd / (np.power(p / const.p1000, kappa) * const.Rd * self.th_std0)
-
+        p = phys.Hydrostatic.p_of_z_assuming_const_th_and_qv(self.p0, self.th_std0, self.qv0, z=zZ * self.size[-1])
+        rhod = phys.ThStd.rho_d(p, self.qv0, self.th_std0)
         return rhod
 
     kernel = Geometric(collection_efficiency=1)
