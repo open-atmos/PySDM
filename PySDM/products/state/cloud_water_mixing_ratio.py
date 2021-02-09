@@ -13,20 +13,20 @@ class CloudWaterMixingRatio(MomentProduct):
             unit='g/kg',
             description='cloud water mixing ratio',
             scale='linear',
-            range=[0, 5]
+            range=[0, 2]
         )
 
     def get(self):  # TODO #217
         self.download_moment_to_buffer('volume', rank=0, filter_range=self.volume_range, filter_attr='volume')
-        conc = self.buffer.copy()  # unit: #/cell
+        conc = self.buffer.copy()
 
         self.download_moment_to_buffer('volume', rank=1, filter_range=self.volume_range, filter_attr='volume')
-        result = self.buffer.copy()  # unit: m3
-        result[:] *= const.rho_w  # unit: kg
-        result[:] *= conc  # unit: kg / cell
-        result[:] /= self.core.mesh.dv  #  unit: kg / m3
+        result = self.buffer.copy()
+        result[:] *= const.rho_w
+        result[:] *= conc
+        result[:] /= self.core.mesh.dv
 
         self.download_to_buffer(self.core.environment['rhod'])
-        result[:] /= self.buffer  # unit: kg / kg
+        result[:] /= self.buffer
         const.convert_to(result, const.si.gram / const.si.kilogram)
         return result
