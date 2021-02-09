@@ -8,6 +8,7 @@ import numpy as np
 from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
 from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.indexed_storage import make_IndexedStorage
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
@@ -57,14 +58,14 @@ class TestAlgorithmicMethods:
         # Arrange
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
         _idx = make_Index(backend).from_ndarray(np.asarray(idx))
-        _n = backend.Storage.from_ndarray(np.asarray(n))
+        _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))
         _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
         _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
         _is_first_in_pair = make_PairIndicator(backend)(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
 
         # Act
-        backend.adaptive_sdm_gamma(_gamma, _idx, _n, _cell_id, _dt_left, dt, dt_max, _is_first_in_pair)
+        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_max, _is_first_in_pair)
 
         # Assert
         np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected))

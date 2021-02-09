@@ -93,6 +93,24 @@ def multiply(output, multiplier):
     loop.launch_n(len(output), thrust([output, multiplier]))
 
 
+__truediv_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
+        output[i] /= multiplier[i];
+    ''')
+
+__truediv_body = trtc.For(['output', 'multiplier'], "i", '''
+        output[i] /= multiplier;
+    ''')
+
+
+@nice_thrust(**NICE_THRUST_FLAGS)
+def truediv(output, multiplier):
+    if hasattr(multiplier, 'data'):
+        loop = __truediv_elementwise_body
+    else:
+        loop = __truediv_body
+    loop.launch_n(len(output), thrust([output, multiplier]))
+
+
 __multiply_out_of_place_elementwise_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
         output[i] = multiplicand[i] * multiplier[i];
     ''')

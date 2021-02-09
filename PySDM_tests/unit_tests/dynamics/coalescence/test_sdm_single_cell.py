@@ -6,6 +6,8 @@ import numpy as np
 import pytest
 
 from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.indexed_storage import make_IndexedStorage
+from PySDM.storages.index import make_Index
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import backend_fill
@@ -160,8 +162,8 @@ class TestSDMSingleCell:
                 # Act
                 prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
                 rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
-                idx = backend.Storage.from_ndarray(np.arange(n_sd))
-                mult = backend.Storage.from_ndarray(np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
+                idx = make_Index(backend).from_ndarray(np.arange(n_sd))
+                mult = make_IndexedStorage(backend).from_ndarray(idx, np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
                 _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
                 cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
 
@@ -169,7 +171,7 @@ class TestSDMSingleCell:
                 indicator.indicator[0] = 1
                 indicator.indicator[1] = 0
 
-                backend.compute_gamma(prob_arr, rand_arr, idx, mult,
+                backend.compute_gamma(prob_arr, rand_arr, mult,
                                       cell_id=cell_id, is_first_in_pair=indicator,
                                       collision_rate=_, collision_rate_deficit=_)
 

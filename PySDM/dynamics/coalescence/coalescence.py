@@ -73,29 +73,27 @@ class Coalescence:
     def __call__(self):
         if self.enable:
             if not self.adaptive:
-                for s in range(self.__substeps):  # TODO
-                    self.step(s)
+                for _ in range(self.__substeps):
+                    self.step()
             else:
                 self.dt_left[:] = self.core.dt
 
-                s = 0
-                while len(self.core.particles._Particles__idx) != 0:
+                while self.core.particles.get_working_length() != 0:
                     self.core.particles.cell_idx.sort_by_key(self.dt_left)
-                    self.step(s)
-                    s += 1
+                    self.step()
 
-                self.core.particles.reset_length()
-                self.core.particles.cell_idx.reset_index()
-                self.core.particles._Particles__sort_by_cell_id()
+                self.core.particles.reset_working_length()
+                self.core.particles.reset_cell_idx()
+            self.rnd_opt.reset()
 
-    def step(self, s):
-        pairs_rand, rand = self.rnd_opt.get_random_arrays(s)
+    def step(self):
+        pairs_rand, rand = self.rnd_opt.get_random_arrays()
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
         self.compute_probability(self.prob, self.is_first_in_pair)
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
         self.core.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         if self.adaptive:
-            self.core.particles.cut_length(self.core.particles.adaptive_sdm_end(self.dt_left))
+            self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.core.particles.sanitize()
@@ -117,11 +115,23 @@ class Coalescence:
     def compute_gamma(self, prob, rand, is_first_in_pair):
         if self.adaptive:
             self.core.backend.adaptive_sdm_gamma(
-                prob, self.core.particles._Particles__idx, self.core.particles['n'],
+                prob,
+                self.core.particles['n'],
                 self.core.particles["cell id"],
-                self.dt_left, self.core.dt, self.dt_coal_range[1], is_first_in_pair)
+                self.dt_left,
+                self.core.dt,
+                self.dt_coal_range[1],
+                is_first_in_pair
+            )
+        else:
+            prob /= self.__substeps
 
         self.core.backend.compute_gamma(
-            prob, rand, self.core.particles._Particles__idx, self.core.particles['n'],
+            prob,
+            rand,
+            self.core.particles['n'],
             self.core.particles["cell id"],
-            self.collision_rate_deficit, self.collision_rate, is_first_in_pair)
+            self.collision_rate_deficit,
+            self.collision_rate,
+            is_first_in_pair
+        )

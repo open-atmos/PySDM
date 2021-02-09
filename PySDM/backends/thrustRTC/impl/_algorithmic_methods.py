@@ -52,17 +52,17 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
         dt_todo = trtc.device_vector('uint64_t', len(dt_left))
         d_dt_max = PrecisionResolver.get_floating_point(dt_max)
         d_dt = PrecisionResolver.get_floating_point(dt)
         AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt, d_dt_max))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(
-            len(idx) // 2,
-            (gamma.data, idx.data, n.data, cell_id.data, d_dt,
+            len(n) // 2,
+            (gamma.data, n.idx.data, n.data, cell_id.data, d_dt,
              is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
-            len(idx) // 2, (gamma.data, idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+            len(n) // 2, (gamma.data, n.idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
 
     @staticmethod
@@ -182,11 +182,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def compute_gamma(gamma, rand, idx, n, cell_id,
+    def compute_gamma(gamma, rand, n, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
         AlgorithmicMethods.__compute_gamma_body.launch_n(
-            len(idx) // 2,
-            [gamma.data, rand.data, idx.data, n.data, cell_id.data,
+            len(n) // 2,
+            [gamma.data, rand.data, n.idx.data, n.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data])
 
     @staticmethod

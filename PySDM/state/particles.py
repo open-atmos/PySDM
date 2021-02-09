@@ -64,12 +64,19 @@ class Particles:
             self.__healthy_memory[:] = 1
             self.__sorted = False
 
-    def cut_length(self, length):
+    def cut_working_length(self, length):
         assert length < len(self.__idx)
         self.__idx.length = length
 
-    def reset_length(self):
+    def get_working_length(self):
+        return len(self.__idx)
+
+    def reset_working_length(self):
         self.__idx.length = self.__valid_n_sd
+
+    def reset_cell_idx(self):
+        self.cell_idx.reset_index()
+        self.__sort_by_cell_id()
 
     def __getitem__(self, item):
         return self.attributes[item].get()

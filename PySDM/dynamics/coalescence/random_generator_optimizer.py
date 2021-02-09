@@ -12,6 +12,7 @@ class RandomGeneratorOptimizer:
         self.optimized_random = optimized_random
         self.dt_min = dt_min
         self.seed = seed
+        self.substep = 0
         self.pairs_rand = None
         self.rand = None
         self.rnd = None
@@ -23,14 +24,18 @@ class RandomGeneratorOptimizer:
         self.rand = self.core.Storage.empty(self.core.n_sd // 2, dtype=float)
         self.rnd = self.core.Random(self.core.n_sd + shift, self.seed)
 
-    def get_random_arrays(self, s):
+    def reset(self):
+        self.substep = 0
+
+    def get_random_arrays(self):
         if self.optimized_random:
-            shift = s
-            if s == 0:
+            shift = self.substep
+            if self.substep == 0:
                 self.pairs_rand.urand(self.rnd)
                 self.rand.urand(self.rnd)
         else:
             shift = 0
             self.pairs_rand.urand(self.rnd)
             self.rand.urand(self.rnd)
+        self.substep += 1
         return self.pairs_rand[shift:self.core.n_sd + shift], self.rand
