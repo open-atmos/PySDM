@@ -14,9 +14,10 @@ class Particles:
     def __init__(
             self, core,
             idx,
-            base_attributes,
-            keys: dict,
-            intensive_start: int,
+            extensive_attributes,
+            extensive_keys: dict,
+            intensive_attributes,
+            intensive_keys: dict,
             cell_start,
             attributes: Dict[str, Attribute]
     ):
@@ -28,12 +29,12 @@ class Particles:
         self.__idx = idx
         self.__strides = self.core.Storage.from_ndarray(self.core.mesh.strides)
 
-        # Dived into 2 arrays
-        self.base_attributes = base_attributes
-        self.keys = keys
-        self.intensive_start = intensive_start
+        self.extensive_attributes = extensive_attributes
+        self.extensive_keys = extensive_keys
+        self.intensive_attributes = intensive_attributes
+        self.intensive_keys = intensive_keys
 
-        self.cell_idx = self.core.Index.empty(len(cell_start) - 1)
+        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = self.core.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
                                                                   scheme=core.sorting_scheme)
@@ -81,12 +82,10 @@ class Particles:
         self.__sorted = True
 
     def get_extensive_attrs(self):
-        result = self.base_attributes[:self.intensive_start]
-        return result
+        return self.extensive_attributes
 
     def get_intensive_attrs(self):
-        result = self.base_attributes[self.intensive_start:]
-        return result
+        return self.intensive_attributes
 
     def recalculate_cell_id(self):
         if 'cell origin' not in self.attributes:
@@ -99,16 +98,34 @@ class Particles:
         self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
-        specs_idx, specs_rank = [], []
+        specs_ex_idx, specs_ex_rank = [], []
+        specs_in_idx, specs_in_rank = [], []
         for attr in specs:
             for rank in specs[attr]:
-                specs_idx.append(self.keys[attr])
-                specs_rank.append(rank)
-        specs_idx = self.core.bck.Storage.from_ndarray(np.array(specs_idx, dtype=int))
-        specs_rank = self.core.bck.Storage.from_ndarray(np.array(specs_rank, dtype=float))
-        self.core.bck.moments(moment_0, moments, self['n'], self.base_attributes, self['cell id'], self.__idx,
-                              self.SD_num, specs_idx, specs_rank, attr_range[0], attr_range[1],
-                              self.keys[attr_name])
+                if attr in self.extensive_keys:
+                    specs_ex_idx.append(self.extensive_keys[attr])
+                    specs_ex_rank.append(rank)
+                if attr in self.intensive_keys:
+                    specs_in_idx.append(self.intensive_keys[attr])
+                    specs_in_rank.append(rank)
+        specs_ex_idx = self.core.bck.Storage.from_ndarray(np.array(specs_ex_idx, dtype=int))
+        specs_ex_rank = self.core.bck.Storage.from_ndarray(np.array(specs_ex_rank, dtype=float))
+        specs_in_idx = self.core.bck.Storage.from_ndarray(np.array(specs_in_idx, dtype=int))
+        specs_in_rank = self.core.bck.Storage.from_ndarray(np.array(specs_in_rank, dtype=float))
+        self.core.bck.moments(moment_0,
+                              moments,
+                              self['n'],
+                              self.extensive_attributes,
+                              self.intensive_attributes,
+                              self['cell id'],
+                              self.__idx,
+                              self.SD_num,
+                              specs_ex_idx,
+                              specs_ex_rank,
+                              specs_in_idx,
+                              specs_in_rank,
+                              attr_range[0], attr_range[1],
+                              self[attr_name])
 
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
@@ -128,7 +145,7 @@ class Particles:
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
 
     def has_attribute(self, attr):
-        return attr in self.keys
+        return attr in self.attributes
 
     def remove_precipitated(self) -> float:
         res = self.core.bck.flag_precipitated(self['cell origin'], self['position in cell'],

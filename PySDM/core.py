@@ -5,6 +5,10 @@ Created at 09.11.2019
 import numpy as np
 
 from PySDM.state.particles import Particles
+from PySDM.storages.index import make_Index
+from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.pairwise_storage import make_PairwiseStorage
+from PySDM.storages.indexed_storage import make_IndexedStorage
 
 
 class Core:
@@ -24,6 +28,11 @@ class Core:
         self.sorting_scheme = 'default'
         self.condensation_solver = None
 
+        self.Index = make_Index(backend)
+        self.PairIndicator = make_PairIndicator(backend)
+        self.PairwiseStorage = make_PairwiseStorage(backend)
+        self.IndexedStorage = make_IndexedStorage(backend)
+
     @property
     def env(self):
         return self.environment
@@ -35,22 +44,6 @@ class Core:
     @property
     def Storage(self):
         return self.backend.Storage
-
-    @property
-    def Index(self):
-        return self.backend.Index
-
-    @property
-    def IndexedStorage(self):
-        return self.backend.IndexedStorage
-
-    @property
-    def PairIndicator(self):
-        return self.backend.PairIndicator
-
-    @property
-    def PairwiseStorage(self):
-        return self.backend.PairwiseStorage
 
     @property
     def Random(self):

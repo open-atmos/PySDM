@@ -3,8 +3,7 @@ Created at 30.05.2020
 """
 
 import numpy as np
-
-from PySDM.backends.numba.impl._maths_methods import MathsMethods
+from PySDM.backends.numba.impl import storage_impl as impl
 
 
 class Storage:
@@ -18,28 +17,30 @@ class Storage:
         self.shape = (shape,) if isinstance(shape, int) else shape
         self.dtype = dtype
 
-    def __getitem__(self, key):
-        if isinstance(key, slice):
-            step = key.step or 1
+    def __getitem__(self, item):
+        dim = len(self.shape)
+        if isinstance(item, slice):
+            step = item.step or 1
             if step != 1:
                 raise NotImplementedError("step != 1")
-            start = key.start or 0
-            dim = len(self.shape)
+            start = item.start or 0
             if dim == 1:
-                stop = key.stop or len(self)
-                result_data = self.data[key]
+                stop = item.stop or len(self)
+                result_data = self.data[item]
                 result_shape = (stop - start,)
             elif dim == 2:
-                stop = key.stop or self.shape[0]
-                result_data = self.data[key]
+                stop = item.stop or self.shape[0]
+                result_data = self.data[item]
                 result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             if stop > self.data.shape[0]:
                 raise IndexError(f"requested a slice ({start}:{stop}) of Storage with first dim of length {self.data.shape[0]}")
             result = Storage(result_data, result_shape, self.dtype)
+        elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
+            result = Storage(self.data[item[0]], (*self.shape[1:],), self.dtype)
         else:
-            result = self.data[key]
+            result = self.data[item]
         return result
 
     def __setitem__(self, key, value):
@@ -54,16 +55,16 @@ class Storage:
 
     def __iadd__(self, other):
         if isinstance(other, Storage):
-            MathsMethods.add(self.data, other.data)
+            impl.add(self.data, other.data)
         else:
-            MathsMethods.add(self.data, other)
+            impl.add(self.data, other)
         return self
 
     def __sub__(self, other):
         raise TypeError("Use -=")
 
     def __isub__(self, other):
-        MathsMethods.subtract(self.data, other.data)
+        impl.subtract(self.data, other.data)
         return self
 
     def __mul__(self, other):
@@ -71,9 +72,9 @@ class Storage:
 
     def __imul__(self, other):
         if hasattr(other, 'data'):
-            MathsMethods.multiply(self.data, other.data)
+            impl.multiply(self.data, other.data)
         else:
-            MathsMethods.multiply(self.data, other)
+            impl.multiply(self.data, other)
         return self
 
     def __truediv__(self, other):
@@ -90,14 +91,14 @@ class Storage:
         raise TypeError("Use %=")
 
     def __imod__(self, other):
-        MathsMethods.row_modulo(self.data, other.data)
+        impl.row_modulo(self.data, other.data)
         return self
 
     def __pow__(self, other):
         raise TypeError("Use **=")
 
     def __ipow__(self, other):
-        MathsMethods.power(self.data, other)
+        impl.power(self.data, other)
         return self
 
     def __len__(self):
@@ -164,21 +165,17 @@ class Storage:
 
     def floor(self, other=None):
         if other is None:
-            MathsMethods.floor(self.data)
+            impl.floor(self.data)
         else:
-            MathsMethods.floor_out_of_place(self.data, other.data)
+            impl.floor_out_of_place(self.data, other.data)
         return self
 
     def product(self, multiplicand, multiplier):
         if hasattr(multiplier, 'data'):
-            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
+            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
         else:
-            MathsMethods.multiply_out_of_place(self.data, multiplicand.data, multiplier)
+            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier)
         return self
-
-    def read_row(self, i):
-        result = Storage(self.data[i, :], *self.shape[1:], self.dtype)
-        return result
 
     # TODO #352 rename (different logic than np.ravel())
     def ravel(self, other):
@@ -195,7 +192,3 @@ class Storage:
 
     def upload(self, data):
         np.copyto(self.data, data, casting='safe')
-
-    # TODO #342 remove
-    def write_row(self, i, row):
-        self.data[i, :] = row.data

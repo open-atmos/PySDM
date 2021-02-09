@@ -57,8 +57,10 @@ class AlgorithmicMethods:
         d_dt_max = PrecisionResolver.get_floating_point(dt_max)
         d_dt = PrecisionResolver.get_floating_point(dt)
         AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt, d_dt_max))
-        AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(len(idx) // 2,
-            (gamma.data, idx.data, n.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(
+            len(idx) // 2,
+            (gamma.data, idx.data, n.data, cell_id.data, d_dt,
+             is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
             len(idx) // 2, (gamma.data, idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
@@ -69,7 +71,9 @@ class AlgorithmicMethods:
         dim = trtc.DVInt64(dim)
         idx_length = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
-        loop = trtc.For(['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i", f'''
+        loop = trtc.For(
+            ['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i",
+            f'''
             // Arakawa-C grid
             auto _l_0 = cell_origin[i + 0];
             auto _l_1 = cell_origin[i + idx_length];
@@ -86,7 +90,32 @@ class AlgorithmicMethods:
             displacement.shape[1],
             [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
-    __coalescence_body = trtc.For(['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma', 'healthy'], "i", '''
+    __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
+        cell_id[i] = 0;
+        for (auto j = 0; j < n_dims; j += 1) {
+            cell_id[i] += cell_origin[size * j + i] * strides[j];
+        }
+        ''')
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def cell_id(cell_id, cell_origin, strides):
+        assert cell_origin.shape[0] == strides.shape[1]
+        assert cell_id.shape[0] == cell_origin.shape[1]
+        assert strides.shape[0] == 1
+        n_dims = trtc.DVInt64(cell_origin.shape[0])
+        size = trtc.DVInt64(cell_origin.shape[1])
+        AlgorithmicMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
+
+    __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
+        }
+        ''')
+
+    __coalescence_body = trtc.For(
+        ['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma',
+         'healthy'], "i", '''
         if (gamma[i] == 0) {
             return;
         }
@@ -125,14 +154,15 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         idx_length = trtc.DVInt64(len(idx))
-        intensive_length = trtc.DVInt64(len(intensive))
-        extensive_length = trtc.DVInt64(len(extensive))
+        intensive_length = trtc.DVInt64(intensive.shape[0])
+        extensive_length = trtc.DVInt64(extensive.shape[0])
         AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
-            [n.data, volume.data, idx.data, idx_length, intensive.data, intensive_length,
-             extensive.data, extensive_length, gamma.data, healthy.data])
+                                                       [n.data, volume.data, idx.data, idx_length, intensive.data,
+                                                        intensive_length,
+                                                        extensive.data, extensive_length, gamma.data, healthy.data])
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
-                           "collision_rate_deficit", "collision_rate"], "i", '''
+                                     "collision_rate_deficit", "collision_rate"], "i", '''
         gamma[i] = ceil(gamma[i] - rand[i]);
         
         if (gamma[i] == 0) {
@@ -154,7 +184,8 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(gamma, rand, idx, n, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
-        AlgorithmicMethods.__compute_gamma_body.launch_n(len(idx) // 2,
+        AlgorithmicMethods.__compute_gamma_body.launch_n(
+            len(idx) // 2,
             [gamma.data, rand.data, idx.data, n.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data])
 
@@ -186,7 +217,9 @@ class AlgorithmicMethods:
                      volume.data, n.data])
         return 0  # TODO #332
 
-    __linear_collection_efficiency_body = trtc.For(['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii', 'is_first_in_pair', 'idx', 'unit'], "i", '''
+    __linear_collection_efficiency_body = trtc.For(
+        ['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii',
+         'is_first_in_pair', 'idx', 'unit'], "i", '''
         if (is_first_in_pair[i]) {
             real_type r = 0;
             real_type r_s = 0;
@@ -256,25 +289,32 @@ class AlgorithmicMethods:
         return AlgorithmicMethods._sort_by_cell_id_and_update_cell_start
 
     __loop_reset = trtc.For(['vector_to_clean'], "i",
-    '''
+                            '''
         vector_to_clean[i] = 0;
     ''')
 
-    __moments_body_0 = trtc.For(['idx', 'min_x', 'attr', 'x_id', 'max_x', 'moment_0', 'cell_id', 'n', 'specs_idx_shape', 'moments',
-                                 'specs_idx', 'specs_rank', 'attr_shape', 'moments_shape'], "fake_i",
-    '''
+    __moments_body_0 = trtc.For(
+        ['idx', 'min_x', 'ex_attr', 'in_attr', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
+         'specs_ex_idx_shape', 'specs_in_idx_shape', 'moments', 'specs_ex_idx', 'specs_ex_rank',
+         'specs_in_idx', 'specs_in_rank', 'length', 'moments_shape', 'ex_num'],
+        "fake_i",
+        '''
         auto i = idx[fake_i];
-        if (min_x < attr[attr_shape * x_id + i] && attr[attr_shape  * x_id + i] < max_x) {
+        if (min_x < x_attr[i] && x_attr[i] < max_x) {
             atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-            for (auto k = 0; k < specs_idx_shape; k+=1) {
-                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)(attr[attr_shape * specs_idx[k] + i]), (real_type)(specs_rank[k])));
+            for (auto k = 0; k < specs_ex_idx_shape; k+=1) {
+                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)(ex_attr[length * specs_ex_idx[k] + i]), (real_type)(specs_ex_rank[k])));
+            }
+            for (auto k = 0; k < specs_in_idx_shape; k+=1) {
+                atomicAdd((real_type*) &moments[moments_shape * (specs_ex_idx_shape + k) + cell_id[i]], n[i] * pow((real_type)(in_attr[length * specs_in_idx[k] + i]), (real_type)(specs_in_rank[k])));
             }
         }
     '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-    __moments_body_1 = trtc.For(['specs_idx_shape', 'moments', 'moment_0', 'moments_shape'], "c_id",
-    '''
-        for (auto k = 0; k < specs_idx_shape; k+=1) {
+    __moments_body_1 = trtc.For(['specs_ex_idx_shape', 'specs_in_idx_shape', 'moments', 'moment_0', 'moments_shape'],
+                                "c_id",
+                                '''
+        for (auto k = 0; k < specs_ex_idx_shape; k+=1) {
             if (moment_0[c_id] == 0) {
                 moments[moments_shape * k  + c_id] = 0;
             } 
@@ -282,24 +322,49 @@ class AlgorithmicMethods:
                 moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
             }
         }
+        for (auto k = 0; k < specs_in_idx_shape; k+=1) {
+            if (moment_0[c_id] == 0) {
+                moments[moments_shape * (specs_ex_idx_shape + k)  + c_id] = 0;
+            } 
+            else {
+                moments[moments_shape * (specs_ex_idx_shape + k) + c_id] = moments[moments_shape * (specs_ex_idx_shape + k) + c_id] / moment_0[c_id];
+            }
+        }
     ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(moment_0, moments, n, attr, cell_id, idx, length, specs_idx, specs_rank, min_x, max_x, x_id):
+    def moments(moment_0, moments, n, ex_attr, in_attr, cell_id, idx, length, specs_ex_idx, specs_ex_rank, specs_in_idx,
+                specs_in_rank, min_x, max_x, x_attr):
         AlgorithmicMethods.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
         AlgorithmicMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
         AlgorithmicMethods.__moments_body_0.launch_n(length,
-                           [idx.data, PrecisionResolver.get_floating_point(min_x), attr.data, trtc.DVInt64(x_id),
-                            PrecisionResolver.get_floating_point(max_x),
-                            moment_0.data, cell_id.data, n.data, trtc.DVInt64(specs_idx.shape[0]), moments.data,
-                            specs_idx.data, specs_rank.data, trtc.DVInt64(attr.shape[1]),
-                            trtc.DVInt64(moments.shape[1])])
+                                                     [idx.data,
+                                                      PrecisionResolver.get_floating_point(min_x),
+                                                      ex_attr.data,
+                                                      in_attr.data,
+                                                      x_attr.data,
+                                                      PrecisionResolver.get_floating_point(max_x),
+                                                      moment_0.data,
+                                                      cell_id.data,
+                                                      n.data,
+                                                      trtc.DVInt64(specs_ex_idx.shape[0]),
+                                                      trtc.DVInt64(specs_in_idx.shape[0]),
+                                                      moments.data,
+                                                      specs_ex_idx.data,
+                                                      specs_ex_rank.data,
+                                                      specs_in_idx.data,
+                                                      specs_in_rank.data,
+                                                      trtc.DVInt64(len(idx)),
+                                                      trtc.DVInt64(moments.shape[1]),
+                                                      trtc.DVInt64(specs_ex_idx.shape[0])
+                                                      ]
+                                                     )
 
-        AlgorithmicMethods.__moments_body_1.launch_n(moment_0.shape[0], [trtc.DVInt64(specs_idx.shape[0]), moments.data, moment_0.data,
-                           trtc.DVInt64(moments.shape[1])])
-
+        AlgorithmicMethods.__moments_body_1.launch_n(
+            moment_0.shape[0], [trtc.DVInt64(specs_in_idx.shape[0]), trtc.DVInt64(specs_ex_idx.shape[0]),
+                                moments.data, moment_0.data, trtc.DVInt64(moments.shape[1])])
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
         auto sd_num = cell_start[i + 1] - cell_start[i];
@@ -366,5 +431,6 @@ class AlgorithmicMethods:
         #     assert max_cell_id == 0
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
-                                                                                  [cell_id.data, cell_start.data, idx.data])
+                                                                                  [cell_id.data, cell_start.data,
+                                                                                   idx.data])
         return idx

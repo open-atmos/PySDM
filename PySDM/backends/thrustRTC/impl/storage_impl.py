@@ -2,10 +2,10 @@
 Created at 02.06.2020
 """
 
-from ..conf import trtc
+from PySDM.backends.thrustRTC.conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
-from ..impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
 def thrust(obj):

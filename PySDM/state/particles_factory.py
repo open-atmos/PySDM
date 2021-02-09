@@ -16,50 +16,65 @@ class ParticlesFactory:
         tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
         extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
         intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
-        idx = core.backend.Index.empty(core.n_sd)
-        base_attributes = core.backend.IndexedStorage.empty(idx, (len(tensive_attr), core.n_sd), float)  # TODO #342
+        idx = core.Index.identity_index(core.n_sd)
+        extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
+        intensive_attributes = core.IndexedStorage.empty(idx, (len(intensive_attr), core.n_sd), float)
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
                 attr.allocate(idx)
 
-        keys = {}
-        for i, attr in enumerate(extensive_attr + intensive_attr):
-            keys[str(attr)] = i
-            req_attr[attr].set_data(base_attributes.read_row(i))
+        extensive_keys = {}
+        for i, attr in enumerate(extensive_attr):
+            extensive_keys[str(attr)] = i
+            req_attr[attr].set_data(extensive_attributes[i, :])
+            req_attr[attr].init(attributes[attr])
+        intensive_keys = {}
+        for i, attr in enumerate(intensive_attr):
+            intensive_keys[str(attr)] = i
+            req_attr[attr].set_data(intensive_attributes[i, :])
             req_attr[attr].init(attributes[attr])
 
         n = req_attr['n']
         n.allocate(idx)
         n.init(attributes['n'])
-        req_attr['n'].data = core.backend.IndexedStorage.indexed(idx, n.data)
+        req_attr['n'].data = core.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr['cell id']
         cell_id.allocate(idx)
         cell_id.init(attributes['cell id'])
-        req_attr['cell id'].data = core.backend.IndexedStorage.indexed(idx, cell_id.data)
+        req_attr['cell id'].data = core.IndexedStorage.indexed(idx, cell_id.data)
         try:
             cell_origin = req_attr['cell origin']
             cell_origin.allocate(idx)
             cell_origin.init(attributes['cell origin'])
-            req_attr['cell origin'].data = core.backend.IndexedStorage.indexed(idx, cell_origin.data)
+            req_attr['cell origin'].data = core.IndexedStorage.indexed(idx, cell_origin.data)
         except KeyError:
             cell_origin = None
         try:
             position_in_cell = req_attr['position in cell']
             position_in_cell.allocate(idx)
             position_in_cell.init(attributes['position in cell'])
-            req_attr['position in cell'].data = core.backend.IndexedStorage.indexed(idx, position_in_cell.data)
+            req_attr['position in cell'].data = core.IndexedStorage.indexed(idx, position_in_cell.data)
         except KeyError:
             position_in_cell = None
 
         cell_start = np.empty(core.mesh.n_cell + 1, dtype=int)
 
-        state = Particles(core, idx, base_attributes, keys, len(extensive_attr), cell_start, req_attr)
+        state = Particles(
+            core,
+            idx,
+            extensive_attributes, extensive_keys,
+            intensive_attributes, intensive_keys,
+            cell_start,
+            req_attr
+        )
 
         return state
 
     @staticmethod
     def empty_particles(particles, n_sd) -> Particles:
-        idx = particles.backend.Index.empty(n_sd)
+        idx = particles.Index.identity_index(n_sd)
         return Particles(
-            core=particles, idx=idx, keys={}, intensive_start=-1,
-            cell_start=np.zeros(0, dtype=np.int64), base_attributes=None, attributes={})
+            core=particles, idx=idx,
+            extensive_attributes=None, extensive_keys={}, intensive_attributes=None, intensive_keys={},
+            cell_start=np.zeros(0, dtype=np.int64), attributes={}
+        )

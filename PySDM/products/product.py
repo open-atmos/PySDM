@@ -43,6 +43,6 @@ class MomentProduct(Product):
         if rank == 0:  # TODO #217
             self.download_to_buffer(self.moment_0)
         else:
-            self.download_to_buffer(self.moments.read_row(0))
+            self.download_to_buffer(self.moments[0, :])
 
 

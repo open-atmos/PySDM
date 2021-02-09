@@ -3,9 +3,9 @@ Created at 30.05.2020
 """
 
 import numpy as np
-from . import storage_impl as impl
-from ..conf import trtc
-from ..impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrustRTC.impl import storage_impl as impl
+from PySDM.backends.thrustRTC.conf import trtc
+from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
 class Storage:
@@ -20,8 +20,8 @@ class Storage:
         self.dtype = dtype
 
     def __getitem__(self, item):
+        dim = len(self.shape)
         if isinstance(item, slice):
-            dim = len(self.shape)
             start = item.start or 0
             stop = item.stop or self.shape[0]
             if dim == 1:
@@ -33,6 +33,9 @@ class Storage:
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
+        elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
+            result_data = self.data.range(self.shape[1] * item[0], self.shape[1] * (item[0] + 1))
+            result = Storage(result_data, (*self.shape[1:],), self.dtype)
         else:
             result = self.to_ndarray()[item]
         return result
@@ -55,35 +58,35 @@ class Storage:
         return self
 
     def __add__(self, other):
-        raise NotImplementedError("Use +=")
+        raise TypeError("Use +=")
 
     def __iadd__(self, other):
         impl.add(self, other)
         return self
 
     def __sub__(self, other):
-        raise NotImplementedError("Use -=")
+        raise TypeError("Use -=")
 
     def __isub__(self, other):
         impl.subtract(self, other)
         return self
 
     def __mul__(self, other):
-        raise NotImplementedError("Use *=")
+        raise TypeError("Use *=")
 
     def __imul__(self, other):
         impl.multiply(self, other)
         return self
 
     def __mod__(self, other):
-        raise NotImplementedError("Use %=")
+        raise TypeError("Use %=")
 
     def __imod__(self, other):
         impl.row_modulo(self, other)
         return self
 
     def __pow__(self, other):
-        raise NotImplementedError("Use **=")
+        raise TypeError("Use **=")
 
     def __ipow__(self, other):
         impl.power(self, other)
@@ -179,14 +182,6 @@ class Storage:
         else:
             self.data = trtc.device_vector_from_numpy(other.ravel())
 
-    # TODO #342 handle by getitem
-    def read_row(self, i):
-        start = self.shape[1] * i
-        stop = start + self.shape[1]
-        result_data = self.data.range(start, stop)
-        result = Storage(result_data, self.shape[1:], self.dtype)
-        return result
-
     def to_ndarray(self):
         result = self._to_host()
         result = np.reshape(result, self.shape)
@@ -198,7 +193,3 @@ class Storage:
     def upload(self, data):
         trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)
 
-    def write_row(self, i, row):
-        start = self.shape[1] * i
-        stop = start + self.shape[1]
-        trtc.Copy(row.data, self.data.range(start, stop))

@@ -18,9 +18,9 @@ class CriticalRadius(DerivedAttribute):
 
     def recalculate(self):
         kappa = self.particles.dynamics['Condensation'].kappa
-        r_d = self.r_dry.get()
-        T = self.environment['T']
-        cell = self.cell_id.get()
+        r_d = self.r_dry.get().data
+        T = self.environment['T'].data
+        cell = self.cell_id.get().data
         for i in range(len(self.data)):  # TODO #347 move to backend
             self.data.data[i] = phys.r_cr(kp=kappa, rd=r_d[i], T=T[cell[i]])
 
