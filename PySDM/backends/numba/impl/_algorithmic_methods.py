@@ -4,7 +4,7 @@ Created at 04.11.2019
 
 import numba
 import numpy as np
-from numba import void, float64, int64, prange, bool_
+from numba import void, f8, i8, prange, b1
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage import Storage
@@ -92,7 +92,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        void(int64[:], float64[:], int64[:], int64, float64[:, :], float64[:, :], float64[:], int64[:], bool_[:]),
+        void(i8[:], f8[:], i8[:], i8, f8[:, :], f8[:, :], f8[:], i8[:], b1[:]),
         **conf.JIT_FLAGS)
     def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):
@@ -174,7 +174,7 @@ class AlgorithmicMethods:
         )
 
     @staticmethod
-    @numba.njit(float64(int64[:, :], float64[:, :], float64[:], int64[:], int64[:], int64, int64[:]))
+    @numba.njit(f8(i8[:, :], f8[:, :], f8[:], i8[:], i8[:], i8, i8[:]))
     def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
         rainfall = 0.
         for i in range(length):
@@ -308,7 +308,7 @@ class AlgorithmicMethods:
             prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
 
     @staticmethod
-    @numba.njit(int64(int64[:], int64[:], int64), **{**conf.JIT_FLAGS, **{'parallel': False}})
+    @numba.njit(i8(i8[:], i8[:], i8), **{**conf.JIT_FLAGS, **{'parallel': False}})
     def remove_zeros(data, idx, length) -> int:
         new_length = length
         i = 0
@@ -357,7 +357,7 @@ class AlgorithmicMethods:
                 pthd[cell_id] = thd_new
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:]), **conf.JIT_FLAGS)
+    @numba.njit(void(i8[:], i8[:], i8[:], i8[:], i8, i8[:]), **conf.JIT_FLAGS)
     def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, cell_idx, length, cell_start):
         cell_end = cell_start
         # Warning: Assuming len(cell_end) == n_cell+1
@@ -371,7 +371,7 @@ class AlgorithmicMethods:
             new_idx[cell_end[cell_idx[cell_id[idx[i]]]]] = idx[i]
 
     @staticmethod
-    @numba.njit(void(int64[:], int64[:], int64[:], int64[:], int64, int64[:], int64[:, :]), **conf.JIT_FLAGS)
+    @numba.njit(void(i8[:], i8[:], i8[:], i8[:], i8, i8[:], i8[:, :]), **conf.JIT_FLAGS)
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
             new_idx, idx, cell_id, cell_prior, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p

@@ -22,6 +22,9 @@ def make_Index(backend):
             result = Index.from_ndarray(np.arange(length, dtype=backend.Storage.INT))
             return result
 
+        def reset_index(self):
+            backend.identity_index(self.data)
+
         @staticmethod
         def empty(*args, **kwargs):
             raise TypeError("'Index' class cannot be instantiated as empty.")
