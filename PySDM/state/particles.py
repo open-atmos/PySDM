@@ -65,7 +65,7 @@ class Particles:
             self.__sorted = False
 
     def cut_working_length(self, length):
-        assert length < len(self.__idx)
+        assert length <= len(self.__idx)
         self.__idx.length = length
 
     def get_working_length(self):
