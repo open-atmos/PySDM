@@ -37,7 +37,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
         dt_todo = np.empty_like(dt_left)
         for i in prange(len(dt_todo)):
             dt_todo[i] = min(dt_left[i], dt_max)
@@ -49,6 +49,7 @@ class AlgorithmicMethods:
             dt_optimal = dt * prop / gamma[i]
             cid = cell_id[j]
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
+            n_substep[cid] += 1
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -57,10 +58,10 @@ class AlgorithmicMethods:
         dt_left -= dt_todo
 
     @staticmethod
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
         return AlgorithmicMethods.adaptive_sdm_gamma_body(
             gamma.data, n.idx.data, len(n), n.data, cell_id.data,
-            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data)
+            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data, n_substep.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})

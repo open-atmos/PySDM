@@ -52,7 +52,7 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair):
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
         dt_todo = trtc.device_vector('uint64_t', len(dt_left))
         d_dt_max = PrecisionResolver.get_floating_point(dt_max)
         d_dt = PrecisionResolver.get_floating_point(dt)
