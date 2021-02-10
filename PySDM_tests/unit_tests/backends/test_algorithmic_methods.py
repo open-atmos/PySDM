@@ -63,9 +63,10 @@ class TestAlgorithmicMethods:
         _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
         _is_first_in_pair = make_PairIndicator(backend)(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
+        _n_substep = backend.Storage.from_ndarray(np.empty_like(dt_left)) # TODO: check output
 
         # Act
-        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_max, _is_first_in_pair)
+        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_max, _is_first_in_pair, _n_substep)
 
         # Assert
         np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected))
