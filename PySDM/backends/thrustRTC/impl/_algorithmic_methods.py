@@ -23,7 +23,7 @@ class AlgorithmicMethods:
         dt_todo[i] = (min(dt_left[i], dt_max) / dt) * ULLONG_MAX;
     ''')
 
-    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
+    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo', 'n_substep'], 'i', '''
             if (gamma[i] == 0) {
                 return;
             }
@@ -33,7 +33,8 @@ class AlgorithmicMethods:
             auto prop = (int64_t)(n[j] / n[k]);
             auto dt_optimal = dt * prop / gamma[i];
             auto cid = cell_id[j];
-            atomicMin((unsigned long long int*)&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
+            atomicMin(&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
+            atomicAdd(&n_substep[cid], 1);
     ''')
 
     __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
@@ -60,7 +61,7 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (gamma.data, n.idx.data, n.data, cell_id.data, d_dt,
-             is_first_in_pair.indicator.data, dt_todo))
+             is_first_in_pair.indicator.data, dt_todo, n_substep.data))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2, (gamma.data, n.idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
