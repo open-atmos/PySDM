@@ -41,7 +41,7 @@ class AlgorithmicMethods:
         dt_todo = np.empty_like(dt_left)
         for i in prange(len(dt_todo)):
             dt_todo[i] = min(dt_left[i], dt_max)
-        for i in prange(length // 2):
+        for i in range(length // 2):  # TODO: prange after sroting out atomics
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
