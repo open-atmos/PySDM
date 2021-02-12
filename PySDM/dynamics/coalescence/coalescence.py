@@ -6,7 +6,7 @@ import numpy as np
 from PySDM.physics import si
 from .random_generator_optimizer import RandomGeneratorOptimizer
 
-default_dt_coal_range = (1 * si.second, 5 * si.second)
+default_dt_coal_range = (.1 * si.second, 10 * si.second)
 
 
 class Coalescence:
@@ -60,6 +60,7 @@ class Coalescence:
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.n_substep[:] = 0 if self.adaptive else self.__substeps
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
@@ -121,7 +122,8 @@ class Coalescence:
                 self.dt_left,
                 self.core.dt,
                 self.dt_coal_range[1],
-                is_first_in_pair
+                is_first_in_pair,
+                self.n_substep
             )
         else:
             prob /= self.__substeps

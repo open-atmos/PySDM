@@ -3,56 +3,41 @@ Created at 23.11.2020
 """
 
 import numpy as np
-
+import numba
+from PySDM.backends.numba.conf import JIT_FLAGS
 from PySDM.products.product import Product
 
 
 class CoalescenceTimestep(Product):
 
-    def __init__(self, debug=False):
+    def __init__(self):
         super().__init__(
-            name='dt_coal',
+            name='dt_coal_avg',
             unit='s',
-            description='Coalescence timestep',
+            description='Coalescence timestep (average)',
             scale='log',
             range=None
         )
-        self.minimum = None
-        self.maximum = None
-        self.count = None
+        self.count = 0
         self.coalescence = None
 
     def register(self, builder):
         super().register(builder)
         self.core.observers.append(self)
         self.coalescence = self.core.dynamics['Coalescence']
-        self.range = (1e-5, self.core.dt)
-        self.minimum = np.full_like(self.buffer, np.nan)
-        self.maximum = np.full_like(self.buffer, np.nan)
-        self.count = np.full_like(self.buffer, np.nan)
+        self.range = self.coalescence.dt_coal_range
 
-    def get_min(self):
-        return self.minimum
-
-    def get_max(self):
-        return self.maximum
-
-    def get_count(self):
-        return self.count
+    @staticmethod
+    @numba.njit(**JIT_FLAGS)
+    def __get_impl(buffer, count, dt):
+        buffer[:] = np.where(buffer[:] > 0, count * dt / buffer[:], np.nan)
 
     def get(self):
         self.download_to_buffer(self.coalescence.n_substep)
-        self.buffer[:] = self.coalescence.core.dt / self.buffer
+        CoalescenceTimestep.__get_impl(self.buffer, self.count, self.core.dt)
+        self.coalescence.n_substep[:] = 0
+        self.count = 0
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.coalescence.n_substep)
-        self.count[:] += self.buffer
-        self.buffer[:] = self.coalescence.core.dt / self.buffer
-        self.minimum = np.minimum(self.buffer, self.minimum)
-        self.maximum = np.maximum(self.buffer, self.maximum)
-
-    def reset(self):
-        self.minimum[:] = np.inf
-        self.maximum[:] = -np.inf
-        self.count[:] = 0
+        self.count += 1

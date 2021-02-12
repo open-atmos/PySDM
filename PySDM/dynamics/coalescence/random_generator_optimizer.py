@@ -35,7 +35,7 @@ class RandomGeneratorOptimizer:
                 self.rand.urand(self.rnd)
         else:
             shift = 0
-            self.pairs_rand.urand(self.rnd)
+            self.pairs_rand.urand(self.rnd)  # TODO #399
             self.rand.urand(self.rnd)
         self.substep += 1
         return self.pairs_rand[shift:self.core.n_sd + shift], self.rand

@@ -65,7 +65,7 @@ class _ImagePlot(_Plot):
         data = self._transpose(data)
         if data is not None:
             self.im.set_data(data)
-            self.ax.set_title(f"min:{np.amin(data): .3g}    max:{np.amax(data): .3g}    t/dt:{step: >6}")
+            self.ax.set_title(f"min:{np.nanmin(data): .3g}    max:{np.nanmax(data): .3g}    t/dt:{step: >6}")
 
     def update_lines(self, focus_x, focus_z):
         self.lines['X'][0].set_xdata(x=focus_x[0] * self.dx)
