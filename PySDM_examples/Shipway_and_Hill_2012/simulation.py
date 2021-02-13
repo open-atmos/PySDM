@@ -7,6 +7,7 @@ from PySDM.products import (RelativeHumidity, Pressure, Temperature,
                             ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, CloudWaterMixingRatio)
 from PySDM.state.mesh import Mesh
 from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.dynamics.coalescence.kernels import Geometric
 from .mpdata_1d import MPDATA_1D
 import numpy as np
 
@@ -34,8 +35,8 @@ class Simulation:
             kappa=settings.kappa
         ))
         builder.add_dynamic(EulerianAdvection(mpdata))
-        # builder.add_dynamic(Coalescence())  # TODO
-        # builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=))  # TODO: perhaps optional!
+        builder.add_dynamic(Coalescence(kernel=Geometric(collection_efficiency=1)))
+        builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO
         attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(

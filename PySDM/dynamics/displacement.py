@@ -32,9 +32,13 @@ class Displacement:
         self.scheme = method
 
         self.dimension = len(self.courant_field)
-        # TODO #346 simplification
-        self.grid = self.core.Storage.from_ndarray(
-            np.array([self.courant_field[1].shape[0], self.courant_field[0].shape[1]], dtype=np.int64))
+        if self.dimension == 1:
+            self.grid = (self.courant_field[0].shape[0] - 1,)
+        elif self.dimension == 2:
+            self.grid = self.core.Storage.from_ndarray(
+                np.array([self.courant_field[1].shape[0], self.courant_field[0].shape[1]], dtype=np.int64))
+        else:
+            raise NotImplementedError()
         self.courant = [self.core.Storage.from_ndarray(self.courant_field[i]) for i in range(self.dimension)]
         self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
         self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
@@ -76,4 +80,6 @@ class Displacement:
     def boundary_condition(self, cell_origin):
         # TODO #346 hardcoded periodic
         # TODO #346 droplets above the mesh
-        cell_origin %= self.grid
+        # TODO: 1D ???
+        if len(self.grid) > 1:
+            cell_origin %= self.grid

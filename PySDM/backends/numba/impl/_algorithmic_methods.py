@@ -18,6 +18,12 @@ def pair_indices(i, idx, is_first_in_pair):
     return j, k
 
 
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell):
+    omega = position_in_cell[dim, droplet]
+    displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
+
+
 class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -65,19 +71,35 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-    def calculate_displacement_body(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement_body_1d(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+        length = displacement.shape[1]
+        for droplet in prange(length):
+            # Arakawa-C grid
+            _l = cell_origin[0, droplet]
+            _r = cell_origin[0, droplet] + 1
+            calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def calculate_displacement_body_2d(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         length = displacement.shape[1]
         for droplet in prange(length):
             # Arakawa-C grid
             _l = (cell_origin[0, droplet], cell_origin[1, droplet])
             _r = (cell_origin[0, droplet] + 1 * (dim == 0), cell_origin[1, droplet] + 1 * (dim == 1))
-            omega = position_in_cell[dim, droplet]
-            displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
+            calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell)
 
     @staticmethod
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
-        AlgorithmicMethods.calculate_displacement_body(dim, scheme, displacement.data, courant.data, cell_origin.data,
-                                                       position_in_cell.data)
+        n_dims = len(courant.shape)
+        if n_dims == 1:
+            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data, cell_origin.data,
+                                                              position_in_cell.data)
+        elif n_dims == 2:
+            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data, cell_origin.data,
+                                                              position_in_cell.data)
+        else:
+            raise NotImplementedError()
 
     @staticmethod
     # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
