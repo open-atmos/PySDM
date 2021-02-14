@@ -44,7 +44,7 @@ def make_Index(backend):
             else:
                 backend.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
 
-        def remove_zeros(self, indexed_storage):
-            self.length = backend.remove_zeros(indexed_storage.data, self.data, self.length)
+        def remove_zero_n_or_flagged(self, indexed_storage):
+            self.length = backend.remove_zero_n_or_flagged(indexed_storage.data, self.data, self.length)
 
     return Index
