@@ -35,8 +35,12 @@ class Simulation:
             kappa=settings.kappa
         ))
         builder.add_dynamic(EulerianAdvection(mpdata))
-        builder.add_dynamic(Coalescence(kernel=Geometric(collection_efficiency=1)))
-        builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO
+        if settings.precip:
+            builder.add_dynamic(Coalescence(
+                kernel=Geometric(collection_efficiency=1),
+                adaptive=settings.coalescence_adaptive
+            ))
+            builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO
         attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
@@ -72,6 +76,6 @@ class Simulation:
 
         self.save(output, 0)
         for step in range(nt):
-            self.core.run(1)
+            self.core.run(steps=1)
             self.save(output, step+1)
         return output

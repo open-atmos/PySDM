@@ -9,9 +9,9 @@ from PySDM.dynamics import condensation
 
 
 class Settings:
-    def __init__(self, n_sd, w_1=2*si.m/si.s, dt=1*si.s, dz=25*si.m):
-        self.n_sd = n_sd
-        self.kappa = .9
+    def __init__(self, n_sd_per_gridbox, w_1=2*si.m/si.s, dt=1*si.s, dz=25*si.m, precip=True):
+        self.n_sd_per_gridbox = n_sd_per_gridbox
+        self.kappa = .9  # TODO: not in the paper
         self.wet_radius_spectrum_per_mass_of_dry_air = Lognormal(
             norm_factor=50/si.cm**3,  # TODO: / self.rho,
             m_mode=.08/2 * si.um,
@@ -20,6 +20,7 @@ class Settings:
 
         self.dt = dt
         self.dz = dz
+        self.precip = precip
 
         self.z_max = 3000 * si.metres
         self.t_max = 60 * si.minutes
@@ -30,8 +31,8 @@ class Settings:
         self._th = interp1d((0, 740, 3260), (297.9, 297.9, 312.66))
         self.qv = interp1d((0, 740, 3260), (.015, .0138, .0024))  # TODO: is initial particle water included in initial qv? (q1 logic)
         self.thd = lambda z: phys.th_dry(self._th(z), self.qv(z))
-        p0 = 975 * si.hPa  # TODO: not in the paper?
 
+        p0 = 975 * si.hPa  # TODO: not in the paper?
         self.rhod0 = phys.ThStd.rho_d(p0, self.qv(0), self._th(0))
 
         def drhod_dz(z, rhod):
@@ -52,9 +53,15 @@ class Settings:
         self.condensation_rtol_x = condensation.default_rtol_x
         self.condensation_rtol_thd = condensation.default_rtol_thd
         self.condensation_adaptive = True
+        self.coalescence_adaptive = False
 
         self.v_bin_edges = phys.volume(np.logspace(np.log10(0.001 * si.um), np.log10(100 * si.um), 101, endpoint=True))
         self.cloud_water_radius_range = [1 * si.um, 50 * si.um]
+        self.rain_water_radius_range = [50 * si.um, np.inf * si.um]
+
+    @property
+    def n_sd(self):
+        return self.nz * self.n_sd_per_gridbox
 
     @property
     def nz(self):

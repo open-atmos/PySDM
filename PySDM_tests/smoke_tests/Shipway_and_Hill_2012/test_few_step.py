@@ -6,7 +6,7 @@ class TestFewTimesteps:
     @staticmethod
     def test_cloud_water_mixing_ratio(plot=False):
         # Arrange
-        settings = Settings(n_sd=64, dt=10*si.s, dz=100*si.m)
+        settings = Settings(n_sd_per_gridbox=5, dt=10*si.s, dz=100*si.m)
         simulation = Simulation(settings)
 
         # Act
