@@ -4,7 +4,7 @@ from PySDM import Builder
 from PySDM.dynamics import EulerianAdvection, Condensation, AmbientThermodynamics, Displacement, Coalescence
 from PySDM.products import (RelativeHumidity, Pressure, Temperature,
                             WaterVapourMixingRatio, DryAirDensity, DryAirPotentialTemperature,
-                            ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, CloudWaterMixingRatio)
+                            ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, WaterMixingRatio)
 from PySDM.state.mesh import Mesh
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.dynamics.coalescence.kernels import Geometric
@@ -46,7 +46,9 @@ class Simulation:
         )
         products = [
             RelativeHumidity(), Pressure(), Temperature(),
-            WaterVapourMixingRatio(), CloudWaterMixingRatio(settings.cloud_water_radius_range),
+            WaterVapourMixingRatio(),
+            WaterMixingRatio('ql', 'cloud', settings.cloud_water_radius_range),
+            WaterMixingRatio('qr', 'rain', settings.rain_water_radius_range),
             DryAirDensity(),
             DryAirPotentialTemperature(),
             ParticlesDrySizeSpectrum(v_bins=settings.v_bin_edges),

@@ -4,14 +4,14 @@ from ...physics import formulae as phys
 import numpy as np
 
 
-class CloudWaterMixingRatio(MomentProduct):
+class WaterMixingRatio(MomentProduct):
 
-    def __init__(self, radius_range):
+    def __init__(self, name, description_prefix, radius_range):
         self.volume_range = phys.volume(np.asarray(radius_range))
         super().__init__(
-            name='ql',
+            name=name,
             unit='g/kg',
-            description='cloud water mixing ratio',
+            description=f'{description_prefix} water mixing ratio',
             scale='linear',
             range=[0, 2]
         )
