@@ -390,7 +390,7 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
-    __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
+    __remove_zero_n_or_flagged_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
         if (idx[i] < idx_length && data[idx[i]] == 0) {
             idx[i] = idx_length;
         }
@@ -398,11 +398,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def remove_zeros(data, idx, length) -> int:
+    def remove_zero_n_or_flagged(data, idx, length) -> int:
         idx_length = trtc.DVInt64(idx.size())
 
         # Warning: (potential bug source): reading from outside of array
-        AlgorithmicMethods.__remove_zeros_body.launch_n(length, [data, idx, idx_length])
+        AlgorithmicMethods.__remove_zero_n_or_flagged_body.launch_n(length, [data, idx, idx_length])
 
         trtc.Sort(idx)
 

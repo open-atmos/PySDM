@@ -58,7 +58,7 @@ class Particles:
     def sanitize(self):
         if not self.healthy:
             self.__idx.length = self.__valid_n_sd
-            self.__idx.remove_zeros(self['n'])
+            self.__idx.remove_zero_n_or_flagged(self['n'])
             self.__valid_n_sd = self.__idx.length
             self.healthy = True
             self.__healthy_memory[:] = 1

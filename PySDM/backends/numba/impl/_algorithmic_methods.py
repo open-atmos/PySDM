@@ -333,14 +333,15 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(i8(i8[:], i8[:], i8), **{**conf.JIT_FLAGS, **{'parallel': False}})
-    def remove_zeros(data, idx, length) -> int:
+    def remove_zero_n_or_flagged(multiplicity, idx, length) -> int:
+        flag = len(idx)
         new_length = length
         i = 0
         while i < new_length:
-            if idx[i] == len(idx) or data[idx[i]] == 0:
+            if idx[i] == flag or multiplicity[idx[i]] == 0:
                 new_length -= 1
                 idx[i] = idx[new_length]
-                idx[new_length] = len(idx)
+                idx[new_length] = flag
             else:
                 i += 1
         return new_length
