@@ -21,7 +21,7 @@ class Simulation:
         mesh = Mesh(grid=(settings.nz,), size=(settings.z_max,))
         env = Kinematic1D(dt=settings.dt, mesh=mesh, thd_of_z=settings.thd, rhod_of_z=settings.rhod)
 
-        mpdata = MPDATA_1D(nz=settings.nz, dt=settings.dt,
+        mpdata = MPDATA_1D(nz=settings.nz, dt=settings.dt, mpdata_settings=settings.mpdata_settings,
                            advector_of_t=lambda t: settings.w(t) * settings.dt / settings.dz,
                            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ*settings.dz),
                            g_factor_of_zZ=lambda zZ: settings.rhod(zZ*settings.dz))

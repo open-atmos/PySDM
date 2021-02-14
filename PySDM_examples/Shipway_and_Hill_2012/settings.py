@@ -48,13 +48,7 @@ class Settings:
         assert rhod_solution.success
         self.rhod = interp1d(z_points, rhod_solution.y[0])
 
-        self.mpdata_settings = {
-            'mpdata_iters': 3,
-            'mpdata_iga': True,
-            'mpdata_fct': True,
-            'mpdata_tot': True
-        }
-
+        self.mpdata_settings = {'n_iters': 3, 'iga': True, 'fct': True, 'tot': True}
         self.condensation_rtol_x = condensation.default_rtol_x
         self.condensation_rtol_thd = condensation.default_rtol_thd
         self.condensation_adaptive = True
