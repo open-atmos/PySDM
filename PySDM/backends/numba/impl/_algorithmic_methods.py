@@ -200,10 +200,11 @@ class AlgorithmicMethods:
     @numba.njit(f8(i8[:, :], f8[:, :], f8[:], i8[:], i8[:], i8, i8[:]))
     def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
         rainfall = 0.
+        flag = len(idx)
         for i in range(length):
-            if cell_origin[-1, i] == 0 and position_in_cell[-1, i] < 0:
-                rainfall += volume[i] * n[i]
-                idx[i] = len(idx)
+            if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] < 0:
+                rainfall += volume[idx[i]] * n[idx[i]]
+                idx[i] = flag
                 healthy[0] = 0
         return rainfall
 
