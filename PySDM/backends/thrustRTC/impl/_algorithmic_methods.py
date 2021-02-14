@@ -202,7 +202,7 @@ class AlgorithmicMethods:
 
     __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
                                          'volume', 'n'], "i", '''
-        if (cell_origin[idx_length * (n_dims-1) + i] == 0 && position_in_cell[idx_length * (n_dims-1) + i] < 0) {
+        if (cell_origin[idx_length * (n_dims-1) + idx[i]] + position_in_cell[idx_length * (n_dims-1) + idx[i]] < 0) {
             idx[i] = idx_length;
             healthy[0] = 0;
         }
