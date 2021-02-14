@@ -45,12 +45,11 @@ class Displacement:
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
-        displacement = self.displacement
         cell_origin = self.core.particles['cell origin']
         position_in_cell = self.core.particles['position in cell']
 
-        self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
-        self.update_position(position_in_cell, displacement)
+        self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
+        self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
             self.precipitation_in_last_step = self.core.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)

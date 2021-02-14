@@ -47,7 +47,7 @@ class AlgorithmicMethods:
         dt_todo = np.empty_like(dt_left)
         for i in prange(len(dt_todo)):
             dt_todo[i] = min(dt_left[i], dt_max)
-        for i in range(length // 2):  # TODO: prange after sroting out atomics
+        for i in range(length // 2):  # TODO: #401
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -396,7 +396,7 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(void(i8[:], i8[:], i8[:], i8[:], i8, i8[:], i8[:, :]), **conf.JIT_FLAGS)
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
-            new_idx, idx, cell_id, cell_prior, length, cell_start, cell_start_p):
+            new_idx, idx, cell_id, cell_idx, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p
         # Warning: Assuming len(cell_end) == n_cell+1
         thread_num = cell_end_thread.shape[0]
@@ -404,7 +404,7 @@ class AlgorithmicMethods:
             cell_end_thread[t, :] = 0
             for i in range(t * length // thread_num,
                            (t + 1) * length // thread_num if t < thread_num - 1 else length):
-                cell_end_thread[t, cell_prior[cell_id[idx[i]]]] += 1
+                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] += 1
 
         cell_start[:] = np.sum(cell_end_thread, axis=0)
         for i in range(1, len(cell_start)):
@@ -422,7 +422,7 @@ class AlgorithmicMethods:
             for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
                            t * length // thread_num - 1,
                            -1):
-                cell_end_thread[t, cell_prior[cell_id[idx[i]]]] -= 1
-                new_idx[cell_end_thread[t, cell_prior[cell_id[idx[i]]]]] = idx[i]
+                cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
+                new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
 
         cell_start[:] = cell_end_thread[0, :]

@@ -29,7 +29,7 @@ class DisplacementSettings:
         cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
         attributes = {
             'n': self.n,
-            'volume':self.volume,
+            'volume': self.volume,
             'cell id': cell_id,
             'cell origin': cell_origin,
             'position in cell': position_in_cell
