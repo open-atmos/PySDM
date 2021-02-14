@@ -97,7 +97,6 @@ class Coalescence:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
-        self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
             self.core.particles.cell_start,

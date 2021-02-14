@@ -156,6 +156,7 @@ class Particles:
                                   is_first_in_pair=is_first_in_pair
                                   )
         self.healthy = bool(self.__healthy_memory)
+        self.core.particles.sanitize()
         self.attributes['volume'].mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
@@ -169,4 +170,5 @@ class Particles:
                                               self['volume'], self['n'],
                                               self.__idx, self.SD_num, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
+        self.sanitize()
         return res
