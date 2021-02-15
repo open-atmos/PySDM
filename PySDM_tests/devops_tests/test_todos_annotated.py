@@ -1,6 +1,7 @@
 import pytest
 import os
 import re
+import sys
 from ghapi.all import GhApi, paged
 
 
@@ -41,6 +42,7 @@ def gh_issues():
     return all
 
 
+@pytest.mark.skipif("'CI' in os.environ and 'GITHUB_ACTIONS' not in os.environ and sys.version_info.minor < 8")
 def test_todos_annotated(file, gh_issues):
     if os.path.basename(file) == 'test_todos_annotated.py':
         return
