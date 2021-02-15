@@ -37,5 +37,5 @@ install:
 
 test_script:
   - ps: |
-      iex "$env:PYTHON -m pytest -We"
+      iex "$env:PYTHON -m pytest -We -p no:unraisableexception"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
