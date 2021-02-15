@@ -53,7 +53,7 @@ class Settings:
         self.condensation_rtol_x = condensation.default_rtol_x
         self.condensation_rtol_thd = condensation.default_rtol_thd
         self.condensation_adaptive = True
-        self.coalescence_adaptive = False
+        self.coalescence_adaptive = True
 
         self.v_bin_edges = phys.volume(np.logspace(np.log10(0.001 * si.um), np.log10(100 * si.um), 101, endpoint=True))
         self.cloud_water_radius_range = [1 * si.um, 50 * si.um]
