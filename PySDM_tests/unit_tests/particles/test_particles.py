@@ -58,7 +58,7 @@ class TestParticles:
     def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
-            return  # TODO #69
+            return  # TODO #330
 
         # Arrange
         core = DummyCore(backend, n_sd=n_sd)
