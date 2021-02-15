@@ -34,6 +34,11 @@ class FakeThrustRTC:
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
 
+        def __setitem__(self, key, value):
+            if isinstance(value, FakeThrustRTC.Number):
+                value = value.ndarray
+            self.ndarray[key] = value
+
         def __getitem__(self, item):
             return self.ndarray[item]
 

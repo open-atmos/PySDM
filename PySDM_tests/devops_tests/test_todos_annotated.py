@@ -42,7 +42,7 @@ def gh_issues():
 
 
 def test_todos_annotated(file, gh_issues):
-    if file == '../../PySDM_tests/devops_tests/test_todos_annotated.py':
+    if os.path.basename(file) == 'test_todos_annotated.py':
         return
     for line in grep(file, r'.*TODO.*'):
         match = re.search(r'TODO #(\d+)', line)
