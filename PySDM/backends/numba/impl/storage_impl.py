@@ -20,6 +20,11 @@ def add(output, addend):
     output += addend
 
 
+@numba.njit(**conf.JIT_FLAGS)
+def amin(data):
+    return np.amin(data)
+
+
 @numba.njit(void(i8[:, :], i8[:]), **conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(len(divisor)):

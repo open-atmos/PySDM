@@ -204,7 +204,7 @@ class TestSDMSingleCell:
                 super(CountingRandom, self).__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd)
-        sut.n_substep[:] = n_substeps  # TODO
+        sut.stats_n_substep[:] = n_substeps  # TODO
         sut.adaptive = adaptive
 
         # Act

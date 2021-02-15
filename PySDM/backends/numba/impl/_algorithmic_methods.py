@@ -43,10 +43,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
+                                stats_n_substep, stats_dt_min):
         dt_todo = np.empty_like(dt_left)
-        for i in prange(len(dt_todo)):
-            dt_todo[i] = min(dt_left[i], dt_max)
+        for cid in prange(len(dt_todo)):
+            dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO: #401
             if gamma[i] == 0:
                 continue
@@ -54,20 +55,24 @@ class AlgorithmicMethods:
             prop = n[j] // n[k]
             dt_optimal = dt * prop / gamma[i]
             cid = cell_id[j]
+            dt_optimal = max(dt_optimal, dt_range[0])
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
-            n_substep[cid] += 1
+            stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
             j, _ = pair_indices(i, idx, is_first_in_pair)
             gamma[i] *= dt_todo[cell_id[j]] / dt
-        dt_left -= dt_todo
+        for cid in prange(len(dt_todo)):
+            dt_left[cid] -= dt_todo[cid]
+            if dt_todo[cid] > 0:
+                stats_n_substep[cid] += 1
 
     @staticmethod
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min):
         return AlgorithmicMethods.adaptive_sdm_gamma_body(
             gamma.data, n.idx.data, len(n), n.data, cell_id.data,
-            dt_left.data, dt, dt_max, is_first_in_pair.indicator.data, n_substep.data)
+            dt_left.data, dt, dt_range, is_first_in_pair.indicator.data, stats_n_substep.data, stats_dt_min.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})

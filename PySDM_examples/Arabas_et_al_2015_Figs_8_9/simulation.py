@@ -92,7 +92,8 @@ class Simulation:
             products.append(PySDM_products.SurfacePrecipitation())  # TODO #37 ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel, adaptive=self.settings.coalescence_adaptive))
-            products.append(PySDM_products.CoalescenceTimestep())
+            products.append(PySDM_products.CoalescenceTimestepMean())
+            products.append(PySDM_products.CoalescenceTimestepMin())
             products.append(PySDM_products.CollisionRate())
             products.append(PySDM_products.CollisionRateDeficit())
 
