@@ -8,6 +8,7 @@ import warnings
 from numba import cuda
 import sys
 
+
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
 def cuda_is_available():
     lib_names = ('libcuda.so', 'libcuda.dylib', 'cuda.dll')
