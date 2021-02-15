@@ -53,7 +53,7 @@ install:
 
 script:
   - NBCONVERT="python$PY_SFX $PY_FLAGS -m nbconvert --to markdown --stdout"
-  - PYTEST="python$PY_SFX -m pytest $PY_FLAGS"
+  - PYTEST="python$PY_SFX -m pytest $PY_FLAGS -p no:unraisableexception"
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
   - $PYTEST
   - |
