@@ -42,7 +42,7 @@ def gh_issues():
     return all
 
 
-@pytest.mark.skipif("'CI' in os.environ and 'GITHUB_ACTIONS' not in os.environ and sys.version_info.minor < 8")
+@pytest.mark.skipif("'CI' in os.environ and ('GITHUB_ACTIONS' not in os.environ or sys.version_info.minor < 8)")
 def test_todos_annotated(file, gh_issues):
     if os.path.basename(file) == 'test_todos_annotated.py':
         return
