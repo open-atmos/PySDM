@@ -2,7 +2,7 @@ import pytest
 import os
 import re
 import sys
-from ghapi.all import GhApi, paged
+from ghapi.all import GhApi, paged, github_token
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
@@ -33,7 +33,10 @@ def file(request):
 
 @pytest.fixture(scope='session')
 def gh_issues():
-    api = GhApi(owner='atmos-cloud-sim-uj', repo='PySDM')
+    args = {'owner': 'atmos-cloud-sim-uj', 'repo': 'PySDM'}
+    if 'CI' in os.environ:
+        args['token'] = github_token()
+    api = GhApi(**args)
     pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all')
     all = {}
     for page in pages:
