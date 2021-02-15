@@ -7,6 +7,7 @@ from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
 from PySDM.physics import si
 import numpy as np
 from matplotlib import pyplot
+import pytest
 
 
 class DummyStorage:
@@ -20,6 +21,7 @@ class DummyStorage:
             self.profiles[step] = {"qv": np.mean(data, axis=0)}
 
 
+@pytest.mark.filterwarnings("ignore:.*:pytest.PytestUnraisableExceptionWarning")  # TODO:
 def test_spin_up(plot=False):
     # Arrange
     Settings.dt = .5 * si.second
