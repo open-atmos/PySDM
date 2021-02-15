@@ -2,7 +2,8 @@ import pytest
 import os
 import re
 import sys
-from ghapi.all import GhApi, paged, github_token
+import pathlib
+from ghapi.all import GhApi, paged
 
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
@@ -26,18 +27,15 @@ def grep(filepath, regex):
     return res
 
 
-@pytest.fixture(params=findfiles('../..', r'.*\.(ipynb|py|txt|yml|m|jl|md)$'))
+@pytest.fixture(params=findfiles(pathlib.Path(__file__).parent.parent.parent.absolute(), r'.*\.(ipynb|py|txt|yml|m|jl|md)$'))
 def file(request):
     return request.param
 
 
 @pytest.fixture(scope='session')
 def gh_issues():
-    args = {'owner': 'atmos-cloud-sim-uj', 'repo': 'PySDM'}
-    if 'CI' in os.environ:
-        args['token'] = github_token()
-    api = GhApi(**args)
-    pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all')
+    api = GhApi(owner='atmos-cloud-sim-uj', repo='PySDM')
+    pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all', per_page=100)
     all = {}
     for page in pages:
         for item in page.items:
