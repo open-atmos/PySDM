@@ -4,7 +4,6 @@ Created at 28.09.2020
 
 from ...numba.conf import JIT_FLAGS
 import re
-import numpy as np
 
 cppython = {
     "int ": "",
@@ -12,7 +11,6 @@ cppython = {
     "float ": "",
     "auto ": "",
     "bool ": "",
-    "ULLONG_MAX": f"{np.uint32(-1)}",  # note: would need more clever parsing to work with np.uint64(-1)
     " {": ":",
     "}": "",
     "//": "#",
@@ -73,16 +71,15 @@ def replace_fors(cpp) -> str:
 
 
 def atomic_min_to_python(cpp: str) -> str:
-    cpp = cpp.replace("unsigned long long int*", "") \
-              .replace("unsigned long long int", "np.uint64") \
+    cpp = cpp.replace("unsigned int*", "") \
               .replace("double*", "") \
               .replace("float*", "") \
               .replace(" ", "") \
               .replace("()", "") \
               .replace("&", "")
     cpp = re.sub(
-        r"atomicMin\((\w+)\[(\w+)],\s*\(np.uint64\)\(([^)]*)\)\);",
-        r"np.minimum(\1[\2:\2+1], np.asarray(\3, dtype=np.uint64), \1[\2:\2+1]);", cpp)
+        r"atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);",
+        r"np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);", cpp)
     return cpp
 
 
@@ -125,6 +122,7 @@ def replace_atomic_adds(cpp: str) -> (str, bool):
 
 
 def to_numba(name, args, iter_var, body):
+    body = re.sub(r"static_assert\([^;]*;", '', body)
     body = body.replace("\n", "\n    ")
     for cpp, python in cppython.items():
         body = body.replace(cpp, python)

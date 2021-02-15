@@ -6,6 +6,7 @@ from PySDM.backends.thrustRTC.conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+import numpy as np
 
 
 def thrust(obj):
@@ -25,6 +26,11 @@ def thrust(obj):
 @nice_thrust(**NICE_THRUST_FLAGS)
 def add(output, addend):
     trtc.Transform_Binary(thrust(addend), thrust(output), thrust(output), trtc.Plus())
+
+
+@nice_thrust(**NICE_THRUST_FLAGS)
+def amin(data):
+    return trtc.Reduce(data, thrust(np.inf), trtc.Minimum())
 
 
 __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
