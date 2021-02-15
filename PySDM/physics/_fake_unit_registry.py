@@ -2,6 +2,7 @@
 Created at 14.11.2019
 """
 
+
 def fake(si_unit):
     return (1. * si_unit).to_base_units().magnitude
 
@@ -17,5 +18,5 @@ class FakeUnitRegistry:
                 self.__setattr__(prefix+unit + "s", fake(si.__getattr__(prefix+unit + "s")))
 
         for prefix in ("n", "u", "m", "c", "", "h", "k"):
-            for unit in ("m", "g", "Hz", "mol", "J", "K", "s", "min", "day", "Pa", "l", "h"):
+            for unit in ("m", "g", "Hz", "mol", "J", "K", "s", "min", "day", "Pa", "l", "h", "bar"):
                 self.__setattr__(prefix+unit, fake(si.__getattr__(prefix+unit)))
