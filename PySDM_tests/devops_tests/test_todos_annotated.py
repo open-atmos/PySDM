@@ -18,7 +18,7 @@ def findfiles(path, regex):
 def grep(filepath, regex):
     regObj = re.compile(regex)
     res = []
-    with open(filepath) as f:
+    with open(filepath, encoding="utf8") as f:
         for line in f:
             if regObj.match(line):
                 res.append(line)
