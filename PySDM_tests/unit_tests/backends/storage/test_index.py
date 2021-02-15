@@ -13,7 +13,7 @@ from PySDM.storages.indexed_storage import make_IndexedStorage
 class TestIndex:
 
     @staticmethod
-    def test_remove_zeros(backend):
+    def test_remove_zero_n_or_flagged(backend):
         # Arrange
         n_sd = 44
         idx = make_Index(backend).identity_index(n_sd)
@@ -23,7 +23,7 @@ class TestIndex:
         data = make_IndexedStorage(backend).indexed(storage=data, idx=idx)
 
         # Act
-        idx.remove_zeros(data)
+        idx.remove_zero_n_or_flagged(data)
 
         # Assert
         assert len(idx) == n_sd - 3

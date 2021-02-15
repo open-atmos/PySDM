@@ -5,8 +5,9 @@ Created at 07.06.2019
 import numpy as np
 from PySDM.physics import si
 from .random_generator_optimizer import RandomGeneratorOptimizer
+import warnings
 
-default_dt_coal_range = (.1 * si.second, 10 * si.second)
+default_dt_coal_range = (.1 * si.second, 100 * si.second)
 
 
 class Coalescence:
@@ -27,6 +28,7 @@ class Coalescence:
 
         self.kernel = kernel
 
+        assert dt_coal_range[0] > 0
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random,
                                                 dt_min=dt_coal_range[0],
                                                 seed=seed)
@@ -34,8 +36,9 @@ class Coalescence:
 
         self.__substeps = substeps
         self.adaptive = adaptive
-        self.n_substep = None
-        self.dt_coal_range = list(dt_coal_range)
+        self.stats_n_substep = None
+        self.stats_dt_min = None
+        self.dt_coal_range = tuple(dt_coal_range)
 
         self.kernel_temp = None
         self.norm_factor_temp = None
@@ -52,15 +55,19 @@ class Coalescence:
         if self.core.n_sd < 2:
             raise ValueError("No one to collide with!")
         if self.dt_coal_range[1] > self.core.dt:
-            self.dt_coal_range[1] = self.core.dt
+            self.dt_coal_range = (self.dt_coal_range[0], self.core.dt)
+        assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.n_substep[:] = 0 if self.adaptive else self.__substeps
+
+        self.stats_n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.stats_n_substep[:] = 0 if self.adaptive else self.__substeps
+        self.stats_dt_min = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        self.stats_dt_min[:] = np.nan
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
@@ -97,7 +104,6 @@ class Coalescence:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
-        self.core.particles.sanitize()
         self.core.particles.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
             self.core.particles.cell_start,
@@ -121,10 +127,13 @@ class Coalescence:
                 self.core.particles["cell id"],
                 self.dt_left,
                 self.core.dt,
-                self.dt_coal_range[1],
+                self.dt_coal_range,
                 is_first_in_pair,
-                self.n_substep
+                self.stats_n_substep,
+                self.stats_dt_min
             )
+            if self.stats_dt_min.amin() == self.dt_coal_range[0]:
+                warnings.warn("coalescence adaptive time-step reached dt_min")
         else:
             prob /= self.__substeps
 

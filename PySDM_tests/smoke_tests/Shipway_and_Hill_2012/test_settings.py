@@ -5,11 +5,11 @@ import numpy as np
 class TestSettings:
     @staticmethod
     def test_instantiate():
-        _ = Settings(n_sd=1, w_1=1)
+        _ = Settings(n_sd_per_gridbox=1, w_1=1)
 
     @staticmethod
     def test_th():
-        settings = Settings(n_sd=1, w_1=1)
+        settings = Settings(n_sd_per_gridbox=1, w_1=1)
         assert settings._th(0) == 297.9
         assert settings._th(100) == 297.9
         assert settings._th(740) == 297.9
@@ -17,12 +17,12 @@ class TestSettings:
 
     @staticmethod
     def test_qv():
-        settings = Settings(n_sd=1, w_1=1)
+        settings = Settings(n_sd_per_gridbox=1, w_1=1)
         assert settings.qv(0) == .015
         assert settings.qv(740) == .0138
         np.testing.assert_approx_equal(settings.qv(3260), .0024)
 
     @staticmethod
     def test_rhod():
-        settings = Settings(n_sd=1, w_1=1)
+        settings = Settings(n_sd_per_gridbox=1, w_1=1)
         assert settings.rhod  # TODO

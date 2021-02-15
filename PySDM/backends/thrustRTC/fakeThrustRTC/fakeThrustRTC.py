@@ -152,6 +152,8 @@ class FakeThrustRTC:
             return start.ndarray - dvvector.ndarray.sum()
         if operator == "max":
             return max(start.ndarray, np.amax(dvvector.ndarray))
+        if operator == "min":
+            return max(start.ndarray, np.amin(dvvector.ndarray))
 
     @staticmethod
     def Plus():
@@ -164,6 +166,10 @@ class FakeThrustRTC:
     @staticmethod
     def Maximum():
         return "max"
+
+    @staticmethod
+    def Minimum():
+        return "min"
 
     @staticmethod
     def Transform_Binary(vec_in1, vec_in2, vec_out, op):

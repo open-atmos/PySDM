@@ -34,8 +34,8 @@ jobs:
       - if: matrix.platform == 'ubuntu-latest'
         env: 
           NUMBA_THREADING_LAYER: omp
-        run: PYTHONPATH=. pytest -We
+        run: PYTHONPATH=. pytest -p no:unraisableexception -We
 
       - if: matrix.platform != 'ubuntu-latest'
-        run: PYTHONPATH=. pytest -We
+        run: PYTHONPATH=. pytest -p no:unraisableexception -We
 

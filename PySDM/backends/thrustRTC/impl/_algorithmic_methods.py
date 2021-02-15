@@ -19,11 +19,11 @@ class AlgorithmicMethods:
             i = len(dt_left)
         return cell_start[i]
 
-    __adaptive_sdm_gamma_body_1 = trtc.For(['dt_todo', 'dt_left', 'dt', 'dt_max'], 'i', '''
-        dt_todo[i] = (min(dt_left[i], dt_max) / dt) * ULLONG_MAX;
+    __adaptive_sdm_gamma_body_1 = trtc.For(['dt_todo', 'dt_left', 'dt_max'], 'cid', '''
+            dt_todo[cid] = min(dt_left[cid], dt_max);
     ''')
 
-    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo', 'n_substep'], 'i', '''
+    __adaptive_sdm_gamma_body_2 = trtc.For(['gamma', 'idx', 'n', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
             if (gamma[i] == 0) {
                 return;
             }
@@ -33,8 +33,8 @@ class AlgorithmicMethods:
             auto prop = (int64_t)(n[j] / n[k]);
             auto dt_optimal = dt * prop / gamma[i];
             auto cid = cell_id[j];
-            atomicMin(&dt_todo[cid], (unsigned long long int)(dt_optimal / dt * ULLONG_MAX));
-            atomicAdd(&n_substep[cid], 1);
+            static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
+            atomicMin((unsigned int*)&dt_todo[cid], __float_as_uint(dt_optimal));
     ''')
 
     __adaptive_sdm_gamma_body_3 = trtc.For(['gamma', 'idx', 'cell_id', 'dt', 'is_first_in_pair', 'dt_todo'], 'i', '''
@@ -43,28 +43,32 @@ class AlgorithmicMethods:
             }
             auto offset = 1 - is_first_in_pair[2 * i];
             auto j = idx[2 * i + offset];
-            auto _dt_todo = (dt * dt_todo[cell_id[j]]) / ULLONG_MAX;
-            gamma[i] *= _dt_todo / dt;
+            gamma[i] *= dt_todo[cell_id[j]] / dt;
     ''')
 
-    __adaptive_sdm_gamma_body_4 = trtc.For(['dt_left', 'dt_todo', 'dt'], 'i', '''
-        dt_left[i] -= (dt * dt_todo[i]) / ULLONG_MAX;
+    __adaptive_sdm_gamma_body_4 = trtc.For(['dt_left', 'dt_todo', 'stats_n_substep'], 'cid', '''
+            dt_left[cid] -= dt_todo[cid];
+            if (dt_todo[cid] > 0) {
+                stats_n_substep[cid] += 1;
+            }
     ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, n_substep):
-        dt_todo = trtc.device_vector('uint64_t', len(dt_left))
-        d_dt_max = PrecisionResolver.get_floating_point(dt_max)
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min):
+        # TODO: implement stats_dt_min
+        dt_todo = trtc.device_vector('float', len(dt_left))
+        d_dt_max = PrecisionResolver.get_floating_point(dt_range[1])
         d_dt = PrecisionResolver.get_floating_point(dt)
-        AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt, d_dt_max))
+
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_1.launch_n(len(dt_left), (dt_todo, dt_left.data, d_dt_max))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (gamma.data, n.idx.data, n.data, cell_id.data, d_dt,
-             is_first_in_pair.indicator.data, dt_todo, n_substep.data))
+             is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2, (gamma.data, n.idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
-        AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, d_dt])
+        AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, stats_n_substep.data])
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -202,7 +206,7 @@ class AlgorithmicMethods:
 
     __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
                                          'volume', 'n'], "i", '''
-        if (cell_origin[idx_length * (n_dims-1) + i] == 0 && position_in_cell[idx_length * (n_dims-1) + i] < 0) {
+        if (cell_origin[idx_length * (n_dims-1) + idx[i]] + position_in_cell[idx_length * (n_dims-1) + idx[i]] < 0) {
             idx[i] = idx_length;
             healthy[0] = 0;
         }
@@ -390,7 +394,7 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
-    __remove_zeros_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
+    __remove_zero_n_or_flagged_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
         if (idx[i] < idx_length && data[idx[i]] == 0) {
             idx[i] = idx_length;
         }
@@ -398,11 +402,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def remove_zeros(data, idx, length) -> int:
+    def remove_zero_n_or_flagged(data, idx, length) -> int:
         idx_length = trtc.DVInt64(idx.size())
 
         # Warning: (potential bug source): reading from outside of array
-        AlgorithmicMethods.__remove_zeros_body.launch_n(length, [data, idx, idx_length])
+        AlgorithmicMethods.__remove_zero_n_or_flagged_body.launch_n(length, [data, idx, idx_length])
 
         trtc.Sort(idx)
 

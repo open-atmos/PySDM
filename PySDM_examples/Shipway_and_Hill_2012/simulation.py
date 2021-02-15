@@ -4,9 +4,10 @@ from PySDM import Builder
 from PySDM.dynamics import EulerianAdvection, Condensation, AmbientThermodynamics, Displacement, Coalescence
 from PySDM.products import (RelativeHumidity, Pressure, Temperature,
                             WaterVapourMixingRatio, DryAirDensity, DryAirPotentialTemperature,
-                            ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, CloudWaterMixingRatio)
+                            ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, WaterMixingRatio)
 from PySDM.state.mesh import Mesh
 from PySDM.initialisation import spectral_sampling, spatial_sampling
+from PySDM.dynamics.coalescence.kernels import Geometric
 from .mpdata_1d import MPDATA_1D
 import numpy as np
 
@@ -20,7 +21,7 @@ class Simulation:
         mesh = Mesh(grid=(settings.nz,), size=(settings.z_max,))
         env = Kinematic1D(dt=settings.dt, mesh=mesh, thd_of_z=settings.thd, rhod_of_z=settings.rhod)
 
-        mpdata = MPDATA_1D(nz=settings.nz, dt=settings.dt,
+        mpdata = MPDATA_1D(nz=settings.nz, dt=settings.dt, mpdata_settings=settings.mpdata_settings,
                            advector_of_t=lambda t: settings.w(t) * settings.dt / settings.dz,
                            advectee_of_zZ_at_t0=lambda zZ: settings.qv(zZ*settings.dz),
                            g_factor_of_zZ=lambda zZ: settings.rhod(zZ*settings.dz))
@@ -34,8 +35,12 @@ class Simulation:
             kappa=settings.kappa
         ))
         builder.add_dynamic(EulerianAdvection(mpdata))
-        # builder.add_dynamic(Coalescence())  # TODO
-        # builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=))  # TODO: perhaps optional!
+        if settings.precip:
+            builder.add_dynamic(Coalescence(
+                kernel=Geometric(collection_efficiency=1),
+                adaptive=settings.coalescence_adaptive
+            ))
+            builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO
         attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(
@@ -45,7 +50,9 @@ class Simulation:
         )
         products = [
             RelativeHumidity(), Pressure(), Temperature(),
-            WaterVapourMixingRatio(), CloudWaterMixingRatio(settings.cloud_water_radius_range),
+            WaterVapourMixingRatio(),
+            WaterMixingRatio('ql', 'cloud', settings.cloud_water_radius_range),
+            WaterMixingRatio('qr', 'rain', settings.rain_water_radius_range),
             DryAirDensity(),
             DryAirPotentialTemperature(),
             ParticlesDrySizeSpectrum(v_bins=settings.v_bin_edges),
@@ -69,6 +76,6 @@ class Simulation:
 
         self.save(output, 0)
         for step in range(nt):
-            self.core.run(1)
+            self.core.run(steps=1)
             self.save(output, step+1)
         return output

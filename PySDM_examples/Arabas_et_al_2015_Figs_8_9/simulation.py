@@ -16,6 +16,7 @@ from PySDM import products as PySDM_products
 from PySDM.state.arakawa_c import Fields
 from .dummy_controller import DummyController
 from .spin_up import SpinUp
+import numpy as np
 
 
 class Simulation:
@@ -47,7 +48,8 @@ class Simulation:
             PySDM_products.TotalParticleSpecificConcentration(),
             PySDM_products.AerosolConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
             PySDM_products.CloudConcentration(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
-            PySDM_products.CloudWaterMixingRatio(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
+            PySDM_products.WaterMixingRatio(name='qc', description_prefix='cloud', radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
+            PySDM_products.WaterMixingRatio(name='qr', description_prefix='rain', radius_range=(self.settings.drizzle_radius_threshold, np.inf)),
             PySDM_products.DrizzleConcentration(radius_threshold=self.settings.drizzle_radius_threshold),
             PySDM_products.AerosolSpecificConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
             PySDM_products.ParticleMeanRadius(),
@@ -90,7 +92,8 @@ class Simulation:
             products.append(PySDM_products.SurfacePrecipitation())  # TODO #37 ditto
         if self.settings.processes["coalescence"]:
             builder.add_dynamic(Coalescence(kernel=self.settings.kernel, adaptive=self.settings.coalescence_adaptive))
-            products.append(PySDM_products.CoalescenceTimestep())
+            products.append(PySDM_products.CoalescenceTimestepMean())
+            products.append(PySDM_products.CoalescenceTimestepMin())
             products.append(PySDM_products.CollisionRate())
             products.append(PySDM_products.CollisionRateDeficit())
 

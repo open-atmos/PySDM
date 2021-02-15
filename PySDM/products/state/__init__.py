@@ -11,4 +11,4 @@ from .particles_concentration import AerosolConcentration, CloudConcentration, D
 from .super_droplet_count import SuperDropletCount
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
 from .particles_volume_spectrum import ParticlesVolumeSpectrum
-from .cloud_water_mixing_ratio import CloudWaterMixingRatio
+from .water_mixing_ratio import WaterMixingRatio

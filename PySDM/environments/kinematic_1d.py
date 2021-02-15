@@ -1,5 +1,4 @@
 from ._moist import _Moist
-# from ..initialisation.r_dry_init import r_dry_init  # TODO: is this what is done in KiD?
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
 from ..physics import formulae as phys
@@ -38,11 +37,9 @@ class Kinematic1D(_Moist):
             positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
-            # r_wet, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            # r_dry = r_dry_init(r_wet, self, attributes['cell id'], kappa)  # TODO: dry/wet choice should be external!
 
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            r_wet = r_wet_init(r_dry, self, attributes['cell id'], kappa)  # TODO: dry/wet choice should be external!
+            r_wet = r_wet_init(r_dry, self, attributes['cell id'], kappa)
 
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']

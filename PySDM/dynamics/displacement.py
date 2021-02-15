@@ -32,21 +32,24 @@ class Displacement:
         self.scheme = method
 
         self.dimension = len(self.courant_field)
-        # TODO #346 simplification
-        self.grid = self.core.Storage.from_ndarray(
-            np.array([self.courant_field[1].shape[0], self.courant_field[0].shape[1]], dtype=np.int64))
+        if self.dimension == 1:
+            grid = (self.courant_field[0].shape[0] - 1,)
+        elif self.dimension == 2:
+            grid = (self.courant_field[1].shape[0], self.courant_field[0].shape[1])
+        else:
+            raise NotImplementedError()
+        self.grid = self.core.Storage.from_ndarray(np.array(grid, dtype=np.int64))
         self.courant = [self.core.Storage.from_ndarray(self.courant_field[i]) for i in range(self.dimension)]
         self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
         self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
-        displacement = self.displacement
         cell_origin = self.core.particles['cell origin']
         position_in_cell = self.core.particles['position in cell']
 
-        self.calculate_displacement(displacement, self.courant, cell_origin, position_in_cell)
-        self.update_position(position_in_cell, displacement)
+        self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
+        self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
             self.precipitation_in_last_step = self.core.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)

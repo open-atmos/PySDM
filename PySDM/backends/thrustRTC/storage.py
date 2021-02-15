@@ -127,6 +127,9 @@ class Storage:
             data = self.data
         return data.to_host()
 
+    def amin(self):
+        return impl.amin(self.data)
+
     def download(self, target, reshape=False):
         shape = target.shape if reshape else self.shape
         target[:] = np.reshape(self._to_host(), shape)
