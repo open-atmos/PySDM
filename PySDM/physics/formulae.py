@@ -65,7 +65,7 @@ class ThStd:
 
 
 class Hydrostatic:
-    # TODO: include assumptions in the name (p vs. pd)
+    # TODO #407: include assumptions in the name (p vs. pd)
     @staticmethod
     def drhod_dz(p, T, qv):
         rho = MoistAir.rho_of_p_qv_T(p, qv, T)

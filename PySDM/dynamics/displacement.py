@@ -77,6 +77,6 @@ class Displacement:
         position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
-        # TODO #346 hardcoded periodic
-        # TODO #346 droplets above the mesh
+        # TODO #414 hardcoded periodic
+        # TODO #414 droplets above the mesh
         cell_origin %= self.grid

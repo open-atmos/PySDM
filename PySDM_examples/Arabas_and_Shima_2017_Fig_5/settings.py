@@ -22,7 +22,7 @@ class Settings:
         t_total = 2 * Settings.z_half / self.w_avg
         result = t_total / Settings.n_output
         if result < 1 * si.centimetre / si.second:
-            result /= 100  # TODO #304
+            result /= 100  # TODO #411
         return result
 
     n_output = 500

@@ -55,7 +55,7 @@ def main(plot: bool, save: str):
         plotter.smooth = True
         for step, vals in states.items():
             error = plotter.plot(vals, step * settings.dt)
-            #assert error < 200
+            #assert error < 200  # TODO #327
         if save is not None:
             n_sd = settings.n_sd
             plotter.save(save + "/" +

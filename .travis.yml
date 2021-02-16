@@ -16,7 +16,7 @@ jobs:
         # https://github.com/pypa/virtualenv/pull/1064/files
         - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
         - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
-        - export PY_FLAGS="" # TODO numba 0.52 triggers deprecation warnings with newest numpy
+        - export PY_FLAGS="" # TODO #408: numba 0.52 triggers deprecation warnings with newest numpy
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
@@ -57,7 +57,7 @@ script:
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
   - $PYTEST
   - |
-      python$PY_SFX -m ipykernel install --user  # TODO: https://github.com/ipython/ipykernel/issues/560
+      python$PY_SFX -m ipykernel install --user
       for i in PySDM_examples/*/demo.ipynb; do
          $NBCONVERT $i > $i.md.repo;
          $NBCONVERT --execute --ExecutePreprocessor.timeout=1800 $i || exit 1;

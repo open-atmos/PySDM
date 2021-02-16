@@ -39,7 +39,7 @@ class MPDATA_1D:
     def __call__(self):
         self.t += .5 * self.dt
         self.solver.advector.get_component(0)[:] = self.advector_of_t(self.t)
-        try:  # TODO: move the try-except logic to within PyMPDATA
+        try:  # TODO #417: move the try-except logic to within PyMPDATA
             self.solver.advance(1)
         except NumbaExperimentalFeatureWarning:
             pass

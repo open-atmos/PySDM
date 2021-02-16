@@ -11,9 +11,9 @@ import numpy as np
 import os
 
 
-# TODO #304 run for different atol, rtol, dt_max
+# TODO #411
 if 'CI' in os.environ and not os.environ.get('FAST_TESTS') == 'true':
-    scheme = ('default',  'BDF')
+    scheme = ('default', 'BDF')
     coord = ('volume logarithm', 'volume')
     adaptive = (True, False)
     enable_particle_temperatures = (False, True)

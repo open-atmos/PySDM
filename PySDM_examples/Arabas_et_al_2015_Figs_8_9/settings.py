@@ -53,7 +53,7 @@ class Settings:
 
     @property
     def n_steps(self) -> int:
-        return int(self.simulation_time / self.dt) #TODO
+        return int(self.simulation_time / self.dt)  # TODO #413
 
     @property
     def steps_per_output_interval(self) -> int:

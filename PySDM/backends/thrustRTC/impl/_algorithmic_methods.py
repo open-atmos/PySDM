@@ -56,7 +56,7 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min):
-        # TODO: implement stats_dt_min
+        # TODO #406 implement stats_dt_min
         dt_todo = trtc.device_vector('float', len(dt_left))
         d_dt_max = PrecisionResolver.get_floating_point(dt_range[1])
         d_dt = PrecisionResolver.get_floating_point(dt)
@@ -430,10 +430,7 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(cell_id, cell_idx, cell_start, idx, length):
-        # TODO #69
-        # if length > 0:
-        #     max_cell_id = max(cell_id.to_ndarray())
-        #     assert max_cell_id == 0
+        # TODO #330
         trtc.Fill(cell_start.data, trtc.DVInt64(length))
         AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
                                                                                   [cell_id.data, cell_start.data,
