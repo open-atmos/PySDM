@@ -20,17 +20,17 @@ COMPOUNDS = [
     "Hp"]
 
 
-class ConcentrationImpl(TensiveAttribute):
+class AmountImpl(TensiveAttribute):
 
     def __init__(self, particles_builder, *, name):
         super().__init__(particles_builder, name=name, extensive=False)
 
 
-def Concentration(what):
+def Amount(what):
     def _constructor(pb):
-        return ConcentrationImpl(pb, name=what)
+        return AmountImpl(pb, name=what)
     return _constructor
 
 
-def register_concentrations():
-    return {k: Concentration(k) for k in COMPOUNDS}
+def register_amounts():
+    return {k: Amount(k) for k in COMPOUNDS}

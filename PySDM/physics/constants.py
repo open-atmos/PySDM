@@ -59,3 +59,7 @@ rho_STP = p_STP / Rd / T_STP
 
 ppb = 1e-9
 ppm = 1e-6
+ROOM_TEMP = T_tri + 25 * si.K
+M = si.mole / si.litre
+H_u = M / p_STP
+dT_u = si.K

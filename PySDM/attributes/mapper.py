@@ -13,7 +13,7 @@ from .cell.cell_origin import CellOrigin
 from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
 from .droplet.critical_radius import CriticalRadius
-from .chemistry.molar_concentration import register_concentrations
+from .chemistry.amount import register_amounts
 
 # TODO #157
 attributes = {
@@ -28,7 +28,7 @@ attributes = {
     'position in cell': PositionInCell,
     'temperature': Temperature,
     'critical radius': CriticalRadius,
-    ** register_concentrations()
+    ** register_amounts()
 }
 
 
