@@ -61,7 +61,7 @@ class DemoSettings(Settings):
 
     @property
     def n_steps(self):
-        return int(self.ui_simulation_time.value / self.ui_dt.value)  # TODO
+        return int(self.ui_simulation_time.value / self.ui_dt.value)  # TODO #413
 
     ui_condensation_rtol_x = IntSlider(
         value=np.log10(Settings.condensation_rtol_thd),

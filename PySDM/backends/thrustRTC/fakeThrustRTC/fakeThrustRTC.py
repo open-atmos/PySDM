@@ -34,7 +34,6 @@ class FakeThrustRTC:
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
 
-        # TODO: should not be needed
         def __setitem__(self, key, value):
             if isinstance(value, FakeThrustRTC.Number):
                 value = value.ndarray
@@ -102,7 +101,7 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        if elem_cls == 'double' or elem_cls == 'float':  # TODO: distinguish np.float32 and np.float64?
+        if elem_cls == 'double' or elem_cls == 'float':  # TODO #405
             dtype = np.float64
         elif elem_cls == 'int64_t':
             dtype = np.int64

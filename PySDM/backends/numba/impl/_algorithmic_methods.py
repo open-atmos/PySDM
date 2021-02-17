@@ -48,7 +48,7 @@ class AlgorithmicMethods:
         dt_todo = np.empty_like(dt_left)
         for cid in prange(len(dt_todo)):
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
-        for i in range(length // 2):  # TODO: #401
+        for i in range(length // 2):  # TODO #401
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -173,7 +173,7 @@ class AlgorithmicMethods:
 
             j, k = pair_indices(i, idx, is_first_in_pair)
             prop = n[j] // n[k]
-            g = min(int(gamma[i]), prop)  # TODO: test asserting that min is not needed with adaptivity
+            g = min(int(gamma[i]), prop)  # TODO #416: test asserting that min is not needed with adaptivity
             cid = cell_id[j]
             collision_rate[cid] += g * n[k]
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]

@@ -35,7 +35,7 @@ class Kinematic2D(_Moist):
                         enable_temperatures=False,
                         rtol=default_rtol
                         ):
-        # TODO #346 move to one method
+        # TODO #418 move to one method
         super().sync()
         self.notify()
 

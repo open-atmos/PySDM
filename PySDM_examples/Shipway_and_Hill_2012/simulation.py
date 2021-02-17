@@ -40,7 +40,7 @@ class Simulation:
                 kernel=Geometric(collection_efficiency=1),
                 adaptive=settings.coalescence_adaptive
             ))
-            builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO
+            builder.add_dynamic(Displacement(enable_sedimentation=True, courant_field=(np.zeros(settings.nz+1),)))  # TODO #414
         attributes = env.init_attributes(
             spatial_discretisation=spatial_sampling.Pseudorandom(),
             spectral_discretisation=spectral_sampling.ConstantMultiplicity(

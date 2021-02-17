@@ -1,7 +1,7 @@
 ThrustRTC==0.3.10
 CURandRTC==0.1.6
 numba==0.52.0
-numpy==1.19.4  # TODO: np.long deprecation in newer numpy triggers warnings in numba 0.52
+numpy==1.19.4  # TODO #408: np.long deprecation in newer numpy triggers warnings in numba 0.52
 git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@f33d602#egg=PyMPDATA
 chempy==0.8.1
 
@@ -10,3 +10,6 @@ scipy>=1.4.1
 molmass>=2020.6.10
 matplotlib>=3.2.2
 ipywidgets>=7.5.1
+
+ghapi
+pytest

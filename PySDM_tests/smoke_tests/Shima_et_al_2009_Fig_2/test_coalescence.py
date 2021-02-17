@@ -37,7 +37,7 @@ def check(n_part, dv, n_sd, rho, state, step):
 def test_coalescence(backend, croupier, adaptive):
     if backend == ThrustRTC and croupier == 'local':  # TODO #358
         return
-    if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #380
+    if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
         return
     # Arrange
     n_sd = 2 ** 14

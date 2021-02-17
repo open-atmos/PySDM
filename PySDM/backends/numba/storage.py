@@ -180,7 +180,6 @@ class Storage:
             impl.multiply_out_of_place(self.data, multiplicand.data, multiplier)
         return self
 
-    # TODO #352 rename (different logic than np.ravel())
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
