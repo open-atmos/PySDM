@@ -3,7 +3,8 @@ import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from .support import EqConst
-from PySDM.physics.constants import H_u, dT_u, ROOM_TEMP
+from PySDM.physics.constants import H_u, dT_u, ROOM_TEMP, M_SO2, Md
+from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure
 
 
 HENRY_CONST = {
@@ -15,45 +16,43 @@ HENRY_CONST = {
     "O3":   EqConst((1.13 * 10 ** -2) * H_u, 2540 * dT_u),
 }
 
+eps_SO2 = M_SO2 / Md
 
-def dissolve_env_gases(super_droplet_ids, amounts_SO2, env_SO2, env_T): #, amounts, V_w, n, *, dt, steps=1, T=ROOM_TEMP):
-    todo = HENRY_CONST["SO2"].at(env_T)
 
+def delta_mixing_ratio(delta_mole_amount, dv, rho_d):
+    return delta_mole_amount * M_SO2 / (rho_d * dv)
+
+
+def dissolve_env_gases(super_droplet_ids, mole_amounts_SO2, env_mixing_ratio_SO2, env_T, env_p, env_rho_d, dv, droplet_volume, multiplicity, system_type):
+    henrysConstant = HENRY_CONST["SO2"].at(env_T)  # mol m−3 Pa−1
+    # TODO: effective H (dissociation) ... as option for tests
+    # TODO: diffusion law formulation using mass accommodation coefficient
+    mole_amount_taken = 0
     for i in super_droplet_ids:
-        pass
-    #     hconc = amounts[self.hindex]
-    #     for henry, gasi, envi in zip(self.henry_processes,
-    #                                  self.gas_indices,
-    #                                  self.environment_indices.values()):
-    #         A = amounts[gasi]
-    #         c = self.environment[envi]
-    #         for i in range(steps):
-    #             A = henry(A, c, T=T, V_w=V_w, H=hconc, dt=dt)
-    #
-    #             # Don't accumulate to avoid numerical errors
-    #             # We multiply by n, since all the droplets suck in the gases
-    #             c = (self.environment[envi]
-    #                  - (A - amounts[gasi]) * n * V_w / self.particles.environment.dv)
-    #
-    #             # Ensure we do not take too much
-    #             if A < 0:
-    #                 print(f"Borrowed gas: {self._indices[gasi]}")
-    #                 A = 0
-    #             if c < 0:
-    #                 print(f"Borrowed gas: {self._indices[gasi]}")
-    #                 c = 0
-    #         amounts[gasi] = A
-    #         self.environment[envi] = c
-    #
-    # return amounts
+        p_SO2 = mixing_ratio_2_partial_pressure(mixing_ratio=env_mixing_ratio_SO2, specific_gravity=eps_SO2, pressure=env_p)  # TODO: p vs. pd ?
+        c_SO2 = henrysConstant * p_SO2  # mol / m3
+        new_mole_amount_per_real_droplet = c_SO2 * droplet_volume[i]
+        mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts_SO2[i])
+        mole_amounts_SO2.data[i] = new_mole_amount_per_real_droplet
+        assert mole_amounts_SO2[i] >= 0
+    delta_mr = delta_mixing_ratio(mole_amount_taken, dv, env_rho_d)
+    assert delta_mr <= env_mixing_ratio_SO2
+    if system_type == 'closed':
+        env_mixing_ratio_SO2 -= delta_mr
 
 
 class AqueousChemistry:
-    def __init__(self, environment_amount):
-        self.environment_amount = environment_amount
+    def __init__(self, environment_mole_fractions, system_type):
+        self.environment_mixing_ratios = {}
+        for compound in environment_mole_fractions:
+            if compound != 'SO2':
+                continue  # TODO
+            self.environment_mixing_ratios[compound] = np.full((1,), mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], eps_SO2))
         self.mesh = None
         self.core = None
         self.env = None
+        assert system_type in ('open', 'closed')
+        self.system_type = system_type
 
     def register(self, builder):
         self.mesh = builder.core.mesh
@@ -89,7 +88,13 @@ class AqueousChemistry:
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])
                 dissolve_env_gases(
                     super_droplet_ids=idx[cell_start:cell_end],
-                    amounts_SO2=self.core.particles["SO2"],
-                    env_SO2=self.environment_amount["SO2"],
-                    env_T=T
+                    mole_amounts_SO2=self.core.particles["SO2"],
+                    env_mixing_ratio_SO2=self.environment_mixing_ratios["SO2"][cell_id:cell_id+1],
+                    env_T=T,
+                    env_p=p,
+                    env_rho_d=rhod_mean,
+                    dv=self.mesh.dv,
+                    droplet_volume=self.core.particles["volume"],
+                    multiplicity=self.core.particles["n"],
+                    system_type=self.system_type
                 )

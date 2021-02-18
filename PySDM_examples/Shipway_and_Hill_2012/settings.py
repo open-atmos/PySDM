@@ -1,6 +1,7 @@
 import numpy as np
 from PySDM.physics import si
 import PySDM.physics.formulae as phys
+import PySDM.physics.constants as const
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from PySDM.initialisation.spectra import Lognormal
@@ -33,11 +34,12 @@ class Settings:
         self.thd = lambda z: phys.th_dry(self._th(z), self.qv(z))
 
         p0 = 975 * si.hPa  # TODO #414: not in the paper?
+        g = const.g_std
         self.rhod0 = phys.ThStd.rho_d(p0, self.qv(0), self._th(0))
 
         def drhod_dz(z, rhod):
             T, p, _ = temperature_pressure_RH(rhod[0], self.thd(z), self.qv(z))
-            return phys.Hydrostatic.drhod_dz(p, T, self.qv(z))
+            return phys.Hydrostatic.drho_dz(g, p, T, self.qv(z))
 
         z_points = np.arange(0, self.z_max, self.dz / 2)
         rhod_solution = solve_ivp(

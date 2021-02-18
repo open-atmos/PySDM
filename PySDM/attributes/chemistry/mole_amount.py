@@ -20,17 +20,16 @@ COMPOUNDS = [
     "Hp"]
 
 
-class AmountImpl(TensiveAttribute):
-
+class MoleAmountImpl(TensiveAttribute):
     def __init__(self, particles_builder, *, name):
-        super().__init__(particles_builder, name=name, extensive=False)
+        super().__init__(particles_builder, name=name, extensive=True)
 
 
-def Amount(what):
+def MoleAmount(what):
     def _constructor(pb):
-        return AmountImpl(pb, name=what)
+        return MoleAmountImpl(pb, name=what)
     return _constructor
 
 
 def register_amounts():
-    return {k: Amount(k) for k in COMPOUNDS}
+    return {k: MoleAmount(k) for k in COMPOUNDS}

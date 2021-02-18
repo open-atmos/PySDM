@@ -13,7 +13,7 @@ from .cell.cell_origin import CellOrigin
 from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
 from .droplet.critical_radius import CriticalRadius
-from .chemistry.amount import register_amounts
+from .chemistry.mole_amount import register_amounts
 
 # TODO #157
 attributes = {

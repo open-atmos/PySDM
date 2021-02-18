@@ -43,6 +43,11 @@ def get_starting_amounts(dry_v):
 
 class Settings:
     def __init__(self, dt, n_sd):
+        self.system_type = 'closed'
+        self.t_max = (2400 + 196) * si.s
+        self.w = .5 * si.m/si.s
+        self.g = 10 * si.m / si.s**2
+
         self.dt = dt
         self.n_sd = n_sd
 
@@ -62,7 +67,7 @@ class Settings:
             )
         ).sample(n_sd)
 
-        self.ENVIRONMENT_AMOUNTS = {
+        self.ENVIRONMENT_MOLE_FRACTIONS = {
             "SO2": 0.2 * const.ppb,
             "O3": 50 * const.ppb,
             "H2O2": 0.5 * const.ppb,
@@ -72,3 +77,9 @@ class Settings:
         }
 
         self.starting_amounts = get_starting_amounts(phys.volume(self.r_dry))
+
+    @property
+    def nt(self):
+        nt = self.t_max / self.dt
+        assert nt == int(nt)
+        return int(nt)

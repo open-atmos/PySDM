@@ -25,6 +25,7 @@ pi = sci.pi
 
 Md = 0.78 * _weight('N2') + 0.21 * _weight('O2') + 0.01 * _weight('Ar')
 Mv = _weight('H2O')
+M_SO2 = _weight('SO2')
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 eps = Mv / Md
@@ -37,7 +38,7 @@ p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
 c_pv = 1850 * si.joule / si.kilogram / si.kelvin
 T0 = sci.zero_Celsius * si.kelvin
-g = sci.g * si.metre / si.second ** 2
+g_std = sci.g * si.metre / si.second ** 2
 
 c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 

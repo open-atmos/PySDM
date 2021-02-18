@@ -12,8 +12,7 @@ from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
-from PySDM.products.state import ParticleMeanRadius
-from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products import ParticleMeanRadius, CondensationTimestep, ParcelDisplacement, RelativeHumidity, Time
 
 
 class Simulation:
@@ -48,7 +47,7 @@ class Simulation:
         environment = builder.core.environment
         r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), settings.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
-        products = [ParticleMeanRadius(), CondensationTimestep()]
+        products = [ParticleMeanRadius(), CondensationTimestep(), ParcelDisplacement(), RelativeHumidity(), Time()]
 
         self.core = builder.build(attributes, products)
 
@@ -57,10 +56,10 @@ class Simulation:
     def save(self, output):
         cell_id = 0
         output["r"].append(self.core.products['radius_m1'].get(unit=const.si.metre)[cell_id])
-        output["S"].append(self.core.environment["RH"][cell_id] - 1)
-        output["z"].append(self.core.environment["z"][cell_id])
-        output["t"].append(self.core.environment["t"][cell_id])
         output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
+        output["z"].append(self.core.products["z"].get())
+        output["S"].append(self.core.products["RH"].get()[cell_id] - 1)
+        output["t"].append(self.core.products["t"].get())
 
     def run(self):
         output = {"r": [], "S": [], "z": [], "t": [], "dt": []}
