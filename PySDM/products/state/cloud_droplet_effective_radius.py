@@ -18,8 +18,8 @@ class CloudDropletEffectiveRadius(MomentProduct):
             name='r_eff',
             unit='um',
             description='Cloud Droplet Effective Radius',
-            scale=None,
-            range=None
+            scale='linear',
+            range=(0, 20)
         )
 
     def get(self):

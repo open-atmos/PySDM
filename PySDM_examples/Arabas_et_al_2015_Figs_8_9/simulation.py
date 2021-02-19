@@ -41,14 +41,15 @@ class Simulation:
                                   field_values=self.settings.field_values)
         builder.set_environment(environment)
 
+        cloud_range = (self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)
         products = products or [
             PySDM_products.ParticlesWetSizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),
             PySDM_products.ParticlesDrySizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),  # Note: better v_bins
             PySDM_products.TotalParticleConcentration(),
             PySDM_products.TotalParticleSpecificConcentration(),
             PySDM_products.AerosolConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
-            PySDM_products.CloudDropletConcentration(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
-            PySDM_products.WaterMixingRatio(name='qc', description_prefix='cloud', radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
+            PySDM_products.CloudDropletConcentration(radius_range=cloud_range),
+            PySDM_products.WaterMixingRatio(name='qc', description_prefix='cloud', radius_range=cloud_range),
             PySDM_products.WaterMixingRatio(name='qr', description_prefix='rain', radius_range=(self.settings.drizzle_radius_threshold, np.inf)),
             PySDM_products.DrizzleConcentration(radius_threshold=self.settings.drizzle_radius_threshold),
             PySDM_products.AerosolSpecificConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
@@ -59,7 +60,9 @@ class Simulation:
             PySDM_products.DryAirDensity(),
             PySDM_products.DryAirPotentialTemperature(),
             PySDM_products.CPUTime(),
-            PySDM_products.WallTime()
+            PySDM_products.WallTime(),
+            PySDM_products.CloudDropletEffectiveRadius(radius_range=cloud_range),
+            PySDM_products.PeakSupersaturation()
         ]
 
         fields = Fields(environment, self.settings.stream_function)
