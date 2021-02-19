@@ -39,7 +39,7 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _ = step_impl(*args, dt, 1, True)
+            _, thd_new, _, _ = step_impl(*args, dt, 1, True)
             return thd_new
 
         return step_fake
@@ -60,6 +60,7 @@ class CondensationMethods:
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
             ripenings = 0
+            RH_max = 0
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
@@ -72,7 +73,8 @@ class CondensationMethods:
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
                 ripenings += ripening
-            return qv, thd, ripenings
+                RH_max = max(RH_max, RH)
+            return qv, thd, ripenings, RH_max
 
         return step_impl
 
@@ -132,11 +134,11 @@ class CondensationMethods:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
                     v_cr = 4/3 * np.pi * (r_cr[drop])**3
-                    if v_new > v_cr and v[drop] > v_cr and v_new > v[drop]:
+                    if v_new > v_cr and v_cr < v[drop] < v_new:
                         growing += 1
-                    if v_new > v_cr and v[drop] < v_cr:
+                    if v_new > v_cr > v[drop]:
                         activating += 1
-                    if v_new < v_cr and v[drop] > v_cr:
+                    if v_new < v_cr < v[drop]:
                         deactivating += 1
                     v[drop] = v_new
                 result += n[drop] * v_new * const.rho_w
@@ -160,8 +162,8 @@ class CondensationMethods:
             args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
-            qv, thd, ripenings = step(args, dt, n_substeps)
+            qv, thd, ripenings, RH_max = step(args, dt, n_substeps)
 
-            return qv, thd, n_substeps, ripenings
+            return qv, thd, n_substeps, ripenings, RH_max
 
         return solve
