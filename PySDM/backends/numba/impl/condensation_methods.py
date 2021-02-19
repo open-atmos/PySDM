@@ -106,8 +106,9 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
+            activating = 0
+            deactivating = 0
             growing = 0
-            decreasing = 0
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
@@ -130,15 +131,16 @@ class CondensationMethods:
                     if enable_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    # if v_new > 4/3 * np.pi * (r_cr[drop])**3: # TODO #347 difference if r<r_cr, filter out noise
-                    if abs((v_new-v[drop])/v_new) > .5:
-                        if v_new - v[drop] > 0:
-                            growing += 1
-                        else:
-                            decreasing += 1
+                    v_cr = 4/3 * np.pi * (r_cr[drop])**3
+                    if v_new > v_cr and v[drop] > v_cr and v_new > v[drop]:
+                        growing += 1
+                    if v_new > v_cr and v[drop] < v_cr:
+                        activating += 1
+                    if v_new < v_cr and v[drop] > v_cr:
+                        deactivating += 1
                     v[drop] = v_new
                 result += n[drop] * v_new * const.rho_w
-            return result, (growing > 0 and decreasing > 0)
+            return result, (deactivating > 0 and growing > 0)
 
         return calculate_ml_new
 

@@ -47,7 +47,7 @@ class Simulation:
             PySDM_products.TotalParticleConcentration(),
             PySDM_products.TotalParticleSpecificConcentration(),
             PySDM_products.AerosolConcentration(radius_threshold=self.settings.aerosol_radius_threshold),
-            PySDM_products.CloudConcentration(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
+            PySDM_products.CloudDropletConcentration(radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
             PySDM_products.WaterMixingRatio(name='qc', description_prefix='cloud', radius_range=(self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)),
             PySDM_products.WaterMixingRatio(name='qr', description_prefix='rain', radius_range=(self.settings.drizzle_radius_threshold, np.inf)),
             PySDM_products.DrizzleConcentration(radius_threshold=self.settings.drizzle_radius_threshold),

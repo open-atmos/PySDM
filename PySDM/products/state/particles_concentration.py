@@ -39,7 +39,7 @@ class AerosolConcentration(ParticlesConcentration):
         self.description = 'Aerosol particles concentration'
 
 
-class CloudConcentration(ParticlesConcentration):
+class CloudDropletConcentration(ParticlesConcentration):
 
     def __init__(self, radius_range):
         super().__init__(radius_range)
