@@ -39,7 +39,7 @@ class DemoViewer:
         self.products = products
         self.product_select.options = [
             (f"{val.description} [{val.unit}]", key)
-            for key, val in products.items()
+            for key, val in sorted(self.products.items(), key=lambda item: item[1].description)
             if len(val.shape) == 2
         ]
 
