@@ -11,6 +11,7 @@ import numpy as np
 import numba
 import scipy.integrate
 import types
+import sys
 
 idx_thd = 0
 idx_x = 1
@@ -106,7 +107,7 @@ def make_solve(coord, rtol):
                     method="BDF"
                 )
             except RuntimeWarning:
-                raise Exception("warning thrown within scipy.integrate.solve_ivp (python -We ?)")
+                print("warning thrown within scipy.integrate.solve_ivp (python -We ?)", file=sys.stderr)
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 
