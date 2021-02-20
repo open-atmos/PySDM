@@ -9,7 +9,7 @@ class PeakSupersaturation(Product):
             unit='%',
             description='Peak supersaturation',
             scale='linear',
-            range=(0, 1)
+            range=(-1, 1)
         )
         self.condensation = None
         self.RH_max = None

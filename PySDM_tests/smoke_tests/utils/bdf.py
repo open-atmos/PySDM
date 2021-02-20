@@ -23,7 +23,7 @@ def patch_core(core, coord='volume logarithm', rtol=1e-3):
 
 def bdf_condensation(core,
                      kappa,
-                     rtol_x, rtol_thd, substeps, ripening_flags
+                     rtol_x, rtol_thd, substeps, ripening_flags, RH_max
                      ):
     n_threads = 1
     if core.particles.has_attribute("temperature"):
@@ -53,7 +53,8 @@ def bdf_condensation(core,
         dt=core.dt,
         substeps=substeps.data,
         cell_order=np.argsort(substeps),
-        ripening_flags=ripening_flags.data
+        ripening_flags=ripening_flags.data,
+        RH_max=RH_max.data
     )
 
 
@@ -115,7 +116,7 @@ def make_solve(coord, rtol):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1
+        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1, np.nan
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
