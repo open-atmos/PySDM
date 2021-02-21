@@ -3,6 +3,7 @@ Created at 05.02.2020
 """
 
 import numpy as np
+from ..environments._moist import _Moist
 
 
 class Product:
@@ -45,4 +46,24 @@ class MomentProduct(Product):
         else:
             self.download_to_buffer(self.moments[0, :])
 
+
+class MoistEnvironmentProduct(Product):
+    def __init__(self, **args):
+        super().__init__(**args)
+        self.environment = None
+        self.source = None
+
+    def register(self, builder):
+        assert isinstance(builder.core.env, _Moist)
+        super().register(builder)
+        self.core.observers.append(self)
+        self.environment = builder.core.env
+        self.source = self.environment[self.name]
+
+    def notify(self):
+        self.source = self.environment.get_predicted(self.name)
+
+    def get(self):
+        self.download_to_buffer(self.source)
+        return self.buffer
 

@@ -38,6 +38,7 @@ class Condensation:
         self.adaptive = adaptive
         self.n_substep = None
         self.dt_cond_range = dt_cond_range
+        # TODO: same asserts on dt range as in coalescence?
 
     def register(self, builder):
         self.core = builder.core

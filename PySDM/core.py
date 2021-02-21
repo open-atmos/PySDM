@@ -101,11 +101,20 @@ class Core:
                 ripening_flags=ripening_flags,
                 RH_max=RH_max
             )
+        self.backend.temperature_pressure_RH(
+            self.env.get_predicted('rhod'),
+            self.env.get_predicted('thd'),
+            self.env.get_predicted('qv'),
+            self.env.get_predicted('T'),
+            self.env.get_predicted('p'),
+            self.env.get_predicted('RH')
+        )
 
     def run(self, steps):
         for _ in range(steps):
             for dynamic in self.dynamics.values():
                 dynamic()
             self.n_steps += 1
-            for observer in self.observers:
+            reversed_order_so_that_environment_is_last = reversed(self.observers)
+            for observer in reversed_order_so_that_environment_is_last:
                 observer.notify()
