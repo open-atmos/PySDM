@@ -2,9 +2,7 @@ from PySDM.environments.kinematic_1d import Kinematic1D
 from PySDM.backends import CPU
 from PySDM import Builder
 from PySDM.dynamics import EulerianAdvection, Condensation, AmbientThermodynamics, Displacement, Coalescence
-from PySDM.products import (RelativeHumidity, Pressure, Temperature,
-                            WaterVapourMixingRatio, DryAirDensity, DryAirPotentialTemperature,
-                            ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum, WaterMixingRatio)
+import PySDM.products as PySDM_products
 from PySDM.state.mesh import Mesh
 from PySDM.initialisation import spectral_sampling, spatial_sampling
 from PySDM.dynamics.coalescence.kernels import Geometric
@@ -49,14 +47,22 @@ class Simulation:
             kappa=settings.kappa
         )
         products = [
-            RelativeHumidity(), Pressure(), Temperature(),
-            WaterVapourMixingRatio(),
-            WaterMixingRatio('ql', 'cloud', settings.cloud_water_radius_range),
-            WaterMixingRatio('qr', 'rain', settings.rain_water_radius_range),
-            DryAirDensity(),
-            DryAirPotentialTemperature(),
-            ParticlesDrySizeSpectrum(v_bins=settings.v_bin_edges),
-            ParticlesWetSizeSpectrum(v_bins=settings.v_bin_edges)
+            PySDM_products.RelativeHumidity(),
+            PySDM_products.Pressure(),
+            PySDM_products.Temperature(),
+            PySDM_products.WaterVapourMixingRatio(),
+            PySDM_products.WaterMixingRatio('ql', 'cloud', settings.cloud_water_radius_range),
+            PySDM_products.WaterMixingRatio('qr', 'rain', settings.rain_water_radius_range),
+            PySDM_products.DryAirDensity(),
+            PySDM_products.DryAirPotentialTemperature(),
+            PySDM_products.ParticlesDrySizeSpectrum(v_bins=settings.v_bin_edges),
+            PySDM_products.ParticlesWetSizeSpectrum(v_bins=settings.v_bin_edges),
+            PySDM_products.CloudDropletConcentration(radius_range=settings.cloud_water_radius_range),
+            PySDM_products.AerosolConcentration(radius_threshold=settings.cloud_water_radius_range[0]),
+            PySDM_products.ParticleMeanRadius(),
+            PySDM_products.RipeningRate(),
+            PySDM_products.CloudDropletEffectiveRadius(radius_range=settings.cloud_water_radius_range),
+            PySDM_products.PeakSupersaturation()
         ]
         self.core = builder.build(attributes=attributes, products=products)
 

@@ -50,6 +50,8 @@ class MomentProduct(Product):
 class MoistEnvironmentProduct(Product):
     def __init__(self, **args):
         super().__init__(**args)
+        self._name = self.name
+        self.name = self._name + '_env'
         self.environment = None
         self.source = None
 
@@ -58,10 +60,10 @@ class MoistEnvironmentProduct(Product):
         super().register(builder)
         self.core.observers.append(self)
         self.environment = builder.core.env
-        self.source = self.environment[self.name]
+        self.source = self.environment[self._name]
 
     def notify(self):
-        self.source = self.environment.get_predicted(self.name)
+        self.source = self.environment.get_predicted(self._name)
 
     def get(self):
         self.download_to_buffer(self.source)

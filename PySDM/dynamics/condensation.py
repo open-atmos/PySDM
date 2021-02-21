@@ -7,7 +7,7 @@ from PySDM.physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
-default_dt_cond_range = (0 * si.second, 1 * si.second)
+default_adaptive_dt_range = (0 * si.second, 1 * si.second)
 
 
 class Condensation:
@@ -19,7 +19,7 @@ class Condensation:
                  coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_cond_range=default_dt_cond_range
+                 adaptive_dt_range=default_adaptive_dt_range
                  ):
 
         self.core = None
@@ -37,11 +37,15 @@ class Condensation:
         self.__substeps = substeps
         self.adaptive = adaptive
         self.n_substep = None
-        self.dt_cond_range = dt_cond_range
-        # TODO: same asserts on dt range as in coalescence?
+        self.dt_cond_range = adaptive_dt_range
 
     def register(self, builder):
         self.core = builder.core
+
+        if self.dt_cond_range[1] > self.core.dt:
+            self.dt_cond_range = (self.dt_cond_range[0], self.core.dt)
+        assert self.dt_cond_range[0] <= self.dt_cond_range[1]
+
         builder._set_condensation_parameters(self.coord, self.adaptive)
         self.r_cr = builder.get_attribute('critical radius')
 
