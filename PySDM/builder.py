@@ -31,6 +31,7 @@ class Builder:
         self.core.environment.register(self)
 
     def add_dynamic(self, dynamic):
+        assert_not_none(self.core.environment)
         self.core.dynamics[dynamic.__class__.__name__] = dynamic
 
     def register_product(self, product):
