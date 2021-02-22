@@ -7,7 +7,7 @@ from PySDM.physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
-default_dt_cond_range = (0 * si.second, 1 * si.second)
+default_adaptive_dt_range = (0 * si.second, 1 * si.second)
 
 
 class Condensation:
@@ -19,7 +19,7 @@ class Condensation:
                  coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_cond_range=default_dt_cond_range
+                 adaptive_dt_range=default_adaptive_dt_range
                  ):
 
         self.core = None
@@ -31,15 +31,21 @@ class Condensation:
         self.r_cr = None
 
         self.ripening_flags = None
+        self.RH_max = None
         self.coord = coord
 
         self.__substeps = substeps
         self.adaptive = adaptive
         self.n_substep = None
-        self.dt_cond_range = dt_cond_range
+        self.dt_cond_range = adaptive_dt_range
 
     def register(self, builder):
         self.core = builder.core
+
+        if self.dt_cond_range[1] > self.core.dt:
+            self.dt_cond_range = (self.dt_cond_range[0], self.core.dt)
+        assert self.dt_cond_range[0] <= self.dt_cond_range[1]
+
         builder._set_condensation_parameters(self.coord, self.adaptive)
         self.r_cr = builder.get_attribute('critical radius')
 
@@ -49,6 +55,8 @@ class Condensation:
         self.ripening_flags = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
         self.ripening_flags[:] = 0
 
+        self.RH_max = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+
     def __call__(self):
         if self.enable:
             self.core.condensation(
@@ -56,7 +64,8 @@ class Condensation:
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 substeps=self.n_substep,
-                ripening_flags=self.ripening_flags
+                ripening_flags=self.ripening_flags,
+                RH_max=self.RH_max
             )
             if self.adaptive:
                 self.n_substep[:] = np.maximum(self.n_substep[:], int(self.core.dt / self.dt_cond_range[1]))

@@ -68,10 +68,12 @@ class Core:
             prob, self.particles['cell id'], self.particles.cell_idx,
             self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
-    def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
+    def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags, RH_max):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
+
+        RH_max[:] = 0
 
         self.backend.condensation(
                 solver=self.condensation_solver,
@@ -96,13 +98,23 @@ class Core:
                 dt=self.dt,
                 substeps=substeps,
                 cell_order=np.argsort(substeps),  # TODO #341 check if better than regular order
-                ripening_flags=ripening_flags
+                ripening_flags=ripening_flags,
+                RH_max=RH_max
             )
+        self.backend.temperature_pressure_RH(
+            self.env.get_predicted('rhod'),
+            self.env.get_predicted('thd'),
+            self.env.get_predicted('qv'),
+            self.env.get_predicted('T'),
+            self.env.get_predicted('p'),
+            self.env.get_predicted('RH')
+        )
 
     def run(self, steps):
         for _ in range(steps):
             for dynamic in self.dynamics.values():
                 dynamic()
             self.n_steps += 1
-            for observer in self.observers:
+            reversed_order_so_that_environment_is_last = reversed(self.observers)
+            for observer in reversed_order_so_that_environment_is_last:
                 observer.notify()

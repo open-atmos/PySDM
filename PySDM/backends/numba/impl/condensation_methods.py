@@ -39,7 +39,7 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _ = step_impl(*args, dt, 1, True)
+            _, thd_new, _, _ = step_impl(*args, dt, 1, True)
             return thd_new
 
         return step_fake
@@ -60,6 +60,7 @@ class CondensationMethods:
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
             ripenings = 0
+            RH_max = 0
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
@@ -72,7 +73,8 @@ class CondensationMethods:
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
                 ripenings += ripening
-            return qv, thd, ripenings
+                RH_max = max(RH_max, RH)
+            return qv, thd, ripenings, RH_max
 
         return step_impl
 
@@ -106,8 +108,9 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
+            activating = 0
+            deactivating = 0
             growing = 0
-            decreasing = 0
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
@@ -130,15 +133,16 @@ class CondensationMethods:
                     if enable_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    # if v_new > 4/3 * np.pi * (r_cr[drop])**3: # TODO #347 difference if r<r_cr, filter out noise
-                    if abs((v_new-v[drop])/v_new) > .5:
-                        if v_new - v[drop] > 0:
-                            growing += 1
-                        else:
-                            decreasing += 1
+                    v_cr = 4/3 * np.pi * (r_cr[drop])**3
+                    if v_new > v_cr and v_cr < v[drop] < v_new:
+                        growing += 1
+                    if v_new > v_cr > v[drop]:
+                        activating += 1
+                    if v_new < v_cr < v[drop]:
+                        deactivating += 1
                     v[drop] = v_new
                 result += n[drop] * v_new * const.rho_w
-            return result, (growing > 0 and decreasing > 0)
+            return result, (deactivating > 0 and growing > 0)
 
         return calculate_ml_new
 
@@ -158,8 +162,8 @@ class CondensationMethods:
             args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
-            qv, thd, ripenings = step(args, dt, n_substeps)
+            qv, thd, ripenings, RH_max = step(args, dt, n_substeps)
 
-            return qv, thd, n_substeps, ripenings
+            return qv, thd, n_substeps, ripenings, RH_max
 
         return solve

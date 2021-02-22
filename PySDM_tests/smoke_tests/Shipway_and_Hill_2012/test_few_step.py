@@ -1,5 +1,6 @@
 from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
 from PySDM.physics import si
+import numpy as np
 
 
 class TestFewTimesteps:
