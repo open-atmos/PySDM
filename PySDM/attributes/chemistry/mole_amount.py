@@ -4,7 +4,7 @@ Created at 01.06.2020
 @author: Grzegorz Łazarski
 """
 
-from PySDM.attributes.tensive_attribute import TensiveAttribute
+from PySDM.attributes.extensive_attribute import ExtensiveAttribute
 
 # TODO Duplicated info, needs to be kept in sync with
 # chemical_reaction.oxidation.dynamic.COMPOUNDS
@@ -20,9 +20,9 @@ COMPOUNDS = [
     "Hp"]
 
 
-class MoleAmountImpl(TensiveAttribute):
+class MoleAmountImpl(ExtensiveAttribute):
     def __init__(self, particles_builder, *, name):
-        super().__init__(particles_builder, name=name, extensive=True)
+        super().__init__(particles_builder, name=name)
 
 
 def MoleAmount(what):

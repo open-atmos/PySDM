@@ -58,7 +58,7 @@ class Simulation:
         output["r"].append(self.core.products['radius_m1'].get(unit=const.si.metre)[cell_id])
         output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
         output["z"].append(self.core.products["z"].get())
-        output["S"].append(self.core.products["RH"].get()[cell_id]/100 - 1)
+        output["S"].append(self.core.products["RH_env"].get()[cell_id]/100 - 1)
         output["t"].append(self.core.products["t"].get())
 
     def run(self):

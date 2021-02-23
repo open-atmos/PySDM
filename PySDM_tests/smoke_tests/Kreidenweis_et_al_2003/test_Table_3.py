@@ -53,7 +53,7 @@ class TestTable3:
 
     def test_at_1200m_above_cloud_base(self):
         # Arrange
-        settings = Settings(n_sd=100, dt=2 * si.s)
+        settings = Settings(n_sd=100, dt=4 * si.s)
         simulation = Simulation(settings)
 
         # Act
@@ -61,5 +61,5 @@ class TestTable3:
 
         # Assert
         np.testing.assert_allclose(output['z'][-1], (1.2 + .1) * si.km, rtol=.005)
-        np.testing.assert_allclose(output['ql'][-1], 2.17, rtol=.006)
+        np.testing.assert_allclose(output['ql'][-1], 2.17, rtol=.02)
 
