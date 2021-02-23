@@ -36,20 +36,20 @@ def file(request):
 @pytest.fixture(scope='session')
 def gh_issues():
     res = {}
-    try:
-        api = GhApi(owner='atmos-cloud-sim-uj', repo='PySDM')
-        pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all', per_page=100)
-        for page in pages:
-            for item in page.items:
-                res[item.number] = item.state
-    except ExceptionsHTTP[403]:
-        pass
+    if 'CI' not in os.environ or ('GITHUB_ACTIONS' in os.environ and sys.version_info.minor >= 8):
+        try:
+            api = GhApi(owner='atmos-cloud-sim-uj', repo='PySDM')
+            pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all', per_page=100)
+            for page in pages:
+                for item in page.items:
+                    res[item.number] = item.state
+        except ExceptionsHTTP[403]:
+            pass
     return res
 
 
-@pytest.mark.skipif("'CI' in os.environ and ('GITHUB_ACTIONS' not in os.environ or sys.version_info.minor < 8)")
 def test_todos_annotated(file, gh_issues):
-    if os.path.basename(file) == 'test_todos_annotated.py':
+    if os.path.basename(file) == 'test_todos_annotated.py' or file.endswith("-checkpoint.ipynb"):
         return
     for line in grep(file, r'.*TODO.*'):
         match = re.search(r'TODO #(\d+)', line)

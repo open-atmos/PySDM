@@ -41,7 +41,7 @@ __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def row_modulo(output, divisor):
-    __row_modulo_body.launch_n(len(output), thrust([output, divisor, output.shape[1]]))
+    __row_modulo_body.launch_n(output.shape[0], thrust([output, divisor, output.shape[1]]))
 
 
 __floor_body = trtc.For(['arr'], "i", '''
@@ -60,7 +60,7 @@ __floor_body = trtc.For(['arr'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def floor(output):
-    __floor_body.launch_n(len(output), thrust([output]))
+    __floor_body.launch_n(output.shape[0], thrust([output]))
 
 
 __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
@@ -78,7 +78,7 @@ __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def floor_out_of_place(output, input_data):
-    __floor_out_of_place_body.launch_n(len(output), thrust([output, input_data]))
+    __floor_out_of_place_body.launch_n(output.shape[0], thrust([output, input_data]))
 
 
 __multiply_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
@@ -96,7 +96,7 @@ def multiply(output, multiplier):
         loop = __multiply_elementwise_body
     else:
         loop = __multiply_body
-    loop.launch_n(len(output), thrust([output, multiplier]))
+    loop.launch_n(output.shape[0], thrust([output, multiplier]))
 
 
 __truediv_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
@@ -114,7 +114,7 @@ def truediv(output, multiplier):
         loop = __truediv_elementwise_body
     else:
         loop = __truediv_body
-    loop.launch_n(len(output), thrust([output, multiplier]))
+    loop.launch_n(output.shape[0], thrust([output, multiplier]))
 
 
 __multiply_out_of_place_elementwise_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
@@ -134,7 +134,21 @@ def multiply_out_of_place(output, multiplicand, multiplier):
         loop = __multiply_out_of_place_body
     else:
         raise NotImplementedError()
-    loop.launch_n(len(output), thrust([output, multiplicand, multiplier]))
+    loop.launch_n(output.shape[0], thrust([output, multiplicand, multiplier]))
+
+
+__divide_out_of_place_elementwise_body = trtc.For(['output', 'dividend', 'divisor'], "i", '''
+        output[i] = dividend[i] / divisor[i];
+    ''')
+
+
+@nice_thrust(**NICE_THRUST_FLAGS)
+def divide_out_of_place(output, dividend, divisor):
+    if hasattr(divisor, 'data'):
+        loop = __divide_out_of_place_elementwise_body
+    else:
+        raise NotImplementedError()
+    loop.launch_n(output.shape[0], thrust([output, dividend, divisor]))
 
 
 __power_body = trtc.For(['output', 'exponent'], "i", '''
@@ -146,7 +160,7 @@ __power_body = trtc.For(['output', 'exponent'], "i", '''
 def power(output, exponent: int):
     if exponent == 1:
         return
-    __power_body.launch_n(len(output), thrust([output, float(exponent)]))
+    __power_body.launch_n(output.shape[0], thrust([output, float(exponent)]))
 
 
 __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
@@ -156,4 +170,4 @@ __subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def subtract(output, subtrahend):
-    __subtract_body.launch_n(len(output), thrust([output, subtrahend]))
+    __subtract_body.launch_n(output.shape[0], thrust([output, subtrahend]))

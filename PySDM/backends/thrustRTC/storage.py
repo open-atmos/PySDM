@@ -186,6 +186,10 @@ class Storage:
         impl.multiply_out_of_place(self, multiplicand, multiplier)
         return self
 
+    def ratio(self, dividend, divisor):
+        impl.divide_out_of_place(self, dividend, divisor)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             trtc.Copy(other.data, self.data)
