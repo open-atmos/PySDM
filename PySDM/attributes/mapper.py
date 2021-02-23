@@ -12,6 +12,7 @@ from .cell.cell_id import CellID
 from .cell.cell_origin import CellOrigin
 from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
+from .droplet.heat import Heat
 from .droplet.critical_radius import CriticalRadius
 from .chemistry.mole_amount import register_amounts
 
@@ -27,6 +28,7 @@ attributes = {
     'cell origin': CellOrigin,
     'position in cell': PositionInCell,
     'temperature': Temperature,
+    'heat': Heat,
     'critical radius': CriticalRadius,
     ** register_amounts()
 }

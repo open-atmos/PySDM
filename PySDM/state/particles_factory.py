@@ -5,7 +5,9 @@ Created at 09.11.2019
 import numpy as np
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
-from PySDM.attributes.tensive_attribute import TensiveAttribute
+from PySDM.attributes.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.droplet.multiplicities import Multiplicities
+from PySDM.attributes.cell_attribute import CellAttribute
 from PySDM.state.particles import Particles
 
 
@@ -13,25 +15,24 @@ class ParticlesFactory:
 
     @staticmethod
     def attributes(core, req_attr, attributes):
-        tensive_attr = [attr_name for attr_name in req_attr if isinstance(req_attr[attr_name], TensiveAttribute)]
-        extensive_attr = [attr_name for attr_name in tensive_attr if req_attr[attr_name].extensive]
-        intensive_attr = [attr_name for attr_name in tensive_attr if not req_attr[attr_name].extensive]
         idx = core.Index.identity_index(core.n_sd)
+
+        extensive_attr = []
+        for attr_name in req_attr:
+            if isinstance(req_attr[attr_name], ExtensiveAttribute):
+                extensive_attr.append(attr_name)
+            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute)):
+                raise AssertionError()
+
         extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
-        intensive_attributes = core.IndexedStorage.empty(idx, (len(intensive_attr), core.n_sd), float)
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute):
                 attr.allocate(idx)
 
         extensive_keys = {}
         for i, attr in enumerate(extensive_attr):
-            extensive_keys[str(attr)] = i
+            extensive_keys[attr] = i
             req_attr[attr].set_data(extensive_attributes[i, :])
-            req_attr[attr].init(attributes[attr])
-        intensive_keys = {}
-        for i, attr in enumerate(intensive_attr):
-            intensive_keys[str(attr)] = i
-            req_attr[attr].set_data(intensive_attributes[i, :])
             req_attr[attr].init(attributes[attr])
 
         n = req_attr['n']
@@ -63,7 +64,6 @@ class ParticlesFactory:
             core,
             idx,
             extensive_attributes, extensive_keys,
-            intensive_attributes, intensive_keys,
             cell_start,
             req_attr
         )
@@ -75,6 +75,6 @@ class ParticlesFactory:
         idx = particles.Index.identity_index(n_sd)
         return Particles(
             core=particles, idx=idx,
-            extensive_attributes=None, extensive_keys={}, intensive_attributes=None, intensive_keys={},
+            extensive_attributes=None, extensive_keys={},
             cell_start=np.zeros(0, dtype=np.int64), attributes={}
         )

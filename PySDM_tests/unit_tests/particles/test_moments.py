@@ -27,7 +27,7 @@ class TestMaths:
         T = np.full_like(v, 300.)
         n = discretise_n(n)
         particles = DummyCore(backend, n_sd)
-        attribute = {'n': n, 'volume': v, 'temperature': T}
+        attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
         state = particles.particles
 

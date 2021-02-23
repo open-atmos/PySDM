@@ -120,9 +120,9 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(
-        void(i8[:], f8[:], i8[:], i8, f8[:, :], f8[:, :], f8[:], i8[:], b1[:]),
+        void(i8[:], i8[:], i8, f8[:, :], f8[:], i8[:], b1[:]),
         **conf.JIT_FLAGS)
-    def coalescence_body(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
+    def coalescence_body(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -131,28 +131,21 @@ class AlgorithmicMethods:
             new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
                 n[j] = new_n
-                for ii in range(0, len(intensive)):
-                    intensive[ii, k] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
-                                      / (volume[k] + gamma[i] * volume[j])
-                for ie in range(0, len(extensive)):
-                    extensive[ie, k] += gamma[i] * extensive[ie, j]
+                for a in range(0, len(extensive_attributes)):
+                    extensive_attributes[a, k] += gamma[i] * extensive_attributes[a, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                for ii in range(0, len(intensive)):
-                    intensive[ii, j] = (intensive[ii, k] * volume[k] + intensive[ii, j] * gamma[i] * volume[j]) \
-                                      / (volume[k] + gamma[i] * volume[j])
-                    intensive[ii, k] = intensive[ii, j]
-                for ie in range(0, len(extensive)):
-                    extensive[ie, j] = gamma[i] * extensive[ie, j] + extensive[ie, k]
-                    extensive[ie, k] = extensive[ie, j]
+                for a in range(0, len(extensive_attributes)):
+                    extensive_attributes[a, j] = gamma[i] * extensive_attributes[a, j] + extensive_attributes[a, k]
+                    extensive_attributes[a, k] = extensive_attributes[a, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
-        AlgorithmicMethods.coalescence_body(n.data, volume.data, idx.data, length, intensive.data,
-                                            extensive.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+    def coalescence(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+        AlgorithmicMethods.coalescence_body(n.data, idx.data, length,
+                                            extensive_attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -274,7 +267,8 @@ class AlgorithmicMethods:
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty((numba.config.NUMBA_NUM_THREADS, len(cell_start)), dtype=int)
 
-            def __call__(self, cell_id, cell_idx, cell_start, idx, length):
+            def __call__(self, cell_id, cell_idx, cell_start, idx):
+                length = len(idx)
                 if self.scheme == "counting_sort":
                     AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data, length, cell_start.data)
@@ -289,32 +283,26 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
-            moment_0, moments, n, ex_attr, in_attr, cell_id, idx, length,
-            specs_ex_idx, specs_ex_rank, specs_in_idx, specs_in_rank, min_x, max_x, x_attr):
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            ranks, min_x, max_x, x_attr):
         moment_0[:] = 0
         moments[:, :] = 0
         for i in idx[:length]:
             if min_x < x_attr[i] < max_x:
                 moment_0[cell_id[i]] += n[i]
-                for k in range(specs_ex_idx.shape[0]):  # TODO #315 (AtomicAdd)
-                    moments[k, cell_id[i]] += n[i] * ex_attr[specs_ex_idx[k], i] ** specs_ex_rank[k]
-                for k in range(specs_in_idx.shape[0]):
-                    moments[specs_ex_idx.shape[0] + k, cell_id[i]] += \
-                        n[i] * in_attr[specs_in_idx[k], i] ** specs_in_rank[k]
+                for k in range(ranks.shape[0]):  # TODO #315 (AtomicAdd)
+                    moments[k, cell_id[i]] += n[i] * attr_data[i] ** ranks[k]
         for c_id in range(moment_0.shape[0]):
-            for k in range(specs_ex_idx.shape[0]):
+            for k in range(ranks.shape[0]):
                 moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
-            for k in range(specs_in_idx.shape[0]):
-                moments[specs_ex_idx.shape[0] + k, c_id] = \
-                    moments[specs_ex_idx.shape[0] + k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
 
     @staticmethod
     def moments(
-            moment_0, moments, n, ex_attr, in_attr, cell_id, idx, length,
-            specs_ex_idx, specs_ex_rank, specs_in_idx, specs_in_rank, min_x, max_x, x_attr):
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            ranks, min_x, max_x, x_attr):
         return AlgorithmicMethods.moments_body(
-            moment_0.data, moments.data, n.data, ex_attr.data, in_attr.data, cell_id.data,
-            idx.data, length, specs_ex_idx.data, specs_ex_rank.data, specs_in_idx.data, specs_in_rank.data,
+            moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
+            idx.data, length, ranks.data,
             min_x, max_x, x_attr.data
         )
 

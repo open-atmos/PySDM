@@ -3,7 +3,7 @@ from PySDM.physics import si
 import numpy as np
 
 
-class TestFewTimesteps:
+class TestFewSteps:
     @staticmethod
     def test_cloud_water_mixing_ratio(plot=False):
         # Arrange
@@ -16,7 +16,7 @@ class TestFewTimesteps:
         # Plot
         if plot:
             from matplotlib import pyplot
-            for var in ('RH', 'T_ambient', 'qv', 'p_ambient', 'ql'):
+            for var in ('RH_env', 'T_env', 'qv_env', 'p_env', 'ql'):
                 pyplot.plot(output[var][:, -1], output['z'], linestyle='--', marker='o')
                 pyplot.ylabel('Z [m]')
                 pyplot.xlabel(var + ' [' + simulation.core.products[var].unit + ']')

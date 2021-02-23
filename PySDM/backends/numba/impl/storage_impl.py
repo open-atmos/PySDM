@@ -27,7 +27,7 @@ def amin(data):
 
 @numba.njit(void(i8[:, :], i8[:]), **conf.JIT_FLAGS)
 def row_modulo(output, divisor):
-    for d in range(len(divisor)):
+    for d in range(output.shape[0]):
         for i in prange(output.shape[1]):
             output[d, i] %= divisor[d]
 
@@ -50,6 +50,11 @@ def multiply(output, multiplier):
 @numba.njit(**conf.JIT_FLAGS)
 def multiply_out_of_place(output, multiplicand, multiplier):
     output[:] = multiplicand * multiplier
+
+
+@numba.njit(**conf.JIT_FLAGS)
+def divide_out_of_place(output, dividend, divisor):
+    output[:] = dividend / divisor
 
 
 @numba.njit(**conf.JIT_FLAGS)
