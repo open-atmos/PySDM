@@ -16,7 +16,7 @@ class TestTable3:
         output = simulation.run(nt=0)
 
         # Assert
-        np.testing.assert_allclose(output['RH'][0], 95)
+        np.testing.assert_allclose(output['RH_env'][0], 95)
         # TODO
         # SO2 at t = 0 	200 (ppt‐v)
         np.testing.assert_allclose(output['SO2_tot_conc'], 0.2 * const.ppb)
@@ -39,17 +39,17 @@ class TestTable3:
 
         # Assert
         assert round(output['z'][-1]) == (698 - 600) * si.m
-        np.testing.assert_allclose(output['p_ambient'][-1], 939 * si.mbar, rtol=.005)
-        np.testing.assert_allclose(output['T_ambient'][-1], 284.2 * si.K, rtol=.005)
+        np.testing.assert_allclose(output['p_env'][-1], 939 * si.mbar, rtol=.005)
+        np.testing.assert_allclose(output['T_env'][-1], 284.2 * si.K, rtol=.005)
         np.testing.assert_allclose(
-            phys.MoistAir.rho_of_rhod_qv(rhod=output['rhod'][-1], qv=output['qv'][-1]*si.g/si.kg),
+            phys.MoistAir.rho_of_rhod_qv(rhod=output['rhod_env'][-1], qv=output['qv_env'][-1]*si.g/si.kg),
             1.15 * si.kg / si.m**3,
             rtol=.005
         )
         assert output['ql'][-2] < .0005
         assert output['ql'][-1] > .0004
-        assert output['RH'][-1] > 100
-        assert output['RH'][-6] < 100
+        assert output['RH_env'][-1] > 100
+        assert output['RH_env'][-6] < 100
 
     def test_at_1200m_above_cloud_base(self):
         # Arrange

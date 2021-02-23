@@ -1,21 +1,16 @@
-"""
-Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
-"""
-
 from PySDM.attributes.derived_attribute import DerivedAttribute
 from PySDM.physics import constants as const
 
 
-class Radius(DerivedAttribute):
+class pH(DerivedAttribute):
     def __init__(self, builder):
         self.volume = builder.get_attribute('volume')
-        dependencies = [self.volume]
-        super().__init__(builder, name='radius', dependencies=dependencies)
+        self.Hp = builder.get_attribute('Hp')
+        dependencies = [self.volume, self.Hp]
+        super().__init__(builder, name='pH', dependencies=dependencies)
 
     def recalculate(self):
+        -ln_10(Hp / dv)
         self.data.idx = self.volume.data.idx
-        self.data.product(self.volume.get(), (3 / 4 / const.pi))  # TODO
+        self.data.product(self.volume.get(), (3 / 4 / const.pi))
         self.data **= 1 / 3

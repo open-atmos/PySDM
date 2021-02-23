@@ -3,7 +3,7 @@ import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from .support import EqConst
-from PySDM.physics.constants import H_u, dT_u, ROOM_TEMP, M_SO2, Md
+from PySDM.physics.constants import H_u, dT_u, M_SO2, Md, M
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure
 
 
@@ -14,6 +14,23 @@ HENRY_CONST = {
     "SO2":  EqConst(1.23 * H_u, 3150 * dT_u),
     "CO2":  EqConst((3.4 * 10 ** -2) * H_u, 2440 * dT_u),
     "O3":   EqConst((1.13 * 10 ** -2) * H_u, 2540 * dT_u),
+}
+
+EQUILIBRIUM_CONST = {  # Reaction Specific units, K
+    # ("HNO3(aq) = H+ + NO3-", 15.4, 0),
+    "K_HNO3": EqConst(15.4 * M, 0 * dT_u),
+    # ("H2SO3(aq) = H+ + HSO3-", 1.54*10**-2 * KU, 1960),
+    "K_SO2":  EqConst((1.3 * 10 ** -2) * M, 1960 * dT_u),
+    # ("NH4+ = NH3(aq) + H+", 10**-9.25 * M, 0),
+    "K_NH3":  EqConst((1.7 * 10 ** -5) * M, -450 * dT_u),
+    # ("H2CO3(aq) = H+ + HCO3-", 4.3*10**-7 * KU, -1000),
+    "K_CO2":  EqConst((4.3 * 10 ** -7) * M, -1000 * dT_u),
+    # ("HSO3- = H+ + SO3-2", 6.6*10**-8 * KU, 1500),
+    "K_HSO3": EqConst((6.6 * 10 ** -8) * M, 1500 * dT_u),
+    # ("HCO3- = H+ + CO3-2", 4.68*10**-11 * KU, -1760),
+    "K_HCO3": EqConst((4.68 * 10 ** -11) * M, -1760 * dT_u),
+    # ("HSO4- = H+ + SO4-2", 1.2*10**-2 * KU, 2720),
+    "K_HSO4": EqConst((1.2 * 10 ** -2) * M, 2720 * dT_u)
 }
 
 eps_SO2 = M_SO2 / Md
@@ -98,3 +115,4 @@ class AqueousChemistry:
                     multiplicity=self.core.particles["n"],
                     system_type=self.system_type
                 )
+
