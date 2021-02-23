@@ -16,8 +16,6 @@ class Particles:
             idx,
             extensive_attributes,
             extensive_keys: dict,
-            intensive_attributes,
-            intensive_keys: dict,
             cell_start,
             attributes: Dict[str, Attribute]
     ):
@@ -32,8 +30,6 @@ class Particles:
 
         self.extensive_attributes = extensive_attributes
         self.extensive_keys = extensive_keys
-        self.intensive_attributes = intensive_attributes
-        self.intensive_keys = intensive_keys
 
         self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = self.core.Storage.from_ndarray(cell_start)
@@ -95,14 +91,11 @@ class Particles:
             self.__sorted = False
 
     def __sort_by_cell_id(self):
-        self.__cell_caretaker(self['cell id'], self.cell_idx, self.__cell_start, self.__idx, self.SD_num)
+        self.__cell_caretaker(self['cell id'], self.cell_idx, self.__cell_start, self.__idx)
         self.__sorted = True
 
     def get_extensive_attrs(self):
         return self.extensive_attributes
-
-    def get_intensive_attrs(self):
-        return self.intensive_attributes
 
     def recalculate_cell_id(self):
         if 'cell origin' not in self.attributes:
@@ -115,42 +108,39 @@ class Particles:
         self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
-        specs_ex_idx, specs_ex_rank = [], []
-        specs_in_idx, specs_in_rank = [], []
+        attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
-                if attr in self.extensive_keys:
-                    specs_ex_idx.append(self.extensive_keys[attr])
-                    specs_ex_rank.append(rank)
-                if attr in self.intensive_keys:
-                    specs_in_idx.append(self.intensive_keys[attr])
-                    specs_in_rank.append(rank)
-        specs_ex_idx = self.core.bck.Storage.from_ndarray(np.array(specs_ex_idx, dtype=int))
-        specs_ex_rank = self.core.bck.Storage.from_ndarray(np.array(specs_ex_rank, dtype=float))
-        specs_in_idx = self.core.bck.Storage.from_ndarray(np.array(specs_in_idx, dtype=int))
-        specs_in_rank = self.core.bck.Storage.from_ndarray(np.array(specs_in_rank, dtype=float))
+                if attr in self.attributes:
+                    attr_data.append(self.attributes[attr].get())
+                    ranks.append(rank)
+                else:
+                    raise NotImplementedError()
+        # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
+        assert len(set(attr_data)) <= 1
+        if len(attr_data) == 0:
+            attr_data = np.empty((0,))
+        else:
+            attr_data = attr_data[0]
+
+        ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+
         self.core.bck.moments(moment_0,
                               moments,
                               self['n'],
-                              self.extensive_attributes,
-                              self.intensive_attributes,
+                              attr_data,
                               self['cell id'],
                               self.__idx,
                               self.SD_num,
-                              specs_ex_idx,
-                              specs_ex_rank,
-                              specs_in_idx,
-                              specs_in_rank,
+                              ranks,
                               attr_range[0], attr_range[1],
                               self[attr_name])
 
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
-                                  volume=self['volume'],
                                   idx=self.__idx,
                                   length=self.SD_num,
-                                  intensive=self.get_intensive_attrs(),
-                                  extensive=self.get_extensive_attrs(),
+                                  extensive_attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
                                   is_first_in_pair=is_first_in_pair

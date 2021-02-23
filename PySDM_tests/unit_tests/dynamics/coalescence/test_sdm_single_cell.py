@@ -15,14 +15,16 @@ from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_
 # noinspection PyUnresolvedReferences
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import v_2, T_2, n_2
 
+
 class TestSDMSingleCell:
 
     @staticmethod
     def test_single_collision(backend, v_2, T_2, n_2):
         # Arrange
+        const = 1.
         core, sut = get_dummy_core_and_sdm(backend, len(n_2))
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
-        attributes = {'n': n_2, 'volume': v_2, 'temperature': T_2}
+        attributes = {'n': n_2, 'volume': v_2, 'heat': const*T_2*v_2, 'temperature': T_2}
         core.build(attributes)
 
         # Act
@@ -30,9 +32,12 @@ class TestSDMSingleCell:
 
         # Assert
         particles = core.particles
+        a = particles['n'].to_ndarray()
+        b = particles['volume'].to_ndarray()
+        c = particles['temperature'].to_ndarray()
         np.testing.assert_approx_equal(
-            np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()),
-            np.sum(n_2 * T_2 * v_2),
+            const * np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()),
+            const * np.sum(n_2 * T_2 * v_2),
             significant=7
         )
         new_T = np.sum(T_2 * v_2) / np.sum(v_2)
@@ -40,7 +45,8 @@ class TestSDMSingleCell:
 
         assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray()) == np.sum(n_2 * v_2)
         assert np.sum(core.particles['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
-        if np.amin(n_2) > 0: assert np.amax(core.particles['volume'].to_ndarray()) == np.sum(v_2)
+        if np.amin(n_2) > 0:
+            assert np.amax(core.particles['volume'].to_ndarray()) == np.sum(v_2)
         assert np.amax(core.particles['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @staticmethod

@@ -74,26 +74,26 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
         dim = trtc.DVInt64(dim)
-        idx_length = trtc.DVInt64(position_in_cell.shape[1])
+        n_sd = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
         loop = trtc.For(
-            ['dim', 'idx_length', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i",
+            ['dim', 'n_sd', 'displacement', 'courant', 'courant_length', 'cell_origin', 'position_in_cell'], "i",
             f'''
             // Arakawa-C grid
             auto _l_0 = cell_origin[i + 0];
-            auto _l_1 = cell_origin[i + idx_length];
+            auto _l_1 = cell_origin[i + n_sd];
             auto _l = _l_0 + _l_1 * courant_length;
             auto _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
-            auto _r_1 = cell_origin[i + idx_length] + 1 * (dim == 1);
+            auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
             auto _r = _r_0 + _r_1 * courant_length;
-            auto omega = position_in_cell[i + idx_length * dim];
+            auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r];
             auto c_l = courant[_l];
             displacement[i, dim] = {scheme(None, None, None)}
             ''')
         loop.launch_n(
             displacement.shape[1],
-            [dim, idx_length, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
+            [dim, n_sd, displacement.data, courant.data, courant_length, cell_origin.data, position_in_cell.data])
 
     __cell_id_body = trtc.For(['cell_id', 'cell_origin', 'strides', 'n_dims', 'size'], "i", '''
         cell_id[i] = 0;
@@ -119,8 +119,7 @@ class AlgorithmicMethods:
         ''')
 
     __coalescence_body = trtc.For(
-        ['n', 'volume', 'idx', 'idx_length', 'intensive', 'intensive_length', 'extensive', 'extensive_length', 'gamma',
-         'healthy'], "i", '''
+        ['n', 'idx', 'n_sd', 'extensive_attributes', 'n_attr', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0) {
             return;
         }
@@ -130,24 +129,16 @@ class AlgorithmicMethods:
         auto new_n = n[j] - gamma[i] * n[k];
         if (new_n > 0) {
             n[j] = new_n;
-            
-            for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + k] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
-            }
-            for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + k] += gamma[i] * extensive[attr + j];
+            for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                extensive_attributes[attr + k] += gamma[i] * extensive_attributes[attr + j];
             }
         }
         else {  // new_n == 0
             n[j] = (int64_t)(n[k] / 2);
             n[k] = n[k] - n[j];
-            for (auto attr = 0; attr < intensive_length; attr+=idx_length) {
-                intensive[attr + j] = (intensive[attr + k] * volume[k] + intensive[attr + j] * gamma[i] * volume[j]) / (volume[k] + gamma[i] * volume[j]);
-                intensive[attr + k] = intensive[attr + j];
-            }
-            for (auto attr = 0; attr < extensive_length; attr+=idx_length) {
-                extensive[attr + j] = gamma[i] * extensive[attr + j] + extensive[attr + k];
-                extensive[attr + k] = extensive[attr + j];
+            for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                extensive_attributes[attr + j] = gamma[i] * extensive_attributes[attr + j] + extensive_attributes[attr + k];
+                extensive_attributes[attr + k] = extensive_attributes[attr + j];
             }
         }
         if (n[k] == 0 || n[j] == 0) {
@@ -157,14 +148,13 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, volume, idx, length, intensive, extensive, gamma, healthy, is_first_in_pair):
-        idx_length = trtc.DVInt64(len(idx))
-        intensive_length = trtc.DVInt64(intensive.shape[0])
-        extensive_length = trtc.DVInt64(extensive.shape[0])
+    def coalescence(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+        n_sd = trtc.DVInt64(extensive_attributes.shape[1])
+        n_attr = trtc.DVInt64(extensive_attributes.shape[0])
         AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
-                                                       [n.data, volume.data, idx.data, idx_length, intensive.data,
-                                                        intensive_length,
-                                                        extensive.data, extensive_length, gamma.data, healthy.data])
+                                                       [n.data, idx.data, n_sd,
+                                                        extensive_attributes.data,
+                                                        n_attr, gamma.data, healthy.data])
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
                                      "collision_rate_deficit", "collision_rate"], "i", '''
@@ -204,10 +194,10 @@ class AlgorithmicMethods:
     ):
         raise NotImplementedError()
 
-    __flag_precipitated_body = trtc.For(['idx', 'idx_length', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
+    __flag_precipitated_body = trtc.For(['idx', 'n_sd', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
                                          'volume', 'n'], "i", '''
-        if (cell_origin[idx_length * (n_dims-1) + idx[i]] + position_in_cell[idx_length * (n_dims-1) + idx[i]] < 0) {
-            idx[i] = idx_length;
+        if (cell_origin[n_sd * (n_dims-1) + idx[i]] + position_in_cell[n_sd * (n_dims-1) + idx[i]] < 0) {
+            idx[i] = n_sd;
             healthy[0] = 0;
         }
         ''')
@@ -215,10 +205,10 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy):
-        idx_length = trtc.DVInt64(len(idx))
+        n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
         AlgorithmicMethods.__flag_precipitated_body.launch_n(
-            length, [idx.data, idx_length, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
+            length, [idx.data, n_sd, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
                      volume.data, n.data])
         return 0  # TODO #332
 
@@ -299,77 +289,62 @@ class AlgorithmicMethods:
     ''')
 
     __moments_body_0 = trtc.For(
-        ['idx', 'min_x', 'ex_attr', 'in_attr', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
-         'specs_ex_idx_shape', 'specs_in_idx_shape', 'moments', 'specs_ex_idx', 'specs_ex_rank',
-         'specs_in_idx', 'specs_in_rank', 'length', 'moments_shape', 'ex_num'],
+        ['idx', 'min_x', 'attr_data', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
+         'n_ranks', 'moments', 'ranks',
+         'n_sd', 'n_cell'],
         "fake_i",
         '''
         auto i = idx[fake_i];
         if (min_x < x_attr[i] && x_attr[i] < max_x) {
             atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
-            for (auto k = 0; k < specs_ex_idx_shape; k+=1) {
-                atomicAdd((real_type*) &moments[moments_shape * k + cell_id[i]], n[i] * pow((real_type)(ex_attr[length * specs_ex_idx[k] + i]), (real_type)(specs_ex_rank[k])));
-            }
-            for (auto k = 0; k < specs_in_idx_shape; k+=1) {
-                atomicAdd((real_type*) &moments[moments_shape * (specs_ex_idx_shape + k) + cell_id[i]], n[i] * pow((real_type)(in_attr[length * specs_in_idx[k] + i]), (real_type)(specs_in_rank[k])));
+            for (auto k = 0; k < n_ranks; k+=1) {
+                atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
             }
         }
     '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-    __moments_body_1 = trtc.For(['specs_ex_idx_shape', 'specs_in_idx_shape', 'moments', 'moment_0', 'moments_shape'],
-                                "c_id",
+    __moments_body_1 = trtc.For(['n_ranks', 'moments', 'moment_0', 'n_cell'], "c_id",
                                 '''
-        for (auto k = 0; k < specs_ex_idx_shape; k+=1) {
+        for (auto k = 0; k < n_ranks; k+=1) {
             if (moment_0[c_id] == 0) {
-                moments[moments_shape * k  + c_id] = 0;
+                moments[n_cell * k  + c_id] = 0;
             } 
             else {
-                moments[moments_shape * k + c_id] = moments[moments_shape * k + c_id] / moment_0[c_id];
-            }
-        }
-        for (auto k = 0; k < specs_in_idx_shape; k+=1) {
-            if (moment_0[c_id] == 0) {
-                moments[moments_shape * (specs_ex_idx_shape + k)  + c_id] = 0;
-            } 
-            else {
-                moments[moments_shape * (specs_ex_idx_shape + k) + c_id] = moments[moments_shape * (specs_ex_idx_shape + k) + c_id] / moment_0[c_id];
+                moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
             }
         }
     ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(moment_0, moments, n, ex_attr, in_attr, cell_id, idx, length, specs_ex_idx, specs_ex_rank, specs_in_idx,
-                specs_in_rank, min_x, max_x, x_attr):
+    def moments(moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
+                min_x, max_x, x_attr):
+        n_cell = trtc.DVInt64(moments.shape[1])
+        n_sd = trtc.DVInt64(moments.shape[0])
+        n_ranks = trtc.DVInt64(ranks.shape[0])
+
         AlgorithmicMethods.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
         AlgorithmicMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
         AlgorithmicMethods.__moments_body_0.launch_n(length,
                                                      [idx.data,
                                                       PrecisionResolver.get_floating_point(min_x),
-                                                      ex_attr.data,
-                                                      in_attr.data,
+                                                      attr_data.data,
                                                       x_attr.data,
                                                       PrecisionResolver.get_floating_point(max_x),
                                                       moment_0.data,
                                                       cell_id.data,
                                                       n.data,
-                                                      trtc.DVInt64(specs_ex_idx.shape[0]),
-                                                      trtc.DVInt64(specs_in_idx.shape[0]),
+                                                      n_ranks,
                                                       moments.data,
-                                                      specs_ex_idx.data,
-                                                      specs_ex_rank.data,
-                                                      specs_in_idx.data,
-                                                      specs_in_rank.data,
-                                                      trtc.DVInt64(len(idx)),
-                                                      trtc.DVInt64(moments.shape[1]),
-                                                      trtc.DVInt64(specs_ex_idx.shape[0])
+                                                      ranks.data,
+                                                      n_sd,
+                                                      n_cell
                                                       ]
                                                      )
 
         AlgorithmicMethods.__moments_body_1.launch_n(
-            moment_0.shape[0], [trtc.DVInt64(specs_in_idx.shape[0]), trtc.DVInt64(specs_ex_idx.shape[0]),
-                                moments.data, moment_0.data, trtc.DVInt64(moments.shape[1])])
+            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
 
     __normalize_body_0 = trtc.For(['cell_start', 'norm_factor', 'dt_div_dv'], "i", '''
         auto sd_num = cell_start[i + 1] - cell_start[i];
@@ -394,23 +369,23 @@ class AlgorithmicMethods:
         AlgorithmicMethods.__normalize_body_0.launch_n(n_cell, [cell_start.data, norm_factor.data, device_dt_div_dv])
         AlgorithmicMethods.__normalize_body_1.launch_n(prob.shape[0], [prob.data, cell_id.data, norm_factor.data])
 
-    __remove_zero_n_or_flagged_body = trtc.For(['data', 'idx', 'idx_length'], "i", '''
-        if (idx[i] < idx_length && data[idx[i]] == 0) {
-            idx[i] = idx_length;
+    __remove_zero_n_or_flagged_body = trtc.For(['data', 'idx', 'n_sd'], "i", '''
+        if (idx[i] < n_sd && data[idx[i]] == 0) {
+            idx[i] = n_sd;
         }
         ''')
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def remove_zero_n_or_flagged(data, idx, length) -> int:
-        idx_length = trtc.DVInt64(idx.size())
+        n_sd = trtc.DVInt64(idx.size())
 
         # Warning: (potential bug source): reading from outside of array
-        AlgorithmicMethods.__remove_zero_n_or_flagged_body.launch_n(length, [data, idx, idx_length])
+        AlgorithmicMethods.__remove_zero_n_or_flagged_body.launch_n(length, [data, idx, n_sd])
 
         trtc.Sort(idx)
 
-        result = idx.size() - trtc.Count(idx, idx_length)
+        result = idx.size() - trtc.Count(idx, n_sd)
         return result
 
     ___sort_by_cell_id_and_update_cell_start_body = trtc.For(['cell_id', 'cell_start', 'idx'], "i", '''
@@ -429,10 +404,11 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def _sort_by_cell_id_and_update_cell_start(cell_id, cell_idx, cell_start, idx, length):
+    def _sort_by_cell_id_and_update_cell_start(cell_id, cell_idx, cell_start, idx):
         # TODO #330
-        trtc.Fill(cell_start.data, trtc.DVInt64(length))
-        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(length - 1,
+        n_sd = cell_id.shape[0]
+        trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
+        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(len(idx) - 1,
                                                                                   [cell_id.data, cell_start.data,
                                                                                    idx.data])
         return idx

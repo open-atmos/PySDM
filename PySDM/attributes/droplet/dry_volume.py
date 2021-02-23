@@ -2,10 +2,10 @@
 Created at 11.05.2020
 """
 
-from PySDM.attributes.tensive_attribute import TensiveAttribute
+from PySDM.attributes.extensive_attribute import ExtensiveAttribute
 
 
-class DryVolume(TensiveAttribute):
+class DryVolume(ExtensiveAttribute):
 
     def __init__(self, builder):
-        super().__init__(builder, name='dry volume', extensive=True)
+        super().__init__(builder, name='dry volume')
