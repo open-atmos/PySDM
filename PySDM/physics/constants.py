@@ -25,7 +25,6 @@ pi = sci.pi
 
 Md = 0.78 * _weight('N2') + 0.21 * _weight('O2') + 0.01 * _weight('Ar')
 Mv = _weight('H2O')
-M_SO2 = _weight('SO2')
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 eps = Mv / Md

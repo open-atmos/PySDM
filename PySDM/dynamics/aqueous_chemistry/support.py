@@ -1,6 +1,17 @@
 from PySDM.physics.constants import R_str, ROOM_TEMP
 import numpy as np
 
+COMPOUNDS = [
+    "SO2",
+    "O3",
+    "H2O2",
+    "CO2",
+    "HNO3",
+    "NH3",
+    "HSO4",  # TODO: was "HSO4m"
+    "H"  # TODO: was "Hp"
+]
+
 
 def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
@@ -64,23 +75,3 @@ class EqConst:
     def __repr__(self):
         return f"EqConst({self.K}@{self.T0}, {self.dH})"
 
-
-def hydrogen_conc_factory(*, NH3, HNO3, CO2, SO2, HSO4m, K_HNO3, K_SO2,
-                          K_NH3, K_CO2, K_HSO3, K_HCO3, K_HSO4, **kwargs):
-    N_III, N_V, C, S_IV, S_VI = NH3/v, HNO3/v, CO2/v, SO2/v, HSO4m/v
-
-    def concentration(H):
-        H /= v
-
-        ammonia = (N_III * H * K_NH3) / (K_H2O + K_NH3 * H)
-        nitric = N_V * K_HNO3 / (H + K_HNO3)
-        sulfous = S_IV * K_SO2 * (H + 2*K_HSO3) / \
-            (H * H + H * K_SO2 + K_SO2 * K_HSO3)
-        water = K_H2O / H
-        sulfuric = S_VI * (H + 2 * K_HSO4) / (H + K_HSO4)
-        carbonic = C * K_CO2 * (H + 2 * K_HCO3) / \
-            (H * H + H * K_CO2 + K_CO2 * K_HCO3)
-        zero = H + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
-        return zero
-
-    return concentration

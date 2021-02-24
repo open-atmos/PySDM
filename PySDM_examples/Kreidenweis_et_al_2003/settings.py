@@ -4,41 +4,15 @@ from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from chempy import Substance
 import numpy as np
-from collections import OrderedDict  # TODO ???
-
+from PySDM.dynamics.aqueous_chemistry.support import COMPOUNDS
 
 DRY_RHO = 1800 * si.kg / (si.m ** 3)
 DRY_FORMULA = "NH4HSO4"
 DRY_SUBSTANCE = Substance.from_formula(DRY_FORMULA)
 
 
-def default_init(dry_v):
-    return np.zeros_like(dry_v)
-
-
-def compound_init(dry_v):
-    return dry_v_to_amount(dry_v)
-
-
-def dry_v_to_amount(v):
-    return (v * DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole))
-
-
-COMPOUNDS = OrderedDict({
-    "SO2": default_init,
-    "O3": default_init,
-    "H2O2": default_init,
-    "CO2": default_init,
-    "HNO3": default_init,
-    "NH3": compound_init,
-    "HSO4m": compound_init,
-    # "Hp": lambda d, w: default_init(d, w) + 1e-7 * M * w,
-    "Hp": compound_init,
-})
-
-
-def get_starting_amounts(dry_v):
-    return {k: v(dry_v) for k, v in COMPOUNDS.items()}
+def dry_r_to_amount(r):
+    return phys.volume(r) * DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
 
 
 class Settings:
@@ -76,7 +50,9 @@ class Settings:
             "NH3": 0.1 * const.ppb,
         }
 
-        self.starting_amounts = get_starting_amounts(phys.volume(self.r_dry))
+        self.starting_amounts = {
+            "moles_"+k: dry_r_to_amount(self.r_dry) if k in ("NH3", "HSO4", "H") else np.zeros(self.n_sd) for k in COMPOUNDS
+        }
 
     @property
     def nt(self):

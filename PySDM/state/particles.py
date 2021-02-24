@@ -111,11 +111,8 @@ class Particles:
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
-                if attr in self.attributes:
-                    attr_data.append(self.attributes[attr].get())
-                    ranks.append(rank)
-                else:
-                    raise NotImplementedError()
+                attr_data.append(self.attributes[attr].get())
+                ranks.append(rank)
         # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
@@ -147,7 +144,9 @@ class Particles:
                                   )
         self.healthy = bool(self.__healthy_memory)
         self.core.particles.sanitize()
-        self.attributes['volume'].mark_updated()
+        self.attributes['n'].mark_updated()
+        for attr in self.extensive_attributes:
+            attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)

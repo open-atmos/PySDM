@@ -14,9 +14,13 @@ from .cell.position_in_cell import PositionInCell
 from .droplet.temperature import Temperature
 from .droplet.heat import Heat
 from .droplet.critical_radius import CriticalRadius
-from .chemistry.mole_amount import register_amounts
+from .chemistry.mole_amount import MoleAmount
+from .chemistry.concentration import Concentration
+from .chemistry.pH import pH
+from ..dynamics.aqueous_chemistry.support import COMPOUNDS
+from .extensive_attribute import ExtensiveAttribute
+from .intensive_attribute import IntensiveAttribute
 
-# TODO #157
 attributes = {
     'n': Multiplicities,
     'volume': Volume,
@@ -30,7 +34,9 @@ attributes = {
     'temperature': Temperature,
     'heat': Heat,
     'critical radius': CriticalRadius,
-    ** register_amounts()
+    **{"moles_" + compound: MoleAmount(compound) for compound in COMPOUNDS},
+    **{"conc_" + compound: Concentration(compound) for compound in COMPOUNDS},
+    'pH': pH
 }
 
 

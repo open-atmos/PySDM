@@ -1,7 +1,6 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics import formulae as phys
-from PySDM.physics import constants as const
 import numpy as np
 
 
@@ -11,20 +10,21 @@ class TestTable3:
         # Arrange
         settings = Settings(n_sd=1, dt=1 * si.s)
         simulation = Simulation(settings)
+        zero = 0
 
         # Act
-        output = simulation.run(nt=0)
+        output = simulation.run(nt=zero)
 
         # Assert
-        np.testing.assert_allclose(output['RH_env'][0], 95)
+        np.testing.assert_allclose(output['RH_env'][zero], 95)
+        np.testing.assert_allclose(output['gas_SO2_ppb'][zero], 0.2)
+        np.testing.assert_allclose(output['gas_NH3_ppb'][zero], 0.1)
+        np.testing.assert_allclose(output['gas_H2O2_ppb'], 0.5)
+        np.testing.assert_allclose(output['gas_HNO3_ppb'], 0.1)
+        np.testing.assert_allclose(output['gas_O3_ppb'], 50)
+        np.testing.assert_allclose(output['gas_CO2_ppb'], 360*1000)
+
         # TODO
-        # SO2 at t = 0 	200 (ppt‐v)
-        np.testing.assert_allclose(output['SO2_tot_conc'], 0.2 * const.ppb)
-        # NH3(g) at t = 0 	100 (ppt‐v)
-        # H2O2 at t = 0 	500 (ppt‐v)
-        # HNO3 at t = 0 	100 (ppt‐v)
-        # O3 at t = 0 	50 (ppb‐v)
-        # CO2 at t = 0 	360 (ppm‐v)
         # SO4= (particulate) at t = 0 	2 (μg m−3)
         # NH4+ (particulate) at t = 0 	0.375 (μg m−3)
 

@@ -4,8 +4,8 @@ from PySDM.backends import CPU
 from PySDM.physics import constants as const
 from PySDM.physics import si
 from PySDM.dynamics import AmbientThermodynamics, Condensation, AqueousChemistry
-from PySDM.products import (RelativeHumidity, WaterMixingRatio, ParcelDisplacement, Pressure, Temperature,
-                            DryAirDensity, WaterVapourMixingRatio, Time, TotalConcentration)
+from PySDM.dynamics.aqueous_chemistry.support import COMPOUNDS
+import PySDM.products as PySDM_products
 import numpy as np
 
 
@@ -23,22 +23,24 @@ class Simulation:
             kappa=settings.kappa,
             r_dry=settings.r_dry
         )
-        attributes = {**attributes, **settings.starting_amounts}
+        attributes = {**attributes, **settings.starting_amounts, 'pH': np.zeros(settings.n_sd)}
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(kappa=settings.kappa))
         builder.add_dynamic(AqueousChemistry(settings.ENVIRONMENT_MOLE_FRACTIONS, system_type=settings.system_type))
 
         products = [
-            RelativeHumidity(),
-            WaterMixingRatio(name='ql', description_prefix='liquid', radius_range=[1*si.um, np.inf]),
-            ParcelDisplacement(),
-            Pressure(),
-            Temperature(),
-            DryAirDensity(),
-            WaterVapourMixingRatio(),
-            Time(),
-            TotalConcentration('SO2')
+            PySDM_products.RelativeHumidity(),
+            PySDM_products.WaterMixingRatio(name='ql', description_prefix='liquid', radius_range=[1*si.um, np.inf]),
+            PySDM_products.ParcelDisplacement(),
+            PySDM_products.Pressure(),
+            PySDM_products.Temperature(),
+            PySDM_products.DryAirDensity(),
+            PySDM_products.WaterVapourMixingRatio(),
+            PySDM_products.Time(),
+            *[PySDM_products.AqueousMoleFraction(compound) for compound in COMPOUNDS],
+            *[PySDM_products.GaseousMoleFraction(compound) for compound in settings.ENVIRONMENT_MOLE_FRACTIONS.keys()],
+            PySDM_products.pH()
         ]
 
         self.core = builder.build(attributes=attributes, products=products)

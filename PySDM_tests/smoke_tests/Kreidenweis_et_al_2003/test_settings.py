@@ -12,8 +12,8 @@ def test_settings(plot=False):
 
     # Assert
     for compound in ('SO2', 'O3', 'H2O2', 'CO2', 'HNO3'):
-        assert (settings.starting_amounts[compound] == 0).all()
-    for compound in ('NH3', 'Hp', 'HSO4m'):
-        assert (settings.starting_amounts[compound] != 0).all()
+        assert (settings.starting_amounts["moles_" + compound] == 0).all()
+    for compound in ('NH3', 'H', 'HSO4'):
+        assert (settings.starting_amounts["moles_" + compound] != 0).all()
 
     # TODO: asserts on actual values!
