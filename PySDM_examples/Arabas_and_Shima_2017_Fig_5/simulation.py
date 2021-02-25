@@ -13,7 +13,7 @@ from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
 from PySDM.products.state import ParticleMeanRadius
-from PySDM.products.dynamics.condensation import CondensationTimestep
+from PySDM.products.dynamics.condensation import CondensationTimestep, RipeningRate, ActivatingRate, DeactivatingRate
 
 
 class Simulation:
@@ -48,7 +48,7 @@ class Simulation:
         environment = builder.core.environment
         r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), settings.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
-        products = [ParticleMeanRadius(), CondensationTimestep()]
+        products = [ParticleMeanRadius(), CondensationTimestep(), RipeningRate(), ActivatingRate(), DeactivatingRate()]
 
         self.core = builder.build(attributes, products)
 
@@ -62,8 +62,12 @@ class Simulation:
         output["t"].append(self.core.environment["t"][cell_id])
         output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
 
+        for event in ('activating', 'deactivating', 'ripening'):
+            output[event+"_rate"].append(self.core.products[event+'_rate'].get()[cell_id])
+
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "dt": []}
+        output = {"r": [], "S": [], "z": [], "t": [], "dt": [], "activating_rate": [],
+                  "deactivating_rate": [], "ripening_rate": []}
 
         self.save(output)
         for step in range(self.n_output):

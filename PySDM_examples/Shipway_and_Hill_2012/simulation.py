@@ -61,6 +61,8 @@ class Simulation:
             PySDM_products.AerosolConcentration(radius_threshold=settings.cloud_water_radius_range[0]),
             PySDM_products.ParticleMeanRadius(),
             PySDM_products.RipeningRate(),
+            PySDM_products.ActivatingRate(),
+            PySDM_products.DeactivatingRate(),
             PySDM_products.CloudDropletEffectiveRadius(radius_range=settings.cloud_water_radius_range),
             PySDM_products.PeakSupersaturation()
         ]

@@ -62,7 +62,10 @@ class Simulation:
             PySDM_products.CPUTime(),
             PySDM_products.WallTime(),
             PySDM_products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-            PySDM_products.PeakSupersaturation()
+            PySDM_products.PeakSupersaturation(),
+            PySDM_products.ActivatingRate(),
+            PySDM_products.DeactivatingRate(),
+            PySDM_products.RipeningRate()
         ]
 
         fields = Fields(environment, self.settings.stream_function)
