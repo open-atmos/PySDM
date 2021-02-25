@@ -4,18 +4,19 @@ from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from chempy import Substance
 import numpy as np
-from PySDM.dynamics.aqueous_chemistry.support import COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS
 
-DRY_RHO = 1800 * si.kg / (si.m ** 3)
 DRY_FORMULA = "NH4HSO4"
 DRY_SUBSTANCE = Substance.from_formula(DRY_FORMULA)
 
 
 def dry_r_to_amount(r):
-    return phys.volume(r) * DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
+    return phys.volume(r) * Settings.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
 
 
 class Settings:
+    DRY_RHO = 1800 * si.kg / (si.m ** 3)
+
     def __init__(self, dt, n_sd):
         self.system_type = 'closed'
         self.t_max = (2400 + 196) * si.s
@@ -51,7 +52,7 @@ class Settings:
         }
 
         self.starting_amounts = {
-            "moles_"+k: dry_r_to_amount(self.r_dry) if k in ("NH3", "HSO4", "H") else np.zeros(self.n_sd) for k in COMPOUNDS
+            "moles_"+k: dry_r_to_amount(self.r_dry) if k in ("NH3", "SO4", "H") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS
         }
 
     @property

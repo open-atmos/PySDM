@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
-from .support import EqConst, COMPOUNDS
+from .support import EqConst
 from PySDM.physics.constants import H_u, dT_u, _weight, Md, M
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure
 from scipy import optimize
@@ -35,12 +35,33 @@ EQUILIBRIUM_CONST = {  # Reaction Specific units, K
 
 K_H2O = 1e-14 * M * M
 
-SPECIFIC_GRAVITY = {compound: _weight(compound) / Md for compound in COMPOUNDS}
+AQUEOUS_COMPOUNDS = [
+    "SO2",
+    "O3",
+    "H2O2",
+    "CO2",
+    "HNO3",
+    "NH3",  #TODO: NH4
+    "SO4",
+    "H"
+]
+
+GASEOUS_COMPOUNDS = [
+    "HNO3",
+    "H2O2",
+    "NH3",
+    "SO2",
+    "CO2",
+    "O3"
+]
+
+SPECIFIC_GRAVITY = {
+    compound: _weight(compound) / Md for compound in {*AQUEOUS_COMPOUNDS, *GASEOUS_COMPOUNDS}
+}
 
 
 def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_rho_d, dv, droplet_volume,
                        multiplicity, system_type, specific_gravity, compound):
-    # TODO: effective H (dissociation) ... as option for tests
     # TODO: diffusion law formulation using mass accommodation coefficient
     mole_amount_taken = 0
     for i in super_droplet_ids:
@@ -61,7 +82,7 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
     N_V = particles["conc_HNO3"].data
     C_IV = particles["conc_CO2"].data
     S_IV = particles["conc_SO2"].data
-    S_VI = particles["conc_HSO4"].data
+    S_VI = particles["conc_SO4"].data
     H = particles["conc_H"].data
     volume = particles["volume"].data
 
@@ -94,13 +115,12 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
 class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type):
         self.environment_mixing_ratios = {}
-        for compound in COMPOUNDS:
+        for compound in GASEOUS_COMPOUNDS:
             shape = (1,)  # TODO
-            if compound in environment_mole_fractions:
-                self.environment_mixing_ratios[compound] = np.full(
-                    shape,
-                    mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
-                )
+            self.environment_mixing_ratios[compound] = np.full(
+                shape,
+                mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
+            )
         self.mesh = None
         self.core = None
         self.env = None
@@ -111,7 +131,7 @@ class AqueousChemistry:
         self.mesh = builder.core.mesh
         self.core = builder.core
         self.env = builder.core.env
-        for compound in COMPOUNDS:
+        for compound in AQUEOUS_COMPOUNDS:
             builder.request_attribute("conc_" + compound)
 
     def __call__(self):
@@ -140,7 +160,7 @@ class AqueousChemistry:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO: this is surely already computed elsewhere!
 
-                for compound in self.environment_mixing_ratios:
+                for compound in GASEOUS_COMPOUNDS:
                     dissolve_env_gases(
                         super_droplet_ids=idx[cell_start:cell_end],
                         mole_amounts=self.core.particles['moles_'+compound],

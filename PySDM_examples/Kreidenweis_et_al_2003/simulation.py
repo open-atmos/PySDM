@@ -4,7 +4,7 @@ from PySDM.backends import CPU
 from PySDM.physics import constants as const
 from PySDM.physics import si
 from PySDM.dynamics import AmbientThermodynamics, Condensation, AqueousChemistry
-from PySDM.dynamics.aqueous_chemistry.support import COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
 import PySDM.products as PySDM_products
 import numpy as np
 
@@ -38,9 +38,10 @@ class Simulation:
             PySDM_products.DryAirDensity(),
             PySDM_products.WaterVapourMixingRatio(),
             PySDM_products.Time(),
-            *[PySDM_products.AqueousMoleFraction(compound) for compound in COMPOUNDS],
-            *[PySDM_products.GaseousMoleFraction(compound) for compound in settings.ENVIRONMENT_MOLE_FRACTIONS.keys()],
-            PySDM_products.pH()
+            *[PySDM_products.AqueousMoleFraction(compound) for compound in AQUEOUS_COMPOUNDS],
+            *[PySDM_products.GaseousMoleFraction(compound) for compound in GASEOUS_COMPOUNDS],
+            PySDM_products.pH(),
+            PySDM_products.TotalDryMassMixingRatio(settings.DRY_RHO)
         ]
 
         self.core = builder.build(attributes=attributes, products=products)

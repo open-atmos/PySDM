@@ -17,9 +17,7 @@ from .droplet.critical_radius import CriticalRadius
 from .chemistry.mole_amount import MoleAmount
 from .chemistry.concentration import Concentration
 from .chemistry.pH import pH
-from ..dynamics.aqueous_chemistry.support import COMPOUNDS
-from .extensive_attribute import ExtensiveAttribute
-from .intensive_attribute import IntensiveAttribute
+from ..dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS
 
 attributes = {
     'n': Multiplicities,
@@ -34,8 +32,8 @@ attributes = {
     'temperature': Temperature,
     'heat': Heat,
     'critical radius': CriticalRadius,
-    **{"moles_" + compound: MoleAmount(compound) for compound in COMPOUNDS},
-    **{"conc_" + compound: Concentration(compound) for compound in COMPOUNDS},
+    **{"moles_" + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS},
+    **{"conc_" + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS},
     'pH': pH
 }
 

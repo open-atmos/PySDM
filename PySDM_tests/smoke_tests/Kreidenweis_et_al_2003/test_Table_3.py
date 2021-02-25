@@ -1,6 +1,8 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics import formulae as phys
+from PySDM.physics.constants import _weight, convert_to, ppb
+from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY
 import numpy as np
 
 
@@ -8,7 +10,7 @@ class TestTable3:
     @staticmethod
     def test_at_t_0():
         # Arrange
-        settings = Settings(n_sd=1, dt=1 * si.s)
+        settings = Settings(n_sd=100, dt=1 * si.s)
         simulation = Simulation(settings)
         zero = 0
 
@@ -24,9 +26,33 @@ class TestTable3:
         np.testing.assert_allclose(output['gas_O3_ppb'], 50)
         np.testing.assert_allclose(output['gas_CO2_ppb'], 360*1000)
 
-        # TODO
-        # SO4= (particulate) at t = 0 	2 (μg m−3)
-        # NH4+ (particulate) at t = 0 	0.375 (μg m−3)
+        rtol = 0.15
+
+        mass_conc_SO4mm = 2
+        mass_conc_NH4p = 0.375
+        num_conc_SO4mm = mass_conc_SO4mm / _weight("SO4")
+        num_conc_NH4p = mass_conc_NH4p / _weight("NH4")
+        np.testing.assert_allclose(num_conc_NH4p, num_conc_SO4mm, rtol=.005)
+        mass_conc_H = num_conc_NH4p * _weight("H")
+        np.testing.assert_allclose(
+            actual=np.asarray(output['q_dry'])*np.asarray(output['rhod_env']),
+            desired=mass_conc_NH4p + mass_conc_SO4mm + mass_conc_H,
+            rtol=rtol
+        )
+
+        # TODO: should be NH4
+        expected = {'SO4': mass_conc_SO4mm * si.ug / si.m**3, 'NH3': mass_conc_NH4p * si.ug / si.m**3}
+        for compound in expected.keys():
+            mole_fraction = np.asarray(output[f"aq_{compound}_ppb"])
+            convert_to(mole_fraction, 1/ppb)
+            np.testing.assert_allclose(
+                actual=(
+                    phys.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
+                    * np.asarray(output['rhod_env'])
+                ),
+                desired=expected[compound],
+                rtol=rtol
+            )
 
     @staticmethod
     def test_at_cloud_base():

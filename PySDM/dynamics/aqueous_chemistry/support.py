@@ -1,17 +1,6 @@
 from PySDM.physics.constants import R_str, ROOM_TEMP
 import numpy as np
 
-COMPOUNDS = [
-    "SO2",
-    "O3",
-    "H2O2",
-    "CO2",
-    "HNO3",
-    "NH3",
-    "HSO4",  # TODO: was "HSO4m"
-    "H"  # TODO: was "Hp"
-]
-
 
 def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
