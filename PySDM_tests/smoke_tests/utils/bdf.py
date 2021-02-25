@@ -49,7 +49,10 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max):
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
         dt=core.dt,
-        counters=counters,
+        counter_n_substeps=counters['n_substeps'],
+        counter_n_activating=counters['n_activating'],
+        counter_n_deactivating=counters['n_deactivating'],
+        counter_n_ripening=counters['n_ripening'],
         cell_order=np.argsort(counters['n_substeps']),
         RH_max=RH_max.data
     )
