@@ -3,6 +3,7 @@ Created at 24.10.2019
 """
 
 import numpy as np
+from ..physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
@@ -34,6 +35,7 @@ class Condensation:
         self.__substeps = substeps
         self.adaptive = adaptive
         self.counters = {}
+        self.dt_cond_range = (0 * si.second, 1 * si.second)  # TODO!
 
     def register(self, builder):
         self.core = builder.core
@@ -60,3 +62,7 @@ class Condensation:
                 counters=self.counters,
                 RH_max=self.RH_max
             )
+            if self.adaptive:
+                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
+                if self.dt_cond_range[0] != 0:
+                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[0]))
