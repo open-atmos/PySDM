@@ -27,7 +27,10 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max):
     if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
 
-    Numba._condensation.py_func(
+    func = Numba._condensation
+    if not numba.config.DISABLE_JIT:
+        func = func.py_func
+    func(
         solver=core.condensation_solver,
         n_threads=n_threads,
         n_cell=core.mesh.n_cell,
