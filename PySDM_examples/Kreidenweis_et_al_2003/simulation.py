@@ -38,8 +38,8 @@ class Simulation:
             PySDM_products.DryAirDensity(),
             PySDM_products.WaterVapourMixingRatio(),
             PySDM_products.Time(),
-            *[PySDM_products.AqueousMoleFraction(compound) for compound in AQUEOUS_COMPOUNDS],
-            *[PySDM_products.GaseousMoleFraction(compound) for compound in GASEOUS_COMPOUNDS],
+            *[PySDM_products.AqueousMoleFraction(compound) for compound in AQUEOUS_COMPOUNDS.keys()],
+            *[PySDM_products.GaseousMoleFraction(compound) for compound in GASEOUS_COMPOUNDS.keys()],
             PySDM_products.pH(),
             PySDM_products.TotalDryMassMixingRatio(settings.DRY_RHO)
         ]

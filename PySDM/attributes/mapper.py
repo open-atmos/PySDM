@@ -32,8 +32,8 @@ attributes = {
     'temperature': Temperature,
     'heat': Heat,
     'critical radius': CriticalRadius,
-    **{"moles_" + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS},
-    **{"conc_" + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS},
+    **{"moles_" + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
+    **{"conc_" + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
     'pH': pH
 }
 

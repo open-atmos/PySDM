@@ -6,13 +6,6 @@ from chempy import Substance
 import numpy as np
 from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS
 
-DRY_FORMULA = "NH4HSO4"
-DRY_SUBSTANCE = Substance.from_formula(DRY_FORMULA)
-
-
-def dry_r_to_amount(r):
-    return phys.volume(r) * Settings.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
-
 
 class Settings:
     DRY_RHO = 1800 * si.kg / (si.m ** 3)
@@ -51,8 +44,10 @@ class Settings:
             "NH3": 0.1 * const.ppb,
         }
 
+        DRY_SUBSTANCE = Substance.from_formula("NH4HSO4")
         self.starting_amounts = {
-            "moles_"+k: dry_r_to_amount(self.r_dry) if k in ("NH3", "SO4", "H") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS
+            "moles_"+k: phys.volume(self.r_dry) * Settings.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
+            if k in ("N_mIII", "S_VI", "H") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS.keys()
         }
 
     @property

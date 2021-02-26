@@ -2,7 +2,7 @@ from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics import formulae as phys
 from PySDM.physics.constants import _weight, convert_to, ppb
-from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY
+from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY, AQUEOUS_COMPOUNDS
 import numpy as np
 
 
@@ -19,12 +19,12 @@ class TestTable3:
 
         # Assert
         np.testing.assert_allclose(output['RH_env'][zero], 95)
-        np.testing.assert_allclose(output['gas_SO2_ppb'][zero], 0.2)
-        np.testing.assert_allclose(output['gas_NH3_ppb'][zero], 0.1)
+        np.testing.assert_allclose(output['gas_S_IV_ppb'][zero], 0.2)
+        np.testing.assert_allclose(output['gas_N_mIII_ppb'][zero], 0.1)
         np.testing.assert_allclose(output['gas_H2O2_ppb'], 0.5)
-        np.testing.assert_allclose(output['gas_HNO3_ppb'], 0.1)
+        np.testing.assert_allclose(output['gas_N_V_ppb'], 0.1)
         np.testing.assert_allclose(output['gas_O3_ppb'], 50)
-        np.testing.assert_allclose(output['gas_CO2_ppb'], 360*1000)
+        np.testing.assert_allclose(output['gas_C_IV_ppb'], 360*1000)
 
         rtol = 0.15
 
@@ -41,16 +41,21 @@ class TestTable3:
         )
 
         # TODO: should be NH4
-        expected = {'SO4': mass_conc_SO4mm * si.ug / si.m**3, 'NH3': mass_conc_NH4p * si.ug / si.m**3}
-        for compound in expected.keys():
-            mole_fraction = np.asarray(output[f"aq_{compound}_ppb"])
+        expected = {k: 0 for k in AQUEOUS_COMPOUNDS.keys()}
+        expected['S_VI'] = mass_conc_SO4mm * si.ug / si.m**3
+        expected['N_mIII'] = mass_conc_NH4p * si.ug / si.m**3
+        expected['H'] = mass_conc_H * si.ug / si.m**3
+
+        for key in expected.keys():
+            mole_fraction = np.asarray(output[f"aq_{key}_ppb"])
             convert_to(mole_fraction, 1/ppb)
+            compound = AQUEOUS_COMPOUNDS[key][0]  # sic!
             np.testing.assert_allclose(
                 actual=(
                     phys.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
                     * np.asarray(output['rhod_env'])
                 ),
-                desired=expected[compound],
+                desired=expected[key],
                 rtol=rtol
             )
 

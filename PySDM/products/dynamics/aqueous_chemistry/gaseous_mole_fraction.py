@@ -1,20 +1,20 @@
 from ...product import Product
 from ....physics.formulae import mixing_ratio_2_mole_fraction
-from ....dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY
+from ....dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY, GASEOUS_COMPOUNDS
 from ....physics.constants import convert_to, ppb
 
 
 class GaseousMoleFraction(Product):
-    def __init__(self, compound):
+    def __init__(self, key):
         super().__init__(
-            name=f'gas_{compound}_ppb',
+            name=f'gas_{key}_ppb',
             unit='ppb',
-            description=f'gaseous {compound} mole fraction',
+            description=f'gaseous {key} mole fraction',
             scale=None,
             range=None
         )
         self.aqueous_chemistry = None
-        self.compound = compound
+        self.compound = GASEOUS_COMPOUNDS[key]
 
     def register(self, builder):
         super().register(builder)

@@ -36,7 +36,7 @@ class TestFig1:
         # Plot
         if plot:
             pyplot.plot(
-                np.asarray(example_output['aq_SO2_ppb']) + np.asarray(example_output['gas_SO2_ppb']),
+                np.asarray(example_output['aq_S_IV_ppb']) + np.asarray(example_output['gas_S_IV_ppb']),
                 np.asarray(example_output['t']) - Z_CB * si.s)
             pyplot.xlim(0, .21)
             pyplot.show()

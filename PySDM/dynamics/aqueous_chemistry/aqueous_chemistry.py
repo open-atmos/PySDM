@@ -35,33 +35,36 @@ EQUILIBRIUM_CONST = {  # Reaction Specific units, K
 
 K_H2O = 1e-14 * M * M
 
-AQUEOUS_COMPOUNDS = [
-    "SO2",
-    "O3",
-    "H2O2",
-    "CO2",
-    "HNO3",
-    "NH3",  #TODO: NH4
-    "SO4",
-    "H"
-]
+AQUEOUS_COMPOUNDS = {
+    "S_IV": ("SO2 H2O", "HSO3", "SO3"),
+    "O3": ("O3",),
+    "H2O2": ("H2O2",),
+    "C_IV": ("CO2 H2O", "HCO3", "CO3"),
+    "N_V": ("HNO3", "NO3"),
+    "N_mIII": ("NH4", "H2O NH3"),
+    "S_VI": ("SO4", "HSO4"),
+    "H": ("H",)
+}
 
-GASEOUS_COMPOUNDS = [
-    "HNO3",
-    "H2O2",
-    "NH3",
-    "SO2",
-    "CO2",
-    "O3"
-]
+GASEOUS_COMPOUNDS = {
+    "N_V": "HNO3",
+    "H2O2": "H2O2",
+    "N_mIII": "NH3",
+    "S_IV": "SO2",
+    "C_IV": "CO2",
+    "O3": "O3"
+}
 
 SPECIFIC_GRAVITY = {
-    compound: _weight(compound) / Md for compound in {*AQUEOUS_COMPOUNDS, *GASEOUS_COMPOUNDS}
+    compound: _weight(compound) / Md for compound in {*GASEOUS_COMPOUNDS.values()}
 }
+for compounds in AQUEOUS_COMPOUNDS.values():
+    for compound in compounds:
+        SPECIFIC_GRAVITY[compound] = _weight(compound) / Md
 
 
 def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_rho_d, dv, droplet_volume,
-                       multiplicity, system_type, specific_gravity, compound):
+                       multiplicity, system_type, specific_gravity):
     # TODO: diffusion law formulation using mass accommodation coefficient
     mole_amount_taken = 0
     for i in super_droplet_ids:
@@ -70,19 +73,19 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         new_mole_amount_per_real_droplet = concentration * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
         mole_amounts.data[i] = new_mole_amount_per_real_droplet
-        assert mole_amounts[i] >= 0
+#        assert mole_amounts[i] >= 0
     delta_mr = mole_amount_taken * specific_gravity * Md / (dv * env_rho_d)
-    assert delta_mr <= env_mixing_ratio
+#    assert delta_mr <= env_mixing_ratio
     if system_type == 'closed':
         env_mixing_ratio -= delta_mr
 
 
 def equilibrate_pH(super_droplet_ids, particles, env_T):
-    N_III = particles["conc_NH3"].data
-    N_V = particles["conc_HNO3"].data
-    C_IV = particles["conc_CO2"].data
-    S_IV = particles["conc_SO2"].data
-    S_VI = particles["conc_SO4"].data
+    N_III = particles["conc_N_mIII"].data
+    N_V = particles["conc_N_V"].data
+    C_IV = particles["conc_C_IV"].data
+    S_IV = particles["conc_S_IV"].data
+    S_VI = particles["conc_S_VI"].data
     H = particles["conc_H"].data
     volume = particles["volume"].data
 
@@ -115,7 +118,7 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
 class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type):
         self.environment_mixing_ratios = {}
-        for compound in GASEOUS_COMPOUNDS:
+        for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)  # TODO
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
@@ -131,8 +134,8 @@ class AqueousChemistry:
         self.mesh = builder.core.mesh
         self.core = builder.core
         self.env = builder.core.env
-        for compound in AQUEOUS_COMPOUNDS:
-            builder.request_attribute("conc_" + compound)
+        for key in AQUEOUS_COMPOUNDS.keys():
+            builder.request_attribute("conc_" + key)
 
     def __call__(self):
         n_cell = self.mesh.n_cell
@@ -160,10 +163,10 @@ class AqueousChemistry:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO: this is surely already computed elsewhere!
 
-                for compound in GASEOUS_COMPOUNDS:
+                for key, compound in GASEOUS_COMPOUNDS.items():
                     dissolve_env_gases(
                         super_droplet_ids=idx[cell_start:cell_end],
-                        mole_amounts=self.core.particles['moles_'+compound],
+                        mole_amounts=self.core.particles['moles_'+key],
                         env_mixing_ratio=self.environment_mixing_ratios[compound][cell_id:cell_id+1],
                         henrysConstant=HENRY_CONST[compound].at(T),  # mol m−3 Pa−1
                         env_p=p,
@@ -172,8 +175,7 @@ class AqueousChemistry:
                         droplet_volume=self.core.particles["volume"],
                         multiplicity=self.core.particles["n"],
                         system_type=self.system_type,
-                        specific_gravity=SPECIFIC_GRAVITY[compound],
-                        compound=compound
+                        specific_gravity=SPECIFIC_GRAVITY[compound]
                     )
 
                 equilibrate_pH(
