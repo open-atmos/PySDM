@@ -3,7 +3,7 @@ from PySDM.physics import si
 import numpy as np
 
 
-def test_few_steps(plot=True):
+def test_few_steps(plot=False):
     # Arrange
     settings = Settings(n_sd_per_gridbox=100, dt=30*si.s, dz=100*si.m)
     simulation = Simulation(settings)
