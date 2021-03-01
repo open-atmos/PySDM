@@ -93,7 +93,7 @@ def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
 
 
 def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
-    return 1 / (1 + specific_gravity / mixing_ratio)
+    return mixing_ratio / (specific_gravity + mixing_ratio)
 
 
 def mixing_ratio_2_partial_pressure(mixing_ratio, specific_gravity, pressure):
