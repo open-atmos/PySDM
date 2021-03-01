@@ -3,7 +3,7 @@ from PySDM.physics import si
 import numpy as np
 
 
-def test_few_steps(plot=False):
+def test_few_steps(plot=True):
     # Arrange
     settings = Settings(n_sd_per_gridbox=25, dt=60*si.s, dz=100*si.m)
     simulation = Simulation(settings)
@@ -26,7 +26,7 @@ def test_few_steps(plot=False):
 
     # Assert
     assert min(profile('ql')) == 0
-    assert .2 < max(profile('ql')) < .3
+    assert .2 < max(profile('ql')) < .5
     assert max(profile('ripening_rate')) > 0
-    assert max(profile('activating_rate')) > 0
+    assert max(profile('activating_rate')) == 0
     assert max(profile('deactivating_rate')) > 0
