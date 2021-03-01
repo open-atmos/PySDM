@@ -65,10 +65,10 @@ for compounds in AQUEOUS_COMPOUNDS.values():
 
 def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_rho_d, dv, droplet_volume,
                        multiplicity, system_type, specific_gravity):
-    # TODO: diffusion law formulation using mass accommodation coefficient
+    # TODO #157: diffusion law formulation using mass accommodation coefficient
     mole_amount_taken = 0
     for i in super_droplet_ids:
-        partial_pressure = mixing_ratio_2_partial_pressure(mixing_ratio=env_mixing_ratio, specific_gravity=specific_gravity, pressure=env_p)  # TODO: p vs. pd ?
+        partial_pressure = mixing_ratio_2_partial_pressure(mixing_ratio=env_mixing_ratio, specific_gravity=specific_gravity, pressure=env_p)  # TODO #157: p vs. pd ?
         concentration = henrysConstant * partial_pressure  # mol / m3
         new_mole_amount_per_real_droplet = concentration * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
@@ -119,7 +119,7 @@ class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type):
         self.environment_mixing_ratios = {}
         for key, compound in GASEOUS_COMPOUNDS.items():
-            shape = (1,)  # TODO
+            shape = (1,)  # TODO #157
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
@@ -139,8 +139,8 @@ class AqueousChemistry:
 
     def __call__(self):
         n_cell = self.mesh.n_cell
-        n_threads = 1  # TODO
-        cell_order = np.arange(n_cell)  # TODO
+        n_threads = 1  # TODO #157
+        cell_order = np.arange(n_cell)  # TODO #157
         cell_start_arg = self.core.particles.cell_start.data
         idx = self.core.particles._Particles__idx
 
@@ -149,7 +149,7 @@ class AqueousChemistry:
         qv = self.env["qv"]
         prhod = self.env.get_predicted("rhod")
 
-        # TODO: same code in condensation
+        # TODO #157: same code in condensation
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
@@ -161,7 +161,7 @@ class AqueousChemistry:
                     continue
 
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO: this is surely already computed elsewhere!
+                T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO #157: this is surely already computed elsewhere!
 
                 for key, compound in GASEOUS_COMPOUNDS.items():
                     dissolve_env_gases(

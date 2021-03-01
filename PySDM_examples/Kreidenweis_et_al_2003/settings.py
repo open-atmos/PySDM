@@ -23,9 +23,9 @@ class Settings:
         self.T0 = 285.2 * si.K
         self.pv0 = .95 * phys.pvs(self.T0)
 
-        self.kappa = .61  # TODO
-        rho = 1  # TODO
-        self.mass_of_dry_air = 44  # TODO
+        self.kappa = .61  # TODO #157
+        rho = 1  # TODO #157
+        self.mass_of_dry_air = 44  # TODO #157
 
         self.r_dry, self.n_in_dv = spectral_sampling.ConstantMultiplicity(
             spectrum=spectra.Lognormal(
