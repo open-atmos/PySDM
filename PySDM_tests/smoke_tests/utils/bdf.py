@@ -98,6 +98,7 @@ def make_solve(coord, rtol):
         if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
+            integ = None
             try:
                 integ = scipy.integrate.solve_ivp(
                     fun=odesys,
