@@ -12,6 +12,7 @@ import numba
 import scipy.integrate
 import types
 import sys
+import warnings
 
 idx_thd = 0
 idx_x = 1
@@ -98,8 +99,8 @@ def make_solve(coord, rtol):
         if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
-            integ = None
-            try:
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("ignore")
                 integ = scipy.integrate.solve_ivp(
                     fun=odesys,
                     t_span=[0, dt],
@@ -109,8 +110,6 @@ def make_solve(coord, rtol):
                     atol=0,
                     method="BDF"
                 )
-            except RuntimeWarning:
-                print("warning thrown within scipy.integrate.solve_ivp (python -We ?)", file=sys.stderr)
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 
