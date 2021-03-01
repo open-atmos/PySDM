@@ -7,6 +7,7 @@ from typing import Dict
 import numpy as np
 
 from PySDM.attributes.attribute import Attribute
+from PySDM.attributes.extensive_attribute import ExtensiveAttribute
 
 
 class Particles:
@@ -145,8 +146,9 @@ class Particles:
         self.healthy = bool(self.__healthy_memory)
         self.core.particles.sanitize()
         self.attributes['n'].mark_updated()
-        for attr in self.extensive_attributes:
-            attr.mark_updated()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
