@@ -5,7 +5,7 @@ import numpy as np
 
 def test_few_steps(plot=True):
     # Arrange
-    settings = Settings(n_sd_per_gridbox=100, dt=30*si.s, dz=50*si.m)
+    settings = Settings(n_sd_per_gridbox=100, dt=30*si.s, dz=100*si.m)
     simulation = Simulation(settings)
 
     # Act
