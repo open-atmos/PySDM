@@ -41,12 +41,12 @@ class CondensationTimestep(Product):
         return self.count
 
     def get(self):
-        self.download_to_buffer(self.condensation.n_substep)
+        self.download_to_buffer(self.condensation.counters['n_substeps'])
         self.buffer[:] = self.condensation.core.dt / self.buffer
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.n_substep)
+        self.download_to_buffer(self.condensation.counters['n_substeps'])
         self.count[:] += self.buffer
         self.buffer[:] = self.condensation.core.dt / self.buffer
         self.minimum = np.minimum(self.buffer, self.minimum)

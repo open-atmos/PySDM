@@ -16,6 +16,7 @@ c_p = physics.c_p
 dthd_dt = physics.dthd_dt
 temperature_pressure_RH = physics.temperature_pressure_RH
 radius = physics.radius
+volume = physics.volume
 RH_eq = physics.RH_eq
 
 
@@ -25,10 +26,6 @@ def th_dry(th_std, qv):
 
 def th_std(p, T):
     return T * (const.p1000 / p)**(const.Rd / const.c_pd)
-
-
-def volume(radius):
-    return 4 / 3 * np.pi * radius ** 3
 
 
 class MoistAir:

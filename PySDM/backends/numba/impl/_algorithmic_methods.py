@@ -184,14 +184,19 @@ class AlgorithmicMethods:
             solver,
             n_cell, cell_start_arg,
             v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags, RH_max
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg.data,
             v.data, particle_temperatures.data, r_cr.data, n.data, vdry.data, idx.data,
             rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
-            rtol_x, rtol_thd, dt, substeps.data, cell_order, ripening_flags.data, RH_max.data
+            rtol_x, rtol_thd, dt,
+            counters['n_substeps'].data,
+            counters['n_activating'].data,
+            counters['n_deactivating'].data,
+            counters['n_ripening'].data,
+            cell_order, RH_max.data
         )
 
     @staticmethod
@@ -344,7 +349,9 @@ class AlgorithmicMethods:
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
             v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order, ripening_flags, RH_max
+            rtol_x, rtol_thd, dt,
+            counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
+            cell_order, RH_max
     ):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):  # TODO #341 at least show that it is not slower :)
@@ -361,16 +368,17 @@ class AlgorithmicMethods:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 md = rhod_mean * dv_mean
 
-                qv_new, thd_new, substeps_hint, ripening_flag, RH_max_in_cell = solver(
+                qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
                     v, particle_temperatures, r_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
-                    rtol_x, rtol_thd, dt, substeps[cell_id]
+                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
                 )
-
-                substeps[cell_id] = substeps_hint
-                ripening_flags[cell_id] += ripening_flag
-                RH_max[cell_id] = max(RH_max[cell_id], RH_max_in_cell)
+                counter_n_substeps[cell_id] = substeps_hint
+                counter_n_activating[cell_id] = n_activating
+                counter_n_deactivating[cell_id] = n_deactivating
+                counter_n_ripening[cell_id] = n_ripening
+                RH_max[cell_id] = RH_max_in_cell
 
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new

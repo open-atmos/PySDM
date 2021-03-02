@@ -11,7 +11,7 @@ from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
 from PySDM.products.state import ParticlesWetSizeSpectrum
 from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.products.dynamics.condensation.ripening_rate import RipeningRate
+from PySDM.products.dynamics.condensation.event_rates import RipeningRate
 
 
 class Simulation:
