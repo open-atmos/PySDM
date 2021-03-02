@@ -5,7 +5,8 @@ Created at 11.2019
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.numba_helpers import \
-    radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, dthd_dt, within_tolerance, bisec
+    radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, dthd_dt, within_tolerance, \
+    bisec, volume
 from PySDM.backends.numba.coordinates import mapper as coordinates
 import numba
 import numpy as np
@@ -39,7 +40,7 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _, _ = step_impl(*args, dt, 1, True)
+            _, thd_new, _, _, _, _ = step_impl(*args, dt, 1, True)
             return thd_new
 
         return step_fake
@@ -59,22 +60,25 @@ class CondensationMethods:
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
-            ripenings = 0
+            count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
-                ml_new, ripening = calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
+                ml_new, n_activating, n_deactivating, n_ripening = \
+                    calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
                 thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
-                ripenings += ripening
+                count_activating += n_activating
+                count_deactivating += n_deactivating
+                count_ripening += n_ripening
                 RH_max = max(RH_max, RH)
-            return qv, thd, ripenings, RH_max
+            return qv, thd, count_activating, count_deactivating, count_ripening, RH_max
 
         return step_impl
 
@@ -90,16 +94,16 @@ class CondensationMethods:
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(dx_dt, volume, x, enable_drop_temperatures):
+    def make_calculate_ml_new(dx_dt, volume_of_x, x, enable_drop_temperatures):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def _minfun_FF(x_new, x_old, dt, T, p, qv, kappa, rd, T_i):
-            r_new = radius(volume(x_new))
+            r_new = radius(volume_of_x(x_new))
             dr_dt = dr_dt_FF(r_new, T, p, qv, kappa, rd, T_i)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def _minfun_MM(x_new, x_old, dt, T, p, RH, kappa, rd, _):
-            r_new = radius(volume(x_new))
+            r_new = radius(volume_of_x(x_new))
             dr_dt = dr_dt_MM(r_new, T, p, RH, kappa, rd)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
@@ -108,13 +112,13 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
-            activating = 0
-            deactivating = 0
-            growing = 0
+            n_activating = 0
+            n_deactivating = 0
+            n_activated_and_growing = 0
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
-                rd = radius(volume=vdry[drop])
+                rd = radius(vdry[drop])
                 if enable_drop_temperatures:
                     particle_T_old = particle_T[drop]
                     dr_dt_old = dr_dt_FF(r_old, T, p, qv, kappa, rd, particle_T_old)
@@ -128,21 +132,22 @@ class CondensationMethods:
                 a = x_old
                 interval = dx_old
                 x_new = bisec(minfun, a, interval, args, rtol_x)
-                v_new = volume(x_new)
+                v_new = volume_of_x(x_new)
+                result += n[drop] * v_new * const.rho_w
                 if not fake:
                     if enable_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    v_cr = 4/3 * np.pi * (r_cr[drop])**3
-                    if v_new > v_cr and v_cr < v[drop] < v_new:
-                        growing += 1
+                    v_cr = volume(r_cr[drop])
+                    if v_new > v_cr and v_new > v[drop]:
+                        n_activated_and_growing += n[drop]
                     if v_new > v_cr > v[drop]:
-                        activating += 1
+                        n_activating += n[drop]
                     if v_new < v_cr < v[drop]:
-                        deactivating += 1
+                        n_deactivating += n[drop]
                     v[drop] = v_new
-                result += n[drop] * v_new * const.rho_w
-            return result, (deactivating > 0 and growing > 0)
+            n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
+            return result, n_activating, n_deactivating, n_ripening
 
         return calculate_ml_new
 
@@ -162,8 +167,8 @@ class CondensationMethods:
             args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, dt, thd, rtol_thd)
-            qv, thd, ripenings, RH_max = step(args, dt, n_substeps)
+            qv, thd, n_activating, n_deactivating, n_ripening, RH_max = step(args, dt, n_substeps)
 
-            return qv, thd, n_substeps, ripenings, RH_max
+            return qv, thd, n_substeps, n_activating, n_deactivating, n_ripening, RH_max
 
         return solve

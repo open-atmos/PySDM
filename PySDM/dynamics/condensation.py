@@ -3,11 +3,10 @@ Created at 24.10.2019
 """
 
 import numpy as np
-from PySDM.physics import si
+from ..physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
-default_adaptive_dt_range = (0 * si.second, 1 * si.second)
 
 
 class Condensation:
@@ -18,8 +17,7 @@ class Condensation:
                  rtol_thd=default_rtol_thd,
                  coord='volume logarithm',
                  substeps: int = 1,
-                 adaptive: bool = True,
-                 adaptive_dt_range=default_adaptive_dt_range
+                 adaptive: bool = True
                  ):
 
         self.core = None
@@ -36,26 +34,24 @@ class Condensation:
 
         self.__substeps = substeps
         self.adaptive = adaptive
-        self.n_substep = None
-        self.dt_cond_range = adaptive_dt_range
+        self.counters = {}
+        self.dt_cond_range = (0 * si.second, 1 * si.second)  # TODO #430
 
     def register(self, builder):
         self.core = builder.core
 
-        if self.dt_cond_range[1] > self.core.dt:
-            self.dt_cond_range = (self.dt_cond_range[0], self.core.dt)
-        assert self.dt_cond_range[0] <= self.dt_cond_range[1]
-
         builder._set_condensation_parameters(self.coord, self.adaptive)
         self.r_cr = builder.get_attribute('critical radius')
 
-        self.n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.n_substep[:] = self.__substeps
-
-        self.ripening_flags = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.ripening_flags[:] = 0
+        for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
+            self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+            if counter == 'n_substeps':
+                self.counters[counter][:] = self.__substeps
+            else:
+                self.counters[counter][:] = -1
 
         self.RH_max = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        self.RH_max[:] = np.nan
 
     def __call__(self):
         if self.enable:
@@ -63,11 +59,10 @@ class Condensation:
                 kappa=self.kappa,
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
-                substeps=self.n_substep,
-                ripening_flags=self.ripening_flags,
+                counters=self.counters,
                 RH_max=self.RH_max
             )
             if self.adaptive:
-                self.n_substep[:] = np.maximum(self.n_substep[:], int(self.core.dt / self.dt_cond_range[1]))
+                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
                 if self.dt_cond_range[0] != 0:
-                    self.n_substep[:] = np.minimum(self.n_substep[:], int(self.core.dt / self.dt_cond_range[0]))
+                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[0]))

@@ -3,27 +3,30 @@ from PySDM.physics import si
 import numpy as np
 
 
-class TestFewSteps:
-    @staticmethod
-    def test_cloud_water_mixing_ratio(plot=False):
-        # Arrange
-        settings = Settings(n_sd_per_gridbox=5, dt=10*si.s, dz=100*si.m)
-        simulation = Simulation(settings)
+def test_few_steps(plot=False):
+    # Arrange
+    settings = Settings(n_sd_per_gridbox=100, dt=30*si.s, dz=100*si.m)
+    simulation = Simulation(settings)
 
-        # Act
-        output = simulation.run(nt=5)
+    # Act
+    output = simulation.run(nt=100)
 
-        # Plot
-        if plot:
-            from matplotlib import pyplot
-            for var in ('RH_env', 'T_env', 'qv_env', 'p_env', 'ql'):
-                pyplot.plot(output[var][:, -1], output['z'], linestyle='--', marker='o')
-                pyplot.ylabel('Z [m]')
-                pyplot.xlabel(var + ' [' + simulation.core.products[var].unit + ']')
-                pyplot.grid()
-                pyplot.show()
+    # Plot
+    def profile(var):
+        return np.mean(output[var][:, -20:], axis=1)
 
-        # Assert
-        ql = output['ql'][:, -1]
-        assert min(ql) == 0
-        assert .3 < max(ql) < .6
+    if plot:
+        from matplotlib import pyplot
+        for var in ('RH_env', 'S_max', 'T_env', 'qv_env', 'p_env', 'ql', 'ripening_rate', 'activating_rate', 'deactivating_rate'):
+            pyplot.plot(profile(var), output['z'], linestyle='--', marker='o')
+            pyplot.ylabel('Z [m]')
+            pyplot.xlabel(var + ' [' + simulation.core.products[var].unit + ']')
+            pyplot.grid()
+            pyplot.show()
+
+    # Assert
+    assert min(profile('ql')) == 0
+    assert .1 < max(profile('ql')) < .6
+    assert max(profile('ripening_rate')) > 0
+    assert max(profile('activating_rate')) == 0
+    assert max(profile('deactivating_rate')) > 0

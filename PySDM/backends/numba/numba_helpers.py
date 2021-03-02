@@ -144,6 +144,11 @@ def radius(volume):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def volume(radius):
+    return 4 / 3 * np.pi * radius ** 3
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def dthd_dt(rhod, thd, T, dqv_dt):
     return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
 

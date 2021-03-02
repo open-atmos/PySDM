@@ -12,6 +12,7 @@ import numba
 import scipy.integrate
 import types
 import sys
+import warnings
 
 idx_thd = 0
 idx_x = 1
@@ -22,15 +23,15 @@ def patch_core(core, coord='volume logarithm', rtol=1e-3):
     core.condensation = types.MethodType(bdf_condensation, core)
 
 
-def bdf_condensation(core,
-                     kappa,
-                     rtol_x, rtol_thd, substeps, ripening_flags, RH_max
-                     ):
+def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max):
     n_threads = 1
     if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
 
-    Numba._condensation.py_func(
+    func = Numba._condensation
+    if not numba.config.DISABLE_JIT:
+        func = func.py_func
+    func(
         solver=core.condensation_solver,
         n_threads=n_threads,
         n_cell=core.mesh.n_cell,
@@ -52,9 +53,11 @@ def bdf_condensation(core,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
         dt=core.dt,
-        substeps=substeps.data,
-        cell_order=np.argsort(substeps),
-        ripening_flags=ripening_flags.data,
+        counter_n_substeps=counters['n_substeps'],
+        counter_n_activating=counters['n_activating'],
+        counter_n_deactivating=counters['n_deactivating'],
+        counter_n_ripening=counters['n_ripening'],
+        cell_order=np.argsort(counters['n_substeps']),
         RH_max=RH_max.data
     )
 
@@ -96,7 +99,8 @@ def make_solve(coord, rtol):
         if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
-            try:
+            with warnings.catch_warnings(record=True) as w:
+                warnings.simplefilter("ignore")
                 integ = scipy.integrate.solve_ivp(
                     fun=odesys,
                     t_span=[0, dt],
@@ -106,8 +110,6 @@ def make_solve(coord, rtol):
                     atol=0,
                     method="BDF"
                 )
-            except RuntimeWarning:
-                print("warning thrown within scipy.integrate.solve_ivp (python -We ?)", file=sys.stderr)
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 
@@ -117,7 +119,7 @@ def make_solve(coord, rtol):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1, np.nan
+        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1, 1, 1, np.nan
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
