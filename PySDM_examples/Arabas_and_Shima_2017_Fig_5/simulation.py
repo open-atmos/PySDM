@@ -12,8 +12,7 @@ from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.physics import constants as const
-from PySDM.products.state import ParticleMeanRadius
-from PySDM.products.dynamics.condensation import CondensationTimestep
+import PySDM.products as PySDM_products
 
 
 class Simulation:
@@ -48,7 +47,16 @@ class Simulation:
         environment = builder.core.environment
         r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), settings.kappa)
         attributes['volume'] = phys.volume(radius=r_wet)
-        products = [ParticleMeanRadius(), CondensationTimestep()]
+        products = [
+            PySDM_products.ParticleMeanRadius(),
+            PySDM_products.CondensationTimestep(),
+            PySDM_products.ParcelDisplacement(),
+            PySDM_products.RelativeHumidity(),
+            PySDM_products.Time(),
+            PySDM_products.ActivatingRate(),
+            PySDM_products.DeactivatingRate(),
+            PySDM_products.RipeningRate()
+        ]
 
         self.core = builder.build(attributes, products)
 
