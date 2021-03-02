@@ -6,13 +6,14 @@ import numpy as np
 from PySDM.initialisation.spectra import Exponential
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.physics.constants import si
+from PySDM.physics.formulae import volume
 
 
 class Settings:
 
     n_sd = 2 ** 13
     n_part = 2 ** 23 / si.metre**3
-    X0 = 4 / 3 * np.pi * (30.531 * si.micrometres) ** 3
+    X0 = volume(radius=30.531 * si.micrometres)
     dv = 1e6 * si.metres**3
     norm_factor = n_part * dv
     rho = 1000 * si.kilogram / si.metre**3

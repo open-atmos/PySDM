@@ -3,7 +3,7 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.derived_attribute import DerivedAttribute
-from PySDM.physics import constants as const
+from PySDM.physics.formulae import volume
 
 
 class DryRadius(DerivedAttribute):
@@ -14,5 +14,5 @@ class DryRadius(DerivedAttribute):
 
     def recalculate(self):
         self.data.idx = self.volume_dry.data.idx
-        self.data.product(self.volume_dry.get(), (3 / 4 / const.pi))
-        self.data **= 1 / 3
+        self.data.product(self.volume_dry.get(), 1/volume(1))
+        self.data **= 1/3
