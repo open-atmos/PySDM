@@ -1,4 +1,5 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
+from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import GASEOUS_COMPOUNDS
 from PySDM.physics import si
 from matplotlib import pyplot
 import numpy as np
@@ -7,7 +8,7 @@ import pytest
 
 @pytest.fixture(scope='session')
 def example_output():
-    settings = Settings(n_sd=1, dt=1*si.s)
+    settings = Settings(n_sd=2, dt=1*si.s)
     simulation = Simulation(settings)
     output = simulation.run()
     return output
@@ -35,11 +36,20 @@ class TestFig1:
     def test_b(example_output, plot=True):
         # Plot
         if plot:
-            pyplot.plot(
-                np.asarray(example_output['aq_S_IV_ppb']) + np.asarray(example_output['gas_S_IV_ppb']),
-                np.asarray(example_output['t']) - Z_CB * si.s)
-            pyplot.xlim(0, .21)
-            pyplot.show()
+            for key in GASEOUS_COMPOUNDS.keys():
+                pyplot.plot(
+                    np.asarray(example_output[f'aq_{key}_ppb']),
+                    np.asarray(example_output['t']) - Z_CB * si.s, label='aq')
+                pyplot.plot(
+                    np.asarray(example_output[f'gas_{key}_ppb']),
+                    np.asarray(example_output['t']) - Z_CB * si.s, label='gas')
+                pyplot.plot(
+                    np.asarray(example_output[f'aq_{key}_ppb']) + np.asarray(example_output[f'gas_{key}_ppb']),
+                    np.asarray(example_output['t']) - Z_CB * si.s, label='sum')
+                pyplot.legend()
+#                pyplot.xlim(0, .21)
+                pyplot.xlabel(key + ' [ppb]')
+                pyplot.show()
 
         # Assert
         # assert False  TODO #157
@@ -48,6 +58,7 @@ class TestFig1:
     def test_c(example_output, plot=True):
         if plot:
             pyplot.plot(example_output['pH'], np.asarray(example_output['t']) - Z_CB * si.s)
+            pyplot.xlabel('pH')
             pyplot.show()
 
         #  assert False  TODO #157

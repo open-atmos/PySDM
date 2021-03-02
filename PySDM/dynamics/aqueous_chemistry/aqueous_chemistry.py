@@ -2,35 +2,35 @@ import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from .support import EqConst
-from PySDM.physics.constants import H_u, dT_u, _weight, Md, M
-from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure
+from PySDM.physics.constants import H_u, dT_u, _weight, Md, M, si
+from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure, volume
 from scipy import optimize
 
 
 HENRY_CONST = {
-    "HNO3": EqConst((2.10 * 10 ** 5) * H_u, 0 * dT_u),
-    "H2O2": EqConst((7.45 * 10 ** 4) * H_u, 7300 * dT_u),
+    "HNO3": EqConst(2.1e5 * H_u, 0 * dT_u),
+    "H2O2": EqConst(7.45e4 * H_u, 7300 * dT_u),
     "NH3":  EqConst(62 * H_u, 4110 * dT_u),
     "SO2":  EqConst(1.23 * H_u, 3150 * dT_u),
-    "CO2":  EqConst((3.4 * 10 ** -2) * H_u, 2440 * dT_u),
-    "O3":   EqConst((1.13 * 10 ** -2) * H_u, 2540 * dT_u),
+    "CO2":  EqConst(3.4e-2 * H_u, 2440 * dT_u),
+    "O3":   EqConst(1.13e-2 * H_u, 2540 * dT_u),
 }
 
 EQUILIBRIUM_CONST = {  # Reaction Specific units, K
     # ("HNO3(aq) = H+ + NO3-", 15.4, 0),
     "K_HNO3": EqConst(15.4 * M, 0 * dT_u),
     # ("H2SO3(aq) = H+ + HSO3-", 1.54*10**-2 * KU, 1960),
-    "K_SO2":  EqConst((1.3 * 10 ** -2) * M, 1960 * dT_u),
+    "K_SO2":  EqConst(1.3e-2 * M, 1960 * dT_u),
     # ("NH4+ = NH3(aq) + H+", 10**-9.25 * M, 0),
-    "K_NH3":  EqConst((1.7 * 10 ** -5) * M, -450 * dT_u),
+    "K_NH3":  EqConst(1.7e-5 * M, -450 * dT_u),
     # ("H2CO3(aq) = H+ + HCO3-", 4.3*10**-7 * KU, -1000),
-    "K_CO2":  EqConst((4.3 * 10 ** -7) * M, -1000 * dT_u),
+    "K_CO2":  EqConst(4.3e-7 * M, -1000 * dT_u),
     # ("HSO3- = H+ + SO3-2", 6.6*10**-8 * KU, 1500),
-    "K_HSO3": EqConst((6.6 * 10 ** -8) * M, 1500 * dT_u),
+    "K_HSO3": EqConst(6.6e-8 * M, 1500 * dT_u),
     # ("HCO3- = H+ + CO3-2", 4.68*10**-11 * KU, -1760),
-    "K_HCO3": EqConst((4.68 * 10 ** -11) * M, -1760 * dT_u),
+    "K_HCO3": EqConst(4.68e-11 * M, -1760 * dT_u),
     # ("HSO4- = H+ + SO4-2", 1.2*10**-2 * KU, 2720),
-    "K_HSO4": EqConst((1.2 * 10 ** -2) * M, 2720 * dT_u)
+    "K_HSO4": EqConst(1.2e-2 * M, 2720 * dT_u)
 }
 
 K_H2O = 1e-14 * M * M
@@ -73,9 +73,9 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         new_mole_amount_per_real_droplet = concentration * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
         mole_amounts.data[i] = new_mole_amount_per_real_droplet
-#        assert mole_amounts[i] >= 0
+        # assert mole_amounts[i] >= 0
     delta_mr = mole_amount_taken * specific_gravity * Md / (dv * env_rho_d)
-#    assert delta_mr <= env_mixing_ratio
+    # assert delta_mr <= env_mixing_ratio
     if system_type == 'closed':
         env_mixing_ratio -= delta_mr
 
@@ -86,8 +86,8 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
     C_IV = particles["conc_C_IV"].data
     S_IV = particles["conc_S_IV"].data
     S_VI = particles["conc_S_VI"].data
-    H = particles["conc_H"].data
     volume = particles["volume"].data
+    moles_H = particles["moles_H"].data
 
     K_NH3 = EQUILIBRIUM_CONST["K_NH3"].at(env_T)
     K_SO2 = EQUILIBRIUM_CONST["K_SO2"].at(env_T)
@@ -108,11 +108,15 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
         zero = H_i + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
         return zero
 
+    pH_min=-1
+    pH_max=9
+    H_min = 10**(-pH_max) * (si.m**3 / si.litre)
+    H_max = 10**(-pH_min) * (si.m**3 / si.litre)
     for i in super_droplet_ids:
         args = (i,)
-        result = optimize.root_scalar(concentration, x0=1e-10, x1=1, args=args)
+        result = optimize.root_scalar(concentration, x0=H_min, x1=H_max, args=args)
         assert result.converged
-        H[i] = result.root * volume[i]
+        moles_H[i] = result.root * volume[i]
 
 
 class AqueousChemistry:
@@ -177,9 +181,12 @@ class AqueousChemistry:
                         system_type=self.system_type,
                         specific_gravity=SPECIFIC_GRAVITY[compound]
                     )
+                    self.core.particles.attributes[f'moles_{key}'].mark_updated()
 
                 equilibrate_pH(
                     super_droplet_ids=idx[cell_start:cell_end],
                     particles=self.core.particles,
                     env_T=T
                 )
+                self.core.particles.attributes['moles_H'].mark_updated()
+

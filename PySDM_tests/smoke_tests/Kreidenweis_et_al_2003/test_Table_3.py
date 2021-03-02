@@ -83,7 +83,7 @@ class TestTable3:
 
     def test_at_1200m_above_cloud_base(self):
         # Arrange
-        settings = Settings(n_sd=100, dt=4 * si.s)
+        settings = Settings(n_sd=100, dt=1 * si.s)
         simulation = Simulation(settings)
 
         # Act

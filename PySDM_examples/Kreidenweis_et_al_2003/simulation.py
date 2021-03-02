@@ -40,7 +40,7 @@ class Simulation:
             PySDM_products.Time(),
             *[PySDM_products.AqueousMoleFraction(compound) for compound in AQUEOUS_COMPOUNDS.keys()],
             *[PySDM_products.GaseousMoleFraction(compound) for compound in GASEOUS_COMPOUNDS.keys()],
-            PySDM_products.pH(),
+            PySDM_products.pH(radius_range=settings.cloud_radius_range),
             PySDM_products.TotalDryMassMixingRatio(settings.DRY_RHO)
         ]
 
