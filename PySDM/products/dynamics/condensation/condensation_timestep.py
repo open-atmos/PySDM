@@ -40,6 +40,7 @@ class CondensationTimestep(Product):
     def get_count(self):
         return self.count
 
+    # TODO: where is it used???
     def get(self):
         self.download_to_buffer(self.condensation.counters['n_substeps'])
         self.buffer[:] = self.condensation.core.dt / self.buffer

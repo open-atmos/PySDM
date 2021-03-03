@@ -35,6 +35,7 @@ class Settings:
         self.condensation_rtol_x = condensation.default_rtol_x
         self.condensation_rtol_thd = condensation.default_rtol_thd
         self.condensation_adaptive = True
+        self.condensation_substeps = -1
 
         self.coalescence_adaptive = True
 

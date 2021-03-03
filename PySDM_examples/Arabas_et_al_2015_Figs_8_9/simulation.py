@@ -42,6 +42,8 @@ class Simulation:
         builder.set_environment(environment)
 
         cloud_range = (self.settings.aerosol_radius_threshold, self.settings.drizzle_radius_threshold)
+        if products is not None:
+            products = list(products)
         products = products or [
             PySDM_products.ParticlesWetSizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),
             PySDM_products.ParticlesDrySizeSpectrum(v_bins=self.settings.v_bins, normalise_by_dv=True),  # Note: better v_bins
@@ -77,7 +79,10 @@ class Simulation:
                 rtol_x=self.settings.condensation_rtol_x,
                 rtol_thd=self.settings.condensation_rtol_thd,
                 coord=self.settings.condensation_coord,
-                adaptive=self.settings.condensation_adaptive)
+                adaptive=self.settings.condensation_adaptive,
+                substeps=self.settings.condensation_substeps,
+                dt_cond_range=self.settings.dt_cond_range
+            )
             builder.add_dynamic(condensation)
             products.append(PySDM_products.CondensationTimestep())  # TODO #37 and what if a user doesn't want it?
         if self.settings.processes['fluid advection']:

@@ -10,15 +10,16 @@ from PySDM.backends.numba.numba_helpers import \
 from PySDM.backends.numba.coordinates import mapper as coordinates
 import numba
 import numpy as np
+import math
 
 
 class CondensationMethods:
     @staticmethod
-    def make_adapt_substeps(step_fake, fuse=100, multiplier=2):
+    def make_adapt_substeps(step_fake, dt_range, fuse=100, multiplier=2):
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def adapt_substeps(args, n_substeps, dt, thd, rtol_thd):
-            n_substeps = np.maximum(1, n_substeps // multiplier)
+            n_substeps = np.maximum(math.ceil(dt / dt_range[1]), n_substeps // multiplier)
             thd_new_long = step_fake(args, dt, n_substeps)
             for burnout in range(fuse + 1):
                 if burnout == fuse:
@@ -31,7 +32,7 @@ class CondensationMethods:
                 if within_tolerance(error_estimate, thd, rtol_thd):
                     break
                 n_substeps *= multiplier
-            return n_substeps
+            return np.maximum(math.floor(dt / dt_range[0]), n_substeps)
 
         return adapt_substeps
 
@@ -152,13 +153,13 @@ class CondensationMethods:
         return calculate_ml_new
 
     @staticmethod
-    def make_condensation_solver(coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
+    def make_condensation_solver(dt_range, coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
         dx_dt, volume, x = coordinates.get(coord)
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, enable_drop_temperatures)
         step_impl = CondensationMethods.make_step_impl(calculate_ml_old, calculate_ml_new)
         step_fake = CondensationMethods.make_step_fake(step_impl)
-        adapt_substeps = CondensationMethods.make_adapt_substeps(step_fake)
+        adapt_substeps = CondensationMethods.make_adapt_substeps(step_fake, dt_range)
         step = CondensationMethods.make_step(step_impl)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
