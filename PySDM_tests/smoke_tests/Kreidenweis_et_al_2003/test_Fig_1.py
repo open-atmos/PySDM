@@ -8,10 +8,11 @@ import pytest
 
 @pytest.fixture(scope='session')
 def example_output():
-    settings = Settings(n_sd=2, dt=1*si.s)
+    settings = Settings(n_sd=32, dt=1*si.s)
     simulation = Simulation(settings)
     output = simulation.run()
     return output
+
 
 Z_CB = 196 * si.m
 
@@ -47,7 +48,6 @@ class TestFig1:
                     np.asarray(example_output[f'aq_{key}_ppb']) + np.asarray(example_output[f'gas_{key}_ppb']),
                     np.asarray(example_output['t']) - Z_CB * si.s, label='sum')
                 pyplot.legend()
-#                pyplot.xlim(0, .21)
                 pyplot.xlabel(key + ' [ppb]')
                 pyplot.show()
 
