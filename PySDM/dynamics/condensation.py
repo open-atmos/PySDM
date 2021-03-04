@@ -66,3 +66,4 @@ class Condensation:
                 self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
                 if self.dt_cond_range[0] != 0:
                     self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[0]))
+            self.core.particles.attributes['volume'].mark_updated()
