@@ -4,10 +4,10 @@ Created at 24.10.2019
 
 import numpy as np
 from ..physics import si
-import math
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
+default_cond_range = (1e-4 * si.second, 10 * si.second)
 
 
 class Condensation:
@@ -19,7 +19,7 @@ class Condensation:
                  coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_cond_range=(0 * si.second, 1 * si.second)
+                 dt_cond_range: tuple = default_cond_range
                  ):
 
         self.core = None

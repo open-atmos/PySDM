@@ -61,7 +61,7 @@ class Builder:
             self.request_attribute(attribute)
         if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(**self.condensation_params,
+                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params,
                                                            enable_drop_temperatures='temperatures' in self.req_attr)
         attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
