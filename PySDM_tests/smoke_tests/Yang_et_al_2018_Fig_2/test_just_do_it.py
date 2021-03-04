@@ -62,12 +62,13 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
 
     n_unit = 1/si.microgram
     assert min(N1) == 0.0 * n_unit
-    assert .63 * n_unit < max(N1) < .68 * n_unit
-    assert .14 * n_unit < min(N2) < .15 * n_unit
-    assert .3 * n_unit < max(N2) < .37 * n_unit
-    assert .08 * n_unit < min(N3) < .083 * n_unit
+    assert .71 * n_unit < max(N1) < .72 * n_unit
+    assert .17 * n_unit < min(N2) < .18 * n_unit
+    assert .40 * n_unit < max(N2) < .41 * n_unit
+    assert .1 * n_unit < min(N3) < .11 * n_unit
     assert .27 * n_unit < max(N3) < .4 * n_unit
     assert max(output['ripening_rate']) > 0
+
 
 def n_tot(n, condition):
     return np.dot(n, condition)
