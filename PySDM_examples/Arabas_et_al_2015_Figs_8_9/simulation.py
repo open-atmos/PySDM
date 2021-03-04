@@ -84,7 +84,8 @@ class Simulation:
                 dt_cond_range=self.settings.dt_cond_range
             )
             builder.add_dynamic(condensation)
-            products.append(PySDM_products.CondensationTimestep())  # TODO #37 and what if a user doesn't want it?
+            products.append(PySDM_products.CondensationTimestepMin())  # TODO #37 and what if a user doesn't want it?
+            products.append(PySDM_products.CondensationTimestepMax())
         if self.settings.processes['fluid advection']:
             solver = MPDATA(
                 fields=fields,

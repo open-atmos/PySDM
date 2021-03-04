@@ -9,9 +9,7 @@ from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
-from PySDM.products.state import ParticlesWetSizeSpectrum
-from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.products.dynamics.condensation.event_rates import RipeningRate
+import PySDM.products as PySDM_products
 
 
 class Simulation:
@@ -45,9 +43,10 @@ class Simulation:
         builder.add_dynamic(condensation)
 
         products = [
-            ParticlesWetSizeSpectrum(v_bins=phys.volume(settings.r_bins_edges)),
-            CondensationTimestep(),
-            RipeningRate()
+            PySDM_products.ParticlesWetSizeSpectrum(v_bins=phys.volume(settings.r_bins_edges)),
+            PySDM_products.CondensationTimestepMin(),
+            PySDM_products.CondensationTimestepMax(),
+            PySDM_products.RipeningRate()
         ]
 
         attributes = environment.init_attributes(

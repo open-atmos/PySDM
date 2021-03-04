@@ -7,19 +7,19 @@ import numpy as np
 from PySDM.products.product import Product
 
 
-class CondensationTimestep(Product):
+class _CondensationTimestep(Product):
 
-    def __init__(self, debug=False):
+    def __init__(self, extremum, label, reset_value):
         super().__init__(
-            name='dt_cond',
+            name=f'dt_cond_{label}',
             unit='s',
-            description='Condensation timestep',
+            description=f'Condensation timestep ({label})',
             scale='log',
             range=None
         )
-        self.minimum = None
-        self.maximum = None
-        self.count = None
+        self.extremum = extremum
+        self.reset_value = reset_value
+        self.value = None
         self.condensation = None
 
     def register(self, builder):
@@ -27,33 +27,24 @@ class CondensationTimestep(Product):
         self.core.observers.append(self)
         self.condensation = self.core.dynamics['Condensation']
         self.range = (1e-5, self.core.dt)
-        self.minimum = np.full_like(self.buffer, np.nan)
-        self.maximum = np.full_like(self.buffer, np.nan)
-        self.count = np.full_like(self.buffer, np.nan)
-
-    def get_min(self):
-        return self.minimum
-
-    def get_max(self):
-        return self.maximum
-
-    def get_count(self):
-        return self.count
-
-    # TODO: where is it used???
-    def get(self):
-        self.download_to_buffer(self.condensation.counters['n_substeps'])
-        self.buffer[:] = self.condensation.core.dt / self.buffer
-        return self.buffer
+        self.value = np.full_like(self.buffer, np.nan)
 
     def notify(self):
         self.download_to_buffer(self.condensation.counters['n_substeps'])
-        self.count[:] += self.buffer
         self.buffer[:] = self.condensation.core.dt / self.buffer
-        self.minimum = np.minimum(self.buffer, self.minimum)
-        self.maximum = np.maximum(self.buffer, self.maximum)
+        self.value = self.extremum(self.buffer, self.value)
 
-    def reset(self):
-        self.minimum[:] = np.inf
-        self.maximum[:] = -np.inf
-        self.count[:] = 0
+    def get(self):
+        self.buffer[:] = self.value[:]
+        self.value[:] = self.reset_value
+        return self.buffer
+
+
+class CondensationTimestepMin(_CondensationTimestep):
+    def __init__(self):
+        super().__init__(np.minimum, 'min', np.inf)
+
+
+class CondensationTimestepMax(_CondensationTimestep):
+    def __init__(self):
+        super().__init__(np.maximum, 'max', -np.inf)

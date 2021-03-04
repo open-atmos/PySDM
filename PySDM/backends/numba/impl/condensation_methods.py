@@ -32,7 +32,7 @@ class CondensationMethods:
                 if within_tolerance(error_estimate, thd, rtol_thd):
                     break
                 n_substeps *= multiplier
-            return np.maximum(math.floor(dt / dt_range[0]), n_substeps)
+            return np.minimum(math.floor(dt / dt_range[0]), n_substeps)
 
         return adapt_substeps
 
