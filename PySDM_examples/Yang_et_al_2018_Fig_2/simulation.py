@@ -69,9 +69,8 @@ class Simulation:
         output["T"].append(self.core.environment["T"][cell_id])
         output["z"].append(self.core.environment["z"][cell_id])
         output["t"].append(self.core.environment["t"][cell_id])
-        output["dt_cond_max"].append(self.core.products["dt_cond"].get_max().copy())
-        output["dt_cond_min"].append(self.core.products["dt_cond"].get_min().copy())
-        self.core.products["dt_cond"].reset()
+        output["dt_cond_max"].append(self.core.products["dt_cond_max"].get()[cell_id].copy())
+        output["dt_cond_min"].append(self.core.products["dt_cond_min"].get()[cell_id].copy())
         output['ripening_rate'].append(self.core.products['ripening_rate'].get()[cell_id].copy())
 
     def run(self):

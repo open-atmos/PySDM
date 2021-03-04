@@ -50,7 +50,6 @@ class Simulation:
         products = [
             PySDM_products.ParticleMeanRadius(),
             PySDM_products.CondensationTimestepMin(),
-            PySDM_products.CondensationTimestepMax(),
             PySDM_products.RipeningRate(),
             PySDM_products.ActivatingRate(),
             PySDM_products.DeactivatingRate()
@@ -66,13 +65,13 @@ class Simulation:
         output["S"].append(self.core.environment["RH"][cell_id] - 1)
         output["z"].append(self.core.environment["z"][cell_id])
         output["t"].append(self.core.environment["t"][cell_id])
-        output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
+        output["dt_cond_min"].append(self.core.products['dt_cond_min'].get()[cell_id])
 
         for event in ('activating', 'deactivating', 'ripening'):
             output[event+"_rate"].append(self.core.products[event+'_rate'].get()[cell_id])
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "dt": [], "activating_rate": [],
+        output = {"r": [], "S": [], "z": [], "t": [], "dt_cond_min": [], "activating_rate": [],
                   "deactivating_rate": [], "ripening_rate": []}
 
         self.save(output)
