@@ -75,21 +75,21 @@ GASEOUS_COMPOUNDS = {
 }
 
 def aqq_CO2(H):
-    return (1 + EQUILIBRIUM_CONST["K_CO2"] * (1 / H + EQUILIBRIUM_CONST["K_HCO3"] / (H ** 2)))
+    return 1 + EQUILIBRIUM_CONST["K_CO2"] * (1 / H + EQUILIBRIUM_CONST["K_HCO3"] / (H ** 2))
 
 def aqq_SO2(H):
-    return (1 + EQUILIBRIUM_CONST["K_SO2"] * (1 / H + EQUILIBRIUM_CONST["K_HSO3"] / (H ** 2)))
+    return 1 + EQUILIBRIUM_CONST["K_SO2"] * (1 / H + EQUILIBRIUM_CONST["K_HSO3"] / (H ** 2))
 
 def aqq_NH3(H):
-    return (1 + EQUILIBRIUM_CONST["K_NH3"] / K_H2O * H)
+    return 1 + EQUILIBRIUM_CONST["K_NH3"] / K_H2O * H
 
 def aqq_HNO3(H):
-    return (1 + EQUILIBRIUM_CONST["K_HNO3"] / H)
+    return 1 + EQUILIBRIUM_CONST["K_HNO3"] / H
 
 def aqq(_):
     return 1
 
-AQQ = {
+MEMBER = {
     "CO2": aqq_CO2,
     "SO2": aqq_SO2,
     "NH3": aqq_NH3,
@@ -115,13 +115,15 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         Mc = specific_gravity * Md
         Rc = R_str / Mc
         cinf = env_p / env_T / (Rd/env_mixing_ratio + Rc) / Mc
-        Heff = henrysConstant * hconcdep(H_conc[i])
+        ksi = hconcdep(H_conc[i])
         r_w = radius(volume=droplet_volume[i])
         v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
         scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
-        concentration = (mole_amounts.data[i]/droplet_volume[i] + dt * cinf / scale) / (1 + dt / (scale * Heff * R_str * env_T))
+        A_old = mole_amounts.data[i] / droplet_volume[i]
+        # TODO: multiply cinf by ksi ???
+        A_new = (A_old + dt * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
 
-        new_mole_amount_per_real_droplet = concentration * droplet_volume[i]
+        new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
         mole_amounts.data[i] = new_mole_amount_per_real_droplet
         assert mole_amounts[i] >= 0
@@ -207,7 +209,7 @@ def calc_ionic_strength(*, Hp, N_III, N_V, C_IV, S_IV, S_VI , env_T):
     return 0.5 * (water + czS_VI + cz_CO2 + cz_SO2 + cz_HNO3 + cz_NH3)
 
 
-def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13 / M, **kwargs):
+def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13 / M):
     # NB: magic_const in the paper is k4.
     # The value is fixed at 13 M^-1 (from dr Jaruga's Thesis)
 
@@ -308,15 +310,15 @@ class AqueousChemistry:
                             specific_gravity=SPECIFIC_GRAVITY[compound],
                             alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
                             diffusion_constant=DIFFUSION_CONST[compound],
-                            hconcdep=AQQ[compound],
+                            hconcdep=MEMBER[compound],
                             H_conc=self.core.particles["conc_H"]
                         )
-                        self.core.particles.attributes[f'moles_{key}'].mark_updated()
+                        self.core.particles.attributes[f'moles_{key}'].mark_updated()  # TODO: not within threads loop!!!
 
                     equilibrate_pH(
                         super_droplet_ids=super_droplet_ids,
                         particles=self.core.particles,
                         env_T=T
                     )
-                    self.core.particles.attributes['moles_H'].mark_updated()
+                    self.core.particles.attributes['moles_H'].mark_updated()  # TODO: not qithin threads loop !!!
 
