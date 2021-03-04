@@ -9,3 +9,6 @@ class CellID(CellAttribute):
 
     def __init__(self, builder):
         super().__init__(builder, name='cell id', dtype=int)
+
+    def recalculate(self):
+        self.core.particles.recalculate_cell_id()
