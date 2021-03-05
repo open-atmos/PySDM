@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
-from .support import EqConst
+from .support import EqConst, KinConst
 from PySDM.physics.constants import H_u, dT_u, _weight, Md, M, si, R_str, Rd
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, mixing_ratio_2_partial_pressure, radius
 from scipy import optimize
@@ -74,20 +74,26 @@ GASEOUS_COMPOUNDS = {
     "O3": "O3"
 }
 
+
 def aqq_CO2(H):
     return 1 + EQUILIBRIUM_CONST["K_CO2"] * (1 / H + EQUILIBRIUM_CONST["K_HCO3"] / (H ** 2))
+
 
 def aqq_SO2(H):
     return 1 + EQUILIBRIUM_CONST["K_SO2"] * (1 / H + EQUILIBRIUM_CONST["K_HSO3"] / (H ** 2))
 
+
 def aqq_NH3(H):
     return 1 + EQUILIBRIUM_CONST["K_NH3"] / K_H2O * H
+
 
 def aqq_HNO3(H):
     return 1 + EQUILIBRIUM_CONST["K_HNO3"] / H
 
+
 def aqq(_):
     return 1
+
 
 MEMBER = {
     "CO2": aqq_CO2,
@@ -96,6 +102,15 @@ MEMBER = {
     "HNO3": aqq_HNO3,
     "O3": aqq,
     "H2O2": aqq
+}
+
+k_u = 1 / (si.s * M)
+KINETIC_CONST = {
+    "k0": KinConst.from_k(2.4e4 * k_u, 0 * dT_u),
+    "k1": KinConst.from_k(3.5e5 * k_u, -5530 * dT_u),
+    "k2": KinConst.from_k(1.5e9 * k_u, -5280 * dT_u),
+    # Different unit due to a different pseudo-order of kinetics
+    "k3": KinConst.from_k(7.45e9 * k_u / M, -4430 * dT_u),
 }
 
 SPECIFIC_GRAVITY = {
@@ -121,10 +136,11 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
         A_old = mole_amounts.data[i] / droplet_volume[i]
         # TODO: multiply cinf by ksi ???
-        A_new = (A_old + dt * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
+        A_new = (A_old + dt * ksi * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
 
         new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
+        assert new_mole_amount_per_real_droplet >= 0
         mole_amounts.data[i] = new_mole_amount_per_real_droplet
         assert mole_amounts[i] >= 0
     delta_mr = mole_amount_taken * specific_gravity * Md / (dv * env_rho_d)
@@ -209,28 +225,65 @@ def calc_ionic_strength(*, Hp, N_III, N_V, C_IV, S_IV, S_VI , env_T):
     return 0.5 * (water + czS_VI + cz_CO2 + cz_SO2 + cz_HNO3 + cz_NH3)
 
 
-def oxidation_factory(*, k0, k1, k2, k3, K_SO2, K_HSO3, magic_const=13 / M):
-    # NB: magic_const in the paper is k4.
-    # The value is fixed at 13 M^-1 (from dr Jaruga's Thesis)
-
-    # NB: This might not be entirely correct
-    # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
-    # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
-
-    # NB: There is also slight error due to "borrowing" compounds when
-    # the concentration is close to 0. That way, if the rate is big enough,
-    # it will consume more compound than there is.
-
-    def oxidation(x):
-        x[x < 0] = 0
-        H, O3, SO2aq, H2O2, HSO4m = x
-        ozone = ((k0) + (k1 * K_SO2 / H) + (k2 * K_SO2 * K_HSO3 / (H ** 2))) * O3 * SO2aq
-        peroxide = k3 * K_SO2 / (1 + magic_const * H) * H2O2 * SO2aq
-        return (0, -ozone, -(ozone + peroxide), -peroxide, ozone + peroxide)
-    return oxidation
+# NB: magic_const in the paper is k4.
+# The value is fixed at 13 M^-1 (from Ania's Thesis)
+magic_const = 13 / M
 
 
-class AqueousChemistry:
+def oxidize(super_droplet_ids, particles, env_T, dt, droplet_volume):
+    k0 = KINETIC_CONST["k0"].at(env_T)
+    k1 = KINETIC_CONST["k1"].at(env_T)
+    k2 = KINETIC_CONST["k2"].at(env_T)
+    k3 = KINETIC_CONST["k3"].at(env_T)
+    K_SO2 = EQUILIBRIUM_CONST["K_SO2"].at(env_T)
+    K_HSO3 = EQUILIBRIUM_CONST["K_HSO3"].at(env_T)
+
+    H = particles.attributes["conc_H"].data
+    O3 = particles.attributes["conc_O3"].data
+    H2O2 = particles.attributes["conc_H2O2"].data
+    S_IV = particles.attributes["conc_S_IV"].data
+
+    moles_O3 = particles.attributes["moles_O3"].data
+    moles_H2O2 = particles.attributes["moles_H2O2"].data
+    moles_S_IV = particles.attributes["moles_S_IV"].data
+    moles_S_VI = particles.attributes["moles_S_VI"].data
+
+    for i in super_droplet_ids:
+        SO2aq = S_IV[i] / aqq_SO2(H[i])
+
+        # NB: This might not be entirely correct
+        # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
+        # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
+
+        # NB: There is also slight error due to "borrowing" compounds when
+        # the concentration is close to 0. That way, if the rate is big enough,
+        # it will consume more compound than there is.
+
+        ozone = (k0 + (k1 * K_SO2 / H[i]) + (k2 * K_SO2 * K_HSO3 / H[i]**2)) * O3[i] * SO2aq
+        peroxide = k3 * K_SO2 / (1 + magic_const * H[i]) * H2O2[i] * SO2aq
+
+        dconc_dt_O3 = -ozone
+        dconc_dt_S_IV = -(ozone + peroxide)
+        dconc_dt_H2O2 = -peroxide
+        dconc_dt_S_VI = ozone + peroxide
+
+        a = dt * droplet_volume.data[i]
+
+        if (
+            moles_O3.data[i] + dconc_dt_O3 * a < 0 or
+            moles_S_IV.data[i] + dconc_dt_S_IV * a < 0 or
+            moles_S_VI.data[i] + dconc_dt_S_VI * a < 0 or
+            moles_H2O2.data[i] + dconc_dt_H2O2 * a < 0
+        ):
+            continue
+
+        moles_O3.data[i] += dconc_dt_O3 * a
+        moles_S_IV.data[i] += dconc_dt_S_IV * a
+        moles_S_VI.data[i] += dconc_dt_S_VI * a
+        moles_H2O2.data[i] += dconc_dt_H2O2 * a
+
+
+class AqueousChemistry():
     def __init__(self, environment_mole_fractions, system_type):
         self.environment_mixing_ratios = {}
         for key, compound in GASEOUS_COMPOUNDS.items():
@@ -265,7 +318,7 @@ class AqueousChemistry:
         prhod = self.env.get_predicted("rhod")
 
         # TODO #157: same code in condensation
-        n_substep = 2
+        n_substep = 50
         for _ in range(n_substep):
             for thread_id in numba.prange(n_threads):
                 for i in range(thread_id, n_cell, n_threads):
@@ -321,4 +374,17 @@ class AqueousChemistry:
                         env_T=T
                     )
                     self.core.particles.attributes['moles_H'].mark_updated()  # TODO: not qithin threads loop !!!
+
+                    oxidize(
+                        super_droplet_ids=super_droplet_ids,
+                        particles=self.core.particles,
+                        env_T=T,
+                        dt=self.core.dt / n_substep,
+                        droplet_volume=self.core.particles["volume"]
+                    )
+                    self.core.particles.attributes['moles_S_IV'].mark_updated()
+                    self.core.particles.attributes['moles_S_VI'].mark_updated()
+                    self.core.particles.attributes['moles_H2O2'].mark_updated()
+                    self.core.particles.attributes['moles_O3'].mark_updated()
+
 

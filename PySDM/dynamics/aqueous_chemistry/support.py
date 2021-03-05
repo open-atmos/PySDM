@@ -64,3 +64,25 @@ class EqConst:
     def __repr__(self):
         return f"EqConst({self.K}@{self.T0}, {self.dH})"
 
+
+def arrhenius(A, Ea, T=ROOM_TEMP):
+    return A * np.exp(-Ea / (R_str * T))
+
+
+class KinConst:
+    def __init__(self, A, dT, *, energy=False):
+        self.A = A
+        self.Ea = dT if energy else tdep2enthalpy(dT)
+
+    @staticmethod
+    def from_k(k, dT, *, T_0=ROOM_TEMP, energy=False):
+        if not energy:
+            Ea = tdep2enthalpy(dT)
+        A = k * np.exp(Ea / (R_str * T_0))
+        return KinConst(A, Ea, energy=True)
+
+    def at(self, T):
+        return arrhenius(self.A, self.Ea, T)
+
+    def __repr__(self):
+        return f"KinConst({self.A}, {self.Ea})"
