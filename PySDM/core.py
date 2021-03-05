@@ -68,10 +68,17 @@ class Core:
             prob, self.particles['cell id'], self.particles.cell_idx,
             self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max):
+    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, schedule):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
+
+        if schedule == 'prev_substeps':
+            cell_order = np.argsort(counters['n_substeps'])
+        elif schedule == 'static':
+            cell_order = np.arange(self.mesh.n_cell)
+        else:
+            raise NotImplementedError()
 
         self.backend.condensation(
                 solver=self.condensation_solver,
@@ -95,7 +102,7 @@ class Core:
                 r_cr=self.particles["critical radius"],
                 dt=self.dt,
                 counters=counters,
-                cell_order=np.argsort(counters['n_substeps']),  # TODO #341 check if better than regular order
+                cell_order=cell_order,
                 RH_max=RH_max
             )
         self.backend.temperature_pressure_RH(

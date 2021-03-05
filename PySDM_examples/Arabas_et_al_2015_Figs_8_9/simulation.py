@@ -81,7 +81,8 @@ class Simulation:
                 coord=self.settings.condensation_coord,
                 adaptive=self.settings.condensation_adaptive,
                 substeps=self.settings.condensation_substeps,
-                dt_cond_range=self.settings.dt_cond_range
+                dt_cond_range=self.settings.condensation_dt_cond_range,
+                schedule=self.settings.condensation_schedule
             )
             builder.add_dynamic(condensation)
             products.append(PySDM_products.CondensationTimestepMin())  # TODO #37 and what if a user doesn't want it?

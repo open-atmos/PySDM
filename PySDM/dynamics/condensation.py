@@ -8,6 +8,7 @@ from ..physics import si
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
 default_cond_range = (1e-4 * si.second, 10 * si.second)
+default_schedule = 'prev_substeps'
 
 
 class Condensation:
@@ -19,7 +20,8 @@ class Condensation:
                  coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_cond_range: tuple = default_cond_range
+                 dt_cond_range: tuple = default_cond_range,
+                 schedule: str = default_schedule
                  ):
 
         self.core = None
@@ -38,6 +40,7 @@ class Condensation:
         self.adaptive = adaptive
         self.counters = {}
         self.dt_cond_range = dt_cond_range
+        self.schedule = schedule
 
     def register(self, builder):
         self.core = builder.core
@@ -62,5 +65,6 @@ class Condensation:
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
-                RH_max=self.RH_max
+                RH_max=self.RH_max,
+                schedule=self.schedule
             )

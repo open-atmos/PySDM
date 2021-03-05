@@ -354,7 +354,7 @@ class AlgorithmicMethods:
             cell_order, RH_max
     ):
         for thread_id in numba.prange(n_threads):
-            for i in range(thread_id, n_cell, n_threads):  # TODO #341 at least show that it is not slower :)
+            for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
 
                 cell_start = cell_start_arg[cell_id]
