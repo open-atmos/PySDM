@@ -32,7 +32,7 @@ attributes = {
     'position in cell': PositionInCell,
     'temperature': Temperature,
     'heat': Heat,
-    'critical volume': CriticalVolume
+    'critical volume': CriticalVolume,
     **{"moles_" + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
     **{"conc_" + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
     'pH': pH
