@@ -11,7 +11,6 @@ import numpy as np
 import numba
 import scipy.integrate
 import types
-import sys
 import warnings
 
 idx_thd = 0
@@ -23,7 +22,7 @@ def patch_core(core, coord='volume logarithm', rtol=1e-3):
     core.condensation = types.MethodType(bdf_condensation, core)
 
 
-def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, schedule):
+def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
     n_threads = 1
     if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
@@ -57,7 +56,7 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, schedule):
         counter_n_activating=counters['n_activating'],
         counter_n_deactivating=counters['n_deactivating'],
         counter_n_ripening=counters['n_ripening'],
-        cell_order=np.arange(core.mesh.n_cell),
+        cell_order=cell_order,
         RH_max=RH_max.data
     )
 

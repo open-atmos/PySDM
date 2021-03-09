@@ -12,7 +12,7 @@ import numpy as np
 rtols = [1e-3, 1e-6]
 schemes = ['default', 'BDF']
 setups_num = len(setups)
-dt_cond_range = (0, 1)
+dt_cond_range = (1e-10, 1)
 
 
 @pytest.fixture(scope='module')
