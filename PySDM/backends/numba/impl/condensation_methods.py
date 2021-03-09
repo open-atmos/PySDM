@@ -17,6 +17,8 @@ from functools import lru_cache
 class CondensationMethods:
     @staticmethod
     def make_adapt_substeps(dt, step_fake, dt_range, fuse=100, multiplier=2):
+        if not isinstance(multiplier, int):
+            raise ValueError()
         if dt_range[1] > dt:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
