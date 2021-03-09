@@ -11,7 +11,7 @@ default_cond_range = (1e-4 * si.second, 10 * si.second)
 default_schedule = 'dynamic'
 
 
-class Condensation:
+class Condensation():
 
     def __init__(self,
                  kappa,
@@ -31,7 +31,6 @@ class Condensation:
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
 
-        self.ripening_flags = None
         self.RH_max = None
         self.coord = coord
 
