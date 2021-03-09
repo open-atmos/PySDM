@@ -33,6 +33,8 @@ class Core:
         self.PairwiseStorage = make_PairwiseStorage(backend)
         self.IndexedStorage = make_IndexedStorage(backend)
 
+        self.timers = {}
+
     @property
     def env(self):
         return self.environment
@@ -68,7 +70,7 @@ class Core:
             prob, self.particles['cell id'], self.particles.cell_idx,
             self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max):
+    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
@@ -92,10 +94,10 @@ class Core:
                 kappa=kappa,
                 rtol_x=rtol_x,
                 rtol_thd=rtol_thd,
-                r_cr=self.particles["critical radius"],
+                v_cr=self.particles["critical volume"],
                 dt=self.dt,
                 counters=counters,
-                cell_order=np.argsort(counters['n_substeps']),  # TODO #341 check if better than regular order
+                cell_order=cell_order,
                 RH_max=RH_max
             )
         self.backend.temperature_pressure_RH(
@@ -109,8 +111,9 @@ class Core:
 
     def run(self, steps):
         for _ in range(steps):
-            for dynamic in self.dynamics.values():
-                dynamic()
+            for key, dynamic in self.dynamics.items():
+                with self.timers[key]:
+                    dynamic()
             self.n_steps += 1
             reversed_order_so_that_environment_is_last = reversed(self.observers)
             for observer in reversed_order_so_that_environment_is_last:

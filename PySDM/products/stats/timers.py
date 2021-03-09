@@ -12,6 +12,7 @@ class _Timer(Product):
             scale='linear',
             range=None
         )
+        self._time = None
         self.reset()
 
     def reset(self):
@@ -26,6 +27,9 @@ class _Timer(Product):
         self.reset()
         result += self._time
         return result
+
+    def clock(self):
+        raise NotImplementedError()
 
 
 class CPUTime(_Timer):

@@ -49,7 +49,7 @@ class Simulation:
         attributes['volume'] = phys.volume(radius=r_wet)
         products = [
             PySDM_products.ParticleMeanRadius(),
-            PySDM_products.CondensationTimestep(),
+            PySDM_products.CondensationTimestepMin(),
             PySDM_products.ParcelDisplacement(),
             PySDM_products.RelativeHumidity(),
             PySDM_products.Time(),
@@ -65,7 +65,7 @@ class Simulation:
     def save(self, output):
         cell_id = 0
         output["r"].append(self.core.products['radius_m1'].get(unit=const.si.metre)[cell_id])
-        output["dt"].append(self.core.products['dt_cond'].get()[cell_id])
+        output["dt"].append(self.core.products['dt_cond_min'].get()[cell_id])
         output["z"].append(self.core.products["z"].get())
         output["S"].append(self.core.products["RH_env"].get()[cell_id]/100 - 1)
         output["t"].append(self.core.products["t"].get())
@@ -74,7 +74,7 @@ class Simulation:
             output[event+"_rate"].append(self.core.products[event+'_rate'].get()[cell_id])
 
     def run(self):
-        output = {"r": [], "S": [], "z": [], "t": [], "dt": [], "activating_rate": [],
+        output = {"r": [], "S": [], "z": [], "t": [], "dt_cond_min": [], "activating_rate": [],
                   "deactivating_rate": [], "ripening_rate": []}
 
         self.save(output)

@@ -12,7 +12,7 @@ import matplotlib
 from matplotlib.collections import LineCollection
 
 
-def data(n_output, rtols, schemes, setups_num):
+def data(n_output, rtols, schemes, setups_num, dt_cond_range):
     resultant_data = {}
     for scheme in schemes:
         resultant_data[scheme] = {}
@@ -22,6 +22,7 @@ def data(n_output, rtols, schemes, setups_num):
             for settings_idx in range(setups_num):
                 settings = setups[settings_idx]
                 settings.n_output = n_output
+                settings.dt_cond_range = dt_cond_range
                 simulation = Simulation(settings)
                 bdf.patch_core(simulation.core, settings.coord, rtol=1e-4)
                 results = simulation.run()

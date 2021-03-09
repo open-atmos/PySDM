@@ -6,6 +6,7 @@ git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@f33d602#egg=PyMPDATA
 
 chempy
 
+pystrict>=1.0
 Pint>=0.11
 scipy>=1.4.1
 molmass>=2020.6.10
