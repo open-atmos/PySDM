@@ -8,6 +8,7 @@ import numba
 import numpy
 import numpy as np
 import scipy
+from pystrict import strict
 
 import PySDM
 from PySDM.dynamics import condensation
@@ -21,7 +22,7 @@ from PySDM.physics.constants import si
 
 # from PyMPDATA import __version__ as TODO #339
 
-
+@strict
 class Settings:
     def __dir__(self) -> Iterable[str]:
         return 'dt', 'grid', 'size', 'n_spin_up', 'versions', 'steps_per_output_interval'
