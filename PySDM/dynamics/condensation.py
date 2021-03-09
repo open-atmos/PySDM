@@ -30,7 +30,6 @@ class Condensation:
         self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
-        self.r_cr = None
 
         self.ripening_flags = None
         self.RH_max = None
@@ -46,7 +45,7 @@ class Condensation:
         self.core = builder.core
 
         builder._set_condensation_parameters(self.coord, self.dt_cond_range, self.adaptive)
-        self.r_cr = builder.get_attribute('critical radius')
+        builder.request_attribute('critical volume')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
             self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)

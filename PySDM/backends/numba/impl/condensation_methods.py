@@ -70,7 +70,7 @@ class CondensationMethods:
     @staticmethod
     def make_step_impl(calculate_ml_old, calculate_ml_new):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def step_impl(v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
+        def step_impl(v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
@@ -81,7 +81,7 @@ class CondensationMethods:
                 qv += dt * dqv_dt_pred / 2
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
                 ml_new, n_activating, n_deactivating, n_ripening = \
-                    calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
+                    calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
@@ -124,7 +124,7 @@ class CondensationMethods:
         minfun = _minfun_FF if enable_drop_temperatures else _minfun_MM
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, r_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
+        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -152,12 +152,11 @@ class CondensationMethods:
                     if enable_drop_temperatures:
                         T_i_new = particle_T_old + dt * dT_i_dt_FF(r_old, T, p, particle_T_old, dr_dt_old)
                         particle_T[drop] = T_i_new
-                    v_cr = volume(r_cr[drop])
-                    if v_new > v_cr and v_new > v[drop]:
+                    if v_new > v_cr[drop] and v_new > v[drop]:
                         n_activated_and_growing += n[drop]
-                    if v_new > v_cr > v[drop]:
+                    if v_new > v_cr[drop] > v[drop]:
                         n_activating += n[drop]
-                    if v_new < v_cr < v[drop]:
+                    if v_new < v_cr[drop] < v[drop]:
                         n_deactivating += n[drop]
                     v[drop] = v_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
@@ -177,9 +176,9 @@ class CondensationMethods:
         step = CondensationMethods.make_step(step_impl)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def solve(v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
+        def solve(v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
                   rtol_x, rtol_thd, dt, n_substeps):
-            args = (v, particle_T, r_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
+            args = (v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
             if adaptive:
                 n_substeps = adapt_substeps(args, n_substeps, thd, rtol_thd)
             qv, thd, n_activating, n_deactivating, n_ripening, RH_max = step(args, dt, n_substeps)
