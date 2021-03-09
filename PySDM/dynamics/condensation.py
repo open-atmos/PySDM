@@ -8,7 +8,7 @@ from ..physics import si
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
 default_cond_range = (1e-4 * si.second, 10 * si.second)
-default_schedule = 'prev_substeps'
+default_schedule = 'dynamic'
 
 
 class Condensation:
@@ -40,6 +40,7 @@ class Condensation:
         self.counters = {}
         self.dt_cond_range = dt_cond_range
         self.schedule = schedule
+        self.cell_order = None
 
     def register(self, builder):
         self.core = builder.core
@@ -56,14 +57,23 @@ class Condensation:
 
         self.RH_max = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.RH_max[:] = np.nan
+        self.cell_order = np.arange(self.core.mesh.n_cell)
 
     def __call__(self):
         if self.enable:
+            if self.schedule == 'dynamic':
+                self.condensation_cell_order = np.argsort(self.counters['n_substeps'])
+            elif self.schedule == 'static':
+                pass
+            else:
+                raise NotImplementedError()
+
             self.core.condensation(
                 kappa=self.kappa,
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
                 RH_max=self.RH_max,
-                schedule=self.schedule
+                cell_order=self.cell_order
             )
+
