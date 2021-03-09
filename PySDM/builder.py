@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.core import Core
 from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
 from PySDM.state.particles_factory import ParticlesFactory
-
+from PySDM.state.wall_timer import WallTimer
 from PySDM.attributes.mapper import get_class as attr_class
 from PySDM.attributes.droplet.multiplicities import Multiplicities
 from PySDM.attributes.droplet.volume import Volume
@@ -67,6 +67,9 @@ class Builder:
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
         self.core.particles = ParticlesFactory.attributes(self.core, self.req_attr, attributes)
+
+        for key in self.core.dynamics.keys():
+            self.core.timers[key] = WallTimer()
 
         return self.core
 
