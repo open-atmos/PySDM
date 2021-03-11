@@ -30,7 +30,9 @@ EQUILIBRIUM_CONST = {  # Reaction Specific units, K
     # ("HCO3- = H+ + CO3-2", 4.68*10**-11 * KU, -1760),
     "K_HCO3": EqConst(4.68e-11 * M, -1760 * dT_u),
     # ("HSO4- = H+ + SO4-2", 1.2*10**-2 * KU, 2720),
-    "K_HSO4": EqConst(1.2e-2 * M, 2720 * dT_u)
+    "K_HSO4": EqConst(1.2e-2 * M, 2720 * dT_u),
+    # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
+    "K_H2O": EqConst(1e-14 * si.moles**2 / si.metres**6, 0)  # TODO: triple check
 }
 
 K_H2O = 1e-14 * M * M
