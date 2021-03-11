@@ -1,4 +1,4 @@
-from ..intensive_attribute import IntensiveAttribute
+from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 
 class ConcentrationImpl(IntensiveAttribute):

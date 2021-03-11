@@ -6,8 +6,8 @@ from typing import Dict
 
 import numpy as np
 
-from PySDM.attributes.attribute import Attribute
-from PySDM.attributes.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl.attribute import Attribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
 class Particles:

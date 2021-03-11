@@ -2,7 +2,7 @@
 Created at 11.05.2020
 """
 
-from PySDM.attributes.base_attribute import BaseAttribute
+from PySDM.attributes.impl.base_attribute import BaseAttribute
 
 
 class Multiplicities(BaseAttribute):

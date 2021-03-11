@@ -4,7 +4,7 @@ from PySDM.physics import formulae as phys
 from PySDM.physics import constants as const
 from chempy import Substance
 import numpy as np
-from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
 
 class Settings:

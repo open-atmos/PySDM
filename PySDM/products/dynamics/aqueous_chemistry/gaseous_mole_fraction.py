@@ -1,6 +1,6 @@
 from ...product import Product
 from ....physics.formulae import mixing_ratio_2_mole_fraction
-from ....dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY, GASEOUS_COMPOUNDS
+from ....dynamics.aqueous_chemistry.support import GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 from ....physics.constants import convert_to, ppb
 
 

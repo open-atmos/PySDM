@@ -1,4 +1,4 @@
-from PySDM.attributes.intensive_attribute import IntensiveAttribute
+from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 from PySDM.physics.constants import convert_to
 from PySDM.physics import si
 

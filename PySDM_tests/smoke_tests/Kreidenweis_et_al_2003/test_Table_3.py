@@ -2,7 +2,7 @@ from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics import formulae as phys
 from PySDM.physics.constants import _weight, convert_to, ppb
-from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import SPECIFIC_GRAVITY, AQUEOUS_COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 import numpy as np
 
 

@@ -4,7 +4,7 @@ from PySDM.backends import CPU
 from PySDM.physics import constants as const
 from PySDM.physics import si
 from PySDM.dynamics import AmbientThermodynamics, Condensation, AqueousChemistry
-from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
 import PySDM.products as PySDM_products
 import numpy as np
 

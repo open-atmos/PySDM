@@ -2,7 +2,7 @@
 Created at 14.05.2020
 """
 
-from PySDM.attributes.intensive_attribute import IntensiveAttribute
+from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 
 class Temperature(IntensiveAttribute):

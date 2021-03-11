@@ -1,5 +1,5 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
-from PySDM.dynamics.aqueous_chemistry.aqueous_chemistry import GASEOUS_COMPOUNDS
+from PySDM.dynamics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
 from PySDM.physics import si
 from matplotlib import pyplot
 import numpy as np

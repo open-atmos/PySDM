@@ -5,8 +5,8 @@ Created at 19.11.2019
 from PySDM.builder import Builder
 from PySDM.core import Core
 from .dummy_environment import DummyEnvironment
-from PySDM.attributes.droplet.multiplicities import Multiplicities
-from PySDM.attributes.cell.cell_id import CellID
+from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.numerics.cell_id import CellID
 
 
 class DummyCore(Builder, Core):
