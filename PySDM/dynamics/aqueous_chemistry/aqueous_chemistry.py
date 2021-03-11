@@ -25,7 +25,6 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
         scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
         A_old = mole_amounts.data[i] / droplet_volume[i]
-        # TODO: multiply cinf by ksi ???
         A_new = (A_old + dt * ksi * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
 
         new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
@@ -136,7 +135,7 @@ def oxidize(super_droplet_ids, particles, env_T, dt, droplet_volume):
         moles_H2O2.data[i] += dconc_dt_H2O2 * a
 
 
-class AqueousChemistry():
+class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type):
         self.environment_mixing_ratios = {}
         for key, compound in GASEOUS_COMPOUNDS.items():
@@ -171,7 +170,7 @@ class AqueousChemistry():
         prhod = self.env.get_predicted("rhod")
 
         # TODO #157: same code in condensation
-        n_substep = 50
+        n_substep = 5
         for _ in range(n_substep):
             for thread_id in numba.prange(n_threads):
                 for i in range(thread_id, n_cell, n_threads):

@@ -3,7 +3,7 @@ from ...dynamics.aqueous_chemistry.support import EQUILIBRIUM_CONST, K_H2O
 
 
 class IonicStrength(DerivedAttribute):
-    pass
+    pass  # TODO
 
 
 def calc_ionic_strength(*, Hp, N_III, N_V, C_IV, S_IV, S_VI , env_T):

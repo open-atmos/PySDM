@@ -39,7 +39,7 @@ def test_calc_ionic_strength(nt, n_sd):
     alpha_N5 = (1 + K_HNO3 / conc['H+'])
 
     actual = calc_ionic_strength(
-        Hp=conc['H+'],
+        Hp=conc['H+'],  # TODO: embrace the same notation for attributes?
         N_III=conc['N-3'],
         N_V=conc['N+5'],
         C_IV=conc['C+4'],
@@ -50,15 +50,15 @@ def test_calc_ionic_strength(nt, n_sd):
     expected = ionic_strength({
         'H+': conc['H+'] / rho_w,
         'HCO3-': K_CO2 / conc['H+'] * conc['C+4'] / alpha_C / rho_w,
-        'CO32-': K_CO2 / conc['H+'] * K_HCO3 / conc['H+'] * conc['C+4'] / alpha_C / rho_w,
+        'CO3-2': K_CO2 / conc['H+'] * K_HCO3 / conc['H+'] * conc['C+4'] / alpha_C / rho_w,
         'HSO3-': K_SO2 / conc['H+'] * conc['S+4'] / alpha_S / rho_w,
-        'SO32-': K_SO2 / conc['H+'] * K_HSO3 / conc['H+'] * conc['S+4'] / alpha_S / rho_w,
+        'SO3-2': K_SO2 / conc['H+'] * K_HSO3 / conc['H+'] * conc['S+4'] / alpha_S / rho_w,
         'NH4+': K_NH3 / K_H2O * conc['H+'] * conc['N-3'] / alpha_N3 / rho_w,
         'NO3-': K_HNO3 / conc['H+'] * conc['N+5'] / alpha_N5 / rho_w,
         'HSO4-': conc['H+'] * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
-        'SO42-': K_HSO4 * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
+        'SO4-2': K_HSO4 * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
         'OH-': K_H2O / conc['H+'] / rho_w
-    }) * rho_w
+    }, warn=False) * rho_w  # TODO: warn=True if equilibrate_pH done
 
-    np.testing.assert_allclose(actual, expected, rtol=1e-2)
+    np.testing.assert_allclose(actual, expected, rtol=1e-15)
 
