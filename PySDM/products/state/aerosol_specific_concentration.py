@@ -16,7 +16,7 @@ class AerosolSpecificConcentration(MomentProduct):
             unit='mg-1',
             description='Aerosol specific concentration',
             scale='linear',
-            range=[0, 1e2]
+            range=[0, 3e2]
         )
 
     def get(self):

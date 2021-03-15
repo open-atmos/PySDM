@@ -26,7 +26,7 @@ class _CondensationTimestep(Product):
         super().register(builder)
         self.core.observers.append(self)
         self.condensation = self.core.dynamics['Condensation']
-        self.range = (1e-5, self.core.dt)
+        self.range = self.condensation.dt_cond_range
         self.value = np.full_like(self.buffer, np.nan)
 
     def notify(self):

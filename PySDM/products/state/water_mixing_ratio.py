@@ -13,7 +13,7 @@ class WaterMixingRatio(MomentProduct):
             unit='g/kg',
             description=f'{description_prefix} water mixing ratio',
             scale='linear',
-            range=[0, 2]
+            range=[0, 1]
         )
 
     def get(self):  # TODO #217
