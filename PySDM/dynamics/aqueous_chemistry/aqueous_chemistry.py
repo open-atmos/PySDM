@@ -25,7 +25,8 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
         scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
         A_old = mole_amounts.data[i] / droplet_volume[i]
-        A_new = (A_old + dt * ksi * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
+        A_new = (A_old + dt * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
+        # TODO !!!!!!!!! A_new = (A_old + dt * ksi * cinf / scale) / (1 + dt / (scale * ksi * henrysConstant * R_str * env_T))
 
         new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
         mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])

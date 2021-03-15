@@ -97,6 +97,8 @@ HENRY_CONST = {
     "CO2":  EqConst(3.4e-2 * H_u, 2440 * dT_u),
     "O3":   EqConst(1.13e-2 * H_u, 2540 * dT_u),
 }
+
+# Table 4 in Kreidenweis et al. 2003
 EQUILIBRIUM_CONST = {  # Reaction Specific units, K
     # ("HNO3(aq) = H+ + NO3-", 15.4, 0),
     "K_HNO3": EqConst(15.4 * M, 0 * dT_u),
@@ -134,10 +136,10 @@ MASS_ACCOMMODATION_COEFFICIENTS = {
     "O3":   0.00053
 }
 AQUEOUS_COMPOUNDS = {
-    "S_IV": ("SO2 H2O", "HSO3", "SO3"),
+    "S_IV": ("SO2 H2O", "HSO3", "SO3"),  # rename: SO2 H2O -> H2SO3(aq) ?
     "O3": ("O3",),
     "H2O2": ("H2O2",),
-    "C_IV": ("CO2 H2O", "HCO3", "CO3"),
+    "C_IV": ("CO2 H2O", "HCO3", "CO3"),  # ditto
     "N_V": ("HNO3", "NO3"),
     "N_mIII": ("NH4", "H2O NH3"),
     "S_VI": ("SO4", "HSO4"),
