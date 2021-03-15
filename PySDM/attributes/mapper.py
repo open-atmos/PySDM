@@ -15,7 +15,6 @@ from .droplet.temperature import Temperature
 from .droplet.heat import Heat
 from .droplet.critical_radius import CriticalRadius
 
-# TODO #157
 attributes = {
     'n': Multiplicities,
     'volume': Volume,
