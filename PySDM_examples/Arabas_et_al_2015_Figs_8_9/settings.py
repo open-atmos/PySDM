@@ -44,6 +44,7 @@ class Settings:
         self.coalescence_adaptive = True
         self.coalescence_dt_coal_range = coalescence.default_dt_coal_range
         self.coalescence_optimized_random = True
+        self.coalescence_substeps = 1
 
         self.grid = (25, 25)
         self.size = (1500 * si.metres, 1500 * si.metres)

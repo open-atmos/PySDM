@@ -1,14 +1,15 @@
-from ...product import Product
+from PySDM.products.product import Product
 
 
-class CondensationWallTime(Product):
-    def __init__(self):
+class DynamicWallTime(Product):
+    def __init__(self, dynamic):
         super().__init__(
-            name='cond_wall_time',
+            name=f'{dynamic}_wall_time',
             unit='s',
-            description='Condensation wall time',
+            description=f'{dynamic} wall time',
         )
         self.value = 0
+        self.dynamic = dynamic
 
     def register(self, builder):
         super().register(builder)
@@ -21,4 +22,4 @@ class CondensationWallTime(Product):
         return tmp
 
     def notify(self):
-        self.value += self.core.timers['Condensation'].time
+        self.value += self.core.timers[self.dynamic].time
