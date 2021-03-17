@@ -43,7 +43,6 @@ class TestTable3:
         expected = {k: 0 for k in AQUEOUS_COMPOUNDS.keys()}
         expected['S_VI'] = mass_conc_SO4mm * si.ug / si.m**3
         expected['N_mIII'] = mass_conc_NH4p * si.ug / si.m**3
-        expected['H'] = mass_conc_H * si.ug / si.m**3
 
         for key in expected.keys():
             mole_fraction = np.asarray(output[f"aq_{key}_ppb"])

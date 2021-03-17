@@ -52,7 +52,7 @@ class Settings:
         DRY_SUBSTANCE = Substance.from_formula("NH4HSO4")
         BUM = phys.volume(self.r_dry) * Settings.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
         self.starting_amounts = {
-            "moles_"+k: BUM if k in ("N_mIII", "S_VI", "H") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS.keys()
+            "moles_"+k: BUM if k in ("N_mIII", "S_VI") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS.keys()
         }
 
     @property

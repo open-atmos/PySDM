@@ -166,7 +166,7 @@ def within_tolerance(error_estimate, value, rtol):
     return error_estimate < rtol * np.abs(value)
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}} )
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
 def bisec(minfun, a, interval, args, rtol):
     b = a + interval
 

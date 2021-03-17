@@ -1,12 +1,15 @@
 from PySDM.physics import si
 from PySDM.physics.constants import R_str, ROOM_TEMP, H_u, dT_u, M, _weight, Md
 import numpy as np
+import numba
 
 
+@numba.njit()
 def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
 
 
+@numba.njit()
 def tdep2enthalpy(tdep):
     return -tdep * R_str
 
@@ -136,7 +139,7 @@ AQUEOUS_COMPOUNDS = {
     "N_V": ("HNO3", "NO3"),
     "N_mIII": ("NH4", "H2O NH3"),
     "S_VI": ("SO4", "HSO4"),
-    "H": ("H",)
+    # "H": ("H",)
 }
 GASEOUS_COMPOUNDS = {
     "N_V": "HNO3",
@@ -191,3 +194,15 @@ SPECIFIC_GRAVITY = {
 for compounds in AQUEOUS_COMPOUNDS.values():
     for compound in compounds:
         SPECIFIC_GRAVITY[compound] = _weight(compound) / Md
+
+
+@numba.njit()
+def pH2H(pH):
+    return 10**(-pH) * 1e3
+
+@numba.njit()
+def H2pH(H):
+    return -np.log10(H * 1e-3)
+
+
+FLAG = -44
