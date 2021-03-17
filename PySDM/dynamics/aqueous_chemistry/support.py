@@ -100,19 +100,12 @@ HENRY_CONST = {
 
 # Table 4 in Kreidenweis et al. 2003
 EQUILIBRIUM_CONST = {  # Reaction Specific units, K
-    # ("HNO3(aq) = H+ + NO3-", 15.4, 0),
     "K_HNO3": EqConst(15.4 * M, 0 * dT_u),
-    # ("H2SO3(aq) = H+ + HSO3-", 1.54*10**-2 * KU, 1960),
     "K_SO2":  EqConst(1.3e-2 * M, 1960 * dT_u),
-    # ("NH4+ = NH3(aq) + H+", 10**-9.25 * M, 0),
     "K_NH3":  EqConst(1.7e-5 * M, -450 * dT_u),
-    # ("H2CO3(aq) = H+ + HCO3-", 4.3*10**-7 * KU, -1000),
     "K_CO2":  EqConst(4.3e-7 * M, -1000 * dT_u),
-    # ("HSO3- = H+ + SO3-2", 6.6*10**-8 * KU, 1500),
     "K_HSO3": EqConst(6.6e-8 * M, 1500 * dT_u),
-    # ("HCO3- = H+ + CO3-2", 4.68*10**-11 * KU, -1760),
     "K_HCO3": EqConst(4.68e-11 * M, -1760 * dT_u),
-    # ("HSO4- = H+ + SO4-2", 1.2*10**-2 * KU, 2720),
     "K_HSO4": EqConst(1.2e-2 * M, 2720 * dT_u),
 }
 

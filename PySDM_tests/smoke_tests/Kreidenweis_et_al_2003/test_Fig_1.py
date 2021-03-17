@@ -8,7 +8,7 @@ import pytest
 
 @pytest.fixture(scope='session')
 def example_output():
-    settings = Settings(n_sd=2, dt=1*si.s)
+    settings = Settings(n_sd=16, dt=1*si.s)
     simulation = Simulation(settings)
     output = simulation.run()
     return output
@@ -51,6 +51,11 @@ class TestFig1:
                 pyplot.xlabel(key + ' [ppb]')
                 pyplot.show()
 
+            pyplot.plot(
+                np.asarray(example_output[f'aq_S_VI_ppb']),
+                np.asarray(example_output['t']) - Z_CB * si.s, label='S_VI')
+            pyplot.xlabel('TODO [ppb]')
+            pyplot.show()
         # Assert
         # assert False  TODO #157
 

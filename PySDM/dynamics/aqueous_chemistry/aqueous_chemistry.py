@@ -39,7 +39,7 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         env_mixing_ratio -= delta_mr
 
 
-def equilibrate_pH(super_droplet_ids, particles, env_T):
+def equilibrate_pH(super_droplet_ids, particles, env_T, pH_min=-1, pH_max=14):
     N_III = particles["conc_N_mIII"].data
     N_V = particles["conc_N_V"].data
     C_IV = particles["conc_C_IV"].data
@@ -67,14 +67,13 @@ def equilibrate_pH(super_droplet_ids, particles, env_T):
         zero = H_i + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
         return zero
 
-    pH_min=-1
-    pH_max=9
     H_min = 10**(-pH_max) * (si.m**3 / si.litre)
     H_max = 10**(-pH_min) * (si.m**3 / si.litre)
     for i in super_droplet_ids:
         args = (i,)
-        result = optimize.root_scalar(concentration, x0=H_min, x1=H_max, args=args)
+        result = optimize.root_scalar(concentration, bracket=(H_min, H_max), args=args, method='bisect')
         assert result.converged
+        assert result.root >= 0
         moles_H[i] = result.root * volume[i]
 
 
@@ -91,15 +90,15 @@ def oxidize(super_droplet_ids, particles, env_T, dt, droplet_volume):
     K_SO2 = EQUILIBRIUM_CONST["K_SO2"].at(env_T)
     K_HSO3 = EQUILIBRIUM_CONST["K_HSO3"].at(env_T)
 
-    H = particles.attributes["conc_H"].data
-    O3 = particles.attributes["conc_O3"].data
-    H2O2 = particles.attributes["conc_H2O2"].data
-    S_IV = particles.attributes["conc_S_IV"].data
+    H = particles["conc_H"].data
+    O3 = particles["conc_O3"].data
+    H2O2 = particles["conc_H2O2"].data
+    S_IV = particles["conc_S_IV"].data
 
-    moles_O3 = particles.attributes["moles_O3"].data
-    moles_H2O2 = particles.attributes["moles_H2O2"].data
-    moles_S_IV = particles.attributes["moles_S_IV"].data
-    moles_S_VI = particles.attributes["moles_S_VI"].data
+    moles_O3 = particles["moles_O3"].data
+    moles_H2O2 = particles["moles_H2O2"].data
+    moles_S_IV = particles["moles_S_IV"].data
+    moles_S_VI = particles["moles_S_VI"].data
 
     for i in super_droplet_ids:
         SO2aq = S_IV[i] / aqq_SO2(H[i])
@@ -114,6 +113,12 @@ def oxidize(super_droplet_ids, particles, env_T, dt, droplet_volume):
 
         ozone = (k0 + (k1 * K_SO2 / H[i]) + (k2 * K_SO2 * K_HSO3 / H[i]**2)) * O3[i] * SO2aq
         peroxide = k3 * K_SO2 / (1 + magic_const * H[i]) * H2O2[i] * SO2aq
+
+        if ozone < 0:
+            print("AQQ")
+
+        if peroxide < 0:
+            print("BQQ")
 
         dconc_dt_O3 = -ozone
         dconc_dt_S_IV = -(ozone + peroxide)
@@ -226,7 +231,7 @@ class AqueousChemistry:
                         particles=self.core.particles,
                         env_T=T
                     )
-                    self.core.particles.attributes['moles_H'].mark_updated()  # TODO: not qithin threads loop !!!
+                    self.core.particles.attributes['moles_H'].mark_updated()  # TODO: not within threads loop !!!
 
                     oxidize(
                         super_droplet_ids=super_droplet_ids,
