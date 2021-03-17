@@ -19,7 +19,6 @@ from PySDM.attributes.chemistry.concentration import Concentration
 from PySDM.attributes.chemistry.pH import pH
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
-# TODO #157
 attributes = {
     'n': Multiplicities,
     'volume': Volume,
