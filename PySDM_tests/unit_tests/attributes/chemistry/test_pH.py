@@ -83,7 +83,7 @@ class Test_pH:
         np.testing.assert_allclose(actual_pH, expected_pH, rtol=1e-5)
 
     @staticmethod
-    @pytest.mark.parametrize("nt", (0,)) #  1, 2, 3)) TODO!
+    @pytest.mark.parametrize("nt", (0, 1, 2, 3))
     @pytest.mark.parametrize("n_sd", (1, 2, 100))
     def test_calc_ionic_strength(nt, n_sd):
         from chempy.electrolytes import ionic_strength
