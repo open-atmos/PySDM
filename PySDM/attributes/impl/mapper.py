@@ -13,7 +13,7 @@ from PySDM.attributes.numerics.cell_origin import CellOrigin
 from PySDM.attributes.numerics.position_in_cell import PositionInCell
 from PySDM.attributes.physics.temperature import Temperature
 from PySDM.attributes.physics.heat import Heat
-from PySDM.attributes.physics.critical_radius import CriticalVolume
+from PySDM.attributes.physics.critical_volume import CriticalVolume
 from PySDM.attributes.chemistry.mole_amount import MoleAmount
 from PySDM.attributes.chemistry.concentration import Concentration
 from PySDM.attributes.chemistry.pH import pH

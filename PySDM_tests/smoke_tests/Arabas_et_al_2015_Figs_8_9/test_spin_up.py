@@ -37,7 +37,7 @@ def test_spin_up(plot=False):
     # Plot
     if plot:
         levels = np.arange(settings.grid[1])
-        for step, datum in storage.profiles.items():
+        for step, datum in enumerate(storage.profiles):
             pyplot.plot(datum["qv_env"], levels, label=str(step))
         pyplot.legend()
         pyplot.show()

@@ -37,11 +37,6 @@ def floor(output):
     output[:] = np.floor(output)
 
 
-@numba.njit(void(f8[:]), **conf.JIT_FLAGS)
-def log10(output):
-    output[:] = np.log10(output)
-
-
 @numba.njit(void(i8[:, :], f8[:, :]), **conf.JIT_FLAGS)
 def floor_out_of_place(output, input_data):
     output[:] = np.floor(input_data)

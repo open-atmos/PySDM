@@ -30,7 +30,7 @@ class Settings:
     rtol_x = condensation.default_rtol_x
     rtol_thd = condensation.default_rtol_thd
     coord = 'volume logarithm'
-    dt_cond_range = condensation.default_cond_range
+    dt_cond_range = (condensation.default_cond_range[0], 1 * si.s)
 
     p0 = 1000 * si.hectopascals
     RH0 = .98

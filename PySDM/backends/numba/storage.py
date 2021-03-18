@@ -173,10 +173,6 @@ class Storage:
             impl.floor_out_of_place(self.data, other.data)
         return self
 
-    def log10(self):
-        impl.log10(self.data)
-        return self
-
     def product(self, multiplicand, multiplier):
         if hasattr(multiplier, 'data'):
             impl.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)

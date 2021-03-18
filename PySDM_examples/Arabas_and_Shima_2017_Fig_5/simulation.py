@@ -39,6 +39,7 @@ class Simulation:
             kappa=settings.kappa,
             rtol_x=settings.rtol_x,
             rtol_thd=settings.rtol_thd,
+            dt_cond_range=settings.dt_cond_range
         ))
         attributes = {}
         r_dry = np.array([settings.r_dry])
