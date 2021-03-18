@@ -8,7 +8,7 @@ import pytest
 
 @pytest.fixture(scope='session')
 def example_output():
-    settings = Settings(n_sd=16, dt=1*si.s)
+    settings = Settings(n_sd=16, dt=1*si.s, n_substep=5)
     simulation = Simulation(settings)
     output = simulation.run()
     return output

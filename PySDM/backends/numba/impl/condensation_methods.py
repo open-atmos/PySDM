@@ -22,7 +22,7 @@ class CondensationMethods:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
             raise NotImplementedError()
-            # TODO: n_substeps_max = ... (fuse)
+            # TODO #437: n_substeps_max = ... (fuse)
         else:
             n_substeps_max = math.floor(dt / dt_range[0])
         n_substeps_min = math.ceil(dt / dt_range[1])

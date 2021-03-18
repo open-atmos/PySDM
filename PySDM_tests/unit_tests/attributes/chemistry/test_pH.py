@@ -1,5 +1,5 @@
-from PySDM.dynamics.aqueous_chemistry.support import K_H2O, M, EQUILIBRIUM_CONST
-from PySDM.physics.constants import ROOM_TEMP
+from PySDM.dynamics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
+from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.attributes.chemistry.pH import equilibrate_H
 from chempy import Equilibrium
 from chempy.equilibria import EqSystem
@@ -14,10 +14,14 @@ class Test_pH:
     @staticmethod
     def test_equilibrate_pH_pure_water():
         # Arrange
+        eqs = {}
+        for key in EQUILIBRIUM_CONST.keys():
+            eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(ROOM_TEMP))
 
         # Act
-        result = equilibrate_H(
-            env_T=ROOM_TEMP,
+        result, _ = equilibrate_H(
+            equilibrium_consts=eqs,
+            cell_id=0,
             N_mIII=0,
             N_V=0,
             C_IV=0,
@@ -62,13 +66,18 @@ class Test_pH:
         assert substances[H_idx].name == 'H+'
         expected_pH = -np.log10(x[H_idx])
 
-        actual_pH = equilibrate_H(
+        eqs = {}
+        for key in EQUILIBRIUM_CONST.keys():
+            eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
+
+        actual_pH, _ = equilibrate_H(
             N_mIII=init_conc['NH3'] * 1e3,
             N_V=init_conc['HNO3(aq)'] * 1e3,
             C_IV=init_conc['H2CO3(aq)'] * 1e3,
             S_IV=init_conc['H2SO3(aq)'] * 1e3,
             S_VI=init_conc['HSO4-'] * 1e3,
-            env_T=env_T
+            equilibrium_consts=eqs,
+            cell_id=0
         )
 
         np.testing.assert_allclose(actual_pH, expected_pH, rtol=1e-5)
@@ -79,7 +88,7 @@ class Test_pH:
     def test_calc_ionic_strength(nt, n_sd):
         from chempy.electrolytes import ionic_strength
         from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
-        from PySDM.attributes.chemistry.pH import calc_ionic_strength
+        from PySDM.backends.numba.impl._chemistry_methods import calc_ionic_strength
         from PySDM.physics.constants import rho_w, ROOM_TEMP
 
         K_NH3 = EQUILIBRIUM_CONST["K_NH3"].at(ROOM_TEMP)
@@ -90,7 +99,7 @@ class Test_pH:
         K_CO2 = EQUILIBRIUM_CONST["K_CO2"].at(ROOM_TEMP)
         K_HNO3 = EQUILIBRIUM_CONST["K_HNO3"].at(ROOM_TEMP)
 
-        settings = Settings(dt=1, n_sd=n_sd)
+        settings = Settings(dt=1, n_sd=n_sd, n_substep=5)
         simulation = Simulation(settings)
         simulation.run(nt)
 

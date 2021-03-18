@@ -10,7 +10,7 @@ from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 class Settings:
     DRY_RHO = 1800 * si.kg / (si.m ** 3)
 
-    def __init__(self, dt, n_sd):
+    def __init__(self, dt, n_sd, n_substep):
         self.system_type = 'closed'
         self.t_max = (2400 + 196) * si.s
         self.w = .5 * si.m/si.s
@@ -18,6 +18,7 @@ class Settings:
 
         self.dt = dt
         self.n_sd = n_sd
+        self.n_substep = n_substep
 
         self.p0 = 950 * si.mbar
         self.T0 = 285.2 * si.K

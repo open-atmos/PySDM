@@ -27,7 +27,11 @@ class Simulation:
 
         builder.add_dynamic(AmbientThermodynamics())
         builder.add_dynamic(Condensation(kappa=settings.kappa))
-        builder.add_dynamic(AqueousChemistry(settings.ENVIRONMENT_MOLE_FRACTIONS, system_type=settings.system_type))
+        builder.add_dynamic(AqueousChemistry(
+            settings.ENVIRONMENT_MOLE_FRACTIONS,
+            system_type=settings.system_type,
+            n_substep=settings.n_substep
+        ))
 
         products = [
             PySDM_products.RelativeHumidity(),

@@ -10,7 +10,7 @@ class TestTable3:
     @staticmethod
     def test_at_t_0():
         # Arrange
-        settings = Settings(n_sd=100, dt=1 * si.s)
+        settings = Settings(n_sd=100, dt=1 * si.s, n_substep=5)
         simulation = Simulation(settings)
         zero = 0
 
@@ -60,7 +60,7 @@ class TestTable3:
     @staticmethod
     def test_at_cloud_base():
         # Arrange
-        settings = Settings(n_sd=50, dt=1*si.s)
+        settings = Settings(n_sd=50, dt=1*si.s, n_substep=5)
         simulation = Simulation(settings)
 
         # Act
@@ -82,7 +82,7 @@ class TestTable3:
 
     def test_at_1200m_above_cloud_base(self):
         # Arrange
-        settings = Settings(n_sd=10, dt=1 * si.s)
+        settings = Settings(n_sd=10, dt=1 * si.s, n_substep=5)
         simulation = Simulation(settings)
 
         # Act

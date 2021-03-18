@@ -4,12 +4,11 @@ numba==0.53.0
 numpy==1.19.4  # TODO #408: np.long deprecation in newer numpy triggers warnings in numba 0.52
 git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@f33d602#egg=PyMPDATA
 
-chempy
-
+chempy>=0.8.1
 pystrict>=1.0
 Pint>=0.11
 scipy>=1.4.1
-molmass>=2020.6.10
+molmass>=2020.6.10  # TODO: 436
 matplotlib>=3.2.2
 ipywidgets>=7.5.1
 
