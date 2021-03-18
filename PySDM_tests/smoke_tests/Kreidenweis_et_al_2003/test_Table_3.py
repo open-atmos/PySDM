@@ -11,16 +11,16 @@ class TestTable3:
     def test_at_t_0():
         # Arrange
         settings = Settings(n_sd=100, dt=1 * si.s, n_substep=5)
+        settings.t_max = 0
         simulation = Simulation(settings)
-        zero = 0
 
         # Act
-        output = simulation.run(nt=zero)
+        output = simulation.run()
 
         # Assert
-        np.testing.assert_allclose(output['RH_env'][zero], 95)
-        np.testing.assert_allclose(output['gas_S_IV_ppb'][zero], 0.2)
-        np.testing.assert_allclose(output['gas_N_mIII_ppb'][zero], 0.1)
+        np.testing.assert_allclose(output['RH_env'][0], 95)
+        np.testing.assert_allclose(output['gas_S_IV_ppb'][0], 0.2)
+        np.testing.assert_allclose(output['gas_N_mIII_ppb'][0], 0.1)
         np.testing.assert_allclose(output['gas_H2O2_ppb'], 0.5)
         np.testing.assert_allclose(output['gas_N_V_ppb'], 0.1)
         np.testing.assert_allclose(output['gas_O3_ppb'], 50)
@@ -61,10 +61,12 @@ class TestTable3:
     def test_at_cloud_base():
         # Arrange
         settings = Settings(n_sd=50, dt=1*si.s, n_substep=5)
+        settings.t_max = 196 * si.s
+        settings.output_interval = settings.dt
         simulation = Simulation(settings)
 
         # Act
-        output = simulation.run(nt=int(196 * si.s / settings.dt))
+        output = simulation.run()
 
         # Assert
         assert round(output['z'][-1]) == (698 - 600) * si.m
