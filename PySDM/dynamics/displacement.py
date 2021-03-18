@@ -54,7 +54,9 @@ class Displacement:
             self.precipitation_in_last_step = self.core.particles.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
+        self.core.particles.recalculate_cell_id()
 
+        # TODO #443
         self.core.particles.attributes['position in cell'].mark_updated()
         self.core.particles.attributes['cell origin'].mark_updated()
         self.core.particles.attributes['cell id'].mark_updated()
