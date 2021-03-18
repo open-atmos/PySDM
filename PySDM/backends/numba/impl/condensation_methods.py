@@ -167,7 +167,7 @@ class CondensationMethods:
         return calculate_ml_new
 
     @staticmethod
-    @lru_cache
+    @lru_cache()
     def make_condensation_solver(dt, dt_range, coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
         dx_dt, volume, x = coordinates.get(coord)
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()
