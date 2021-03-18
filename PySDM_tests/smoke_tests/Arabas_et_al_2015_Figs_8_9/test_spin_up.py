@@ -20,12 +20,12 @@ class DummyStorage:
             self.profiles.append({"qv_env": np.mean(data, axis=0)})
 
 
-def test_spin_up(plot=False):
+def test_spin_up(plot=True):
     # Arrange
-    Settings.dt = .5 * si.second
-    Settings.simulation_time = 20 * Settings.dt
-    Settings.output_interval = 1 * Settings.dt
     settings = Settings()
+    settings.dt = .5 * si.second
+    settings.simulation_time = 20 * settings.dt
+    settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
     simulation = Simulation(settings, storage)
