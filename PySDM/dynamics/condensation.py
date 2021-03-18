@@ -7,7 +7,7 @@ from ..physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
-default_cond_range = (1e-4 * si.second, 10 * si.second)
+default_cond_range = (1e-4 * si.second, 1 * si.second)
 default_schedule = 'dynamic'
 
 

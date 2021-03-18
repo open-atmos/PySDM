@@ -62,7 +62,7 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
 
     n_unit = 1/si.microgram
     assert min(N1) == 0.0 * n_unit
-    assert .71 * n_unit < max(N1) < .72 * n_unit
+    assert .6 * n_unit < max(N1) < .8 * n_unit
     assert .17 * n_unit < min(N2) < .18 * n_unit
     assert .40 * n_unit < max(N2) < .41 * n_unit
     assert .1 * n_unit < min(N3) < .11 * n_unit

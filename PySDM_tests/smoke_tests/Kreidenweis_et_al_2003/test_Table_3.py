@@ -80,7 +80,7 @@ class TestTable3:
         assert output['ql'][-2] < .0005
         assert output['ql'][-1] > .0004
         assert output['RH_env'][-1] > 100
-        assert output['RH_env'][-6] < 100
+        assert output['RH_env'][-8] < 100
 
     def test_at_1200m_above_cloud_base(self):
         # Arrange
