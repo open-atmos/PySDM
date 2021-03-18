@@ -1,15 +1,13 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
-from PySDM.backends.numba.impl._chemistry_methods import calc_ionic_strength, concentration, H2pH
-from PySDM.physics import si
+from PySDM.backends.numba.impl._chemistry_methods import calc_ionic_strength, concentration, H2pH, pH2H
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, M
 from PySDM.backends.numba.numba_helpers import bisec
 
 # TODO #439 (iterate in logarithm?)
-pH_min=-1
-pH_max=14
-
-H_min = 10 ** (-pH_max) * (si.m ** 3 / si.litre)
-H_max = 10 ** (-pH_min) * (si.m ** 3 / si.litre)
+pH_min = -1
+pH_max = 14
+H_min = pH2H(pH_max)
+H_max = pH2H(pH_min)
 
 
 def equilibrate_H(equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI):
