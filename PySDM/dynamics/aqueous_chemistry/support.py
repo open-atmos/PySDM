@@ -23,6 +23,7 @@ class KinConst:
         return arrhenius(self.A, self.Ea, T)
 
 
+# TODO #442: unit tests against chempy
 HENRY_CONST = {
     "HNO3": EqConst(2.1e5 * H_u, 0 * dT_u, T_0=ROOM_TEMP),
     "H2O2": EqConst(7.45e4 * H_u, 7300 * dT_u, T_0=ROOM_TEMP),
@@ -51,6 +52,7 @@ DIFFUSION_CONST = {
     "CO2":  13.81e-6 * si.m**2 / si.s,
     "O3":   14.44e-6 * si.m**2 / si.s,
 }
+
 MASS_ACCOMMODATION_COEFFICIENTS = {
     "HNO3": 0.05,
     "H2O2": 0.018,
@@ -68,7 +70,6 @@ AQUEOUS_COMPOUNDS = {
     "N_V": ("HNO3", "NO3"),
     "N_mIII": ("NH4", "H2O NH3"),
     "S_VI": ("SO4", "HSO4"),
-    # "H": ("H",)
 }
 
 GASEOUS_COMPOUNDS = {
@@ -80,7 +81,7 @@ GASEOUS_COMPOUNDS = {
     "O3": "O3"
 }
 
-MEMBER = {
+DISSOCIATION_FACTORS = {
     "CO2": lambda H, eqc, cell_id: 1 + eqc["K_CO2"].data[cell_id] * (1 / H + eqc["K_HCO3"].data[cell_id] / (H ** 2)),
     "SO2": lambda H, eqc, cell_id: 1 + eqc["K_SO2"].data[cell_id] * (1 / H + eqc["K_HSO3"].data[cell_id] / (H ** 2)),
     "NH3": lambda H, eqc, cell_id: 1 + eqc["K_NH3"].data[cell_id] / K_H2O * H,
@@ -104,5 +105,3 @@ SPECIFIC_GRAVITY = {
 for compounds in AQUEOUS_COMPOUNDS.values():
     for compound in compounds:
         SPECIFIC_GRAVITY[compound] = _weight(compound) / Md
-
-

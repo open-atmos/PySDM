@@ -2,7 +2,7 @@ import numba
 import numpy as np
 
 from PySDM.backends.numba import conf
-from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O, ROOM_TEMP
+from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
 from PySDM.physics.formulae import radius
 
 
@@ -21,7 +21,7 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
         A_old = mole_amounts[i] / droplet_volume[i]
         A_new = (A_old + dt * cinf / scale) / (1 + dt / (scale * ksi[i] * henrysConstant * R_str * env_T))
-        # TODO #431 !!!!!!!!! A_new = (A_old + dt * ksi[i] * cinf / scale) / (1 + dt / (scale * ksi[i] * henrysConstant * R_str * env_T))
+        # TODO #442 !!!!!!!!! A_new = (A_old + dt * ksi[i] * cinf / scale) / (1 + dt / (scale * ksi[i] * henrysConstant * R_str * env_T))
         new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
         assert new_mole_amount_per_real_droplet >= 0
 
@@ -37,16 +37,9 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
 def oxidize(n_sd, cell_ids, do_chemistry_flag,
             k0, k1, k2, k3, K_SO2, K_HSO3,
             dt, droplet_volume,
-            pH,
-            O3,
-            H2O2,
-            S_IV,
-            aqq_SO2,
+            pH, O3, H2O2, S_IV, dissociation_factor_SO2,
             # output
-            moles_O3,
-            moles_H2O2,
-            moles_S_IV,
-            moles_S_VI
+            moles_O3, moles_H2O2, moles_S_IV, moles_S_VI
             ):
     # NB: magic_const in the paper is k4.
     # The value is fixed at 13 M^-1 (from Ania's Thesis)
@@ -58,7 +51,7 @@ def oxidize(n_sd, cell_ids, do_chemistry_flag,
 
         cid = cell_ids[i]
         H = pH2H(pH[i])
-        SO2aq = S_IV[i] / aqq_SO2[i]
+        SO2aq = S_IV[i] / dissociation_factor_SO2[i]
 
         # NB: This might not be entirely correct
         # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
@@ -143,7 +136,7 @@ def H2pH(H):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
+def vant_hoff(K, dH, T, *, T_0):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
 
 
@@ -153,5 +146,5 @@ def tdep2enthalpy(tdep):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def arrhenius(A, Ea, T=ROOM_TEMP):
+def arrhenius(A, Ea, T):
     return A * np.exp(-Ea / (R_str * T))

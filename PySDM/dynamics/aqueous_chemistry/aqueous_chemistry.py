@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from .support import HENRY_CONST, EQUILIBRIUM_CONST, DIFFUSION_CONST, \
-    MASS_ACCOMMODATION_COEFFICIENTS, AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS, MEMBER, KINETIC_CONST, \
+    MASS_ACCOMMODATION_COEFFICIENTS, AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, KINETIC_CONST, \
     SPECIFIC_GRAVITY
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio
 from ...backends.numba.impl._chemistry_methods import dissolve_env_gases, oxidize, pH2H
@@ -60,7 +60,7 @@ class AqueousChemistry:
         for i in range(self.core.n_sd):  # TODO #440?
             H = pH2H(pH[i])
             for key in DIFFUSION_CONST.keys():
-                self.aqq[key].data[i] = MEMBER[key](H, self.equilibrium_consts, cell_id[i])
+                self.aqq[key].data[i] = DISSOCIATION_FACTORS[key](H, self.equilibrium_consts, cell_id[i])
 
     def __call__(self):
         n_cell = self.mesh.n_cell
@@ -135,7 +135,7 @@ class AqueousChemistry:
                 k3=self.kinetic_consts["k3"].data,
                 K_SO2=self.equilibrium_consts["K_SO2"].data,
                 K_HSO3=self.equilibrium_consts["K_HSO3"].data,
-                aqq_SO2=self.aqq['SO2'].data,
+                dissociation_factor_SO2=self.aqq['SO2'].data,
                 dt=self.core.dt / self.n_substep,
                 # input
                 droplet_volume=self.core.particles["volume"].data,
