@@ -1,12 +1,12 @@
 import numba
 import numpy as np
 
-from PySDM.backends.numba.conf import JIT_FLAGS
+from PySDM.backends.numba import conf
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O, ROOM_TEMP
 from PySDM.physics.formulae import radius
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_T,
                        env_rho_d, dt, dv, droplet_volume,
                        multiplicity, system_type, specific_gravity, alpha, diffusion_constant,
@@ -33,7 +33,7 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
         env_mixing_ratio -= delta_mr
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def oxidize(n_sd, cell_ids, do_chemistry_flag,
             k0, k1, k2, k3, K_SO2, K_HSO3,
             dt, droplet_volume,
@@ -91,7 +91,7 @@ def oxidize(n_sd, cell_ids, do_chemistry_flag,
         moles_H2O2[i] += dconc_dt_H2O2 * a
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
     # Directly adapted
     # https://github.com/igfuw/libcloudphxx/blob/0b4e2455fba4f95c7387623fc21481a85e7b151f/src/impl/particles_impl_chem_strength.ipp#L50
@@ -120,7 +120,7 @@ def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, 
     return 0.5 * (water + czS_VI + cz_CO2 + cz_SO2 + cz_HNO3 + cz_NH3)
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def concentration(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
     ammonia = (N_mIII * H * K_NH3) / (K_H2O + K_NH3 * H)
     nitric = N_V * K_HNO3 / (H + K_HNO3)
@@ -132,26 +132,26 @@ def concentration(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4
     return zero
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def pH2H(pH):
     return 10**(-pH) * 1e3
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def H2pH(H):
     return -np.log10(H * 1e-3)
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def vant_hoff(K, dH, T, *, T_0=ROOM_TEMP):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def tdep2enthalpy(tdep):
     return -tdep * R_str
 
 
-@numba.njit(**JIT_FLAGS)
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def arrhenius(A, Ea, T=ROOM_TEMP):
     return A * np.exp(-Ea / (R_str * T))
