@@ -7,10 +7,13 @@ from scipy.integrate import solve_ivp
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from PySDM.dynamics import condensation
+from pystrict import strict
 
 
+@strict
 class Settings:
-    def __init__(self, n_sd_per_gridbox, w_1=2*si.m/si.s, dt=1*si.s, dz=25*si.m, precip=True):
+    def __init__(self, n_sd_per_gridbox: int, w_1: float = 2*si.m/si.s, dt: float = 1*si.s,
+                 dz: float = 25*si.m, precip: bool = True):
         self.n_sd_per_gridbox = n_sd_per_gridbox
         self.kappa = .9  # TODO #414: not in the paper
         self.wet_radius_spectrum_per_mass_of_dry_air = Lognormal(

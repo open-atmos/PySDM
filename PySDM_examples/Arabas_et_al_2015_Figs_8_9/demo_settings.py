@@ -12,7 +12,6 @@ import os
 class DemoSettings():
     def __init__(self):
         settings = Settings()
-        #super().__init__()
         self.ui_th_std0 = FloatSlider(description="$\\theta_0$ [K]", value=settings.th_std0, min=280, max=300)
         self.ui_qv0 = FloatSlider(description="q$_{v0}$ [g/kg]", value=settings.qv0 * 1000, min=5, max=10)
         self.ui_p0 = FloatSlider(description="p$_0$ [hPa]", value=settings.p0 / 100, min=900, max=1100)
@@ -58,8 +57,6 @@ class DemoSettings():
             Checkbox(value=settings.mpdata_iga, description=self.iga_description),
             IntSlider(value=settings.mpdata_iters, description=self.nit_description, min=1, max=5)
         ]
-        self.ui_n_threads = IntSlider(min=1, max=os.cpu_count(), value=numba.get_num_threads())
-        self.ui_n_threads.observe(DemoSettings.handle_n_threads, 'value')
 
         # TODO #37
         self.v_bins = settings.v_bins
@@ -182,8 +179,3 @@ class DemoSettings():
         layout.set_title(1, 'processes')
         layout.set_title(2, 'discretisation')
         return layout
-
-    @staticmethod
-    def handle_n_threads(change):
-        numba.set_num_threads(change['new'])
-

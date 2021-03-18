@@ -5,18 +5,22 @@ from PySDM.physics import constants as const
 from chempy import Substance
 import numpy as np
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from pystrict import strict
 
 
+@strict
 class Settings:
-    DRY_RHO = 1800 * si.kg / (si.m ** 3)
-
-    def __init__(self, dt, n_sd, n_substep):
+    def __init__(self, dt: float, n_sd: int, n_substep: int):
+        self.DRY_RHO = 1800 * si.kg / (si.m ** 3)
         self.system_type = 'closed'
+
         self.t_max = (2400 + 196) * si.s
+        self.output_interval = 10 * si.s
+        self.dt = dt
+
         self.w = .5 * si.m/si.s
         self.g = 10 * si.m / si.s**2
 
-        self.dt = dt
         self.n_sd = n_sd
         self.n_substep = n_substep
 
@@ -51,7 +55,7 @@ class Settings:
         }
 
         DRY_SUBSTANCE = Substance.from_formula("NH4HSO4")
-        BUM = phys.volume(self.r_dry) * Settings.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
+        BUM = phys.volume(self.r_dry) * self.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
         self.starting_amounts = {
             "moles_"+k: BUM if k in ("N_mIII", "S_VI") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS.keys()
         }
@@ -61,3 +65,7 @@ class Settings:
         nt = self.t_max / self.dt
         assert nt == int(nt)
         return int(nt)
+
+    @property
+    def steps_per_output_interval(self) -> int:
+        return int(self.output_interval / self.dt)
