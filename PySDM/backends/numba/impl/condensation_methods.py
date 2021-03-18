@@ -27,8 +27,6 @@ class CondensationMethods:
             n_substeps_max = math.floor(dt / dt_range[0])
         n_substeps_min = math.ceil(dt / dt_range[1])
 
-        # TODO: is fuse needed with dt_range?
-
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def adapt_substeps(args, n_substeps, thd, rtol_thd):
 

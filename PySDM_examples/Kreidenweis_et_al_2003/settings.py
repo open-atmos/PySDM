@@ -24,9 +24,9 @@ class Settings:
         self.T0 = 285.2 * si.K
         self.pv0 = .95 * phys.pvs(self.T0)
 
-        self.kappa = .61  # TODO #157
-        rho = 1  # TODO #157
-        self.mass_of_dry_air = 44  # TODO #157
+        self.kappa = .61  # TODO #442
+        rho = 1  # TODO #442
+        self.mass_of_dry_air = 44  # TODO #442
 
         self.cloud_radius_range = (
                 .5 * si.micrometre,

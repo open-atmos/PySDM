@@ -4,7 +4,7 @@ from PySDM.physics import si
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, M
 from PySDM.backends.numba.numba_helpers import bisec
 
-# TODO (iterate in logarithm?)
+# TODO #439 (iterate in logarithm?)
 pH_min=-1
 pH_max=14
 
@@ -25,7 +25,7 @@ def equilibrate_H(equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI):
         N_mIII, N_V, C_IV, S_IV, S_VI,
         K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3
     )
-    H = bisec(concentration, H_min, H_max - H_min, args, rtol=1e-6)  # TODO: pass rtol as arg
+    H = bisec(concentration, H_min, H_max - H_min, args, rtol=1e-6)  # TODO #439: pass rtol as arg
     flag = calc_ionic_strength(H, *args) <= 0.02 * M
     return H2pH(H), flag
 

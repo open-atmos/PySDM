@@ -30,7 +30,6 @@ class Attribute:
         pass
 
     def mark_updated(self):
-        # TODO: error id dependant attribute
         self.timestamp += 1
 
     def __str__(self):

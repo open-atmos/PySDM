@@ -12,7 +12,7 @@ class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type, n_substep):
         self.environment_mixing_ratios = {}
         for key, compound in GASEOUS_COMPOUNDS.items():
-            shape = (1,)  # TODO #157
+            shape = (1,)  # TODO #440
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
@@ -57,15 +57,15 @@ class AqueousChemistry:
     def recalculate_drop_data(self):
         cell_id = self.core.particles['cell id'].data
         pH = self.core.particles['pH'].data
-        for i in range(self.core.n_sd):  # TODO idx?
+        for i in range(self.core.n_sd):  # TODO #440?
             H = pH2H(pH[i])
             for key in DIFFUSION_CONST.keys():
                 self.aqq[key].data[i] = MEMBER[key](H, self.equilibrium_consts, cell_id[i])
 
     def __call__(self):
         n_cell = self.mesh.n_cell
-        n_threads = 1  # TODO #157
-        cell_order = np.arange(n_cell)  # TODO #157
+        n_threads = 1  # TODO #440
+        cell_order = np.arange(n_cell)  # TODO #440
         cell_start_arg = self.core.particles.cell_start.data
         idx = self.core.particles._Particles__idx
 
@@ -91,10 +91,10 @@ class AqueousChemistry:
                         continue
 
                     rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                    T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO #157: this is surely already computed elsewhere!
+                    T, p, RH = temperature_pressure_RH(rhod_mean, thd[cell_id], qv[cell_id])  # TODO #440: this is surely already computed elsewhere!
 
-                    super_droplet_ids = []
-                    for sd_id in idx[cell_start:cell_end]:  # TODO: idx?
+                    super_droplet_ids = numba.typed.List()
+                    for sd_id in idx[cell_start:cell_end]:  # TODO #440: idx?
                         if self.do_chemistry_flag.data[sd_id]:
                             super_droplet_ids.append(sd_id)
 

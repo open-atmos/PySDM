@@ -11,13 +11,13 @@ from matplotlib import pyplot
 
 class DummyStorage:
     def __init__(self):
-        self.profiles = {}
+        self.profiles = []
 
     def init(*_): pass
 
     def save(self, data: np.ndarray, step: int, name: str):
         if name == "qv_env":
-            self.profiles[step] = {"qv_env": np.mean(data, axis=0)}
+            self.profiles.append({"qv_env": np.mean(data, axis=0)})
 
 
 def test_spin_up(plot=False):
@@ -45,7 +45,7 @@ def test_spin_up(plot=False):
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next = storage.profiles[step + settings.steps_per_output_interval]["qv_env"]
+        next = storage.profiles[step + 1]["qv_env"]
         prev = storage.profiles[step]["qv_env"]
         eps = 1e-3
         assert ((prev + eps) >= next).all()

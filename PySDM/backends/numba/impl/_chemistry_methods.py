@@ -12,7 +12,7 @@ def dissolve_env_gases(super_droplet_ids, mole_amounts, env_mixing_ratio, henrys
                        multiplicity, system_type, specific_gravity, alpha, diffusion_constant,
                        ksi):
     mole_amount_taken = 0
-    for i in super_droplet_ids:  # TODO: idx?
+    for i in super_droplet_ids:  # TODO #440: idx?
         Mc = specific_gravity * Md
         Rc = R_str / Mc
         cinf = env_p / env_T / (Rd/env_mixing_ratio[0] + Rc) / Mc
@@ -52,7 +52,7 @@ def oxidize(n_sd, cell_ids, do_chemistry_flag,
     # The value is fixed at 13 M^-1 (from Ania's Thesis)
     magic_const = 13 / M
 
-    for i in range(n_sd):  # TODO: idx?
+    for i in range(n_sd):  # TODO #440: idx?
         if not do_chemistry_flag[i]:
             continue
 

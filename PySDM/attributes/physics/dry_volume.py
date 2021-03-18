@@ -10,4 +10,4 @@ class DryVolume(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name='dry volume')
 
-    # TODO: for chemistry this should be a dependent attribute
+    # TODO #438: for chemistry this should be a dependent attribute

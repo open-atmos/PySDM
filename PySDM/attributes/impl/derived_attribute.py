@@ -21,3 +21,6 @@ class DerivedAttribute(Attribute):
 
     def recalculate(self):
         raise NotImplementedError()
+
+    def mark_updated(self):
+        raise AssertionError()

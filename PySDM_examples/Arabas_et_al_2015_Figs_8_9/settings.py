@@ -86,7 +86,7 @@ class Settings:
         self.th_std0 = 289 * si.kelvins
         self.qv0 = 7.5 * si.grams / si.kilogram
         self.p0 = 1015 * si.hectopascals
-        self.kappa = 1  # TODO!
+        self.kappa = 1  # TODO #441!
         self.g = const.g_std
         self.kernel = Geometric(collection_efficiency=1)
         self.aerosol_radius_threshold = .5 * si.micrometre
