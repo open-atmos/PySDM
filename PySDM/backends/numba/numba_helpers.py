@@ -14,7 +14,7 @@ else:
     import numba
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'fastmath': False}})
 def temperature_pressure_RH(rhod, thd, qv):
     # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
     exponent = const.Rd / const.c_pd

@@ -2,7 +2,6 @@
 Crated at 2019
 """
 
-import molmass
 import pint
 from scipy import constants as sci
 from PySDM.physics._fake_unit_registry import FakeUnitRegistry
@@ -15,10 +14,7 @@ if not DIMENSIONAL_ANALYSIS:
 
 
 def _weight(x):
-    # TODO #436
-    # return Substance.from_formula(x).mass * si.gram / si.mole
-
-    return molmass.Formula(x).mass * si.gram / si.mole
+    return Substance.from_formula(x).mass * si.gram / si.mole
 
 
 def convert_to(value, unit):
