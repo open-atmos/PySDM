@@ -1,7 +1,6 @@
 from PySDM.environments import Parcel
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.physics import constants as const
 from PySDM.physics import si
 from PySDM.dynamics import AmbientThermodynamics, Condensation, AqueousChemistry
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS
@@ -11,8 +10,7 @@ import numpy as np
 
 class Simulation:
     def __init__(self, settings):
-        q0 = const.eps * settings.pv0 / (settings.p0 - settings.pv0)
-        env = Parcel(dt=settings.dt, mass_of_dry_air=settings.mass_of_dry_air, p0=settings.p0, q0=q0, T0=settings.T0,
+        env = Parcel(dt=settings.dt, mass_of_dry_air=settings.mass_of_dry_air, p0=settings.p0, q0=settings.q0, T0=settings.T0,
                      w=settings.w, g=settings.g)
 
         builder = Builder(n_sd=settings.n_sd, backend=CPU)

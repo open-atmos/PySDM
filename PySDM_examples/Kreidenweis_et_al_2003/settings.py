@@ -26,7 +26,8 @@ class Settings:
 
         self.p0 = 950 * si.mbar
         self.T0 = 285.2 * si.K
-        self.pv0 = .95 * phys.pvs(self.T0)
+        pv0 = .95 * phys.pvs(self.T0)
+        self.q0 = const.eps * pv0 / (self.p0 - pv0)
 
         self.kappa = .61  # TODO #442
         rho = 1  # TODO #442
