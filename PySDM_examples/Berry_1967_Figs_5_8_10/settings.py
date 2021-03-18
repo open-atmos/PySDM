@@ -19,8 +19,8 @@ class Settings:
         self.n_sd = 2 ** 13
         n_part = 239 / si.cm**3
         X0 = phys.volume(radius=10 * si.micrometres)
-        dv = 1e1 * si.metres**3  # TODO #336 1e6 do not work with ThrustRTC (overflow?)
-        norm_factor = n_part * dv
+        self.dv = 1e1 * si.metres**3  # TODO #336 1e6 do not work with ThrustRTC (overflow?)
+        norm_factor = n_part * self.dv
         self.rho = 1000 * si.kilogram / si.metre**3
         self.dt = 1 * si.seconds
         self.adaptive = False

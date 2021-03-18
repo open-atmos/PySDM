@@ -16,8 +16,8 @@ class Settings:
         self.n_sd = 2 ** 13
         n_part = 2 ** 23 / si.metre**3
         X0 = volume(radius=30.531 * si.micrometres)
-        dv = 1e6 * si.metres**3
-        norm_factor = n_part * dv
+        self.dv = 1e6 * si.metres**3
+        norm_factor = n_part * self.dv
         self.rho = 1000 * si.kilogram / si.metre**3
         self.dt = 1 * si.seconds
         self.adaptive = False
