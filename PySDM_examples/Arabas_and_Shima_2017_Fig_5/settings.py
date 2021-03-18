@@ -14,7 +14,7 @@ class Settings:
     def __init__(self, w_avg: float, N_STP: float, r_dry: float, mass_of_dry_air: float):
         self.p0 = 1000 * si.hectopascals
         self.RH0 = .98
-        self.kappa = .2  # TODO
+        self.kappa = .2  # TODO #441
         self.T0 = 300 * si.kelvin
         self.z_half = 150 * si.metres
 

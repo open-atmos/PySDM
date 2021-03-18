@@ -120,7 +120,7 @@ class Test_pH:
         alpha_N5 = (1 + K_HNO3 / conc['H+'])
 
         actual = calc_ionic_strength(
-            H=conc['H+'],  # TODO: embrace the same notation for attributes?
+            H=conc['H+'],
             N_mIII=conc['N-3'],
             N_V=conc['N+5'],
             C_IV=conc['C+4'],
