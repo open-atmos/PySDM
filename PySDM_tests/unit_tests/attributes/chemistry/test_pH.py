@@ -103,8 +103,9 @@ class Test_pH:
         simulation = Simulation(settings)
         simulation.run(nt)
 
+        H = simulation.core.particles['conc_N_mIII'].data
         conc = {
-            'H+': simulation.core.particles['conc_N_mIII'].data,  # TODO!
+            'H+': H,
             'N-3': simulation.core.particles['conc_N_mIII'].data,
             'N+5': simulation.core.particles['conc_N_V'].data,
             'S+4': simulation.core.particles['conc_S_IV'].data,

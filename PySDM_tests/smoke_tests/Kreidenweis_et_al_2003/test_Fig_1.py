@@ -19,7 +19,7 @@ Z_CB = 196 * si.m
 
 class TestFig1:
     @staticmethod
-    def test_a(example_output, plot=True):
+    def test_a(example_output, plot=False):
         # Plot
         if plot:
             name = 'ql'
@@ -54,7 +54,7 @@ class TestFig1:
             pyplot.plot(
                 np.asarray(example_output[f'aq_S_VI_ppb']),
                 np.asarray(example_output['t']) - Z_CB * si.s, label='S_VI')
-            pyplot.xlabel('TODO [ppb]')
+            pyplot.xlabel('TODO #431 [ppb]')
             pyplot.show()
         # Assert
         # assert False  TODO #431
