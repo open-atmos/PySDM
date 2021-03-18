@@ -49,7 +49,7 @@ class Simulation:
         ]
 
         self.core = builder.build(attributes=attributes, products=products)
-        self.nt = settings.nt
+        self.settings = settings
 
     def _save(self, output):
         for k, v in self.core.products.items():
@@ -58,11 +58,10 @@ class Simulation:
                 value = value[0]
             output[k].append(value)
 
-    def run(self, nt=None):
-        nt = self.nt if nt is None else nt
+    def run(self):
         output = {k: [] for k in self.core.products.keys()}
         self._save(output)
-        for _ in range(nt):
-            self.core.run(steps=1)
+        for _ in range(0, self.settings.nt+1, self.settings.steps_per_output_interval):
+            self.core.run(steps=self.settings.steps_per_output_interval)
             self._save(output)
         return output

@@ -100,8 +100,9 @@ class Test_pH:
         K_HNO3 = EQUILIBRIUM_CONST["K_HNO3"].at(ROOM_TEMP)
 
         settings = Settings(dt=1, n_sd=n_sd, n_substep=5)
+        settings.t_max = nt * settings.dt
         simulation = Simulation(settings)
-        simulation.run(nt)
+        simulation.run()
 
         H = simulation.core.particles['conc_N_mIII'].data
         conc = {
