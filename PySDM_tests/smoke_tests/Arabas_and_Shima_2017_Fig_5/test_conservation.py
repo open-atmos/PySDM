@@ -34,7 +34,6 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme):
         mass_of_dry_air=mass_of_dry_air
     )
     settings.n_output = 50
-    settings.scheme = scheme
     simulation = Simulation(settings)
     qt0 = settings.q0 + ql(simulation)
     if scheme == 'BDF':
