@@ -14,17 +14,17 @@ class Settings:
 
     def __init__(self):
         self.n_sd = 2 ** 13
-        n_part = 2 ** 23 / si.metre**3
-        X0 = volume(radius=30.531 * si.micrometres)
+        self.n_part = 2 ** 23 / si.metre**3
+        self.X0 = volume(radius=30.531 * si.micrometres)
         self.dv = 1e6 * si.metres**3
-        self.norm_factor = n_part * self.dv
+        self.norm_factor = self.n_part * self.dv
         self.rho = 1000 * si.kilogram / si.metre**3
         self.dt = 1 * si.seconds
         self.adaptive = False
         self.seed = 44
         self._steps = [0, 1200, 2400, 3600]
         self.kernel = Golovin(b=1.5e3 / si.second)
-        self.spectrum = Exponential(norm_factor=self.norm_factor, scale=X0)
+        self.spectrum = Exponential(norm_factor=self.norm_factor, scale=self.X0)
         self.radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=128, endpoint=True)
 
     @property
