@@ -119,7 +119,7 @@ class AlgorithmicMethods:
         ''')
 
     __coalescence_body = trtc.For(
-        ['n', 'idx', 'n_sd', 'extensive_attributes', 'n_attr', 'gamma', 'healthy'], "i", '''
+        ['n', 'idx', 'n_sd', 'attributes', 'n_attr', 'gamma', 'healthy'], "i", '''
         if (gamma[i] == 0) {
             return;
         }
@@ -130,15 +130,15 @@ class AlgorithmicMethods:
         if (new_n > 0) {
             n[j] = new_n;
             for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
-                extensive_attributes[attr + k] += gamma[i] * extensive_attributes[attr + j];
+                attributes[attr + k] += gamma[i] * attributes[attr + j];
             }
         }
         else {  // new_n == 0
             n[j] = (int64_t)(n[k] / 2);
             n[k] = n[k] - n[j];
             for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
-                extensive_attributes[attr + j] = gamma[i] * extensive_attributes[attr + j] + extensive_attributes[attr + k];
-                extensive_attributes[attr + k] = extensive_attributes[attr + j];
+                attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
+                attributes[attr + k] = attributes[attr + j];
             }
         }
         if (n[k] == 0 || n[j] == 0) {
@@ -148,12 +148,12 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
-        n_sd = trtc.DVInt64(extensive_attributes.shape[1])
-        n_attr = trtc.DVInt64(extensive_attributes.shape[0])
+    def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
+        n_sd = trtc.DVInt64(attributes.shape[1])
+        n_attr = trtc.DVInt64(attributes.shape[0])
         AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
                                                        [n.data, idx.data, n_sd,
-                                                        extensive_attributes.data,
+                                                        attributes.data,
                                                         n_attr, gamma.data, healthy.data])
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",

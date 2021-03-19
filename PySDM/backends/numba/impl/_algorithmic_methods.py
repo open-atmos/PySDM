@@ -122,7 +122,7 @@ class AlgorithmicMethods:
     @numba.njit(
         void(i8[:], i8[:], i8, f8[:, :], f8[:], i8[:], b1[:]),
         **conf.JIT_FLAGS)
-    def coalescence_body(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+    def coalescence_body(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -131,21 +131,21 @@ class AlgorithmicMethods:
             new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
                 n[j] = new_n
-                for a in range(0, len(extensive_attributes)):
-                    extensive_attributes[a, k] += gamma[i] * extensive_attributes[a, j]
+                for a in range(0, len(attributes)):
+                    attributes[a, k] += gamma[i] * attributes[a, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                for a in range(0, len(extensive_attributes)):
-                    extensive_attributes[a, j] = gamma[i] * extensive_attributes[a, j] + extensive_attributes[a, k]
-                    extensive_attributes[a, k] = extensive_attributes[a, j]
+                for a in range(0, len(attributes)):
+                    attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
+                    attributes[a, k] = attributes[a, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+    def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, idx.data, length,
-                                            extensive_attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+                                            attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
