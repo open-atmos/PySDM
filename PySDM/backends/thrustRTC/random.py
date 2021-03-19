@@ -12,11 +12,11 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 class Random:
     __urand_init_rng_state_body = trtc.For(['rng', 'states', 'seed'], 'i', '''
-        rng.state_init(1234, i, 0, states[i]);
+        rng.state_init(seed, i, 0, states[i]);
         ''')
 
     __urand_body = trtc.For(['states', 'vec_rnd'], 'i', '''
-        vec_rnd[i]=states[i].rand01();
+        vec_rnd[i] = states[i].rand01();
         ''')
 
     def __init__(self, size, seed=None):
