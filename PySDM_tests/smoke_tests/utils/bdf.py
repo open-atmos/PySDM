@@ -11,6 +11,7 @@ import numpy as np
 import numba
 import scipy.integrate
 import types
+import warnings
 
 idx_thd = 0
 idx_x = 1
@@ -98,15 +99,17 @@ def make_solve(coord):
         if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
-            integ = scipy.integrate.solve_ivp(
-                fun=odesys,
-                t_span=[0, dt],
-                t_eval=[dt],
-                y0=y0,
-                rtol=rtol,
-                atol=0,
-                method="BDF"
-            )
+            with warnings.catch_warnings(record=True) as _:
+                warnings.simplefilter("ignore")
+                integ = scipy.integrate.solve_ivp(
+                    fun=odesys,
+                    t_span=[0, dt],
+                    t_eval=[dt],
+                    y0=y0,
+                    rtol=rtol,
+                    atol=0,
+                    method="BDF"
+                )
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 
