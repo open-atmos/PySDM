@@ -140,7 +140,7 @@ class Particles:
         self.core.bck.coalescence(n=self['n'],
                                   idx=self.__idx,
                                   length=self.SD_num,
-                                  extensive_attributes=self.get_extensive_attrs(),
+                                  attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
                                   is_first_in_pair=is_first_in_pair
