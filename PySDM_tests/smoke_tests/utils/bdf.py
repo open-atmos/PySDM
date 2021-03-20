@@ -11,14 +11,14 @@ import numpy as np
 import numba
 import scipy.integrate
 import types
-import warnings
 
 idx_thd = 0
 idx_x = 1
+rtol = 1e-4
 
 
-def patch_core(core, coord='volume logarithm', rtol=1e-3):
-    core.condensation_solver = make_solve(coord, rtol)
+def patch_core(core, coord='volume logarithm'):
+    core.condensation_solver = make_solve(coord)
     core.condensation = types.MethodType(bdf_condensation, core)
 
 
@@ -37,7 +37,7 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order
         cell_start_arg=core.particles.cell_start.data,
         v=core.particles["volume"].data,
         particle_temperatures=np.empty(0),
-        r_cr=None,
+        v_cr=None,
         n=core.particles['n'].data,
         vdry=core.particles["dry volume"].data,
         idx=core.particles._Particles__idx.data,
@@ -61,7 +61,7 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order
     )
 
 
-def make_solve(coord, rtol):
+def make_solve(coord):
     if coord == 'volume':
         coord = coord_volume
     elif coord == 'volume logarithm':
@@ -74,7 +74,7 @@ def make_solve(coord, rtol):
     dx_dt = coord.dx_dt
 
     def solve(
-            v, particle_temperatures, r_cr, n, vdry,
+            v, particle_temperatures, v_cr, n, vdry,
             cell_idx, kappa, thd, qv,
             dthd_dt, dqv_dt, m_d_mean, rhod_mean,
             rtol_x, rtol_thd, dt, substeps
@@ -98,17 +98,15 @@ def make_solve(coord, rtol):
         if dthd_dt == 0 and dqv_dt == 0 and (odesys(0, y0)[idx_x] == 0).all():
             y1 = y0
         else:
-            with warnings.catch_warnings(record=True) as w:
-                warnings.simplefilter("ignore")
-                integ = scipy.integrate.solve_ivp(
-                    fun=odesys,
-                    t_span=[0, dt],
-                    t_eval=[dt],
-                    y0=y0,
-                    rtol=rtol,
-                    atol=0,
-                    method="BDF"
-                )
+            integ = scipy.integrate.solve_ivp(
+                fun=odesys,
+                t_span=[0, dt],
+                t_eval=[dt],
+                y0=y0,
+                rtol=rtol,
+                atol=0,
+                method="BDF"
+            )
             assert integ.success, integ.message
             y1 = integ.y[:, 0]
 

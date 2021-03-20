@@ -23,7 +23,7 @@ def data(n_output, rtols, schemes, setups_num):
                 settings = setups[settings_idx]
                 settings.n_output = n_output
                 simulation = Simulation(settings)
-                bdf.patch_core(simulation.core, settings.coord, rtol=1e-4)
+                bdf.patch_core(simulation.core, settings.coord)
                 results = simulation.run()
                 for rtol in rtols:
                     resultant_data[scheme][rtol].append(results)
