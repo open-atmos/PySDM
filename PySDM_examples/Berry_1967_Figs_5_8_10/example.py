@@ -29,7 +29,6 @@ def main(plot: bool, save):
 
                 for kernel in setup_prop:
                     s = Settings()
-                    s.u_term = u_term_approx
                     s.dt = 10 if dt == 'adaptive' else dt
                     s.adaptive = dt == 'adaptive'
                     s.kernel = kernel()
