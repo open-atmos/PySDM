@@ -100,14 +100,6 @@ class Core:
                 cell_order=cell_order,
                 RH_max=RH_max
             )
-        self.backend.temperature_pressure_RH(
-            self.env.get_predicted('rhod'),
-            self.env.get_predicted('thd'),
-            self.env.get_predicted('qv'),
-            self.env.get_predicted('T'),
-            self.env.get_predicted('p'),
-            self.env.get_predicted('RH')
-        )
 
     def run(self, steps):
         for _ in range(steps):

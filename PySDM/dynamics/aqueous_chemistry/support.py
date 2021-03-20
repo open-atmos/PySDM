@@ -104,3 +104,7 @@ SPECIFIC_GRAVITY = {
     compound: Substance.from_formula(compound).mass * si.gram / si.mole / Md
     for compound in {*GASEOUS_COMPOUNDS.values()}
 }
+
+for compounds in AQUEOUS_COMPOUNDS.values():
+    for compound in compounds:
+        SPECIFIC_GRAVITY[compound] = Substance.from_formula(compound).mass * si.gram / si.mole / Md
