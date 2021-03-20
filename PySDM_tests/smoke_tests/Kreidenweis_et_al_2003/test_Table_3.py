@@ -1,9 +1,10 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics import formulae as phys
-from PySDM.physics.constants import _weight, convert_to, ppb
+from PySDM.physics.constants import convert_to, ppb
 from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 import numpy as np
+from chempy import Substance
 
 
 class TestTable3:
@@ -30,10 +31,10 @@ class TestTable3:
 
         mass_conc_SO4mm = 2
         mass_conc_NH4p = 0.375
-        num_conc_SO4mm = mass_conc_SO4mm / _weight("SO4")
-        num_conc_NH4p = mass_conc_NH4p / _weight("NH4")
+        num_conc_SO4mm = mass_conc_SO4mm / Substance.from_formula("SO4").mass * si.gram / si.mole
+        num_conc_NH4p = mass_conc_NH4p / Substance.from_formula("NH4").mass * si.gram / si.mole
         np.testing.assert_allclose(num_conc_NH4p, num_conc_SO4mm, rtol=.005)
-        mass_conc_H = num_conc_NH4p * _weight("H")
+        mass_conc_H = num_conc_NH4p * Substance.from_formula("H").mass * si.gram / si.mole
         np.testing.assert_allclose(
             actual=np.asarray(output['q_dry'])*np.asarray(output['rhod_env']),
             desired=mass_conc_NH4p + mass_conc_SO4mm + mass_conc_H,

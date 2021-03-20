@@ -348,7 +348,7 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt,
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
             cell_order, RH_max
@@ -369,7 +369,7 @@ class AlgorithmicMethods:
                 md = rhod_mean * dv_mean
 
                 qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, particle_temperatures, r_cr, n, vdry,
+                    v, particle_temperatures, v_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
