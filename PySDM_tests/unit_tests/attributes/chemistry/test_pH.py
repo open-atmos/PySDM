@@ -1,6 +1,7 @@
 from PySDM.dynamics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
-from PySDM.attributes.chemistry.pH import equilibrate_H
+from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
+from PySDM.dynamics.aqueous_chemistry import aqueous_chemistry
 from chempy import Equilibrium
 from chempy.equilibria import EqSystem
 from chempy.chemistry import Species
@@ -19,14 +20,29 @@ class Test_pH:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(ROOM_TEMP))
 
         # Act
-        result, _ = equilibrate_H(
-            equilibrium_consts=eqs,
-            cell_id=0,
-            N_mIII=0,
-            N_V=0,
-            C_IV=0,
-            S_IV=0,
-            S_VI=0
+        result = np.empty(1)
+        ChemistryMethods.equilibrate_H_body(
+            N_mIII=np.zeros(1),
+            N_V=np.zeros(1),
+            C_IV=np.zeros(1),
+            S_IV=np.zeros(1),
+            S_VI=np.zeros(1),
+            K_HNO3=eqs['K_HNO3'].data,
+            K_HCO3=eqs['K_HCO3'].data,
+            K_HSO3=eqs['K_HSO3'].data,
+            K_HSO4=eqs['K_HSO4'].data,
+            K_CO2=eqs['K_CO2'].data,
+            K_NH3=eqs['K_NH3'].data,
+            K_SO2=eqs['K_SO2'].data,
+            cell_id=np.zeros(1, dtype=int),
+            # output
+            do_chemistry_flag=np.empty(1),
+            pH=result,
+            # params
+            H_min=aqueous_chemistry.default_H_min,
+            H_max=aqueous_chemistry.default_H_max,
+            ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
+            rtol=aqueous_chemistry.default_pH_rtol
         )
 
         # Assert
@@ -70,17 +86,32 @@ class Test_pH:
         for key in EQUILIBRIUM_CONST.keys():
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
 
-        actual_pH, _ = equilibrate_H(
-            N_mIII=init_conc['NH3'] * 1e3,
-            N_V=init_conc['HNO3(aq)'] * 1e3,
-            C_IV=init_conc['H2CO3(aq)'] * 1e3,
-            S_IV=init_conc['H2SO3(aq)'] * 1e3,
-            S_VI=init_conc['HSO4-'] * 1e3,
-            equilibrium_consts=eqs,
-            cell_id=0
+        actual_pH = np.empty(1)
+        ChemistryMethods.equilibrate_H_body(
+            N_mIII=np.full(1, init_conc['NH3'] * 1e3),
+            N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
+            C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
+            S_IV=np.full(1, init_conc['H2SO3(aq)'] * 1e3),
+            S_VI=np.full(1, init_conc['HSO4-'] * 1e3),
+            K_HNO3=eqs['K_HNO3'].data,
+            K_HCO3=eqs['K_HCO3'].data,
+            K_HSO3=eqs['K_HSO3'].data,
+            K_HSO4=eqs['K_HSO4'].data,
+            K_CO2=eqs['K_CO2'].data,
+            K_NH3=eqs['K_NH3'].data,
+            K_SO2=eqs['K_SO2'].data,
+            cell_id=np.zeros(1, dtype=int),
+            # output
+            do_chemistry_flag=np.empty(1),
+            pH=actual_pH,
+            # params
+            H_min=aqueous_chemistry.default_H_min,
+            H_max=aqueous_chemistry.default_H_max,
+            ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
+            rtol=aqueous_chemistry.default_pH_rtol
         )
 
-        np.testing.assert_allclose(actual_pH, expected_pH, rtol=1e-5)
+        np.testing.assert_allclose(actual_pH[0], expected_pH, rtol=1e-5)
 
     @staticmethod
     @pytest.mark.parametrize("nt", (0, 1, 2, 3))

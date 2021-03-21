@@ -18,6 +18,7 @@ temperature_pressure_RH = physics.temperature_pressure_RH
 radius = physics.radius
 volume = physics.volume
 RH_eq = physics.RH_eq
+pH2H = physics.pH2H
 
 
 def th_dry(th_std, qv):

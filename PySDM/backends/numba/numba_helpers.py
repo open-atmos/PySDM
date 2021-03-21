@@ -7,6 +7,7 @@ import numpy as np
 import PySDM.physics.constants as const
 from PySDM.physics import _flag
 from . import conf
+from ...physics.constants import R_str
 
 if _flag.DIMENSIONAL_ANALYSIS:
     import PySDM.physics._fake_numba as numba
@@ -197,3 +198,28 @@ def bisec(minfun, a, interval, args, rtol):
         else:
             b = x_new
     return x_new
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def pH2H(pH):
+    return 10**(-pH) * 1e3
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def H2pH(H):
+    return -np.log10(H * 1e-3)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def vant_hoff(K, dH, T, *, T_0):
+    return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def tdep2enthalpy(tdep):
+    return -tdep * R_str
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def arrhenius(A, Ea, T):
+    return A * np.exp(-Ea / (R_str * T))

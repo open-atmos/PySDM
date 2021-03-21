@@ -76,14 +76,8 @@ class Condensation:
                 cell_order=self.cell_order
             )
             # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
-            self.core.backend.temperature_pressure_RH(
-                self.core.env.get_predicted('rhod'),
-                self.core.env.get_predicted('thd'),
-                self.core.env.get_predicted('qv'),
-                self.core.env.get_predicted('T'),
-                self.core.env.get_predicted('p'),
-                self.core.env.get_predicted('RH')
-            )
+            self.core.update_TpRH()
+
             if self.adaptive:
                 self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
                 if self.dt_cond_range[0] != 0:

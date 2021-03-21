@@ -1,6 +1,6 @@
 from chempy import Substance
 
-from PySDM.backends.numba.impl._chemistry_methods import vant_hoff, tdep2enthalpy, arrhenius
+from PySDM.backends.numba.numba_helpers import vant_hoff, tdep2enthalpy, arrhenius
 from PySDM.physics import si
 from PySDM.physics.constants import R_str, ROOM_TEMP, H_u, dT_u, M, Md, K_H2O
 import numpy as np
