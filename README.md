@@ -86,7 +86,7 @@ repository and install the package using ``pip -e`` or simply adjust the ``PYTHO
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)    
   (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
 #### 0D parcel-model condensation/aqueous-chemistry example (works on CPU backend only for now, stay tuned...)
-- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) Figs TODO:
+- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) Fig 1:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
   (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case)
