@@ -18,7 +18,7 @@ class Settings:
         self.output_interval = 10 * si.s
         self.dt = dt
 
-        self.w = .5 * si.m/si.s
+        self.w = .5 * si.m / si.s
         self.g = 10 * si.m / si.s**2
 
         self.n_sd = n_sd
@@ -28,19 +28,21 @@ class Settings:
         self.T0 = 285.2 * si.K
         pv0 = .95 * phys.pvs(self.T0)
         self.q0 = const.eps * pv0 / (self.p0 - pv0)
-
         self.kappa = .61  # TODO #442
-        rho = 1  # TODO #442
-        self.mass_of_dry_air = 44  # TODO #442
 
         self.cloud_radius_range = (
                 .5 * si.micrometre,
                 25 * si.micrometre
         )
 
+        # TODO #442
+        self.mass_of_dry_air = 44
+        # note: .83 found to match best the initial condition (see test Table_3)
+        # rho0 = .83 * phys.MoistAir.rho_of_p_qv_T(self.p0, self.q0, self.T0)
+        rho0 = 1
         self.r_dry, self.n_in_dv = spectral_sampling.ConstantMultiplicity(
             spectrum=spectra.Lognormal(
-                norm_factor=566 / si.cm**3 / rho * self.mass_of_dry_air,
+                norm_factor=566 / si.cm**3 / rho0 * self.mass_of_dry_air,
                 m_mode=.08 * si.um / 2,
                 s_geom=2
             )
@@ -55,10 +57,12 @@ class Settings:
             "NH3": 0.1 * const.ppb,
         }
 
-        DRY_SUBSTANCE = Substance.from_formula("NH4HSO4")
-        BUM = phys.volume(self.r_dry) * self.DRY_RHO / (DRY_SUBSTANCE.mass * si.gram / si.mole)
         self.starting_amounts = {
-            "moles_"+k: BUM if k in ("N_mIII", "S_VI") else np.zeros(self.n_sd) for k in AQUEOUS_COMPOUNDS.keys()
+            "moles_"+k:
+                phys.volume(self.r_dry) * self.DRY_RHO / (Substance.from_formula("NH4HSO4").mass * si.gram / si.mole)
+                if k in ("N_mIII", "S_VI")
+                else np.zeros(self.n_sd)
+            for k in AQUEOUS_COMPOUNDS.keys()
         }
 
     @property

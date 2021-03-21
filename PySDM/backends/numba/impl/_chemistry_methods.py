@@ -61,13 +61,14 @@ class ChemistryMethods:
         for i in super_droplet_ids:
             Mc = specific_gravity * Md
             Rc = R_str / Mc
-            cinf = env_p / env_T / (Rd/env_mixing_ratio[0] + Rc) / Mc
+            cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
             scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
+            # note: different than in Ania's thesis!
+            dt_over_ksi_scale = dt / scale / ksi[i]
             A_old = mole_amounts[i] / droplet_volume[i]
-            A_new = (A_old + dt * cinf / scale) / (1 + dt / (scale * ksi[i] * henrysConstant * R_str * env_T))
-            # TODO #442 !!!!!!!!! A_new = (A_old + dt * ksi[i] * cinf / scale) / (1 + dt / (scale * ksi[i] * henrysConstant * R_str * env_T))
+            A_new = (A_old + dt_over_ksi_scale * cinf) / (1 + dt_over_ksi_scale / (henrysConstant * R_str * env_T))
             new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
             assert new_mole_amount_per_real_droplet >= 0
 
@@ -91,16 +92,15 @@ class ChemistryMethods:
         )
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+    @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(n_sd, cell_ids, do_chemistry_flag,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
-        # NB: magic_const in the paper is k4.
-        # The value is fixed at 13 M^-1 (from Ania's Thesis)
+        # from Ania's Thesis, k4 therein
         magic_const = 13 / M
 
-        for i in range(n_sd):
+        for i in numba.prange(n_sd):
             if not do_chemistry_flag[i]:
                 continue
 
@@ -112,10 +112,6 @@ class ChemistryMethods:
             # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
             # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
 
-            # NB: There is also slight error due to "borrowing" compounds when
-            # the concentration is close to 0. That way, if the rate is big enough,
-            # it will consume more compound than there is.
-
             ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * O3[i] * SO2aq
             peroxide = k3[cid] * K_SO2[cid] / (1 + magic_const * H) * H2O2[i] * SO2aq
 
@@ -124,6 +120,7 @@ class ChemistryMethods:
             dconc_dt_H2O2 = -peroxide
             dconc_dt_S_VI = ozone + peroxide
 
+            # TODO #446: do better than explicit Euler with such workarounds
             a = dt * droplet_volume[i]
             if (
                 moles_O3[i] + dconc_dt_O3 * a < 0 or
@@ -137,7 +134,6 @@ class ChemistryMethods:
             moles_S_IV[i] += dconc_dt_S_IV * a
             moles_S_VI[i] += dconc_dt_S_VI * a
             moles_H2O2[i] += dconc_dt_H2O2 * a
-
 
     @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
@@ -238,5 +234,3 @@ def concentration(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4
     carbonic = C_IV * K_CO2 * (H + 2 * K_HCO3) / (H * H + H * K_CO2 + K_CO2 * K_HCO3)
     zero = H + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
     return zero
-
-
