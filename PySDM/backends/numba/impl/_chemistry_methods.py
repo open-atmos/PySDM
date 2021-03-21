@@ -178,9 +178,8 @@ class ChemistryMethods:
                                             rtol=rtol
                                             )
 
-
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})  # TODO #440
     def equilibrate_H_body(cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
                            K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3,
                            do_chemistry_flag, pH,
