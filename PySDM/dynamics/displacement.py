@@ -56,6 +56,11 @@ class Displacement:
         self.boundary_condition(cell_origin)
         self.core.particles.recalculate_cell_id()
 
+        # TODO #443
+        self.core.particles.attributes['position in cell'].mark_updated()
+        self.core.particles.attributes['cell origin'].mark_updated()
+        self.core.particles.attributes['cell id'].mark_updated()
+
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
             self.core.bck.calculate_displacement(

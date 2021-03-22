@@ -1,15 +1,19 @@
 import numpy as np
 from PySDM.physics import si
 import PySDM.physics.formulae as phys
+import PySDM.physics.constants as const
 from scipy.interpolate import interp1d
 from scipy.integrate import solve_ivp
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.backends.numba.numba_helpers import temperature_pressure_RH
 from PySDM.dynamics import condensation
+from pystrict import strict
 
 
+@strict
 class Settings:
-    def __init__(self, n_sd_per_gridbox, w_1=2*si.m/si.s, dt=1*si.s, dz=25*si.m, precip=True):
+    def __init__(self, n_sd_per_gridbox: int, w_1: float = 2*si.m/si.s, dt: float = 1*si.s,
+                 dz: float = 25*si.m, precip: bool = True):
         self.n_sd_per_gridbox = n_sd_per_gridbox
         self.kappa = .9  # TODO #414: not in the paper
         self.wet_radius_spectrum_per_mass_of_dry_air = Lognormal(
@@ -33,11 +37,12 @@ class Settings:
         self.thd = lambda z: phys.th_dry(self._th(z), self.qv(z))
 
         p0 = 975 * si.hPa  # TODO #414: not in the paper?
+        g = const.g_std
         self.rhod0 = phys.ThStd.rho_d(p0, self.qv(0), self._th(0))
 
         def drhod_dz(z, rhod):
             T, p, _ = temperature_pressure_RH(rhod[0], self.thd(z), self.qv(z))
-            return phys.Hydrostatic.drhod_dz(p, T, self.qv(z))
+            return phys.Hydrostatic.drho_dz(g, p, T, self.qv(z))
 
         z_points = np.arange(0, self.z_max, self.dz / 2)
         rhod_solution = solve_ivp(

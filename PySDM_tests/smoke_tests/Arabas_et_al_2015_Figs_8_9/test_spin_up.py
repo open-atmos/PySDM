@@ -11,21 +11,21 @@ from matplotlib import pyplot
 
 class DummyStorage:
     def __init__(self):
-        self.profiles = {}
+        self.profiles = []
 
     def init(*_): pass
 
     def save(self, data: np.ndarray, step: int, name: str):
         if name == "qv_env":
-            self.profiles[step] = {"qv_env": np.mean(data, axis=0)}
+            self.profiles.append({"qv_env": np.mean(data, axis=0)})
 
 
 def test_spin_up(plot=False):
     # Arrange
-    Settings.dt = .5 * si.second
-    Settings.simulation_time = 20 * Settings.dt
-    Settings.output_interval = 1 * Settings.dt
     settings = Settings()
+    settings.dt = .5 * si.second
+    settings.simulation_time = 20 * settings.dt
+    settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
     simulation = Simulation(settings, storage)
@@ -37,7 +37,7 @@ def test_spin_up(plot=False):
     # Plot
     if plot:
         levels = np.arange(settings.grid[1])
-        for step, datum in storage.profiles.items():
+        for step, datum in enumerate(storage.profiles):
             pyplot.plot(datum["qv_env"], levels, label=str(step))
         pyplot.legend()
         pyplot.show()
@@ -45,7 +45,7 @@ def test_spin_up(plot=False):
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next = storage.profiles[step + settings.steps_per_output_interval]["qv_env"]
+        next = storage.profiles[step + 1]["qv_env"]
         prev = storage.profiles[step]["qv_env"]
         eps = 1e-3
         assert ((prev + eps) >= next).all()

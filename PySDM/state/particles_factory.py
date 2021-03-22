@@ -4,10 +4,10 @@ Created at 09.11.2019
 
 import numpy as np
 
-from PySDM.attributes.derived_attribute import DerivedAttribute
-from PySDM.attributes.extensive_attribute import ExtensiveAttribute
-from PySDM.attributes.droplet.multiplicities import Multiplicities
-from PySDM.attributes.cell_attribute import CellAttribute
+from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.impl.cell_attribute import CellAttribute
 from PySDM.state.particles import Particles
 
 

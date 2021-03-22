@@ -34,9 +34,8 @@ def main():
         "condensation": False,
         "sedimentation": True,
     }
-    settings.condensation_dt_max = .2
 
-    n_sd = range(15, 16, 1)
+    n_sd = range(14, 16, 1)
 
     times = {}
     backends = [(CPU, "sync"), (CPU, "async")]
@@ -46,13 +45,12 @@ def main():
         if backend is CPU:
             PySDM.backends.numba.conf.NUMBA_PARALLEL = mode
             reload_CPU_backend()
-        settings.backend = backend
         key = f"{backend} (mode={mode})"
         times[key] = []
         for sd in n_sd:
             settings.n_sd_per_gridbox = sd
             storage = Storage()
-            simulation = Simulation(settings, storage)
+            simulation = Simulation(settings, storage, backend)
             simulation.reinit(products=[WallTime()])
             simulation.run()
             times[key].append(storage.load('wall_time')[-1])

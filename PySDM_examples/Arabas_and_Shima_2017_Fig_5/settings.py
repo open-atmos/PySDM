@@ -6,36 +6,38 @@ from PySDM.physics.constants import si
 from PySDM.physics import constants as const, formulae as phys
 from PySDM.dynamics import condensation
 import numpy as np
+from pystrict import strict
 
 
+@strict
 class Settings:
-    def __init__(self, w_avg, N_STP, r_dry, mass_of_dry_air):
+    def __init__(self, w_avg: float, N_STP: float, r_dry: float, mass_of_dry_air: float):
+        self.p0 = 1000 * si.hectopascals
+        self.RH0 = .98
+        self.kappa = .2  # TODO #441
+        self.T0 = 300 * si.kelvin
+        self.z_half = 150 * si.metres
+
         self.q0 = const.eps / (self.p0 / self.RH0 / phys.pvs(self.T0) - 1)
         self.w_avg = w_avg
         self.r_dry = r_dry
         self.N_STP = N_STP
         self.n_in_dv = N_STP / const.rho_STP * mass_of_dry_air
         self.mass_of_dry_air = mass_of_dry_air
+        self.n_output = 500
+
+        self.rtol_x = condensation.default_rtol_x
+        self.rtol_thd = condensation.default_rtol_thd
+        self.coord = 'volume logarithm'
+        self.dt_cond_range = (1e-10 * si.s, 1 * si.s)
 
     @property
     def dt_max(self):
-        t_total = 2 * Settings.z_half / self.w_avg
-        result = t_total / Settings.n_output
+        t_total = 2 * self.z_half / self.w_avg
+        result = t_total / self.n_output
         if result < 1 * si.centimetre / si.second:
             result /= 100  # TODO #411
         return result
-
-    n_output = 500
-
-    rtol_x = condensation.default_rtol_x
-    rtol_thd = condensation.default_rtol_thd
-    coord = 'volume logarithm'
-
-    p0 = 1000 * si.hectopascals
-    RH0 = .98
-    kappa = .2
-    T0 = 300 * si.kelvin
-    z_half = 150 * si.metres
 
     def w(self, t):
         return self.w_avg * np.pi / 2 * np.sin(np.pi * t / self.z_half * self.w_avg)

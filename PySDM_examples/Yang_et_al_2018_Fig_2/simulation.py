@@ -9,9 +9,7 @@ from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import Parcel
 from PySDM.physics import formulae as phys
-from PySDM.products.state import ParticlesWetSizeSpectrum
-from PySDM.products.dynamics.condensation import CondensationTimestep
-from PySDM.products.dynamics.condensation.event_rates import RipeningRate
+import PySDM.products as PySDM_products
 
 
 class Simulation:
@@ -45,9 +43,10 @@ class Simulation:
         builder.add_dynamic(condensation)
 
         products = [
-            ParticlesWetSizeSpectrum(v_bins=phys.volume(settings.r_bins_edges)),
-            CondensationTimestep(),
-            RipeningRate()
+            PySDM_products.ParticlesWetSizeSpectrum(v_bins=phys.volume(settings.r_bins_edges)),
+            PySDM_products.CondensationTimestepMin(),
+            PySDM_products.CondensationTimestepMax(),
+            PySDM_products.RipeningRate()
         ]
 
         attributes = environment.init_attributes(
@@ -70,9 +69,8 @@ class Simulation:
         output["T"].append(self.core.environment["T"][cell_id])
         output["z"].append(self.core.environment["z"][cell_id])
         output["t"].append(self.core.environment["t"][cell_id])
-        output["dt_cond_max"].append(self.core.products["dt_cond"].get_max().copy())
-        output["dt_cond_min"].append(self.core.products["dt_cond"].get_min().copy())
-        self.core.products["dt_cond"].reset()
+        output["dt_cond_max"].append(self.core.products["dt_cond_max"].get()[cell_id].copy())
+        output["dt_cond_min"].append(self.core.products["dt_cond_min"].get()[cell_id].copy())
         output['ripening_rate'].append(self.core.products['ripening_rate'].get()[cell_id].copy())
 
     def run(self):

@@ -16,7 +16,6 @@ jobs:
         # https://github.com/pypa/virtualenv/pull/1064/files
         - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
         - cat /home/travis/virtualenv/python3.8.0/lib/python3.8/site.py
-        - export PY_FLAGS="" # TODO #408: numba 0.52 triggers deprecation warnings with newest numpy
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py

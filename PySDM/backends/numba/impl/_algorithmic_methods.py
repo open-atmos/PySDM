@@ -183,13 +183,13 @@ class AlgorithmicMethods:
     def condensation(
             solver,
             n_cell, cell_start_arg,
-            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, counters, cell_order, RH_max
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg.data,
-            v.data, particle_temperatures.data, r_cr.data, n.data, vdry.data, idx.data,
+            v.data, particle_temperatures.data, v_cr.data, n.data, vdry.data, idx.data,
             rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
             rtol_x, rtol_thd, dt,
             counters['n_substeps'].data,
@@ -348,13 +348,13 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt,
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
             cell_order, RH_max
     ):
         for thread_id in numba.prange(n_threads):
-            for i in range(thread_id, n_cell, n_threads):  # TODO #341 at least show that it is not slower :)
+            for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
 
                 cell_start = cell_start_arg[cell_id]
@@ -369,7 +369,7 @@ class AlgorithmicMethods:
                 md = rhod_mean * dv_mean
 
                 qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, particle_temperatures, r_cr, n, vdry,
+                    v, particle_temperatures, v_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]

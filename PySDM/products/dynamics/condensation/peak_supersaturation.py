@@ -22,7 +22,7 @@ class PeakSupersaturation(Product):
 
     def get(self):
         self.buffer[:] = (self.RH_max[:] - 1) * 100
-        self.RH_max[:] = 0
+        self.RH_max[:] = -100
         return self.buffer
 
     def notify(self):
