@@ -9,15 +9,14 @@ import pytest
 import numpy as np
 
 
-rtols = [1e-3, 1e-6]
+rtols = [1e-3, 1e-7]
 schemes = ['default', 'BDF']
 setups_num = len(setups)
-dt_cond_range = (1e-10, 1)
 
 
 @pytest.fixture(scope='module')
 def data():
-    return data_method(n_output=20, rtols=rtols, schemes=schemes, setups_num=setups_num, dt_cond_range=dt_cond_range)
+    return data_method(n_output=20, rtols=rtols, schemes=schemes, setups_num=setups_num)
 
 
 def split(arg1, arg2):

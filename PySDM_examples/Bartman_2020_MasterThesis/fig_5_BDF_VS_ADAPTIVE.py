@@ -12,7 +12,7 @@ import matplotlib
 from matplotlib.collections import LineCollection
 
 
-def data(n_output, rtols, schemes, setups_num, dt_cond_range):
+def data(n_output, rtols, schemes, setups_num):
     resultant_data = {}
     for scheme in schemes:
         resultant_data[scheme] = {}
@@ -22,9 +22,8 @@ def data(n_output, rtols, schemes, setups_num, dt_cond_range):
             for settings_idx in range(setups_num):
                 settings = setups[settings_idx]
                 settings.n_output = n_output
-                settings.dt_cond_range = dt_cond_range
                 simulation = Simulation(settings)
-                bdf.patch_core(simulation.core, settings.coord, rtol=1e-4)
+                bdf.patch_core(simulation.core, settings.coord)
                 results = simulation.run()
                 for rtol in rtols:
                     resultant_data[scheme][rtol].append(results)
@@ -33,7 +32,6 @@ def data(n_output, rtols, schemes, setups_num, dt_cond_range):
                 resultant_data[scheme][rtol] = []
                 for settings_idx in range(setups_num):
                     settings = setups[settings_idx]
-                    settings.scheme = scheme
                     settings.rtol_x = rtol
                     settings.rtol_thd = rtol
                     settings.n_output = n_output
@@ -47,7 +45,7 @@ def add_color_line(fig, ax, x, y, z):
     points = np.array([x, y]).T.reshape(-1, 1, 2)
     segments = np.concatenate([points[:-1], points[1:]], axis=1)
     z = np.array(z)
-    vmin = min(np.amin(z), np.amax(z)/2)
+    vmin = min(np.nanmin(z), np.nanmax(z)/2)
     lc = LineCollection(segments, cmap=plt.get_cmap('plasma'),
                         norm=matplotlib.colors.LogNorm(vmax=1, vmin=vmin))
     lc.set_array(z)
@@ -71,7 +69,7 @@ def plot(data, rtols, schemes, setups_num, path=None):
                 datum = data[scheme][rtols[rtol_idx]][settings_idx]
                 S = datum['S']
                 z = datum['z']
-                dt = datum['dt']
+                dt = datum['dt_cond_min']
                 if scheme == 'BDF':
                     ax.plot(S, z, label=scheme, color='grey')
                     BDF_S = np.array(S)

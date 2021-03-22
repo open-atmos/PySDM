@@ -5,7 +5,7 @@ import numpy as np
 
 def test_few_steps(plot=False):
     # Arrange
-    settings = Settings(n_sd_per_gridbox=100, dt=30*si.s, dz=100*si.m)
+    settings = Settings(n_sd_per_gridbox=50, dt=30*si.s, dz=50*si.m)
     simulation = Simulation(settings)
 
     # Act
@@ -26,7 +26,7 @@ def test_few_steps(plot=False):
 
     # Assert
     assert min(profile('ql')) == 0
-    assert .1 < max(profile('ql')) < .6
+    assert .1 < max(profile('ql')) < 1
     assert max(profile('ripening_rate')) > 0
     assert max(profile('activating_rate')) == 0
     assert max(profile('deactivating_rate')) > 0

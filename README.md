@@ -45,7 +45,7 @@ It is worth here to distinguish the dependencies of the PySDM core subpackage
 ``PySDM_examples`` and ``PySDM_tests`` subpackages indicated in the ``requirements.txt`` file.
 
 PySDM core subpackage dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
-[Pint](https://pint.readthedocs.io/) and [molmass](https://pypi.org/project/molmass/).
+[Pint](https://pint.readthedocs.io/) and [chempy](https://pypi.org/project/chempy/).
 
 The **Numba backend** named ``CPU`` is the default, and features multi-threaded parallelism for 
   multi-core CPUs. 
@@ -85,12 +85,17 @@ repository and install the package using ``pip -e`` or simply adjust the ``PYTHO
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Yang_et_al_2018_Fig_2/demo.ipynb)    
   (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
+#### 0D parcel-model condensation/aqueous-chemistry example (works on CPU backend only for now, stay tuned...)
+- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) Fig 1:
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
+  (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case)
 #### 1D kinematic (prescribed-flow, single-column)  
 - [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913)
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Shipway_and_Hill_2012/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Shipway_and_Hill_2012/demo.ipynb)    
   (Fig. 1 with thermodynamics & condensation only - no particle displacement)
-#### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) example (work with CPU backend only for now, stay tuned...)
+#### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) examples (work with CPU backend only for now, stay tuned...)
 - [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) Figs. 8 & 9:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)
   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Arabas_et_al_2015_Figs_8_9/demo.ipynb)       
@@ -200,7 +205,7 @@ The resultant plot looks as follows:
         linear, logarithmic and constant_multiplicity classes
 - [physics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/physics):
     - [constants](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/constants.py): 
-      physical constants partly imported from [SciPy](https://www.scipy.org/) and [molmass](https://pypi.org/project/molmass/) packages
+      physical constants partly imported from [SciPy](https://www.scipy.org/) and [chempy](https://pypi.org/project/chempy/) packages
     - [dimensional_analysis](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/dimensional_analysis.py): 
       tool for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
     - [formulae](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/formulae.py): 

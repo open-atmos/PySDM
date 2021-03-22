@@ -2,8 +2,6 @@
 Created at 08.08.2019
 """
 
-import copy
-
 import numpy as np
 import pytest
 
@@ -15,6 +13,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectra import Exponential
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
+from PySDM.physics import formulae as phys
 from PySDM_tests.backends_fixture import backend
 
 
@@ -42,7 +41,7 @@ def test_coalescence(backend, croupier, adaptive):
     # Arrange
     n_sd = 2 ** 14
     steps = [0, 100, 200]
-    X0 = 4 / 3 * np.pi * 30.531e-6 ** 3
+    X0 = phys.volume(radius=30.531e-6)
     n_part = 2 ** 23 / si.metre ** 3
     dv = 1e6 * si.metres ** 3
     dt = 1 * si.seconds

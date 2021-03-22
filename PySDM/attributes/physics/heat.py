@@ -1,4 +1,4 @@
-from ..extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
 class Heat(ExtensiveAttribute):

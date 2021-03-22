@@ -2,7 +2,7 @@
 Created at 11.05.2020
 """
 
-from PySDM.attributes.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
 class Volume(ExtensiveAttribute):

@@ -90,7 +90,8 @@ class Settings:
         self.th_std0 = 289 * si.kelvins
         self.qv0 = 7.5 * si.grams / si.kilogram
         self.p0 = 1015 * si.hectopascals
-        self.kappa = 1
+        self.kappa = 1  # TODO #441!
+        self.g = const.g_std
         self.kernel = Geometric(collection_efficiency=1)
         self.aerosol_radius_threshold = .5 * si.micrometre
         self.drizzle_radius_threshold = 25 * si.micrometre
@@ -127,6 +128,6 @@ class Settings:
         return - self.rho_w_max * X / np.pi * np.sin(np.pi * zZ) * np.cos(2 * np.pi * xX)
 
     def rhod(self, zZ):
-        p = phys.Hydrostatic.p_of_z_assuming_const_th_and_qv(self.p0, self.th_std0, self.qv0, z=zZ * self.size[-1])
+        p = phys.Hydrostatic.p_of_z_assuming_const_th_and_qv(self.g, self.p0, self.th_std0, self.qv0, z=zZ * self.size[-1])
         rhod = phys.ThStd.rho_d(p, self.qv0, self.th_std0)
         return rhod

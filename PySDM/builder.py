@@ -8,10 +8,10 @@ from PySDM.core import Core
 from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
 from PySDM.state.particles_factory import ParticlesFactory
 from PySDM.state.wall_timer import WallTimer
-from PySDM.attributes.mapper import get_class as attr_class
-from PySDM.attributes.droplet.multiplicities import Multiplicities
-from PySDM.attributes.droplet.volume import Volume
-from PySDM.attributes.cell.cell_id import CellID
+from PySDM.attributes.impl.mapper import get_class as attr_class
+from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.physics.volume import Volume
+from PySDM.attributes.numerics.cell_id import CellID
 
 
 class Builder:

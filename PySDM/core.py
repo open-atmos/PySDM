@@ -70,6 +70,19 @@ class Core:
             prob, self.particles['cell id'], self.particles.cell_idx,
             self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
+    def update_TpRH(self):
+        self.backend.temperature_pressure_RH(
+            # input
+            self.env.get_predicted('rhod'),
+            self.env.get_predicted('thd'),
+            self.env.get_predicted('qv'),
+            # output
+            self.env.get_predicted('T'),
+            self.env.get_predicted('p'),
+            self.env.get_predicted('RH')
+        )
+        # TODO #443: mark_updated
+
     def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \
@@ -100,14 +113,6 @@ class Core:
                 cell_order=cell_order,
                 RH_max=RH_max
             )
-        self.backend.temperature_pressure_RH(
-            self.env.get_predicted('rhod'),
-            self.env.get_predicted('thd'),
-            self.env.get_predicted('qv'),
-            self.env.get_predicted('T'),
-            self.env.get_predicted('p'),
-            self.env.get_predicted('RH')
-        )
 
     def run(self, steps):
         for _ in range(steps):

@@ -22,12 +22,10 @@ class CondensationMethods:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
             raise NotImplementedError()
-            # TODO: n_substeps_max = ... (fuse)
+            # TODO #437: n_substeps_max = ... (fuse)
         else:
             n_substeps_max = math.floor(dt / dt_range[0])
         n_substeps_min = math.ceil(dt / dt_range[1])
-
-        # TODO: is fuse needed with dt_range?
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def adapt_substeps(args, n_substeps, thd, rtol_thd):
@@ -167,7 +165,7 @@ class CondensationMethods:
         return calculate_ml_new
 
     @staticmethod
-    @lru_cache
+    @lru_cache()
     def make_condensation_solver(dt, dt_range, coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
         dx_dt, volume, x = coordinates.get(coord)
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()

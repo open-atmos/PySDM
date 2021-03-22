@@ -51,9 +51,12 @@ class Simulation:
         products = [
             PySDM_products.ParticleMeanRadius(),
             PySDM_products.CondensationTimestepMin(),
-            PySDM_products.RipeningRate(),
+            PySDM_products.ParcelDisplacement(),
+            PySDM_products.RelativeHumidity(),
+            PySDM_products.Time(),
             PySDM_products.ActivatingRate(),
-            PySDM_products.DeactivatingRate()
+            PySDM_products.DeactivatingRate(),
+            PySDM_products.RipeningRate()
         ]
 
         self.core = builder.build(attributes, products)
@@ -63,10 +66,10 @@ class Simulation:
     def save(self, output):
         cell_id = 0
         output["r"].append(self.core.products['radius_m1'].get(unit=const.si.metre)[cell_id])
-        output["S"].append(self.core.environment["RH"][cell_id] - 1)
-        output["z"].append(self.core.environment["z"][cell_id])
-        output["t"].append(self.core.environment["t"][cell_id])
         output["dt_cond_min"].append(self.core.products['dt_cond_min'].get()[cell_id])
+        output["z"].append(self.core.products["z"].get())
+        output["S"].append(self.core.products["RH_env"].get()[cell_id]/100 - 1)
+        output["t"].append(self.core.products["t"].get())
 
         for event in ('activating', 'deactivating', 'ripening'):
             output[event+"_rate"].append(self.core.products[event+'_rate'].get()[cell_id])

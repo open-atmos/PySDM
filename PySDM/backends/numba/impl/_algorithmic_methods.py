@@ -122,7 +122,7 @@ class AlgorithmicMethods:
     @numba.njit(
         void(i8[:], i8[:], i8, f8[:, :], f8[:], i8[:], b1[:]),
         **conf.JIT_FLAGS)
-    def coalescence_body(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+    def coalescence_body(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
         for i in prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -131,21 +131,21 @@ class AlgorithmicMethods:
             new_n = n[j] - gamma[i] * n[k]
             if new_n > 0:
                 n[j] = new_n
-                for a in range(0, len(extensive_attributes)):
-                    extensive_attributes[a, k] += gamma[i] * extensive_attributes[a, j]
+                for a in range(0, len(attributes)):
+                    attributes[a, k] += gamma[i] * attributes[a, j]
             else:  # new_n == 0
                 n[j] = n[k] // 2
                 n[k] = n[k] - n[j]
-                for a in range(0, len(extensive_attributes)):
-                    extensive_attributes[a, j] = gamma[i] * extensive_attributes[a, j] + extensive_attributes[a, k]
-                    extensive_attributes[a, k] = extensive_attributes[a, j]
+                for a in range(0, len(attributes)):
+                    attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
+                    attributes[a, k] = attributes[a, j]
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, idx, length, extensive_attributes, gamma, healthy, is_first_in_pair):
+    def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, idx.data, length,
-                                            extensive_attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+                                            attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -348,7 +348,7 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, r_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt,
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
             cell_order, RH_max
@@ -369,7 +369,7 @@ class AlgorithmicMethods:
                 md = rhod_mean * dv_mean
 
                 qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, particle_temperatures, r_cr, n, vdry,
+                    v, particle_temperatures, v_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]

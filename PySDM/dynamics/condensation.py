@@ -7,11 +7,11 @@ from ..physics import si
 
 default_rtol_x = 1e-6
 default_rtol_thd = 1e-6
-default_cond_range = (1e-4 * si.second, 10 * si.second)
+default_cond_range = (1e-4 * si.second, 1 * si.second)
 default_schedule = 'dynamic'
 
 
-class Condensation():
+class Condensation:
 
     def __init__(self,
                  kappa,
@@ -75,4 +75,11 @@ class Condensation():
                 RH_max=self.RH_max,
                 cell_order=self.cell_order
             )
+            # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
+            self.core.update_TpRH()
 
+            if self.adaptive:
+                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
+                if self.dt_cond_range[0] != 0:
+                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[0]))
+            self.core.particles.attributes['volume'].mark_updated()

@@ -6,7 +6,8 @@ from typing import Dict
 
 import numpy as np
 
-from PySDM.attributes.attribute import Attribute
+from PySDM.attributes.impl.attribute import Attribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
 class Particles:
@@ -111,11 +112,8 @@ class Particles:
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
-                if attr in self.attributes:
-                    attr_data.append(self.attributes[attr].get())
-                    ranks.append(rank)
-                else:
-                    raise NotImplementedError()
+                attr_data.append(self.attributes[attr].get())
+                ranks.append(rank)
         # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
@@ -140,14 +138,17 @@ class Particles:
         self.core.bck.coalescence(n=self['n'],
                                   idx=self.__idx,
                                   length=self.SD_num,
-                                  extensive_attributes=self.get_extensive_attrs(),
+                                  attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
                                   is_first_in_pair=is_first_in_pair
                                   )
         self.healthy = bool(self.__healthy_memory)
         self.core.particles.sanitize()
-        self.attributes['volume'].mark_updated()
+        self.attributes['n'].mark_updated()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
@@ -162,3 +163,73 @@ class Particles:
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
+
+    def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+        self.core.bck.oxidation(
+            n_sd=self.core.n_sd,
+            cell_ids=self['cell id'],
+            do_chemistry_flag=do_chemistry_flag,
+            k0=kinetic_consts["k0"],
+            k1=kinetic_consts["k1"],
+            k2=kinetic_consts["k2"],
+            k3=kinetic_consts["k3"],
+            K_SO2=equilibrium_consts["K_SO2"],
+            K_HSO3=equilibrium_consts["K_HSO3"],
+            dissociation_factor_SO2=dissociation_factors['SO2'],
+            dt=dt,
+            # input
+            droplet_volume=self["volume"],
+            pH=self["pH"],
+            O3=self["conc_O3"],
+            H2O2=self["conc_H2O2"],
+            S_IV=self["conc_S_IV"],
+            # output
+            moles_O3=self["moles_O3"],
+            moles_H2O2=self["moles_H2O2"],
+            moles_S_IV=self["moles_S_IV"],
+            moles_S_VI=self["moles_S_VI"]
+        )
+        self.attributes['moles_S_IV'].mark_updated()
+        self.attributes['moles_S_VI'].mark_updated()
+        self.attributes['moles_H2O2'].mark_updated()
+        self.attributes['moles_O3'].mark_updated()
+
+    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
+                    environment_mixing_ratios, do_chemistry_flag):
+        self.core.bck.dissolution(
+            n_cell=self.core.mesh.n_cell,
+            n_threads=1,  # TODO #440
+            cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+            cell_start_arg=self.cell_start,
+            idx=self._Particles__idx,
+            do_chemistry_flag=do_chemistry_flag,
+            mole_amounts={key: self["moles_" + key] for key in gaseous_compounds.keys()},
+            env_mixing_ratio=environment_mixing_ratios,
+            # note: assuming condensation was called
+            env_p=self.core.env.get_predicted('p'),
+            env_T=self.core.env.get_predicted('T'),
+            env_rho_d=self.core.env.get_predicted('rhod'),
+            dt=dt,
+            dv=self.core.mesh.dv,
+            droplet_volume=self["volume"],
+            multiplicity=self["n"],
+            system_type=system_type,
+            ksi=dissociation_factors
+        )
+        for key in gaseous_compounds.keys():
+            self.attributes[f'moles_{key}'].mark_updated()
+
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+        self.core.bck.chem_recalculate_cell_data(
+            equilibrium_consts=equilibrium_consts,
+            kinetic_consts=kinetic_consts,
+            T=self.core.env.get_predicted('T')
+        )
+
+    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+        self.core.bck.chem_recalculate_drop_data(
+            dissociation_factors=dissociation_factors,
+            equilibrium_consts=equilibrium_consts,
+            pH=self['pH'],
+            cell_id=self['cell id']
+        )

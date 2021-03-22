@@ -17,11 +17,15 @@ class Parcel(_Moist):
             self, dt,
             mass_of_dry_air: float,
             p0: float, q0: float, T0: float,
-            w: [float, callable], z0: float = 0):
+            w: [float, callable],
+            z0: float = 0,
+            g=const.g_std
+    ):
 
         super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
 
         self.w = w if callable(w) else lambda _: w
+        self.g = g
 
         pd0 = phys.MoistAir.p_d(p0, q0)
         rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, T0)
@@ -30,6 +34,7 @@ class Parcel(_Moist):
         self.mesh.dv = phys.Trivia.volume_of_density_mass(rhod0, mass_of_dry_air)
 
         self.mass_of_dry_air = mass_of_dry_air
+        self.dql = None
 
     @property
     def dv(self):
@@ -64,15 +69,20 @@ class Parcel(_Moist):
 
     def advance_parcel_vars(self):
         dt = self.core.dt
-        qv = self['qv'][0]
         T = self['T'][0]
         p = self['p'][0]
         t = self['t'][0]
+
         dz_dt = self.w(t + dt/2)  # "mid-point"
+        qv = self['qv'][0] - self.dql/2
+
+        dql_dz = self.dql / dz_dt / dt
+        drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, dql_dz=dql_dz)
+        drhod_dz = drho_dz
 
         phys.explicit_euler(self._tmp['t'][:], dt, 1)
         phys.explicit_euler(self._tmp['z'][:], dt, dz_dt)
-        phys.explicit_euler(self._tmp['rhod'][:], dt, dz_dt * phys.Hydrostatic.drhod_dz(p, T, qv))
+        phys.explicit_euler(self._tmp['rhod'][:], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = phys.Trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,
@@ -86,6 +96,7 @@ class Parcel(_Moist):
         return self['qv']
 
     def sync_parcel_vars(self):
+        self.dql = self._tmp['qv'][0] - self['qv'][0]
         for var in self.variables:
             self._tmp[var][:] = self[var][:]
 
