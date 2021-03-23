@@ -22,7 +22,7 @@ class CloudDropletEffectiveRadius(MomentProduct):
             unit='um',
             description='Cloud Droplet Effective Radius',
             scale='linear',
-            range=(0, 20)
+            range=(0, 25)
         )
 
     @staticmethod

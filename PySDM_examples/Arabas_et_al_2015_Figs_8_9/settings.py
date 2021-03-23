@@ -12,6 +12,7 @@ from pystrict import strict
 
 import PySDM
 from PySDM.dynamics import condensation
+from PySDM.dynamics.coalescence import coalescence
 from PySDM.dynamics.coalescence.kernels import Geometric
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.initialisation.spectra import Sum
@@ -41,6 +42,9 @@ class Settings:
         self.condensation_schedule = condensation.default_schedule
 
         self.coalescence_adaptive = True
+        self.coalescence_dt_coal_range = coalescence.default_dt_coal_range
+        self.coalescence_optimized_random = True
+        self.coalescence_substeps = 1
 
         self.grid = (25, 25)
         self.size = (1500 * si.metres, 1500 * si.metres)

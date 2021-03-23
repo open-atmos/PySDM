@@ -88,7 +88,7 @@ repository and install the package using ``pip -e`` or simply adjust the ``PYTHO
 #### 0D parcel-model condensation/aqueous-chemistry example (works on CPU backend only for now, stay tuned...)
 - [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) Fig 1:
   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM.git/master?filepath=PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)    
   (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case)
 #### 1D kinematic (prescribed-flow, single-column)  
 - [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913)
@@ -232,23 +232,29 @@ The resultant plot looks as follows:
               bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
             - [BDF](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_tests/smoke_tests/utils/bdf.py): 
               black-box SciPy-based solver for benchmarking (Numba backend only)
+    - [AqueousChemistry](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/aqueous_chemistry/aqueous_chemistry.py):
+      aqueous-phase chemistry (incl. SO2 oxidation)
     - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
       includes advection with the flow & sedimentation)
     - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection)
 - Attributes (selected):
-    - [cell](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/cell):
-        - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/cell/position_in_cell.py)
-        - [cell_id](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/cell/cell_id.py)
+    - [numerics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/numerics):
+        - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/numerics/position_in_cell.py)
+        - [cell_id](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/numerics/cell_id.py)
         - ...
-    - [droplet](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/droplet):
-        - [volume](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/volume.py)
-        - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/multiplicities.py)
-        - [critical_radius](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/droplet/critical_radius.py)
+    - [physics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/physics):
+        - [volume](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/physics/volume.py)
+        - [multiplicities](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/physics/multiplicities.py)
+        - [critical_volume](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/physics/critical_volume.py)
+        - ...
+    - [chemistry](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/chemistry):
+        - [pH](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/chemistry/pH.py)
+        - [concentration](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/chemistry/concentration.py)
         - ...
 - Products (selected):
     - [SuperDropletCount](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/state/super_droplet_count.py)
     - [ParticlesVolumeSpectrum](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/state/particles_volume_spectrum.py)
-    - [CondensationTimestep](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/dynamics/condensation/condensation_timestep.py)    
+    - [WaterMixingRatio](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/products/state/water_mixing_ratio.py)
     - ...
 
 ## Credits:
