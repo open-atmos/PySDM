@@ -75,8 +75,7 @@ PySDM is released under the **GNU GPL v3 license**.
 
 Subsequent sections of this paper provide: an outline of PySDM programming interface; an index of 
 examples and tutorials included as of v1.3; an overview of other open-source software packages implementing the SDM algorithm; 
-and a description of a set of technical solutions introduced in PySDM that are of potential interest to
-the wider research software engineering community. 
+and a brief summary highlighting the key virtues of PySDM and its design. 
 
 # API in brief
 
@@ -161,21 +160,54 @@ pyplot.show()
 
 # Boundled examples
 
+The PySDM examples are hosted in a separate repository (\url{https://github.com/atmos-cloud-sim-uj/PySDM-examples})
+  and are all based on setups from literature.
+All examples feature a `settings.py` file with simulation parameters, a `simulation.py` file including logic
+  analogous to the one presented in the code snippets above for handling composition of `PySDM` components
+  using the `Builder` class, and a `demo.ipynb` Jupyter notebook file with simulation launching code and
+  basic result visualisation.
 
+### Box environment examples
 
-`PySDM.backends`
-`PySDM.dynamics`
-`PySDM.products`
-`PySDM.attributes`
-`PySDM.environments`
+The `Box` environment is the simplest one available in PySDM and the `PySDM_examples` package ships with two examples based on it.
+The first, labelled `Shima_et_al_2009` is an extension of the code presented in the snippets in the preceding section
+  and reproduces Fig. 2 from the seminal paper of [@Shima_et_al_2009].
+Coalescence is the only process (`Coalescence` dynamic) considered, and the probabilities of collisions of particles
+  are evaluated using the Golovin additive kernel, which is unphysical but allows to compare the results with
+  analytical solution of the Smoluchowski equation (included in the resultant plots).
 
-examples (add one figure per each example): 
-  - box, coalescence only: Shima [@Shima_et_al_2009], Berry [@Berry_1966]
-  - parcel, monodisperse: AS [@Arabas_and_Shima_2017]
-  - parcel, polydisperse: Yang [@Yang_et_al_2018]
-  - parcel, polydisperse with aqueous chemistry: [@Kreidenweis_et_al_2003], [@Jaruga_and_Pawlowska_2018]
-  - kinematic 1D warm-rain: [@Shipway_and_Hill_2012]
-  - kinematic 2D warm-rain: ICMW [@Arabas_et_al_2015]
+The second example based on the `Box` environment and also featuring collision-only setup is labelled `Berry_1966`
+  and reproduces several figures from the seminal work of [@Berry_1966] involving more sophisticated 
+  collision kernels representing such phenomena as geometric sweep-out and influence of electric field of collision probability.
+
+### Adiabatic parcel examples
+
+The `Parcel` environment share the zero-dimensional setting of `Box` (i.e., no particle physical coordinates considered), yet
+  provides a thermodynamic evolution of the ambient air mimicking adiabatic displacement of an air parcel in 
+  hydrostatically stratified atmosphere.
+The adiabatic cooling during ascent results in reaching supersaturation with water vapour what triggers activation of
+  aerosol particles (condensation nuclei) into cloud droplets through condensation.
+All examples based on the `Parcel` environment thus utilise the `Condensation` and `AmbientThermodynamics` dynamics.
+
+The simplest example labelled `Arabas_and_Shima_2017` uses a monodisperse particle spectrum represented with a single super-droplet
+  and reproduces simulations described in [@Arabas_and_Shima_2017] where an ascent-descent scenario is employed to
+  depict hysteretic behaviour of the activation/deactivation phenomena.
+
+A polydisperse lognormal spectrum represented with multiple super-droplets is used in the `Yang_et_al_2018` example
+  based on the work of [@Yang_et_al_2018].
+Presented simulations involve repeated ascent-descent cycles and depict the evolution of partitioning between
+  activated and unactivated particles.
+  
+Finally, there are two examples labelled `Kreidenweis_et_al_2003` and `Jaruga_and_Pawlowska_2018` featuring adiabatic
+  parcel simulations involving representation of the dynamics of chemical composition of both ambient air and
+  the droplet-dissolved substances, in particular focusing on the oxidation of aqueous-phase sulphur.
+The examples reproduce the simulations discussed in [@Kreidenweis_et_al_2003] and in [@Jaruga_and_Pawlowska_2018].
+
+### Kinematic (prescribed-flow) examples
+
+TODO: kinematic 1D warm-rain: [@Shipway_and_Hill_2012]
+
+TODO: kinematic 2D warm-rain: ICMW [@Arabas_et_al_2015]
 
 \begin{figure}[!htbp]
   \includegraphics[width=\linewidth]{test} 
@@ -185,18 +217,8 @@ examples (add one figure per each example):
   }
 \end{figure}
 
-# Notable hacks
-
-During development of PySDM, ...
-
-FakeThrust
-FakeUnits
-nicethrust
-closure pattern + profiling tradeoff
-
 # Selected relevant recent open-source developments
 
-SDM patents?
 
   - SDM algorithm implementations are part of the following packages:
     - `SCALE-SDM` (`Fortran`, \url{https://github.com/Shima-Lab}) [@Sato_et_al_2018]
@@ -211,6 +233,31 @@ SDM patents?
     - `pyrcel` (\url{https://github.com/darothen/pyrcel}) [@Rothenberg_and_Wang_2017]
     - `PyBox` (\url{https://github.com/loftytopping/PyBox}) [@Topping_et_al_2018]
 
+Note on the SDM patents: TODO
+
+# Summary
+
+The key virtues of PySDM stem from the characteristics of the employed Python language which enables high performance computational
+  modelling without trading off such coveted features as:
+\begin{description}
+    \item[succinct syntax]{ -- the example snippets presented in the paper are arguably close to pseudo-code;}
+    \item[seamless portability]{depicted in PySDM with continuous integration workflows for Linux, macOS and Windows, including 32-bit and 64-bit runs};
+    \item[unrivalled interoperability]{depicted in PySDM with Matlab and Julia usage examples which do not require any additional biding logic within PySDM;}
+    \item[multifaceted ecosystem]{including vibrant market of cloud-computing solutions and depicted in PySDM with one-click execution of Jupyter notebooks on mybinder.org and colab.research.google.com platforms};
+    \item[availability of tools for modern hybrid hardware]{depicted in PySDM with the GPU backend}.
+\end{description}
+It is worth noting that the above features play well together.
+For instance, the GPU backend of PySDM featuring the pseudo-code-like API 
+  can be leveraged through Jupyter notebooks in the cloud, as well as from within 
+  Matlab code on different operating systems.
+
+The key goal of the reported endeavour was to equip the cloud modelling community with 
+  a framework enabling rapid development, paper-review-level reproducibility of simulations
+  (i.e., technically feasible without contacting the authors and able to be set up within minutes)
+  and free from the two-language barrier commonly separating prototype and high-performance research code.
+  
+TODO ...
+  
 # Author contributions
 
 PB has been the architect and lead developer of PySDM v1 with SA as the main co-developer.
