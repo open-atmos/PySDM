@@ -60,14 +60,14 @@ The SDM is a probabilistic alternative to the mean-field approach emodied in the
 
 PySDM together with a set of developed usage examples constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modelling methods.
 The usage examples for `Python` were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
-In addition, the packages ships with tutorial code depicting how **`PySDM` can be used from `Julia` and `Matlab`**.
+In addition, the package ships with tutorial code depicting how **`PySDM` can be used from `Julia` and `Matlab`**.
 
 All Python examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
-Coninuous integration infrastructure used in the development of PySDM assures the targetted full usability on **Linux, macOS and Windows** environments 
+Continuous integration infrastructure used in the development of PySDM assures the targetted full usability on **Linux, macOS and Windows** environments 
   and as of the time of writing full compatibility with Python versions 3.7 through 3.9 is maintained.
 Test coverage for PySDM is reported using the `codecov.io` platform.
 
-PySDM essential dependencies (`numpy`, `scipy`, `numba`, `pint` and `chempy`) are free and open-sourse and are all available via the PyPI platform.
+PySDM essential dependencies (`numpy`, `scipy`, `numba`, `pint` and `chempy`) are free and open-source and are all available via the PyPI platform.
 PySDM ships with a setup.py file allowing **installation using the `pip` package manager** (i.e., `pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git`).
 The optional GPU backend relies on proprietary vendor-specific CUDA technology and the accompanying non-free software libraries. 
 The GPU backend is implemented using open-source `ThrustRTC` and `CURandRTC` packages released under the Anti-996 license.
@@ -252,9 +252,9 @@ For instance, the GPU backend of PySDM featuring the pseudo-code-like API
   Matlab code on different operating systems.
 
 The key goal of the reported endeavour was to equip the cloud modelling community with 
-  a framework enabling rapid development, paper-review-level reproducibility of simulations
-  (i.e., technically feasible without contacting the authors and able to be set up within minutes)
-  and free from the two-language barrier commonly separating prototype and high-performance research code.
+  a solution enabling rapid development and paper-review-level reproducibility of simulations
+  (i.e., technically feasible without contacting the authors and able to be set up within minutes).
+  while being free from the two-language barrier commonly separating prototype and high-performance research code.
   
 TODO ...
   
@@ -263,7 +263,7 @@ TODO ...
 PB has been the architect and lead developer of PySDM v1 with SA as the main co-developer.
 PySDM 1.0 release accompanied PB's MSc thesis prepared under the mentorship of SA. 
 MO contributed to the development of the condensation solver and led the development of relevant examples.
-GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM with help of AJ.
+GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM under guidance from AJ.
 KG and BP contributed to the GPU backend.
 AT contributed to the examples.
 The paper was composed by SA and PB and is partially based on the content of the PySDM README file and PB's MSc thesis.
