@@ -55,7 +55,7 @@ class Simulation:
     def _save(self, output):
         for k, v in self.core.products.items():
             value = v.get()
-            if isinstance(value, np.ndarray) and value.size:
+            if isinstance(value, np.ndarray) and value.size == 1:
                 value = value[0]
             output[k].append(value)
 

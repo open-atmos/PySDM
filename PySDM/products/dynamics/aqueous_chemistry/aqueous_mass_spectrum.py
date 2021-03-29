@@ -12,7 +12,7 @@ class AqueousMassSpectrum(MomentProduct):
 
     def __init__(self, key, dry_radius_bins_edges):
         super().__init__(
-            name='dm/dlnr',
+            name=f'dm_{key}/dlnr',
             unit='kg / m3 / (unit dr/r)',
             description=f'... {key} ...',
             scale=None,
@@ -21,7 +21,7 @@ class AqueousMassSpectrum(MomentProduct):
         self.key = key
         self.moment_0 = None
         self.moments = None
-        self.molar_mass = 1 # TODO
+        self.molar_mass = 1  # TODO #458
         self.dry_radius_bins_edges = dry_radius_bins_edges
 
     def register(self, builder):
