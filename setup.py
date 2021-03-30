@@ -14,7 +14,7 @@ setup(
     setup_requires=['setuptools_scm'],
     install_requires=['ThrustRTC==0.3.10',
                       'CURandRTC==0.1.6',
-                      'numba==0.53.0',
+                      'numba==0.53.1',
                       'numpy>=1.19.4',
                       'Pint>=0.11',
                       'chempy>=0.7.10',
