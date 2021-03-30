@@ -1,6 +1,6 @@
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import Settings, w_avgs
+from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM_examples.Arabas_and_Shima_2017.settings import setups
+from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 from PySDM.physics.constants import si, rho_STP, convert_to
 import pytest
 import numpy as np
