@@ -6,10 +6,10 @@ from PySDM_examples.Arabas_et_al_2015_Figs_8_9.netcdf_exporter import NetCDFExpo
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
 from PySDM_examples.Arabas_et_al_2015_Figs_8_9.storage import Storage
-from PySDM_examples.utils.temporary_file import TemporaryFile
+import tempfile
 
 
-def test_export():
+def test_export(tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
@@ -17,8 +17,8 @@ def test_export():
 
     storage = Storage()
     simulator = Simulation(settings, storage)
-    temp_file = TemporaryFile('.nc')
-    sut = NetCDFExporter(storage, settings, simulator, temp_file.absolute_path)
+    temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
+    sut = NetCDFExporter(storage, settings, simulator, temp_file)
 
     simulator.reinit()
     simulator.run()
