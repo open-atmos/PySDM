@@ -17,7 +17,7 @@ def test_export(tmp_path):
 
     storage = Storage()
     simulator = Simulation(settings, storage)
-    temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
+    _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 
     simulator.reinit()
