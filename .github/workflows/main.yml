@@ -25,17 +25,17 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: |
-          pip install pytest
+          pip install -r requirements.txt
 
       - run: |
-          pip install -r requirements.txt
+          pip install -e .
 
       # TODO #184 (https://github.com/numba/numba/issues/6350#issuecomment-728174860)
       - if: matrix.platform == 'ubuntu-latest'
         env: 
           NUMBA_THREADING_LAYER: omp
-        run: PYTHONPATH=. pytest -p no:unraisableexception -We
+        run: pytest -p no:unraisableexception -We
 
       - if: matrix.platform != 'ubuntu-latest'
-        run: PYTHONPATH=. pytest -p no:unraisableexception -We
+        run: pytest -p no:unraisableexception -We
 
