@@ -5,7 +5,7 @@ Created at 2019
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import Settings, w_avgs
-from PySDM_tests.smoke_tests.utils import bdf
+from PySDM.backends.numba import bdf
 from PySDM.physics import constants as const
 import pytest
 import numpy as np
