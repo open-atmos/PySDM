@@ -33,10 +33,10 @@ class AqueousMassSpectrum(MomentProduct):
         volume_bins_edges = phys.volume(self.dry_radius_bins_edges)
         vals = np.empty(len(volume_bins_edges) - 1)
         for i in range(len(vals)):
-            self.download_moment_to_buffer(attr=f'moles_{self.key}', rank=1,
+            self.download_moment_to_buffer(attr=f'moles_{self.key}', rank=1, filter_attr='dry volume',
                                            filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
             vals[i] = self.buffer[0]
-            self.download_moment_to_buffer(attr='volume', rank=0,
+            self.download_moment_to_buffer(attr='volume', rank=0, filter_attr='dry volume',
                                            filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
             vals[i] *= self.buffer[0]
         vals *= self.molar_mass / np.diff(np.log(self.dry_radius_bins_edges)) / self.core.mesh.dv
