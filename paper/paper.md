@@ -64,7 +64,7 @@ In addition, the package ships with tutorial code depicting how **`PySDM` can be
 
 All Python examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
 Continuous integration infrastructure used in the development of PySDM assures the targetted full usability on **Linux, macOS and Windows** environments 
-  and as of the time of writing full compatibility with Python versions 3.6 through 3.9 is maintained.
+  and as of the time of writing full compatibility with Python versions 3.7 through 3.9 is maintained.
 Test coverage for PySDM is reported using the `codecov.io` platform.
 
 PySDM essential dependencies (`numpy`, `scipy`, `numba`, `pint` and `chempy`) are free and open-source and are all available via the PyPI platform.
