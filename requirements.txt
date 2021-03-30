@@ -1,15 +1,6 @@
-ThrustRTC==0.3.10
-CURandRTC==0.1.6
-numba==0.53.0
-numpy>=1.19.4
-git+git://github.com/atmos-cloud-sim-uj/PyMPDATA@f33d602#egg=PyMPDATA
-
-chempy>=0.7.10
-pystrict>=1.1
-Pint>=0.11
-scipy>=1.4.1
+# test-time requirements
 matplotlib>=3.2.2
-ipywidgets>=7.5.1
-
 ghapi
 pytest
+# note: if clonin both PySDM and PySDM examples, consider "pip install -e"
+git+git://github.com/atmos-cloud-sim-uj/PySDM-examples@TODO#egg=PySDM_examples
