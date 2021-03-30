@@ -49,7 +49,7 @@ def gh_issues():
 
 
 def test_todos_annotated(file, gh_issues):
-    if os.path.basename(file) == 'test_todos_annotated.py' or file.endswith("-checkpoint.ipynb"):
+    if os.path.basename(file) == 'test_todos_annotated.py' or file.endswith("-checkpoint.ipynb") or ".eggs" in file:
         return
     for line in grep(file, r'.*TODO.*'):
         match = re.search(r'TODO #(\d+)', line)
