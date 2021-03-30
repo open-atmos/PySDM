@@ -4,7 +4,7 @@ Created at 20.08.2020
 
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
-from PySDM_tests.smoke_tests.utils import bdf
+from PySDM.backends.numba import bdf
 
 import numpy as np
 import matplotlib.pyplot as plt

@@ -44,6 +44,7 @@ class Simulation:
             *[PySDM_products.GaseousMoleFraction(compound) for compound in GASEOUS_COMPOUNDS.keys()],
             PySDM_products.pH(radius_range=settings.cloud_radius_range),
             PySDM_products.TotalDryMassMixingRatio(settings.DRY_RHO),
+            PySDM_products.AqueousMassSpectrum("S_VI", settings.dry_radius_bins_edges),
             PySDM_products.PeakSupersaturation(),
             PySDM_products.CloudDropletConcentration(radius_range=settings.cloud_radius_range)
         ]
@@ -54,7 +55,7 @@ class Simulation:
     def _save(self, output):
         for k, v in self.core.products.items():
             value = v.get()
-            if isinstance(value, np.ndarray):
+            if isinstance(value, np.ndarray) and value.size == 1:
                 value = value[0]
             output[k].append(value)
 
