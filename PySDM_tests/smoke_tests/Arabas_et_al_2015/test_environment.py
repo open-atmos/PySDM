@@ -5,8 +5,8 @@ Created at 2019
 import numpy as np
 
 from PySDM.physics.constants import si
-from PySDM_examples.Arabas_et_al_2015_Figs_8_9.settings import Settings
-from PySDM_examples.Arabas_et_al_2015_Figs_8_9.simulation import Simulation
+from PySDM_examples.Arabas_et_al_2015.settings import Settings
+from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
 
 
 def test_environment():
