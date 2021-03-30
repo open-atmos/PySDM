@@ -2,5 +2,6 @@
 matplotlib>=3.2.2
 ghapi
 pytest
-# note: if clonin both PySDM and PySDM examples, consider "pip install -e"
-git+git://github.com/atmos-cloud-sim-uj/PySDM-examples@TODO#egg=PySDM_examples
+
+# note: if cloning both PySDM and PySDM examples, consider "pip install -e"
+git+git://github.com/atmos-cloud-sim-uj/PySDM-examples@6a8b48a#egg=PySDM_examples
