@@ -2,9 +2,9 @@
 Created at 2019
 """
 
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.simulation import Simulation
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import setups
-from PySDM_examples.Arabas_and_Shima_2017_Fig_5.settings import Settings, w_avgs
+from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM_examples.Arabas_and_Shima_2017.settings import setups
+from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 from PySDM.backends.numba import bdf
 from PySDM.physics import constants as const
 import pytest
