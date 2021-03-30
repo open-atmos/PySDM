@@ -2,8 +2,8 @@
 Created at 2020
 """
 
-from PySDM_examples.Yang_et_al_2018_Fig_2.example import Simulation
-from PySDM_examples.Yang_et_al_2018_Fig_2.settings import Settings
+from PySDM_examples.Yang_et_al_2018.example import Simulation
+from PySDM_examples.Yang_et_al_2018.settings import Settings
 from PySDM.physics.constants import si
 from PySDM.backends.numba import bdf
 import pytest
