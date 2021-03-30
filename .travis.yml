@@ -41,7 +41,7 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
-  - pip$PY_SFX install -U ipykernel pytest pytest-cov codecov setuptools>=50.3.2  # TODO #462
+  - pip$PY_SFX install -U pytest-cov codecov setuptools>=50.3.2  # TODO #462
   - |
     # https://stackoverflow.com/questions/55486248/deprecationwarning-in-python-3-6-and-3-7-with-pillow-distutils-imp
     if [[ $TRAVIS_OS_NAME == linux ]]; then
@@ -51,7 +51,6 @@ install:
   - export PY_FLAGS="-We"
 
 script:
-  - NBCONVERT="python$PY_SFX $PY_FLAGS -m nbconvert --to markdown --stdout"
   - PYTEST="python$PY_SFX -m pytest $PY_FLAGS -p no:unraisableexception"
   - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM  # TODO #461
   - $PYTEST
