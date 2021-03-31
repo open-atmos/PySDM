@@ -35,7 +35,7 @@ authors:
   - name: Aleksandra Talar
     affiliation: "1"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA    
    index: 2
