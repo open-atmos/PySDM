@@ -59,8 +59,8 @@ Test-time dependencies are listed in the ``requirements.txt`` file.
 
 Besides the PySDM repository (where this README file is hosted), there are three related repositories:
 - [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) with a suite of Python/Jupyter examples depicting PySDM features and listed below,
-- [``PySDM_examples.jl``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.jl) with a subset of the examples depicting how to use PySDM from Julia using [PyCall.jl](https://github.com/JuliaPy/PyCall.jl),
-- [``PySDM_examples.m``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.m) with a subset of the examples depicting how to use PySDM from Matlab using the [Matlab-Python interface](https://www.mathworks.com/help/matlab/call-python-libraries.html).
+- [``PySDM_examples.jl``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.jl) with examples depicting how to use PySDM from Julia using [PyCall.jl](https://github.com/JuliaPy/PyCall.jl),
+- [``PySDM_examples.m``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.m) with examples depicting how to use PySDM from Matlab using the [Matlab-Python interface](https://www.mathworks.com/help/matlab/call-python-libraries.html).
 
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
 
