@@ -272,19 +272,19 @@ Most of the drizzle drops evaporate before reaching the bottom of the domain dep
 # Selected relevant recent open-source developments
 
 The SDM algorithm implementations are part of the following packages (of otherwise largely differing functionality):
-- `SCALE-SDM` in Fortran, [@Sato_et_al_2018]
-- `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet})
-- `Pencil Code` in Fortran, [@Pencil_2021]
-- `PALM LES` in Fortran, [@Maronga_et_al_2020]
-- `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015]
-- `LCM1D` in Python/C, [@Unterstrasser_et_al_2020]
-- `NTLP` in Fortran, [@Richter_et_al_2021]
+   - `SCALE-SDM` in Fortran, [@Sato_et_al_2018]
+   - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet})
+   - `Pencil Code` in Fortran, [@Pencil_2021]
+   - `PALM LES` in Fortran, [@Maronga_et_al_2020]
+   - `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015]
+   - `LCM1D` in Python/C, [@Unterstrasser_et_al_2020]
+   - `NTLP` in Fortran, [@Richter_et_al_2021]
 List of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.
 
 Python packages for solving dynamics of particles with moving-sectional representation of the size spectrum include:
-- `pyrcel`, [@Rothenberg_and_Wang_2017]
-- `PyBox`, [@Topping_et_al_2018]
+    - `pyrcel`, [@Rothenberg_and_Wang_2017]
+    - `PyBox`, [@Topping_et_al_2018]
 Both of the above packages depend on `Assimulo` for solving ODEs.
    
 # Summary
