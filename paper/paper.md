@@ -35,7 +35,7 @@ authors:
   - name: Aleksandra Talar
     affiliation: "1"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA    
    index: 2
@@ -49,28 +49,29 @@ bibliography: paper.bib
 
 # Introduction
 
-`PySDM` is an open-source Python package for simulating the dynamics of population of particles undergoing condensational and collisional growth,
+`PySDM` is an open-source Python package for simulating the dynamics of particles undergoing condensational and collisional growth,
   interacting with a fluid flow and subject to chemical composition changes. 
 It is intended to serve as a building block for process-level as well as computational-fluid-dynamics simulation systems involving representation
   of a continuous phase (air) and a dispersed phase (aerosol), with `PySDM` being responsible for representation of the dispersed phase. 
 As of the major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on 
   modelling the dynamics of particles immersed in moist air using the particle-based 
   approach to represent 
-  the evolution of size spectrum of aerosol/cloud/rain particles. 
+  the evolution of the size spectrum of aerosol/cloud/rain particles. 
 The particle-based approach contrasts the more commonly used bulk and bin methods
   in which atmospheric particles are segregated into multiple categories (aerosol, cloud, rain) 
-  and their evolution is governed by deterministic dynamics solved on Eulerian grid. 
-Particle-based methods employ discrete computational (super) particles, each carrying
-   a set of continuously-valued attributes evolving in Lagrangian manner. 
+  and their evolution is governed by deterministic dynamics solved on the same Eulerian grid as 
+  the dynamics of the continuous phase. 
+Particle-based methods employ discrete computational (super) particles for modelling the dispersed phase.
+Each super particle is associated with a set of continuously-valued attributes evolving in Lagrangian manner. 
 Such approach is particularly well suited for using probabilistic representation of 
   particle collisional growth (coagulation) and for representing processes dependent 
   on numerous particle attributes which helps to overcome the limitations of bulk and bin methods
   [@Morrison_et_al_2020].
 
 The `PySDM` package core is a Pythonic high-performance implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth [@Shima_et_al_2009], hence the name. 
-The SDM is a probabilistic alternative to the mean-field approach embodied by the Smoluchowski equation (for a comparative outline of 
-  both approaches see @Bartman_and_Arabas_2021).
-In atmospheric aerosol-cloud interactions, particle collisional growth is responsible for  
+The SDM is a probabilistic alternative to the mean-field approach embodied by the Smoluchowski equation, for a comparative outline of 
+  both approaches see @Bartman_and_Arabas_2021.
+In atmospheric aerosol-cloud interactions, particle collisional growth is responsible for
   formation of rain drops through collisions of smaller cloud droplets (warm-rain process)
   as well as for aerosol washout. 
 
@@ -78,8 +79,8 @@ Besides collisional growth, `PySDM` includes representation of condensation/evap
   water vapour on/from the particles.
 Furthermore, representation of dissolution and, if applicable, dissociation 
   of trace gases (sulfur dioxide, ozone, hydrogen peroxide, carbon dioxide, nitric acid and ammonia)
-  is included to model the subsequent aqueous-phase oxidation of the dissolved sulfur dioxide
-  (representation following the work of @Jaruga_and_Pawlowska_2018).
+  is included to model the subsequent aqueous-phase oxidation of the dissolved sulfur dioxide.
+Representation of the chemical processes follows the particle-based formulation of @Jaruga_and_Pawlowska_2018.
 
 The usage examples are built on four different `environment` classes included in `PySDM` v1
   and implementing common simple atmospheric cloud modelling frameworks: box, adiabatic
