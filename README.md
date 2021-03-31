@@ -236,7 +236,7 @@ The resultant plot looks as follows:
         - solvers (working in arbitrary spectral coordinate specified through external class, defaults to logarithm of volume): 
             - [default](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/impl/condensation_methods.py):
               bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
-            - [BDF](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM_tests/smoke_tests/utils/bdf.py): 
+            - [BDF](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/bdf.py): 
               black-box SciPy-based solver for benchmarking (Numba backend only)
     - [AqueousChemistry](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/aqueous_chemistry/aqueous_chemistry.py):
       aqueous-phase chemistry (incl. SO2 oxidation)
