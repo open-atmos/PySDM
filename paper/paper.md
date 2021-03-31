@@ -268,7 +268,7 @@ A rain shaft forms in the right part of the domain where the downward flow direc
 Precipitating drizzle drops collide with aerosol particles washing out the sub-cloud aerosol.
 Most of the drizzle drops evaporate before reaching the bottom of the domain depicting the virga phenomenon and the resultant aerosol resuspension.
 
-![Sample results from a 2D prescribed-flow simulation using the @Arabas_et_al_2015 example.\label{fig:virga}](test.pdf)
+![Results from a 2D prescribed-flow simulation using the @Arabas_et_al_2015 example.\label{fig:virga}](test.pdf)
 
 # Selected relevant recent open-source developments
 
