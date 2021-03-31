@@ -9,6 +9,15 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 
 class PairMethods:
 
+    __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
+        if (is_first_in_pair[i]) {
+            data_out[i] = abs(data_in[i] - data_in[i + 1]);
+        } 
+        else {
+            data_out[i] = 0;
+        }
+        ''')
+
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def distance_pair(data_out, data_in, is_first_in_pair, idx):
