@@ -39,7 +39,7 @@ affiliations:
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
    index: 2
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;;&nbsp;;&nbsp;;&nbsp;;&nbsp;
    index: 3
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 4
@@ -277,7 +277,8 @@ The SDM algorithm implementations are part of the following open-source packages
    - `LCM1D` in Python/C, [@Unterstrasser_et_al_2020];
    - `Pencil Code` in Fortran, [@Pencil_2021];
    - `NTLP` in Fortran, [@Richter_et_al_2021].
-   - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet});
+   - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia    
+      (\url{https://github.com/darothen/superdroplet});
 
 List of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.
@@ -299,7 +300,7 @@ Thus, the key advantages of PySDM stem from the characteristics of the employed 
 \begin{description}
     \item[succinct syntax]{ -- the snippets presented in the paper are arguably close to pseudo-code;}
     \item[portability]{depicted in PySDM with continuous integration workflows for Linux, macOS and Windows, including 32-bit and 64-bit runs};
-    \item[interoperability]{depicted in PySDM with Matlab and Julia usage examples which do not require any additional biding logic within PySDM;}
+    \item[interoperability]{depicted in PySDM with Matlab and Julia usage examples requireing minimal amount of biding-specific code;}
     \item[multifaceted ecosystem]{depicted in PySDM with one-click execution of Jupyter notebooks on mybinder.org and colab.research.google.com platforms};
     \item[availability of tools for modern hardware]{depicted in PySDM with the GPU backend}.
 \end{description}
@@ -320,7 +321,7 @@ The paper was composed by SA and PB and is partially based on the content of the
 # Acknowledgements
 
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
-We thank Fei Yang (https://github.com/fynv/) for addressing several issues reported in ThrustRTC during the development of PySDM.
+We thank Fei Yang (https://github.com/fynv/) for creating and supporting ThrustRTC.
 Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
 
 # References
