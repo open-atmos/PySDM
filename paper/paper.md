@@ -39,7 +39,7 @@ affiliations:
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
    index: 2
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;&nbsp;;&nbsp;;&nbsp;;&nbsp;;&nbsp;
+ - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 3
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 4
