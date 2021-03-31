@@ -187,7 +187,7 @@ pyplot.show()
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.75\textwidth]{readme}
+    \includegraphics[width=0.6\textwidth]{readme}
     \caption{Sample plot generated with the code snippets included in the paper.}
     \label{fig:readme_fig_1}
 \end{figure}
