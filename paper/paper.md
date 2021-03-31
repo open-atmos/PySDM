@@ -123,18 +123,15 @@ It is a coalescence-only set-up in which the initial particle size spectrum is e
 
 ```python
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import constant_multiplicity
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
-from PySDM.physics.formulae import volume
 
 n_sd = 2 ** 17
 initial_spectrum = Exponential(
     norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
-sampling_range = (volume(radius=10 * si.um),
-                  volume(radius=100 * si.um))
 attributes = {}
-attributes['volume'], attributes['n'] = constant_multiplicity(
-    n_sd=n_sd, spectrum=initial_spectrum, range=sampling_range)
+spectral_sampling = ConstantMultiplicity(spectrum=initial_spectrum)
+attributes['volume'], attributes['n'] = spectral_sampling.sample(n_sd=n_sd)
 ```
 
 In the above snippet, the exponential distribution of particle volumes is sampled at $2^{17}$ points 
@@ -148,7 +145,7 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.coalescence.kernels import Golovin
 from PySDM.backends import Numba
-from PySDM.state.products import ParticlesVolumeSpectrum
+from PySDM.products import ParticlesVolumeSpectrum
 
 builder = Builder(n_sd=n_sd, backend=Numba)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
