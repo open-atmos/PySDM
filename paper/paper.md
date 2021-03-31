@@ -52,7 +52,7 @@ bibliography: paper.bib
 `PySDM` is an open-source Python package for simulating the dynamics of population of particles undergoing condensational and collisional growth,
   interacting with a fluid flow and subject to chemical composition changes. 
 It is intended to serve as a building block for process-level as well as computational-fluid-dynamics simulation systems involving representation
-  of a continuous phase (fluid) and a dispersed phase (aerosol/hydrosol), with `PySDM` being responsible for representation of the dispersed phase. 
+  of a continuous phase (air) and a dispersed phase (aerosol), with `PySDM` being responsible for representation of the dispersed phase. 
 As of the major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on 
   modelling the dynamics of particles immersed in moist air using the particle-based 
   approach to represent 
@@ -98,7 +98,7 @@ The optional GPU backend relies on proprietary vendor-specific CUDA technology, 
 The usage examples for `Python` were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
 All Python examples are ready for use in the cloud using the `mybinder.org` and the `Google Colab` platforms.
 
-Continuous integration infrastructure used in the development of PySDM assures the targetted full usability on Linux, macOS and Windows environments 
+Continuous integration infrastructure used in the development of PySDM assures the targeted full usability on Linux, macOS and Windows environments 
   and as of the time of writing full compatibility with Python versions 3.7 through 3.9 is maintained.
 Test coverage for PySDM is reported using the `codecov.io` platform.
 Coverage analysis of the backend code requires execution with JIT-compilation disabled for the CPU backend 
@@ -107,7 +107,7 @@ For the GPU backend, a purpose-built `FakeThrust` package is shipped with `PySDM
   and translates C++ kernels into equivalent `Numba` parallel Python code for debugging and coverage analysis. 
 
 The `Pint` dimensional analysis package is used for unit testing.
-It allows to assert on the dimensionality of arithmetic expressions representing physical formulae.
+It allows asserting on the dimensionality of arithmetic expressions representing physical formulae.
 In order to enable JIT compilation of the formulae, a `FakeUnitRegistry` class is shipped that
   mocks the `Pint` API reducing its functionality to SI prefix handling for simulation runs.
 
@@ -195,10 +195,10 @@ pyplot.show()
 # Usage examples
 
 The PySDM examples are shipped in a separate package
-  that can be instaled with `pip install git+https://github.com/atmos-cloud-sim-uj/PySDM-examples.git` or
+  that can be installed with `pip install git+https://github.com/atmos-cloud-sim-uj/PySDM-examples.git` or
   conveniently experimented with using Colab or mybinder.org platforms (single-click launching badges included in the 
   `PySDM` README file).
-The examples are based on setups from literature and the package is structured using bibliographic labels (e.g., 
+The examples are based on setups from literature, and the package is structured using bibliographic labels (e.g., 
   `PySDM_examples.Shima_et_al_2009`).
 
 All examples feature a `settings.py` file with simulation parameters, a `simulation.py` file including logic
@@ -258,11 +258,11 @@ Each plot depicts a 1.5x1.5 km vertical slab of an idealised atmosphere in which
 The left plot shows the distribution of aerosol particles in the air. 
 The upper part of the domain is covered with a stratocumulus-like cloud which formed on the aerosol particles
   above the flat cloud base at the level where relative humidity goes above 100%.
+Within the cloud, the aerosol concentration is thus reduced. 
 The middle plot depicts the sizes of particles. 
-Particles larger than ca. 1 micrometre in radius are considered cloud droplets, particles larger than 
-  25 micrometres are considered drizzle.
-Within the cloud, the aerosol concentration is reduced. 
-Concentration of drizzle particles (larger than 25 $\mu\text{m}$) forming through collisions at the top of the is depicted in the right panel.
+Particles larger than 1 micrometre in diameter are considered as cloud droplets, particles larger than 
+  50 micrometres in diameter are considered as drizzle.
+Concentration of drizzle particles forming through collisions at the top of the is depicted in the right panel.
 A rain shaft forms in the right part of the domain where the downwards flow direction amplifies particle sedimentation.
 Precipitating drizzle drops collide with aerosol particles washing out the sub-cloud aerosol.
 Most of the drizzle drops evaporate before reaching the bottom of the domain depicting the virga phenomenon (and aerosol resuspension).
@@ -271,23 +271,23 @@ Most of the drizzle drops evaporate before reaching the bottom of the domain dep
 
 # Selected relevant recent open-source developments
 
-The SDM algorithm implementations are part of the following packages (of otherwise largely differing functionality):
+The SDM algorithm implementations are part of the following open-source packages (of otherwise largely differing functionality):
 
-   - `SCALE-SDM` in Fortran, [@Sato_et_al_2018]
-   - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet})
-   - `Pencil Code` in Fortran, [@Pencil_2021]
-   - `PALM LES` in Fortran, [@Maronga_et_al_2020]
-   - `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015]
-   - `LCM1D` in Python/C, [@Unterstrasser_et_al_2020]
-   - `NTLP` in Fortran, [@Richter_et_al_2021]
+   - `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015];
+   - `SCALE-SDM` in Fortran, [@Sato_et_al_2018];
+   - `PALM LES` in Fortran, [@Maronga_et_al_2020];
+   - `LCM1D` in Python/C, [@Unterstrasser_et_al_2020];
+   - `Pencil Code` in Fortran, [@Pencil_2021];
+   - `NTLP` in Fortran, [@Richter_et_al_2021].
+   - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet});
+
 List of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.
 
-Python packages for solving dynamics of particles with moving-sectional representation of the size spectrum include:
+Python packages for solving dynamics of particles with moving-sectional representation of the size spectrum include (both depend on `Assimulo` for solving ODEs):
 
-    - `pyrcel`, [@Rothenberg_and_Wang_2017]
-    - `PyBox`, [@Topping_et_al_2018]
-Both of the above packages depend on `Assimulo` for solving ODEs.
+   - `pyrcel`, [@Rothenberg_and_Wang_2017];
+   - `PyBox`, [@Topping_et_al_2018].
    
 # Summary
 
