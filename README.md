@@ -98,8 +98,8 @@ The examples have additional dependencies listed in [``PySDM_examples`` package 
 
 #### 1D kinematic (prescribed-flow, single-column)  
 - [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913)
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shipway_and_Hill_2012/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shipway_and_Hill_2012/demo.ipynb)    
+  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)    
   (Fig. 1 with thermodynamics & condensation only - no particle displacement)
 #### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) examples (CPU backend only, stay tuned...)
 - [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) Figs. 8 & 9:
