@@ -23,8 +23,10 @@ authors:
     affiliation: "1"
   - name: Anna Jaruga
     affiliation: "2"
+    orcid: 0000-0003-3194-6440
   - name: Grzegorz Łazarski
     affiliation: "1, 3"
+    orcid: 0000-0002-5595-371X
   - name: Michael Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "4"
@@ -268,7 +270,7 @@ Most of the drizzle drops evaporate before reaching the bottom of the domain dep
 \begin{figure}[!htbp]
   \includegraphics[width=\linewidth]{test} 
 
-  \caption{\label{fig:TODO}
+  \caption{\label{fig:virga}
     Sample results from a 2D prescribed-flow simulation using the @Arabas_et_al_2015 example.
   }
 \end{figure}
