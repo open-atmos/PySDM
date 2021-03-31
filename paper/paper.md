@@ -35,13 +35,13 @@ authors:
   - name: Aleksandra Talar
     affiliation: "1"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland  
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA    
    index: 2
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland
+ - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland    
    index: 3
- - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland
+ - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland    
    index: 4
 bibliography: paper.bib
 
@@ -194,12 +194,12 @@ pyplot.show()
 
 # Usage examples
 
-The PySDM examples are shipped in a separate package (\url{https://github.com/atmos-cloud-sim-uj/PySDM-examples})
+The PySDM examples are shipped in a separate package
   that can be instaled with `pip install git+https://github.com/atmos-cloud-sim-uj/PySDM-examples.git` or
   conveniently experimented with using Colab or mybinder.org platforms (single-click launching badges included in the 
   `PySDM` README file).
 The examples are based on setups from literature and the package is structured using bibliographic labels (e.g., 
-  `PySDM_examples.Shima_et_al_2009`.
+  `PySDM_examples.Shima_et_al_2009`).
 
 All examples feature a `settings.py` file with simulation parameters, a `simulation.py` file including logic
   analogous to the one presented in the code snippets above for handling composition of `PySDM` components
@@ -252,7 +252,7 @@ Usage of the `kinematic_1d` environment is depicted in an example based on the w
   while the `kinematic_2d` environment is showcased with a Jupyter notebook featuring an interactive user interface 
   and allowing studying aerosol-cloud interactions in drizzling stratocumulus setup based on the work of @Arabas_et_al_2015.
 
-The figure below presents a snapshot from the 2D simulation described in detail in @Arabas_et_al_2015 and works cited therein.
+The figure \autoref{fig:virga} presents a snapshot from the 2D simulation described in detail in @Arabas_et_al_2015 and works cited therein.
 Each plot depicts a 1.5x1.5 km vertical slab of an idealised atmosphere in which a prescribed single-eddy non-divergent flow
   is forced (updraft in the left-hand part of the domain, downdraft in the right-hand part). 
 The left plot shows the distribution of aerosol particles in the air. 
@@ -267,30 +267,24 @@ A rain shaft forms in the right part of the domain where the downwards flow dire
 Precipitating drizzle drops collide with aerosol particles washing out the sub-cloud aerosol.
 Most of the drizzle drops evaporate before reaching the bottom of the domain depicting the virga phenomenon (and aerosol resuspension).
 
-\begin{figure}[!htbp]
-  \includegraphics[width=\linewidth]{test} 
-
-  \caption{\label{fig:virga}
-    Sample results from a 2D prescribed-flow simulation using the @Arabas_et_al_2015 example.
-  }
-\end{figure}
+![Sample results from a 2D prescribed-flow simulation using the @Arabas_et_al_2015 example.\label{fig:virga}](test.pdf)
 
 # Selected relevant recent open-source developments
 
-The SDM algorithm implementations are part of the following packages (of largely differing functionality):
-- `SCALE-SDM` in Fortran, [@Sato_et_al_2018];
-- `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet});
-- `Pencil Code` in Fortran, [@Pencil_2021];
-- `PALM LES` in Fortran, [@Maronga_et_al_2020];
-- `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015];
-- `LCM1D` in Python/C, [@Unterstrasser_et_al_2020];
-- `NTLP` in Fortran, [@Richter_et_al_2021].
+The SDM algorithm implementations are part of the following packages (of otherwise largely differing functionality):
+- `SCALE-SDM` in Fortran, [@Sato_et_al_2018]
+- `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia, (\url{https://github.com/darothen/superdroplet})
+- `Pencil Code` in Fortran, [@Pencil_2021]
+- `PALM LES` in Fortran, [@Maronga_et_al_2020]
+- `libcloudph++` in C++ [@Arabas_et_al_2015;@Jaruga_and_Pawlowska_2018] with Python bindings [@Jarecka_et_al_2015]
+- `LCM1D` in Python/C, [@Unterstrasser_et_al_2020]
+- `NTLP` in Fortran, [@Richter_et_al_2021]
 List of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.
 
 Python packages for solving dynamics of particles with moving-sectional representation of the size spectrum include:
-- `pyrcel`, [@Rothenberg_and_Wang_2017];
-- `PyBox`, [@Topping_et_al_2018].
+- `pyrcel`, [@Rothenberg_and_Wang_2017]
+- `PyBox`, [@Topping_et_al_2018]
 Both of the above packages depend on `Assimulo` for solving ODEs.
    
 # Summary
@@ -303,11 +297,11 @@ Thus, the key advantages of PySDM stem from the characteristics of the employed 
   language which enables high performance computational
   modelling without trading off such features as:
 \begin{description}
-    \item[succinct syntax]{ -- the example snippets presented in the paper are arguably close to pseudo-code;}
+    \item[succinct syntax]{ -- the snippets presented in the paper are arguably close to pseudo-code;}
     \item[portability]{depicted in PySDM with continuous integration workflows for Linux, macOS and Windows, including 32-bit and 64-bit runs};
     \item[interoperability]{depicted in PySDM with Matlab and Julia usage examples which do not require any additional biding logic within PySDM;}
     \item[multifaceted ecosystem]{depicted in PySDM with one-click execution of Jupyter notebooks on mybinder.org and colab.research.google.com platforms};
-    \item[availability of tools for modern hybrid hardware]{depicted in PySDM with the GPU backend}.
+    \item[availability of tools for modern hardware]{depicted in PySDM with the GPU backend}.
 \end{description}
 
 PySDM together with a set of developed usage examples constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modelling methods.
