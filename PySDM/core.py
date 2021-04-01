@@ -3,27 +3,37 @@ Created at 09.11.2019
 """
 
 import numpy as np
-from PySDM.state.state import State
-from PySDM.stats import Stats
+
+from PySDM.state.particles import Particles
+from PySDM.storages.index import make_Index
+from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.pairwise_storage import make_PairwiseStorage
+from PySDM.storages.indexed_storage import make_IndexedStorage
 
 
 class Core:
 
-    def __init__(self, n_sd, backend, stats=None):
+    def __init__(self, n_sd, backend):
         self.__n_sd = n_sd
 
         self.backend = backend
         self.environment = None
-        self.state: (State, None) = None
+        self.particles: (Particles, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
 
         self.n_steps = 0
-        self.stats = stats or Stats()
 
         self.sorting_scheme = 'default'
         self.condensation_solver = None
+
+        self.Index = make_Index(backend)
+        self.PairIndicator = make_PairIndicator(backend)
+        self.PairwiseStorage = make_PairwiseStorage(backend)
+        self.IndexedStorage = make_IndexedStorage(backend)
+
+        self.timers = {}
 
     @property
     def env(self):
@@ -38,12 +48,8 @@ class Core:
         return self.backend.Storage
 
     @property
-    def IndexedStorage(self):
-        return self.backend.IndexedStorage
-
-    @property
     def Random(self):
-        return  self.backend.Random
+        return self.backend.Random
 
     @property
     def n_sd(self) -> int:
@@ -59,27 +65,38 @@ class Core:
         if self.environment is not None:
             return self.environment.mesh
 
-    def normalize(self, prob, norm_factor, subs):
-        factor = self.dt/subs/self.mesh.dv
-        self.backend.normalize(prob, self.state['cell id'], self.state.cell_start, norm_factor, factor)
+    def normalize(self, prob, norm_factor):
+        self.backend.normalize(
+            prob, self.particles['cell id'], self.particles.cell_idx,
+            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
 
-    def coalescence(self, gamma, adaptive, subs, adaptive_memory):
-        return self.state.coalescence(gamma, adaptive, subs, adaptive_memory)
+    def update_TpRH(self):
+        self.backend.temperature_pressure_RH(
+            # input
+            self.env.get_predicted('rhod'),
+            self.env.get_predicted('thd'),
+            self.env.get_predicted('qv'),
+            # output
+            self.env.get_predicted('T'),
+            self.env.get_predicted('p'),
+            self.env.get_predicted('RH')
+        )
+        # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, substeps, ripening_flags):
+    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
         particle_temperatures = \
-            self.state["temperature"] if self.state.has_attribute("temperature") else \
+            self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
 
         self.backend.condensation(
                 solver=self.condensation_solver,
                 n_cell=self.mesh.n_cell,
-                cell_start_arg=self.state.cell_start,
-                v=self.state["volume"],
+                cell_start_arg=self.particles.cell_start,
+                v=self.particles["volume"],
                 particle_temperatures=particle_temperatures,
-                n=self.state['n'],
-                vdry=self.state["dry volume"],
-                idx=self.state._State__idx,
+                n=self.particles['n'],
+                vdry=self.particles["dry volume"],
+                idx=self.particles._Particles__idx,
                 rhod=self.env["rhod"],
                 thd=self.env["thd"],
                 qv=self.env["qv"],
@@ -90,18 +107,19 @@ class Core:
                 kappa=kappa,
                 rtol_x=rtol_x,
                 rtol_thd=rtol_thd,
-                r_cr=self.state["critical radius"],
+                v_cr=self.particles["critical volume"],
                 dt=self.dt,
-                substeps=substeps,
-                cell_order=np.argsort(substeps),  # TODO: check if better than regular order
-                ripening_flags=ripening_flags
+                counters=counters,
+                cell_order=cell_order,
+                RH_max=RH_max
             )
 
     def run(self, steps):
-        with self.stats:
-            for _ in range(steps):
-                for dynamic in self.dynamics.values():
+        for _ in range(steps):
+            for key, dynamic in self.dynamics.items():
+                with self.timers[key]:
                     dynamic()
-                self.n_steps += 1
-                for observer in self.observers:
-                    observer.notify()
+            self.n_steps += 1
+            reversed_order_so_that_environment_is_last = reversed(self.observers)
+            for observer in reversed_order_so_that_environment_is_last:
+                observer.notify()

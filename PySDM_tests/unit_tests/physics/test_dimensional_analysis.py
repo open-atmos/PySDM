@@ -2,12 +2,16 @@
 Created at 2019
 """
 
+import pytest
+import numba
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis, formulae
 from PySDM.physics import constants
 
 
 class TestDimensionalAnalysis:
-    def test_fake_units(self):
+
+    @staticmethod
+    def test_fake_units():
         # Arrange
         sut = DimensionalAnalysis()
 
@@ -18,7 +22,9 @@ class TestDimensionalAnalysis:
             assert type(constants.D0.magnitude) == float
         assert type(constants.D0) == float
 
-    def test_fake_numba(self):
+    @staticmethod
+    @pytest.mark.skipif("numba.config.DISABLE_JIT")
+    def test_fake_numba():
         # Arrange
         sut = DimensionalAnalysis()
 

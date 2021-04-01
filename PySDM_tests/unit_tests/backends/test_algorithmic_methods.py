@@ -3,97 +3,76 @@ Created at 20.04.2020
 """
 
 import pytest
+import os
 import numpy as np
+from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
+from PySDM.storages.index import make_Index
+from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.storages.indexed_storage import make_IndexedStorage
 # noinspection PyUnresolvedReferences
-from PySDM_tests.unit_tests.backends.__parametrisation__ import \
-    number_float, number, \
-    shape_full, shape_1d, shape_2d, \
-    natural_length, length, \
-    order, pairs, \
-    dtype_full, dtype, dtype_mixed
-from PySDM_tests.unit_tests.backends.__parametrisation__ import backends
-from .utils import universal_test, generate_is_first_in_pair, generate_data
-from .__parametrisation__ import backend
+from PySDM_tests.backends_fixture import backend
 
 
-@pytest.mark.parametrize('sut', backends)
+@pytest.mark.parametrize("i, idx, is_first_in_pair, expected", [
+    (0, (0, 1), (True, False), (0, 1)),
+    (0, (1, 0), (True, False), (1, 0)),
+    (0, (0, 1, 2), (False, True), (1, 2)),
+])
+def test_pair_indices(i, idx, is_first_in_pair, expected):
+    # Arrange
+    sut = pair_indices if 'NUMBA_DISABLE_JIT' in os.environ else pair_indices.py_func
+
+    # Act
+    actual = sut(i, idx, is_first_in_pair)
+
+    # Assert
+    assert expected == actual
+
+
 class TestAlgorithmicMethods:
-
     @staticmethod
-    def test_calculate_displacement(sut):
-        assert False
-
-    @staticmethod
-    def test_coalescence(sut, shape_2d, order, natural_length, pairs):
-        _, data = generate_data(sut, shape=(shape_2d[1],), dtype=float, factor=5)
-        _, is_first_in_pair = generate_is_first_in_pair(sut, shape=(shape_2d[1],), pairs=pairs)
-        backend.multiply(data, is_first_in_pair)
-        gamma = np.floor(backend.to_ndarray(data))
-
-        params = [{'name': "n",
-                   'details': {'shape': (shape_2d[1],), 'dtype': int}},
-                  {'name': "volume",
-                   'details': {'shape': (shape_2d[1],), 'dtype': float}},
-                  {'name': "idx",
-                   'details': {'shape': shape_2d, 'order': order}},
-                  {'name': "length",
-                   'details': {'shape': shape_2d, 'length': natural_length}},
-                  {'name': "intensive",
-                   'details': {'shape': shape_2d, 'dtype': float}},
-                  {'name': "extensive",
-                   'details': {'shape': shape_2d, 'dtype': float}},
-                  {'name': "gamma",
-                   'details': {'array': gamma}},
-                  {'name': "healthy",
-                   'details': {'shape': (1,), 'dtype': int}}
-                  ]
-        universal_test("coalescence", sut, params)
-
-    @staticmethod
-    def test_compute_gamma(sut, shape_1d):
-        params = [{'name': "prob",
-                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 44, 'factor': 5}},
-                  {'name': "rand",
-                   'details': {'shape': shape_1d, 'dtype': float, 'seed': 66, 'factor': 1}}
-                  ]
-        universal_test("compute_gamma", sut, params)
-
-    @staticmethod
-    def test_condensation(sut):
-        assert False
-
-    @staticmethod
-    def test_flag_precipitated(sut):
-        assert False
-
-    @staticmethod
-    def test_make_cell_caretaker(sut):
-        assert False
-
-    @staticmethod
-    def test_moments(sut):
-        assert False
-
-    @staticmethod
-    def test_normalize(sut):
-        assert False
-
-    @staticmethod
-    @pytest.mark.parametrize('data_ndarray', [
-        np.array([0] * 87),
-        np.array([1, 0, 1, 0, 1, 1, 1, 1]),
-        np.array([1, 1, 1, 1, 1, 0, 1, 0]),
-        np.array([1] * 87)
+    @pytest.mark.parametrize("dt_left, cell_start, expected", [
+        ((4, 5, 4.5, 0, 0), (0, 1, 2, 3, 4, 5), 3),
+        ((4, 5, 4.5, 3, .1), (0, 1, 2, 3, 4, 5), 5)
     ])
-    def test_remove_zeros(sut, data_ndarray, length, order):
-        params = [{'name': "data",
-                   'details': {'array': data_ndarray}},
-                  {'name': "idx",
-                   'details': {'shape': (data_ndarray.shape[0], ), 'order': order},
-                   'checking': ['sorted', 'length_valid']},
-                  {'name': "length",
-                   'details': {'shape': (data_ndarray.shape[0], ), 'length': length}}
-                  ]
-        universal_test("remove_zeros", sut, params)
+    def test_adaptive_sdm_end(backend, dt_left, cell_start, expected):
+        # Arrange
+        dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
+        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
 
+        # Act
+        actual = backend.adaptive_sdm_end(dt_left, cell_start)
 
+        # Assert
+        assert actual == expected
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected_dt_left, expected_n_substep", [
+            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10., (True, False), (9.,), (1,)),
+            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., .1, (True, False), (9.9,), (1,)),
+            ((0.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10., (False, True), (0.,), (1,)),
+            ((10.,), (0, 1), (440, 44), (0, 0), (10.,), 10., 10., (True, False), (0.,), (1,)),
+            ((.5, 6), (0, 1, 2, 3, 4), (44, 44, 22, 33, 11), (0, 0, 0, 1, 1), (10., 10), 10., 10., (True, False, False, True, False), (0., 5.), (1, 1)),
+        ])
+    def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected_dt_left, expected_n_substep):
+        # Arrange
+        _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
+        _idx = make_Index(backend).from_ndarray(np.asarray(idx))
+        _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))
+        _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
+        _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
+        _is_first_in_pair = make_PairIndicator(backend)(len(n))
+        _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
+        _n_substep = backend.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
+        _dt_min = backend.Storage.from_ndarray(np.zeros_like(dt_left))
+        dt_range = (np.nan, dt_max)
+
+        # Act
+        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range, _is_first_in_pair, _n_substep, _dt_min)
+
+        # Assert
+        np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected_dt_left))
+        expected_gamma = (dt - np.asarray(expected_dt_left)) / dt * np.asarray(gamma)
+        np.testing.assert_array_almost_equal(_gamma.to_ndarray(), expected_gamma)
+        np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))

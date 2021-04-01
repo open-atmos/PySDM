@@ -2,7 +2,7 @@
 Created at 21.11.2019
 """
 
-from PySDM.mesh import Mesh
+from PySDM.state.mesh import Mesh
 import numpy as np
 
 
@@ -43,5 +43,5 @@ class DummyEnvironment:
     def get_thd(self):
         return self.thd[self.halo:-self.halo, self.halo:-self.halo]
 
-    def step(self):
-        self.step_counter += 1
+    def sync(self):
+        pass

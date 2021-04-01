@@ -5,28 +5,21 @@ os: linux
 
 jobs:
   include:
-    - name: "Python 3.8 with newest packages on Linux"
-      os: linux
-      language: python
-      python: "3.8"
-      before_install:
-        - sudo `which pip` install --upgrade pip
-      before_script:
-        - pip install -U $(cat requirements.txt | cut -d '=' -f 1)
     - name: "Python 3.7 on Linux numba::parallel=False"
       before_script:
         - sed -i s/parallel=True/parallel=False/g PySDM/backends/numba/conf.py
+        - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
       after_success:
         - codecov
     - name: "Python 3.7 on Linux numba::parallel=True"
       before_script:
         - sed -i s/parallel=False/parallel=True/g PySDM/backends/numba/conf.py
+        - sed -i 's/"rU"/"r"/g' /home/travis/virtualenv/python3.7.1/lib/python3.7/site.py
     - name: "Python 3.7 on OSX"
       language: shell
       os: osx
+      osx_image: xcode11.3
       before_install:
-        - sed -i -e '/^ThrustRTC/d' requirements.txt  # TODO
-        - sed -i -e '/^CURandRTC/d' requirements.txt  # TODO
         - export PY_SFX=3
     - name: "Python 3.7 on Windows"
       language: shell
@@ -37,23 +30,19 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
+  - pip$PY_SFX install -U pytest-cov codecov setuptools>=50.3.2  # TODO #462
+  - |
+    # https://stackoverflow.com/questions/55486248/deprecationwarning-in-python-3-6-and-3-7-with-pillow-distutils-imp
+    if [[ $TRAVIS_OS_NAME == linux ]]; then
+      python$PY_SFX $PY_FLAGS -c 'import os, virtualenv; virtualenv.install_distutils(os.environ["VIRTUAL_ENV"])' || exit 1
+    fi;
   - pip$PY_SFX install -U -r requirements.txt
-  - pip$PY_SFX install -r submodules/MPyDATA/requirements.txt
-  - pip$PY_SFX install submodules/MPyDATA
+  - pip$PY_SFX install -e .
+  - export PY_FLAGS="-We"
 
 script:
-  - python$PY_SFX -m pytest --ignore submodules --cov-report term --cov=PySDM
-  - |
-      python$PY_SFX -m ipykernel install --user
-      for i in PySDM_examples/*/demo.ipynb; do
-         jupyter nbconvert --to markdown --stdout $i > $i.md.repo;
-         jupyter nbconvert --ExecutePreprocessor.timeout=1800 --to markdown --execute --stdout $i > $i.md.travis || exit 1;
-         # diff $i.md.repo $i.md.travis  # does not make sense with ipywidgets
-      done;
-  - |
-      if [[ $TRAVIS_OS_NAME == linux ]]; then
-        for i in PySDM_examples/*/example*.py; do
-          echo $i
-          PYTHONPATH=. travis_wait 15 python$PY_SFX $i
-        done;
-      fi;
+  - PYTEST="python$PY_SFX -m pytest $PY_FLAGS -p no:unraisableexception"
+  - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM  # TODO #461
+  - $PYTEST
+  # execute Python lines from README.md  # TODO #463
+  - awk < README.md 'BEGIN {cmt=1; swp=0;} {swp=(substr($0,1,3)=="```"); if (swp && !cmt) {cmt=1; swp=0} if (cmt) print("#" $0); else print $0; if (swp && cmt) {cmt=0; swp=0}}' | python$PY_SFX $PY_FLAGS

@@ -7,6 +7,9 @@ from scipy.stats import expon
 import math
 import numpy as np
 from scipy.interpolate import interp1d
+from .spectral_sampling import default_cdf_range
+
+default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
 
 class Spectrum:
@@ -50,12 +53,11 @@ class Lognormal(Spectrum):
 
 class Sum:
 
-    def __init__(self, spectra: tuple, percentile=.001):
+    def __init__(self, spectra: tuple, interpolation_grid=default_interpolation_grid):
         self.spectra = spectra
         self.norm_factor = sum((s.norm_factor for s in self.spectra))
-        num = 999
-        p = [s.percentiles(np.linspace(percentile, 1-percentile, num)) for s in self.spectra]
-        x = np.zeros(num * len(self.spectra) + 1)
+        p = [s.percentiles(interpolation_grid) for s in self.spectra]
+        x = np.zeros(len(interpolation_grid) * len(self.spectra) + 1)
         x[1:] = np.concatenate(p)
         y = self.cumulative(x) / self.norm_factor
         self.inverse_cdf = interp1d(y, x)

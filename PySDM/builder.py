@@ -5,25 +5,25 @@ Created at 09.11.2019
 import numpy as np
 
 from PySDM.core import Core
-from PySDM.initialisation.multiplicities import discretise_n  # TODO
-from PySDM.state.state_factory import StateFactory
-
-from PySDM.attributes.mapper import get_class as attr_class
-from PySDM.attributes.droplet.multiplicities import Multiplicities
-from PySDM.attributes.droplet.volume import Volume
-from PySDM.attributes.cell.cell_id import CellID
+from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
+from PySDM.state.particles_factory import ParticlesFactory
+from PySDM.state.wall_timer import WallTimer
+from PySDM.attributes.impl.mapper import get_class as attr_class
+from PySDM.attributes.physics.multiplicities import Multiplicities
+from PySDM.attributes.physics.volume import Volume
+from PySDM.attributes.numerics.cell_id import CellID
 
 
 class Builder:
 
-    def __init__(self, n_sd, backend, stats=None):
-        self.core = Core(n_sd, backend, stats)
+    def __init__(self, n_sd, backend):
+        self.core = Core(n_sd, backend)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
-    def _set_condensation_parameters(self, coord, adaptive=True):
-        self.condensation_params = {'coord': coord, 'adaptive': adaptive}
+    def _set_condensation_parameters(self, coord, dt_range, adaptive):
+        self.condensation_params = {'coord': coord, 'dt_range': dt_range, 'adaptive': adaptive}
 
     def set_environment(self, environment):
         assert_none(self.core.environment)
@@ -31,7 +31,8 @@ class Builder:
         self.core.environment.register(self)
 
     def add_dynamic(self, dynamic):
-        self.core.dynamics[str(dynamic.__class__)] = dynamic
+        assert_not_none(self.core.environment)
+        self.core.dynamics[dynamic.__class__.__name__] = dynamic
 
     def register_product(self, product):
         if product.name in self.core.products:
@@ -47,7 +48,9 @@ class Builder:
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute)(self)
 
-    def build(self, attributes: dict, products: list = ()):
+    def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
+        self.core.backend.sanity_check()
+
         for dynamic in self.core.dynamics.values():
             dynamic.register(self)
 
@@ -56,14 +59,17 @@ class Builder:
 
         for attribute in attributes:
             self.request_attribute(attribute)
-        if "<class 'PySDM.dynamics.condensation.condensation.Condensation'>" in self.core.dynamics:  # TODO: mapper?
+        if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(**self.condensation_params,
+                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params,
                                                            enable_drop_temperatures='temperatures' in self.req_attr)
-        attributes['n'] = discretise_n(attributes['n'])
+        attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
-            attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)  # TODO
-        self.core.state = StateFactory.attributes(self.core, self.req_attr, attributes)
+            attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
+        self.core.particles = ParticlesFactory.attributes(self.core, self.req_attr, attributes)
+
+        for key in self.core.dynamics.keys():
+            self.core.timers[key] = WallTimer()
 
         return self.core
 

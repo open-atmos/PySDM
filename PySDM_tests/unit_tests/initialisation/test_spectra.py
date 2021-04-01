@@ -2,7 +2,7 @@
 Created at 2019
 """
 
-from PySDM.initialisation.spectra import Lognormal, Exponential, Sum
+from PySDM.initialisation.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 import numpy as np
 from numpy.testing import assert_approx_equal
@@ -10,7 +10,9 @@ import pytest
 
 
 class TestLognormal:
-    def test_size_distribution_n_part(self):
+
+    @staticmethod
+    def test_size_distribution_n_part():
         # Arrange
         s = 1.5
         n_part = 256
@@ -23,7 +25,8 @@ class TestLognormal:
         # Assert
         assert_approx_equal(np.sum(sd) * dm, n_part, 4)
 
-    def test_size_distribution_r_mode(self):
+    @staticmethod
+    def test_size_distribution_r_mode():
         # Arrange
         s = 1.001
         r_mode = 1e-6
@@ -42,10 +45,12 @@ class TestLognormal:
 
 
 class TestExponential:
+
+    @staticmethod
     @pytest.mark.parametrize("scale", [
         pytest.param(0.5), pytest.param(1), pytest.param(1.5),
     ])
-    def test_size_distribution_n_part(self, scale):
+    def test_size_distribution_n_part(scale):
         # Arrange
         scale = 1
         n_part = 256
@@ -68,8 +73,8 @@ class TestSum:
     r_mode = 1e-6
     lognormal = Lognormal(1, r_mode, s)
 
-
-    def test_size_distribution(self):
+    @staticmethod
+    def test_size_distribution():
         # Arrange
         sut = Sum((TestSum.exponential,))
 
@@ -81,7 +86,8 @@ class TestSum:
         # Assert
         np.testing.assert_array_equal(sut_sd, exp_sd)
 
-    def test_cumulative(self):
+    @staticmethod
+    def test_cumulative():
         # Arrange
         sut = Sum((TestSum.exponential,))
 
@@ -93,17 +99,18 @@ class TestSum:
         # Assert
         np.testing.assert_array_equal(sut_c, exp_c)
 
+    @staticmethod
     @pytest.mark.parametrize("distributions", [
         pytest.param((exponential,), id="single exponential"),
         pytest.param((lognormal,), id="single lognormal"),
         pytest.param((exponential, exponential), id="2 exponentials")
     ])
-    def test_percentiles(self, distributions):
+    def test_percentiles(distributions):
         # Arrange
         sut = Sum(distributions)
 
         # Act
-        cdf_values = np.linspace(0, .999)
+        cdf_values = default_interpolation_grid
         sut_p = sut.percentiles(cdf_values)
         exp_p = distributions[0].percentiles(cdf_values)
 
