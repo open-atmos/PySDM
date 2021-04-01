@@ -5,15 +5,18 @@ Created at 28.04.2020
 import numpy as np
 
 from PySDM.physics import formulae as phys
+from PySDM.physics.constants import convert_to, si
 from PySDM.products.product import MomentProduct
+from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from chempy import Substance
 
 
 class AqueousMassSpectrum(MomentProduct):
 
     def __init__(self, key, dry_radius_bins_edges):
         super().__init__(
-            name=f'dm_{key}/dlnr',
-            unit='kg / m3 / (unit dr/r)',
+            name=f'dm_{key}/dlog_10(dry diameter)',
+            unit='µg / m3 / (unit dD/D)',
             description=f'... {key} ...',
             scale=None,
             range=None
@@ -21,7 +24,7 @@ class AqueousMassSpectrum(MomentProduct):
         self.key = key
         self.moment_0 = None
         self.moments = None
-        self.molar_mass = 1  # TODO #458
+        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.dry_radius_bins_edges = dry_radius_bins_edges
 
     def register(self, builder):
@@ -39,5 +42,6 @@ class AqueousMassSpectrum(MomentProduct):
             self.download_moment_to_buffer(attr='volume', rank=0, filter_attr='dry volume',
                                            filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
             vals[i] *= self.buffer[0]
-        vals *= self.molar_mass / np.diff(np.log(self.dry_radius_bins_edges)) / self.core.mesh.dv
+        vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
+        convert_to(vals, si.ug)
         return vals
