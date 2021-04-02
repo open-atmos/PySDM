@@ -65,6 +65,15 @@ Besides the PySDM repository (where this README file is hosted), there are three
 
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
 
+Running the examples requires the the ``PySDM_examples`` package to be installed (or within ``PYTHONPATH``).
+Since the examples package includes Jupyter notebooks, the suggested install and launch steps are:
+```
+git clone https://github.com/atmos-cloud-sim-uj/PySDM-examples.git
+cd PySDM-examples
+pip install -e .
+jupyter-notebook
+```
+
 ## PySDM examples (Jupyter notebooks reproducing results from literature):
 
 #### 0D box-model coalescence-only examples (work with both CPU and GPU backends):
