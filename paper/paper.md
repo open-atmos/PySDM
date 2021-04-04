@@ -1,5 +1,6 @@
 ---
 title: 'PySDM v1: particle-based cloud modelling package for&nbsp;warm-rain microphysics and aqueous chemistry'
+date: 31 March 2021
 tags:
   - Python
   - physics-simulation 
