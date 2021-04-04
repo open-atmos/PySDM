@@ -146,6 +146,7 @@ The key element of the PySDM interface is the [``Core``](https://github.com/atmo
   class which instances are used to manage the system state and control the simulation.
 Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
+<!--exdown-cont-->
 ```Python
 from PySDM import Builder
 from PySDM.environments import Box
@@ -178,6 +179,7 @@ The ``run(nt)`` method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
+<!--exdown-cont-->
 ```Python
 from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
