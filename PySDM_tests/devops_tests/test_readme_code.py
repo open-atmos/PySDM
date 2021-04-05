@@ -1,10 +1,10 @@
 import exdown
 import pathlib
 import pytest
-import platform
+import sys
 
-# note: skipping Windows to avoid non-UTF encoding trouble
-test_readme = pytest.mark.skipif('platform.system() == "Windows"')(exdown.pytests(
+
+test_readme = pytest.mark.skipif("sys.getfilesystemencoding() != 'utf-8'")(exdown.pytests(
     pathlib.Path(__file__).parent.parent.parent.joinpath("README.md").absolute(),
     syntax_filter="Python"
 ))
