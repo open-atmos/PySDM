@@ -2,7 +2,7 @@
 matplotlib>=3.2.2
 ghapi
 pytest
-exdown
+exdown>=0.8.8
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
 git+git://github.com/atmos-cloud-sim-uj/PySDM-examples
