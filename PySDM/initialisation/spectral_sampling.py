@@ -46,8 +46,8 @@ class Linear(SpectralSampling):
 class Logarithmic(SpectralSampling):
     def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
         super().__init__(spectrum, size_range)
-        self.start = np.log10(size_range[0])
-        self.stop = np.log10(size_range[1])
+        self.start = np.log10(self.size_range[0])
+        self.stop = np.log10(self.size_range[1])
 
     def sample(self, n_sd):
         grid = np.logspace(self.start, self.stop, num=2 * n_sd + 1)
