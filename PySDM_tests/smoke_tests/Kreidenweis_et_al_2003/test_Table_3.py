@@ -78,7 +78,7 @@ class TestTable3:
             1.15 * si.kg / si.m**3,
             rtol=.005
         )
-        assert output['ql'][-2] < .0005
+        assert output['ql'][-2] < .00055
         assert output['ql'][-1] > .0004
         assert output['RH_env'][-1] > 100
         assert output['RH_env'][-8] < 100
