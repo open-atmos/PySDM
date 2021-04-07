@@ -282,13 +282,15 @@ Development of PySDM is supported by the EU through a grant of the Foundation fo
 copyright: Jagiellonian University   
 licence: GPL v3   
 
-## SDM patents (some expired, some withdrawn):
+## Related resources and open-source projects
+
+### SDM patents (some expired, some withdrawn):
 - https://patents.google.com/patent/US7756693B2
 - https://patents.google.com/patent/EP1847939A3
 - https://patents.google.com/patent/JP4742387B2
 - https://patents.google.com/patent/CN101059821B
 
-## Other open-source SDM implementations:
+### Other SDM implementations:
 - SCALE-SDM (Fortran):    
   https://github.com/Shima-Lab/SCALE-SDM_BOMEX_Sato2018/blob/master/contrib/SDM/sdm_coalescence.f90
 - Pencil Code (Fortran):    
@@ -303,3 +305,14 @@ licence: GPL v3
   https://github.com/darothen/superdroplet
 - NTLP (FORTRAN)   
   https://github.com/Folca/NTLP/blob/SuperDroplet/les.F
+
+### non-SDM probabilistic particle-based coagulation solvers
+
+- PartMC (Fortran):    
+  https://github.com/compdyn/partmc
+
+### Python models with discrete-particle (moving-sectional) representation of particle size spectrum
+
+- pyrcel: https://github.com/darothen/pyrcel
+- PyBox: https://github.com/loftytopping/PyBox
+- py-cloud-parcel-model: https://github.com/emmasimp/py-cloud-parcel-model
