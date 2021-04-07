@@ -32,4 +32,5 @@ class TestSepctrum:
 
         # Assert
         key = 'S_VI'
+        # TODO #481 : better than >0 (we do have analytic formula)
         assert (output[f'dm_{key}/dlog_10(dry diameter)'][0] > 0).any()
