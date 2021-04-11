@@ -124,7 +124,7 @@ class CondensationMethods:
 
         minfun = _minfun_FF if enable_drop_temperatures else _minfun_MM
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': False}})
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
             result = 0
             n_activating = 0
@@ -151,12 +151,12 @@ class CondensationMethods:
                     fa = minfun(a, *args)
                     fb = minfun(b, *args)
 
-                    counter = 0
+                    counter = 1
                     while not fa * fb < 0:
-                        counter += 1
-                        if counter == 32:
+                        counter *= 2
+                        if counter > 100:
                             raise RuntimeError("Cannot find interval!")
-                        b = max(x_dry, a + dx_old * 2 ** counter)
+                        b = max(x_dry, a + np.ldexp(dx_old, counter))
                         fb = minfun(b, *args)
 
                     if a > b:
