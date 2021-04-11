@@ -13,6 +13,10 @@ class pH(DerivedAttribute):
         self.cell_id = builder.get_attribute('cell id')
         self.particles = builder.core
 
+    def allocate(self, idx):
+        super().allocate(idx)
+        self.data[:] = 7
+
     def recalculate(self):
         dynamic = self.particles.dynamics['AqueousChemistry']
 
