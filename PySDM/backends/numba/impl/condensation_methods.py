@@ -154,9 +154,9 @@ class CondensationMethods:
                     counter = 1
                     while not fa * fb < 0:
                         counter *= 2
-                        if counter > 100:
+                        if counter > 128:
                             raise RuntimeError("Cannot find interval!")
-                        b = max(x_dry, a + np.ldexp(dx_old, counter))
+                        b = max(x_dry, a + math.ldexp(dx_old, counter))
                         fb = minfun(b, *args)
 
                     if a > b:
