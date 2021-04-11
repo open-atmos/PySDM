@@ -3,7 +3,7 @@ Crated at 2019
 """
 
 import numpy as np
-from ..backends.numba.numba_helpers import bisec
+from ..backends.numba.toms748 import toms748_solve
 from ..physics import formulae
 from ..backends.numba.conf import JIT_FLAGS
 from numba import prange, njit
@@ -18,7 +18,7 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     return r_wet_init_impl(r_dry, T, p, RH, cell_id, kappa, rtol)
 
 
-@njit(**JIT_FLAGS)
+@njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False}})
 def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
     r_wet = np.empty_like(r_dry)
 
@@ -36,6 +36,9 @@ def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rto
             kappa,
             r_d
         )
-        r_wet[i] = bisec(formulae.dr_dt_MM, a, b-a, args, rtol=rtol)
-
+        fa = formulae.dr_dt_MM(a, *args)
+        fb = formulae.dr_dt_MM(b, *args)
+        max_iters = 64
+        r_wet[i], iters_done = toms748_solve(formulae.dr_dt_MM, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
+        assert iters_done != max_iters
     return r_wet

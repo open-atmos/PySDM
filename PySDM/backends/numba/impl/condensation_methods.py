@@ -5,7 +5,8 @@ Created at 11.2019
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.numba_helpers import \
-    radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, dthd_dt, within_tolerance, bisec
+    radius, temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, dthd_dt, within_tolerance
+from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.backends.numba.coordinates import mapper as coordinates
 import numba
 import numpy as np
@@ -141,11 +142,31 @@ class CondensationMethods:
                     dr_dt_old = dr_dt_MM(r_old, T, p, RH, kappa, rd)
                     args = (x_old, dt, T, p, RH, kappa, rd, 0)
                 dx_old = dt * dx_dt(x_old, dr_dt_old)
-                if dx_old < 0:
-                    dx_old = np.maximum(dx_old, x(vdry[drop]) - x_old)
-                a = x_old
-                interval = dx_old
-                x_new = bisec(minfun, a, interval, args, rtol_x)
+                if dx_old == 0:
+                    x_new = x_old
+                else:
+                    x_dry = x(vdry[drop])
+                    a = x_old
+                    b = max(x_dry, a + dx_old)
+                    fa = minfun(a, *args)
+                    fb = minfun(b, *args)
+
+                    counter = 1
+                    while not fa * fb < 0:
+                        counter *= 2
+                        if counter > 128:
+                            raise RuntimeError("Cannot find interval!")
+                        b = max(x_dry, a + math.ldexp(dx_old, counter))
+                        fb = minfun(b, *args)
+
+                    if a > b:
+                        a, b = b, a
+                        fa, fb = fb, fa
+
+                    max_iters = 16
+                    x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters)
+                    assert iters_taken != max_iters
+
                 v_new = volume_of_x(x_new)
                 result += n[drop] * v_new * const.rho_w
                 if not fake:

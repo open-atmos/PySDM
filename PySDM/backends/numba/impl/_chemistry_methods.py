@@ -2,12 +2,20 @@ import numba
 import numpy as np
 
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.numba_helpers import pH2H, bisec, H2pH
+from PySDM.backends.numba.numba_helpers import pH2H, H2pH
+from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
 from PySDM.physics.formulae import radius
 from PySDM.dynamics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KINETIC_CONST, EQUILIBRIUM_CONST
+
+_tolerance = 1e-6
+_max_iter_quite_close = 8
+_max_iter_default = 32
+_realy_close_threshold = 1e-6
+_quite_close_threshold = 1
+_quite_close_multiplier = 2
 
 
 class ChemistryMethods:
@@ -189,7 +197,35 @@ class ChemistryMethods:
                 N_mIII[i], N_V[i], C_IV[i], S_IV[i], S_VI[i],
                 K_NH3[cid], K_SO2[cid], K_HSO3[cid], K_HSO4[cid], K_HCO3[cid], K_CO2[cid], K_HNO3[cid]
             )
-            H = bisec(concentration, H_min, H_max - H_min, args, rtol=rtol)
+            a = pH2H(pH[i])
+            fa = pH_minfun(a, *args)
+            if abs(fa) < _realy_close_threshold:
+                continue
+            b = np.nan
+            fb = np.nan
+            use_default_range = False
+            if abs(fa) < _quite_close_threshold:
+                b = a * _quite_close_multiplier
+                fb = pH_minfun(b, *args)
+                if fa * fb > 0:
+                    b = a
+                    fb = fa
+                    a = b / _quite_close_multiplier / _quite_close_multiplier
+                    fa = pH_minfun(a, *args)
+                    if fa * fb > 0:
+                        use_default_range = True
+            else:
+                use_default_range = True
+            if use_default_range:
+                a = H_min
+                b = H_max
+                fa = pH_minfun(a, *args)
+                fb = pH_minfun(b, *args)
+                max_iter = _max_iter_default
+            else:
+                max_iter = _max_iter_quite_close
+            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter)
+            assert _iters_taken != max_iter
             flag = calc_ionic_strength(H, *args) <= ionic_strength_threshold
             pH[i] = H2pH(H)
             do_chemistry_flag[i] = flag
@@ -225,7 +261,7 @@ def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, 
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def concentration(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
+def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
     ammonia = (N_mIII * H * K_NH3) / (K_H2O + K_NH3 * H)
     nitric = N_V * K_HNO3 / (H + K_HNO3)
     sulfous = S_IV * K_SO2 * (H + 2 * K_HSO3) / (H * H + H * K_SO2 + K_SO2 * K_HSO3)

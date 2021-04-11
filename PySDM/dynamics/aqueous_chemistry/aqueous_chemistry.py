@@ -4,10 +4,10 @@ from .support import EQUILIBRIUM_CONST, DIFFUSION_CONST, AQUEOUS_COMPOUNDS, GASE
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, pH2H
 
 
-default_H_max = pH2H(pH=-1)
-default_H_min = pH2H(pH=14)
+default_H_max = pH2H(pH=-1.)
+default_H_min = pH2H(pH=14.)
 default_pH_rtol = 1e-6
-default_ionic_strength_threshold=0.02 * M
+default_ionic_strength_threshold = 0.02 * M
 
 
 class AqueousChemistry:
