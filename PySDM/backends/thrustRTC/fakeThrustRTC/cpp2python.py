@@ -21,6 +21,7 @@ cppython = {
     "(float)": "np.float32",
     "floor": "np.floor",
     "ceil": "np.ceil",
+    "exp(": "np.exp(",
     "return": "continue",
 }
 
