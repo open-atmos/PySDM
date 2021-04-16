@@ -17,16 +17,14 @@ else:
 
 
 def c_inline(fun, **args):
-    prae = "([\+\-\*/( ]|^)"
-    post = "([ )/\*\-\+]|$)"
+    prae = r"([+\-*/( ]|^)"
+    post = r"([ )/*\-+]|$)"
     source = inspect.getsourcelines(fun)[0]
     assert len(source) == 3
     source = source[-1].strip()
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
-        source = re.sub(f"{prae}({arg}){post}", f"\\1{args[arg]}\\3", source)
+        source = re.sub(f"{prae}({arg}){post}", f"\\1({args[arg]})\\3", source)
     source = re.sub(f"{prae}const\.([^\d\W]\w*]*){post}", "\\1{const.\\2}\\3", source)
     source = eval(f'f"""{source}"""')
-    string = f"{const.ARM_C1} * exp(({const.ARM_C2} * ({args['T']} - {const.T0})) / ({args['T']} - {const.T0} + {const.ARM_C3}))"
-
-    return f'({string})'
+    return f'({source})'
