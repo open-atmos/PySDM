@@ -25,6 +25,6 @@ def c_inline(fun, **args):
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
         source = re.sub(f"{prae}({arg}){post}", f"\\1({args[arg]})\\3", source)
-    source = re.sub(f"{prae}const.([^\d\W]\w*]*){post}", "\\1{const.\\2}\\3", source)
+    source = re.sub(f"{prae}const\\.([^\\d\\W]\\w*]*){post}", "\\1{const.\\2}\\3", source)
     source = eval(f'f"""{source}"""')
     return f'({source})'
