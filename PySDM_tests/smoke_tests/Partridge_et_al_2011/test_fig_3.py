@@ -5,7 +5,7 @@ from PySDM_examples.Partridge_et_al_2011.simulation import Simulation
 import re
 
 
-def test_fig_3(plot=True):
+def test_fig_3(plot=False):
     # Arrange
     runs = []
     for settings_class in (MarineArctic, MarineAverage, RuralContinental, PollutedContinental):
