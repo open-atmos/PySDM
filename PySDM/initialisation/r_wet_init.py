@@ -18,11 +18,11 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     return r_wet_init_impl(r_dry, T, p, RH, cell_id, kappa, rtol)
 
 
-@njit(**{**JIT_FLAGS, **{'fastmath': False}})
+@njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False}})
 def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
     r_wet = np.empty_like(r_dry)
 
-    for i in prange(len(r_wet)):
+    for i in prange(len(r_dry)):
         r_d = r_dry[i]
         cid = cell_id[i]
         # root-finding initial guess
