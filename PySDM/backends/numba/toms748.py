@@ -5,7 +5,7 @@
 import numba
 from sys import float_info
 from PySDM.backends.numba.conf import JIT_FLAGS
-from PySDM.backends.numba.numba_helpers import within_tolerance
+from PySDM.physics.formulae import within_tolerance
 
 float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max

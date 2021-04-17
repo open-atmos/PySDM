@@ -5,7 +5,7 @@ Created at 2020
 import numba
 import numpy as np
 from PySDM.backends.numba import conf
-from PySDM.backends.numba.numba_helpers import radius
+from PySDM.physics.formulae import radius
 
 volume0 = 1.
 

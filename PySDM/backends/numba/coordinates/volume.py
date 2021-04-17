@@ -5,7 +5,7 @@ Created at 2020
 import numba
 from PySDM.backends.numba import conf
 import numpy as np
-from PySDM.backends.numba.numba_helpers import radius
+from PySDM.physics.formulae import radius
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

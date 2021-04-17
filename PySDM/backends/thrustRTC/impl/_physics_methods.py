@@ -1,11 +1,13 @@
 """
 Created at 20.03.2020
 """
+from PySDM.backends.formulae import c_inline
 
 from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 import PySDM.physics.constants as const
+import PySDM.physics.formulae as phys
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
@@ -33,10 +35,7 @@ class PhysicsMethods:
         real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
         p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
     
-        // August-Roche-Magnus formula
-        real_type pvs = {const.ARM_C1} * exp(({const.ARM_C2} * (T[i] - {const.T0})) / (T[i] - {const.T0} + {const.ARM_C3}));
-    
-        RH[i] = (p[i] - pd) / pvs;
+        RH[i] = (p[i] - pd) / {c_inline(phys.pvs, T="T[i]")};
     '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @staticmethod
