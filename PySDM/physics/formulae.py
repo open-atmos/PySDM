@@ -7,7 +7,13 @@ from PySDM.physics import constants as const
 import numpy as np
 from PySDM.physics.constants import R_str
 from numpy import exp
+from pystrict import strict
 
+
+@strict
+class Formulae:
+    def __init__(self):
+        pass
 
 @formula(inline='never')
 def dr_dt_MM(r, T, p, RH, kp, rd):

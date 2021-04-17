@@ -25,8 +25,8 @@ class Numba(
 
     default_croupier = 'local'
 
-    def __init__(self):
-        raise Exception("Backend is stateless.")
+    def __init__(self, formulae):
+        self.formulae = formulae
 
     @staticmethod
     def sanity_check():
