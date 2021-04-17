@@ -2,8 +2,7 @@
 Crated at 2019
 """
 
-from PySDM.backends.formulae import formula
-from PySDM.backends.numba import conf
+from PySDM.physics.impl.formulae import formula
 from PySDM.physics import constants as const
 import numpy as np
 from PySDM.physics.constants import R_str

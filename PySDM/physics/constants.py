@@ -4,8 +4,8 @@ Crated at 2019
 
 import pint
 from scipy import constants as sci
-from PySDM.physics._fake_unit_registry import FakeUnitRegistry
-from PySDM.physics._flag import DIMENSIONAL_ANALYSIS
+from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
+from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
 
 si = pint.UnitRegistry()

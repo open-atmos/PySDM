@@ -1,8 +1,9 @@
 from PySDM.backends.numba import conf
 
-from PySDM.physics import _flag
-if _flag.DIMENSIONAL_ANALYSIS:
-    from PySDM.physics._fake_numba import njit
+from PySDM.physics.impl import flag
+
+if flag.DIMENSIONAL_ANALYSIS:
+    from PySDM.physics.impl.fake_numba import njit
     formula = njit
 else:
     import numba
