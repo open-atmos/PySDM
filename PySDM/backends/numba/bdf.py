@@ -5,8 +5,7 @@ Created at 09.01.2020
 from PySDM.physics.constants import rho_w
 from PySDM.physics import formulae as phys
 from PySDM.backends.numba.numba import Numba
-from PySDM.backends.numba.coordinates import volume as coord_volume
-from PySDM.backends.numba.coordinates import volume_logarithm as coord_volume_logarithm
+from PySDM.backends.numba.conf import JIT_FLAGS
 import numpy as np
 import numba
 import scipy.integrate
@@ -18,8 +17,8 @@ idx_x = 1
 rtol = 1e-4
 
 
-def patch_core(core, coord='volume logarithm'):
-    core.condensation_solver = make_solve(coord)
+def patch_core(core):
+    core.condensation_solver = make_solve(core.backend.formulae.condensation_coord)
     core.condensation = types.MethodType(bdf_condensation, core)
 
 
@@ -63,13 +62,6 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order
 
 
 def make_solve(coord):
-    if coord == 'volume':
-        coord = coord_volume
-    elif coord == 'volume logarithm':
-        coord = coord_volume_logarithm
-    else:
-        raise ValueError()
-
     x = coord.x
     volume = coord.volume
     dx_dt = coord.dx_dt
@@ -145,12 +137,12 @@ def make_solve(coord):
             return dy_dt
 
         @staticmethod
-        @numba.njit()
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
         def ql(n, x, m_d_mean):
             return np.sum(n * volume(x)) * rho_w / m_d_mean
 
         @staticmethod
-        @numba.njit()
+        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
         def impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean):
             for i in range(len(x)):
                 dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(phys.radius(volume(x[i])), T, p, RH, kappa, rd[i]))

@@ -7,7 +7,6 @@ from PySDM.backends.numba import conf
 from PySDM.physics.formulae import temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, radius, dthd_dt, \
     within_tolerance
 from PySDM.backends.numba.toms748 import toms748_solve
-from PySDM.backends.numba.coordinates import mapper as coordinates
 import numba
 import numpy as np
 import math
@@ -185,10 +184,20 @@ class CondensationMethods:
 
         return calculate_ml_new
 
+    def make_condensation_solver(self, dt, dt_range, adaptive=True, enable_drop_temperatures=False):
+        return CondensationMethods.make_condensation_solver_impl(
+            dx_dt=self.formulae.condensation_coord.dx_dt,
+            volume=self.formulae.condensation_coord.volume,
+            x=self.formulae.condensation_coord.x,
+            dt=dt,
+            dt_range=dt_range,
+            adaptive=adaptive,
+            enable_drop_temperatures=enable_drop_temperatures
+        )
+
     @staticmethod
     @lru_cache()
-    def make_condensation_solver(dt, dt_range, coord='volume logarithm', adaptive=True, enable_drop_temperatures=False):
-        dx_dt, volume, x = coordinates.get(coord)
+    def make_condensation_solver_impl(dx_dt, volume, x, dt, dt_range, adaptive, enable_drop_temperatures):
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, enable_drop_temperatures)
         step_impl = CondensationMethods.make_step_impl(calculate_ml_old, calculate_ml_new)
