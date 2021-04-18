@@ -137,12 +137,12 @@ def make_solve(coord):
             return dy_dt
 
         @staticmethod
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+        @numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
         def ql(n, x, m_d_mean):
             return np.sum(n * volume(x)) * rho_w / m_d_mean
 
         @staticmethod
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+        @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
         def impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean):
             for i in range(len(x)):
                 dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(phys.radius(volume(x[i])), T, p, RH, kappa, rd[i]))
