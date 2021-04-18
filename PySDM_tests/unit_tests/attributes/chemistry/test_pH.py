@@ -177,7 +177,7 @@ class Test_pH:
             'HSO4-': conc['H+'] * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
             'SO4-2': K_HSO4 * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
             'OH-': K_H2O / conc['H+'] / rho_w
-        }, warn=False) * rho_w  # TODO #439: warn=True if equilibrate_pH done
+        }, warn=False) * rho_w
 
         np.testing.assert_allclose(actual, expected, rtol=1e-15)
 
