@@ -295,7 +295,7 @@ class AlgorithmicMethods:
         for i in idx[:length]:
             if min_x < x_attr[i] < max_x:
                 moment_0[cell_id[i]] += n[i]
-                for k in range(ranks.shape[0]):  # TODO #315 (AtomicAdd)
+                for k in range(ranks.shape[0]):  # TODO #401 (AtomicAdd)
                     moments[k, cell_id[i]] += n[i] * attr_data[i] ** ranks[k]
         for c_id in range(moment_0.shape[0]):
             for k in range(ranks.shape[0]):

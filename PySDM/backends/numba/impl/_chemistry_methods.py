@@ -189,7 +189,6 @@ class ChemistryMethods:
                            # params
                            H_min, H_max, ionic_strength_threshold, rtol
     ):
-        # TODO #439 (iterate in logarithm?)
         for i in range(len(pH)):
             cid = cell_id[i]
             args = (
