@@ -21,7 +21,7 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
 @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False}})
 def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
     r_wet = np.empty_like(r_dry)
-
+    lv = formulae.lv(T)
     for i in prange(len(r_dry)):
         r_d = r_dry[i]
         cid = cell_id[i]
@@ -33,6 +33,7 @@ def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rto
             T[cid],
             p[cid],
             np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
+            lv[cid],
             kappa,
             r_d
         )

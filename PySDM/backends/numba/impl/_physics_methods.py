@@ -5,7 +5,7 @@ Created at 11.2019
 import numba
 from numba import prange
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import temperature_pressure_RH, dr_dt_MM, dr_dt_FF, radius, dthd_dt
+from PySDM.physics.formulae import temperature_pressure_RH
 
 
 class PhysicsMethods:
@@ -44,22 +44,4 @@ class PhysicsMethods:
             else:
                 values[i] = k3 * radius[i] ** (1 / 2)
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def radius(volume):
-        return radius(volume)
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def dr_dt_MM(r, T, p, RH, kp, rd):
-        return dr_dt_MM(r, T, p, RH, kp, rd)
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
-        return dr_dt_FF(r, T, p, qv, kp, rd, T_i)
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def dthd_dt(rhod, thd, T, dqv_dt):
-        return dthd_dt(rhod, thd, T, dqv_dt)

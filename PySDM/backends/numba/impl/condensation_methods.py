@@ -6,6 +6,7 @@ from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.physics.formulae import temperature_pressure_RH, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, radius, dthd_dt, \
     within_tolerance
+import PySDM.physics.formulae as phys
 from PySDM.backends.numba.toms748 import toms748_solve
 import numba
 import numpy as np
@@ -79,12 +80,15 @@ class CondensationMethods:
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
+
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
+                lv = phys.lv(T)
                 ml_new, n_activating, n_deactivating, n_ripening = \
-                    calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, rtol_x)
+                    calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, lv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
-                dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr)
+                dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv)
+
                 thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
                 ml_old = ml_new
@@ -110,21 +114,21 @@ class CondensationMethods:
     @staticmethod
     def make_calculate_ml_new(dx_dt, volume_of_x, x, enable_drop_temperatures):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def _minfun_FF(x_new, x_old, dt, T, p, qv, kappa, rd, T_i):
+        def _minfun_FF(x_new, x_old, dt, T, p, RH, qv, lv, kappa, rd, T_i):
             r_new = radius(volume_of_x(x_new))
-            dr_dt = dr_dt_FF(r_new, T, p, qv, kappa, rd, T_i)
+            dr_dt = dr_dt_FF(r_new, T, p, qv, lv, kappa, rd, T_i)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def _minfun_MM(x_new, x_old, dt, T, p, RH, kappa, rd, _):
+        def _minfun_MM(x_new, x_old, dt, T, p, RH, qv, lv, kappa, rd, _):
             r_new = radius(volume_of_x(x_new))
-            dr_dt = dr_dt_MM(r_new, T, p, RH, kappa, rd)
+            dr_dt = dr_dt_MM(r_new, T, p, RH, lv, kappa, rd)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
         minfun = _minfun_FF if enable_drop_temperatures else _minfun_MM
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, rtol_x):
+        def calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, lv, rtol_x):
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -135,11 +139,11 @@ class CondensationMethods:
                 rd = radius(vdry[drop])
                 if enable_drop_temperatures:
                     particle_T_old = particle_T[drop]
-                    dr_dt_old = dr_dt_FF(r_old, T, p, qv, kappa, rd, particle_T_old)
-                    args = (x_old, dt, T, p, qv, kappa, rd, particle_T_old)
+                    dr_dt_old = dr_dt_FF(r_old, T, p, qv, lv, kappa, rd, particle_T_old)
                 else:
-                    dr_dt_old = dr_dt_MM(r_old, T, p, RH, kappa, rd)
-                    args = (x_old, dt, T, p, RH, kappa, rd, 0)
+                    particle_T_old = 0
+                    dr_dt_old = dr_dt_MM(r_old, T, p, RH, lv, kappa, rd)
+                args = (x_old, dt, T, p, RH, qv, lv, kappa, rd, particle_T_old)
                 dx_old = dt * dx_dt(x_old, dr_dt_old)
                 if dx_old == 0:
                     x_new = x_old

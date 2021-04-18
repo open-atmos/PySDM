@@ -39,6 +39,7 @@ class VolumeLogarithmCoordinate:
         return log(volume)
 
 
+@strict
 class VolumeCoordinate:
     @staticmethod
     @formula
@@ -58,11 +59,11 @@ class VolumeCoordinate:
 
 
 @formula(inline='never')
-def dr_dt_MM(r, T, p, RH, kp, rd):
+def dr_dt_MM(r, T, p, RH, lv, kp, rd):
     nom = (RH - RH_eq(r, T, kp, rd))
     den = (
             Fd(T, D(r, T)) +
-            Fk(T, K(r, T, p), lv(T))
+            Fk(T, K(r, T, p), lv)
     )
     return 1 / r * nom / den
 
@@ -88,8 +89,8 @@ def c_p(q):
 
 
 @formula
-def dthd_dt(rhod, thd, T, dqv_dt):
-    return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
+def dthd_dt(rhod, thd, T, dqv_dt, lv):
+    return - lv * dqv_dt / const.c_pd / T * thd * rhod
 
 
 @formula(fastmath=False)
@@ -268,7 +269,7 @@ def B(kp, rd):
 
 
 @formula
-def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
+def dr_dt_FF(r, T, p, RH, qv, kp, rd, T_i):
     rho_v = p * qv / R(qv) / T
     rho_eq = pvs(T_i) * RH_eq(r, T_i, kp, rd) / const.Rv / T_i
     return D(r, T_i) / const.rho_w / r * (rho_v - rho_eq)
