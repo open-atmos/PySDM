@@ -1,7 +1,6 @@
 """
 Created at 20.03.2020
 """
-from PySDM.backends.formulae import c_inline
 
 from ..conf import trtc
 from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
@@ -9,6 +8,7 @@ from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 import PySDM.physics.constants as const
 import PySDM.physics.formulae as phys
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrustRTC.impl.c_inline import c_inline
 
 
 class PhysicsMethods:

@@ -12,18 +12,21 @@ from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.numerics.cell_id import CellID
+from PySDM.physics.formulae import Formulae
+import inspect
 
 
 class Builder:
 
-    def __init__(self, n_sd, backend):
-        self.core = Core(n_sd, backend)
+    def __init__(self, n_sd, backend, formulae=Formulae()):
+        assert inspect.isclass(backend)
+        self.core = Core(n_sd, backend(formulae))
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
-    def _set_condensation_parameters(self, coord, dt_range, adaptive):
-        self.condensation_params = {'coord': coord, 'dt_range': dt_range, 'adaptive': adaptive}
+    def _set_condensation_parameters(self, dt_range, adaptive):
+        self.condensation_params = {'dt_range': dt_range, 'adaptive': adaptive}
 
     def set_environment(self, environment):
         assert_none(self.core.environment)

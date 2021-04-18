@@ -14,6 +14,7 @@ from PySDM.storages.indexed_storage import make_IndexedStorage
 class Core:
 
     def __init__(self, n_sd, backend):
+        assert isinstance(backend, object)
         self.__n_sd = n_sd
 
         self.backend = backend

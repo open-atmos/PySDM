@@ -2,12 +2,59 @@
 Crated at 2019
 """
 
-from PySDM.backends.formulae import formula
-from PySDM.backends.numba import conf
+from PySDM.physics.impl.formulae import formula
 from PySDM.physics import constants as const
 import numpy as np
 from PySDM.physics.constants import R_str
-from numpy import exp
+from numpy import exp, log, pi
+from pystrict import strict
+
+
+@strict
+class Formulae:
+    def __init__(self, condensation_coord: str='volume logarithm'):
+        if condensation_coord == 'volume':
+            self.condensation_coord = VolumeCoordinate
+        elif condensation_coord == 'volume logarithm':
+            self.condensation_coord = VolumeLogarithmCoordinate
+        else:
+            raise ValueError(f"Unknown {condensation_coord} coordinates. Please chose one from: ['volume', 'volume logarithm']")
+
+
+@strict
+class VolumeLogarithmCoordinate:
+    @staticmethod
+    @formula
+    def dx_dt(x, dr_dt):
+        return exp(-x/3) * dr_dt * 3 * (3/4/pi)**(-1/3)
+
+    @staticmethod
+    @formula
+    def volume(x):
+        return exp(x)
+
+    @staticmethod
+    @formula
+    def x(volume):
+        return log(volume)
+
+
+class VolumeCoordinate:
+    @staticmethod
+    @formula
+    def dx_dt(x, dr_dt):
+        r = radius(x)
+        return 4 * pi * r**2 * dr_dt
+
+    @staticmethod
+    @formula
+    def volume(x):
+        return x
+
+    @staticmethod
+    @formula
+    def x(volume):
+        return volume
 
 
 @formula(inline='never')

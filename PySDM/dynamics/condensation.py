@@ -17,7 +17,6 @@ class Condensation:
                  kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
-                 coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
                  dt_cond_range: tuple = default_cond_range,
@@ -32,7 +31,6 @@ class Condensation:
         self.rtol_thd = rtol_thd
 
         self.RH_max = None
-        self.coord = coord
 
         self.__substeps = substeps
         self.adaptive = adaptive
@@ -44,7 +42,7 @@ class Condensation:
     def register(self, builder):
         self.core = builder.core
 
-        builder._set_condensation_parameters(self.coord, self.dt_cond_range, self.adaptive)
+        builder._set_condensation_parameters(self.dt_cond_range, self.adaptive)
         builder.request_attribute('critical volume')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
