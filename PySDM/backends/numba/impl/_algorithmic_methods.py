@@ -184,7 +184,7 @@ class AlgorithmicMethods:
             solver,
             n_cell, cell_start_arg,
             v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, counters, cell_order, RH_max
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         AlgorithmicMethods._condensation(
@@ -196,7 +196,7 @@ class AlgorithmicMethods:
             counters['n_activating'].data,
             counters['n_deactivating'].data,
             counters['n_ripening'].data,
-            cell_order, RH_max.data
+            cell_order, RH_max.data, success.data
         )
 
     @staticmethod
@@ -351,7 +351,7 @@ class AlgorithmicMethods:
             v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt,
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
-            cell_order, RH_max
+            cell_order, RH_max, success
     ):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):
@@ -368,7 +368,7 @@ class AlgorithmicMethods:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 md = rhod_mean * dv_mean
 
-                qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
+                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
                     v, particle_temperatures, v_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
@@ -379,7 +379,7 @@ class AlgorithmicMethods:
                 counter_n_deactivating[cell_id] = n_deactivating
                 counter_n_ripening[cell_id] = n_ripening
                 RH_max[cell_id] = RH_max_in_cell
-
+                success[cell_id] = success_in_cell
                 pqv[cell_id] = qv_new
                 pthd[cell_id] = thd_new
 

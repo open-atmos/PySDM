@@ -22,7 +22,7 @@ def patch_core(core):
     core.condensation = types.MethodType(bdf_condensation, core)
 
 
-def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
+def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     n_threads = 1
     if core.particles.has_attribute("temperature"):
         raise NotImplementedError()
@@ -57,7 +57,8 @@ def bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order
         counter_n_deactivating=counters['n_deactivating'],
         counter_n_ripening=counters['n_ripening'],
         cell_order=cell_order,
-        RH_max=RH_max.data
+        RH_max=RH_max.data,
+        success=success.data
     )
 
 
@@ -111,7 +112,7 @@ def make_solve(coord):
             m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
-        return qt - m_new / m_d_mean, y1[idx_thd], 1, 1, 1, 1, np.nan
+        return integ.success, qt - m_new / m_d_mean, y1[idx_thd], 1, 1, 1, 1, np.nan
 
     class _ODESystem:
         def __init__(self, kappa, dry_volume: np.ndarray, n: np.ndarray, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):

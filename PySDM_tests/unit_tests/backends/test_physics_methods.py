@@ -20,6 +20,6 @@ class TestPhysicsMethods:
         sut(rhod, thd, qv, T, p, RH)
 
         # Assert
-        assert (RH.data[:] != 0).all()
-        assert (p.data[:] != 0).all()
-        assert (T.data[:] != 0).all()
+        assert np.amin(RH[:]) != 0 and np.amax(RH[:]) != 0
+        assert np.amin(p[:]) != 0 and np.amax(p[:]) != 0
+        assert np.amin(T[:]) != 0 and np.amax(T[:]) != 0

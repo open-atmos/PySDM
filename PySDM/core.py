@@ -84,7 +84,7 @@ class Core:
         )
         # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
+    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         particle_temperatures = \
             self.particles["temperature"] if self.particles.has_attribute("temperature") else \
             self.Storage.empty(0, dtype=float)
@@ -112,7 +112,8 @@ class Core:
                 dt=self.dt,
                 counters=counters,
                 cell_order=cell_order,
-                RH_max=RH_max
+                RH_max=RH_max,
+                success=success
             )
 
     def run(self, steps):

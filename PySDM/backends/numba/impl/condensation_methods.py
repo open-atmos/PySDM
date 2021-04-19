@@ -22,7 +22,7 @@ class CondensationMethods:
         if dt_range[1] > dt:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
-            raise NotImplementedError()
+            raise NotImplementedError()  # TODO #490
             # TODO #437: n_substeps_max = ... (fuse)
         else:
             n_substeps_max = math.floor(dt / dt_range[0])
@@ -30,23 +30,25 @@ class CondensationMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def adapt_substeps(args, n_substeps, thd, rtol_thd):
-
             n_substeps = np.maximum(n_substeps_min, n_substeps // multiplier)
-            thd_new_long = step_fake(args, dt, n_substeps)
+            thd_new_long, success = step_fake(args, dt, n_substeps)
+            if not success:
+                return 0, success
             for burnout in range(fuse + 1):
                 if burnout == fuse:
-                    raise RuntimeError("Cannot find solution!")
-                thd_new_short = step_fake(args, dt, n_substeps * multiplier)
+                    print("burnout")
+                    return 0, False
+                thd_new_short, success = step_fake(args, dt, n_substeps * multiplier)
                 dthd_long = thd_new_long - thd
                 dthd_short = thd_new_short - thd
                 error_estimate = np.abs(dthd_long - multiplier * dthd_short)
                 thd_new_long = thd_new_short
-                if within_tolerance(error_estimate, thd, rtol_thd):
+                if within_tolerance(error_estimate, thd, rtol_thd) and success:
                     break
                 n_substeps *= multiplier
                 if n_substeps > n_substeps_max:
                     break
-            return np.minimum(n_substeps_max, n_substeps)
+            return np.minimum(n_substeps_max, n_substeps), success
 
         return adapt_substeps
 
@@ -55,8 +57,8 @@ class CondensationMethods:
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _, _, _, _ = step_impl(*args, dt, 1, True)
-            return thd_new
+            _, thd_new, _, _, _, _, success = step_impl(*args, dt, 1, True)
+            return thd_new, success
 
         return step_fake
 
@@ -77,13 +79,14 @@ class CondensationMethods:
             ml_old = calculate_ml_old(v, n, cell_idx)
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
+            success = True
             for t in range(n_substeps):
                 thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
                 qv += dt * dqv_dt_pred / 2
 
                 T, p, RH = temperature_pressure_RH(rhod_mean, thd, qv)
                 lv = phys.lv(T)
-                ml_new, n_activating, n_deactivating, n_ripening = \
+                ml_new, success_within_substep, n_activating, n_deactivating, n_ripening = \
                     calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, lv, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
@@ -96,7 +99,8 @@ class CondensationMethods:
                 count_deactivating += n_deactivating
                 count_ripening += n_ripening
                 RH_max = max(RH_max, RH)
-            return qv, thd, count_activating, count_deactivating, count_ripening, RH_max
+                success = success and success_within_substep
+            return qv, thd, count_activating, count_deactivating, count_ripening, RH_max, success
 
         return step_impl
 
@@ -133,6 +137,7 @@ class CondensationMethods:
             n_activating = 0
             n_deactivating = 0
             n_activated_and_growing = 0
+            success = True
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
@@ -154,21 +159,30 @@ class CondensationMethods:
                     fa = minfun(a, *args)
                     fb = minfun(b, *args)
 
-                    counter = 1
+                    counter = 0
                     while not fa * fb < 0:
-                        counter *= 2
-                        if counter > 128:
-                            raise RuntimeError("Cannot find interval!")
+                        counter += 1
+                        if counter > 16:
+                            print("failed to find interval")
+                            success = False
+                            break
                         b = max(x_dry, a + math.ldexp(dx_old, counter))
                         fb = minfun(b, *args)
 
-                    if a > b:
-                        a, b = b, a
-                        fa, fb = fb, fa
+                    if not success:
+                        x_new = np.nan
+                    elif a != b:
+                        if a > b:
+                            a, b = b, a
+                            fa, fb = fb, fa
 
-                    max_iters = 16
-                    x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters)
-                    assert iters_taken != max_iters
+                        max_iters = 16
+                        x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters)
+                        if iters_taken in (-1, max_iters):
+                            print("TOMS failed")
+                            success = False
+                    else:
+                        x_new = x_old
 
                 v_new = volume_of_x(x_new)
                 result += n[drop] * v_new * const.rho_w
@@ -184,7 +198,7 @@ class CondensationMethods:
                         n_deactivating += n[drop]
                     v[drop] = v_new
             n_ripening = n_activated_and_growing if n_deactivating > 0 else 0
-            return result, n_activating, n_deactivating, n_ripening
+            return result, success, n_activating, n_deactivating, n_ripening
 
         return calculate_ml_new
 
@@ -213,10 +227,11 @@ class CondensationMethods:
         def solve(v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
                   rtol_x, rtol_thd, dt, n_substeps):
             args = (v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
+            success = True
             if adaptive:
-                n_substeps = adapt_substeps(args, n_substeps, thd, rtol_thd)
-            qv, thd, n_activating, n_deactivating, n_ripening, RH_max = step(args, dt, n_substeps)
-
-            return qv, thd, n_substeps, n_activating, n_deactivating, n_ripening, RH_max
+                n_substeps, success = adapt_substeps(args, n_substeps, thd, rtol_thd)
+            if success:
+                qv, thd, n_activating, n_deactivating, n_ripening, RH_max, success = step(args, dt, n_substeps)
+            return success, qv, thd, n_substeps, n_activating, n_deactivating, n_ripening, RH_max
 
         return solve
