@@ -29,8 +29,8 @@ class PhysicsMethods:
     __temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
         // equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
         real_type exponent = {const.Rd} / {const.c_pd};
-        real_type pd = pow((rhod[i] * {const.Rd} * thd[i]) / pow({const.p1000}, exponent), 1 / (1 - exponent));
-        T[i] = thd[i] * pow((pd / {const.p1000}), exponent);
+        real_type pd = pow(real_type(rhod[i] * {const.Rd} * thd[i]) / pow(real_type({const.p1000}), exponent), 1 / (1 - exponent));
+        T[i] = thd[i] * pow(real_type(pd / {const.p1000}), exponent);
     
         real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
         p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
