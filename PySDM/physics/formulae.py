@@ -59,10 +59,10 @@ class VolumeCoordinate:
 
 
 @formula(inline='never')
-def dr_dt_MM(r, T, p, RH, lv, kp, rd):
+def dr_dt_MM(r, T, p, RH, lv, pvs, kp, rd):
     nom = (RH - RH_eq(r, T, kp, rd))
     den = (
-            Fd(T, D(r, T)) +
+            Fd(T, D(r, T), pvs) +
             Fk(T, K(r, T, p), lv)
     )
     return 1 / r * nom / den
@@ -94,18 +94,14 @@ def dthd_dt(rhod, thd, T, dqv_dt, lv):
 
 
 @formula(fastmath=False)
-def temperature_pressure_RH(rhod, thd, qv):
+def temperature_pressure_pv(rhod, thd, qv):
     # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
     exponent = const.Rd / const.c_pd
     pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
     T = thd * (pd / const.p1000) ** exponent
-
     R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
     p = rhod * (1 + qv) * R * T
-
-    RH = (p - pd) / pvs(T)
-
-    return T, p, RH
+    return T, p, p - pd
 
 
 @formula
@@ -248,8 +244,8 @@ def K(r, T, p):
 
 
 @formula
-def Fd(T, D):
-    return const.rho_w * const.Rv * T / D / pvs(T)
+def Fd(T, D, pvs):
+    return const.rho_w * const.Rv * T / D / pvs
 
 
 @formula

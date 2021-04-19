@@ -130,11 +130,12 @@ def make_solve(coord):
             x = y[idx_x:]
 
             qv = self.qt + self.dqv_dt * t - self.ql(self.n, x, self.m_d_mean)
-            T, p, RH = phys.temperature_pressure_RH(self.rhod_mean, thd, qv)
-
+            T, p, pv = phys.temperature_pressure_pv(self.rhod_mean, thd, qv)
+            pvs = phys.pvs(T)
+            RH = pv / pvs
             dy_dt = np.empty_like(y)
             self.impl(dy_dt, x, T, p, self.n, RH, self.kappa, self.rd, thd, self.dthd_dt, self.dqv_dt, self.m_d_mean,
-                      self.rhod_mean)
+                      self.rhod_mean, pvs)
             return dy_dt
 
         @staticmethod
@@ -144,10 +145,10 @@ def make_solve(coord):
 
         @staticmethod
         @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-        def impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean):
+        def impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs):
             lv = phys.lv(T)
             for i in range(len(x)):
-                dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(phys.radius(volume(x[i])), T, p, RH, lv, kappa, rd[i]))
+                dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(phys.radius(volume(x[i])), T, p, RH, lv, pvs, kappa, rd[i]))
             dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * rho_w / m_d_mean
             dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
