@@ -6,11 +6,11 @@ import numba
 from sys import float_info
 from PySDM.backends.numba.conf import JIT_FLAGS
 from PySDM.physics.formulae import within_tolerance
+from numpy import nan
 
 float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max
 float_info_min = float_info.min
-
 
 @numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
 def bracket(f, args, a, b, c, fa, fb):
@@ -113,7 +113,9 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
     b = bx
     fa = fax
     fb = fbx
-    # assert a < b
+    if not a < b:
+        print("TOMS748 problem: not a < b")
+        return nan, -1
 
     if tol(a, b, rtol) or fa == 0 or fb == 0:
         max_iter = 0
@@ -123,7 +125,10 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
             a = b
         return (a + b) / 2, max_iter
 
-    assert fa * fb < 0
+    if not fa * fb < 0:
+        print("TOMS748 problem: not fa * fb < 0")
+        return nan, -1
+
     fe = e = fd = 1e5
 
     if fa != 0:

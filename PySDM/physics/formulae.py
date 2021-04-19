@@ -269,7 +269,7 @@ def B(kp, rd):
 
 
 @formula
-def dr_dt_FF(r, T, p, RH, qv, kp, rd, T_i):
+def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
     rho_v = p * qv / R(qv) / T
     rho_eq = pvs(T_i) * RH_eq(r, T_i, kp, rd) / const.Rv / T_i
     return D(r, T_i) / const.rho_w / r * (rho_v - rho_eq)
