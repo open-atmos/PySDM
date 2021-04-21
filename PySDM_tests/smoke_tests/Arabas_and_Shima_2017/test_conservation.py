@@ -5,7 +5,7 @@ Created at 2019
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
-from PySDM.backends.numba import bdf
+from PySDM.backends.numba.test_helpers import bdf
 from PySDM.physics import constants as const
 import pytest
 import numpy as np
@@ -36,6 +36,8 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme):
     settings.n_output = 50
     simulation = Simulation(settings)
     qt0 = settings.q0 + ql(simulation)
+
+    assert scheme in ('BDF', 'default')
     if scheme == 'BDF':
         bdf.patch_core(simulation.core)
 

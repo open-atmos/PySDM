@@ -54,15 +54,15 @@ def _magick(value, module):
 @strict
 class Formulae:
     def __init__(self, *,
-                 condensation_coordinate: str= 'VolumeLogarithm',
-                 saturation_vapour_pressure: str='FlatauWalkoCotton',
-                 latent_heat: str='Kirchhoff',
-                 hygroscopicity: str='KappaKoehler',
-                 drop_growth: str='MaxwellMason',
-                 surface_tension: str='Constant',
-                 diffusion_kinetics: str='FuchsSutugin',
-                 ventilation: str='Neglect',
-                 state_variable_triplet: str='RhodThdQv'
+                 condensation_coordinate: str = 'VolumeLogarithm',
+                 saturation_vapour_pressure: str = 'FlatauWalkoCotton',
+                 latent_heat: str = 'Kirchhoff',
+                 hygroscopicity: str = 'KappaKoehler',
+                 drop_growth: str = 'MaxwellMason',
+                 surface_tension: str = 'Constant',
+                 diffusion_kinetics: str = 'FuchsSutugin',
+                 ventilation: str = 'Neglect',
+                 state_variable_triplet: str = 'RhodThdQv'
                  ):
         self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate)
         self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure)

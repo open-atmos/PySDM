@@ -4,7 +4,7 @@ Created at 10.12.2019
 
 from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
-from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
+from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from ..conf import trtc
 from .precision_resolver import PrecisionResolver
 
