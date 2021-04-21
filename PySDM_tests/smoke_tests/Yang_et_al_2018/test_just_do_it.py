@@ -11,17 +11,10 @@ import numpy as np
 import os
 
 
-# TODO #411
-if 'CI' in os.environ and not os.environ.get('FAST_TESTS') == 'true':
-    scheme = ('default', 'BDF')
-    coord = ('VolumeLogarithm', 'Volume')
-    adaptive = (True, False)
-    enable_particle_temperatures = (False, True)
-else:
-    scheme = ('default',)
-    coord = ('VolumeLogarithm',)
-    adaptive = (True,)
-    enable_particle_temperatures = (False,)
+scheme = ('default', 'BDF')
+coord = ('VolumeLogarithm', 'Volume')
+adaptive = (True, False)
+enable_particle_temperatures = (False, True)
 
 
 @pytest.mark.parametrize("scheme", scheme)
