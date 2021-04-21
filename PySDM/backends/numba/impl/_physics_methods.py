@@ -25,7 +25,7 @@ class PhysicsMethods:
         return (omega * dC + c_l) / (1 - dC)
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
+    @numba.njit(**conf.JIT_FLAGS)
     def temperature_pressure_RH_body(pvs_C, rhod, thd, qv, T, p, RH):
         for i in prange(T.shape[0]):
             T[i], p[i], pv = temperature_pressure_pv(rhod[i], thd[i], qv[i])

@@ -14,16 +14,16 @@ else:
     import numba
     def _formula(func=None, **kw):
         if func is None:
-            return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+            return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, **kw}})
         else:
-            return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False,  'inline': 'always', **kw}})
+            return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, **kw}})
 
 from PySDM.physics import constants as const
 import numpy as np
 from PySDM.physics.constants import R_str
-from numpy import exp, log, pi, polyval
 from pystrict import strict
 from PySDM import physics
+
 
 def _boost(obj):
     if not flag.DIMENSIONAL_ANALYSIS:
@@ -35,11 +35,13 @@ def _boost(obj):
                 setattr(obj, item, _formula(attr))
     return obj
 
+
 def _pick(value: str, choices: dict):
     for name, cls in choices.items():
         if name == value:
             return cls()
     raise ValueError(f"Unknown setting: '{value}';, choices are: {tuple(choices.keys())}")
+
 
 def _choices(module):
     return dict([(name, cls) for name, cls in module.__dict__.items() if isinstance(cls, type)])
@@ -47,6 +49,7 @@ def _choices(module):
 
 def _magick(value, module):
     return _boost(_pick(value, _choices(module)))
+
 
 @strict
 class Formulae:
@@ -77,6 +80,7 @@ class Formulae:
             if not attr.startswith('_'):
                 description.append(f"{attr}: {getattr(self, attr).__class__.__name__}")
         return ', '.join(description)
+
 
 @_formula(inline='never')
 def dr_dt_MM(r, T, p, RH, lv, pvs, kp, rd):

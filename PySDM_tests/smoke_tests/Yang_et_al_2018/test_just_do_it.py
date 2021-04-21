@@ -8,28 +8,22 @@ from PySDM.physics.constants import si
 from PySDM.backends.numba import bdf
 import pytest
 import numpy as np
-import os
 
 
 scheme = ('default', 'BDF')
-coord = ('VolumeLogarithm', 'Volume')
 adaptive = (True, False)
-enable_particle_temperatures = (False, True)
+enable_particle_temperatures = (False,)  # (False, True)  # TODO #427
 
 
 @pytest.mark.parametrize("scheme", scheme)
-@pytest.mark.parametrize("coord", coord)
 @pytest.mark.parametrize("adaptive", adaptive)
 @pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
-def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
+def test_just_do_it(scheme, adaptive, enable_particle_temperatures):
     # Arrange
     if scheme == 'BDF' and not adaptive:
         return
-    if scheme == 'BDF' and coord == 'Volume':
-        return
 
     settings = Settings(dt_output=10 * si.second)
-    settings.coord = coord
     settings.adaptive = adaptive
     settings.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
@@ -65,4 +59,3 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
 
 def n_tot(n, condition):
     return np.dot(n, condition)
-
