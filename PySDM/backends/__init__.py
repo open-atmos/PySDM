@@ -39,7 +39,7 @@ def cuda_is_available():
 if cuda_is_available() or cuda.is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
 else:
-    from .thrustRTC.fakeThrustRTC import _flag
+    from .thrustRTC.test_helpers import _flag
 
     _flag.fakeThrustRTC = True
 

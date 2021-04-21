@@ -115,7 +115,7 @@ class Test_pH:
 
     @staticmethod
     @pytest.mark.parametrize("nt", (0, 1, 2, 3))
-    @pytest.mark.parametrize("n_sd", (1, 2, 100))
+    @pytest.mark.parametrize("n_sd", (1, 2, 10))
     def test_calc_ionic_strength(nt, n_sd):
         from chempy.electrolytes import ionic_strength
         from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
