@@ -5,7 +5,7 @@ Created at 07.06.2019
 import numpy as np
 import pytest
 from PySDM.physics.formulae import volume
-from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.physics.coalescence_kernels import Golovin
 
 
 class TestGolovin:

@@ -7,7 +7,7 @@ import numpy as np
 from PySDM.physics import formulae as phys
 from PySDM.physics.constants import convert_to, si
 from PySDM.products.product import MomentProduct
-from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from chempy import Substance
 
 

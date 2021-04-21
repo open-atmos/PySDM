@@ -77,7 +77,8 @@ class Parcel(_Moist):
         qv = self['qv'][0] - self.dql/2
 
         dql_dz = self.dql / dz_dt / dt
-        drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, dql_dz=dql_dz)
+        lv = self.core.backend.formulae.latent_heat.lv(T)
+        drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
         phys.explicit_euler(self._tmp['t'][:], dt, 1)

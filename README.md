@@ -151,7 +151,7 @@ Instantiation of the ``Core`` class is handled by the ``Builder``
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products.state import ParticlesVolumeSpectrum
 
@@ -222,12 +222,17 @@ The resultant plot looks as follows:
     - [spectral_sampling](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/initialisation/spectral_sampling.py):
         linear, logarithmic and constant_multiplicity classes
 - [physics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/physics):
+    - [coalescence_kernels (selected)](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/physics/coalescence_kernels)
+      - [Golovin](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/coalescence_kernels/golovin.py)
+      - [Geometric](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/coalescence_kernels/geometric.py)
+      - [Hydrodynamic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/coalescence_kernels/hydrodynamic.py)
+      - ...
     - [constants](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/constants.py): 
       physical constants partly imported from [SciPy](https://www.scipy.org/) and [chempy](https://pypi.org/project/chempy/) packages
     - [dimensional_analysis](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/dimensional_analysis.py): 
       tool for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
     - [formulae](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/formulae.py): 
-      physical formulae partly imported from the Numba backend (e.g., for initialisation)
+      physical formulae boosted imported from the Numba backend (e.g., for initialisation)
 - [environments](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/environments):
     - [Box](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/box.py): 
       bare zero-dimensional framework 
@@ -238,23 +243,15 @@ The resultant plot looks as follows:
     - [Kinematic2D](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/kinematic_2d.py): 
       two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 - [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
-    - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence)
-        - [coalescence.kernels (selected)](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence/kernels)
-            - [Golovin](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/golovin.py)
-            - [Geometric](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/geometric.py)
-            - [Hydrodynamic](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/coalescence/kernels/hydrodynamic.py)
-            - ...
+    - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence.py)
+      SDM implementation with adaptive timestepping
     - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation.py)
-        - solvers (working in arbitrary spectral coordinate specified through external class, defaults to logarithm of volume): 
-            - [default](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/impl/condensation_methods.py):
-              bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
-            - [BDF](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/backends/numba/bdf.py): 
-              black-box SciPy-based solver for benchmarking (Numba backend only)
-    - [AqueousChemistry](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/aqueous_chemistry/aqueous_chemistry.py):
+      bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
+    - [AqueousChemistry](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/aqueous_chemistry.py):
       aqueous-phase chemistry (incl. SO2 oxidation)
     - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
       includes advection with the flow & sedimentation)
-    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection)
+    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py)
 - Attributes (selected):
     - [numerics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/numerics):
         - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/numerics/position_in_cell.py)

@@ -1,5 +1,6 @@
 import PySDM.physics.formulae
 from PySDM_tests.backends_fixture import backend
+from PySDM.physics.formulae import Formulae
 import numpy as np
 
 
@@ -7,7 +8,7 @@ class TestPhysicsMethods:
     @staticmethod
     def test_temperature_pressure_RH(backend):
         # Arrange
-        sut = backend.temperature_pressure_RH
+        sut = backend(Formulae()).temperature_pressure_RH
         rhod = backend.Storage.from_ndarray(np.asarray((1,1.1)))
         thd = backend.Storage.from_ndarray(np.asarray((300,301)))
         qv = backend.Storage.from_ndarray(np.asarray((.01,.02)))

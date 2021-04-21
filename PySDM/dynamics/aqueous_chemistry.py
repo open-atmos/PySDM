@@ -1,6 +1,6 @@
 import numpy as np
-from .support import EQUILIBRIUM_CONST, DIFFUSION_CONST, AQUEOUS_COMPOUNDS, GASEOUS_COMPOUNDS, KINETIC_CONST, \
-    SPECIFIC_GRAVITY, M
+from PySDM.physics.aqueous_chemistry.support import EQUILIBRIUM_CONST, DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
+    GASEOUS_COMPOUNDS, KINETIC_CONST, SPECIFIC_GRAVITY, M
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, pH2H
 
 

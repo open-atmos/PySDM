@@ -2,8 +2,10 @@
 Created at 2019
 """
 
-from PySDM.physics import constants, formulae
+from PySDM.physics import constants
+from PySDM.physics.formulae import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics import formulae as phys
 
 
 class TestFormulae:
@@ -12,8 +14,9 @@ class TestFormulae:
     def test_pvs():
         with DimensionalAnalysis():
             # Arrange
+            formulae = Formulae()
             si = constants.si
-            sut = formulae.pvs
+            sut = formulae.saturation_vapour_pressure.pvs_Celsius
             T = 300 * si.kelvins
 
             # Act
@@ -27,7 +30,7 @@ class TestFormulae:
         with DimensionalAnalysis():
             # Arrange
             si = constants.si
-            sut = formulae.r_cr
+            sut = phys.r_cr
 
             kp = .5
             rd = .1 * si.micrometre
@@ -46,9 +49,22 @@ class TestFormulae:
             si = constants.si
             T = 300 * si.kelvins
 
+            formulae = Formulae()
+            sut = formulae.latent_heat.lv
+
             # Act
-            latent_heat = formulae.lv(T)
+            latent_heat = sut(T)
 
             # Assert
             assert latent_heat.check('[energy]/[mass]')
 
+    @staticmethod
+    def test___str__():
+        # Arrange
+        sut = Formulae()
+
+        # Act
+        result = str(sut)
+
+        # Assert
+        assert len(result) > 0

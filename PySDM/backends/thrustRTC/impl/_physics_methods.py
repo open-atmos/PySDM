@@ -26,22 +26,22 @@ class PhysicsMethods:
         result = "(omega * (c_r - c_l) + c_l) / (1 - (c_r - c_l));"
         return result
 
-    __temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
-        // equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-        real_type exponent = {const.Rd} / {const.c_pd};
-        real_type pd = pow(real_type(rhod[i] * {const.Rd} * thd[i]) / pow(real_type({const.p1000}), exponent), 1 / (1 - exponent));
-        T[i] = thd[i] * pow(real_type(pd / {const.p1000}), exponent);
-    
-        real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
-        p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
-    
-        RH[i] = (p[i] - pd) / {c_inline(phys.pvs, T="T[i]")};
-    '''.replace("real_type", PrecisionResolver.get_C_type()))
+    def __init__(self):
+        self._temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
+            // equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
+            real_type exponent = {const.Rd} / {const.c_pd};
+            real_type pd = pow(real_type(rhod[i] * {const.Rd} * thd[i]) / pow(real_type({const.p1000}), exponent), 1 / (1 - exponent));
+            T[i] = thd[i] * pow(real_type(pd / {const.p1000}), exponent);
+        
+            real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
+            p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
+        
+            RH[i] = (p[i] - pd) / {c_inline(self.formulae.saturation_vapour_pressure.pvs_Celsius, T="T[i] - const.T0")};
+        '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def temperature_pressure_RH(rhod, thd, qv, T, p, RH):
-        PhysicsMethods.__temperature_pressure_RH_body.launch_n(
+    def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
+        self._temperature_pressure_RH_body.launch_n(
             T.shape[0], (rhod.data, thd.data, qv.data, T.data, p.data, RH.data))
 
     __terminal_velocity_body = trtc.For(["values", "radius", "k1", "k2", "k3", "r1", "r2"], "i", '''

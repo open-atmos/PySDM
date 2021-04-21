@@ -5,7 +5,7 @@ from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
 from PySDM.physics.formulae import radius, pH2H, H2pH
-from PySDM.dynamics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
+from PySDM.physics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KINETIC_CONST, EQUILIBRIUM_CONST
 

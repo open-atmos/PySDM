@@ -4,7 +4,7 @@ Created at 07.06.2019
 
 import numpy as np
 from PySDM.physics import si
-from .random_generator_optimizer import RandomGeneratorOptimizer
+from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 import warnings
 
 default_dt_coal_range = (.1 * si.second, 100 * si.second)

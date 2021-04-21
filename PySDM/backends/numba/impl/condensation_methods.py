@@ -71,7 +71,7 @@ class CondensationMethods:
         return step
 
     @staticmethod
-    def make_step_impl(calculate_ml_old, calculate_ml_new):
+    def make_step_impl(phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def step_impl(v, particle_T, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
@@ -85,8 +85,8 @@ class CondensationMethods:
                 qv += dt * dqv_dt_pred / 2
 
                 T, p, pv = temperature_pressure_pv(rhod_mean, thd, qv)
-                lv = phys.lv(T)
-                pvs = phys.pvs(T)
+                lv = phys_lv(T)
+                pvs = phys_pvs_C(T - const.T0)
                 RH = pv / pvs
                 ml_new, success_within_substep, n_activating, n_deactivating, n_ripening = \
                     calculate_ml_new(dt, fake, T, p, RH, v, particle_T, v_cr, n, vdry, cell_idx, kappa, qv, lv, pvs, rtol_x)
@@ -205,10 +205,14 @@ class CondensationMethods:
         return calculate_ml_new
 
     def make_condensation_solver(self, dt, dt_range, adaptive=True, enable_drop_temperatures=False):
+        phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
+        phys_lv = self.formulae.latent_heat.lv
         return CondensationMethods.make_condensation_solver_impl(
-            dx_dt=self.formulae.condensation_coord.dx_dt,
-            volume=self.formulae.condensation_coord.volume,
-            x=self.formulae.condensation_coord.x,
+            phys_pvs_C = phys_pvs_C,
+            phys_lv=phys_lv,
+            dx_dt=self.formulae.condensation_coordinate.dx_dt,
+            volume=self.formulae.condensation_coordinate.volume,
+            x=self.formulae.condensation_coordinate.x,
             dt=dt,
             dt_range=dt_range,
             adaptive=adaptive,
@@ -217,10 +221,10 @@ class CondensationMethods:
 
     @staticmethod
     @lru_cache()
-    def make_condensation_solver_impl(dx_dt, volume, x, dt, dt_range, adaptive, enable_drop_temperatures):
+    def make_condensation_solver_impl(phys_pvs_C, phys_lv, dx_dt, volume, x, dt, dt_range, adaptive, enable_drop_temperatures):
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, enable_drop_temperatures)
-        step_impl = CondensationMethods.make_step_impl(calculate_ml_old, calculate_ml_new)
+        step_impl = CondensationMethods.make_step_impl(phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
         step_fake = CondensationMethods.make_step_fake(step_impl)
         adapt_substeps = CondensationMethods.make_adapt_substeps(dt, step_fake, dt_range)
         step = CondensationMethods.make_step(step_impl)

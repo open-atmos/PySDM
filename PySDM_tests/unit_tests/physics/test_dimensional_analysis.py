@@ -4,7 +4,8 @@ Created at 2019
 
 import pytest
 import numba
-from PySDM.physics.dimensional_analysis import DimensionalAnalysis, formulae
+from PySDM.physics.dimensional_analysis import DimensionalAnalysis
+from PySDM.physics.formulae import Formulae
 from PySDM.physics import constants
 
 
@@ -29,7 +30,7 @@ class TestDimensionalAnalysis:
         sut = DimensionalAnalysis()
 
         # Act & Assert
-        assert hasattr(formulae.pvs, "py_func")
+        assert hasattr(Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func")
         with sut:
-            assert not hasattr(formulae.pvs, "py_func")
-        assert hasattr(formulae.pvs, "py_func")
+            assert not hasattr(Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func")
+        assert hasattr(Formulae().saturation_vapour_pressure.pvs_Celsius, "py_func")

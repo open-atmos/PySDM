@@ -1,0 +1,2 @@
+class KappaKoehler:
+    pass

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from PySDM.physics import constants as const
-from PySDM.attributes.physics.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
+from PySDM.physics.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend

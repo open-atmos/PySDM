@@ -5,7 +5,8 @@ Created at 11.2019
 import numba
 from numba import prange
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import temperature_pressure_pv, pvs
+from PySDM.physics.formulae import temperature_pressure_pv
+from PySDM.physics import constants as const
 
 
 class PhysicsMethods:
@@ -24,15 +25,16 @@ class PhysicsMethods:
         return (omega * dC + c_l) / (1 - dC)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):
+    @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
+    def temperature_pressure_RH_body(pvs_C, rhod, thd, qv, T, p, RH):
         for i in prange(T.shape[0]):
             T[i], p[i], pv = temperature_pressure_pv(rhod[i], thd[i], qv[i])
-            RH[i] = pv / pvs(T[i])
+            RH[i] = pv / pvs_C(T[i] - const.T0)
 
-    @staticmethod
-    def temperature_pressure_RH(rhod, thd, qv, T, p, RH):
-        return PhysicsMethods.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
+    def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
+        return PhysicsMethods.temperature_pressure_RH_body(
+            self.formulae.saturation_vapour_pressure.pvs_Celsius,
+            rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

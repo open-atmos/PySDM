@@ -1,5 +1,5 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
-from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
 
 class pH(DerivedAttribute):

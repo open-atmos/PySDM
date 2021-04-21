@@ -1,7 +1,7 @@
-from PySDM.dynamics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
+from PySDM.physics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
-from PySDM.dynamics.aqueous_chemistry import aqueous_chemistry
+from PySDM.dynamics import aqueous_chemistry
 from chempy import Equilibrium
 from chempy.equilibria import EqSystem
 from chempy.chemistry import Species

@@ -9,9 +9,16 @@ def c_inline(fun, **args):
     post = r"([ )/*\-+]|$)"
     real_t = PrecisionResolver.get_C_type()
     real_fmt = ".32g"
-    source = inspect.getsourcelines(fun)[0]
-    assert len(source) == 3
-    source = source[-1].strip()
+    source = ''
+    for lineno, line in enumerate(inspect.getsourcelines(fun)[0]):
+        stripped = line.strip()
+        if stripped.startswith('@'):
+            continue
+        if stripped.startswith('//'):
+            continue
+        if stripped.startswith('def '):
+            continue
+        source += stripped
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
         source = re.sub(f"{prae}({arg}){post}", f"\\1{real_t}({args[arg]})\\3", source)

@@ -1,0 +1,2 @@
+class FuchsSutugin:
+    pass
