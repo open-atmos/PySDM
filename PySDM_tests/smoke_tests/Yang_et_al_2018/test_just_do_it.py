@@ -14,12 +14,12 @@ import os
 # TODO #411
 if 'CI' in os.environ and not os.environ.get('FAST_TESTS') == 'true':
     scheme = ('default', 'BDF')
-    coord = ('volume logarithm', 'volume')
+    coord = ('VolumeLogarithm', 'Volume')
     adaptive = (True, False)
     enable_particle_temperatures = (False, True)
 else:
     scheme = ('default',)
-    coord = ('volume logarithm',)
+    coord = ('VolumeLogarithm',)
     adaptive = (True,)
     enable_particle_temperatures = (False,)
 
@@ -32,7 +32,7 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
     # Arrange
     if scheme == 'BDF' and not adaptive:
         return
-    if scheme == 'BDF' and coord == 'volume':
+    if scheme == 'BDF' and coord == 'Volume':
         return
 
     settings = Settings(dt_output=10 * si.second)
