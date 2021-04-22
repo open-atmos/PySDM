@@ -10,7 +10,7 @@ import pytest
 import numpy as np
 
 
-scheme = ('default', 'BDF')
+scheme = ('default',)  # 'BDF')
 adaptive = (True, False)
 
 @pytest.mark.parametrize("scheme", scheme)

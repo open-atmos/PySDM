@@ -84,11 +84,11 @@ class Formulae:
 
 
 @_formula(inline='never')
-def dr_dt_MM(r, T, p, RH, lv, pvs, kp, rd):
+def dr_dt_MM(r, T, p, RH, lv, pvs, kp, rd, D, K):
     nom = (RH - RH_eq(r, T, kp, rd))
     den = (
-            Fd(T, D(r, T), pvs) +
-            Fk(T, K(r, T, p), lv)
+            const.rho_w * const.Rv * T / D / pvs +
+            const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
     )
     return 1 / r * nom / den
 
@@ -256,17 +256,6 @@ def D(r, T):
 def K(r, T, p):
     Kn = lambdaK(T, p) / r
     return const.K0 * beta(Kn)
-
-
-@_formula
-def Fd(T, D, pvs):
-    return const.rho_w * const.Rv * T / D / pvs
-
-
-@_formula
-def Fk(T, K, lv):
-    return const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
-
 
 
 @_formula

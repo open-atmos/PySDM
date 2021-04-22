@@ -5,7 +5,7 @@ Created at 11.2019
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.physics.formulae import temperature_pressure_pv, dr_dt_MM, radius, dthd_dt, \
-    within_tolerance
+    within_tolerance, D as phys_D, K as phys_K
 import PySDM.physics.formulae as phys
 from PySDM.backends.numba.toms748 import toms748_solve
 import numba
@@ -89,7 +89,7 @@ class CondensationMethods:
                 pvs = phys_pvs_C(T - const.T0)
                 RH = pv / pvs
                 ml_new, success_within_substep, n_activating, n_deactivating, n_ripening = \
-                    calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, qv, lv, pvs, rtol_x)
+                    calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, lv, pvs, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv)
@@ -120,13 +120,13 @@ class CondensationMethods:
     @staticmethod
     def make_calculate_ml_new(dx_dt, volume_of_x, x):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def minfun(x_new, x_old, dt, T, p, RH, qv, lv, pvs, kappa, rd):
+        def minfun(x_new, x_old, dt, T, p, RH, lv, pvs, kappa, rd, D, K):
             r_new = radius(volume_of_x(x_new))
-            dr_dt = dr_dt_MM(r_new, T, p, RH, lv, pvs, kappa, rd)
+            dr_dt = dr_dt_MM(r_new, T, p, RH, lv, pvs, kappa, rd, D, K)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, qv, lv, pvs, rtol_x):
+        def calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, lv, pvs, rtol_x):
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -136,8 +136,10 @@ class CondensationMethods:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 rd = radius(vdry[drop])
-                dr_dt_old = dr_dt_MM(r_old, T, p, RH, lv, pvs, kappa, rd)
-                args = (x_old, dt, T, p, RH, qv, lv, pvs, kappa, rd)
+                D = phys_D(r_old, T)
+                K = phys_K(r_old, T, p)
+                args = (x_old, dt, T, p, RH, lv, pvs, kappa, rd, D, K)
+                dr_dt_old = dr_dt_MM(r_old, *args[2:])
                 dx_old = dt * dx_dt(x_old, dr_dt_old)
                 if dx_old == 0:
                     x_new = x_old

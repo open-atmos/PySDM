@@ -40,7 +40,9 @@ def r_wet_init_impl(pvs_C, lv_K, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarra
             lv[cid],
             pvs[cid],
             kappa,
-            r_d
+            r_d,
+            const.D0,
+            const.K0
         )
         fa = formulae.dr_dt_MM(a, *args)
         fb = formulae.dr_dt_MM(b, *args)
