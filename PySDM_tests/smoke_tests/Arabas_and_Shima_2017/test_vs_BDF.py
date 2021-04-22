@@ -9,8 +9,8 @@ import pytest
 import numpy as np
 
 
-rtols = [1e-3, 1e-7]
-schemes = ['default', 'BDF']
+rtols = (1e-3, 1e-7)
+schemes = ('default', 'BDF')
 setups_num = len(setups)
 
 
@@ -26,7 +26,7 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("settings_idx", range(setups_num))
 @pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
-def test_vs_BDF(settings_idx, data, rtol, leg):
+def test_vs_BDF(settings_idx, data, rtol):
     # Arrange
     supersaturation = {}
     for scheme in schemes:

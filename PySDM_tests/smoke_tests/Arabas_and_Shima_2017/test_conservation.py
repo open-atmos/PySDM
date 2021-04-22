@@ -23,17 +23,20 @@ def ql(simulation: Simulation):
 
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
-@pytest.mark.parametrize("mass_of_dry_air", [1, 10000])
-@pytest.mark.parametrize("scheme", ['BDF', 'default'])
-def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme):
+@pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
+@pytest.mark.parametrize("scheme", ('BDF', 'default'))
+@pytest.mark.parametrize("coord", ('VolumeLogarithm', 'Volume'))
+def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     # Arrange
     settings = Settings(
         w_avg=setups[settings_idx].w_avg,
         N_STP=setups[settings_idx].N_STP,
         r_dry=setups[settings_idx].r_dry,
-        mass_of_dry_air=mass_of_dry_air
+        mass_of_dry_air=mass_of_dry_air,
+        coord=coord
     )
     settings.n_output = 50
+    settings.coord = coord
     simulation = Simulation(settings)
     qt0 = settings.q0 + ql(simulation)
 
