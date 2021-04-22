@@ -11,7 +11,7 @@ if not fakeThrustRTC:
     import CURandRTC as rndrtc
 else:
     # noinspection PyUnresolvedReferences
-    from .fakeThrustRTC.fakeThrustRTC import FakeThrustRTC as trtc
+    from .test_helpers.fakeThrustRTC import FakeThrustRTC as trtc
     # noinspection PyUnresolvedReferences
     rndrtc = None
 
