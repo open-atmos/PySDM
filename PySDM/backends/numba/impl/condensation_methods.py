@@ -118,13 +118,13 @@ class CondensationMethods:
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(dx_dt, volume_of_x, x, phys_dr_dt):
+    def make_calculate_ml_new(dx_dt, volume_of_x, x, phys_r_dr_dt):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def minfun(x_new, x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K):
             r_new = radius(volume_of_x(x_new))
             RH_eq = phys.RH_eq(r_new, T, kappa, rd)
-            dr_dt = phys_dr_dt(r_new, RH_eq, T, RH, lv, pvs, D, K)
-            return x_old - x_new + dt * dx_dt(x_new, dr_dt)
+            r_dr_dt = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
+            return x_old - x_new + dt * dx_dt(x_new, r_dr_dt)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
         def calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, lv, pvs, rtol_x):
@@ -141,8 +141,8 @@ class CondensationMethods:
                 K = phys_K(r_old, T, p)
                 RH_eq = phys.RH_eq(r_old, T, kappa, rd)
                 args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
-                dr_dt_old = phys_dr_dt(r_old, RH_eq, T, RH, lv, pvs, D, K)
-                dx_old = dt * dx_dt(x_old, dr_dt_old)
+                r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
+                dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 if dx_old == 0:
                     x_new = x_old
                 else:
@@ -195,11 +195,11 @@ class CondensationMethods:
     def make_condensation_solver(self, dt, dt_range, adaptive=True):
         phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_lv = self.formulae.latent_heat.lv
-        phys_dr_dt = self.formulae.drop_growth.dr_dt
+        phys_r_dr_dt = self.formulae.drop_growth.r_dr_dt
         return CondensationMethods.make_condensation_solver_impl(
             phys_pvs_C = phys_pvs_C,
             phys_lv=phys_lv,
-            phys_dr_dt=phys_dr_dt,
+            phys_r_dr_dt=phys_r_dr_dt,
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
             x=self.formulae.condensation_coordinate.x,
@@ -210,9 +210,9 @@ class CondensationMethods:
 
     @staticmethod
     @lru_cache()
-    def make_condensation_solver_impl(phys_pvs_C, phys_lv, phys_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive):
+    def make_condensation_solver_impl(phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive):
         calculate_ml_old = CondensationMethods.make_calculate_ml_old()
-        calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, phys_dr_dt)
+        calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, phys_r_dr_dt)
         step_impl = CondensationMethods.make_step_impl(phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
         step_fake = CondensationMethods.make_step_fake(step_impl)
         adapt_substeps = CondensationMethods.make_adapt_substeps(dt, step_fake, dt_range)

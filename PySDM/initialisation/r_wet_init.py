@@ -20,14 +20,11 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     formulae = environment.core.backend.formulae
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv_K = formulae.latent_heat.lv
-    phys_dr_dt = formulae.drop_growth.dr_dt
+    phys_r_dr_dt = formulae.drop_growth.r_dr_dt
 
     @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
-    def minfun(r, T, p, RH, lv, pvs, kp, rd):
-        RH_eq = phys.RH_eq(r, T, kp, rd)
-        D = phys.D(r, T)
-        K = phys.K(r, T, p)
-        return phys_dr_dt(r, RH_eq, T, RH, lv, pvs, D, K)
+    def minfun(r, T, RH, kp, rd):
+        return RH - phys.RH_eq(r, T, kp, rd)
 
     return r_wet_init_impl(pvs_C, lv_K, minfun, r_dry, T, p, RH, cell_id, kappa, rtol)
 
@@ -46,10 +43,10 @@ def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: n
         # minimisation
         args = (
             T[cid],
-            p[cid],
+            # p[cid],
             np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
-            lv[cid],
-            pvs[cid],
+            # lv[cid],
+            # pvs[cid],
             kappa,
             r_d
         )
