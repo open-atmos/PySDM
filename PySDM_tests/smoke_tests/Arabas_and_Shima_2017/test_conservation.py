@@ -54,13 +54,15 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
 @pytest.mark.parametrize("mass_of_dry_air",  [1, 10000])
-def test_energy_conservation(settings_idx, mass_of_dry_air):
+@pytest.mark.parametrize("coord", ('VolumeLogarithm', 'Volume'))
+def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
     # Arrange
     settings = Settings(
         w_avg=setups[settings_idx].w_avg,
         N_STP=setups[settings_idx].N_STP,
         r_dry=setups[settings_idx].r_dry,
         mass_of_dry_air=mass_of_dry_air,
+        coord=coord
     )
     simulation = Simulation(settings)
     env = simulation.core.environment
