@@ -7,7 +7,6 @@ from PySDM.state.mesh import Mesh
 from ..state import arakawa_c
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
-from PySDM.initialisation.temperature_init import temperature_init
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.physics import formulae as phys
 
@@ -50,8 +49,6 @@ class Kinematic2D(_Moist):
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        if enable_temperatures:
-            attributes['temperature'] = temperature_init(self, attributes['cell id'])
         attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
         attributes['volume'] = phys.volume(radius=r_wet)
         attributes['dry volume'] = phys.volume(radius=r_dry)

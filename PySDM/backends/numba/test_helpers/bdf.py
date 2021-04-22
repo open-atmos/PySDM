@@ -24,20 +24,15 @@ def patch_core(core):
 
 
 def _bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
-    n_threads = 1
-    if core.particles.has_attribute("temperature"):
-        raise NotImplementedError()
-
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:
         func = func.py_func
     func(
         solver=core.condensation_solver,
-        n_threads=n_threads,
+        n_threads=1,
         n_cell=core.mesh.n_cell,
         cell_start_arg=core.particles.cell_start.data,
         v=core.particles["volume"].data,
-        particle_temperatures=np.empty(0),
         v_cr=None,
         n=core.particles['n'].data,
         vdry=core.particles["dry volume"].data,
@@ -99,7 +94,7 @@ def _make_solve(formulae):
         return dy_dt
 
     def solve(
-            v, particle_temperatures, v_cr, n, vdry,
+            v, v_cr, n, vdry,
             cell_idx, kappa, thd, qv,
             dthd_dt, dqv_dt, m_d_mean, rhod_mean,
             rtol_x, rtol_thd, dt, substeps

@@ -183,13 +183,13 @@ class AlgorithmicMethods:
     def condensation(
             solver,
             n_cell, cell_start_arg,
-            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         AlgorithmicMethods._condensation(
             solver, n_threads, n_cell, cell_start_arg.data,
-            v.data, particle_temperatures.data, v_cr.data, n.data, vdry.data, idx.data,
+            v.data, v_cr.data, n.data, vdry.data, idx.data,
             rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
             rtol_x, rtol_thd, dt,
             counters['n_substeps'].data,
@@ -348,7 +348,7 @@ class AlgorithmicMethods:
     @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
     def _condensation(
             solver, n_threads, n_cell, cell_start_arg,
-            v, particle_temperatures, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
             rtol_x, rtol_thd, dt,
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
             cell_order, RH_max, success
@@ -369,7 +369,7 @@ class AlgorithmicMethods:
                 md = rhod_mean * dv_mean
 
                 success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, particle_temperatures, v_cr, n, vdry,
+                    v, v_cr, n, vdry,
                     idx[cell_start:cell_end],
                     kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
                     rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]

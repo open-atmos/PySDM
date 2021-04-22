@@ -10,24 +10,20 @@ import pytest
 import numpy as np
 
 
-scheme = ('default',) # TODO #334 'BDF')
+scheme = ('default', 'BDF')
 adaptive = (True, False)
-enable_particle_temperatures = (False,)  # (False, True)  # TODO #427
-
 
 @pytest.mark.parametrize("scheme", scheme)
 @pytest.mark.parametrize("adaptive", adaptive)
-@pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
-def test_just_do_it(scheme, adaptive, enable_particle_temperatures):
+def test_just_do_it(scheme, adaptive):
     # Arrange
     if scheme == 'BDF' and not adaptive:
         return
 
     settings = Settings(dt_output=10 * si.second)
     settings.adaptive = adaptive
-    settings.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
-        settings.dt_max = settings.dt_output
+        settings.dt_max = settings.dt_output  # TODO #334 'BDF')
     elif not adaptive:
         settings.dt_max = 1 * si.second
 

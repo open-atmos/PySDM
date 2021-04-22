@@ -280,21 +280,6 @@ def B(kp, rd):
 
 
 @_formula
-def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
-    rho_v = p * qv / R(qv) / T
-    rho_eq = pvs(T_i) * RH_eq(r, T_i, kp, rd) / const.Rv / T_i
-    return D(r, T_i) / const.rho_w / r * (rho_v - rho_eq)
-
-
-@_formula
-def dT_i_dt_FF(r, T, p, T_i, dr_dt):
-    return 3 / r / const.c_pw * (
-        K(r, T, p) / const.rho_w / r * (T - T_i) +  # TODO #57 K(T) vs. K(Td) ???
-        lv(T_i) * dr_dt
-    )
-
-
-@_formula
 def within_tolerance(error_estimate, value, rtol):
     return error_estimate < rtol * np.abs(value)
 
