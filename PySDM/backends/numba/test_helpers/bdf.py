@@ -75,9 +75,9 @@ def _make_solve(formulae):
     def _ql(n, x, m_d_mean):
         return np.sum(n * volume(x)) * const.rho_w / m_d_mean
 
-    @numba.njit(**JIT_FLAGS)
+    @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
-        for i in numba.prange(len(x)):
+        for i in range(len(x)):
             dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(phys.radius(volume(x[i])), T, p, RH, lv, pvs, kappa, rd[i]))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
