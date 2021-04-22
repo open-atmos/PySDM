@@ -71,7 +71,7 @@ def _make_solve(formulae):
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv = formulae.latent_heat.lv
 
-    @numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+    @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
         return np.sum(n * volume(x)) * const.rho_w / m_d_mean
 

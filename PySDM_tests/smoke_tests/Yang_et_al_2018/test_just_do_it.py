@@ -10,7 +10,7 @@ import pytest
 import numpy as np
 
 
-scheme = ('default', 'BDF')
+scheme = ('default',) # TODO #334 'BDF')
 adaptive = (True, False)
 enable_particle_temperatures = (False,)  # (False, True)  # TODO #427
 
