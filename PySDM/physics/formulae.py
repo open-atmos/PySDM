@@ -14,9 +14,9 @@ else:
     import numba
     def _formula(func=None, **kw):
         if func is None:
-            return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, **kw}})
+            return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
         else:
-            return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, **kw}})
+            return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
 
 from PySDM.physics import constants as const
 import numpy as np
