@@ -22,6 +22,14 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
 
 
 @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
+def minfun(r, T, p, RH, lv, pvs, kp, rd):
+    RH_eq = formulae.RH_eq(r, T, kp, rd)
+    D = formulae.D(r, T)
+    K = formulae.K(r, T, p)
+    return formulae.dr_dt_MM(r, RH_eq, T, RH, lv, pvs, D, K)
+
+
+@njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
 def r_wet_init_impl(pvs_C, lv_K, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
     r_wet = np.empty_like(r_dry)
     lv = lv_K(T)
@@ -40,13 +48,11 @@ def r_wet_init_impl(pvs_C, lv_K, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarra
             lv[cid],
             pvs[cid],
             kappa,
-            r_d,
-            const.D0,
-            const.K0
+            r_d
         )
-        fa = formulae.dr_dt_MM(a, *args)
-        fb = formulae.dr_dt_MM(b, *args)
+        fa = minfun(a, *args)
+        fb = minfun(b, *args)
         max_iters = 64
-        r_wet[i], iters_done = toms748_solve(formulae.dr_dt_MM, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
+        r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
         assert iters_done != max_iters
     return r_wet

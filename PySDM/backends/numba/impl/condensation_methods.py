@@ -120,9 +120,10 @@ class CondensationMethods:
     @staticmethod
     def make_calculate_ml_new(dx_dt, volume_of_x, x):
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-        def minfun(x_new, x_old, dt, T, p, RH, lv, pvs, kappa, rd, D, K):
+        def minfun(x_new, x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K):
             r_new = radius(volume_of_x(x_new))
-            dr_dt = dr_dt_MM(r_new, T, p, RH, lv, pvs, kappa, rd, D, K)
+            RH_eq = phys.RH_eq(r_new, T, kappa, rd)
+            dr_dt = dr_dt_MM(r_new, RH_eq, T, RH, lv, pvs, D, K)
             return x_old - x_new + dt * dx_dt(x_new, dr_dt)
 
         @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
@@ -138,8 +139,9 @@ class CondensationMethods:
                 rd = radius(vdry[drop])
                 D = phys_D(r_old, T)
                 K = phys_K(r_old, T, p)
-                args = (x_old, dt, T, p, RH, lv, pvs, kappa, rd, D, K)
-                dr_dt_old = dr_dt_MM(r_old, *args[2:])
+                RH_eq = phys.RH_eq(r_old, T, kappa, rd)
+                args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
+                dr_dt_old = dr_dt_MM(r_old, RH_eq, *args[5:])
                 dx_old = dt * dx_dt(x_old, dr_dt_old)
                 if dx_old == 0:
                     x_new = x_old

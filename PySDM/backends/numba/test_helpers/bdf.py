@@ -77,7 +77,8 @@ def _make_solve(formulae):
             r = phys.radius(v)
             D = phys.D(r, T)
             K = phys.K(r, T, p)
-            dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(r, T, p, RH, lv, pvs, kappa, rd[i], D, K))
+            RH_eq = phys.RH_eq(r, T, kappa, rd[i])
+            dy_dt[idx_x + i] = dx_dt(x[i], phys.dr_dt_MM(r, RH_eq, T, RH, lv, pvs, D, K))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 

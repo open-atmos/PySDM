@@ -84,13 +84,11 @@ class Formulae:
 
 
 @_formula(inline='never')
-def dr_dt_MM(r, T, p, RH, lv, pvs, kp, rd, D, K):
-    nom = (RH - RH_eq(r, T, kp, rd))
-    den = (
+def dr_dt_MM(r, RH_eq, T, RH, lv, pvs, D, K):
+    return (RH - RH_eq) / (
             const.rho_w * const.Rv * T / D / pvs +
             const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
-    )
-    return 1 / r * nom / den
+    ) / r
 
 
 @_formula
