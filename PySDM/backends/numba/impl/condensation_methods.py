@@ -4,7 +4,7 @@ Created at 11.2019
 
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import temperature_pressure_pv, dr_dt_MM, dr_dt_FF, dT_i_dt_FF, radius, dthd_dt, \
+from PySDM.physics.formulae import temperature_pressure_pv, dr_dt_MM, radius, dthd_dt, \
     within_tolerance
 import PySDM.physics.formulae as phys
 from PySDM.backends.numba.toms748 import toms748_solve
