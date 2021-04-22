@@ -12,7 +12,7 @@ float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max
 float_info_min = float_info.min
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def bracket(f, args, a, b, c, fa, fb):
     tol = float_info_epsilon * 2
     if (b - a) < 2 * tol * a:
@@ -41,7 +41,7 @@ def bracket(f, args, a, b, c, fa, fb):
     return a, b, fa, fb, d, fd
 
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def safe_div(num, denom, r):
     if abs(denom) < 1:
         if abs(denom * float_info_max) <= abs(num):
@@ -49,7 +49,7 @@ def safe_div(num, denom, r):
     return num / denom
 
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def secant_interpolate(a, b, fa, fb):
     tol = float_info_epsilon * 5
     c = a - (fa / (fb - fa)) * (b - a)
@@ -58,7 +58,7 @@ def secant_interpolate(a, b, fa, fb):
     return c
 
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def quadratic_interpolate(a, b, d, fa, fb, fd, count):
     B = safe_div(fb - fa, b - a, float_info_max)
     A = safe_div(fd - fb, d - b, float_info_max)
@@ -81,7 +81,7 @@ def quadratic_interpolate(a, b, d, fa, fb, fd, count):
     return c
 
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
     q11 = (d - e) * fd / (fe - fd)
     q21 = (b - d) * fb / (fd - fb)
@@ -100,7 +100,7 @@ def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
     return c
 
 
-@numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'inline': 'always'}})
+@numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
 def tol(a, b, rtol):
     return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)
 

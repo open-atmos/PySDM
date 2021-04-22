@@ -3,7 +3,7 @@ Crated at 2019
 """
 
 from PySDM.backends.numba import conf
-
+from functools import lru_cache
 from PySDM.physics.impl import flag
 
 if flag.DIMENSIONAL_ANALYSIS:
@@ -47,6 +47,7 @@ def _choices(module):
     return dict([(name, cls) for name, cls in module.__dict__.items() if isinstance(cls, type)])
 
 
+@lru_cache()
 def _magick(value, module):
     return _boost(_pick(value, _choices(module)))
 
