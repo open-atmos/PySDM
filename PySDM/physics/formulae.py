@@ -83,14 +83,6 @@ class Formulae:
         return ', '.join(description)
 
 
-@_formula(inline='never')
-def dr_dt_MM(r, RH_eq, T, RH, lv, pvs, D, K):
-    return (RH - RH_eq) / (
-            const.rho_w * const.Rv * T / D / pvs +
-            const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
-    ) / r
-
-
 @_formula
 def R(q):
     return _mix(q, const.Rd, const.Rv)

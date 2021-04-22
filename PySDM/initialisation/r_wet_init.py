@@ -4,7 +4,7 @@ Crated at 2019
 
 import numpy as np
 from ..backends.numba.toms748 import toms748_solve
-from ..physics import formulae
+from ..physics import formulae as phys
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
 from numba import prange, njit
@@ -16,21 +16,24 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     T = environment["T"].to_ndarray()
     p = environment["p"].to_ndarray()
     RH = environment["RH"].to_ndarray()
-    pvs_C = environment.core.backend.formulae.saturation_vapour_pressure.pvs_Celsius
-    lv_K = environment.core.backend.formulae.latent_heat.lv
-    return r_wet_init_impl(pvs_C, lv_K, r_dry, T, p, RH, cell_id, kappa, rtol)
+
+    formulae = environment.core.backend.formulae
+    pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
+    lv_K = formulae.latent_heat.lv
+    phys_dr_dt = formulae.drop_growth.dr_dt
+
+    @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
+    def minfun(r, T, p, RH, lv, pvs, kp, rd):
+        RH_eq = phys.RH_eq(r, T, kp, rd)
+        D = phys.D(r, T)
+        K = phys.K(r, T, p)
+        return phys_dr_dt(r, RH_eq, T, RH, lv, pvs, D, K)
+
+    return r_wet_init_impl(pvs_C, lv_K, minfun, r_dry, T, p, RH, cell_id, kappa, rtol)
 
 
 @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
-def minfun(r, T, p, RH, lv, pvs, kp, rd):
-    RH_eq = formulae.RH_eq(r, T, kp, rd)
-    D = formulae.D(r, T)
-    K = formulae.K(r, T, p)
-    return formulae.dr_dt_MM(r, RH_eq, T, RH, lv, pvs, D, K)
-
-
-@njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
-def r_wet_init_impl(pvs_C, lv_K, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
+def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
     r_wet = np.empty_like(r_dry)
     lv = lv_K(T)
     pvs = pvs_C(T - const.T0)
@@ -39,7 +42,7 @@ def r_wet_init_impl(pvs_C, lv_K, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarra
         cid = cell_id[i]
         # root-finding initial guess
         a = r_d
-        b = formulae.r_cr(kappa, r_d, T[cid])
+        b = phys.r_cr(kappa, r_d, T[cid])
         # minimisation
         args = (
             T[cid],
