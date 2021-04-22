@@ -11,6 +11,7 @@ import numba
 import scipy.integrate
 import types
 import warnings
+from functools import lru_cache
 
 idx_thd = 0
 idx_x = 1
@@ -62,6 +63,7 @@ def _bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, success, 
     )
 
 
+@lru_cache()
 def _make_solve(formulae):
     x = formulae.condensation_coordinate.x
     volume = formulae.condensation_coordinate.volume
