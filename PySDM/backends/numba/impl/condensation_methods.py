@@ -146,9 +146,9 @@ class CondensationMethods:
                 if dx_old == 0:
                     x_new = x_old
                 else:
-                    x_dry = x(vdry[drop])
+                    x_insane = 2 * x(vdry[drop])
                     a = x_old
-                    b = max(x_dry, a + dx_old)
+                    b = max(x_insane, a + dx_old)
                     fa = minfun(a, *args)
                     fb = minfun(b, *args)
 
@@ -159,7 +159,7 @@ class CondensationMethods:
                             print("failed to find interval")
                             success = False
                             break
-                        b = max(x_dry, a + math.ldexp(dx_old, counter))
+                        b = max(x_insane, a + math.ldexp(dx_old, counter))
                         fb = minfun(b, *args)
 
                     if not success:
