@@ -25,14 +25,14 @@ from pystrict import strict
 from PySDM import physics
 
 
-def _boost(obj):
+def _boost(obj, fastmath):
     if not flag.DIMENSIONAL_ANALYSIS:
         for item in dir(obj):
             if item.startswith('__'):
                 continue
             attr = getattr(obj, item)
             if callable(attr):
-                setattr(obj, item, _formula(attr))
+                setattr(obj, item, _formula(attr, fastmath=fastmath))
     return obj
 
 
@@ -48,13 +48,14 @@ def _choices(module):
 
 
 @lru_cache()
-def _magick(value, module):
-    return _boost(_pick(value, _choices(module)))
+def _magick(value, module, fastmath):
+    return _boost(_pick(value, _choices(module)), fastmath)
 
 
 @strict
 class Formulae:
     def __init__(self, *,
+                 fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
                  latent_heat: str = 'Kirchhoff',
@@ -65,15 +66,16 @@ class Formulae:
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv'
                  ):
-        self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate)
-        self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure)
-        self.latent_heat = _magick(latent_heat, physics.latent_heat)
-        self.hygroscopicity = _magick(hygroscopicity, physics.hygroscopicity)
-        self.drop_growth = _magick(drop_growth, physics.drop_growth)
-        self.surface_tension = _magick(surface_tension, physics.surface_tension)
-        self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics)
-        self.ventilation = _magick(ventilation, physics.ventilation)
-        self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet)
+        self.fastmath = fastmath
+        self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
+        self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
+        self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
+        self.hygroscopicity = _magick(hygroscopicity, physics.hygroscopicity, fastmath)
+        self.drop_growth = _magick(drop_growth, physics.drop_growth, fastmath)
+        self.surface_tension = _magick(surface_tension, physics.surface_tension, fastmath)
+        self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics, fastmath)
+        self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
+        self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
 
     def __str__(self):
         description = []

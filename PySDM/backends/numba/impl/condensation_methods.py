@@ -16,7 +16,7 @@ from functools import lru_cache
 
 class CondensationMethods:
     @staticmethod
-    def make_adapt_substeps(dt, step_fake, dt_range, fuse=100, multiplier=2):
+    def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse=100, multiplier=2):
         if not isinstance(multiplier, int):
             raise ValueError()
         if dt_range[1] > dt:
@@ -28,7 +28,7 @@ class CondensationMethods:
             n_substeps_max = math.floor(dt / dt_range[0])
         n_substeps_min = math.ceil(dt / dt_range[1])
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+        @numba.njit(**jit_flags)
         def adapt_substeps(args, n_substeps, thd, rtol_thd):
             n_substeps = np.maximum(n_substeps_min, n_substeps // multiplier)
             thd_new_long, success = step_fake(args, dt, n_substeps)
@@ -53,8 +53,8 @@ class CondensationMethods:
         return adapt_substeps
 
     @staticmethod
-    def make_step_fake(step_impl):
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def make_step_fake(jit_flags, step_impl):
+        @numba.njit(**jit_flags)
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
             _, thd_new, _, _, _, _, success = step_impl(*args, dt, 1, True)
@@ -63,16 +63,16 @@ class CondensationMethods:
         return step_fake
 
     @staticmethod
-    def make_step(step_impl):
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def make_step(jit_flags, step_impl):
+        @numba.njit(**jit_flags)
         def step(args, dt, n_substeps):
             return step_impl(*args, dt, n_substeps, False)
 
         return step
 
     @staticmethod
-    def make_step_impl(phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new):
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new):
+        @numba.njit(**jit_flags)
         def step_impl(v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
             dt /= n_substeps
@@ -107,8 +107,8 @@ class CondensationMethods:
         return step_impl
 
     @staticmethod
-    def make_calculate_ml_old():
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def make_calculate_ml_old(jit_flags):
+        @numba.njit(**jit_flags)
         def calculate_ml_old(v, n, cell_idx):
             result = 0
             for drop in cell_idx:
@@ -118,15 +118,15 @@ class CondensationMethods:
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(dx_dt, volume_of_x, x, phys_r_dr_dt):
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt):
+        @numba.njit(**jit_flags)
         def minfun(x_new, x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K):
             r_new = radius(volume_of_x(x_new))
             RH_eq = phys.RH_eq(r_new, T, kappa, rd)
             r_dr_dt = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
             return x_old - x_new + dt * dx_dt(x_new, r_dr_dt)
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+        @numba.njit(**jit_flags)
         def calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, lv, pvs, rtol_x):
             result = 0
             n_activating = 0
@@ -196,7 +196,9 @@ class CondensationMethods:
         phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_lv = self.formulae.latent_heat.lv
         phys_r_dr_dt = self.formulae.drop_growth.r_dr_dt
+        fastmath = self.formulae.fastmath
         return CondensationMethods.make_condensation_solver_impl(
+            fastmath=fastmath,
             phys_pvs_C = phys_pvs_C,
             phys_lv=phys_lv,
             phys_r_dr_dt=phys_r_dr_dt,
@@ -210,15 +212,17 @@ class CondensationMethods:
 
     @staticmethod
     @lru_cache()
-    def make_condensation_solver_impl(phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive):
-        calculate_ml_old = CondensationMethods.make_calculate_ml_old()
-        calculate_ml_new = CondensationMethods.make_calculate_ml_new(dx_dt, volume, x, phys_r_dr_dt)
-        step_impl = CondensationMethods.make_step_impl(phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
-        step_fake = CondensationMethods.make_step_fake(step_impl)
-        adapt_substeps = CondensationMethods.make_adapt_substeps(dt, step_fake, dt_range)
-        step = CondensationMethods.make_step(step_impl)
+    def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive):
+        jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
-        @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
+        calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt)
+        step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
+        step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
+        adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range)
+        step = CondensationMethods.make_step(jit_flags, step_impl)
+
+        @numba.njit(**jit_flags)
         def solve(v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
                   rtol_x, rtol_thd, dt, n_substeps):
             args = (v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
