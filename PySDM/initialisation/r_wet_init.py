@@ -22,37 +22,41 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     lv_K = formulae.latent_heat.lv
     phys_r_dr_dt = formulae.drop_growth.r_dr_dt
 
-    @njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
+    jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
+
+    @njit(**jit_flags)
     def minfun(r, T, RH, kp, rd):
         return RH - phys.RH_eq(r, T, kp, rd)
+
+    @njit(**jit_flags)
+    def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol,
+                        RH_range=(0, 1)):
+        r_wet = np.empty_like(r_dry)
+        lv = lv_K(T)
+        pvs = pvs_C(T - const.T0)
+        for i in prange(len(r_dry)):
+            r_d = r_dry[i]
+            cid = cell_id[i]
+            # root-finding initial guess
+            a = r_d
+            b = phys.r_cr(kappa, r_d, T[cid])
+            # minimisation
+            args = (
+                T[cid],
+                # p[cid],
+                np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
+                # lv[cid],
+                # pvs[cid],
+                kappa,
+                r_d
+            )
+            fa = minfun(a, *args)
+            fb = minfun(b, *args)
+            max_iters = 64
+            r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
+            assert iters_done != max_iters
+        return r_wet
 
     return r_wet_init_impl(pvs_C, lv_K, minfun, r_dry, T, p, RH, cell_id, kappa, rtol)
 
 
-@njit(**{**JIT_FLAGS, **{'parallel': False, 'fastmath': False, 'cache': False}})
-def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol, RH_range=(0, 1)):
-    r_wet = np.empty_like(r_dry)
-    lv = lv_K(T)
-    pvs = pvs_C(T - const.T0)
-    for i in prange(len(r_dry)):
-        r_d = r_dry[i]
-        cid = cell_id[i]
-        # root-finding initial guess
-        a = r_d
-        b = phys.r_cr(kappa, r_d, T[cid])
-        # minimisation
-        args = (
-            T[cid],
-            # p[cid],
-            np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
-            # lv[cid],
-            # pvs[cid],
-            kappa,
-            r_d
-        )
-        fa = minfun(a, *args)
-        fb = minfun(b, *args)
-        max_iters = 64
-        r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
-        assert iters_done != max_iters
-    return r_wet
