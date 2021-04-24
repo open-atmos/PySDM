@@ -47,6 +47,7 @@ class CondensationMethods:
                     break
                 n_substeps *= multiplier
                 if n_substeps > n_substeps_max:
+                    print("n_substeps > n_substeps_max (", n_substeps, ")")
                     break
             return np.minimum(n_substeps_max, n_substeps), success
 
@@ -156,7 +157,8 @@ class CondensationMethods:
                     while not fa * fb < 0:
                         counter += 1
                         if counter > 16:
-                            print("failed to find interval")
+                            if not fake:
+                                print("failed to find interval for drop ", drop, " with rd:", rd, " rold:", r_old, "(x=", x_old, ")")
                             success = False
                             break
                         b = max(x_insane, a + math.ldexp(dx_old, counter))
@@ -172,7 +174,8 @@ class CondensationMethods:
                         max_iters = 16
                         x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters)
                         if iters_taken in (-1, max_iters):
-                            print("TOMS failed")
+                            if not fake:
+                                print("TOMS failed")
                             success = False
                     else:
                         x_new = x_old
