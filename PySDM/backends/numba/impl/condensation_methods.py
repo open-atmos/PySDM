@@ -45,9 +45,6 @@ class CondensationMethods:
                 if burnout == fuse:
                     print("burnout (short)")
                     return 0, False
-                if n_substeps > n_substeps_max:
-                    print("n_substeps > n_substeps_max (", n_substeps, ") - reached dt_range[0] limit")
-                    break
                 thd_new_short, success = step_fake(args, dt, n_substeps * multiplier)
                 if not success:
                     print("short failed")
@@ -59,7 +56,9 @@ class CondensationMethods:
                 if within_tolerance(error_estimate, thd, rtol_thd):
                     break
                 n_substeps *= multiplier
-
+                if n_substeps > n_substeps_max:
+                    print("n_substeps > n_substeps_max (", n_substeps, ") - reached dt_range[0] limit")
+                    break
             return np.minimum(n_substeps_max, n_substeps), success
 
         return adapt_substeps
@@ -150,7 +149,7 @@ class CondensationMethods:
                 r_old = radius(v[drop])
                 rd = radius(vdry[drop])
                 RH_eq = phys.RH_eq(r_old, T, kappa, rd)
-                if not within_tolerance(RH - RH_eq, RH, RH_rtol):
+                if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     D = phys_D(r_old, T)
                     K = phys_K(r_old, T, p)
                     args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
@@ -230,7 +229,7 @@ class CondensationMethods:
     @staticmethod
     @lru_cache()
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive,
-                                      fuse=100, multiplier=2, RH_rtol=1e-8, max_iters=16):
+                                      fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
