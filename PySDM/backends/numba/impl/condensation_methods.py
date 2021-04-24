@@ -142,8 +142,11 @@ class CondensationMethods:
                 K = phys_K(r_old, T, p)
                 RH_eq = phys.RH_eq(r_old, T, kappa, rd)
                 args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
-                r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
-                dx_old = dt * dx_dt(x_old, r_dr_dt_old)
+                if RH != RH_eq:
+                    r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
+                    dx_old = dt * dx_dt(x_old, r_dr_dt_old)
+                else:
+                    dx_old = 0.
                 if dx_old == 0:
                     x_new = x_old
                 else:
@@ -166,6 +169,7 @@ class CondensationMethods:
 
                     if not success:
                         x_new = np.nan
+                        break
                     elif a != b:
                         if a > b:
                             a, b = b, a
@@ -177,6 +181,7 @@ class CondensationMethods:
                             if not fake:
                                 print("TOMS failed")
                             success = False
+                            break
                     else:
                         x_new = x_old
 
