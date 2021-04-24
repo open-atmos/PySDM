@@ -25,8 +25,8 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
 
     @njit(**jit_flags)
-    def minfun(r, T, RH, kp, rd):
-        return RH - phys.RH_eq(r, T, kp, rd)
+    def minfun(r, T, RH, kp, rd3):
+        return RH - phys.RH_eq(r, T, kp, rd3)
 
     @njit(**jit_flags)
     def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol,
@@ -43,12 +43,9 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
             # minimisation
             args = (
                 T[cid],
-                # p[cid],
                 np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
-                # lv[cid],
-                # pvs[cid],
                 kappa,
-                r_d
+                r_d**3
             )
             fa = minfun(a, *args)
             fb = minfun(b, *args)

@@ -127,8 +127,8 @@ def volume(radius):
 
 
 @_formula
-def RH_eq(r, T, kp, rd):
-    return 1 + A(T) / r - B(kp, rd) / r ** 3
+def RH_eq(r, T, kp, rd3):
+    return 1 + A(T) / r - B(kp, rd3) / r ** 3
 
 
 @_formula
@@ -256,8 +256,8 @@ def A(T):
 
 
 @_formula
-def B(kp, rd):
-    return kp * rd ** 3
+def B(kp, rd3):
+    return kp * rd3
 
 
 @_formula

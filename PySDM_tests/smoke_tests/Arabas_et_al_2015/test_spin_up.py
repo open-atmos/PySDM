@@ -21,11 +21,15 @@ class DummyStorage:
             self.profiles.append({"qv_env": np.mean(data, axis=0)})
 
 
-@pytest.mark.parametrize("fastmath", (True, False))
+@pytest.mark.parametrize("fastmath", (
+        pytest.param(False, id="fastmath: False"),
+        pytest.param(True, id="fastmath: True")
+))
 def test_spin_up(fastmath, plot=False):
     # Arrange
     settings = Settings(fastmath=fastmath)
     settings.dt = .5 * si.second
+    settings.grid = (3, 25)
     settings.simulation_time = 20 * settings.dt
     settings.output_interval = 1 * settings.dt
 

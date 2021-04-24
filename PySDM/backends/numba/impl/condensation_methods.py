@@ -131,9 +131,9 @@ class CondensationMethods:
     @staticmethod
     def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
-        def minfun(x_new, x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K):
+        def minfun(x_new, x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K):
             r_new = radius(volume_of_x(x_new))
-            RH_eq = phys.RH_eq(r_new, T, kappa, rd)
+            RH_eq = phys.RH_eq(r_new, T, kappa, rd3)
             r_dr_dt = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
             return x_old - x_new + dt * dx_dt(x_new, r_dr_dt)
 
@@ -147,12 +147,13 @@ class CondensationMethods:
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
-                rd = radius(vdry[drop])
-                RH_eq = phys.RH_eq(r_old, T, kappa, rd)
+                x_insane = x(vdry[drop]/100)
+                rd3 = vdry[drop] / (4/3*np.pi)
+                RH_eq = phys.RH_eq(r_old, T, kappa, rd3)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     D = phys_D(r_old, T)
                     K = phys_K(r_old, T, p)
-                    args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
+                    args = (x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 else:
@@ -161,7 +162,7 @@ class CondensationMethods:
                     x_new = x_old
                 else:
                     a = x_old
-                    b = a + dx_old
+                    b = max(x_insane, a + dx_old)
                     fa = minfun(a, *args)
                     fb = minfun(b, *args)
 
@@ -170,10 +171,10 @@ class CondensationMethods:
                         counter += 1
                         if counter > max_iters:
                             if not fake:
-                                print("failed to find interval for drop ", drop, " with rd:", rd, " rold:", r_old, "(x=", x_old, ")")
+                                print("failed to find interval")
                             success = False
                             break
-                        b = a + math.ldexp(dx_old, counter)
+                        b = max(x_insane, a + math.ldexp(dx_old, counter))
                         fb = minfun(b, *args)
 
                     if not success:
