@@ -16,7 +16,7 @@ from functools import lru_cache
 
 class CondensationMethods:
     @staticmethod
-    def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse=100, multiplier=2):
+    def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier):
         if not isinstance(multiplier, int):
             raise ValueError()
         if dt_range[1] > dt:
@@ -31,24 +31,35 @@ class CondensationMethods:
         @numba.njit(**jit_flags)
         def adapt_substeps(args, n_substeps, thd, rtol_thd):
             n_substeps = np.maximum(n_substeps_min, n_substeps // multiplier)
-            thd_new_long, success = step_fake(args, dt, n_substeps)
-            if not success:
-                return 0, success
+            success = False
             for burnout in range(fuse + 1):
                 if burnout == fuse:
-                    print("burnout")
+                    print("burnout (long)")
                     return 0, False
+                thd_new_long, success = step_fake(args, dt, n_substeps)
+                if success:
+                    break
+                else:
+                    n_substeps *= multiplier
+            for burnout in range(fuse + 1):
+                if burnout == fuse:
+                    print("burnout (short)")
+                    return 0, False
+                if n_substeps > n_substeps_max:
+                    print("n_substeps > n_substeps_max (", n_substeps, ") - reached dt_range[0] limit")
+                    break
                 thd_new_short, success = step_fake(args, dt, n_substeps * multiplier)
+                if not success:
+                    print("short failed")
+                    return 0, False
                 dthd_long = thd_new_long - thd
                 dthd_short = thd_new_short - thd
                 error_estimate = np.abs(dthd_long - multiplier * dthd_short)
                 thd_new_long = thd_new_short
-                if within_tolerance(error_estimate, thd, rtol_thd) and success:
+                if within_tolerance(error_estimate, thd, rtol_thd):
                     break
                 n_substeps *= multiplier
-                if n_substeps > n_substeps_max:
-                    print("n_substeps > n_substeps_max (", n_substeps, ")")
-                    break
+
             return np.minimum(n_substeps_max, n_substeps), success
 
         return adapt_substeps
@@ -119,7 +130,7 @@ class CondensationMethods:
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt):
+    def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
         def minfun(x_new, x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K):
             r_new = radius(volume_of_x(x_new))
@@ -138,11 +149,11 @@ class CondensationMethods:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 rd = radius(vdry[drop])
-                D = phys_D(r_old, T)
-                K = phys_K(r_old, T, p)
                 RH_eq = phys.RH_eq(r_old, T, kappa, rd)
-                args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
-                if RH != RH_eq:
+                if not within_tolerance(RH - RH_eq, RH, RH_rtol):
+                    D = phys_D(r_old, T)
+                    K = phys_K(r_old, T, p)
+                    args = (x_old, dt, p, kappa, rd, T, RH, lv, pvs, D, K)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 else:
@@ -150,21 +161,20 @@ class CondensationMethods:
                 if dx_old == 0:
                     x_new = x_old
                 else:
-                    x_insane = 2 * x(vdry[drop])
                     a = x_old
-                    b = max(x_insane, a + dx_old)
+                    b = a + dx_old
                     fa = minfun(a, *args)
                     fb = minfun(b, *args)
 
                     counter = 0
                     while not fa * fb < 0:
                         counter += 1
-                        if counter > 16:
+                        if counter > max_iters:
                             if not fake:
                                 print("failed to find interval for drop ", drop, " with rd:", rd, " rold:", r_old, "(x=", x_old, ")")
                             success = False
                             break
-                        b = max(x_insane, a + math.ldexp(dx_old, counter))
+                        b = a + math.ldexp(dx_old, counter)
                         fb = minfun(b, *args)
 
                     if not success:
@@ -175,7 +185,6 @@ class CondensationMethods:
                             a, b = b, a
                             fa, fb = fb, fa
 
-                        max_iters = 16
                         x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters)
                         if iters_taken in (-1, max_iters):
                             if not fake:
@@ -220,14 +229,15 @@ class CondensationMethods:
 
     @staticmethod
     @lru_cache()
-    def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive):
+    def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, dx_dt, volume, x, dt, dt_range, adaptive,
+                                      fuse=100, multiplier=2, RH_rtol=1e-8, max_iters=16):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
-        calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt)
+        calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt, max_iters, RH_rtol)
         step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
-        adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range)
+        adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier)
         step = CondensationMethods.make_step(jit_flags, step_impl)
 
         @numba.njit(**jit_flags)
