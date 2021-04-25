@@ -91,11 +91,6 @@ def R(q):
 
 
 @_formula
-def r_cr(kp, rd, T):
-    return np.sqrt(3 * kp * rd ** 3 / A(T))
-
-
-@_formula
 def c_p(q):
     return _mix(q, const.c_pd, const.c_pv)
 
@@ -124,11 +119,6 @@ def radius(volume):
 @_formula
 def volume(radius):
     return 4 / 3 * np.pi * radius ** 3
-
-
-@_formula
-def RH_eq(r, T, kp, rd3):
-    return 1 + A(T) / r - B(kp, rd3) / r ** 3
 
 
 @_formula
@@ -248,16 +238,6 @@ def D(r, T):
 def K(r, T, p):
     Kn = lambdaK(T, p) / r
     return const.K0 * beta(Kn)
-
-
-@_formula
-def A(T):
-    return 2 * const.sgm / const.Rv / T / const.rho_w
-
-
-@_formula
-def B(kp, rd3):
-    return kp * rd3
 
 
 @_formula

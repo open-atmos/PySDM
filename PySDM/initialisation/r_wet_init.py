@@ -8,6 +8,7 @@ from ..physics import formulae as phys
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
 from numba import prange, njit
+import numpy as np
 
 default_rtol = 1e-5
 
@@ -21,15 +22,19 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv_K = formulae.latent_heat.lv
     phys_r_dr_dt = formulae.drop_growth.r_dr_dt
+    r_cr = formulae.hygroscopicity.r_cr
+    RH_eq = formulae.hygroscopicity.RH_eq
+    sigma = formulae.surface_tension.sigma
 
     jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
 
     @njit(**jit_flags)
     def minfun(r, T, RH, kp, rd3):
-        return RH - phys.RH_eq(r, T, kp, rd3)
+        sgm = sigma(T, v_wet=phys.volume(radius=r), v_dry=4/3*np.pi * rd3)
+        return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @njit(**jit_flags)
-    def r_wet_init_impl(pvs_C, lv_K, minfun, r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol,
+    def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
         lv = lv_K(T)
@@ -39,7 +44,7 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
             cid = cell_id[i]
             # root-finding initial guess
             a = r_d
-            b = phys.r_cr(kappa, r_d, T[cid])
+            b = r_cr(kappa, r_d**3, T[cid], const.sgm)
             # minimisation
             args = (
                 T[cid],
@@ -54,6 +59,6 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
             assert iters_done != max_iters
         return r_wet
 
-    return r_wet_init_impl(pvs_C, lv_K, minfun, r_dry, T, p, RH, cell_id, kappa, rtol)
+    return r_wet_init_impl(r_dry, T, p, RH, cell_id, kappa, rtol)
 
 

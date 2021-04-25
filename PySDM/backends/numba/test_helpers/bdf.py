@@ -66,6 +66,8 @@ def _make_solve(formulae):
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv = formulae.latent_heat.lv
     r_dr_dt = formulae.drop_growth.r_dr_dt
+    RH_eq = formulae.hygroscopicity.RH_eq
+    sigma = formulae.surface_tension.sigma
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
@@ -78,8 +80,8 @@ def _make_solve(formulae):
             r = phys.radius(v)
             D = phys.D(r, T)
             K = phys.K(r, T, p)
-            RH_eq = phys.RH_eq(r, T, kappa, rd[i]**3)
-            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq, T, RH, lv, pvs, D, K))
+            sgm = sigma(T, v, volume(rd[i]))
+            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, rd[i]**3, sgm), T, RH, lv, pvs, D, K))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 

@@ -30,14 +30,16 @@ class TestFormulae:
         with DimensionalAnalysis():
             # Arrange
             si = constants.si
-            sut = phys.r_cr
+            formulae = Formulae()
+            sut = formulae.hygroscopicity.r_cr
 
             kp = .5
             rd = .1 * si.micrometre
             T = 300 * si.kelvins
+            sgm = constants.sgm
 
             # Act
-            r_cr = sut(kp, rd, T)
+            r_cr = sut(kp, rd**3, T, sgm)
 
             # Assert
             assert r_cr.to_base_units().units == si.metres

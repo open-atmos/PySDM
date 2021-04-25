@@ -1,7 +1,7 @@
 import PySDM.physics.constants as const
 
 
-class Constant:
+class CompressedFilm:
     @staticmethod
     def sigma(T, v_wet, v_dry):
-        return const.sgm
+        return const.sgm  # TODO #223
