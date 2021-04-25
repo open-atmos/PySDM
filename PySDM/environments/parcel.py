@@ -21,27 +21,32 @@ class Parcel(_Moist):
             z0: float = 0,
             g=const.g_std
     ):
-
         super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
 
-        self.w = w if callable(w) else lambda _: w
+        self.p0 = p0
+        self.q0 = q0
+        self.T0 = T0
+        self.z0 = z0
+        self.mass_of_dry_air = mass_of_dry_air
         self.g = g
 
-        pd0 = phys.MoistAir.p_d(p0, q0)
-        rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, T0)
+        self.w = w if callable(w) else lambda _: w
 
-        self.params = (q0, phys.th_std(pd0, T0), rhod0, z0, 0)
-        self.mesh.dv = phys.Trivia.volume_of_density_mass(rhod0, mass_of_dry_air)
-
-        self.mass_of_dry_air = mass_of_dry_air
+        self.formulae = None
         self.dql = None
 
     @property
     def dv(self):
         rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
-        return phys.Trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
+        return self.formulae.trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
 
     def register(self, builder):
+        self.formulae = builder.core.backend.formulae
+        pd0 = phys.MoistAir.p_d(self.p0, self.q0)
+        rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, self.T0)
+        self.params = (self.q0, phys.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
+
         _Moist.register(self, builder)
         self['qv'][:] = self.params[0]
         self['thd'][:] = self.params[1]
@@ -85,7 +90,7 @@ class Parcel(_Moist):
         phys.explicit_euler(self._tmp['z'][:], dt, dz_dt)
         phys.explicit_euler(self._tmp['rhod'][:], dt, dz_dt * drhod_dz)
 
-        self.mesh.dv = phys.Trivia.volume_of_density_mass(
+        self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,
             self.mass_of_dry_air
         )

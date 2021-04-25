@@ -23,6 +23,7 @@ import numpy as np
 from PySDM.physics.constants import R_str
 from pystrict import strict
 from PySDM import physics
+from PySDM.physics.trivia import Trivia
 
 
 def _boost(obj, fastmath):
@@ -67,6 +68,7 @@ class Formulae:
                  state_variable_triplet: str = 'RhodThdQv'
                  ):
         self.fastmath = fastmath
+        self.trivia = _boost(Trivia(), fastmath)
         self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
         self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
         self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
@@ -156,12 +158,6 @@ class MoistAir:
     @staticmethod
     def rho_of_p_qv_T(p, qv, T):
         return p / R(qv) / T
-
-
-class Trivia:
-    @staticmethod
-    def volume_of_density_mass(rho, m):
-        return m / rho
 
 
 class ThStd:
