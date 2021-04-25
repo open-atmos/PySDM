@@ -26,6 +26,7 @@ from PySDM import physics
 from PySDM.physics.trivia import Trivia
 
 
+@lru_cache()
 def _boost(obj, fastmath):
     if not flag.DIMENSIONAL_ANALYSIS:
         for item in dir(obj):
