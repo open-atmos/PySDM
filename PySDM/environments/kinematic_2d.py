@@ -19,6 +19,7 @@ class Kinematic2D(_Moist):
 
     def register(self, builder):
         super().register(builder)
+        self.formulae = builder.core.formulae
         rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
@@ -50,8 +51,8 @@ class Kinematic2D(_Moist):
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
-        attributes['volume'] = phys.volume(radius=r_wet)
-        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
+        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 

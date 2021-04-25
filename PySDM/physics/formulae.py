@@ -114,16 +114,6 @@ def temperature_pressure_pv(rhod, thd, qv):
 
 
 @_formula
-def radius(volume):
-    return (volume * 3 / 4 / np.pi) ** (1 / 3)
-
-
-@_formula
-def volume(radius):
-    return 4 / 3 * np.pi * radius ** 3
-
-
-@_formula
 def pH2H(pH):
     return 10**(-pH) * 1e3
 

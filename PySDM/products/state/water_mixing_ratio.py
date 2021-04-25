@@ -7,7 +7,7 @@ import numpy as np
 class WaterMixingRatio(MomentProduct):
 
     def __init__(self, name, description_prefix, radius_range):
-        self.volume_range = phys.volume(np.asarray(radius_range))
+        self.radius_range = radius_range
         super().__init__(
             name=name,
             unit='g/kg',
@@ -15,6 +15,10 @@ class WaterMixingRatio(MomentProduct):
             scale='linear',
             range=[0, 1]
         )
+
+    def register(self, builder):
+        super().register(builder)
+        self.volume_range = self.formulae.trivia.volume(np.asarray(self.radius_range))
 
     def get(self):  # TODO #217
         self.download_moment_to_buffer('volume', rank=0, filter_range=self.volume_range, filter_attr='volume')

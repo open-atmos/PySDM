@@ -41,7 +41,7 @@ class Parcel(_Moist):
         return self.formulae.trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
 
     def register(self, builder):
-        self.formulae = builder.core.backend.formulae
+        self.formulae = builder.core.formulae
         pd0 = phys.MoistAir.p_d(self.p0, self.q0)
         rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, self.T0)
         self.params = (self.q0, phys.th_std(pd0, self.T0), rhod0, self.z0, 0)
@@ -66,10 +66,10 @@ class Parcel(_Moist):
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
         attributes['n'] = discretise_n(n_in_dv)
         r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa, rtol)
-        attributes['volume'] = phys.volume(radius=r_wet)
+        attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
         return attributes
 
     def advance_parcel_vars(self):
@@ -82,7 +82,7 @@ class Parcel(_Moist):
         qv = self['qv'][0] - self.dql/2
 
         dql_dz = self.dql / dz_dt / dt
-        lv = self.core.backend.formulae.latent_heat.lv(T)
+        lv = self.core.formulae.latent_heat.lv(T)
         drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 

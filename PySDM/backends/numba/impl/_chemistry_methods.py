@@ -4,7 +4,7 @@ import numpy as np
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
-from PySDM.physics.formulae import radius, pH2H, H2pH
+from PySDM.physics.formulae import pH2H, H2pH
 from PySDM.physics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KINETIC_CONST, EQUILIBRIUM_CONST
@@ -18,8 +18,7 @@ _quite_close_multiplier = 2
 
 
 class ChemistryMethods:
-    @staticmethod
-    def dissolution(*, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
+    def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
                     env_mixing_ratio, env_T, env_p, env_rho_d, ksi, dt, dv, system_type, droplet_volume,
                     multiplicity):
         for thread_id in numba.prange(n_threads):
@@ -57,13 +56,14 @@ class ChemistryMethods:
                         specific_gravity=SPECIFIC_GRAVITY[compound],
                         alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
                         diffusion_constant=DIFFUSION_CONST[compound],
-                        ksi=ksi[compound].data
+                        ksi=ksi[compound].data,
+                        radius=self.formulae.trivia.radius
                     )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_T, env_rho_d, dt, dv,
-                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, ksi):
+                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, ksi, radius):
         mole_amount_taken = 0
         for i in super_droplet_ids:
             Mc = specific_gravity * Md

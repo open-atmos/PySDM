@@ -20,6 +20,6 @@ class ParticleMeanRadius(MomentProduct):
 
     def get(self, unit=const.si.micrometre):
         self.download_moment_to_buffer('volume', rank=1/3)
-        self.buffer[:] *= phys.radius(volume=1)
+        self.buffer[:] /= const.pi_4_3**(1/3)
         const.convert_to(self.buffer, unit)
         return self.buffer

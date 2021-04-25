@@ -1,5 +1,4 @@
 from ...product import MomentProduct
-import PySDM.physics.formulae as phys
 
 
 class pH(MomentProduct):
@@ -15,6 +14,6 @@ class pH(MomentProduct):
 
     def get(self):
         self.download_moment_to_buffer('pH', rank=1,
-                                       filter_range=(phys.volume(self.radius_range[0]),
-                                                     phys.volume(self.radius_range[1])))
+                                       filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                                                     self.formulae.trivia.volume(self.radius_range[1])))
         return self.buffer

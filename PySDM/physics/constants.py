@@ -18,6 +18,7 @@ def convert_to(value, unit):
 
 
 pi = sci.pi
+pi_4_3 = pi * 4 / 3
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +

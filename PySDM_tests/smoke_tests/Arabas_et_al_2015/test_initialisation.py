@@ -26,7 +26,7 @@ def test_initialisation(plot=False):
     n_cell = np.prod(np.array(settings.grid))
     n_moments = 1
 
-    r_bins = phys.radius(volume=settings.v_bins)
+    r_bins = settings.formulae.trivia.radius(volume=settings.v_bins)
 
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)

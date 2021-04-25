@@ -13,7 +13,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectra import Exponential
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
-from PySDM.physics import formulae as phys
+from PySDM.physics.formulae import Formulae
 from PySDM_tests.backends_fixture import backend
 
 
@@ -39,9 +39,10 @@ def test_coalescence(backend, croupier, adaptive):
     if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
         return
     # Arrange
+    formulae = Formulae()
     n_sd = 2 ** 14
     steps = [0, 100, 200]
-    X0 = phys.volume(radius=30.531e-6)
+    X0 = formulae.trivia.volume(radius=30.531e-6)
     n_part = 2 ** 23 / si.metre ** 3
     dv = 1e6 * si.metres ** 3
     dt = 1 * si.seconds
@@ -50,7 +51,7 @@ def test_coalescence(backend, croupier, adaptive):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    builder = Builder(n_sd=n_sd, backend=backend)
+    builder = Builder(n_sd=n_sd, backend=backend, formulae=formulae)
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)

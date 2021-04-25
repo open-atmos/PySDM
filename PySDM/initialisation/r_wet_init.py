@@ -18,19 +18,20 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     p = environment["p"].to_ndarray()
     RH = environment["RH"].to_ndarray()
 
-    formulae = environment.core.backend.formulae
+    formulae = environment.core.formulae
     pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
     lv_K = formulae.latent_heat.lv
     phys_r_dr_dt = formulae.drop_growth.r_dr_dt
     r_cr = formulae.hygroscopicity.r_cr
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
+    phys_volume = formulae.trivia.volume
 
     jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
 
     @njit(**jit_flags)
     def minfun(r, T, RH, kp, rd3):
-        sgm = sigma(T, v_wet=phys.volume(radius=r), v_dry=4/3*np.pi * rd3)
+        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3)
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @njit(**jit_flags)

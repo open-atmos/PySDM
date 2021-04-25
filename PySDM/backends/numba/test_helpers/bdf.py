@@ -19,7 +19,7 @@ rtol = 1e-4
 
 
 def patch_core(core):
-    core.condensation_solver = _make_solve(core.backend.formulae)
+    core.condensation_solver = _make_solve(core.formulae)
     core.condensation = types.MethodType(_bdf_condensation, core)
 
 
@@ -68,27 +68,26 @@ def _make_solve(formulae):
     r_dr_dt = formulae.drop_growth.r_dr_dt
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
+    phys_radius = formulae.trivia.radius
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
         return np.sum(n * volume(x)) * const.rho_w / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-    def _impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
+    def _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
         for i in range(len(x)):
             v = volume(x[i])
-            r = phys.radius(v)
+            r = phys_radius(v)
             D = phys.D(r, T)
             K = phys.K(r, T, p)
-            sgm = sigma(T, v, volume(rd[i]))
-            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, rd[i]**3, sgm), T, RH, lv, pvs, D, K))
+            sgm = sigma(T, v, dry_volume[i])
+            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, D, K))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _odesys(t, y, kappa, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
-        rd = phys.radius(volume=dry_volume)
-
         thd = y[idx_thd]
         x = y[idx_x:]
 
@@ -98,7 +97,7 @@ def _make_solve(formulae):
         RH = pv / pvs
 
         dy_dt = np.empty_like(y)
-        _impl(dy_dt, x, T, p, n, RH, kappa, rd, thd, dthd_dt, dqv_dt, m_d_mean, rhod_mean, pvs, lv(T))
+        _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dthd_dt, dqv_dt, m_d_mean, rhod_mean, pvs, lv(T))
         return dy_dt
 
     def solve(

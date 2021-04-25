@@ -20,6 +20,7 @@ class Product:
 
     def register(self, builder):
         self.core = builder.core
+        self.formulae = self.core.formulae
         self.shape = self.core.mesh.grid
         self.buffer = np.empty(self.core.mesh.grid)
 

@@ -14,7 +14,7 @@ def test_dry_spectrum_x():
     settings = Settings()
     simulation = Simulation(settings)
     dry_volume = simulation.core.particles['dry volume'].to_ndarray()
-    rd = phys.radius(volume=dry_volume) / si.nanometre
+    rd = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
 
     rd = rd[::-1]
     assert round(rd[  1-1], 0) == 503
@@ -27,7 +27,7 @@ def test_dry_spectrum_y(plot=False):
     settings = Settings()
     simulation = Simulation(settings)
     dry_volume = simulation.core.particles['dry volume'].to_ndarray()
-    rd = phys.radius(volume=dry_volume) / si.nanometre
+    rd = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
     nd = simulation.core.particles['n'].to_ndarray()
 
     dr = (rd[1:] - rd[0:-1])
@@ -58,11 +58,11 @@ def test_wet_vs_dry_spectrum(plot=False):
     # Act
     simulation = Simulation(settings)
     wet_volume = simulation.core.particles['volume'].to_ndarray()
-    r_wet = phys.radius(volume=wet_volume) / si.nanometre
+    r_wet = simulation.formulae.trivia.radius(volume=wet_volume) / si.nanometre
     n = simulation.core.particles['n'].to_ndarray()
 
     dry_volume = simulation.core.particles['dry volume'].to_ndarray()
-    r_dry = phys.radius(volume=dry_volume) / si.nanometre
+    r_dry = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
 
     # Plot
     if plot:

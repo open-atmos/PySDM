@@ -42,7 +42,8 @@ class ParticlesSizeSpectrum(MomentProduct):
         self.download_to_buffer(self.core.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.v_bins) - 1):
-            dr = phys.radius(volume=self.v_bins[i + 1]) - phys.radius(volume=self.v_bins[i])
+            dr = self.formulae.trivia.radius(volume=self.v_bins[i + 1]) - \
+                 self.formulae.trivia.radius(volume=self.v_bins[i])
             vals[:, i] /= rhod * dr
 
         const.convert_to(vals, const.si.micrometre**-1 * const.si.milligram**-1)

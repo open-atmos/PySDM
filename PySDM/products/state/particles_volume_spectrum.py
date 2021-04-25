@@ -27,7 +27,7 @@ class ParticlesVolumeSpectrum(MomentProduct):
         self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
 
     def get(self, radius_bins_edges):
-        volume_bins_edges = phys.volume(radius_bins_edges)
+        volume_bins_edges = self.formulae.trivia.volume(radius_bins_edges)
         vals = np.empty(len(volume_bins_edges) - 1)
         for i in range(len(vals)):
             self.download_moment_to_buffer(attr='volume', rank=1,

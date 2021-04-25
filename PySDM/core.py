@@ -18,6 +18,7 @@ class Core:
         self.__n_sd = n_sd
 
         self.backend = backend
+        self.formulae = backend.formulae
         self.environment = None
         self.particles: (Particles, None) = None
         self.dynamics = {}

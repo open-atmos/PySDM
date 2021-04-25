@@ -6,7 +6,7 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.physics.formulae import volume
+from PySDM.physics import constants as const
 
 
 class Radius(DerivedAttribute):
@@ -17,5 +17,5 @@ class Radius(DerivedAttribute):
 
     def recalculate(self):
         self.data.idx = self.volume.data.idx
-        self.data.product(self.volume.get(), 1/volume(1))
+        self.data.product(self.volume.get(), 1/const.pi_4_3)
         self.data **= 1/3

@@ -3,7 +3,7 @@ Created at 11.05.2020
 """
 
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.physics import formulae as phys
+from PySDM.physics import constants as const
 import numpy as np
 
 
@@ -14,7 +14,6 @@ class CriticalVolume(DerivedAttribute):
         self.v_wet = builder.get_attribute('volume')
         self.environment = builder.core.environment
         self.particles = builder.core
-        self.formulae = builder.core.backend.formulae
         dependencies = [self.v_dry, self.v_wet, self.cell_id]
         super().__init__(builder, name='critical volume', dependencies=dependencies)
 
@@ -26,9 +25,9 @@ class CriticalVolume(DerivedAttribute):
         cell = self.cell_id.get().data
         for i in range(len(self.data)):  # TODO #347 move to backend
             sigma = self.formulae.surface_tension.sigma(T[cell[i]], v_wet[i], v_dry[i])
-            self.data.data[i] = phys.volume(self.formulae.hygroscopicity.r_cr(
+            self.data.data[i] = self.formulae.trivia.volume(self.formulae.hygroscopicity.r_cr(
                 kp=kappa,
-                rd3=v_dry[i] / (4/3*np.pi),
+                rd3=v_dry[i] / const.pi_4_3,
                 T=T[cell[i]],
                 sgm=sigma
             ))
