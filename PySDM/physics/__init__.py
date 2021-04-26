@@ -12,3 +12,4 @@ import PySDM.physics.surface_tension
 import PySDM.physics.diffusion_kinetics
 import PySDM.physics.ventilation
 import PySDM.physics.state_variable_triplet
+import PySDM.physics.trivia

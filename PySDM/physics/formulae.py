@@ -23,10 +23,8 @@ import numpy as np
 from PySDM.physics.constants import R_str
 from pystrict import strict
 from PySDM import physics
-from PySDM.physics.trivia import Trivia
 
 
-@lru_cache()
 def _boost(obj, fastmath):
     if not flag.DIMENSIONAL_ANALYSIS:
         for item in dir(obj):
@@ -69,7 +67,7 @@ class Formulae:
                  state_variable_triplet: str = 'RhodThdQv'
                  ):
         self.fastmath = fastmath
-        self.trivia = _boost(Trivia(), fastmath)
+        self.trivia = _magick('Trivia', physics.trivia, fastmath)
         self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
         self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
         self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
