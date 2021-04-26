@@ -4,7 +4,6 @@ import numpy as np
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
-from PySDM.physics.formulae import pH2H, H2pH
 from PySDM.physics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KINETIC_CONST, EQUILIBRIUM_CONST
@@ -92,6 +91,7 @@ class ChemistryMethods:
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
             n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
+            self.formulae.trivia.pH2H,
             k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
             dt, droplet_volume.data, pH.data, O3.data, H2O2.data, S_IV.data, dissociation_factor_SO2.data,
             # output
@@ -100,7 +100,7 @@ class ChemistryMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler,
+    def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
@@ -142,11 +142,10 @@ class ChemistryMethods:
             explicit_euler(moles_S_VI[i], a, dconc_dt_S_VI)
             explicit_euler(moles_H2O2[i], a, dconc_dt_H2O2)
 
-    @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
-    def chem_recalculate_drop_data(dissociation_factors, equilibrium_consts, cell_id, pH):
+    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
         for i in range(len(pH)):
-            H = pH2H(pH.data[i])
+            H = self.formulae.trivia.pH2H(pH.data[i])
             for key in DIFFUSION_CONST.keys():
                 dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
 
@@ -162,6 +161,8 @@ class ChemistryMethods:
     def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
                       H_min, H_max, ionic_strength_threshold, rtol):
         ChemistryMethods.equilibrate_H_body(within_tolerance=self.formulae.trivia.within_tolerance,
+                                            pH2H=self.formulae.trivia.pH2H,
+                                            H2pH=self.formulae.trivia.H2pH,
                                             cell_id=cell_id.data,
                                             N_mIII=N_mIII.data,
                                             N_V=N_V.data,
@@ -188,6 +189,7 @@ class ChemistryMethods:
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})  # TODO #440
     def equilibrate_H_body(within_tolerance,
+                           pH2H, H2pH,
                            cell_id,
                            N_mIII, N_V, C_IV, S_IV, S_VI,
                            K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3,

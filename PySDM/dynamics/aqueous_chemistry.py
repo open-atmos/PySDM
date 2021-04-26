@@ -1,11 +1,11 @@
 import numpy as np
 from PySDM.physics.aqueous_chemistry.support import EQUILIBRIUM_CONST, DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
     GASEOUS_COMPOUNDS, KINETIC_CONST, SPECIFIC_GRAVITY, M
-from PySDM.physics.formulae import mole_fraction_2_mixing_ratio, pH2H
+from PySDM.physics.formulae import mole_fraction_2_mixing_ratio
 
 
-default_H_max = pH2H(pH=-1.)
-default_H_min = pH2H(pH=14.)
+default_pH_min = -1.
+default_pH_max = 14.
 default_pH_rtol = 1e-6
 default_ionic_strength_threshold = 0.02 * M
 
@@ -13,8 +13,8 @@ default_ionic_strength_threshold = 0.02 * M
 class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type, n_substep,
                  ionic_strength_threshold=default_ionic_strength_threshold,
-                 pH_H_min=default_H_min,
-                 pH_H_max=default_H_max,
+                 pH_H_min=None,
+                 pH_H_max=None,
                  pH_rtol=default_pH_rtol):
         self.environment_mixing_ratios = {}
         for key, compound in GASEOUS_COMPOUNDS.items():
@@ -41,6 +41,12 @@ class AqueousChemistry:
 
     def register(self, builder):
         self.core = builder.core
+
+        if self.pH_H_max is None:
+            self.pH_H_max = self.core.formulae.trivia.pH2H(default_pH_min)
+        if self.pH_H_min is None:
+            self.pH_H_min = self.core.formulae.trivia.pH2H(default_pH_max)
+
         for key in AQUEOUS_COMPOUNDS.keys():
             builder.request_attribute("conc_" + key)
 

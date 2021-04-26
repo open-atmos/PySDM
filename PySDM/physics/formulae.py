@@ -113,11 +113,6 @@ def temperature_pressure_pv(rhod, thd, qv):
 
 
 @_formula
-def pH2H(pH):
-    return 10**(-pH) * 1e3
-
-
-@_formula
 def th_dry(th_std, qv):
     return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
 
@@ -219,11 +214,6 @@ def D(r, T):
 def K(r, T, p):
     Kn = lambdaK(T, p) / r
     return const.K0 * beta(Kn)
-
-
-@_formula
-def H2pH(H):
-    return -np.log10(H * 1e-3)
 
 
 @_formula

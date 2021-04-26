@@ -22,9 +22,11 @@ class Test_pH:
 
         # Act
         result = np.empty(1)
-        wt = Formulae().trivia.within_tolerance
+        formulae = Formulae()
         ChemistryMethods.equilibrate_H_body(
-            within_tolerance=wt,
+            within_tolerance=formulae.trivia.within_tolerance,
+            pH2H=formulae.trivia.pH2H,
+            H2pH=formulae.trivia.H2pH,
             N_mIII=np.zeros(1),
             N_V=np.zeros(1),
             C_IV=np.zeros(1),
@@ -42,8 +44,8 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=result,
             # params
-            H_min=aqueous_chemistry.default_H_min,
-            H_max=aqueous_chemistry.default_H_max,
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
             ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
             rtol=aqueous_chemistry.default_pH_rtol
         )
@@ -90,9 +92,11 @@ class Test_pH:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
 
         actual_pH = np.empty(1)
-        wt = Formulae().trivia.within_tolerance
+        formulae = Formulae()
         ChemistryMethods.equilibrate_H_body(
-            within_tolerance=wt,
+            within_tolerance=formulae.trivia.within_tolerance,
+            pH2H=formulae.trivia.pH2H,
+            H2pH=formulae.trivia.H2pH,
             N_mIII=np.full(1, init_conc['NH3'] * 1e3),
             N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
             C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
@@ -110,8 +114,8 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=actual_pH,
             # params
-            H_min=aqueous_chemistry.default_H_min,
-            H_max=aqueous_chemistry.default_H_max,
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
             ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
             rtol=aqueous_chemistry.default_pH_rtol
         )

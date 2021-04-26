@@ -1,5 +1,5 @@
 from PySDM.physics import constants as const
-from numpy import abs
+from numpy import abs, log10
 
 
 class Trivia:
@@ -22,3 +22,11 @@ class Trivia:
     @staticmethod
     def within_tolerance(error_estimate, value, rtol):
         return error_estimate < rtol * abs(value)
+
+    @staticmethod
+    def H2pH(H):
+        return -log10(H * 1e-3)
+
+    @staticmethod
+    def pH2H(pH):
+        return 10**(-pH) * 1e3
