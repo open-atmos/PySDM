@@ -13,3 +13,7 @@ class Trivia:
     @staticmethod
     def volume(radius):
         return const.pi_4_3 * radius**3
+
+    @staticmethod
+    def explicit_euler(y, dt, dy_dt):
+        y += dt * dy_dt

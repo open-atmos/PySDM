@@ -86,13 +86,13 @@ class ChemistryMethods:
         if system_type == 'closed':
             env_mixing_ratio -= delta_mr
 
-    @staticmethod
-    def oxidation(n_sd, cell_ids, do_chemistry_flag,
+    def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
-            n_sd, cell_ids.data, do_chemistry_flag.data, k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
+            n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
+            k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
             dt, droplet_volume.data, pH.data, O3.data, H2O2.data, S_IV.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
@@ -100,7 +100,7 @@ class ChemistryMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def oxidation_body(n_sd, cell_ids, do_chemistry_flag,
+    def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
@@ -137,10 +137,10 @@ class ChemistryMethods:
             ):
                 continue
 
-            moles_O3[i] += dconc_dt_O3 * a
-            moles_S_IV[i] += dconc_dt_S_IV * a
-            moles_S_VI[i] += dconc_dt_S_VI * a
-            moles_H2O2[i] += dconc_dt_H2O2 * a
+            explicit_euler(moles_O3[i], a, dconc_dt_O3)
+            explicit_euler(moles_S_IV[i], a, dconc_dt_S_IV)
+            explicit_euler(moles_S_VI[i], a, dconc_dt_S_VI)
+            explicit_euler(moles_H2O2[i], a, dconc_dt_H2O2)
 
     @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440

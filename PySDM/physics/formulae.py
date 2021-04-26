@@ -174,10 +174,6 @@ class Hydrostatic:
         return const.p1000 * np.power(arg, 1/kappa)
 
 
-def explicit_euler(y, dt, dy_dt):
-    y += dt * dy_dt
-
-
 @_formula
 def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
     return specific_gravity * mole_fraction / (1 - mole_fraction)
