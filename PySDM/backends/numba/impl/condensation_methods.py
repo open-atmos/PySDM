@@ -56,7 +56,7 @@ class CondensationMethods:
                     break
                 n_substeps *= multiplier
                 if n_substeps > n_substeps_max:
-                    print("n_substeps > n_substeps_max (", n_substeps, ") - reached dt_range[0] limit")
+                    # print("n_substeps > n_substeps_max (", n_substeps, ") - reached dt_range[0] limit")
                     break
             return np.minimum(n_substeps_max, n_substeps), success
 

@@ -59,7 +59,7 @@ class Formulae:
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
                  latent_heat: str = 'Kirchhoff',
-                 hygroscopicity: str = 'KappaKoehler',
+                 hygroscopicity: str = 'KappaKoehlerLeadingTerms',
                  drop_growth: str = 'MaxwellMason',
                  surface_tension: str = 'Constant',
                  diffusion_kinetics: str = 'FuchsSutugin',
