@@ -5,7 +5,6 @@
 import numba
 from sys import float_info
 from PySDM.backends.numba.conf import JIT_FLAGS
-from PySDM.physics.formulae import within_tolerance
 from numpy import nan
 
 float_info_epsilon = float_info.epsilon
@@ -101,12 +100,12 @@ def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
 
 
 @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-def tol(a, b, rtol):
+def tol(a, b, rtol, within_tolerance):
     return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)
 
 
 @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
+def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
     count = max_iter
     mu = 0.5
     a = ax
@@ -117,7 +116,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
         print("TOMS748 problem: not a < b")
         return nan, -1
 
-    if tol(a, b, rtol) or fa == 0 or fb == 0:
+    if tol(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
         max_iter = 0
         if fa == 0:
             b = a
@@ -136,14 +135,14 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
         count -= 1
 
-        if count > 0 and fa != 0 and not tol(a, b, rtol):
+        if count > 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
             c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
             e = d
             fe = fd
             a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
             count -= 1
 
-    while count > 0 and fa != 0 and not tol(a, b, rtol):
+    while count > 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
         a0 = a
         b0 = b
         min_diff = float_info_min * 32
@@ -162,7 +161,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol):
+        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
             count -= 1
             break
         prof = (
@@ -178,7 +177,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
         else:
             c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol):
+        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
             count -= 1
             break
         if abs(fa) < abs(fb):
@@ -193,7 +192,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol):
+        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
             count -= 1
             break
         if (b - a) < mu * (b0 - a0):

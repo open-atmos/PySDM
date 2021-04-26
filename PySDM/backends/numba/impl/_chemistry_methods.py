@@ -159,11 +159,15 @@ class ChemistryMethods:
             for key in kinetic_consts.keys():
                 kinetic_consts[key].data[i] = KINETIC_CONST[key].at(T.data[i])
 
-    @staticmethod
-    def equilibrate_H(equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
+    def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
                       H_min, H_max, ionic_strength_threshold, rtol):
-        ChemistryMethods.equilibrate_H_body(cell_id.data,
-                                            N_mIII.data, N_V.data, C_IV.data, S_IV.data, S_VI.data,
+        ChemistryMethods.equilibrate_H_body(within_tolerance=self.formulae.trivia.within_tolerance,
+                                            cell_id=cell_id.data,
+                                            N_mIII=N_mIII.data,
+                                            N_V=N_V.data,
+                                            C_IV=C_IV.data,
+                                            S_IV=S_IV.data,
+                                            S_VI=S_VI.data,
                                             K_NH3=equilibrium_consts["K_NH3"].data,
                                             K_SO2=equilibrium_consts["K_SO2"].data,
                                             K_HSO3=equilibrium_consts["K_HSO3"].data,
@@ -183,7 +187,9 @@ class ChemistryMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})  # TODO #440
-    def equilibrate_H_body(cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+    def equilibrate_H_body(within_tolerance,
+                           cell_id,
+                           N_mIII, N_V, C_IV, S_IV, S_VI,
                            K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3,
                            do_chemistry_flag, pH,
                            # params
@@ -222,7 +228,8 @@ class ChemistryMethods:
                 max_iter = _max_iter_default
             else:
                 max_iter = _max_iter_quite_close
-            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter)
+            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter,
+                                            within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
             flag = calc_ionic_strength(H, *args) <= ionic_strength_threshold
             pH[i] = H2pH(H)

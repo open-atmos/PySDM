@@ -26,6 +26,7 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
     phys_volume = formulae.trivia.volume
+    within_tolerance = formulae.trivia.within_tolerance
 
     jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
 
@@ -56,7 +57,8 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
             fa = minfun(a, *args)
             fb = minfun(b, *args)
             max_iters = 64
-            r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters)
+            r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
+                                                 within_tolerance=within_tolerance)
             assert iters_done != max_iters
         return r_wet
 

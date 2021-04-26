@@ -222,11 +222,6 @@ def K(r, T, p):
 
 
 @_formula
-def within_tolerance(error_estimate, value, rtol):
-    return error_estimate < rtol * np.abs(value)
-
-
-@_formula
 def H2pH(H):
     return -np.log10(H * 1e-3)
 
