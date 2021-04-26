@@ -25,13 +25,16 @@ class PhysicsMethods:
 
     def __init__(self):
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
-        temperature_pressure_pv = self.formulae.state_variable_triplet.temperature_pressure_pv
+        phys_T = self.formulae.state_variable_triplet.T
+        phys_p = self.formulae.state_variable_triplet.p
+        phys_pv = self.formulae.state_variable_triplet.pv
 
         @numba.njit(**conf.JIT_FLAGS)
         def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):
             for i in prange(T.shape[0]):
-                T[i], p[i], pv = temperature_pressure_pv(rhod[i], thd[i], qv[i])
-                RH[i] = pv / pvs_C(T[i] - const.T0)
+                T[i] = phys_T(rhod[i], thd[i])
+                p[i] = phys_p(rhod[i], T[i], qv[i])
+                RH[i] = phys_pv(p[i], qv[i]) / pvs_C(T[i] - const.T0)
         self.temperature_pressure_RH_body = temperature_pressure_RH_body
 
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):

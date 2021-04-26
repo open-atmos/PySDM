@@ -42,6 +42,8 @@ g_std = sci.g * si.metre / si.second ** 2
 
 c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 
+Rd_over_c_pd = Rd / c_pd
+
 ARM_C1 = 6.1094 * si.hectopascal
 ARM_C2 = 17.625 * si.dimensionless
 ARM_C3 = 243.04 * si.kelvin

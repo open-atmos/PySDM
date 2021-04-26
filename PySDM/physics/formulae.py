@@ -92,11 +92,6 @@ def R(q):
 
 
 @_formula
-def c_p(q):
-    return _mix(q, const.c_pd, const.c_pv)
-
-
-@_formula
 def dthd_dt(rhod, thd, T, dqv_dt, lv):
     return - lv * dqv_dt / const.c_pd / T * thd * rhod
 
@@ -147,7 +142,7 @@ class Hydrostatic:
     def drho_dz(g, p, T, qv, lv, dql_dz=0):
         rho = MoistAir.rho_of_p_qv_T(p, qv, T)
         Rq = R(qv)
-        cp = c_p(qv)
+        cp = _mix(qv, const.c_pd, const.c_pv)
         return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
 
     @staticmethod
