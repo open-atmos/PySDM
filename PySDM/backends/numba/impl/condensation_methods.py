@@ -4,7 +4,7 @@ Created at 11.2019
 
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import temperature_pressure_pv, dthd_dt, D as phys_D, K as phys_K
+from PySDM.physics.formulae import dthd_dt, D as phys_D, K as phys_K
 import PySDM.physics.formulae as phys
 from PySDM.backends.numba.toms748 import toms748_solve
 import numba
@@ -81,7 +81,7 @@ class CondensationMethods:
         return step
 
     @staticmethod
-    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new):
+    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, temperature_pressure_pv):
         @numba.njit(**jit_flags)
         def step_impl(v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
@@ -221,6 +221,7 @@ class CondensationMethods:
             phys_RH_eq=self.formulae.hygroscopicity.RH_eq,
             phys_sigma=self.formulae.surface_tension.sigma,
             radius=self.formulae.trivia.radius,
+            temperature_pressure_pv=self.formulae.state_variable_triplet.temperature_pressure_pv,
             within_tolerance=self.formulae.trivia.within_tolerance,
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
@@ -233,6 +234,7 @@ class CondensationMethods:
     @staticmethod
     @lru_cache()
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+                                      temperature_pressure_pv,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
                                       fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
@@ -240,7 +242,8 @@ class CondensationMethods:
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq,
                                                                      phys_sigma, radius, within_tolerance, max_iters, RH_rtol)
-        step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new)
+        step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
+                                                       temperature_pressure_pv)
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
         adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier,
                                                                  within_tolerance)

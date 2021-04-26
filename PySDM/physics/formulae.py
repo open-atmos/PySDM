@@ -102,17 +102,6 @@ def dthd_dt(rhod, thd, T, dqv_dt, lv):
 
 
 @_formula
-def temperature_pressure_pv(rhod, thd, qv):
-    # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-    exponent = const.Rd / const.c_pd
-    pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
-    T = thd * (pd / const.p1000) ** exponent
-    R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-    p = rhod * (1 + qv) * R * T
-    return T, p, p - pd
-
-
-@_formula
 def th_dry(th_std, qv):
     return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
 

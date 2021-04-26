@@ -5,7 +5,6 @@ Created at 11.2019
 import numba
 from numba import prange
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import temperature_pressure_pv
 from PySDM.physics import constants as const
 
 
@@ -26,6 +25,7 @@ class PhysicsMethods:
 
     def __init__(self):
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
+        temperature_pressure_pv = self.formulae.state_variable_triplet.temperature_pressure_pv
 
         @numba.njit(**conf.JIT_FLAGS)
         def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):

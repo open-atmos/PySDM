@@ -69,6 +69,7 @@ def _make_solve(formulae):
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
     phys_radius = formulae.trivia.radius
+    temperature_pressure_pv = formulae.state_variable_triplet.temperature_pressure_pv
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
@@ -92,7 +93,7 @@ def _make_solve(formulae):
         x = y[idx_x:]
 
         qv = qt + dqv_dt * t - _ql(n, x, m_d_mean)
-        T, p, pv = phys.temperature_pressure_pv(rhod_mean, thd, qv)
+        T, p, pv = temperature_pressure_pv(rhod_mean, thd, qv)
         pvs = pvs_C(T - const.T0)
         RH = pv / pvs
 
