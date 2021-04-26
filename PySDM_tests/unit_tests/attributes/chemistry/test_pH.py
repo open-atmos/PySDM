@@ -1,5 +1,6 @@
 from PySDM.physics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
+from PySDM.physics.formulae import Formulae
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
 from PySDM.dynamics import aqueous_chemistry
 from chempy import Equilibrium
@@ -21,7 +22,9 @@ class Test_pH:
 
         # Act
         result = np.empty(1)
+        wt = Formulae().trivia.within_tolerance
         ChemistryMethods.equilibrate_H_body(
+            within_tolerance=wt,
             N_mIII=np.zeros(1),
             N_V=np.zeros(1),
             C_IV=np.zeros(1),
@@ -87,7 +90,9 @@ class Test_pH:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
 
         actual_pH = np.empty(1)
+        wt = Formulae().trivia.within_tolerance
         ChemistryMethods.equilibrate_H_body(
+            within_tolerance=wt,
             N_mIII=np.full(1, init_conc['NH3'] * 1e3),
             N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
             C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
