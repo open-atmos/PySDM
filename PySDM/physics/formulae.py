@@ -21,7 +21,6 @@ else:
 from PySDM.physics import constants as const
 import numpy as np
 from PySDM.physics.constants import R_str
-from pystrict import strict
 from PySDM import physics
 
 
@@ -52,7 +51,6 @@ def _magick(value, module, fastmath):
     return _boost(_pick(value, _choices(module)), fastmath)
 
 
-@strict
 class Formulae:
     def __init__(self, *,
                  fastmath: bool = True,
