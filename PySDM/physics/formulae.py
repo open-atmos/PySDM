@@ -19,7 +19,6 @@ class Formulae:
             raise ValueError(f"Unknown {condensation_coord} coordinates. Please chose one from: ['volume', 'volume logarithm']")
 
 
-@strict
 class VolumeLogarithmCoordinate:
     @staticmethod
     @formula
