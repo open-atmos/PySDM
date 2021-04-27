@@ -1,6 +1,7 @@
 # test-time requirements
 matplotlib>=3.2.2
 ghapi
+pystrict
 pytest
 exdown>=0.8.8
 
