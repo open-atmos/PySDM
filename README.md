@@ -427,6 +427,7 @@ for i, (key, product) in enumerate(core.products.items()):
 
 ```Julia
 using PyCall
+using Plots
 PySDM = pyimport("PySDM")
 PySDM_backends = pyimport("PySDM.backends")
 PySDM_physics_formulae = pyimport("PySDM.physics.formulae")
@@ -491,7 +492,6 @@ for step = 2:steps+1
     output["z"][step]=environment.__getitem__("z")[1]
 end 
 
-using Plots
 plots = []
 for (_, product) in core.products
     append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.description)])
@@ -500,7 +500,7 @@ plot(plots..., layout=(1,3))
 savefig("plot.svg")
 ```
 </details>
-<detail>
+<details>
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
@@ -514,7 +514,6 @@ PySDM_physics = py.importlib.import_module('PySDM.physics');
 PySDM_dynamics = py.importlib.import_module('PySDM.dynamics');
 PySDM_backends = py.importlib.import_module('PySDM.backends');
 
-% parameters
 si = PySDM_physics.constants.si;
 
 n_sd = 100;
@@ -537,7 +536,6 @@ radius_range = py.list({.5 * si.um, 25 * si.um});
 steps = 100;
 substeps = 10;
 
-% PySDM components
 builder = PySDM.Builder(pyargs( ...
     'backend', PySDM_backends.CPU, ...
     'n_sd', int32(n_sd) ...
@@ -572,7 +570,6 @@ core = builder.build(pyargs( ...
     'products', products ...
 )); 
 
-% Matlab table for output storage 
 output_size = [steps+1, 1 + length(py.list(core.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
 output_names = ['z', cellfun(@string, cell(py.list(core.products.keys())))];
@@ -590,7 +587,6 @@ get = py.getattr(environment, '__getitem__');
 zget = py.getattr(get('z'), '__getitem__');
 output{1, 'z'} = zget(int32(0));
 
-% simulation
 for i=2:steps+1
     core.run(pyargs('steps', int32(substeps)));
     for pykey = py.list(keys(core.products))
@@ -601,7 +597,6 @@ for i=2:steps+1
     output{i, 'z'} = zget(int32(0));
 end
 
-% plotting
 i=1;
 for pykey = py.list(keys(core.products))
     product = core.products{pykey{1}};
@@ -613,7 +608,7 @@ for pykey = py.list(keys(core.products))
     i=i+1;
 end
 ```
-</detail>
+</details>
 ## Package structure and API
 
 - [backends](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/backends):
