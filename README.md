@@ -361,7 +361,7 @@ The resultant plot looks as follows:
 ```Python
 import numpy as np
 from matplotlib import pyplot
-from PySDM.physics import si
+from PySDM.physics import si, Formulae
 from PySDM.initialisation import spectral_sampling
 from PySDM.initialisation import multiplicities
 from PySDM.initialisation.spectra import Lognormal
@@ -370,11 +370,11 @@ from PySDM import Builder
 from PySDM.dynamics import AmbientThermodynamics
 from PySDM.dynamics import Condensation
 from PySDM.environments import Parcel
-from PySDM.physics import formulae as phys
 from PySDM.initialisation.r_wet_init import r_wet_init
 from PySDM.products import ParticleMeanRadius, RelativeHumidity, CloudDropletConcentration
 
-builder = Builder(backend=CPU, n_sd=1)
+formulae = Formulae()
+builder = Builder(backend=CPU, n_sd=1, formulae=formulae)
 environment = Parcel(
     dt=1 * si.s,
     mass_of_dry_air=1 * si.kg,
@@ -398,10 +398,10 @@ r_dry, specific_concentration = spectral_sampling.Logarithmic(
             ),
             size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
         ).sample(n_sd=builder.core.n_sd)
-attributes['dry volume'] = phys.volume(radius=r_dry)
+attributes['dry volume'] = formulae.trivia.volume(radius=r_dry)
 attributes['n'] = multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
 r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), kappa)
-attributes['volume'] = phys.volume(radius=r_wet)
+attributes['volume'] = formulae.trivia.volume(radius=r_wet)
 
 products = [ParticleMeanRadius(), RelativeHumidity(), CloudDropletConcentration(radius_range=(.5 * si.um, 25 * si.um))]
 
@@ -430,14 +430,15 @@ using PyCall
 using Plots
 PySDM = pyimport("PySDM")
 PySDM_backends = pyimport("PySDM.backends")
-PySDM_physics_formulae = pyimport("PySDM.physics.formulae")
+PySDM_physics = pyimport("PySDM.physics")
 PySDM_environments = pyimport("PySDM.environments")
 PySDM_dynamics = pyimport("PySDM.dynamics")
 PySDM_initialisation = pyimport("PySDM.initialisation")
 PySDM_initialisation_spectra = pyimport("PySDM.initialisation.spectra")
 PySDM_products = pyimport("PySDM.products")
 
-builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=1)
+formulae = PySDM_physics.Formulae()
+builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=1, formulae=formulae)
 si = PySDM.physics.si
 environment = PySDM_environments.Parcel(
     dt=1 * si.s,
@@ -463,10 +464,10 @@ r_dry, specific_concentration = PySDM_initialisation.spectral_sampling.Logarithm
     size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
 ).sample(n_sd=builder.core.n_sd)
   
-attributes["dry volume"] = PySDM_physics_formulae.volume(radius=r_dry)
+attributes["dry volume"] = formulae.trivia.volume(radius=r_dry)
 attributes["n"] = PySDM_initialisation.multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
 r_wet = PySDM_initialisation.r_wet_init(r_dry, environment, zeros(Int, size(attributes["n"])), kappa)
-attributes["volume"] = PySDM_physics_formulae.volume(radius=r_wet) 
+attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
 
 products = [
   PySDM_products.ParticleMeanRadius(), 
@@ -536,9 +537,11 @@ radius_range = py.list({.5 * si.um, 25 * si.um});
 steps = 100;
 substeps = 10;
 
+formulae = PySDM_physics.Formulae();
 builder = PySDM.Builder(pyargs( ...
     'backend', PySDM_backends.CPU, ...
-    'n_sd', int32(n_sd) ...
+    'n_sd', int32(n_sd), ...
+    'formulae', formulae ...
 ));
 builder.set_environment(environment);
 builder.add_dynamic(PySDM_dynamics.AmbientThermodynamics())
@@ -554,9 +557,9 @@ cell_id = py.numpy.zeros(pyargs('shape', int32(n_sd), 'dtype', py.numpy.int32));
 r_wet = PySDM_initialisation.r_wet_init(r_dry, environment, cell_id, kappa);
 
 attributes = py.dict(pyargs( ...
-    'dry volume', PySDM_physics.formulae.volume(r_dry), ...
+    'dry volume', formulae.trivia.volume(r_dry), ...
     'n', PySDM_initialisation.multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air), ...
-    'volume', PySDM_physics.formulae.volume(r_wet) ...
+    'volume', formulae.trivia.volume(r_wet) ...
 ));
 
 products = py.list({ ...
