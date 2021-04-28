@@ -359,8 +359,262 @@ The resultant plot looks as follows:
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
+<details open>
+<summary>Python</summary>
 
+```Python
+import numpy as np
+from matplotlib import pyplot
+from PySDM.physics import si
+from PySDM.initialisation import spectral_sampling
+from PySDM.initialisation import multiplicities
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.backends import CPU
+from PySDM import Builder
+from PySDM.dynamics import AmbientThermodynamics
+from PySDM.dynamics import Condensation
+from PySDM.environments import Parcel
+from PySDM.physics import formulae as phys
+from PySDM.initialisation.r_wet_init import r_wet_init
+from PySDM.products import ParticleMeanRadius, RelativeHumidity, CloudDropletConcentration
 
+builder = Builder(backend=CPU, n_sd=1)
+environment = Parcel(
+    dt=1 * si.s,
+    mass_of_dry_air=1 * si.kg,
+    p0=1000 * si.hPa,
+    q0=20 * si.g / si.kg,
+    T0=300 * si.K,
+    w= 1 * si.m / si.s
+)
+builder.set_environment(environment)
+
+kappa = 1 * si.dimensionless
+builder.add_dynamic(AmbientThermodynamics())
+builder.add_dynamic(Condensation(kappa=kappa))
+
+attributes = {}
+r_dry, specific_concentration = spectral_sampling.Logarithmic(
+            spectrum=Lognormal(
+                norm_factor=1000 / si.milligram,
+                m_mode=50 * si.nanometre,
+                s_geom=1.4 * si.dimensionless
+            ),
+            size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
+        ).sample(n_sd=builder.core.n_sd)
+attributes['dry volume'] = phys.volume(radius=r_dry)
+attributes['n'] = multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
+r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), kappa)
+attributes['volume'] = phys.volume(radius=r_wet)
+
+products = [ParticleMeanRadius(), RelativeHumidity(), CloudDropletConcentration(radius_range=(.5 * si.um, 25 * si.um))]
+
+core = builder.build(attributes, products)
+output = {product.name: [product.get()[0]] for product in core.products.values()}
+output['z'] = [environment['z'][0]]
+
+for step in range(100):
+    core.run(steps=10)
+    for product in core.products.values():
+        output[product.name].append(product.get()[0])
+    output['z'].append(environment['z'][0])
+
+fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
+for i, (key, product) in enumerate(core.products.items()):
+    axs[i].step(output[key], output['z'])
+    axs[i].set_title(product.description)
+    axs[i].set_xlabel(product.unit)
+```
+</details>
+<details>
+<summary>Julia (click to expand)</summary>
+using PyCall
+PySDM = pyimport("PySDM")
+PySDM_backends = pyimport("PySDM.backends")
+PySDM_physics_formulae = pyimport("PySDM.physics.formulae")
+PySDM_environments = pyimport("PySDM.environments")
+PySDM_dynamics = pyimport("PySDM.dynamics")
+PySDM_initialisation = pyimport("PySDM.initialisation")
+PySDM_initialisation_spectra = pyimport("PySDM.initialisation.spectra")
+PySDM_products = pyimport("PySDM.products")
+
+builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=1)
+si = PySDM.physics.si
+environment = PySDM_environments.Parcel(
+    dt=1 * si.s,
+    mass_of_dry_air=1 * si.kg,
+    p0=1000 * si.hPa,
+    q0=20 * si.g / si.kg,
+    T0=300 * si.K,
+    w= 1 * si.m / si.s
+)
+builder.set_environment(environment)
+
+kappa = 1 * si.dimensionless
+builder.add_dynamic(PySDM_dynamics.AmbientThermodynamics())
+builder.add_dynamic(PySDM_dynamics.Condensation(kappa=kappa))
+        
+attributes = Dict()
+r_dry, specific_concentration = PySDM_initialisation.spectral_sampling.Logarithmic(
+    spectrum=PySDM_initialisation_spectra.Lognormal(
+        norm_factor=1000 / si.milligram,
+        m_mode=50 * si.nanometre,
+        s_geom=1.4 * si.dimensionless
+    ),
+    size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
+).sample(n_sd=builder.core.n_sd)
+  
+attributes["dry volume"] = PySDM_physics_formulae.volume(radius=r_dry)
+attributes["n"] = PySDM_initialisation.multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
+r_wet = PySDM_initialisation.r_wet_init(r_dry, environment, zeros(Int, size(attributes["n"])), kappa)
+attributes["volume"] = PySDM_physics_formulae.volume(radius=r_wet) 
+
+products = [
+  PySDM_products.ParticleMeanRadius(), 
+  PySDM_products.RelativeHumidity(),
+  PySDM_products.CloudConcentration(radius_range=(.5 * si.um, 25 * si.um))
+]
+
+core = builder.build(attributes, products)
+    
+steps = 100
+output = Dict("z" => Array{Float32}(undef, steps+1))
+for (_, product) in core.products
+    output[product.name] = Array{Float32}(undef, steps+1)
+    output[product.name][1] = product.get()[1]
+end 
+output["z"][1] = environment.__getitem__("z")[1]
+    
+for step = 2:steps+1
+    core.run(steps=10)
+    for (_, product) in core.products
+        output[product.name][step] = product.get()[1]
+    end 
+    output["z"][step]=environment.__getitem__("z")[1]
+end 
+
+using Plots
+plots = []
+for (_, product) in core.products
+    append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.description)])
+end
+plot(plots..., layout=(1,3))
+savefig("plot.svg")
+</details>
+<detail>
+<summary>Matlab (click to expand)</summary>
+
+```Matlab
+PySDM = py.importlib.import_module('PySDM');
+PySDM_environments = py.importlib.import_module('PySDM.environments');
+PySDM_products = py.importlib.import_module('PySDM.products');
+PySDM_initialisation = py.importlib.import_module('PySDM.initialisation');
+PySDM_initialisation_spectra = py.importlib.import_module('PySDM.initialisation.spectra');
+PySDM_initialisation_spectral_sampling = py.importlib.import_module('PySDM.initialisation.spectral_sampling');
+PySDM_physics = py.importlib.import_module('PySDM.physics');
+PySDM_dynamics = py.importlib.import_module('PySDM.dynamics');
+PySDM_backends = py.importlib.import_module('PySDM.backends');
+
+% parameters
+si = PySDM_physics.constants.si;
+
+n_sd = 100;
+kappa = 1;
+spectrum = PySDM_initialisation_spectra.Lognormal(pyargs(...
+    'norm_factor', 1000 / si.milligram, ...
+    'm_mode', 50 * si.nanometre, ...
+    's_geom', 1.4 * si.dimensionless ...
+));
+environment = PySDM_environments.Parcel(pyargs( ...
+    'dt', 1 * si.s, ...
+    'mass_of_dry_air', 1 * si.kg, ...
+    'p0', 1000 * si.hPa, ...
+    'q0', 20 * si.g / si.kg, ...
+    'T0', 300 * si.K, ...
+    'w', 1 * si.m / si.s ...
+));
+size_range = py.list({10.633 * si.nanometre, 513.06 * si.nanometre});
+radius_range = py.list({.5 * si.um, 25 * si.um});
+steps = 100;
+substeps = 10;
+
+% PySDM components
+builder = PySDM.Builder(pyargs( ...
+    'backend', PySDM_backends.CPU, ...
+    'n_sd', int32(n_sd) ...
+));
+builder.set_environment(environment);
+builder.add_dynamic(PySDM_dynamics.AmbientThermodynamics())
+builder.add_dynamic(PySDM_dynamics.Condensation(pyargs('kappa', kappa)))
+
+tmp = PySDM_initialisation_spectral_sampling.Logarithmic(pyargs(...
+    'spectrum', spectrum,...
+    'size_range', size_range...
+)).sample(pyargs('n_sd', builder.core.n_sd));
+r_dry = tmp{1};
+specific_concentration = tmp{2};
+cell_id = py.numpy.zeros(pyargs('shape', int32(n_sd), 'dtype', py.numpy.int32));
+r_wet = PySDM_initialisation.r_wet_init(r_dry, environment, cell_id, kappa);
+
+attributes = py.dict(pyargs( ...
+    'dry volume', PySDM_physics.formulae.volume(r_dry), ...
+    'n', PySDM_initialisation.multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air), ...
+    'volume', PySDM_physics.formulae.volume(r_wet) ...
+));
+
+products = py.list({ ...
+    PySDM_products.ParticleMeanRadius(), ...
+    PySDM_products.RelativeHumidity(), ...
+    PySDM_products.CloudConcentration(pyargs('radius_range', radius_range)) ...
+});
+
+core = builder.build(pyargs( ...
+    'attributes', attributes, ...
+    'products', products ...
+)); 
+
+% Matlab table for output storage 
+output_size = [steps+1, 1 + length(py.list(core.products.keys()))];
+output_types = repelem({'double'}, output_size(2));
+output_names = ['z', cellfun(@string, cell(py.list(core.products.keys())))];
+output = table(...
+    'Size', output_size, ...
+    'VariableTypes', output_types, ...
+    'VariableNames', output_names ...
+);
+for pykey = py.list(keys(core.products))
+    get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
+    key = string(pykey{1});
+    output{1, key} = get(int32(0));
+end
+get = py.getattr(environment, '__getitem__');
+zget = py.getattr(get('z'), '__getitem__');
+output{1, 'z'} = zget(int32(0));
+
+% simulation
+for i=2:steps+1
+    core.run(pyargs('steps', int32(substeps)));
+    for pykey = py.list(keys(core.products))
+        get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
+        key = string(pykey{1});
+        output{i, key} = get(int32(0));
+    end
+    output{i, 'z'} = zget(int32(0));
+end
+
+% plotting
+i=1;
+for pykey = py.list(keys(core.products))
+    product = core.products{pykey{1}};
+    subplot(1, width(output)-1, i);
+    plot(output{:, string(pykey{1})}, output.z);
+    title(string(product.description));
+    xlabel(string(product.unit));
+    ylabel('z [m]');
+    i=i+1;
+end
+```
+</detail>
 ## Package structure and API
 
 - [backends](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/backends):
