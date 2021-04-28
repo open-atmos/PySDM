@@ -612,6 +612,7 @@ for pykey = py.list(keys(core.products))
 end
 ```
 </details>
+
 ## Package structure and API
 
 - [backends](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/backends):
@@ -641,7 +642,7 @@ end
     - [dimensional_analysis](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/dimensional_analysis.py): 
       tool for enabling dimensional analysis of the code for unit tests (based on [pint](https://pint.readthedocs.io/))
     - [formulae](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/physics/formulae.py): 
-      physical formulae boosted imported from the Numba backend (e.g., for initialisation)
+      physical formulae boosted with Numba (e.g., for initialisation)
 - [environments](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/environments):
     - [Box](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/box.py): 
       bare zero-dimensional framework 
@@ -650,17 +651,18 @@ end
     - [Kinematic1D](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/kinematic_1d.py): 
       single-column time-varying-updraft framework with moisture advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
     - [Kinematic2D](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/environments/kinematic_2d.py): 
-      two-dimensional prescribed-flow-coupled framework with Eulerian advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
+      two-dimensional single-eddy prescribed-flow framework with moisture and heat advection handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 - [dynamics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics):
-    - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence.py)
+    - [Coalescence](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/coalescence.py):
       SDM implementation with adaptive timestepping
-    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation.py)
+    - [Condensation](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/dynamics/condensation.py):
       bespoke solver with implicit-in-particle-size integration and adaptive timestepping (Numba only as of now, soon on all backends)
     - [AqueousChemistry](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/aqueous_chemistry.py):
       aqueous-phase chemistry (incl. SO2 oxidation)
     - [Displacement](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/displacement.py):
-      includes advection with the flow & sedimentation)
-    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py)
+      includes advection with the flow & sedimentation
+    - [EulerianAdvection](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/dynamics/eulerian_advection.py):
+      wrapper class for triggering integration in the Eulerian advection solver underlying used by the selected environment
 - Attributes (selected):
     - [numerics](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/PySDM/attributes/numerics):
         - [position_in_cell](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/attributes/numerics/position_in_cell.py)
