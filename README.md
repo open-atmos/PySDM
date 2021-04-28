@@ -424,6 +424,8 @@ for i, (key, product) in enumerate(core.products.items()):
 </details>
 <details>
 <summary>Julia (click to expand)</summary>
+
+```Julia
 using PyCall
 PySDM = pyimport("PySDM")
 PySDM_backends = pyimport("PySDM.backends")
@@ -496,6 +498,7 @@ for (_, product) in core.products
 end
 plot(plots..., layout=(1,3))
 savefig("plot.svg")
+```
 </details>
 <detail>
 <summary>Matlab (click to expand)</summary>
