@@ -219,6 +219,7 @@ particles = builder.build(attributes, products)
 </details>
 <details>
 <summary>Julia (click to expand)</summary>
+
 ```Julia
 PySDM_backends = pyimport("PySDM.backends")
 PySDM_physics_coalescence_kernels = pyimport("PySDM.physics.coalescence_kernels")
@@ -234,6 +235,7 @@ products = [PySDM_products.ParticlesVolumeSpectrum()]
 core = builder.build(attributes, products)
 ```
 </details>
+<details>
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
@@ -354,6 +356,10 @@ legend()
 The resultant plot looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.svg)
+
+## Hello-world condensation example in Python, Julia and Matlab
+
+
 
 ## Package structure and API
 
