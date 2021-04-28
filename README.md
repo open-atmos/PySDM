@@ -124,14 +124,18 @@ jupyter-notebook
 
 ![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
 
-## Hello-world example
+## Hello-world coalescence example in Python, Julia and Matlab
 
 In order to depict the PySDM API with a practical example, the following
-  listings provide a sample code roughly reproducing the 
-  Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441).
+  listings provide sample code roughly reproducing the 
+  Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
+  using PySDM from Python, Julia and Matlab (click ...).
 It is a coalescence-only set-up in which the initial particle size 
   spectrum is exponential and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
+<details open>
+<summary>Python</summary>
+
 ```Python
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
@@ -142,11 +146,61 @@ initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
 attributes = {}
 attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
+</details>
+<details>
+<summary>Julia (click to expand)</summary>
+
+```Julia
+# using Pkg
+# Pkg.add("Conda")
+# using Conda
+# Conda.pip_interop(true)
+# Conda.pip("install --pre", "git+https://github.com/atmos-cloud-sim-uj/PySDM.git")
+# Pkg.add("PyCall")
+
+using PyCall
+PySDM = pyimport("PySDM")
+PySDM_initialisation_spectra = pyimport("PySDM.initialisation.spectra")
+PySDM_initialisation_spectral_sampling = pyimport("PySDM.initialisation.spectral_sampling")
+si = PySDM.physics.si
+
+n_sd = 2^15
+initial_spectrum = PySDM_initialisation_spectra.Exponential(
+    norm_factor=8.39e12, scale=1.19e5 * si.um^3
+)
+attributes = environment.init_attributes(
+  spectral_discretisation=PySDM_initialisation_spectral_sampling.ConstantMultiplicity(spectrum=initial_spectrum)
+)
+```
+</details>
+<details>
+<summary>Matlab (click to expand)</summary>
+
+```Matlab
+PySDM = py.importlib.import_module('PySDM');
+PySDM_initialisation_spectra = py.importlib.import_module('PySDM.initialisation.spectra');
+PySDM_initialisation_spectral_sampling = py.importlib.import_module('PySDM.initialisation.spectral_sampling');
+si = PySDM_physics.constants.si;
+
+n_sd = 2 ^ 15;
+initial_spectrum = PySDM_initialisation_spectra.Exponential(pyargs(...
+    'norm_factor', 8.39e12, ...
+    'scale', 1.19e5 * si.um ^ 3 ...
+));
+attributes = environment.init_attributes(pyargs( ...
+    'spectral_discretisation', ...
+    PySDM_initialisation_spectral_sampling.ConstantMultiplicity(initial_spectrum)...
+));
+```
+</details>
 
 The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/core.py) 
   class which instances are used to manage the system state and control the simulation.
 Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
+<details open>
+<summary>Python</summary>
+
 <!--exdown-cont-->
 ```Python
 from PySDM import Builder
@@ -162,6 +216,49 @@ builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum()]
 particles = builder.build(attributes, products)
 ```
+</details>
+<details>
+<summary>Julia (click to expand)</summary>
+```Julia
+PySDM_backends = pyimport("PySDM.backends")
+PySDM_physics_coalescence_kernels = pyimport("PySDM.physics.coalescence_kernels")
+PySDM_environments = pyimport("PySDM.environments")
+PySDM_dynamics = pyimport("PySDM.dynamics")
+PySDM_products = pyimport("PySDM.products")
+
+builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=n_sd)
+environment = PySDM_environments.Box(dt=1 * si.s, dv=1e6 * si.m^3)
+builder.set_environment(environment)
+builder.add_dynamic(PySDM_dynamics.Coalescence(kernel=PySDM_physics_coalescence_kernels.Golovin(b=1.5e3 / si.s)))
+products = [PySDM_products.ParticlesVolumeSpectrum()] 
+core = builder.build(attributes, products)
+```
+</details>
+<summary>Matlab (click to expand)</summary>
+
+```Matlab
+PySDM_backends = py.importlib.import_module('PySDM.backends');
+PySDM_physics_coalescence_kernels = py.importlib.import_module('PySDM.physics.coalescence_kernels');
+PySDM_environments = py.importlib.import_module('PySDM.environments');
+PySDM_dynamics = pyimport("PySDM.dynamics")
+PySDM_products = pyimport("PySDM.products")
+
+builder = PySDM.Builder(pyargs('n_sd', int32(n_sd), 'backend', PySDM_backends.CPU));
+environment = PySDM_environments.Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
+builder.set_environment(environment);
+attributes = environment.init_attributes(pyargs( ...
+    'spectral_discretisation', ...
+    PySDM_initialisation_spectral_sampling.ConstantMultiplicity(initial_spectrum)...
+));
+builder.add_dynamic(PySDM_dynamics.Coalescence(pyargs( ...
+  'kernel', PySDM_physics_coalescence_kernels.Golovin(1.5e3 / si.s)) ...
+));
+products = py.list({ PySDM_products.ParticlesVolumeSpectrum() });
+core = builder.build(attributes, products);
+```
+</details>
+
+
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
@@ -180,6 +277,9 @@ The ``run(nt)`` method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
+<details open>
+<summary>Python</summary>
+
 <!--exdown-cont-->
 ```Python
 from PySDM.physics.constants import rho_w
@@ -200,6 +300,57 @@ pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
 pyplot.legend()
 pyplot.savefig('readme.svg')
 ```
+</details>
+<details>
+<summary>Julia (click to expand)</summary>
+
+```Julia
+PySDM_physics_constants = pyimport("PySDM.physics.constants")
+using Plots
+
+radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
+
+for step = 0:1200:3600
+    core.run(step - core.n_steps)
+    plot!(
+        radius_bins_edges[1:end-1] / si.um,
+        core.products["dv/dlnr"].get(radius_bins_edges) * PySDM_physics_constants.rho_w / si.g,
+        linetype=:steppost,
+        xaxis=:log,
+        xlabel="particle radius [µm]",
+        ylabel="dm/dlnr [g/m^3/(unit dr/r)]",
+        label="t = $step s"
+    )   
+end
+savefig("plot.svg")
+```
+</details>
+<details>
+<summary>Matlab (click to expand)</summary>
+
+```Matlab
+PySDM_physics = py.importlib.import_module('PySDM.physics');
+
+radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
+
+for step = 0:1200:3600
+    core.run(int32(step - core.n_steps))
+    x = radius_bins_edges / si.um;
+    y = core.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * PySDM_physics.constants.rho_w / si.g;
+    stairs(...
+        x(1:end-1), ... 
+        double(py.array.array('d',py.numpy.nditer(y))), ...
+        'DisplayName', sprintf("t = %d s", step) ...
+    );
+    hold on
+end
+hold off
+set(gca,'XScale','log');
+xlabel('particle radius [µm]')
+ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
+legend()
+```
+</details>
 The resultant plot looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.svg)
