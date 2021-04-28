@@ -59,13 +59,9 @@ To install PySDM using ``pip``, one may use: ``pip install git+https://github.co
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies are listed in the ``requirements.txt`` file.
 
-Besides the PySDM repository (where this README file is hosted), there are three related repositories:
-- [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) with a suite of Python/Jupyter examples depicting PySDM features and listed below,
-- [``PySDM_examples.jl``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.jl) with examples depicting how to use PySDM from Julia using [PyCall.jl](https://github.com/JuliaPy/PyCall.jl),
-- [``PySDM_examples.m``](https://github.com/atmos-cloud-sim-uj/PySDM-examples.m) with examples depicting how to use PySDM from Matlab using the [Matlab-Python interface](https://www.mathworks.com/help/matlab/call-python-libraries.html).
-
+PySDM examples listed below are hosted in a separate repository and constitute 
+a separate [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) Python package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
-
 Running the examples requires the the ``PySDM_examples`` package to be installed (or within ``PYTHONPATH``).
 Since the examples package includes Jupyter notebooks, the suggested install and launch steps are:
 ```
