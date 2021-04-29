@@ -20,7 +20,7 @@ class TestExplicitEulerWithInterpolation:
         settings = DisplacementSettings()
         settings.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
         settings.positions = [[0.5], [0.5]]
-        sut, _ = settings.get_displacement(backend)
+        sut, _ = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -39,7 +39,7 @@ class TestExplicitEulerWithInterpolation:
         settings.grid = (3, 3)
         settings.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         settings.positions = [[1.5], [1.5]]
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         # Act
         sut()
