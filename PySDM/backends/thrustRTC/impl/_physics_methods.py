@@ -5,8 +5,6 @@ Created at 20.03.2020
 from ..conf import trtc
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
-import PySDM.physics.constants as const
-import PySDM.physics.formulae as phys
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 from PySDM.backends.thrustRTC.impl.c_inline import c_inline
 
@@ -28,16 +26,10 @@ class PhysicsMethods:
 
     def __init__(self):
         self._temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
-            // equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-            real_type exponent = {const.Rd} / {const.c_pd};
-            real_type pd = pow(real_type(rhod[i] * {const.Rd} * thd[i]) / pow(real_type({const.p1000}), exponent), 1 / (1 - exponent));
-            T[i] = thd[i] * pow(real_type(pd / {const.p1000}), exponent);
-        
-            real_type R = {const.Rv} / (1 / qv[i] + 1) + {const.Rd} / (1 + qv[i]);
-            p[i] = rhod[i] * (1 + qv[i]) * R * T[i];
-        
-            RH[i] = (p[i] - pd) / {c_inline(self.formulae.saturation_vapour_pressure.pvs_Celsius, T="T[i] - const.T0")};
-        '''.replace("real_type", PrecisionResolver.get_C_type()))
+            T[i] = {c_inline(self.formulae.state_variable_triplet.T, rhod="rhod[i]", thd="thd[i]")};
+            p[i] = {c_inline(self.formulae.state_variable_triplet.p, rhod="rhod[i]", T="T[i]", qv="qv[i]")};
+            RH[i] = {c_inline(self.formulae.state_variable_triplet.pv, p="p[i]", qv="qv[i]")} / {c_inline(self.formulae.saturation_vapour_pressure.pvs_Celsius, T="T[i] - const.T0")};
+        ''')
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):

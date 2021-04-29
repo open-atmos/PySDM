@@ -152,7 +152,7 @@ class FakeThrustRTC:
         if operator == "max":
             return max(start.ndarray, np.amax(dvvector.ndarray))
         if operator == "min":
-            return max(start.ndarray, np.amin(dvvector.ndarray))
+            return min(start.ndarray, np.amin(dvvector.ndarray))
 
     @staticmethod
     def Plus():
