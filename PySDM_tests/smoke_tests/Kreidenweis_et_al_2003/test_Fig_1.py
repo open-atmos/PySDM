@@ -59,7 +59,7 @@ class TestFig1:
             pyplot.show()
 
         # Assert
-        # assert False  TODO #442
+        assert 0.18 < example_output['aq_S_IV_ppb'][-1] + example_output['gas_S_IV_ppb'][-1] < 0.19
 
     @staticmethod
     def test_c(example_output, plot=False):
