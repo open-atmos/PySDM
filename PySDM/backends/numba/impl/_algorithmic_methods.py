@@ -94,9 +94,9 @@ class AlgorithmicMethods:
             _r = (cell_origin[0, droplet] + 1 * (dim == 0), cell_origin[1, droplet] + 1 * (dim == 1))
             calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell)
 
-    @staticmethod
-    def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
         n_dims = len(courant.shape)
+        scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
             AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data, cell_origin.data,
                                                               position_in_cell.data)

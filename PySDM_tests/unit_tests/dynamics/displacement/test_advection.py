@@ -60,8 +60,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         settings.positions = [[w], [0]]
-        settings.scheme = 'FTFS'
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -83,8 +82,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         settings.positions = [[0], [w]]
-        settings.scheme = 'FTFS'
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -104,7 +102,7 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         settings.positions = [[px], [py]]
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         sut.displacement[0, droplet_id] = .1
@@ -127,7 +125,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = core.particles
@@ -151,7 +149,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = core.particles

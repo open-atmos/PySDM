@@ -62,7 +62,8 @@ class Formulae:
                  surface_tension: str = 'Constant',
                  diffusion_kinetics: str = 'FuchsSutugin',
                  ventilation: str = 'Neglect',
-                 state_variable_triplet: str = 'RhodThdQv'
+                 state_variable_triplet: str = 'RhodThdQv',
+                 particle_advection: str = 'ImplicitInSpace'
                  ):
         self.fastmath = fastmath
         self.trivia = _magick('Trivia', physics.trivia, fastmath)
@@ -75,6 +76,7 @@ class Formulae:
         self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics, fastmath)
         self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
+        self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
 
     def __str__(self):
         description = []

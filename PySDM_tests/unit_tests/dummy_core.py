@@ -12,8 +12,10 @@ from PySDM.attributes.numerics.cell_id import CellID
 
 class DummyCore(Builder, Core):
 
-    def __init__(self, backend, n_sd=0):
-        Core.__init__(self, n_sd, backend(Formulae()))
+    def __init__(self, backend, n_sd=0, formulae=None):
+        if formulae is None:
+            formulae = Formulae()
+        Core.__init__(self, n_sd, backend(formulae))
         self.core = self
         self.environment = DummyEnvironment()
         self.environment.register(self)

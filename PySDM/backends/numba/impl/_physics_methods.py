@@ -9,20 +9,6 @@ from PySDM.physics import constants as const
 
 
 class PhysicsMethods:
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def explicit_in_space(omega, c_l, c_r):
-        return c_l * (1 - omega) + c_r * omega
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def implicit_in_space(omega, c_l, c_r):
-        """
-        see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
-        """
-        dC = c_r - c_l
-        return (omega * dC + c_l) / (1 - dC)
-
     def __init__(self):
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_T = self.formulae.state_variable_triplet.T

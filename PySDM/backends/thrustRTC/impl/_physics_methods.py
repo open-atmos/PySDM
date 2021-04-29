@@ -10,20 +10,6 @@ from PySDM.backends.thrustRTC.impl.c_inline import c_inline
 
 
 class PhysicsMethods:
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def explicit_in_space(omega, c_l, c_r):
-        return "c_l * (1 - omega) + c_r * omega;"
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def implicit_in_space(omega, c_l, c_r):
-        """
-        see eqs 14-16 in Arabas et al. 2015 (libcloudph++)
-        """
-        result = "(omega * (c_r - c_l) + c_l) / (1 - (c_r - c_l));"
-        return result
-
     def __init__(self):
         self._temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
             T[i] = {c_inline(self.formulae.state_variable_triplet.T, rhod="rhod[i]", thd="thd[i]")};
@@ -59,23 +45,3 @@ class PhysicsMethods:
         r1 = PrecisionResolver.get_floating_point(r1)
         r2 = PrecisionResolver.get_floating_point(r2)
         PhysicsMethods.__terminal_velocity_body.launch_n(values.size(), [values, radius, k1, k2, k3, r1, r2])
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def radius(volume):
-        return ""
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def dr_dt_MM(r, T, p, RH, kp, rd):
-        return ""
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
-        return ""
-
-    @staticmethod
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def dthd_dt(rhod, thd, T, dqv_dt):
-        return ""

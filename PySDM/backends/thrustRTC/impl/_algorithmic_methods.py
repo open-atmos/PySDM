@@ -4,7 +4,7 @@ Created at 10.12.2019
 
 from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
-from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
+from PySDM.backends.thrustRTC.impl import nice_thrust, c_inline
 from ..conf import trtc
 from .precision_resolver import PrecisionResolver
 
@@ -70,9 +70,8 @@ class AlgorithmicMethods:
             len(n) // 2, (gamma.data, n.idx.data, cell_id.data, d_dt, is_first_in_pair.indicator.data, dt_todo))
         AlgorithmicMethods.__adaptive_sdm_gamma_body_4.launch_n(len(dt_left), [dt_left.data, dt_todo, stats_n_substep.data])
 
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def calculate_displacement(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
         courant_length = trtc.DVInt64(courant.shape[0])
@@ -89,7 +88,7 @@ class AlgorithmicMethods:
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r];
             auto c_l = courant[_l];
-            displacement[i, dim] = {scheme(None, None, None)}
+            displacement[i, dim] = {c_inline(self.formulae.particle_advection.displacement, c_l="c_l", c_r="c_r", omega="omega")}
             ''')
         loop.launch_n(
             displacement.shape[1],
