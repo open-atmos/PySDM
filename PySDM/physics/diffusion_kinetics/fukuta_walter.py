@@ -1,2 +1,0 @@
-class FukutaWalter:
-    pass

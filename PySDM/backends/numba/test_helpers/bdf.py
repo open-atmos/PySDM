@@ -72,6 +72,7 @@ def _make_solve(formulae):
     phys_T = formulae.state_variable_triplet.T
     phys_p = formulae.state_variable_triplet.p
     phys_pv = formulae.state_variable_triplet.pv
+    phys_dthd_dt = formulae.state_variable_triplet.dthd_dt
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
@@ -87,7 +88,7 @@ def _make_solve(formulae):
             sgm = sigma(T, v, dry_volume[i])
             dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, D, K))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
-        dy_dt[idx_thd] = dot_thd + phys.dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
+        dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _odesys(t, y, kappa, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):

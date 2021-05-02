@@ -21,3 +21,7 @@ class RhodThdQv:
     @staticmethod
     def pv(p, qv):
         return p * qv / (qv + const.eps)
+
+    @staticmethod
+    def dthd_dt(rhod, thd, T, dqv_dt, lv):
+        return - lv * dqv_dt / const.c_pd / T * thd * rhod

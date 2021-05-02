@@ -4,8 +4,7 @@ Created at 11.2019
 
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import dthd_dt, D as phys_D, K as phys_K
-import PySDM.physics.formulae as phys
+from PySDM.physics.formulae import D as phys_D, K as phys_K
 from PySDM.backends.numba.toms748 import toms748_solve
 import numba
 import numpy as np
@@ -81,7 +80,7 @@ class CondensationMethods:
         return step
 
     @staticmethod
-    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T, phys_p, phys_pv):
+    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T, phys_p, phys_pv, phys_dthd_dt):
         @numba.njit(**jit_flags)
         def step_impl(v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt_pred, dqv_dt_pred,
                       m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
@@ -104,7 +103,7 @@ class CondensationMethods:
                     calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, lv, pvs, rtol_x)
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
-                dthd_dt_corr = dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv)
+                dthd_dt_corr = phys_dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv)
 
                 thd += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
                 qv += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
@@ -226,6 +225,7 @@ class CondensationMethods:
             phys_T=self.formulae.state_variable_triplet.T,
             phys_p=self.formulae.state_variable_triplet.p,
             phys_pv=self.formulae.state_variable_triplet.pv,
+            phys_dthd_dt=self.formulae.state_variable_triplet.dthd_dt,
             within_tolerance=self.formulae.trivia.within_tolerance,
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
@@ -238,7 +238,7 @@ class CondensationMethods:
     @staticmethod
     @lru_cache()
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-                                      phys_T, phys_p, phys_pv,
+                                      phys_T, phys_p, phys_pv, phys_dthd_dt,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
                                       fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
@@ -247,7 +247,7 @@ class CondensationMethods:
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq,
                                                                      phys_sigma, radius, within_tolerance, max_iters, RH_rtol)
         step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
-                                                       phys_T, phys_p, phys_pv)
+                                                       phys_T, phys_p, phys_pv, phys_dthd_dt)
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
         adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier,
                                                                  within_tolerance)
