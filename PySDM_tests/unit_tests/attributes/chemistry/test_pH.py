@@ -1,4 +1,4 @@
-from PySDM.physics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
+from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
@@ -12,6 +12,9 @@ import pytest
 from collections import defaultdict
 
 
+formulae = Formulae()
+EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
+
 class Test_pH:
     @staticmethod
     def test_equilibrate_pH_pure_water():
@@ -22,7 +25,6 @@ class Test_pH:
 
         # Act
         result = np.empty(1)
-        formulae = Formulae()
         ChemistryMethods.equilibrate_H_body(
             within_tolerance=formulae.trivia.within_tolerance,
             pH2H=formulae.trivia.pH2H,

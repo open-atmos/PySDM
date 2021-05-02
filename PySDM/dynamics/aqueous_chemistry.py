@@ -15,14 +15,8 @@ class AqueousChemistry:
                  pH_H_min=None,
                  pH_H_max=None,
                  pH_rtol=default_pH_rtol):
+        self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
-        for key, compound in GASEOUS_COMPOUNDS.items():
-            shape = (1,)  # TODO #440
-            self.environment_mixing_ratios[compound] = np.full(
-                shape,
-                self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
-                    environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
-            )
         self.core = None
 
         assert system_type in ('open', 'closed')
@@ -41,6 +35,15 @@ class AqueousChemistry:
 
     def register(self, builder):
         self.core = builder.core
+
+        for key, compound in GASEOUS_COMPOUNDS.items():
+            shape = (1,)  # TODO #440
+            self.environment_mixing_ratios[compound] = np.full(
+                shape,
+                self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
+                    self.environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
+            )
+        self.environment_mole_fractions = None
 
         if self.pH_H_max is None:
             self.pH_H_max = self.core.formulae.trivia.pH2H(default_pH_min)
