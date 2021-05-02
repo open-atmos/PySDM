@@ -88,7 +88,7 @@ class AlgorithmicMethods:
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r];
             auto c_l = courant[_l];
-            displacement[i, dim] = {c_inline(self.formulae.particle_advection.displacement, c_l="c_l", c_r="c_r", omega="omega")}
+            displacement[i + n_sd * dim] = {c_inline(self.formulae.particle_advection.displacement, c_l="c_l", c_r="c_r", omega="omega")}
             ''')
         loop.launch_n(
             displacement.shape[1],

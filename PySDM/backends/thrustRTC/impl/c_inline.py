@@ -29,5 +29,4 @@ def c_inline(fun, **args):
         source
     )
     source = eval(f'f"""{source}"""')
-    print(source)
     return f'{real_t}({source})'

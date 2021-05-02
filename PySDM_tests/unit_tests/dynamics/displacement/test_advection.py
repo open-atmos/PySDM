@@ -49,10 +49,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_calculate_displacement(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         a = .1
