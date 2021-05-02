@@ -150,21 +150,6 @@ class Hydrostatic:
 
 
 @_formula
-def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
-    return specific_gravity * mole_fraction / (1 - mole_fraction)
-
-
-@_formula
-def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
-    return mixing_ratio / (specific_gravity + mixing_ratio)
-
-
-@_formula
-def mixing_ratio_2_partial_pressure(mixing_ratio, specific_gravity, pressure):
-    return pressure * mixing_ratio / (mixing_ratio + specific_gravity)
-
-
-@_formula
 def _mix(q, dry, wet):
     return wet / (1 / q + 1) + dry / (1 + q)
 

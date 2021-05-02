@@ -1,5 +1,4 @@
 from ...product import MomentProduct
-from ....physics.formulae import mixing_ratio_2_mole_fraction
 from ....physics.constants import convert_to, ppb, Md
 
 
@@ -33,6 +32,6 @@ class AqueousMoleFraction(MomentProduct):
         self.download_to_buffer(self.core.environment['rhod'])
         tmp[:] /= self.core.mesh.dv
         tmp[:] /= self.buffer
-        tmp[:] = mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
+        tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
         convert_to(tmp, ppb)
         return tmp

@@ -51,7 +51,7 @@ class TestTable3:
             compound = AQUEOUS_COMPOUNDS[key][0]  # sic!
             np.testing.assert_allclose(
                 actual=(
-                    phys.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
+                    settings.formulae.trivia.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
                     * np.asarray(output['rhod_env'])
                 ),
                 desired=expected[key],

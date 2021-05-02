@@ -42,3 +42,11 @@ class Trivia:
     @staticmethod
     def arrhenius(A, Ea, T):
         return A * exp(-Ea / (const.R_str * T))
+
+    @staticmethod
+    def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
+        return specific_gravity * mole_fraction / (1 - mole_fraction)
+
+    @staticmethod
+    def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
+        return mixing_ratio / (specific_gravity + mixing_ratio)

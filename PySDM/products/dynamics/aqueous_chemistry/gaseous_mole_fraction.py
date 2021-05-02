@@ -1,5 +1,4 @@
 from ...product import Product
-from ....physics.formulae import mixing_ratio_2_mole_fraction
 from ....physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 from ....physics.constants import convert_to, ppb
 
@@ -21,7 +20,7 @@ class GaseousMoleFraction(Product):
         self.aqueous_chemistry = self.core.dynamics['AqueousChemistry']
 
     def get(self):
-        tmp = mixing_ratio_2_mole_fraction(
+        tmp = self.formulae.trivia.mixing_ratio_2_mole_fraction(
             self.aqueous_chemistry.environment_mixing_ratios[self.compound],
             specific_gravity=SPECIFIC_GRAVITY[self.compound]
         )

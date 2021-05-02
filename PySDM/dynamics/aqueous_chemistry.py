@@ -1,7 +1,6 @@
 import numpy as np
 from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
     GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY, M
-from PySDM.physics.formulae import mole_fraction_2_mixing_ratio
 
 
 default_pH_min = -1.
@@ -21,7 +20,8 @@ class AqueousChemistry:
             shape = (1,)  # TODO #440
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
-                mole_fraction_2_mixing_ratio(environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
+                self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
+                    environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
             )
         self.core = None
 
