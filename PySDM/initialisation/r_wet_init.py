@@ -2,9 +2,7 @@
 Crated at 2019
 """
 
-import numpy as np
 from ..backends.numba.toms748 import toms748_solve
-from ..physics import formulae as phys
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
 from numba import prange, njit
@@ -15,13 +13,9 @@ default_rtol = 1e-5
 
 def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=default_rtol):
     T = environment["T"].to_ndarray()
-    p = environment["p"].to_ndarray()
     RH = environment["RH"].to_ndarray()
 
     formulae = environment.core.formulae
-    pvs_C = formulae.saturation_vapour_pressure.pvs_Celsius
-    lv_K = formulae.latent_heat.lv
-    phys_r_dr_dt = formulae.drop_growth.r_dr_dt
     r_cr = formulae.hygroscopicity.r_cr
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
@@ -36,11 +30,9 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @njit(**jit_flags)
-    def r_wet_init_impl(r_dry: np.ndarray, T, p, RH, cell_id: np.ndarray, kappa, rtol,
+    def r_wet_init_impl(r_dry: np.ndarray, T, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
-        lv = lv_K(T)
-        pvs = pvs_C(T - const.T0)
         for i in prange(len(r_dry)):
             r_d = r_dry[i]
             cid = cell_id[i]
@@ -62,6 +54,6 @@ def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=
             assert iters_done != max_iters
         return r_wet
 
-    return r_wet_init_impl(r_dry, T, p, RH, cell_id, kappa, rtol)
+    return r_wet_init_impl(r_dry, T, RH, cell_id, kappa, rtol)
 
 
