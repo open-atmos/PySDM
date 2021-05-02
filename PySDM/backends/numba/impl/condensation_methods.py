@@ -4,7 +4,6 @@ Created at 11.2019
 
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
-from PySDM.physics.formulae import D as phys_D, K as phys_K
 from PySDM.backends.numba.toms748 import toms748_solve
 import numba
 import numpy as np
@@ -130,6 +129,7 @@ class CondensationMethods:
 
     @staticmethod
     def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+                              phys_lambdaK, phys_lambdaD, phys_DK,
                               within_tolerance, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
         def minfun(x_new, x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K):
@@ -147,6 +147,8 @@ class CondensationMethods:
             n_deactivating = 0
             n_activated_and_growing = 0
             success = True
+            lambdaK = phys_lambdaK(T, p)
+            lambdaD = phys_lambdaD(T)
             for drop in cell_idx:
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
@@ -155,8 +157,8 @@ class CondensationMethods:
                 sgm = phys_sigma(T, v[drop], vdry[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa, rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
-                    D = phys_D(r_old, T)
-                    K = phys_K(r_old, T, p)
+                    D = phys_DK(const.D0, r_old, lambdaD)
+                    K = phys_DK(const.K0, r_old, lambdaK)
                     args = (x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
@@ -226,6 +228,9 @@ class CondensationMethods:
             phys_p=self.formulae.state_variable_triplet.p,
             phys_pv=self.formulae.state_variable_triplet.pv,
             phys_dthd_dt=self.formulae.state_variable_triplet.dthd_dt,
+            phys_lambdaK=self.formulae.diffusion_kinetics.lambdaK,
+            phys_lambdaD=self.formulae.diffusion_kinetics.lambdaD,
+            phys_DK=self.formulae.diffusion_kinetics.DK,
             within_tolerance=self.formulae.trivia.within_tolerance,
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
             volume=self.formulae.condensation_coordinate.volume,
@@ -238,14 +243,16 @@ class CondensationMethods:
     @staticmethod
     @lru_cache()
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-                                      phys_T, phys_p, phys_pv, phys_dthd_dt,
+                                      phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
                                       fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq,
-                                                                     phys_sigma, radius, within_tolerance, max_iters, RH_rtol)
+                                                                     phys_sigma, radius,
+                                                                     phys_lambdaK, phys_lambdaD, phys_DK,
+                                                                     within_tolerance, max_iters, RH_rtol)
         step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
                                                        phys_T, phys_p, phys_pv, phys_dthd_dt)
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)

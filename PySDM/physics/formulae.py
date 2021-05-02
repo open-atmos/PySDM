@@ -176,33 +176,6 @@ def _mix(q, dry, wet):
 
 
 @_formula
-def lambdaD(T):
-    return const.D0 / np.sqrt(2 * const.Rv * T)
-
-
-@_formula
-def lambdaK(T, p):
-    return (4 / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
-
-
-@_formula
-def beta(Kn):
-    return (1 + Kn) / (1 + 1.71 * Kn + 1.33 * Kn * Kn)
-
-
-@_formula
-def D(r, T):
-    Kn = lambdaD(T) / r  # TODO #57 optional
-    return const.D0 * beta(Kn)
-
-
-@_formula
-def K(r, T, p):
-    Kn = lambdaK(T, p) / r
-    return const.K0 * beta(Kn)
-
-
-@_formula
 def vant_hoff(K, dH, T, *, T_0):
     return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
 

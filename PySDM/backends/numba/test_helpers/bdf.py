@@ -3,7 +3,6 @@ Created at 09.01.2020
 """
 
 import PySDM.physics.constants as const
-from PySDM.physics import formulae as phys
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.numba.conf import JIT_FLAGS
 import numpy as np
@@ -73,6 +72,9 @@ def _make_solve(formulae):
     phys_p = formulae.state_variable_triplet.p
     phys_pv = formulae.state_variable_triplet.pv
     phys_dthd_dt = formulae.state_variable_triplet.dthd_dt
+    phys_lambdaD = formulae.diffusion_kinetics.lambdaD
+    phys_lambdaK = formulae.diffusion_kinetics.lambdaK
+    phys_DK = formulae.diffusion_kinetics.DK
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
@@ -80,11 +82,13 @@ def _make_solve(formulae):
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
+        lambdaD = phys_lambdaD(T)
+        lambdaK = phys_lambdaK(T, p)
         for i in range(len(x)):
             v = volume(x[i])
             r = phys_radius(v)
-            D = phys.D(r, T)
-            K = phys.K(r, T, p)
+            D = phys_DK(const.D0, r, lambdaD)
+            K = phys_DK(const.K0, r, lambdaK)
             sgm = sigma(T, v, dry_volume[i])
             dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, D, K))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
