@@ -25,3 +25,7 @@ class RhodThdQv:
     @staticmethod
     def dthd_dt(rhod, thd, T, dqv_dt, lv):
         return - lv * dqv_dt / const.c_pd / T * thd * rhod
+
+    @staticmethod
+    def th_dry(th_std, qv):
+        return th_std * power(1 + qv / const.eps, const.Rd / const.c_pd)

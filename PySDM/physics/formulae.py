@@ -93,11 +93,6 @@ def R(q):
 
 
 @_formula
-def th_dry(th_std, qv):
-    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
-
-
-@_formula
 def th_std(p, T):
     return T * (const.p1000 / p)**(const.Rd / const.c_pd)
 
