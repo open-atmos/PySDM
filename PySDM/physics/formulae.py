@@ -21,7 +21,6 @@ else:
 
 from PySDM.physics import constants as const
 import numpy as np
-from PySDM.physics.constants import R_str
 from PySDM import physics
 
 
@@ -169,17 +168,3 @@ def mixing_ratio_2_partial_pressure(mixing_ratio, specific_gravity, pressure):
 def _mix(q, dry, wet):
     return wet / (1 / q + 1) + dry / (1 + q)
 
-
-@_formula
-def vant_hoff(K, dH, T, *, T_0):
-    return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
-
-
-@_formula
-def tdep2enthalpy(tdep):
-    return -tdep * R_str
-
-
-@_formula
-def arrhenius(A, Ea, T):
-    return A * np.exp(-Ea / (R_str * T))

@@ -4,9 +4,9 @@ import numpy as np
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
-from PySDM.physics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
+from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
-    KINETIC_CONST, EQUILIBRIUM_CONST
+    KineticConsts, EquilibriumConsts
 
 _tolerance = 1e-6
 _max_iter_quite_close = 8
@@ -17,6 +17,11 @@ _quite_close_multiplier = 2
 
 
 class ChemistryMethods:
+    def __init__(self):
+        self.HENRY_CONST = HenryConsts(self.formulae)
+        self.KINETIC_CONST = KineticConsts(self.formulae)
+        self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
+
     def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
                     env_mixing_ratio, env_T, env_p, env_rho_d, ksi, dt, dv, system_type, droplet_volume,
                     multiplicity):
@@ -43,7 +48,7 @@ class ChemistryMethods:
                         super_droplet_ids=super_droplet_ids,
                         mole_amounts=mole_amounts[key].data,
                         env_mixing_ratio=env_mixing_ratio[compound][cell_id:cell_id + 1],
-                        henrysConstant=HENRY_CONST[compound].at(env_T[cell_id]),
+                        henrysConstant=self.HENRY_CONST.HENRY_CONST[compound].at(env_T[cell_id]),
                         env_p=env_p[cell_id],
                         env_T=env_T[cell_id],
                         env_rho_d=env_rho_d[cell_id],
@@ -149,14 +154,13 @@ class ChemistryMethods:
             for key in DIFFUSION_CONST.keys():
                 dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
 
-    @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
-    def chem_recalculate_cell_data(equilibrium_consts, kinetic_consts, T):
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
         for i in range(len(T)):
             for key in equilibrium_consts.keys():
-                equilibrium_consts[key].data[i] = EQUILIBRIUM_CONST[key].at(T.data[i])
+                equilibrium_consts[key].data[i] = self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
             for key in kinetic_consts.keys():
-                kinetic_consts[key].data[i] = KINETIC_CONST[key].at(T.data[i])
+                kinetic_consts[key].data[i] = self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
 
     def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
                       H_min, H_max, ionic_strength_threshold, rtol):

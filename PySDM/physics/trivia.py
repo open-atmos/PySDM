@@ -1,5 +1,5 @@
 from PySDM.physics import constants as const
-from numpy import abs, log10
+from numpy import abs, log10, exp
 
 
 class Trivia:
@@ -30,3 +30,15 @@ class Trivia:
     @staticmethod
     def pH2H(pH):
         return 10**(-pH) * 1e3
+
+    @staticmethod
+    def vant_hoff(K, dH, T, *, T_0):
+        return K * exp(-dH / const.R_str * (1 / T - 1 / T_0))
+
+    @staticmethod
+    def tdep2enthalpy(tdep):
+        return -tdep * const.R_str
+
+    @staticmethod
+    def arrhenius(A, Ea, T):
+        return A * exp(-Ea / (const.R_str * T))

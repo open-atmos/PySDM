@@ -1,6 +1,6 @@
 import numpy as np
-from PySDM.physics.aqueous_chemistry.support import EQUILIBRIUM_CONST, DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
-    GASEOUS_COMPOUNDS, KINETIC_CONST, SPECIFIC_GRAVITY, M
+from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
+    GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY, M
 from PySDM.physics.formulae import mole_fraction_2_mixing_ratio
 
 
@@ -50,9 +50,9 @@ class AqueousChemistry:
         for key in AQUEOUS_COMPOUNDS.keys():
             builder.request_attribute("conc_" + key)
 
-        for key in KINETIC_CONST.keys():
+        for key in self.core.backend.KINETIC_CONST.KINETIC_CONST.keys():
             self.kinetic_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-        for key in EQUILIBRIUM_CONST.keys():
+        for key in self.core.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
             self.equilibrium_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         for key in DIFFUSION_CONST.keys():
             self.dissociation_factors[key] = self.core.Storage.empty(self.core.n_sd, dtype=float)
