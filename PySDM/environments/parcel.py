@@ -42,8 +42,8 @@ class Parcel(_Moist):
 
     def register(self, builder):
         self.formulae = builder.core.formulae
-        pd0 = phys.MoistAir.p_d(self.p0, self.q0)
-        rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, self.T0)
+        pd0 = phys.p_d(self.p0, self.q0)
+        rhod0 = phys.rhod_of_pd_T(pd0, self.T0)
         self.params = (self.q0, phys.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 

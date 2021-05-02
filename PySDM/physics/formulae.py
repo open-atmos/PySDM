@@ -12,6 +12,7 @@ if flag.DIMENSIONAL_ANALYSIS:
     _formula = njit
 else:
     import numba
+
     def _formula(func=None, **kw):
         if func is None:
             return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
@@ -101,46 +102,52 @@ def th_std(p, T):
     return T * (const.p1000 / p)**(const.Rd / const.c_pd)
 
 
-class MoistAir:
-    @staticmethod
-    def rhod_of_rho_qv(rho, qv):
-        return rho / (1 + qv)
+@_formula
+def rhod_of_rho_qv(rho, qv):
+    return rho / (1 + qv)
 
-    @staticmethod
-    def rho_of_rhod_qv(rhod, qv):
-        return rhod * (1 + qv)
 
-    @staticmethod
-    def p_d(p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
+@_formula
+def rho_of_rhod_qv(rhod, qv):
+    return rhod * (1 + qv)
 
-    @staticmethod
-    def rhod_of_pd_T(pd, T):
-        return pd / const.Rd / T
 
-    @staticmethod
-    def rho_of_p_qv_T(p, qv, T):
-        return p / R(qv) / T
+@_formula
+def p_d(p, qv):
+    return p * (1 - 1 / (1 + const.eps / qv))
+
+
+@_formula
+def rhod_of_pd_T(pd, T):
+    return pd / const.Rd / T
+
+
+@_formula
+def rho_of_p_qv_T(p, qv, T):
+    return p / R(qv) / T
 
 
 class ThStd:
     @staticmethod
+    @_formula
     def rho_d(p, qv, theta_std):
         kappa = const.Rd / const.c_pd
-        pd = MoistAir.p_d(p, qv)
+        pd = p_d(p, qv)
         rho_d = pd / (np.power(p / const.p1000, kappa) * const.Rd * theta_std)
         return rho_d
 
 
 class Hydrostatic:
     @staticmethod
+    @_formula
     def drho_dz(g, p, T, qv, lv, dql_dz=0):
-        rho = MoistAir.rho_of_p_qv_T(p, qv, T)
+        rho = rho_of_p_qv_T(p, qv, T)
         Rq = R(qv)
         cp = _mix(qv, const.c_pd, const.c_pv)
         return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
 
     @staticmethod
+    @_formula
     def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
         kappa = const.Rd / const.c_pd
         z0 = 0

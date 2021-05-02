@@ -74,7 +74,7 @@ class TestTable3:
         np.testing.assert_allclose(output['p_env'][-1], 939 * si.mbar, rtol=.005)
         np.testing.assert_allclose(output['T_env'][-1], 284.2 * si.K, rtol=.005)
         np.testing.assert_allclose(
-            phys.MoistAir.rho_of_rhod_qv(rhod=output['rhod_env'][-1], qv=output['qv_env'][-1]*si.g/si.kg),
+            phys.rho_of_rhod_qv(rhod=output['rhod_env'][-1], qv=output['qv_env'][-1]*si.g/si.kg),
             1.15 * si.kg / si.m**3,
             rtol=.005
         )
