@@ -50,3 +50,11 @@ class Trivia:
     @staticmethod
     def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
         return mixing_ratio / (specific_gravity + mixing_ratio)
+
+    @staticmethod
+    def p_d(p, qv):
+        return p * (1 - 1 / (1 + const.eps / qv))
+
+    @staticmethod
+    def th_std(p, T):
+        return T * (const.p1000 / p)**(const.Rd_over_c_pd)

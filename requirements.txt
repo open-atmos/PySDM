@@ -5,4 +5,4 @@ pytest
 exdown>=0.8.8
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
-git+git://github.com/slayoo/PySDM-examples@0e7cb29#egg=PySDM-examples
+git+git://github.com/slayoo/PySDM-examples@46c8169#egg=PySDM-examples

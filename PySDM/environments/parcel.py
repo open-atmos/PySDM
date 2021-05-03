@@ -42,9 +42,9 @@ class Parcel(_Moist):
 
     def register(self, builder):
         self.formulae = builder.core.formulae
-        pd0 = phys.p_d(self.p0, self.q0)
-        rhod0 = phys.rhod_of_pd_T(pd0, self.T0)
-        self.params = (self.q0, phys.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
+        rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
+        self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
         _Moist.register(self, builder)
@@ -82,8 +82,8 @@ class Parcel(_Moist):
         qv = self['qv'][0] - self.dql/2
 
         dql_dz = self.dql / dz_dt / dt
-        lv = self.core.formulae.latent_heat.lv(T)
-        drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
+        lv = self.formulae.latent_heat.lv(T)
+        drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
         self.core.formulae.trivia.explicit_euler(self._tmp['t'].data, dt, 1)

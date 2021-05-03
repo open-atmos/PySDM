@@ -4,28 +4,19 @@ Crated at 2019
 
 from PySDM.backends.numba import conf
 from functools import lru_cache
-from PySDM.physics.impl import flag
-
-if flag.DIMENSIONAL_ANALYSIS:
-    # TODO #492 - with all formulae refactored, this will not be needed anymore!
-    from PySDM.physics.impl.fake_numba import njit
-    _formula = njit
-else:
-    import numba
-
-    def _formula(func=None, **kw):
-        if func is None:
-            return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
-        else:
-            return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
-
-from PySDM.physics import constants as const
-import numpy as np
 from PySDM import physics
+import numba
+
+
+def _formula(func=None, **kw):
+    if func is None:
+        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+    else:
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
 
 
 def _boost(obj, fastmath):
-    if not flag.DIMENSIONAL_ANALYSIS:
+    if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
         for item in dir(obj):
             if item.startswith('__'):
                 continue
@@ -63,10 +54,13 @@ class Formulae:
                  diffusion_kinetics: str = 'FuchsSutugin',
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv',
-                 particle_advection: str = 'ImplicitInSpace'
+                 particle_advection: str = 'ImplicitInSpace',
+                 hydrostatics: str = 'Default'
                  ):
         self.fastmath = fastmath
+
         self.trivia = _magick('Trivia', physics.trivia, fastmath)
+
         self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
         self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
         self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
@@ -77,6 +71,7 @@ class Formulae:
         self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
+        self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
 
     def __str__(self):
         description = []
@@ -84,72 +79,3 @@ class Formulae:
             if not attr.startswith('_'):
                 description.append(f"{attr}: {getattr(self, attr).__class__.__name__}")
         return ', '.join(description)
-
-
-@_formula
-def R(q):
-    return _mix(q, const.Rd, const.Rv)
-
-
-@_formula
-def th_std(p, T):
-    return T * (const.p1000 / p)**(const.Rd / const.c_pd)
-
-
-@_formula
-def rhod_of_rho_qv(rho, qv):
-    return rho / (1 + qv)
-
-
-@_formula
-def rho_of_rhod_qv(rhod, qv):
-    return rhod * (1 + qv)
-
-
-@_formula
-def p_d(p, qv):
-    return p * (1 - 1 / (1 + const.eps / qv))
-
-
-@_formula
-def rhod_of_pd_T(pd, T):
-    return pd / const.Rd / T
-
-
-@_formula
-def rho_of_p_qv_T(p, qv, T):
-    return p / R(qv) / T
-
-
-class ThStd:
-    @staticmethod
-    @_formula
-    def rho_d(p, qv, theta_std):
-        kappa = const.Rd / const.c_pd
-        pd = p_d(p, qv)
-        rho_d = pd / (np.power(p / const.p1000, kappa) * const.Rd * theta_std)
-        return rho_d
-
-
-class Hydrostatic:
-    @staticmethod
-    @_formula
-    def drho_dz(g, p, T, qv, lv, dql_dz=0):
-        rho = rho_of_p_qv_T(p, qv, T)
-        Rq = R(qv)
-        cp = _mix(qv, const.c_pd, const.c_pv)
-        return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
-
-    @staticmethod
-    @_formula
-    def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
-        kappa = const.Rd / const.c_pd
-        z0 = 0
-        arg = np.power(p0/const.p1000, kappa) - (z-z0) * kappa * g / thstd / R(qv)
-        return const.p1000 * np.power(arg, 1/kappa)
-
-
-@_formula
-def _mix(q, dry, wet):
-    return wet / (1 / q + 1) + dry / (1 + q)
-
