@@ -20,6 +20,7 @@ class Builder:
 
     def __init__(self, n_sd, backend, formulae=Formulae()):
         assert inspect.isclass(backend)
+        self.formulae = formulae
         self.core = Core(n_sd, backend(formulae))
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0

@@ -1,12 +1,11 @@
 from ..product import MomentProduct
 from ...physics import constants as const
-from ...physics import formulae as phys
 import numpy as np
 
 
 class WaterMixingRatio(MomentProduct):
 
-    def __init__(self, name, description_prefix, radius_range):
+    def __init__(self, radius_range, name='ql', description_prefix='liquid'):
         self.radius_range = radius_range
         super().__init__(
             name=name,

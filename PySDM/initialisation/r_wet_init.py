@@ -11,7 +11,10 @@ import numpy as np
 default_rtol = 1e-5
 
 
-def r_wet_init(r_dry: np.ndarray, environment, cell_id: np.ndarray, kappa, rtol=default_rtol):
+def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None, rtol=default_rtol):
+    if cell_id is None:
+        cell_id = np.zeros_like(r_dry, dtype=int)
+
     T = environment["T"].to_ndarray()
     RH = environment["RH"].to_ndarray()
 

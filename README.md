@@ -359,67 +359,67 @@ The resultant plot looks as follows:
 <summary>Python</summary>
 
 ```Python
-import numpy as np
 from matplotlib import pyplot
-from PySDM.physics import si, Formulae
-from PySDM.initialisation import spectral_sampling
-from PySDM.initialisation import multiplicities
-from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics import si
+from PySDM.initialisation import spectral_sampling, multiplicities, spectra, r_wet_init
 from PySDM.backends import CPU
-from PySDM import Builder
-from PySDM.dynamics import AmbientThermodynamics
-from PySDM.dynamics import Condensation
+from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM.initialisation.r_wet_init import r_wet_init
-from PySDM.products import ParticleMeanRadius, RelativeHumidity, CloudDropletConcentration
+from PySDM import Builder, products
 
-formulae = Formulae()
-builder = Builder(backend=CPU, n_sd=1, formulae=formulae)
-environment = Parcel(
-    dt=1 * si.s,
-    mass_of_dry_air=1 * si.kg,
-    p0=1000 * si.hPa,
+env = Parcel(
+    dt=.25 * si.s,
+    mass_of_dry_air=1e3 * si.kg,
+    p0=1122 * si.hPa,
     q0=20 * si.g / si.kg,
     T0=300 * si.K,
-    w= 1 * si.m / si.s
+    w=2.5 * si.m / si.s
 )
-builder.set_environment(environment)
+spectrum = spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.5)
+kappa = .5 * si.dimensionless
+cloud_range = (.5 * si.um, 25 * si.um)
+output_interval = 4
+output_points = 40
+n_sd = 256
 
-kappa = 1 * si.dimensionless
+builder = Builder(backend=CPU, n_sd=n_sd)
+builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation(kappa=kappa))
 
-attributes = {}
-r_dry, specific_concentration = spectral_sampling.Logarithmic(
-            spectrum=Lognormal(
-                norm_factor=1000 / si.milligram,
-                m_mode=50 * si.nanometre,
-                s_geom=1.4 * si.dimensionless
-            ),
-            size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
-        ).sample(n_sd=builder.core.n_sd)
-attributes['dry volume'] = formulae.trivia.volume(radius=r_dry)
-attributes['n'] = multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
-r_wet = r_wet_init(r_dry, environment, np.zeros_like(attributes['n']), kappa)
-attributes['volume'] = formulae.trivia.volume(radius=r_wet)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd=n_sd)
+r_wet = r_wet_init(r_dry, env, kappa)
 
-products = [ParticleMeanRadius(), RelativeHumidity(), CloudDropletConcentration(radius_range=(.5 * si.um, 25 * si.um))]
+attributes = {
+    'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
+    'dry volume': builder.formulae.trivia.volume(radius=r_dry),
+    'volume': builder.formulae.trivia.volume(radius=r_wet)
+}
 
-core = builder.build(attributes, products)
-output = {product.name: [product.get()[0]] for product in core.products.values()}
-output['z'] = [environment['z'][0]]
+core = builder.build(attributes, products=[
+    products.PeakSupersaturation(),
+    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
+    products.CloudDropletConcentration(radius_range=cloud_range),
+    products.WaterMixingRatio(radius_range=cloud_range)
+])
 
-for step in range(100):
-    core.run(steps=10)
+cell = 0
+output = {product.name: [product.get()[cell]] for product in core.products.values()}
+output['z'] = [env['z'][cell]]
+
+for step in range(output_points):
+    core.run(steps=output_interval)
     for product in core.products.values():
-        output[product.name].append(product.get()[0])
-    output['z'].append(environment['z'][0])
+        output[product.name].append(product.get()[cell])
+    output['z'].append(env['z'][cell])
 
 fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
 for i, (key, product) in enumerate(core.products.items()):
-    axs[i].step(output[key], output['z'])
-    axs[i].set_title(product.description)
+    axs[i].plot(output[key], output['z'], marker='.')
+    axs[i].set_title(product.name)
     axs[i].set_xlabel(product.unit)
+    axs[i].grid()
+pyplot.savefig('parcel.svg')
 ```
 </details>
 <details>
@@ -612,6 +612,8 @@ for pykey = py.list(keys(core.products))
 end
 ```
 </details>
+
+![plot](https://raw.githubusercontent.com/slayoo/PySDM/koehler_refactor/parcel.svg)
 
 ## Package structure and API
 
