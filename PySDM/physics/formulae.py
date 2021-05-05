@@ -77,5 +77,9 @@ class Formulae:
         description = []
         for attr in dir(self):
             if not attr.startswith('_'):
-                description.append(f"{attr}: {getattr(self, attr).__class__.__name__}")
+                if getattr(self, attr).__class__ in (bool, int, float):
+                    value = getattr(self, attr)
+                else:
+                    value = getattr(self, attr).__class__.__name__
+                description.append(f"{attr}: {value}")
         return ', '.join(description)
