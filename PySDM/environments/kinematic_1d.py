@@ -1,7 +1,6 @@
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
-from ..physics import formulae as phys
 from ..state import arakawa_c
 import numpy as np
 
@@ -40,7 +39,7 @@ class Kinematic1D(_Moist):
                 self.mesh.cellular_attributes(positions)
 
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            r_wet = r_wet_init(r_dry, self, attributes['cell id'], kappa)
+            r_wet = r_wet_init(r_dry, self, cell_id=attributes['cell id'], kappa=kappa)
 
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
