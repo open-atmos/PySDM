@@ -8,7 +8,6 @@ from ..state import arakawa_c
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.physics import formulae as phys
 
 
 class Kinematic2D(_Moist):
@@ -32,7 +31,6 @@ class Kinematic2D(_Moist):
                         spatial_discretisation,
                         spectral_discretisation,
                         kappa,
-                        enable_temperatures=False,
                         rtol=default_rtol
                         ):
         # TODO #418 move to one method
@@ -45,7 +43,7 @@ class Kinematic2D(_Moist):
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            r_wet = r_wet_init(r_dry, self, attributes['cell id'], kappa, rtol)
+            r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes['cell id'])
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))

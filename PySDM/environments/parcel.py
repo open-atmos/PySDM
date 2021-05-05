@@ -68,7 +68,7 @@ class Parcel(_Moist):
         attributes = {}
         attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
         attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa, rtol)
+        r_wet = r_wet_init(r_dry, self, kappa, rtol=rtol)
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
         return attributes
 
