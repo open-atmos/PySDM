@@ -52,7 +52,7 @@ class Formulae:
                  drop_growth: str = 'MaxwellMason',
                  surface_tension: str = 'Constant',
                  diffusion_kinetics: str = 'FuchsSutugin',
-                 diffusion_thermics: str = 'TracyWelchPorter',
+                 diffusion_thermics: str = 'Neglect',
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
