@@ -168,10 +168,8 @@ initial_spectrum = Exponential(pyargs(...
     'norm_factor', 8.39e12, ...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
-attributes = environment.init_attributes(pyargs( ...
-    'spectral_discretisation', ...
-    ConstantMultiplicity(initial_spectrum)...
-));
+tmp = ConstantMultiplicity(initial_spectrum).sample(n_sd);
+attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 ```
 </details>
 <details open>
@@ -185,7 +183,7 @@ from PySDM.initialisation.spectra import Exponential
 n_sd = 2**15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
 attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
 </details>
 
