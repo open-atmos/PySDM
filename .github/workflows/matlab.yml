@@ -19,8 +19,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
       - run: pip install -e .
-      - run: pip install exdown pytest
-      - run: python -c "import exdown; blocks=exdown.extract('README.md', syntax_filter='Matlab'); f=open('readme.m', 'w'); f.writelines(block[0] for block in bocks); f.close()"
+      - run: pip install pytest_codeblocks pytest
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - uses: matlab-actions/setup-matlab@v0
       - uses: matlab-actions/run-command@v0
         with:
