@@ -6,7 +6,6 @@ import numpy as np
 import numba
 from ...backends.numba.conf import JIT_FLAGS
 from PySDM.physics import constants as const
-from PySDM.physics import formulae as phys
 from PySDM.products.product import MomentProduct
 
 GEOM_FACTOR = const.pi_4_3**(-1/3)

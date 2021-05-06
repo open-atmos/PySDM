@@ -3,8 +3,6 @@ Created at 28.04.2020
 """
 
 import numpy as np
-
-from PySDM.physics import formulae as phys
 from PySDM.products.product import MomentProduct
 
 

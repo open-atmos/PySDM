@@ -3,7 +3,6 @@ Created at 05.02.2020
 """
 
 from PySDM.physics import constants as const
-from PySDM.physics import formulae as phys
 from PySDM.products.product import MomentProduct
 
 

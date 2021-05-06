@@ -5,7 +5,6 @@ Created at 25.11.2019
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
 from PySDM.state.mesh import Mesh

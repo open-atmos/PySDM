@@ -3,7 +3,6 @@ Created at 2019
 """
 
 import pytest
-import numba
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 from PySDM.physics.formulae import Formulae
 from PySDM.physics import constants
