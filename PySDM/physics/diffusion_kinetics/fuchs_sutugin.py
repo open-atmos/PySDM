@@ -4,8 +4,8 @@ from numpy import sqrt
 
 class FuchsSutugin:
     @staticmethod
-    def lambdaD(T):
-        return const.D0 / sqrt(2 * const.Rv * T)
+    def lambdaD(D, T):
+        return D / sqrt(2 * const.Rv * T)
 
     @staticmethod
     def lambdaK(T, p):

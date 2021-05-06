@@ -52,6 +52,7 @@ class Formulae:
                  drop_growth: str = 'MaxwellMason',
                  surface_tension: str = 'Constant',
                  diffusion_kinetics: str = 'FuchsSutugin',
+                 diffusion_thermics: str = 'TracyWelchPorter',
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
@@ -68,6 +69,7 @@ class Formulae:
         self.drop_growth = _magick(drop_growth, physics.drop_growth, fastmath)
         self.surface_tension = _magick(surface_tension, physics.surface_tension, fastmath)
         self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics, fastmath)
+        self.diffusion_thermics = _magick(diffusion_thermics, physics.diffusion_thermics, fastmath)
         self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)

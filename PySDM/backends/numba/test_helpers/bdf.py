@@ -75,6 +75,7 @@ def _make_solve(formulae):
     phys_lambdaD = formulae.diffusion_kinetics.lambdaD
     phys_lambdaK = formulae.diffusion_kinetics.lambdaK
     phys_DK = formulae.diffusion_kinetics.DK
+    phys_D = formulae.diffusion_thermics.D
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
@@ -84,13 +85,14 @@ def _make_solve(formulae):
     def _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
         lambdaD = phys_lambdaD(T)
         lambdaK = phys_lambdaK(T, p)
+        DTp = phys_D(T, p)
         for i in range(len(x)):
             v = volume(x[i])
             r = phys_radius(v)
-            D = phys_DK(const.D0, r, lambdaD)
-            K = phys_DK(const.K0, r, lambdaK)
+            Dr = phys_DK(DTp, r, lambdaD)
+            Kr = phys_DK(const.K0, r, lambdaK)
             sgm = sigma(T, v, dry_volume[i])
-            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, D, K))
+            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, Dr, Kr))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
