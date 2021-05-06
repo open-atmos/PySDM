@@ -9,9 +9,11 @@ from numba import prange, njit
 import numpy as np
 
 default_rtol = 1e-5
+default_max_iters = 64
 
 
-def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None, rtol=default_rtol):
+def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None,
+               rtol=default_rtol, max_iters=default_max_iters):
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
 
@@ -33,7 +35,7 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @njit(**jit_flags)
-    def r_wet_init_impl(r_dry: np.ndarray, T, RH, cell_id: np.ndarray, kappa, rtol,
+    def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
         for i in prange(len(r_dry)):
@@ -51,12 +53,13 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
             )
             fa = minfun(a, *args)
             fb = minfun(b, *args)
-            max_iters = 64
-            r_wet[i], iters_done = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
+            r_wet[i], iters[i] = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
                                                  within_tolerance=within_tolerance)
-            assert iters_done != max_iters
         return r_wet
 
-    return r_wet_init_impl(r_dry, T, RH, cell_id, kappa, rtol)
+    iters = np.empty_like(r_dry, dtype=int)
+    r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
+    assert (iters != max_iters).all()
+    return r_wet
 
 
