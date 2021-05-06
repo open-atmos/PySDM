@@ -14,7 +14,6 @@ class Coalescence:
 
     def __init__(self,
                  kernel,
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -29,11 +28,8 @@ class Coalescence:
         self.kernel = kernel
 
         assert dt_coal_range[0] > 0
-        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=optimized_random,
-                                                dt_min=dt_coal_range[0],
-                                                seed=seed)
         self.croupier = croupier
-
+        self.optimized_random = optimized_random
         self.__substeps = substeps
         self.adaptive = adaptive
         self.stats_n_substep = None
@@ -51,6 +47,10 @@ class Coalescence:
 
     def register(self, builder):
         self.core = builder.core
+        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=self.optimized_random,
+                                                dt_min=self.dt_coal_range[0],
+                                                seed=self.core.formulae.seed)
+        self.optimised_random = None
 
         if self.core.n_sd < 2:
             raise ValueError("No one to collide with!")

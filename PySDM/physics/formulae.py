@@ -44,6 +44,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
+                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
@@ -58,6 +59,7 @@ class Formulae:
                  particle_advection: str = 'ImplicitInSpace',
                  hydrostatics: str = 'Default'
                  ):
+        self.seed = seed
         self.fastmath = fastmath
 
         self.trivia = _magick('Trivia', physics.trivia, fastmath)

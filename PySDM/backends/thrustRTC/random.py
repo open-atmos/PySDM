@@ -19,11 +19,10 @@ class Random:
         vec_rnd[i] = states[i].rand01();
         ''')
 
-    def __init__(self, size, seed=None):
+    def __init__(self, size, seed):
         rng = rndrtc.DVRNG()
         self.generator = trtc.device_vector('RNGState', size)
         self.size = size
-        seed = seed or np.random.randint(0, 2*16)
         dseed = trtc.DVInt64(seed)
         Random.__urand_init_rng_state_body.launch_n(size, [rng, self.generator, dseed])
 

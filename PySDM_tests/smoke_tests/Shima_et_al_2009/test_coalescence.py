@@ -39,7 +39,7 @@ def test_coalescence(backend, croupier, adaptive):
     if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
         return
     # Arrange
-    formulae = Formulae()
+    formulae = Formulae(seed=256)
     n_sd = 2 ** 14
     steps = [0, 100, 200]
     X0 = formulae.trivia.volume(radius=30.531e-6)
@@ -55,7 +55,7 @@ def test_coalescence(backend, croupier, adaptive):
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
-    builder.add_dynamic(Coalescence(kernel, seed=256, croupier=croupier, adaptive=adaptive))
+    builder.add_dynamic(Coalescence(kernel, croupier=croupier, adaptive=adaptive))
     core = builder.build(attributes)
 
     volumes = {}
