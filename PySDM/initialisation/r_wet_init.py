@@ -25,9 +25,9 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
     phys_volume = formulae.trivia.volume
     within_tolerance = formulae.trivia.within_tolerance
 
-    jit_flags = {**JIT_FLAGS, **{'parallel': False, 'fastmath': formulae.fastmath, 'cache': False}}
+    jit_flags = {**JIT_FLAGS, **{'fastmath': formulae.fastmath, 'cache': False}}
 
-    @njit(**jit_flags)
+    @njit(**{**jit_flags, 'parallel': False})
     def minfun(r, T, RH, kp, rd3):
         sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3)
         return RH - RH_eq(r, T, kp, rd3, sgm)
