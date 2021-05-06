@@ -83,9 +83,9 @@ def _make_solve(formulae):
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
-        lambdaD = phys_lambdaD(T)
-        lambdaK = phys_lambdaK(T, p)
         DTp = phys_D(T, p)
+        lambdaD = phys_lambdaD(DTp, T)
+        lambdaK = phys_lambdaK(T, p)
         for i in range(len(x)):
             v = volume(x[i])
             r = phys_radius(v)
