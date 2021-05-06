@@ -215,24 +215,18 @@ core = builder.build(attributes, products)
 
 <!--exdown-cont-->
 ```Matlab
-PySDM_backends = py.importlib.import_module('PySDM.backends');
-PySDM_physics_coalescence_kernels = py.importlib.import_module('PySDM.physics.coalescence_kernels');
-PySDM_environments = py.importlib.import_module('PySDM.environments');
-PySDM_dynamics = pyimport("PySDM.dynamics")
-PySDM_products = pyimport("PySDM.products")
+Builder = py.importlib.import_module('PySDM').Builder;
+Box = py.importlib.import_module('PySDM.environments').Box;
+Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
+Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
+CPU = py.importlib.import_module('PySDM.backends').CPU;
+ParticleVolumeSpectrum = pyimport("PySDM.products").ParticleVolumeSpectrum;
 
-builder = PySDM.Builder(pyargs('n_sd', int32(n_sd), 'backend', PySDM_backends.CPU));
-environment = PySDM_environments.Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
-builder.set_environment(environment);
-attributes = environment.init_attributes(pyargs( ...
-    'spectral_discretisation', ...
-    PySDM_initialisation_spectral_sampling.ConstantMultiplicity(initial_spectrum)...
-));
-builder.add_dynamic(PySDM_dynamics.Coalescence(pyargs( ...
-  'kernel', PySDM_physics_coalescence_kernels.Golovin(1.5e3 / si.s)) ...
-));
-products = py.list({ PySDM_products.ParticlesVolumeSpectrum() });
-core = builder.build(attributes, products);
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
+builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3));
+builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
+products = py.list({ ParticlesVolumeSpectrum() });
+particles = builder.build(attributes, products);
 ```
 </details>
 <details open>
@@ -303,14 +297,14 @@ savefig("plot.svg")
 
 <!--exdown-cont-->
 ```Matlab
-PySDM_physics = py.importlib.import_module('PySDM.physics');
+rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 for step = 0:1200:3600
     core.run(int32(step - core.n_steps))
     x = radius_bins_edges / si.um;
-    y = core.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * PySDM_physics.constants.rho_w / si.g;
+    y = core.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
