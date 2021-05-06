@@ -125,24 +125,10 @@ jupyter-notebook
 In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
-  using PySDM from Python, Julia and Matlab (click ...).
+  using PySDM from Python, Julia and Matlab.
 It is a coalescence-only set-up in which the initial particle size 
   spectrum is exponential and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
-<details open>
-<summary>Python</summary>
-
-```Python
-from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.initialisation.spectra import Exponential
-
-n_sd = 2**15
-initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
-attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
-```
-</details>
 <details>
 <summary>Julia (click to expand)</summary>
 
@@ -189,30 +175,25 @@ attributes = environment.init_attributes(pyargs( ...
 ));
 ```
 </details>
+<details open>
+<summary>Python</summary>
+
+```Python
+from PySDM.physics import si
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra import Exponential
+
+n_sd = 2**15
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
+attributes = {}
+attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+```
+</details>
 
 The key element of the PySDM interface is the [``Core``](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/PySDM/core.py) 
   class which instances are used to manage the system state and control the simulation.
 Instantiation of the ``Core`` class is handled by the ``Builder``
   as exemplified below:
-<details open>
-<summary>Python</summary>
-
-<!--exdown-cont-->
-```Python
-from PySDM import Builder
-from PySDM.environments import Box
-from PySDM.dynamics import Coalescence
-from PySDM.physics.coalescence_kernels import Golovin
-from PySDM.backends import CPU
-from PySDM.products.state import ParticlesVolumeSpectrum
-
-builder = Builder(n_sd=n_sd, backend=CPU)
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()]
-particles = builder.build(attributes, products)
-```
-</details>
 <details>
 <summary>Julia (click to expand)</summary>
 
@@ -255,7 +236,25 @@ products = py.list({ PySDM_products.ParticlesVolumeSpectrum() });
 core = builder.build(attributes, products);
 ```
 </details>
+<details open>
+<summary>Python</summary>
 
+<!--exdown-cont-->
+```Python
+from PySDM import Builder
+from PySDM.environments import Box
+from PySDM.dynamics import Coalescence
+from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.backends import CPU
+from PySDM.products.state import ParticlesVolumeSpectrum
+
+builder = Builder(n_sd=n_sd, backend=CPU)
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
+builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+products = [ParticlesVolumeSpectrum()]
+particles = builder.build(attributes, products)
+```
+</details>
 
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
@@ -275,30 +274,6 @@ The ``run(nt)`` method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
-<details open>
-<summary>Python</summary>
-
-<!--exdown-cont-->
-```Python
-from PySDM.physics.constants import rho_w
-from matplotlib import pyplot
-import numpy as np
-
-radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
-
-for step in [0, 1200, 2400, 3600]:
-    particles.run(step - particles.n_steps)
-    pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho_w / si.g,
-                where='post', label=f"t = {step}s")
-
-pyplot.xscale('log')
-pyplot.xlabel('particle radius [µm]')
-pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
-pyplot.legend()
-pyplot.savefig('readme.svg')
-```
-</details>
 <details>
 <summary>Julia (click to expand)</summary>
 
@@ -349,79 +324,37 @@ ylabel("dm/dlnr [g/m^3/(unit dr/r)]")
 legend()
 ```
 </details>
+<details open>
+<summary>Python</summary>
+
+<!--exdown-cont-->
+```Python
+from PySDM.physics.constants import rho_w
+from matplotlib import pyplot
+import numpy as np
+
+radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+
+for step in [0, 1200, 2400, 3600]:
+    particles.run(step - particles.n_steps)
+    pyplot.step(x=radius_bins_edges[:-1] / si.um,
+                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho_w / si.g,
+                where='post', label=f"t = {step}s")
+
+pyplot.xscale('log')
+pyplot.xlabel('particle radius [µm]')
+pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
+pyplot.legend()
+pyplot.savefig('readme.svg')
+```
+</details>
+
 The resultant plot looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.svg)
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
-<details open>
-<summary>Python</summary>
-
-```Python
-from matplotlib import pyplot
-from PySDM.physics import si
-from PySDM.initialisation import spectral_sampling, multiplicities, spectra, r_wet_init
-from PySDM.backends import CPU
-from PySDM.dynamics import AmbientThermodynamics, Condensation
-from PySDM.environments import Parcel
-from PySDM import Builder, products
-
-env = Parcel(
-    dt=.25 * si.s,
-    mass_of_dry_air=1e3 * si.kg,
-    p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
-    T0=300 * si.K,
-    w=2.5 * si.m / si.s
-)
-spectrum = spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.5)
-kappa = .5 * si.dimensionless
-cloud_range = (.5 * si.um, 25 * si.um)
-output_interval = 4
-output_points = 40
-n_sd = 256
-
-builder = Builder(backend=CPU, n_sd=n_sd)
-builder.set_environment(env)
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(kappa=kappa))
-
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd=n_sd)
-r_wet = r_wet_init(r_dry, env, kappa)
-
-attributes = {
-    'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume': builder.formulae.trivia.volume(radius=r_dry),
-    'volume': builder.formulae.trivia.volume(radius=r_wet)
-}
-
-core = builder.build(attributes, products=[
-    products.PeakSupersaturation(),
-    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-    products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range)
-])
-
-cell = 0
-output = {product.name: [product.get()[cell]] for product in core.products.values()}
-output['z'] = [env['z'][cell]]
-
-for step in range(output_points):
-    core.run(steps=output_interval)
-    for product in core.products.values():
-        output[product.name].append(product.get()[cell])
-    output['z'].append(env['z'][cell])
-
-fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
-for i, (key, product) in enumerate(core.products.items()):
-    axs[i].plot(output[key], output['z'], marker='.')
-    axs[i].set_title(product.name)
-    axs[i].set_xlabel(product.unit)
-    axs[i].grid()
-pyplot.savefig('parcel.svg')
-```
-</details>
 <details>
 <summary>Julia (click to expand)</summary>
 
@@ -610,6 +543,73 @@ for pykey = py.list(keys(core.products))
     ylabel('z [m]');
     i=i+1;
 end
+```
+</details>
+<details open>
+<summary>Python</summary>
+
+```Python
+from matplotlib import pyplot
+from PySDM.physics import si
+from PySDM.initialisation import spectral_sampling, multiplicities, spectra, r_wet_init
+from PySDM.backends import CPU
+from PySDM.dynamics import AmbientThermodynamics, Condensation
+from PySDM.environments import Parcel
+from PySDM import Builder, products
+
+env = Parcel(
+    dt=.25 * si.s,
+    mass_of_dry_air=1e3 * si.kg,
+    p0=1122 * si.hPa,
+    q0=20 * si.g / si.kg,
+    T0=300 * si.K,
+    w=2.5 * si.m / si.s
+)
+spectrum = spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.5)
+kappa = .5 * si.dimensionless
+cloud_range = (.5 * si.um, 25 * si.um)
+output_interval = 4
+output_points = 40
+n_sd = 256
+
+builder = Builder(backend=CPU, n_sd=n_sd)
+builder.set_environment(env)
+builder.add_dynamic(AmbientThermodynamics())
+builder.add_dynamic(Condensation(kappa=kappa))
+
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd=n_sd)
+r_wet = r_wet_init(r_dry, env, kappa)
+
+attributes = {
+    'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
+    'dry volume': builder.formulae.trivia.volume(radius=r_dry),
+    'volume': builder.formulae.trivia.volume(radius=r_wet)
+}
+
+core = builder.build(attributes, products=[
+    products.PeakSupersaturation(),
+    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
+    products.CloudDropletConcentration(radius_range=cloud_range),
+    products.WaterMixingRatio(radius_range=cloud_range)
+])
+
+cell = 0
+output = {product.name: [product.get()[cell]] for product in core.products.values()}
+output['z'] = [env['z'][cell]]
+
+for step in range(output_points):
+    core.run(steps=output_interval)
+    for product in core.products.values():
+        output[product.name].append(product.get()[cell])
+    output['z'].append(env['z'][cell])
+
+fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
+for i, (key, product) in enumerate(core.products.items()):
+    axs[i].plot(output[key], output['z'], marker='.')
+    axs[i].set_title(product.name)
+    axs[i].set_xlabel(product.unit)
+    axs[i].grid()
+pyplot.savefig('parcel.svg')
 ```
 </details>
 
