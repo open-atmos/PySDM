@@ -20,7 +20,6 @@ def test_initialisation(plot=False):
 
     simulation = Simulation(settings, None)
 
-    n_bins = 32
     n_levels = settings.grid[1]
     n_cell = np.prod(np.array(settings.grid))
     n_moments = 1
