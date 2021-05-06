@@ -197,6 +197,7 @@ Instantiation of the ``Core`` class is handled by the ``Builder``
 <details>
 <summary>Julia (click to expand)</summary>
 
+<!--exdown-cont-->
 ```Julia
 PySDM_backends = pyimport("PySDM.backends")
 PySDM_physics_coalescence_kernels = pyimport("PySDM.physics.coalescence_kernels")
@@ -215,6 +216,7 @@ core = builder.build(attributes, products)
 <details>
 <summary>Matlab (click to expand)</summary>
 
+<!--exdown-cont-->
 ```Matlab
 PySDM_backends = py.importlib.import_module('PySDM.backends');
 PySDM_physics_coalescence_kernels = py.importlib.import_module('PySDM.physics.coalescence_kernels');
@@ -277,6 +279,7 @@ In the listing below, its usage is interleaved with plotting logic
 <details>
 <summary>Julia (click to expand)</summary>
 
+<!--exdown-cont-->
 ```Julia
 PySDM_physics_constants = pyimport("PySDM.physics.constants")
 using Plots
@@ -301,6 +304,7 @@ savefig("plot.svg")
 <details>
 <summary>Matlab (click to expand)</summary>
 
+<!--exdown-cont-->
 ```Matlab
 PySDM_physics = py.importlib.import_module('PySDM.physics');
 

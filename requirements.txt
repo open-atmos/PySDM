@@ -2,7 +2,7 @@
 matplotlib>=3.2.2
 ghapi
 pytest
-exdown>=0.8.8
+exdown>=0.9.0
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
 git+git://github.com/slayoo/PySDM-examples@f8e1e77#egg=PySDM-examples
