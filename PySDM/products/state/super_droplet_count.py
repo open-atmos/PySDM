@@ -11,9 +11,7 @@ class SuperDropletCount(Product):
         super().__init__(
             name='n_sd',
             unit='#/gridbox',
-            description='Super droplet count',
-            scale='linear',
-            range=[0, 10]
+            description='Super droplet count'
         )
 
     def get(self):

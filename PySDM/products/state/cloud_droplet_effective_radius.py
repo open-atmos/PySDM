@@ -20,9 +20,7 @@ class CloudDropletEffectiveRadius(MomentProduct):
         super().__init__(
             name='r_eff',
             unit='um',
-            description='Cloud Droplet Effective Radius',
-            scale='linear',
-            range=(0, 25)
+            description='Cloud Droplet Effective Radius'
         )
 
     @staticmethod

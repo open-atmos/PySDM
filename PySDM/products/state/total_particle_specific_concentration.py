@@ -12,9 +12,7 @@ class TotalParticleSpecificConcentration(MomentProduct):
         super().__init__(
             name='n_mg',
             unit='mg-1',
-            description='Total particle specific concentration',
-            scale='linear',
-            range=[20, 50]
+            description='Total particle specific concentration'
         )
 
     def get(self):

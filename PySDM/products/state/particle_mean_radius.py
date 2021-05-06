@@ -13,9 +13,7 @@ class ParticleMeanRadius(MomentProduct):
         super().__init__(
             name='radius_m1',
             unit='um',
-            description='Mean radius',
-            scale='linear',
-            range=[1, 25]
+            description='Mean radius'
         )
 
     def get(self, unit=const.si.micrometre):

@@ -11,9 +11,7 @@ class WaterMixingRatio(MomentProduct):
         super().__init__(
             name=name,
             unit='g/kg',
-            description=f'{description_prefix} water mixing ratio',
-            scale='linear',
-            range=[0, 1]
+            description=f'{description_prefix} water mixing ratio'
         )
 
     def register(self, builder):

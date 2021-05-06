@@ -7,9 +7,7 @@ class AqueousMoleFraction(MomentProduct):
         super().__init__(
             name=f'aq_{key}_ppb',
             unit='ppb',
-            description=f'aqueous {key} mole fraction',
-            scale=None,
-            range=None
+            description=f'aqueous {key} mole fraction'
         )
         self.aqueous_chemistry = None
         self.key = key

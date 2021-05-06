@@ -8,9 +8,7 @@ class GaseousMoleFraction(Product):
         super().__init__(
             name=f'gas_{key}_ppb',
             unit='ppb',
-            description=f'gaseous {key} mole fraction',
-            scale=None,
-            range=None
+            description=f'gaseous {key} mole fraction'
         )
         self.aqueous_chemistry = None
         self.compound = GASEOUS_COMPOUNDS[key]

@@ -10,8 +10,7 @@ class CollisionRateDeficit(Product):
     def __init__(self):
         super().__init__(
             name='collision_rate_deficit',
-            description='Collision rate deficit',
-            range=(0, 1e10)
+            description='Collision rate deficit'
         )
         self.coalescence = None
 

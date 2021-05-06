@@ -11,9 +11,7 @@ class CoalescenceTimestepMin(Product):
         super().__init__(
             name='dt_coal_min',
             unit='s',
-            description='Coalescence timestep (minimal)',
-            scale='log',
-            range=None
+            description='Coalescence timestep (minimal)'
         )
         self.coalescence = None
 

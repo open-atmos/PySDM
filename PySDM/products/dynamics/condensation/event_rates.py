@@ -13,9 +13,7 @@ class EventRate(Product):
         super().__init__(
             name=what+'_rate',
             description=what+' rate',
-            unit='s-1 mg-1',
-            range=(1e-1, 1e1),
-            scale='log'
+            unit='s-1 mg-1'
         )
         self.condensation = None
         self.timestep_count = 0

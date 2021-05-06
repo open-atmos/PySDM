@@ -14,9 +14,7 @@ class CoalescenceTimestepMean(Product):
         super().__init__(
             name='dt_coal_avg',
             unit='s',
-            description='Coalescence timestep (mean)',
-            scale='log',
-            range=None
+            description='Coalescence timestep (mean)'
         )
         self.count = 0
         self.coalescence = None

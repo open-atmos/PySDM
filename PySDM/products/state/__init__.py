@@ -4,7 +4,6 @@ Created at 28.08.2020
 
 from .aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.products.state.particle_mean_radius import ParticleMeanRadius
-from .particle_temperature import ParticleTemperature
 from .particles_size_spectrum import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum
 from .total_particle_concentration import TotalParticleConcentration
 from .particles_concentration import ParticlesConcentration, AerosolConcentration, CloudDropletConcentration, DrizzleConcentration

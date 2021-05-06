@@ -14,9 +14,7 @@ class ParticlesVolumeSpectrum(MomentProduct):
         super().__init__(
             name='dv/dlnr',
             unit='1/(unit dr/r)',
-            description='Particles volume distribution',
-            scale='linear',
-            range=[20, 50]
+            description='Particles volume distribution'
         )
         self.moment_0 = None
         self.moments = None

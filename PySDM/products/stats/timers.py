@@ -8,9 +8,7 @@ class _Timer(Product):
         super().__init__(
             name=name,
             unit='s',
-            description=description,
-            scale='linear',
-            range=None
+            description=description
         )
         self._time = None
         self.reset()

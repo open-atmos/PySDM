@@ -8,9 +8,7 @@ class SurfacePrecipitation(Product):
         super().__init__(
             name='surf_precip',
             unit='mm/day',
-            description='Surface precipitation',
-            scale='linear',
-            range=None
+            description='Surface precipitation'
         )
         self.displacement = None
         self._reset_counters()

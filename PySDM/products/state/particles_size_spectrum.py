@@ -18,9 +18,7 @@ class ParticlesSizeSpectrum(MomentProduct):
         super().__init__(
             name=name,
             unit=f"mg-1 um-1{'' if normalise_by_dv else ' m^3'}",
-            description='Specific concentration density',
-            scale='linear',
-            range=[20, 50]
+            description='Specific concentration density'
         )
 
     def register(self, builder):

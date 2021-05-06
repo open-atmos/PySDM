@@ -14,9 +14,7 @@ class AerosolSpecificConcentration(MomentProduct):
         super().__init__(
             name='n_a_mg',
             unit='mg-1',
-            description='Aerosol specific concentration',
-            scale='linear',
-            range=[0, 3e2]
+            description='Aerosol specific concentration'
         )
 
     def get(self):

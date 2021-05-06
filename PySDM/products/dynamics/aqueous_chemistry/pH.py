@@ -7,9 +7,7 @@ class pH(MomentProduct):
         super().__init__(
           name='pH',
           unit='',
-          description='number-weighted pH',
-          scale=None,
-          range=None
+          description='number-weighted pH'
         )
 
     def get(self):

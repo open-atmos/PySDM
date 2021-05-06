@@ -17,9 +17,7 @@ class AqueousMassSpectrum(MomentProduct):
         super().__init__(
             name=f'dm_{key}/dlog_10(dry diameter)',
             unit='µg / m3 / (unit dD/D)',
-            description=f'... {key} ...',
-            scale=None,
-            range=None
+            description=f'... {key} ...'
         )
         self.key = key
         self.moment_0 = None

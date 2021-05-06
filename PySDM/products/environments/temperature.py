@@ -11,7 +11,5 @@ class Temperature(MoistEnvironmentProduct):
         super().__init__(
             description="Temperature",
             name="T",
-            unit="K",
-            range=(275, 305),
-            scale="linear"
+            unit="K"
         )

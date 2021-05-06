@@ -17,9 +17,7 @@ class ParticlesConcentration(MomentProduct):
         super().__init__(
             name='n_a_cm3',
             unit='mg-1' if specific else 'cm-3',
-            description='Particles concentration',
-            scale='linear',
-            range=[1e0, 1e2]
+            description='Particles concentration'
         )
 
     def get(self):
@@ -53,5 +51,3 @@ class DrizzleConcentration(ParticlesConcentration):
         super().__init__((radius_threshold, np.inf))
         self.name = 'n_d_cm3'
         self.description = 'Drizzle droplets concentration'
-        self.scale = 'log'
-        self.range = (1e-3, 1e1)
