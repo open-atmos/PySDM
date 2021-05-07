@@ -384,7 +384,7 @@ r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n
 r_wet = r_wet_init(r_dry, env, kappa)
 
 attributes = Dict()
-attributes["n"] = multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
+attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = builder.formulae.trivia.volume(radius=r_dry)
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
