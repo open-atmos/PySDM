@@ -415,7 +415,7 @@ plots = []
 for (_, product) in core.products
     append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.name)])
 end
-plot(plots..., layout=(1,3))
+plot(plots..., layout=(1,4))
 savefig("parcel.svg")
 ```
 </details>
