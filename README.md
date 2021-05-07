@@ -133,26 +133,17 @@ It is a coalescence-only set-up in which the initial particle size
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-# using Pkg
-# Pkg.add("Conda")
-# using Conda
-# Conda.pip_interop(true)
-# Conda.pip("install --pre", "git+https://github.com/atmos-cloud-sim-uj/PySDM.git")
-# Pkg.add("PyCall")
+using Pkg
+Pkg.add("PyCall")
 
 using PyCall
-PySDM = pyimport("PySDM")
-PySDM_initialisation_spectra = pyimport("PySDM.initialisation.spectra")
-PySDM_initialisation_spectral_sampling = pyimport("PySDM.initialisation.spectral_sampling")
-si = PySDM.physics.si
+ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
+Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
 n_sd = 2^15
-initial_spectrum = PySDM_initialisation_spectra.Exponential(
-    norm_factor=8.39e12, scale=1.19e5 * si.um^3
-)
-attributes = environment.init_attributes(
-  spectral_discretisation=PySDM_initialisation_spectral_sampling.ConstantMultiplicity(spectrum=initial_spectrum)
-)
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
+attributes = Dict()
+attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 </details>
 <details>
@@ -196,18 +187,17 @@ Instantiation of the ``Core`` class is handled by the ``Builder``
 
 <!--exdown-cont-->
 ```Julia
-PySDM_backends = pyimport("PySDM.backends")
-PySDM_physics_coalescence_kernels = pyimport("PySDM.physics.coalescence_kernels")
-PySDM_environments = pyimport("PySDM.environments")
-PySDM_dynamics = pyimport("PySDM.dynamics")
-PySDM_products = pyimport("PySDM.products")
+Builder = pyimport("PySDM").Builder
+Box = pyimport("PySDM.environments").Box
+Coalescence = pyimport("PySDM.dynamics").Coalescence
+Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
+ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
 
-builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=n_sd)
-environment = PySDM_environments.Box(dt=1 * si.s, dv=1e6 * si.m^3)
-builder.set_environment(environment)
-builder.add_dynamic(PySDM_dynamics.Coalescence(kernel=PySDM_physics_coalescence_kernels.Golovin(b=1.5e3 / si.s)))
-products = [PySDM_products.ParticlesVolumeSpectrum()] 
-core = builder.build(attributes, products)
+builder = PySDM.Builder(n_sd=n_sd, backend=CPU)
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
+builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+products = [ParticlesVolumeSpectrum()] 
+particles = builder.build(attributes, products)
 ```
 </details>
 <details>
@@ -272,7 +262,7 @@ In the listing below, its usage is interleaved with plotting logic
 
 <!--exdown-cont-->
 ```Julia
-PySDM_physics_constants = pyimport("PySDM.physics.constants")
+rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
@@ -281,7 +271,7 @@ for step = 0:1200:3600
     core.run(step - core.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        core.products["dv/dlnr"].get(radius_bins_edges) * PySDM_physics_constants.rho_w / si.g,
+        core.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -356,77 +346,75 @@ The resultant plot looks as follows:
 ```Julia
 using PyCall
 using Plots
-PySDM = pyimport("PySDM")
-PySDM_backends = pyimport("PySDM.backends")
-PySDM_physics = pyimport("PySDM.physics")
-PySDM_environments = pyimport("PySDM.environments")
-PySDM_dynamics = pyimport("PySDM.dynamics")
-PySDM_initialisation = pyimport("PySDM.initialisation")
-PySDM_initialisation_spectra = pyimport("PySDM.initialisation.spectra")
-PySDM_products = pyimport("PySDM.products")
+si = pyimport("PySDM.physics").si
+spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
+multiplicities = pyimport("PySDM.initialisation").multiplicities
+spectra = pyimport("PySDM.initialisation").spectra
+r_wet_init = pyimport("PySDM.initialisation").r_wet_init
+CPU = pyimport("PySDM.backends").CPU
+AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
+Condensation = pyimport("PySDM.dynamics").Condensation
+Parcel = pyimport("PySDM.environments").Parcel
+Builder = pyimport("PySDM").Builder
+products = pyimport("PySDM.products")
 
-formulae = PySDM_physics.Formulae()
-builder = PySDM.Builder(backend=PySDM_backends.CPU, n_sd=1, formulae=formulae)
-si = PySDM.physics.si
-environment = PySDM_environments.Parcel(
-    dt=1 * si.s,
-    mass_of_dry_air=1 * si.kg,
-    p0=1000 * si.hPa,
+env = Parcel(
+    dt=.25 * si.s,
+    mass_of_dry_air=1e3 * si.kg,
+    p0=1122 * si.hPa,
     q0=20 * si.g / si.kg,
     T0=300 * si.K,
-    w= 1 * si.m / si.s
+    w= 2.5 * si.m / si.s
 )
-builder.set_environment(environment)
+spectrum=spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
+kappa = .5 * si.dimensionless
+cloud_range = (.5 * si.um, 25 * si.um)
+output_interval = 4
+output_points = 40
+n_sd = 256
 
-kappa = 1 * si.dimensionless
-builder.add_dynamic(PySDM_dynamics.AmbientThermodynamics())
-builder.add_dynamic(PySDM_dynamics.Condensation(kappa=kappa))
-        
+builder = Builder(backend=CPU, n_sd=n_sd)
+builder.set_environment(env)
+builder.add_dynamic(AmbientThermodynamics())
+builder.add_dynamic(Condensation(kappa=kappa))
+
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_wet = r_wet_init(r_dry, env, kappa)
+
 attributes = Dict()
-r_dry, specific_concentration = PySDM_initialisation.spectral_sampling.Logarithmic(
-    spectrum=PySDM_initialisation_spectra.Lognormal(
-        norm_factor=1000 / si.milligram,
-        m_mode=50 * si.nanometre,
-        s_geom=1.4 * si.dimensionless
-    ),
-    size_range=(10.633 * si.nanometre, 513.06 * si.nanometre)
-).sample(n_sd=builder.core.n_sd)
-  
-attributes["dry volume"] = formulae.trivia.volume(radius=r_dry)
-attributes["n"] = PySDM_initialisation.multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
-r_wet = PySDM_initialisation.r_wet_init(r_dry, environment, zeros(Int, size(attributes["n"])), kappa)
-attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
+attributes["n"] = multiplicities.discretise_n(specific_concentration * environment.mass_of_dry_air)
+attributes["dry volume"] = builder.formulae.trivia.volume(radius=r_dry)
+attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
-products = [
-  PySDM_products.ParticleMeanRadius(), 
-  PySDM_products.RelativeHumidity(),
-  PySDM_products.CloudConcentration(radius_range=(.5 * si.um, 25 * si.um))
+core = builder.build(attributes, products=[
+    products.PeakSupersaturation(),
+    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
+    products.CloudDropletConcentration(radius_range=cloud_range),
+    products.WaterMixingRatio(radius_range=cloud_range)
 ]
-
-core = builder.build(attributes, products)
     
-steps = 100
-output = Dict("z" => Array{Float32}(undef, steps+1))
+cell_id=1
+output = Dict("z" => Array{Float32}(undef, output_points+1))
 for (_, product) in core.products
-    output[product.name] = Array{Float32}(undef, steps+1)
-    output[product.name][1] = product.get()[1]
+    output[product.name] = Array{Float32}(undef, output_points+1)
+    output[product.name][1] = product.get()[cell_id]
 end 
-output["z"][1] = environment.__getitem__("z")[1]
+output["z"][1] = env.__getitem__("z")[cell_id]
     
-for step = 2:steps+1
-    core.run(steps=10)
+for step = 2:output_points+1
+    core.run(steps=output_interval)
     for (_, product) in core.products
-        output[product.name][step] = product.get()[1]
+        output[product.name][step] = product.get()[cell_id]
     end 
-    output["z"][step]=environment.__getitem__("z")[1]
+    output["z"][step]=env.__getitem__("z")[cell_id]
 end 
 
 plots = []
 for (_, product) in core.products
-    append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.description)])
+    append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.name)])
 end
 plot(plots..., layout=(1,3))
-savefig("plot.svg")
+savefig("parcel.svg")
 ```
 </details>
 <details>
