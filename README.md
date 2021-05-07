@@ -144,7 +144,7 @@ Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
 ```
 </details>
 <details>
