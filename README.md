@@ -393,7 +393,7 @@ core = builder.build(attributes, products=[
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
     products.WaterMixingRatio(radius_range=cloud_range)
-]
+])
     
 cell_id=1
 output = Dict("z" => Array{Float32}(undef, output_points+1))
