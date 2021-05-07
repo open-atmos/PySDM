@@ -135,6 +135,7 @@ It is a coalescence-only set-up in which the initial particle size
 ```Julia
 using Pkg
 Pkg.add("PyCall")
+Pkg.add("Plots")
 
 using PyCall
 si = pyimport("PySDM.physics").si
