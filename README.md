@@ -137,6 +137,7 @@ using Pkg
 Pkg.add("PyCall")
 
 using PyCall
+si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
