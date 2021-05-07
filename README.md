@@ -483,7 +483,7 @@ core = builder.build(attributes, py.list({ ...
     products.WaterMixingRatio(pyargs('radius_range', cloud_range)) ...
 }));
 
-cell = int32(0);
+cell_id = int32(0);
 output_size = [output_points+1, 1 + length(py.list(core.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
 output_names = ['z', cellfun(@string, cell(py.list(core.products.keys())))];
@@ -495,20 +495,20 @@ output = table(...
 for pykey = py.list(keys(core.products))
     get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
     key = string(pykey{1});
-    output{1, key} = get(cell);
+    output{1, key} = get(cell_id);
 end
 get = py.getattr(environment, '__getitem__');
 zget = py.getattr(get('z'), '__getitem__');
-output{1, 'z'} = zget(cell);
+output{1, 'z'} = zget(cell_id);
 
 for i=2:output_points+1
     core.run(pyargs('steps', int32(output_interval)));
     for pykey = py.list(keys(core.products))
         get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
-        output{i, key} = get(cell);
+        output{i, key} = get(cell_id);
     end
-    output{i, 'z'} = zget(cell);
+    output{i, 'z'} = zget(cell_id);
 end
 
 i=1;
@@ -571,15 +571,15 @@ core = builder.build(attributes, products=[
     products.WaterMixingRatio(radius_range=cloud_range)
 ])
 
-cell = 0
-output = {product.name: [product.get()[cell]] for product in core.products.values()}
-output['z'] = [env['z'][cell]]
+cell_id = 0
+output = {product.name: [product.get()[cell_id]] for product in core.products.values()}
+output['z'] = [env['z'][cell_id]]
 
 for step in range(output_points):
     core.run(steps=output_interval)
     for product in core.products.values():
-        output[product.name].append(product.get()[cell])
-    output['z'].append(env['z'][cell])
+        output[product.name].append(product.get()[cell_id])
+    output['z'].append(env['z'][cell_id])
 
 fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
 for i, (key, product) in enumerate(core.products.items()):
