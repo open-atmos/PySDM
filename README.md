@@ -483,8 +483,8 @@ core = builder.build(attributes, py.list({ ...
     products.WaterMixingRatio(pyargs('radius_range', cloud_range)) ...
 }));
 
-cell = int32(0)
-output_size = [steps+1, 1 + length(py.list(core.products.keys()))];
+cell = int32(0);
+output_size = [output_points+1, 1 + length(py.list(core.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
 output_names = ['z', cellfun(@string, cell(py.list(core.products.keys())))];
 output = table(...
@@ -501,8 +501,8 @@ get = py.getattr(environment, '__getitem__');
 zget = py.getattr(get('z'), '__getitem__');
 output{1, 'z'} = zget(cell);
 
-for i=2:steps+1
-    core.run(pyargs('steps', int32(substeps)));
+for i=2:output_points+1
+    core.run(pyargs('steps', int32(output_interval)));
     for pykey = py.list(keys(core.products))
         get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
