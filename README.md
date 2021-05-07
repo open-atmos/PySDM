@@ -497,7 +497,7 @@ for pykey = py.list(keys(core.products))
     key = string(pykey{1});
     output{1, key} = get(cell_id);
 end
-get = py.getattr(environment, '__getitem__');
+get = py.getattr(env, '__getitem__');
 zget = py.getattr(get('z'), '__getitem__');
 output{1, 'z'} = zget(cell_id);
 
