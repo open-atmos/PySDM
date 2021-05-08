@@ -12,7 +12,7 @@ def test_fig_3(plot=False):
         runs.append(Simulation(settings_class()))
 
     # Act
-
+    # TODO #491
 
     # Plot
     if plot:

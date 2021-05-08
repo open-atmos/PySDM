@@ -12,7 +12,5 @@ class DryAirPotentialTemperature(MoistEnvironmentProduct):
         super().__init__(
             description="Dry-air potential temperature",
             name="thd",
-            unit="K",
-            range=(275, 300),
-            scale="linear",
+            unit="K"
         )

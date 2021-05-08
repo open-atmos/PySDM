@@ -68,6 +68,5 @@ def subtract(output, subtrahend):
 
 
 # @numba.njit(void(f8[:]), **conf.JIT_FLAGS)
-def urand(output, seed=None):
-    np.random.seed(seed)
+def urand(output):
     output.data[:] = np.random.uniform(0, 1, output.shape)

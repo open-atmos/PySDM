@@ -2,303 +2,88 @@
 Crated at 2019
 """
 
-from PySDM.physics.impl.formula import formula
-from PySDM.physics import constants as const
-import numpy as np
-from PySDM.physics.constants import R_str
-from numpy import exp, log, pi
+from PySDM.backends.numba import conf
+from functools import lru_cache
+from PySDM import physics
+import numba
+
+
+def _formula(func=None, **kw):
+    if func is None:
+        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+    else:
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+
+
+def _boost(obj, fastmath):
+    if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
+        for item in dir(obj):
+            if item.startswith('__'):
+                continue
+            attr = getattr(obj, item)
+            if callable(attr):
+                setattr(obj, item, _formula(attr, fastmath=fastmath))
+    return obj
+
+
+def _pick(value: str, choices: dict):
+    for name, cls in choices.items():
+        if name == value:
+            return cls()
+    raise ValueError(f"Unknown setting: '{value}';, choices are: {tuple(choices.keys())}")
+
+
+def _choices(module):
+    return dict([(name, cls) for name, cls in module.__dict__.items() if isinstance(cls, type)])
+
+
+@lru_cache()
+def _magick(value, module, fastmath):
+    return _boost(_pick(value, _choices(module)), fastmath)
 
 
 class Formulae:
-    def __init__(self, condensation_coord: str='volume logarithm'):
-        if condensation_coord == 'volume':
-            self.condensation_coord = VolumeCoordinate
-        elif condensation_coord == 'volume logarithm':
-            self.condensation_coord = VolumeLogarithmCoordinate
-        else:
-            raise ValueError(f"Unknown {condensation_coord} coordinates. Please chose one from: ['volume', 'volume logarithm']")
-
-
-class VolumeLogarithmCoordinate:
-    @staticmethod
-    @formula
-    def dx_dt(x, dr_dt):
-        return exp(-x/3) * dr_dt * 3 * (3/4/pi)**(-1/3)
-
-    @staticmethod
-    @formula
-    def volume(x):
-        return exp(x)
-
-    @staticmethod
-    @formula
-    def x(volume):
-        return log(volume)
-
-
-class VolumeCoordinate:
-    @staticmethod
-    @formula
-    def dx_dt(x, dr_dt):
-        r = radius(x)
-        return 4 * pi * r**2 * dr_dt
-
-    @staticmethod
-    @formula
-    def volume(x):
-        return x
-
-    @staticmethod
-    @formula
-    def x(volume):
-        return volume
-
-
-@formula(inline='never')
-def dr_dt_MM(r, T, p, RH, kp, rd):
-    nom = (RH - RH_eq(r, T, kp, rd))
-    den = (
-            Fd(T, D(r, T)) +
-            Fk(T, K(r, T, p), lv(T))
-    )
-    return 1 / r * nom / den
-
-
-@formula
-def R(q):
-    return _mix(q, const.Rd, const.Rv)
-
-
-@formula
-def r_cr(kp, rd, T):
-    return np.sqrt(3 * kp * rd ** 3 / A(T))
-
-
-@formula
-def lv(T):
-    return const.l_tri + (const.c_pv - const.c_pw) * (T - const.T_tri)
-
-
-@formula
-def c_p(q):
-    return _mix(q, const.c_pd, const.c_pv)
-
-
-@formula
-def dthd_dt(rhod, thd, T, dqv_dt):
-    return - lv(T) * dqv_dt / const.c_pd / T * thd * rhod
-
-
-@formula(fastmath=False)
-def temperature_pressure_RH(rhod, thd, qv):
-    # equivalent to eqs A11 & A12 in libcloudph++ 1.0 paper
-    exponent = const.Rd / const.c_pd
-    pd = np.power((rhod * const.Rd * thd) / const.p1000 ** exponent, 1 / (1 - exponent))
-    T = thd * (pd / const.p1000) ** exponent
-
-    R = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-    p = rhod * (1 + qv) * R * T
-
-    RH = (p - pd) / pvs(T)
-
-    return T, p, RH
-
-
-@formula
-def radius(volume):
-    return (volume * 3 / 4 / np.pi) ** (1 / 3)
-
-
-@formula
-def volume(radius):
-    return 4 / 3 * np.pi * radius ** 3
-
-
-@formula
-def RH_eq(r, T, kp, rd):
-    return 1 + A(T) / r - B(kp, rd) / r ** 3
-
-
-@formula
-def pH2H(pH):
-    return 10**(-pH) * 1e3
-
-
-@formula
-def pvs(T):
-    return const.ARM_C1 * exp((const.ARM_C2 * (T - const.T0)) / (T - const.T0 + const.ARM_C3))
-
-
-@formula
-def th_dry(th_std, qv):
-    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
-
-
-@formula
-def th_std(p, T):
-    return T * (const.p1000 / p)**(const.Rd / const.c_pd)
-
-
-class MoistAir:
-    @staticmethod
-    def rhod_of_rho_qv(rho, qv):
-        return rho / (1 + qv)
-
-    @staticmethod
-    def rho_of_rhod_qv(rhod, qv):
-        return rhod * (1 + qv)
-
-    @staticmethod
-    def p_d(p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
-
-    @staticmethod
-    def rhod_of_pd_T(pd, T):
-        return pd / const.Rd / T
-
-    @staticmethod
-    def rho_of_p_qv_T(p, qv, T):
-        return p / R(qv) / T
-
-
-class Trivia:
-    @staticmethod
-    def volume_of_density_mass(rho, m):
-        return m / rho
-
-
-class ThStd:
-    @staticmethod
-    def rho_d(p, qv, theta_std):
-        kappa = const.Rd / const.c_pd
-        pd = MoistAir.p_d(p, qv)
-        rho_d = pd / (np.power(p / const.p1000, kappa) * const.Rd * theta_std)
-        return rho_d
-
-
-class Hydrostatic:
-    @staticmethod
-    def drho_dz(g, p, T, qv, dql_dz=0):
-        rho = MoistAir.rho_of_p_qv_T(p, qv, T)
-        Rq = R(qv)
-        cp = c_p(qv)
-        return (g / T * rho * (Rq / cp - 1) - p * lv(T) / cp / T**2 * dql_dz) / Rq
-
-    @staticmethod
-    def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
-        kappa = const.Rd / const.c_pd
-        z0 = 0
-        arg = np.power(p0/const.p1000, kappa) - (z-z0) * kappa * g / thstd / R(qv)
-        return const.p1000 * np.power(arg, 1/kappa)
-
-
-def explicit_euler(y, dt, dy_dt):
-    y += dt * dy_dt
-
-
-@formula
-def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
-    return specific_gravity * mole_fraction / (1 - mole_fraction)
-
-
-@formula
-def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
-    return mixing_ratio / (specific_gravity + mixing_ratio)
-
-
-@formula
-def mixing_ratio_2_partial_pressure(mixing_ratio, specific_gravity, pressure):
-    return pressure * mixing_ratio / (mixing_ratio + specific_gravity)
-
-
-@formula
-def _mix(q, dry, wet):
-    return wet / (1 / q + 1) + dry / (1 + q)
-
-
-@formula
-def lambdaD(T):
-    return const.D0 / np.sqrt(2 * const.Rv * T)
-
-
-@formula
-def lambdaK(T, p):
-    return (4 / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
-
-
-@formula
-def beta(Kn):
-    return (1 + Kn) / (1 + 1.71 * Kn + 1.33 * Kn * Kn)
-
-
-@formula
-def D(r, T):
-    Kn = lambdaD(T) / r  # TODO #57 optional
-    return const.D0 * beta(Kn)
-
-
-@formula
-def K(r, T, p):
-    Kn = lambdaK(T, p) / r
-    return const.K0 * beta(Kn)
-
-
-@formula
-def Fd(T, D):
-    return const.rho_w * const.Rv * T / D / pvs(T)
-
-
-@formula
-def Fk(T, K, lv):
-    return const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
-
-
-
-@formula
-def A(T):
-    return 2 * const.sgm / const.Rv / T / const.rho_w
-
-
-@formula
-def B(kp, rd):
-    return kp * rd ** 3
-
-
-@formula
-def dr_dt_FF(r, T, p, qv, kp, rd, T_i):
-    rho_v = p * qv / R(qv) / T
-    rho_eq = pvs(T_i) * RH_eq(r, T_i, kp, rd) / const.Rv / T_i
-    return D(r, T_i) / const.rho_w / r * (rho_v - rho_eq)
-
-
-@formula
-def dT_i_dt_FF(r, T, p, T_i, dr_dt):
-    return 3 / r / const.c_pw * (
-        K(r, T, p) / const.rho_w / r * (T - T_i) +  # TODO #57 K(T) vs. K(Td) ???
-        lv(T_i) * dr_dt
-    )
-
-
-@formula
-def within_tolerance(error_estimate, value, rtol):
-    return error_estimate < rtol * np.abs(value)
-
-
-@formula
-def H2pH(H):
-    return -np.log10(H * 1e-3)
-
-
-@formula
-def vant_hoff(K, dH, T, *, T_0):
-    return K * np.exp(-dH / R_str * (1 / T - 1/T_0))
-
-
-@formula
-def tdep2enthalpy(tdep):
-    return -tdep * R_str
-
-
-@formula
-def arrhenius(A, Ea, T):
-    return A * np.exp(-Ea / (R_str * T))
+    def __init__(self, *,
+                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 fastmath: bool = True,
+                 condensation_coordinate: str = 'VolumeLogarithm',
+                 saturation_vapour_pressure: str = 'FlatauWalkoCotton',
+                 latent_heat: str = 'Kirchhoff',
+                 hygroscopicity: str = 'KappaKoehlerLeadingTerms',
+                 drop_growth: str = 'MaxwellMason',
+                 surface_tension: str = 'Constant',
+                 diffusion_kinetics: str = 'FuchsSutugin',
+                 diffusion_thermics: str = 'Neglect',
+                 ventilation: str = 'Neglect',
+                 state_variable_triplet: str = 'RhodThdQv',
+                 particle_advection: str = 'ImplicitInSpace',
+                 hydrostatics: str = 'Default'
+                 ):
+        self.seed = seed
+        self.fastmath = fastmath
+
+        self.trivia = _magick('Trivia', physics.trivia, fastmath)
+
+        self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
+        self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
+        self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
+        self.hygroscopicity = _magick(hygroscopicity, physics.hygroscopicity, fastmath)
+        self.drop_growth = _magick(drop_growth, physics.drop_growth, fastmath)
+        self.surface_tension = _magick(surface_tension, physics.surface_tension, fastmath)
+        self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics, fastmath)
+        self.diffusion_thermics = _magick(diffusion_thermics, physics.diffusion_thermics, fastmath)
+        self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
+        self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
+        self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
+        self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
+
+    def __str__(self):
+        description = []
+        for attr in dir(self):
+            if not attr.startswith('_'):
+                if getattr(self, attr).__class__ in (bool, int, float):
+                    value = getattr(self, attr)
+                else:
+                    value = getattr(self, attr).__class__.__name__
+                description.append(f"{attr}: {value}")
+        return ', '.join(description)

@@ -12,6 +12,7 @@ class Attribute:
         self.dtype = dtype
         self.size = size
         self.name = name
+        self.formulae = self.core.formulae
 
     def allocate(self, idx):
         if self.size >= 1:

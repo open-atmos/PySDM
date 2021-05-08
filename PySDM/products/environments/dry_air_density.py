@@ -11,8 +11,6 @@ class DryAirDensity(MoistEnvironmentProduct):
         super().__init__(
             description="Dry-air density",
             name="rhod",
-            unit="kg/m^3",
-            range=(0.95, 1.3),
-            scale="linear"
+            unit="kg/m^3"
         )
 

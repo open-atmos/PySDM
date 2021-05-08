@@ -4,8 +4,8 @@ Created at 07.06.2019
 
 import numpy as np
 import pytest
-from PySDM.physics.formulae import volume
-from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.physics.formulae import Formulae
+from PySDM.physics.coalescence_kernels import Golovin
 
 
 class TestGolovin:
@@ -17,8 +17,9 @@ class TestGolovin:
     ])
     def test_analytic_solution_underflow(x):
         # Arrange
+        formulae = Formulae()
         b = 1.5e3
-        x_0 = volume(radius=30.531e-6)
+        x_0 = formulae.trivia.volume(radius=30.531e-6)
         N_0 = 2 ** 23
         sut = Golovin(b)
 

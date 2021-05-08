@@ -39,7 +39,7 @@ def cuda_is_available():
 if cuda_is_available() or cuda.is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
 else:
-    from .thrustRTC.fakeThrustRTC import _flag
+    from .thrustRTC.test_helpers import _flag
 
     _flag.fakeThrustRTC = True
 
@@ -49,9 +49,8 @@ else:
     ThrustRTC.ENABLE = False
 
     class Random:
-        def __init__(self, size, seed=None):
+        def __init__(self, size, seed):
             self.size = size
-            seed = seed or np.random.randint(0, 2 * 16)
             self.generator = np.random.default_rng(seed)
 
         def __call__(self, storage):

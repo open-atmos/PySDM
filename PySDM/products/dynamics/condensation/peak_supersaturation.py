@@ -7,9 +7,7 @@ class PeakSupersaturation(Product):
         super().__init__(
             name='S_max',
             unit='%',
-            description='Peak supersaturation',
-            scale='linear',
-            range=(-1, 1)
+            description='Peak supersaturation'
         )
         self.condensation = None
         self.RH_max = None

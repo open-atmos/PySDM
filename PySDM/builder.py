@@ -20,6 +20,7 @@ class Builder:
 
     def __init__(self, n_sd, backend, formulae=Formulae()):
         assert inspect.isclass(backend)
+        self.formulae = formulae
         self.core = Core(n_sd, backend(formulae))
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
@@ -64,8 +65,7 @@ class Builder:
             self.request_attribute(attribute)
         if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params,
-                                                           enable_drop_temperatures='temperatures' in self.req_attr)
+                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params)
         attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)

@@ -4,10 +4,9 @@ import numpy as np
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
-from PySDM.physics.formulae import radius, pH2H, H2pH
-from PySDM.dynamics.aqueous_chemistry.support import HENRY_CONST, SPECIFIC_GRAVITY, \
+from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
-    KINETIC_CONST, EQUILIBRIUM_CONST
+    KineticConsts, EquilibriumConsts
 
 _tolerance = 1e-6
 _max_iter_quite_close = 8
@@ -18,8 +17,12 @@ _quite_close_multiplier = 2
 
 
 class ChemistryMethods:
-    @staticmethod
-    def dissolution(*, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
+    def __init__(self):
+        self.HENRY_CONST = HenryConsts(self.formulae)
+        self.KINETIC_CONST = KineticConsts(self.formulae)
+        self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
+
+    def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
                     env_mixing_ratio, env_T, env_p, env_rho_d, ksi, dt, dv, system_type, droplet_volume,
                     multiplicity):
         for thread_id in numba.prange(n_threads):
@@ -45,7 +48,7 @@ class ChemistryMethods:
                         super_droplet_ids=super_droplet_ids,
                         mole_amounts=mole_amounts[key].data,
                         env_mixing_ratio=env_mixing_ratio[compound][cell_id:cell_id + 1],
-                        henrysConstant=HENRY_CONST[compound].at(env_T[cell_id]),
+                        henrysConstant=self.HENRY_CONST.HENRY_CONST[compound].at(env_T[cell_id]),
                         env_p=env_p[cell_id],
                         env_T=env_T[cell_id],
                         env_rho_d=env_rho_d[cell_id],
@@ -57,13 +60,14 @@ class ChemistryMethods:
                         specific_gravity=SPECIFIC_GRAVITY[compound],
                         alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
                         diffusion_constant=DIFFUSION_CONST[compound],
-                        ksi=ksi[compound].data
+                        ksi=ksi[compound].data,
+                        radius=self.formulae.trivia.radius
                     )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_T, env_rho_d, dt, dv,
-                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, ksi):
+                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, ksi, radius):
         mole_amount_taken = 0
         for i in super_droplet_ids:
             Mc = specific_gravity * Md
@@ -86,13 +90,14 @@ class ChemistryMethods:
         if system_type == 'closed':
             env_mixing_ratio -= delta_mr
 
-    @staticmethod
-    def oxidation(n_sd, cell_ids, do_chemistry_flag,
+    def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
-            n_sd, cell_ids.data, do_chemistry_flag.data, k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
+            n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
+            self.formulae.trivia.pH2H,
+            k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
             dt, droplet_volume.data, pH.data, O3.data, H2O2.data, S_IV.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
@@ -100,7 +105,7 @@ class ChemistryMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def oxidation_body(n_sd, cell_ids, do_chemistry_flag,
+    def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
                   k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
@@ -137,33 +142,37 @@ class ChemistryMethods:
             ):
                 continue
 
-            moles_O3[i] += dconc_dt_O3 * a
-            moles_S_IV[i] += dconc_dt_S_IV * a
-            moles_S_VI[i] += dconc_dt_S_VI * a
-            moles_H2O2[i] += dconc_dt_H2O2 * a
+            explicit_euler(moles_O3[i:i+1], a, dconc_dt_O3)
+            explicit_euler(moles_S_IV[i:i+1], a, dconc_dt_S_IV)
+            explicit_euler(moles_S_VI[i:i+1], a, dconc_dt_S_VI)
+            explicit_euler(moles_H2O2[i:i+1], a, dconc_dt_H2O2)
 
-    @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
-    def chem_recalculate_drop_data(dissociation_factors, equilibrium_consts, cell_id, pH):
+    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
         for i in range(len(pH)):
-            H = pH2H(pH.data[i])
+            H = self.formulae.trivia.pH2H(pH.data[i])
             for key in DIFFUSION_CONST.keys():
                 dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
 
-    @staticmethod
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
-    def chem_recalculate_cell_data(equilibrium_consts, kinetic_consts, T):
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
         for i in range(len(T)):
             for key in equilibrium_consts.keys():
-                equilibrium_consts[key].data[i] = EQUILIBRIUM_CONST[key].at(T.data[i])
+                equilibrium_consts[key].data[i] = self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
             for key in kinetic_consts.keys():
-                kinetic_consts[key].data[i] = KINETIC_CONST[key].at(T.data[i])
+                kinetic_consts[key].data[i] = self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
 
-    @staticmethod
-    def equilibrate_H(equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
+    def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
                       H_min, H_max, ionic_strength_threshold, rtol):
-        ChemistryMethods.equilibrate_H_body(cell_id.data,
-                                            N_mIII.data, N_V.data, C_IV.data, S_IV.data, S_VI.data,
+        ChemistryMethods.equilibrate_H_body(within_tolerance=self.formulae.trivia.within_tolerance,
+                                            pH2H=self.formulae.trivia.pH2H,
+                                            H2pH=self.formulae.trivia.H2pH,
+                                            cell_id=cell_id.data,
+                                            N_mIII=N_mIII.data,
+                                            N_V=N_V.data,
+                                            C_IV=C_IV.data,
+                                            S_IV=S_IV.data,
+                                            S_VI=S_VI.data,
                                             K_NH3=equilibrium_consts["K_NH3"].data,
                                             K_SO2=equilibrium_consts["K_SO2"].data,
                                             K_HSO3=equilibrium_consts["K_HSO3"].data,
@@ -183,7 +192,10 @@ class ChemistryMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})  # TODO #440
-    def equilibrate_H_body(cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+    def equilibrate_H_body(within_tolerance,
+                           pH2H, H2pH,
+                           cell_id,
+                           N_mIII, N_V, C_IV, S_IV, S_VI,
                            K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3,
                            do_chemistry_flag, pH,
                            # params
@@ -222,7 +234,8 @@ class ChemistryMethods:
                 max_iter = _max_iter_default
             else:
                 max_iter = _max_iter_quite_close
-            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter)
+            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter,
+                                            within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
             flag = calc_ionic_strength(H, *args) <= ionic_strength_threshold
             pH[i] = H2pH(H)

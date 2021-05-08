@@ -1,5 +1,5 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
-from PySDM.dynamics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
+from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
 from PySDM.physics import si
 from matplotlib import pyplot
 import numpy as np
@@ -59,7 +59,7 @@ class TestFig1:
             pyplot.show()
 
         # Assert
-        # assert False  TODO #442
+        assert 0.18 < example_output['aq_S_IV_ppb'][-1] + example_output['gas_S_IV_ppb'][-1] < 0.19
 
     @staticmethod
     def test_c(example_output, plot=False):

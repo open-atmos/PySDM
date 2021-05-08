@@ -3,11 +3,9 @@ Created at 28.04.2020
 """
 
 import numpy as np
-
-from PySDM.physics import formulae as phys
 from PySDM.physics.constants import convert_to, si
 from PySDM.products.product import MomentProduct
-from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from chempy import Substance
 
 
@@ -17,9 +15,7 @@ class AqueousMassSpectrum(MomentProduct):
         super().__init__(
             name=f'dm_{key}/dlog_10(dry diameter)',
             unit='µg / m3 / (unit dD/D)',
-            description=f'... {key} ...',
-            scale=None,
-            range=None
+            description=f'... {key} ...'
         )
         self.key = key
         self.moment_0 = None
@@ -33,7 +29,7 @@ class AqueousMassSpectrum(MomentProduct):
         self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
 
     def get(self):
-        volume_bins_edges = phys.volume(self.dry_radius_bins_edges)
+        volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
         vals = np.empty(len(volume_bins_edges) - 1)
         for i in range(len(vals)):
             self.download_moment_to_buffer(attr=f'moles_{self.key}', rank=1, filter_attr='dry volume',

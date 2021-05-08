@@ -3,9 +3,7 @@ Created at 05.02.2020
 """
 
 import numpy as np
-
 from PySDM.physics import constants as const
-from PySDM.physics import formulae as phys
 from PySDM.products.product import MomentProduct
 
 
@@ -17,15 +15,13 @@ class ParticlesConcentration(MomentProduct):
         super().__init__(
             name='n_a_cm3',
             unit='mg-1' if specific else 'cm-3',
-            description='Particles concentration',
-            scale='linear',
-            range=[1e0, 1e2]
+            description='Particles concentration'
         )
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0,
-                                       filter_range=(phys.volume(self.radius_range[0]),
-                                                     phys.volume(self.radius_range[1])))
+                                       filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                                                     self.formulae.trivia.volume(self.radius_range[1])))
         self.buffer[:] /= self.core.mesh.dv
         const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer
@@ -53,5 +49,3 @@ class DrizzleConcentration(ParticlesConcentration):
         super().__init__((radius_threshold, np.inf))
         self.name = 'n_d_cm3'
         self.description = 'Drizzle droplets concentration'
-        self.scale = 'log'
-        self.range = (1e-3, 1e1)

@@ -13,9 +13,7 @@ class _CondensationTimestep(Product):
         super().__init__(
             name=f'dt_cond_{label}',
             unit='s',
-            description=f'Condensation timestep ({label})',
-            scale='log',
-            range=None
+            description=f'Condensation timestep ({label})'
         )
         self.extremum = extremum
         self.reset_value = reset_value

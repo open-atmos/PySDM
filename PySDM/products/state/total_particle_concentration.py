@@ -12,9 +12,7 @@ class TotalParticleConcentration(MomentProduct):
         super().__init__(
             name='n_cm3',
             unit='cm-3',
-            description='Total particle concentration',
-            scale='linear',
-            range=[20, 50]
+            description='Total particle concentration'
         )
 
     def get(self):

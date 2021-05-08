@@ -6,9 +6,8 @@ import numpy as np
 
 
 class Displacement:
-    def __init__(self, courant_field, scheme='FTBS', enable_sedimentation=False):
+    def __init__(self, courant_field, enable_sedimentation=False):
         self.core = None
-        self.scheme = scheme
         self.enable_sedimentation = enable_sedimentation
         self.dimension = None
         self.grid = None
@@ -21,16 +20,6 @@ class Displacement:
     def register(self, builder):
         builder.request_attribute('terminal velocity')
         self.core = builder.core
-
-        # TODO #332 replace with make_calculate_displacement
-        if self.scheme == 'FTFS':
-            method = self.core.backend.explicit_in_space
-        elif self.scheme == 'FTBS':
-            method = self.core.backend.implicit_in_space
-        else:
-            raise NotImplementedError()
-        self.scheme = method
-
         self.dimension = len(self.courant_field)
         if self.dimension == 1:
             grid = (self.courant_field[0].shape[0] - 1,)
@@ -64,7 +53,7 @@ class Displacement:
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
             self.core.bck.calculate_displacement(
-                dim, self.scheme, displacement, courant[dim], cell_origin, position_in_cell)
+                dim, displacement, courant[dim], cell_origin, position_in_cell)
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]
             dt_over_dz = self.core.dt / self.core.mesh.dz

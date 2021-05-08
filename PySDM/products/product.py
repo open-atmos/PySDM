@@ -8,18 +8,17 @@ from ..environments._moist import _Moist
 
 class Product:
 
-    def __init__(self, name, unit=None, description=None, scale=None, range=(0, 100)):
+    def __init__(self, name, unit=None, description=None):
         self.name = name
         self.unit = unit
         self.description = description
-        self.scale = scale
-        self.range = range  # TODO #344 move out (maybe inject based on settings) and rename to something like plot_hint_range
         self.shape = None
         self.buffer = None
         self.core = None
 
     def register(self, builder):
         self.core = builder.core
+        self.formulae = self.core.formulae
         self.shape = self.core.mesh.grid
         self.buffer = np.empty(self.core.mesh.grid)
 
@@ -29,8 +28,8 @@ class Product:
 
 class MomentProduct(Product):
 
-    def __init__(self, name, unit, description, scale, range):
-        super().__init__(name, unit, description, scale, range)
+    def __init__(self, name, unit, description):
+        super().__init__(name, unit, description)
         self.moment_0 = None
         self.moments = None
 

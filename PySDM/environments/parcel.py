@@ -5,7 +5,6 @@ Created at 25.11.2019
 import numpy as np
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.physics import formulae as phys
 from ..physics import constants as const
 from ._moist import _Moist
 from PySDM.state.mesh import Mesh
@@ -21,27 +20,32 @@ class Parcel(_Moist):
             z0: float = 0,
             g=const.g_std
     ):
-
         super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
 
-        self.w = w if callable(w) else lambda _: w
+        self.p0 = p0
+        self.q0 = q0
+        self.T0 = T0
+        self.z0 = z0
+        self.mass_of_dry_air = mass_of_dry_air
         self.g = g
 
-        pd0 = phys.MoistAir.p_d(p0, q0)
-        rhod0 = phys.MoistAir.rhod_of_pd_T(pd0, T0)
+        self.w = w if callable(w) else lambda _: w
 
-        self.params = (q0, phys.th_std(pd0, T0), rhod0, z0, 0)
-        self.mesh.dv = phys.Trivia.volume_of_density_mass(rhod0, mass_of_dry_air)
-
-        self.mass_of_dry_air = mass_of_dry_air
+        self.formulae = None
         self.dql = None
 
     @property
     def dv(self):
         rhod_mean = (self.get_predicted("rhod")[0] + self["rhod"][0]) / 2
-        return phys.Trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
+        return self.formulae.trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
 
     def register(self, builder):
+        self.formulae = builder.core.formulae
+        pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
+        rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
+        self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
+
         _Moist.register(self, builder)
         self['qv'][:] = self.params[0]
         self['thd'][:] = self.params[1]
@@ -61,10 +65,10 @@ class Parcel(_Moist):
             n_in_dv = np.array([n_in_dv])
 
         attributes = {}
-        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
         attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(r_dry, self, np.zeros_like(attributes['n']), kappa, rtol)
-        attributes['volume'] = phys.volume(radius=r_wet)
+        r_wet = r_wet_init(r_dry, self, kappa, rtol=rtol)
+        attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
         return attributes
 
     def advance_parcel_vars(self):
@@ -77,14 +81,15 @@ class Parcel(_Moist):
         qv = self['qv'][0] - self.dql/2
 
         dql_dz = self.dql / dz_dt / dt
-        drho_dz = phys.Hydrostatic.drho_dz(self.g, p, T, qv, dql_dz=dql_dz)
+        lv = self.formulae.latent_heat.lv(T)
+        drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        phys.explicit_euler(self._tmp['t'][:], dt, 1)
-        phys.explicit_euler(self._tmp['z'][:], dt, dz_dt)
-        phys.explicit_euler(self._tmp['rhod'][:], dt, dz_dt * drhod_dz)
+        self.core.formulae.trivia.explicit_euler(self._tmp['t'].data, dt, 1)
+        self.core.formulae.trivia.explicit_euler(self._tmp['z'].data, dt, dz_dt)
+        self.core.formulae.trivia.explicit_euler(self._tmp['rhod'].data, dt, dz_dt * drhod_dz)
 
-        self.mesh.dv = phys.Trivia.volume_of_density_mass(
+        self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,
             self.mass_of_dry_air
         )

@@ -20,7 +20,7 @@ class TestExplicitEulerWithInterpolation:
         settings = DisplacementSettings()
         settings.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
         settings.positions = [[0.5], [0.5]]
-        sut, _ = settings.get_displacement(backend)
+        sut, _ = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -39,7 +39,7 @@ class TestExplicitEulerWithInterpolation:
         settings.grid = (3, 3)
         settings.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         settings.positions = [[1.5], [1.5]]
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -49,10 +49,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_calculate_displacement(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         a = .1
@@ -60,8 +56,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         settings.positions = [[w], [0]]
-        settings.scheme = 'FTFS'
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -83,8 +78,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         settings.positions = [[0], [w]]
-        settings.scheme = 'FTFS'
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -104,7 +98,7 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         settings.positions = [[px], [py]]
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         sut.displacement[0, droplet_id] = .1
@@ -127,7 +121,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = core.particles
@@ -151,7 +145,7 @@ class TestExplicitEulerWithInterpolation:
 
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend)
+        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = core.particles

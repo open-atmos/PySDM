@@ -11,9 +11,7 @@ class RelativeHumidity(MoistEnvironmentProduct):
         super().__init__(
             description="Relative humidity",
             name="RH",
-            unit="%",
-            range=(75, 105),
-            scale="linear",
+            unit="%"
         )
 
     def get(self):

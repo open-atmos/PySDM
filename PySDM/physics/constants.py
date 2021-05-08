@@ -18,6 +18,7 @@ def convert_to(value, unit):
 
 
 pi = sci.pi
+pi_4_3 = pi * 4 / 3
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +
@@ -41,9 +42,21 @@ g_std = sci.g * si.metre / si.second ** 2
 
 c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 
+Rd_over_c_pd = Rd / c_pd
+
 ARM_C1 = 6.1094 * si.hectopascal
 ARM_C2 = 17.625 * si.dimensionless
 ARM_C3 = 243.04 * si.kelvin
+
+FWC_C0 = 6.115836990e000 * si.hPa
+FWC_C1 = 0.444606896e000 * si.hPa / si.K
+FWC_C2 = 0.143177157e-01 * si.hPa / si.K**2
+FWC_C3 = 0.264224321e-03 * si.hPa / si.K**3
+FWC_C4 = 0.299291081e-05 * si.hPa / si.K**4
+FWC_C5 = 0.203154182e-07 * si.hPa / si.K**5
+FWC_C6 = 0.702620698e-10 * si.hPa / si.K**6
+FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
+FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
 
 rho_w = 1 * si.kilograms / si.litres
 sgm = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence

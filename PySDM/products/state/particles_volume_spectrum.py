@@ -3,8 +3,6 @@ Created at 28.04.2020
 """
 
 import numpy as np
-
-from PySDM.physics import formulae as phys
 from PySDM.products.product import MomentProduct
 
 
@@ -14,9 +12,7 @@ class ParticlesVolumeSpectrum(MomentProduct):
         super().__init__(
             name='dv/dlnr',
             unit='1/(unit dr/r)',
-            description='Particles volume distribution',
-            scale='linear',
-            range=[20, 50]
+            description='Particles volume distribution'
         )
         self.moment_0 = None
         self.moments = None
@@ -27,7 +23,7 @@ class ParticlesVolumeSpectrum(MomentProduct):
         self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
 
     def get(self, radius_bins_edges):
-        volume_bins_edges = phys.volume(radius_bins_edges)
+        volume_bins_edges = self.formulae.trivia.volume(radius_bins_edges)
         vals = np.empty(len(volume_bins_edges) - 1)
         for i in range(len(vals)):
             self.download_moment_to_buffer(attr='volume', rank=1,
