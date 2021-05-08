@@ -1,4 +1,4 @@
-name: PySDM-readme.jl
+name: PySDM-readme.py
 
 defaults:
   run:
@@ -20,6 +20,5 @@ jobs:
       - uses: actions/setup-python@v1
       - run: pip install -e .
       - run: pip install exdown pytest
-      - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
-      - uses: julia-actions/setup-julia@v1
-      - run: julia readme.jl
+      - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.py', 'w'); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
+      - run: python readme.py

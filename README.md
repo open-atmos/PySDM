@@ -222,7 +222,6 @@ particles = builder.build(attributes, products);
 <details open>
 <summary>Python</summary>
 
-<!--exdown-cont-->
 ```Python
 from PySDM import Builder
 from PySDM.environments import Box
@@ -310,7 +309,6 @@ legend()
 <details open>
 <summary>Python</summary>
 
-<!--exdown-cont-->
 ```Python
 from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
