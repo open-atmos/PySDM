@@ -195,7 +195,7 @@ Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
 
-builder = PySDM.Builder(n_sd=n_sd, backend=CPU)
+builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum()] 
@@ -211,7 +211,7 @@ Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
 Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
-ParticleVolumeSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeSpectrum;
+ParticleVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticleVolumeSpectrum;
 
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
