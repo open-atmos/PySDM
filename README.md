@@ -187,7 +187,6 @@ Instantiation of the ``Core`` class is handled by the ``Builder``
 <details>
 <summary>Julia (click to expand)</summary>
 
-<!--exdown-cont-->
 ```Julia
 Builder = pyimport("PySDM").Builder
 Box = pyimport("PySDM.environments").Box
@@ -205,7 +204,6 @@ particles = builder.build(attributes, products)
 <details>
 <summary>Matlab (click to expand)</summary>
 
-<!--exdown-cont-->
 ```Matlab
 Builder = py.importlib.import_module('PySDM').Builder;
 Box = py.importlib.import_module('PySDM.environments').Box;
@@ -262,7 +260,6 @@ In the listing below, its usage is interleaved with plotting logic
 <details>
 <summary>Julia (click to expand)</summary>
 
-<!--exdown-cont-->
 ```Julia
 rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots
@@ -287,7 +284,6 @@ savefig("plot.svg")
 <details>
 <summary>Matlab (click to expand)</summary>
 
-<!--exdown-cont-->
 ```Matlab
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
