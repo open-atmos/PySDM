@@ -576,7 +576,7 @@ pyplot.savefig('parcel.svg')
 ```
 </details>
 
-![plot](https://raw.githubusercontent.com/slayoo/PySDM/koehler_refactor/parcel.svg)
+![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
 
 ## Package structure and API
 
