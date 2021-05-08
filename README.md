@@ -267,10 +267,10 @@ using Plots
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
 for step = 0:1200:3600
-    core.run(step - core.n_steps)
+    particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        core.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
+        particles.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -290,9 +290,9 @@ rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 for step = 0:1200:3600
-    core.run(int32(step - core.n_steps))
+    particles.run(int32(step - particles.n_steps))
     x = radius_bins_edges / si.um;
-    y = core.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
+    y = particles.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -383,7 +383,7 @@ attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_
 attributes["dry volume"] = builder.formulae.trivia.volume(radius=r_dry)
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
-core = builder.build(attributes, products=[
+particles = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
@@ -392,22 +392,22 @@ core = builder.build(attributes, products=[
     
 cell_id=1
 output = Dict("z" => Array{Float32}(undef, output_points+1))
-for (_, product) in core.products
+for (_, product) in particles.products
     output[product.name] = Array{Float32}(undef, output_points+1)
     output[product.name][1] = product.get()[cell_id]
 end 
 output["z"][1] = env.__getitem__("z")[cell_id]
     
 for step = 2:output_points+1
-    core.run(steps=output_interval)
-    for (_, product) in core.products
+    particles.run(steps=output_interval)
+    for (_, product) in particles.products
         output[product.name][step] = product.get()[cell_id]
     end 
     output["z"][step]=env.__getitem__("z")[cell_id]
 end 
 
 plots = []
-for (_, product) in core.products
+for (_, product) in particles.products
     append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.name)])
 end
 plot(plots..., layout=(1,4))
@@ -461,7 +461,7 @@ attributes = py.dict(pyargs( ...
     'volume', builder.formulae.trivia.volume(r_wet) ...
 ));
 
-core = builder.build(attributes, py.list({ ...
+particles = builder.build(attributes, py.list({ ...
     products.PeakSupersaturation(), ...
     products.CloudDropletEffectiveRadius(pyargs('radius_range', cloud_range)), ...
     products.CloudDropletConcentration(pyargs('radius_range', cloud_range)), ...
@@ -469,16 +469,16 @@ core = builder.build(attributes, py.list({ ...
 }));
 
 cell_id = int32(0);
-output_size = [output_points+1, 1 + length(py.list(core.products.keys()))];
+output_size = [output_points+1, 1 + length(py.list(particles.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
-output_names = ['z', cellfun(@string, cell(py.list(core.products.keys())))];
+output_names = ['z', cellfun(@string, cell(py.list(particles.products.keys())))];
 output = table(...
     'Size', output_size, ...
     'VariableTypes', output_types, ...
     'VariableNames', output_names ...
 );
-for pykey = py.list(keys(core.products))
-    get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
+for pykey = py.list(keys(particles.products))
+    get = py.getattr(particles.products{pykey{1}}.get(), '__getitem__');
     key = string(pykey{1});
     output{1, key} = get(cell_id);
 end
@@ -487,9 +487,9 @@ zget = py.getattr(get('z'), '__getitem__');
 output{1, 'z'} = zget(cell_id);
 
 for i=2:output_points+1
-    core.run(pyargs('steps', int32(output_interval)));
-    for pykey = py.list(keys(core.products))
-        get = py.getattr(core.products{pykey{1}}.get(), '__getitem__');
+    particles.run(pyargs('steps', int32(output_interval)));
+    for pykey = py.list(keys(particles.products))
+        get = py.getattr(particles.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
         output{i, key} = get(cell_id);
     end
@@ -497,8 +497,8 @@ for i=2:output_points+1
 end
 
 i=1;
-for pykey = py.list(keys(core.products))
-    product = core.products{pykey{1}};
+for pykey = py.list(keys(particles.products))
+    product = particles.products{pykey{1}};
     subplot(1, width(output)-1, i);
     plot(output{:, string(pykey{1})}, output.z);
     title(string(product.name));
@@ -549,7 +549,7 @@ attributes = {
     'volume': builder.formulae.trivia.volume(radius=r_wet)
 }
 
-core = builder.build(attributes, products=[
+particles = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
@@ -557,17 +557,17 @@ core = builder.build(attributes, products=[
 ])
 
 cell_id = 0
-output = {product.name: [product.get()[cell_id]] for product in core.products.values()}
+output = {product.name: [product.get()[cell_id]] for product in particles.products.values()}
 output['z'] = [env['z'][cell_id]]
 
 for step in range(output_points):
-    core.run(steps=output_interval)
-    for product in core.products.values():
+    particles.run(steps=output_interval)
+    for product in particles.products.values():
         output[product.name].append(product.get()[cell_id])
     output['z'].append(env['z'][cell_id])
 
-fig, axs = pyplot.subplots(1, len(core.products), sharey="all")
-for i, (key, product) in enumerate(core.products.items()):
+fig, axs = pyplot.subplots(1, len(particles.products), sharey="all")
+for i, (key, product) in enumerate(particles.products.items()):
     axs[i].plot(output[key], output['z'], marker='.')
     axs[i].set_title(product.name)
     axs[i].set_xlabel(product.unit)
