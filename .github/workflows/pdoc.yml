@@ -17,6 +17,7 @@ jobs:
       - name: Build
         run: |
           pip3 install pdoc3
+          pip install -e .
           pdoc --html PySDM
       - name: Deploy
         if: github.ref == 'refs/heads/master'
