@@ -7,4 +7,9 @@ Created at 30.04.2020
 
 from .builder import Builder
 
-__version__ = "TODO #415"
+from pkg_resources import get_distribution, DistributionNotFound
+try:
+    __version__ = get_distribution(__name__).version
+except DistributionNotFound:
+    # package is not installed
+    pass
