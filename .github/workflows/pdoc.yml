@@ -20,9 +20,9 @@ jobs:
           pip install -e .
           pdoc --html PySDM
       - name: Deploy
-        if: github.ref == 'refs/heads/master'
+        #if: github.ref == 'refs/heads/master'
         uses: JamesIves/github-pages-deploy-action@4.1.1
         with:
           BRANCH: pdoc
-          FOLDER: build
+          FOLDER: html/PySDM
           CLEAN: true
