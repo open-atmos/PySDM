@@ -4,18 +4,10 @@ Created at 04.11.2019
 
 import numpy as np
 import numba
-from numba import void, f8, i8, prange
 from PySDM.backends.numba import conf
 
 
-@numba.njit([void(i8[:], i8[:]),
-             void(i8[:, :], i8[:, :]),
-             void(f8[:], f8),
-             void(f8[:], f8[:]),
-             void(f8[:, :], f8[:, :]),
-             void(f8[:, :], i8[:, :])
-             ],
-            **{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def add(output, addend):
     output += addend
 
@@ -25,19 +17,19 @@ def amin(data):
     return np.amin(data)
 
 
-@numba.njit(void(i8[:, :], i8[:]), **conf.JIT_FLAGS)
+@numba.njit(**conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(output.shape[0]):
-        for i in prange(output.shape[1]):
+        for i in numba.prange(output.shape[1]):
             output[d, i] %= divisor[d]
 
 
-@numba.njit(void(f8[:]), **conf.JIT_FLAGS)
+@numba.njit(**conf.JIT_FLAGS)
 def floor(output):
     output[:] = np.floor(output)
 
 
-@numba.njit(void(i8[:, :], f8[:, :]), **conf.JIT_FLAGS)
+@numba.njit(**conf.JIT_FLAGS)
 def floor_out_of_place(output, input_data):
     output[:] = np.floor(input_data)
 
