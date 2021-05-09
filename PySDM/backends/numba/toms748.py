@@ -11,6 +11,7 @@ float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max
 float_info_min = float_info.min
 
+
 @numba.njit(**{**JIT_FLAGS, **{'parallel': False, 'cache':False}})
 def bracket(f, args, a, b, c, fa, fb):
     tol = float_info_epsilon * 2
