@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>PySDM.state.particles API documentation</title>
+<meta name="description" content="Created at 03.06.2019" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>PySDM.state.particles</code></h1>
+</header>
+<section id="section-intro">
+<p>Created at 03.06.2019</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Created at 03.06.2019
+&#34;&#34;&#34;
+
+from typing import Dict
+
+import numpy as np
+
+from PySDM.attributes.impl.attribute import Attribute
+from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
+
+
+class Particles:
+
+    def __init__(
+            self, core,
+            idx,
+            extensive_attributes,
+            extensive_keys: dict,
+            cell_start,
+            attributes: Dict[str, Attribute]
+    ):
+        self.core = core
+
+        self.__n_sd = core.n_sd
+        self.__valid_n_sd = core.n_sd
+        self.healthy = True
+        self.__healthy_memory = self.core.Storage.from_ndarray(np.full((1,), 1))
+        self.__idx = idx
+        self.__strides = self.core.Storage.from_ndarray(self.core.mesh.strides)
+
+        self.extensive_attributes = extensive_attributes
+        self.extensive_keys = extensive_keys
+
+        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
+        self.__cell_start = self.core.Storage.from_ndarray(cell_start)
+        self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
+                                                                  scheme=core.sorting_scheme)
+        self.__sorted = False
+        self.attributes = attributes
+
+        self.recalculate_cell_id()
+
+    @property
+    def cell_start(self):
+        if not self.__sorted:
+            self.__sort_by_cell_id()
+        return self.__cell_start
+
+    @property
+    def SD_num(self):
+        assert self.healthy
+        return len(self.__idx)
+
+    def sanitize(self):
+        if not self.healthy:
+            self.__idx.length = self.__valid_n_sd
+            self.__idx.remove_zero_n_or_flagged(self[&#39;n&#39;])
+            self.__valid_n_sd = self.__idx.length
+            self.healthy = True
+            self.__healthy_memory[:] = 1
+            self.__sorted = False
+
+    def cut_working_length(self, length):
+        assert length &lt;= len(self.__idx)
+        self.__idx.length = length
+
+    def get_working_length(self):
+        return len(self.__idx)
+
+    def reset_working_length(self):
+        self.__idx.length = self.__valid_n_sd
+
+    def reset_cell_idx(self):
+        self.cell_idx.reset_index()
+        self.__sort_by_cell_id()
+
+    def __getitem__(self, item):
+        return self.attributes[item].get()
+
+    def permutation(self, u01, local):
+        if local:
+            &#34;&#34;&#34;
+            apply Fisher-Yates algorithm per cell
+            &#34;&#34;&#34;
+            self.__idx.shuffle(u01, parts=self.cell_start)
+        else:
+            &#34;&#34;&#34;
+            apply Fisher-Yates algorithm to all super-droplets
+            &#34;&#34;&#34;
+            self.__idx.shuffle(u01)
+            self.__sorted = False
+
+    def __sort_by_cell_id(self):
+        self.__cell_caretaker(self[&#39;cell id&#39;], self.cell_idx, self.__cell_start, self.__idx)
+        self.__sorted = True
+
+    def get_extensive_attrs(self):
+        return self.extensive_attributes
+
+    def recalculate_cell_id(self):
+        if &#39;cell origin&#39; not in self.attributes:
+            return
+        else:
+            self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+            self.__sorted = False
+
+    def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
+        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+
+    def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf)):
+        attr_data, ranks = [], []
+        for attr in specs:
+            for rank in specs[attr]:
+                attr_data.append(self.attributes[attr].get())
+                ranks.append(rank)
+        # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
+        assert len(set(attr_data)) &lt;= 1
+        if len(attr_data) == 0:
+            attr_data = np.empty((0,))
+        else:
+            attr_data = attr_data[0]
+
+        ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+
+        self.core.bck.moments(moment_0,
+                              moments,
+                              self[&#39;n&#39;],
+                              attr_data,
+                              self[&#39;cell id&#39;],
+                              self.__idx,
+                              self.SD_num,
+                              ranks,
+                              attr_range[0], attr_range[1],
+                              self[attr_name])
+
+    def coalescence(self, gamma, is_first_in_pair):
+        self.core.bck.coalescence(n=self[&#39;n&#39;],
+                                  idx=self.__idx,
+                                  length=self.SD_num,
+                                  attributes=self.get_extensive_attrs(),
+                                  gamma=gamma,
+                                  healthy=self.__healthy_memory,
+                                  is_first_in_pair=is_first_in_pair
+                                  )
+        self.healthy = bool(self.__healthy_memory)
+        self.core.particles.sanitize()
+        self.attributes[&#39;n&#39;].mark_updated()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
+
+    def adaptive_sdm_end(self, dt_left):
+        return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
+
+    def has_attribute(self, attr):
+        return attr in self.attributes
+
+    def remove_precipitated(self) -&gt; float:
+        res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                              self[&#39;volume&#39;], self[&#39;n&#39;],
+                                              self.__idx, self.SD_num, self.__healthy_memory)
+        self.healthy = bool(self.__healthy_memory)
+        self.sanitize()
+        return res
+
+    def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+        self.core.bck.oxidation(
+            n_sd=self.core.n_sd,
+            cell_ids=self[&#39;cell id&#39;],
+            do_chemistry_flag=do_chemistry_flag,
+            k0=kinetic_consts[&#34;k0&#34;],
+            k1=kinetic_consts[&#34;k1&#34;],
+            k2=kinetic_consts[&#34;k2&#34;],
+            k3=kinetic_consts[&#34;k3&#34;],
+            K_SO2=equilibrium_consts[&#34;K_SO2&#34;],
+            K_HSO3=equilibrium_consts[&#34;K_HSO3&#34;],
+            dissociation_factor_SO2=dissociation_factors[&#39;SO2&#39;],
+            dt=dt,
+            # input
+            droplet_volume=self[&#34;volume&#34;],
+            pH=self[&#34;pH&#34;],
+            O3=self[&#34;conc_O3&#34;],
+            H2O2=self[&#34;conc_H2O2&#34;],
+            S_IV=self[&#34;conc_S_IV&#34;],
+            # output
+            moles_O3=self[&#34;moles_O3&#34;],
+            moles_H2O2=self[&#34;moles_H2O2&#34;],
+            moles_S_IV=self[&#34;moles_S_IV&#34;],
+            moles_S_VI=self[&#34;moles_S_VI&#34;]
+        )
+        self.attributes[&#39;moles_S_IV&#39;].mark_updated()
+        self.attributes[&#39;moles_S_VI&#39;].mark_updated()
+        self.attributes[&#39;moles_H2O2&#39;].mark_updated()
+        self.attributes[&#39;moles_O3&#39;].mark_updated()
+
+    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
+                    environment_mixing_ratios, do_chemistry_flag):
+        self.core.bck.dissolution(
+            n_cell=self.core.mesh.n_cell,
+            n_threads=1,  # TODO #440
+            cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+            cell_start_arg=self.cell_start,
+            idx=self._Particles__idx,
+            do_chemistry_flag=do_chemistry_flag,
+            mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
+            env_mixing_ratio=environment_mixing_ratios,
+            # note: assuming condensation was called
+            env_p=self.core.env.get_predicted(&#39;p&#39;),
+            env_T=self.core.env.get_predicted(&#39;T&#39;),
+            env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+            dt=dt,
+            dv=self.core.mesh.dv,
+            droplet_volume=self[&#34;volume&#34;],
+            multiplicity=self[&#34;n&#34;],
+            system_type=system_type,
+            ksi=dissociation_factors
+        )
+        for key in gaseous_compounds.keys():
+            self.attributes[f&#39;moles_{key}&#39;].mark_updated()
+
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+        self.core.bck.chem_recalculate_cell_data(
+            equilibrium_consts=equilibrium_consts,
+            kinetic_consts=kinetic_consts,
+            T=self.core.env.get_predicted(&#39;T&#39;)
+        )
+
+    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+        self.core.bck.chem_recalculate_drop_data(
+            dissociation_factors=dissociation_factors,
+            equilibrium_consts=equilibrium_consts,
+            pH=self[&#39;pH&#39;],
+            cell_id=self[&#39;cell id&#39;]
+        )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM.state.particles.Particles"><code class="flex name class">
+<span>class <span class="ident">Particles</span></span>
+<span>(</span><span>core, idx, extensive_attributes, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Particles:
+
+    def __init__(
+            self, core,
+            idx,
+            extensive_attributes,
+            extensive_keys: dict,
+            cell_start,
+            attributes: Dict[str, Attribute]
+    ):
+        self.core = core
+
+        self.__n_sd = core.n_sd
+        self.__valid_n_sd = core.n_sd
+        self.healthy = True
+        self.__healthy_memory = self.core.Storage.from_ndarray(np.full((1,), 1))
+        self.__idx = idx
+        self.__strides = self.core.Storage.from_ndarray(self.core.mesh.strides)
+
+        self.extensive_attributes = extensive_attributes
+        self.extensive_keys = extensive_keys
+
+        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
+        self.__cell_start = self.core.Storage.from_ndarray(cell_start)
+        self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
+                                                                  scheme=core.sorting_scheme)
+        self.__sorted = False
+        self.attributes = attributes
+
+        self.recalculate_cell_id()
+
+    @property
+    def cell_start(self):
+        if not self.__sorted:
+            self.__sort_by_cell_id()
+        return self.__cell_start
+
+    @property
+    def SD_num(self):
+        assert self.healthy
+        return len(self.__idx)
+
+    def sanitize(self):
+        if not self.healthy:
+            self.__idx.length = self.__valid_n_sd
+            self.__idx.remove_zero_n_or_flagged(self[&#39;n&#39;])
+            self.__valid_n_sd = self.__idx.length
+            self.healthy = True
+            self.__healthy_memory[:] = 1
+            self.__sorted = False
+
+    def cut_working_length(self, length):
+        assert length &lt;= len(self.__idx)
+        self.__idx.length = length
+
+    def get_working_length(self):
+        return len(self.__idx)
+
+    def reset_working_length(self):
+        self.__idx.length = self.__valid_n_sd
+
+    def reset_cell_idx(self):
+        self.cell_idx.reset_index()
+        self.__sort_by_cell_id()
+
+    def __getitem__(self, item):
+        return self.attributes[item].get()
+
+    def permutation(self, u01, local):
+        if local:
+            &#34;&#34;&#34;
+            apply Fisher-Yates algorithm per cell
+            &#34;&#34;&#34;
+            self.__idx.shuffle(u01, parts=self.cell_start)
+        else:
+            &#34;&#34;&#34;
+            apply Fisher-Yates algorithm to all super-droplets
+            &#34;&#34;&#34;
+            self.__idx.shuffle(u01)
+            self.__sorted = False
+
+    def __sort_by_cell_id(self):
+        self.__cell_caretaker(self[&#39;cell id&#39;], self.cell_idx, self.__cell_start, self.__idx)
+        self.__sorted = True
+
+    def get_extensive_attrs(self):
+        return self.extensive_attributes
+
+    def recalculate_cell_id(self):
+        if &#39;cell origin&#39; not in self.attributes:
+            return
+        else:
+            self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+            self.__sorted = False
+
+    def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
+        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+
+    def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf)):
+        attr_data, ranks = [], []
+        for attr in specs:
+            for rank in specs[attr]:
+                attr_data.append(self.attributes[attr].get())
+                ranks.append(rank)
+        # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
+        assert len(set(attr_data)) &lt;= 1
+        if len(attr_data) == 0:
+            attr_data = np.empty((0,))
+        else:
+            attr_data = attr_data[0]
+
+        ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+
+        self.core.bck.moments(moment_0,
+                              moments,
+                              self[&#39;n&#39;],
+                              attr_data,
+                              self[&#39;cell id&#39;],
+                              self.__idx,
+                              self.SD_num,
+                              ranks,
+                              attr_range[0], attr_range[1],
+                              self[attr_name])
+
+    def coalescence(self, gamma, is_first_in_pair):
+        self.core.bck.coalescence(n=self[&#39;n&#39;],
+                                  idx=self.__idx,
+                                  length=self.SD_num,
+                                  attributes=self.get_extensive_attrs(),
+                                  gamma=gamma,
+                                  healthy=self.__healthy_memory,
+                                  is_first_in_pair=is_first_in_pair
+                                  )
+        self.healthy = bool(self.__healthy_memory)
+        self.core.particles.sanitize()
+        self.attributes[&#39;n&#39;].mark_updated()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
+
+    def adaptive_sdm_end(self, dt_left):
+        return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
+
+    def has_attribute(self, attr):
+        return attr in self.attributes
+
+    def remove_precipitated(self) -&gt; float:
+        res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                              self[&#39;volume&#39;], self[&#39;n&#39;],
+                                              self.__idx, self.SD_num, self.__healthy_memory)
+        self.healthy = bool(self.__healthy_memory)
+        self.sanitize()
+        return res
+
+    def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+        self.core.bck.oxidation(
+            n_sd=self.core.n_sd,
+            cell_ids=self[&#39;cell id&#39;],
+            do_chemistry_flag=do_chemistry_flag,
+            k0=kinetic_consts[&#34;k0&#34;],
+            k1=kinetic_consts[&#34;k1&#34;],
+            k2=kinetic_consts[&#34;k2&#34;],
+            k3=kinetic_consts[&#34;k3&#34;],
+            K_SO2=equilibrium_consts[&#34;K_SO2&#34;],
+            K_HSO3=equilibrium_consts[&#34;K_HSO3&#34;],
+            dissociation_factor_SO2=dissociation_factors[&#39;SO2&#39;],
+            dt=dt,
+            # input
+            droplet_volume=self[&#34;volume&#34;],
+            pH=self[&#34;pH&#34;],
+            O3=self[&#34;conc_O3&#34;],
+            H2O2=self[&#34;conc_H2O2&#34;],
+            S_IV=self[&#34;conc_S_IV&#34;],
+            # output
+            moles_O3=self[&#34;moles_O3&#34;],
+            moles_H2O2=self[&#34;moles_H2O2&#34;],
+            moles_S_IV=self[&#34;moles_S_IV&#34;],
+            moles_S_VI=self[&#34;moles_S_VI&#34;]
+        )
+        self.attributes[&#39;moles_S_IV&#39;].mark_updated()
+        self.attributes[&#39;moles_S_VI&#39;].mark_updated()
+        self.attributes[&#39;moles_H2O2&#39;].mark_updated()
+        self.attributes[&#39;moles_O3&#39;].mark_updated()
+
+    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
+                    environment_mixing_ratios, do_chemistry_flag):
+        self.core.bck.dissolution(
+            n_cell=self.core.mesh.n_cell,
+            n_threads=1,  # TODO #440
+            cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+            cell_start_arg=self.cell_start,
+            idx=self._Particles__idx,
+            do_chemistry_flag=do_chemistry_flag,
+            mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
+            env_mixing_ratio=environment_mixing_ratios,
+            # note: assuming condensation was called
+            env_p=self.core.env.get_predicted(&#39;p&#39;),
+            env_T=self.core.env.get_predicted(&#39;T&#39;),
+            env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+            dt=dt,
+            dv=self.core.mesh.dv,
+            droplet_volume=self[&#34;volume&#34;],
+            multiplicity=self[&#34;n&#34;],
+            system_type=system_type,
+            ksi=dissociation_factors
+        )
+        for key in gaseous_compounds.keys():
+            self.attributes[f&#39;moles_{key}&#39;].mark_updated()
+
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+        self.core.bck.chem_recalculate_cell_data(
+            equilibrium_consts=equilibrium_consts,
+            kinetic_consts=kinetic_consts,
+            T=self.core.env.get_predicted(&#39;T&#39;)
+        )
+
+    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+        self.core.bck.chem_recalculate_drop_data(
+            dissociation_factors=dissociation_factors,
+            equilibrium_consts=equilibrium_consts,
+            pH=self[&#39;pH&#39;],
+            cell_id=self[&#39;cell id&#39;]
+        )</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="PySDM.state.particles.Particles.SD_num"><code class="name">var <span class="ident">SD_num</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def SD_num(self):
+    assert self.healthy
+    return len(self.__idx)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.cell_start"><code class="name">var <span class="ident">cell_start</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cell_start(self):
+    if not self.__sorted:
+        self.__sort_by_cell_id()
+    return self.__cell_start</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.state.particles.Particles.adaptive_sdm_end"><code class="name flex">
+<span>def <span class="ident">adaptive_sdm_end</span></span>(<span>self, dt_left)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def adaptive_sdm_end(self, dt_left):
+    return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.chem_recalculate_cell_data"><code class="name flex">
+<span>def <span class="ident">chem_recalculate_cell_data</span></span>(<span>self, equilibrium_consts, kinetic_consts)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+    self.core.bck.chem_recalculate_cell_data(
+        equilibrium_consts=equilibrium_consts,
+        kinetic_consts=kinetic_consts,
+        T=self.core.env.get_predicted(&#39;T&#39;)
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.chem_recalculate_drop_data"><code class="name flex">
+<span>def <span class="ident">chem_recalculate_drop_data</span></span>(<span>self, dissociation_factors, equilibrium_consts)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+    self.core.bck.chem_recalculate_drop_data(
+        dissociation_factors=dissociation_factors,
+        equilibrium_consts=equilibrium_consts,
+        pH=self[&#39;pH&#39;],
+        cell_id=self[&#39;cell id&#39;]
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.coalescence"><code class="name flex">
+<span>def <span class="ident">coalescence</span></span>(<span>self, gamma, is_first_in_pair)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def coalescence(self, gamma, is_first_in_pair):
+    self.core.bck.coalescence(n=self[&#39;n&#39;],
+                              idx=self.__idx,
+                              length=self.SD_num,
+                              attributes=self.get_extensive_attrs(),
+                              gamma=gamma,
+                              healthy=self.__healthy_memory,
+                              is_first_in_pair=is_first_in_pair
+                              )
+    self.healthy = bool(self.__healthy_memory)
+    self.core.particles.sanitize()
+    self.attributes[&#39;n&#39;].mark_updated()
+    for attr in self.attributes.values():
+        if isinstance(attr, ExtensiveAttribute):
+            attr.mark_updated()</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.cut_working_length"><code class="name flex">
+<span>def <span class="ident">cut_working_length</span></span>(<span>self, length)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cut_working_length(self, length):
+    assert length &lt;= len(self.__idx)
+    self.__idx.length = length</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.dissolution"><code class="name flex">
+<span>def <span class="ident">dissolution</span></span>(<span>self, gaseous_compounds, system_type, dissociation_factors, dt, environment_mixing_ratios, do_chemistry_flag)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
+                environment_mixing_ratios, do_chemistry_flag):
+    self.core.bck.dissolution(
+        n_cell=self.core.mesh.n_cell,
+        n_threads=1,  # TODO #440
+        cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+        cell_start_arg=self.cell_start,
+        idx=self._Particles__idx,
+        do_chemistry_flag=do_chemistry_flag,
+        mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
+        env_mixing_ratio=environment_mixing_ratios,
+        # note: assuming condensation was called
+        env_p=self.core.env.get_predicted(&#39;p&#39;),
+        env_T=self.core.env.get_predicted(&#39;T&#39;),
+        env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+        dt=dt,
+        dv=self.core.mesh.dv,
+        droplet_volume=self[&#34;volume&#34;],
+        multiplicity=self[&#34;n&#34;],
+        system_type=system_type,
+        ksi=dissociation_factors
+    )
+    for key in gaseous_compounds.keys():
+        self.attributes[f&#39;moles_{key}&#39;].mark_updated()</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.get_extensive_attrs"><code class="name flex">
+<span>def <span class="ident">get_extensive_attrs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_extensive_attrs(self):
+    return self.extensive_attributes</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.get_working_length"><code class="name flex">
+<span>def <span class="ident">get_working_length</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_working_length(self):
+    return len(self.__idx)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.has_attribute"><code class="name flex">
+<span>def <span class="ident">has_attribute</span></span>(<span>self, attr)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_attribute(self, attr):
+    return attr in self.attributes</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.moments"><code class="name flex">
+<span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf))</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf)):
+    attr_data, ranks = [], []
+    for attr in specs:
+        for rank in specs[attr]:
+            attr_data.append(self.attributes[attr].get())
+            ranks.append(rank)
+    # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
+    assert len(set(attr_data)) &lt;= 1
+    if len(attr_data) == 0:
+        attr_data = np.empty((0,))
+    else:
+        attr_data = attr_data[0]
+
+    ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+
+    self.core.bck.moments(moment_0,
+                          moments,
+                          self[&#39;n&#39;],
+                          attr_data,
+                          self[&#39;cell id&#39;],
+                          self.__idx,
+                          self.SD_num,
+                          ranks,
+                          attr_range[0], attr_range[1],
+                          self[attr_name])</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.oxidation"><code class="name flex">
+<span>def <span class="ident">oxidation</span></span>(<span>self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+    self.core.bck.oxidation(
+        n_sd=self.core.n_sd,
+        cell_ids=self[&#39;cell id&#39;],
+        do_chemistry_flag=do_chemistry_flag,
+        k0=kinetic_consts[&#34;k0&#34;],
+        k1=kinetic_consts[&#34;k1&#34;],
+        k2=kinetic_consts[&#34;k2&#34;],
+        k3=kinetic_consts[&#34;k3&#34;],
+        K_SO2=equilibrium_consts[&#34;K_SO2&#34;],
+        K_HSO3=equilibrium_consts[&#34;K_HSO3&#34;],
+        dissociation_factor_SO2=dissociation_factors[&#39;SO2&#39;],
+        dt=dt,
+        # input
+        droplet_volume=self[&#34;volume&#34;],
+        pH=self[&#34;pH&#34;],
+        O3=self[&#34;conc_O3&#34;],
+        H2O2=self[&#34;conc_H2O2&#34;],
+        S_IV=self[&#34;conc_S_IV&#34;],
+        # output
+        moles_O3=self[&#34;moles_O3&#34;],
+        moles_H2O2=self[&#34;moles_H2O2&#34;],
+        moles_S_IV=self[&#34;moles_S_IV&#34;],
+        moles_S_VI=self[&#34;moles_S_VI&#34;]
+    )
+    self.attributes[&#39;moles_S_IV&#39;].mark_updated()
+    self.attributes[&#39;moles_S_VI&#39;].mark_updated()
+    self.attributes[&#39;moles_H2O2&#39;].mark_updated()
+    self.attributes[&#39;moles_O3&#39;].mark_updated()</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.permutation"><code class="name flex">
+<span>def <span class="ident">permutation</span></span>(<span>self, u01, local)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def permutation(self, u01, local):
+    if local:
+        &#34;&#34;&#34;
+        apply Fisher-Yates algorithm per cell
+        &#34;&#34;&#34;
+        self.__idx.shuffle(u01, parts=self.cell_start)
+    else:
+        &#34;&#34;&#34;
+        apply Fisher-Yates algorithm to all super-droplets
+        &#34;&#34;&#34;
+        self.__idx.shuffle(u01)
+        self.__sorted = False</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.recalculate_cell_id"><code class="name flex">
+<span>def <span class="ident">recalculate_cell_id</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate_cell_id(self):
+    if &#39;cell origin&#39; not in self.attributes:
+        return
+    else:
+        self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+        self.__sorted = False</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.remove_precipitated"><code class="name flex">
+<span>def <span class="ident">remove_precipitated</span></span>(<span>self) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_precipitated(self) -&gt; float:
+    res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                          self[&#39;volume&#39;], self[&#39;n&#39;],
+                                          self.__idx, self.SD_num, self.__healthy_memory)
+    self.healthy = bool(self.__healthy_memory)
+    self.sanitize()
+    return res</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.reset_cell_idx"><code class="name flex">
+<span>def <span class="ident">reset_cell_idx</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset_cell_idx(self):
+    self.cell_idx.reset_index()
+    self.__sort_by_cell_id()</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.reset_working_length"><code class="name flex">
+<span>def <span class="ident">reset_working_length</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset_working_length(self):
+    self.__idx.length = self.__valid_n_sd</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.sanitize"><code class="name flex">
+<span>def <span class="ident">sanitize</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sanitize(self):
+    if not self.healthy:
+        self.__idx.length = self.__valid_n_sd
+        self.__idx.remove_zero_n_or_flagged(self[&#39;n&#39;])
+        self.__valid_n_sd = self.__idx.length
+        self.healthy = True
+        self.__healthy_memory[:] = 1
+        self.__sorted = False</code></pre>
+</details>
+</dd>
+<dt id="PySDM.state.particles.Particles.sort_within_pair_by_attr"><code class="name flex">
+<span>def <span class="ident">sort_within_pair_by_attr</span></span>(<span>self, is_first_in_pair, attr_name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
+    self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="PySDM.state" href="index.html">PySDM.state</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="PySDM.state.particles.Particles" href="#PySDM.state.particles.Particles">Particles</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.state.particles.Particles.SD_num" href="#PySDM.state.particles.Particles.SD_num">SD_num</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.adaptive_sdm_end" href="#PySDM.state.particles.Particles.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.cell_start" href="#PySDM.state.particles.Particles.cell_start">cell_start</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.chem_recalculate_cell_data" href="#PySDM.state.particles.Particles.chem_recalculate_cell_data">chem_recalculate_cell_data</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.chem_recalculate_drop_data" href="#PySDM.state.particles.Particles.chem_recalculate_drop_data">chem_recalculate_drop_data</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.coalescence" href="#PySDM.state.particles.Particles.coalescence">coalescence</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.cut_working_length" href="#PySDM.state.particles.Particles.cut_working_length">cut_working_length</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.dissolution" href="#PySDM.state.particles.Particles.dissolution">dissolution</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.get_extensive_attrs" href="#PySDM.state.particles.Particles.get_extensive_attrs">get_extensive_attrs</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.get_working_length" href="#PySDM.state.particles.Particles.get_working_length">get_working_length</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.has_attribute" href="#PySDM.state.particles.Particles.has_attribute">has_attribute</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.moments" href="#PySDM.state.particles.Particles.moments">moments</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.oxidation" href="#PySDM.state.particles.Particles.oxidation">oxidation</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.permutation" href="#PySDM.state.particles.Particles.permutation">permutation</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.recalculate_cell_id" href="#PySDM.state.particles.Particles.recalculate_cell_id">recalculate_cell_id</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.remove_precipitated" href="#PySDM.state.particles.Particles.remove_precipitated">remove_precipitated</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.reset_cell_idx" href="#PySDM.state.particles.Particles.reset_cell_idx">reset_cell_idx</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.reset_working_length" href="#PySDM.state.particles.Particles.reset_working_length">reset_working_length</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.sanitize" href="#PySDM.state.particles.Particles.sanitize">sanitize</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.sort_within_pair_by_attr" href="#PySDM.state.particles.Particles.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
