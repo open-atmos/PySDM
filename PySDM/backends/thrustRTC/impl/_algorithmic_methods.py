@@ -186,12 +186,24 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
-            solver,
-            n_cell, cell_start_arg,
-            v, particle_temperatures, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, substeps, cell_order
+        solver,
+        n_cell, cell_start_arg,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+        rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success
     ):
-        raise NotImplementedError()
+        if n_cell != 1:
+            raise NotImplementedError()
+        cell_id = 0
+        cell_idx = None
+
+        n_substeps = counters['n_substeps']
+        dv_mean = dv
+        dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+        dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+        rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+        m_d = rhod_mean * dv_mean
+
+        solver(v, v_cr, n, vdry, cell_idx, kappa, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x, rtol_thd, dt, n_substeps)
 
     __flag_precipitated_body = trtc.For(['idx', 'n_sd', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
                                          'volume', 'n'], "i", '''
@@ -407,7 +419,8 @@ class AlgorithmicMethods:
         # TODO #330
         n_sd = cell_id.shape[0]
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
-        AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(len(idx) - 1,
-                                                                                  [cell_id.data, cell_start.data,
-                                                                                   idx.data])
+        if len(idx) > 1:
+            AlgorithmicMethods.___sort_by_cell_id_and_update_cell_start_body.launch_n(len(idx) - 1,
+                                                                                      [cell_id.data, cell_start.data,
+                                                                                       idx.data])
         return idx

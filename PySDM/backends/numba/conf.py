@@ -18,5 +18,5 @@ try:
 except numba.core.errors.UnsupportedParforsError:
     if 'CI' not in os.environ:
         warnings.warn("Numba version used does not support parallel for (32 bits?)")
-    JIT_FLAGS['parallel']=False
+    JIT_FLAGS['parallel'] = False
 
