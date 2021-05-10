@@ -246,10 +246,10 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive=True):
+    def make_condensation_solver(self, dt, dt_range, adaptive):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
-            phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius,
+            phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
             phys_lv=self.formulae.latent_heat.lv,
             phys_r_dr_dt=self.formulae.drop_growth.r_dr_dt,
             phys_RH_eq=self.formulae.hygroscopicity.RH_eq,
@@ -532,10 +532,10 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive=True):
+    def make_condensation_solver(self, dt, dt_range, adaptive):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
-            phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius,
+            phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
             phys_lv=self.formulae.latent_heat.lv,
             phys_r_dr_dt=self.formulae.drop_growth.r_dr_dt,
             phys_RH_eq=self.formulae.hygroscopicity.RH_eq,
@@ -913,7 +913,7 @@ def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_m
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_condensation_solver"><code class="name flex">
-<span>def <span class="ident">make_condensation_solver</span></span>(<span>self, dt, dt_range, adaptive=True)</span>
+<span>def <span class="ident">make_condensation_solver</span></span>(<span>self, dt, dt_range, adaptive)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -921,10 +921,10 @@ def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_m
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def make_condensation_solver(self, dt, dt_range, adaptive=True):
+<pre><code class="python">def make_condensation_solver(self, dt, dt_range, adaptive):
     return CondensationMethods.make_condensation_solver_impl(
         fastmath=self.formulae.fastmath,
-        phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius,
+        phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
         phys_lv=self.formulae.latent_heat.lv,
         phys_r_dr_dt=self.formulae.drop_growth.r_dr_dt,
         phys_RH_eq=self.formulae.hygroscopicity.RH_eq,

@@ -114,9 +114,9 @@ class Parcel(_Moist):
         drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;t&#39;].data, dt, 1)
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;z&#39;].data, dt, dz_dt)
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;rhod&#39;].data, dt, dz_dt * drhod_dz)
+        self.core.bck.explicit_euler(self._tmp[&#39;t&#39;], dt, 1)
+        self.core.bck.explicit_euler(self._tmp[&#39;z&#39;], dt, dz_dt)
+        self.core.bck.explicit_euler(self._tmp[&#39;rhod&#39;], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp[&#39;rhod&#39;][0] + self[&#34;rhod&#34;][0]) / 2,
@@ -234,9 +234,9 @@ class Parcel(_Moist):
         drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;t&#39;].data, dt, 1)
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;z&#39;].data, dt, dz_dt)
-        self.core.formulae.trivia.explicit_euler(self._tmp[&#39;rhod&#39;].data, dt, dz_dt * drhod_dz)
+        self.core.bck.explicit_euler(self._tmp[&#39;t&#39;], dt, 1)
+        self.core.bck.explicit_euler(self._tmp[&#39;z&#39;], dt, dz_dt)
+        self.core.bck.explicit_euler(self._tmp[&#39;rhod&#39;], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp[&#39;rhod&#39;][0] + self[&#34;rhod&#34;][0]) / 2,
@@ -304,9 +304,9 @@ def dv(self):
     drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
     drhod_dz = drho_dz
 
-    self.core.formulae.trivia.explicit_euler(self._tmp[&#39;t&#39;].data, dt, 1)
-    self.core.formulae.trivia.explicit_euler(self._tmp[&#39;z&#39;].data, dt, dz_dt)
-    self.core.formulae.trivia.explicit_euler(self._tmp[&#39;rhod&#39;].data, dt, dz_dt * drhod_dz)
+    self.core.bck.explicit_euler(self._tmp[&#39;t&#39;], dt, 1)
+    self.core.bck.explicit_euler(self._tmp[&#39;z&#39;], dt, dz_dt)
+    self.core.bck.explicit_euler(self._tmp[&#39;rhod&#39;], dt, dz_dt * drhod_dz)
 
     self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
         (self._tmp[&#39;rhod&#39;][0] + self[&#34;rhod&#34;][0]) / 2,
