@@ -6,6 +6,7 @@ from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
 import numpy as np
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
+from PySDM.physics import Formulae
 
 
 class DisplacementSettings:
@@ -15,12 +16,12 @@ class DisplacementSettings:
         self.grid = (1, 1)
         self.courant_field_data = (np.array([[0, 0]]).T, np.array([[0, 0]]))
         self.positions = [[0], [0]]
-        self.scheme = 'FTBS'
         self.sedimentation = False
         self.dt = None
 
-    def get_displacement(self, backend):
-        core = DummyCore(backend, n_sd=len(self.n))
+    def get_displacement(self, backend, scheme):
+        formulae = Formulae(particle_advection=scheme)
+        core = DummyCore(backend, n_sd=len(self.n), formulae=formulae)
         core.environment = DummyEnvironment(
             dt=self.dt,
             grid=self.grid,
@@ -35,7 +36,7 @@ class DisplacementSettings:
             'position in cell': position_in_cell
         }
         core.build(attributes)
-        sut = Displacement(courant_field=self.courant_field_data, scheme=self.scheme, enable_sedimentation=self.sedimentation)
+        sut = Displacement(courant_field=self.courant_field_data, enable_sedimentation=self.sedimentation)
         sut.register(core)
 
         return sut, core

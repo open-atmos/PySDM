@@ -5,48 +5,32 @@ Created at 2020
 from PySDM_examples.Yang_et_al_2018.example import Simulation
 from PySDM_examples.Yang_et_al_2018.settings import Settings
 from PySDM.physics.constants import si
-from PySDM.backends.numba import bdf
+from PySDM.backends.numba.test_helpers import bdf
 import pytest
 import numpy as np
-import os
 
 
-# TODO #411
-if 'CI' in os.environ and not os.environ.get('FAST_TESTS') == 'true':
-    scheme = ('default', 'BDF')
-    coord = ('volume logarithm', 'volume')
-    adaptive = (True, False)
-    enable_particle_temperatures = (False, True)
-else:
-    scheme = ('default',)
-    coord = ('volume logarithm',)
-    adaptive = (True,)
-    enable_particle_temperatures = (False,)
+scheme = ('default', 'BDF')
+adaptive = (True, False)
 
 
 @pytest.mark.parametrize("scheme", scheme)
-@pytest.mark.parametrize("coord", coord)
 @pytest.mark.parametrize("adaptive", adaptive)
-@pytest.mark.parametrize("enable_particle_temperatures", enable_particle_temperatures)
-def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
+def test_just_do_it(scheme, adaptive):
     # Arrange
     if scheme == 'BDF' and not adaptive:
         return
-    if scheme == 'BDF' and coord == 'volume':
-        return
 
     settings = Settings(dt_output=10 * si.second)
-    settings.coord = coord
     settings.adaptive = adaptive
-    settings.enable_particle_temperatures = enable_particle_temperatures
     if scheme == 'BDF':
-        settings.dt_max = settings.dt_output
+        settings.dt_max = settings.dt_output  # TODO #334 'BDF')
     elif not adaptive:
         settings.dt_max = 1 * si.second
 
     simulation = Simulation(settings)
     if scheme == 'BDF':
-        bdf.patch_core(simulation.core, settings.coord)
+        bdf.patch_core(simulation.core)
 
     # Act
     output = simulation.run()
@@ -72,4 +56,3 @@ def test_just_do_it(scheme, coord, adaptive, enable_particle_temperatures):
 
 def n_tot(n, condition):
     return np.dot(n, condition)
-

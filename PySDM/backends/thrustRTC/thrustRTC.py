@@ -24,8 +24,9 @@ class ThrustRTC(
 
     default_croupier = 'global'
 
-    def __init__(self):
-        raise Exception("Backend is stateless.")
+    def __init__(self, formulae):
+        self.formulae = formulae
+        PhysicsMethods.__init__(self)
 
     @staticmethod
     def sanity_check():

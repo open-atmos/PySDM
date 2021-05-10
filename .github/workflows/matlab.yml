@@ -1,0 +1,29 @@
+name: PySDM-readme.m
+
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  schedule:
+    - cron: '0 13 * * 4'
+
+jobs:
+  matlab:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - run: pip install -e .
+      - run: pip install exdown pytest
+      - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - uses: matlab-actions/setup-matlab@v0
+      - uses: matlab-actions/run-command@v0
+        with:
+          command: readme

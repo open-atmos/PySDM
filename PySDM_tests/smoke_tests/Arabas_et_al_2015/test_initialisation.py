@@ -6,7 +6,6 @@ import numpy as np
 from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
 from PySDM.physics.constants import si
-from PySDM.physics import formulae as phys
 from matplotlib import pyplot
 from PySDM.backends import CPU
 
@@ -21,12 +20,11 @@ def test_initialisation(plot=False):
 
     simulation = Simulation(settings, None)
 
-    n_bins = 32
     n_levels = settings.grid[1]
     n_cell = np.prod(np.array(settings.grid))
     n_moments = 1
 
-    r_bins = phys.radius(volume=settings.v_bins)
+    r_bins = settings.formulae.trivia.radius(volume=settings.v_bins)
 
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)

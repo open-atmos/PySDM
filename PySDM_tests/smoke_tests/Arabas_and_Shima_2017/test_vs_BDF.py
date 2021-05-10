@@ -9,8 +9,8 @@ import pytest
 import numpy as np
 
 
-rtols = [1e-3, 1e-7]
-schemes = ['default', 'BDF']
+rtols = (1e-3, 1e-7)
+schemes = ('default', 'BDF')
 setups_num = len(setups)
 
 

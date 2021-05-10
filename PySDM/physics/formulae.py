@@ -2,97 +2,88 @@
 Crated at 2019
 """
 
-from PySDM.backends.numba import numba_helpers as physics
-from PySDM.physics import constants as const
-
-import numpy as np
-
-dr_dt_MM = physics.dr_dt_MM
-R = physics.R
-r_cr = physics.r_cr
-pvs = physics.pvs
-lv = physics.lv
-c_p = physics.c_p
-dthd_dt = physics.dthd_dt
-temperature_pressure_RH = physics.temperature_pressure_RH
-radius = physics.radius
-volume = physics.volume
-RH_eq = physics.RH_eq
-pH2H = physics.pH2H
+from PySDM.backends.numba import conf
+from functools import lru_cache
+from PySDM import physics
+import numba
 
 
-def th_dry(th_std, qv):
-    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
+def _formula(func=None, **kw):
+    if func is None:
+        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+    else:
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
 
 
-def th_std(p, T):
-    return T * (const.p1000 / p)**(const.Rd / const.c_pd)
+def _boost(obj, fastmath):
+    if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
+        for item in dir(obj):
+            if item.startswith('__'):
+                continue
+            attr = getattr(obj, item)
+            if callable(attr):
+                setattr(obj, item, _formula(attr, fastmath=fastmath))
+    return obj
 
 
-class MoistAir:
-    @staticmethod
-    def rhod_of_rho_qv(rho, qv):
-        return rho / (1 + qv)
-
-    @staticmethod
-    def rho_of_rhod_qv(rhod, qv):
-        return rhod * (1 + qv)
-
-    @staticmethod
-    def p_d(p, qv):
-        return p * (1 - 1 / (1 + const.eps / qv))
-
-    @staticmethod
-    def rhod_of_pd_T(pd, T):
-        return pd / const.Rd / T
-
-    @staticmethod
-    def rho_of_p_qv_T(p, qv, T):
-        return p / R(qv) / T
+def _pick(value: str, choices: dict):
+    for name, cls in choices.items():
+        if name == value:
+            return cls()
+    raise ValueError(f"Unknown setting: '{value}';, choices are: {tuple(choices.keys())}")
 
 
-class Trivia:
-    @staticmethod
-    def volume_of_density_mass(rho, m):
-        return m / rho
+def _choices(module):
+    return dict([(name, cls) for name, cls in module.__dict__.items() if isinstance(cls, type)])
 
 
-class ThStd:
-    @staticmethod
-    def rho_d(p, qv, theta_std):
-        kappa = const.Rd / const.c_pd
-        pd = MoistAir.p_d(p, qv)
-        rho_d = pd / (np.power(p / const.p1000, kappa) * const.Rd * theta_std)
-        return rho_d
+@lru_cache()
+def _magick(value, module, fastmath):
+    return _boost(_pick(value, _choices(module)), fastmath)
 
 
-class Hydrostatic:
-    @staticmethod
-    def drho_dz(g, p, T, qv, dql_dz=0):
-        rho = MoistAir.rho_of_p_qv_T(p, qv, T)
-        Rq = R(qv)
-        cp = c_p(qv)
-        return (g / T * rho * (Rq / cp - 1) - p * lv(T) / cp / T**2 * dql_dz) / Rq
+class Formulae:
+    def __init__(self, *,
+                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 fastmath: bool = True,
+                 condensation_coordinate: str = 'VolumeLogarithm',
+                 saturation_vapour_pressure: str = 'FlatauWalkoCotton',
+                 latent_heat: str = 'Kirchhoff',
+                 hygroscopicity: str = 'KappaKoehlerLeadingTerms',
+                 drop_growth: str = 'MaxwellMason',
+                 surface_tension: str = 'Constant',
+                 diffusion_kinetics: str = 'FuchsSutugin',
+                 diffusion_thermics: str = 'Neglect',
+                 ventilation: str = 'Neglect',
+                 state_variable_triplet: str = 'RhodThdQv',
+                 particle_advection: str = 'ImplicitInSpace',
+                 hydrostatics: str = 'Default'
+                 ):
+        self.seed = seed
+        self.fastmath = fastmath
 
-    @staticmethod
-    def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
-        kappa = const.Rd / const.c_pd
-        z0 = 0
-        arg = np.power(p0/const.p1000, kappa) - (z-z0) * kappa * g / thstd / R(qv)
-        return const.p1000 * np.power(arg, 1/kappa)
+        self.trivia = _magick('Trivia', physics.trivia, fastmath)
 
+        self.condensation_coordinate = _magick(condensation_coordinate, physics.condensation_coordinate, fastmath)
+        self.saturation_vapour_pressure = _magick(saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
+        self.latent_heat = _magick(latent_heat, physics.latent_heat, fastmath)
+        self.hygroscopicity = _magick(hygroscopicity, physics.hygroscopicity, fastmath)
+        self.drop_growth = _magick(drop_growth, physics.drop_growth, fastmath)
+        self.surface_tension = _magick(surface_tension, physics.surface_tension, fastmath)
+        self.diffusion_kinetics = _magick(diffusion_kinetics, physics.diffusion_kinetics, fastmath)
+        self.diffusion_thermics = _magick(diffusion_thermics, physics.diffusion_thermics, fastmath)
+        self.ventilation = _magick(ventilation, physics.ventilation, fastmath)
+        self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
+        self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
+        self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
 
-def explicit_euler(y, dt, dy_dt):
-    y += dt * dy_dt
-
-
-def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
-    return specific_gravity * mole_fraction / (1 - mole_fraction)
-
-
-def mixing_ratio_2_mole_fraction(mixing_ratio, specific_gravity):
-    return mixing_ratio / (specific_gravity + mixing_ratio)
-
-
-def mixing_ratio_2_partial_pressure(mixing_ratio, specific_gravity, pressure):
-    return pressure * mixing_ratio / (mixing_ratio + specific_gravity)
+    def __str__(self):
+        description = []
+        for attr in dir(self):
+            if not attr.startswith('_'):
+                if getattr(self, attr).__class__ in (bool, int, float):
+                    value = getattr(self, attr)
+                else:
+                    value = getattr(self, attr).__class__.__name__
+                description.append(f"{attr}: {value}")
+        return ', '.join(description)

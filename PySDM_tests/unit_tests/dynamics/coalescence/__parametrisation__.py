@@ -5,7 +5,7 @@ Created at 04.11.2019
 import numpy as np
 import pytest
 
-from PySDM.dynamics.coalescence.coalescence import Coalescence, default_dt_coal_range
+from PySDM.dynamics.coalescence import Coalescence, default_dt_coal_range
 from PySDM.environments import Box
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 

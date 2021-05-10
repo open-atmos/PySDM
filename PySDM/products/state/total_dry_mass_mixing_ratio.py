@@ -8,9 +8,7 @@ class TotalDryMassMixingRatio(MomentProduct):
         super().__init__(
             name='q_dry',
             description='total dry mass mixing ratio',
-            unit='μg/kg',
-            range=None,
-            scale='linear'
+            unit='μg/kg'
         )
         self.density = density
 

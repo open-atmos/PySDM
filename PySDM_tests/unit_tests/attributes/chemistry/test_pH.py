@@ -1,7 +1,8 @@
-from PySDM.dynamics.aqueous_chemistry.support import M, EQUILIBRIUM_CONST
+from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
+from PySDM.physics.formulae import Formulae
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
-from PySDM.dynamics.aqueous_chemistry import aqueous_chemistry
+from PySDM.dynamics import aqueous_chemistry
 from chempy import Equilibrium
 from chempy.equilibria import EqSystem
 from chempy.chemistry import Species
@@ -10,6 +11,9 @@ import numpy as np
 import pytest
 from collections import defaultdict
 
+
+formulae = Formulae()
+EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
 
 class Test_pH:
     @staticmethod
@@ -22,6 +26,9 @@ class Test_pH:
         # Act
         result = np.empty(1)
         ChemistryMethods.equilibrate_H_body(
+            within_tolerance=formulae.trivia.within_tolerance,
+            pH2H=formulae.trivia.pH2H,
+            H2pH=formulae.trivia.H2pH,
             N_mIII=np.zeros(1),
             N_V=np.zeros(1),
             C_IV=np.zeros(1),
@@ -39,8 +46,8 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=result,
             # params
-            H_min=aqueous_chemistry.default_H_min,
-            H_max=aqueous_chemistry.default_H_max,
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
             ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
             rtol=aqueous_chemistry.default_pH_rtol
         )
@@ -87,7 +94,11 @@ class Test_pH:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
 
         actual_pH = np.empty(1)
+        formulae = Formulae()
         ChemistryMethods.equilibrate_H_body(
+            within_tolerance=formulae.trivia.within_tolerance,
+            pH2H=formulae.trivia.pH2H,
+            H2pH=formulae.trivia.H2pH,
             N_mIII=np.full(1, init_conc['NH3'] * 1e3),
             N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
             C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
@@ -105,8 +116,8 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=actual_pH,
             # params
-            H_min=aqueous_chemistry.default_H_min,
-            H_max=aqueous_chemistry.default_H_max,
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
             ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
             rtol=aqueous_chemistry.default_pH_rtol
         )
@@ -115,7 +126,7 @@ class Test_pH:
 
     @staticmethod
     @pytest.mark.parametrize("nt", (0, 1, 2, 3))
-    @pytest.mark.parametrize("n_sd", (1, 2, 100))
+    @pytest.mark.parametrize("n_sd", (1, 2, 10))
     def test_calc_ionic_strength(nt, n_sd):
         from chempy.electrolytes import ionic_strength
         from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
@@ -177,7 +188,7 @@ class Test_pH:
             'HSO4-': conc['H+'] * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
             'SO4-2': K_HSO4 * conc['S+6'] / (conc['H+'] + K_HSO4) / rho_w,
             'OH-': K_H2O / conc['H+'] / rho_w
-        }, warn=False) * rho_w  # TODO #439: warn=True if equilibrate_pH done
+        }, warn=False) * rho_w
 
         np.testing.assert_allclose(actual, expected, rtol=1e-15)
 

@@ -4,9 +4,7 @@ Created at 2019
 
 import numpy as np
 import pytest
-
-from PySDM.physics import constants as const
-from PySDM.physics import formulae as phys
+from PySDM.physics import Formulae, constants as const
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 
@@ -29,7 +27,8 @@ class TestInitialisation:
     def test_RH_initialisation(settings_idx):
         setup = setups[settings_idx]
         pv0 = setup.p0 / (1 + const.eps / setup.q0)
-        TestInitialisation.simulation_test('RH', pv0 / phys.pvs(setup.T0), setup)
+        pvs = setup.formulae.saturation_vapour_pressure.pvs_Celsius(setup.T0 - const.T0)
+        TestInitialisation.simulation_test('RH', pv0 / pvs, setup)
 
     @staticmethod
     @pytest.mark.parametrize("settings_idx", range(len(setups)))
@@ -58,5 +57,6 @@ class TestInitialisation:
         setup = setups[settings_idx]
         pv0 = setup.p0 / (1 + const.eps / setup.q0)
         pd0 = setup.p0 - pv0
+        phys = Formulae().trivia
         thd0 = phys.th_std(pd0, setup.T0)
         TestInitialisation.simulation_test('thd', thd0, setup)

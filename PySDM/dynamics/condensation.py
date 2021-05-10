@@ -17,7 +17,6 @@ class Condensation:
                  kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
-                 coord='volume logarithm',
                  substeps: int = 1,
                  adaptive: bool = True,
                  dt_cond_range: tuple = default_cond_range,
@@ -32,7 +31,7 @@ class Condensation:
         self.rtol_thd = rtol_thd
 
         self.RH_max = None
-        self.coord = coord
+        self.success = None
 
         self.__substeps = substeps
         self.adaptive = adaptive
@@ -44,7 +43,7 @@ class Condensation:
     def register(self, builder):
         self.core = builder.core
 
-        builder._set_condensation_parameters(self.coord, self.dt_cond_range, self.adaptive)
+        builder._set_condensation_parameters(self.dt_cond_range, self.adaptive)
         builder.request_attribute('critical volume')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
@@ -56,6 +55,8 @@ class Condensation:
 
         self.RH_max = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.RH_max[:] = np.nan
+        self.success = self.core.Storage.empty(self.core.mesh.n_cell, dtype=bool)
+        self.success[:] = False
         self.cell_order = np.arange(self.core.mesh.n_cell)
 
     def __call__(self):
@@ -73,8 +74,11 @@ class Condensation:
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
                 RH_max=self.RH_max,
+                success=self.success,
                 cell_order=self.cell_order
             )
+            if not (self.success.data[:] == True).all():
+                raise RuntimeError("Condensation failed")
             # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
             self.core.update_TpRH()
 

@@ -1,7 +1,6 @@
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
-from ..physics import formulae as phys
 from ..state import arakawa_c
 import numpy as np
 
@@ -14,6 +13,7 @@ class Kinematic1D(_Moist):
 
     def register(self, builder):
         super().register(builder)
+        self.formulae = builder.core.formulae
         rhod = builder.core.Storage.from_ndarray(self.rhod)
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
@@ -39,15 +39,15 @@ class Kinematic1D(_Moist):
                 self.mesh.cellular_attributes(positions)
 
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            r_wet = r_wet_init(r_dry, self, attributes['cell id'], kappa)
+            r_wet = r_wet_init(r_dry, self, cell_id=attributes['cell id'], kappa=kappa)
 
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
-        attributes['volume'] = phys.volume(radius=r_wet)
-        attributes['dry volume'] = phys.volume(radius=r_dry)
+        attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
+        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 

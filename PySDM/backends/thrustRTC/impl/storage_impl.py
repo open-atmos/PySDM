@@ -3,7 +3,7 @@ Created at 02.06.2020
 """
 
 from PySDM.backends.thrustRTC.conf import trtc
-from PySDM.backends.thrustRTC.nice_thrust import nice_thrust
+from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 import numpy as np

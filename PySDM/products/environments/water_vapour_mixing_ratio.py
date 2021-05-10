@@ -12,9 +12,7 @@ class WaterVapourMixingRatio(MoistEnvironmentProduct):
         super().__init__(
             description="Water vapour mixing ratio",
             name="qv",
-            unit="g/kg",
-            range=(5, 7.5),
-            scale="linear",
+            unit="g/kg"
         )
 
     def get(self):

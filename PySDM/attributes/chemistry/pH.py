@@ -1,5 +1,5 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
-from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
 
 class pH(DerivedAttribute):
@@ -12,6 +12,10 @@ class pH(DerivedAttribute):
         self.environment = builder.core.environment
         self.cell_id = builder.get_attribute('cell id')
         self.particles = builder.core
+
+    def allocate(self, idx):
+        super().allocate(idx)
+        self.data[:] = 7
 
     def recalculate(self):
         dynamic = self.particles.dynamics['AqueousChemistry']

@@ -1,8 +1,7 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
-from PySDM.physics import formulae as phys
 from PySDM.physics.constants import convert_to, ppb
-from PySDM.dynamics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 import numpy as np
 from chempy import Substance
 
@@ -51,7 +50,7 @@ class TestTable3:
             compound = AQUEOUS_COMPOUNDS[key][0]  # sic!
             np.testing.assert_allclose(
                 actual=(
-                    phys.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
+                    settings.formulae.trivia.mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity=SPECIFIC_GRAVITY[compound])
                     * np.asarray(output['rhod_env'])
                 ),
                 desired=expected[key],
@@ -74,11 +73,11 @@ class TestTable3:
         np.testing.assert_allclose(output['p_env'][-1], 939 * si.mbar, rtol=.005)
         np.testing.assert_allclose(output['T_env'][-1], 284.2 * si.K, rtol=.005)
         np.testing.assert_allclose(
-            phys.MoistAir.rho_of_rhod_qv(rhod=output['rhod_env'][-1], qv=output['qv_env'][-1]*si.g/si.kg),
+            settings.formulae.state_variable_triplet.rho_of_rhod_qv(rhod=output['rhod_env'][-1], qv=output['qv_env'][-1]*si.g/si.kg),
             1.15 * si.kg / si.m**3,
             rtol=.005
         )
-        assert output['ql'][-2] < .0005
+        assert output['ql'][-2] < .00055
         assert output['ql'][-1] > .0004
         assert output['RH_env'][-1] > 100
         assert output['RH_env'][-8] < 100

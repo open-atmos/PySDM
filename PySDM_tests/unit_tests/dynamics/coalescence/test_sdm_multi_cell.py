@@ -8,7 +8,7 @@ import pytest
 from PySDM.environments import Box
 from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
-from PySDM.dynamics.coalescence.coalescence import default_dt_coal_range
+from PySDM.dynamics.coalescence import default_dt_coal_range
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM_tests.unit_tests.dynamics.coalescence.__parametrisation__ import get_dummy_core_and_sdm

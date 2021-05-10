@@ -14,9 +14,11 @@ from PySDM.storages.indexed_storage import make_IndexedStorage
 class Core:
 
     def __init__(self, n_sd, backend):
+        assert isinstance(backend, object)
         self.__n_sd = n_sd
 
         self.backend = backend
+        self.formulae = backend.formulae
         self.environment = None
         self.particles: (Particles, None) = None
         self.dynamics = {}
@@ -34,6 +36,7 @@ class Core:
         self.IndexedStorage = make_IndexedStorage(backend)
 
         self.timers = {}
+        self.null = self.Storage.empty(0, dtype=float)
 
     @property
     def env(self):
@@ -83,17 +86,16 @@ class Core:
         )
         # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, cell_order):
-        particle_temperatures = \
-            self.particles["temperature"] if self.particles.has_attribute("temperature") else \
-            self.Storage.empty(0, dtype=float)
+    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+        particle_heat = \
+            self.particles["heat"] if self.particles.has_attribute("heat") else \
+            self.null
 
         self.backend.condensation(
                 solver=self.condensation_solver,
                 n_cell=self.mesh.n_cell,
                 cell_start_arg=self.particles.cell_start,
                 v=self.particles["volume"],
-                particle_temperatures=particle_temperatures,
                 n=self.particles['n'],
                 vdry=self.particles["dry volume"],
                 idx=self.particles._Particles__idx,
@@ -111,7 +113,8 @@ class Core:
                 dt=self.dt,
                 counters=counters,
                 cell_order=cell_order,
-                RH_max=RH_max
+                RH_max=RH_max,
+                success=success
             )
 
     def run(self, steps):
