@@ -20,7 +20,7 @@ def c_inline(fun, **args):
         if stripped.startswith('def '):
             continue
         source += stripped
-    source = re.sub("power\(", "pow(", source)
+    source = source.reaplce("power(", "pow(")
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
         source = re.sub(f"{prae}({arg}){post}", f"\\1{real_t}({args[arg]})\\3", source)
