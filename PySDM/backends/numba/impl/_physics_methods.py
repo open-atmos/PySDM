@@ -21,8 +21,7 @@ class PhysicsMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def explicit_euler_body(y, dt, dy_dt):
-            for i in prange(y.shape[0]):
-                y[i] = explicit_euler(y[i], dt, dy_dt)
+            y[:] = explicit_euler(y, dt, dy_dt)
         self.explicit_euler_body = explicit_euler_body
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
