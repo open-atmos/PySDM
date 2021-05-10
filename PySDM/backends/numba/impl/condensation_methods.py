@@ -17,7 +17,7 @@ class CondensationMethods:
             solver,
             n_cell, cell_start_arg,
             v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, _
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         CondensationMethods._condensation(
