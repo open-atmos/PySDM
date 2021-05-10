@@ -34,12 +34,7 @@ class RhodThdQv:
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
     def T(rhod, thd):
-        return thd * (
-                power(
-                    (rhod * const.Rd * thd) / const.p1000 ** const.Rd_over_c_pd,
-                    1 / (1 - const.Rd_over_c_pd)
-                ) / const.p1000
-        ) ** const.Rd_over_c_pd
+        return thd * power(rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd))
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
@@ -93,12 +88,7 @@ class RhodThdQv:
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
     def T(rhod, thd):
-        return thd * (
-                power(
-                    (rhod * const.Rd * thd) / const.p1000 ** const.Rd_over_c_pd,
-                    1 / (1 - const.Rd_over_c_pd)
-                ) / const.p1000
-        ) ** const.Rd_over_c_pd
+        return thd * power(rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd))
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
@@ -142,12 +132,7 @@ class RhodThdQv:
 </summary>
 <pre><code class="python">@staticmethod
 def T(rhod, thd):
-    return thd * (
-            power(
-                (rhod * const.Rd * thd) / const.p1000 ** const.Rd_over_c_pd,
-                1 / (1 - const.Rd_over_c_pd)
-            ) / const.p1000
-    ) ** const.Rd_over_c_pd</code></pre>
+    return thd * power(rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.dthd_dt"><code class="name flex">

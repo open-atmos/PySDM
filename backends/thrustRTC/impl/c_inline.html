@@ -48,6 +48,7 @@ def c_inline(fun, **args):
         if stripped.startswith(&#39;def &#39;):
             continue
         source += stripped
+    source = source.replace(&#34;power(&#34;, &#34;pow(&#34;)
     source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
     for arg in inspect.signature(fun).parameters:
         source = re.sub(f&#34;{prae}({arg}){post}&#34;, f&#34;\\1{real_t}({args[arg]})\\3&#34;, source)
@@ -91,6 +92,7 @@ def c_inline(fun, **args):
         if stripped.startswith(&#39;def &#39;):
             continue
         source += stripped
+    source = source.replace(&#34;power(&#34;, &#34;pow(&#34;)
     source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
     for arg in inspect.signature(fun).parameters:
         source = re.sub(f&#34;{prae}({arg}){post}&#34;, f&#34;\\1{real_t}({args[arg]})\\3&#34;, source)
