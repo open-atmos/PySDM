@@ -146,7 +146,7 @@ Subsequently, a `Builder` object is created to orchestrate dependency injection 
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticlesVolumeSpectrum
 
