@@ -110,7 +110,8 @@ class Core:
             counters=counters,
             cell_order=cell_order,
             RH_max=RH_max,
-            success=success
+            success=success,
+            cell_id=self.particles['cell id']
         )
 
     def run(self, steps):
