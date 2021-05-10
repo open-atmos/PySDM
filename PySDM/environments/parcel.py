@@ -85,9 +85,9 @@ class Parcel(_Moist):
         drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        self.core.formulae.trivia.explicit_euler(self._tmp['t'].data, dt, 1)
-        self.core.formulae.trivia.explicit_euler(self._tmp['z'].data, dt, dz_dt)
-        self.core.formulae.trivia.explicit_euler(self._tmp['rhod'].data, dt, dz_dt * drhod_dz)
+        self.core.bck.explicit_euler(self._tmp['t'], dt, 1)
+        self.core.bck.explicit_euler(self._tmp['z'], dt, dz_dt)
+        self.core.bck.explicit_euler(self._tmp['rhod'], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,

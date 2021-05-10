@@ -217,10 +217,10 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive=True):
+    def make_condensation_solver(self, dt, dt_range, adaptive):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
-            phys_pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius,
+            phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
             phys_lv=self.formulae.latent_heat.lv,
             phys_r_dr_dt=self.formulae.drop_growth.r_dr_dt,
             phys_RH_eq=self.formulae.hygroscopicity.RH_eq,

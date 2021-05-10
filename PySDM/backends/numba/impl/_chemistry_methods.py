@@ -142,10 +142,10 @@ class ChemistryMethods:
             ):
                 continue
 
-            explicit_euler(moles_O3[i:i+1], a, dconc_dt_O3)
-            explicit_euler(moles_S_IV[i:i+1], a, dconc_dt_S_IV)
-            explicit_euler(moles_S_VI[i:i+1], a, dconc_dt_S_VI)
-            explicit_euler(moles_H2O2[i:i+1], a, dconc_dt_H2O2)
+            moles_O3[i] = explicit_euler(moles_O3[i], a, dconc_dt_O3)
+            moles_S_IV[i] = explicit_euler(moles_S_IV[i], a, dconc_dt_S_IV)
+            moles_S_VI[i] = explicit_euler(moles_S_VI[i], a, dconc_dt_S_VI)
+            moles_H2O2[i] = explicit_euler(moles_H2O2[i], a, dconc_dt_H2O2)
 
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):

@@ -1,5 +1,5 @@
 from PySDM.physics import constants as const
-from numpy import abs, log10, exp
+from numpy import abs, log10, exp, power
 
 
 class Trivia:
@@ -9,15 +9,15 @@ class Trivia:
 
     @staticmethod
     def radius(volume):
-        return (volume / const.pi_4_3)**(1/3)
+        return power(volume / const.pi_4_3, 1./3)
 
     @staticmethod
     def volume(radius):
-        return const.pi_4_3 * radius**3
+        return const.pi_4_3 * power(radius, 3)
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):
-        y += dt * dy_dt
+        return y + dt * dy_dt
 
     @staticmethod
     def within_tolerance(error_estimate, value, rtol):
@@ -29,7 +29,7 @@ class Trivia:
 
     @staticmethod
     def pH2H(pH):
-        return 10**(-pH) * 1e3
+        return power(10, -pH) * 1e3
 
     @staticmethod
     def vant_hoff(K, dH, T, *, T_0):
@@ -57,4 +57,4 @@ class Trivia:
 
     @staticmethod
     def th_std(p, T):
-        return T * (const.p1000 / p)**(const.Rd_over_c_pd)
+        return T * power(const.p1000 / p, const.Rd_over_c_pd)

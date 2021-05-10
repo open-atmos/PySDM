@@ -18,16 +18,10 @@ class CriticalVolume(DerivedAttribute):
         super().__init__(builder, name='critical volume', dependencies=dependencies)
 
     def recalculate(self):
-        kappa = self.particles.dynamics['Condensation'].kappa
-        v_dry = self.v_dry.get().data
-        v_wet = self.v_wet.get().data
-        T = self.environment['T'].data
-        cell = self.cell_id.get().data
-        for i in range(len(self.data)):  # TODO #347 move to backend
-            sigma = self.formulae.surface_tension.sigma(T[cell[i]], v_wet[i], v_dry[i])
-            self.data.data[i] = self.formulae.trivia.volume(self.formulae.hygroscopicity.r_cr(
-                kp=kappa,
-                rd3=v_dry[i] / const.pi_4_3,
-                T=T[cell[i]],
-                sgm=sigma
-            ))
+        self.core.bck.critical_volume(self.data,
+            kappa=self.particles.dynamics['Condensation'].kappa,
+            v_dry=self.v_dry.get(),
+            v_wet=self.v_wet.get(),
+            T=self.environment['T'],
+            cell=self.cell_id.get()
+        )

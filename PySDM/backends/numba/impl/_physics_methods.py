@@ -14,6 +14,27 @@ class PhysicsMethods:
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
         phys_pv = self.formulae.state_variable_triplet.pv
+        explicit_euler = self.formulae.trivia.explicit_euler
+        phys_sigma = self.formulae.surface_tension.sigma
+        phys_volume = self.formulae.trivia.volume
+        phys_r_cr = self.formulae.hygroscopicity.r_cr
+
+        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        def explicit_euler_body(y, dt, dy_dt):
+            y[:] = explicit_euler(y, dt, dy_dt)
+        self.explicit_euler_body = explicit_euler_body
+
+        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        def critical_volume(v_cr, kappa, v_dry, v_wet, T, cell):
+            for i in prange(len(v_cr)):
+                sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i])
+                v_cr[i] = phys_volume(phys_r_cr(
+                    kp=kappa,
+                    rd3=v_dry[i] / const.pi_4_3,
+                    T=T[cell[i]],
+                    sgm=sigma
+                ))
+        self.critical_volume_body = critical_volume
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):
@@ -39,3 +60,9 @@ class PhysicsMethods:
 
     def terminal_velocity(self, values, radius, k1, k2, k3, r1, r2):
         self.terminal_velocity_body(values, radius, k1, k2, k3, r1, r2)
+
+    def explicit_euler(self, y, dt, dy_dt):
+        self.explicit_euler_body(y.data, dt, dy_dt)
+
+    def critical_volume(self, v_cr, kappa, v_dry, v_wet, T, cell):
+        self.critical_volume_body(v_cr.data, kappa, v_dry.data, v_wet.data, T.data, cell.data)

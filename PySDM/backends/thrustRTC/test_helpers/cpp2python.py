@@ -23,6 +23,7 @@ cppython = {
     "ceil": "np.ceil",
     "exp(": "np.exp(",
     "power(": "np.power(",
+    "sqrt(": "np.sqrt(",
     "return": "continue",
 }
 

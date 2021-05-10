@@ -87,35 +87,31 @@ class Core:
         # TODO #443: mark_updated
 
     def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
-        particle_heat = \
-            self.particles["heat"] if self.particles.has_attribute("heat") else \
-            self.null
-
         self.backend.condensation(
-                solver=self.condensation_solver,
-                n_cell=self.mesh.n_cell,
-                cell_start_arg=self.particles.cell_start,
-                v=self.particles["volume"],
-                n=self.particles['n'],
-                vdry=self.particles["dry volume"],
-                idx=self.particles._Particles__idx,
-                rhod=self.env["rhod"],
-                thd=self.env["thd"],
-                qv=self.env["qv"],
-                dv=self.env.dv,
-                prhod=self.env.get_predicted("rhod"),
-                pthd=self.env.get_predicted("thd"),
-                pqv=self.env.get_predicted("qv"),
-                kappa=kappa,
-                rtol_x=rtol_x,
-                rtol_thd=rtol_thd,
-                v_cr=self.particles["critical volume"],
-                dt=self.dt,
-                counters=counters,
-                cell_order=cell_order,
-                RH_max=RH_max,
-                success=success
-            )
+            solver=self.condensation_solver,
+            n_cell=self.mesh.n_cell,
+            cell_start_arg=self.particles.cell_start,
+            v=self.particles["volume"],
+            n=self.particles['n'],
+            vdry=self.particles["dry volume"],
+            idx=self.particles._Particles__idx,
+            rhod=self.env["rhod"],
+            thd=self.env["thd"],
+            qv=self.env["qv"],
+            dv=self.env.dv,
+            prhod=self.env.get_predicted("rhod"),
+            pthd=self.env.get_predicted("thd"),
+            pqv=self.env.get_predicted("qv"),
+            kappa=kappa,
+            rtol_x=rtol_x,
+            rtol_thd=rtol_thd,
+            v_cr=self.particles["critical volume"],
+            dt=self.dt,
+            counters=counters,
+            cell_order=cell_order,
+            RH_max=RH_max,
+            success=success
+        )
 
     def run(self, steps):
         for _ in range(steps):
