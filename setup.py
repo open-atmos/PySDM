@@ -15,7 +15,7 @@ setup(
     install_requires=['ThrustRTC==0.3.10',
                       'CURandRTC==0.1.6',
                       'numba==0.53.1',
-                      'numpy>=1.20.2',
+                      'numpy>=1.19.5',
                       'Pint>=0.17',
                       'chempy>=0.7.10',
                       'scipy>=1.6.3'],
