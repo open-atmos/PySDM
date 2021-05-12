@@ -18,7 +18,7 @@ setup(
                       'numpy>=1.19.5',
                       'Pint>=0.17',
                       'chempy>=0.7.10',
-                      'scipy>=1.6.3'],
+                      'scipy>=1.5.4'],
     author='https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors',
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
