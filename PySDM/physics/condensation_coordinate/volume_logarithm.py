@@ -1,10 +1,11 @@
-from numpy import pi, log, exp
+from numpy import pi, log, exp, power
+from PySDM.physics import constants as const
 
 
 class VolumeLogarithm:
     @staticmethod
     def dx_dt(x, r_dr_dt):
-        return exp(-2*x/3) * r_dr_dt * 3 * (3/4/pi)**(-2/3)
+        return exp(-2*x/3) * r_dr_dt * 3 * power(const.pi_4_3, const.two_thirds)
 
     @staticmethod
     def volume(x):

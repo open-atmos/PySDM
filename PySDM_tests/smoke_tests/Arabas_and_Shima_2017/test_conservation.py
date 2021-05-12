@@ -1,14 +1,17 @@
 """
 Created at 2019
 """
+import pytest
+import numpy as np
 
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 from PySDM.backends.numba.test_helpers import bdf
 from PySDM.physics import constants as const
-import pytest
-import numpy as np
+
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
 def ql(simulation: Simulation):
@@ -26,7 +29,7 @@ def ql(simulation: Simulation):
 @pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
 @pytest.mark.parametrize("scheme", ('BDF', 'default'))
 @pytest.mark.parametrize("coord", ('VolumeLogarithm', 'Volume'))
-def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
+def test_water_mass_conservation(backend, settings_idx, mass_of_dry_air, scheme, coord):
     # Arrange
     settings = Settings(
         w_avg=setups[settings_idx].w_avg,
@@ -37,7 +40,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     )
     settings.n_output = 50
     settings.coord = coord
-    simulation = Simulation(settings)
+    simulation = Simulation(settings, backend)
     qt0 = settings.q0 + ql(simulation)
 
     assert scheme in ('BDF', 'default')

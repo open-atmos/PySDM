@@ -9,11 +9,11 @@ class Trivia:
 
     @staticmethod
     def radius(volume):
-        return power(volume / const.pi_4_3, 1./3)
+        return power(volume / const.pi_4_3, const.one_third)
 
     @staticmethod
     def volume(radius):
-        return const.pi_4_3 * power(radius, 3)
+        return const.pi_4_3 * power(radius, const.three)
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):

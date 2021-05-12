@@ -43,7 +43,8 @@ class Condensation:
     def register(self, builder):
         self.core = builder.core
 
-        builder._set_condensation_parameters(self.dt_cond_range, self.adaptive)
+        builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
+                                             fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16)
         builder.request_attribute('critical volume')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
@@ -77,7 +78,7 @@ class Condensation:
                 success=self.success,
                 cell_order=self.cell_order
             )
-            if not (self.success.data[:] == True).all():
+            if not self.success.all():
                 raise RuntimeError("Condensation failed")
             # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
             self.core.update_TpRH()

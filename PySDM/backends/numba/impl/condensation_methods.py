@@ -245,7 +245,6 @@ class CondensationMethods:
                         fb = minfun(b, *args)
 
                     if not success:
-                        x_new = np.nan
                         break
                     elif a != b:
                         if a > b:
@@ -276,7 +275,7 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive):
+    def make_condensation_solver(self, dt, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
             phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
@@ -299,7 +298,11 @@ class CondensationMethods:
             x=self.formulae.condensation_coordinate.x,
             dt=dt,
             dt_range=dt_range,
-            adaptive=adaptive
+            adaptive=adaptive,
+            fuse=fuse,
+            multiplier=multiplier,
+            RH_rtol=RH_rtol,
+            max_iters=max_iters
         )
 
     @staticmethod
@@ -307,7 +310,7 @@ class CondensationMethods:
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
                                       phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
-                                      fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
+                                      fuse, multiplier, RH_rtol, max_iters):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)

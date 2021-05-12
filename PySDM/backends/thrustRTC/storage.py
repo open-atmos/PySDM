@@ -41,7 +41,7 @@ class Storage:
         return result
 
     def __setitem__(self, key, value):
-        if hasattr(value, 'data'):
+        if hasattr(value, 'data') and hasattr(value, 'shape') and len(value.shape) != 0:
             if isinstance(value, np.ndarray):
                 vector = trtc.device_vector_from_numpy(value)
                 trtc.Copy(vector, self.data)
@@ -129,6 +129,10 @@ class Storage:
 
     def amin(self):
         return impl.amin(self.data)
+
+    def all(self):
+        assert self.dtype is Storage.BOOL
+        return self.amin()
 
     def download(self, target, reshape=False):
         shape = target.shape if reshape else self.shape

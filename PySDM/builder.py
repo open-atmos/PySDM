@@ -26,8 +26,8 @@ class Builder:
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
-    def _set_condensation_parameters(self, dt_range, adaptive):
-        self.condensation_params = {'dt_range': dt_range, 'adaptive': adaptive}
+    def _set_condensation_parameters(self, **kwargs):
+        self.condensation_params = kwargs
 
     def set_environment(self, environment):
         assert_none(self.core.environment)
