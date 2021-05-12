@@ -22,6 +22,7 @@ cppython = {
     "floor": "np.floor",
     "ceil": "np.ceil",
     "exp(": "np.exp(",
+    "log(": "np.log(",
     "power(": "np.power(",
     "sqrt(": "np.sqrt(",
     "return": "continue",

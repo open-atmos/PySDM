@@ -8,6 +8,7 @@ from PySDM.backends.thrustRTC.impl._algorithmic_methods import AlgorithmicMethod
 from PySDM.backends.thrustRTC.impl._pair_methods import PairMethods
 from PySDM.backends.thrustRTC.impl._index_methods import IndexMethods
 from PySDM.backends.thrustRTC.impl._physics_methods import PhysicsMethods
+from PySDM.backends.thrustRTC.impl.moments_methods import MomentsMethods
 from PySDM.backends.thrustRTC.impl.condensation_methods import CondensationMethods
 from PySDM.backends.thrustRTC.storage import Storage as ImportedStorage
 from PySDM.backends.thrustRTC.random import Random as ImportedRandom
@@ -18,7 +19,8 @@ class ThrustRTC(
     PairMethods,
     IndexMethods,
     PhysicsMethods,
-    CondensationMethods
+    CondensationMethods,
+    MomentsMethods
 ):
     ENABLE = True
     Storage = ImportedStorage
@@ -29,6 +31,7 @@ class ThrustRTC(
     def __init__(self, formulae):
         self.formulae = formulae
         PhysicsMethods.__init__(self)
+        CondensationMethods.__init__(self)
 
     @staticmethod
     def sanity_check():
