@@ -158,13 +158,16 @@ class AlgorithmicMethods:
         for i in numba.prange(length // 2):
             gamma[i] = np.ceil(gamma[i] - rand[i])
 
+            # (4) No collision
             if gamma[i] == 0:
                 continue
 
+            # (5) Successful collision
             j, k = pair_indices(i, idx, is_first_in_pair)
             prop = n[j] // n[k]
             g = min(int(gamma[i]), prop)  # TODO #416: test asserting that min is not needed with adaptivity
             cid = cell_id[j]
+            # compute the number of collisions
             collision_rate[cid] += g * n[k]
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
             gamma[i] = g

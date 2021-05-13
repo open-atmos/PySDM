@@ -149,6 +149,8 @@ class Particles:
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()
+                
+    ## TODO Emily: def breakup(self, gamma, n_fragment, is_first_in_pair)
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
