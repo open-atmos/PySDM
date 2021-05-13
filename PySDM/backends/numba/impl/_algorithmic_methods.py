@@ -143,6 +143,41 @@ class AlgorithmicMethods:
     def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, idx.data, length,
                                             attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+        
+    ## TODO: Emily implement breakup
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def breakup_body(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
+        for i in numba.prange(length // 2):
+            # no collisional breakup occurs
+            if gamma[i] == 0:
+                continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
+
+            new_n = n[j] - gamma[i] * n[k]
+            
+            if new_n > 0:
+                n[j] = new_n
+                n[k] = n[k] * n_fragment
+                for a in range(0, len(attributes)):
+                    attributes[a, k] += gamma[i] * attributes[a, j]
+                    attributes[a, k] /= n_fragment
+                    
+            else:  # new_n == 0
+                n[j] = (n_fragment * n[k]) // 2
+                n[k] = n_fragment * n[k] - n[j]
+                for a in range(0, len(attributes)):
+                    attributes[a, j] = (gamma[i] * attributes[a, j] + attributes[a, k])/n_fragment
+                    attributes[a, k] = attributes[a, j]
+                    
+            if n[k] == 0 or n[j] == 0:
+                healthy[0] = 0
+
+    @staticmethod
+    def breakup(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
+        AlgorithmicMethods.breakup_body(n.data, idx.data, length,
+                                            attributes.data, gamma.data, n_fragment.data, healthy.data,
+                                            is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -328,6 +363,7 @@ class AlgorithmicMethods:
     def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         return AlgorithmicMethods.normalize_body(
             prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
+
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

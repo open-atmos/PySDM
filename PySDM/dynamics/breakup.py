@@ -39,6 +39,7 @@ class Breakup:
         self.dt_coal_range = tuple(dt_coal_range)
 
         self.kernel_temp = None
+        self.fragment_temp = None
         self.norm_factor_temp = None
         self.prob = None
         self.is_first_in_pair = None
@@ -61,8 +62,10 @@ class Breakup:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.fragment_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
 
@@ -73,6 +76,7 @@ class Breakup:
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
+        self.fragmentation.register(builder)
 
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
@@ -103,17 +107,20 @@ class Breakup:
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
-        # (3) Compute the probability of a collision
+        
+        # (3a) Compute the probability of a collision
         self.compute_probability(self.prob, self.is_first_in_pair)
+        # (3b) Compute the number of fragments
+        self.compute_n_fragment(self.n_fragment, rand, self.is_first_in_pair)
+        
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        # (5) Perform the coalescence step: 
+        
+        # (5) Perform the collisional-breakup step: 
         # ../../state/particles.py
         # ../backends/*/_algorithmic_methods.py
-        self.core.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         # TODO Emily: 
-        # (7) self.core.particles.n_fragment()
-        # (6) self.core.particles.breakup()
+        self.core.particles.breakup(gamma=self.prob, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
         
         if self.adaptive:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
@@ -137,7 +144,7 @@ class Breakup:
 
         self.core.normalize(prob, self.norm_factor_temp)
 
-    # (4) Compute gamma, i.e. whether the collision succeeds
+    # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):
         if self.adaptive:
             self.core.backend.adaptive_sdm_gamma(
@@ -152,7 +159,7 @@ class Breakup:
                 self.stats_dt_min
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
-                warnings.warn("coalescence adaptive time-step reached dt_min")
+                warnings.warn("breakup adaptive time-step reached dt_min")
         else:
             prob /= self.__substeps
             
@@ -166,3 +173,12 @@ class Breakup:
             self.collision_rate,
             is_first_in_pair
         )
+        
+    # (4a) Compute n_fragment
+    def compute_n_fragment(self, n_fragment, rand, is_first_in_pair):
+        self.fragmentation(self.fragmentation_temp, is_first_in_pair)
+        n_fragment.max(self.core.particles['n'], is_first_in_pair)
+        n_fragment = self.fragmentation_temp
+        
+        # TODO: normalize?
+        

@@ -151,6 +151,22 @@ class Particles:
                 attr.mark_updated()
                 
     ## TODO Emily: def breakup(self, gamma, n_fragment, is_first_in_pair)
+    def breakup(self, gamma, n_fragment, is_first_in_pair):
+        self.core.bck.breakup(n=self['n'],
+                              idx=self.__idx,
+                              length=self.SD_num,
+                              attributes=self.get_extensive_attrs(),
+                              gamma=gamma,
+                              n_fragment=n_fragment,
+                              health=self.__health_memory,
+                              is_first_in_pair=is_first_in_pair
+                             )
+        self.healthy = bool(self.__health_memory)
+        self.core.particles.sanitize()
+        self.attributes['n'].mark_update()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
