@@ -9,7 +9,7 @@ class CondensationMethods:
     def __init__(self):
         phys = self.formulae
 
-        # TODO #228: precision for consts
+        # TODO #509: precision for consts
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
@@ -49,7 +49,7 @@ class CondensationMethods:
         rhod_mean = (prhod[cid] + rhod[cid]) / 2
         m_d = rhod_mean * dv_mean
 
-        n_substeps = 10  # TODO #228!
+        n_substeps = 10  # TODO #509!
         for i in range(n_substeps):
             T = phys.state_variable_triplet.T(rhod_mean, thd[cid])
             p = phys.state_variable_triplet.p(rhod_mean, T, qv[cid])
@@ -67,7 +67,7 @@ class CondensationMethods:
             self.__calculate_m_l.launch_n(len(n), (self.ml_new, v.data, n.data, cell_id.data))
 
     def make_condensation_solver(self, dt, dt_range, adaptive):
-        # TODO #228: uncomment
+        # TODO #509: uncomment
         # if adaptive:
         #     raise NotImplementedError()
         return None
