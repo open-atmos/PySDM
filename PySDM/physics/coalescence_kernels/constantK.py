@@ -1,20 +1,19 @@
 """
-Created at 13.05.2021 by edejong
+Created at 14.05.2021
 """
 
 import numpy as np
+from scipy import special
 
 
-class AlwaysN:
+class ConstantK:
 
-    def __init__(self, n):
+    def __init__(self, a):
+        self.a = a
         self.core = None
-        self.N = n
-        
 
     def __call__(self, output, is_first_in_pair):
-        output = self.N
-        print("always_n.py", self.N)
+        output = self.a
 
     def register(self, builder):
         self.core = builder.core

@@ -158,12 +158,12 @@ class Particles:
                               attributes=self.get_extensive_attrs(),
                               gamma=gamma,
                               n_fragment=n_fragment,
-                              health=self.__health_memory,
+                              healthy=self.__healthy_memory,
                               is_first_in_pair=is_first_in_pair
                              )
-        self.healthy = bool(self.__health_memory)
+        self.healthy = bool(self.__healthy_memory)
         self.core.particles.sanitize()
-        self.attributes['n'].mark_update()
+        self.attributes['n'].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()

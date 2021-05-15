@@ -155,19 +155,20 @@ class AlgorithmicMethods:
             j, k = pair_indices(i, idx, is_first_in_pair)
 
             new_n = n[j] - gamma[i] * n[k]
-            
+            print("_algorithmic_methods.py", i, n_fragment[i])
+            # breakup does occur
             if new_n > 0:
                 n[j] = new_n
-                n[k] = n[k] * n_fragment
+                n[k] = n[k] * int(n_fragment[i])
                 for a in range(0, len(attributes)):
                     attributes[a, k] += gamma[i] * attributes[a, j]
-                    attributes[a, k] /= n_fragment
+                    attributes[a, k] /= int(n_fragment[i])
                     
             else:  # new_n == 0
-                n[j] = (n_fragment * n[k]) // 2
-                n[k] = n_fragment * n[k] - n[j]
+                n[j] = (int(n_fragment[i]) * n[k]) // 2
+                n[k] = int(n_fragment[i]) * n[k] - n[j]
                 for a in range(0, len(attributes)):
-                    attributes[a, j] = (gamma[i] * attributes[a, j] + attributes[a, k])/n_fragment
+                    attributes[a, j] = (gamma[i] * attributes[a, j] + attributes[a, k])/int(n_fragment[i])
                     attributes[a, k] = attributes[a, j]
                     
             if n[k] == 0 or n[j] == 0:

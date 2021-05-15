@@ -39,7 +39,7 @@ class Breakup:
         self.dt_coal_range = tuple(dt_coal_range)
 
         self.kernel_temp = None
-        self.fragment_temp = None
+        self.fragmentation_temp = None
         self.norm_factor_temp = None
         self.prob = None
         self.is_first_in_pair = None
@@ -47,6 +47,7 @@ class Breakup:
 
         self.collision_rate = None
         self.collision_rate_deficit = None
+        self.n_fragment = None
 
     def register(self, builder):
         self.core = builder.core
@@ -62,10 +63,10 @@ class Breakup:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.fragment_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
+        self.fragmentation_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
+        self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
         self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
 
@@ -81,8 +82,6 @@ class Breakup:
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
         
-        
-        # TODO Emily: check whether this is still correct to use.
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
 
@@ -105,21 +104,23 @@ class Breakup:
     def step(self):
         # (1) Make the superdroplet list 
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
+        print("list made")
+        
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
+        print("tossed pairs")
         
         # (3a) Compute the probability of a collision
         self.compute_probability(self.prob, self.is_first_in_pair)
+        print('computed prob')
+        
         # (3b) Compute the number of fragments
-        self.compute_n_fragment(self.n_fragment, rand, self.is_first_in_pair)
+        self.compute_n_fragment(self.n_fragment, self.is_first_in_pair)
+        print('computed n_fragment')
         
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        
         # (5) Perform the collisional-breakup step: 
-        # ../../state/particles.py
-        # ../backends/*/_algorithmic_methods.py
-        # TODO Emily: 
         self.core.particles.breakup(gamma=self.prob, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
         
         if self.adaptive:
@@ -143,6 +144,15 @@ class Breakup:
         prob *= self.kernel_temp
 
         self.core.normalize(prob, self.norm_factor_temp)
+        
+    # (4a) Compute n_fragment
+    def compute_n_fragment(self, n_fragment, is_first_in_pair):
+        self.fragmentation(self.fragmentation_temp, is_first_in_pair)
+        n_fragment.max(self.core.particles['n'], is_first_in_pair)
+        n_fragment *= self.fragmentation_temp
+        
+        # TODO: normalize?
+        self.core.normalize(n_fragment, self.norm_factor_temp)
 
     # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):
@@ -174,11 +184,4 @@ class Breakup:
             is_first_in_pair
         )
         
-    # (4a) Compute n_fragment
-    def compute_n_fragment(self, n_fragment, rand, is_first_in_pair):
-        self.fragmentation(self.fragmentation_temp, is_first_in_pair)
-        n_fragment.max(self.core.particles['n'], is_first_in_pair)
-        n_fragment = self.fragmentation_temp
-        
-        # TODO: normalize?
-        
+
