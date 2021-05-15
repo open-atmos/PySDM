@@ -17,7 +17,7 @@ setup(
                       'numba==0.53.1',
                       'numpy>=1.20.2',
                       'Pint>=0.17',
-                      'chempy>=0.8.0',
+                      'chempy>=0.7.10',
                       'scipy>=1.6.3'],
     author='https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors',
     long_description=get_long_description(),
