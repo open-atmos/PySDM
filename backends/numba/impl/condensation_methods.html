@@ -42,6 +42,65 @@ from functools import lru_cache
 
 class CondensationMethods:
     @staticmethod
+    def condensation(
+            solver,
+            n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
+    ):
+        n_threads = min(numba.get_num_threads(), n_cell)
+        CondensationMethods._condensation(
+            solver, n_threads, n_cell, cell_start_arg.data,
+            v.data, v_cr.data, n.data, vdry.data, idx.data,
+            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
+            rtol_x, rtol_thd, dt,
+            counters[&#39;n_substeps&#39;].data,
+            counters[&#39;n_activating&#39;].data,
+            counters[&#39;n_deactivating&#39;].data,
+            counters[&#39;n_ripening&#39;].data,
+            cell_order, RH_max.data, success.data
+        )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;cache&#39;: False}})
+    def _condensation(
+            solver, n_threads, n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt,
+            counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
+            cell_order, RH_max, success
+    ):
+        for thread_id in numba.prange(n_threads):
+            for i in range(thread_id, n_cell, n_threads):
+                cell_id = cell_order[i]
+
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
+                n_sd_in_cell = cell_end - cell_start
+                if n_sd_in_cell == 0:
+                    continue
+
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+                md = rhod_mean * dv_mean
+
+                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
+                    v, v_cr, n, vdry,
+                    idx[cell_start:cell_end],
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
+                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
+                )
+                counter_n_substeps[cell_id] = substeps_hint
+                counter_n_activating[cell_id] = n_activating
+                counter_n_deactivating[cell_id] = n_deactivating
+                counter_n_ripening[cell_id] = n_ripening
+                RH_max[cell_id] = RH_max_in_cell
+                success[cell_id] = success_in_cell
+                pqv[cell_id] = qv_new
+                pthd[cell_id] = thd_new
+
+    @staticmethod
     def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier, within_tolerance):
         if not isinstance(multiplier, int):
             raise ValueError()
@@ -328,6 +387,65 @@ class CondensationMethods:
 </summary>
 <pre><code class="python">class CondensationMethods:
     @staticmethod
+    def condensation(
+            solver,
+            n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
+    ):
+        n_threads = min(numba.get_num_threads(), n_cell)
+        CondensationMethods._condensation(
+            solver, n_threads, n_cell, cell_start_arg.data,
+            v.data, v_cr.data, n.data, vdry.data, idx.data,
+            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
+            rtol_x, rtol_thd, dt,
+            counters[&#39;n_substeps&#39;].data,
+            counters[&#39;n_activating&#39;].data,
+            counters[&#39;n_deactivating&#39;].data,
+            counters[&#39;n_ripening&#39;].data,
+            cell_order, RH_max.data, success.data
+        )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;cache&#39;: False}})
+    def _condensation(
+            solver, n_threads, n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt,
+            counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
+            cell_order, RH_max, success
+    ):
+        for thread_id in numba.prange(n_threads):
+            for i in range(thread_id, n_cell, n_threads):
+                cell_id = cell_order[i]
+
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
+                n_sd_in_cell = cell_end - cell_start
+                if n_sd_in_cell == 0:
+                    continue
+
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+                md = rhod_mean * dv_mean
+
+                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
+                    v, v_cr, n, vdry,
+                    idx[cell_start:cell_end],
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
+                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
+                )
+                counter_n_substeps[cell_id] = substeps_hint
+                counter_n_activating[cell_id] = n_activating
+                counter_n_deactivating[cell_id] = n_deactivating
+                counter_n_ripening[cell_id] = n_ripening
+                RH_max[cell_id] = RH_max_in_cell
+                success[cell_id] = success_in_cell
+                pqv[cell_id] = qv_new
+                pthd[cell_id] = thd_new
+
+    @staticmethod
     def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier, within_tolerance):
         if not isinstance(multiplier, int):
             raise ValueError()
@@ -599,6 +717,36 @@ class CondensationMethods:
 </ul>
 <h3>Static methods</h3>
 <dl>
+<dt id="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.condensation"><code class="name flex">
+<span>def <span class="ident">condensation</span></span>(<span>solver, n_cell, cell_start_arg, v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def condensation(
+        solver,
+        n_cell, cell_start_arg,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+        rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
+):
+    n_threads = min(numba.get_num_threads(), n_cell)
+    CondensationMethods._condensation(
+        solver, n_threads, n_cell, cell_start_arg.data,
+        v.data, v_cr.data, n.data, vdry.data, idx.data,
+        rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
+        rtol_x, rtol_thd, dt,
+        counters[&#39;n_substeps&#39;].data,
+        counters[&#39;n_activating&#39;].data,
+        counters[&#39;n_deactivating&#39;].data,
+        counters[&#39;n_ripening&#39;].data,
+        cell_order, RH_max.data, success.data
+    )</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_adapt_substeps"><code class="name flex">
 <span>def <span class="ident">make_adapt_substeps</span></span>(<span>jit_flags, dt, step_fake, dt_range, fuse, multiplier, within_tolerance)</span>
 </code></dt>
@@ -969,6 +1117,7 @@ def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_m
 <li>
 <h4><code><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods" href="#PySDM.backends.numba.impl.condensation_methods.CondensationMethods">CondensationMethods</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.condensation" href="#PySDM.backends.numba.impl.condensation_methods.CondensationMethods.condensation">condensation</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_adapt_substeps" href="#PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_adapt_substeps">make_adapt_substeps</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_calculate_ml_new" href="#PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_calculate_ml_new">make_calculate_ml_new</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_calculate_ml_old" href="#PySDM.backends.numba.impl.condensation_methods.CondensationMethods.make_calculate_ml_old">make_calculate_ml_old</a></code></li>
