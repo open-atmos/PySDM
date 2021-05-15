@@ -36,7 +36,7 @@ class CondensationMethods:
         assert solver is None
         phys = self.formulae
 
-        # TODO #228: not here
+        # TODO #509: not here
         self.ml_old = trtc.device_vector(PrecisionResolver.get_C_type(), n_cell)
         self.ml_new = trtc.device_vector(PrecisionResolver.get_C_type(), n_cell)
 

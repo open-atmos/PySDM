@@ -42,5 +42,5 @@ install:
 
 script:
   - PYTEST="python$PY_SFX -m pytest $PY_FLAGS -p no:unraisableexception"
-  - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM  # TODO #461
+  - NUMBA_DISABLE_JIT=1 $PYTEST PySDM_tests/unit_tests --cov-report term --cov=PySDM
   - $PYTEST
