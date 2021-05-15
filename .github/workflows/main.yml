@@ -34,7 +34,7 @@ jobs:
 
       # note: this installs PySDM-examples including its dependencies which inclde PySDM itself...
       - run: |
-          pip install -r requirements.txt
+          pip install -r test-time-requirements.txt
 
       # note: ... hence reverting to the currently tested version
       - run: |

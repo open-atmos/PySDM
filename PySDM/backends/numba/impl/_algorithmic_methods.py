@@ -177,26 +177,6 @@ class AlgorithmicMethods:
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
-    def condensation(
-            solver,
-            n_cell, cell_start_arg,
-            v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success
-    ):
-        n_threads = min(numba.get_num_threads(), n_cell)
-        AlgorithmicMethods._condensation(
-            solver, n_threads, n_cell, cell_start_arg.data,
-            v.data, v_cr.data, n.data, vdry.data, idx.data,
-            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
-            rtol_x, rtol_thd, dt,
-            counters['n_substeps'].data,
-            counters['n_activating'].data,
-            counters['n_deactivating'].data,
-            counters['n_ripening'].data,
-            cell_order, RH_max.data, success.data
-        )
-
-    @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
         rainfall = 0.
@@ -283,32 +263,6 @@ class AlgorithmicMethods:
         return CellCaretaker(idx, cell_start, scheme)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def moments_body(
-            moment_0, moments, n, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr):
-        moment_0[:] = 0
-        moments[:, :] = 0
-        for i in idx[:length]:
-            if min_x < x_attr[i] < max_x:
-                moment_0[cell_id[i]] += n[i]
-                for k in range(ranks.shape[0]):  # TODO #401 (AtomicAdd)
-                    moments[k, cell_id[i]] += n[i] * attr_data[i] ** ranks[k]
-        for c_id in range(moment_0.shape[0]):
-            for k in range(ranks.shape[0]):
-                moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
-
-    @staticmethod
-    def moments(
-            moment_0, moments, n, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr):
-        return AlgorithmicMethods.moments_body(
-            moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
-            idx.data, length, ranks.data,
-            min_x, max_x, x_attr.data
-        )
-
-    @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
@@ -340,45 +294,6 @@ class AlgorithmicMethods:
             else:
                 i += 1
         return new_length
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
-    def _condensation(
-            solver, n_threads, n_cell, cell_start_arg,
-            v, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
-            rtol_x, rtol_thd, dt,
-            counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
-            cell_order, RH_max, success
-    ):
-        for thread_id in numba.prange(n_threads):
-            for i in range(thread_id, n_cell, n_threads):
-                cell_id = cell_order[i]
-
-                cell_start = cell_start_arg[cell_id]
-                cell_end = cell_start_arg[cell_id + 1]
-                n_sd_in_cell = cell_end - cell_start
-                if n_sd_in_cell == 0:
-                    continue
-
-                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
-                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
-                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
-                md = rhod_mean * dv_mean
-
-                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, v_cr, n, vdry,
-                    idx[cell_start:cell_end],
-                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
-                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
-                )
-                counter_n_substeps[cell_id] = substeps_hint
-                counter_n_activating[cell_id] = n_activating
-                counter_n_deactivating[cell_id] = n_deactivating
-                counter_n_ripening[cell_id] = n_ripening
-                RH_max[cell_id] = RH_max_in_cell
-                success[cell_id] = success_in_cell
-                pqv[cell_id] = qv_new
-                pthd[cell_id] = thd_new
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
