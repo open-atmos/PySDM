@@ -36,7 +36,7 @@ install:
     if [[ $TRAVIS_OS_NAME == linux ]]; then
       python$PY_SFX $PY_FLAGS -c 'import os, virtualenv; virtualenv.install_distutils(os.environ["VIRTUAL_ENV"])' || exit 1
     fi;
-  - pip$PY_SFX install -U -r requirements.txt
+  - pip$PY_SFX install -U -r test-time-requirements.txt
   - pip$PY_SFX install -e .
   - export PY_FLAGS="-We"
 
