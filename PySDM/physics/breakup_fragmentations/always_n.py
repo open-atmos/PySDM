@@ -14,7 +14,6 @@ class AlwaysN:
 
     def __call__(self, output, is_first_in_pair):
         output = self.N
-        print("always_n.py", self.N)
 
     def register(self, builder):
         self.core = builder.core

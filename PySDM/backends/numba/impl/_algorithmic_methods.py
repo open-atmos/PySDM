@@ -153,7 +153,6 @@ class AlgorithmicMethods:
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
-
             new_n = n[j] - gamma[i] * n[k]
             print("_algorithmic_methods.py", i, n_fragment[i])
             # breakup does occur
