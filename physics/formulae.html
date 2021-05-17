@@ -39,9 +39,9 @@ import numba
 
 def _formula(func=None, **kw):
     if func is None:
-        return numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, **kw}})
+        return numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}})
     else:
-        return numba.njit(func, **{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, **kw}})
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}})
 
 
 def _boost(obj, fastmath):
