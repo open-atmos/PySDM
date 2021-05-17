@@ -10,9 +10,9 @@ import numba
 
 def _formula(func=None, **kw):
     if func is None:
-        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', 'cache': False, **kw}})
     else:
-        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', 'cache': False, **kw}})
 
 
 def _boost(obj, fastmath):
