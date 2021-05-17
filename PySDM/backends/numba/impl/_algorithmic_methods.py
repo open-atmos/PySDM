@@ -150,11 +150,13 @@ class AlgorithmicMethods:
     def breakup_body(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
         for i in numba.prange(length // 2):
             # no collisional breakup occurs
+            #print(gamma[i])
             if gamma[i] == 0:
+                #print('gamma is zero')
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
             new_n = n[j] - gamma[i] * n[k]
-            print("_algorithmic_methods.py", i, n_fragment[i])
+            #print('_algorithmic_methods.py', i, gamma[i], n_fragment[i])
             # breakup does occur
             if new_n > 0:
                 n[j] = new_n
@@ -191,10 +193,12 @@ class AlgorithmicMethods:
               = floor(prob)     if rand >= prob - floor(prob)
         """
         for i in numba.prange(length // 2):
+            #print('gamma body pre', i, gamma[i])
             gamma[i] = np.ceil(gamma[i] - rand[i])
-
+            #print('gamma body minus', i, gamma[i])
             # (4) No collision
             if gamma[i] == 0:
+                #print('gamma_body is zero', i, gamma[i])
                 continue
 
             # (5) Successful collision
@@ -206,6 +210,7 @@ class AlgorithmicMethods:
             collision_rate[cid] += g * n[k]
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
             gamma[i] = g
+            #print('gamma body post', i, gamma[i])
 
     @staticmethod
     def compute_gamma(gamma, rand, n, cell_id,

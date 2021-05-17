@@ -104,30 +104,30 @@ class Breakup:
             self.rnd_opt.reset()
 
     def step(self):
-        print("called step")
+        print("0. called step", flush=True)
         # (1) Make the superdroplet list 
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
-        print("list made")
+        print("1. list made", flush=True)
         
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
-        print("tossed pairs")
+        print("2. tossed pairs", flush=True)
         
         # (3a) Compute the probability of a collision
         self.compute_probability(self.prob, self.is_first_in_pair)
-        print('computed prob')
+        print('3. computed prob', flush=True)
         
         # (3b) Compute the number of fragments
         self.compute_n_fragment(self.n_fragment, self.is_first_in_pair)
-        print('computed n_fragment')
+        print('3b. computed n_fragment')
         
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        print('computed gamma')
+        print('4. computed gamma')
         
         # (5) Perform the collisional-breakup step: 
         self.core.particles.breakup(gamma=self.prob, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
-        print('breakup done')
+        print('5. breakup done')
         
         if self.adaptive:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
@@ -148,7 +148,6 @@ class Breakup:
         # P_jk = max(xi_j, xi_k)*P_jk
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
-
         self.core.normalize(prob, self.norm_factor_temp)
         
     # (4a) Compute n_fragment
