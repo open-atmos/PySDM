@@ -70,6 +70,7 @@ T_STP = T0 + 15 * si.kelvin
 p_STP = 101325 * si.pascal
 rho_STP = p_STP / Rd / T_STP
 
+ppt = 1e-12
 ppb = 1e-9
 ppm = 1e-6
 ROOM_TEMP = T_tri + 25 * si.K
