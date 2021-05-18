@@ -33,5 +33,3 @@ class pH(DerivedAttribute):
                                     H_max=dynamic.pH_H_max,
                                     ionic_strength_threshold=dynamic.ionic_strength_threshold,
                                     rtol=dynamic.pH_rtol)
-
-

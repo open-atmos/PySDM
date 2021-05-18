@@ -10,7 +10,7 @@ default_ionic_strength_threshold = 0.02 * M
 
 
 class AqueousChemistry:
-    def __init__(self, environment_mole_fractions, system_type, n_substep,
+    def __init__(self, environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass,
                  ionic_strength_threshold=default_ionic_strength_threshold,
                  pH_H_min=None,
                  pH_H_max=None,
@@ -23,6 +23,8 @@ class AqueousChemistry:
         self.system_type = system_type
         assert isinstance(n_substep, int) and n_substep > 0
         self.n_substep = n_substep
+        self.dry_rho = dry_rho
+        self.dry_molar_mass = dry_molar_mass
         self.ionic_strength_threshold=ionic_strength_threshold
         self.pH_H_max = pH_H_max
         self.pH_H_min = pH_H_min

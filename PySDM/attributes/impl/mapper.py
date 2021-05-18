@@ -4,7 +4,7 @@ Created at 12.05.2020
 
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
-from PySDM.attributes.physics.dry_volume import DryVolume
+from PySDM.attributes.physics.dry_volume import DryVolumeDynamic, DryVolumeStatic
 from PySDM.attributes.physics.radius import Radius
 from PySDM.attributes.physics.dry_radius import DryRadius
 from PySDM.attributes.physics.terminal_velocity import TerminalVelocity
@@ -20,23 +20,23 @@ from PySDM.attributes.chemistry.pH import pH
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
 attributes = {
-    'n': Multiplicities,
-    'volume': Volume,
-    'dry volume': DryVolume,
-    'radius': Radius,
-    'dry radius': DryRadius,
-    'terminal velocity': TerminalVelocity,
-    'cell id': CellID,
-    'cell origin': CellOrigin,
-    'position in cell': PositionInCell,
-    'temperature': Temperature,
-    'heat': Heat,
-    'critical volume': CriticalVolume,
-    **{"moles_" + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
-    **{"conc_" + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
-    'pH': pH
+    'n': lambda _: Multiplicities,
+    'volume': lambda _: Volume,
+    'dry volume': lambda dynamics: DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolumeStatic,
+    'radius': lambda _: Radius,
+    'dry radius': lambda _: DryRadius,
+    'terminal velocity': lambda _: TerminalVelocity,
+    'cell id': lambda _: CellID,
+    'cell origin': lambda _: CellOrigin,
+    'position in cell': lambda _: PositionInCell,
+    'temperature': lambda _: Temperature,
+    'heat': lambda _: Heat,
+    'critical volume': lambda _: CriticalVolume,
+    **{"moles_" + compound: lambda _: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
+    **{"conc_" + compound: lambda _: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
+    'pH': lambda _: pH
 }
 
 
-def get_class(name):
-    return attributes[name]
+def get_class(name, dynamics):
+    return attributes[name](dynamics)
