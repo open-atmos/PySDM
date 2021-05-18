@@ -10,7 +10,7 @@ JIT_FLAGS = dict(
     parallel=True,
     fastmath=True,
     error_model='numpy',
-    cache=True
+    cache=False  # https://github.com/numba/numba/issues/2956
 )
 
 try:
