@@ -18,6 +18,7 @@ from PySDM.attributes.chemistry.mole_amount import MoleAmount
 from PySDM.attributes.chemistry.concentration import Concentration
 from PySDM.attributes.chemistry.pH import pH
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from functools import partial
 
 attributes = {
     'n': lambda _: Multiplicities,
@@ -32,8 +33,10 @@ attributes = {
     'temperature': lambda _: Temperature,
     'heat': lambda _: Heat,
     'critical volume': lambda _: CriticalVolume,
-    **{"moles_" + compound: lambda _: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
-    **{"conc_" + compound: lambda _: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
+    **{"moles_" + compound: partial(lambda _, c: MoleAmount(c), c=compound)
+       for compound in AQUEOUS_COMPOUNDS.keys()},
+    **{"conc_" + compound: partial(lambda _, c: Concentration(c), c=compound)
+       for compound in AQUEOUS_COMPOUNDS.keys()},
     'pH': lambda _: pH
 }
 
