@@ -14,8 +14,8 @@ setup(
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     install_requires=[
-        'ThrustRTC' + ('==0.3.10' if 'CI' in os.environ else '>=0.1.2'),
-        'CURandRTC' + ('==0.1.6' if 'CI' in os.environ else '>=0.3.3'),
+        'ThrustRTC' + ('==0.3.10' if 'CI' in os.environ else '>=0.3.3'),
+        'CURandRTC' + ('==0.1.6' if 'CI' in os.environ else '>=0.1.2'),
         'numba' + ('==0.53.1' if 'CI' in os.environ else '>=0.51.2'),
         'numpy' + ('==1.20.2' if 'CI' in os.environ else ''),
         'Pint' + ('==0.17' if 'CI' in os.environ else ''),
