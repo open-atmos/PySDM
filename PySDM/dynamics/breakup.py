@@ -14,6 +14,7 @@ class Breakup:
 
     def __init__(self,
                  kernel,
+                 coal_eff,
                  fragmentation,
                  croupier=None,
                  optimized_random=False,
@@ -27,6 +28,7 @@ class Breakup:
         self.enable = True
 
         self.kernel = kernel
+        self.coal_eff = coal_eff
         self.fragmentation = fragmentation
 
         assert dt_coal_range[0] > 0
@@ -48,7 +50,7 @@ class Breakup:
         self.collision_rate = None
         self.collision_rate_deficit = None
         self.n_fragment = None
-        print("initialized")
+        #print("initialized")
 
     def register(self, builder):
         self.core = builder.core
@@ -85,7 +87,7 @@ class Breakup:
         
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        print("registered")
+        #print("registered")
 
     def __call__(self):
         if self.enable:
@@ -104,30 +106,30 @@ class Breakup:
             self.rnd_opt.reset()
 
     def step(self):
-        print("0. called step", flush=True)
+        #print("0. called step", flush=True)
         # (1) Make the superdroplet list 
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
-        print("1. list made", flush=True)
+        #print("1. list made", flush=True)
         
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
-        print("2. tossed pairs", flush=True)
+        #print("2. tossed pairs", flush=True)
         
         # (3a) Compute the probability of a collision
         self.compute_probability(self.prob, self.is_first_in_pair)
-        print('3. computed prob', flush=True)
+        #print('3. computed prob', flush=True)
         
         # (3b) Compute the number of fragments
         self.compute_n_fragment(self.n_fragment, self.is_first_in_pair)
-        print('3b. computed n_fragment')
+        #print('3b. computed n_fragment')
         
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        print('4. computed gamma')
+        #print('4. computed gamma')
         
         # (5) Perform the collisional-breakup step: 
         self.core.particles.breakup(gamma=self.prob, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
-        print('5. breakup done')
+        #print('5. breakup done')
         
         if self.adaptive:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
