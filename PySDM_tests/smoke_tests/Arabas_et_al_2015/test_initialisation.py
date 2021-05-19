@@ -7,6 +7,8 @@ from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
 from PySDM.physics.constants import si
 from matplotlib import pyplot
+
+# noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
 
