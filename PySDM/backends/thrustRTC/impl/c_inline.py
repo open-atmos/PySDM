@@ -5,7 +5,7 @@ from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 from PySDM.physics import constants as const
 
 
-def c_inline(fun, **args):
+def c_inline(fun, return_type=PrecisionResolver.get_C_type(), **args):
     prae = r"([,+\-*/( ]|^)"
     post = r"([ )/*\-+,]|$)"
     real_t = PrecisionResolver.get_C_type()
@@ -30,4 +30,4 @@ def c_inline(fun, **args):
         source
     )
     source = eval(f'f"""{source}"""')
-    return f'{real_t}({source})'
+    return f'{return_type}({source})'

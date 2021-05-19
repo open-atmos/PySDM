@@ -12,7 +12,7 @@ import tempfile
 from PySDM_tests.backends_fixture import backend
 
 
-def test_export(tmp_path):
+def test_export(backend, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt

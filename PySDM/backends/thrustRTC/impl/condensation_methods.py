@@ -19,8 +19,13 @@ class CondensationMethods:
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
+        args_vars = ('x_old', 'dt', '_p', 'kappa', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr')
+
+        def args(arg):
+            return f"args[{args_vars.index(arg)}]"
+
         self.__update_volume = trtc.For(("v", "vdry", *keys, "kappa", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
-            f'''
+            f'''            
             auto _T = T[cell_id[i]];
             auto _p = p[cell_id[i]];
             auto _pv = pv[cell_id[i]];
@@ -31,19 +36,15 @@ class CondensationMethods:
             auto _lambdaK = lambdaK[cell_id[i]];
             auto _lambdaD = lambdaD[cell_id[i]];
             
-            struct Args {{
-                real_type x_old, dt, p, kappa, rd3, T, RH, lv, pvs, Dr, Kr;
-            }};
             struct Minfun {{
-                static __device__ real_type value(const real_type &x_new, void* args_p)
-                {{
-                    auto args = static_cast<Args*>(args_p);
+                static __device__ real_type value(real_type x_new, void* args_p) {{
+                    auto args = static_cast<real_type*>(args_p);
                     auto vol = {c_inline(phys.condensation_coordinate.volume, x="x_new")};
                     auto r_new = {c_inline(phys.trivia.radius, volume="vol")};
-                    auto sgm = {c_inline(phys.surface_tension.sigma, T="args->T", v_wet="vol", v_dry="const.pi_4_3 * args->rd3")};
-                    auto RH_eq = {c_inline(phys.hygroscopicity.RH_eq, r="r_new", T="args->T", kp="args->kappa", rd3="args->rd3", sgm="sgm")};
-                    auto r_dr_dt = {c_inline(phys.drop_growth.r_dr_dt, RH_eq="RH_eq", T="args->T", RH="args->RH", lv="args->lv", pvs="args->pvs", D="args->Dr", K="args->Kr")};
-                    return args->x_old - x_new + args->dt * {c_inline(phys.condensation_coordinate.dx_dt, x="x_new", r_dr_dt="r_dr_dt")};
+                    auto sgm = {c_inline(phys.surface_tension.sigma, T=args('_T'), v_wet="vol", v_dry=f"const.pi_4_3 * {args('rd3')}")};
+                    auto RH_eq = {c_inline(phys.hygroscopicity.RH_eq, r="r_new", T=args('_T'), kp=args("kappa"), rd3=args("rd3"), sgm="sgm")};
+                    auto r_dr_dt = {c_inline(phys.drop_growth.r_dr_dt, RH_eq="RH_eq", T=args("_T"), RH=args("_RH"), lv=args("_lv"), pvs=args("_pvs"), D=args("Dr"), K=args("Kr"))};
+                    return {args("x_old")} - x_new + {args("dt")} * {c_inline(phys.condensation_coordinate.dx_dt, x="x_new", r_dr_dt="r_dr_dt")};
                 }}
             }};
             {BISECTION}
@@ -55,21 +56,23 @@ class CondensationMethods:
             auto sgm = {c_inline(phys.surface_tension.sigma, T="_T", v_wet="v[i]", v_dry="vdry[i]")};
             auto RH_eq = {c_inline(phys.hygroscopicity.RH_eq, r="r_old", T="_T", kp="kappa", rd3="rd3", sgm="sgm")};
 
-            real_type Dr, Kr, r_dr_dt_old, dx_old;
-            Args args;
-            real_type x_new;
-            if ( ! {c_inline(phys.trivia.within_tolerance, error_estimate="abs(_RH - RH_eq)", value="_RH", rtol="RH_rtol")})
-            {{
+            real_type Dr=0;
+            real_type Kr=0; 
+            real_type r_dr_dt_old=0;
+            real_type dx_old=0;
+
+            real_type x_new = 0;
+            if ( ! {c_inline(phys.trivia.within_tolerance, return_type='bool', error_estimate="abs(_RH - RH_eq)", value="_RH", rtol="RH_rtol")}) {{
                 Dr = {c_inline(phys.diffusion_kinetics.DK, DK="_DTp", r="r_old", lmbd="_lambdaD")};
                 Kr = {c_inline(phys.diffusion_kinetics.DK, DK="const.K0", r="r_old", lmbd="_lambdaK")};
-                args = Args{{x_old, dt, _p, kappa, rd3, _T, _RH, _lv, _pvs, Dr, Kr}};
                 r_dr_dt_old = {c_inline(phys.drop_growth.r_dr_dt, RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr")};
                 dx_old = dt * {c_inline(phys.condensation_coordinate.dx_dt, x="x_old", r_dr_dt="r_dr_dt_old")};
             }}
-            else 
-            {{
+            else {{
                 dx_old = 0;
             }}
+            real_type args[] = {{{','.join(args_vars)}}}; // array
+
             if (dx_old == 0) {{
                 x_new = x_old;
             }}
@@ -87,7 +90,7 @@ class CondensationMethods:
                         //success = False
                         return;
                     }}
-                    b = max(x_insane, a + ldexp(dx_old, counter));
+                    b = max(x_insane, a + ldexp(dx_old, 1.*counter));
                     fb = Minfun::value(b, &args);
                 }}
 
@@ -96,18 +99,13 @@ class CondensationMethods:
                 //    break
                 if (a != b) {{
                     if (a > b) {{
-                        {{ 
-                            auto tmp = a; 
-                            a = b;
-                            b = tmp;
-                        }}
-                        {{ 
-                            auto tmp = fa; 
-                            fa = fb;
-                            fb = tmp;
-                        }}
+                        auto tmp = a; 
+                        a = b;
+                        b = tmp;
+                        auto ftmp = fa; 
+                        fa = fb;
+                        fb = ftmp;
                     }}
-
                     x_new = Bisect::bisect(Minfun::value, &args, a, b, fa, fb, rtol_x);
                     //if iters_taken in (-1, max_iters):
                     //    if not fake:
@@ -122,6 +120,43 @@ class CondensationMethods:
             v[i] = {c_inline(phys.condensation_coordinate.volume, x="x_new")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
+        self.__pre_for = trtc.For(("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd", "pqv", "qv", "prhod", "rhod", "dt"),
+                              "i", f'''
+            dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
+            dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
+            rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
+        ''')
+
+        self.__pre = trtc.For(
+            (*keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt"),
+            "i", f'''
+            thd[i] += dt * dthd_dt_pred[i] / 2;
+            qv[i] += dt * dqv_dt_pred[i] / 2;
+
+            T[i] = {c_inline(phys.state_variable_triplet.T, rhod='rhod_mean[i]', thd='thd[i]')};
+            p[i] = {c_inline(phys.state_variable_triplet.p, rhod='rhod_mean[i]', T='T[i]', qv='qv[i]')};
+            pv[i] = {c_inline(phys.state_variable_triplet.pv, p='p[i]', qv='qv[i]')};
+            lv[i] = {c_inline(phys.latent_heat.lv, T='T[i]')};
+            pvs[i] = {c_inline(phys.saturation_vapour_pressure.pvs_Celsius, T='T[i] - const.T0')};
+            RH[i] = pv[i] / pvs[i];
+            DTp[i] = {c_inline(phys.diffusion_thermics.D, T='T[i]', p='p[i]')};
+            lambdaK[i] = {c_inline(phys.diffusion_kinetics.lambdaK, T='T[i]', p='p[i]')};
+            lambdaD[i] = {c_inline(phys.diffusion_kinetics.lambdaD, D='DTp[i]', T='T[i]')};
+        ''')
+
+        self.__post = trtc.For(
+            ("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt", "ml_new", "ml_old", "dv_mean", "T",
+             "lv"),
+            "i", f'''
+            auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
+            auto dqv_dt_corr = - dml_dt / (rhod_mean[i] * dv_mean);
+            auto dthd_dt_corr = {c_inline(phys.state_variable_triplet.dthd_dt, rhod='rhod_mean[i]', thd='thd[i]', T='T[i]', dqv_dt='dqv_dt_corr', lv='lv[i]')};
+
+            thd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
+            qv[i] += dt * (dqv_dt_pred[i] / 2 + dqv_dt_corr);
+            ml_old[i] = ml_new[i];
+        ''')
+
     def calculate_m_l(self, ml, v, n, cell_id):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
@@ -135,7 +170,6 @@ class CondensationMethods:
         rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
-        phys = self.formulae
 
         # TODO #509: not here
         self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
@@ -150,15 +184,7 @@ class CondensationMethods:
         dv_mean = dv
 
         success[:] = True
-        # </TODO>
         dvfloat = PrecisionResolver.get_floating_point
-
-        self.__pre_for = trtc.For(("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd", "pqv", "qv", "prhod", "rhod", "dt"),
-                              "i", f'''
-            dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
-            dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
-            rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
-        ''')
 
         self.__pre_for.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt)))
 
@@ -166,45 +192,13 @@ class CondensationMethods:
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for i in range(n_substeps):
-            self.__pre = trtc.For(
-                (*AQQ.keys(), "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt"),
-                "i", f'''
-                thd[i] += dt * dthd_dt_pred[i] / 2;
-                qv[i] += dt * dqv_dt_pred[i] / 2;
-    
-                T[i] = {c_inline(phys.state_variable_triplet.T, rhod='rhod_mean[i]', thd='thd[i]')};
-                p[i] = {c_inline(phys.state_variable_triplet.p, rhod='rhod_mean[i]', T='T[i]', qv='qv[i]')};
-                pv[i] = {c_inline(phys.state_variable_triplet.pv, p='p[i]', qv='qv[i]')};
-                lv[i] = {c_inline(phys.latent_heat.lv, T='T[i]')};
-                pvs[i] = {c_inline(phys.saturation_vapour_pressure.pvs_Celsius, T='T[i] - const.T0')};
-                RH[i] = pv[i] / pvs[i];
-                DTp[i] = {c_inline(phys.diffusion_thermics.D, T='T[i]', p='p[i]')};
-                lambdaK[i] = {c_inline(phys.diffusion_kinetics.lambdaK, T='T[i]', p='p[i]')};
-                lambdaD[i] = {c_inline(phys.diffusion_kinetics.lambdaD, D='DTp[i]', T='T[i]')};
-            ''')
-
             self.__pre.launch_n(n_cell, (*AQQ.values(),  dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, thd.data, qv.data, rhod.data, dvfloat(dt)))
-
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *AQQ.values(),
                                                    dvfloat(kappa),
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
-
-            # ...
-            self.__post = trtc.For(
-                ("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt", "ml_new", "ml_old", "dv_mean", "T", "lv"),
-                "i", f'''
-                auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
-                auto dqv_dt_corr = - dml_dt / (rhod_mean[i] * dv_mean);
-                auto dthd_dt_corr = {c_inline(phys.state_variable_triplet.dthd_dt, rhod='rhod_mean[i]', thd='thd[i]', T='T[i]', dqv_dt='dqv_dt_corr', lv='lv[i]')};
-    
-                thd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
-                qv[i] += dt * (dqv_dt_pred[i] / 2 + dqv_dt_corr);
-                ml_old[i] = ml_new[i];
-            ''')
-
             self.__post.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, thd.data, qv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), AQQ['T'], AQQ['lv']))
 
     def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
