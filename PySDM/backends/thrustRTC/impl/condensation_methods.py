@@ -12,7 +12,7 @@ class CondensationMethods:
         phys = self.formulae
         self.RH_rtol = None
 
-        # TODO #228: precision for consts
+        # TODO #509: precision for consts
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
@@ -126,10 +126,10 @@ class CondensationMethods:
         assert solver is None
         phys = self.formulae
 
-        # TODO #228: not here
+        # TODO #509: not here
         self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.ml_new = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        n_substeps = 10  # TODO #228!
+        n_substeps = 10  # TODO #509!
 
         if n_cell != 1:
             raise NotImplementedError()
@@ -181,7 +181,7 @@ class CondensationMethods:
 
 
     def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
-        # TODO #228: uncomment
+        # TODO #509: uncomment
         # if adaptive:
         #     raise NotImplementedError()
         self.RH_rtol = RH_rtol

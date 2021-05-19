@@ -57,13 +57,13 @@ PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata
 To install PySDM using ``pip``, use: ``pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git``.
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
-Test-time dependencies are listed in the ``requirements.txt`` file.
+Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
 
 PySDM examples listed below are hosted in a separate repository and constitute 
 a separate [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) Python package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
-Running the examples requires the the ``PySDM_examples`` package to be installed (or within ``PYTHONPATH``).
-Since the examples package includes Jupyter notebooks, the suggested install and launch steps are:
+Running the examples requires the the ``PySDM_examples`` package to be installed.
+Since the examples package includes Jupyter notebooks (and their execution requires write access), the suggested install and launch steps are:
 ```
 git clone https://github.com/atmos-cloud-sim-uj/PySDM-examples.git
 cd PySDM-examples
