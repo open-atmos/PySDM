@@ -17,7 +17,8 @@ class CondensationMethods:
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__update_volume = trtc.For(("v", "vdry", "T", "kappa", "DTp", "lambdaD", "lambdaK", "RH", "pvs", "lv", "dt", "p", "RH_rtol", "rtol_x", "max_iters"), "i",
+        self.__update_volume = trtc.For(("v", "vdry", "T", "kappa", "DTp", "lambdaD", "lambdaK", "RH",
+                                         "pvs", "lv", "dt", "p", "RH_rtol", "rtol_x", "max_iters"), "i",
             '''
             struct Args {
                 real_type x_old, dt, p, kappa, rd3, T, RH, lv, pvs, Dr, Kr;
@@ -112,8 +113,14 @@ class CondensationMethods:
                     x_new = x_old;
                 }}
             }}
-            v[i] = {c_inline(phys.condensation_coordinate.volume, x="x_new")};        
+            v[i] = {c_inline(phys.condensation_coordinate.volume, x="x_new")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
+
+
+    def calculate_m_l(self, ml, v, n, cell_id):
+        ml[:] = 0
+        self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
+
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
@@ -129,11 +136,11 @@ class CondensationMethods:
         # TODO #509: not here
         self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.ml_new = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        n_substeps = 10  # TODO #509!
 
         if n_cell != 1:
             raise NotImplementedError()
         cid = 0
+        n_substeps = counters['n_substeps'][cell_id][0]
         dv_mean = dv
         dthd_dt_pred = (pthd[cid] - thd[cid]) / dt
         dqv_dt_pred = (pqv[cid] - qv[cid]) / dt
@@ -143,10 +150,10 @@ class CondensationMethods:
         # </TODO>
 
         dt /= n_substeps
-        self.__calculate_m_l.launch_n(len(n), (self.ml_old.data, v.data, n.data, cell_id.data))
+        self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for i in range(n_substeps):
-            thd[cid] = thd[cid] + dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
+            thd[cid] += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
             qv[cid] += dt * dqv_dt_pred / 2
 
             T = phys.state_variable_triplet.T(rhod_mean, thd[cid])
@@ -160,14 +167,13 @@ class CondensationMethods:
             lambdaD = phys.diffusion_kinetics.lambdaD(DTp, T)
 
             dvfloat = PrecisionResolver.get_floating_point
-            self.ml_old[:] = 0
             self.__update_volume.launch_n(len(n), (v.data, vdry.data,
                                                    dvfloat(T), dvfloat(kappa), dvfloat(DTp), dvfloat(lambdaD),
                                                    dvfloat(lambdaK), dvfloat(RH), dvfloat(pvs), dvfloat(lv),
                                                    dvfloat(dt), dvfloat(p), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters))
                                           )
-            self.__calculate_m_l.launch_n(len(n), (self.ml_new.data, v.data, n.data, cell_id.data))
+            self.calculate_m_l(self.ml_new, v, n, cell_id)
 
             # ...
             dml_dt = (self.ml_new[cid] - self.ml_old[cid]) / dt
@@ -176,14 +182,12 @@ class CondensationMethods:
 
             thd[cid] += dt * (dthd_dt_pred / 2 + dthd_dt_corr)
             qv[cid] += dt * (dqv_dt_pred / 2 + dqv_dt_corr)
-            self.ml_old = self.ml_new
+            self.ml_old[:] = self.ml_new[:]
             # ...
 
-
     def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
-        # TODO #509: uncomment
-        # if adaptive:
-        #     raise NotImplementedError()
+        if adaptive:
+            raise NotImplementedError()
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
         return None
