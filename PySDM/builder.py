@@ -50,7 +50,7 @@ class Builder:
 
     def request_attribute(self, attribute):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(attribute)(self)
+            self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         self.core.backend.sanity_check()
