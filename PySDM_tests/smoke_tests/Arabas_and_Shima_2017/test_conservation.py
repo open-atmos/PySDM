@@ -9,9 +9,7 @@ from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 from PySDM.backends.numba.test_helpers import bdf
 from PySDM.physics import constants as const
-
-# noinspection PyUnresolvedReferences
-from PySDM_tests.backends_fixture import backend
+from PySDM.backends import CPU, GPU
 
 
 def ql(simulation: Simulation):
@@ -27,10 +25,12 @@ def ql(simulation: Simulation):
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
 @pytest.mark.parametrize("mass_of_dry_air", (1, 10000))
-@pytest.mark.parametrize("scheme", ('BDF', 'default'))
+@pytest.mark.parametrize("scheme", ('BDF', 'CPU', 'GPU'))
 @pytest.mark.parametrize("coord", ('VolumeLogarithm', 'Volume'))
-def test_water_mass_conservation(backend, settings_idx, mass_of_dry_air, scheme, coord):
+def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     # Arrange
+    assert scheme in ('BDF', 'CPU', 'GPU')
+
     settings = Settings(
         w_avg=setups[settings_idx].w_avg,
         N_STP=setups[settings_idx].N_STP,
@@ -40,10 +40,9 @@ def test_water_mass_conservation(backend, settings_idx, mass_of_dry_air, scheme,
     )
     settings.n_output = 50
     settings.coord = coord
-    simulation = Simulation(settings, backend)
+    simulation = Simulation(settings, GPU if scheme == 'GPU' else CPU)
     qt0 = settings.q0 + ql(simulation)
 
-    assert scheme in ('BDF', 'default')
     if scheme == 'BDF':
         bdf.patch_core(simulation.core)
 

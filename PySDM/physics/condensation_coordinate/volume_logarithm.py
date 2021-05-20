@@ -1,4 +1,4 @@
-from numpy import pi, log, exp, power
+from numpy import log, exp, power
 from PySDM.physics import constants as const
 
 
