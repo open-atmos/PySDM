@@ -33,7 +33,7 @@ Created at 12.05.2020
 
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
-from PySDM.attributes.physics.dry_volume import DryVolume
+from PySDM.attributes.physics.dry_volume import DryVolumeDynamic, DryVolumeStatic
 from PySDM.attributes.physics.radius import Radius
 from PySDM.attributes.physics.dry_radius import DryRadius
 from PySDM.attributes.physics.terminal_velocity import TerminalVelocity
@@ -47,28 +47,31 @@ from PySDM.attributes.chemistry.mole_amount import MoleAmount
 from PySDM.attributes.chemistry.concentration import Concentration
 from PySDM.attributes.chemistry.pH import pH
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from functools import partial
 
 attributes = {
-    &#39;n&#39;: Multiplicities,
-    &#39;volume&#39;: Volume,
-    &#39;dry volume&#39;: DryVolume,
-    &#39;radius&#39;: Radius,
-    &#39;dry radius&#39;: DryRadius,
-    &#39;terminal velocity&#39;: TerminalVelocity,
-    &#39;cell id&#39;: CellID,
-    &#39;cell origin&#39;: CellOrigin,
-    &#39;position in cell&#39;: PositionInCell,
-    &#39;temperature&#39;: Temperature,
-    &#39;heat&#39;: Heat,
-    &#39;critical volume&#39;: CriticalVolume,
-    **{&#34;moles_&#34; + compound: MoleAmount(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
-    **{&#34;conc_&#34; + compound: Concentration(compound) for compound in AQUEOUS_COMPOUNDS.keys()},
-    &#39;pH&#39;: pH
+    &#39;n&#39;: lambda _: Multiplicities,
+    &#39;volume&#39;: lambda _: Volume,
+    &#39;dry volume&#39;: lambda dynamics: DryVolumeDynamic if &#39;AqueousChemistry&#39; in dynamics else DryVolumeStatic,
+    &#39;radius&#39;: lambda _: Radius,
+    &#39;dry radius&#39;: lambda _: DryRadius,
+    &#39;terminal velocity&#39;: lambda _: TerminalVelocity,
+    &#39;cell id&#39;: lambda _: CellID,
+    &#39;cell origin&#39;: lambda _: CellOrigin,
+    &#39;position in cell&#39;: lambda _: PositionInCell,
+    &#39;temperature&#39;: lambda _: Temperature,
+    &#39;heat&#39;: lambda _: Heat,
+    &#39;critical volume&#39;: lambda _: CriticalVolume,
+    **{&#34;moles_&#34; + compound: partial(lambda _, c: MoleAmount(c), c=compound)
+       for compound in AQUEOUS_COMPOUNDS.keys()},
+    **{&#34;conc_&#34; + compound: partial(lambda _, c: Concentration(c), c=compound)
+       for compound in AQUEOUS_COMPOUNDS.keys()},
+    &#39;pH&#39;: lambda _: pH
 }
 
 
-def get_class(name):
-    return attributes[name]</code></pre>
+def get_class(name, dynamics):
+    return attributes[name](dynamics)</code></pre>
 </details>
 </section>
 <section>
@@ -79,7 +82,7 @@ def get_class(name):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.attributes.impl.mapper.get_class"><code class="name flex">
-<span>def <span class="ident">get_class</span></span>(<span>name)</span>
+<span>def <span class="ident">get_class</span></span>(<span>name, dynamics)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,8 +90,8 @@ def get_class(name):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_class(name):
-    return attributes[name]</code></pre>
+<pre><code class="python">def get_class(name, dynamics):
+    return attributes[name](dynamics)</code></pre>
 </details>
 </dd>
 </dl>

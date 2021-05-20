@@ -32,14 +32,25 @@ Created at 11.05.2020
 &#34;&#34;&#34;
 
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
+from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.physics import constants as const
 
 
-class DryVolume(ExtensiveAttribute):
-
+class DryVolumeStatic(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name=&#39;dry volume&#39;)
 
-    # TODO #438: for chemistry this should be a dependent attribute</code></pre>
+
+class DryVolumeDynamic(DerivedAttribute):
+    def __init__(self, builder):
+        self.core = builder.core
+        self.moles_S_VI = builder.get_attribute(&#39;moles_S_VI&#39;)
+        super().__init__(builder, name=&#39;dry volume&#39;, dependencies=(self.moles_S_VI,))
+
+    def recalculate(self):
+        dynamic = self.core.dynamics[&#39;AqueousChemistry&#39;]
+        self.data.data[:] = self.moles_S_VI.data.data[:]
+        self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
 </details>
 </section>
 <section>
@@ -51,8 +62,8 @@ class DryVolume(ExtensiveAttribute):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.attributes.physics.dry_volume.DryVolume"><code class="flex name class">
-<span>class <span class="ident">DryVolume</span></span>
+<dt id="PySDM.attributes.physics.dry_volume.DryVolumeDynamic"><code class="flex name class">
+<span>class <span class="ident">DryVolumeDynamic</span></span>
 <span>(</span><span>builder)</span>
 </code></dt>
 <dd>
@@ -61,12 +72,54 @@ class DryVolume(ExtensiveAttribute):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class DryVolume(ExtensiveAttribute):
-
+<pre><code class="python">class DryVolumeDynamic(DerivedAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name=&#39;dry volume&#39;)
+        self.core = builder.core
+        self.moles_S_VI = builder.get_attribute(&#39;moles_S_VI&#39;)
+        super().__init__(builder, name=&#39;dry volume&#39;, dependencies=(self.moles_S_VI,))
 
-    # TODO #438: for chemistry this should be a dependent attribute</code></pre>
+    def recalculate(self):
+        dynamic = self.core.dynamics[&#39;AqueousChemistry&#39;]
+        self.data.data[:] = self.moles_S_VI.data.data[:]
+        self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.physics.dry_volume.DryVolumeDynamic.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate(self):
+    dynamic = self.core.dynamics[&#39;AqueousChemistry&#39;]
+    self.data.data[:] = self.moles_S_VI.data.data[:]
+    self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="PySDM.attributes.physics.dry_volume.DryVolumeStatic"><code class="flex name class">
+<span>class <span class="ident">DryVolumeStatic</span></span>
+<span>(</span><span>builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DryVolumeStatic(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name=&#39;dry volume&#39;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -92,7 +145,13 @@ class DryVolume(ExtensiveAttribute):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.physics.dry_volume.DryVolume" href="#PySDM.attributes.physics.dry_volume.DryVolume">DryVolume</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.dry_volume.DryVolumeDynamic" href="#PySDM.attributes.physics.dry_volume.DryVolumeDynamic">DryVolumeDynamic</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.physics.dry_volume.DryVolumeDynamic.recalculate" href="#PySDM.attributes.physics.dry_volume.DryVolumeDynamic.recalculate">recalculate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.attributes.physics.dry_volume.DryVolumeStatic" href="#PySDM.attributes.physics.dry_volume.DryVolumeStatic">DryVolumeStatic</a></code></h4>
 </li>
 </ul>
 </li>

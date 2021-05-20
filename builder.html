@@ -79,7 +79,7 @@ class Builder:
 
     def request_attribute(self, attribute):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(attribute)(self)
+            self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         self.core.backend.sanity_check()
@@ -204,7 +204,7 @@ def assert_not_none(*params):
 
     def request_attribute(self, attribute):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(attribute)(self)
+            self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         self.core.backend.sanity_check()
@@ -321,7 +321,7 @@ def assert_not_none(*params):
 </summary>
 <pre><code class="python">def request_attribute(self, attribute):
     if attribute not in self.req_attr:
-        self.req_attr[attribute] = attr_class(attribute)(self)</code></pre>
+        self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.builder.Builder.set_environment"><code class="name flex">

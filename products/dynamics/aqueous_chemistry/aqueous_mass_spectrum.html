@@ -40,10 +40,10 @@ from chempy import Substance
 
 class AqueousMassSpectrum(MomentProduct):
 
-    def __init__(self, key, dry_radius_bins_edges):
+    def __init__(self, key, dry_radius_bins_edges, specific=False):
         super().__init__(
-            name=f&#39;dm_{key}/dlog_10(dry diameter)&#39;,
-            unit=&#39;µg / m3 / (unit dD/D)&#39;,
+            name=f&#39;dm_{key}/dlog_10(dry diameter){&#34;_spec&#34; if specific else &#34;&#34;}&#39;,
+            unit=f&#39;µg / {&#34;kg&#34; if specific else &#34;m3&#34;} / (unit dD/D)&#39;,
             description=f&#39;... {key} ...&#39;
         )
         self.key = key
@@ -51,11 +51,13 @@ class AqueousMassSpectrum(MomentProduct):
         self.moments = None
         self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.dry_radius_bins_edges = dry_radius_bins_edges
+        self.specific = specific
 
     def register(self, builder):
         super().register(builder)
         self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
         self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
+        self.env = builder.core.env
 
     def get(self):
         volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
@@ -69,6 +71,9 @@ class AqueousMassSpectrum(MomentProduct):
             vals[i] *= self.buffer[0]
         vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
         convert_to(vals, si.ug)
+        if self.specific:
+            self.download_to_buffer(self.env[&#39;rhod&#39;])
+            vals[:] /= self.buffer
         return vals</code></pre>
 </details>
 </section>
@@ -83,7 +88,7 @@ class AqueousMassSpectrum(MomentProduct):
 <dl>
 <dt id="PySDM.products.dynamics.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum"><code class="flex name class">
 <span>class <span class="ident">AqueousMassSpectrum</span></span>
-<span>(</span><span>key, dry_radius_bins_edges)</span>
+<span>(</span><span>key, dry_radius_bins_edges, specific=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -93,10 +98,10 @@ class AqueousMassSpectrum(MomentProduct):
 </summary>
 <pre><code class="python">class AqueousMassSpectrum(MomentProduct):
 
-    def __init__(self, key, dry_radius_bins_edges):
+    def __init__(self, key, dry_radius_bins_edges, specific=False):
         super().__init__(
-            name=f&#39;dm_{key}/dlog_10(dry diameter)&#39;,
-            unit=&#39;µg / m3 / (unit dD/D)&#39;,
+            name=f&#39;dm_{key}/dlog_10(dry diameter){&#34;_spec&#34; if specific else &#34;&#34;}&#39;,
+            unit=f&#39;µg / {&#34;kg&#34; if specific else &#34;m3&#34;} / (unit dD/D)&#39;,
             description=f&#39;... {key} ...&#39;
         )
         self.key = key
@@ -104,11 +109,13 @@ class AqueousMassSpectrum(MomentProduct):
         self.moments = None
         self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.dry_radius_bins_edges = dry_radius_bins_edges
+        self.specific = specific
 
     def register(self, builder):
         super().register(builder)
         self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
         self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
+        self.env = builder.core.env
 
     def get(self):
         volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
@@ -122,6 +129,9 @@ class AqueousMassSpectrum(MomentProduct):
             vals[i] *= self.buffer[0]
         vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
         convert_to(vals, si.ug)
+        if self.specific:
+            self.download_to_buffer(self.env[&#39;rhod&#39;])
+            vals[:] /= self.buffer
         return vals</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -152,6 +162,9 @@ class AqueousMassSpectrum(MomentProduct):
         vals[i] *= self.buffer[0]
     vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
     convert_to(vals, si.ug)
+    if self.specific:
+        self.download_to_buffer(self.env[&#39;rhod&#39;])
+        vals[:] /= self.buffer
     return vals</code></pre>
 </details>
 </dd>
@@ -167,7 +180,8 @@ class AqueousMassSpectrum(MomentProduct):
 <pre><code class="python">def register(self, builder):
     super().register(builder)
     self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
-    self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)</code></pre>
+    self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
+    self.env = builder.core.env</code></pre>
 </details>
 </dd>
 </dl>
