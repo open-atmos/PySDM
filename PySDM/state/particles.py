@@ -117,7 +117,7 @@ class Particles:
         # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
-            attr_data = np.empty((0,))
+            attr_data = self.core.backend.Storage.empty((0,), dtype=float)
         else:
             attr_data = attr_data[0]
 

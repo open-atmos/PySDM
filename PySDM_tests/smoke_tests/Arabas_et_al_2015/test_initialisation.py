@@ -7,21 +7,21 @@ from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
 from PySDM.physics.constants import si
 from matplotlib import pyplot
-from PySDM.backends import CPU
 
-backend = CPU
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
-def test_initialisation(plot=False):
+def test_initialisation(backend, plot=False):
     settings = Settings()
     settings.simulation_time = -1 * settings.dt
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None)
+    simulation = Simulation(settings, None, backend)
 
     n_levels = settings.grid[1]
-    n_cell = np.prod(np.array(settings.grid))
+    n_cell = int(np.prod(np.array(settings.grid)))
     n_moments = 1
 
     r_bins = settings.formulae.trivia.radius(volume=settings.v_bins)

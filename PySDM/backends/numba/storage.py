@@ -161,6 +161,9 @@ class Storage:
     def amin(self):
         return impl.amin(self.data)
 
+    def all(self):
+        return self.data.all()
+
     @staticmethod
     def from_ndarray(array):
         result = Storage(*Storage._get_data_from_ndarray(array))

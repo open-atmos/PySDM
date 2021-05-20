@@ -9,6 +9,8 @@ import numpy as np
 from matplotlib import pyplot
 import pytest
 
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 class DummyStorage:
     def __init__(self):
@@ -25,7 +27,7 @@ class DummyStorage:
         pytest.param(False, id="fastmath: False"),
         pytest.param(True, id="fastmath: True")
 ))
-def test_spin_up(fastmath, plot=False):
+def test_spin_up(backend, fastmath, plot=False):
     # Arrange
     settings = Settings(fastmath=fastmath)
     settings.dt = .5 * si.second
@@ -34,7 +36,7 @@ def test_spin_up(fastmath, plot=False):
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage)
+    simulation = Simulation(settings, storage, backend)
     simulation.reinit()
 
     # Act
