@@ -14,7 +14,7 @@ class Breakup:
 
     def __init__(self,
                  kernel,
-                 coal_eff,
+                 #coal_eff,
                  fragmentation,
                  croupier=None,
                  optimized_random=False,
@@ -28,7 +28,7 @@ class Breakup:
         self.enable = True
 
         self.kernel = kernel
-        self.coal_eff = coal_eff
+        #self.coal_eff = coal_eff
         self.fragmentation = fragmentation
 
         assert dt_coal_range[0] > 0
@@ -150,6 +150,7 @@ class Breakup:
         # P_jk = max(xi_j, xi_k)*P_jk
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
+
         self.core.normalize(prob, self.norm_factor_temp)
         
     # (4a) Compute n_fragment

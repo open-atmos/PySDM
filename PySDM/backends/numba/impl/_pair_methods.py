@@ -43,9 +43,7 @@ class PairMethods:
         data_out[:] = 0
         for i in numba.prange(length - 1):
             if is_first_in_pair[i]:
-                #print('max pair', data_in[idx[i]], data_in[idx[i+1]])
                 data_out[i//2] = max(data_in[idx[i]], data_in[idx[i + 1]])
-                #print(data_out[i//2])
 
     @staticmethod
     def max_pair(data_out, data_in, is_first_in_pair, idx):
