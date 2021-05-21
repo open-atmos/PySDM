@@ -133,19 +133,19 @@ class ChemistryMethods:
             dconc_dt_S_VI = ozone + peroxide
 
             # TODO #446: do better than explicit Euler with such workarounds
-            a = dt * droplet_volume[i]
+            dt_times_volume = dt * droplet_volume[i]
             if (
-                moles_O3[i] + dconc_dt_O3 * a < 0 or
-                moles_S_IV[i] + dconc_dt_S_IV * a < 0 or
-                moles_S_VI[i] + dconc_dt_S_VI * a < 0 or
-                moles_H2O2[i] + dconc_dt_H2O2 * a < 0
+                moles_O3[i] + dconc_dt_O3 * dt_times_volume < 0 or
+                moles_S_IV[i] + dconc_dt_S_IV * dt_times_volume < 0 or
+                moles_S_VI[i] + dconc_dt_S_VI * dt_times_volume < 0 or
+                moles_H2O2[i] + dconc_dt_H2O2 * dt_times_volume < 0
             ):
                 continue
 
-            moles_O3[i] = explicit_euler(moles_O3[i], a, dconc_dt_O3)
-            moles_S_IV[i] = explicit_euler(moles_S_IV[i], a, dconc_dt_S_IV)
-            moles_S_VI[i] = explicit_euler(moles_S_VI[i], a, dconc_dt_S_VI)
-            moles_H2O2[i] = explicit_euler(moles_H2O2[i], a, dconc_dt_H2O2)
+            moles_O3[i] = explicit_euler(moles_O3[i], dt_times_volume, dconc_dt_O3)
+            moles_S_IV[i] = explicit_euler(moles_S_IV[i], dt_times_volume, dconc_dt_S_IV)
+            moles_S_VI[i] = explicit_euler(moles_S_VI[i], dt_times_volume, dconc_dt_S_VI)
+            moles_H2O2[i] = explicit_euler(moles_H2O2[i], dt_times_volume, dconc_dt_H2O2)
 
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
@@ -237,9 +237,9 @@ class ChemistryMethods:
             H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter,
                                             within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
-            flag = calc_ionic_strength(H, *args) <= ionic_strength_threshold
             pH[i] = H2pH(H)
-            do_chemistry_flag[i] = flag
+            ionic_strength = calc_ionic_strength(H, *args)
+            do_chemistry_flag[i] = (ionic_strength <= ionic_strength_threshold)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
