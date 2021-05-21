@@ -114,10 +114,8 @@ class Core:
         )
 
     def run(self, steps):
-        #print("called run")
         for _ in range(steps):
             for key, dynamic in self.dynamics.items():
-                #print("dynamic is", key)
                 with self.timers[key]:
                     dynamic()
             self.n_steps += 1

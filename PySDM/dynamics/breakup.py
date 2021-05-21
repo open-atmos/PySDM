@@ -50,7 +50,6 @@ class Breakup:
         self.collision_rate = None
         self.collision_rate_deficit = None
         self.n_fragment = None
-        #print("initialized")
 
     def register(self, builder):
         self.core = builder.core
@@ -87,7 +86,6 @@ class Breakup:
         
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        #print("registered")
 
     def __call__(self):
         if self.enable:
@@ -106,30 +104,23 @@ class Breakup:
             self.rnd_opt.reset()
 
     def step(self):
-        #print("0. called step", flush=True)
         # (1) Make the superdroplet list 
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
-        #print("1. list made", flush=True)
         
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
-        #print("2. tossed pairs", flush=True)
         
         # (3a) Compute the probability of a collision
         self.compute_probability(self.prob, self.is_first_in_pair)
-        #print('3. computed prob', flush=True)
         
         # (3b) Compute the number of fragments
         self.compute_n_fragment(self.n_fragment, self.is_first_in_pair)
-        #print('3b. computed n_fragment')
         
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        #print('4. computed gamma')
         
         # (5) Perform the collisional-breakup step: 
         self.core.particles.breakup(gamma=self.prob, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
-        #print('5. breakup done')
         
         if self.adaptive:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))
@@ -156,12 +147,6 @@ class Breakup:
     # (4a) Compute n_fragment
     def compute_n_fragment(self, n_fragment, is_first_in_pair):
         self.fragmentation(self.n_fragment, is_first_in_pair)
-        #self.fragmentation(self.fragmentation_temp, is_first_in_pair)
-        #n_fragment.max(self.core.particles['n'], is_first_in_pair)
-        #n_fragment = self.fragmentation_temp
-        
-        # TODO: normalize?
-        #self.core.normalize(n_fragment, self.norm_factor_temp)
 
     # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):
