@@ -154,7 +154,7 @@ class AlgorithmicMethods:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
             new_n = n[j] - gamma[i] * n[k]
-            print("_algorithmic_methods.py", i, n_fragment[i])
+            #print("_algorithmic_methods.py", i, n_fragment[i], gamma[i])
             # breakup does occur
             if new_n > 0:
                 n[j] = new_n
@@ -169,7 +169,7 @@ class AlgorithmicMethods:
                 for a in range(0, len(attributes)):
                     attributes[a, j] = (gamma[i] * attributes[a, j] + attributes[a, k])/int(n_fragment[i])
                     attributes[a, k] = attributes[a, j]
-                    
+            #print(n[j], n[k], attributes[0,j], attributes[0,k])
             if n[k] == 0 or n[j] == 0:
                 healthy[0] = 0
 
@@ -191,6 +191,7 @@ class AlgorithmicMethods:
               = floor(prob)     if rand >= prob - floor(prob)
         """
         for i in numba.prange(length // 2):
+            #print("compute gamma pre ", gamma[i])
             gamma[i] = np.ceil(gamma[i] - rand[i])
 
             # (4) No collision

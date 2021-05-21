@@ -155,10 +155,10 @@ class Breakup:
         
     # (4a) Compute n_fragment
     def compute_n_fragment(self, n_fragment, is_first_in_pair):
-        #self.fragmentation(self.n_fragment, is_first_in_pair)
-        self.fragmentation(self.fragmentation_temp, is_first_in_pair)
-        n_fragment.max(self.core.particles['n'], is_first_in_pair)
-        n_fragment = self.fragmentation_temp
+        self.fragmentation(self.n_fragment, is_first_in_pair)
+        #self.fragmentation(self.fragmentation_temp, is_first_in_pair)
+        #n_fragment.max(self.core.particles['n'], is_first_in_pair)
+        #n_fragment = self.fragmentation_temp
         
         # TODO: normalize?
         #self.core.normalize(n_fragment, self.norm_factor_temp)

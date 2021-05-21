@@ -13,7 +13,9 @@ class AlwaysN:
         
 
     def __call__(self, output, is_first_in_pair):
-        output = self.N
-
+        output *= 0
+        output += self.N
+        
+        
     def register(self, builder):
         self.core = builder.core

@@ -13,7 +13,8 @@ class ConstantK:
         self.core = None
 
     def __call__(self, output, is_first_in_pair):
-        output = self.a
+        output *= 0
+        output += self.a
 
     def register(self, builder):
         self.core = builder.core
