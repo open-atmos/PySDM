@@ -18,4 +18,3 @@ import PySDM.physics.trivia
 import PySDM.physics.particle_advection
 import PySDM.physics.hydrostatics
 import PySDM.physics.breakup_fragmentations
-import PySDM.physics.coalescence_efficiencies

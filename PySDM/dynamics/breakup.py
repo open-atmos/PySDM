@@ -41,8 +41,6 @@ class Breakup:
         self.dt_coal_range = tuple(dt_coal_range)
 
         self.kernel_temp = None
-        self.coal_eff_temp = None
-        self.breakup_eff_temp = None
         self.fragmentation_temp = None
         self.norm_factor_temp = None
         self.prob = None
@@ -68,8 +66,6 @@ class Breakup:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.coal_eff_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.breakup_eff_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.fragmentation_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
@@ -84,7 +80,6 @@ class Breakup:
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
-        self.coal_eff.register(builder)
         self.fragmentation.register(builder)
 
         if self.croupier is None:
@@ -152,13 +147,9 @@ class Breakup:
     # (3) Compute probability of a collision
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
-        self.coal_eff(self.coal_eff_temp, is_first_in_pair)
-        self.breakup_eff_temp += self.coal_eff_temp
-        self.breakup_eff_temp *= -1.0
-        
+        # P_jk = max(xi_j, xi_k)*P_jk
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
-        prob *= self.breakup_eff_temp
         self.core.normalize(prob, self.norm_factor_temp)
         
     # (4a) Compute n_fragment

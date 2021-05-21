@@ -14,7 +14,6 @@ class Coalescence:
 
     def __init__(self,
                  kernel,
-                 coal_eff,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -27,7 +26,6 @@ class Coalescence:
         self.enable = True
 
         self.kernel = kernel
-        self.coal_eff = coal_eff
 
         assert dt_coal_range[0] > 0
         self.croupier = croupier
@@ -39,7 +37,6 @@ class Coalescence:
         self.dt_coal_range = tuple(dt_coal_range)
 
         self.kernel_temp = None
-        self.coal_eff_temp = None
         self.norm_factor_temp = None
         self.prob = None
         self.is_first_in_pair = None
@@ -62,7 +59,6 @@ class Coalescence:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.coal_eff_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
@@ -75,7 +71,6 @@ class Coalescence:
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
-        self.coal_eff.register(builder)
 
         if self.croupier is None:
             self.croupier = self.core.backend.default_croupier
@@ -119,10 +114,8 @@ class Coalescence:
 
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
-        self.coal_eff(self.coal_eff_temp, is_first_in_pair)
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
-        prob *= self.coal_eff_temp
 
         self.core.normalize(prob, self.norm_factor_temp)
 
