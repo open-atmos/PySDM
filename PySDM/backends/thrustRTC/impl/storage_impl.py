@@ -34,7 +34,7 @@ def amin(data):
 
 
 __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
-        int d = i / length;
+        auto d = (int64_t)(i / length);
         output[i] %= divisor[d];
     ''')
 

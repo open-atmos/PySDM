@@ -182,9 +182,9 @@ class CondensationMethods:
         AQQ = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data for key in keys}
 
         if self.adaptive:
-            n_substeps = 1  # TODO #527
-        else:
-            n_substeps = counters['n_substeps'][0]
+            counters['n_substeps'][:] = 1  # TODO #527
+
+        n_substeps = counters['n_substeps'][0]
         dv_mean = dv
 
         success[:] = True  # TODO #528
