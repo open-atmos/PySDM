@@ -13,8 +13,10 @@ class CondensationMethods:
     def __init__(self):
         phys = self.formulae
         self.RH_rtol = None
+        self.adaptive = None
+        self.max_iters = None
 
-        # TODO #509: precision for consts
+        # TODO #526: precision for consts
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
@@ -170,7 +172,7 @@ class CondensationMethods:
     ):
         assert solver is None
 
-        # TODO #509: not here
+        # TODO #526: not here
         self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.ml_new = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.T = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
@@ -179,10 +181,13 @@ class CondensationMethods:
         rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         AQQ = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data for key in keys}
 
-        n_substeps = counters['n_substeps'][0]
+        if self.adaptive:
+            n_substeps = 1  # TODO #527
+        else:
+            n_substeps = counters['n_substeps'][0]
         dv_mean = dv
 
-        success[:] = True
+        success[:] = True  # TODO #528
         dvfloat = PrecisionResolver.get_floating_point
 
         self.__pre_for.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt)))
@@ -201,8 +206,7 @@ class CondensationMethods:
             self.__post.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), AQQ['T'], AQQ['lv']))
 
     def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
-        if adaptive:
-            raise NotImplementedError()
+        self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
         return None
