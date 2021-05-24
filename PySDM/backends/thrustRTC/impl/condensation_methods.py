@@ -191,15 +191,15 @@ class CondensationMethods:
         dt /= n_substeps
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
-        for i in range(n_substeps):
-            self.__pre.launch_n(n_cell, (*AQQ.values(),  dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, thd.data, qv.data, rhod.data, dvfloat(dt)))
+        for _ in range(n_substeps):
+            self.__pre.launch_n(n_cell, (*AQQ.values(),  dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt)))
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *AQQ.values(),
                                                    dvfloat(kappa),
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
-            self.__post.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, thd.data, qv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), AQQ['T'], AQQ['lv']))
+            self.__post.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), AQQ['T'], AQQ['lv']))
 
     def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         if adaptive:
