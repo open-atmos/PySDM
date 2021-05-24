@@ -22,7 +22,7 @@ BISECTION = '''
             }
 
             real_type mid = (min + max) / 2; 
-            while (abs(max - min) > tol) {
+            while (abs(max - min) > tol * abs(mid)) {
                 if (mid == max || mid == min) {
                     break;
                 }
