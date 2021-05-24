@@ -19,23 +19,13 @@ class CondensationMethods:
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        args_vars = ('x_old', 'dt', '_p', 'kappa', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr')
+        args_vars = ('x_old', 'dt', 'kappa', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr')
 
         def args(arg):
             return f"args[{args_vars.index(arg)}]"
 
         self.__update_volume = trtc.For(("v", "vdry", *keys, "kappa", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
             f'''            
-            auto _T = T[cell_id[i]];
-            auto _p = p[cell_id[i]];
-            auto _pv = pv[cell_id[i]];
-            auto _lv = lv[cell_id[i]];
-            auto _pvs = pvs[cell_id[i]];
-            auto _RH = RH[cell_id[i]];
-            auto _DTp = DTp[cell_id[i]];
-            auto _lambdaK = lambdaK[cell_id[i]];
-            auto _lambdaD = lambdaD[cell_id[i]];
-            
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
@@ -48,6 +38,15 @@ class CondensationMethods:
                 }}
             }};
             {BISECTION}
+            
+            auto _T = T[cell_id[i]];
+            auto _pv = pv[cell_id[i]];
+            auto _lv = lv[cell_id[i]];
+            auto _pvs = pvs[cell_id[i]];
+            auto _RH = RH[cell_id[i]];
+            auto _DTp = DTp[cell_id[i]];
+            auto _lambdaK = lambdaK[cell_id[i]];
+            auto _lambdaD = lambdaD[cell_id[i]];
             
             auto x_old = {c_inline(phys.condensation_coordinate.x, volume="v[i]")};
             auto r_old = {c_inline(phys.trivia.radius, volume="v[i]")};
@@ -180,7 +179,7 @@ class CondensationMethods:
         rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         AQQ = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data for key in keys}
 
-        n_substeps = 100
+        n_substeps = counters['n_substeps'][0]
         dv_mean = dv
 
         success[:] = True

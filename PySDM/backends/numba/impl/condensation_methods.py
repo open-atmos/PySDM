@@ -193,7 +193,7 @@ class CondensationMethods:
                               phys_lambdaK, phys_lambdaD, phys_DK,
                               within_tolerance, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
-        def minfun(x_new, x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K):
+        def minfun(x_new, x_old, dt, kappa, rd3, T, RH, lv, pvs, D, K):
             vol = volume_of_x(x_new)
             r_new = radius(vol)
             sgm = phys_sigma(T, vol, const.pi_4_3 * rd3)
@@ -220,7 +220,7 @@ class CondensationMethods:
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     Dr = phys_DK(DTp, r_old, lambdaD)
                     Kr = phys_DK(const.K0, r_old, lambdaK)
-                    args = (x_old, dt, p, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
+                    args = (x_old, dt, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, Dr, Kr)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 else:
