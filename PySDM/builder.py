@@ -1,7 +1,6 @@
 """
-Created at 09.11.2019
+The Builder class handling `PySDM.core.Core` instantiation
 """
-
 import numpy as np
 
 from PySDM.core import Core

@@ -1,5 +1,4 @@
 """
-Created at 11.05.2020
 """
 
 from PySDM.attributes.impl.cell_attribute import CellAttribute

@@ -1,7 +1,3 @@
-"""
-Crated at 2019
-"""
-
 from .constants import si
 from .formulae import Formulae
 import PySDM.physics.condensation_coordinate

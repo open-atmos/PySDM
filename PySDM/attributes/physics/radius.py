@@ -1,8 +1,4 @@
 """
-Created at 11.05.2020
-
-@author: Piotr Bartman
-@author: Sylwester Arabas
 """
 
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute

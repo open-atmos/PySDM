@@ -1,5 +1,4 @@
 """
-Created at 12.05.2020
 """
 
 from PySDM.attributes.physics.multiplicities import Multiplicities
