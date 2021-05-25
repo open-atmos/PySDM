@@ -154,6 +154,51 @@ class AlgorithmicMethods:
                                                        [n.data, idx.data, n_sd,
                                                         attributes.data,
                                                         n_attr, gamma.data, healthy.data])
+    
+    __breakup_body = trtc.For(
+        ['n', 'idx', 'n_sd', 'attributes', 'n_attr', 'gamma', 'n_fragment', 'healthy'], "i", '''
+        if (gamma[i] == 0) {
+            return;
+        }
+        auto j = idx[2 * i];
+        auto k = idx[2 * i + 1];
+            
+        auto new_n = n[j] - gamma[i] * n[k];
+        if (new_n > 0) {
+            n[j] = new_n;
+            n[k] = n[k] * n_fragment[i];
+            for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                attributes[attr + k] += gamma[i] * attributes[attr + j];
+                attributes[attr + k] /= int(n_fragment[i]);
+            }
+        }
+        else {  // new_n == 0
+            n[j] = (int64_t)(n_fragment[i] * n[k] / 2);
+            n[k] = n_fragment[i] * n[k] - n[j];
+            for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                attributes[attr + j] = (gamma[i] * attributes[attr + j] + attributes[attr + k]) / n_fragment[i];
+                attributes[attr + k] = attributes[attr + j];
+            }
+        }
+        if (n[k] == 0 || n[j] == 0) {
+            healthy[0] = 0;
+        }
+        ''')
+    
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def breakup(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
+        n_sd = trtc.DVInt64(attributes.shape[1])
+        n_attr = trtc.DVInt64(attributes.shape[0])
+        print(n.data.to_host(), flush=True)
+        print(gamma.data.to_host(), flush=True)
+        print(n_fragment.data.to_host(), flush=True)
+        AlgorithmicMethods.__breakup_body.launch_n(length // 2,
+                                                   [n.data, idx.data, n_sd,
+                                                    attributes.data, n_attr,
+                                                    gamma.data, n_fragment.data,
+                                                    healthy.data])
+        
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
                                      "collision_rate_deficit", "collision_rate"], "i", '''
@@ -178,10 +223,12 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(gamma, rand, n, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
+        print("compute_gamma ", gamma.data.to_host())
         AlgorithmicMethods.__compute_gamma_body.launch_n(
             len(n) // 2,
             [gamma.data, rand.data, n.idx.data, n.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data])
+        print("computed_gamma ", gamma.data.to_host())
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
