@@ -1,3 +1,6 @@
+"""
+Physical `PySDM.physics.constants` and `PySDM.physics.formulae.Formulae`
+"""
 from .constants import si
 from .formulae import Formulae
 import PySDM.physics.condensation_coordinate

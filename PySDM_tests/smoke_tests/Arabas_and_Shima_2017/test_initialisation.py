@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 import numpy as np
 import pytest
 from PySDM.physics import Formulae, constants as const

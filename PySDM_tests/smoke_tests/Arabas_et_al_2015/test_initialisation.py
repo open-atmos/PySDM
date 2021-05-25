@@ -1,7 +1,3 @@
-"""
-Created at 18.11.2019
-"""
-
 import numpy as np
 from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation

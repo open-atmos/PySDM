@@ -1,7 +1,3 @@
-"""
-Crated at 2019
-"""
-
 import numpy as np
 from typing import Tuple
 

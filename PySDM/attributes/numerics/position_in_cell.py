@@ -1,6 +1,3 @@
-"""
-"""
-
 from PySDM.attributes.impl.cell_attribute import CellAttribute
 
 

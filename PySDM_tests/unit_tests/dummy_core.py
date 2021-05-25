@@ -1,7 +1,3 @@
-"""
-Created at 19.11.2019
-"""
-
 from PySDM.builder import Builder
 from PySDM.physics.formulae import Formulae
 from PySDM.core import Core

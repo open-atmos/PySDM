@@ -1,7 +1,3 @@
-"""
-Created at 04.11.2019
-"""
-
 import numpy as np
 import numba
 from PySDM.backends.numba import conf

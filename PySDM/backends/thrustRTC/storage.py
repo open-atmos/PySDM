@@ -1,7 +1,3 @@
-"""
-Created at 30.05.2020
-"""
-
 import numpy as np
 from PySDM.backends.thrustRTC.impl import storage_impl as impl
 from PySDM.backends.thrustRTC.conf import trtc

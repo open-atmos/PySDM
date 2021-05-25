@@ -1,6 +1,3 @@
-"""
-"""
-
 from PySDM.attributes.impl.base_attribute import BaseAttribute
 
 

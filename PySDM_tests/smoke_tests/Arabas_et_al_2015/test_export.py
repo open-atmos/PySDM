@@ -1,7 +1,3 @@
-"""
-Created at 07.02.2020
-"""
-
 from PySDM_examples.Arabas_et_al_2015.netcdf_exporter import NetCDFExporter
 from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation

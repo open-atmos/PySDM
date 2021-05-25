@@ -1,5 +1,6 @@
 """
-Created at 06.11.2019
+Two-dimensional single-eddy prescribed-flow framework with moisture and heat advection
+handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 """
 
 from ._moist import _Moist

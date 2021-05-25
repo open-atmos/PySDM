@@ -1,7 +1,3 @@
-"""
-Created at 28.09.2020
-"""
-
 from ...numba.conf import JIT_FLAGS
 import re
 

@@ -1,5 +1,5 @@
 """
-The Builder class handling `PySDM.core.Core` instantiation
+The Builder class handling creation of  `PySDM.core.Core` instances
 """
 import numpy as np
 

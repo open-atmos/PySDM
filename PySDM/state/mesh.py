@@ -1,9 +1,4 @@
-"""
-Created at 28.11.2019
-"""
-
 import numpy as np
-from PySDM.backends.numba.numba import Numba
 
 
 class Mesh:

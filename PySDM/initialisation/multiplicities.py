@@ -1,7 +1,6 @@
 """
-Created at 16.01.2020
+integer-valued discretisation with sanity checks for errors due to type casting
 """
-
 import numpy as np
 
 

@@ -1,5 +1,7 @@
 """
-Crated at 2019
+Collection of physical constants with dimensional analysis handled with
+[Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
+purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
 
 import pint

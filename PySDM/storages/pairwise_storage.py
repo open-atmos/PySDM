@@ -1,8 +1,3 @@
-"""
-Created at 09.11.2020
-"""
-
-
 def make_PairwiseStorage(backend):
 
     class PairwiseStorage(backend.Storage):

@@ -1,7 +1,3 @@
-"""
-"""
-
-
 class Attribute:
 
     def __init__(self, builder, name, dtype=float, size=0):

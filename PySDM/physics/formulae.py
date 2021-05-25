@@ -1,7 +1,3 @@
-"""
-Crated at 2019
-"""
-
 from PySDM.backends.numba import conf
 from functools import lru_cache
 from PySDM import physics

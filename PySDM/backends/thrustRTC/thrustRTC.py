@@ -1,5 +1,5 @@
 """
-Created at 01.08.2019
+GPU-resident backend using NVRTC runtime compilation library for CUDA
 """
 
 import os

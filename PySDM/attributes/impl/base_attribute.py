@@ -1,6 +1,3 @@
-"""
-"""
-
 from .attribute import Attribute
 
 

@@ -1,7 +1,6 @@
 """
-Created at 24.10.2019
+Bespoke condensational growth solver with implicit-in-particle-size integration and adaptive timestepping
 """
-
 import numpy as np
 from ..physics import si
 

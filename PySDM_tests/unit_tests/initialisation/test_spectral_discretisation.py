@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity
 from PySDM.initialisation.spectra import Lognormal
 import numpy as np

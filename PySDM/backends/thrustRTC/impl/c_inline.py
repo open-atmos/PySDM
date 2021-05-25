@@ -2,6 +2,8 @@ import inspect
 import re
 
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+
+# noinspection PyUnresolvedReferences
 from PySDM.physics import constants as const
 
 

@@ -1,7 +1,3 @@
-"""
-Created at 30.05.2020
-"""
-
 import numpy as np
 from PySDM.backends.numba.impl import storage_impl as impl
 

@@ -1,7 +1,3 @@
-"""
-Created at 10.12.2019
-"""
-
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust, c_inline
 from ..conf import trtc

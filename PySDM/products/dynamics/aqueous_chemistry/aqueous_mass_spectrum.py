@@ -1,7 +1,3 @@
-"""
-Created at 28.04.2020
-"""
-
 import numpy as np
 from PySDM.physics.constants import convert_to, si
 from PySDM.products.product import MomentProduct

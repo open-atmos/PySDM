@@ -1,3 +1,8 @@
+"""
+Classes representing physicochemical processes:
+`PySDM.dynamics.coalescence.Coalescence`,
+`PySDM.dynamics.condensation.Condensation`, ...
+"""
 from .coalescence import Coalescence
 from .condensation import Condensation
 from .displacement import Displacement

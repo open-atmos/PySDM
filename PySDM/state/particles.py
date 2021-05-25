@@ -1,7 +1,3 @@
-"""
-Created at 03.06.2019
-"""
-
 from typing import Dict
 
 import numpy as np

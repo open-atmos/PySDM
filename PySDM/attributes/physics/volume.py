@@ -1,6 +1,3 @@
-"""
-"""
-
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 

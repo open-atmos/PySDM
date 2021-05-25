@@ -1,6 +1,3 @@
-"""
-Created at 2019
-"""
 import pytest
 import numpy as np
 

@@ -1,7 +1,3 @@
-"""
-Crated at 2019
-"""
-
 from importlib import reload
 from PySDM.physics import constants
 from PySDM.physics import formulae

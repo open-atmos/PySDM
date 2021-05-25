@@ -1,7 +1,3 @@
-"""
-Created at 05.10.2020
-"""
-
 import numpy as np
 
 # noinspection PyUnresolvedReferences

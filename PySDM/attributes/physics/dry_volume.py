@@ -1,6 +1,3 @@
-"""
-"""
-
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.physics import constants as const

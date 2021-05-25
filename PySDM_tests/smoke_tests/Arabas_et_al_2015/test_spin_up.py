@@ -1,7 +1,3 @@
-"""
-Created at 22.11.2019
-"""
-
 from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
 from PySDM_examples.Arabas_et_al_2015.settings import Settings
 from PySDM.physics import si

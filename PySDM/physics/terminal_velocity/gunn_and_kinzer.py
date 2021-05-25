@@ -1,7 +1,3 @@
-"""
-Created at 10.06.2020
-"""
-
 import numpy as np
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const

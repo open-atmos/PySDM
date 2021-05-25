@@ -1,7 +1,3 @@
-"""
-Created at 14.07.2020
-"""
-
 from PySDM.dynamics import EulerianAdvection
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment

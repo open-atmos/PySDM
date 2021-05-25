@@ -1,7 +1,3 @@
-"""
-Created at 04.01.2021
-"""
-
 from PySDM.products.product import Product
 
 
