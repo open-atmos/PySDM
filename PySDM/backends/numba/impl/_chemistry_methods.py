@@ -91,14 +91,14 @@ class ChemistryMethods:
             env_mixing_ratio -= delta_mr
 
     def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
-                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
+                  k0, k1, k2, k3, k4, K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
             n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
             self.formulae.trivia.pH2H,
-            k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
-            dt, droplet_volume.data, pH.data, O3.data, H2O2.data, S_IV.data, dissociation_factor_SO2.data,
+            k0.data, k1.data, k2.data, k3.data, k4, K_SO2.data, K_HSO3.data,
+            dt, droplet_volume.data, pH.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
         )
@@ -106,26 +106,25 @@ class ChemistryMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
-                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
+                  k0, k1, k2, k3, k4,
+                  K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
-        # from Ania's Thesis, k4 therein
-        magic_const = 13 / M
-
         for i in numba.prange(n_sd):
             if not do_chemistry_flag[i]:
                 continue
 
             cid = cell_ids[i]
             H = pH2H(pH[i])
-            SO2aq = S_IV[i] / dissociation_factor_SO2[i]
+            SO2aq = moles_S_IV[i] / droplet_volume[i] / dissociation_factor_SO2[i]
 
             # NB: This might not be entirely correct
             # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
             # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
 
-            ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * O3[i] * SO2aq
-            peroxide = k3[cid] * K_SO2[cid] / (1 + magic_const * H) * H2O2[i] * SO2aq
+            ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * (moles_O3[i] / droplet_volume[i]) * SO2aq
+            peroxide = k3[cid] * K_SO2[cid] / (1 + k4 * H) * (moles_H2O2[i] / droplet_volume[i]) * SO2aq
+            dt_times_volume = dt * droplet_volume[i]
 
             dconc_dt_O3 = -ozone
             dconc_dt_S_IV = -(ozone + peroxide)
@@ -133,7 +132,6 @@ class ChemistryMethods:
             dconc_dt_S_VI = ozone + peroxide
 
             # TODO #446: do better than explicit Euler with such workarounds
-            dt_times_volume = dt * droplet_volume[i]
             if (
                 moles_O3[i] + dconc_dt_O3 * dt_times_volume < 0 or
                 moles_S_IV[i] + dconc_dt_S_IV * dt_times_volume < 0 or

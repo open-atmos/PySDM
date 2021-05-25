@@ -169,6 +169,7 @@ class Particles:
             k1=kinetic_consts["k1"],
             k2=kinetic_consts["k2"],
             k3=kinetic_consts["k3"],
+            k4=kinetic_consts["k4"],
             K_SO2=equilibrium_consts["K_SO2"],
             K_HSO3=equilibrium_consts["K_HSO3"],
             dissociation_factor_SO2=dissociation_factors['SO2'],
@@ -176,9 +177,9 @@ class Particles:
             # input
             droplet_volume=self["volume"],
             pH=self["pH"],
-            O3=self["conc_O3"],
-            H2O2=self["conc_H2O2"],
-            S_IV=self["conc_S_IV"],
+            # O3=self["conc_O3"],
+            # H2O2=self["conc_H2O2"],
+            # S_IV=self["conc_S_IV"],
             # output
             moles_O3=self["moles_O3"],
             moles_H2O2=self["moles_H2O2"],
