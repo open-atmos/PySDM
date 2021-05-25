@@ -14,7 +14,7 @@ class Breakup:
 
     def __init__(self,
                  kernel,
-                 #coal_eff,
+                 coal_eff,
                  fragmentation,
                  croupier=None,
                  optimized_random=False,
@@ -28,7 +28,7 @@ class Breakup:
         self.enable = True
 
         self.kernel = kernel
-        #self.coal_eff = coal_eff
+        self.coal_eff = coal_eff
         self.fragmentation = fragmentation
 
         assert dt_coal_range[0] > 0
@@ -42,6 +42,8 @@ class Breakup:
 
         self.kernel_temp = None
         self.fragmentation_temp = None
+        self.coal_eff_temp = None
+        self.neg_ones = None
         self.norm_factor_temp = None
         self.prob = None
         self.is_first_in_pair = None
@@ -66,6 +68,8 @@ class Breakup:
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.fragmentation_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
+        self.coal_eff_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.neg_ones = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
         self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
@@ -79,6 +83,7 @@ class Breakup:
 
         self.rnd_opt.register(builder)
         self.kernel.register(builder)
+        self.coal_eff.register(builder)
         self.fragmentation.register(builder)
 
         if self.croupier is None:
@@ -138,9 +143,13 @@ class Breakup:
     # (3) Compute probability of a collision
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
-        # P_jk = max(xi_j, xi_k)*P_jk
+        self.coal_eff(self.coal_eff_temp, is_first_in_pair)
+        self.coal_eff_temp *= self.neg_ones
+        self.coal_eff_temp -= self.neg_ones
+        # P_jk = max(xi_j, xi_k)*P_jk*E_c
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
+        prob *= self.coal_eff_temp
 
         self.core.normalize(prob, self.norm_factor_temp)
         
