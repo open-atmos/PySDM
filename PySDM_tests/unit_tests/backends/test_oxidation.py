@@ -70,7 +70,6 @@ def test_oxidation(conc):
         k1=k1,
         k2=k2,
         k3=k3,
-        k4=k4,
         K_SO2=K_SO2,
         K_HSO3=K_HSO3,
         dt=dt,
