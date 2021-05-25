@@ -107,9 +107,10 @@ class KineticConsts:
             "k2": KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * dT_u, T_0=ROOM_TEMP),
             # Different unit due to a different pseudo-order of kinetics
             "k3": KinConst(formulae, k=7.45e9 / si.s / M / M, dT=-4430 * dT_u, T_0=ROOM_TEMP),
-            "k4": 13 / M
         }
 
+
+k4 = 13 / M
 
 SPECIFIC_GRAVITY = {
     compound: Substance.from_formula(compound).mass * si.gram / si.mole / Md

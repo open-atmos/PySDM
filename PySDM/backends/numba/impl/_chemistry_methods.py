@@ -3,10 +3,10 @@ import numpy as np
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
-from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
+from PySDM.physics.constants import Md, R_str, Rd, K_H2O
 from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
-    KineticConsts, EquilibriumConsts
+    KineticConsts, EquilibriumConsts, k4
 
 _tolerance = 1e-6
 _max_iter_quite_close = 8
@@ -91,13 +91,13 @@ class ChemistryMethods:
             env_mixing_ratio -= delta_mr
 
     def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
-                  k0, k1, k2, k3, k4, K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
+                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
             n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
             self.formulae.trivia.pH2H,
-            k0.data, k1.data, k2.data, k3.data, k4, K_SO2.data, K_HSO3.data,
+            k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
             dt, droplet_volume.data, pH.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
@@ -106,7 +106,7 @@ class ChemistryMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
-                  k0, k1, k2, k3, k4,
+                  k0, k1, k2, k3,
                   K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
