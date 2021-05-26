@@ -271,7 +271,7 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
+    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
             phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,

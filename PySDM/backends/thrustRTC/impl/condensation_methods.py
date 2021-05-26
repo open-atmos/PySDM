@@ -1,3 +1,5 @@
+from typing import Dict, Optional
+
 from PySDM.physics import constants as const
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust, c_inline
@@ -6,15 +8,22 @@ from PySDM.backends.thrustRTC.bisection import BISECTION
 from ..conf import trtc
 from PySDM.backends.thrustRTC.storage import Storage
 
-keys = ['T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD']
 
+class CondensationMethods():
+    keys = ['T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD']
 
-class CondensationMethods:
     def __init__(self):
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None
         self.max_iters = None
+        self.ml_old: Optional[Storage] = None
+        self.ml_new: Optional[Storage] = None
+        self.T: Optional[Storage] = None
+        self.dthd_dt_pred: Optional[Storage] = None
+        self.dqv_dt_pred: Optional[Storage] = None
+        self.rhod_mean: Optional[Storage] = None
+        self.vars: Optional[Dict[str, Storage]] = None
 
         # TODO #526: precision for consts
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
@@ -26,7 +35,7 @@ class CondensationMethods:
         def args(arg):
             return f"args[{args_vars.index(arg)}]"
 
-        self.__update_volume = trtc.For(("v", "vdry", *keys, "kappa", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
+        self.__update_volume = trtc.For(("v", "vdry", *CondensationMethods.keys, "kappa", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
             f'''            
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
@@ -129,7 +138,7 @@ class CondensationMethods:
         ''')
 
         self.__pre = trtc.For(
-            (*keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt"),
+            (*CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt"),
             "i", f'''
             thd[i] += dt * dthd_dt_pred[i] / 2;
             qv[i] += dt * dqv_dt_pred[i] / 2;
@@ -172,15 +181,6 @@ class CondensationMethods:
     ):
         assert solver is None
 
-        # TODO #526: not here
-        self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        self.ml_new = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        self.T = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        dthd_dt_pred = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        dqv_dt_pred = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
-        AQQ = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data for key in keys}
-
         if self.adaptive:
             counters['n_substeps'][:] = 1  # TODO #527
 
@@ -190,23 +190,31 @@ class CondensationMethods:
         success[:] = True  # TODO #528
         dvfloat = PrecisionResolver.get_floating_point
 
-        self.__pre_for.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt)))
+        self.__pre_for.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt)))
 
         dt /= n_substeps
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for _ in range(n_substeps):
-            self.__pre.launch_n(n_cell, (*AQQ.values(),  dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt)))
-            self.__update_volume.launch_n(len(n), (v.data, vdry.data, *AQQ.values(),
+            self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt)))
+            self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
                                                    dvfloat(kappa),
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
-            self.__post.launch_n(n_cell, (dthd_dt_pred.data, dqv_dt_pred.data, rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), AQQ['T'], AQQ['lv']))
+            self.__post.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), self.vars['T'], self.vars['lv']))
 
-    def make_condensation_solver(self, dt, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
+    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
+        self.ml_old = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.ml_new = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.T = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.dthd_dt_pred = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.dqv_dt_pred = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
+        self.vars = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data
+                     for key in CondensationMethods.keys}
         return None
