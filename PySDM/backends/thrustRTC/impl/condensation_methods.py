@@ -130,15 +130,16 @@ class CondensationMethods():
             v[i] = {c_inline(phys.condensation_coordinate.volume, x="x_new")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__pre_for = trtc.For(("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd", "pqv", "qv", "prhod", "rhod", "dt"),
+        self.__pre_for = trtc.For(("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd", "pqv", "qv", "prhod", "rhod", "dt", "RH_max"),
                               "i", f'''
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
+            RH_max[i] = 0;
         ''')
 
         self.__pre = trtc.For(
-            (*CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt"),
+            (*CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt", "RH_max"),
             "i", f'''
             thd[i] += dt * dthd_dt_pred[i] / 2;
             qv[i] += dt * dqv_dt_pred[i] / 2;
@@ -149,6 +150,7 @@ class CondensationMethods():
             lv[i] = {c_inline(phys.latent_heat.lv, T='T[i]')};
             pvs[i] = {c_inline(phys.saturation_vapour_pressure.pvs_Celsius, T='T[i] - const.T0')};
             RH[i] = pv[i] / pvs[i];
+            RH_max[i] = max(RH_max[i], RH[i]);
             DTp[i] = {c_inline(phys.diffusion_thermics.D, T='T[i]', p='p[i]')};
             lambdaK[i] = {c_inline(phys.diffusion_kinetics.lambdaK, T='T[i]', p='p[i]')};
             lambdaD[i] = {c_inline(phys.diffusion_kinetics.lambdaD, D='DTp[i]', T='T[i]')};
@@ -190,13 +192,13 @@ class CondensationMethods():
         success[:] = True  # TODO #528
         dvfloat = PrecisionResolver.get_floating_point
 
-        self.__pre_for.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt)))
+        self.__pre_for.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt), RH_max.data))
 
         dt /= n_substeps
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for _ in range(n_substeps):
-            self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt)))
+            self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), RH_max.data))
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
                                                    dvfloat(kappa),
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
