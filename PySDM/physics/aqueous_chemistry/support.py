@@ -110,6 +110,8 @@ class KineticConsts:
         }
 
 
+k4 = 13 / M
+
 SPECIFIC_GRAVITY = {
     compound: Substance.from_formula(compound).mass * si.gram / si.mole / Md
     for compound in {*GASEOUS_COMPOUNDS.values()}

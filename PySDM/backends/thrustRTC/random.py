@@ -1,7 +1,3 @@
-"""
-Created at 25.08.2020
-"""
-
 import numpy as np
 from .conf import trtc, rndrtc
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust

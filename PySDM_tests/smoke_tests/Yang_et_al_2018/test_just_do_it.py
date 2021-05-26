@@ -1,14 +1,13 @@
-"""
-Created at 2020
-"""
+import pytest
+import numpy as np
 
 from PySDM_examples.Yang_et_al_2018.example import Simulation
 from PySDM_examples.Yang_et_al_2018.settings import Settings
 from PySDM.physics.constants import si
 from PySDM.backends.numba.test_helpers import bdf
-import pytest
-import numpy as np
 
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 scheme = ('default', 'BDF')
 adaptive = (True, False)
@@ -16,7 +15,7 @@ adaptive = (True, False)
 
 @pytest.mark.parametrize("scheme", scheme)
 @pytest.mark.parametrize("adaptive", adaptive)
-def test_just_do_it(scheme, adaptive):
+def test_just_do_it(backend, scheme, adaptive):
     # Arrange
     if scheme == 'BDF' and not adaptive:
         return
@@ -28,7 +27,7 @@ def test_just_do_it(scheme, adaptive):
     elif not adaptive:
         settings.dt_max = 1 * si.second
 
-    simulation = Simulation(settings)
+    simulation = Simulation(settings, backend)
     if scheme == 'BDF':
         bdf.patch_core(simulation.core)
 
@@ -51,7 +50,10 @@ def test_just_do_it(scheme, adaptive):
     assert .35 * n_unit < max(N2) < .41 * n_unit
     assert .1 * n_unit < min(N3) < .11 * n_unit
     assert .27 * n_unit < max(N3) < .4 * n_unit
-    assert max(output['ripening_rate']) > 0
+
+    from PySDM.backends import GPU  # TODO #527
+    if backend is not GPU:
+        assert max(output['ripening_rate']) > 0
 
 
 def n_tot(n, condition):

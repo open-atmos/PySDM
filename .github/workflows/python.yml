@@ -21,4 +21,6 @@ jobs:
       - run: pip install -e .
       - run: pip install exdown pytest
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.py', 'w'); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
-      - run: python readme.py
+      - run: python -We readme.py
+      - run: sed -i 's/CPU/GPU/g' readme.py
+      - run: python -We readme.py

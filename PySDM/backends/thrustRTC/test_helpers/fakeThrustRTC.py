@@ -1,7 +1,3 @@
-"""
-Created at 22.09.2020
-"""
-
 import types
 import numpy as np
 from .cpp2python import to_numba

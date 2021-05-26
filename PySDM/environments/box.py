@@ -1,5 +1,5 @@
 """
-Created at 2019
+Bare zero-dimensional framework
 """
 
 from PySDM.state.mesh import Mesh

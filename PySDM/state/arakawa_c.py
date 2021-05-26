@@ -1,7 +1,3 @@
-"""
-Created at 04.09.2020
-"""
-
 import numpy as np
 
 

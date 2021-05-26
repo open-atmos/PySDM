@@ -1,7 +1,3 @@
-"""
-Created at 12.05.2020
-"""
-
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.physics.dry_volume import DryVolumeDynamic, DryVolumeStatic

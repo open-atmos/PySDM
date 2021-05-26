@@ -1,7 +1,6 @@
 """
-Created at 07.06.2019
+SDM implementation with adaptive timestepping
 """
-
 import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer

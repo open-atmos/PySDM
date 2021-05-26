@@ -3,10 +3,10 @@ import numpy as np
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
-from PySDM.physics.constants import Md, R_str, Rd, M, K_H2O
+from PySDM.physics.constants import Md, R_str, Rd, K_H2O
 from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
-    KineticConsts, EquilibriumConsts
+    KineticConsts, EquilibriumConsts, k4
 
 _tolerance = 1e-6
 _max_iter_quite_close = 8
@@ -91,14 +91,14 @@ class ChemistryMethods:
             env_mixing_ratio -= delta_mr
 
     def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
-                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
+                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
             n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
             self.formulae.trivia.pH2H,
             k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
-            dt, droplet_volume.data, pH.data, O3.data, H2O2.data, S_IV.data, dissociation_factor_SO2.data,
+            dt, droplet_volume.data, pH.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
         )
@@ -106,26 +106,25 @@ class ChemistryMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
-                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, O3, H2O2, S_IV, dissociation_factor_SO2,
+                  k0, k1, k2, k3,
+                  K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
-        # from Ania's Thesis, k4 therein
-        magic_const = 13 / M
-
         for i in numba.prange(n_sd):
             if not do_chemistry_flag[i]:
                 continue
 
             cid = cell_ids[i]
             H = pH2H(pH[i])
-            SO2aq = S_IV[i] / dissociation_factor_SO2[i]
+            SO2aq = moles_S_IV[i] / droplet_volume[i] / dissociation_factor_SO2[i]
 
             # NB: This might not be entirely correct
             # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
             # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
 
-            ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * O3[i] * SO2aq
-            peroxide = k3[cid] * K_SO2[cid] / (1 + magic_const * H) * H2O2[i] * SO2aq
+            ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * (moles_O3[i] / droplet_volume[i]) * SO2aq
+            peroxide = k3[cid] * K_SO2[cid] / (1 + k4 * H) * (moles_H2O2[i] / droplet_volume[i]) * SO2aq
+            dt_times_volume = dt * droplet_volume[i]
 
             dconc_dt_O3 = -ozone
             dconc_dt_S_IV = -(ozone + peroxide)
@@ -133,19 +132,18 @@ class ChemistryMethods:
             dconc_dt_S_VI = ozone + peroxide
 
             # TODO #446: do better than explicit Euler with such workarounds
-            a = dt * droplet_volume[i]
             if (
-                moles_O3[i] + dconc_dt_O3 * a < 0 or
-                moles_S_IV[i] + dconc_dt_S_IV * a < 0 or
-                moles_S_VI[i] + dconc_dt_S_VI * a < 0 or
-                moles_H2O2[i] + dconc_dt_H2O2 * a < 0
+                moles_O3[i] + dconc_dt_O3 * dt_times_volume < 0 or
+                moles_S_IV[i] + dconc_dt_S_IV * dt_times_volume < 0 or
+                moles_S_VI[i] + dconc_dt_S_VI * dt_times_volume < 0 or
+                moles_H2O2[i] + dconc_dt_H2O2 * dt_times_volume < 0
             ):
                 continue
 
-            moles_O3[i] = explicit_euler(moles_O3[i], a, dconc_dt_O3)
-            moles_S_IV[i] = explicit_euler(moles_S_IV[i], a, dconc_dt_S_IV)
-            moles_S_VI[i] = explicit_euler(moles_S_VI[i], a, dconc_dt_S_VI)
-            moles_H2O2[i] = explicit_euler(moles_H2O2[i], a, dconc_dt_H2O2)
+            moles_O3[i] = explicit_euler(moles_O3[i], dt_times_volume, dconc_dt_O3)
+            moles_S_IV[i] = explicit_euler(moles_S_IV[i], dt_times_volume, dconc_dt_S_IV)
+            moles_S_VI[i] = explicit_euler(moles_S_VI[i], dt_times_volume, dconc_dt_S_VI)
+            moles_H2O2[i] = explicit_euler(moles_H2O2[i], dt_times_volume, dconc_dt_H2O2)
 
     # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
@@ -237,9 +235,9 @@ class ChemistryMethods:
             H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter,
                                             within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
-            flag = calc_ionic_strength(H, *args) <= ionic_strength_threshold
             pH[i] = H2pH(H)
-            do_chemistry_flag[i] = flag
+            ionic_strength = calc_ionic_strength(H, *args)
+            do_chemistry_flag[i] = (ionic_strength <= ionic_strength_threshold)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

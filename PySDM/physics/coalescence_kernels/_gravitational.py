@@ -1,8 +1,3 @@
-"""
-Created at 24.01.2020
-"""
-
-
 class Gravitational:
 
     def __init__(self):

@@ -1,7 +1,3 @@
-"""
-Created at 08.08.2019
-"""
-
 import numba
 import warnings
 import os

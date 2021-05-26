@@ -1,8 +1,3 @@
-"""
-Created at 03.06.2020
-"""
-
-
 def make_IndexedStorage(backend):
     class IndexedStorage(backend.Storage):
 

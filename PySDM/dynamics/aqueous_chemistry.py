@@ -1,3 +1,6 @@
+"""
+Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
+"""
 import numpy as np
 from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
     GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY, M

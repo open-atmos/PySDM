@@ -1,6 +1,6 @@
 class Neglect:
     @staticmethod
-    def lambdaD(T):
+    def lambdaD(D, T):
         return -1
 
     @staticmethod

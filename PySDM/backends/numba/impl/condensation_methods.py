@@ -1,7 +1,3 @@
-"""
-Created at 11.2019
-"""
-
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
@@ -193,7 +189,7 @@ class CondensationMethods:
                               phys_lambdaK, phys_lambdaD, phys_DK,
                               within_tolerance, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
-        def minfun(x_new, x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K):
+        def minfun(x_new, x_old, dt, kappa, rd3, T, RH, lv, pvs, D, K):
             vol = volume_of_x(x_new)
             r_new = radius(vol)
             sgm = phys_sigma(T, vol, const.pi_4_3 * rd3)
@@ -220,7 +216,7 @@ class CondensationMethods:
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     Dr = phys_DK(DTp, r_old, lambdaD)
                     Kr = phys_DK(const.K0, r_old, lambdaK)
-                    args = (x_old, dt, p, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
+                    args = (x_old, dt, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, Dr, Kr)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 else:
@@ -245,7 +241,6 @@ class CondensationMethods:
                         fb = minfun(b, *args)
 
                     if not success:
-                        x_new = np.nan
                         break
                     elif a != b:
                         if a > b:
@@ -276,7 +271,7 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive):
+    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
             phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
@@ -299,7 +294,11 @@ class CondensationMethods:
             x=self.formulae.condensation_coordinate.x,
             dt=dt,
             dt_range=dt_range,
-            adaptive=adaptive
+            adaptive=adaptive,
+            fuse=fuse,
+            multiplier=multiplier,
+            RH_rtol=RH_rtol,
+            max_iters=max_iters
         )
 
     @staticmethod
@@ -307,7 +306,7 @@ class CondensationMethods:
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
                                       phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
-                                      fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
+                                      fuse, multiplier, RH_rtol, max_iters):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)

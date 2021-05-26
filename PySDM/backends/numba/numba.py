@@ -1,5 +1,5 @@
 """
-Created at 24.07.2019
+Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
 
 from PySDM.backends.numba.impl._algorithmic_methods import AlgorithmicMethods

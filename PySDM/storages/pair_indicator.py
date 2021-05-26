@@ -1,8 +1,3 @@
-"""
-Created at 09.11.2020
-"""
-
-
 def make_PairIndicator(backend):
 
     class PairIndicator:

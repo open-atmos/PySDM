@@ -1,7 +1,6 @@
 """
-Created at 23.10.2019
+Particle displacement due to advection by the flow & sedimentation
 """
-
 import numpy as np
 
 

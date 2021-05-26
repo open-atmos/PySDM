@@ -1,7 +1,3 @@
-"""
-Created at 23.10.2019
-"""
-
 import numpy as np
 from .displacement_settings import DisplacementSettings
 # noinspection PyUnresolvedReferences

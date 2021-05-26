@@ -1,7 +1,3 @@
-"""
-Created at 23.11.2020
-"""
-
 from .coalescence_timestep_mean import CoalescenceTimestepMean
 from .coalescence_timestep_min import CoalescenceTimestepMin
 from .collision_rate import CollisionRate

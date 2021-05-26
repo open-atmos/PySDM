@@ -1,9 +1,6 @@
 """
-Created at 09.11.2019
+The very class exposing `PySDM.core.Core.run()` method for launching simulations
 """
-
-import numpy as np
-
 from PySDM.state.particles import Particles
 from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator

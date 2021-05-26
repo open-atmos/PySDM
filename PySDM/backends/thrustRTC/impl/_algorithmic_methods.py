@@ -1,7 +1,3 @@
-"""
-Created at 10.12.2019
-"""
-
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust, c_inline
 from ..conf import trtc
@@ -87,7 +83,7 @@ class AlgorithmicMethods:
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r];
             auto c_l = courant[_l];
-            displacement[i + n_sd * dim] = {c_inline(self.formulae.particle_advection.displacement, c_l="c_l", c_r="c_r", omega="omega")}
+            displacement[i + n_sd * dim] = {c_inline(self.formulae.particle_advection.displacement, c_l="c_l", c_r="c_r", omega="omega")};
             ''')
         loop.launch_n(
             displacement.shape[1],

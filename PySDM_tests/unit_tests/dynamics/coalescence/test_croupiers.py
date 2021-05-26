@@ -1,7 +1,3 @@
-"""
-Created at 13.01.2020
-"""
-
 import numpy as np
 import pytest
 
