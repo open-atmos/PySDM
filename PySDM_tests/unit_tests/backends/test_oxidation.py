@@ -40,16 +40,53 @@ cell_ids = Storage.from_ndarray(np.zeros(n_sd, dtype=int))
 H = formulae.trivia.pH2H(pH)
 DF = DISSOCIATION_FACTORS['SO2'](H, eqc, 0)
 
+O3_react_consts = k0.data[0] +\
+                  k1.data[0] * K_SO2.data[0] / H +\
+                  k2.data[0] * K_SO2.data[0] * K_HSO3.data[0] / H**2
+H2O2_react_consts = k3.data[0] * K_SO2.data[0] / (1. + k4 * H)
+
+O3_init = 1e-4
+H2O2_init = 1e-4
+S_IV_init = 1e-4
+S_VI_init = 1e-4
 
 @pytest.mark.parametrize('conc', [
     {
-        'input': {},
+        'input': {'S_IV': 0., 'S_VI': 0., 'H2O2': 0., 'O3': 0.},
         'output': {'S_IV': 0., 'S_VI': 0., 'H2O2': 0., 'O3': 0.}
     },
-    # {
-    #     'input': {'S_IV': 44., 'O3': 22.},
-    #     'output': {'S_VI': (k0 + k1 * K_SO2 / H + k2 * K_SO2 * K_HSO3 / H**2) * 22 * DF},
-    # }
+    {
+        'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': 0., 'S_VI': 0.},
+        'output': {
+             'S_VI':  O3_react_consts * O3_init * S_IV_init / DF,
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+             'H2O2':  0.0,
+             'S_IV': -O3_react_consts * O3_init * S_IV_init / DF}
+    },
+    {
+        'input': {'S_IV': S_IV_init, 'O3': 0, 'H2O2': H2O2_init, 'S_VI': 0.},
+        'output': {
+             'S_VI':  H2O2_react_consts * H2O2_init * S_IV_init / DF,
+             'O3':    0.0,
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+             'S_IV': -H2O2_react_consts * H2O2_init * S_IV_init / DF}
+    },
+    {
+        'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': H2O2_init, 'S_VI': 0.},
+        'output': {
+             'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+             'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
+    },
+    {
+        'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': H2O2_init, 'S_VI': S_VI_init},
+        'output': {
+             'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+             'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
+    }
 ])
 def test_oxidation(conc):
     # Arrange
@@ -85,4 +122,4 @@ def test_oxidation(conc):
 
     # Assert
     for k in conc['output'].keys():
-        assert moles[k].data / volume == conc['output'][k]
+        np.testing.assert_allclose(moles[k].data / volume - conc['input'][k], conc['output'][k] * dt, rtol=1e-12)
