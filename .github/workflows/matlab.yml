@@ -27,3 +27,7 @@ jobs:
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
+      - run: sed -i '/s/CPU/GPU/' readme.m
+      - uses: matlab-actions/run-command@v0
+        with:
+          command: readme
