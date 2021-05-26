@@ -515,8 +515,8 @@ end
 i=1;
 for pykey = py.list(keys(particles.products))
     product = particles.products{pykey{1}};
-    subplot(1, width(output)-2, i);
-    if i ~= width(output)
+    if string(product.name) ~= "z"
+        subplot(1, width(output)-2, i);
         plot(output{:, string(pykey{1})}, output.z);
         title(string(product.name));
         xlabel(string(product.unit));
