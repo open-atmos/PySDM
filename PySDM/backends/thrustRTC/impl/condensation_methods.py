@@ -25,7 +25,7 @@ class CondensationMethods():
         self.rhod_mean: Optional[Storage] = None
         self.vars: Optional[Dict[str, Storage]] = None
 
-        # TODO #526: precision for consts
+        # TODO #532: precision for consts
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))

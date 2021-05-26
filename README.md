@@ -404,30 +404,32 @@ particles = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range)
+    products.WaterMixingRatio(radius_range=cloud_range),
+    products.ParcelDisplacement()
 ])
     
 cell_id=1
-output = Dict("z" => Array{Float32}(undef, output_points+1))
+output = Dict()
 for (_, product) in particles.products
     output[product.name] = Array{Float32}(undef, output_points+1)
     output[product.name][1] = product.get()[cell_id]
 end 
-output["z"][1] = env.__getitem__("z")[cell_id]
     
 for step = 2:output_points+1
     particles.run(steps=output_interval)
     for (_, product) in particles.products
         output[product.name][step] = product.get()[cell_id]
     end 
-    output["z"][step]=env.__getitem__("z")[cell_id]
 end 
 
 plots = []
+ylabel = particles.products["z"].unit
 for (_, product) in particles.products
-    append!(plots, [plot(output[product.name], output["z"], ylabel="z [m]", xlabel=product.unit, title=product.name)])
+    if product.name != "z"
+        append!(plots, [plot(output[product.name], output["z"], ylabel=ylabel, xlabel=product.unit, title=product.name)])
+    ylabel = ""
 end
-plot(plots..., layout=(1,4))
+plot(plots..., layout=(1, length(output)-1))
 savefig("parcel.svg")
 ```
 </details>
@@ -483,6 +485,7 @@ particles = builder.build(attributes, py.list({ ...
     products.CloudDropletEffectiveRadius(pyargs('radius_range', cloud_range)), ...
     products.CloudDropletConcentration(pyargs('radius_range', cloud_range)), ...
     products.WaterMixingRatio(pyargs('radius_range', cloud_range)) ...
+    products.ParcelDisplacement() ...
 }));
 
 cell_id = int32(0);
@@ -500,8 +503,6 @@ for pykey = py.list(keys(particles.products))
     output{1, key} = get(cell_id);
 end
 get = py.getattr(env, '__getitem__');
-zget = py.getattr(get('z'), '__getitem__');
-output{1, 'z'} = zget(cell_id);
 
 for i=2:output_points+1
     particles.run(pyargs('steps', int32(output_interval)));
@@ -510,17 +511,20 @@ for i=2:output_points+1
         key = string(pykey{1});
         output{i, key} = get(cell_id);
     end
-    output{i, 'z'} = zget(cell_id);
 end
 
 i=1;
 for pykey = py.list(keys(particles.products))
     product = particles.products{pykey{1}};
-    subplot(1, width(output)-1, i);
-    plot(output{:, string(pykey{1})}, output.z);
-    title(string(product.name));
-    xlabel(string(product.unit));
-    ylabel('z [m]');
+    subplot(1, width(output)-2, i);
+    if i ~= width(output)
+        plot(output{:, string(pykey{1})}, output.z);
+        title(string(product.name));
+        xlabel(string(product.unit));
+    end
+    if i == 1
+        ylabel(string(product.unit));
+    end
     i=i+1;
 end
 ```
@@ -570,25 +574,26 @@ particles = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range)
+    products.WaterMixingRatio(radius_range=cloud_range),
+    products.ParcelDisplacement()
 ])
 
 cell_id = 0
 output = {product.name: [product.get()[cell_id]] for product in particles.products.values()}
-output['z'] = [env['z'][cell_id]]
 
 for step in range(output_points):
     particles.run(steps=output_interval)
     for product in particles.products.values():
         output[product.name].append(product.get()[cell_id])
-    output['z'].append(env['z'][cell_id])
 
-fig, axs = pyplot.subplots(1, len(particles.products), sharey="all")
+fig, axs = pyplot.subplots(1, len(particles.products)-1, sharey="all")
 for i, (key, product) in enumerate(particles.products.items()):
-    axs[i].plot(output[key], output['z'], marker='.')
-    axs[i].set_title(product.name)
-    axs[i].set_xlabel(product.unit)
-    axs[i].grid()
+    if key != 'z':
+        axs[i].plot(output[key], output['z'], marker='.')
+        axs[i].set_title(product.name)
+        axs[i].set_xlabel(product.unit)
+        axs[i].grid()
+axs[0].set_ylabel(particles.products['z'].unit)
 pyplot.savefig('parcel.svg')
 ```
 </details>
