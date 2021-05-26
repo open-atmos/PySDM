@@ -423,12 +423,12 @@ for step = 2:output_points+1
 end 
 
 plots = []
-ylabel = particles.products["z"].unit
+ylbl = particles.products["z"].unit
 for (_, product) in particles.products
     if product.name != "z"
-        append!(plots, [plot(output[product.name], output["z"], ylabel=ylabel, xlabel=product.unit, title=product.name)])
+        append!(plots, [plot(output[product.name], output["z"], ylabel=ylbl, xlabel=product.unit, title=product.name)])
     end
-    ylabel = ""
+    global ylbl = ""
 end
 plot(plots..., layout=(1, length(output)-1))
 savefig("parcel.svg")

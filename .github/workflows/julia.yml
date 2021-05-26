@@ -23,5 +23,5 @@ jobs:
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
       - uses: julia-actions/setup-julia@v1
       - run: julia readme.jl
-      - run: sed -i '/s/CPU/GPU/' readme.jl
+      - run: sed -i 's/CPU/GPU/g' readme.jl
       - run: julia readme.jl
