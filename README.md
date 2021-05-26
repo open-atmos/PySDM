@@ -489,9 +489,9 @@ particles = builder.build(attributes, py.list({ ...
 }));
 
 cell_id = int32(0);
-output_size = [output_points+1, 1 + length(py.list(particles.products.keys()))];
+output_size = [output_points+1, length(py.list(particles.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
-output_names = ['z', cellfun(@string, cell(py.list(particles.products.keys())))];
+output_names = [cellfun(@string, cell(py.list(particles.products.keys())))];
 output = table(...
     'Size', output_size, ...
     'VariableTypes', output_types, ...
@@ -502,7 +502,6 @@ for pykey = py.list(keys(particles.products))
     key = string(pykey{1});
     output{1, key} = get(cell_id);
 end
-get = py.getattr(env, '__getitem__');
 
 for i=2:output_points+1
     particles.run(pyargs('steps', int32(output_interval)));
