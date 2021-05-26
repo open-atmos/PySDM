@@ -427,6 +427,7 @@ ylabel = particles.products["z"].unit
 for (_, product) in particles.products
     if product.name != "z"
         append!(plots, [plot(output[product.name], output["z"], ylabel=ylabel, xlabel=product.unit, title=product.name)])
+    end
     ylabel = ""
 end
 plot(plots..., layout=(1, length(output)-1))
