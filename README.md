@@ -461,7 +461,7 @@ env = Parcel(pyargs( ...
 spectrum = spectra.Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
 kappa = .5;
 cloud_range = py.tuple({.5 * si.um, 25 * si.um});
-output_interval = 1;
+output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
@@ -517,16 +517,17 @@ i=1;
 for pykey = py.list(keys(particles.products))
     product = particles.products{pykey{1}};
     if string(product.name) ~= "z"
-        subplot(1, width(output)-2, i);
-        plot(output{:, string(pykey{1})}, output.z);
-        title(string(product.name));
+        subplot(1, width(output)-1, i);
+        plot(output{:, string(pykey{1})}, output.z, '-o');
+        title(string(product.name), 'Interpreter', 'none');
         xlabel(string(product.unit));
     end
     if i == 1
-        ylabel(string(product.unit));
+        ylabel(string(particles.products{"z"}.unit));
     end
     i=i+1;
 end
+saveas(gcf, "parcel.svg")
 ```
 </details>
 <details open>
