@@ -339,6 +339,22 @@ The resultant plot looks as follows:
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
+In the following example, a condensation-only setup is used with the adiabatic 
+[`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
+initial humidity. 
+Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
+causes a subset of particles to activate into cloud droplets.
+Results of the simulation are plotted against vertical 
+[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/environments/parcel_displacement.html)
+and depict the evolution of 
+[`Supersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/dynamics/condensation/peak_supersaturation.html), 
+[`CloudDropletEffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/cloud_droplet_effective_radius.html), 
+[`CloudDropletConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/particles_concentration.html#PySDM.products.state.particles_concentration.CloudDropletConcentration) 
+and the 
+[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/water_mixing_ratio.html).
+
 <details>
 <summary>Julia (click to expand)</summary>
 
