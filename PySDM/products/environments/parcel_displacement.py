@@ -19,4 +19,4 @@ class ParcelDisplacement(Product):
 
     def get(self):
         self.download_to_buffer(self.environment['z'])
-        return self.buffer[0]
+        return self.buffer

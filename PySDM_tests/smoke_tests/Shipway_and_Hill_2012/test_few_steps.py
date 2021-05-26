@@ -1,6 +1,7 @@
+import numpy as np
+
 from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
 from PySDM.physics import si
-import numpy as np
 
 
 def test_few_steps(plot=False):
@@ -29,4 +30,4 @@ def test_few_steps(plot=False):
     assert .1 < max(profile('ql')) < 1
     # assert max(profile('ripening_rate')) > 0 # TODO #521
     assert max(profile('activating_rate')) == 0
-    #assert max(profile('deactivating_rate')) > 0 TODO #521
+    # assert max(profile('deactivating_rate')) > 0 TODO #521

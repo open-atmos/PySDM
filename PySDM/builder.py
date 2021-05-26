@@ -64,7 +64,7 @@ class Builder:
             self.request_attribute(attribute)
         if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params)
+                self.core.backend.make_condensation_solver(self.core.dt, self.core.mesh.n_cell, **self.condensation_params)
         attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
