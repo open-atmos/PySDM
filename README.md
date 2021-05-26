@@ -37,10 +37,9 @@ The package core is a Pythonic high-performance implementation of the
 PySDM has two alternative parallel number-crunching backends 
   available: multi-threaded CPU backend based on [Numba](http://numba.pydata.org/) 
   and GPU-resident backend built on top of [ThrustRTC](https://pypi.org/project/ThrustRTC/).
-The **Numba backend** named ``CPU`` is the default, and features multi-threaded parallelism for 
-  multi-core CPUs. 
-It uses the just-in-time compilation technique based on the LLVM infrastructure.
-The **ThrustRTC** backend named ``GPU`` offers GPU-resident operation of PySDM
+The [`Numba`](https://atmos-cloud-sim-uj.github.io/PySDM/backends/numba/numba.html) backend (aliased ``CPU``) features multi-threaded parallelism for 
+  multi-core CPUs, it uses the just-in-time compilation technique based on the LLVM infrastructure.
+The [`ThrustRTC`](https://atmos-cloud-sim-uj.github.io/PySDM/backends/thrustRTC/thrustRTC.html) backend (aliased ``GPU``) offers GPU-resident operation of PySDM
   leveraging the [SIMT](https://en.wikipedia.org/wiki/Single_instruction,_multiple_threads) 
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
@@ -62,9 +61,9 @@ For development purposes, we suggest cloning the repository and installing it us
 Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
 
 PySDM examples listed below are hosted in a separate repository and constitute 
-a separate [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) Python package.
+the [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
-Running the examples requires the the ``PySDM_examples`` package to be installed.
+Running the examples requires the ``PySDM_examples`` package to be installed.
 Since the examples package includes Jupyter notebooks (and their execution requires write access), the suggested install and launch steps are:
 ```
 git clone https://github.com/atmos-cloud-sim-uj/PySDM-examples.git
@@ -128,8 +127,8 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a coalescence-only set-up in which the initial particle size 
-  spectrum is exponential and is deterministically sampled to match
+It is a [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
+  spectrum is [`Exponential`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -183,7 +182,7 @@ attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).s
 </details>
 
 The key element of the PySDM interface is the [``Core``](https://atmos-cloud-sim-uj.github.io/PySDM/core.html) 
-  class which instances are used to manage the system state and control the simulation.
+  class instances of which are used to manage the system state and control the simulation.
 Instantiation of the [``Core``](https://atmos-cloud-sim-uj.github.io/PySDM/core.html) class is handled by the [``Builder``](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html)
   as exemplified below:
 <details>
@@ -244,18 +243,18 @@ particles = builder.build(attributes, products)
 The ``backend`` argument may be set to ``CPU`` or ``GPU``
   what translates to choosing the multi-threaded backend or the 
   GPU-resident computation mode, respectively.
-The employed ``Box`` environment corresponds to a zero-dimensional framework
+The employed [`Box`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are
   used to initialise super-droplet attributes.
-The ``Coalescence`` Monte-Carlo algorithm (Super Droplet Method) is registered as the only
-  dynamic in the system (other available dynamics representing
-  condensational growth and particle displacement).
-Finally, the ``build()`` method is used to obtain an instance
-  of ``Core`` which can then be used to control time-stepping and
+The [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coalescence.html)
+  Monte-Carlo algorithm (Super Droplet Method) is registered as the only
+  dynamic in the system.
+Finally, the [`build()`](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
+  of [`Core`](https://atmos-cloud-sim-uj.github.io/PySDM/core.html#PySDM.core.Core) which can then be used to control time-stepping and
   access simulation state.
 
-The ``run(nt)`` method advances the simulation by ``nt`` timesteps.
+The [`run(nt)`](https://atmos-cloud-sim-uj.github.io/PySDM/core.html#PySDM.core.Core.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
