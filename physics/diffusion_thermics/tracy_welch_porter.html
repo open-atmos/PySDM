@@ -37,7 +37,7 @@ from numpy import power
 class TracyWelchPorter:
     @staticmethod
     def D(T, p):
-        return const.D0 * power(T / const.T0, 1.81) * (const.p1000 / p)</code></pre>
+        return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 </section>
 <section>
@@ -61,7 +61,7 @@ class TracyWelchPorter:
 <pre><code class="python">class TracyWelchPorter:
     @staticmethod
     def D(T, p):
-        return const.D0 * power(T / const.T0, 1.81) * (const.p1000 / p)</code></pre>
+        return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -76,7 +76,7 @@ class TracyWelchPorter:
 </summary>
 <pre><code class="python">@staticmethod
 def D(T, p):
-    return const.D0 * power(T / const.T0, 1.81) * (const.p1000 / p)</code></pre>
+    return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 </dd>
 </dl>

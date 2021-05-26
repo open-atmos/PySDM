@@ -27,7 +27,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import PySDM.physics.constants as const
-from numpy import sqrt
+from numpy import sqrt, power
 
 
 class KappaKoehlerLeadingTerms:
@@ -36,7 +36,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / r ** 3
+           kp * rd3 / power(r, const.three)
         )
 
     @staticmethod
@@ -68,7 +68,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / r ** 3
+           kp * rd3 / power(r, const.three)
         )
 
     @staticmethod
@@ -91,7 +91,7 @@ def RH_eq(r, T, kp, rd3, sgm):
     return (
        1 +
        (2 * sgm / const.Rv / T / const.rho_w) / r -
-       kp * rd3 / r ** 3
+       kp * rd3 / power(r, const.three)
     )</code></pre>
 </details>
 </dd>

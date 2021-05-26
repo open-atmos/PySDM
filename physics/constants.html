@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>PySDM.physics.constants API documentation</title>
-<meta name="description" content="Crated at 2019" />
+<meta name="description" content="Collection of physical constants with dimensional analysis handled with
+[Pint](https://pypi.org/project/Pint/)&#39;s package `UnitRegistry` for test
+…" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +24,17 @@
 <h1 class="title">Module <code>PySDM.physics.constants</code></h1>
 </header>
 <section id="section-intro">
-<p>Crated at 2019</p>
+<p>Collection of physical constants with dimensional analysis handled with
+<a href="https://pypi.org/project/Pint/">Pint</a>'s package <code>UnitRegistry</code> for test
+purposes and mocked with <code><a title="PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry" href="impl/fake_unit_registry.html#PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry">FakeUnitRegistry</a></code> by default.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Crated at 2019
+Collection of physical constants with dimensional analysis handled with
+[Pint](https://pypi.org/project/Pint/)&#39;s package `UnitRegistry` for test
+purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 &#34;&#34;&#34;
 
 import pint
@@ -48,6 +54,9 @@ def convert_to(value, unit):
 
 pi = sci.pi
 pi_4_3 = pi * 4 / 3
+three = 3
+one_third = 1/3
+two_thirds = 2/3
 
 Md = (
         0.78 * Substance.from_formula(&#39;N2&#39;).mass * si.gram / si.mole +
@@ -60,7 +69,10 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 eps = Mv / Md
 Rd = R_str / Md
 Rv = R_str / Mv
+
 D0 = 2.26e-5 * si.metre ** 2 / si.second
+D_exp = 1.81
+
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
 p1000 = 1000 * si.hectopascals
