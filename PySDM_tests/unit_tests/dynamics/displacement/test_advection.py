@@ -8,10 +8,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_single_cell(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         settings.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
@@ -63,10 +59,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_calculate_displacement_dim1(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         a = .1

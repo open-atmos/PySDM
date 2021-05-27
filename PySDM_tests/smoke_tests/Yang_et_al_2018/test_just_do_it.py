@@ -5,6 +5,7 @@ from PySDM_examples.Yang_et_al_2018.example import Simulation
 from PySDM_examples.Yang_et_al_2018.settings import Settings
 from PySDM.physics.constants import si
 from PySDM.backends.numba.test_helpers import bdf
+from PySDM.backends import GPU
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
@@ -17,7 +18,7 @@ adaptive = (True, False)
 @pytest.mark.parametrize("adaptive", adaptive)
 def test_just_do_it(backend, scheme, adaptive):
     # Arrange
-    if scheme == 'BDF' and not adaptive:
+    if scheme == 'BDF' and (not adaptive or backend is GPU):
         return
 
     settings = Settings(dt_output=10 * si.second)
@@ -51,7 +52,7 @@ def test_just_do_it(backend, scheme, adaptive):
     assert .1 * n_unit < min(N3) < .11 * n_unit
     assert .27 * n_unit < max(N3) < .4 * n_unit
 
-    from PySDM.backends import GPU  # TODO #527
+    # TODO #527
     if backend is not GPU:
         assert max(output['ripening_rate']) > 0
 
