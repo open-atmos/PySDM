@@ -128,5 +128,5 @@ def test_oxidation(conc, dt):
         np.testing.assert_allclose(
             actual=moles[k].data / volume - conc['input'][k],
             desired=conc['output'][k] * dt,
-            rtol=1e-12
+            rtol=1e-11
         )

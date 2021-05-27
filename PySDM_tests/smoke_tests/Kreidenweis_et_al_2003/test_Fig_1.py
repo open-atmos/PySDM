@@ -68,4 +68,4 @@ class TestFig1:
             pyplot.xlabel('pH')
             pyplot.show()
 
-        assert 5 < example_output['pH'][-1] < 5.2
+        assert 4.9 < example_output['pH'][-1] < 5

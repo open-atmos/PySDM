@@ -29,7 +29,7 @@ class KinConst:
 class HenryConsts:
     def __init__(self, formulae):
         self.HENRY_CONST = {
-            "HNO3": EqConst(formulae, 2.1e5 * H_u, 0 * dT_u, T_0=ROOM_TEMP),  # TODO #525
+            "HNO3": EqConst(formulae, 2.1e5 * H_u, 8700 * dT_u, T_0=ROOM_TEMP),
             "H2O2": EqConst(formulae, 7.45e4 * H_u, 7300 * dT_u, T_0=ROOM_TEMP),
             "NH3":  EqConst(formulae, 62 * H_u, 4110 * dT_u, T_0=ROOM_TEMP),
             "SO2":  EqConst(formulae, 1.23 * H_u, 3150 * dT_u, T_0=ROOM_TEMP),
@@ -42,7 +42,7 @@ class HenryConsts:
 class EquilibriumConsts:
     def __init__(self, formulae):
         self.EQUILIBRIUM_CONST = {  # Reaction Specific units, K
-            "K_HNO3": EqConst(formulae, 15.4 * M, 0 * dT_u, T_0=ROOM_TEMP), # TODO #525
+            "K_HNO3": EqConst(formulae, 15.4 * M, 8700 * dT_u, T_0=ROOM_TEMP),
             "K_SO2":  EqConst(formulae, 1.3e-2 * M, 1960 * dT_u, T_0=ROOM_TEMP),
             "K_NH3":  EqConst(formulae, 1.7e-5 * M, -450 * dT_u, T_0=ROOM_TEMP),
             "K_CO2":  EqConst(formulae, 4.3e-7 * M, -1000 * dT_u, T_0=ROOM_TEMP),
