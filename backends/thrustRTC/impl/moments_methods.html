@@ -34,65 +34,64 @@ from .precision_resolver import PrecisionResolver
 
 
 class MomentsMethods:
-    __loop_reset = trtc.For([&#39;vector_to_clean&#39;], &#34;i&#34;, &#39;&#39;&#39;
-        vector_to_clean[i] = 0;
-    &#39;&#39;&#39;)
+    def __init__(self):
+        self.__loop_reset = trtc.For([&#39;vector_to_clean&#39;], &#34;i&#34;, &#39;&#39;&#39;
+            vector_to_clean[i] = 0;
+        &#39;&#39;&#39;)
 
-    __moments_body_0 = trtc.For(
-        [&#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-         &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;,
-         &#39;n_sd&#39;, &#39;n_cell&#39;],
-        &#34;fake_i&#34;,
-        &#39;&#39;&#39;
-        auto i = idx[fake_i];
-        if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
-            atomicAdd((unsigned long long int*)&amp;moment_0[cell_id[i]], (unsigned long long int)n[i]);
+        self.__moments_body_0 = trtc.For(
+            [&#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
+             &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;,
+             &#39;n_sd&#39;, &#39;n_cell&#39;],
+            &#34;fake_i&#34;,
+            &#39;&#39;&#39;
+            auto i = idx[fake_i];
+            if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
+                atomicAdd((unsigned long long int*)&amp;moment_0[cell_id[i]], (unsigned long long int)n[i]);
+                for (auto k = 0; k &lt; n_ranks; k+=1) {
+                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
+                }
+            }
+        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+
+        self.__moments_body_1 = trtc.For([&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;c_id&#34;, &#39;&#39;&#39;
             for (auto k = 0; k &lt; n_ranks; k+=1) {
-                atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
+                if (moment_0[c_id] == 0) {
+                    moments[n_cell * k  + c_id] = 0;
+                } 
+                else {
+                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
+                }
             }
-        }
-    &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+        &#39;&#39;&#39;)
 
-    __moments_body_1 = trtc.For([&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;c_id&#34;, &#39;&#39;&#39;
-        for (auto k = 0; k &lt; n_ranks; k+=1) {
-            if (moment_0[c_id] == 0) {
-                moments[n_cell * k  + c_id] = 0;
-            } 
-            else {
-                moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
-            }
-        }
-    &#39;&#39;&#39;)
-
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
+    def moments(self, moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
                 min_x, max_x, x_attr):
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
 
-        MomentsMethods.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
-        MomentsMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
+        self.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
+        self.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
-        MomentsMethods.__moments_body_0.launch_n(length,
-                                                     [idx.data,
-                                                      PrecisionResolver.get_floating_point(min_x),
-                                                      attr_data.data,
-                                                      x_attr.data,
-                                                      PrecisionResolver.get_floating_point(max_x),
-                                                      moment_0.data,
-                                                      cell_id.data,
-                                                      n.data,
-                                                      n_ranks,
-                                                      moments.data,
-                                                      ranks.data,
-                                                      n_sd,
-                                                      n_cell
-                                                      ]
-                                                     )
+        self.__moments_body_0.launch_n(length, [
+            idx.data,
+            PrecisionResolver.get_floating_point(min_x),
+            attr_data.data,
+            x_attr.data,
+            PrecisionResolver.get_floating_point(max_x),
+            moment_0.data,
+            cell_id.data,
+            n.data,
+            n_ranks,
+            moments.data,
+            ranks.data,
+            n_sd,
+            n_cell
+        ])
 
-        MomentsMethods.__moments_body_1.launch_n(
+        self.__moments_body_1.launch_n(
             moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])</code></pre>
 </details>
 </section>
@@ -115,72 +114,71 @@ class MomentsMethods:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MomentsMethods:
-    __loop_reset = trtc.For([&#39;vector_to_clean&#39;], &#34;i&#34;, &#39;&#39;&#39;
-        vector_to_clean[i] = 0;
-    &#39;&#39;&#39;)
+    def __init__(self):
+        self.__loop_reset = trtc.For([&#39;vector_to_clean&#39;], &#34;i&#34;, &#39;&#39;&#39;
+            vector_to_clean[i] = 0;
+        &#39;&#39;&#39;)
 
-    __moments_body_0 = trtc.For(
-        [&#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-         &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;,
-         &#39;n_sd&#39;, &#39;n_cell&#39;],
-        &#34;fake_i&#34;,
-        &#39;&#39;&#39;
-        auto i = idx[fake_i];
-        if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
-            atomicAdd((unsigned long long int*)&amp;moment_0[cell_id[i]], (unsigned long long int)n[i]);
+        self.__moments_body_0 = trtc.For(
+            [&#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
+             &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;,
+             &#39;n_sd&#39;, &#39;n_cell&#39;],
+            &#34;fake_i&#34;,
+            &#39;&#39;&#39;
+            auto i = idx[fake_i];
+            if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
+                atomicAdd((unsigned long long int*)&amp;moment_0[cell_id[i]], (unsigned long long int)n[i]);
+                for (auto k = 0; k &lt; n_ranks; k+=1) {
+                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
+                }
+            }
+        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+
+        self.__moments_body_1 = trtc.For([&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;c_id&#34;, &#39;&#39;&#39;
             for (auto k = 0; k &lt; n_ranks; k+=1) {
-                atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
+                if (moment_0[c_id] == 0) {
+                    moments[n_cell * k  + c_id] = 0;
+                } 
+                else {
+                    moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
+                }
             }
-        }
-    &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+        &#39;&#39;&#39;)
 
-    __moments_body_1 = trtc.For([&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;c_id&#34;, &#39;&#39;&#39;
-        for (auto k = 0; k &lt; n_ranks; k+=1) {
-            if (moment_0[c_id] == 0) {
-                moments[n_cell * k  + c_id] = 0;
-            } 
-            else {
-                moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
-            }
-        }
-    &#39;&#39;&#39;)
-
-    @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
+    def moments(self, moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
                 min_x, max_x, x_attr):
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
 
-        MomentsMethods.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
-        MomentsMethods.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
+        self.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
+        self.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
 
-        MomentsMethods.__moments_body_0.launch_n(length,
-                                                     [idx.data,
-                                                      PrecisionResolver.get_floating_point(min_x),
-                                                      attr_data.data,
-                                                      x_attr.data,
-                                                      PrecisionResolver.get_floating_point(max_x),
-                                                      moment_0.data,
-                                                      cell_id.data,
-                                                      n.data,
-                                                      n_ranks,
-                                                      moments.data,
-                                                      ranks.data,
-                                                      n_sd,
-                                                      n_cell
-                                                      ]
-                                                     )
+        self.__moments_body_0.launch_n(length, [
+            idx.data,
+            PrecisionResolver.get_floating_point(min_x),
+            attr_data.data,
+            x_attr.data,
+            PrecisionResolver.get_floating_point(max_x),
+            moment_0.data,
+            cell_id.data,
+            n.data,
+            n_ranks,
+            moments.data,
+            ranks.data,
+            n_sd,
+            n_cell
+        ])
 
-        MomentsMethods.__moments_body_1.launch_n(
+        self.__moments_body_1.launch_n(
             moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="../thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></li>
 </ul>
-<h3>Static methods</h3>
+<h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>*args, **kwargs)</span>

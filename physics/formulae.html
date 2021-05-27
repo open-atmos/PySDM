@@ -27,9 +27,14 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from PySDM.backends.numba import conf
-from functools import lru_cache
 from PySDM import physics
+from functools import lru_cache, partial
 import numba
+import re
+import inspect
+
+# noinspection PyUnresolvedReferences
+from PySDM.physics import constants as const
 
 
 def _formula(func=None, **kw):
@@ -46,8 +51,39 @@ def _boost(obj, fastmath):
                 continue
             attr = getattr(obj, item)
             if callable(attr):
-                setattr(obj, item, _formula(attr, fastmath=fastmath))
+                formula = _formula(attr, fastmath=fastmath)
+                setattr(obj, item, formula)
+                setattr(getattr(obj, item), &#39;c_inline&#39;, partial(_c_inline, fun=formula))
     return obj
+
+
+def _c_inline(fun, return_type=None, **args):
+    real_t = &#39;real_type&#39;
+    return_type = return_type or real_t
+    prae = r&#34;([,+\-*/( ]|^)&#34;
+    post = r&#34;([ )/*\-+,]|$)&#34;
+    real_fmt = &#34;.32g&#34;
+    source = &#39;&#39;
+    for lineno, line in enumerate(inspect.getsourcelines(fun)[0]):
+        stripped = line.strip()
+        if stripped.startswith(&#39;@&#39;):
+            continue
+        if stripped.startswith(&#39;//&#39;):
+            continue
+        if stripped.startswith(&#39;def &#39;):
+            continue
+        source += stripped
+    source = source.replace(&#34;power(&#34;, &#34;pow(&#34;)
+    source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
+    for arg in inspect.signature(fun).parameters:
+        source = re.sub(f&#34;{prae}({arg}){post}&#34;, f&#34;\\1({real_t})({args[arg]})\\3&#34;, source)
+    source = re.sub(
+        f&#34;{prae}const\\.([^\\d\\W]\\w*]*){post}&#34;,
+        &#34;\\1(&#34; + real_t + &#34;)({const.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
+        source
+    )
+    source = eval(f&#39;f&#34;&#34;&#34;{source}&#34;&#34;&#34;&#39;)
+    return f&#39;({return_type})({source})&#39;
 
 
 def _pick(value: str, choices: dict):
