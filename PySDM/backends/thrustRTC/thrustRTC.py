@@ -32,6 +32,8 @@ class ThrustRTC(
         self.formulae = formulae
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
+        AlgorithmicMethods.__init__(self)
+        MomentsMethods.__init__(self)
 
     @staticmethod
     def sanity_check():
