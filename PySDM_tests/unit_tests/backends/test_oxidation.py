@@ -50,51 +50,54 @@ H2O2_init = 1e-4
 S_IV_init = 1e-4
 S_VI_init = 1e-4
 
+
 @pytest.mark.parametrize('conc', [
-    {
+    pytest.param({
         'input': {'S_IV': 0., 'S_VI': 0., 'H2O2': 0., 'O3': 0.},
         'output': {'S_IV': 0., 'S_VI': 0., 'H2O2': 0., 'O3': 0.}
-    },
-    {
+    }, id="zeros"),
+    pytest.param({
         'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': 0., 'S_VI': 0.},
         'output': {
              'S_VI':  O3_react_consts * O3_init * S_IV_init / DF,
              'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
              'H2O2':  0.0,
              'S_IV': -O3_react_consts * O3_init * S_IV_init / DF}
-    },
-    {
+    }, id="ozone"),
+    pytest.param({
         'input': {'S_IV': S_IV_init, 'O3': 0, 'H2O2': H2O2_init, 'S_VI': 0.},
         'output': {
              'S_VI':  H2O2_react_consts * H2O2_init * S_IV_init / DF,
              'O3':    0.0,
              'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
              'S_IV': -H2O2_react_consts * H2O2_init * S_IV_init / DF}
-    },
-    {
+    }, id="hydrogen peroxide"),
+    pytest.param({
         'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': H2O2_init, 'S_VI': 0.},
         'output': {
              'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
              'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
              'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
              'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
-    },
-    {
+    }, id="all with no initial S_VI"),
+    pytest.param({
         'input': {'S_IV': S_IV_init, 'O3': O3_init, 'H2O2': H2O2_init, 'S_VI': S_VI_init},
         'output': {
              'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
              'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
              'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
              'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
-    }
+    }, id="all")
 ])
-def test_oxidation(conc):
+@pytest.mark.parametrize("dt", (1, .1))
+def test_oxidation(conc, dt):
     # Arrange
     sut = SUT()
-    dt = 1
 
     moles = {
-        k: Storage.from_ndarray(np.full(n_sd, 0. if k not in conc['input'] else conc['input'][k] * volume))
+        k: Storage.from_ndarray(np.full(n_sd,
+                                        0. if k not in conc['input'] else
+                                        conc['input'][k] * volume))
         for k in ('S_IV', 'S_VI', 'H2O2', 'O3')
     }
 
@@ -122,4 +125,8 @@ def test_oxidation(conc):
 
     # Assert
     for k in conc['output'].keys():
-        np.testing.assert_allclose(moles[k].data / volume - conc['input'][k], conc['output'][k] * dt, rtol=1e-12)
+        np.testing.assert_allclose(
+            actual=moles[k].data / volume - conc['input'][k],
+            desired=conc['output'][k] * dt,
+            rtol=1e-12
+        )
