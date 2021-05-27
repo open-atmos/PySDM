@@ -205,5 +205,8 @@ class Storage:
         generator(self)
 
     def upload(self, data):
-        trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)
+        trtc.Copy(
+            trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
+            self.data
+        )
 
