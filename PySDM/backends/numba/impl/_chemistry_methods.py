@@ -76,10 +76,9 @@ class ChemistryMethods:
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
             scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
-            # note: different than in Ania's thesis!
             dt_over_ksi_scale = dt / scale / ksi[i]
             A_old = mole_amounts[i] / droplet_volume[i]
-            A_new = (A_old + dt_over_ksi_scale * cinf) / (1 + dt_over_ksi_scale / (henrysConstant * R_str * env_T))
+            A_new = (A_old + ksi[i] * dt_over_ksi_scale * cinf) / (1 + dt_over_ksi_scale / (henrysConstant * R_str * env_T))
             new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
             assert new_mole_amount_per_real_droplet >= 0
 

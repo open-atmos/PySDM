@@ -59,7 +59,7 @@ class TestFig1:
             pyplot.show()
 
         # Assert
-        assert 0.18 < example_output['aq_S_IV_ppb'][-1] + example_output['gas_S_IV_ppb'][-1] < 0.19
+        assert 0.03 < example_output['aq_S_IV_ppb'][-1] + example_output['gas_S_IV_ppb'][-1] < 0.05
 
     @staticmethod
     def test_c(example_output, plot=False):
@@ -68,4 +68,4 @@ class TestFig1:
             pyplot.xlabel('pH')
             pyplot.show()
 
-        assert 5 < example_output['pH'][-1] < 5.2
+        assert 4.9 < example_output['pH'][-1] < 5
