@@ -332,7 +332,7 @@ pyplot.savefig('readme.svg')
 ```
 </details>
 
-The resultant plot looks as follows:
+The resultant plot (generated with the Python code) looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/readme.svg)
 
@@ -598,6 +598,8 @@ axs[0].set_ylabel(particles.products['z'].unit)
 pyplot.savefig('parcel.svg')
 ```
 </details>
+
+The resultant plot (generated with the Matlab code) looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
 
