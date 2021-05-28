@@ -233,7 +233,10 @@ class Storage:
         generator(self)
 
     def upload(self, data):
-        trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)</code></pre>
+        trtc.Copy(
+            trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
+            self.data
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -456,7 +459,10 @@ class Storage:
         generator(self)
 
     def upload(self, data):
-        trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)</code></pre>
+        trtc.Copy(
+            trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
+            self.data
+        )</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -651,7 +657,10 @@ def from_ndarray(array):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def upload(self, data):
-    trtc.Copy(trtc.device_vector_from_numpy(data.ravel()), self.data)</code></pre>
+    trtc.Copy(
+        trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
+        self.data
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.thrustRTC.storage.Storage.urand"><code class="name flex">

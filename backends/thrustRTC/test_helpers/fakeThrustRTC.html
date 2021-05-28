@@ -125,8 +125,10 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        if elem_cls == &#39;double&#39; or elem_cls == &#39;float&#39;:  # TODO #405
+        if elem_cls == &#39;double&#39;:
             dtype = np.float64
+        elif elem_cls == &#39;float&#39;:
+            dtype = np.float32
         elif elem_cls == &#39;int64_t&#39;:
             dtype = np.int64
         elif elem_cls == &#39;uint64_t&#39;:
@@ -321,8 +323,10 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        if elem_cls == &#39;double&#39; or elem_cls == &#39;float&#39;:  # TODO #405
+        if elem_cls == &#39;double&#39;:
             dtype = np.float64
+        elif elem_cls == &#39;float&#39;:
+            dtype = np.float32
         elif elem_cls == &#39;int64_t&#39;:
             dtype = np.int64
         elif elem_cls == &#39;uint64_t&#39;:
@@ -742,8 +746,10 @@ def Wait():
 </summary>
 <pre><code class="python">@staticmethod
 def device_vector(elem_cls, size):
-    if elem_cls == &#39;double&#39; or elem_cls == &#39;float&#39;:  # TODO #405
+    if elem_cls == &#39;double&#39;:
         dtype = np.float64
+    elif elem_cls == &#39;float&#39;:
+        dtype = np.float32
     elif elem_cls == &#39;int64_t&#39;:
         dtype = np.int64
     elif elem_cls == &#39;uint64_t&#39;:
