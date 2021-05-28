@@ -49,7 +49,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
 
     # Assert
     qt = simulation.core.environment["qv"].to_ndarray() + ql(simulation)
-    significant = 6 if scheme == 'GPU' else 14  # TODO: #540
+    significant = 6 if scheme == 'GPU' else 14  # TODO #540
     np.testing.assert_approx_equal(qt, qt0, significant)
     if scheme != 'BDF':
         assert simulation.core.products['S_max'].get() >= output['S'][-1]
