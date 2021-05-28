@@ -14,7 +14,7 @@ class AlwaysN:
         self.zeros = None
         
 
-    def __call__(self, output, is_first_in_pair):
+    def __call__(self, output, u01, is_first_in_pair):
         output *= self.zeros
         output += self.N_vec
         

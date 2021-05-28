@@ -176,6 +176,22 @@ class AlgorithmicMethods:
         AlgorithmicMethods.breakup_body(n.data, idx.data, length,
                                             attributes.data, gamma.data, n_fragment.data, healthy.data,
                                             is_first_in_pair.indicator.data)
+        
+    # Emily: SLAMS fragmentation function
+    @numba.njit(**{**conf.JIT_FLAGS})
+    def slams_fragmentation_body(n_fragment, probs, rand):
+        for i in numba.prange(len(n_fragment)):
+            probs[i] = 0.0
+            n_fragment[i] = 1
+            for n in range(22):
+                probs[i] += 0.91 * (n + 2)**(-1.56)
+                if (rand[i] < probs[i]):
+                    n_fragment[i] = n + 2
+                    break
+    
+    @staticmethod
+    def slams_fragmentation(n_fragment, probs, rand):
+        AlgorithmicMethods.slams_fragmentation_body(n_fragment.data, probs.data, rand.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

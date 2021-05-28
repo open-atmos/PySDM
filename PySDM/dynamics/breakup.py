@@ -5,6 +5,7 @@ Created at 05.13.21 by edejong
 import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
+from PySDM.dynamics.impl.random_generator_optimizer_nopair import RandomGeneratorOptimizerNoPair
 import warnings
 
 default_dt_coal_range = (.1 * si.second, 100 * si.second)
@@ -58,6 +59,9 @@ class Breakup:
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=self.optimized_random,
                                                 dt_min=self.dt_coal_range[0],
                                                 seed=self.core.formulae.seed)
+        self.rnd_opt_frag = RandomGeneratorOptimizerNoPair(optimized_random=self.optimized_random,
+                                                dt_min=self.dt_coal_range[0],
+                                                seed=self.core.formulae.seed)
         self.optimised_random = None
 
         if self.core.n_sd < 2:
@@ -83,6 +87,7 @@ class Breakup:
         self.stats_dt_min[:] = np.nan
 
         self.rnd_opt.register(builder)
+        self.rnd_opt_frag.register(builder)
         self.kernel.register(builder)
         self.coal_eff.register(builder)
         self.fragmentation.register(builder)
@@ -108,10 +113,12 @@ class Breakup:
                 self.core.particles.reset_working_length()
                 self.core.particles.reset_cell_idx()
             self.rnd_opt.reset()
+            self.rnd_opt_frag.reset()
 
     def step(self):
-        # (1) Make the superdroplet list 
+        # (1) Make the superdroplet list and random numbers for fragmentation
         pairs_rand, rand = self.rnd_opt.get_random_arrays()
+        rand_frag = self.rnd_opt_frag.get_random_arrays()
         
         # (2) candidate-pair list
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
@@ -120,7 +127,7 @@ class Breakup:
         self.compute_probability(self.prob, self.is_first_in_pair)
         
         # (3b) Compute the number of fragments
-        self.compute_n_fragment(self.n_fragment, self.is_first_in_pair)
+        self.compute_n_fragment(self.n_fragment, rand_frag, self.is_first_in_pair)
         
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
@@ -155,8 +162,8 @@ class Breakup:
         self.core.normalize(prob, self.norm_factor_temp)
         
     # (4a) Compute n_fragment
-    def compute_n_fragment(self, n_fragment, is_first_in_pair):
-        self.fragmentation(self.n_fragment, is_first_in_pair)
+    def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
+        self.fragmentation(self.n_fragment, u01, is_first_in_pair)
 
     # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):
