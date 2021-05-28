@@ -163,7 +163,7 @@ class Breakup:
         
     # (4a) Compute n_fragment
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
-        self.fragmentation(self.n_fragment, u01, is_first_in_pair)
+        self.fragmentation(n_fragment, u01, is_first_in_pair)
 
     # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):

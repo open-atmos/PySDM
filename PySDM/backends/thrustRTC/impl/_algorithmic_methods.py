@@ -190,14 +190,30 @@ class AlgorithmicMethods:
     def breakup(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
-        #print(n.data.to_host(), flush=True)
-        #print(gamma.data.to_host(), flush=True)
-        #print(n_fragment.data.to_host(), flush=True)
         AlgorithmicMethods.__breakup_body.launch_n(length // 2,
                                                    [n.data, idx.data, n_sd,
                                                     attributes.data, n_attr,
                                                     gamma.data, n_fragment.data,
                                                     healthy.data])
+        
+    # EMILY: SLAMS fragmentation
+    __slams_fragmentation_body = trtc.For(
+        ['n_fragment', 'probs', 'rand'], "i", '''
+        probs[i] = 0.0;
+        n_fragment[i] = 1;
+        for (auto n = 0; n < 22; n+=1) {
+            probs[i] += 0.91 * (n + 2)**(-1.56);
+            if (rand[i] < probs[i]) {
+                n_fragment[i] = n + 2;
+                break;
+            }
+        }
+        ''')
+    
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def slams_fragmentation(n_fragment, probs, rand):
+        AlgorithmicMethods.__slams_fragmentation_body.launch_n(len(n_fragment), [n_fragment.data, probs.data, rand.data])
         
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
@@ -223,12 +239,10 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(gamma, rand, n, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
-        #print("compute_gamma ", gamma.data.to_host())
         AlgorithmicMethods.__compute_gamma_body.launch_n(
             len(n) // 2,
             [gamma.data, rand.data, n.idx.data, n.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data])
-        #print("computed_gamma ", gamma.data.to_host())
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
