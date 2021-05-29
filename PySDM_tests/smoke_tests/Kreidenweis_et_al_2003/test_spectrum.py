@@ -2,14 +2,19 @@ from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic
 import pytest
+from scipy.signal import find_peaks
+import numpy as np
 
 
 class TestSepctrum:
     @staticmethod
-    @pytest.mark.parametrize("spectral_sampling", [ConstantMultiplicity, Logarithmic])
-    def test_at_t_0(spectral_sampling, plot=False):
+    @pytest.mark.parametrize("spectral_sampling", [
+        pytest.param(ConstantMultiplicity, marks=pytest.mark.xfail()),
+        Logarithmic
+    ])
+    def test_at_t_0(spectral_sampling, plot=True):
         # Arrange
-        settings = Settings(n_sd=64, dt=1 * si.s, n_substep=5, spectral_sampling=spectral_sampling)
+        settings = Settings(n_sd=64, dt=1 * si.s, n_substep=1, spectral_sampling=spectral_sampling)
         settings.t_max = 0
         simulation = Simulation(settings)
 
@@ -32,5 +37,7 @@ class TestSepctrum:
 
         # Assert
         key = 'S_VI'
-        # TODO #481 : better than >0 (we do have analytic formula)
-        assert (output[f'dm_{key}/dlog_10(dry diameter)'][0] > 0).any()
+        spectrum = output[f'dm_{key}/dlog_10(dry diameter)'][0]
+        peaks, props = find_peaks(spectrum)
+        assert len(peaks) == 1
+        assert 3 < np.amax(spectrum) < 5
