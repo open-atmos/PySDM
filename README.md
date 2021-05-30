@@ -75,49 +75,64 @@ jupyter-notebook
 ## PySDM examples (Jupyter notebooks reproducing results from literature):
 
 #### 0D box-model coalescence-only examples:
-- [Shima et al. 2009](http://doi.org/10.1002/qj.441) Fig. 2 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)    
-  (Box model, coalescence only, test case employing Golovin analytical solution)
-- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) Figs. 5, 8 & 10 
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)    
-  (Box model, coalescence only, test cases for realistic kernels)
+- [Shima et al. 2009](http://doi.org/10.1002/qj.441) (Box model, coalescence only, test case employing Golovin analytical solution):
+    - Fig. 2: 
+      [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)
+      [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shima_et_al_2009/fig_2.ipynb)    
+  
+- [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024<0688:CDGBC>2.0.CO;2) (Box model, coalescence only, test cases for realistic kernels):
+    - Figs. 5, 8 & 10: 
+     [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
+     [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Berry_1967/figs_5_8_10.ipynb)
   
 #### 0D parcel-model condensation only examples:
-- [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) Fig. 5
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)    
-  (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case)
-- [Yang et al. 2018](https://doi.org/10.5194/acp-18-7313-2018) Fig. 2:
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)    
-  (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case)
+- [Arabas & Shima 2017](http://dx.doi.org/10.5194/npg-24-535-2017) (Adiabatic parcel, monodisperse size spectrum activation/deactivation test case):
+  - Fig. 5:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Arabas_and_Shima_2017/fig_5.ipynb)    
+  
+- [Yang et al. 2018](https://doi.org/10.5194/acp-18-7313-2018) (Adiabatic parcel, polydisperse size spectrum activation/deactivation test case):
+  - Fig. 2:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Yang_et_al_2018/fig_2.ipynb)
 
 #### 0D parcel-model condensation/aqueous-chemistry example:
-- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) Fig 1:
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Kreidenweis_et_al_2003/demo.ipynb)    
-  (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case)
-- [Jaruga and Pawlowska 2018](https://doi.org/10.5194/gmd-11-3623-2018):
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Jaruga_and_Pawlowska_2018/figs_1_2_3.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Jaruga_and_Pawlowska_2018/figs_1_2_3.ipynb)    
-  (same test case as above, different numerical settings)
+- [Kreidenweis et al. 2003](https://doi.org/10.1029/2002JD002697) (Adiabatic parcel, polydisperse size spectrum, aqueous‐phase SO2 oxidation test case):
+  - Fig 1:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Kreidenweis_et_al_2003/fig_1.ipynb)
+- [Jaruga and Pawlowska 2018](https://doi.org/10.5194/gmd-11-3623-2018) (same test case as above, different numerical settings):
+  - Fig 2:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_2.ipynb)    
+  - Fig 3:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Jaruga_and_Pawlowska_2018/fig_3.ipynb)    
+  
 
 #### 1D kinematic (prescribed-flow, single-column):  
-- [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913)
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)    
-  (Fig. 1 with thermodynamics & condensation only - no particle displacement)
+- [Shipway & Hill 2012](https://doi.org/10.1002/qj.1913):
+  - Fig 1 (thermodynamics/condensation only, no particle displacement yet):   
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Shipway_and_Hill_2012/fig_1.ipynb)
+
 #### 2D kinematic (prescribed-flow) Sc-mimicking aerosol collisional processing (warm-rain) examples:
-- [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) Figs. 8 & 9:
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Arabas_et_al_2015/figs_8_9.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Arabas_et_al_2015/figs_8_9.ipynb)       
-  (interactive web-GUI with product selection, parameter sliders and netCDF/plot export buttons)
+- [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015) 
+  - Figs. 8 & 9 (interactive web-GUI with product selection, parameter sliders and netCDF/plot export buttons):    
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Arabas_et_al_2015/figs_8_9.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Arabas_et_al_2015/figs_8_9.ipynb)       
+  
 - Bartman et al. 2021 (in preparation):
-  [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?filepath=lab/tree/PySDM_examples/Bartman_et_al_2021/demo.ipynb)
-  [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Bartman_et_al_2021/demo.ipynb)       
-  (default-settings based script generating a netCDF file and loading it subsequently to create the animation below)
+  - Fig 1 (default-settings based script generating a netCDF file and loading it subsequently to create the animation below):    
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Bartman_et_al_2021/demo.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Bartman_et_al_2021/demo.ipynb)       
+  - Fig 2:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Bartman_et_al_2021/demo_fig2.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Bartman_et_al_2021/demo_fig2.ipynb)
+  - Fig 3:
+    [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/atmos-cloud-sim-uj/PySDM-examples.git/main?urlpath=lab/tree/PySDM_examples/Bartman_et_al_2021/demo_fig3.ipynb)
+    [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/atmos-cloud-sim-uj/PySDM-examples/blob/main/PySDM_examples/Bartman_et_al_2021/demo_fig3.ipynb)       
+
 
 ![animation](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/files/kinematic_2D_example.gif)
 
