@@ -12,7 +12,7 @@ class TestSepctrum:
         pytest.param(ConstantMultiplicity, marks=pytest.mark.xfail()),
         Logarithmic
     ])
-    def test_at_t_0(spectral_sampling, plot=True):
+    def test_at_t_0(spectral_sampling, plot=False):
         # Arrange
         settings = Settings(n_sd=64, dt=1 * si.s, n_substep=1, spectral_sampling=spectral_sampling)
         settings.t_max = 0
