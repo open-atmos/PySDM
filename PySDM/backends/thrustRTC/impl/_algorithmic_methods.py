@@ -196,7 +196,38 @@ class AlgorithmicMethods:
             length, [idx.data, n_sd, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
                      volume.data, n.data])
         return 0  # TODO #332
-
+    
+    __linear_collection_efficiency_body = trtc.For(
+        ['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii',
+         'is_first_in_pair', 'idx', 'unit'], "i", '''
+        if (is_first_in_pair[i]) {
+            real_type r = 0;
+            real_type r_s = 0;
+            if (radii[idx[i]] > radii[idx[i + 1]]) {
+                r = radii[idx[i]] / unit;
+                r_s = radii[idx[i + 1]] / unit;
+            }
+            else {
+                r = radii[idx[i + 1]] / unit;
+                r_s = radii[idx[i]] / unit;
+            }
+            real_type p = r_s / r;
+            if (p != 0 && p != 1) {
+                real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
+                real_type Gp = pow((1 - p), G);
+                if (Gp != 0) {
+                    real_type D = D1 / pow(r, D2);
+                    real_type E = E1 / pow(r, E2);
+                    real_type F = pow((F1 / r), Mf) + F2;
+                    output[int(i / 2)] = A + B * p + D / pow(p, F) + E / Gp;
+                    if (output[int(i / 2)] < 0) {
+                        output[int(i / 2)] = 0;
+                    }
+                }
+            }
+        }
+    '''.replace("real_type", PrecisionResolver.get_C_type()))
+    
     def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = PrecisionResolver.get_floating_point(A)
