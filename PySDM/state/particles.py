@@ -104,7 +104,8 @@ class Particles:
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
         self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
 
-    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
+    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf),
+                weighting_attribute='volume', weighting_rank=0):
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
@@ -128,7 +129,10 @@ class Particles:
                               self.SD_num,
                               ranks,
                               attr_range[0], attr_range[1],
-                              self[attr_name])
+                              self[attr_name],
+                              weighting_attribute=self[weighting_attribute],
+                              weighting_rank=weighting_rank
+                              )
 
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],

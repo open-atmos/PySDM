@@ -3,7 +3,6 @@ Bare zero-dimensional framework
 """
 
 from PySDM.state.mesh import Mesh
-from PySDM.builder import Builder
 
 
 class Box:
@@ -13,7 +12,7 @@ class Box:
         self.mesh = Mesh.mesh_0d(dv)
         self.core = None
 
-    def register(self, builder: Builder):
+    def register(self, builder):
         self.core = builder.core
 
     def init_attributes(self, *, spectral_discretisation):

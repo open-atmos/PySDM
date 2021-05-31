@@ -31,11 +31,14 @@ class MomentProduct(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.moment_0 = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+        self.moment_0 = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
         self.moments = self.core.Storage.empty((1, self.core.mesh.n_cell), dtype=float)
 
-    def download_moment_to_buffer(self, attr, rank, filter_attr='volume', filter_range=(-np.inf, np.inf)):
-        self.core.particles.moments(self.moment_0, self.moments, {attr: (rank,)}, attr_name=filter_attr, attr_range=filter_range)
+    def download_moment_to_buffer(self, attr, rank, filter_attr='volume', filter_range=(-np.inf, np.inf),
+                                  weighting_attribute='volume', weighting_rank=0):
+        self.core.particles.moments(self.moment_0, self.moments, {attr: (rank,)},
+                                    attr_name=filter_attr, attr_range=filter_range,
+                                    weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
         if rank == 0:  # TODO #217
             self.download_to_buffer(self.moment_0)
         else:
