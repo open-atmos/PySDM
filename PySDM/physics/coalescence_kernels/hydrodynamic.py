@@ -1,7 +1,3 @@
-"""
-Created at 05.07.2020
-"""
-
 from ._parameterized import Parameterized
 
 

@@ -1,7 +1,3 @@
-"""
-Created at 05.02.2020
-"""
-
 from PySDM.environments._moist import _Moist
 from PySDM.products.product import MoistEnvironmentProduct
 

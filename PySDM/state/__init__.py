@@ -1,3 +1,3 @@
 """
-Created at 09.11.2019
+Classes representing system state: `PySDM.state.particles.Particles`, `PySDM.state.mesh.Mesh`, ...
 """

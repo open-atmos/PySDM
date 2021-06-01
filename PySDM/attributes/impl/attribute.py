@@ -1,8 +1,3 @@
-"""
-Created at 11.05.2020
-"""
-
-
 class Attribute:
 
     def __init__(self, builder, name, dtype=float, size=0):

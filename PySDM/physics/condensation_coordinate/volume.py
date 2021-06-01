@@ -1,10 +1,11 @@
-from numpy import pi
+from PySDM.physics import constants as const
+from numpy import power
 
 
 class Volume:
     @staticmethod
     def dx_dt(x, r_dr_dt):
-        return 4 * pi * (x * 3/4 / pi)**(1/3) * r_dr_dt
+        return 4 * const.pi * power(x / const.pi_4_3, const.one_third) * r_dr_dt
 
     @staticmethod
     def volume(x):

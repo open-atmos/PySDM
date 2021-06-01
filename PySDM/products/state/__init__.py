@@ -1,7 +1,3 @@
-"""
-Created at 28.08.2020
-"""
-
 from .aerosol_specific_concentration import AerosolSpecificConcentration
 from PySDM.products.state.particle_mean_radius import ParticleMeanRadius
 from .particles_size_spectrum import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum

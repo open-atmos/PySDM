@@ -1,7 +1,3 @@
-"""
-Created at 08.08.2019
-"""
-
 import numpy as np
 import pytest
 
@@ -14,6 +10,8 @@ from PySDM.initialisation.spectra import Exponential
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
 from PySDM.physics.formulae import Formulae
+
+# noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
 

@@ -1,7 +1,3 @@
-"""
-Created at 11.2019
-"""
-
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
@@ -12,6 +8,65 @@ from functools import lru_cache
 
 
 class CondensationMethods:
+    @staticmethod
+    def condensation(
+            solver,
+            n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
+    ):
+        n_threads = min(numba.get_num_threads(), n_cell)
+        CondensationMethods._condensation(
+            solver, n_threads, n_cell, cell_start_arg.data,
+            v.data, v_cr.data, n.data, vdry.data, idx.data,
+            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa,
+            rtol_x, rtol_thd, dt,
+            counters['n_substeps'].data,
+            counters['n_activating'].data,
+            counters['n_deactivating'].data,
+            counters['n_ripening'].data,
+            cell_order, RH_max.data, success.data
+        )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{'cache': False}})
+    def _condensation(
+            solver, n_threads, n_cell, cell_start_arg,
+            v, v_cr, n, vdry, idx, rhod, thd, qv, dv_mean, prhod, pthd, pqv, kappa,
+            rtol_x, rtol_thd, dt,
+            counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
+            cell_order, RH_max, success
+    ):
+        for thread_id in numba.prange(n_threads):
+            for i in range(thread_id, n_cell, n_threads):
+                cell_id = cell_order[i]
+
+                cell_start = cell_start_arg[cell_id]
+                cell_end = cell_start_arg[cell_id + 1]
+                n_sd_in_cell = cell_end - cell_start
+                if n_sd_in_cell == 0:
+                    continue
+
+                dthd_dt = (pthd[cell_id] - thd[cell_id]) / dt
+                dqv_dt = (pqv[cell_id] - qv[cell_id]) / dt
+                rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
+                md = rhod_mean * dv_mean
+
+                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
+                    v, v_cr, n, vdry,
+                    idx[cell_start:cell_end],
+                    kappa, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
+                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
+                )
+                counter_n_substeps[cell_id] = substeps_hint
+                counter_n_activating[cell_id] = n_activating
+                counter_n_deactivating[cell_id] = n_deactivating
+                counter_n_ripening[cell_id] = n_ripening
+                RH_max[cell_id] = RH_max_in_cell
+                success[cell_id] = success_in_cell
+                pqv[cell_id] = qv_new
+                pthd[cell_id] = thd_new
+
     @staticmethod
     def make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier, within_tolerance):
         if not isinstance(multiplier, int):
@@ -134,7 +189,7 @@ class CondensationMethods:
                               phys_lambdaK, phys_lambdaD, phys_DK,
                               within_tolerance, max_iters, RH_rtol):
         @numba.njit(**jit_flags)
-        def minfun(x_new, x_old, dt, p, kappa, rd3, T, RH, lv, pvs, D, K):
+        def minfun(x_new, x_old, dt, kappa, rd3, T, RH, lv, pvs, D, K):
             vol = volume_of_x(x_new)
             r_new = radius(vol)
             sgm = phys_sigma(T, vol, const.pi_4_3 * rd3)
@@ -161,7 +216,7 @@ class CondensationMethods:
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
                     Dr = phys_DK(DTp, r_old, lambdaD)
                     Kr = phys_DK(const.K0, r_old, lambdaK)
-                    args = (x_old, dt, p, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
+                    args = (x_old, dt, kappa, rd3, T, RH, lv, pvs, Dr, Kr)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, Dr, Kr)
                     dx_old = dt * dx_dt(x_old, r_dr_dt_old)
                 else:
@@ -186,7 +241,6 @@ class CondensationMethods:
                         fb = minfun(b, *args)
 
                     if not success:
-                        x_new = np.nan
                         break
                     elif a != b:
                         if a > b:
@@ -217,7 +271,7 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, dt_range, adaptive):
+    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
             phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
@@ -240,7 +294,11 @@ class CondensationMethods:
             x=self.formulae.condensation_coordinate.x,
             dt=dt,
             dt_range=dt_range,
-            adaptive=adaptive
+            adaptive=adaptive,
+            fuse=fuse,
+            multiplier=multiplier,
+            RH_rtol=RH_rtol,
+            max_iters=max_iters
         )
 
     @staticmethod
@@ -248,7 +306,7 @@ class CondensationMethods:
     def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
                                       phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
                                       within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
-                                      fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16):
+                                      fuse, multiplier, RH_rtol, max_iters):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)

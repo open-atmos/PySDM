@@ -1,7 +1,3 @@
-"""
-Created at 23.04.2020
-"""
-
 import numpy as np
 
 from PySDM.physics import constants as const

@@ -1,9 +1,3 @@
-"""
-Created at 01.06.2020
-
-@author: Grzegorz Łazarski
-"""
-
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 

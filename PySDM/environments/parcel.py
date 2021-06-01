@@ -1,5 +1,5 @@
 """
-Created at 25.11.2019
+Zero-dimensional adiabatic parcel framework
 """
 
 import numpy as np

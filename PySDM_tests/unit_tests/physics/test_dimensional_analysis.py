@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 import pytest
 import numba
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis

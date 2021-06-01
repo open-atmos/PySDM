@@ -1,7 +1,3 @@
-"""
-Created at 10.11.2020
-"""
-
 import math
 
 

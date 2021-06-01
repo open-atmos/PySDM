@@ -1,7 +1,6 @@
 """
-Crated at 2019
+Koehler-curve equilibrium in unsaturated conditions
 """
-
 from ..backends.numba.toms748 import toms748_solve
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS

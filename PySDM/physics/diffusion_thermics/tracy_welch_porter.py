@@ -9,4 +9,4 @@ from numpy import power
 class TracyWelchPorter:
     @staticmethod
     def D(T, p):
-        return const.D0 * power(T / const.T0, 1.81) * (const.p1000 / p)
+        return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)

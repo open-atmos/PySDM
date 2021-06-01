@@ -1,7 +1,3 @@
-"""
-Created at 27.05.2020
-"""
-
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend

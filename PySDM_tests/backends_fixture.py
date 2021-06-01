@@ -1,7 +1,3 @@
-"""
-Created at 29.09.2020
-"""
-
 import pytest
 from PySDM.backends import CPU, GPU
 

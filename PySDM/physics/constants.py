@@ -1,5 +1,7 @@
 """
-Crated at 2019
+Collection of physical constants with dimensional analysis handled with
+[Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
+purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
 
 import pint
@@ -19,6 +21,9 @@ def convert_to(value, unit):
 
 pi = sci.pi
 pi_4_3 = pi * 4 / 3
+three = 3
+one_third = 1/3
+two_thirds = 2/3
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +
@@ -31,7 +36,10 @@ R_str = sci.R * si.joule / si.kelvin / si.mole
 eps = Mv / Md
 Rd = R_str / Md
 Rv = R_str / Mv
+
 D0 = 2.26e-5 * si.metre ** 2 / si.second
+D_exp = 1.81
+
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
 p1000 = 1000 * si.hectopascals
@@ -70,6 +78,7 @@ T_STP = T0 + 15 * si.kelvin
 p_STP = 101325 * si.pascal
 rho_STP = p_STP / Rd / T_STP
 
+ppt = 1e-12
 ppb = 1e-9
 ppm = 1e-6
 ROOM_TEMP = T_tri + 25 * si.K

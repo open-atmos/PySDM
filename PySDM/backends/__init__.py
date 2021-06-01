@@ -1,7 +1,7 @@
 """
-Created at 24.07.2019
+Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
+and `GPU`=`PySDM.backends.thrustRTC.thrustRTC.ThrustRTC`
 """
-
 from .numba.numba import Numba
 import ctypes
 import warnings
@@ -10,7 +10,7 @@ import sys
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
-def cuda_is_available():
+def _cuda_is_available():
     lib_names = ('libcuda.so', 'libcuda.dylib', 'cuda.dll')
     for libname in lib_names:
         try:
@@ -36,7 +36,7 @@ def cuda_is_available():
     return True
 
 
-if cuda_is_available() or cuda.is_available():
+if _cuda_is_available() or cuda.is_available():
     from .thrustRTC.thrustRTC import ThrustRTC
 else:
     from .thrustRTC.test_helpers import _flag
@@ -59,4 +59,11 @@ else:
     ThrustRTC.Random = Random
    
 CPU = Numba
+""" 
+alias for Numba 
+"""
+
 GPU = ThrustRTC
+""" 
+alias for ThrustRTC 
+"""

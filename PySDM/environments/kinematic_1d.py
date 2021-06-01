@@ -1,3 +1,8 @@
+"""
+Single-column time-varying-updraft framework with moisture advection handled by
+[PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
+"""
+
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n

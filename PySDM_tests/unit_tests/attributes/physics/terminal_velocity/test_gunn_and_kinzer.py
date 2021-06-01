@@ -1,8 +1,3 @@
-"""
-Created at 10.06.2020
-"""
-
-
 import matplotlib.pyplot as plt
 import numpy as np
 

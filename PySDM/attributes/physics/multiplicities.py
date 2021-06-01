@@ -1,7 +1,3 @@
-"""
-Created at 11.05.2020
-"""
-
 from PySDM.attributes.impl.base_attribute import BaseAttribute
 
 

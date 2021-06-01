@@ -9,7 +9,7 @@ class FuchsSutugin:
 
     @staticmethod
     def lambdaK(T, p):
-        return (4 / 5) * const.K0 * T / p / sqrt(2 * const.Rd * T)
+        return (4. / 5) * const.K0 * T / p / sqrt(2 * const.Rd * T)
 
     @staticmethod
     def DK(DK, r, lmbd):

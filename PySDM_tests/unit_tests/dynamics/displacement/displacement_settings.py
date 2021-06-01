@@ -1,7 +1,3 @@
-"""
-Created at 29.04.2020
-"""
-
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 from PySDM.dynamics import Displacement
 import numpy as np

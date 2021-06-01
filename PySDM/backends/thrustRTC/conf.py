@@ -1,7 +1,3 @@
-"""
-Created at 20.05.2020
-"""
-
 from PySDM.backends.thrustRTC.test_helpers._flag import fakeThrustRTC
 
 if not fakeThrustRTC:

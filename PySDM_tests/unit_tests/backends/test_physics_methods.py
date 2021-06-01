@@ -1,4 +1,4 @@
-import PySDM.physics.formulae
+# noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM.physics import si, Formulae
 import numpy as np

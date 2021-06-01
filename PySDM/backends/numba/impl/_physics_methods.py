@@ -1,7 +1,3 @@
-"""
-Created at 11.2019
-"""
-
 import numba
 from numba import prange
 from PySDM.backends.numba import conf
