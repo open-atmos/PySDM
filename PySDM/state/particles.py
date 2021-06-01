@@ -211,7 +211,7 @@ class Particles:
             droplet_volume=self["volume"],
             multiplicity=self["n"],
             system_type=system_type,
-            ksi=dissociation_factors
+            dissociation_factors=dissociation_factors
         )
         for key in gaseous_compounds.keys():
             self.attributes[f'moles_{key}'].mark_updated()

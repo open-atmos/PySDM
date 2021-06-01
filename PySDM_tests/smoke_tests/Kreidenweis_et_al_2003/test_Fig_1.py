@@ -68,5 +68,7 @@ class TestFig1:
             pyplot.xlabel('pH')
             pyplot.show()
 
-        assert 4.9 < example_output['pH_number_weighted'][-1] < 5
-        assert 4.9 < example_output['pH_volume_weighted'][-1] < 5
+        assert 4.9 < example_output['pH_pH_number_weighted'][-1] < 5
+        assert 4.9 < example_output['pH_pH_volume_weighted'][-1] < 5
+        assert 4.7 < example_output['pH_conc_H_number_weighted'][-1] < 4.9
+        assert 4.7 < example_output['pH_conc_H_volume_weighted'][-1] < 4.9

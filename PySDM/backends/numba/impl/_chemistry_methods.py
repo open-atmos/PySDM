@@ -23,7 +23,7 @@ class ChemistryMethods:
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
 
     def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
-                    env_mixing_ratio, env_T, env_p, env_rho_d, ksi, dt, dv, system_type, droplet_volume,
+                    env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors, dt, dv, system_type, droplet_volume,
                     multiplicity):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):
@@ -60,14 +60,14 @@ class ChemistryMethods:
                         specific_gravity=SPECIFIC_GRAVITY[compound],
                         alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
                         diffusion_constant=DIFFUSION_CONST[compound],
-                        ksi=ksi[compound].data,
+                        dissociation_factor=dissociation_factors[compound].data,
                         radius=self.formulae.trivia.radius
                     )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_T, env_rho_d, dt, dv,
-                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, ksi, radius):
+                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, dissociation_factor, radius):
         mole_amount_taken = 0
         for i in super_droplet_ids:
             Mc = specific_gravity * Md
@@ -75,10 +75,10 @@ class ChemistryMethods:
             cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
-            scale = (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
-            dt_over_ksi_scale = dt / scale / ksi[i]
+            dt_over_scale = dt / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
             A_old = mole_amounts[i] / droplet_volume[i]
-            A_new = (A_old + ksi[i] * dt_over_ksi_scale * cinf) / (1 + dt_over_ksi_scale / (henrysConstant * R_str * env_T))
+            H_eff = henrysConstant * dissociation_factor[i]
+            A_new = (A_old + dt_over_scale * cinf) / (1 + dt_over_scale / H_eff / R_str / env_T)
             new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
             assert new_mole_amount_per_real_droplet >= 0
 
@@ -130,7 +130,6 @@ class ChemistryMethods:
             dconc_dt_H2O2 = -peroxide
             dconc_dt_S_VI = ozone + peroxide
 
-            # TODO #446: do better than explicit Euler with such workarounds
             if (
                 moles_O3[i] + dconc_dt_O3 * dt_times_volume < 0 or
                 moles_S_IV[i] + dconc_dt_S_IV * dt_times_volume < 0 or
@@ -144,14 +143,12 @@ class ChemistryMethods:
             moles_S_VI[i] = explicit_euler(moles_S_VI[i], dt_times_volume, dconc_dt_S_VI)
             moles_H2O2[i] = explicit_euler(moles_H2O2[i], dt_times_volume, dconc_dt_H2O2)
 
-    # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
         for i in range(len(pH)):
             H = self.formulae.trivia.pH2H(pH.data[i])
             for key in DIFFUSION_CONST.keys():
                 dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
 
-    # @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})  # TODO #440
     def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
         for i in range(len(T)):
             for key in equilibrium_consts.keys():
@@ -188,7 +185,7 @@ class ChemistryMethods:
                                             )
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})  # TODO #440
+    @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
     def equilibrate_H_body(within_tolerance,
                            pH2H, H2pH,
                            cell_id,
