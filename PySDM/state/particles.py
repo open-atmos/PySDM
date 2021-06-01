@@ -111,7 +111,6 @@ class Particles:
             for rank in specs[attr]:
                 attr_data.append(self.attributes[attr].get())
                 ranks.append(rank)
-        # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
             attr_data = self.core.backend.Storage.empty((0,), dtype=float)

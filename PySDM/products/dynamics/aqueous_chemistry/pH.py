@@ -6,7 +6,7 @@ from ...product import MomentProduct
 
 
 class pH(MomentProduct):
-    def __init__(self, radius_range, weighting='number', attr='pH'):
+    def __init__(self, radius_range, weighting='volume', attr='conc_H'):
         assert attr in ('pH', 'moles_H', 'conc_H')
         self.attr = attr
 
