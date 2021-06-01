@@ -195,8 +195,8 @@ class Particles:
                     environment_mixing_ratios, do_chemistry_flag):
         self.core.bck.dissolution(
             n_cell=self.core.mesh.n_cell,
-            n_threads=1,  # TODO #440
-            cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+            n_threads=1,
+            cell_order=np.arange(self.core.mesh.n_cell),
             cell_start_arg=self.cell_start,
             idx=self._Particles__idx,
             do_chemistry_flag=do_chemistry_flag,

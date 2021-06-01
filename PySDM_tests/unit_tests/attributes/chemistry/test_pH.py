@@ -57,8 +57,6 @@ class Test_pH:
 
     @staticmethod
     @pytest.mark.parametrize('init_conc', (
-        # TODO #434
-        #  defaultdict(float, {'H2O': 1, 'HSO4-': 5e-3, 'HNO3(aq)': 0.035e-3, 'NH3': 5e-3, 'H2CO3(aq)': 0.01e-3, 'H2SO3(aq)': 0.005e-3}),
         defaultdict(float, {'H2O': 1, 'NH3': 5e-3, 'H2CO3(aq)': 0.01e-3, 'H2SO3(aq)': 0.005e-3}),
         defaultdict(float, {'H2O': 1, 'NH3': .5e-3, 'H2CO3(aq)': 0.1e-3, 'H2SO3(aq)': 0.05e-3}),
     ))
@@ -68,12 +66,8 @@ class Test_pH:
         equilibria = {
             'water': Equilibrium.from_string(f"H2O = H+ + OH-; {K_H2O / M / M}"),
             'ammonia': Equilibrium.from_string(f"NH3 + H2O = NH4+ + OH-; {EQUILIBRIUM_CONST['K_NH3'].at(env_T) / M}"),
-            # TODO #434
-            # 'nitric': Equilibrium.from_string(f"HNO3(aq) = H+ + NO3-; {EQUILIBRIUM_CONST['K_HNO3'].at(env_T) / M}"),
             'sulfonic_first': Equilibrium.from_string(f"H2SO3(aq) = H+ + HSO3-; {EQUILIBRIUM_CONST['K_SO2'].at(env_T) / M}"),
             'sulfonic_second': Equilibrium.from_string(f"HSO3- = H+ + SO3-2; {EQUILIBRIUM_CONST['K_HSO3'].at(env_T) / M}"),
-            # TODO #434
-            # 'sulphuric_first': Equilibrium.from_string(f"HSO4- = H+ + SO4-2; {EQUILIBRIUM_CONST['K_HSO4'].at(env_T) / M}"),
             'carbonic_first': Equilibrium.from_string(f"H2CO3(aq) = H+ + HCO3-; {EQUILIBRIUM_CONST['K_CO2'].at(env_T) / M}"),
             'carbonic_second': Equilibrium.from_string(f"HCO3- = H+ + CO3-2; {EQUILIBRIUM_CONST['K_HCO3'].at(env_T) / M}")
         }
