@@ -191,16 +191,19 @@ class AlgorithmicMethods:
                                                     attributes.data, n_attr,
                                                     gamma.data, n_fragment.data,
                                                     healthy.data])
-        
+    
     # EMILY: SLAMS fragmentation
-    __slams_fragmentation_body = trtc.For(
-        ['n_fragment', 'probs', 'rand'], "i", '''
+    __slams_fragmentation_body = trtc.For(['n_fragment', 'probs', 'rand'], "i", '''
         probs[i] = 0.0;
-        n_fragment[i] = 1;
-        for (auto n = 0; n < 22; n+=1) {
-            probs[i] += 0.91 * (n + 2)**(-1.56);
-            if (rand[i] < probs[i]) {
-                n_fragment[i] = n + 2;
+        n_fragment[i] = 2;
+        auto tmp = 0.0;
+        for (auto k = 0; k < 22; k+=1) {
+            tmp = (k+2)^(39/25);
+            tmp = 1 / tmp;
+            tmp *= 0.91;
+            probs[i] += tmp;
+            if (rand[i] <= probs[i]) {
+                n_fragment[i] = k + 2;
                 break;
             }
         }
@@ -210,7 +213,6 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def slams_fragmentation(n_fragment, probs, rand):
         AlgorithmicMethods.__slams_fragmentation_body.launch_n(len(n_fragment), [n_fragment.data, probs.data, rand.data])
-        
 
     __compute_gamma_body = trtc.For(['gamma', 'rand', "idx", "n", "cell_id",
                                      "collision_rate_deficit", "collision_rate"], "i", '''
