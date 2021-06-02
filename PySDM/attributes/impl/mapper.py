@@ -13,6 +13,7 @@ from PySDM.attributes.physics.critical_volume import CriticalVolume
 from PySDM.attributes.chemistry.mole_amount import MoleAmount
 from PySDM.attributes.chemistry.concentration import Concentration
 from PySDM.attributes.chemistry.pH import pH
+from PySDM.attributes.chemistry.hydrogen_ion_concentration import HydrogenIonConcentration
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from functools import partial
 
@@ -33,7 +34,8 @@ attributes = {
        for compound in AQUEOUS_COMPOUNDS.keys()},
     **{"conc_" + compound: partial(lambda _, c: Concentration(c), c=compound)
        for compound in AQUEOUS_COMPOUNDS.keys()},
-    'pH': lambda _: pH
+    'pH': lambda _: pH,
+    'conc_H': lambda _: HydrogenIonConcentration
 }
 
 

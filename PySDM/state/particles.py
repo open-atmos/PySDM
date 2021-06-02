@@ -104,13 +104,13 @@ class Particles:
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
         self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
 
-    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf)):
+    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf),
+                weighting_attribute='volume', weighting_rank=0):
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
                 attr_data.append(self.attributes[attr].get())
                 ranks.append(rank)
-        # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
             attr_data = self.core.backend.Storage.empty((0,), dtype=float)
@@ -128,7 +128,10 @@ class Particles:
                               self.SD_num,
                               ranks,
                               attr_range[0], attr_range[1],
-                              self[attr_name])
+                              self[attr_name],
+                              weighting_attribute=self[weighting_attribute],
+                              weighting_rank=weighting_rank
+                              )
 
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
@@ -191,8 +194,8 @@ class Particles:
                     environment_mixing_ratios, do_chemistry_flag):
         self.core.bck.dissolution(
             n_cell=self.core.mesh.n_cell,
-            n_threads=1,  # TODO #440
-            cell_order=np.arange(self.core.mesh.n_cell),  # TODO #440
+            n_threads=1,
+            cell_order=np.arange(self.core.mesh.n_cell),
             cell_start_arg=self.cell_start,
             idx=self._Particles__idx,
             do_chemistry_flag=do_chemistry_flag,
@@ -207,7 +210,7 @@ class Particles:
             droplet_volume=self["volume"],
             multiplicity=self["n"],
             system_type=system_type,
-            ksi=dissociation_factors
+            dissociation_factors=dissociation_factors
         )
         for key in gaseous_compounds.keys():
             self.attributes[f'moles_{key}'].mark_updated()

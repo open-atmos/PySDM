@@ -23,9 +23,7 @@ class TestFig1:
         # Plot
         if plot:
             name = 'ql'
-            #prod = simulation.core.products['ql']
             pyplot.plot(example_output[name], np.asarray(example_output['t']) - Z_CB * si.s)
-            #pyplot.xlabel(f"{prod.name} [{prod.unit}]")  # TODO #442
             pyplot.ylabel(f"time above cloud base [s]")
             pyplot.grid()
             pyplot.show()
@@ -68,4 +66,7 @@ class TestFig1:
             pyplot.xlabel('pH')
             pyplot.show()
 
-        assert 4.9 < example_output['pH'][-1] < 5
+        assert 4.9 < example_output['pH_pH_number_weighted'][-1] < 5
+        assert 4.9 < example_output['pH_pH_volume_weighted'][-1] < 5
+        assert 4.7 < example_output['pH_conc_H_number_weighted'][-1] < 4.9
+        assert 4.7 < example_output['pH_conc_H_volume_weighted'][-1] < 4.9

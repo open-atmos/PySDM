@@ -42,7 +42,7 @@ class AqueousChemistry:
         self.core = builder.core
 
         for key, compound in GASEOUS_COMPOUNDS.items():
-            shape = (1,)  # TODO #440
+            shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
