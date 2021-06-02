@@ -1,8 +1,10 @@
 import types
-import numpy as np
-from .cpp2python import to_numba
-from numba.core.errors import NumbaError
 import warnings
+
+import numpy as np
+from numba.core.errors import NumbaError
+
+from .cpp2python import to_numba
 
 
 class FakeThrustRTC:
@@ -67,6 +69,8 @@ class FakeThrustRTC:
             self.__internal_python_method__ = self.make()
 
         def launch_n(self, size, args):
+            if size == 0:
+                raise SystemError("An internal error happened :) (size==0).")
             try:
                 result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
             except (NumbaError, IndexError) as error:
