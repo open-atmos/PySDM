@@ -196,7 +196,6 @@ class AlgorithmicMethods:
     __slams_fragmentation_body = trtc.For(['n_fragment', 'probs', 'rand'], "i", '''
         probs[i] = 0.0;
         n_fragment[i] = 2;
-        auto tmp = 0.0;
         for (auto k = 0.0; k < 22.0; k+=1.0) {
             probs[i] += 0.91 * pow(k+2.0, -1.56);
             if (rand[i] <= probs[i]) {
