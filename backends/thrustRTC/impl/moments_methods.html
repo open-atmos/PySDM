@@ -67,7 +67,10 @@ class MomentsMethods:
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(self, moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
-                min_x, max_x, x_attr):
+                min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+        if weighting_rank != 0:
+            raise NotImplementedError()
+
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
@@ -147,7 +150,10 @@ class MomentsMethods:
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(self, moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
-                min_x, max_x, x_attr):
+                min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+        if weighting_rank != 0:
+            raise NotImplementedError()
+
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])

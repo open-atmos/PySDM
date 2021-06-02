@@ -32,7 +32,6 @@ Bare zero-dimensional framework
 &#34;&#34;&#34;
 
 from PySDM.state.mesh import Mesh
-from PySDM.builder import Builder
 
 
 class Box:
@@ -42,7 +41,7 @@ class Box:
         self.mesh = Mesh.mesh_0d(dv)
         self.core = None
 
-    def register(self, builder: Builder):
+    def register(self, builder):
         self.core = builder.core
 
     def init_attributes(self, *, spectral_discretisation):
@@ -77,7 +76,7 @@ class Box:
         self.mesh = Mesh.mesh_0d(dv)
         self.core = None
 
-    def register(self, builder: Builder):
+    def register(self, builder):
         self.core = builder.core
 
     def init_attributes(self, *, spectral_discretisation):
@@ -103,7 +102,7 @@ class Box:
 </details>
 </dd>
 <dt id="PySDM.environments.box.Box.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder: <a title="PySDM.builder.Builder" href="../builder.html#PySDM.builder.Builder">Builder</a>)</span>
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -111,7 +110,7 @@ class Box:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def register(self, builder: Builder):
+<pre><code class="python">def register(self, builder):
     self.core = builder.core</code></pre>
 </details>
 </dd>
