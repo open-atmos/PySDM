@@ -197,11 +197,8 @@ class AlgorithmicMethods:
         probs[i] = 0.0;
         n_fragment[i] = 2;
         auto tmp = 0.0;
-        for (auto k = 0; k < 22; k+=1) {
-            tmp = (k+2)^(39/25);
-            tmp = 1 / tmp;
-            tmp *= 0.91;
-            probs[i] += tmp;
+        for (auto k = 0.0; k < 22.0; k+=1.0) {
+            probs[i] += 0.91 * pow(k+2.0, -1.56);
             if (rand[i] <= probs[i]) {
                 n_fragment[i] = k + 2;
                 break;

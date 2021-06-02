@@ -188,7 +188,7 @@ class AlgorithmicMethods:
     @staticmethod
     def slams_fragmentation(n_fragment, probs, rand):
         AlgorithmicMethods.slams_fragmentation_body(n_fragment.data, probs.data, rand.data)
-
+        
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def compute_gamma_body(gamma, rand, idx, length, n, cell_id,
