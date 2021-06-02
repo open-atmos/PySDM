@@ -34,10 +34,16 @@ def make_IndexedStorage(backend):
 
         def to_ndarray(self, *, raw=False):
             result = backend.Storage.to_ndarray(self)
+            dim = len(self.shape)
             if raw:
                 return result
-            else:
+            elif dim == 1:
                 idx = self.idx.to_ndarray()
                 return result[idx[:len(self)]]
+            elif dim == 2:
+                idx = self.idx.to_ndarray()
+                return result[:, idx[:len(self)]]
+            else:
+                raise NotImplementedError()
 
     return IndexedStorage

@@ -1,7 +1,8 @@
 import numpy as np
-from .displacement_settings import DisplacementSettings
+
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
+from .displacement_settings import DisplacementSettings
 
 
 class TestExplicitEulerWithInterpolation:
@@ -134,10 +135,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_boundary_condition(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
