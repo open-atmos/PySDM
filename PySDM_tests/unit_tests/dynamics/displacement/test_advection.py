@@ -1,7 +1,8 @@
 import numpy as np
-from .displacement_settings import DisplacementSettings
+
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
+from .displacement_settings import DisplacementSettings
 
 
 class TestExplicitEulerWithInterpolation:
@@ -22,10 +23,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_advection(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         settings.grid = (3, 3)
@@ -110,10 +107,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_update_cell_origin(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
@@ -134,10 +127,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_boundary_condition(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')

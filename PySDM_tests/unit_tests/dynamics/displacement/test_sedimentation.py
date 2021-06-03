@@ -1,13 +1,13 @@
 import numpy as np
 
-from .displacement_settings import DisplacementSettings
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
+from .displacement_settings import DisplacementSettings
 
 
 class ConstantTerminalVelocity:
-    def __init__(self, particles):
-        self.values = np.full(particles.n_sd, 1000)
+    def __init__(self, backend, particles):
+        self.values = backend.Storage.from_ndarray(np.full(particles.n_sd, 1000))
 
     def get(self):
         return self.values
@@ -17,17 +17,13 @@ class TestSedimentation:
 
     @staticmethod
     def test_boundary_condition(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         settings.dt = 1
         settings.sedimentation = True
         sut, particles = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
-        particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(particles)
+        particles.particles.attributes['terminal velocity'] = ConstantTerminalVelocity(backend, particles)
         assert sut.precipitation_in_last_step == 0
 
         # Act
