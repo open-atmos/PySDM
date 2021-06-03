@@ -1,7 +1,3 @@
-"""
-Created at 03.06.2019
-"""
-
 from scipy.stats import lognorm
 from scipy.stats import expon
 import math

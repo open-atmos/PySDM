@@ -1,5 +1,5 @@
 """
-Created at 29.11.2019
+Wrapper class for triggering integration in the Eulerian advection solver used by the selected environment
 """
 
 

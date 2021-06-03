@@ -1,7 +1,3 @@
-"""
-Created at 05.08.2019
-"""
-
 import numpy as np
 
 # noinspection PyUnresolvedReferences
@@ -39,22 +35,22 @@ class TestMaths:
 
         # Act
         state.moments(moment_0, moments, specs={'volume': (0,)})
-        discr_zero = moments[0, 0]
+        discr_zero = moments[0, slice(0, 1)].to_ndarray()
 
         state.moments(moment_0, moments, specs={'volume': (1,)})
-        discr_mean = moments[0, 0]
+        discr_mean = moments[0, slice(0, 1)].to_ndarray()
 
         state.moments(moment_0, moments, specs={'volume': (2,)})
-        discr_mean_radius_squared = moments[0, 0]
+        discr_mean_radius_squared = moments[0, slice(0, 1)].to_ndarray()
 
         state.moments(moment_0, moments, specs={'temperature': (0,)})
-        discr_zero_T = moments[0, 0]
+        discr_zero_T = moments[0, slice(0, 1)].to_ndarray()
 
         state.moments(moment_0, moments, specs={'temperature': (1,)})
-        discr_mean_T = moments[0, 0]
+        discr_mean_T = moments[0, slice(0, 1)].to_ndarray()
 
         state.moments(moment_0, moments, specs={'temperature': (2,)})
-        discr_mean_T_squared = moments[0, 0]
+        discr_mean_T_squared = moments[0, slice(0, 1)].to_ndarray()
 
         # Assert
         assert abs(discr_zero - 1) / 1 < 1e-3

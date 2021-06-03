@@ -93,4 +93,3 @@ class TestTable3:
         # Assert
         np.testing.assert_allclose(output['z'][-1], (1.2 + .1) * si.km, rtol=.005)
         np.testing.assert_allclose(output['ql'][-1], 2.17, rtol=.02)
-

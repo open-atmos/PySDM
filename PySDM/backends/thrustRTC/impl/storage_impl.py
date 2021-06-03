@@ -1,7 +1,3 @@
-"""
-Created at 02.06.2020
-"""
-
 from PySDM.backends.thrustRTC.conf import trtc
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
@@ -34,7 +30,7 @@ def amin(data):
 
 
 __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
-        int d = i / length;
+        auto d = (int64_t)(i / length);
         output[i] %= divisor[d];
     ''')
 

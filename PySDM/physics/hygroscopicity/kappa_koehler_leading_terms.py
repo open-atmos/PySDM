@@ -1,5 +1,5 @@
 import PySDM.physics.constants as const
-from numpy import sqrt
+from numpy import sqrt, power
 
 
 class KappaKoehlerLeadingTerms:
@@ -8,7 +8,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / r ** 3
+           kp * rd3 / power(r, const.three)
         )
 
     @staticmethod

@@ -1,7 +1,3 @@
-"""
-Created at 05.02.2020
-"""
-
 import numpy as np
 from ..environments._moist import _Moist
 

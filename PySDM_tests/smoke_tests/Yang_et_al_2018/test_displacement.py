@@ -1,7 +1,3 @@
-"""
-Created at 2020
-"""
-
 from PySDM_examples.Yang_et_al_2018.example import Simulation
 from PySDM_examples.Yang_et_al_2018.settings import Settings
 import matplotlib.pyplot as plt

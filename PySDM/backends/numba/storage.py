@@ -1,7 +1,3 @@
-"""
-Created at 30.05.2020
-"""
-
 import numpy as np
 from PySDM.backends.numba.impl import storage_impl as impl
 
@@ -160,6 +156,9 @@ class Storage:
 
     def amin(self):
         return impl.amin(self.data)
+
+    def all(self):
+        return self.data.all()
 
     @staticmethod
     def from_ndarray(array):

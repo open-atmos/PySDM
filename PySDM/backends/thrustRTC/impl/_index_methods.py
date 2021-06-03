@@ -1,6 +1,3 @@
-"""
-Created at 10.12.2019
-"""
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
 import numpy as np

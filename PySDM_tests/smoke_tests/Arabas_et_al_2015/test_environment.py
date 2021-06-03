@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 import numpy as np
 
 from PySDM.physics.constants import si

@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Bartman_2020_MasterThesis.fig_5_BDF_VS_ADAPTIVE import data as data_method
 
@@ -10,7 +6,7 @@ import numpy as np
 
 
 rtols = (1e-3, 1e-7)
-schemes = ('default', 'BDF')
+schemes = ('CPU', 'GPU', 'BDF')
 setups_num = len(setups)
 
 
@@ -26,7 +22,8 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("settings_idx", range(setups_num))
 @pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
-def test_vs_BDF(settings_idx, data, rtol, leg):
+@pytest.mark.parametrize("scheme", ('CPU', 'GPU'))
+def test_vs_BDF(settings_idx, data, rtol, leg, scheme):
     # Arrange
     supersaturation = {}
     for scheme in schemes:
@@ -36,5 +33,5 @@ def test_vs_BDF(settings_idx, data, rtol, leg):
 
     # Assert
     desired = np.array(supersaturation['BDF'])
-    actual = np.array(supersaturation['default'])
+    actual = np.array(supersaturation[scheme])
     assert np.mean((desired - actual)**2) < rtol

@@ -1,7 +1,3 @@
-"""
-Created at 05.02.2020
-"""
-
 from PySDM.environments import Parcel
 from PySDM.products.product import Product
 
@@ -23,4 +19,4 @@ class ParcelDisplacement(Product):
 
     def get(self):
         self.download_to_buffer(self.environment['z'])
-        return self.buffer[0]
+        return self.buffer

@@ -1,7 +1,3 @@
-"""
-Created at 11.05.2020
-"""
-
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.physics.terminal_velocity.gunn_and_kinzer import Interpolation
 

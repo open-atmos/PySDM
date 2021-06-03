@@ -1,7 +1,3 @@
-"""
-Created at 09.11.2019
-"""
-
 import numpy as np
 
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute

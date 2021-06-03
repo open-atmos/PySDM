@@ -1,9 +1,8 @@
-"""
-Created at 28.09.2020
-"""
-
 from ...numba.conf import JIT_FLAGS
 import re
+
+
+jit_opts = "error_model='numpy', fastmath=True"
 
 cppython = {
     "int ": "",
@@ -11,20 +10,24 @@ cppython = {
     "float ": "",
     "auto ": "",
     "bool ": "",
+    '[] = {': ' = (',
     " {": ":",
-    "}": "",
+    '}; // array': ')',
     "//": "#",
     "||": "or",
     "&&": "and",
+    "! ": "not ",
+    "&": "",
     "(int64_t)": "np.int64",  # TODO #324 unit test depicting what fails when this is changed to int16
     "(double)": "np.float64",
     "(float)": "np.float32",
-    "floor": "np.floor",
-    "ceil": "np.ceil",
-    "exp(": "np.exp(",
-    "power(": "np.power(",
-    "sqrt(": "np.sqrt(",
-    "return": "continue",
+    "return;": "continue",
+    "void*": "",
+    '::': '_',
+    '(*': '',
+    ')(, )': '',
+    'else if': 'elif',
+    'printf': 'print'
 }
 
 
@@ -124,8 +127,29 @@ def replace_atomic_adds(cpp: str) -> (str, bool):
     return cpp, parallel
 
 
+def extract_struct_defs(cpp: str) -> (str, str):
+    stop_string = "};"
+    structs = []
+    names = []
+
+    start = cpp.find("struct ")
+    while start > -1:
+        stop = cpp.find(stop_string, start)
+        struct = cpp[start:stop + len(stop_string)]
+        cpp = cpp.replace(struct, '')
+        start = cpp.find("struct ", start + 1)
+        structs.append(struct[struct.find(':')+1:-2])
+        names.append(re.match(r'(struct )(.*)(:)', struct)[2])
+
+    for i, struct in enumerate(structs):
+        structs[i] = struct.replace('static __device__ ', f'\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_')
+
+    return cpp, '\n'.join(structs)
+
+
 def to_numba(name, args, iter_var, body):
     body = re.sub(r"static_assert\([^;]*;", '', body)
+    body = re.sub(r"static_cast<[^;]*>", '', body)
     body = body.replace("\n", "\n    ")
     for cpp, python in cppython.items():
         body = body.replace(cpp, python)
@@ -133,16 +157,26 @@ def to_numba(name, args, iter_var, body):
     body, parallel_add = replace_atomic_adds(body)
     body, parallel_min = replace_atomic_mins(body)
     parallel = parallel_add and parallel_min
+
+    body, structs = extract_struct_defs(body)
+
     result = f'''
 def make(self):
     import numpy as np
+    from numpy import floor, ceil, exp, log, power, sqrt
     import numba
-    @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, error_model='numpy', fastmath=True)
+    
+    @numba.njit(parallel=False, {jit_opts})
+    def ldexp(a, b):
+        return a * 2**b
+    
+    {structs}
+    @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, {jit_opts})
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
         for {iter_var} in numba.prange(__python_n__):
             {body}
 
     return {name}
-'''
+'''.replace('};', ')').replace("}", "")
 
     return result

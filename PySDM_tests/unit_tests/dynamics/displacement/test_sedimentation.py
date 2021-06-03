@@ -1,7 +1,3 @@
-"""
-Created at 12.03.2020
-"""
-
 import numpy as np
 
 from .displacement_settings import DisplacementSettings

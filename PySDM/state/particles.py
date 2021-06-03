@@ -1,7 +1,3 @@
-"""
-Created at 03.06.2019
-"""
-
 from typing import Dict
 
 import numpy as np
@@ -117,7 +113,7 @@ class Particles:
         # attr_data = self.core.bck.Storage.from_ndarray(np.array(attr_data, dtype=int))
         assert len(set(attr_data)) <= 1
         if len(attr_data) == 0:
-            attr_data = np.empty((0,))
+            attr_data = self.core.backend.Storage.empty((0,), dtype=float)
         else:
             attr_data = attr_data[0]
 
@@ -198,9 +194,6 @@ class Particles:
             # input
             droplet_volume=self["volume"],
             pH=self["pH"],
-            O3=self["conc_O3"],
-            H2O2=self["conc_H2O2"],
-            S_IV=self["conc_S_IV"],
             # output
             moles_O3=self["moles_O3"],
             moles_H2O2=self["moles_H2O2"],

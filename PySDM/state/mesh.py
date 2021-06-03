@@ -1,9 +1,4 @@
-"""
-Created at 28.11.2019
-"""
-
 import numpy as np
-from PySDM.backends.numba.numba import Numba
 
 
 class Mesh:
@@ -40,7 +35,7 @@ class Mesh:
         domain = np.empty(tuple(grid))
         strides = np.array(domain.strides) // domain.itemsize
         if len(grid) == 1:
-            strides = strides.reshape((1,))
+            strides = strides.reshape((1, 1))
         elif len(grid) == 2:
             strides = strides.reshape(1, -1)
         return strides

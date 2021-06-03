@@ -1,7 +1,3 @@
-"""
-Created at 23.10.2019
-"""
-
 import numpy as np
 from .displacement_settings import DisplacementSettings
 # noinspection PyUnresolvedReferences
@@ -12,10 +8,6 @@ class TestExplicitEulerWithInterpolation:
 
     @staticmethod
     def test_single_cell(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         settings.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
@@ -45,7 +37,11 @@ class TestExplicitEulerWithInterpolation:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(core.particles['cell origin'][:, 0], np.array([2, 1]))
+        dim_x = 0
+        np.testing.assert_array_equal(
+            core.particles['cell origin'][:, dim_x],
+            np.array([2, 1])
+        )
 
     @staticmethod
     def test_calculate_displacement(backend):
@@ -63,14 +59,13 @@ class TestExplicitEulerWithInterpolation:
                                    core.particles['cell origin'], core.particles['position in cell'])
 
         # Assert
-        np.testing.assert_equal(sut.displacement[0, 0], (1 - w) * a + w * b)
+        np.testing.assert_equal(
+            sut.displacement[0, slice(0, 1)].to_ndarray(),
+            (1 - w) * a + w * b
+        )
 
     @staticmethod
     def test_calculate_displacement_dim1(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         a = .1
@@ -85,14 +80,13 @@ class TestExplicitEulerWithInterpolation:
                                    core.particles['cell origin'], core.particles['position in cell'])
 
         # Assert
-        np.testing.assert_equal(sut.displacement[1, 0], (1 - w) * a + w * b)
+        np.testing.assert_equal(
+            sut.displacement[1, slice(0, 1)].to_ndarray(),
+            (1 - w) * a + w * b
+        )
 
     @staticmethod
     def test_update_position(backend):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
-            return  # TODO #332
-
         # Arrange
         settings = DisplacementSettings()
         px = .1
@@ -100,7 +94,7 @@ class TestExplicitEulerWithInterpolation:
         settings.positions = [[px], [py]]
         sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
-        droplet_id = 0
+        droplet_id = slice(0, 1)
         sut.displacement[0, droplet_id] = .1
         sut.displacement[1, droplet_id] = .2
 
@@ -109,8 +103,9 @@ class TestExplicitEulerWithInterpolation:
 
         # Assert
         for d in range(2):
-            assert core.particles['position in cell'][d, droplet_id] == (
-                    settings.positions[d][droplet_id] + sut.displacement[d, droplet_id]
+            np.testing.assert_array_almost_equal(
+                core.particles['position in cell'][d, droplet_id].to_ndarray(),
+                settings.positions[d][droplet_id] + sut.displacement[d, droplet_id].to_ndarray()
             )
 
     @staticmethod

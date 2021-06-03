@@ -1,7 +1,3 @@
-"""
-Created at 18.05.2020
-"""
-
 from PySDM.backends.thrustRTC.conf import trtc
 
 

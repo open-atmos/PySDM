@@ -1,7 +1,3 @@
-"""
-Created at 23.11.2020
-"""
-
 import numpy as np
 import numba
 from PySDM.backends.numba.conf import JIT_FLAGS

@@ -1,7 +1,3 @@
-"""
-Created at 09.01.2020
-"""
-
 import PySDM.physics.constants as const
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.numba.conf import JIT_FLAGS

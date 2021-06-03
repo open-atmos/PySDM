@@ -1,5 +1,11 @@
 """
-Crated at 2019
+Initialisation logic incl.
+`PySDM.initialisation.spectral_sampling`,
+`PySDM.initialisation.spatial_sampling`,
+`PySDM.initialisation.spectra`
 """
-
 from .r_wet_init import r_wet_init
+from . import spectral_sampling
+from . import spectra
+from . import spatial_sampling
+from . import multiplicities

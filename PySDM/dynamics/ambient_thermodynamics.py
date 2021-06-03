@@ -1,5 +1,5 @@
 """
-Created at 07.09.2020
+Environment-sync triggering class
 """
 
 

@@ -1,7 +1,3 @@
-"""
-Created at 22.09.2020
-"""
-
 import types
 import numpy as np
 from .cpp2python import to_numba
@@ -101,8 +97,10 @@ class FakeThrustRTC:
 
     @staticmethod
     def device_vector(elem_cls, size):
-        if elem_cls == 'double' or elem_cls == 'float':  # TODO #405
+        if elem_cls == 'double':
             dtype = np.float64
+        elif elem_cls == 'float':
+            dtype = np.float32
         elif elem_cls == 'int64_t':
             dtype = np.int64
         elif elem_cls == 'uint64_t':

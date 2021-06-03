@@ -1,5 +1,4 @@
 """
-Created at 28.11.2019
 """
 
 import numpy as np

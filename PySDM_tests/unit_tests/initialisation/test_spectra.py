@@ -1,7 +1,3 @@
-"""
-Created at 2019
-"""
-
 from PySDM.initialisation.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 import numpy as np

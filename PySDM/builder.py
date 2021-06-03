@@ -1,7 +1,6 @@
 """
-Created at 09.11.2019
+The Builder class handling creation of  `PySDM.core.Core` instances
 """
-
 import numpy as np
 
 from PySDM.core import Core
@@ -26,8 +25,8 @@ class Builder:
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
-    def _set_condensation_parameters(self, dt_range, adaptive):
-        self.condensation_params = {'dt_range': dt_range, 'adaptive': adaptive}
+    def _set_condensation_parameters(self, **kwargs):
+        self.condensation_params = kwargs
 
     def set_environment(self, environment):
         assert_none(self.core.environment)
@@ -50,7 +49,7 @@ class Builder:
 
     def request_attribute(self, attribute):
         if attribute not in self.req_attr:
-            self.req_attr[attribute] = attr_class(attribute)(self)
+            self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         self.core.backend.sanity_check()
@@ -65,7 +64,7 @@ class Builder:
             self.request_attribute(attribute)
         if 'Condensation' in self.core.dynamics:
             self.core.condensation_solver = \
-                self.core.backend.make_condensation_solver(self.core.dt, **self.condensation_params)
+                self.core.backend.make_condensation_solver(self.core.dt, self.core.mesh.n_cell, **self.condensation_params)
         attributes['n'] = int_caster(attributes['n'])
         if self.core.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)

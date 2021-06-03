@@ -1,7 +1,3 @@
-"""
-Created at 24.10.2019
-"""
-
 import numpy as np
 
 # TODO #305 QUASIRANDOM & GRID

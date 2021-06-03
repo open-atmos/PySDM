@@ -1,18 +1,19 @@
-"""
-Crated at 2019
-"""
-
 from PySDM.backends.numba import conf
-from functools import lru_cache
 from PySDM import physics
+from functools import lru_cache, partial
 import numba
+import re
+import inspect
+
+# noinspection PyUnresolvedReferences
+from PySDM.physics import constants as const
 
 
 def _formula(func=None, **kw):
     if func is None:
-        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+        return numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', 'cache': False, **kw}})
     else:
-        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', **kw}})
+        return numba.njit(func, **{**conf.JIT_FLAGS, **{'parallel': False, 'inline': 'always', 'cache': False, **kw}})
 
 
 def _boost(obj, fastmath):
@@ -22,8 +23,39 @@ def _boost(obj, fastmath):
                 continue
             attr = getattr(obj, item)
             if callable(attr):
-                setattr(obj, item, _formula(attr, fastmath=fastmath))
+                formula = _formula(attr, fastmath=fastmath)
+                setattr(obj, item, formula)
+                setattr(getattr(obj, item), 'c_inline', partial(_c_inline, fun=formula))
     return obj
+
+
+def _c_inline(fun, return_type=None, **args):
+    real_t = 'real_type'
+    return_type = return_type or real_t
+    prae = r"([,+\-*/( ]|^)"
+    post = r"([ )/*\-+,]|$)"
+    real_fmt = ".32g"
+    source = ''
+    for lineno, line in enumerate(inspect.getsourcelines(fun)[0]):
+        stripped = line.strip()
+        if stripped.startswith('@'):
+            continue
+        if stripped.startswith('//'):
+            continue
+        if stripped.startswith('def '):
+            continue
+        source += stripped
+    source = source.replace("power(", "pow(")
+    source = re.sub("^return ", "", source)
+    for arg in inspect.signature(fun).parameters:
+        source = re.sub(f"{prae}({arg}){post}", f"\\1({real_t})({args[arg]})\\3", source)
+    source = re.sub(
+        f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
+        "\\1(" + real_t + ")({const.\\2:" + real_fmt + "})\\3",
+        source
+    )
+    source = eval(f'f"""{source}"""')
+    return f'({return_type})({source})'
 
 
 def _pick(value: str, choices: dict):
