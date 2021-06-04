@@ -156,7 +156,7 @@ Pkg.add("Plots")
 using PyCall
 si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
-Exponential = pyimport("PySDM.initialisation.spectra").Exponential
+Exponential = pyimport("PySDM.physics.spectra").Exponential
 
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
@@ -170,7 +170,7 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
 ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.spectral_sampling').ConstantMultiplicity;
-Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
+Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
 
 n_sd = 2^15;
 initial_spectrum = Exponential(pyargs(...
@@ -355,7 +355,7 @@ The resultant plot (generated with the Python code) looks as follows:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/physics/spectra.html#PySDM.physics.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
@@ -378,7 +378,7 @@ using Plots
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
 multiplicities = pyimport("PySDM.initialisation").multiplicities
-spectra = pyimport("PySDM.initialisation").spectra
+spectra = pyimport("PySDM.physics").spectra
 r_wet_init = pyimport("PySDM.initialisation").r_wet_init
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
@@ -456,7 +456,7 @@ savefig("parcel.svg")
 si = py.importlib.import_module('PySDM.physics').si;
 spectral_sampling = py.importlib.import_module('PySDM.initialisation').spectral_sampling;
 multiplicities = py.importlib.import_module('PySDM.initialisation').multiplicities;
-spectra = py.importlib.import_module('PySDM.initialisation').spectra;
+spectra = py.importlib.import_module('PySDM.physics').spectra;
 r_wet_init = py.importlib.import_module('PySDM.initialisation').r_wet_init;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
