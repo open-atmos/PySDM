@@ -156,7 +156,7 @@ Pkg.add("Plots")
 using PyCall
 si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
-Exponential = pyimport("PySDM.initialisation.spectra").Exponential
+Exponential = pyimport("PySDM.physics.spectra").Exponential
 
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
@@ -170,7 +170,7 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
 ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.spectral_sampling').ConstantMultiplicity;
-Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
+Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
 
 n_sd = 2^15;
 initial_spectrum = Exponential(pyargs(...
@@ -187,10 +187,10 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 ```Python
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.spectra import Exponential
 
-n_sd = 2**15
-initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
+n_sd = 2 ** 15
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
 attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
@@ -355,7 +355,7 @@ The resultant plot (generated with the Python code) looks as follows:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/physics/spectra.html#PySDM.physics.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
@@ -378,7 +378,7 @@ using Plots
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
 multiplicities = pyimport("PySDM.initialisation").multiplicities
-spectra = pyimport("PySDM.initialisation").spectra
+spectra = pyimport("PySDM.physics").spectra
 r_wet_init = pyimport("PySDM.initialisation").r_wet_init
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
@@ -456,7 +456,7 @@ savefig("parcel.svg")
 si = py.importlib.import_module('PySDM.physics').si;
 spectral_sampling = py.importlib.import_module('PySDM.initialisation').spectral_sampling;
 multiplicities = py.importlib.import_module('PySDM.initialisation').multiplicities;
-spectra = py.importlib.import_module('PySDM.initialisation').spectra;
+spectra = py.importlib.import_module('PySDM.physics').spectra;
 r_wet_init = py.importlib.import_module('PySDM.initialisation').r_wet_init;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
@@ -550,8 +550,8 @@ saveas(gcf, "parcel.svg")
 
 ```Python
 from matplotlib import pyplot
-from PySDM.physics import si
-from PySDM.initialisation import spectral_sampling, multiplicities, spectra, r_wet_init
+from PySDM.physics import si, spectra
+from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -565,7 +565,7 @@ env = Parcel(
     T0=300 * si.K,
     w=2.5 * si.m / si.s
 )
-spectrum = spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.5)
+spectrum = spectra.Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
@@ -602,7 +602,7 @@ for step in range(output_points):
     for product in particles.products.values():
         output[product.name].append(product.get()[cell_id])
 
-fig, axs = pyplot.subplots(1, len(particles.products)-1, sharey="all")
+fig, axs = pyplot.subplots(1, len(particles.products) - 1, sharey="all")
 for i, (key, product) in enumerate(particles.products.items()):
     if key != 'z':
         axs[i].plot(output[key], output['z'], marker='.')

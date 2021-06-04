@@ -1,5 +1,5 @@
 from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity
-from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics.spectra import Lognormal
 import numpy as np
 import pytest
 

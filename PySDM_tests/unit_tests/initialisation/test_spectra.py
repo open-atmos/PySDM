@@ -1,4 +1,4 @@
-from PySDM.initialisation.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
+from PySDM.physics.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 import numpy as np
 from numpy.testing import assert_approx_equal

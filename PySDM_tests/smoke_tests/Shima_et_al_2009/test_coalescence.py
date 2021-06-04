@@ -6,7 +6,7 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.environments import Box
-from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.spectra import Exponential
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
 from PySDM.physics.formulae import Formulae
