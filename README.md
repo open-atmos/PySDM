@@ -187,10 +187,10 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 ```Python
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.spectra import Exponential
 
-n_sd = 2**15
-initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um**3)
+n_sd = 2 ** 15
+initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
 attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
 ```
@@ -550,8 +550,8 @@ saveas(gcf, "parcel.svg")
 
 ```Python
 from matplotlib import pyplot
-from PySDM.physics import si
-from PySDM.initialisation import spectral_sampling, multiplicities, spectra, r_wet_init
+from PySDM.physics import si, spectra
+from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
@@ -565,7 +565,7 @@ env = Parcel(
     T0=300 * si.K,
     w=2.5 * si.m / si.s
 )
-spectrum = spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.5)
+spectrum = spectra.Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
@@ -602,7 +602,7 @@ for step in range(output_points):
     for product in particles.products.values():
         output[product.name].append(product.get()[cell_id])
 
-fig, axs = pyplot.subplots(1, len(particles.products)-1, sharey="all")
+fig, axs = pyplot.subplots(1, len(particles.products) - 1, sharey="all")
 for i, (key, product) in enumerate(particles.products.items()):
     if key != 'z':
         axs[i].plot(output[key], output['z'], marker='.')

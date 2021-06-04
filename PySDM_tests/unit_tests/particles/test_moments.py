@@ -3,7 +3,7 @@ import numpy as np
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 

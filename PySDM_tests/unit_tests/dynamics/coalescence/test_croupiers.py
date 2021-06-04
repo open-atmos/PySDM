@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from PySDM.initialisation.spectra import Lognormal
+from PySDM.physics.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_environment import DummyEnvironment
 from PySDM_tests.unit_tests.dummy_core import DummyCore

@@ -3,7 +3,7 @@ from scipy.stats import expon
 import math
 import numpy as np
 from scipy.interpolate import interp1d
-from .spectral_sampling import default_cdf_range
+from PySDM.initialisation.spectral_sampling import default_cdf_range
 
 default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
