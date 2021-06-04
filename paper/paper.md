@@ -126,7 +126,7 @@ It is a coalescence-only set-up in which the initial particle size spectrum is e
 ```python
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.spectra import Exponential
 
 n_sd = 2 ** 17
 initial_spectrum = Exponential(
