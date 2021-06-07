@@ -49,8 +49,8 @@ class _Moist:
         )
         self._values["predicted"] = target
 
-    def get_qv(self) -> np.ndarray: raise NotImplemented()
-    def get_thd(self) -> np.ndarray: raise NotImplemented()
+    def get_qv(self) -> np.ndarray: raise NotImplementedError()
+    def get_thd(self) -> np.ndarray: raise NotImplementedError()
 
     def notify(self):
         if self._values["predicted"] is None:
