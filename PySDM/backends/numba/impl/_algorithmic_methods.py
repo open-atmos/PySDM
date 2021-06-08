@@ -133,8 +133,8 @@ class AlgorithmicMethods:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
-        AlgorithmicMethods.coalescence_body(n.data, idx.data, length,
+    def coalescence(n, idx, attributes, gamma, healthy, is_first_in_pair):
+        AlgorithmicMethods.coalescence_body(n.data, idx.data, len(idx),
                                             attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
 
     @staticmethod

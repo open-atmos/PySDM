@@ -1,7 +1,6 @@
 from typing import Dict
 
 import numpy as np
-
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
@@ -102,7 +101,7 @@ class Particles:
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+        self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf),
                 weighting_attribute='volume', weighting_rank=0):
@@ -136,7 +135,6 @@ class Particles:
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
                                   idx=self.__idx,
-                                  length=self.SD_num,
                                   attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
