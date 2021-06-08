@@ -50,7 +50,7 @@ def test_coalescence_2_sd(backend):
     s = Settings()
     s.kernel = Golovin(b=1.5e12)
     s.formulae.seed = 0
-    steps = [0, 200]
+    steps = [0, 600]
     s.n_sd = 2
 
     builder = Builder(n_sd=s.n_sd, backend=backend, formulae=s.formulae)
