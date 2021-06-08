@@ -1,12 +1,13 @@
 import numpy as np
-
-from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
 from PySDM.physics import si
+from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
+# noinspection PyUnresolvedReferences
+from PySDM_tests.backends_fixture import backend
 
 
-def test_few_steps(plot=False):
+def test_few_steps(backend, plot=False):
     # Arrange
-    settings = Settings(n_sd_per_gridbox=50, dt=30*si.s, dz=50*si.m)
+    settings = Settings(n_sd_per_gridbox=50, dt=30 * si.s, dz=50 * si.m)
     simulation = Simulation(settings)
 
     # Act
