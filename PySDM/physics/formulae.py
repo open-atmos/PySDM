@@ -1,10 +1,10 @@
-from PySDM.backends.numba import conf
-from PySDM import physics
-from functools import lru_cache, partial
-import numba
-import re
 import inspect
+import re
+from functools import lru_cache, partial
 
+import numba
+from PySDM import physics
+from PySDM.backends.numba import conf
 # noinspection PyUnresolvedReferences
 from PySDM.physics import constants as const
 
@@ -76,7 +76,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = 44,  # https://en.wikipedia.org/wiki/44_(number)
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',

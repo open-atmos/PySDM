@@ -1,10 +1,10 @@
-from ..conf import trtc
-from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
+from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
+
+from ..conf import trtc
 
 
 class PairMethods:
-
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
@@ -82,9 +82,11 @@ class PairMethods:
         ''')
 
     @staticmethod
-    def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
+    def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
+        if len(idx) < 2:
+            return
         PairMethods.__sort_within_pair_by_attr_body.launch_n(
-            length - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
+            len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
 
     __sum_pair_body = trtc.For(['data_out', 'perm_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {

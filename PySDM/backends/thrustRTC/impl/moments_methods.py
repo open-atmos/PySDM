@@ -1,15 +1,12 @@
-from functools import reduce
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust
-from ..conf import trtc
+
 from .precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class MomentsMethods:
     def __init__(self):
-        self.__loop_reset = trtc.For(['vector_to_clean'], "i", '''
-            vector_to_clean[i] = 0;
-        ''')
 
         self.__moments_body_0 = trtc.For(
             ['idx', 'min_x', 'attr_data', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
@@ -19,10 +16,10 @@ class MomentsMethods:
             '''
             auto i = idx[fake_i];
             if (min_x < x_attr[i] && x_attr[i] < max_x) {
-                atomicAdd((unsigned long long int*)&moment_0[cell_id[i]], (unsigned long long int)n[i]);
+                atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(n[i]));
                 for (auto k = 0; k < n_ranks; k+=1) {
                     atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
-                }
+               }
             }
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
@@ -47,8 +44,8 @@ class MomentsMethods:
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
 
-        self.__loop_reset.launch_n(moment_0.shape[0], [moment_0.data])
-        self.__loop_reset.launch_n(reduce(lambda x, y: x * y, moments.shape), [moments.data])
+        moments[:] = 0
+        moment_0[:] = 0
 
         self.__moments_body_0.launch_n(length, [
             idx.data,
