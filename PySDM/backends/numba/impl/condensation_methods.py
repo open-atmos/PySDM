@@ -145,7 +145,7 @@ class CondensationMethods:
             RH_max = 0
             success = True
             for t in range(n_substeps):
-                thd += dt * dthd_dt_pred / 2  # TODO #48 example showing that it makes sense
+                thd += dt * dthd_dt_pred / 2  # note: we do not have yet an example showing that it brings any improvement 
                 qv += dt * dqv_dt_pred / 2
 
                 T = phys_T(rhod_mean, thd)
