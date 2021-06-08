@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+import struct
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
@@ -45,6 +46,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
         x_max = np.amax(volume)
 
 
+@pytest.mark.xfail(struct.calcsize("P") * 8 == 32, strict=True, reason="32 bit")
 def test_coalescence_2_sd(backend):
     # Arrange
     s = Settings()
