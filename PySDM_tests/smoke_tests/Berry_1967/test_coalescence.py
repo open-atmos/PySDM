@@ -22,7 +22,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
     # Arrange
     s = Settings()
     s.formulae.seed = 0
-    steps = [0, 200]
+    steps = [0, 800]
 
     builder = Builder(n_sd=s.n_sd, backend=backend, formulae=s.formulae)
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
@@ -50,7 +50,7 @@ def test_coalescence_2_sd(backend):
     s = Settings()
     s.kernel = Golovin(b=1.5e12)
     s.formulae.seed = 0
-    steps = [0, 600]
+    steps = [0, 200]
     s.n_sd = 2
 
     builder = Builder(n_sd=s.n_sd, backend=backend, formulae=s.formulae)
