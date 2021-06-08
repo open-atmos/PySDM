@@ -26,13 +26,13 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.backends.numba import conf
-from PySDM import physics
-from functools import lru_cache, partial
-import numba
+<pre><code class="python">import inspect
 import re
-import inspect
+from functools import lru_cache, partial
 
+import numba
+from PySDM import physics
+from PySDM.backends.numba import conf
 # noinspection PyUnresolvedReferences
 from PySDM.physics import constants as const
 
@@ -104,7 +104,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = 44,  # https://en.wikipedia.org/wiki/44_(number)
                  fastmath: bool = True,
                  condensation_coordinate: str = &#39;VolumeLogarithm&#39;,
                  saturation_vapour_pressure: str = &#39;FlatauWalkoCotton&#39;,
@@ -170,7 +170,7 @@ class Formulae:
 </summary>
 <pre><code class="python">class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = 44,  # https://en.wikipedia.org/wiki/44_(number)
                  fastmath: bool = True,
                  condensation_coordinate: str = &#39;VolumeLogarithm&#39;,
                  saturation_vapour_pressure: str = &#39;FlatauWalkoCotton&#39;,

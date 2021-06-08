@@ -29,7 +29,6 @@
 <pre><code class="python">from typing import Dict
 
 import numpy as np
-
 from PySDM.attributes.impl.attribute import Attribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
@@ -130,7 +129,7 @@ class Particles:
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+        self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
@@ -164,7 +163,6 @@ class Particles:
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self[&#39;n&#39;],
                                   idx=self.__idx,
-                                  length=self.SD_num,
                                   attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
@@ -374,7 +372,7 @@ class Particles:
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])
+        self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
@@ -408,7 +406,6 @@ class Particles:
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self[&#39;n&#39;],
                                   idx=self.__idx,
-                                  length=self.SD_num,
                                   attributes=self.get_extensive_attrs(),
                                   gamma=gamma,
                                   healthy=self.__healthy_memory,
@@ -594,7 +591,6 @@ def cell_start(self):
 <pre><code class="python">def coalescence(self, gamma, is_first_in_pair):
     self.core.bck.coalescence(n=self[&#39;n&#39;],
                               idx=self.__idx,
-                              length=self.SD_num,
                               attributes=self.get_extensive_attrs(),
                               gamma=gamma,
                               healthy=self.__healthy_memory,
@@ -886,7 +882,7 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-    self.core.bck.sort_within_pair_by_attr(self.__idx, self.SD_num, is_first_in_pair, self[attr_name])</code></pre>
+    self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])</code></pre>
 </details>
 </dd>
 </dl>
