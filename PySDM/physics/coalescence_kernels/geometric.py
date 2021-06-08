@@ -1,4 +1,5 @@
 from PySDM.physics import constants as const
+
 from ._gravitational import Gravitational
 
 
@@ -8,7 +9,6 @@ class Geometric(Gravitational):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
-        self.collection_efficiency = 1
 
     def __call__(self, output, is_first_in_pair):
         output.sum(self.core.particles['radius'], is_first_in_pair)
