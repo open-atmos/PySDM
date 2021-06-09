@@ -47,7 +47,7 @@ Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://dev
 For an overview paper on PySDM v1 (and the preferred item to cite if using PySDM), see [Bartman et al. 2021 arXiv e-print](https://arxiv.org/abs/2103.17238) (submitted to JOSS).
 For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
 
-An [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://atmos-cloud-sim-uj.github.io/PySDM](https://atmos-cloud-sim-uj.github.io/PySDM) 
+A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://atmos-cloud-sim-uj.github.io/PySDM](https://atmos-cloud-sim-uj.github.io/PySDM) 
 
 ## Dependencies and Installation
 
