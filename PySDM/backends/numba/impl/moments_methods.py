@@ -1,5 +1,7 @@
 import numba
+
 from PySDM.backends.numba import conf
+from PySDM.backends.numba.impl._atomic_operations import atomic_add
 
 
 class MomentsMethods:
@@ -10,11 +12,13 @@ class MomentsMethods:
             ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
         moment_0[:] = 0
         moments[:, :] = 0
-        for i in idx[:length]:
+        for idx_i in numba.prange(length):
+            i = idx[idx_i]
             if min_x < x_attr[i] < max_x:
-                moment_0[cell_id[i]] += n[i] * weighting_attribute[i]**weighting_rank
-                for k in range(ranks.shape[0]):  # TODO #401 (AtomicAdd)
-                    moments[k, cell_id[i]] += n[i] * weighting_attribute[i]**weighting_rank * attr_data[i] ** ranks[k]
+                atomic_add(moment_0, cell_id[i], n[i] * weighting_attribute[i] ** weighting_rank)
+                for k in range(ranks.shape[0]):
+                    atomic_add(moments, (k, cell_id[i]),
+                               n[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** ranks[k])
         for c_id in range(moment_0.shape[0]):
             for k in range(ranks.shape[0]):
                 moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0

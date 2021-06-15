@@ -1,10 +1,12 @@
-import pytest
 import os
+
 import numpy as np
+import pytest
+
 from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
 from PySDM.storages.index import make_Index
-from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.indexed_storage import make_IndexedStorage
+from PySDM.storages.pair_indicator import make_PairIndicator
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
 
@@ -69,6 +71,10 @@ class TestAlgorithmicMethods:
 
         # Assert
         np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected_dt_left))
-        expected_gamma = (dt - np.asarray(expected_dt_left)) / dt * np.asarray(gamma)
+        expected_gamma = np.empty_like(np.asarray(gamma))
+        for i in range(len(idx)):
+            if is_first_in_pair[i]:
+                expected_gamma[i // 2] = (dt - np.asarray(expected_dt_left[cell_id[i]])) / dt * np.asarray(gamma)[
+                    i // 2]
         np.testing.assert_array_almost_equal(_gamma.to_ndarray(), expected_gamma)
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
