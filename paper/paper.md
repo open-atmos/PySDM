@@ -20,6 +20,9 @@ authors:
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
     affiliation: "1"
+  - name: Oleksii Bulenok
+    orcid: 0000-0003-2272-8548
+    affiliation: "1"
   - name: Kamil Górski
     affiliation: "1"
   - name: Anna Jaruga
@@ -89,6 +92,8 @@ The usage examples are built on top of four different `environment` classes incl
 
 In addition, the package ships with tutorial code depicting how `PySDM` can be used from `Julia` and `Matlab` using
   the `PyCall.jl` and the Matlab-bundled Python interface, respectively.
+Two exporter classes are available as of time of writing enabling storage of particle attributes in the VTK
+  format and storage of gridded products in netCDF format.
 
 # Dependencies and supported platforms 
 
@@ -320,6 +325,7 @@ MO contributed to the development of the condensation solver and led the develop
 GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM under guidance from AJ.
 KG and BP contributed to the GPU backend.
 AT contributed to the examples.
+OB contributed the VTK exporter.
 The paper was composed by SA and PB and is partially based on the content of the PySDM README file and PB's MSc thesis.
 
 # Acknowledgements
