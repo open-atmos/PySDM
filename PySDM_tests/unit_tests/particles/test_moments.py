@@ -1,10 +1,10 @@
 import numpy as np
 
+from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.spectral_sampling import Linear
+from PySDM.physics.spectra import Lognormal
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
-from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.physics.spectra import Lognormal
-from PySDM.initialisation.spectral_sampling import Linear
 from PySDM_tests.unit_tests.dummy_core import DummyCore
 
 
@@ -30,7 +30,7 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO #217 : add a moments_0 wrapper
-        moment_0 = particles.backend.Storage.empty((1,), dtype=int)
+        moment_0 = particles.backend.Storage.empty((1,), dtype=float)
         moments = particles.backend.Storage.empty((1, 1), dtype=float)
 
         # Act
