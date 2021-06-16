@@ -43,7 +43,7 @@ class AlgorithmicMethods:
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
-        for i in range(length // 2):  # TODO #401
+        for i in range(length // 2):  # TODO #571
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
