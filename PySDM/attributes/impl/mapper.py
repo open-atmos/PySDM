@@ -1,4 +1,3 @@
-from Users.claresinger.Research.PySDM.PySDM.attributes.physics.dry_volume import DryVolumeInorganic, DryVolumeOrganic
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolumeInorganic, DryVolumeDynamic, DryVolumeStatic
