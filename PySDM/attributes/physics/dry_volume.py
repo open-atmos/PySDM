@@ -19,7 +19,7 @@ class DryVolumeDynamic(DerivedAttribute):
 
 # TODO #223
 # first attempt to add inorganic and organic dry volumes as extensive attributes
-# and make DryVolumeStatic a derived attribute
+# and make DryVolumeOrgInorg a derived attribute
 class DryVolumeInorganic(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name='dry volume inorganic')

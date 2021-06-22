@@ -2,6 +2,7 @@ from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolumeInorganic
 from PySDM.attributes.physics.dry_volume import DryVolumeOrgInorg, DryVolumeDynamic, DryVolumeStatic
+from PySDM.attributes.physics.organic_fraction import OrganicFraction
 from PySDM.attributes.physics.radius import Radius
 from PySDM.attributes.physics.dry_radius import DryRadius
 from PySDM.attributes.physics.terminal_velocity import TerminalVelocity
@@ -25,6 +26,7 @@ attributes = {
     'dry volume inorganic': lambda _: DryVolumeInorganic,
     # 'dry volume': lambda dynamics: DryVolumeDynamic if 'AqueousChemistry' in dynamics else (DryVolumeOrgInorg if 'SurfaceOrganics' in dynamics else DryVolumeStatic),
     'dry volume': lambda dynamics: DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolumeStatic,
+    'organic fraction': lambda _: OrganicFraction,
     'radius': lambda _: Radius,
     'dry radius': lambda _: DryRadius,
     'terminal velocity': lambda _: TerminalVelocity,
