@@ -291,7 +291,7 @@ for step = 0:1200:3600
     particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get()[1] * rho_w / si.g,
+        particles.products["dv/dlnr"].get()[:] * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
