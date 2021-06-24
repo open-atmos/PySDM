@@ -132,6 +132,23 @@ class Particles:
                               weighting_rank=weighting_rank
                               )
 
+    def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name='volume',
+                         weighting_attribute='volume', weighting_rank=0):
+        attr_data = self.attributes[attr].get()
+        self.core.bck.spectrum_moments(moment_0,
+                                       moments,
+                                       self['n'],
+                                       attr_data,
+                                       self['cell id'],
+                                       self.__idx,
+                                       self.SD_num,
+                                       rank,
+                                       attr_bins,
+                                       self[attr_name],
+                                       weighting_attribute=self[weighting_attribute],
+                                       weighting_rank=weighting_rank
+                                       )
+
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
                                   idx=self.__idx,
