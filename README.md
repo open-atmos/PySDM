@@ -291,7 +291,7 @@ for step = 0:1200:3600
     particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get()[0] * rho_w / si.g,
+        particles.products["dv/dlnr"].get()[1] * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -311,7 +311,7 @@ rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 for step = 0:1200:3600
     particles.run(int32(step - particles.n_steps))
     x = radius_bins_edges / si.um;
-    y = particles.products{"dv/dlnr"}.get()(0) * rho_w / si.g;
+    y = particles.products{"dv/dlnr"}.get()(1) * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
