@@ -211,10 +211,12 @@ Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
 
+radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
+
 builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()] 
+products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
 particles = builder.build(attributes, products)
 ```
 </details>
@@ -229,10 +231,12 @@ Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovi
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticlesVolumeSpectrum;
 
+radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
+
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum() });
+products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
 particles = builder.build(attributes, products);
 ```
 </details>
@@ -282,13 +286,11 @@ In the listing below, its usage is interleaved with plotting logic
 rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots
 
-radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
-
 for step = 0:1200:3600
     particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
+        particles.products["dv/dlnr"].get() * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -305,12 +307,10 @@ savefig("plot.svg")
 ```Matlab
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
-radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
-
 for step = 0:1200:3600
     particles.run(int32(step - particles.n_steps))
     x = radius_bins_edges / si.um;
-    y = particles.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
+    y = particles.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
