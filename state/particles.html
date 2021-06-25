@@ -160,6 +160,23 @@ class Particles:
                               weighting_rank=weighting_rank
                               )
 
+    def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
+                         weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        attr_data = self.attributes[attr].get()
+        self.core.bck.spectrum_moments(moment_0,
+                                       moments,
+                                       self[&#39;n&#39;],
+                                       attr_data,
+                                       self[&#39;cell id&#39;],
+                                       self.__idx,
+                                       self.SD_num,
+                                       rank,
+                                       attr_bins,
+                                       self[attr_name],
+                                       weighting_attribute=self[weighting_attribute],
+                                       weighting_rank=weighting_rank
+                                       )
+
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self[&#39;n&#39;],
                                   idx=self.__idx,
@@ -402,6 +419,23 @@ class Particles:
                               weighting_attribute=self[weighting_attribute],
                               weighting_rank=weighting_rank
                               )
+
+    def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
+                         weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        attr_data = self.attributes[attr].get()
+        self.core.bck.spectrum_moments(moment_0,
+                                       moments,
+                                       self[&#39;n&#39;],
+                                       attr_data,
+                                       self[&#39;cell id&#39;],
+                                       self.__idx,
+                                       self.SD_num,
+                                       rank,
+                                       attr_bins,
+                                       self[attr_name],
+                                       weighting_attribute=self[weighting_attribute],
+                                       weighting_rank=weighting_rank
+                                       )
 
     def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self[&#39;n&#39;],
@@ -885,6 +919,33 @@ def cell_start(self):
     self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])</code></pre>
 </details>
 </dd>
+<dt id="PySDM.state.particles.Particles.spectrum_moments"><code class="name flex">
+<span>def <span class="ident">spectrum_moments</span></span>(<span>self, moment_0, moments, attr, rank, attr_bins, attr_name='volume', weighting_attribute='volume', weighting_rank=0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
+                     weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+    attr_data = self.attributes[attr].get()
+    self.core.bck.spectrum_moments(moment_0,
+                                   moments,
+                                   self[&#39;n&#39;],
+                                   attr_data,
+                                   self[&#39;cell id&#39;],
+                                   self.__idx,
+                                   self.SD_num,
+                                   rank,
+                                   attr_bins,
+                                   self[attr_name],
+                                   weighting_attribute=self[weighting_attribute],
+                                   weighting_rank=weighting_rank
+                                   )</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -926,6 +987,7 @@ def cell_start(self):
 <li><code><a title="PySDM.state.particles.Particles.reset_working_length" href="#PySDM.state.particles.Particles.reset_working_length">reset_working_length</a></code></li>
 <li><code><a title="PySDM.state.particles.Particles.sanitize" href="#PySDM.state.particles.Particles.sanitize">sanitize</a></code></li>
 <li><code><a title="PySDM.state.particles.Particles.sort_within_pair_by_attr" href="#PySDM.state.particles.Particles.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
+<li><code><a title="PySDM.state.particles.Particles.spectrum_moments" href="#PySDM.state.particles.Particles.spectrum_moments">spectrum_moments</a></code></li>
 </ul>
 </li>
 </ul>

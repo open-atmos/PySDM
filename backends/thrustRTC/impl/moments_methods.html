@@ -43,7 +43,7 @@ class MomentsMethods:
             &#34;fake_i&#34;,
             &#39;&#39;&#39;
             auto i = idx[fake_i];
-            if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
+            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(n[i]));
                 for (auto k = 0; k &lt; n_ranks; k+=1) {
                     atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
@@ -58,6 +58,32 @@ class MomentsMethods:
                 } 
                 else {
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
+                }
+            }
+        &#39;&#39;&#39;)
+
+        self.__spectrum_moments_body_0 = trtc.For(
+            [&#39;idx&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
+             &#39;x_bins&#39;, &#39;n_bins&#39;, &#39;moments&#39;, &#39;rank&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;],
+            &#34;fake_i&#34;,
+            &#39;&#39;&#39;
+            auto i = idx[fake_i];
+            for (auto k = 0; k &lt; n_bins; k+=1) {
+                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
+                    atomicAdd((real_type*)&amp;moment_0[n_cell * k + cell_id[i]], (real_type)(n[i]));
+                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(rank)));
+                    break;
+                }
+            }
+        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+
+        self.__spectrum_moments_body_1 = trtc.For([&#39;n_bins&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;i&#34;, &#39;&#39;&#39;
+            for (auto k = 0; k &lt; n_bins; k+=1) {
+                if (moment_0[n_cell * k + i] == 0) {
+                    moments[n_cell * k  + i] = 0;
+                } 
+                else {
+                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }
             }
         &#39;&#39;&#39;)
@@ -92,7 +118,42 @@ class MomentsMethods:
         ])
 
         self.__moments_body_1.launch_n(
-            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])</code></pre>
+            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
+
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def spectrum_moments(self, moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        assert moments.shape[0] == x_bins.shape[0] - 1
+        assert moment_0.shape == moments.shape
+        if weighting_rank != 0:
+            raise NotImplementedError()
+
+        n_cell = trtc.DVInt64(moments.shape[1])
+        n_sd = trtc.DVInt64(moments.shape[0])
+        d_rank = trtc.DVInt64(rank)
+        n_bins = trtc.DVInt64(len(x_bins) - 1)
+
+        moments[:] = 0
+        moment_0[:] = 0
+
+        self.__spectrum_moments_body_0.launch_n(length, [
+            idx.data,
+            attr_data.data,
+            x_attr.data,
+            moment_0.data,
+            cell_id.data,
+            n.data,
+            x_bins.data,
+            n_bins,
+            moments.data,
+            d_rank,
+            n_sd,
+            n_cell
+        ])
+
+        self.__spectrum_moments_body_1.launch_n(
+            moment_0.shape[1], [n_bins, moments.data, moment_0.data, n_cell])</code></pre>
 </details>
 </section>
 <section>
@@ -123,7 +184,7 @@ class MomentsMethods:
             &#34;fake_i&#34;,
             &#39;&#39;&#39;
             auto i = idx[fake_i];
-            if (min_x &lt; x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
+            if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(n[i]));
                 for (auto k = 0; k &lt; n_ranks; k+=1) {
                     atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
@@ -138,6 +199,32 @@ class MomentsMethods:
                 } 
                 else {
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
+                }
+            }
+        &#39;&#39;&#39;)
+
+        self.__spectrum_moments_body_0 = trtc.For(
+            [&#39;idx&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
+             &#39;x_bins&#39;, &#39;n_bins&#39;, &#39;moments&#39;, &#39;rank&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;],
+            &#34;fake_i&#34;,
+            &#39;&#39;&#39;
+            auto i = idx[fake_i];
+            for (auto k = 0; k &lt; n_bins; k+=1) {
+                if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
+                    atomicAdd((real_type*)&amp;moment_0[n_cell * k + cell_id[i]], (real_type)(n[i]));
+                    atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(rank)));
+                    break;
+                }
+            }
+        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+
+        self.__spectrum_moments_body_1 = trtc.For([&#39;n_bins&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;], &#34;i&#34;, &#39;&#39;&#39;
+            for (auto k = 0; k &lt; n_bins; k+=1) {
+                if (moment_0[n_cell * k + i] == 0) {
+                    moments[n_cell * k  + i] = 0;
+                } 
+                else {
+                    moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }
             }
         &#39;&#39;&#39;)
@@ -172,7 +259,42 @@ class MomentsMethods:
         ])
 
         self.__moments_body_1.launch_n(
-            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])</code></pre>
+            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
+
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def spectrum_moments(self, moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        assert moments.shape[0] == x_bins.shape[0] - 1
+        assert moment_0.shape == moments.shape
+        if weighting_rank != 0:
+            raise NotImplementedError()
+
+        n_cell = trtc.DVInt64(moments.shape[1])
+        n_sd = trtc.DVInt64(moments.shape[0])
+        d_rank = trtc.DVInt64(rank)
+        n_bins = trtc.DVInt64(len(x_bins) - 1)
+
+        moments[:] = 0
+        moment_0[:] = 0
+
+        self.__spectrum_moments_body_0.launch_n(length, [
+            idx.data,
+            attr_data.data,
+            x_attr.data,
+            moment_0.data,
+            cell_id.data,
+            n.data,
+            x_bins.data,
+            n_bins,
+            moments.data,
+            d_rank,
+            n_sd,
+            n_cell
+        ])
+
+        self.__spectrum_moments_body_1.launch_n(
+            moment_0.shape[1], [n_bins, moments.data, moment_0.data, n_cell])</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -182,6 +304,24 @@ class MomentsMethods:
 <dl>
 <dt id="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.spectrum_moments"><code class="name flex">
+<span>def <span class="ident">spectrum_moments</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -220,6 +360,7 @@ class MomentsMethods:
 <h4><code><a title="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods" href="#PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods">MomentsMethods</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.moments" href="#PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.moments">moments</a></code></li>
+<li><code><a title="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.spectrum_moments" href="#PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods.spectrum_moments">spectrum_moments</a></code></li>
 </ul>
 </li>
 </ul>

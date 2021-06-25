@@ -59,6 +59,38 @@ class MomentsMethods:
             moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
             idx.data, length, ranks.data,
             min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def spectrum_moments_body(
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        moment_0[:, :] = 0
+        moments[:, :] = 0
+        for idx_i in numba.prange(length):
+            i = idx[idx_i]
+            for k in range(x_bins.shape[0] - 1):
+                if x_bins[k] &lt;= x_attr[i] &lt; x_bins[k + 1]:
+                    atomic_add(moment_0, (k, cell_id[i]),
+                               n[i] * weighting_attribute[i] ** weighting_rank)
+                    atomic_add(moments, (k, cell_id[i]),
+                               n[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** rank)
+                    break
+        for c_id in range(moment_0.shape[1]):
+            for k in range(x_bins.shape[0] - 1):
+                moments[k, c_id] = moments[k, c_id] / moment_0[k, c_id] if moment_0[k, c_id] != 0 else 0
+
+    @staticmethod
+    def spectrum_moments(
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        assert moments.shape[0] == x_bins.shape[0] - 1
+        assert moment_0.shape == moments.shape
+        return MomentsMethods.spectrum_moments_body(
+            moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
+            idx.data, length, rank,
+            x_bins.data, x_attr.data, weighting_attribute.data, weighting_rank
         )</code></pre>
 </details>
 </section>
@@ -107,6 +139,38 @@ class MomentsMethods:
             moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
             idx.data, length, ranks.data,
             min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def spectrum_moments_body(
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        moment_0[:, :] = 0
+        moments[:, :] = 0
+        for idx_i in numba.prange(length):
+            i = idx[idx_i]
+            for k in range(x_bins.shape[0] - 1):
+                if x_bins[k] &lt;= x_attr[i] &lt; x_bins[k + 1]:
+                    atomic_add(moment_0, (k, cell_id[i]),
+                               n[i] * weighting_attribute[i] ** weighting_rank)
+                    atomic_add(moments, (k, cell_id[i]),
+                               n[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** rank)
+                    break
+        for c_id in range(moment_0.shape[1]):
+            for k in range(x_bins.shape[0] - 1):
+                moments[k, c_id] = moments[k, c_id] / moment_0[k, c_id] if moment_0[k, c_id] != 0 else 0
+
+    @staticmethod
+    def spectrum_moments(
+            moment_0, moments, n, attr_data, cell_id, idx, length,
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+        assert moments.shape[0] == x_bins.shape[0] - 1
+        assert moment_0.shape == moments.shape
+        return MomentsMethods.spectrum_moments_body(
+            moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
+            idx.data, length, rank,
+            x_bins.data, x_attr.data, weighting_attribute.data, weighting_rank
         )</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -163,6 +227,58 @@ def moments_body(
             moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments"><code class="name flex">
+<span>def <span class="ident">spectrum_moments</span></span>(<span>moment_0, moments, n, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def spectrum_moments(
+        moment_0, moments, n, attr_data, cell_id, idx, length,
+        rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+    assert moments.shape[0] == x_bins.shape[0] - 1
+    assert moment_0.shape == moments.shape
+    return MomentsMethods.spectrum_moments_body(
+        moment_0.data, moments.data, n.data, attr_data.data, cell_id.data,
+        idx.data, length, rank,
+        x_bins.data, x_attr.data, weighting_attribute.data, weighting_rank
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments_body"><code class="name flex">
+<span>def <span class="ident">spectrum_moments_body</span></span>(<span>moment_0, moments, n, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+@numba.njit(**conf.JIT_FLAGS)
+def spectrum_moments_body(
+        moment_0, moments, n, attr_data, cell_id, idx, length,
+        rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+    moment_0[:, :] = 0
+    moments[:, :] = 0
+    for idx_i in numba.prange(length):
+        i = idx[idx_i]
+        for k in range(x_bins.shape[0] - 1):
+            if x_bins[k] &lt;= x_attr[i] &lt; x_bins[k + 1]:
+                atomic_add(moment_0, (k, cell_id[i]),
+                           n[i] * weighting_attribute[i] ** weighting_rank)
+                atomic_add(moments, (k, cell_id[i]),
+                           n[i] * weighting_attribute[i] ** weighting_rank * attr_data[i] ** rank)
+                break
+    for c_id in range(moment_0.shape[1]):
+        for k in range(x_bins.shape[0] - 1):
+            moments[k, c_id] = moments[k, c_id] / moment_0[k, c_id] if moment_0[k, c_id] != 0 else 0</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -186,6 +302,8 @@ def moments_body(
 <ul class="">
 <li><code><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods.moments" href="#PySDM.backends.numba.impl.moments_methods.MomentsMethods.moments">moments</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods.moments_body" href="#PySDM.backends.numba.impl.moments_methods.MomentsMethods.moments_body">moments_body</a></code></li>
+<li><code><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments" href="#PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments">spectrum_moments</a></code></li>
+<li><code><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments_body" href="#PySDM.backends.numba.impl.moments_methods.MomentsMethods.spectrum_moments_body">spectrum_moments_body</a></code></li>
 </ul>
 </li>
 </ul>

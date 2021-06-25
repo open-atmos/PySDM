@@ -28,12 +28,12 @@
 </summary>
 <pre><code class="python">import numpy as np
 from PySDM.physics.constants import convert_to, si
-from PySDM.products.product import MomentProduct
+from PySDM.products.product import SpectrumMomentProduct
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from chempy import Substance
 
 
-class AqueousMassSpectrum(MomentProduct):
+class AqueousMassSpectrum(SpectrumMomentProduct):
 
     def __init__(self, key, dry_radius_bins_edges, specific=False):
         super().__init__(
@@ -42,32 +42,36 @@ class AqueousMassSpectrum(MomentProduct):
             description=f&#39;... {key} ...&#39;
         )
         self.key = key
-        self.moment_0 = None
-        self.moments = None
-        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.dry_radius_bins_edges = dry_radius_bins_edges
+        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.specific = specific
 
     def register(self, builder):
+        builder.request_attribute(&#39;dry volume&#39;)
+        builder.request_attribute(f&#39;moles_{self.key}&#39;)
+
+        dry_volume_bins_edges = builder.core.formulae.trivia.volume(self.dry_radius_bins_edges)
+        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(dry_volume_bins_edges)
+
         super().register(builder)
-        self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
-        self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
-        self.env = builder.core.env
+
+        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def get(self):
-        volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
-        vals = np.empty(len(volume_bins_edges) - 1)
-        for i in range(len(vals)):
-            self.download_moment_to_buffer(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;,
-                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-            vals[i] = self.buffer[0]
-            self.download_moment_to_buffer(attr=&#39;volume&#39;, rank=0, filter_attr=&#39;dry volume&#39;,
-                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-            vals[i] *= self.buffer[0]
+        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        self.recalculate_spectrum_moment(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;)
+
+        for i in range(vals.shape[1]):
+            self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            vals[:, i] *= self.buffer.ravel()
+
         vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
         convert_to(vals, si.ug)
+
         if self.specific:
-            self.download_to_buffer(self.env[&#39;rhod&#39;])
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
             vals[:] /= self.buffer
         return vals</code></pre>
 </details>
@@ -91,7 +95,7 @@ class AqueousMassSpectrum(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AqueousMassSpectrum(MomentProduct):
+<pre><code class="python">class AqueousMassSpectrum(SpectrumMomentProduct):
 
     def __init__(self, key, dry_radius_bins_edges, specific=False):
         super().__init__(
@@ -100,38 +104,42 @@ class AqueousMassSpectrum(MomentProduct):
             description=f&#39;... {key} ...&#39;
         )
         self.key = key
-        self.moment_0 = None
-        self.moments = None
-        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.dry_radius_bins_edges = dry_radius_bins_edges
+        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
         self.specific = specific
 
     def register(self, builder):
+        builder.request_attribute(&#39;dry volume&#39;)
+        builder.request_attribute(f&#39;moles_{self.key}&#39;)
+
+        dry_volume_bins_edges = builder.core.formulae.trivia.volume(self.dry_radius_bins_edges)
+        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(dry_volume_bins_edges)
+
         super().register(builder)
-        self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
-        self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
-        self.env = builder.core.env
+
+        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def get(self):
-        volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
-        vals = np.empty(len(volume_bins_edges) - 1)
-        for i in range(len(vals)):
-            self.download_moment_to_buffer(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;,
-                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-            vals[i] = self.buffer[0]
-            self.download_moment_to_buffer(attr=&#39;volume&#39;, rank=0, filter_attr=&#39;dry volume&#39;,
-                                           filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-            vals[i] *= self.buffer[0]
+        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        self.recalculate_spectrum_moment(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;)
+
+        for i in range(vals.shape[1]):
+            self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            vals[:, i] *= self.buffer.ravel()
+
         vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
         convert_to(vals, si.ug)
+
         if self.specific:
-            self.download_to_buffer(self.env[&#39;rhod&#39;])
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
             vals[:] /= self.buffer
         return vals</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.product.MomentProduct" href="../../product.html#PySDM.products.product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.product.SpectrumMomentProduct" href="../../product.html#PySDM.products.product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
 <li><a title="PySDM.products.product.Product" href="../../product.html#PySDM.products.product.Product">Product</a></li>
 </ul>
 <h3>Methods</h3>
@@ -146,19 +154,20 @@ class AqueousMassSpectrum(MomentProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get(self):
-    volume_bins_edges = self.formulae.trivia.volume(self.dry_radius_bins_edges)
-    vals = np.empty(len(volume_bins_edges) - 1)
-    for i in range(len(vals)):
-        self.download_moment_to_buffer(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;,
-                                       filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-        vals[i] = self.buffer[0]
-        self.download_moment_to_buffer(attr=&#39;volume&#39;, rank=0, filter_attr=&#39;dry volume&#39;,
-                                       filter_range=(volume_bins_edges[i], volume_bins_edges[i + 1]))
-        vals[i] *= self.buffer[0]
+    vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+    self.recalculate_spectrum_moment(attr=f&#39;moles_{self.key}&#39;, rank=1, filter_attr=&#39;dry volume&#39;)
+
+    for i in range(vals.shape[1]):
+        self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+        vals[:, i] = self.buffer.ravel()
+        self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+        vals[:, i] *= self.buffer.ravel()
+
     vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.core.mesh.dv
     convert_to(vals, si.ug)
+
     if self.specific:
-        self.download_to_buffer(self.env[&#39;rhod&#39;])
+        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
         vals[:] /= self.buffer
     return vals</code></pre>
 </details>
@@ -173,10 +182,15 @@ class AqueousMassSpectrum(MomentProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
+    builder.request_attribute(&#39;dry volume&#39;)
+    builder.request_attribute(f&#39;moles_{self.key}&#39;)
+
+    dry_volume_bins_edges = builder.core.formulae.trivia.volume(self.dry_radius_bins_edges)
+    self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(dry_volume_bins_edges)
+
     super().register(builder)
-    self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
-    self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
-    self.env = builder.core.env</code></pre>
+
+    self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)</code></pre>
 </details>
 </dd>
 </dl>

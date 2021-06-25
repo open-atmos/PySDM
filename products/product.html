@@ -73,6 +73,31 @@ class MomentProduct(Product):
             self.download_to_buffer(self.moments[0, :])
 
 
+class SpectrumMomentProduct(Product):
+    def __init__(self, name, unit, description):
+        super().__init__(name, unit, description)
+        self.attr_bins_edges = None
+        self.moment_0 = None
+        self.moments = None
+
+    def register(self, builder):
+        super().register(builder)
+        self.moment_0 = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)
+        self.moments = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)
+
+    def recalculate_spectrum_moment(self, attr, rank, filter_attr=&#39;volume&#39;,
+                                            weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        self.core.particles.spectrum_moments(self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
+                                             attr_name=filter_attr,
+                                             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
+
+    def download_spectrum_moment_to_buffer(self, rank, bin_number):
+        if rank == 0:  # TODO #217
+            self.download_to_buffer(self.moment_0[bin_number, :])
+        else:
+            self.download_to_buffer(self.moments[bin_number, :])
+
+
 class MoistEnvironmentProduct(Product):
     def __init__(self, **args):
         super().__init__(**args)
@@ -236,15 +261,12 @@ class MoistEnvironmentProduct(Product):
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.dynamics.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="dynamics/aqueous_chemistry/aqueous_mass_spectrum.html#PySDM.products.dynamics.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></li>
 <li><a title="PySDM.products.dynamics.aqueous_chemistry.aqueous_mole_fraction.AqueousMoleFraction" href="dynamics/aqueous_chemistry/aqueous_mole_fraction.html#PySDM.products.dynamics.aqueous_chemistry.aqueous_mole_fraction.AqueousMoleFraction">AqueousMoleFraction</a></li>
 <li><a title="PySDM.products.dynamics.aqueous_chemistry.pH.pH" href="dynamics/aqueous_chemistry/pH.html#PySDM.products.dynamics.aqueous_chemistry.pH.pH">pH</a></li>
 <li><a title="PySDM.products.state.aerosol_specific_concentration.AerosolSpecificConcentration" href="state/aerosol_specific_concentration.html#PySDM.products.state.aerosol_specific_concentration.AerosolSpecificConcentration">AerosolSpecificConcentration</a></li>
 <li><a title="PySDM.products.state.cloud_droplet_effective_radius.CloudDropletEffectiveRadius" href="state/cloud_droplet_effective_radius.html#PySDM.products.state.cloud_droplet_effective_radius.CloudDropletEffectiveRadius">CloudDropletEffectiveRadius</a></li>
 <li><a title="PySDM.products.state.particle_mean_radius.ParticleMeanRadius" href="state/particle_mean_radius.html#PySDM.products.state.particle_mean_radius.ParticleMeanRadius">ParticleMeanRadius</a></li>
 <li><a title="PySDM.products.state.particles_concentration.ParticlesConcentration" href="state/particles_concentration.html#PySDM.products.state.particles_concentration.ParticlesConcentration">ParticlesConcentration</a></li>
-<li><a title="PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum" href="state/particles_size_spectrum.html#PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum">ParticlesSizeSpectrum</a></li>
-<li><a title="PySDM.products.state.particles_volume_spectrum.ParticlesVolumeSpectrum" href="state/particles_volume_spectrum.html#PySDM.products.state.particles_volume_spectrum.ParticlesVolumeSpectrum">ParticlesVolumeSpectrum</a></li>
 <li><a title="PySDM.products.state.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio" href="state/total_dry_mass_mixing_ratio.html#PySDM.products.state.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio">TotalDryMassMixingRatio</a></li>
 <li><a title="PySDM.products.state.total_particle_concentration.TotalParticleConcentration" href="state/total_particle_concentration.html#PySDM.products.state.total_particle_concentration.TotalParticleConcentration">TotalParticleConcentration</a></li>
 <li><a title="PySDM.products.state.total_particle_specific_concentration.TotalParticleSpecificConcentration" href="state/total_particle_specific_concentration.html#PySDM.products.state.total_particle_specific_concentration.TotalParticleSpecificConcentration">TotalParticleSpecificConcentration</a></li>
@@ -334,6 +356,7 @@ class MoistEnvironmentProduct(Product):
 <li><a title="PySDM.products.environments.time.Time" href="environments/time.html#PySDM.products.environments.time.Time">Time</a></li>
 <li><a title="PySDM.products.product.MoistEnvironmentProduct" href="#PySDM.products.product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
 <li><a title="PySDM.products.product.MomentProduct" href="#PySDM.products.product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.product.SpectrumMomentProduct" href="#PySDM.products.product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
 <li><a title="PySDM.products.state.super_droplet_count.SuperDropletCount" href="state/super_droplet_count.html#PySDM.products.state.super_droplet_count.SuperDropletCount">SuperDropletCount</a></li>
 <li>PySDM.products.stats.timers._Timer</li>
 </ul>
@@ -366,6 +389,101 @@ class MoistEnvironmentProduct(Product):
     self.formulae = self.core.formulae
     self.shape = self.core.mesh.grid
     self.buffer = np.empty(self.core.mesh.grid)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="PySDM.products.product.SpectrumMomentProduct"><code class="flex name class">
+<span>class <span class="ident">SpectrumMomentProduct</span></span>
+<span>(</span><span>name, unit, description)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpectrumMomentProduct(Product):
+    def __init__(self, name, unit, description):
+        super().__init__(name, unit, description)
+        self.attr_bins_edges = None
+        self.moment_0 = None
+        self.moments = None
+
+    def register(self, builder):
+        super().register(builder)
+        self.moment_0 = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)
+        self.moments = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)
+
+    def recalculate_spectrum_moment(self, attr, rank, filter_attr=&#39;volume&#39;,
+                                            weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        self.core.particles.spectrum_moments(self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
+                                             attr_name=filter_attr,
+                                             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
+
+    def download_spectrum_moment_to_buffer(self, rank, bin_number):
+        if rank == 0:  # TODO #217
+            self.download_to_buffer(self.moment_0[bin_number, :])
+        else:
+            self.download_to_buffer(self.moments[bin_number, :])</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.product.Product" href="#PySDM.products.product.Product">Product</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.dynamics.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="dynamics/aqueous_chemistry/aqueous_mass_spectrum.html#PySDM.products.dynamics.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></li>
+<li><a title="PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum" href="state/particles_size_spectrum.html#PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum">ParticlesSizeSpectrum</a></li>
+<li><a title="PySDM.products.state.particles_volume_spectrum.ParticlesVolumeSpectrum" href="state/particles_volume_spectrum.html#PySDM.products.state.particles_volume_spectrum.ParticlesVolumeSpectrum">ParticlesVolumeSpectrum</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.product.SpectrumMomentProduct.download_spectrum_moment_to_buffer"><code class="name flex">
+<span>def <span class="ident">download_spectrum_moment_to_buffer</span></span>(<span>self, rank, bin_number)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def download_spectrum_moment_to_buffer(self, rank, bin_number):
+    if rank == 0:  # TODO #217
+        self.download_to_buffer(self.moment_0[bin_number, :])
+    else:
+        self.download_to_buffer(self.moments[bin_number, :])</code></pre>
+</details>
+</dd>
+<dt id="PySDM.products.product.SpectrumMomentProduct.recalculate_spectrum_moment"><code class="name flex">
+<span>def <span class="ident">recalculate_spectrum_moment</span></span>(<span>self, attr, rank, filter_attr='volume', weighting_attribute='volume', weighting_rank=0)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate_spectrum_moment(self, attr, rank, filter_attr=&#39;volume&#39;,
+                                        weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+    self.core.particles.spectrum_moments(self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
+                                         attr_name=filter_attr,
+                                         weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.products.product.SpectrumMomentProduct.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register(self, builder):
+    super().register(builder)
+    self.moment_0 = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)
+    self.moments = self.core.Storage.empty((len(self.attr_bins_edges) - 1, self.core.mesh.n_cell), dtype=float)</code></pre>
 </details>
 </dd>
 </dl>
@@ -406,6 +524,14 @@ class MoistEnvironmentProduct(Product):
 <ul class="">
 <li><code><a title="PySDM.products.product.Product.download_to_buffer" href="#PySDM.products.product.Product.download_to_buffer">download_to_buffer</a></code></li>
 <li><code><a title="PySDM.products.product.Product.register" href="#PySDM.products.product.Product.register">register</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.products.product.SpectrumMomentProduct" href="#PySDM.products.product.SpectrumMomentProduct">SpectrumMomentProduct</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.product.SpectrumMomentProduct.download_spectrum_moment_to_buffer" href="#PySDM.products.product.SpectrumMomentProduct.download_spectrum_moment_to_buffer">download_spectrum_moment_to_buffer</a></code></li>
+<li><code><a title="PySDM.products.product.SpectrumMomentProduct.recalculate_spectrum_moment" href="#PySDM.products.product.SpectrumMomentProduct.recalculate_spectrum_moment">recalculate_spectrum_moment</a></code></li>
+<li><code><a title="PySDM.products.product.SpectrumMomentProduct.register" href="#PySDM.products.product.SpectrumMomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>
