@@ -37,7 +37,7 @@ class TestSepctrum:
 
         # Assert
         key = 'S_VI'
-        spectrum = output[f'dm_{key}/dlog_10(dry diameter)'][0]
+        spectrum = output[f'dm_{key}/dlog_10(dry diameter)'][0][0]
         peaks, props = find_peaks(spectrum)
         assert len(peaks) == 1
         assert 3 < np.amax(spectrum) < 5
