@@ -18,22 +18,20 @@ requirements:
     - pip
     - python
     - setuptools_scm
-    ## Uncomment when they are available
-    ## - thrustrtc >=0.3.3
-    ## - curandrtc >=0.1.2
+    - thrustrtc
+    - curandrtc
 
   run:
     - pip
     - python
     - numpy
-    - numba >=0.51.2
+    - numba
     - pint
     - chempy
     - scipy
     - pyevtk
-    ## Uncomment when they are available
-    ## - thrustrtc >=0.3.3
-    ## - curandrtc >=0.1.2
+    - thrustrtc
+    - curandrtc
 
 about:
   home: "https://atmos-cloud-sim-uj.github.io/PySDM/"
