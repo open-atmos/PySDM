@@ -1,3 +1,6 @@
+"""
+Various (hopefully) undebatable formulae
+"""
 from PySDM.physics import constants as const
 from numpy import abs, log10, exp, power
 
