@@ -618,6 +618,26 @@ The resultant plot (generated with the Matlab code) looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
 
+## Contributing, reporting issues, seeking support 
+
+Please preferably use [GitHub pull requests](https://github.com/atmos-cloud-sim-uj/PySDM/pulls) 
+to submit new code to the project - it helps to keep record of code authorship, 
+track and archive the code review workflow and allows to benefit
+from the continuous integration setup which automates execution of tests 
+with the newly added code. 
+
+Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
+the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+
+Issues regarding any incorrect, unintuitive or undocumented bahaviour of
+PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).
+Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/Ideas-for-new-features-and-examples).
+
+We encourage to use the [GitHub Discussions](https://github.com/atmos-cloud-sim-uj/PySDM/discussions) feature
+(rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
+
+We look forward to your contributions and feedback.
+
 ## Credits:
 
 Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
