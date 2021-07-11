@@ -211,10 +211,12 @@ Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
 
+radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
+
 builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()] 
+products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
 particles = builder.build(attributes, products)
 ```
 </details>
@@ -229,10 +231,12 @@ Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovi
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticlesVolumeSpectrum;
 
+radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
+
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum() });
+products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
 particles = builder.build(attributes, products);
 ```
 </details>
@@ -240,6 +244,7 @@ particles = builder.build(attributes, products);
 <summary>Python</summary>
 
 ```Python
+import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
@@ -247,10 +252,12 @@ from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products.state import ParticlesVolumeSpectrum
 
+radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+
 builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()]
+products = [ParticlesVolumeSpectrum(radius_bins_edges)]
 particles = builder.build(attributes, products)
 ```
 </details>
@@ -280,13 +287,11 @@ In the listing below, its usage is interleaved with plotting logic
 rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots
 
-radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
-
 for step = 0:1200:3600
     particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
+        particles.products["dv/dlnr"].get()[:] * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -303,12 +308,10 @@ savefig("plot.svg")
 ```Matlab
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
-radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
-
 for step = 0:1200:3600
     particles.run(int32(step - particles.n_steps))
     x = radius_bins_edges / si.um;
-    y = particles.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
+    y = particles.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -329,14 +332,11 @@ legend()
 ```Python
 from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
-import numpy as np
-
-radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 for step in [0, 1200, 2400, 3600]:
     particles.run(step - particles.n_steps)
     pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho_w / si.g,
+                y=particles.products['dv/dlnr'].get()[0] * rho_w / si.g,
                 where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
@@ -617,6 +617,26 @@ pyplot.savefig('parcel.svg')
 The resultant plot (generated with the Matlab code) looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
+
+## Contributing, reporting issues, seeking support 
+
+Please preferably use [GitHub pull requests](https://github.com/atmos-cloud-sim-uj/PySDM/pulls) 
+to submit new code to the project - it helps to keep record of code authorship, 
+track and archive the code review workflow and allows to benefit
+from the continuous integration setup which automates execution of tests 
+with the newly added code. 
+
+Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
+the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+
+Issues regarding any incorrect, unintuitive or undocumented bahaviour of
+PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).
+Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/Ideas-for-new-features-and-examples).
+
+We encourage to use the [GitHub Discussions](https://github.com/atmos-cloud-sim-uj/PySDM/discussions) feature
+(rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
+
+We look forward to your contributions and feedback.
 
 ## Credits:
 
