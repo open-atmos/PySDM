@@ -301,7 +301,7 @@ In the listing below, its usage is interleaved with plotting logic
 
 ```Julia
 rho_w = pyimport("PySDM.physics.constants").rho_w
-using Plots; plotlyjs()
+using Plots; plotly()
 
 for step = 0:1200:3600
     particles.run(step - particles.n_steps)
