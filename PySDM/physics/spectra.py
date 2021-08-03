@@ -1,3 +1,6 @@
+"""
+Classes representing particle size spectra (based on SciPy.stats logic)
+"""
 from scipy.stats import lognorm
 from scipy.stats import expon
 import math

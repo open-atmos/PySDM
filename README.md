@@ -1,3 +1,5 @@
+# PySDM
+
 [![Python 3](https://img.shields.io/static/v1?label=Python&logo=Python&color=3776AB&message=3)](https://www.python.org/)
 [![LLVM](https://img.shields.io/static/v1?label=LLVM&logo=LLVM&color=gold&message=Numba)](https://numba.pydata.org)
 [![CUDA](https://img.shields.io/static/v1?label=CUDA&logo=nVidia&color=87ce3e&message=ThrustRTC)](https://pypi.org/project/ThrustRTC/)
@@ -5,23 +7,33 @@
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
 [![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
-[![Travis Build Status](https://img.shields.io/travis/atmos-cloud-sim-uj/PySDM/master.svg?logo=travis)](https://travis-ci.com/atmos-cloud-sim-uj/PySDM)
-[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/PySDM/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
-[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM-examples/workflows/PySDM-examples/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/actions)
-[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=master&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/master)
 [![Dependabot](https://img.shields.io/static/v1?label=Dependabot&logo=dependabot&color=blue&message=on)](https://github.com/atmos-cloud-sim-uj/PySDM/network/dependencies)
-[![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/master/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/atmos-cloud-sim-uj/PySDM/graphs/commit-activity)
-[![GitHub issues](https://img.shields.io/github/issues/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=)
-[![GitHub issues](https://img.shields.io/github/issues-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=is:closed)
-[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=)
-[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=is:closed)
 [![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
 [![EU Funding](https://img.shields.io/static/v1?label=EU%20Funding%20by&color=103069&message=FNP&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAeCAYAAABTwyyaAAAEzklEQVRYw9WYS2yUVRiGn3P5ZzozpZ3aUsrNgoKlKBINmkhpCCwwxIAhsDCpBBIWhmCMMYTEhSJ4i9EgBnSBEm81MRrFBhNXEuUSMCopiRWLQqEGLNgr085M5//POS46NNYFzHQ6qGc1i5nzP/P973m/9ztCrf7A8T9csiibCocUbvTzfxLcAcaM3cY3imXz25lT3Y34G7gQYAKV3+bFAHcATlBTPogJNADG92iY28FHW97kyPbnuW/W7xgzAhukQ9xe04PJeOT0HkQRwK0TlEeGWb/kOO9v3kdD3a8YK9GhDMfa6mg9fxunOm/lWPtcpDI4K7n/jnN8+uQbrFrUSiwU/DtSEUB/MsKKBT+zYslJqiYNgVE4JwhHkzy86wlWvrKVWDSZ/YFjZlU39yw4y/rGoyQGowWB67zl4QQue+jssMdXrQvZ/00jyeHwqCgDKwnsiJjSvkYAxsG5K9WsenYbJdqAtAjhCIxCSZt/4fK1w5A2WCvxrUAKCHwNVoA2aGmvq11jJQQapEXrgMBKqmJJugejKGWLIxXrBPFoigfv/omd675gRkU/xgqUDlAhH3UDaAAlLSqUQekAYyVTyhLs3tDMsvntlIYzOFcEcOcEGd9jx9oDbGs6QO0t/Tijxi9S4bhzxiWaVh5m94Zm0n7oui4ybo0raUlcncQnxx+g+WgDF/vLoYDmoqSl/dJUnt7XRCoTZjij0Z6Pc2LiNS4EBBkNvoeOJXN+yPWWSZeANOhwJq/98nKVwNdoL8B5AROxBKBL0gjh8DMhdCh3eJnrA0yqhLpplwmyup6IajvAOIGfKGVx3VmCRGnOMpe5QAdG0bT8CAeeep0d6z6nqjSJnQiZWEllLMWrmz6k+fE9rGk8MVqYgsGv5ZH2i1Opr+9kajzB5d74hKQ+KS3d/WVMLhtgdu1lriRiOR/4nDVunaR24x7qp3UV5Cb/fJvC83nv26W81LIK58SYNFmwq4hsGx/5BwKlzYRma2NUthgOJSew4i7ru9nJYCQF5tApb2yvjiDQKJV/IfJKh0o6qssSLKv/jcAoRKHQQzE2Lj2OMV5OkWFc4MZIpsev8uXWXRx6ZicbGk8QZLxxgwe+x/rlR3h3816+f2E7lbEU+ZDn3vKVpePCdFovzCISHqbl5EIoQOteKMPB1rto65zNyfOz+KOrGl06lHPQyi/WOohH0/T0l1MZH6A3GUEKl7Pmr2la6wBrBWWRDP2DUcqjKVKBGom9RZmABAykwnglafpSJSPQvsfiOR0EQ7ExVmazA8cY6N4K1iw6RdAXRwi4mgrheT5Dvs4LeuS81a15Ll/3dQisFVSVpnj7sf1sX/sZvhAc+6UOrQyBVUQ8gx/orFmDsZqtaw/y1qZ9zKjp5vDpenyjcNe+cLNmTiUdf/bEOddVQ0VpgsOn54ET+EYxvWKALSu+5tGG76it7MNaiZKGQ23zCIcMfUMxBnrjN3fmHHvCAlp+vJcXWx6itqoXpAEnUNLx8iMfo5Xh1i17R3PJYCpC2cZ3qK3sQ8WGEDDuXlAQuFKGHzpmopXhTNfk0bmxs7uC1w6uJul79AxFkMIiBJy5UoUWjrZLU5DCFdTARDHuDqVw+OkSwI0MCEW4gtNF2BPrBCo8fKNbtILWX9aUDqFqHnn7AAAAAElFTkSuQmCC)](https://www.fnp.org.pl/en/)
-[![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://en.uj.edu.pl/)
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![PL Funding](https://img.shields.io/static/v1?label=PL%20Funding%20by&color=d21132&message=NCN&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAABmJLR0QA/wD/AP+gvaeTAAAAKUlEQVQ4jWP8////fwYqAiZqGjZqIHUAy4dJS6lqIOMdEZvRZDPcDQQAb3cIaY1Sbi4AAAAASUVORK5CYII=)](https://www.ncn.gov.pl/?language=en)
+[![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)
 
-# PySDM
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://en.uj.edu.pl/)
+
+#### [core package](https://github.com/atsmo-cloud-sim-uj/PySDM):  
+[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/PySDM/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
+[![Travis Build Status](https://img.shields.io/travis/atmos-cloud-sim-uj/PySDM/master.svg?logo=travis)](https://travis-ci.com/atmos-cloud-sim-uj/PySDM)
+[![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=master&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/master)
+[![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/master/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)    
+[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=)
+[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=is:closed)    
+[![GitHub issues](https://img.shields.io/github/issues/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=)
+[![GitHub issues](https://img.shields.io/github/issues-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/issues?q=is:closed)   
+[![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
+
+#### [examples package](https://github.com/atsmo-cloud-sim-uj/PySDM-examples):   
+[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM-examples/workflows/PySDM-examples/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/actions)    
+[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=)
+[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=is:closed)    
+[![PyPI version](https://badge.fury.io/py/PySDM-examples.svg)](https://pypi.org/project/PySDM-examples)
+
 PySDM is a package for simulating the dynamics of population of particles. 
 It is intended to serve as a building block for simulation systems modelling
   fluid flows involving a dispersed phase,
@@ -55,7 +67,9 @@ PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata
 [Pint](https://pint.readthedocs.io/), [chempy](https://pypi.org/project/chempy/), 
 [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
 
-To install PySDM using ``pip``, use: ``pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git``.
+To install PySDM using ``pip``, use: ``pip install PySDM`` 
+(or ``pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git`` to get updates
+beyond the latest release).
 
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
@@ -71,6 +85,8 @@ cd PySDM-examples
 pip install -e .
 jupyter-notebook
 ```
+Alternatively, one can also install the examples package from pypi.org by 
+using `pip install PySDM-examples``.
 
 ## PySDM examples (Jupyter notebooks reproducing results from literature):
 
@@ -211,10 +227,12 @@ Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
 
+radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
+
 builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()] 
+products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
 particles = builder.build(attributes, products)
 ```
 </details>
@@ -229,10 +247,12 @@ Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovi
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticlesVolumeSpectrum;
 
+radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
+
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum() });
+products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
 particles = builder.build(attributes, products);
 ```
 </details>
@@ -240,6 +260,7 @@ particles = builder.build(attributes, products);
 <summary>Python</summary>
 
 ```Python
+import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
@@ -247,10 +268,12 @@ from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products.state import ParticlesVolumeSpectrum
 
+radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+
 builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()]
+products = [ParticlesVolumeSpectrum(radius_bins_edges)]
 particles = builder.build(attributes, products)
 ```
 </details>
@@ -280,13 +303,11 @@ In the listing below, its usage is interleaved with plotting logic
 rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots
 
-radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
-
 for step = 0:1200:3600
     particles.run(step - particles.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get(radius_bins_edges) * rho_w / si.g,
+        particles.products["dv/dlnr"].get()[:] * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -303,12 +324,10 @@ savefig("plot.svg")
 ```Matlab
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
-radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
-
 for step = 0:1200:3600
     particles.run(int32(step - particles.n_steps))
     x = radius_bins_edges / si.um;
-    y = particles.products{"dv/dlnr"}.get(py.numpy.array(radius_bins_edges)) * rho_w / si.g;
+    y = particles.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -329,14 +348,11 @@ legend()
 ```Python
 from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
-import numpy as np
-
-radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 for step in [0, 1200, 2400, 3600]:
     particles.run(step - particles.n_steps)
     pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particles.products['dv/dlnr'].get(radius_bins_edges) * rho_w / si.g,
+                y=particles.products['dv/dlnr'].get()[0] * rho_w / si.g,
                 where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
@@ -617,6 +633,34 @@ pyplot.savefig('parcel.svg')
 The resultant plot (generated with the Matlab code) looks as follows:
 
 ![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
+
+## Contributing, reporting issues, seeking support 
+
+Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/atmos-cloud-sim-uj/PySDM/pulls) 
+(or the [PySDM-examples PR site](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls) if working on examples) - it helps to keep record of code authorship, 
+track and archive the code review workflow and allows to benefit
+from the continuous integration setup which automates execution of tests 
+with the newly added code. 
+
+As of now, the copyright to the entire PySDM codebase is with the Jagiellonian
+University, and code contributions are assumed to imply transfer of copyright.
+Should there be a need to make an exception, please indicate it when creating
+a pull request or contributing code in any other way. In any case, 
+the license of the contributed code must be compatible with GPL v3.
+
+Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
+the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
+The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html).
+
+Issues regarding any incorrect, unintuitive or undocumented bahaviour of
+PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).
+Feature requests are recorded in the "Ideas..." [PySDM wiki page](https://github.com/atmos-cloud-sim-uj/PySDM/wiki/Ideas-for-new-features-and-examples).
+
+We encourage to use the [GitHub Discussions](https://github.com/atmos-cloud-sim-uj/PySDM/discussions) feature
+(rather than the issue tracker) for seeking support in understanding, using and extending PySDM code.
+
+Please use the PySDM issue-tracking and dicsussion infrastructure for `PySDM-examples` as well.
+We look forward to your contributions and feedback.
 
 ## Credits:
 

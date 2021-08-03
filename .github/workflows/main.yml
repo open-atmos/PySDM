@@ -32,13 +32,8 @@ jobs:
       - run: |
           python -We -c "import PySDM"
 
-      # note: this installs PySDM-examples including its dependencies which inclde PySDM itself...
       - run: |
           pip install -r test-time-requirements.txt
-
-      # note: ... hence reverting to the currently tested version
-      - run: |
-          pip install -e .
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: matrix.platform == 'ubuntu-latest'
