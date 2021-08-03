@@ -168,6 +168,7 @@ It is a [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coal
 using Pkg
 Pkg.add("PyCall")
 Pkg.add("Plots")
+Pkg.add("PlotlyJS")
 
 using PyCall
 si = pyimport("PySDM.physics").si
@@ -301,7 +302,7 @@ In the listing below, its usage is interleaved with plotting logic
 
 ```Julia
 rho_w = pyimport("PySDM.physics.constants").rho_w
-using Plots
+using Plots; plotlyjs()
 
 for step = 0:1200:3600
     particles.run(step - particles.n_steps)
@@ -390,7 +391,7 @@ and the
 
 ```Julia
 using PyCall
-using Plots
+using Plots; plotlyjs()
 si = pyimport("PySDM.physics").si
 spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
 multiplicities = pyimport("PySDM.initialisation").multiplicities
