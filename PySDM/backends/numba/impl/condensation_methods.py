@@ -8,7 +8,7 @@ from functools import lru_cache
 import sys
 
 
-@numba.njit(**conf.JIT_FLAGS)
+@numba.njit({**conf.JIT_FLAGS, **{'parallel': False}})
 def _warn(msg, context=None, return_value=None):
     with numba.objmode():
         print("condensation error:", msg, file=sys.stderr)
