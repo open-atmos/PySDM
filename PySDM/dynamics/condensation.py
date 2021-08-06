@@ -19,7 +19,8 @@ class Condensation:
                  substeps: int = 1,
                  adaptive: bool = True,
                  dt_cond_range: tuple = default_cond_range,
-                 schedule: str = default_schedule
+                 schedule: str = default_schedule,
+                 max_iters: int = 16
                  ):
 
         self.core = None
@@ -37,13 +38,15 @@ class Condensation:
         self.counters = {}
         self.dt_cond_range = dt_cond_range
         self.schedule = schedule
+        self.max_iters = max_iters
+
         self.cell_order = None
 
     def register(self, builder):
         self.core = builder.core
 
         builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
-                                             fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=16)
+                                             fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
         builder.request_attribute('critical volume')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):

@@ -35,8 +35,6 @@ class ThrustRTC(
         AlgorithmicMethods.__init__(self)
         MomentsMethods.__init__(self)
 
-    @staticmethod
-    def sanity_check():
         if not ThrustRTC.ENABLE \
            and 'CI' not in os.environ:
             warnings.warn('CUDA is not available, using FakeThrustRTC!')
