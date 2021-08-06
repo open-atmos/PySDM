@@ -64,8 +64,6 @@ class ThrustRTC(
         AlgorithmicMethods.__init__(self)
         MomentsMethods.__init__(self)
 
-    @staticmethod
-    def sanity_check():
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:
             warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
@@ -111,8 +109,6 @@ class ThrustRTC(
         AlgorithmicMethods.__init__(self)
         MomentsMethods.__init__(self)
 
-    @staticmethod
-    def sanity_check():
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:
             warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
@@ -145,25 +141,6 @@ class ThrustRTC(
 <div class="desc"></div>
 </dd>
 </dl>
-<h3>Static methods</h3>
-<dl>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.sanity_check"><code class="name flex">
-<span>def <span class="ident">sanity_check</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def sanity_check():
-    if not ThrustRTC.ENABLE \
-       and &#39;CI&#39; not in os.environ:
-        warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -188,7 +165,6 @@ def sanity_check():
 <li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Random" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Random">Random</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Storage" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Storage">Storage</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.default_croupier" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.default_croupier">default_croupier</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.sanity_check" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.sanity_check">sanity_check</a></code></li>
 </ul>
 </li>
 </ul>
