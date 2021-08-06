@@ -5,18 +5,8 @@ import numba
 import numpy as np
 import math
 from functools import lru_cache
-import sys
+from .warnings import warn
 
-
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def _warn(msg, context=None, return_value=None):
-    with numba.objmode():
-        print("condensation error:", msg, file=sys.stderr)
-        if context is not None:
-            print("context:", file=sys.stderr)
-            for var in context:
-                print("\t", var, file=sys.stderr)
-    return return_value
 
 class CondensationMethods:
     @staticmethod
@@ -97,7 +87,7 @@ class CondensationMethods:
             success = False
             for burnout in range(fuse + 1):
                 if burnout == fuse:
-                    return _warn("burnout (long)", context=("thd", thd,), return_value=(0, False))
+                    return warn("burnout (long)", __file__, context=("thd", thd,), return_value=(0, False))
                 thd_new_long, success = step_fake(args, dt, n_substeps)
                 if success:
                     break
@@ -105,10 +95,10 @@ class CondensationMethods:
                     n_substeps *= multiplier
             for burnout in range(fuse + 1):
                 if burnout == fuse:
-                    return _warn("burnout (short)", return_value=(0, False))
+                    return warn("burnout (short)", __file__, return_value=(0, False))
                 thd_new_short, success = step_fake(args, dt, n_substeps * multiplier)
                 if not success:
-                    return _warn("short failed", return_value=(0, False))
+                    return warn("short failed", __file__, return_value=(0, False))
                 dthd_long = thd_new_long - thd
                 dthd_short = thd_new_short - thd
                 error_estimate = np.abs(dthd_long - multiplier * dthd_short)
@@ -241,7 +231,8 @@ class CondensationMethods:
                         counter += 1
                         if counter > max_iters:
                             if not fake:
-                                _warn("failed to find interval", context=("T", T, "p", p, "RH", RH, "a", a, "b", b, "fa", fa, "fb", fb))
+                                warn("failed to find interval", __file__,
+                                      context=("T", T, "p", p, "RH", RH, "a", a, "b", b, "fa", fa, "fb", fb))
                             success = False
                             break
                         b = max(x_insane, a + math.ldexp(dx_old, counter))
@@ -257,7 +248,7 @@ class CondensationMethods:
                         x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters, within_tolerance)
                         if iters_taken in (-1, max_iters):
                             if not fake:
-                                _warn("TOMS failed")
+                                warn("TOMS failed", __file__)
                             success = False
                             break
                     else:

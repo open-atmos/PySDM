@@ -1,11 +1,13 @@
 #from PySDM_tests.backends_fixture import backend # TODO #588
 from PySDM.backends import CPU
-
 from PySDM import Builder
 from PySDM.environments import Parcel
 from PySDM.state.mesh import Mesh
 from PySDM.dynamics.condensation import Condensation
 import numpy as np
+import re
+import fnmatch
+
 
 class _TestEnv:
     def __init__(self, dt, dv):
@@ -43,6 +45,9 @@ class TestDiagnostics:
         captured = capsys.readouterr()
 
         # assert
+        fn = fnmatch.translate("*condensation_methods.py")
+        pattern = re.compile(r"^burnout \(long\)\n\tfile: " + fn[:-2] + r"\n\tcontext:\n\t\t thd\n\t\t 1.0\n$")
         assert isinstance(exception, RuntimeError)
-        assert captured.err == "condensation error: burnout (long)\ncontext:\n\t thd\n\t 1.0\n"
+        assert str(exception) == 'Condensation failed'
+        assert pattern.match(captured.err) is not None
         assert captured.out == ""
