@@ -20,7 +20,7 @@ def test_initialisation(backend, plot=False):
     n_cell = int(np.prod(np.array(settings.grid)))
     n_moments = 1
 
-    r_bins = settings.formulae.trivia.radius(volume=settings.v_bins)
+    r_bins = settings.r_bins_edges
 
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
@@ -32,20 +32,22 @@ def test_initialisation(backend, plot=False):
 
     # Act (moments)
     simulation.run()
-    particles = simulation.core
+    core = simulation.core
     environment = simulation.core.environment
     rhod = environment["rhod"].to_ndarray().reshape(settings.grid).mean(axis=0)
 
-    for i in range(len(histogram_dry)):
-        particles.particles.moments(
-            moment_0, moments, specs={}, attr_name='dry volume', attr_range=(settings.v_bins[i], settings.v_bins[i + 1]))
-        moment_0.download(tmp)
-        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particles.mesh.dv * settings.grid[0])
+    v_bins = settings.formulae.trivia.volume(settings.r_bins_edges)
 
-        particles.particles.moments(
-            moment_0, moments, specs={}, attr_name='volume', attr_range=(settings.v_bins[i], settings.v_bins[i + 1]))
+    for i in range(len(histogram_dry)):
+        core.particles.moments(
+            moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particles.mesh.dv * settings.grid[0])
+        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (core.mesh.dv * settings.grid[0])
+
+        core.particles.moments(
+            moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
+        moment_0.download(tmp)
+        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (core.mesh.dv * settings.grid[0])
 
     # Plot
     if plot:
