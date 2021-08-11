@@ -1,15 +1,15 @@
 import numpy as np
 
 from PySDM.physics.constants import si
-from PySDM_examples.Arabas_et_al_2015.settings import Settings
-from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
+from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
+from PySDM_examples.Szumowski_et_al_1998 import Simulation
 
 
 def test_environment():
     # Arrange
     settings = Settings()
     settings.simulation_time = -1 * settings.dt
-    simulation = Simulation(settings, None)
+    simulation = Simulation(settings, None, SpinUp=SpinUp)
     simulation.reinit()
 
     # Act
