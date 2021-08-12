@@ -43,10 +43,9 @@ from PySDM.initialisation.multiplicities import discretise_n
 
 
 class Kinematic2D(_Moist):
-    def __init__(self, dt, grid, size, rhod_of, field_values):
+    def __init__(self, dt, grid, size, rhod_of):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
-        self.field_values = field_values
 
     def register(self, builder):
         super().register(builder)
@@ -108,7 +107,7 @@ class Kinematic2D(_Moist):
 <dl>
 <dt id="PySDM.environments.kinematic_2d.Kinematic2D"><code class="flex name class">
 <span>class <span class="ident">Kinematic2D</span></span>
-<span>(</span><span>dt, grid, size, rhod_of, field_values)</span>
+<span>(</span><span>dt, grid, size, rhod_of)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -117,10 +116,9 @@ class Kinematic2D(_Moist):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Kinematic2D(_Moist):
-    def __init__(self, dt, grid, size, rhod_of, field_values):
+    def __init__(self, dt, grid, size, rhod_of):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
-        self.field_values = field_values
 
     def register(self, builder):
         super().register(builder)
