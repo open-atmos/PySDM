@@ -1,6 +1,6 @@
 import numpy as np
-from PySDM_examples.Arabas_et_al_2015.settings import Settings
-from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
+from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
+from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM.physics.constants import si
 from matplotlib import pyplot
 
@@ -14,7 +14,7 @@ def test_initialisation(backend, plot=False):
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None, backend)
+    simulation = Simulation(settings, None, SpinUp=SpinUp, backend=backend)
 
     n_levels = settings.grid[1]
     n_cell = int(np.prod(np.array(settings.grid)))
