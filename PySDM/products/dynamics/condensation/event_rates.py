@@ -43,14 +43,14 @@ class EventRate(Product):
 
 class RipeningRate(EventRate):
     def __init__(self):
-        super().__init__('ripening')
+        super().__init__('Ripening')
 
 
 class ActivatingRate(EventRate):
     def __init__(self):
-        super().__init__('activating')
+        super().__init__('Activating')
 
 
 class DeactivatingRate(EventRate):
     def __init__(self):
-        super().__init__('deactivating')
+        super().__init__('Deactivating')
