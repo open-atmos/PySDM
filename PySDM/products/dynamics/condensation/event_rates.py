@@ -7,8 +7,8 @@ class EventRate(Product):
 
     def __init__(self, what):
         super().__init__(
-            name=what.lower()+'_rate',
-            description=what+' rate',
+            name=what+'_rate',
+            description=what.capitalize() + ' rate',
             unit='s-1 mg-1'
         )
         self.condensation = None
@@ -43,14 +43,14 @@ class EventRate(Product):
 
 class RipeningRate(EventRate):
     def __init__(self):
-        super().__init__('Ripening')
+        super().__init__('ripening')
 
 
 class ActivatingRate(EventRate):
     def __init__(self):
-        super().__init__('Activating')
+        super().__init__('activating')
 
 
 class DeactivatingRate(EventRate):
     def __init__(self):
-        super().__init__('Deactivating')
+        super().__init__('deactivating')
