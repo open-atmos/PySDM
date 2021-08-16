@@ -7,7 +7,7 @@ class EventRate(Product):
 
     def __init__(self, what):
         super().__init__(
-            name=what+'_rate',
+            name=what.lower()+'_rate',
             description=what+' rate',
             unit='s-1 mg-1'
         )
