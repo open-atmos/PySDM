@@ -92,7 +92,8 @@ class Formulae:
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
-                 hydrostatics: str = 'Default'
+                 hydrostatics: str = 'Default',
+                 inas_density: str = 'Niemand_et_al_2012'
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -111,6 +112,7 @@ class Formulae:
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
+        self.inas_density = _magick(inas_density, physics.inas_density, fastmath)
 
     def __str__(self):
         description = []
