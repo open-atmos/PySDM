@@ -35,7 +35,7 @@ class NetCDFExporter:
         self.storage = storage
         self.settings = settings
         self.simulator = simulator
-        self.vars = {}
+        self.vars = None
         self.filename = filename
         self.XZ = (&#39;X&#39;, &#39;Z&#39;)
 
@@ -51,6 +51,7 @@ class NetCDFExporter:
                              len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1)
 
     def _create_variables(self, ncdf):
+        self.vars = {}
         self.vars[&#34;T&#34;] = ncdf.createVariable(&#34;T&#34;, &#34;f&#34;, [&#34;T&#34;])
         self.vars[&#34;T&#34;].units = &#34;seconds&#34;
 
@@ -132,7 +133,7 @@ class NetCDFExporter:
         self.storage = storage
         self.settings = settings
         self.simulator = simulator
-        self.vars = {}
+        self.vars = None
         self.filename = filename
         self.XZ = (&#39;X&#39;, &#39;Z&#39;)
 
@@ -148,6 +149,7 @@ class NetCDFExporter:
                              len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1)
 
     def _create_variables(self, ncdf):
+        self.vars = {}
         self.vars[&#34;T&#34;] = ncdf.createVariable(&#34;T&#34;, &#34;f&#34;, [&#34;T&#34;])
         self.vars[&#34;T&#34;].units = &#34;seconds&#34;
 

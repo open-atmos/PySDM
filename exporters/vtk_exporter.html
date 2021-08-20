@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import numpy as np
 from pyevtk.hl import pointsToVTK
+from pyevtk.vtk import VtkGroup
 import numbers, os
 
 
@@ -45,25 +46,28 @@ for step in range(settings.n_steps):
 
 class VTKExporter:
 
-    def __init__(self, path=&#39;.&#39;, particles_file_number=1, particles_filename=&#34;sd_points&#34;, file_num_len=4, verbose=False):
-        path = os.path.join(path, &#39;output&#39;) 
+    def __init__(self, path=&#39;.&#39;, particles_filename=&#34;sd_points&#34;, file_num_len=4, verbose=False):
+        self.path = os.path.join(path, &#39;output&#39;)
         
-        if not os.path.isdir(path):
-            os.mkdir(path)
+        if not os.path.isdir(self.path):
+            os.mkdir(self.path)
 
-        self.particles_file_path = os.path.join(path, particles_filename)
-        self.particles_file_number = particles_file_number
+        self.particles_file_path = os.path.join(self.path, particles_filename)
         self.num_len = file_num_len
-
+        self.exported_times = {}
         self.verbose = verbose
 
+    def write_pvd(self):
+        pvd = VtkGroup(self.particles_file_path)
+        for k, v in self.exported_times.items():
+            pvd.addFile(k + &#39;.vtu&#39;, sim_time=v)
+        pvd.save()
+
     def export_particles(self, core):
-        path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(self.particles_file_number)
+        path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(core.n_steps)
+        self.exported_times[path] = core.n_steps * core.dt
         if self.verbose:
             print(&#34;Exporting Particles to vtk, path: &#34; + path)
-
-        self.particles_file_number += 1
-            
         payload = {}
 
         particles = core.particles
@@ -79,13 +83,13 @@ class VTKExporter:
         payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags[&#39;C_CONTIGUOUS&#39;] or v.flags[&#39;F_CONTIGUOUS&#39;])})
 
         if core.mesh.dimension == 2:
-            x = payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;]
-            y = np.full_like(x, 0)
-            z = payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;]
+            y = core.mesh.size[0]/core.mesh.grid[0] * (payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;])
+            x = core.mesh.size[1]/core.mesh.grid[1] * (payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;])
+            z = np.full_like(x, 0)
         else:
             raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-        pointsToVTK(path, x, y, z, data = payload) 
+        pointsToVTK(path, x, y, z, data = payload)
 
     def add_leading_zeros(self, a):
         return &#39;&#39;.join([&#39;0&#39; for i in range(self.num_len - len(str(a)))]) + str(a)
@@ -103,7 +107,7 @@ class VTKExporter:
 <dl>
 <dt id="PySDM.exporters.vtk_exporter.VTKExporter"><code class="flex name class">
 <span>class <span class="ident">VTKExporter</span></span>
-<span>(</span><span>path='.', particles_file_number=1, particles_filename='sd_points', file_num_len=4, verbose=False)</span>
+<span>(</span><span>path='.', particles_filename='sd_points', file_num_len=4, verbose=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -113,25 +117,28 @@ class VTKExporter:
 </summary>
 <pre><code class="python">class VTKExporter:
 
-    def __init__(self, path=&#39;.&#39;, particles_file_number=1, particles_filename=&#34;sd_points&#34;, file_num_len=4, verbose=False):
-        path = os.path.join(path, &#39;output&#39;) 
+    def __init__(self, path=&#39;.&#39;, particles_filename=&#34;sd_points&#34;, file_num_len=4, verbose=False):
+        self.path = os.path.join(path, &#39;output&#39;)
         
-        if not os.path.isdir(path):
-            os.mkdir(path)
+        if not os.path.isdir(self.path):
+            os.mkdir(self.path)
 
-        self.particles_file_path = os.path.join(path, particles_filename)
-        self.particles_file_number = particles_file_number
+        self.particles_file_path = os.path.join(self.path, particles_filename)
         self.num_len = file_num_len
-
+        self.exported_times = {}
         self.verbose = verbose
 
+    def write_pvd(self):
+        pvd = VtkGroup(self.particles_file_path)
+        for k, v in self.exported_times.items():
+            pvd.addFile(k + &#39;.vtu&#39;, sim_time=v)
+        pvd.save()
+
     def export_particles(self, core):
-        path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(self.particles_file_number)
+        path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(core.n_steps)
+        self.exported_times[path] = core.n_steps * core.dt
         if self.verbose:
             print(&#34;Exporting Particles to vtk, path: &#34; + path)
-
-        self.particles_file_number += 1
-            
         payload = {}
 
         particles = core.particles
@@ -147,13 +154,13 @@ class VTKExporter:
         payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags[&#39;C_CONTIGUOUS&#39;] or v.flags[&#39;F_CONTIGUOUS&#39;])})
 
         if core.mesh.dimension == 2:
-            x = payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;]
-            y = np.full_like(x, 0)
-            z = payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;]
+            y = core.mesh.size[0]/core.mesh.grid[0] * (payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;])
+            x = core.mesh.size[1]/core.mesh.grid[1] * (payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;])
+            z = np.full_like(x, 0)
         else:
             raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-        pointsToVTK(path, x, y, z, data = payload) 
+        pointsToVTK(path, x, y, z, data = payload)
 
     def add_leading_zeros(self, a):
         return &#39;&#39;.join([&#39;0&#39; for i in range(self.num_len - len(str(a)))]) + str(a)</code></pre>
@@ -183,12 +190,10 @@ class VTKExporter:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def export_particles(self, core):
-    path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(self.particles_file_number)
+    path = self.particles_file_path + &#39;_num&#39; + self.add_leading_zeros(core.n_steps)
+    self.exported_times[path] = core.n_steps * core.dt
     if self.verbose:
         print(&#34;Exporting Particles to vtk, path: &#34; + path)
-
-    self.particles_file_number += 1
-        
     payload = {}
 
     particles = core.particles
@@ -204,13 +209,29 @@ class VTKExporter:
     payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags[&#39;C_CONTIGUOUS&#39;] or v.flags[&#39;F_CONTIGUOUS&#39;])})
 
     if core.mesh.dimension == 2:
-        x = payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;]
-        y = np.full_like(x, 0)
-        z = payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;]
+        y = core.mesh.size[0]/core.mesh.grid[0] * (payload[&#39;cell origin[0]&#39;] + payload[&#39;position in cell[0]&#39;])
+        x = core.mesh.size[1]/core.mesh.grid[1] * (payload[&#39;cell origin[1]&#39;] + payload[&#39;position in cell[1]&#39;])
+        z = np.full_like(x, 0)
     else:
         raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-    pointsToVTK(path, x, y, z, data = payload) </code></pre>
+    pointsToVTK(path, x, y, z, data = payload)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.exporters.vtk_exporter.VTKExporter.write_pvd"><code class="name flex">
+<span>def <span class="ident">write_pvd</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def write_pvd(self):
+    pvd = VtkGroup(self.particles_file_path)
+    for k, v in self.exported_times.items():
+        pvd.addFile(k + &#39;.vtu&#39;, sim_time=v)
+    pvd.save()</code></pre>
 </details>
 </dd>
 </dl>
@@ -236,6 +257,7 @@ class VTKExporter:
 <ul class="">
 <li><code><a title="PySDM.exporters.vtk_exporter.VTKExporter.add_leading_zeros" href="#PySDM.exporters.vtk_exporter.VTKExporter.add_leading_zeros">add_leading_zeros</a></code></li>
 <li><code><a title="PySDM.exporters.vtk_exporter.VTKExporter.export_particles" href="#PySDM.exporters.vtk_exporter.VTKExporter.export_particles">export_particles</a></code></li>
+<li><code><a title="PySDM.exporters.vtk_exporter.VTKExporter.write_pvd" href="#PySDM.exporters.vtk_exporter.VTKExporter.write_pvd">write_pvd</a></code></li>
 </ul>
 </li>
 </ul>
