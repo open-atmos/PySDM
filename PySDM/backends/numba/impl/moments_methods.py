@@ -6,7 +6,7 @@ from PySDM.backends.numba.impl._atomic_operations import atomic_add
 
 class MomentsMethods:
     @staticmethod
-    #@numba.njit(**conf.JIT_FLAGS)
+    @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
             moment_0, moments, n, attr_data, cell_id, idx, length,
             ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
