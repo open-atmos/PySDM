@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Displacement:
-    def __init__(self, courant_field, enable_sedimentation=False):
+    def __init__(self, enable_sedimentation=False):
         self.core = None
         self.enable_sedimentation = enable_sedimentation
         self.dimension = None
@@ -13,23 +13,29 @@ class Displacement:
         self.courant = None
         self.displacement = None
         self.temp = None
-        self.courant_field = courant_field
         self.precipitation_in_last_step = 0
 
     def register(self, builder):
         builder.request_attribute('terminal velocity')
         self.core = builder.core
-        self.dimension = len(self.courant_field)
+        self.dimension = len(builder.core.environment.mesh.grid)
+        self.grid = self.core.Storage.from_ndarray(np.array(builder.core.environment.mesh.grid, dtype=np.int64))
         if self.dimension == 1:
-            grid = (self.courant_field[0].shape[0] - 1,)
+            courant_field = (np.full(self.grid[0]+1, np.nan),)
         elif self.dimension == 2:
-            grid = (self.courant_field[1].shape[0], self.courant_field[0].shape[1])
+            courant_field = (
+                np.full((self.grid[0]+1, self.grid[1]), np.nan),
+                np.full((self.grid[0], self.grid[1]+1), np.nan),
+            )
         else:
             raise NotImplementedError()
-        self.grid = self.core.Storage.from_ndarray(np.array(grid, dtype=np.int64))
-        self.courant = [self.core.Storage.from_ndarray(self.courant_field[i]) for i in range(self.dimension)]
+        self.courant = tuple(self.core.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension))
         self.displacement = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd)))
         self.temp = self.core.Storage.from_ndarray(np.zeros((self.dimension, self.core.n_sd), dtype=np.int64))
+
+    def upload_courant_field(self, courant_field):
+        for i, component in enumerate(courant_field):
+            self.courant[i].upload(component)
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]

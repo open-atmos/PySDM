@@ -7,7 +7,7 @@ class NetCDFExporter:
         self.storage = storage
         self.settings = settings
         self.simulator = simulator
-        self.vars = {}
+        self.vars = None
         self.filename = filename
         self.XZ = ('X', 'Z')
 
@@ -23,6 +23,7 @@ class NetCDFExporter:
                              len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1)
 
     def _create_variables(self, ncdf):
+        self.vars = {}
         self.vars["T"] = ncdf.createVariable("T", "f", ["T"])
         self.vars["T"].units = "seconds"
 
