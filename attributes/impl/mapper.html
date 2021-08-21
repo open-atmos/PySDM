@@ -26,22 +26,11 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
-from PySDM.attributes.physics.dry_volume import DryVolumeDynamic, DryVolumeStatic
-from PySDM.attributes.physics.radius import Radius
-from PySDM.attributes.physics.dry_radius import DryRadius
-from PySDM.attributes.physics.terminal_velocity import TerminalVelocity
-from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.attributes.numerics.cell_origin import CellOrigin
-from PySDM.attributes.numerics.position_in_cell import PositionInCell
-from PySDM.attributes.physics.temperature import Temperature
-from PySDM.attributes.physics.heat import Heat
-from PySDM.attributes.physics.critical_volume import CriticalVolume
-from PySDM.attributes.chemistry.mole_amount import MoleAmount
-from PySDM.attributes.chemistry.concentration import Concentration
-from PySDM.attributes.chemistry.pH import pH
-from PySDM.attributes.chemistry.hydrogen_ion_concentration import HydrogenIonConcentration
+<pre><code class="python">from PySDM.attributes.physics import (Multiplicities, Volume, DryVolumeDynamic, DryVolumeStatic, Radius, DryRadius,
+                                      TerminalVelocity, Temperature, Heat, CriticalVolume)
+from PySDM.attributes.ice import FreezingTemperature, SpheroidMass
+from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
+from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from functools import partial
 
@@ -63,7 +52,9 @@ attributes = {
     **{&#34;conc_&#34; + compound: partial(lambda _, c: Concentration(c), c=compound)
        for compound in AQUEOUS_COMPOUNDS.keys()},
     &#39;pH&#39;: lambda _: pH,
-    &#39;conc_H&#39;: lambda _: HydrogenIonConcentration
+    &#39;conc_H&#39;: lambda _: HydrogenIonConcentration,
+    &#39;freezing temperature&#39;: lambda _: FreezingTemperature,
+    &#39;spheroid mass&#39;: lambda _: SpheroidMass
 }
 
 
