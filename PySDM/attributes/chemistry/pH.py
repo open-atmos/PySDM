@@ -1,5 +1,6 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics import constants as const
 
 
 class pH(DerivedAttribute):
@@ -15,7 +16,7 @@ class pH(DerivedAttribute):
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = 7
+        self.data[:] = const.pH_w
 
     def recalculate(self):
         dynamic = self.particles.dynamics['AqueousChemistry']
