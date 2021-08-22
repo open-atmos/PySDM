@@ -1,8 +1,4 @@
-from PySDM.attributes.physics import (Multiplicities, Volume, DryVolumeDynamic, DryVolumeStatic, Radius, DryRadius,
-                                      TerminalVelocity, Temperature, Heat, CriticalVolume)
 from PySDM.attributes.ice import FreezingTemperature, SpheroidMass
-from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
-from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolumeInorganic,
