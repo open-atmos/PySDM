@@ -450,7 +450,7 @@ builder.add_dynamic(Condensation())
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = builder.formulae.trivia.volume(r_dry)
+v_dry = builder.formulae.trivia.volume(r_dry);
 specific_concentration = tmp{2};
 r_wet = r_wet_init(r_dry, env, kappa * v_dry);
 
