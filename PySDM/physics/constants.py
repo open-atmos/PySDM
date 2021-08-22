@@ -67,6 +67,7 @@ FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
 FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
 
 rho_w = 1 * si.kilograms / si.litres
+pH_w = 7
 sgm_w = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence
 sgm_org = 40 * si.mN / si.m
 delta_min = 0.2 * si.nm  # minimum organic film thickness [nm]

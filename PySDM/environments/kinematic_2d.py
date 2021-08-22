@@ -12,10 +12,9 @@ from PySDM.initialisation.multiplicities import discretise_n
 
 
 class Kinematic2D(_Moist):
-    def __init__(self, dt, grid, size, rhod_of, field_values):
+    def __init__(self, dt, grid, size, rhod_of):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
-        self.field_values = field_values
 
     def register(self, builder):
         super().register(builder)

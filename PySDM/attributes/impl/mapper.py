@@ -1,3 +1,8 @@
+from PySDM.attributes.physics import (Multiplicities, Volume, DryVolumeDynamic, DryVolumeStatic, Radius, DryRadius,
+                                      TerminalVelocity, Temperature, Heat, CriticalVolume)
+from PySDM.attributes.ice import FreezingTemperature, SpheroidMass
+from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
+from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolumeInorganic,
@@ -44,7 +49,9 @@ attributes = {
     **{"conc_" + compound: partial(lambda _, c: Concentration(c), c=compound)
        for compound in AQUEOUS_COMPOUNDS.keys()},
     'pH': lambda _: pH,
-    'conc_H': lambda _: HydrogenIonConcentration
+    'conc_H': lambda _: HydrogenIonConcentration,
+    'freezing temperature': lambda _: FreezingTemperature,
+    'spheroid mass': lambda _: SpheroidMass
 }
 
 
