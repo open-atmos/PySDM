@@ -364,14 +364,18 @@ n_sd = 256
 builder = Builder(backend=CPU, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(kappa=kappa))
+builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-r_wet = r_wet_init(r_dry, env, kappa)
+v_dry = builder.formulae.trivia.volume(radius=r_dry)
+r_wet = r_wet_init(r_dry, env, kappa * v_dry)
+
 
 attributes = Dict()
 attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
-attributes["dry volume"] = builder.formulae.trivia.volume(radius=r_dry)
+attributes["dry volume inorganic"] = v_dry
+attributes["dry volume organic"] = Array{Float32}(0, n_sd)
+attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
 particles = builder.build(attributes, products=[
@@ -442,16 +446,19 @@ n_sd = 256;
 builder = Builder(pyargs('backend', CPU, 'n_sd', int32(n_sd)));
 builder.set_environment(env);
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(pyargs('kappa', kappa)))
+builder.add_dynamic(Condensation())
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
+v_dry = builder.formulae.trivia.volume(r_dry)
 specific_concentration = tmp{2};
-r_wet = r_wet_init(r_dry, env, kappa);
+r_wet = r_wet_init(r_dry, env, kappa * v_dry);
 
 attributes = py.dict(pyargs( ...
     'n', multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air), ...
-    'dry volume', builder.formulae.trivia.volume(r_dry), ...
+    'dry volume inorganic', v_dry, ...
+    'dry volume organic', zeros(n_sd) ...
+    'kappa times dry volume', kappa * v_dry ... 
     'volume', builder.formulae.trivia.volume(r_wet) ...
 ));
 
@@ -508,6 +515,7 @@ saveas(gcf, "parcel.svg")
 <summary>Python</summary>
 
 ```Python
+import numpy as np
 from matplotlib import pyplot
 from PySDM.physics import si, spectra
 from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
@@ -537,11 +545,14 @@ builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation(kappa=kappa))
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-r_wet = r_wet_init(r_dry, env, kappa)
+v_dry = builder.formulae.trivia.volume(radius=r_dry)
+r_wet = r_wet_init(r_dry, env, kappa * v_dry)
 
 attributes = {
     'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume': builder.formulae.trivia.volume(radius=r_dry),
+    'dry volume inorganic': v_dry,
+    'dry volume organic': np.zeros(n_sd),
+    'kappa times dry volume': kappa * v_dry,
     'volume': builder.formulae.trivia.volume(radius=r_wet)
 }
 
