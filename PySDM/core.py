@@ -83,7 +83,7 @@ class Core:
         )
         # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -99,7 +99,8 @@ class Core:
             prhod=self.env.get_predicted("rhod"),
             pthd=self.env.get_predicted("thd"),
             pqv=self.env.get_predicted("qv"),
-            kappa=kappa,
+            kappa=self.particles["kappa"],
+            f_org=self.particles["dry volume organic fraction"],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
             v_cr=self.particles["critical volume"],

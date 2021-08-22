@@ -30,19 +30,19 @@ class CondensationMethods():
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        args_vars = ('x_old', 'dt', 'kappa', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr')
+        args_vars = ('x_old', 'dt', 'kappa', 'f_org', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr')
 
         def args(arg):
             return f"args[{args_vars.index(arg)}]"
 
-        self.__update_volume = trtc.For(("v", "vdry", *CondensationMethods.keys, "kappa", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
+        self.__update_volume = trtc.For(("v", "vdry", *CondensationMethods.keys, "_kappa", "_f_org", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
             f'''            
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
                     auto vol = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
                     auto r_new = {phys.trivia.radius.c_inline(volume="vol")};
-                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args('_T'), v_wet="vol", v_dry=f"const.pi_4_3 * {args('rd3')}")};
+                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args('_T'), v_wet="vol", v_dry=f"const.pi_4_3 * {args('rd3')}", f_org=args("f_org"))};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r="r_new", T=args('_T'), kp=args("kappa"), rd3=args("rd3"), sgm="sgm")};
                     auto r_dr_dt = {phys.drop_growth.r_dr_dt.c_inline(RH_eq="RH_eq", T=args("_T"), RH=args("_RH"), lv=args("_lv"), pvs=args("_pvs"), D=args("Dr"), K=args("Kr"))};
                     return {args("x_old")} - x_new + {args("dt")} * {phys.condensation_coordinate.dx_dt.c_inline(x="x_new", r_dr_dt="r_dr_dt")};
@@ -63,8 +63,8 @@ class CondensationMethods():
             auto r_old = {phys.trivia.radius.c_inline(volume="v[i]")};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume="vdry[i]/100")};
             auto rd3 = vdry[i] / {const.pi_4_3};
-            auto sgm = {phys.surface_tension.sigma.c_inline(T="_T", v_wet="v[i]", v_dry="vdry[i]")};
-            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r="r_old", T="_T", kp="kappa", rd3="rd3", sgm="sgm")};
+            auto sgm = {phys.surface_tension.sigma.c_inline(T="_T", v_wet="v[i]", v_dry="vdry[i]", f_org="_f_org[i]")};
+            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r="r_old", T="_T", kp="_kappa[i]", rd3="rd3", sgm="sgm")};
 
             real_type Dr=0;
             real_type Kr=0; 
@@ -81,6 +81,8 @@ class CondensationMethods():
             else {{
                 dx_old = 0;
             }}
+            real_type kappa = _kappa[i]
+            real_type f_org = _f_org[i];
             real_type args[] = {{{','.join(args_vars)}}}; // array
 
             if (dx_old == 0) {{
@@ -178,7 +180,7 @@ class CondensationMethods():
         self,
         solver,
         n_cell, cell_start_arg,
-        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
         rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
@@ -200,7 +202,7 @@ class CondensationMethods():
         for _ in range(n_substeps):
             self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), RH_max.data))
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
-                                                   dvfloat(kappa),
+                                                   kappa.data, f_org.data,
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )

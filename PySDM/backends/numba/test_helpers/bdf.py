@@ -18,7 +18,7 @@ def patch_core(core):
     core.condensation = types.MethodType(_bdf_condensation, core)
 
 
-def _bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+def _bdf_condensation(core, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:
         func = func.py_func
@@ -39,7 +39,8 @@ def _bdf_condensation(core, kappa, rtol_x, rtol_thd, counters, RH_max, success, 
         prhod=core.env.get_predicted("rhod").data,
         pthd=core.env.get_predicted("thd").data,
         pqv=core.env.get_predicted("qv").data,
-        kappa=kappa,
+        kappa=core.particles["kappa"].data,
+        f_org=core.particles["dry volume organic fraction"].data,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
         dt=core.dt,
@@ -78,7 +79,7 @@ def _make_solve(formulae):
         return np.sum(n * volume(x)) * const.rho_w / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-    def _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
+    def _impl(dy_dt, x, T, p, n, RH, kappa, f_org, dry_volume, thd, dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
         DTp = phys_D(T, p)
         lambdaD = phys_lambdaD(DTp, T)
         lambdaK = phys_lambdaK(T, p)
@@ -87,13 +88,13 @@ def _make_solve(formulae):
             r = phys_radius(v)
             Dr = phys_DK(DTp, r, lambdaD)
             Kr = phys_DK(const.K0, r, lambdaK)
-            sgm = sigma(T, v, dry_volume[i])
-            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa, dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, Dr, Kr))
+            sgm = sigma(T, v, dry_volume[i], f_org[i])
+            dy_dt[idx_x + i] = dx_dt(x[i], r_dr_dt(RH_eq(r, T, kappa[i], dry_volume[i] / const.pi_4_3, sgm), T, RH, lv, pvs, Dr, Kr))
         dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
-    def _odesys(t, y, kappa, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
+    def _odesys(t, y, kappa, f_org, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt):
         thd = y[idx_thd]
         x = y[idx_x:]
 
@@ -105,12 +106,12 @@ def _make_solve(formulae):
         RH = pv / pvs
 
         dy_dt = np.empty_like(y)
-        _impl(dy_dt, x, T, p, n, RH, kappa, dry_volume, thd, dthd_dt, dqv_dt, m_d_mean, rhod_mean, pvs, lv(T))
+        _impl(dy_dt, x, T, p, n, RH, kappa, f_org, dry_volume, thd, dthd_dt, dqv_dt, m_d_mean, rhod_mean, pvs, lv(T))
         return dy_dt
 
     def solve(
             v, v_cr, n, vdry,
-            cell_idx, kappa, thd, qv,
+            cell_idx, kappa, f_org, thd, qv,
             dthd_dt, dqv_dt, m_d_mean, rhod_mean,
             rtol_x, rtol_thd, dt, substeps
     ):
@@ -119,7 +120,7 @@ def _make_solve(formulae):
         y0[idx_thd] = thd
         y0[idx_x:] = x(v[cell_idx])
         qt = qv + _ql(n[cell_idx], y0[idx_x:], m_d_mean)
-        args = (kappa, vdry[cell_idx], n[cell_idx], dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt)
+        args = (kappa[cell_idx], f_org[cell_idx], vdry[cell_idx], n[cell_idx], dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt)
         if dthd_dt == 0 and dqv_dt == 0 and (_odesys(0, y0, *args)[idx_x] == 0).all():
             y1 = y0
         else:

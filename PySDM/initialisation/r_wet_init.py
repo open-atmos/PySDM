@@ -11,10 +11,15 @@ default_rtol = 1e-5
 default_max_iters = 64
 
 
-def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None,
+def r_wet_init(r_dry: np.ndarray, environment,
+               kappa_times_dry_volume: np.ndarray,
+               f_org: np.ndarray = None,
+               cell_id: np.ndarray = None,
                rtol=default_rtol, max_iters=default_max_iters):
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
+    if f_org is None:
+        f_org = np.zeros_like(r_dry, dtype=float)
 
     T = environment["T"].to_ndarray()
     RH = environment["RH"].to_ndarray()
@@ -26,11 +31,13 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
     phys_volume = formulae.trivia.volume
     within_tolerance = formulae.trivia.within_tolerance
 
+    kappa = kappa_times_dry_volume / phys_volume(radius=r_dry)
+
     jit_flags = {**JIT_FLAGS, **{'fastmath': formulae.fastmath, 'cache': False}}
 
     @njit(**{**jit_flags, 'parallel': False})
-    def minfun(r, T, RH, kp, rd3):
-        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3)
+    def minfun(r, T, RH, kp, rd3, f_org):
+        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3, f_org=f_org)
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @njit(**jit_flags)
@@ -42,13 +49,14 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
             cid = cell_id[i]
             # root-finding initial guess
             a = r_d
-            b = r_cr(kappa, r_d**3, T[cid], const.sgm_w)
+            b = r_cr(kappa[i], r_d**3, T[cid], const.sgm_w)
             # minimisation
             args = (
                 T[cid],
                 np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
-                kappa,
-                r_d**3
+                kappa[i],
+                r_d**3,
+                f_org[i]
             )
             fa = minfun(a, *args)
             fb = minfun(b, *args)
@@ -60,5 +68,3 @@ def r_wet_init(r_dry: np.ndarray, environment, kappa, cell_id: np.ndarray = None
     r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
     assert (iters != max_iters).all()
     return r_wet
-
-

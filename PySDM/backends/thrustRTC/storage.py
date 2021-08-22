@@ -194,6 +194,10 @@ class Storage:
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self, a, b)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             trtc.Copy(other.data, self.data)

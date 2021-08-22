@@ -47,9 +47,11 @@ class Builder:
         self.request_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute):
+    def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
+        if variant is not None:
+            assert variant == self.req_attr[attribute]
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         assert self.core.environment is not None
