@@ -542,7 +542,7 @@ n_sd = 256
 builder = Builder(backend=CPU, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(kappa=kappa))
+builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
 v_dry = builder.formulae.trivia.volume(radius=r_dry)
