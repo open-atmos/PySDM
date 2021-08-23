@@ -89,3 +89,5 @@ dT_u = si.K
 
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 K_H2O = 1e-14 * M * M
+
+default_random_seed = 44  # https://en.wikipedia.org/wiki/44_(number)
