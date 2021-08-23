@@ -1,4 +1,4 @@
-from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity
+from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity, UniformRandom
 from PySDM.physics.spectra import Lognormal
 import numpy as np
 import pytest
@@ -7,11 +7,12 @@ import pytest
 @pytest.mark.parametrize("discretisation", [
 	pytest.param(Linear),
 	pytest.param(Logarithmic),
-	pytest.param(ConstantMultiplicity)
+	pytest.param(ConstantMultiplicity),
+	pytest.param(UniformRandom)
 ])
 def test_spectral_discretisation(discretisation):
 	# Arrange
-	n_sd = 100
+	n_sd = 10000
 	m_mode = .5e-5
 	n_part = 256*16
 	s_geom = 1.5
@@ -29,4 +30,4 @@ def test_spectral_discretisation(discretisation):
 	actual = np.sum(n)
 	desired = spectrum.cumulative(m_range[1]) - spectrum.cumulative(m_range[0])
 	quotient = actual / desired
-	np.testing.assert_almost_equal(actual=quotient, desired=1.0, decimal=2)
+	np.testing.assert_approx_equal(actual=quotient, desired=1.0, significant=2)

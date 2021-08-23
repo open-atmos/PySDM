@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Tuple
-
+from PySDM.physics import constants as const
 
 default_cdf_range = (.00001, .99999)
 
@@ -60,8 +60,6 @@ class ConstantMultiplicity(SpectralSampling):
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-        self.spectrum = spectrum
-
     def sample(self, n_sd):
         cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
         cdf_arg /= self.spectrum.norm_factor
@@ -70,3 +68,13 @@ class ConstantMultiplicity(SpectralSampling):
         assert np.isfinite(percentiles).all()
 
         return self._sample(percentiles, self.spectrum)
+
+class UniformRandom(SpectralSampling):
+    def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
+        super().__init__(spectrum, size_range)
+        self.rng = np.random.default_rng(seed)
+
+    def sample(self, n_sd):
+        pdf_arg = self.rng.uniform(*self.size_range, n_sd)
+        dr = (self.size_range[1] - self.size_range[0]) / n_sd
+        return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)

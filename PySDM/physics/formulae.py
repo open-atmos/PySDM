@@ -79,7 +79,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = const.default_random_seed,
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
