@@ -26,6 +26,8 @@ class Independent(SpectroGlacialSampling):
         )
         dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
         dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
-        return *pdf_arg, dr * dT \
+        return (
+            *pdf_arg, dr * dT \
                * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
                * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+        )
