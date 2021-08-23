@@ -7,7 +7,7 @@ class TestInitialCondition:
     @staticmethod
     def test_initial_condition(plot=False):
         # Arrange
-        settings = Settings(n_sd_per_gridbox=100, w_1=1 * si.m / si.s)
+        settings = Settings(n_sd_per_gridbox=100, rho_times_w_1=1 * si.m / si.s)
         simulation = Simulation(settings)
 
         # Act

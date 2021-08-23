@@ -32,7 +32,8 @@ class DisplacementSettings:
             'position in cell': position_in_cell
         }
         core.build(attributes)
-        sut = Displacement(courant_field=self.courant_field_data, enable_sedimentation=self.sedimentation)
+        sut = Displacement(enable_sedimentation=self.sedimentation)
         sut.register(core)
+        sut.upload_courant_field(self.courant_field_data)
 
         return sut, core

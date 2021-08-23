@@ -8,7 +8,7 @@ class EventRate(Product):
     def __init__(self, what):
         super().__init__(
             name=what+'_rate',
-            description=what+' rate',
+            description=what.capitalize() + ' rate',
             unit='s-1 mg-1'
         )
         self.condensation = None

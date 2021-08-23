@@ -1,5 +1,5 @@
-from PySDM_examples.Arabas_et_al_2015.simulation import Simulation
-from PySDM_examples.Arabas_et_al_2015.settings import Settings
+from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM.physics import si
 import numpy as np
 from matplotlib import pyplot
@@ -7,6 +7,7 @@ import pytest
 
 # noinspection PyUnresolvedReferences
 from PySDM_tests.backends_fixture import backend
+
 
 class DummyStorage:
     def __init__(self):
@@ -32,7 +33,7 @@ def test_spin_up(backend, fastmath, plot=False):
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, backend)
+    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend=backend)
     simulation.reinit()
 
     # Act

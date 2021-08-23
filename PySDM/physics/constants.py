@@ -67,7 +67,8 @@ FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
 FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
 
 rho_w = 1 * si.kilograms / si.litres
-sgm_w = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence
+pH_w = 7
+sgm = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence
 
 p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
@@ -88,3 +89,5 @@ dT_u = si.K
 
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 K_H2O = 1e-14 * M * M
+
+default_random_seed = 44  # https://en.wikipedia.org/wiki/44_(number)
