@@ -155,7 +155,7 @@ __sum_out_of_place_elementwise_body = trtc.For(['output', 'a', 'b'], "i", '''
 @nice_thrust(**NICE_THRUST_FLAGS)
 def sum_out_of_place(output, a, b):
     if hasattr(a, 'data'):
-        loop = __divide_out_of_place_elementwise_body
+        loop = __sum_out_of_place_elementwise_body
     else:
         raise NotImplementedError()
     loop.launch_n(output.shape[0], thrust([output, a, b]))
