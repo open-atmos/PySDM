@@ -4,11 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.initialisation API documentation</title>
-<meta name="description" content="Initialisation logic incl.
-`PySDM.initialisation.spectral_sampling`,
-`PySDM.initialisation.spatial_sampling`,
-`PySDM.initialisation.spectra`" />
+<title>PySDM.initialisation.spectro_glacial API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,59 +19,145 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.initialisation</code></h1>
+<h1 class="title">Module <code>PySDM.initialisation.spectro_glacial</code></h1>
 </header>
 <section id="section-intro">
-<p>Initialisation logic incl.
-<code><a title="PySDM.initialisation.spectral_sampling" href="spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code>,
-<code><a title="PySDM.initialisation.spatial_sampling" href="spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code>,
-<code>PySDM.initialisation.spectra</code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-Initialisation logic incl.
-`PySDM.initialisation.spectral_sampling`,
-`PySDM.initialisation.spatial_sampling`,
-`PySDM.initialisation.spectra`
-&#34;&#34;&#34;
-from .r_wet_init import r_wet_init
-from . import spectral_sampling
-from . import spatial_sampling
-from . import multiplicities</code></pre>
+<pre><code class="python">from PySDM.initialisation.spectral_sampling import SpectralSampling
+from PySDM.physics import constants as const
+import numpy as np
+
+DIM_SIZE = 0
+DIM_TEMP = 1
+N_DIMS = 2
+
+class SpectroGlacialSampling(SpectralSampling):
+    pass
+
+class Independent(SpectroGlacialSampling):
+    def __init__(self,
+                 size_spectrum, freezing_temperature_spectrum,
+                 size_range=None, temperature_range=None,
+                 seed=const.default_random_seed):
+        super().__init__(size_spectrum, size_range)
+        self.freezing_temperature_spectrum = freezing_temperature_spectrum
+        self.temp_range = temperature_range
+        self.rng = np.random.default_rng(seed)
+
+    def sample(self, n_sd):
+        pdf_arg = (
+            self.rng.uniform(*self.size_range, n_sd),
+            self.rng.uniform(*self.temp_range, n_sd)
+        )
+        dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
+        dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        return (
+            *pdf_arg, dr * dT \
+               * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
+               * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+        )</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.initialisation.multiplicities" href="multiplicities.html">PySDM.initialisation.multiplicities</a></code></dt>
-<dd>
-<div class="desc"><p>integer-valued discretisation with sanity checks for errors due to type casting</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.initialisation.r_wet_init" href="r_wet_init.html">PySDM.initialisation.r_wet_init</a></code></dt>
-<dd>
-<div class="desc"><p>Koehler-curve equilibrium in unsaturated conditions</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.initialisation.spatial_sampling" href="spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code></dt>
+<dt id="PySDM.initialisation.spectro_glacial.Independent"><code class="flex name class">
+<span>class <span class="ident">Independent</span></span>
+<span>(</span><span>size_spectrum, freezing_temperature_spectrum, size_range=None, temperature_range=None, seed=44)</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.initialisation.spectral_sampling" href="spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code></dt>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Independent(SpectroGlacialSampling):
+    def __init__(self,
+                 size_spectrum, freezing_temperature_spectrum,
+                 size_range=None, temperature_range=None,
+                 seed=const.default_random_seed):
+        super().__init__(size_spectrum, size_range)
+        self.freezing_temperature_spectrum = freezing_temperature_spectrum
+        self.temp_range = temperature_range
+        self.rng = np.random.default_rng(seed)
+
+    def sample(self, n_sd):
+        pdf_arg = (
+            self.rng.uniform(*self.size_range, n_sd),
+            self.rng.uniform(*self.temp_range, n_sd)
+        )
+        dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
+        dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        return (
+            *pdf_arg, dr * dT \
+               * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
+               * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling" href="#PySDM.initialisation.spectro_glacial.SpectroGlacialSampling">SpectroGlacialSampling</a></li>
+<li><a title="PySDM.initialisation.spectral_sampling.SpectralSampling" href="spectral_sampling.html#PySDM.initialisation.spectral_sampling.SpectralSampling">SpectralSampling</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.initialisation.spectro_glacial.Independent.sample"><code class="name flex">
+<span>def <span class="ident">sample</span></span>(<span>self, n_sd)</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.initialisation.spectro_glacial" href="spectro_glacial.html">PySDM.initialisation.spectro_glacial</a></code></dt>
-<dd>
-<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sample(self, n_sd):
+    pdf_arg = (
+        self.rng.uniform(*self.size_range, n_sd),
+        self.rng.uniform(*self.temp_range, n_sd)
+    )
+    dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
+    dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+    return (
+        *pdf_arg, dr * dT \
+           * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
+           * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+    )</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+<dt id="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling"><code class="flex name class">
+<span>class <span class="ident">SpectroGlacialSampling</span></span>
+<span>(</span><span>spectrum, size_range: [None, typing.Tuple[float, float]] = None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SpectroGlacialSampling(SpectralSampling):
+    pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.initialisation.spectral_sampling.SpectralSampling" href="spectral_sampling.html#PySDM.initialisation.spectral_sampling.SpectralSampling">SpectralSampling</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.initialisation.spectro_glacial.Independent" href="#PySDM.initialisation.spectro_glacial.Independent">Independent</a></li>
+</ul>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -85,16 +168,20 @@ from . import multiplicities</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM" href="../index.html">PySDM</a></code></li>
+<li><code><a title="PySDM.initialisation" href="index.html">PySDM.initialisation</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.initialisation.multiplicities" href="multiplicities.html">PySDM.initialisation.multiplicities</a></code></li>
-<li><code><a title="PySDM.initialisation.r_wet_init" href="r_wet_init.html">PySDM.initialisation.r_wet_init</a></code></li>
-<li><code><a title="PySDM.initialisation.spatial_sampling" href="spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code></li>
-<li><code><a title="PySDM.initialisation.spectral_sampling" href="spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code></li>
-<li><code><a title="PySDM.initialisation.spectro_glacial" href="spectro_glacial.html">PySDM.initialisation.spectro_glacial</a></code></li>
+<li>
+<h4><code><a title="PySDM.initialisation.spectro_glacial.Independent" href="#PySDM.initialisation.spectro_glacial.Independent">Independent</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.initialisation.spectro_glacial.Independent.sample" href="#PySDM.initialisation.spectro_glacial.Independent.sample">sample</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling" href="#PySDM.initialisation.spectro_glacial.SpectroGlacialSampling">SpectroGlacialSampling</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

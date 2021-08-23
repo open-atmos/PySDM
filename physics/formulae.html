@@ -122,7 +122,7 @@ class Formulae:
                  state_variable_triplet: str = &#39;RhodThdQv&#39;,
                  particle_advection: str = &#39;ImplicitInSpace&#39;,
                  hydrostatics: str = &#39;Default&#39;,
-                 inas_density: str = &#39;Niemand_et_al_2012&#39;
+                 freezing_temperature_spectrum: str = &#39;Niemand_et_al_2012&#39;
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -141,7 +141,7 @@ class Formulae:
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
-        self.inas_density = _magick(inas_density, physics.inas_density, fastmath)
+        self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
 
     def __str__(self):
         description = []
@@ -166,7 +166,7 @@ class Formulae:
 <dl>
 <dt id="PySDM.physics.formulae.Formulae"><code class="flex name class">
 <span>class <span class="ident">Formulae</span></span>
-<span>(</span><span>*, seed: int = 44, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'RhodThdQv', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', inas_density: str = 'Niemand_et_al_2012')</span>
+<span>(</span><span>*, seed: int = 44, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'RhodThdQv', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Niemand_et_al_2012')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -190,7 +190,7 @@ class Formulae:
                  state_variable_triplet: str = &#39;RhodThdQv&#39;,
                  particle_advection: str = &#39;ImplicitInSpace&#39;,
                  hydrostatics: str = &#39;Default&#39;,
-                 inas_density: str = &#39;Niemand_et_al_2012&#39;
+                 freezing_temperature_spectrum: str = &#39;Niemand_et_al_2012&#39;
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -209,7 +209,7 @@ class Formulae:
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
-        self.inas_density = _magick(inas_density, physics.inas_density, fastmath)
+        self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
 
     def __str__(self):
         description = []
