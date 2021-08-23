@@ -1,26 +1,36 @@
-from PySDM.initialisation.spectral_sampling import Linear, Logarithmic, ConstantMultiplicity, UniformRandom
+from PySDM.initialisation import spectral_sampling, spectro_glacial
 from PySDM.physics.spectra import Lognormal
+from PySDM.physics import Formulae, constants as const
 import numpy as np
 import pytest
 
+m_mode = .5e-5
+n_part = 256 * 16
+s_geom = 1.5
+spectrum = Lognormal(n_part, m_mode, s_geom)
+m_range = (.1e-6, 100e-6)
+formulae = Formulae()
 
 @pytest.mark.parametrize("discretisation", [
-	pytest.param(Linear),
-	pytest.param(Logarithmic),
-	pytest.param(ConstantMultiplicity),
-	pytest.param(UniformRandom)
+	pytest.param(spectral_sampling.Linear(spectrum, m_range)),
+	pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
+	pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
+	pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
+	pytest.param(spectro_glacial.Independent(
+		size_spectrum=spectrum,
+		freezing_temperature_spectrum=formulae.freezing_temperature_spectrum,
+		temperature_range=(const.T0-40, const.T0+10)
+	))
 ])
 def test_spectral_discretisation(discretisation):
 	# Arrange
 	n_sd = 10000
-	m_mode = .5e-5
-	n_part = 256*16
-	s_geom = 1.5
-	spectrum = Lognormal(n_part, m_mode, s_geom)
-	m_range = (.1e-6, 100e-6)
 
 	# Act
-	m, n = discretisation(spectrum, m_range).sample(n_sd)
+	if isinstance(discretisation, spectro_glacial.SpectroGlacialSampling):
+		m, _, n = discretisation.sample(n_sd)
+	else:
+		m, n = discretisation.sample(n_sd)
 
 	# Assert
 	assert m.shape == n.shape
