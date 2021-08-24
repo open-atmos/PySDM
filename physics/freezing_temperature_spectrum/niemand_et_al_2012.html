@@ -37,7 +37,12 @@ class Niemand_et_al_2012:
     @staticmethod
     def pdf(T):
         ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+
+    @staticmethod
+    def cdf(T):
+        ns_T = np.exp(a * (T - const.T0) + b)
+        return np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
 </details>
 </section>
 <section>
@@ -62,10 +67,30 @@ class Niemand_et_al_2012:
     @staticmethod
     def pdf(T):
         ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+
+    @staticmethod
+    def cdf(T):
+        ns_T = np.exp(a * (T - const.T0) + b)
+        return np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
+<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf"><code class="name flex">
+<span>def <span class="ident">cdf</span></span>(<span>T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def cdf(T):
+    ns_T = np.exp(a * (T - const.T0) + b)
+    return np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
 <span>def <span class="ident">pdf</span></span>(<span>T)</span>
 </code></dt>
@@ -102,6 +127,7 @@ def pdf(T):
 <li>
 <h4><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012">Niemand_et_al_2012</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
 </ul>
 </li>

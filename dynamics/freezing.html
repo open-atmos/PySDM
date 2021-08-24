@@ -29,6 +29,7 @@
 <pre><code class="python">class Freezing:
     def __init__(self, *, singular=True):
         self.singular = singular
+        self.enable = True
 
     def register(self, builder):
         if self.singular:
@@ -40,7 +41,20 @@
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.core.dynamics:
-            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594</code></pre>
+            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
+
+        if not self.enable:
+            return
+
+        self.core.bck.freeze(
+            T_fz=self.core.particles[&#39;freezing temperature&#39;],
+            v_wet=self.core.particles[&#39;volume&#39;],
+            T=self.core.environment[&#39;T&#39;],
+            RH=self.core.environment[&#39;RH&#39;],
+            cell=self.core.particles[&#39;cell id&#39;]
+        )
+
+        self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 </section>
 <section>
@@ -65,6 +79,7 @@
 <pre><code class="python">class Freezing:
     def __init__(self, *, singular=True):
         self.singular = singular
+        self.enable = True
 
     def register(self, builder):
         if self.singular:
@@ -76,7 +91,20 @@
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.core.dynamics:
-            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594</code></pre>
+            raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
+
+        if not self.enable:
+            return
+
+        self.core.bck.freeze(
+            T_fz=self.core.particles[&#39;freezing temperature&#39;],
+            v_wet=self.core.particles[&#39;volume&#39;],
+            T=self.core.environment[&#39;T&#39;],
+            RH=self.core.environment[&#39;RH&#39;],
+            cell=self.core.particles[&#39;cell id&#39;]
+        )
+
+        self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>

@@ -40,13 +40,12 @@ class IceWaterContent(MomentProduct):
         )
 
     def get(self):
-        self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=0)
+        self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=1)
+        self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
         result = self.buffer.copy()
-        result[:] *= conc
-        result[:] /= self.core.mesh.dv
+        result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
         self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
         result[:] /= self.buffer
@@ -82,13 +81,12 @@ class IceWaterContent(MomentProduct):
         )
 
     def get(self):
-        self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=0)
+        self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=1)
+        self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
         result = self.buffer.copy()
-        result[:] *= conc
-        result[:] /= self.core.mesh.dv
+        result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
         self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
         result[:] /= self.buffer
@@ -112,13 +110,12 @@ class IceWaterContent(MomentProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get(self):
-    self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=0)
+    self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
     conc = self.buffer.copy()
 
-    self.download_moment_to_buffer(&#39;spheroid mass&#39;, rank=1)
+    self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
     result = self.buffer.copy()
-    result[:] *= conc
-    result[:] /= self.core.mesh.dv
+    result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
     self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
     result[:] /= self.buffer

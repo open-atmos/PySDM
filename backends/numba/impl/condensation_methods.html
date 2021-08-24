@@ -204,7 +204,8 @@ class CondensationMethods:
         def calculate_ml_old(v, n, cell_idx):
             result = 0
             for drop in cell_idx:
-                result += n[drop] * v[drop] * const.rho_w
+                if v[drop] &gt; 0:
+                    result += n[drop] * v[drop] * const.rho_w
             return result
 
         return calculate_ml_old
@@ -232,6 +233,8 @@ class CondensationMethods:
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
+                if v[drop] &lt; 0:
+                    continue
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 x_insane = x(vdry[drop]/100)
@@ -549,7 +552,8 @@ class CondensationMethods:
         def calculate_ml_old(v, n, cell_idx):
             result = 0
             for drop in cell_idx:
-                result += n[drop] * v[drop] * const.rho_w
+                if v[drop] &gt; 0:
+                    result += n[drop] * v[drop] * const.rho_w
             return result
 
         return calculate_ml_old
@@ -577,6 +581,8 @@ class CondensationMethods:
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
+                if v[drop] &lt; 0:
+                    continue
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 x_insane = x(vdry[drop]/100)
@@ -829,6 +835,8 @@ def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_R
         lambdaK = phys_lambdaK(T, p)
         lambdaD = phys_lambdaD(DTp, T)
         for drop in cell_idx:
+            if v[drop] &lt; 0:
+                continue
             x_old = x(v[drop])
             r_old = radius(v[drop])
             x_insane = x(vdry[drop]/100)
@@ -910,7 +918,8 @@ def make_calculate_ml_old(jit_flags):
     def calculate_ml_old(v, n, cell_idx):
         result = 0
         for drop in cell_idx:
-            result += n[drop] * v[drop] * const.rho_w
+            if v[drop] &gt; 0:
+                result += n[drop] * v[drop] * const.rho_w
         return result
 
     return calculate_ml_old</code></pre>
