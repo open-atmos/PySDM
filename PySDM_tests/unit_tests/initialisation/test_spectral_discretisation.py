@@ -18,8 +18,7 @@ formulae = Formulae()
 	pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
 	pytest.param(spectro_glacial.Independent(
 		size_spectrum=spectrum,
-		freezing_temperature_spectrum=formulae.freezing_temperature_spectrum,
-		temperature_range=(const.T0-40, const.T0+10)
+		freezing_temperature_spectrum=formulae.freezing_temperature_spectrum
 	))
 ])
 def test_spectral_discretisation(discretisation):

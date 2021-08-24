@@ -29,20 +29,29 @@ class Kinematic2D(_Moist):
 
     def init_attributes(self, *,
                         spatial_discretisation,
-                        spectral_discretisation,
                         kappa,
+                        spectral_discretisation = None,
+                        spectro_glacial_discretisation = None,
                         rtol=default_rtol
                         ):
         # TODO #418 move to one method
         super().sync()
         self.notify()
 
+        assert spectro_glacial_discretisation is None or spectral_discretisation is None
+
         attributes = {}
         with np.errstate(all='raise'):
             positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
-            r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+            if spectral_discretisation:
+                r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+            elif spectro_glacial_discretisation:
+                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.core.n_sd)
+                attributes['freezing temperature'] = T_fz
+            else:
+                raise NotImplementedError()
             r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes['cell id'])
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']

@@ -9,15 +9,22 @@ def test_freezing_temperature_spectra(plot=False):
     T = np.linspace(const.T0 - 40, const.T0, num=100)
 
     # Act
-    p = formulae.freezing_temperature_spectrum.pdf(T)
+    pdf = formulae.freezing_temperature_spectrum.pdf(T)
+    cdf = formulae.freezing_temperature_spectrum.cdf(T)
 
     # Plot
     if plot:
-        pylab.plot(T, p, linestyle='-', marker='o')
+        pylab.plot(T, pdf, linestyle='-', marker='o', label='pdf')
+        pdfax = pylab.gca()
+        cdfax = pdfax.twinx()
+        cdfax.plot(T, cdf, linestyle='--', marker='x', label='cdf')
         pylab.xlabel('T [K]')
-        pylab.ylabel('pdf [K$^{-1}$]')
+        pdfax.set_ylabel('pdf [K$^{-1}$]')
+        cdfax.set_ylabel('cdf [1]')
         pylab.show()
 
     # Assert
     dT = T[1] - T[0]
-    np.testing.assert_approx_equal(np.sum(p * dT), 1)
+    np.testing.assert_approx_equal(np.sum(pdf * dT), 1)
+    np.testing.assert_approx_equal(cdf[0]+1, 1)
+    np.testing.assert_approx_equal(cdf[-1], 1)
