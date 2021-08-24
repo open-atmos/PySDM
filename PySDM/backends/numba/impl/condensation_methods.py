@@ -176,7 +176,8 @@ class CondensationMethods:
         def calculate_ml_old(v, n, cell_idx):
             result = 0
             for drop in cell_idx:
-                result += n[drop] * v[drop] * const.rho_w
+                if v[drop] > 0:
+                    result += n[drop] * v[drop] * const.rho_w
             return result
 
         return calculate_ml_old
@@ -204,6 +205,8 @@ class CondensationMethods:
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
+                if v[drop] < 0:
+                    continue
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 x_insane = x(vdry[drop]/100)

@@ -1,5 +1,6 @@
-from PySDM.initialisation.spectral_sampling import SpectralSampling
+from PySDM.initialisation.spectral_sampling import SpectralSampling, default_cdf_range
 from PySDM.physics import constants as const
+from scipy.interpolate import interp1d
 import numpy as np
 
 DIM_SIZE = 0
@@ -16,6 +17,12 @@ class Independent(SpectroGlacialSampling):
                  seed=const.default_random_seed):
         super().__init__(size_spectrum, size_range)
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
+        if temperature_range is None:
+            cdf_arg = np.linspace(const.T0-100, const.T0+10)
+            cdf_val = freezing_temperature_spectrum.cdf(cdf_arg)
+            inv_cdf = interp1d(cdf_val, cdf_arg)
+            temperature_range = inv_cdf(default_cdf_range)
+
         self.temp_range = temperature_range
         self.rng = np.random.default_rng(seed)
 

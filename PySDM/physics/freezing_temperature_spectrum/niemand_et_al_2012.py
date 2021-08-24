@@ -10,3 +10,8 @@ class Niemand_et_al_2012:
     def pdf(T):
         ns_T = np.exp(a * (T - const.T0) + b)
         return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+
+    @staticmethod
+    def cdf(T):
+        ns_T = np.exp(a * (T - const.T0) + b)
+        return np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
