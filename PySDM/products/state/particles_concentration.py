@@ -5,13 +5,13 @@ from PySDM.products.product import MomentProduct
 
 class ParticlesConcentration(MomentProduct):
 
-    def __init__(self, radius_range, specific=False):
+    def __init__(self, radius_range=(0, np.inf), specific=False):
         self.radius_range = radius_range
-
+        self.specific = specific
         super().__init__(
-            name='n_a_cm3',
+            name=f'n_part_{"mg" if specific else "cm3"}',
             unit='mg-1' if specific else 'cm-3',
-            description='Particles concentration'
+            description=f'Particle {"specific " if specific else ""}concentration'
         )
 
     def get(self):
@@ -19,8 +19,14 @@ class ParticlesConcentration(MomentProduct):
                                        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                                                      self.formulae.trivia.volume(self.radius_range[1])))
         self.buffer[:] /= self.core.mesh.dv
-        const.convert_to(self.buffer, const.si.centimetre**-3)
-        return self.buffer
+        if self.specific:
+            result = self.buffer.copy()  # TODO #217
+            self.download_to_buffer(self.core.environment['rhod'])
+            result[:] /= self.buffer
+        else:
+            result = self.buffer
+        const.convert_to(result, const.si.mg**-1 if self.specific else const.si.centimetre**-3)
+        return result
 
 
 class AerosolConcentration(ParticlesConcentration):
