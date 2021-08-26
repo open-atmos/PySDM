@@ -46,7 +46,7 @@ class Independent(SpectroGlacialSampling):
         super().__init__(size_spectrum, size_range)
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         if temperature_range is None:
-            cdf_arg = np.linspace(const.T0-100, const.T0+10)
+            cdf_arg = np.linspace(const.T0+10, const.T0-60)
             cdf_val = freezing_temperature_spectrum.cdf(cdf_arg)
             inv_cdf = interp1d(cdf_val, cdf_arg)
             temperature_range = inv_cdf(default_cdf_range)
@@ -57,10 +57,10 @@ class Independent(SpectroGlacialSampling):
     def sample(self, n_sd):
         pdf_arg = (
             self.rng.uniform(*self.size_range, n_sd),
-            self.rng.uniform(*self.temp_range, n_sd)
+            self.rng.uniform(*sorted(self.temp_range), n_sd)
         )
         dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-        dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
         return (
             *pdf_arg, dr * dT \
                * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
@@ -95,7 +95,7 @@ class Independent(SpectroGlacialSampling):
         super().__init__(size_spectrum, size_range)
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         if temperature_range is None:
-            cdf_arg = np.linspace(const.T0-100, const.T0+10)
+            cdf_arg = np.linspace(const.T0+10, const.T0-60)
             cdf_val = freezing_temperature_spectrum.cdf(cdf_arg)
             inv_cdf = interp1d(cdf_val, cdf_arg)
             temperature_range = inv_cdf(default_cdf_range)
@@ -106,10 +106,10 @@ class Independent(SpectroGlacialSampling):
     def sample(self, n_sd):
         pdf_arg = (
             self.rng.uniform(*self.size_range, n_sd),
-            self.rng.uniform(*self.temp_range, n_sd)
+            self.rng.uniform(*sorted(self.temp_range), n_sd)
         )
         dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-        dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
         return (
             *pdf_arg, dr * dT \
                * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
@@ -135,10 +135,10 @@ class Independent(SpectroGlacialSampling):
 <pre><code class="python">def sample(self, n_sd):
     pdf_arg = (
         self.rng.uniform(*self.size_range, n_sd),
-        self.rng.uniform(*self.temp_range, n_sd)
+        self.rng.uniform(*sorted(self.temp_range), n_sd)
     )
     dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-    dT = (self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+    dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
     return (
         *pdf_arg, dr * dT \
            * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \

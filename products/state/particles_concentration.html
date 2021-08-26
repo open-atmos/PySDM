@@ -33,13 +33,13 @@ from PySDM.products.product import MomentProduct
 
 class ParticlesConcentration(MomentProduct):
 
-    def __init__(self, radius_range, specific=False):
+    def __init__(self, radius_range=(0, np.inf), specific=False):
         self.radius_range = radius_range
-
+        self.specific = specific
         super().__init__(
-            name=&#39;n_a_cm3&#39;,
+            name=f&#39;n_part_{&#34;mg&#34; if specific else &#34;cm3&#34;}&#39;,
             unit=&#39;mg-1&#39; if specific else &#39;cm-3&#39;,
-            description=&#39;Particles concentration&#39;
+            description=f&#39;Particle {&#34;specific &#34; if specific else &#34;&#34;}concentration&#39;
         )
 
     def get(self):
@@ -47,8 +47,14 @@ class ParticlesConcentration(MomentProduct):
                                        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                                                      self.formulae.trivia.volume(self.radius_range[1])))
         self.buffer[:] /= self.core.mesh.dv
-        const.convert_to(self.buffer, const.si.centimetre**-3)
-        return self.buffer
+        if self.specific:
+            result = self.buffer.copy()  # TODO #217
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            result[:] /= self.buffer
+        else:
+            result = self.buffer
+        const.convert_to(result, const.si.mg**-1 if self.specific else const.si.centimetre**-3)
+        return result
 
 
 class AerosolConcentration(ParticlesConcentration):
@@ -158,7 +164,7 @@ class DrizzleConcentration(ParticlesConcentration):
 </dd>
 <dt id="PySDM.products.state.particles_concentration.ParticlesConcentration"><code class="flex name class">
 <span>class <span class="ident">ParticlesConcentration</span></span>
-<span>(</span><span>radius_range, specific=False)</span>
+<span>(</span><span>radius_range=(0, inf), specific=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -168,13 +174,13 @@ class DrizzleConcentration(ParticlesConcentration):
 </summary>
 <pre><code class="python">class ParticlesConcentration(MomentProduct):
 
-    def __init__(self, radius_range, specific=False):
+    def __init__(self, radius_range=(0, np.inf), specific=False):
         self.radius_range = radius_range
-
+        self.specific = specific
         super().__init__(
-            name=&#39;n_a_cm3&#39;,
+            name=f&#39;n_part_{&#34;mg&#34; if specific else &#34;cm3&#34;}&#39;,
             unit=&#39;mg-1&#39; if specific else &#39;cm-3&#39;,
-            description=&#39;Particles concentration&#39;
+            description=f&#39;Particle {&#34;specific &#34; if specific else &#34;&#34;}concentration&#39;
         )
 
     def get(self):
@@ -182,8 +188,14 @@ class DrizzleConcentration(ParticlesConcentration):
                                        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                                                      self.formulae.trivia.volume(self.radius_range[1])))
         self.buffer[:] /= self.core.mesh.dv
-        const.convert_to(self.buffer, const.si.centimetre**-3)
-        return self.buffer</code></pre>
+        if self.specific:
+            result = self.buffer.copy()  # TODO #217
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            result[:] /= self.buffer
+        else:
+            result = self.buffer
+        const.convert_to(result, const.si.mg**-1 if self.specific else const.si.centimetre**-3)
+        return result</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -212,8 +224,14 @@ class DrizzleConcentration(ParticlesConcentration):
                                    filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                                                  self.formulae.trivia.volume(self.radius_range[1])))
     self.buffer[:] /= self.core.mesh.dv
-    const.convert_to(self.buffer, const.si.centimetre**-3)
-    return self.buffer</code></pre>
+    if self.specific:
+        result = self.buffer.copy()  # TODO #217
+        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+        result[:] /= self.buffer
+    else:
+        result = self.buffer
+    const.convert_to(result, const.si.mg**-1 if self.specific else const.si.centimetre**-3)
+    return result</code></pre>
 </details>
 </dd>
 </dl>

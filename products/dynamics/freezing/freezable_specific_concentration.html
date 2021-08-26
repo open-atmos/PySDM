@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012 API documentation</title>
+<title>PySDM.products.dynamics.freezing.freezable_specific_concentration API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,33 +19,51 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012</code></h1>
+<h1 class="title">Module <code>PySDM.products.dynamics.freezing.freezable_specific_concentration</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.physics import constants as const, si
-import numpy as np
+<pre><code class="python">import numpy as np
+from PySDM.physics import constants as const
+from PySDM.products.product import SpectrumMomentProduct
 
-a = -0.517
-b = 8.934
-A_insol = const.pi * (1*si.um)**2
 
-class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
+class FreezableSpecificConcentration(SpectrumMomentProduct):
 
-    @staticmethod
-    def pdf(T):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def __init__(self, temperature_bins_edges):
+        super().__init__(
+            name=&#39;Freezable specific concentration&#39;,
+            unit=f&#34;mg-1 K-1&#34;,
+            description=&#39;Freezable specific concentration&#39;
+        )
+        self.attr_bins_edges = temperature_bins_edges
 
-    @staticmethod
-    def cdf(T):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+    def register(self, builder):
+        builder.request_attribute(&#39;freezing temperature&#39;)
+        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(self.attr_bins_edges)
+        super().register(builder)
+        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
+
+    def get(self):
+        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+
+        for i in range(vals.shape[1]):
+            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+
+        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+        rhod = self.buffer.ravel()
+        for i in range(len(self.attr_bins_edges) - 1):
+            dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
+            vals[:, i] /= rhod * dT * self.core.mesh.dv
+
+        const.convert_to(vals, const.si.milligram**-1 / const.si.K)
+
+        return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
 </section>
 <section>
@@ -57,8 +75,9 @@ class Niemand_et_al_2012:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012"><code class="flex name class">
-<span>class <span class="ident">Niemand_et_al_2012</span></span>
+<dt id="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration"><code class="flex name class">
+<span>class <span class="ident">FreezableSpecificConcentration</span></span>
+<span>(</span><span>temperature_bins_edges)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -66,24 +85,49 @@ class Niemand_et_al_2012:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
+<pre><code class="python">class FreezableSpecificConcentration(SpectrumMomentProduct):
 
-    @staticmethod
-    def pdf(T):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def __init__(self, temperature_bins_edges):
+        super().__init__(
+            name=&#39;Freezable specific concentration&#39;,
+            unit=f&#34;mg-1 K-1&#34;,
+            description=&#39;Freezable specific concentration&#39;
+        )
+        self.attr_bins_edges = temperature_bins_edges
 
-    @staticmethod
-    def cdf(T):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+    def register(self, builder):
+        builder.request_attribute(&#39;freezing temperature&#39;)
+        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(self.attr_bins_edges)
+        super().register(builder)
+        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
+
+    def get(self):
+        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+
+        for i in range(vals.shape[1]):
+            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+
+        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+        rhod = self.buffer.ravel()
+        for i in range(len(self.attr_bins_edges) - 1):
+            dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
+            vals[:, i] /= rhod * dT * self.core.mesh.dv
+
+        const.convert_to(vals, const.si.milligram**-1 / const.si.K)
+
+        return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
-<h3>Static methods</h3>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.product.SpectrumMomentProduct" href="../../product.html#PySDM.products.product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
+<li><a title="PySDM.products.product.Product" href="../../product.html#PySDM.products.product.Product">Product</a></li>
+</ul>
+<h3>Methods</h3>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf"><code class="name flex">
-<span>def <span class="ident">cdf</span></span>(<span>T)</span>
+<dt id="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -91,14 +135,27 @@ class Niemand_et_al_2012:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def cdf(T):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+<pre><code class="python">def get(self):
+    vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+    self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+
+    for i in range(vals.shape[1]):
+        self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+        vals[:, i] = self.buffer.ravel()
+
+    self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+    rhod = self.buffer.ravel()
+    for i in range(len(self.attr_bins_edges) - 1):
+        dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
+        vals[:, i] /= rhod * dT * self.core.mesh.dv
+
+    const.convert_to(vals, const.si.milligram**-1 / const.si.K)
+
+    return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
-<span>def <span class="ident">pdf</span></span>(<span>T)</span>
+<dt id="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -106,10 +163,11 @@ def cdf(T):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@staticmethod
-def pdf(T):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+<pre><code class="python">def register(self, builder):
+    builder.request_attribute(&#39;freezing temperature&#39;)
+    self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(self.attr_bins_edges)
+    super().register(builder)
+    self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)</code></pre>
 </details>
 </dd>
 </dl>
@@ -125,16 +183,16 @@ def pdf(T):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum" href="index.html">PySDM.physics.freezing_temperature_spectrum</a></code></li>
+<li><code><a title="PySDM.products.dynamics.freezing" href="index.html">PySDM.products.dynamics.freezing</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012">Niemand_et_al_2012</a></code></h4>
+<h4><code><a title="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration" href="#PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration">FreezableSpecificConcentration</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
+<li><code><a title="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get" href="#PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get">get</a></code></li>
+<li><code><a title="PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register" href="#PySDM.products.dynamics.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register">register</a></code></li>
 </ul>
 </li>
 </ul>
