@@ -34,7 +34,7 @@ class Builder:
         self.core.environment.register(self)
 
     def add_dynamic(self, dynamic):
-        assert_not_none(self.core.environment)
+        assert self.core.environment is not None
         self.core.dynamics[dynamic.__class__.__name__] = dynamic
 
     def register_product(self, product):
@@ -52,7 +52,7 @@ class Builder:
             self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
-        self.core.backend.sanity_check()
+        assert self.core.environment is not None
 
         for dynamic in self.core.dynamics.values():
             dynamic.register(self)
@@ -80,9 +80,3 @@ def assert_none(*params):
     for param in params:
         if param is not None:
             raise AssertionError(str(param.__class__.__name__) + " is already initialized.")
-
-
-def assert_not_none(*params):
-    for param in params:
-        if param is None:
-            raise AssertionError(str(param.__class__.__name__) + " is not initialized.")
