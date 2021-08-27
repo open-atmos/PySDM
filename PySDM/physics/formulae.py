@@ -79,7 +79,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = const.default_random_seed,
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
@@ -93,7 +93,7 @@ class Formulae:
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
                  hydrostatics: str = 'Default',
-                 inas_density: str = 'Niemand_et_al_2012'
+                 freezing_temperature_spectrum: str = 'Niemand_et_al_2012'
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -112,7 +112,7 @@ class Formulae:
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
-        self.inas_density = _magick(inas_density, physics.inas_density, fastmath)
+        self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
 
     def __str__(self):
         description = []

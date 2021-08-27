@@ -12,13 +12,12 @@ class IceWaterContent(MomentProduct):
         )
 
     def get(self):
-        self.download_moment_to_buffer('spheroid mass', rank=0)
+        self.download_moment_to_buffer('volume', rank=0, filter_range=(-np.inf, 0))
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer('spheroid mass', rank=1)
+        self.download_moment_to_buffer('volume', rank=1, filter_range=(-np.inf, 0))
         result = self.buffer.copy()
-        result[:] *= conc
-        result[:] /= self.core.mesh.dv
+        result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
         self.download_to_buffer(self.core.environment['rhod'])
         result[:] /= self.buffer
