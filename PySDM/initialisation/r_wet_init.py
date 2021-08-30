@@ -4,8 +4,9 @@ Koehler-curve equilibrium in unsaturated conditions
 from ..backends.numba.toms748 import toms748_solve
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
-from numba import prange, njit
+import numba
 import numpy as np
+import sys
 
 default_rtol = 1e-5
 default_max_iters = 64
@@ -35,21 +36,29 @@ def r_wet_init(r_dry: np.ndarray, environment,
 
     jit_flags = {**JIT_FLAGS, **{'fastmath': formulae.fastmath, 'cache': False}}
 
-    @njit(**{**jit_flags, 'parallel': False})
+    @numba.njit(**{**jit_flags, 'parallel': False})
     def minfun(r, T, RH, kp, rd3, f_org):
         sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3, f_org=f_org)
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
-    @njit(**jit_flags)
+    @numba.njit(**jit_flags)
     def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
-        for i in prange(len(r_dry)):
+        for i in numba.prange(len(r_dry)):
             r_d = r_dry[i]
             cid = cell_id[i]
+
             # root-finding initial guess
             a = r_d
             b = r_cr(kappa[i], r_d**3, T[cid], const.sgm_w)
+            if not a < b:
+                with numba.objmode():
+                    msg = "dry radius larger than critical radius for particle no. " + str(i)
+                    print(msg, file=sys.stderr)
+                iters[i] = -1
+                continue
+
             # minimisation
             args = (
                 T[cid],
@@ -62,9 +71,13 @@ def r_wet_init(r_dry: np.ndarray, environment,
             fb = minfun(b, *args)
             r_wet[i], iters[i] = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
                                                  within_tolerance=within_tolerance)
+            if iters[i] == -1:
+                with numba.objmode():
+                    msg = "failed to find wet radius for particle " + str(i) + " with r_dry=" + str(a) + " (r_cr=" + str(b) + ")"
+                    print(msg, file=sys.stderr)
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
     r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
-    assert (iters != max_iters).all()
+    assert (iters != max_iters).all() and (iters != -1).all()
     return r_wet
