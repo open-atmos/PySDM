@@ -4,9 +4,9 @@ Koehler-curve equilibrium in unsaturated conditions
 from ..backends.numba.toms748 import toms748_solve
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
+from ..backends.numba.impl.warnings import warn
 import numba
 import numpy as np
-import sys
 
 default_rtol = 1e-5
 default_max_iters = 64
@@ -53,9 +53,8 @@ def r_wet_init(r_dry: np.ndarray, environment,
             a = r_d
             b = r_cr(kappa[i], r_d**3, T[cid], const.sgm_w)
             if not a < b:
-                with numba.objmode():
-                    msg = "dry radius larger than critical radius for particle no. " + str(i)
-                    print(msg, file=sys.stderr)
+                warn(msg="dry radius larger than critical radius", file=__file__,
+                     context=("i", i, "r_d", r_d, "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
                 iters[i] = -1
                 continue
 
@@ -72,9 +71,8 @@ def r_wet_init(r_dry: np.ndarray, environment,
             r_wet[i], iters[i] = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
                                                  within_tolerance=within_tolerance)
             if iters[i] == -1:
-                with numba.objmode():
-                    msg = "failed to find wet radius for particle " + str(i) + " with r_dry=" + str(a) + " (r_cr=" + str(b) + ")"
-                    print(msg, file=sys.stderr)
+                warn(msg="failed to find wet radius for particle", file=__file__,
+                     context=("i", i, "r_d", r_d, "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
