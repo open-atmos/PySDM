@@ -32,12 +32,13 @@ import numpy as np
 
 class IceWaterContent(MomentProduct):
 
-    def __init__(self):
+    def __init__(self, specific=True):
         super().__init__(
             name=&#39;qi&#39;,
-            unit=&#39;g/kg&#39;,
+            unit=&#39;g/kg&#39; if specific else &#39;kg/m3&#39;,
             description=f&#39;Ice water mixing ratio&#39;
         )
+        self.specific = specific
 
     def get(self):
         self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
@@ -47,9 +48,10 @@ class IceWaterContent(MomentProduct):
         result = self.buffer.copy()
         result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
-        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-        result[:] /= self.buffer
-        const.convert_to(result, const.si.gram / const.si.kilogram)
+        if self.specific:
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            result[:] /= self.buffer
+            const.convert_to(result, const.si.gram / const.si.kilogram)
         return result</code></pre>
 </details>
 </section>
@@ -64,6 +66,7 @@ class IceWaterContent(MomentProduct):
 <dl>
 <dt id="PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent"><code class="flex name class">
 <span>class <span class="ident">IceWaterContent</span></span>
+<span>(</span><span>specific=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,12 +76,13 @@ class IceWaterContent(MomentProduct):
 </summary>
 <pre><code class="python">class IceWaterContent(MomentProduct):
 
-    def __init__(self):
+    def __init__(self, specific=True):
         super().__init__(
             name=&#39;qi&#39;,
-            unit=&#39;g/kg&#39;,
+            unit=&#39;g/kg&#39; if specific else &#39;kg/m3&#39;,
             description=f&#39;Ice water mixing ratio&#39;
         )
+        self.specific = specific
 
     def get(self):
         self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
@@ -88,9 +92,10 @@ class IceWaterContent(MomentProduct):
         result = self.buffer.copy()
         result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
-        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-        result[:] /= self.buffer
-        const.convert_to(result, const.si.gram / const.si.kilogram)
+        if self.specific:
+            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            result[:] /= self.buffer
+            const.convert_to(result, const.si.gram / const.si.kilogram)
         return result</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -117,9 +122,10 @@ class IceWaterContent(MomentProduct):
     result = self.buffer.copy()
     result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
-    self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-    result[:] /= self.buffer
-    const.convert_to(result, const.si.gram / const.si.kilogram)
+    if self.specific:
+        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+        result[:] /= self.buffer
+        const.convert_to(result, const.si.gram / const.si.kilogram)
     return result</code></pre>
 </details>
 </dd>

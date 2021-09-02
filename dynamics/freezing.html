@@ -27,17 +27,23 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True):
+    def __init__(self, *, singular=True, r=None):
         self.singular = singular
         self.enable = True
+        self.r = r
+        self.rand = None
+        self.rng = None
 
     def register(self, builder):
+        self.core = builder.core
+
+        builder.request_attribute(&#34;volume&#34;)
         if self.singular:
             builder.request_attribute(&#34;freezing temperature&#34;)
         else:
-            raise NotImplementedError()
-        builder.request_attribute(&#34;spheroid mass&#34;)
-        self.core = builder.core
+            builder.request_attribute(&#34;nucleation sites&#34;)
+            self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
+            self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.core.dynamics:
@@ -46,13 +52,23 @@
         if not self.enable:
             return
 
-        self.core.bck.freeze(
-            T_fz=self.core.particles[&#39;freezing temperature&#39;],
-            v_wet=self.core.particles[&#39;volume&#39;],
-            T=self.core.environment[&#39;T&#39;],
-            RH=self.core.environment[&#39;RH&#39;],
-            cell=self.core.particles[&#39;cell id&#39;]
-        )
+        if self.singular:
+            self.core.bck.freeze_singular(
+                T_fz=self.core.particles[&#39;freezing temperature&#39;],
+                v_wet=self.core.particles[&#39;volume&#39;],
+                T=self.core.environment[&#39;T&#39;],
+                RH=self.core.environment[&#39;RH&#39;],
+                cell=self.core.particles[&#39;cell id&#39;]
+            )
+        else:
+            self.rand.urand(self.rng)
+            self.core.bck.freeze_time_dependent(
+                rand=self.rand,
+                nucleation_sites=self.core.particles[&#39;nucleation sites&#39;],
+                volume=self.core.particles[&#39;volume&#39;],
+                r=self.r,
+                dt=self.core.dt
+            )
 
         self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
@@ -68,7 +84,7 @@
 <dl>
 <dt id="PySDM.dynamics.freezing.Freezing"><code class="flex name class">
 <span>class <span class="ident">Freezing</span></span>
-<span>(</span><span>*, singular=True)</span>
+<span>(</span><span>*, singular=True, r=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -77,17 +93,23 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True):
+    def __init__(self, *, singular=True, r=None):
         self.singular = singular
         self.enable = True
+        self.r = r
+        self.rand = None
+        self.rng = None
 
     def register(self, builder):
+        self.core = builder.core
+
+        builder.request_attribute(&#34;volume&#34;)
         if self.singular:
             builder.request_attribute(&#34;freezing temperature&#34;)
         else:
-            raise NotImplementedError()
-        builder.request_attribute(&#34;spheroid mass&#34;)
-        self.core = builder.core
+            builder.request_attribute(&#34;nucleation sites&#34;)
+            self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
+            self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
 
     def __call__(self):
         if &#39;Coalescence&#39; in self.core.dynamics:
@@ -96,13 +118,23 @@
         if not self.enable:
             return
 
-        self.core.bck.freeze(
-            T_fz=self.core.particles[&#39;freezing temperature&#39;],
-            v_wet=self.core.particles[&#39;volume&#39;],
-            T=self.core.environment[&#39;T&#39;],
-            RH=self.core.environment[&#39;RH&#39;],
-            cell=self.core.particles[&#39;cell id&#39;]
-        )
+        if self.singular:
+            self.core.bck.freeze_singular(
+                T_fz=self.core.particles[&#39;freezing temperature&#39;],
+                v_wet=self.core.particles[&#39;volume&#39;],
+                T=self.core.environment[&#39;T&#39;],
+                RH=self.core.environment[&#39;RH&#39;],
+                cell=self.core.particles[&#39;cell id&#39;]
+            )
+        else:
+            self.rand.urand(self.rng)
+            self.core.bck.freeze_time_dependent(
+                rand=self.rand,
+                nucleation_sites=self.core.particles[&#39;nucleation sites&#39;],
+                volume=self.core.particles[&#39;volume&#39;],
+                r=self.r,
+                dt=self.core.dt
+            )
 
         self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
@@ -118,12 +150,15 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
+    self.core = builder.core
+
+    builder.request_attribute(&#34;volume&#34;)
     if self.singular:
         builder.request_attribute(&#34;freezing temperature&#34;)
     else:
-        raise NotImplementedError()
-    builder.request_attribute(&#34;spheroid mass&#34;)
-    self.core = builder.core</code></pre>
+        builder.request_attribute(&#34;nucleation sites&#34;)
+        self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
+        self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)</code></pre>
 </details>
 </dd>
 </dl>

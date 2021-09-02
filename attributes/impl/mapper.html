@@ -28,7 +28,7 @@
 </summary>
 <pre><code class="python">from PySDM.attributes.physics import (Multiplicities, Volume, DryVolumeDynamic, DryVolumeStatic, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)
-from PySDM.attributes.ice import FreezingTemperature, SpheroidMass
+from PySDM.attributes.ice import FreezingTemperature, NucleationSites
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
@@ -54,7 +54,7 @@ attributes = {
     &#39;pH&#39;: lambda _: pH,
     &#39;conc_H&#39;: lambda _: HydrogenIonConcentration,
     &#39;freezing temperature&#39;: lambda _: FreezingTemperature,
-    &#39;spheroid mass&#39;: lambda _: SpheroidMass
+    &#39;nucleation sites&#39;: lambda _: NucleationSites
 }
 
 
