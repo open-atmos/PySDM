@@ -2,6 +2,7 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
+import numpy as np
 
 
 class PhysicsMethods:
@@ -51,15 +52,6 @@ class PhysicsMethods:
                     values[i] = k3 * radius[i] ** (1 / 2)
         self.terminal_velocity_body = terminal_velocity_body
 
-        @numba.njit()
-        def freeze_body(T_fz, v_wet, T, RH, cell):
-            for i in prange(len(T_fz)):
-                if v_wet[i] > 0 and RH[cell[i]] > 1 and T[cell[i]] <= T_fz[i]:
-                    v_wet[i] = -1 * v_wet[i] * const.rho_w / const.rho_i
-                    # TODO #599: change thd (latent heat)!
-                    # TODO #599: hangle the negative volume in tests, attributes, products, dynamics, ...
-        self.freeze_body = freeze_body
-
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
         self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
@@ -71,6 +63,3 @@ class PhysicsMethods:
 
     def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.critical_volume_body(v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)
-
-    def freeze(self, T_fz, v_wet, T, RH, cell):
-        self.freeze_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
