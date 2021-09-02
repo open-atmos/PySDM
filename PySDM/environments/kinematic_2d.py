@@ -56,8 +56,11 @@ class Kinematic2D(_Moist):
             attributes['dry volume inorganic'] = self.formulae.trivia.volume(radius=r_dry)
             attributes['dry volume organic'] = np.zeros_like(r_dry)
             attributes['kappa times dry volume'] = kappa * attributes['dry volume inorganic']
-            r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol,
-                               cell_id=attributes['cell id'])
+            if kappa == 0:
+                r_wet = r_dry
+            else:
+                r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol,
+                                   cell_id=attributes['cell id'])
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
