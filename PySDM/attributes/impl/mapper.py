@@ -2,7 +2,7 @@ from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolumeInor
                                                  DryVolume, DryVolumeInorganicDynamic,
                                                  OrganicFraction)
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
-from PySDM.attributes.physics import (Multiplicities, Volume, DryVolumeDynamic, DryVolumeStatic, Radius, DryRadius,
+from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)
 from PySDM.attributes.ice import FreezingTemperature, NucleationSites
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
