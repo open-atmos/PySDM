@@ -6,14 +6,14 @@ from PySDM.products import IceWaterContent
 from PySDM.physics import constants as const
 
 # noinspection PyUnresolvedReferences
-from PySDM_tests.backends_fixture import backend  # TODO: #599
+from PySDM_tests.backends_fixture import backend  # TODO #599
 
 from matplotlib import pylab
 import numpy as np
 
 
 class TestFreezingMethods:
-    # TODO: #599
+    # TODO #599
     # @staticmethod
     # def test_freeze_singular(backend):
     #     pass
