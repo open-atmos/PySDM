@@ -7,7 +7,6 @@
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
 [![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
-[![Dependabot](https://img.shields.io/static/v1?label=Dependabot&logo=dependabot&color=blue&message=on)](https://github.com/atmos-cloud-sim-uj/PySDM/network/dependencies)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/atmos-cloud-sim-uj/PySDM/graphs/commit-activity)
 [![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
 [![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)    

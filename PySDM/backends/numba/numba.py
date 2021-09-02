@@ -8,6 +8,7 @@ from PySDM.backends.numba.impl._physics_methods import PhysicsMethods
 from PySDM.backends.numba.impl._index_methods import IndexMethods
 from PySDM.backends.numba.impl.condensation_methods import CondensationMethods
 from .impl.moments_methods import MomentsMethods
+from .impl.freezing_methods import FreezingMethods
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.random import Random as ImportedRandom
 from PySDM.backends.numba.storage import Storage as ImportedStorage
@@ -20,7 +21,8 @@ class Numba(
     PhysicsMethods,
     CondensationMethods,
     ChemistryMethods,
-    MomentsMethods
+    MomentsMethods,
+    FreezingMethods
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -31,3 +33,4 @@ class Numba(
         self.formulae = formulae
         PhysicsMethods.__init__(self)
         ChemistryMethods.__init__(self)
+        FreezingMethods.__init__(self)
