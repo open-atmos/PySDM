@@ -2,6 +2,7 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
+import numpy as np
 
 
 class PhysicsMethods:
@@ -21,11 +22,11 @@ class PhysicsMethods:
         self.explicit_euler_body = explicit_euler_body
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
-        def critical_volume(v_cr, kappa, v_dry, v_wet, T, cell):
+        def critical_volume(v_cr, kappa, f_org, v_dry, v_wet, T, cell):
             for i in prange(len(v_cr)):
-                sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i])
+                sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
                 v_cr[i] = phys_volume(phys_r_cr(
-                    kp=kappa,
+                    kp=kappa[i],
                     rd3=v_dry[i] / const.pi_4_3,
                     T=T[cell[i]],
                     sgm=sigma
@@ -51,15 +52,6 @@ class PhysicsMethods:
                     values[i] = k3 * radius[i] ** (1 / 2)
         self.terminal_velocity_body = terminal_velocity_body
 
-        @numba.njit()
-        def freeze_body(T_fz, v_wet, T, RH, cell):
-            for i in prange(len(T_fz)):
-                if v_wet[i] > 0 and RH[cell[i]] > 1 and T[cell[i]] <= T_fz[i]:
-                    v_wet[i] = -1 * v_wet[i] * const.rho_w / const.rho_i
-                    # TODO #599: change thd (latent heat)!
-                    # TODO #599: hangle the negative volume in tests, attributes, products, dynamics, ...
-        self.freeze_body = freeze_body
-
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
         self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
@@ -69,8 +61,5 @@ class PhysicsMethods:
     def explicit_euler(self, y, dt, dy_dt):
         self.explicit_euler_body(y.data, dt, dy_dt)
 
-    def critical_volume(self, v_cr, kappa, v_dry, v_wet, T, cell):
-        self.critical_volume_body(v_cr.data, kappa, v_dry.data, v_wet.data, T.data, cell.data)
-
-    def freeze(self, T_fz, v_wet, T, RH, cell):
-        self.freeze_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
+    def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
+        self.critical_volume_body(v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)

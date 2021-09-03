@@ -4,12 +4,13 @@ import numpy as np
 
 class IceWaterContent(MomentProduct):
 
-    def __init__(self):
+    def __init__(self, specific=True):
         super().__init__(
             name='qi',
-            unit='g/kg',
+            unit='g/kg' if specific else 'kg/m3',
             description=f'Ice water mixing ratio'
         )
+        self.specific = specific
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0, filter_range=(-np.inf, 0))
@@ -19,7 +20,8 @@ class IceWaterContent(MomentProduct):
         result = self.buffer.copy()
         result[:] *= -const.rho_i * conc  / self.core.mesh.dv
 
-        self.download_to_buffer(self.core.environment['rhod'])
-        result[:] /= self.buffer
-        const.convert_to(result, const.si.gram / const.si.kilogram)
+        if self.specific:
+            self.download_to_buffer(self.core.environment['rhod'])
+            result[:] /= self.buffer
+            const.convert_to(result, const.si.gram / const.si.kilogram)
         return result

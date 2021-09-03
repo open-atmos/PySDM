@@ -7,7 +7,6 @@
 [![macOS OK](https://img.shields.io/static/v1?label=macOS&logo=Apple&color=silver&message=%E2%9C%93)](https://en.wikipedia.org/wiki/macOS)
 [![Windows OK](https://img.shields.io/static/v1?label=Windows&logo=Windows&color=white&message=%E2%9C%93)](https://en.wikipedia.org/wiki/Windows)
 [![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
-[![Dependabot](https://img.shields.io/static/v1?label=Dependabot&logo=dependabot&color=blue&message=on)](https://github.com/atmos-cloud-sim-uj/PySDM/network/dependencies)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/atmos-cloud-sim-uj/PySDM/graphs/commit-activity)
 [![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
 [![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)    
@@ -365,14 +364,18 @@ n_sd = 256
 builder = Builder(backend=CPU, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(kappa=kappa))
+builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-r_wet = r_wet_init(r_dry, env, kappa)
+v_dry = builder.formulae.trivia.volume(radius=r_dry)
+r_wet = r_wet_init(r_dry, env, kappa * v_dry)
+
 
 attributes = Dict()
 attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
-attributes["dry volume"] = builder.formulae.trivia.volume(radius=r_dry)
+attributes["dry volume inorganic"] = v_dry
+attributes["dry volume organic"] = zeros(n_sd)
+attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
 particles = builder.build(attributes, products=[
@@ -443,16 +446,19 @@ n_sd = 256;
 builder = Builder(pyargs('backend', CPU, 'n_sd', int32(n_sd)));
 builder.set_environment(env);
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(pyargs('kappa', kappa)))
+builder.add_dynamic(Condensation())
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
+v_dry = builder.formulae.trivia.volume(r_dry);
 specific_concentration = tmp{2};
-r_wet = r_wet_init(r_dry, env, kappa);
+r_wet = r_wet_init(r_dry, env, kappa * v_dry);
 
 attributes = py.dict(pyargs( ...
     'n', multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air), ...
-    'dry volume', builder.formulae.trivia.volume(r_dry), ...
+    'dry volume inorganic', v_dry, ...
+    'dry volume organic', py.numpy.zeros(int32(n_sd)), ...
+    'kappa times dry volume', kappa * v_dry, ... 
     'volume', builder.formulae.trivia.volume(r_wet) ...
 ));
 
@@ -509,6 +515,7 @@ saveas(gcf, "parcel.svg")
 <summary>Python</summary>
 
 ```Python
+import numpy as np
 from matplotlib import pyplot
 from PySDM.physics import si, spectra
 from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
@@ -535,14 +542,17 @@ n_sd = 256
 builder = Builder(backend=CPU, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation(kappa=kappa))
+builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-r_wet = r_wet_init(r_dry, env, kappa)
+v_dry = builder.formulae.trivia.volume(radius=r_dry)
+r_wet = r_wet_init(r_dry, env, kappa * v_dry)
 
 attributes = {
     'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume': builder.formulae.trivia.volume(radius=r_dry),
+    'dry volume inorganic': v_dry,
+    'dry volume organic': np.zeros(n_sd),
+    'kappa times dry volume': kappa * v_dry,
     'volume': builder.formulae.trivia.volume(radius=r_wet)
 }
 

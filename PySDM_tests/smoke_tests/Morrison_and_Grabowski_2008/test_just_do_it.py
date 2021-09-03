@@ -22,8 +22,10 @@ class FlowFieldAsserts(AbstractContextManager):
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
+
 def test_just_do_it():
     settings = ColdCumulus()
+    settings.kappa = 0
     for process in settings.processes.keys():
         settings.processes[process] = False
     settings.processes['particle advection'] += 1
