@@ -1,6 +1,6 @@
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic
+from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic, UniformRandom
 import pytest
 from scipy.signal import find_peaks
 import numpy as np
@@ -9,8 +9,9 @@ import numpy as np
 class TestSepctrum:
     @staticmethod
     @pytest.mark.parametrize("spectral_sampling", [
-        pytest.param(ConstantMultiplicity, marks=pytest.mark.xfail()),
-        Logarithmic
+        pytest.param(ConstantMultiplicity, marks=pytest.mark.xfail(strict=True)),
+        Logarithmic,
+        pytest.param(UniformRandom, marks=pytest.mark.xfail(strict=True))
     ])
     def test_at_t_0(spectral_sampling, plot=False):
         # Arrange
