@@ -46,15 +46,15 @@ def r_wet_init(r_dry: np.ndarray, environment,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
         for i in numba.prange(len(r_dry)):
-            r_d = r_dry[i]
             cid = cell_id[i]
 
             # root-finding initial guess
-            a = r_d
-            b = r_cr(kappa[i], r_d**3, T[cid], const.sgm_w)
+            a = r_dry[i]
+            b = r_cr(kappa[i], r_dry[i] ** 3, T[cid], const.sgm_w)
+
             if not a < b:
                 warn(msg="dry radius larger than critical radius", file=__file__,
-                     context=("i", i, "r_d", r_d, "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
+                     context=("i", i, "r_d", r_dry[i], "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
                 iters[i] = -1
                 continue
 
@@ -63,16 +63,22 @@ def r_wet_init(r_dry: np.ndarray, environment,
                 T[cid],
                 np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
                 kappa[i],
-                r_d**3,
+                r_dry[i]**3,
                 f_org[i]
             )
+
             fa = minfun(a, *args)
+            if fa < 0:
+                r_wet[i] = r_dry[i]
+                iters[i] = 0
+                continue
             fb = minfun(b, *args)
+
             r_wet[i], iters[i] = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
-                                                 within_tolerance=within_tolerance)
+                                               within_tolerance=within_tolerance)
             if iters[i] == -1:
                 warn(msg="failed to find wet radius for particle", file=__file__,
-                     context=("i", i, "r_d", r_d, "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
+                     context=("i", i, "r_d", r_dry[i], "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
