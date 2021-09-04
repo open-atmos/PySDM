@@ -13,9 +13,12 @@ from functools import partial
 attributes = {
     'n': lambda _: Multiplicities,
     'volume': lambda _: Volume,
-    'dry volume organic': lambda _: DryVolumeOrganic,
+    'dry volume organic': lambda dynamics: (
+        DummyAttribute if isinstance(dynamics['Condensation'].core.formulae.surface_tension, Constant)
+        else DryVolumeOrganic
+    ),
     'dry volume': lambda dynamics:
-        DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
+    DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
     'dry volume organic fraction': lambda dynamics: (
         DummyAttribute if isinstance(dynamics['Condensation'].core.formulae.surface_tension, Constant)
         else OrganicFraction

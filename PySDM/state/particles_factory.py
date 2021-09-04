@@ -27,6 +27,8 @@ class ParticlesFactory:
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
                 attr.allocate(idx)
+            if isinstance(attr, DummyAttribute) and attr_name in attributes:
+                raise ValueError(f"attribute '{attr_name}' indicated as dummy but values were provided")
 
         extensive_keys = {}
         maximum_keys = {}
@@ -35,14 +37,10 @@ class ParticlesFactory:
             for i, attr in enumerate(names):
                 keys[attr] = i
                 req_attr[attr].set_data(data[i, :])
-                if isinstance(req_attr[attr], DummyAttribute):
-                    if attr in all_attr:
-                        raise ValueError(f"attribute '{attr}' indicated as dummy but values were provided")
-                else:
-                    try:
-                        req_attr[attr].init(all_attr[attr])
-                    except KeyError:
-                        raise ValueError(f"attribute '{attr}' required by one of the processes but initial values not provided")
+                try:
+                    req_attr[attr].init(all_attr[attr])
+                except KeyError:
+                    raise ValueError(f"attribute '{attr}' required by one of the processes but initial values not provided")
 
         helper(req_attr, attributes, extensive_attr, extensive_attributes, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
