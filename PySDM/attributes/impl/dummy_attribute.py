@@ -3,8 +3,8 @@ import numpy as np
 
 
 class DummyAttribute(Attribute):
-    def __init__(self, builder):
-        super().__init__(builder, '')
+    def __init__(self, builder, name):
+        super().__init__(builder, name)
 
     def allocate(self, idx):
         super().allocate(idx)
@@ -12,3 +12,9 @@ class DummyAttribute(Attribute):
 
     def get(self):
         return self.data
+
+
+def DummyAttributeImpl(name):
+    def _constructor(pb):
+        return DummyAttribute(pb, name=name)
+    return _constructor

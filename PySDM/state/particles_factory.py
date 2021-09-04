@@ -27,8 +27,8 @@ class ParticlesFactory:
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
                 attr.allocate(idx)
-            if isinstance(attr, DummyAttribute) and attr_name in attributes:
-                raise ValueError(f"attribute '{attr_name}' indicated as dummy but values were provided")
+            if isinstance(attr, DummyAttribute) and attr.name in attributes:
+                raise ValueError(f"attribute '{attr.name}' indicated as dummy but values were provided")
 
         extensive_keys = {}
         maximum_keys = {}
