@@ -373,8 +373,7 @@ r_wet = r_wet_init(r_dry, env, kappa * v_dry)
 
 attributes = Dict()
 attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
-attributes["dry volume inorganic"] = v_dry
-attributes["dry volume organic"] = zeros(n_sd)
+attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
@@ -456,8 +455,7 @@ r_wet = r_wet_init(r_dry, env, kappa * v_dry);
 
 attributes = py.dict(pyargs( ...
     'n', multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air), ...
-    'dry volume inorganic', v_dry, ...
-    'dry volume organic', py.numpy.zeros(int32(n_sd)), ...
+    'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
     'volume', builder.formulae.trivia.volume(r_wet) ...
 ));
@@ -550,8 +548,7 @@ r_wet = r_wet_init(r_dry, env, kappa * v_dry)
 
 attributes = {
     'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume inorganic': v_dry,
-    'dry volume organic': np.zeros(n_sd),
+    'dry volume': v_dry,
     'kappa times dry volume': kappa * v_dry,
     'volume': builder.formulae.trivia.volume(radius=r_wet)
 }

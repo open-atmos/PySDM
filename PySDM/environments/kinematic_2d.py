@@ -53,9 +53,9 @@ class Kinematic2D(_Moist):
             else:
                 raise NotImplementedError()
 
-            attributes['dry volume inorganic'] = self.formulae.trivia.volume(radius=r_dry)
+            attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
             attributes['dry volume organic'] = np.zeros_like(r_dry)
-            attributes['kappa times dry volume'] = kappa * attributes['dry volume inorganic']
+            attributes['kappa times dry volume'] = kappa * attributes['dry volume']
             if kappa == 0:
                 r_wet = r_dry
             else:

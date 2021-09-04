@@ -1,6 +1,6 @@
 import numpy as np
 
-from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, MaximumAttribute
+from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.state.particles import Particles
 
@@ -18,14 +18,14 @@ class ParticlesFactory:
                 extensive_attr.append(attr_name)
             elif isinstance(req_attr[attr_name], MaximumAttribute):
                 maximum_attr.append(attr_name)
-            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute)):
+            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
         extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
         maximum_attributes = core.IndexedStorage.empty(idx, (len(maximum_attr), core.n_sd), float)
 
         for attr in req_attr.values():
-            if isinstance(attr, DerivedAttribute):
+            if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
                 attr.allocate(idx)
 
         extensive_keys = {}
@@ -35,10 +35,14 @@ class ParticlesFactory:
             for i, attr in enumerate(names):
                 keys[attr] = i
                 req_attr[attr].set_data(data[i, :])
-                try:
-                    req_attr[attr].init(all_attr[attr])
-                except KeyError:
-                    raise ValueError(f"attribute '{attr}' required by one of the processes but initial values not provided")
+                if isinstance(req_attr[attr], DummyAttribute):
+                    if attr in all_attr:
+                        raise ValueError(f"attribute '{attr}' indicated as dummy but values were provided")
+                else:
+                    try:
+                        req_attr[attr].init(all_attr[attr])
+                    except KeyError:
+                        raise ValueError(f"attribute '{attr}' required by one of the processes but initial values not provided")
 
         helper(req_attr, attributes, extensive_attr, extensive_attributes, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)

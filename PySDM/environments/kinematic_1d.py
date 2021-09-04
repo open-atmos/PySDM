@@ -44,9 +44,9 @@ class Kinematic1D(_Moist):
                 self.mesh.cellular_attributes(positions)
 
             r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            attributes['dry volume inorganic'] = self.formulae.trivia.volume(radius=r_dry)
+            attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
             attributes['dry volume organic'] = np.zeros_like(r_dry)
-            attributes['kappa times dry volume'] = attributes['dry volume inorganic'] * kappa
+            attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
             r_wet = r_wet_init(r_dry, self, cell_id=attributes['cell id'],
                                kappa_times_dry_volume=attributes['kappa times dry volume'])
 
