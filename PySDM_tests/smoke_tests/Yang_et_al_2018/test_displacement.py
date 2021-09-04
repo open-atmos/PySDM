@@ -1,5 +1,4 @@
-from PySDM_examples.Yang_et_al_2018.example import Simulation
-from PySDM_examples.Yang_et_al_2018.settings import Settings
+from PySDM_examples.Yang_et_al_2018 import Simulation, Settings
 import matplotlib.pyplot as plt
 from scipy import signal
 import numpy as np

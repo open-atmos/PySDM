@@ -1,8 +1,7 @@
 import pytest
 import numpy as np
 
-from PySDM_examples.Yang_et_al_2018.example import Simulation
-from PySDM_examples.Yang_et_al_2018.settings import Settings
+from PySDM_examples.Yang_et_al_2018 import Simulation, Settings
 from PySDM.physics.constants import si
 from PySDM.backends.numba.test_helpers import bdf
 from PySDM.backends import GPU
