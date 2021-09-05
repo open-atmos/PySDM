@@ -25,17 +25,17 @@ install:
       }
 
   - ps: |
-      iex "$env:PYTHON -m pip install --use-deprecated=legacy-resolver --upgrade pip"
+      iex "$env:PYTHON -m pip --use-deprecated=legacy-resolver install --upgrade pip"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
-      iex "$env:PYTHON -m pip install --use-deprecated=legacy-resolver pytest"
+      iex "$env:PYTHON -m pip --use-deprecated=legacy-resolver install pytest"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
       # Add-Content requirements.txt "`npywin32>=300"
-      iex "$env:PYTHON -m pip install --use-deprecated=legacy-resolver -r test-time-requirements.txt"
+      iex "$env:PYTHON -m pip --use-deprecated=legacy-resolver install -r test-time-requirements.txt"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
-      iex "$env:PYTHON -m pip install --use-deprecated=legacy-resolver -e ."
+      iex "$env:PYTHON -m pip --use-deprecated=legacy-resolver install -e ."
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
 test_script:
