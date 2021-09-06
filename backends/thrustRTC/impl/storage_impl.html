@@ -175,6 +175,20 @@ def divide_out_of_place(output, dividend, divisor):
     loop.launch_n(output.shape[0], thrust([output, dividend, divisor]))
 
 
+__sum_out_of_place_elementwise_body = trtc.For([&#39;output&#39;, &#39;a&#39;, &#39;b&#39;], &#34;i&#34;, &#39;&#39;&#39;
+        output[i] = a[i] + b[i];
+    &#39;&#39;&#39;)
+
+
+@nice_thrust(**NICE_THRUST_FLAGS)
+def sum_out_of_place(output, a, b):
+    if hasattr(a, &#39;data&#39;):
+        loop = __sum_out_of_place_elementwise_body
+    else:
+        raise NotImplementedError()
+    loop.launch_n(output.shape[0], thrust([output, a, b]))
+
+
 __power_body = trtc.For([&#39;output&#39;, &#39;exponent&#39;], &#34;i&#34;, &#39;&#39;&#39;
         output[i] = pow(output[i], exponent);
     &#39;&#39;&#39;)

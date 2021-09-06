@@ -211,6 +211,10 @@ class Storage:
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self.data, a.data, b.data)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
@@ -427,6 +431,10 @@ class Storage:
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self.data, a.data, b.data)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
@@ -631,6 +639,20 @@ def from_ndarray(array):
         self.data[:] = other.ravel()</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.numba.storage.Storage.sum"><code class="name flex">
+<span>def <span class="ident">sum</span></span>(<span>self, a, b)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sum(self, a, b):
+    impl.sum_out_of_place(self.data, a.data, b.data)
+    return self</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.numba.storage.Storage.to_ndarray"><code class="name flex">
 <span>def <span class="ident">to_ndarray</span></span>(<span>self)</span>
 </code></dt>
@@ -704,6 +726,7 @@ def from_ndarray(array):
 <li><code><a title="PySDM.backends.numba.storage.Storage.product" href="#PySDM.backends.numba.storage.Storage.product">product</a></code></li>
 <li><code><a title="PySDM.backends.numba.storage.Storage.ratio" href="#PySDM.backends.numba.storage.Storage.ratio">ratio</a></code></li>
 <li><code><a title="PySDM.backends.numba.storage.Storage.ravel" href="#PySDM.backends.numba.storage.Storage.ravel">ravel</a></code></li>
+<li><code><a title="PySDM.backends.numba.storage.Storage.sum" href="#PySDM.backends.numba.storage.Storage.sum">sum</a></code></li>
 <li><code><a title="PySDM.backends.numba.storage.Storage.to_ndarray" href="#PySDM.backends.numba.storage.Storage.to_ndarray">to_ndarray</a></code></li>
 <li><code><a title="PySDM.backends.numba.storage.Storage.upload" href="#PySDM.backends.numba.storage.Storage.upload">upload</a></code></li>
 <li><code><a title="PySDM.backends.numba.storage.Storage.urand" href="#PySDM.backends.numba.storage.Storage.urand">urand</a></code></li>

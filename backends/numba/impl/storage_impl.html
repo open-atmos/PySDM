@@ -72,6 +72,9 @@ def multiply_out_of_place(output, multiplicand, multiplier):
 def divide_out_of_place(output, dividend, divisor):
     output[:] = dividend / divisor
 
+@numba.njit(**conf.JIT_FLAGS)
+def sum_out_of_place(output, a, b):
+    output[:] = a + b
 
 @numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):
@@ -237,6 +240,20 @@ def subtract(output, subtrahend):
     output[:] -= subtrahend[:]</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.numba.impl.storage_impl.sum_out_of_place"><code class="name flex">
+<span>def <span class="ident">sum_out_of_place</span></span>(<span>output, a, b)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
+def sum_out_of_place(output, a, b):
+    output[:] = a + b</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.numba.impl.storage_impl.urand"><code class="name flex">
 <span>def <span class="ident">urand</span></span>(<span>output)</span>
 </code></dt>
@@ -278,6 +295,7 @@ def subtract(output, subtrahend):
 <li><code><a title="PySDM.backends.numba.impl.storage_impl.power" href="#PySDM.backends.numba.impl.storage_impl.power">power</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.storage_impl.row_modulo" href="#PySDM.backends.numba.impl.storage_impl.row_modulo">row_modulo</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.storage_impl.subtract" href="#PySDM.backends.numba.impl.storage_impl.subtract">subtract</a></code></li>
+<li><code><a title="PySDM.backends.numba.impl.storage_impl.sum_out_of_place" href="#PySDM.backends.numba.impl.storage_impl.sum_out_of_place">sum_out_of_place</a></code></li>
 <li><code><a title="PySDM.backends.numba.impl.storage_impl.urand" href="#PySDM.backends.numba.impl.storage_impl.urand">urand</a></code></li>
 </ul>
 </li>

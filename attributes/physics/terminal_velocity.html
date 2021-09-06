@@ -40,7 +40,6 @@ class TerminalVelocity(DerivedAttribute):
         self.approximation = Interpolation(builder.core)
 
     def recalculate(self):
-        self.data.idx = self.radius.data.idx
         self.approximation(self.data, self.radius.get())</code></pre>
 </details>
 </section>
@@ -73,7 +72,6 @@ class TerminalVelocity(DerivedAttribute):
         self.approximation = Interpolation(builder.core)
 
     def recalculate(self):
-        self.data.idx = self.radius.data.idx
         self.approximation(self.data, self.radius.get())</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -93,7 +91,6 @@ class TerminalVelocity(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.radius.data.idx
     self.approximation(self.data, self.radius.get())</code></pre>
 </details>
 </dd>

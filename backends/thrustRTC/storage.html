@@ -222,6 +222,10 @@ class Storage:
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self, a, b)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             trtc.Copy(other.data, self.data)
@@ -451,6 +455,10 @@ class Storage:
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self, a, b)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             trtc.Copy(other.data, self.data)
@@ -639,6 +647,20 @@ def from_ndarray(array):
         self.data = trtc.device_vector_from_numpy(other.ravel())</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.thrustRTC.storage.Storage.sum"><code class="name flex">
+<span>def <span class="ident">sum</span></span>(<span>self, a, b)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sum(self, a, b):
+    impl.sum_out_of_place(self, a, b)
+    return self</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.thrustRTC.storage.Storage.to_ndarray"><code class="name flex">
 <span>def <span class="ident">to_ndarray</span></span>(<span>self)</span>
 </code></dt>
@@ -716,6 +738,7 @@ def from_ndarray(array):
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.product" href="#PySDM.backends.thrustRTC.storage.Storage.product">product</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.ratio" href="#PySDM.backends.thrustRTC.storage.Storage.ratio">ratio</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.ravel" href="#PySDM.backends.thrustRTC.storage.Storage.ravel">ravel</a></code></li>
+<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.sum" href="#PySDM.backends.thrustRTC.storage.Storage.sum">sum</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.to_ndarray" href="#PySDM.backends.thrustRTC.storage.Storage.to_ndarray">to_ndarray</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.upload" href="#PySDM.backends.thrustRTC.storage.Storage.upload">upload</a></code></li>
 <li><code><a title="PySDM.backends.thrustRTC.storage.Storage.urand" href="#PySDM.backends.thrustRTC.storage.Storage.urand">urand</a></code></li>

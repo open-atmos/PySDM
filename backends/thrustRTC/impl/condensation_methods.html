@@ -58,19 +58,19 @@ class CondensationMethods():
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
 
-        args_vars = (&#39;x_old&#39;, &#39;dt&#39;, &#39;kappa&#39;, &#39;rd3&#39;, &#39;_T&#39;, &#39;_RH&#39;, &#39;_lv&#39;, &#39;_pvs&#39;, &#39;Dr&#39;, &#39;Kr&#39;)
+        args_vars = (&#39;x_old&#39;, &#39;dt&#39;, &#39;kappa&#39;, &#39;f_org&#39;, &#39;rd3&#39;, &#39;_T&#39;, &#39;_RH&#39;, &#39;_lv&#39;, &#39;_pvs&#39;, &#39;Dr&#39;, &#39;Kr&#39;)
 
         def args(arg):
             return f&#34;args[{args_vars.index(arg)}]&#34;
 
-        self.__update_volume = trtc.For((&#34;v&#34;, &#34;vdry&#34;, *CondensationMethods.keys, &#34;kappa&#34;, &#34;dt&#34;, &#34;RH_rtol&#34;, &#34;rtol_x&#34;, &#34;max_iters&#34;, &#34;cell_id&#34;), &#34;i&#34;,
+        self.__update_volume = trtc.For((&#34;v&#34;, &#34;vdry&#34;, *CondensationMethods.keys, &#34;_kappa&#34;, &#34;_f_org&#34;, &#34;dt&#34;, &#34;RH_rtol&#34;, &#34;rtol_x&#34;, &#34;max_iters&#34;, &#34;cell_id&#34;), &#34;i&#34;,
             f&#39;&#39;&#39;            
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast&lt;real_type*&gt;(args_p);
                     auto vol = {phys.condensation_coordinate.volume.c_inline(x=&#34;x_new&#34;)};
                     auto r_new = {phys.trivia.radius.c_inline(volume=&#34;vol&#34;)};
-                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args(&#39;_T&#39;), v_wet=&#34;vol&#34;, v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;)};
+                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args(&#39;_T&#39;), v_wet=&#34;vol&#34;, v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;, f_org=args(&#34;f_org&#34;))};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_new&#34;, T=args(&#39;_T&#39;), kp=args(&#34;kappa&#34;), rd3=args(&#34;rd3&#34;), sgm=&#34;sgm&#34;)};
                     auto r_dr_dt = {phys.drop_growth.r_dr_dt.c_inline(RH_eq=&#34;RH_eq&#34;, T=args(&#34;_T&#34;), RH=args(&#34;_RH&#34;), lv=args(&#34;_lv&#34;), pvs=args(&#34;_pvs&#34;), D=args(&#34;Dr&#34;), K=args(&#34;Kr&#34;))};
                     return {args(&#34;x_old&#34;)} - x_new + {args(&#34;dt&#34;)} * {phys.condensation_coordinate.dx_dt.c_inline(x=&#34;x_new&#34;, r_dr_dt=&#34;r_dr_dt&#34;)};
@@ -91,8 +91,8 @@ class CondensationMethods():
             auto r_old = {phys.trivia.radius.c_inline(volume=&#34;v[i]&#34;)};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume=&#34;vdry[i]/100&#34;)};
             auto rd3 = vdry[i] / {const.pi_4_3};
-            auto sgm = {phys.surface_tension.sigma.c_inline(T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;)};
-            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_old&#34;, T=&#34;_T&#34;, kp=&#34;kappa&#34;, rd3=&#34;rd3&#34;, sgm=&#34;sgm&#34;)};
+            auto sgm = {phys.surface_tension.sigma.c_inline(T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;, f_org=&#34;_f_org[i]&#34;)};
+            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_old&#34;, T=&#34;_T&#34;, kp=&#34;_kappa[i]&#34;, rd3=&#34;rd3&#34;, sgm=&#34;sgm&#34;)};
 
             real_type Dr=0;
             real_type Kr=0; 
@@ -109,6 +109,8 @@ class CondensationMethods():
             else {{
                 dx_old = 0;
             }}
+            real_type kappa = _kappa[i]
+            real_type f_org = _f_org[i];
             real_type args[] = {{{&#39;,&#39;.join(args_vars)}}}; // array
 
             if (dx_old == 0) {{
@@ -206,7 +208,7 @@ class CondensationMethods():
         self,
         solver,
         n_cell, cell_start_arg,
-        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
         rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
@@ -228,7 +230,7 @@ class CondensationMethods():
         for _ in range(n_substeps):
             self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), RH_max.data))
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
-                                                   dvfloat(kappa),
+                                                   kappa.data, f_org.data,
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )
@@ -289,19 +291,19 @@ class CondensationMethods():
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
 
-        args_vars = (&#39;x_old&#39;, &#39;dt&#39;, &#39;kappa&#39;, &#39;rd3&#39;, &#39;_T&#39;, &#39;_RH&#39;, &#39;_lv&#39;, &#39;_pvs&#39;, &#39;Dr&#39;, &#39;Kr&#39;)
+        args_vars = (&#39;x_old&#39;, &#39;dt&#39;, &#39;kappa&#39;, &#39;f_org&#39;, &#39;rd3&#39;, &#39;_T&#39;, &#39;_RH&#39;, &#39;_lv&#39;, &#39;_pvs&#39;, &#39;Dr&#39;, &#39;Kr&#39;)
 
         def args(arg):
             return f&#34;args[{args_vars.index(arg)}]&#34;
 
-        self.__update_volume = trtc.For((&#34;v&#34;, &#34;vdry&#34;, *CondensationMethods.keys, &#34;kappa&#34;, &#34;dt&#34;, &#34;RH_rtol&#34;, &#34;rtol_x&#34;, &#34;max_iters&#34;, &#34;cell_id&#34;), &#34;i&#34;,
+        self.__update_volume = trtc.For((&#34;v&#34;, &#34;vdry&#34;, *CondensationMethods.keys, &#34;_kappa&#34;, &#34;_f_org&#34;, &#34;dt&#34;, &#34;RH_rtol&#34;, &#34;rtol_x&#34;, &#34;max_iters&#34;, &#34;cell_id&#34;), &#34;i&#34;,
             f&#39;&#39;&#39;            
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast&lt;real_type*&gt;(args_p);
                     auto vol = {phys.condensation_coordinate.volume.c_inline(x=&#34;x_new&#34;)};
                     auto r_new = {phys.trivia.radius.c_inline(volume=&#34;vol&#34;)};
-                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args(&#39;_T&#39;), v_wet=&#34;vol&#34;, v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;)};
+                    auto sgm = {phys.surface_tension.sigma.c_inline(T=args(&#39;_T&#39;), v_wet=&#34;vol&#34;, v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;, f_org=args(&#34;f_org&#34;))};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_new&#34;, T=args(&#39;_T&#39;), kp=args(&#34;kappa&#34;), rd3=args(&#34;rd3&#34;), sgm=&#34;sgm&#34;)};
                     auto r_dr_dt = {phys.drop_growth.r_dr_dt.c_inline(RH_eq=&#34;RH_eq&#34;, T=args(&#34;_T&#34;), RH=args(&#34;_RH&#34;), lv=args(&#34;_lv&#34;), pvs=args(&#34;_pvs&#34;), D=args(&#34;Dr&#34;), K=args(&#34;Kr&#34;))};
                     return {args(&#34;x_old&#34;)} - x_new + {args(&#34;dt&#34;)} * {phys.condensation_coordinate.dx_dt.c_inline(x=&#34;x_new&#34;, r_dr_dt=&#34;r_dr_dt&#34;)};
@@ -322,8 +324,8 @@ class CondensationMethods():
             auto r_old = {phys.trivia.radius.c_inline(volume=&#34;v[i]&#34;)};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume=&#34;vdry[i]/100&#34;)};
             auto rd3 = vdry[i] / {const.pi_4_3};
-            auto sgm = {phys.surface_tension.sigma.c_inline(T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;)};
-            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_old&#34;, T=&#34;_T&#34;, kp=&#34;kappa&#34;, rd3=&#34;rd3&#34;, sgm=&#34;sgm&#34;)};
+            auto sgm = {phys.surface_tension.sigma.c_inline(T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;, f_org=&#34;_f_org[i]&#34;)};
+            auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r=&#34;r_old&#34;, T=&#34;_T&#34;, kp=&#34;_kappa[i]&#34;, rd3=&#34;rd3&#34;, sgm=&#34;sgm&#34;)};
 
             real_type Dr=0;
             real_type Kr=0; 
@@ -340,6 +342,8 @@ class CondensationMethods():
             else {{
                 dx_old = 0;
             }}
+            real_type kappa = _kappa[i]
+            real_type f_org = _f_org[i];
             real_type args[] = {{{&#39;,&#39;.join(args_vars)}}}; // array
 
             if (dx_old == 0) {{
@@ -437,7 +441,7 @@ class CondensationMethods():
         self,
         solver,
         n_cell, cell_start_arg,
-        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
         rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
@@ -459,7 +463,7 @@ class CondensationMethods():
         for _ in range(n_substeps):
             self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), RH_max.data))
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
-                                                   dvfloat(kappa),
+                                                   kappa.data, f_org.data,
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )

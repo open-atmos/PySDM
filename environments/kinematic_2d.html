@@ -83,14 +83,20 @@ class Kinematic2D(_Moist):
                 attributes[&#39;freezing temperature&#39;] = T_fz
             else:
                 raise NotImplementedError()
-            r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes[&#39;cell id&#39;])
+
+            attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
+            attributes[&#39;kappa times dry volume&#39;] = kappa * attributes[&#39;dry volume&#39;]
+            if kappa == 0:
+                r_wet = r_dry
+            else:
+                r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;], rtol=rtol,
+                                   cell_id=attributes[&#39;cell id&#39;])
             rhod = self[&#39;rhod&#39;].to_ndarray()
             cell_id = attributes[&#39;cell id&#39;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes[&#39;n&#39;] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
-        attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 
@@ -165,14 +171,20 @@ class Kinematic2D(_Moist):
                 attributes[&#39;freezing temperature&#39;] = T_fz
             else:
                 raise NotImplementedError()
-            r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes[&#39;cell id&#39;])
+
+            attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
+            attributes[&#39;kappa times dry volume&#39;] = kappa * attributes[&#39;dry volume&#39;]
+            if kappa == 0:
+                r_wet = r_dry
+            else:
+                r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;], rtol=rtol,
+                                   cell_id=attributes[&#39;cell id&#39;])
             rhod = self[&#39;rhod&#39;].to_ndarray()
             cell_id = attributes[&#39;cell id&#39;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes[&#39;n&#39;] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
-        attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 
@@ -267,14 +279,20 @@ def dv(self):
             attributes[&#39;freezing temperature&#39;] = T_fz
         else:
             raise NotImplementedError()
-        r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes[&#39;cell id&#39;])
+
+        attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
+        attributes[&#39;kappa times dry volume&#39;] = kappa * attributes[&#39;dry volume&#39;]
+        if kappa == 0:
+            r_wet = r_dry
+        else:
+            r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;], rtol=rtol,
+                               cell_id=attributes[&#39;cell id&#39;])
         rhod = self[&#39;rhod&#39;].to_ndarray()
         cell_id = attributes[&#39;cell id&#39;]
         domain_volume = np.prod(np.array(self.mesh.size))
 
     attributes[&#39;n&#39;] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
     attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
-    attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
 
     return attributes</code></pre>
 </details>

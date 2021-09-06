@@ -78,9 +78,11 @@ class Builder:
         self.request_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute):
+    def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
+        if variant is not None:
+            assert variant == self.req_attr[attribute]
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         assert self.core.environment is not None
@@ -182,9 +184,11 @@ def assert_none(*params):
         self.request_attribute(attribute_name)
         return self.req_attr[attribute_name]
 
-    def request_attribute(self, attribute):
+    def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
+        if variant is not None:
+            assert variant == self.req_attr[attribute]
 
     def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
         assert self.core.environment is not None
@@ -291,7 +295,7 @@ def assert_none(*params):
 </details>
 </dd>
 <dt id="PySDM.builder.Builder.request_attribute"><code class="name flex">
-<span>def <span class="ident">request_attribute</span></span>(<span>self, attribute)</span>
+<span>def <span class="ident">request_attribute</span></span>(<span>self, attribute, variant=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -299,9 +303,11 @@ def assert_none(*params):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def request_attribute(self, attribute):
+<pre><code class="python">def request_attribute(self, attribute, variant=None):
     if attribute not in self.req_attr:
-        self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)</code></pre>
+        self.req_attr[attribute] = attr_class(attribute, self.core.dynamics)(self)
+    if variant is not None:
+        assert variant == self.req_attr[attribute]</code></pre>
 </details>
 </dd>
 <dt id="PySDM.builder.Builder.set_environment"><code class="name flex">

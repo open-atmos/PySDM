@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.attributes.impl.attribute API documentation</title>
+<title>PySDM.attributes.physics.hygroscopicity API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,45 +19,31 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.impl.attribute</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.physics.hygroscopicity</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Attribute:
+<pre><code class="python">from ..impl.derived_attribute import DerivedAttribute
+from ..impl.extensive_attribute import ExtensiveAttribute
 
-    def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
-        self.timestamp: int = 0
-        self.data = None
-        self.dtype = dtype
-        self.size = size
-        self.name = name
-        self.formulae = self.core.formulae
 
-    def allocate(self, idx):
-        if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-        else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
+class KappaTimesDryVolume(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name=&#39;kappa times dry volume&#39;)
 
-    def set_data(self, data):
-        self.data = data
 
-    def get(self):
-        self.update()
-        return self.data
+class Kappa(DerivedAttribute):
+    def __init__(self, builder):
+        self.kappa_times_dry_volume = builder.get_attribute(&#39;kappa times dry volume&#39;)
+        self.dry_volume = builder.get_attribute(&#39;dry volume&#39;)
+        deps = (self.kappa_times_dry_volume, self.dry_volume)
+        super().__init__(builder, name=&#39;kappa&#39;, dependencies=deps)
 
-    def update(self):
-        pass
-
-    def mark_updated(self):
-        self.timestamp += 1
-
-    def __str__(self):
-        return self.name</code></pre>
+    def recalculate(self):
+        self.data.ratio(self.kappa_times_dry_volume.get(), self.dry_volume.get())</code></pre>
 </details>
 </section>
 <section>
@@ -69,9 +55,9 @@
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.attributes.impl.attribute.Attribute"><code class="flex name class">
-<span>class <span class="ident">Attribute</span></span>
-<span>(</span><span>builder, name, dtype=builtins.float, size=0)</span>
+<dt id="PySDM.attributes.physics.hygroscopicity.Kappa"><code class="flex name class">
+<span>class <span class="ident">Kappa</span></span>
+<span>(</span><span>builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -79,49 +65,25 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Attribute:
+<pre><code class="python">class Kappa(DerivedAttribute):
+    def __init__(self, builder):
+        self.kappa_times_dry_volume = builder.get_attribute(&#39;kappa times dry volume&#39;)
+        self.dry_volume = builder.get_attribute(&#39;dry volume&#39;)
+        deps = (self.kappa_times_dry_volume, self.dry_volume)
+        super().__init__(builder, name=&#39;kappa&#39;, dependencies=deps)
 
-    def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
-        self.timestamp: int = 0
-        self.data = None
-        self.dtype = dtype
-        self.size = size
-        self.name = name
-        self.formulae = self.core.formulae
-
-    def allocate(self, idx):
-        if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-        else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
-
-    def set_data(self, data):
-        self.data = data
-
-    def get(self):
-        self.update()
-        return self.data
-
-    def update(self):
-        pass
-
-    def mark_updated(self):
-        self.timestamp += 1
-
-    def __str__(self):
-        return self.name</code></pre>
+    def recalculate(self):
+        self.data.ratio(self.kappa_times_dry_volume.get(), self.dry_volume.get())</code></pre>
 </details>
-<h3>Subclasses</h3>
+<h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
-<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
-<li><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute" href="dummy_attribute.html#PySDM.attributes.impl.dummy_attribute.DummyAttribute">DummyAttribute</a></li>
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.attributes.impl.attribute.Attribute.allocate"><code class="name flex">
-<span>def <span class="ident">allocate</span></span>(<span>self, idx)</span>
+<dt id="PySDM.attributes.physics.hygroscopicity.Kappa.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -129,67 +91,32 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def allocate(self, idx):
-    if self.size &gt;= 1:
-        self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-    else:
-        self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self):
-    self.update()
-    return self.data</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.mark_updated"><code class="name flex">
-<span>def <span class="ident">mark_updated</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def mark_updated(self):
-    self.timestamp += 1</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.set_data"><code class="name flex">
-<span>def <span class="ident">set_data</span></span>(<span>self, data)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_data(self, data):
-    self.data = data</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self):
-    pass</code></pre>
+<pre><code class="python">def recalculate(self):
+    self.data.ratio(self.kappa_times_dry_volume.get(), self.dry_volume.get())</code></pre>
 </details>
 </dd>
 </dl>
+</dd>
+<dt id="PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume"><code class="flex name class">
+<span>class <span class="ident">KappaTimesDryVolume</span></span>
+<span>(</span><span>builder)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KappaTimesDryVolume(ExtensiveAttribute):
+    def __init__(self, builder):
+        super().__init__(builder, name=&#39;kappa times dry volume&#39;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute" href="../impl/extensive_attribute.html#PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute">ExtensiveAttribute</a></li>
+<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="../impl/base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -202,20 +129,19 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.attributes.impl" href="index.html">PySDM.attributes.impl</a></code></li>
+<li><code><a title="PySDM.attributes.physics" href="index.html">PySDM.attributes.physics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.impl.attribute.Attribute" href="#PySDM.attributes.impl.attribute.Attribute">Attribute</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.hygroscopicity.Kappa" href="#PySDM.attributes.physics.hygroscopicity.Kappa">Kappa</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.allocate" href="#PySDM.attributes.impl.attribute.Attribute.allocate">allocate</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.get" href="#PySDM.attributes.impl.attribute.Attribute.get">get</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.mark_updated" href="#PySDM.attributes.impl.attribute.Attribute.mark_updated">mark_updated</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.set_data" href="#PySDM.attributes.impl.attribute.Attribute.set_data">set_data</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.update" href="#PySDM.attributes.impl.attribute.Attribute.update">update</a></code></li>
+<li><code><a title="PySDM.attributes.physics.hygroscopicity.Kappa.recalculate" href="#PySDM.attributes.physics.hygroscopicity.Kappa.recalculate">recalculate</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume" href="#PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume">KappaTimesDryVolume</a></code></h4>
 </li>
 </ul>
 </li>

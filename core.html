@@ -112,7 +112,7 @@ class Core:
         )
         # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -128,7 +128,8 @@ class Core:
             prhod=self.env.get_predicted(&#34;rhod&#34;),
             pthd=self.env.get_predicted(&#34;thd&#34;),
             pqv=self.env.get_predicted(&#34;qv&#34;),
-            kappa=kappa,
+            kappa=self.particles[&#34;kappa&#34;],
+            f_org=self.particles[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
             v_cr=self.particles[&#34;critical volume&#34;],
@@ -245,7 +246,7 @@ class Core:
         )
         # TODO #443: mark_updated
 
-    def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -261,7 +262,8 @@ class Core:
             prhod=self.env.get_predicted(&#34;rhod&#34;),
             pthd=self.env.get_predicted(&#34;thd&#34;),
             pqv=self.env.get_predicted(&#34;qv&#34;),
-            kappa=kappa,
+            kappa=self.particles[&#34;kappa&#34;],
+            f_org=self.particles[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
             v_cr=self.particles[&#34;critical volume&#34;],
@@ -375,7 +377,7 @@ def n_sd(self) -&gt; int:
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.core.Core.condensation"><code class="name flex">
-<span>def <span class="ident">condensation</span></span>(<span>self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
+<span>def <span class="ident">condensation</span></span>(<span>self, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -383,7 +385,7 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def condensation(self, kappa, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+<pre><code class="python">def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     self.backend.condensation(
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
@@ -399,7 +401,8 @@ def n_sd(self) -&gt; int:
         prhod=self.env.get_predicted(&#34;rhod&#34;),
         pthd=self.env.get_predicted(&#34;thd&#34;),
         pqv=self.env.get_predicted(&#34;qv&#34;),
-        kappa=kappa,
+        kappa=self.particles[&#34;kappa&#34;],
+        f_org=self.particles[&#34;dry volume organic fraction&#34;],
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
         v_cr=self.particles[&#34;critical volume&#34;],

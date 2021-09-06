@@ -42,7 +42,6 @@ default_schedule = &#39;dynamic&#39;
 class Condensation:
 
     def __init__(self,
-                 kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  substeps: int = 1,
@@ -55,7 +54,6 @@ class Condensation:
         self.core = None
         self.enable = True
 
-        self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
 
@@ -77,6 +75,8 @@ class Condensation:
         builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
                                              fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
         builder.request_attribute(&#39;critical volume&#39;)
+        builder.request_attribute(&#39;kappa&#39;)
+        builder.request_attribute(&#39;dry volume organic fraction&#39;)
 
         for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
             self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
@@ -101,7 +101,6 @@ class Condensation:
                 raise NotImplementedError()
 
             self.core.condensation(
-                kappa=self.kappa,
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
@@ -132,7 +131,7 @@ class Condensation:
 <dl>
 <dt id="PySDM.dynamics.condensation.Condensation"><code class="flex name class">
 <span>class <span class="ident">Condensation</span></span>
-<span>(</span><span>kappa, rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16)</span>
+<span>(</span><span>rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -143,7 +142,6 @@ class Condensation:
 <pre><code class="python">class Condensation:
 
     def __init__(self,
-                 kappa,
                  rtol_x=default_rtol_x,
                  rtol_thd=default_rtol_thd,
                  substeps: int = 1,
@@ -156,7 +154,6 @@ class Condensation:
         self.core = None
         self.enable = True
 
-        self.kappa = kappa
         self.rtol_x = rtol_x
         self.rtol_thd = rtol_thd
 
@@ -178,6 +175,8 @@ class Condensation:
         builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
                                              fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
         builder.request_attribute(&#39;critical volume&#39;)
+        builder.request_attribute(&#39;kappa&#39;)
+        builder.request_attribute(&#39;dry volume organic fraction&#39;)
 
         for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
             self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
@@ -202,7 +201,6 @@ class Condensation:
                 raise NotImplementedError()
 
             self.core.condensation(
-                kappa=self.kappa,
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
@@ -238,6 +236,8 @@ class Condensation:
     builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
                                          fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
     builder.request_attribute(&#39;critical volume&#39;)
+    builder.request_attribute(&#39;kappa&#39;)
+    builder.request_attribute(&#39;dry volume organic fraction&#39;)
 
     for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
         self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)

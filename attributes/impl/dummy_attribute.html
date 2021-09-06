@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.attributes.impl.attribute API documentation</title>
+<title>PySDM.attributes.impl.dummy_attribute API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,45 +19,33 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.impl.attribute</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.impl.dummy_attribute</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Attribute:
+<pre><code class="python">from .attribute import Attribute
+import numpy as np
 
-    def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
-        self.timestamp: int = 0
-        self.data = None
-        self.dtype = dtype
-        self.size = size
-        self.name = name
-        self.formulae = self.core.formulae
+
+class DummyAttribute(Attribute):
+    def __init__(self, builder, name):
+        super().__init__(builder, name)
 
     def allocate(self, idx):
-        if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-        else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
-
-    def set_data(self, data):
-        self.data = data
+        super().allocate(idx)
+        self.data[:] = np.nan
 
     def get(self):
-        self.update()
         return self.data
 
-    def update(self):
-        pass
 
-    def mark_updated(self):
-        self.timestamp += 1
-
-    def __str__(self):
-        return self.name</code></pre>
+def DummyAttributeImpl(name):
+    def _constructor(pb):
+        return DummyAttribute(pb, name=name)
+    return _constructor</code></pre>
 </details>
 </section>
 <section>
@@ -65,13 +53,10 @@
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.impl.attribute.Attribute"><code class="flex name class">
-<span>class <span class="ident">Attribute</span></span>
-<span>(</span><span>builder, name, dtype=builtins.float, size=0)</span>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl"><code class="name flex">
+<span>def <span class="ident">DummyAttributeImpl</span></span>(<span>name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -79,48 +64,45 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Attribute:
-
-    def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
-        self.timestamp: int = 0
-        self.data = None
-        self.dtype = dtype
-        self.size = size
-        self.name = name
-        self.formulae = self.core.formulae
+<pre><code class="python">def DummyAttributeImpl(name):
+    def _constructor(pb):
+        return DummyAttribute(pb, name=name)
+    return _constructor</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute"><code class="flex name class">
+<span>class <span class="ident">DummyAttribute</span></span>
+<span>(</span><span>builder, name)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DummyAttribute(Attribute):
+    def __init__(self, builder, name):
+        super().__init__(builder, name)
 
     def allocate(self, idx):
-        if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-        else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
-
-    def set_data(self, data):
-        self.data = data
+        super().allocate(idx)
+        self.data[:] = np.nan
 
     def get(self):
-        self.update()
-        return self.data
-
-    def update(self):
-        pass
-
-    def mark_updated(self):
-        self.timestamp += 1
-
-    def __str__(self):
-        return self.name</code></pre>
+        return self.data</code></pre>
 </details>
-<h3>Subclasses</h3>
+<h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></li>
-<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
-<li><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute" href="dummy_attribute.html#PySDM.attributes.impl.dummy_attribute.DummyAttribute">DummyAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.attributes.impl.attribute.Attribute.allocate"><code class="name flex">
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate"><code class="name flex">
 <span>def <span class="ident">allocate</span></span>(<span>self, idx)</span>
 </code></dt>
 <dd>
@@ -130,13 +112,11 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def allocate(self, idx):
-    if self.size &gt;= 1:
-        self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
-    else:
-        self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)</code></pre>
+    super().allocate(idx)
+    self.data[:] = np.nan</code></pre>
 </details>
 </dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.get"><code class="name flex">
+<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttribute.get"><code class="name flex">
 <span>def <span class="ident">get</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -146,47 +126,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get(self):
-    self.update()
     return self.data</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.mark_updated"><code class="name flex">
-<span>def <span class="ident">mark_updated</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def mark_updated(self):
-    self.timestamp += 1</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.set_data"><code class="name flex">
-<span>def <span class="ident">set_data</span></span>(<span>self, data)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set_data(self, data):
-    self.data = data</code></pre>
-</details>
-</dd>
-<dt id="PySDM.attributes.impl.attribute.Attribute.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self):
-    pass</code></pre>
 </details>
 </dd>
 </dl>
@@ -205,16 +145,18 @@
 <li><code><a title="PySDM.attributes.impl" href="index.html">PySDM.attributes.impl</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl" href="#PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl">DummyAttributeImpl</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.attributes.impl.attribute.Attribute" href="#PySDM.attributes.impl.attribute.Attribute">Attribute</a></code></h4>
+<h4><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute">DummyAttribute</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.allocate" href="#PySDM.attributes.impl.attribute.Attribute.allocate">allocate</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.get" href="#PySDM.attributes.impl.attribute.Attribute.get">get</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.mark_updated" href="#PySDM.attributes.impl.attribute.Attribute.mark_updated">mark_updated</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.set_data" href="#PySDM.attributes.impl.attribute.Attribute.set_data">set_data</a></code></li>
-<li><code><a title="PySDM.attributes.impl.attribute.Attribute.update" href="#PySDM.attributes.impl.attribute.Attribute.update">update</a></code></li>
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute.allocate">allocate</a></code></li>
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute.get" href="#PySDM.attributes.impl.dummy_attribute.DummyAttribute.get">get</a></code></li>
 </ul>
 </li>
 </ul>
