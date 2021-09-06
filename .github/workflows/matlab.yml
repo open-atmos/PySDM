@@ -20,8 +20,8 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: pip install -e .
-      - run: pip install exdown pytest
+      - run: pip --use-deprecated=legacy-resolver install -e .
+      - run: pip --use-deprecated=legacy-resolver install exdown pytest
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - uses: matlab-actions/setup-matlab@v0
       - uses: matlab-actions/run-command@v0

@@ -22,11 +22,11 @@ class PhysicsMethods:
         self.explicit_euler_body = explicit_euler_body
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
-        def critical_volume(v_cr, kappa, v_dry, v_wet, T, cell):
+        def critical_volume(v_cr, kappa, f_org, v_dry, v_wet, T, cell):
             for i in prange(len(v_cr)):
-                sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i])
+                sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
                 v_cr[i] = phys_volume(phys_r_cr(
-                    kp=kappa,
+                    kp=kappa[i],
                     rd3=v_dry[i] / const.pi_4_3,
                     T=T[cell[i]],
                     sgm=sigma
@@ -61,5 +61,5 @@ class PhysicsMethods:
     def explicit_euler(self, y, dt, dy_dt):
         self.explicit_euler_body(y.data, dt, dy_dt)
 
-    def critical_volume(self, v_cr, kappa, v_dry, v_wet, T, cell):
-        self.critical_volume_body(v_cr.data, kappa, v_dry.data, v_wet.data, T.data, cell.data)
+    def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
+        self.critical_volume_body(v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)

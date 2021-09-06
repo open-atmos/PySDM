@@ -54,4 +54,4 @@ def test_spin_up(backend, fastmath, plot=False):
         prev = storage.profiles[step]["qv_env"]
         eps = 1e-3
         assert ((prev + eps) >= next).all()
-    assert storage.profiles[step_num]["qv_env"][-1] < 7.
+    assert storage.profiles[step_num]["qv_env"][-1] < 7.1

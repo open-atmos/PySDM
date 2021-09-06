@@ -52,14 +52,20 @@ class Kinematic2D(_Moist):
                 attributes['freezing temperature'] = T_fz
             else:
                 raise NotImplementedError()
-            r_wet = r_wet_init(r_dry, self, kappa=kappa, rtol=rtol, cell_id=attributes['cell id'])
+
+            attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
+            attributes['kappa times dry volume'] = kappa * attributes['dry volume']
+            if kappa == 0:
+                r_wet = r_dry
+            else:
+                r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol,
+                                   cell_id=attributes['cell id'])
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
         attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
-        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 

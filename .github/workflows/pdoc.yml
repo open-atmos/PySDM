@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-python@v2
       - name: Build
         run: |
-          pip3 install pdoc3
-          pip install -e .
+          pip --use-deprecated=legacy-resolver install pdoc3
+          pip --use-deprecated=legacy-resolver install -e .
           pdoc --html PySDM
       - name: Deploy
         if: github.ref == 'refs/heads/master'

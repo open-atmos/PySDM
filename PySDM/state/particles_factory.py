@@ -1,6 +1,6 @@
 import numpy as np
 
-from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, MaximumAttribute
+from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.state.particles import Particles
 
@@ -18,15 +18,17 @@ class ParticlesFactory:
                 extensive_attr.append(attr_name)
             elif isinstance(req_attr[attr_name], MaximumAttribute):
                 maximum_attr.append(attr_name)
-            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute)):
+            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
         extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
         maximum_attributes = core.IndexedStorage.empty(idx, (len(maximum_attr), core.n_sd), float)
 
         for attr in req_attr.values():
-            if isinstance(attr, DerivedAttribute):
+            if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
                 attr.allocate(idx)
+            if isinstance(attr, DummyAttribute) and attr.name in attributes:
+                raise ValueError(f"attribute '{attr.name}' indicated as dummy but values were provided")
 
         extensive_keys = {}
         maximum_keys = {}

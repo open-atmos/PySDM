@@ -183,6 +183,10 @@ class Storage:
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self.data, a.data, b.data)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             self.data[:] = other.data.ravel()
