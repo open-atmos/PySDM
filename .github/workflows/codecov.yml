@@ -10,8 +10,9 @@ jobs:
     - uses: actions/setup-python@master
     - name: Generate coverage report
       run: |
-        pip install pytest
-        pip install pytest-cov
+        pip --use-deprecated=legacy-resolver install -e .
+        pip --use-deprecated=legacy-resolver install -r test-time-requirements.txt
+        pip --use-deprecated=legacy-resolver install pytest-cov
         pytest PySDM_tests/unit_tests --cov-report=xml --cov=PySDM
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
