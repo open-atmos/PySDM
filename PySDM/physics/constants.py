@@ -73,7 +73,7 @@ sgm_w = 0.072 * si.joule / si.metre ** 2
 sgm_org = 40 * si.mN / si.m
 
 # minimum organic film thickness
-# TODO #223 0.2 in the paper, but 0.1 matches the paper plots
+# TODO #604 0.2 in the paper, but 0.1 matches the paper plots
 delta_min = 0.1 * si.nm
 
 p_tri = 611.73 * si.pascal

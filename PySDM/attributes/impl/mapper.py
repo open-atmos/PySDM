@@ -1,6 +1,5 @@
-from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolumeInorganic,
-                                                 DryVolume, DryVolumeInorganicDynamic,
-                                                 OrganicFraction)
+from PySDM.attributes.impl.dummy_attribute import DummyAttributeImpl
+from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolume, DryVolumeDynamic, OrganicFraction
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)
@@ -8,16 +7,22 @@ from PySDM.attributes.ice import FreezingTemperature, NucleationSites
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.surface_tension import Constant
 from functools import partial
 
 attributes = {
     'n': lambda _: Multiplicities,
     'volume': lambda _: Volume,
-    'dry volume organic': lambda _: DryVolumeOrganic,
-    'dry volume inorganic': lambda dynamics:
-        DryVolumeInorganicDynamic if 'AqueousChemistry' in dynamics else DryVolumeInorganic,
-    'dry volume': lambda _: DryVolume,
-    'dry volume organic fraction': lambda _: OrganicFraction,
+    'dry volume organic': lambda dynamics: (
+        DummyAttributeImpl('dry volume organic') if isinstance(dynamics['Condensation'].core.formulae.surface_tension, Constant)
+        else DryVolumeOrganic
+    ),
+    'dry volume': lambda dynamics:
+    DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
+    'dry volume organic fraction': lambda dynamics: (
+        DummyAttributeImpl('dry volume organic fraction') if isinstance(dynamics['Condensation'].core.formulae.surface_tension, Constant)
+        else OrganicFraction
+    ),
     'kappa times dry volume': lambda _: KappaTimesDryVolume,
     'kappa': lambda _: Kappa,
     'radius': lambda _: Radius,

@@ -2,7 +2,7 @@ from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 
-class DryVolumeInorganicDynamic(DerivedAttribute):
+class DryVolumeDynamic(DerivedAttribute):
     def __init__(self, builder):
         self.core = builder.core
         self.moles_S_VI = builder.get_attribute('moles_S_VI')
@@ -14,25 +14,14 @@ class DryVolumeInorganicDynamic(DerivedAttribute):
         self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho
 
 
-class DryVolumeInorganic(ExtensiveAttribute):
+class DryVolume(ExtensiveAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name='dry volume inorganic')
+        super().__init__(builder, name='dry volume')
 
 
 class DryVolumeOrganic(ExtensiveAttribute):
     def __init__(self, builder):
         super().__init__(builder, name='dry volume organic')
-
-
-class DryVolume(DerivedAttribute):
-    def __init__(self, builder):
-        self.volume_dry_org = builder.get_attribute('dry volume organic')
-        self.volume_dry_inorg = builder.get_attribute('dry volume inorganic')
-        dependencies = [self.volume_dry_org, self.volume_dry_inorg]
-        super().__init__(builder, name='dry volume', dependencies=dependencies)
-
-    def recalculate(self):
-        self.data.sum(self.volume_dry_org.get(), self.volume_dry_inorg.get())
 
 
 class OrganicFraction(DerivedAttribute):

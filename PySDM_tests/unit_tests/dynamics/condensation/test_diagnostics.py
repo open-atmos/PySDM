@@ -38,8 +38,7 @@ class _TestCore:
         self.core = builder.build(attributes={
             'n': np.full(n_sd, multiplicity),
             'volume': np.full(n_sd, wet_radius),
-            'dry volume inorganic': np.full(n_sd, dry_volume),
-            'dry volume organic': np.zeros(n_sd),
+            'dry volume': np.full(n_sd, dry_volume),
             'kappa times dry volume': np.ones(n_sd),
         })
 
