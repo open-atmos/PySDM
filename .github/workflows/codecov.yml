@@ -1,0 +1,21 @@
+name: codecov
+on: [push]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    env:
+      NUMBA_DISABLE_JIT: 1
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-python@master
+    - name: Generate coverage report
+      run: |
+        pip --use-deprecated=legacy-resolver install -e .
+        pip --use-deprecated=legacy-resolver install -r test-time-requirements.txt
+        pip --use-deprecated=legacy-resolver install pytest-cov
+        pytest PySDM_tests/unit_tests --cov-report=xml --cov=PySDM
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        fail_ci_if_error: true
+        verbose: true
