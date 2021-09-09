@@ -147,9 +147,12 @@ class Core:
                 with self.timers[key]:
                     dynamic()
             self.n_steps += 1
-            reversed_order_so_that_environment_is_last = reversed(self.observers)
-            for observer in reversed_order_so_that_environment_is_last:
-                observer.notify()</code></pre>
+            self._notify_observers()
+
+    def _notify_observers(self):
+        reversed_order_so_that_environment_is_last = reversed(self.observers)
+        for observer in reversed_order_so_that_environment_is_last:
+            observer.notify()</code></pre>
 </details>
 </section>
 <section>
@@ -281,9 +284,12 @@ class Core:
                 with self.timers[key]:
                     dynamic()
             self.n_steps += 1
-            reversed_order_so_that_environment_is_last = reversed(self.observers)
-            for observer in reversed_order_so_that_environment_is_last:
-                observer.notify()</code></pre>
+            self._notify_observers()
+
+    def _notify_observers(self):
+        reversed_order_so_that_environment_is_last = reversed(self.observers)
+        for observer in reversed_order_so_that_environment_is_last:
+            observer.notify()</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -445,9 +451,7 @@ def n_sd(self) -&gt; int:
             with self.timers[key]:
                 dynamic()
         self.n_steps += 1
-        reversed_order_so_that_environment_is_last = reversed(self.observers)
-        for observer in reversed_order_so_that_environment_is_last:
-            observer.notify()</code></pre>
+        self._notify_observers()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.core.Core.update_TpRH"><code class="name flex">
