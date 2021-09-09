@@ -118,6 +118,9 @@ class Core:
                 with self.timers[key]:
                     dynamic()
             self.n_steps += 1
-            reversed_order_so_that_environment_is_last = reversed(self.observers)
-            for observer in reversed_order_so_that_environment_is_last:
-                observer.notify()
+            self._notify_observers()
+
+    def _notify_observers(self):
+        reversed_order_so_that_environment_is_last = reversed(self.observers)
+        for observer in reversed_order_so_that_environment_is_last:
+            observer.notify()
