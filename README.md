@@ -75,7 +75,7 @@ beyond the latest release).
 For development purposes, we suggest cloning the repository and installing it using ``pip -e``.
 Test-time dependencies are listed in the ``test-time-requirements.txt`` file.
 
-PySDM examples listed below are hosted in a separate repository and constitute 
+PySDM examples are hosted in a separate repository and constitute 
 the [``PySDM_examples``](https://github.com/atmos-cloud-sim-uj/PySDM-examples) package.
 The examples have additional dependencies listed in [``PySDM_examples`` package ``setup.py``](https://github.com/atmos-cloud-sim-uj/PySDM-examples/blob/main/setup.py) file.
 Running the examples requires the ``PySDM_examples`` package to be installed.
@@ -87,7 +87,7 @@ pip install -e .
 jupyter-notebook
 ```
 Alternatively, one can also install the examples package from pypi.org by 
-using `pip install PySDM-examples``.
+using ``pip install PySDM-examples``.
 
 ## PySDM examples (Jupyter notebooks reproducing results from literature):
 
