@@ -30,8 +30,8 @@
 
 #### [examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples):   
 [![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM-examples/workflows/PySDM-examples/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/actions)    
-[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=)
-[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=is:closed)    
+[![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM-examples.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=)
+[![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM-examples.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=is:closed)    
 [![PyPI version](https://badge.fury.io/py/PySDM-examples.svg)](https://pypi.org/project/PySDM-examples)
 
 PySDM is a package for simulating the dynamics of population of particles. 
@@ -65,6 +65,7 @@ A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public A
 
 PySDM dependencies are: [Numpy](https://numpy.org/), [Numba](http://numba.pydata.org/), [SciPy](https://scipy.org/), 
 [Pint](https://pint.readthedocs.io/), [chempy](https://pypi.org/project/chempy/), 
+[pyevtk](https://pypi.org/project/pyevtk/),
 [ThrustRTC](https://fynv.github.io/ThrustRTC/) and [CURandRTC](https://github.com/fynv/CURandRTC).
 
 To install PySDM using ``pip``, use: ``pip install PySDM`` 
