@@ -1,8 +1,8 @@
 class Freezing:
-    def __init__(self, *, singular=True, r=None):
+    def __init__(self, *, singular=True, J_het=None):
         self.singular = singular
         self.enable = True
-        self.r = r
+        self.J_het = J_het
         self.rand = None
         self.rng = None
 
@@ -11,9 +11,11 @@ class Freezing:
 
         builder.request_attribute("volume")
         if self.singular:
+            assert self.J_het is None
             builder.request_attribute("freezing temperature")
         else:
-            builder.request_attribute("nucleation sites")
+            assert self.J_het is not None
+            builder.request_attribute("immersed surface area")
             self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
             self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
 
@@ -36,9 +38,9 @@ class Freezing:
             self.rand.urand(self.rng)
             self.core.bck.freeze_time_dependent(
                 rand=self.rand,
-                nucleation_sites=self.core.particles['nucleation sites'],
+                immersed_surface_area=self.core.particles['immersed surface area'],
                 volume=self.core.particles['volume'],
-                r=self.r,
+                J_het=self.J_het,
                 dt=self.core.dt
             )
 

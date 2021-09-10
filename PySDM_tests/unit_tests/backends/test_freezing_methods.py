@@ -19,7 +19,7 @@ class TestFreezingMethods:
     #     pass
 
     @staticmethod
-    def test_freeze_time_dependent(plot=False):
+    def test_freeze_time_dependent(plot=True):
         # Arrange
         cases = (
             {'dt': 5e5, 'N':  1},
@@ -29,17 +29,18 @@ class TestFreezingMethods:
             {'dt': 5e5, 'N': 32},
             {'dt': 1e6, 'N': 32},
         )
-        r = 1e-9
+        rate = 1e-9
+        immersed_surface_area = 1
+        J_het = rate / immersed_surface_area
         number_of_real_droplets = 1024
-        nucleation_sites_per_particle = 1024
         total_time = 2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
 
         # dummy (but must-be-set) values
         vol = 44  # just to enable sign flipping (ice water uses negative volumes), actual value does not matter
         dv = 666  # products use concentration, just dividing there and multiplying back here, actual value does not matter
 
-        hgh = lambda t: np.exp(-0.8 * r * (t - total_time / 10))
-        low = lambda t: np.exp(-1.2 * r * (t + total_time / 10))
+        hgh = lambda t: np.exp(-0.8 * rate * (t - total_time / 10))
+        low = lambda t: np.exp(-1.2 * rate * (t + total_time / 10))
 
         # Act
         output = {}
@@ -54,10 +55,10 @@ class TestFreezingMethods:
 
             builder = Builder(n_sd=n_sd, backend=CPU)
             builder.set_environment(Box(dt=case['dt'], dv=dv))
-            builder.add_dynamic(Freezing(singular=False, r=r))
+            builder.add_dynamic(Freezing(singular=False, J_het=J_het))
             attributes = {
                 'n': np.full(n_sd, int(case['N'])),
-                'nucleation sites': np.full(n_sd, nucleation_sites_per_particle),
+                'immersed surface area': np.full(n_sd, immersed_surface_area),
                 'volume': np.full(n_sd, vol)
             }
             products = (IceWaterContent(specific=False),)
@@ -76,7 +77,7 @@ class TestFreezingMethods:
         # Plot
         if plot:
             fit_x = np.linspace(0, total_time, num=100)
-            fit_y = np.exp(-r * fit_x)
+            fit_y = np.exp(-rate * fit_x)
 
             for key in output.keys():
                 pylab.step(
