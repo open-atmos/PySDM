@@ -19,7 +19,7 @@ class TestFreezingMethods:
     #     pass
 
     @staticmethod
-    def test_freeze_time_dependent(plot=True):
+    def test_freeze_time_dependent(plot=False):
         # Arrange
         cases = (
             {'dt': 5e5, 'N':  1},
