@@ -52,11 +52,11 @@ class FreezingMethods:
         self.freeze_singular_body = freeze_singular_body
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, nucleation_sites, volume, r, dt):
-            p = 1 - np.exp(-r * dt)
-            # TODO #599: assert if &gt; 1?
-            for i in numba.prange(len(nucleation_sites)):
+        def freeze_time_dependent_body(rand, immersed_surface_area, volume, J_het, dt):
+            n_sd = len(volume)
+            for i in numba.prange(n_sd):
                 if _unfrozen(volume, i):
+                    p = 1 - np.exp(-J_het * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -64,8 +64,8 @@ class FreezingMethods:
     def freeze_singular(self, T_fz, v_wet, T, RH, cell):
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
-    def freeze_time_dependent(self, rand, nucleation_sites, volume, r, dt):
-        self.freeze_time_dependent_body(rand.data, nucleation_sites.data, volume.data, r, dt)</code></pre>
+    def freeze_time_dependent(self, rand, immersed_surface_area, volume, J_het, dt):
+        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, J_het, dt)</code></pre>
 </details>
 </section>
 <section>
@@ -106,11 +106,11 @@ class FreezingMethods:
         self.freeze_singular_body = freeze_singular_body
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, nucleation_sites, volume, r, dt):
-            p = 1 - np.exp(-r * dt)
-            # TODO #599: assert if &gt; 1?
-            for i in numba.prange(len(nucleation_sites)):
+        def freeze_time_dependent_body(rand, immersed_surface_area, volume, J_het, dt):
+            n_sd = len(volume)
+            for i in numba.prange(n_sd):
                 if _unfrozen(volume, i):
+                    p = 1 - np.exp(-J_het * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -118,8 +118,8 @@ class FreezingMethods:
     def freeze_singular(self, T_fz, v_wet, T, RH, cell):
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
-    def freeze_time_dependent(self, rand, nucleation_sites, volume, r, dt):
-        self.freeze_time_dependent_body(rand.data, nucleation_sites.data, volume.data, r, dt)</code></pre>
+    def freeze_time_dependent(self, rand, immersed_surface_area, volume, J_het, dt):
+        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, J_het, dt)</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -141,7 +141,7 @@ class FreezingMethods:
 </details>
 </dd>
 <dt id="PySDM.backends.numba.impl.freezing_methods.FreezingMethods.freeze_time_dependent"><code class="name flex">
-<span>def <span class="ident">freeze_time_dependent</span></span>(<span>self, rand, nucleation_sites, volume, r, dt)</span>
+<span>def <span class="ident">freeze_time_dependent</span></span>(<span>self, rand, immersed_surface_area, volume, J_het, dt)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -149,8 +149,8 @@ class FreezingMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def freeze_time_dependent(self, rand, nucleation_sites, volume, r, dt):
-    self.freeze_time_dependent_body(rand.data, nucleation_sites.data, volume.data, r, dt)</code></pre>
+<pre><code class="python">def freeze_time_dependent(self, rand, immersed_surface_area, volume, J_het, dt):
+    self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, J_het, dt)</code></pre>
 </details>
 </dd>
 </dl>

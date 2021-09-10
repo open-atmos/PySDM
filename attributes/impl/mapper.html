@@ -31,7 +31,7 @@ from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolume, Dry
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)
-from PySDM.attributes.ice import FreezingTemperature, NucleationSites
+from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
@@ -69,7 +69,7 @@ attributes = {
     &#39;pH&#39;: lambda _: pH,
     &#39;conc_H&#39;: lambda _: HydrogenIonConcentration,
     &#39;freezing temperature&#39;: lambda _: FreezingTemperature,
-    &#39;nucleation sites&#39;: lambda _: NucleationSites
+    &#39;immersed surface area&#39;: lambda _: ImmersedSurfaceArea
 }
 
 

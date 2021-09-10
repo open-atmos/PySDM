@@ -27,10 +27,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True, r=None):
+    def __init__(self, *, singular=True, J_het=None):
         self.singular = singular
         self.enable = True
-        self.r = r
+        self.J_het = J_het
         self.rand = None
         self.rng = None
 
@@ -39,9 +39,11 @@
 
         builder.request_attribute(&#34;volume&#34;)
         if self.singular:
+            assert self.J_het is None
             builder.request_attribute(&#34;freezing temperature&#34;)
         else:
-            builder.request_attribute(&#34;nucleation sites&#34;)
+            assert self.J_het is not None
+            builder.request_attribute(&#34;immersed surface area&#34;)
             self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
             self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
 
@@ -64,9 +66,9 @@
             self.rand.urand(self.rng)
             self.core.bck.freeze_time_dependent(
                 rand=self.rand,
-                nucleation_sites=self.core.particles[&#39;nucleation sites&#39;],
+                immersed_surface_area=self.core.particles[&#39;immersed surface area&#39;],
                 volume=self.core.particles[&#39;volume&#39;],
-                r=self.r,
+                J_het=self.J_het,
                 dt=self.core.dt
             )
 
@@ -84,7 +86,7 @@
 <dl>
 <dt id="PySDM.dynamics.freezing.Freezing"><code class="flex name class">
 <span>class <span class="ident">Freezing</span></span>
-<span>(</span><span>*, singular=True, r=None)</span>
+<span>(</span><span>*, singular=True, J_het=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -93,10 +95,10 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True, r=None):
+    def __init__(self, *, singular=True, J_het=None):
         self.singular = singular
         self.enable = True
-        self.r = r
+        self.J_het = J_het
         self.rand = None
         self.rng = None
 
@@ -105,9 +107,11 @@
 
         builder.request_attribute(&#34;volume&#34;)
         if self.singular:
+            assert self.J_het is None
             builder.request_attribute(&#34;freezing temperature&#34;)
         else:
-            builder.request_attribute(&#34;nucleation sites&#34;)
+            assert self.J_het is not None
+            builder.request_attribute(&#34;immersed surface area&#34;)
             self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
             self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
 
@@ -130,9 +134,9 @@
             self.rand.urand(self.rng)
             self.core.bck.freeze_time_dependent(
                 rand=self.rand,
-                nucleation_sites=self.core.particles[&#39;nucleation sites&#39;],
+                immersed_surface_area=self.core.particles[&#39;immersed surface area&#39;],
                 volume=self.core.particles[&#39;volume&#39;],
-                r=self.r,
+                J_het=self.J_het,
                 dt=self.core.dt
             )
 
@@ -154,9 +158,11 @@
 
     builder.request_attribute(&#34;volume&#34;)
     if self.singular:
+        assert self.J_het is None
         builder.request_attribute(&#34;freezing temperature&#34;)
     else:
-        builder.request_attribute(&#34;nucleation sites&#34;)
+        assert self.J_het is not None
+        builder.request_attribute(&#34;immersed surface area&#34;)
         self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
         self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)</code></pre>
 </details>
