@@ -14,7 +14,7 @@ import pytest
 n_runs_per_case = 3
 
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
-def test_fig_1(multiplicity, plot=True):
+def test_fig_1(multiplicity, plot=False):
     # Arrange
     J_het = 1e3 / si.cm ** 2 / si.s
     A_g = 1e-5 * si.cm ** 2
