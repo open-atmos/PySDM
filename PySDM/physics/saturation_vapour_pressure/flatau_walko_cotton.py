@@ -15,3 +15,17 @@ class FlatauWalkoCotton:
                 const.FWC_C7 + T *
                 const.FWC_C8
         ))))))))
+
+    @staticmethod
+    def ice_Celsius(T):
+        return (
+                const.FWC_I0 + T * (
+                const.FWC_I1 + T * (
+                const.FWC_I2 + T * (
+                const.FWC_I3 + T * (
+                const.FWC_I4 + T * (
+                const.FWC_I5 + T * (
+                const.FWC_I6 + T * (
+                const.FWC_I7 + T *
+                const.FWC_I8
+        ))))))))
