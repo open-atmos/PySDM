@@ -17,6 +17,7 @@ class Breakup:
                  kernel,
                  coal_eff,
                  fragmentation,
+                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -31,6 +32,7 @@ class Breakup:
         self.kernel = kernel
         self.coal_eff = coal_eff
         self.fragmentation = fragmentation
+        self.seed = seed
 
         assert dt_coal_range[0] > 0
         self.croupier = croupier
@@ -58,10 +60,10 @@ class Breakup:
         self.core = builder.core
         self.rnd_opt = RandomGeneratorOptimizer(optimized_random=self.optimized_random,
                                                 dt_min=self.dt_coal_range[0],
-                                                seed=self.core.formulae.seed)
+                                                seed=self.seed) #self.core.formulae.seed+1)
         self.rnd_opt_frag = RandomGeneratorOptimizerNoPair(optimized_random=self.optimized_random,
                                                 dt_min=self.dt_coal_range[0],
-                                                seed=self.core.formulae.seed)
+                                                seed=self.seed) #self.core.formulae.seed+1)
         self.optimised_random = None
 
         if self.core.n_sd < 2:
