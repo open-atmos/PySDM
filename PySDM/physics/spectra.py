@@ -53,6 +53,10 @@ class Lognormal(Spectrum):
     def s_geom(self):
         return math.exp(self.distribution_params[0])
 
+    @property
+    def m_mode(self):
+        return self.distribution_params[2]
+
 class Sum:
 
     def __init__(self, spectra: tuple, interpolation_grid=default_interpolation_grid):
