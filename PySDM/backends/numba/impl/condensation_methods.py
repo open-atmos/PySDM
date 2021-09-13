@@ -75,7 +75,7 @@ class CondensationMethods:
         if dt_range[1] > dt:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
-            raise NotImplementedError()  # TODO #490
+            raise NotImplementedError()
             # TODO #437: n_substeps_max = ... (fuse)
         else:
             n_substeps_max = math.floor(dt / dt_range[0])
