@@ -82,6 +82,23 @@ class Lognormal(Spectrum):
     def s_geom(self):
         return math.exp(self.distribution_params[0])
 
+    @property
+    def m_mode(self):
+        return self.distribution_params[2]
+
+class TopHat:
+    def __init__(self, norm_factor, endpoints):
+        self.norm_factor = norm_factor
+        self.endpoints = endpoints
+        self._mn = endpoints[0]
+        self._mx = endpoints[1]
+
+    def cumulative(self, x):
+        return self.norm_factor * np.minimum(1, np.maximum(0, (x - self._mn) / (self._mx - self._mn)))
+
+    def percentiles(self, cdf_values):
+        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))
+
 class Sum:
 
     def __init__(self, spectra: tuple, interpolation_grid=default_interpolation_grid):
@@ -158,7 +175,11 @@ class Sum:
 
     @property
     def s_geom(self):
-        return math.exp(self.distribution_params[0])</code></pre>
+        return math.exp(self.distribution_params[0])
+
+    @property
+    def m_mode(self):
+        return self.distribution_params[2]</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -166,6 +187,18 @@ class Sum:
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="PySDM.physics.spectra.Lognormal.m_mode"><code class="name">var <span class="ident">m_mode</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def m_mode(self):
+    return self.distribution_params[2]</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.spectra.Lognormal.s_geom"><code class="name">var <span class="ident">s_geom</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -363,6 +396,59 @@ def s_geom(self):
 </dd>
 </dl>
 </dd>
+<dt id="PySDM.physics.spectra.TopHat"><code class="flex name class">
+<span>class <span class="ident">TopHat</span></span>
+<span>(</span><span>norm_factor, endpoints)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TopHat:
+    def __init__(self, norm_factor, endpoints):
+        self.norm_factor = norm_factor
+        self.endpoints = endpoints
+        self._mn = endpoints[0]
+        self._mx = endpoints[1]
+
+    def cumulative(self, x):
+        return self.norm_factor * np.minimum(1, np.maximum(0, (x - self._mn) / (self._mx - self._mn)))
+
+    def percentiles(self, cdf_values):
+        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.physics.spectra.TopHat.cumulative"><code class="name flex">
+<span>def <span class="ident">cumulative</span></span>(<span>self, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cumulative(self, x):
+    return self.norm_factor * np.minimum(1, np.maximum(0, (x - self._mn) / (self._mx - self._mn)))</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.spectra.TopHat.percentiles"><code class="name flex">
+<span>def <span class="ident">percentiles</span></span>(<span>self, cdf_values)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def percentiles(self, cdf_values):
+    return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 </dl>
 </section>
 </article>
@@ -385,6 +471,7 @@ def s_geom(self):
 <li>
 <h4><code><a title="PySDM.physics.spectra.Lognormal" href="#PySDM.physics.spectra.Lognormal">Lognormal</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.physics.spectra.Lognormal.m_mode" href="#PySDM.physics.spectra.Lognormal.m_mode">m_mode</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Lognormal.s_geom" href="#PySDM.physics.spectra.Lognormal.s_geom">s_geom</a></code></li>
 </ul>
 </li>
@@ -403,6 +490,13 @@ def s_geom(self):
 <li><code><a title="PySDM.physics.spectra.Sum.cumulative" href="#PySDM.physics.spectra.Sum.cumulative">cumulative</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Sum.percentiles" href="#PySDM.physics.spectra.Sum.percentiles">percentiles</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Sum.size_distribution" href="#PySDM.physics.spectra.Sum.size_distribution">size_distribution</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.physics.spectra.TopHat" href="#PySDM.physics.spectra.TopHat">TopHat</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.physics.spectra.TopHat.cumulative" href="#PySDM.physics.spectra.TopHat.cumulative">cumulative</a></code></li>
+<li><code><a title="PySDM.physics.spectra.TopHat.percentiles" href="#PySDM.physics.spectra.TopHat.percentiles">percentiles</a></code></li>
 </ul>
 </li>
 </ul>
