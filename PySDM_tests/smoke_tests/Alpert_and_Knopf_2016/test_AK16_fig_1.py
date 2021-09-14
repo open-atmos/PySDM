@@ -25,7 +25,8 @@ def test_AK16_fig_1(multiplicity, plot=False):
     # Act
     output = {}
 
-    for key, case in cases.items():
+    for key in ('Iso3', 'Iso4', 'Iso1', 'Iso2'):
+        case = cases[key]
         output[key] = []
         for i in range(n_runs_per_case):
             seed = i
