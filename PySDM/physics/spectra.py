@@ -57,6 +57,19 @@ class Lognormal(Spectrum):
     def m_mode(self):
         return self.distribution_params[2]
 
+class TopHat:
+    def __init__(self, norm_factor, endpoints):
+        self.norm_factor = norm_factor
+        self.endpoints = endpoints
+        self._mn = endpoints[0]
+        self._mx = endpoints[1]
+
+    def cumulative(self, x):
+        return self.norm_factor * np.minimum(1, np.maximum(0, (x - self._mn) / (self._mx - self._mn)))
+
+    def percentiles(self, cdf_values):
+        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))
+
 class Sum:
 
     def __init__(self, spectra: tuple, interpolation_grid=default_interpolation_grid):

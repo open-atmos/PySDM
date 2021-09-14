@@ -1,4 +1,4 @@
-from PySDM_examples.Alpert_and_Knopf_2016 import simulation
+from PySDM_examples.Alpert_and_Knopf_2016 import simulation, Table1
 from PySDM.physics import si, constants as const, Formulae
 from PySDM.physics.spectra import Lognormal
 import numpy as np
@@ -20,12 +20,7 @@ def test_AK16_fig_1(multiplicity, plot=False):
     dv = 1 * si.cm ** 3  # will become used if coalescence or other processes are turned on
     droplet_volume = 1 * si.um ** 3  # ditto
 
-    cases = {
-        'Iso3': {'ISA': Lognormal(norm_factor=1000 / dv, m_mode=A_g, s_geom=10), 'color': '#1A62B4'},
-        'Iso4': {'ISA': Lognormal(norm_factor=30 / dv, m_mode=A_g, s_geom=10), 'color': '#95BDE1'},
-        'Iso1': {'ISA': Lognormal(norm_factor=1000 / dv, m_mode=A_g, s_geom=1), 'color': '#298131'},
-        'Iso2': {'ISA': Lognormal(norm_factor=30 / dv, m_mode=A_g, s_geom=1), 'color': '#9ACFA4'},
-    }
+    cases = Table1(dv=dv)
 
     # Act
     output = {}
@@ -87,5 +82,5 @@ def test_AK16_fig_1(multiplicity, plot=False):
         output['Iso1'][int(.5 * si.min / dt):]
     )
     for key in output.keys():
-        np.testing.assert_array_less(1e-2, output[key][-1][:int(.5 * si.min / dt)])
+        np.testing.assert_array_less(1e-3, output[key][-1][:int(.25 * si.min / dt)])
         np.testing.assert_array_less(output[key][-1][:], 1 + 1e-10)
