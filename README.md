@@ -149,7 +149,7 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 ```
 </details>
 <details open>
-<summary>Python</summary>
+<summary>Python (click to expand)</summary>
 
 ```Python
 from PySDM.physics import si
@@ -208,7 +208,7 @@ particles = builder.build(attributes, products);
 ```
 </details>
 <details open>
-<summary>Python</summary>
+<summary>Python (click to expand)</summary>
 
 ```Python
 import numpy as np
@@ -294,7 +294,7 @@ legend()
 ```
 </details>
 <details open>
-<summary>Python</summary>
+<summary>Python (click to expand)</summary>
 
 ```Python
 from PySDM.physics.constants import rho_w
@@ -518,7 +518,7 @@ saveas(gcf, "parcel.svg")
 ```
 </details>
 <details open>
-<summary>Python</summary>
+<summary>Python (click to expand)</summary>
 
 ```Python
 import numpy as np
