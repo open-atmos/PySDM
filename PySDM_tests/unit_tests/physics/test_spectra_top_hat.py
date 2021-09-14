@@ -37,7 +37,7 @@ class TestSpectraTopHat:
         assert np.sum(hy[1:-1]) == 2
 
     @staticmethod
-    def test_percentiles(plot=True):
+    def test_percentiles(plot=False):
         # arrange
         spectrum = spectra.TopHat(norm_factor=np.e, endpoints=(-np.pi, np.pi))
         x = np.linspace(0, 1)
