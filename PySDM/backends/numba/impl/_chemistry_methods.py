@@ -8,7 +8,6 @@ from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVIT
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KineticConsts, EquilibriumConsts, k4
 
-_tolerance = 1e-6
 _max_iter_quite_close = 8
 _max_iter_default = 32
 _realy_close_threshold = 1e-6
@@ -228,7 +227,7 @@ class ChemistryMethods:
                 max_iter = _max_iter_default
             else:
                 max_iter = _max_iter_quite_close
-            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=_tolerance, max_iter=max_iter,
+            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iter,
                                             within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
             pH[i] = H2pH(H)
