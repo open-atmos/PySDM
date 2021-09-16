@@ -92,8 +92,7 @@ class TestExplicitEulerWithInterpolation:
         sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = slice(0, 1)
-        sut.displacement[0, droplet_id] = .1
-        sut.displacement[1, droplet_id] = .2
+        sut.displacement[:] = backend.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
 
         # Act
         sut.update_position(core.particles['position in cell'], sut.displacement)
@@ -113,8 +112,7 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = core.particles
-        state['position in cell'][0, droplet_id] = 1.1
-        state['position in cell'][1, droplet_id] = 1.2
+        state['position in cell'][:] = backend.Storage.from_ndarray(np.asarray([[1.1], [1.2]]))
 
         # Act
         sut.update_cell_origin(state['cell origin'], state['position in cell'])
@@ -133,8 +131,7 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = core.particles
-        state['cell origin'][0, droplet_id] = 1.1
-        state['cell origin'][1, droplet_id] = 1.2
+        state['cell origin'][:] = backend.Storage.from_ndarray(np.asarray([[1], [1]]))
 
         # Act
         sut.boundary_condition(state['cell origin'])

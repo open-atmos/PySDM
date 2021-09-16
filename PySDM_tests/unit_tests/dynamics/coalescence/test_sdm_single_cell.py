@@ -170,8 +170,7 @@ class TestSDMSingleCell:
                 cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
 
                 indicator = make_PairIndicator(backend)(n_sd)
-                indicator.indicator[0] = 1
-                indicator.indicator[1] = 0
+                indicator.indicator[:] = backend.Storage.from_ndarray(np.asarray((True, False)))
 
                 backend.compute_gamma(prob_arr, rand_arr, mult,
                                       cell_id=cell_id, is_first_in_pair=indicator,
