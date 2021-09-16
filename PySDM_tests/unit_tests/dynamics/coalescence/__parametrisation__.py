@@ -41,7 +41,8 @@ def insert_zeros(array):
 def get_dummy_core_and_sdm(backend, n_length, optimized_random=False, environment=None, substeps=1):
     core = DummyCore(backend, n_sd=n_length)
     core.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
-    sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random, substeps=substeps)
+    sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random, substeps=substeps,
+                      adaptive=False)
     sdm.register(core)
     return core, sdm
 

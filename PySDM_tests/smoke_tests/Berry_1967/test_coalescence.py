@@ -59,7 +59,7 @@ def test_coalescence_2_sd(backend):
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
-    builder.add_dynamic(Coalescence(s.kernel))
+    builder.add_dynamic(Coalescence(s.kernel, adaptive=False))
     core = builder.build(attributes)
 
     volumes = {}
