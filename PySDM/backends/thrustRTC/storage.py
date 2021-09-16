@@ -41,6 +41,8 @@ class Storage:
         return result
 
     def __setitem__(self, key, value):
+        if not (isinstance(key, slice) and key.start is None and key.stop is None and key.step is None):
+            raise NotImplementedError()
         if hasattr(value, 'data') and hasattr(value, 'shape') and len(value.shape) != 0:
             if isinstance(value, np.ndarray):
                 vector = trtc.device_vector_from_numpy(value)
