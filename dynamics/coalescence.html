@@ -45,7 +45,7 @@ class Coalescence:
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
-                 adaptive: bool = False,
+                 adaptive: bool = True,
                  dt_coal_range=default_dt_coal_range
                  ):
         assert substeps == 1 or adaptive is False
@@ -187,7 +187,7 @@ class Coalescence:
 <dl>
 <dt id="PySDM.dynamics.coalescence.Coalescence"><code class="flex name class">
 <span>class <span class="ident">Coalescence</span></span>
-<span>(</span><span>kernel, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = False, dt_coal_range=(0.1, 100.0))</span>
+<span>(</span><span>kernel, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -202,7 +202,7 @@ class Coalescence:
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
-                 adaptive: bool = False,
+                 adaptive: bool = True,
                  dt_coal_range=default_dt_coal_range
                  ):
         assert substeps == 1 or adaptive is False
