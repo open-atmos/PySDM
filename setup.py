@@ -10,7 +10,7 @@ def get_long_description():
 
 setup(
     name='PySDM',
-    description='Pythonic particle-based (super-droplet) cloud microphysics modelling with Jupyter examples',
+    description='Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab',
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     install_requires=[
@@ -24,6 +24,7 @@ setup(
         'pyevtk' + ('==1.2.0' if 'CI' in os.environ else '')
     ],
     author='https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors',
+    author_email='sylwester.arabas@uj.edu.pl',
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     url="https://github.com/atmos-cloud-sim-uj/PySDM",
