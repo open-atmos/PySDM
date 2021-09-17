@@ -46,7 +46,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
         x_max = np.amax(volume)
 
 
-@pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit")  # TODO #565
+@pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=True)
 def test_coalescence_2_sd(backend):
     # Arrange
     s = Settings()
