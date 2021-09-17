@@ -36,9 +36,9 @@ class MomentProduct(Product):
 
     def download_moment_to_buffer(self, attr, rank, filter_attr='volume', filter_range=(-np.inf, np.inf),
                                   weighting_attribute='volume', weighting_rank=0):
-        self.particulator.particles.moments(self.moment_0, self.moments, {attr: (rank,)},
-                                    attr_name=filter_attr, attr_range=filter_range,
-                                    weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
+        self.particulator.attributes.moments(self.moment_0, self.moments, {attr: (rank,)},
+                                             attr_name=filter_attr, attr_range=filter_range,
+                                             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
         if rank == 0:  # TODO #217
             self.download_to_buffer(self.moment_0)
         else:
@@ -59,9 +59,9 @@ class SpectrumMomentProduct(Product):
 
     def recalculate_spectrum_moment(self, attr, rank, filter_attr='volume',
                                             weighting_attribute='volume', weighting_rank=0):
-        self.particulator.particles.spectrum_moments(self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
-                                             attr_name=filter_attr,
-                                             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
+        self.particulator.attributes.spectrum_moments(self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
+                                                      attr_name=filter_attr,
+                                                      weighting_attribute=weighting_attribute, weighting_rank=weighting_rank)
 
     def download_spectrum_moment_to_buffer(self, rank, bin_number):
         if rank == 0:  # TODO #217

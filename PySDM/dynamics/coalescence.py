@@ -85,12 +85,12 @@ class Coalescence:
             else:
                 self.dt_left[:] = self.particulator.dt
 
-                while self.particulator.particles.get_working_length() != 0:
-                    self.particulator.particles.cell_idx.sort_by_key(self.dt_left)
+                while self.particulator.attributes.get_working_length() != 0:
+                    self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
                     self.step()
 
-                self.particulator.particles.reset_working_length()
-                self.particulator.particles.reset_cell_idx()
+                self.particulator.attributes.reset_working_length()
+                self.particulator.attributes.reset_cell_idx()
             self.rnd_opt.reset()
 
     def step(self):
@@ -98,22 +98,22 @@ class Coalescence:
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
         self.compute_probability(self.prob, self.is_first_in_pair)
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        self.particulator.particles.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
+        self.particulator.attributes.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         if self.adaptive:
-            self.particulator.particles.cut_working_length(self.particulator.particles.adaptive_sdm_end(self.dt_left))
+            self.particulator.attributes.cut_working_length(self.particulator.attributes.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
-        self.particulator.particles.permutation(u01, self.croupier == 'local')
+        self.particulator.attributes.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
-            self.particulator.particles.cell_start,
-            self.particulator.particles.cell_idx,
-            self.particulator.particles['cell id']
+            self.particulator.attributes.cell_start,
+            self.particulator.attributes.cell_idx,
+            self.particulator.attributes['cell id']
         )
-        self.particulator.particles.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+        self.particulator.attributes.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
-        prob.max(self.particulator.particles['n'], is_first_in_pair)
+        prob.max(self.particulator.attributes['n'], is_first_in_pair)
         prob *= self.kernel_temp
 
         self.particulator.normalize(prob, self.norm_factor_temp)
@@ -122,8 +122,8 @@ class Coalescence:
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
                 prob,
-                self.particulator.particles['n'],
-                self.particulator.particles["cell id"],
+                self.particulator.attributes['n'],
+                self.particulator.attributes["cell id"],
                 self.dt_left,
                 self.particulator.dt,
                 self.dt_coal_range,
@@ -139,8 +139,8 @@ class Coalescence:
         self.particulator.backend.compute_gamma(
             prob,
             rand,
-            self.particulator.particles['n'],
-            self.particulator.particles["cell id"],
+            self.particulator.attributes['n'],
+            self.particulator.attributes["cell id"],
             self.collision_rate_deficit,
             self.collision_rate,
             is_first_in_pair

@@ -70,7 +70,7 @@ class Builder:
         attributes['n'] = int_caster(attributes['n'])
         if self.particulator.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
-        self.particulator.particles = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
+        self.particulator.attributes = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
 
         for key in self.particulator.dynamics.keys():
             self.particulator.timers[key] = WallTimer()

@@ -33,7 +33,7 @@ class TestParticles:
         particulator = DummyParticulator(backend, n_sd=len(n))
         attributes = {'n': n, 'volume': volume}
         particulator.build(attributes, int_caster=np.int64)
-        sut = particulator.particles
+        sut = particulator.attributes
         sut.healthy = False
 
         # Act
@@ -61,7 +61,7 @@ class TestParticles:
         n_cell = max(cells) + 1
         particulator.environment.mesh.n_cell = n_cell
         particulator.build(attributes={'n': np.ones(n_sd)})
-        sut = particulator.particles
+        sut = particulator.attributes
         sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
         sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cells, sut._Particles__idx)
@@ -93,7 +93,7 @@ class TestParticles:
         cell_id[droplet_id] = -1
         attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
         particulator.build(attribute)
-        sut = particulator.particles
+        sut = particulator.attributes
 
         # Act
         sut.recalculate_cell_id()
@@ -194,7 +194,7 @@ class TestParticles:
             cell_id += [i] * (cell_start[i + 1] - cell_start[i])
         assert len(cell_id) == n_sd
         particulator.build(attributes={'n': np.ones(n_sd)})
-        sut = particulator.particles
+        sut = particulator.attributes
         sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
         idx_length = len(sut._Particles__idx)
         sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend, [0] * idx_length)

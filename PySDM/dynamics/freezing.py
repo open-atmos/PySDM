@@ -28,20 +28,20 @@ class Freezing:
 
         if self.singular:
             self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.particles['freezing temperature'],
-                v_wet=self.particulator.particles['volume'],
+                T_fz=self.particulator.attributes['freezing temperature'],
+                v_wet=self.particulator.attributes['volume'],
                 T=self.particulator.environment['T'],
                 RH=self.particulator.environment['RH'],
-                cell=self.particulator.particles['cell id']
+                cell=self.particulator.attributes['cell id']
             )
         else:
             self.rand.urand(self.rng)
             self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.particles['immersed surface area'],
-                volume=self.particulator.particles['volume'],
+                immersed_surface_area=self.particulator.attributes['immersed surface area'],
+                volume=self.particulator.attributes['volume'],
                 J_het=self.J_het,
                 dt=self.particulator.dt
             )
 
-        self.particulator.particles.attributes['volume'].mark_updated()
+        self.particulator.attributes.attributes['volume'].mark_updated()

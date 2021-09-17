@@ -39,21 +39,21 @@ class Displacement:
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
-        cell_origin = self.particulator.particles['cell origin']
-        position_in_cell = self.particulator.particles['position in cell']
+        cell_origin = self.particulator.attributes['cell origin']
+        position_in_cell = self.particulator.attributes['position in cell']
 
         self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
-            self.precipitation_in_last_step = self.particulator.particles.remove_precipitated()
+            self.precipitation_in_last_step = self.particulator.attributes.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
-        self.particulator.particles.recalculate_cell_id()
+        self.particulator.attributes.recalculate_cell_id()
 
         # TODO #443
-        self.particulator.particles.attributes['position in cell'].mark_updated()
-        self.particulator.particles.attributes['cell origin'].mark_updated()
-        self.particulator.particles.attributes['cell id'].mark_updated()
+        self.particulator.attributes.attributes['position in cell'].mark_updated()
+        self.particulator.attributes.attributes['cell origin'].mark_updated()
+        self.particulator.attributes.attributes['cell id'].mark_updated()
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
@@ -63,7 +63,7 @@ class Displacement:
             displacement_z = displacement[self.dimension - 1, :]
             dt_over_dz = self.particulator.dt / self.particulator.mesh.dz
             displacement_z *= 1 / dt_over_dz
-            displacement_z -= self.particulator.particles['terminal velocity']
+            displacement_z -= self.particulator.attributes['terminal velocity']
             displacement_z *= dt_over_dz
 
     def update_position(self, position_in_cell, displacement):

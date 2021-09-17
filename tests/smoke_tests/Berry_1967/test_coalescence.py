@@ -37,7 +37,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        volumes[particulator.n_steps] = particulator.particles['volume'].to_ndarray()
+        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
 
     # Assert
     x_max = 0
@@ -67,11 +67,11 @@ def test_coalescence_2_sd(backend):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        volumes[particulator.n_steps] = particulator.particles['volume'].to_ndarray()
+        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
 
     # Assert
     x_max = 0
     for volume in volumes.values():
         assert x_max < np.amax(volume)
         x_max = np.amax(volume)
-    assert particulator.particles.SD_num == 1
+    assert particulator.attributes.SD_num == 1
