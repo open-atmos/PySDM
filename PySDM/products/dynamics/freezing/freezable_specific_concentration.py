@@ -15,23 +15,23 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
 
     def register(self, builder):
         builder.request_attribute('freezing temperature')
-        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(self.attr_bins_edges)
+        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(self.attr_bins_edges)
         super().register(builder)
-        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def get(self):
-        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
         self.recalculate_spectrum_moment(attr='volume', filter_attr='freezing temperature', rank=0)
 
         for i in range(vals.shape[1]):
             self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self.download_to_buffer(self.core.environment['rhod'])
+        self.download_to_buffer(self.particulator.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
-            vals[:, i] /= rhod * dT * self.core.mesh.dv
+            vals[:, i] /= rhod * dT * self.particulator.mesh.dv
 
         const.convert_to(vals, const.si.milligram**-1 / const.si.K)
 

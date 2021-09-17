@@ -19,7 +19,7 @@ class TestInitialCondition:
             for var in ('RH_env', 'T_env', 'qv_env', 'p_env'):
                 pyplot.plot(output[var][:, 0], output['z'], linestyle='--', marker='o')
                 pyplot.ylabel('Z [m]')
-                pyplot.xlabel(var + ' [' + simulation.core.products[var].unit + ']')
+                pyplot.xlabel(var + ' [' + simulation.particulator.products[var].unit + ']')
                 pyplot.grid()
                 pyplot.show()
 

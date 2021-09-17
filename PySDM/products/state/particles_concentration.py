@@ -18,10 +18,10 @@ class ParticlesConcentration(MomentProduct):
         self.download_moment_to_buffer('volume', rank=0,
                                        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                                                      self.formulae.trivia.volume(self.radius_range[1])))
-        self.buffer[:] /= self.core.mesh.dv
+        self.buffer[:] /= self.particulator.mesh.dv
         if self.specific:
             result = self.buffer.copy()  # TODO #217
-            self.download_to_buffer(self.core.environment['rhod'])
+            self.download_to_buffer(self.particulator.environment['rhod'])
             result[:] /= self.buffer
         else:
             result = self.buffer

@@ -1,4 +1,4 @@
-from ...dummy_core import DummyCore
+from ...dummy_particulator import DummyParticulator
 from PySDM.dynamics import Displacement
 import numpy as np
 from ...dummy_environment import DummyEnvironment
@@ -17,13 +17,13 @@ class DisplacementSettings:
 
     def get_displacement(self, backend, scheme):
         formulae = Formulae(particle_advection=scheme)
-        core = DummyCore(backend, n_sd=len(self.n), formulae=formulae)
-        core.environment = DummyEnvironment(
+        particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
+        particulator.environment = DummyEnvironment(
             dt=self.dt,
             grid=self.grid,
             courant_field_data=self.courant_field_data)
         positions = np.array(self.positions)
-        cell_id, cell_origin, position_in_cell = core.mesh.cellular_attributes(positions)
+        cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(positions)
         attributes = {
             'n': self.n,
             'volume': self.volume,
@@ -31,9 +31,9 @@ class DisplacementSettings:
             'cell origin': cell_origin,
             'position in cell': position_in_cell
         }
-        core.build(attributes)
+        particulator.build(attributes)
         sut = Displacement(enable_sedimentation=self.sedimentation)
-        sut.register(core)
+        sut.register(particulator)
         sut.upload_courant_field(self.courant_field_data)
 
-        return sut, core
+        return sut, particulator

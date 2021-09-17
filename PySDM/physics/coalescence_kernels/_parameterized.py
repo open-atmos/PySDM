@@ -9,13 +9,13 @@ class Parameterized(Gravitational):
         self.params = params
 
     def __call__(self, output, is_first_in_pair):
-        self.core.backend.linear_collection_efficiency(
-            self.params, output, self.core.particles['radius'], is_first_in_pair, const.si.um)
+        self.particulator.backend.linear_collection_efficiency(
+            self.params, output, self.particulator.particles['radius'], is_first_in_pair, const.si.um)
         output **= 2
         output *= const.pi
-        self.pair_tmp.max(self.core.particles['radius'], is_first_in_pair)
+        self.pair_tmp.max(self.particulator.particles['radius'], is_first_in_pair)
         self.pair_tmp **= 2
         output *= self.pair_tmp
 
-        self.pair_tmp.distance(self.core.particles['terminal velocity'], is_first_in_pair)
+        self.pair_tmp.distance(self.particulator.particles['terminal velocity'], is_first_in_pair)
         output *= self.pair_tmp

@@ -10,9 +10,9 @@ Example of use:
 exporter = VTKExporter()
 
 for step in range(settings.n_steps):
-    simulation.core.run(1)
+    simulation.particulator.run(1)
 
-    exporter.export_particles(simulation.core)
+    exporter.export_particles(simulation.particulator)
 
 """
 
@@ -35,14 +35,14 @@ class VTKExporter:
             pvd.addFile(k + '.vtu', sim_time=v)
         pvd.save()
 
-    def export_particles(self, core):
-        path = self.particles_file_path + '_num' + self.add_leading_zeros(core.n_steps)
-        self.exported_times[path] = core.n_steps * core.dt
+    def export_particles(self, particulator):
+        path = self.particles_file_path + '_num' + self.add_leading_zeros(particulator.n_steps)
+        self.exported_times[path] = particulator.n_steps * particulator.dt
         if self.verbose:
             print("Exporting Particles to vtk, path: " + path)
         payload = {}
 
-        particles = core.particles
+        particles = particulator.particles
         for k in particles.attributes.keys():
             if len(particles[k].shape) != 1:
                 tmp = particles[k].to_ndarray(raw=True)
@@ -54,9 +54,9 @@ class VTKExporter:
 
         payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags['C_CONTIGUOUS'] or v.flags['F_CONTIGUOUS'])})
 
-        if core.mesh.dimension == 2:
-            y = core.mesh.size[0]/core.mesh.grid[0] * (payload['cell origin[0]'] + payload['position in cell[0]'])
-            x = core.mesh.size[1]/core.mesh.grid[1] * (payload['cell origin[1]'] + payload['position in cell[1]'])
+        if particulator.mesh.dimension == 2:
+            y = particulator.mesh.size[0]/particulator.mesh.grid[0] * (payload['cell origin[0]'] + payload['position in cell[0]'])
+            x = particulator.mesh.size[1]/particulator.mesh.grid[1] * (payload['cell origin[1]'] + payload['position in cell[1]'])
             z = np.full_like(x, 0)
         else:
             raise NotImplementedError("Only 2 dimensions array is supported at the moment.")

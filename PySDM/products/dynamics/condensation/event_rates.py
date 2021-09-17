@@ -18,8 +18,8 @@ class EventRate(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.condensation = self.core.dynamics['Condensation']
+        self.particulator.observers.append(self)
+        self.condensation = self.particulator.dynamics['Condensation']
         self.event_count = np.zeros_like(self.buffer)
 
     def notify(self):
@@ -31,8 +31,8 @@ class EventRate(Product):
         if self.timestep_count == 0:
             return self.event_count
         else:
-            self.event_count[:] /= (self.timestep_count * self.core.dt * self.core.mesh.dv)
-            self.download_to_buffer(self.core.environment['rhod'])
+            self.event_count[:] /= (self.timestep_count * self.particulator.dt * self.particulator.mesh.dv)
+            self.download_to_buffer(self.particulator.environment['rhod'])
             self.event_count[:] /= self.buffer[:]
             self.buffer[:] = self.event_count[:]
             self.timestep_count = 0

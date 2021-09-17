@@ -18,10 +18,10 @@ class IceWaterContent(MomentProduct):
 
         self.download_moment_to_buffer('volume', rank=1, filter_range=(-np.inf, 0))
         result = self.buffer.copy()
-        result[:] *= -const.rho_i * conc  / self.core.mesh.dv
+        result[:] *= -const.rho_i * conc  / self.particulator.mesh.dv
 
         if self.specific:
-            self.download_to_buffer(self.core.environment['rhod'])
+            self.download_to_buffer(self.particulator.environment['rhod'])
             result[:] /= self.buffer
             const.convert_to(result, const.si.gram / const.si.kilogram)
         return result

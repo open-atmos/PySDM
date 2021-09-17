@@ -17,7 +17,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://en.uj.edu.pl/)
 
-#### [core package](https://github.com/atmos-cloud-sim-uj/PySDM):  
+#### [PySDM package](https://github.com/atmos-cloud-sim-uj/PySDM):  
 [![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/PySDM/badge.svg?branch=master)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=master&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/master)
 [![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/master/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=master)    
@@ -28,7 +28,7 @@
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
 [![API docs](https://img.shields.io/badge/API_docs-pdoc3-blue.svg)](https://atmos-cloud-sim-uj.github.io/PySDM/)
 
-#### [examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples):   
+#### [PySDM-examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples):   
 [![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM-examples/workflows/PySDM-examples/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/actions)    
 [![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM-examples.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=)
 [![GitHub issues](https://img.shields.io/github/issues-pr-closed/atmos-cloud-sim-uj/PySDM-examples.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM-examples/pulls?q=is:closed)    
@@ -42,7 +42,7 @@ Currently, the development is focused on atmospheric cloud physics
   applications, in particular on modelling the dynamics of particles immersed in moist air 
   using the particle-based (a.k.a. super-droplet) approach 
   to represent aerosol/cloud/rain microphysics.
-The package core is a Pythonic high-performance implementation of the 
+The package features a Pythonic high-performance implementation of the 
   Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth 
   ([Shima et al. 2009](https://rmets.onlinelibrary.wiley.com/doi/abs/10.1002/qj.441)), hence the name. 
 
@@ -163,9 +163,9 @@ attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).s
 ```
 </details>
 
-The key element of the PySDM interface is the [``Core``](https://atmos-cloud-sim-uj.github.io/PySDM/core.html) 
+The key element of the PySDM interface is the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html) 
   class instances of which are used to manage the system state and control the simulation.
-Instantiation of the [``Core``](https://atmos-cloud-sim-uj.github.io/PySDM/core.html) class is handled by the [``Builder``](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html)
+Instantiation of the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html) class is handled by the [``Builder``](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html)
   as exemplified below:
 <details>
 <summary>Julia (click to expand)</summary>
@@ -184,7 +184,7 @@ builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
-particles = builder.build(attributes, products)
+particulator = builder.build(attributes, products)
 ```
 </details>
 <details>
@@ -204,7 +204,7 @@ builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
-particles = builder.build(attributes, products);
+particulator = builder.build(attributes, products);
 ```
 </details>
 <details open>
@@ -225,7 +225,7 @@ builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)]
-particles = builder.build(attributes, products)
+particulator = builder.build(attributes, products)
 ```
 </details>
 
@@ -240,10 +240,10 @@ The [`Coalescence`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/coalesce
   Monte-Carlo algorithm (Super Droplet Method) is registered as the only
   dynamic in the system.
 Finally, the [`build()`](https://atmos-cloud-sim-uj.github.io/PySDM/builder.html#PySDM.builder.Builder.build) method is used to obtain an instance
-  of [`Core`](https://atmos-cloud-sim-uj.github.io/PySDM/core.html#PySDM.core.Core) which can then be used to control time-stepping and
+  of [`Particulator`](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html#PySDM.particulator.Particulator) which can then be used to control time-stepping and
   access simulation state.
 
-The [`run(nt)`](https://atmos-cloud-sim-uj.github.io/PySDM/core.html#PySDM.core.Core.run) method advances the simulation by ``nt`` timesteps.
+The [`run(nt)`](https://atmos-cloud-sim-uj.github.io/PySDM/particulator.html#PySDM.particuparticulatorr.Particulator.run) method advances the simulation by ``nt`` timesteps.
 In the listing below, its usage is interleaved with plotting logic
   which displays a histogram of particle mass distribution 
   at selected timesteps:
@@ -255,10 +255,10 @@ rho_w = pyimport("PySDM.physics.constants").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
-    particles.run(step - particles.n_steps)
+    particulator.run(step - particulator.n_steps)
     plot!(
         radius_bins_edges[1:end-1] / si.um,
-        particles.products["dv/dlnr"].get()[:] * rho_w / si.g,
+        particulator.products["dv/dlnr"].get()[:] * rho_w / si.g,
         linetype=:steppost,
         xaxis=:log,
         xlabel="particle radius [µm]",
@@ -276,9 +276,9 @@ savefig("plot.svg")
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
 for step = 0:1200:3600
-    particles.run(int32(step - particles.n_steps))
+    particulator.run(int32(step - particulator.n_steps))
     x = radius_bins_edges / si.um;
-    y = particles.products{"dv/dlnr"}.get() * rho_w / si.g;
+    y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
         x(1:end-1), ... 
         double(py.array.array('d',py.numpy.nditer(y))), ...
@@ -301,9 +301,9 @@ from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
-    particles.run(step - particles.n_steps)
+    particulator.run(step - particulator.n_steps)
     pyplot.step(x=radius_bins_edges[:-1] / si.um,
-                y=particles.products['dv/dlnr'].get()[0] * rho_w / si.g,
+                y=particulator.products['dv/dlnr'].get()[0] * rho_w / si.g,
                 where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
@@ -385,7 +385,7 @@ attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
-particles = builder.build(attributes, products=[
+particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
@@ -395,21 +395,21 @@ particles = builder.build(attributes, products=[
     
 cell_id=1
 output = Dict()
-for (_, product) in particles.products
+for (_, product) in particulator.products
     output[product.name] = Array{Float32}(undef, output_points+1)
     output[product.name][1] = product.get()[cell_id]
 end 
     
 for step = 2:output_points+1
-    particles.run(steps=output_interval)
-    for (_, product) in particles.products
+    particulator.run(steps=output_interval)
+    for (_, product) in particulator.products
         output[product.name][step] = product.get()[cell_id]
     end 
 end 
 
 plots = []
-ylbl = particles.products["z"].unit
-for (_, product) in particles.products
+ylbl = particulator.products["z"].unit
+for (_, product) in particulator.products
     if product.name != "z"
         append!(plots, [plot(output[product.name], output["z"], ylabel=ylbl, xlabel=product.unit, title=product.name)])
     end
@@ -468,7 +468,7 @@ attributes = py.dict(pyargs( ...
     'volume', builder.formulae.trivia.volume(r_wet) ...
 ));
 
-particles = builder.build(attributes, py.list({ ...
+particulator = builder.build(attributes, py.list({ ...
     products.PeakSupersaturation(), ...
     products.CloudDropletEffectiveRadius(pyargs('radius_range', cloud_range)), ...
     products.CloudDropletConcentration(pyargs('radius_range', cloud_range)), ...
@@ -477,32 +477,32 @@ particles = builder.build(attributes, py.list({ ...
 }));
 
 cell_id = int32(0);
-output_size = [output_points+1, length(py.list(particles.products.keys()))];
+output_size = [output_points+1, length(py.list(particulator.products.keys()))];
 output_types = repelem({'double'}, output_size(2));
-output_names = [cellfun(@string, cell(py.list(particles.products.keys())))];
+output_names = [cellfun(@string, cell(py.list(particulator.products.keys())))];
 output = table(...
     'Size', output_size, ...
     'VariableTypes', output_types, ...
     'VariableNames', output_names ...
 );
-for pykey = py.list(keys(particles.products))
-    get = py.getattr(particles.products{pykey{1}}.get(), '__getitem__');
+for pykey = py.list(keys(particulator.products))
+    get = py.getattr(particulator.products{pykey{1}}.get(), '__getitem__');
     key = string(pykey{1});
     output{1, key} = get(cell_id);
 end
 
 for i=2:output_points+1
-    particles.run(pyargs('steps', int32(output_interval)));
-    for pykey = py.list(keys(particles.products))
-        get = py.getattr(particles.products{pykey{1}}.get(), '__getitem__');
+    particulator.run(pyargs('steps', int32(output_interval)));
+    for pykey = py.list(keys(particulator.products))
+        get = py.getattr(particulator.products{pykey{1}}.get(), '__getitem__');
         key = string(pykey{1});
         output{i, key} = get(cell_id);
     end
 end
 
 i=1;
-for pykey = py.list(keys(particles.products))
-    product = particles.products{pykey{1}};
+for pykey = py.list(keys(particulator.products))
+    product = particulator.products{pykey{1}};
     if string(product.name) ~= "z"
         subplot(1, width(output)-1, i);
         plot(output{:, string(pykey{1})}, output.z, '-o');
@@ -510,7 +510,7 @@ for pykey = py.list(keys(particles.products))
         xlabel(string(product.unit));
     end
     if i == 1
-        ylabel(string(particles.products{"z"}.unit));
+        ylabel(string(particulator.products{"z"}.unit));
     end
     i=i+1;
 end
@@ -561,7 +561,7 @@ attributes = {
     'volume': builder.formulae.trivia.volume(radius=r_wet)
 }
 
-particles = builder.build(attributes, products=[
+particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(),
     products.CloudDropletEffectiveRadius(radius_range=cloud_range),
     products.CloudDropletConcentration(radius_range=cloud_range),
@@ -570,21 +570,21 @@ particles = builder.build(attributes, products=[
 ])
 
 cell_id = 0
-output = {product.name: [product.get()[cell_id]] for product in particles.products.values()}
+output = {product.name: [product.get()[cell_id]] for product in particulator.products.values()}
 
 for step in range(output_points):
-    particles.run(steps=output_interval)
-    for product in particles.products.values():
+    particulator.run(steps=output_interval)
+    for product in particulator.products.values():
         output[product.name].append(product.get()[cell_id])
 
-fig, axs = pyplot.subplots(1, len(particles.products) - 1, sharey="all")
-for i, (key, product) in enumerate(particles.products.items()):
+fig, axs = pyplot.subplots(1, len(particulator.products) - 1, sharey="all")
+for i, (key, product) in enumerate(particulator.products.items()):
     if key != 'z':
         axs[i].plot(output[key], output['z'], marker='.')
         axs[i].set_title(product.name)
         axs[i].set_xlabel(product.unit)
         axs[i].grid()
-axs[0].set_ylabel(particles.products['z'].unit)
+axs[0].set_ylabel(particulator.products['z'].unit)
 pyplot.savefig('parcel.svg')
 ```
 </details>

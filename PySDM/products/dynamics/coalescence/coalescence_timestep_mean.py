@@ -17,8 +17,8 @@ class CoalescenceTimestepMean(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.coalescence = self.core.dynamics['Coalescence']
+        self.particulator.observers.append(self)
+        self.coalescence = self.particulator.dynamics['Coalescence']
         self.range = self.coalescence.dt_coal_range
 
     @staticmethod
@@ -28,7 +28,7 @@ class CoalescenceTimestepMean(Product):
 
     def get(self):
         self.download_to_buffer(self.coalescence.stats_n_substep)
-        CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.core.dt)
+        CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
         self.coalescence.stats_n_substep[:] = 0
         self.count = 0
         return self.buffer

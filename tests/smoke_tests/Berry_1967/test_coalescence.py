@@ -30,14 +30,14 @@ def test_coalescence(backend, kernel, croupier, adaptive):
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
     builder.add_dynamic(Coalescence(kernel, croupier=croupier, adaptive=adaptive))
-    core = builder.build(attributes)
+    particulator = builder.build(attributes)
 
     volumes = {}
 
     # Act
     for step in steps:
-        core.run(step - core.n_steps)
-        volumes[core.n_steps] = core.particles['volume'].to_ndarray()
+        particulator.run(step - particulator.n_steps)
+        volumes[particulator.n_steps] = particulator.particles['volume'].to_ndarray()
 
     # Assert
     x_max = 0
@@ -60,19 +60,18 @@ def test_coalescence_2_sd(backend):
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
     builder.add_dynamic(Coalescence(s.kernel, adaptive=False))
-    core = builder.build(attributes)
+    particulator = builder.build(attributes)
 
     volumes = {}
 
     # Act
     for step in steps:
-        core.run(step - core.n_steps)
-        volumes[core.n_steps] = core.particles['volume'].to_ndarray()
+        particulator.run(step - particulator.n_steps)
+        volumes[particulator.n_steps] = particulator.particles['volume'].to_ndarray()
 
     # Assert
     x_max = 0
     for volume in volumes.values():
         assert x_max < np.amax(volume)
         x_max = np.amax(volume)
-    print(core.particles['n'].to_ndarray())
-    assert core.particles.SD_num == 1
+    assert particulator.particles.SD_num == 1

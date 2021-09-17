@@ -13,37 +13,37 @@ idx_x = 1
 rtol = 1e-4
 
 
-def patch_core(core):
-    core.condensation_solver = _make_solve(core.formulae)
-    core.condensation = types.MethodType(_bdf_condensation, core)
+def patch_particulator(particulator):
+    particulator.condensation_solver = _make_solve(particulator.formulae)
+    particulator.condensation = types.MethodType(_bdf_condensation, particulator)
 
 
-def _bdf_condensation(core, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+def _bdf_condensation(particulator, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:
         func = func.py_func
     func(
-        solver=core.condensation_solver,
+        solver=particulator.condensation_solver,
         n_threads=1,
-        n_cell=core.mesh.n_cell,
-        cell_start_arg=core.particles.cell_start.data,
-        v=core.particles["volume"].data,
+        n_cell=particulator.mesh.n_cell,
+        cell_start_arg=particulator.particles.cell_start.data,
+        v=particulator.particles["volume"].data,
         v_cr=None,
-        n=core.particles['n'].data,
-        vdry=core.particles["dry volume"].data,
-        idx=core.particles._Particles__idx.data,
-        rhod=core.env["rhod"].data,
-        thd=core.env["thd"].data,
-        qv=core.env["qv"].data,
-        dv_mean=core.env.dv,
-        prhod=core.env.get_predicted("rhod").data,
-        pthd=core.env.get_predicted("thd").data,
-        pqv=core.env.get_predicted("qv").data,
-        kappa=core.particles["kappa"].data,
-        f_org=core.particles["dry volume organic fraction"].data,
+        n=particulator.particles['n'].data,
+        vdry=particulator.particles["dry volume"].data,
+        idx=particulator.particles._Particles__idx.data,
+        rhod=particulator.env["rhod"].data,
+        thd=particulator.env["thd"].data,
+        qv=particulator.env["qv"].data,
+        dv_mean=particulator.env.dv,
+        prhod=particulator.env.get_predicted("rhod").data,
+        pthd=particulator.env.get_predicted("thd").data,
+        pqv=particulator.env.get_predicted("qv").data,
+        kappa=particulator.particles["kappa"].data,
+        f_org=particulator.particles["dry volume organic fraction"].data,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
-        dt=core.dt,
+        dt=particulator.dt,
         counter_n_substeps=counters['n_substeps'],
         counter_n_activating=counters['n_activating'],
         counter_n_deactivating=counters['n_deactivating'],

@@ -13,7 +13,7 @@ class FlowFieldAsserts(AbstractContextManager):
         if percent == 0:
             return
         advector = None
-        for solver in self.simulation.core.dynamics['EulerianAdvection'].solvers.mpdatas.values():
+        for solver in self.simulation.particulator.dynamics['EulerianAdvection'].solvers.mpdatas.values():
             assert advector is None or advector is solver.advector
             advector = solver.advector
         np.testing.assert_allclose(advector.get_component(1)[:, 0], 0)

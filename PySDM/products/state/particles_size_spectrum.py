@@ -18,15 +18,15 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
 
-        volume_bins_edges = builder.core.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.core.bck.Storage.from_ndarray(volume_bins_edges)
+        volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
+        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(volume_bins_edges)
 
         super().register(builder)
 
-        self.shape = (*builder.core.mesh.grid, len(self.attr_bins_edges) - 1)
+        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def get(self):
-        vals = np.empty([self.core.mesh.n_cell, len(self.attr_bins_edges) - 1])
+        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
         self.recalculate_spectrum_moment(attr=self.volume_attr, rank=1, filter_attr=self.volume_attr)
 
         for i in range(vals.shape[1]):
@@ -34,9 +34,9 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
             vals[:, i] = self.buffer.ravel()
 
         if self.normalise_by_dv:
-            vals[:] /= self.core.mesh.dv
+            vals[:] /= self.particulator.mesh.dv
 
-        self.download_to_buffer(self.core.environment['rhod'])
+        self.download_to_buffer(self.particulator.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dr = self.formulae.trivia.radius(volume=self.attr_bins_edges[i + 1]) - \

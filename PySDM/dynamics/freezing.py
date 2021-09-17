@@ -7,7 +7,7 @@ class Freezing:
         self.rng = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         builder.request_attribute("volume")
         if self.singular:
@@ -16,32 +16,32 @@ class Freezing:
         else:
             assert self.J_het is not None
             builder.request_attribute("immersed surface area")
-            self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
-            self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
+            self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
 
     def __call__(self):
-        if 'Coalescence' in self.core.dynamics:
+        if 'Coalescence' in self.particulator.dynamics:
             raise NotImplementedError("handling T_fz during collisions not implemented yet")  # TODO #594
 
         if not self.enable:
             return
 
         if self.singular:
-            self.core.bck.freeze_singular(
-                T_fz=self.core.particles['freezing temperature'],
-                v_wet=self.core.particles['volume'],
-                T=self.core.environment['T'],
-                RH=self.core.environment['RH'],
-                cell=self.core.particles['cell id']
+            self.particulator.bck.freeze_singular(
+                T_fz=self.particulator.particles['freezing temperature'],
+                v_wet=self.particulator.particles['volume'],
+                T=self.particulator.environment['T'],
+                RH=self.particulator.environment['RH'],
+                cell=self.particulator.particles['cell id']
             )
         else:
             self.rand.urand(self.rng)
-            self.core.bck.freeze_time_dependent(
+            self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.core.particles['immersed surface area'],
-                volume=self.core.particles['volume'],
+                immersed_surface_area=self.particulator.particles['immersed surface area'],
+                volume=self.particulator.particles['volume'],
                 J_het=self.J_het,
-                dt=self.core.dt
+                dt=self.particulator.dt
             )
 
-        self.core.particles.attributes['volume'].mark_updated()
+        self.particulator.particles.attributes['volume'].mark_updated()

@@ -18,8 +18,8 @@ class Kinematic2D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
@@ -41,13 +41,13 @@ class Kinematic2D(_Moist):
 
         attributes = {}
         with np.errstate(all='raise'):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
             if spectral_discretisation:
-                r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+                r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             elif spectro_glacial_discretisation:
-                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.core.n_sd)
+                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.particulator.n_sd)
                 attributes['freezing temperature'] = T_fz
             else:
                 raise NotImplementedError()
@@ -69,11 +69,11 @@ class Kinematic2D(_Moist):
         return attributes
 
     def get_thd(self):
-        return self.core.dynamics['EulerianAdvection'].solvers['th'].advectee.get()
+        return self.particulator.dynamics['EulerianAdvection'].solvers['th'].advectee.get()
 
     def get_qv(self):
-        return self.core.dynamics['EulerianAdvection'].solvers['qv'].advectee.get()
+        return self.particulator.dynamics['EulerianAdvection'].solvers['qv'].advectee.get()
 
     def sync(self):
-        self.core.dynamics['EulerianAdvection'].solvers.wait()
+        self.particulator.dynamics['EulerianAdvection'].solvers.wait()
         super().sync()

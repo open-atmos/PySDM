@@ -5,7 +5,7 @@ import numpy as np
 class DummyEnvironment:
 
     def __init__(self, dt=None, grid=None, size=None, dv=None, courant_field_data=None, halo=None):
-        self.core = None
+        self.particulator = None
         self.dt = dt
         if grid is None:
             self.mesh = Mesh.mesh_0d(dv)
@@ -21,11 +21,11 @@ class DummyEnvironment:
                 self.step_counter = 0
         self.courant_field_data = courant_field_data
 
-    def register(self, core):
-        self.core = core
+    def register(self, particulator):
+        self.particulator = particulator
         if hasattr(self, 'halo'):
-            self.pred['qv'] = core.bck.Storage.empty(self.mesh.n_cell, dtype=float)
-            self.pred['thd'] = core.bck.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred['qv'] = particulator.bck.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred['thd'] = particulator.bck.Storage.empty(self.mesh.n_cell, dtype=float)
 
     def get_courant_field_data(self):
         return self.courant_field_data

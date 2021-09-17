@@ -21,7 +21,7 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 """
 
 from .builder import Builder
-from .core import Core
+from .particulator import Particulator
 
 from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 try:

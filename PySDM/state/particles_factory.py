@@ -8,8 +8,8 @@ from PySDM.state.particles import Particles
 class ParticlesFactory:
 
     @staticmethod
-    def attributes(core, req_attr, attributes):
-        idx = core.Index.identity_index(core.n_sd)
+    def attributes(particulator, req_attr, attributes):
+        idx = particulator.Index.identity_index(particulator.n_sd)
 
         extensive_attr = []
         maximum_attr = []
@@ -21,8 +21,8 @@ class ParticlesFactory:
             elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
-        extensive_attributes = core.IndexedStorage.empty(idx, (len(extensive_attr), core.n_sd), float)
-        maximum_attributes = core.IndexedStorage.empty(idx, (len(maximum_attr), core.n_sd), float)
+        extensive_attributes = particulator.IndexedStorage.empty(idx, (len(extensive_attr), particulator.n_sd), float)
+        maximum_attributes = particulator.IndexedStorage.empty(idx, (len(maximum_attr), particulator.n_sd), float)
 
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
@@ -48,30 +48,30 @@ class ParticlesFactory:
         n = req_attr['n']
         n.allocate(idx)
         n.init(attributes['n'])
-        req_attr['n'].data = core.IndexedStorage.indexed(idx, n.data)
+        req_attr['n'].data = particulator.IndexedStorage.indexed(idx, n.data)
         cell_id = req_attr['cell id']
         cell_id.allocate(idx)
         cell_id.init(attributes['cell id'])
-        req_attr['cell id'].data = core.IndexedStorage.indexed(idx, cell_id.data)
+        req_attr['cell id'].data = particulator.IndexedStorage.indexed(idx, cell_id.data)
         try:
             cell_origin = req_attr['cell origin']
             cell_origin.allocate(idx)
             cell_origin.init(attributes['cell origin'])
-            req_attr['cell origin'].data = core.IndexedStorage.indexed(idx, cell_origin.data)
+            req_attr['cell origin'].data = particulator.IndexedStorage.indexed(idx, cell_origin.data)
         except KeyError:
             cell_origin = None
         try:
             position_in_cell = req_attr['position in cell']
             position_in_cell.allocate(idx)
             position_in_cell.init(attributes['position in cell'])
-            req_attr['position in cell'].data = core.IndexedStorage.indexed(idx, position_in_cell.data)
+            req_attr['position in cell'].data = particulator.IndexedStorage.indexed(idx, position_in_cell.data)
         except KeyError:
             position_in_cell = None
 
-        cell_start = np.empty(core.mesh.n_cell + 1, dtype=int)
+        cell_start = np.empty(particulator.mesh.n_cell + 1, dtype=int)
 
         state = Particles(
-            core,
+            particulator,
             idx,
             extensive_attributes, extensive_keys,
             # maximum_attributes, maximum_keys, # TODO #594
@@ -85,7 +85,7 @@ class ParticlesFactory:
     def empty_particles(particles, n_sd) -> Particles:
         idx = particles.Index.identity_index(n_sd)
         return Particles(
-            core=particles, idx=idx,
+            particulator=particles, idx=idx,
             extensive_attributes=None, extensive_keys={},
             cell_start=np.zeros(0, dtype=np.int64), attributes={}
         )

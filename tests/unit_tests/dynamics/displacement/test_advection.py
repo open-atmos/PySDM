@@ -28,7 +28,7 @@ class TestExplicitEulerWithInterpolation:
         settings.grid = (3, 3)
         settings.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         settings.positions = [[1.5], [1.5]]
-        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -36,7 +36,7 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         dim_x = 0
         np.testing.assert_array_equal(
-            core.particles['cell origin'][:, dim_x],
+            particulator.particles['cell origin'][:, dim_x],
             np.array([2, 1])
         )
 
@@ -49,11 +49,12 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         settings.positions = [[w], [0]]
-        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   core.particles['cell origin'], core.particles['position in cell'])
+                                   particulator.particles['cell origin'],
+                                   particulator.particles['position in cell'])
 
         # Assert
         np.testing.assert_equal(
@@ -70,11 +71,11 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         settings.positions = [[0], [w]]
-        sut, core = settings.get_displacement(backend, scheme='ExplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
-                                   core.particles['cell origin'], core.particles['position in cell'])
+                                   particulator.particles['cell origin'], particulator.particles['position in cell'])
 
         # Assert
         np.testing.assert_equal(
@@ -89,18 +90,18 @@ class TestExplicitEulerWithInterpolation:
         px = .1
         py = .2
         settings.positions = [[px], [py]]
-        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = slice(0, 1)
         sut.displacement[:] = backend.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
 
         # Act
-        sut.update_position(core.particles['position in cell'], sut.displacement)
+        sut.update_position(particulator.particles['position in cell'], sut.displacement)
 
         # Assert
         for d in range(2):
             np.testing.assert_array_almost_equal(
-                core.particles['position in cell'][d, droplet_id].to_ndarray(),
+                particulator.particles['position in cell'][d, droplet_id].to_ndarray(),
                 settings.positions[d][droplet_id] + sut.displacement[d, droplet_id].to_ndarray()
             )
 
@@ -108,10 +109,10 @@ class TestExplicitEulerWithInterpolation:
     def test_update_cell_origin(backend):
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
-        state = core.particles
+        state = particulator.particles
         state['position in cell'][:] = backend.Storage.from_ndarray(np.asarray([[1.1], [1.2]]))
 
         # Act
@@ -127,10 +128,10 @@ class TestExplicitEulerWithInterpolation:
     def test_boundary_condition(backend):
         # Arrange
         settings = DisplacementSettings()
-        sut, core = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
         droplet_id = 0
-        state = core.particles
+        state = particulator.particles
         state['cell origin'][:] = backend.Storage.from_ndarray(np.asarray([[1], [1]]))
 
         # Act

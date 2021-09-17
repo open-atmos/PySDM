@@ -13,6 +13,6 @@ class TotalParticleConcentration(MomentProduct):
 
     def get(self):
         self.download_moment_to_buffer('volume', rank=0)
-        self.buffer[:] /= self.core.mesh.dv
+        self.buffer[:] /= self.particulator.mesh.dv
         const.convert_to(self.buffer, const.si.centimetre**-3)
         return self.buffer
