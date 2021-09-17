@@ -58,7 +58,7 @@ class Coalescence:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
-        self.norm_factor_temp = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)  # TODO #372
+        self.norm_factor_temp = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
         self.prob = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
         self.is_first_in_pair = self.particulator.PairIndicator(self.particulator.n_sd)
         self.dt_left = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)

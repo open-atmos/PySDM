@@ -156,7 +156,7 @@ class AlgorithmicMethods:
 
             j, k = pair_indices(i, idx, is_first_in_pair)
             prop = n[j] // n[k]
-            g = min(int(gamma[i]), prop)  # TODO #416: test asserting that min is not needed with adaptivity
+            g = min(int(gamma[i]), prop)
             cid = cell_id[j]
             collision_rate[cid] += g * n[k]
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
