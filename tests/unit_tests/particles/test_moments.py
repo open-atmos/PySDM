@@ -25,7 +25,7 @@ class TestMaths:
         particles = DummyParticulator(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
-        state = particles.particles
+        state = particles.attributes
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
@@ -80,7 +80,7 @@ class TestMaths:
         particles = DummyParticulator(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
-        state = particles.particles
+        state = particles.attributes
 
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
 

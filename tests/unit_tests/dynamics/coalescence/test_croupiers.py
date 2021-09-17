@@ -40,8 +40,8 @@ def test_final_state(croupier, backend):
 
     # Act
     u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
-    particulator.particles.permutation(u01, local=particulator.croupier == 'local')
-    _ = particulator.particles.cell_start
+    particulator.attributes.permutation(u01, local=particulator.croupier == 'local')
+    _ = particulator.attributes.cell_start
 
     # Assert
-    assert (np.diff(particulator.particles['cell id'][particulator.particles._Particles__idx]) >= 0).all()
+    assert (np.diff(particulator.attributes['cell id'][particulator.attributes._Particles__idx]) >= 0).all()

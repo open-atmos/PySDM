@@ -16,4 +16,4 @@ class DummyParticulator(Builder, Particulator):
         self.environment = DummyEnvironment()
         self.environment.register(self)
         self.req_attr = {'n': Multiplicities(self), 'cell id': CellID(self)}
-        self.particles = None
+        self.attributes = None
