@@ -34,7 +34,6 @@ class Kinematic2D(_Moist):
                         spectro_glacial_discretisation = None,
                         rtol=default_rtol
                         ):
-        # TODO #418 move to one method
         super().sync()
         self.notify()
 
