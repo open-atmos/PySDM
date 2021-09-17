@@ -70,7 +70,6 @@ class Particles:
         self.cell_idx.reset_index()
         self.__sort_by_cell_id()
 
-    @property
     def keys(self):
         return self.attributes.keys()
 
