@@ -53,6 +53,7 @@ class CondensationMethods():
         self.rhod_mean: Optional[Storage] = None
         self.vars: Optional[Dict[str, Storage]] = None
 
+        # TODO #532: precision for consts
         self.__calculate_m_l = trtc.For((&#34;ml&#34;, &#34;v&#34;, &#34;n&#34;, &#34;cell_id&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
@@ -285,6 +286,7 @@ class CondensationMethods():
         self.rhod_mean: Optional[Storage] = None
         self.vars: Optional[Dict[str, Storage]] = None
 
+        # TODO #532: precision for consts
         self.__calculate_m_l = trtc.For((&#34;ml&#34;, &#34;v&#34;, &#34;n&#34;, &#34;cell_id&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
         &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
