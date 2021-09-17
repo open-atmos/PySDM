@@ -14,8 +14,8 @@ class PeakSupersaturation(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.condensation = self.core.dynamics['Condensation']
+        self.particulator.observers.append(self)
+        self.condensation = self.particulator.dynamics['Condensation']
         self.RH_max = np.full_like(self.buffer, np.nan)
 
     def get(self):

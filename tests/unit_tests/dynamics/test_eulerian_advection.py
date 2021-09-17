@@ -1,5 +1,5 @@
 from PySDM.dynamics import EulerianAdvection
-from ..dummy_core import DummyCore
+from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment
 import numpy as np
 # noinspection PyUnresolvedReferences
@@ -11,19 +11,19 @@ class TestEulerianAdvection:
     @staticmethod
     def test_update(backend):
         # Arrange
-        core = DummyCore(backend)
+        particulator = DummyParticulator(backend)
         halo = 3
         grid = (11, 13)
         env = DummyEnvironment(grid=grid, halo=halo)
-        env.register(core)
+        env.register(particulator)
         env.qv[:] = 7.3
         env.thd[:] = 59.5
         env.pred['qv'][:] = 3.7
         env.pred['thd'][:] = 5.59
-        core.environment = env
+        particulator.environment = env
 
         sut = EulerianAdvection(lambda: None)
-        sut.register(core)
+        sut.register(particulator)
 
         # Act
         sut()

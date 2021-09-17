@@ -8,13 +8,13 @@ class CriticalVolume(DerivedAttribute):
         self.v_wet = builder.get_attribute('volume')
         self.kappa = builder.get_attribute('kappa')
         self.f_org = builder.get_attribute('dry volume organic fraction')
-        self.environment = builder.core.environment
-        self.particles = builder.core
+        self.environment = builder.particulator.environment
+        self.particles = builder.particulator
         dependencies = [self.v_dry, self.v_wet, self.cell_id]
         super().__init__(builder, name='critical volume', dependencies=dependencies)
 
     def recalculate(self):
-        self.core.bck.critical_volume(
+        self.particulator.bck.critical_volume(
             self.data,
             kappa=self.kappa.get(),
             f_org=self.f_org.get(),

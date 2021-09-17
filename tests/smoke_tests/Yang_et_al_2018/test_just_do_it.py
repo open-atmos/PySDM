@@ -29,7 +29,7 @@ def test_just_do_it(backend, scheme, adaptive):
 
     simulation = Simulation(settings, backend)
     if scheme == 'BDF':
-        bdf.patch_core(simulation.core)
+        bdf.patch_particulator(simulation.particulator)
 
     # Act
     output = simulation.run()

@@ -10,9 +10,9 @@ class pH(DerivedAttribute):
             if len(v) > 1:
                 self.conc[k] = builder.get_attribute('conc_' + k)
         super().__init__(builder, name='pH', dependencies=self.conc.values())
-        self.environment = builder.core.environment
+        self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute('cell id')
-        self.particles = builder.core
+        self.particles = builder.particulator
 
     def allocate(self, idx):
         super().allocate(idx)
@@ -28,7 +28,7 @@ class pH(DerivedAttribute):
         S_IV = self.conc["S_IV"].get()
         S_VI = self.conc["S_VI"].get()
 
-        self.core.bck.equilibrate_H(dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+        self.particulator.bck.equilibrate_H(dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
                                     dynamic.do_chemistry_flag, self.data,
                                     H_min=dynamic.pH_H_min,
                                     H_max=dynamic.pH_H_max,

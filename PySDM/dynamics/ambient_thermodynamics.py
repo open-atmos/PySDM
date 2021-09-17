@@ -6,10 +6,10 @@ Environment-sync triggering class
 class AmbientThermodynamics:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def __call__(self):
-        self.core.env.sync()
+        self.particulator.env.sync()

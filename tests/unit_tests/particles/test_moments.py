@@ -5,7 +5,7 @@ from PySDM.initialisation.spectral_sampling import Linear
 from PySDM.physics.spectra import Lognormal
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
-from ..dummy_core import DummyCore
+from ..dummy_particulator import DummyParticulator
 
 
 class TestMaths:
@@ -22,7 +22,7 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyCore(backend, n_sd)
+        particles = DummyParticulator(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
         state = particles.particles
@@ -77,7 +77,7 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyCore(backend, n_sd)
+        particles = DummyParticulator(backend, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
         state = particles.particles

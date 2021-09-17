@@ -22,7 +22,7 @@ class Condensation:
                  max_iters: int = 16
                  ):
 
-        self.core = None
+        self.particulator = None
         self.enable = True
 
         self.rtol_x = rtol_x
@@ -41,7 +41,7 @@ class Condensation:
         self.cell_order = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
                                              fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
@@ -50,17 +50,17 @@ class Condensation:
         builder.request_attribute('dry volume organic fraction')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
-            self.counters[counter] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
+            self.counters[counter] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=int)
             if counter == 'n_substeps':
                 self.counters[counter][:] = self.__substeps if not self.adaptive else -1
             else:
                 self.counters[counter][:] = -1
 
-        self.RH_max = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        self.RH_max = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
         self.RH_max[:] = np.nan
-        self.success = self.core.Storage.empty(self.core.mesh.n_cell, dtype=bool)
+        self.success = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=bool)
         self.success[:] = False
-        self.cell_order = np.arange(self.core.mesh.n_cell)
+        self.cell_order = np.arange(self.particulator.mesh.n_cell)
 
     def __call__(self):
         if self.enable:
@@ -71,7 +71,7 @@ class Condensation:
             else:
                 raise NotImplementedError()
 
-            self.core.condensation(
+            self.particulator.condensation(
                 rtol_x=self.rtol_x,
                 rtol_thd=self.rtol_thd,
                 counters=self.counters,
@@ -82,10 +82,10 @@ class Condensation:
             if not self.success.all():
                 raise RuntimeError("Condensation failed")
             # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
-            self.core.update_TpRH()
+            self.particulator.update_TpRH()
 
             if self.adaptive:
-                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[1]))
+                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.particulator.dt / self.dt_cond_range[1]))
                 if self.dt_cond_range[0] != 0:
-                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.core.dt / self.dt_cond_range[0]))
-            self.core.particles.attributes['volume'].mark_updated()
+                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.particulator.dt / self.dt_cond_range[0]))
+            self.particulator.particles.attributes['volume'].mark_updated()

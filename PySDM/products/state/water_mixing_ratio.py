@@ -27,9 +27,9 @@ class WaterMixingRatio(MomentProduct):
         result = self.buffer.copy()
         result[:] *= const.rho_w
         result[:] *= conc
-        result[:] /= self.core.mesh.dv
+        result[:] /= self.particulator.mesh.dv
 
-        self.download_to_buffer(self.core.environment['rhod'])
+        self.download_to_buffer(self.particulator.environment['rhod'])
         result[:] /= self.buffer
         const.convert_to(result, const.si.gram / const.si.kilogram)
         return result

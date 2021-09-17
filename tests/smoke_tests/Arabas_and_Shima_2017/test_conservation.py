@@ -10,13 +10,13 @@ from PySDM.backends import CPU, GPU
 
 
 def ql(simulation: Simulation):
-    droplet_volume = simulation.core.particles['volume'].to_ndarray()[0]
+    droplet_volume = simulation.particulator.particles['volume'].to_ndarray()[0]
 
-    droplet_number = simulation.core.particles['n'].to_ndarray()[0]
+    droplet_number = simulation.particulator.particles['n'].to_ndarray()[0]
 
     droplet_mass = droplet_number * droplet_volume * const.rho_w
 
-    env = simulation.core.environment
+    env = simulation.particulator.environment
     return droplet_mass / env.mass_of_dry_air
 
 
@@ -41,18 +41,18 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     qt0 = settings.q0 + ql(simulation)
 
     if scheme == 'BDF':
-        bdf.patch_core(simulation.core)
+        bdf.patch_particulator(simulation.particulator)
 
     # Act
-    simulation.core.products['S_max'].get()
+    simulation.particulator.products['S_max'].get()
     output = simulation.run()
 
     # Assert
-    qt = simulation.core.environment["qv"].to_ndarray() + ql(simulation)
+    qt = simulation.particulator.environment["qv"].to_ndarray() + ql(simulation)
     significant = 6 if scheme == 'GPU' else 14  # TODO #540
     np.testing.assert_approx_equal(qt, qt0, significant)
     if scheme != 'BDF':
-        assert simulation.core.products['S_max'].get() >= output['S'][-1]
+        assert simulation.particulator.products['S_max'].get() >= output['S'][-1]
 
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
@@ -68,7 +68,7 @@ def test_energy_conservation(settings_idx, mass_of_dry_air, coord):
         coord=coord
     )
     simulation = Simulation(settings)
-    env = simulation.core.environment
+    env = simulation.particulator.environment
     thd0 = env['thd']
 
     # Act

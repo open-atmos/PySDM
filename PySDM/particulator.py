@@ -1,5 +1,5 @@
 """
-The very class exposing `PySDM.core.Core.run()` method for launching simulations
+The very class exposing `PySDM.Particulator.run()` method for launching simulations
 """
 from PySDM.state.particles import Particles
 from PySDM.storages.index import make_Index
@@ -8,7 +8,7 @@ from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
 
 
-class Core:
+class Particulator:
 
     def __init__(self, n_sd, backend):
         assert isinstance(backend, object)

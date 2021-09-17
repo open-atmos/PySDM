@@ -13,10 +13,10 @@ class Time(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
 
     def get(self):
         return self.t
 
     def notify(self):
-        self.t += self.core.dt
+        self.t += self.particulator.dt

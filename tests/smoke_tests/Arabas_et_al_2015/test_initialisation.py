@@ -32,22 +32,22 @@ def test_initialisation(backend, plot=False):
 
     # Act (moments)
     simulation.run()
-    core = simulation.core
-    environment = simulation.core.environment
+    particulator = simulation.particulator
+    environment = simulation.particulator.environment
     rhod = environment["rhod"].to_ndarray().reshape(settings.grid).mean(axis=0)
 
     v_bins = settings.formulae.trivia.volume(settings.r_bins_edges)
 
     for i in range(len(histogram_dry)):
-        core.particles.moments(
+        particulator.particles.moments(
             moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (core.mesh.dv * settings.grid[0])
+        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
-        core.particles.moments(
+        particulator.particles.moments(
             moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (core.mesh.dv * settings.grid[0])
+        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
     # Plot
     if plot:

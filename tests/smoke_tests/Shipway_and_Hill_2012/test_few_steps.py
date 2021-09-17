@@ -22,7 +22,7 @@ def test_few_steps(backend, plot=False):
         for var in ('RH_env', 'S_max', 'T_env', 'qv_env', 'p_env', 'ql', 'ripening_rate', 'activating_rate', 'deactivating_rate'):
             pyplot.plot(profile(var), output['z'], linestyle='--', marker='o')
             pyplot.ylabel('Z [m]')
-            pyplot.xlabel(var + ' [' + simulation.core.products[var].unit + ']')
+            pyplot.xlabel(var + ' [' + simulation.particulator.products[var].unit + ']')
             pyplot.grid()
             pyplot.show()
 

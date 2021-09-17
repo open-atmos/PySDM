@@ -4,12 +4,12 @@ from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 class DryVolumeDynamic(DerivedAttribute):
     def __init__(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         self.moles_S_VI = builder.get_attribute('moles_S_VI')
         super().__init__(builder, name='dry volume', dependencies=(self.moles_S_VI,))
 
     def recalculate(self):
-        dynamic = self.core.dynamics['AqueousChemistry']
+        dynamic = self.particulator.dynamics['AqueousChemistry']
         self.data.data[:] = self.moles_S_VI.data.data[:]
         self.data.data[:] *= dynamic.dry_molar_mass / dynamic.dry_rho
 

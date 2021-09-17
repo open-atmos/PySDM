@@ -8,5 +8,5 @@ class CellID(CellAttribute):
 
     def recalculate(self):
         # TODO #443!
-        # self.core.particles.recalculate_cell_id()
+        # self.particulator.particles.recalculate_cell_id()
         pass

@@ -25,7 +25,7 @@ def test_event_rates(settings_idx):
     rip = np.asarray(output['ripening_rate'])
     act = np.asarray(output['activating_rate'])
     dea = np.asarray(output['deactivating_rate'])
-    act_max = np.full((1,), settings.n_in_dv / simulation.core.dt / rho_STP)
+    act_max = np.full((1,), settings.n_in_dv / simulation.particulator.dt / rho_STP)
     convert_to(act_max, 1/si.mg)
     assert (rip == 0).all()
     assert (act > 0).any()

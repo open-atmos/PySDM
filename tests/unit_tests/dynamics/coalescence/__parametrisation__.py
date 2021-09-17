@@ -3,7 +3,7 @@ import pytest
 
 from PySDM.dynamics.coalescence import Coalescence, default_dt_coal_range
 from PySDM.environments import Box
-from ....unit_tests.dummy_core import DummyCore
+from ....unit_tests.dummy_particulator import DummyParticulator
 
 
 class StubKernel:
@@ -38,13 +38,13 @@ def insert_zeros(array):
     return result
 
 
-def get_dummy_core_and_sdm(backend, n_length, optimized_random=False, environment=None, substeps=1):
-    core = DummyCore(backend, n_sd=n_length)
-    core.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
-    sdm = Coalescence(StubKernel(core.backend), optimized_random=optimized_random, substeps=substeps,
+def get_dummy_particulator_and_sdm(backend, n_length, optimized_random=False, environment=None, substeps=1):
+    particulator = DummyParticulator(backend, n_sd=n_length)
+    particulator.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
+    sdm = Coalescence(StubKernel(particulator.backend), optimized_random=optimized_random, substeps=substeps,
                       adaptive=False)
-    sdm.register(core)
-    return core, sdm
+    sdm.register(particulator)
+    return particulator, sdm
 
 
 '''
