@@ -191,7 +191,7 @@ class CondensationMethods():
         n_substeps = counters['n_substeps'][0]
         dv_mean = dv
 
-        success[:] = True  # TODO #528
+        success[:] = True  # TODO #588
         dvfloat = PrecisionResolver.get_floating_point
 
         self.__pre_for.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt), RH_max.data))
