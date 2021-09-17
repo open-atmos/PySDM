@@ -7,7 +7,7 @@ import numpy as np
 def test_dry_spectrum_x():
     settings = Settings()
     simulation = Simulation(settings)
-    dry_volume = simulation.particulator.particles['dry volume'].to_ndarray()
+    dry_volume = simulation.particulator.attributes['dry volume'].to_ndarray()
     rd = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
 
     rd = rd[::-1]
@@ -20,9 +20,9 @@ def test_dry_spectrum_x():
 def test_dry_spectrum_y(plot=False):
     settings = Settings()
     simulation = Simulation(settings)
-    dry_volume = simulation.particulator.particles['dry volume'].to_ndarray()
+    dry_volume = simulation.particulator.attributes['dry volume'].to_ndarray()
     rd = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
-    nd = simulation.particulator.particles['n'].to_ndarray()
+    nd = simulation.particulator.attributes['n'].to_ndarray()
 
     dr = (rd[1:] - rd[0:-1])
     env = simulation.particulator.environment
@@ -51,11 +51,11 @@ def test_wet_vs_dry_spectrum(plot=False):
 
     # Act
     simulation = Simulation(settings)
-    wet_volume = simulation.particulator.particles['volume'].to_ndarray()
+    wet_volume = simulation.particulator.attributes['volume'].to_ndarray()
     r_wet = simulation.formulae.trivia.radius(volume=wet_volume) / si.nanometre
-    n = simulation.particulator.particles['n'].to_ndarray()
+    n = simulation.particulator.attributes['n'].to_ndarray()
 
-    dry_volume = simulation.particulator.particles['dry volume'].to_ndarray()
+    dry_volume = simulation.particulator.attributes['dry volume'].to_ndarray()
     r_dry = simulation.formulae.trivia.radius(volume=dry_volume) / si.nanometre
 
     # Plot

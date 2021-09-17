@@ -42,15 +42,14 @@ class VTKExporter:
             print("Exporting Particles to vtk, path: " + path)
         payload = {}
 
-        particles = particulator.particles
-        for k in particles.attributes.keys():
-            if len(particles[k].shape) != 1:
-                tmp = particles[k].to_ndarray(raw=True)
-                tmp_dict = {k + '[' + str(i) + ']' : tmp[i] for i in range(len(particles[k].shape))}
+        for k in particulator.attributes.keys():
+            if len(particulator.attributes[k].shape) != 1:
+                tmp = particulator.attributes[k].to_ndarray(raw=True)
+                tmp_dict = {k + '[' + str(i) + ']' : tmp[i] for i in range(len(particulator.attributes[k].shape))}
 
                 payload.update(tmp_dict)
             else:
-                payload[k] = particles[k].to_ndarray(raw=True)
+                payload[k] = particulator.attributes[k].to_ndarray(raw=True)
 
         payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags['C_CONTIGUOUS'] or v.flags['F_CONTIGUOUS'])})
 

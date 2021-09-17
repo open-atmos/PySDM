@@ -9,7 +9,7 @@ class Golovin:
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.particles['volume'], is_first_in_pair)
+        output.sum(self.particulator.attributes['volume'], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):

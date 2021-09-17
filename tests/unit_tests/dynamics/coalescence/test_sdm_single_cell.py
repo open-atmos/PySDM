@@ -26,7 +26,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        particles = particulator.particles
+        particles = particulator.attributes
         a = particles['n'].to_ndarray()
         b = particles['volume'].to_ndarray()
         c = particles['temperature'].to_ndarray()
@@ -39,10 +39,10 @@ class TestSDMSingleCell:
         assert np.isin(round(new_T, 7), np.round(particles['temperature'].to_ndarray().astype(float), 7))
 
         assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray()) == np.sum(n_2 * v_2)
-        assert np.sum(particulator.particles['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
+        assert np.sum(particulator.attributes['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
         if np.amin(n_2) > 0:
-            assert np.amax(particulator.particles['volume'].to_ndarray()) == np.sum(v_2)
-        assert np.amax(particulator.particles['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+            assert np.amax(particulator.attributes['volume'].to_ndarray()) == np.sum(v_2)
+        assert np.amax(particulator.attributes['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
 
     @staticmethod
     @pytest.mark.parametrize("n_in, n_out", [
@@ -61,7 +61,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particulator.particles['n'].to_ndarray(raw=True)), sorted(n_out))
+        np.testing.assert_array_equal(sorted(particulator.attributes['n'].to_ndarray(raw=True)), sorted(n_out))
 
     @staticmethod
     @pytest.mark.parametrize("p", [
@@ -88,7 +88,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        state = particulator.particles
+        state = particulator.attributes
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
         assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray()) == np.sum(n_2 * v_2)
@@ -118,8 +118,8 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        assert np.amin(particulator.particles['n'].to_ndarray()) >= 0
-        assert np.sum(particulator.particles['n'].to_ndarray() * particulator.particles['volume'].to_ndarray()) == np.sum(n * v)
+        assert np.amin(particulator.attributes['n'].to_ndarray()) >= 0
+        assert np.sum(particulator.attributes['n'].to_ndarray() * particulator.attributes['volume'].to_ndarray()) == np.sum(n * v)
 
     @staticmethod
     def test_multi_step(backend):
@@ -141,11 +141,11 @@ class TestSDMSingleCell:
         # Act
         for _ in range(32):
             sut()
-            particulator.particles.sanitize()
+            particulator.attributes.sanitize()
 
         # Assert
-        assert np.amin(particulator.particles['n'].to_ndarray()) >= 0
-        actual = np.sum(particulator.particles['n'].to_ndarray() * particulator.particles['volume'].to_ndarray())
+        assert np.amin(particulator.attributes['n'].to_ndarray()) >= 0
+        actual = np.sum(particulator.attributes['n'].to_ndarray() * particulator.attributes['volume'].to_ndarray())
         desired = np.sum(n * v)
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 

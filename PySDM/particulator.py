@@ -17,7 +17,7 @@ class Particulator:
         self.backend = backend
         self.formulae = backend.formulae
         self.environment = None
-        self.particles: (Particles, None) = None
+        self.attributes: (Particles, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
@@ -67,8 +67,8 @@ class Particulator:
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob, self.particles['cell id'], self.particles.cell_idx,
-            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
+            prob, self.attributes['cell id'], self.attributes.cell_idx,
+            self.attributes.cell_start, norm_factor, self.dt, self.mesh.dv)
 
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
@@ -87,11 +87,11 @@ class Particulator:
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
-            cell_start_arg=self.particles.cell_start,
-            v=self.particles["volume"],
-            n=self.particles['n'],
-            vdry=self.particles["dry volume"],
-            idx=self.particles._Particles__idx,
+            cell_start_arg=self.attributes.cell_start,
+            v=self.attributes["volume"],
+            n=self.attributes['n'],
+            vdry=self.attributes["dry volume"],
+            idx=self.attributes._Particles__idx,
             rhod=self.env["rhod"],
             thd=self.env["thd"],
             qv=self.env["qv"],
@@ -99,17 +99,17 @@ class Particulator:
             prhod=self.env.get_predicted("rhod"),
             pthd=self.env.get_predicted("thd"),
             pqv=self.env.get_predicted("qv"),
-            kappa=self.particles["kappa"],
-            f_org=self.particles["dry volume organic fraction"],
+            kappa=self.attributes["kappa"],
+            f_org=self.attributes["dry volume organic fraction"],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
-            v_cr=self.particles["critical volume"],
+            v_cr=self.attributes["critical volume"],
             dt=self.dt,
             counters=counters,
             cell_order=cell_order,
             RH_max=RH_max,
             success=success,
-            cell_id=self.particles['cell id']
+            cell_id=self.attributes['cell id']
         )
 
     def run(self, steps):

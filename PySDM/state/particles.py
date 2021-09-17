@@ -70,6 +70,10 @@ class Particles:
         self.cell_idx.reset_index()
         self.__sort_by_cell_id()
 
+    @property
+    def keys(self):
+        return self.attributes.keys()
+
     def __getitem__(self, item):
         return self.attributes[item].get()
 
@@ -158,14 +162,14 @@ class Particles:
                                           is_first_in_pair=is_first_in_pair
                                           )
         self.healthy = bool(self.__healthy_memory)
-        self.particulator.particles.sanitize()
+        self.particulator.attributes.sanitize()
         self.attributes['n'].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
-        return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.particles.cell_start)
+        return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.attributes.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.attributes

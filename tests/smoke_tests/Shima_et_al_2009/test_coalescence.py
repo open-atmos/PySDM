@@ -61,8 +61,8 @@ def test_coalescence(backend, croupier, adaptive):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        check(n_part, dv, n_sd, rho, particulator.particles, step)
-        volumes[particulator.n_steps] = particulator.particles['volume'].to_ndarray()
+        check(n_part, dv, n_sd, rho, particulator.attributes, step)
+        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
 
     # Assert
     x_max = 0

@@ -28,14 +28,14 @@ def test_calc_ionic_strength(nt, n_sd):
 
     simulation.run()
 
-    H = simulation.particulator.particles['conc_N_mIII'].data
+    H = simulation.particulator.attributes['conc_N_mIII'].data
     conc = {
         'H+': H,
-        'N-3': simulation.particulator.particles['conc_N_mIII'].data,
-        'N+5': simulation.particulator.particles['conc_N_V'].data,
-        'S+4': simulation.particulator.particles['conc_S_IV'].data,
-        'S+6': simulation.particulator.particles['conc_S_VI'].data,
-        'C+4': simulation.particulator.particles['conc_C_IV'].data,
+        'N-3': simulation.particulator.attributes['conc_N_mIII'].data,
+        'N+5': simulation.particulator.attributes['conc_N_V'].data,
+        'S+4': simulation.particulator.attributes['conc_S_IV'].data,
+        'S+6': simulation.particulator.attributes['conc_S_VI'].data,
+        'C+4': simulation.particulator.attributes['conc_C_IV'].data,
     }
 
     alpha_C = (1 + K_CO2 / conc['H+'] + K_CO2 * K_HCO3 / conc['H+'] ** 2)

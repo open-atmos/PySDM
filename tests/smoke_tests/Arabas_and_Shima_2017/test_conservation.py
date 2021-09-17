@@ -10,9 +10,9 @@ from PySDM.backends import CPU, GPU
 
 
 def ql(simulation: Simulation):
-    droplet_volume = simulation.particulator.particles['volume'].to_ndarray()[0]
+    droplet_volume = simulation.particulator.attributes['volume'].to_ndarray()[0]
 
-    droplet_number = simulation.particulator.particles['n'].to_ndarray()[0]
+    droplet_number = simulation.particulator.attributes['n'].to_ndarray()[0]
 
     droplet_mass = droplet_number * droplet_volume * const.rho_w
 
