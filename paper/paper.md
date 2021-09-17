@@ -145,7 +145,7 @@ In the above snippet, the `si` is an instance of the `FakeUnitRegistry` class.
 The exponential distribution of particle volumes is sampled at $2^{17}$ points 
   in order to initialise two key attributes of the super-droplets, namely their volume and multiplicity. 
 Subsequently, a `Builder` object is created to orchestrate dependency injection while instantiating
-  the `Core` class of `PySDM`:
+  the `Particulator` class of `PySDM`:
 
 ```python
 import numpy as np
@@ -163,13 +163,13 @@ builder = Builder(n_sd=n_sd, backend=CPU)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)]
-core = builder.build(attributes, products)
+particulator = builder.build(attributes, products)
 ```
 
 The `backend` argument may be set to either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
 The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
 The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of v1.3 represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
-Finally, the `build()` method is used to obtain an instance of the `Core` class which can then be used to control time-stepping and access simulation state
+Finally, the `build()` method is used to obtain an instance of the `Particulator` class which can then be used to control time-stepping and access simulation state
   through the products registered with the builder.
 A minimal simulation example is depicted below with a code snippet and a resultant plot (\autoref{fig:readme_fig_1}):
 
@@ -178,10 +178,10 @@ from PySDM.physics.constants import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
-    core.run(step - core.n_steps)
+    particulator.run(step - particulator.n_steps)
     pyplot.step(
         x=radius_bins_edges[:-1] / si.um,
-        y=core.products['dv/dlnr'].get()[0] * rho_w/si.g,
+        y=particulator.products['dv/dlnr'].get()[0] * rho_w/si.g,
         where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
