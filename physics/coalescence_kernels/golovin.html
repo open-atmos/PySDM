@@ -37,7 +37,7 @@ class Golovin:
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.particles[&#39;volume&#39;], is_first_in_pair)
+        output.sum(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):
@@ -92,7 +92,7 @@ class Golovin:
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.particles[&#39;volume&#39;], is_first_in_pair)
+        output.sum(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):

@@ -101,7 +101,7 @@ class Builder:
         attributes[&#39;n&#39;] = int_caster(attributes[&#39;n&#39;])
         if self.particulator.mesh.dimension == 0:
             attributes[&#39;cell id&#39;] = np.zeros_like(attributes[&#39;n&#39;], dtype=np.int64)
-        self.particulator.particles = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
+        self.particulator.attributes = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
 
         for key in self.particulator.dynamics.keys():
             self.particulator.timers[key] = WallTimer()
@@ -207,7 +207,7 @@ def assert_none(*params):
         attributes[&#39;n&#39;] = int_caster(attributes[&#39;n&#39;])
         if self.particulator.mesh.dimension == 0:
             attributes[&#39;cell id&#39;] = np.zeros_like(attributes[&#39;n&#39;], dtype=np.int64)
-        self.particulator.particles = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
+        self.particulator.attributes = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
 
         for key in self.particulator.dynamics.keys():
             self.particulator.timers[key] = WallTimer()
@@ -256,7 +256,7 @@ def assert_none(*params):
     attributes[&#39;n&#39;] = int_caster(attributes[&#39;n&#39;])
     if self.particulator.mesh.dimension == 0:
         attributes[&#39;cell id&#39;] = np.zeros_like(attributes[&#39;n&#39;], dtype=np.int64)
-    self.particulator.particles = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
+    self.particulator.attributes = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
 
     for key in self.particulator.dynamics.keys():
         self.particulator.timers[key] = WallTimer()

@@ -56,23 +56,23 @@
 
         if self.singular:
             self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.particles[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.particles[&#39;volume&#39;],
+                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
+                v_wet=self.particulator.attributes[&#39;volume&#39;],
                 T=self.particulator.environment[&#39;T&#39;],
                 RH=self.particulator.environment[&#39;RH&#39;],
-                cell=self.particulator.particles[&#39;cell id&#39;]
+                cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
             self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.particles[&#39;immersed surface area&#39;],
-                volume=self.particulator.particles[&#39;volume&#39;],
+                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                volume=self.particulator.attributes[&#39;volume&#39;],
                 J_het=self.J_het,
                 dt=self.particulator.dt
             )
 
-        self.particulator.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.attributes.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 </section>
 <section>
@@ -124,23 +124,23 @@
 
         if self.singular:
             self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.particles[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.particles[&#39;volume&#39;],
+                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
+                v_wet=self.particulator.attributes[&#39;volume&#39;],
                 T=self.particulator.environment[&#39;T&#39;],
                 RH=self.particulator.environment[&#39;RH&#39;],
-                cell=self.particulator.particles[&#39;cell id&#39;]
+                cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
             self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.particles[&#39;immersed surface area&#39;],
-                volume=self.particulator.particles[&#39;volume&#39;],
+                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                volume=self.particulator.attributes[&#39;volume&#39;],
                 J_het=self.J_het,
                 dt=self.particulator.dt
             )
 
-        self.particulator.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.attributes.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>

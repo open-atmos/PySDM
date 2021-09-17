@@ -46,7 +46,7 @@ class Particulator:
         self.backend = backend
         self.formulae = backend.formulae
         self.environment = None
-        self.particles: (Particles, None) = None
+        self.attributes: (Particles, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
@@ -96,8 +96,8 @@ class Particulator:
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob, self.particles[&#39;cell id&#39;], self.particles.cell_idx,
-            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
+            prob, self.attributes[&#39;cell id&#39;], self.attributes.cell_idx,
+            self.attributes.cell_start, norm_factor, self.dt, self.mesh.dv)
 
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
@@ -116,11 +116,11 @@ class Particulator:
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
-            cell_start_arg=self.particles.cell_start,
-            v=self.particles[&#34;volume&#34;],
-            n=self.particles[&#39;n&#39;],
-            vdry=self.particles[&#34;dry volume&#34;],
-            idx=self.particles._Particles__idx,
+            cell_start_arg=self.attributes.cell_start,
+            v=self.attributes[&#34;volume&#34;],
+            n=self.attributes[&#39;n&#39;],
+            vdry=self.attributes[&#34;dry volume&#34;],
+            idx=self.attributes._Particles__idx,
             rhod=self.env[&#34;rhod&#34;],
             thd=self.env[&#34;thd&#34;],
             qv=self.env[&#34;qv&#34;],
@@ -128,17 +128,17 @@ class Particulator:
             prhod=self.env.get_predicted(&#34;rhod&#34;),
             pthd=self.env.get_predicted(&#34;thd&#34;),
             pqv=self.env.get_predicted(&#34;qv&#34;),
-            kappa=self.particles[&#34;kappa&#34;],
-            f_org=self.particles[&#34;dry volume organic fraction&#34;],
+            kappa=self.attributes[&#34;kappa&#34;],
+            f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
-            v_cr=self.particles[&#34;critical volume&#34;],
+            v_cr=self.attributes[&#34;critical volume&#34;],
             dt=self.dt,
             counters=counters,
             cell_order=cell_order,
             RH_max=RH_max,
             success=success,
-            cell_id=self.particles[&#39;cell id&#39;]
+            cell_id=self.attributes[&#39;cell id&#39;]
         )
 
     def run(self, steps):
@@ -183,7 +183,7 @@ class Particulator:
         self.backend = backend
         self.formulae = backend.formulae
         self.environment = None
-        self.particles: (Particles, None) = None
+        self.attributes: (Particles, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
@@ -233,8 +233,8 @@ class Particulator:
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob, self.particles[&#39;cell id&#39;], self.particles.cell_idx,
-            self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)
+            prob, self.attributes[&#39;cell id&#39;], self.attributes.cell_idx,
+            self.attributes.cell_start, norm_factor, self.dt, self.mesh.dv)
 
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
@@ -253,11 +253,11 @@ class Particulator:
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
-            cell_start_arg=self.particles.cell_start,
-            v=self.particles[&#34;volume&#34;],
-            n=self.particles[&#39;n&#39;],
-            vdry=self.particles[&#34;dry volume&#34;],
-            idx=self.particles._Particles__idx,
+            cell_start_arg=self.attributes.cell_start,
+            v=self.attributes[&#34;volume&#34;],
+            n=self.attributes[&#39;n&#39;],
+            vdry=self.attributes[&#34;dry volume&#34;],
+            idx=self.attributes._Particles__idx,
             rhod=self.env[&#34;rhod&#34;],
             thd=self.env[&#34;thd&#34;],
             qv=self.env[&#34;qv&#34;],
@@ -265,17 +265,17 @@ class Particulator:
             prhod=self.env.get_predicted(&#34;rhod&#34;),
             pthd=self.env.get_predicted(&#34;thd&#34;),
             pqv=self.env.get_predicted(&#34;qv&#34;),
-            kappa=self.particles[&#34;kappa&#34;],
-            f_org=self.particles[&#34;dry volume organic fraction&#34;],
+            kappa=self.attributes[&#34;kappa&#34;],
+            f_org=self.attributes[&#34;dry volume organic fraction&#34;],
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
-            v_cr=self.particles[&#34;critical volume&#34;],
+            v_cr=self.attributes[&#34;critical volume&#34;],
             dt=self.dt,
             counters=counters,
             cell_order=cell_order,
             RH_max=RH_max,
             success=success,
-            cell_id=self.particles[&#39;cell id&#39;]
+            cell_id=self.attributes[&#39;cell id&#39;]
         )
 
     def run(self, steps):
@@ -395,11 +395,11 @@ def n_sd(self) -&gt; int:
     self.backend.condensation(
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
-        cell_start_arg=self.particles.cell_start,
-        v=self.particles[&#34;volume&#34;],
-        n=self.particles[&#39;n&#39;],
-        vdry=self.particles[&#34;dry volume&#34;],
-        idx=self.particles._Particles__idx,
+        cell_start_arg=self.attributes.cell_start,
+        v=self.attributes[&#34;volume&#34;],
+        n=self.attributes[&#39;n&#39;],
+        vdry=self.attributes[&#34;dry volume&#34;],
+        idx=self.attributes._Particles__idx,
         rhod=self.env[&#34;rhod&#34;],
         thd=self.env[&#34;thd&#34;],
         qv=self.env[&#34;qv&#34;],
@@ -407,17 +407,17 @@ def n_sd(self) -&gt; int:
         prhod=self.env.get_predicted(&#34;rhod&#34;),
         pthd=self.env.get_predicted(&#34;thd&#34;),
         pqv=self.env.get_predicted(&#34;qv&#34;),
-        kappa=self.particles[&#34;kappa&#34;],
-        f_org=self.particles[&#34;dry volume organic fraction&#34;],
+        kappa=self.attributes[&#34;kappa&#34;],
+        f_org=self.attributes[&#34;dry volume organic fraction&#34;],
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
-        v_cr=self.particles[&#34;critical volume&#34;],
+        v_cr=self.attributes[&#34;critical volume&#34;],
         dt=self.dt,
         counters=counters,
         cell_order=cell_order,
         RH_max=RH_max,
         success=success,
-        cell_id=self.particles[&#39;cell id&#39;]
+        cell_id=self.attributes[&#39;cell id&#39;]
     )</code></pre>
 </details>
 </dd>
@@ -432,8 +432,8 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def normalize(self, prob, norm_factor):
     self.backend.normalize(
-        prob, self.particles[&#39;cell id&#39;], self.particles.cell_idx,
-        self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)</code></pre>
+        prob, self.attributes[&#39;cell id&#39;], self.attributes.cell_idx,
+        self.attributes.cell_start, norm_factor, self.dt, self.mesh.dv)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.run"><code class="name flex">
