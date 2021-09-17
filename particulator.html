@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.core API documentation</title>
-<meta name="description" content="The very class exposing `PySDM.core.Core.run()` method for launching simulations" />
+<title>PySDM.particulator API documentation</title>
+<meta name="description" content="The very class exposing `PySDM.Particulator.run()` method for launching simulations" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,16 +19,16 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.core</code></h1>
+<h1 class="title">Module <code>PySDM.particulator</code></h1>
 </header>
 <section id="section-intro">
-<p>The very class exposing <code><a title="PySDM.core.Core.run" href="#PySDM.core.Core.run">Core.run()</a></code> method for launching simulations</p>
+<p>The very class exposing <code>PySDM.Particulator.run()</code> method for launching simulations</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-The very class exposing `PySDM.core.Core.run()` method for launching simulations
+The very class exposing `PySDM.Particulator.run()` method for launching simulations
 &#34;&#34;&#34;
 from PySDM.state.particles import Particles
 from PySDM.storages.index import make_Index
@@ -37,7 +37,7 @@ from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
 
 
-class Core:
+class Particulator:
 
     def __init__(self, n_sd, backend):
         assert isinstance(backend, object)
@@ -164,8 +164,8 @@ class Core:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.core.Core"><code class="flex name class">
-<span>class <span class="ident">Core</span></span>
+<dt id="PySDM.particulator.Particulator"><code class="flex name class">
+<span>class <span class="ident">Particulator</span></span>
 <span>(</span><span>n_sd, backend)</span>
 </code></dt>
 <dd>
@@ -174,7 +174,7 @@ class Core:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Core:
+<pre><code class="python">class Particulator:
 
     def __init__(self, n_sd, backend):
         assert isinstance(backend, object)
@@ -293,7 +293,7 @@ class Core:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="PySDM.core.Core.Random"><code class="name">var <span class="ident">Random</span></code></dt>
+<dt id="PySDM.particulator.Particulator.Random"><code class="name">var <span class="ident">Random</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -305,7 +305,7 @@ def Random(self):
     return self.backend.Random</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
+<dt id="PySDM.particulator.Particulator.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -317,7 +317,7 @@ def Storage(self):
     return self.backend.Storage</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.bck"><code class="name">var <span class="ident">bck</span></code></dt>
+<dt id="PySDM.particulator.Particulator.bck"><code class="name">var <span class="ident">bck</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -329,7 +329,7 @@ def bck(self):
     return self.backend</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.dt"><code class="name">var <span class="ident">dt</span> : float</code></dt>
+<dt id="PySDM.particulator.Particulator.dt"><code class="name">var <span class="ident">dt</span> : float</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -342,7 +342,7 @@ def dt(self) -&gt; float:
         return self.environment.dt</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.env"><code class="name">var <span class="ident">env</span></code></dt>
+<dt id="PySDM.particulator.Particulator.env"><code class="name">var <span class="ident">env</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -354,7 +354,7 @@ def env(self):
     return self.environment</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.mesh"><code class="name">var <span class="ident">mesh</span></code></dt>
+<dt id="PySDM.particulator.Particulator.mesh"><code class="name">var <span class="ident">mesh</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -367,7 +367,7 @@ def mesh(self):
         return self.environment.mesh</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.n_sd"><code class="name">var <span class="ident">n_sd</span> : int</code></dt>
+<dt id="PySDM.particulator.Particulator.n_sd"><code class="name">var <span class="ident">n_sd</span> : int</code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -382,7 +382,7 @@ def n_sd(self) -&gt; int:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.core.Core.condensation"><code class="name flex">
+<dt id="PySDM.particulator.Particulator.condensation"><code class="name flex">
 <span>def <span class="ident">condensation</span></span>(<span>self, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
 </code></dt>
 <dd>
@@ -421,7 +421,7 @@ def n_sd(self) -&gt; int:
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.normalize"><code class="name flex">
+<dt id="PySDM.particulator.Particulator.normalize"><code class="name flex">
 <span>def <span class="ident">normalize</span></span>(<span>self, prob, norm_factor)</span>
 </code></dt>
 <dd>
@@ -436,7 +436,7 @@ def n_sd(self) -&gt; int:
         self.particles.cell_start, norm_factor, self.dt, self.mesh.dv)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.run"><code class="name flex">
+<dt id="PySDM.particulator.Particulator.run"><code class="name flex">
 <span>def <span class="ident">run</span></span>(<span>self, steps)</span>
 </code></dt>
 <dd>
@@ -454,7 +454,7 @@ def n_sd(self) -&gt; int:
         self._notify_observers()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.core.Core.update_TpRH"><code class="name flex">
+<dt id="PySDM.particulator.Particulator.update_TpRH"><code class="name flex">
 <span>def <span class="ident">update_TpRH</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -496,19 +496,19 @@ def n_sd(self) -&gt; int:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.core.Core" href="#PySDM.core.Core">Core</a></code></h4>
+<h4><code><a title="PySDM.particulator.Particulator" href="#PySDM.particulator.Particulator">Particulator</a></code></h4>
 <ul class="two-column">
-<li><code><a title="PySDM.core.Core.Random" href="#PySDM.core.Core.Random">Random</a></code></li>
-<li><code><a title="PySDM.core.Core.Storage" href="#PySDM.core.Core.Storage">Storage</a></code></li>
-<li><code><a title="PySDM.core.Core.bck" href="#PySDM.core.Core.bck">bck</a></code></li>
-<li><code><a title="PySDM.core.Core.condensation" href="#PySDM.core.Core.condensation">condensation</a></code></li>
-<li><code><a title="PySDM.core.Core.dt" href="#PySDM.core.Core.dt">dt</a></code></li>
-<li><code><a title="PySDM.core.Core.env" href="#PySDM.core.Core.env">env</a></code></li>
-<li><code><a title="PySDM.core.Core.mesh" href="#PySDM.core.Core.mesh">mesh</a></code></li>
-<li><code><a title="PySDM.core.Core.n_sd" href="#PySDM.core.Core.n_sd">n_sd</a></code></li>
-<li><code><a title="PySDM.core.Core.normalize" href="#PySDM.core.Core.normalize">normalize</a></code></li>
-<li><code><a title="PySDM.core.Core.run" href="#PySDM.core.Core.run">run</a></code></li>
-<li><code><a title="PySDM.core.Core.update_TpRH" href="#PySDM.core.Core.update_TpRH">update_TpRH</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.Random" href="#PySDM.particulator.Particulator.Random">Random</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.Storage" href="#PySDM.particulator.Particulator.Storage">Storage</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.bck" href="#PySDM.particulator.Particulator.bck">bck</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.condensation" href="#PySDM.particulator.Particulator.condensation">condensation</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.dt" href="#PySDM.particulator.Particulator.dt">dt</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.env" href="#PySDM.particulator.Particulator.env">env</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.mesh" href="#PySDM.particulator.Particulator.mesh">mesh</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.n_sd" href="#PySDM.particulator.Particulator.n_sd">n_sd</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.normalize" href="#PySDM.particulator.Particulator.normalize">normalize</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.run" href="#PySDM.particulator.Particulator.run">run</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.update_TpRH" href="#PySDM.particulator.Particulator.update_TpRH">update_TpRH</a></code></li>
 </ul>
 </li>
 </ul>

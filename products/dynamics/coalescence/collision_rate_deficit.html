@@ -40,7 +40,7 @@ class CollisionRateDeficit(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.core.dynamics[&#39;Coalescence&#39;]
+        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
 
     def get(self):  # TODO #345 take into account NUMBER of substeps (?)
         self.download_to_buffer(self.coalescence.collision_rate_deficit)
@@ -77,7 +77,7 @@ class CollisionRateDeficit(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.core.dynamics[&#39;Coalescence&#39;]
+        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
 
     def get(self):  # TODO #345 take into account NUMBER of substeps (?)
         self.download_to_buffer(self.coalescence.collision_rate_deficit)
@@ -116,7 +116,7 @@ class CollisionRateDeficit(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.coalescence = self.core.dynamics[&#39;Coalescence&#39;]</code></pre>
+    self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]</code></pre>
 </details>
 </dd>
 </dl>

@@ -42,7 +42,7 @@ class AqueousMoleFraction(MomentProduct):
 
     def register(self, builder):
         super().register(builder)
-        self.aqueous_chemistry = self.core.dynamics[&#39;AqueousChemistry&#39;]
+        self.aqueous_chemistry = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
 
     def get(self):
         attr = &#39;moles_&#39; + self.key
@@ -55,8 +55,8 @@ class AqueousMoleFraction(MomentProduct):
         tmp[:] *= conc
         tmp[:] *= 44 * Md
 
-        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-        tmp[:] /= self.core.mesh.dv
+        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        tmp[:] /= self.particulator.mesh.dv
         tmp[:] /= self.buffer
         tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
         convert_to(tmp, ppb)
@@ -94,7 +94,7 @@ class AqueousMoleFraction(MomentProduct):
 
     def register(self, builder):
         super().register(builder)
-        self.aqueous_chemistry = self.core.dynamics[&#39;AqueousChemistry&#39;]
+        self.aqueous_chemistry = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
 
     def get(self):
         attr = &#39;moles_&#39; + self.key
@@ -107,8 +107,8 @@ class AqueousMoleFraction(MomentProduct):
         tmp[:] *= conc
         tmp[:] *= 44 * Md
 
-        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-        tmp[:] /= self.core.mesh.dv
+        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        tmp[:] /= self.particulator.mesh.dv
         tmp[:] /= self.buffer
         tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
         convert_to(tmp, ppb)
@@ -141,8 +141,8 @@ class AqueousMoleFraction(MomentProduct):
     tmp[:] *= conc
     tmp[:] *= 44 * Md
 
-    self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
-    tmp[:] /= self.core.mesh.dv
+    self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+    tmp[:] /= self.particulator.mesh.dv
     tmp[:] /= self.buffer
     tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
     convert_to(tmp, ppb)
@@ -160,7 +160,7 @@ class AqueousMoleFraction(MomentProduct):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.aqueous_chemistry = self.core.dynamics[&#39;AqueousChemistry&#39;]</code></pre>
+    self.aqueous_chemistry = self.particulator.dynamics[&#39;AqueousChemistry&#39;]</code></pre>
 </details>
 </dd>
 </dl>

@@ -36,29 +36,29 @@ from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 class Particles:
 
     def __init__(
-            self, core,
+            self, particulator,
             idx,
             extensive_attributes,
             extensive_keys: dict,
             cell_start,
             attributes: Dict[str, Attribute]
     ):
-        self.core = core
+        self.particulator = particulator
 
-        self.__n_sd = core.n_sd
-        self.__valid_n_sd = core.n_sd
+        self.__n_sd = particulator.n_sd
+        self.__valid_n_sd = particulator.n_sd
         self.healthy = True
-        self.__healthy_memory = self.core.Storage.from_ndarray(np.full((1,), 1))
+        self.__healthy_memory = self.particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
-        self.__strides = self.core.Storage.from_ndarray(self.core.mesh.strides)
+        self.__strides = self.particulator.Storage.from_ndarray(self.particulator.mesh.strides)
 
         self.extensive_attributes = extensive_attributes
         self.extensive_keys = extensive_keys
 
-        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
-        self.__cell_start = self.core.Storage.from_ndarray(cell_start)
-        self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
-                                                                  scheme=core.sorting_scheme)
+        self.cell_idx = self.particulator.Index.identity_index(len(cell_start) - 1)
+        self.__cell_start = self.particulator.Storage.from_ndarray(cell_start)
+        self.__cell_caretaker = self.particulator.bck.make_cell_caretaker(self.__idx, self.__cell_start,
+                                                                          scheme=particulator.sorting_scheme)
         self.__sorted = False
         self.attributes = attributes
 
@@ -125,11 +125,11 @@ class Particles:
         if &#39;cell origin&#39; not in self.attributes:
             return
         else:
-            self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+            self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
+        self.particulator.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
@@ -140,75 +140,75 @@ class Particles:
                 ranks.append(rank)
         assert len(set(attr_data)) &lt;= 1
         if len(attr_data) == 0:
-            attr_data = self.core.backend.Storage.empty((0,), dtype=float)
+            attr_data = self.particulator.backend.Storage.empty((0,), dtype=float)
         else:
             attr_data = attr_data[0]
 
-        ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+        ranks = self.particulator.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
 
-        self.core.bck.moments(moment_0,
-                              moments,
-                              self[&#39;n&#39;],
-                              attr_data,
-                              self[&#39;cell id&#39;],
-                              self.__idx,
-                              self.SD_num,
-                              ranks,
-                              attr_range[0], attr_range[1],
-                              self[attr_name],
-                              weighting_attribute=self[weighting_attribute],
-                              weighting_rank=weighting_rank
-                              )
+        self.particulator.bck.moments(moment_0,
+                                      moments,
+                                      self[&#39;n&#39;],
+                                      attr_data,
+                                      self[&#39;cell id&#39;],
+                                      self.__idx,
+                                      self.SD_num,
+                                      ranks,
+                                      attr_range[0], attr_range[1],
+                                      self[attr_name],
+                                      weighting_attribute=self[weighting_attribute],
+                                      weighting_rank=weighting_rank
+                                      )
 
     def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
                          weighting_attribute=&#39;volume&#39;, weighting_rank=0):
         attr_data = self.attributes[attr].get()
-        self.core.bck.spectrum_moments(moment_0,
-                                       moments,
-                                       self[&#39;n&#39;],
-                                       attr_data,
-                                       self[&#39;cell id&#39;],
-                                       self.__idx,
-                                       self.SD_num,
-                                       rank,
-                                       attr_bins,
-                                       self[attr_name],
-                                       weighting_attribute=self[weighting_attribute],
-                                       weighting_rank=weighting_rank
-                                       )
+        self.particulator.bck.spectrum_moments(moment_0,
+                                               moments,
+                                               self[&#39;n&#39;],
+                                               attr_data,
+                                               self[&#39;cell id&#39;],
+                                               self.__idx,
+                                               self.SD_num,
+                                               rank,
+                                               attr_bins,
+                                               self[attr_name],
+                                               weighting_attribute=self[weighting_attribute],
+                                               weighting_rank=weighting_rank
+                                               )
 
     def coalescence(self, gamma, is_first_in_pair):
-        self.core.bck.coalescence(n=self[&#39;n&#39;],
-                                  idx=self.__idx,
-                                  attributes=self.get_extensive_attrs(),
-                                  gamma=gamma,
-                                  healthy=self.__healthy_memory,
-                                  is_first_in_pair=is_first_in_pair
-                                  )
+        self.particulator.bck.coalescence(n=self[&#39;n&#39;],
+                                          idx=self.__idx,
+                                          attributes=self.get_extensive_attrs(),
+                                          gamma=gamma,
+                                          healthy=self.__healthy_memory,
+                                          is_first_in_pair=is_first_in_pair
+                                          )
         self.healthy = bool(self.__healthy_memory)
-        self.core.particles.sanitize()
+        self.particulator.particles.sanitize()
         self.attributes[&#39;n&#39;].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
-        return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
+        return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.particles.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.attributes
 
     def remove_precipitated(self) -&gt; float:
-        res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
-                                              self[&#39;volume&#39;], self[&#39;n&#39;],
-                                              self.__idx, self.SD_num, self.__healthy_memory)
+        res = self.particulator.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                                      self[&#39;volume&#39;], self[&#39;n&#39;],
+                                                      self.__idx, self.SD_num, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
 
     def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
-        self.core.bck.oxidation(
-            n_sd=self.core.n_sd,
+        self.particulator.bck.oxidation(
+            n_sd=self.particulator.n_sd,
             cell_ids=self[&#39;cell id&#39;],
             do_chemistry_flag=do_chemistry_flag,
             k0=kinetic_consts[&#34;k0&#34;],
@@ -235,21 +235,21 @@ class Particles:
 
     def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
                     environment_mixing_ratios, do_chemistry_flag):
-        self.core.bck.dissolution(
-            n_cell=self.core.mesh.n_cell,
+        self.particulator.bck.dissolution(
+            n_cell=self.particulator.mesh.n_cell,
             n_threads=1,
-            cell_order=np.arange(self.core.mesh.n_cell),
+            cell_order=np.arange(self.particulator.mesh.n_cell),
             cell_start_arg=self.cell_start,
             idx=self._Particles__idx,
             do_chemistry_flag=do_chemistry_flag,
             mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
             # note: assuming condensation was called
-            env_p=self.core.env.get_predicted(&#39;p&#39;),
-            env_T=self.core.env.get_predicted(&#39;T&#39;),
-            env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+            env_p=self.particulator.env.get_predicted(&#39;p&#39;),
+            env_T=self.particulator.env.get_predicted(&#39;T&#39;),
+            env_rho_d=self.particulator.env.get_predicted(&#39;rhod&#39;),
             dt=dt,
-            dv=self.core.mesh.dv,
+            dv=self.particulator.mesh.dv,
             droplet_volume=self[&#34;volume&#34;],
             multiplicity=self[&#34;n&#34;],
             system_type=system_type,
@@ -259,14 +259,14 @@ class Particles:
             self.attributes[f&#39;moles_{key}&#39;].mark_updated()
 
     def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
-        self.core.bck.chem_recalculate_cell_data(
+        self.particulator.bck.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
-            T=self.core.env.get_predicted(&#39;T&#39;)
+            T=self.particulator.env.get_predicted(&#39;T&#39;)
         )
 
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
-        self.core.bck.chem_recalculate_drop_data(
+        self.particulator.bck.chem_recalculate_drop_data(
             dissociation_factors=dissociation_factors,
             equilibrium_consts=equilibrium_consts,
             pH=self[&#39;pH&#39;],
@@ -285,7 +285,7 @@ class Particles:
 <dl>
 <dt id="PySDM.state.particles.Particles"><code class="flex name class">
 <span>class <span class="ident">Particles</span></span>
-<span>(</span><span>core, idx, extensive_attributes, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
+<span>(</span><span>particulator, idx, extensive_attributes, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -296,29 +296,29 @@ class Particles:
 <pre><code class="python">class Particles:
 
     def __init__(
-            self, core,
+            self, particulator,
             idx,
             extensive_attributes,
             extensive_keys: dict,
             cell_start,
             attributes: Dict[str, Attribute]
     ):
-        self.core = core
+        self.particulator = particulator
 
-        self.__n_sd = core.n_sd
-        self.__valid_n_sd = core.n_sd
+        self.__n_sd = particulator.n_sd
+        self.__valid_n_sd = particulator.n_sd
         self.healthy = True
-        self.__healthy_memory = self.core.Storage.from_ndarray(np.full((1,), 1))
+        self.__healthy_memory = self.particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
-        self.__strides = self.core.Storage.from_ndarray(self.core.mesh.strides)
+        self.__strides = self.particulator.Storage.from_ndarray(self.particulator.mesh.strides)
 
         self.extensive_attributes = extensive_attributes
         self.extensive_keys = extensive_keys
 
-        self.cell_idx = self.core.Index.identity_index(len(cell_start) - 1)
-        self.__cell_start = self.core.Storage.from_ndarray(cell_start)
-        self.__cell_caretaker = self.core.bck.make_cell_caretaker(self.__idx, self.__cell_start,
-                                                                  scheme=core.sorting_scheme)
+        self.cell_idx = self.particulator.Index.identity_index(len(cell_start) - 1)
+        self.__cell_start = self.particulator.Storage.from_ndarray(cell_start)
+        self.__cell_caretaker = self.particulator.bck.make_cell_caretaker(self.__idx, self.__cell_start,
+                                                                          scheme=particulator.sorting_scheme)
         self.__sorted = False
         self.attributes = attributes
 
@@ -385,11 +385,11 @@ class Particles:
         if &#39;cell origin&#39; not in self.attributes:
             return
         else:
-            self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+            self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
+        self.particulator.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
 
     def moments(self, moment_0, moments, specs: dict, attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
@@ -400,75 +400,75 @@ class Particles:
                 ranks.append(rank)
         assert len(set(attr_data)) &lt;= 1
         if len(attr_data) == 0:
-            attr_data = self.core.backend.Storage.empty((0,), dtype=float)
+            attr_data = self.particulator.backend.Storage.empty((0,), dtype=float)
         else:
             attr_data = attr_data[0]
 
-        ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+        ranks = self.particulator.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
 
-        self.core.bck.moments(moment_0,
-                              moments,
-                              self[&#39;n&#39;],
-                              attr_data,
-                              self[&#39;cell id&#39;],
-                              self.__idx,
-                              self.SD_num,
-                              ranks,
-                              attr_range[0], attr_range[1],
-                              self[attr_name],
-                              weighting_attribute=self[weighting_attribute],
-                              weighting_rank=weighting_rank
-                              )
+        self.particulator.bck.moments(moment_0,
+                                      moments,
+                                      self[&#39;n&#39;],
+                                      attr_data,
+                                      self[&#39;cell id&#39;],
+                                      self.__idx,
+                                      self.SD_num,
+                                      ranks,
+                                      attr_range[0], attr_range[1],
+                                      self[attr_name],
+                                      weighting_attribute=self[weighting_attribute],
+                                      weighting_rank=weighting_rank
+                                      )
 
     def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
                          weighting_attribute=&#39;volume&#39;, weighting_rank=0):
         attr_data = self.attributes[attr].get()
-        self.core.bck.spectrum_moments(moment_0,
-                                       moments,
-                                       self[&#39;n&#39;],
-                                       attr_data,
-                                       self[&#39;cell id&#39;],
-                                       self.__idx,
-                                       self.SD_num,
-                                       rank,
-                                       attr_bins,
-                                       self[attr_name],
-                                       weighting_attribute=self[weighting_attribute],
-                                       weighting_rank=weighting_rank
-                                       )
+        self.particulator.bck.spectrum_moments(moment_0,
+                                               moments,
+                                               self[&#39;n&#39;],
+                                               attr_data,
+                                               self[&#39;cell id&#39;],
+                                               self.__idx,
+                                               self.SD_num,
+                                               rank,
+                                               attr_bins,
+                                               self[attr_name],
+                                               weighting_attribute=self[weighting_attribute],
+                                               weighting_rank=weighting_rank
+                                               )
 
     def coalescence(self, gamma, is_first_in_pair):
-        self.core.bck.coalescence(n=self[&#39;n&#39;],
-                                  idx=self.__idx,
-                                  attributes=self.get_extensive_attrs(),
-                                  gamma=gamma,
-                                  healthy=self.__healthy_memory,
-                                  is_first_in_pair=is_first_in_pair
-                                  )
+        self.particulator.bck.coalescence(n=self[&#39;n&#39;],
+                                          idx=self.__idx,
+                                          attributes=self.get_extensive_attrs(),
+                                          gamma=gamma,
+                                          healthy=self.__healthy_memory,
+                                          is_first_in_pair=is_first_in_pair
+                                          )
         self.healthy = bool(self.__healthy_memory)
-        self.core.particles.sanitize()
+        self.particulator.particles.sanitize()
         self.attributes[&#39;n&#39;].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
-        return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
+        return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.particles.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.attributes
 
     def remove_precipitated(self) -&gt; float:
-        res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
-                                              self[&#39;volume&#39;], self[&#39;n&#39;],
-                                              self.__idx, self.SD_num, self.__healthy_memory)
+        res = self.particulator.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                                      self[&#39;volume&#39;], self[&#39;n&#39;],
+                                                      self.__idx, self.SD_num, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
 
     def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
-        self.core.bck.oxidation(
-            n_sd=self.core.n_sd,
+        self.particulator.bck.oxidation(
+            n_sd=self.particulator.n_sd,
             cell_ids=self[&#39;cell id&#39;],
             do_chemistry_flag=do_chemistry_flag,
             k0=kinetic_consts[&#34;k0&#34;],
@@ -495,21 +495,21 @@ class Particles:
 
     def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
                     environment_mixing_ratios, do_chemistry_flag):
-        self.core.bck.dissolution(
-            n_cell=self.core.mesh.n_cell,
+        self.particulator.bck.dissolution(
+            n_cell=self.particulator.mesh.n_cell,
             n_threads=1,
-            cell_order=np.arange(self.core.mesh.n_cell),
+            cell_order=np.arange(self.particulator.mesh.n_cell),
             cell_start_arg=self.cell_start,
             idx=self._Particles__idx,
             do_chemistry_flag=do_chemistry_flag,
             mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
             # note: assuming condensation was called
-            env_p=self.core.env.get_predicted(&#39;p&#39;),
-            env_T=self.core.env.get_predicted(&#39;T&#39;),
-            env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+            env_p=self.particulator.env.get_predicted(&#39;p&#39;),
+            env_T=self.particulator.env.get_predicted(&#39;T&#39;),
+            env_rho_d=self.particulator.env.get_predicted(&#39;rhod&#39;),
             dt=dt,
-            dv=self.core.mesh.dv,
+            dv=self.particulator.mesh.dv,
             droplet_volume=self[&#34;volume&#34;],
             multiplicity=self[&#34;n&#34;],
             system_type=system_type,
@@ -519,14 +519,14 @@ class Particles:
             self.attributes[f&#39;moles_{key}&#39;].mark_updated()
 
     def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
-        self.core.bck.chem_recalculate_cell_data(
+        self.particulator.bck.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
-            T=self.core.env.get_predicted(&#39;T&#39;)
+            T=self.particulator.env.get_predicted(&#39;T&#39;)
         )
 
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
-        self.core.bck.chem_recalculate_drop_data(
+        self.particulator.bck.chem_recalculate_drop_data(
             dissociation_factors=dissociation_factors,
             equilibrium_consts=equilibrium_consts,
             pH=self[&#39;pH&#39;],
@@ -575,7 +575,7 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def adaptive_sdm_end(self, dt_left):
-    return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)</code></pre>
+    return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.particles.cell_start)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.state.particles.Particles.chem_recalculate_cell_data"><code class="name flex">
@@ -588,10 +588,10 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
-    self.core.bck.chem_recalculate_cell_data(
+    self.particulator.bck.chem_recalculate_cell_data(
         equilibrium_consts=equilibrium_consts,
         kinetic_consts=kinetic_consts,
-        T=self.core.env.get_predicted(&#39;T&#39;)
+        T=self.particulator.env.get_predicted(&#39;T&#39;)
     )</code></pre>
 </details>
 </dd>
@@ -605,7 +605,7 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
-    self.core.bck.chem_recalculate_drop_data(
+    self.particulator.bck.chem_recalculate_drop_data(
         dissociation_factors=dissociation_factors,
         equilibrium_consts=equilibrium_consts,
         pH=self[&#39;pH&#39;],
@@ -623,15 +623,15 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def coalescence(self, gamma, is_first_in_pair):
-    self.core.bck.coalescence(n=self[&#39;n&#39;],
-                              idx=self.__idx,
-                              attributes=self.get_extensive_attrs(),
-                              gamma=gamma,
-                              healthy=self.__healthy_memory,
-                              is_first_in_pair=is_first_in_pair
-                              )
+    self.particulator.bck.coalescence(n=self[&#39;n&#39;],
+                                      idx=self.__idx,
+                                      attributes=self.get_extensive_attrs(),
+                                      gamma=gamma,
+                                      healthy=self.__healthy_memory,
+                                      is_first_in_pair=is_first_in_pair
+                                      )
     self.healthy = bool(self.__healthy_memory)
-    self.core.particles.sanitize()
+    self.particulator.particles.sanitize()
     self.attributes[&#39;n&#39;].mark_updated()
     for attr in self.attributes.values():
         if isinstance(attr, ExtensiveAttribute):
@@ -663,21 +663,21 @@ def cell_start(self):
 </summary>
 <pre><code class="python">def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
                 environment_mixing_ratios, do_chemistry_flag):
-    self.core.bck.dissolution(
-        n_cell=self.core.mesh.n_cell,
+    self.particulator.bck.dissolution(
+        n_cell=self.particulator.mesh.n_cell,
         n_threads=1,
-        cell_order=np.arange(self.core.mesh.n_cell),
+        cell_order=np.arange(self.particulator.mesh.n_cell),
         cell_start_arg=self.cell_start,
         idx=self._Particles__idx,
         do_chemistry_flag=do_chemistry_flag,
         mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
         env_mixing_ratio=environment_mixing_ratios,
         # note: assuming condensation was called
-        env_p=self.core.env.get_predicted(&#39;p&#39;),
-        env_T=self.core.env.get_predicted(&#39;T&#39;),
-        env_rho_d=self.core.env.get_predicted(&#39;rhod&#39;),
+        env_p=self.particulator.env.get_predicted(&#39;p&#39;),
+        env_T=self.particulator.env.get_predicted(&#39;T&#39;),
+        env_rho_d=self.particulator.env.get_predicted(&#39;rhod&#39;),
         dt=dt,
-        dv=self.core.mesh.dv,
+        dv=self.particulator.mesh.dv,
         droplet_volume=self[&#34;volume&#34;],
         multiplicity=self[&#34;n&#34;],
         system_type=system_type,
@@ -744,25 +744,25 @@ def cell_start(self):
             ranks.append(rank)
     assert len(set(attr_data)) &lt;= 1
     if len(attr_data) == 0:
-        attr_data = self.core.backend.Storage.empty((0,), dtype=float)
+        attr_data = self.particulator.backend.Storage.empty((0,), dtype=float)
     else:
         attr_data = attr_data[0]
 
-    ranks = self.core.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
+    ranks = self.particulator.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
 
-    self.core.bck.moments(moment_0,
-                          moments,
-                          self[&#39;n&#39;],
-                          attr_data,
-                          self[&#39;cell id&#39;],
-                          self.__idx,
-                          self.SD_num,
-                          ranks,
-                          attr_range[0], attr_range[1],
-                          self[attr_name],
-                          weighting_attribute=self[weighting_attribute],
-                          weighting_rank=weighting_rank
-                          )</code></pre>
+    self.particulator.bck.moments(moment_0,
+                                  moments,
+                                  self[&#39;n&#39;],
+                                  attr_data,
+                                  self[&#39;cell id&#39;],
+                                  self.__idx,
+                                  self.SD_num,
+                                  ranks,
+                                  attr_range[0], attr_range[1],
+                                  self[attr_name],
+                                  weighting_attribute=self[weighting_attribute],
+                                  weighting_rank=weighting_rank
+                                  )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.state.particles.Particles.oxidation"><code class="name flex">
@@ -775,8 +775,8 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
-    self.core.bck.oxidation(
-        n_sd=self.core.n_sd,
+    self.particulator.bck.oxidation(
+        n_sd=self.particulator.n_sd,
         cell_ids=self[&#39;cell id&#39;],
         do_chemistry_flag=do_chemistry_flag,
         k0=kinetic_consts[&#34;k0&#34;],
@@ -838,7 +838,7 @@ def cell_start(self):
     if &#39;cell origin&#39; not in self.attributes:
         return
     else:
-        self.core.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+        self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
         self.__sorted = False</code></pre>
 </details>
 </dd>
@@ -852,9 +852,9 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def remove_precipitated(self) -&gt; float:
-    res = self.core.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
-                                          self[&#39;volume&#39;], self[&#39;n&#39;],
-                                          self.__idx, self.SD_num, self.__healthy_memory)
+    res = self.particulator.bck.flag_precipitated(self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
+                                                  self[&#39;volume&#39;], self[&#39;n&#39;],
+                                                  self.__idx, self.SD_num, self.__healthy_memory)
     self.healthy = bool(self.__healthy_memory)
     self.sanitize()
     return res</code></pre>
@@ -916,7 +916,7 @@ def cell_start(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-    self.core.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])</code></pre>
+    self.particulator.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])</code></pre>
 </details>
 </dd>
 <dt id="PySDM.state.particles.Particles.spectrum_moments"><code class="name flex">
@@ -931,19 +931,19 @@ def cell_start(self):
 <pre><code class="python">def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
                      weighting_attribute=&#39;volume&#39;, weighting_rank=0):
     attr_data = self.attributes[attr].get()
-    self.core.bck.spectrum_moments(moment_0,
-                                   moments,
-                                   self[&#39;n&#39;],
-                                   attr_data,
-                                   self[&#39;cell id&#39;],
-                                   self.__idx,
-                                   self.SD_num,
-                                   rank,
-                                   attr_bins,
-                                   self[attr_name],
-                                   weighting_attribute=self[weighting_attribute],
-                                   weighting_rank=weighting_rank
-                                   )</code></pre>
+    self.particulator.bck.spectrum_moments(moment_0,
+                                           moments,
+                                           self[&#39;n&#39;],
+                                           attr_data,
+                                           self[&#39;cell id&#39;],
+                                           self.__idx,
+                                           self.SD_num,
+                                           rank,
+                                           attr_bins,
+                                           self[attr_name],
+                                           weighting_attribute=self[weighting_attribute],
+                                           weighting_rank=weighting_rank
+                                           )</code></pre>
 </details>
 </dd>
 </dl>

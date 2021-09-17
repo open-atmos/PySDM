@@ -39,14 +39,14 @@ class Box:
     def __init__(self, dt, dv):
         self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.core.n_sd)
+        attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.particulator.n_sd)
         return attributes</code></pre>
 </details>
 </section>
@@ -74,14 +74,14 @@ class Box:
     def __init__(self, dt, dv):
         self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.core.n_sd)
+        attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.particulator.n_sd)
         return attributes</code></pre>
 </details>
 <h3>Methods</h3>
@@ -97,7 +97,7 @@ class Box:
 </summary>
 <pre><code class="python">def init_attributes(self, *, spectral_discretisation):
     attributes = {}
-    attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.core.n_sd)
+    attributes[&#39;volume&#39;], attributes[&#39;n&#39;] = spectral_discretisation.sample(self.particulator.n_sd)
     return attributes</code></pre>
 </details>
 </dd>
@@ -111,7 +111,7 @@ class Box:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core</code></pre>
+    self.particulator = builder.particulator</code></pre>
 </details>
 </dd>
 </dl>

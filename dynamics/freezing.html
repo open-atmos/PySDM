@@ -35,7 +35,7 @@
         self.rng = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         builder.request_attribute(&#34;volume&#34;)
         if self.singular:
@@ -44,35 +44,35 @@
         else:
             assert self.J_het is not None
             builder.request_attribute(&#34;immersed surface area&#34;)
-            self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
-            self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
+            self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
 
     def __call__(self):
-        if &#39;Coalescence&#39; in self.core.dynamics:
+        if &#39;Coalescence&#39; in self.particulator.dynamics:
             raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
 
         if not self.enable:
             return
 
         if self.singular:
-            self.core.bck.freeze_singular(
-                T_fz=self.core.particles[&#39;freezing temperature&#39;],
-                v_wet=self.core.particles[&#39;volume&#39;],
-                T=self.core.environment[&#39;T&#39;],
-                RH=self.core.environment[&#39;RH&#39;],
-                cell=self.core.particles[&#39;cell id&#39;]
+            self.particulator.bck.freeze_singular(
+                T_fz=self.particulator.particles[&#39;freezing temperature&#39;],
+                v_wet=self.particulator.particles[&#39;volume&#39;],
+                T=self.particulator.environment[&#39;T&#39;],
+                RH=self.particulator.environment[&#39;RH&#39;],
+                cell=self.particulator.particles[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
-            self.core.bck.freeze_time_dependent(
+            self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.core.particles[&#39;immersed surface area&#39;],
-                volume=self.core.particles[&#39;volume&#39;],
+                immersed_surface_area=self.particulator.particles[&#39;immersed surface area&#39;],
+                volume=self.particulator.particles[&#39;volume&#39;],
                 J_het=self.J_het,
-                dt=self.core.dt
+                dt=self.particulator.dt
             )
 
-        self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 </section>
 <section>
@@ -103,7 +103,7 @@
         self.rng = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         builder.request_attribute(&#34;volume&#34;)
         if self.singular:
@@ -112,35 +112,35 @@
         else:
             assert self.J_het is not None
             builder.request_attribute(&#34;immersed surface area&#34;)
-            self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
-            self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)
+            self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
 
     def __call__(self):
-        if &#39;Coalescence&#39; in self.core.dynamics:
+        if &#39;Coalescence&#39; in self.particulator.dynamics:
             raise NotImplementedError(&#34;handling T_fz during collisions not implemented yet&#34;)  # TODO #594
 
         if not self.enable:
             return
 
         if self.singular:
-            self.core.bck.freeze_singular(
-                T_fz=self.core.particles[&#39;freezing temperature&#39;],
-                v_wet=self.core.particles[&#39;volume&#39;],
-                T=self.core.environment[&#39;T&#39;],
-                RH=self.core.environment[&#39;RH&#39;],
-                cell=self.core.particles[&#39;cell id&#39;]
+            self.particulator.bck.freeze_singular(
+                T_fz=self.particulator.particles[&#39;freezing temperature&#39;],
+                v_wet=self.particulator.particles[&#39;volume&#39;],
+                T=self.particulator.environment[&#39;T&#39;],
+                RH=self.particulator.environment[&#39;RH&#39;],
+                cell=self.particulator.particles[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
-            self.core.bck.freeze_time_dependent(
+            self.particulator.bck.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.core.particles[&#39;immersed surface area&#39;],
-                volume=self.core.particles[&#39;volume&#39;],
+                immersed_surface_area=self.particulator.particles[&#39;immersed surface area&#39;],
+                volume=self.particulator.particles[&#39;volume&#39;],
                 J_het=self.J_het,
-                dt=self.core.dt
+                dt=self.particulator.dt
             )
 
-        self.core.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
+        self.particulator.particles.attributes[&#39;volume&#39;].mark_updated()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -154,7 +154,7 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core
+    self.particulator = builder.particulator
 
     builder.request_attribute(&#34;volume&#34;)
     if self.singular:
@@ -163,8 +163,8 @@
     else:
         assert self.J_het is not None
         builder.request_attribute(&#34;immersed surface area&#34;)
-        self.rand = self.core.Storage.empty(self.core.n_sd, dtype=float)
-        self.rng = self.core.Random(self.core.n_sd, self.core.bck.formulae.seed)</code></pre>
+        self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+        self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)</code></pre>
 </details>
 </dd>
 </dl>

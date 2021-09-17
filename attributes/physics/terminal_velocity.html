@@ -37,7 +37,7 @@ class TerminalVelocity(DerivedAttribute):
         dependencies = [self.radius]
         super().__init__(builder, name=&#39;terminal velocity&#39;, dependencies=dependencies)
 
-        self.approximation = Interpolation(builder.core)
+        self.approximation = Interpolation(builder.particulator)
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())</code></pre>
@@ -69,7 +69,7 @@ class TerminalVelocity(DerivedAttribute):
         dependencies = [self.radius]
         super().__init__(builder, name=&#39;terminal velocity&#39;, dependencies=dependencies)
 
-        self.approximation = Interpolation(builder.core)
+        self.approximation = Interpolation(builder.particulator)
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())</code></pre>

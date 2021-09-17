@@ -49,13 +49,13 @@ class Kinematic1D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(self.rhod)
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(self.rhod)
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
     def get_qv(self) -&gt; np.ndarray:
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()
 
     def get_thd(self) -&gt; np.ndarray:
         return self.thd0
@@ -70,11 +70,11 @@ class Kinematic1D(_Moist):
 
         attributes = {}
         with np.errstate(all=&#39;raise&#39;):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
                 self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
             r_wet = r_wet_init(r_dry, self, cell_id=attributes[&#39;cell id&#39;],
@@ -124,13 +124,13 @@ class Kinematic1D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(self.rhod)
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(self.rhod)
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
     def get_qv(self) -&gt; np.ndarray:
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()
 
     def get_thd(self) -&gt; np.ndarray:
         return self.thd0
@@ -145,11 +145,11 @@ class Kinematic1D(_Moist):
 
         attributes = {}
         with np.errstate(all=&#39;raise&#39;):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
                 self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
             r_wet = r_wet_init(r_dry, self, cell_id=attributes[&#39;cell id&#39;],
@@ -202,7 +202,7 @@ def dv(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_qv(self) -&gt; np.ndarray:
-    return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()</code></pre>
+    return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.advectee.get()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.kinematic_1d.Kinematic1D.get_thd"><code class="name flex">
@@ -237,11 +237,11 @@ def dv(self):
 
     attributes = {}
     with np.errstate(all=&#39;raise&#39;):
-        positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+        positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
         attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
             self.mesh.cellular_attributes(positions)
 
-        r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+        r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
         attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
         attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
         r_wet = r_wet_init(r_dry, self, cell_id=attributes[&#39;cell id&#39;],
@@ -268,8 +268,8 @@ def dv(self):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.formulae = builder.core.formulae
-    rhod = builder.core.Storage.from_ndarray(self.rhod)
+    self.formulae = builder.particulator.formulae
+    rhod = builder.particulator.Storage.from_ndarray(self.rhod)
     self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
     self._tmp[&#34;rhod&#34;] = rhod</code></pre>
 </details>

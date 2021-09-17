@@ -49,8 +49,8 @@ class Kinematic2D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
@@ -72,13 +72,13 @@ class Kinematic2D(_Moist):
 
         attributes = {}
         with np.errstate(all=&#39;raise&#39;):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
                 self.mesh.cellular_attributes(positions)
             if spectral_discretisation:
-                r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+                r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             elif spectro_glacial_discretisation:
-                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.core.n_sd)
+                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.particulator.n_sd)
                 attributes[&#39;freezing temperature&#39;] = T_fz
             else:
                 raise NotImplementedError()
@@ -100,13 +100,13 @@ class Kinematic2D(_Moist):
         return attributes
 
     def get_thd(self):
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()
 
     def get_qv(self):
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()
 
     def sync(self):
-        self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
+        self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
         super().sync()</code></pre>
 </details>
 </section>
@@ -136,8 +136,8 @@ class Kinematic2D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
         self._tmp[&#34;rhod&#34;] = rhod
 
@@ -159,13 +159,13 @@ class Kinematic2D(_Moist):
 
         attributes = {}
         with np.errstate(all=&#39;raise&#39;):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
                 self.mesh.cellular_attributes(positions)
             if spectral_discretisation:
-                r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+                r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             elif spectro_glacial_discretisation:
-                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.core.n_sd)
+                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.particulator.n_sd)
                 attributes[&#39;freezing temperature&#39;] = T_fz
             else:
                 raise NotImplementedError()
@@ -187,13 +187,13 @@ class Kinematic2D(_Moist):
         return attributes
 
     def get_thd(self):
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()
 
     def get_qv(self):
-        return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()
+        return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()
 
     def sync(self):
-        self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
+        self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
         super().sync()</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -227,7 +227,7 @@ def dv(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_qv(self):
-    return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()</code></pre>
+    return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;qv&#39;].advectee.get()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.kinematic_2d.Kinematic2D.get_thd"><code class="name flex">
@@ -240,7 +240,7 @@ def dv(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_thd(self):
-    return self.core.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()</code></pre>
+    return self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers[&#39;th&#39;].advectee.get()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.kinematic_2d.Kinematic2D.init_attributes"><code class="name flex">
@@ -266,13 +266,13 @@ def dv(self):
 
     attributes = {}
     with np.errstate(all=&#39;raise&#39;):
-        positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+        positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
         attributes[&#39;cell id&#39;], attributes[&#39;cell origin&#39;], attributes[&#39;position in cell&#39;] = \
             self.mesh.cellular_attributes(positions)
         if spectral_discretisation:
-            r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
         elif spectro_glacial_discretisation:
-            r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.core.n_sd)
+            r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.particulator.n_sd)
             attributes[&#39;freezing temperature&#39;] = T_fz
         else:
             raise NotImplementedError()
@@ -305,8 +305,8 @@ def dv(self):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.formulae = builder.core.formulae
-    rhod = builder.core.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
+    self.formulae = builder.particulator.formulae
+    rhod = builder.particulator.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
     self._values[&#34;current&#34;][&#34;rhod&#34;] = rhod
     self._tmp[&#34;rhod&#34;] = rhod</code></pre>
 </details>
@@ -321,7 +321,7 @@ def dv(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sync(self):
-    self.core.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
+    self.particulator.dynamics[&#39;EulerianAdvection&#39;].solvers.wait()
     super().sync()</code></pre>
 </details>
 </dd>

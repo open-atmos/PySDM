@@ -41,13 +41,13 @@ class Time(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
 
     def get(self):
         return self.t
 
     def notify(self):
-        self.t += self.core.dt</code></pre>
+        self.t += self.particulator.dt</code></pre>
 </details>
 </section>
 <section>
@@ -80,13 +80,13 @@ class Time(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
 
     def get(self):
         return self.t
 
     def notify(self):
-        self.t += self.core.dt</code></pre>
+        self.t += self.particulator.dt</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -117,7 +117,7 @@ class Time(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def notify(self):
-    self.t += self.core.dt</code></pre>
+    self.t += self.particulator.dt</code></pre>
 </details>
 </dd>
 <dt id="PySDM.products.environments.time.Time.register"><code class="name flex">
@@ -131,7 +131,7 @@ class Time(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.core.observers.append(self)</code></pre>
+    self.particulator.observers.append(self)</code></pre>
 </details>
 </dd>
 </dl>

@@ -36,14 +36,14 @@ class EulerianAdvection:
 
     def __init__(self, solvers):
         self.solvers = solvers
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def __call__(self):
-        self.core.env.get_predicted(&#39;qv&#39;).download(self.core.env.get_qv(), reshape=True)
-        self.core.env.get_predicted(&#39;thd&#39;).download(self.core.env.get_thd(), reshape=True)
+        self.particulator.env.get_predicted(&#39;qv&#39;).download(self.particulator.env.get_qv(), reshape=True)
+        self.particulator.env.get_predicted(&#39;thd&#39;).download(self.particulator.env.get_thd(), reshape=True)
         self.solvers()</code></pre>
 </details>
 </section>
@@ -70,14 +70,14 @@ class EulerianAdvection:
 
     def __init__(self, solvers):
         self.solvers = solvers
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def __call__(self):
-        self.core.env.get_predicted(&#39;qv&#39;).download(self.core.env.get_qv(), reshape=True)
-        self.core.env.get_predicted(&#39;thd&#39;).download(self.core.env.get_thd(), reshape=True)
+        self.particulator.env.get_predicted(&#39;qv&#39;).download(self.particulator.env.get_qv(), reshape=True)
+        self.particulator.env.get_predicted(&#39;thd&#39;).download(self.particulator.env.get_thd(), reshape=True)
         self.solvers()</code></pre>
 </details>
 <h3>Methods</h3>
@@ -92,7 +92,7 @@ class EulerianAdvection:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core</code></pre>
+    self.particulator = builder.particulator</code></pre>
 </details>
 </dd>
 </dl>

@@ -42,13 +42,13 @@ attributes = {
     &#39;n&#39;: lambda _: Multiplicities,
     &#39;volume&#39;: lambda _: Volume,
     &#39;dry volume organic&#39;: lambda dynamics: (
-        DummyAttributeImpl(&#39;dry volume organic&#39;) if isinstance(dynamics[&#39;Condensation&#39;].core.formulae.surface_tension, Constant)
+        DummyAttributeImpl(&#39;dry volume organic&#39;) if isinstance(dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension, Constant)
         else DryVolumeOrganic
     ),
     &#39;dry volume&#39;: lambda dynamics:
     DryVolumeDynamic if &#39;AqueousChemistry&#39; in dynamics else DryVolume,
     &#39;dry volume organic fraction&#39;: lambda dynamics: (
-        DummyAttributeImpl(&#39;dry volume organic fraction&#39;) if isinstance(dynamics[&#39;Condensation&#39;].core.formulae.surface_tension, Constant)
+        DummyAttributeImpl(&#39;dry volume organic fraction&#39;) if isinstance(dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension, Constant)
         else OrganicFraction
     ),
     &#39;kappa times dry volume&#39;: lambda _: KappaTimesDryVolume,

@@ -35,13 +35,13 @@ Environment-sync triggering class
 class AmbientThermodynamics:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def __call__(self):
-        self.core.env.sync()</code></pre>
+        self.particulator.env.sync()</code></pre>
 </details>
 </section>
 <section>
@@ -65,13 +65,13 @@ class AmbientThermodynamics:
 <pre><code class="python">class AmbientThermodynamics:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
     def __call__(self):
-        self.core.env.sync()</code></pre>
+        self.particulator.env.sync()</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -85,7 +85,7 @@ class AmbientThermodynamics:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core</code></pre>
+    self.particulator = builder.particulator</code></pre>
 </details>
 </dd>
 </dl>

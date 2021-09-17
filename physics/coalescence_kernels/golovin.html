@@ -34,14 +34,14 @@ class Golovin:
 
     def __init__(self, b):
         self.b = b
-        self.core = None
+        self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.core.particles[&#39;volume&#39;], is_first_in_pair)
+        output.sum(self.particulator.particles[&#39;volume&#39;], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         builder.request_attribute(&#39;volume&#39;)
 
     def analytic_solution(self, x, t, x_0, N_0):
@@ -89,14 +89,14 @@ class Golovin:
 
     def __init__(self, b):
         self.b = b
-        self.core = None
+        self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.core.particles[&#39;volume&#39;], is_first_in_pair)
+        output.sum(self.particulator.particles[&#39;volume&#39;], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         builder.request_attribute(&#39;volume&#39;)
 
     def analytic_solution(self, x, t, x_0, N_0):
@@ -176,7 +176,7 @@ def analytic_solution_helper(x, tau, x_0):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core
+    self.particulator = builder.particulator
     builder.request_attribute(&#39;volume&#39;)</code></pre>
 </details>
 </dd>

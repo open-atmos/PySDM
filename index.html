@@ -65,7 +65,7 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 &#34;&#34;&#34;
 
 from .builder import Builder
-from .core import Core
+from .particulator import Particulator
 
 from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 try:
@@ -92,11 +92,7 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 <dt><code class="name"><a title="PySDM.builder" href="builder.html">PySDM.builder</a></code></dt>
 <dd>
 <div class="desc"><p>The Builder class handling creation of
-<code><a title="PySDM.core.Core" href="core.html#PySDM.core.Core">Core</a></code> instances</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.core" href="core.html">PySDM.core</a></code></dt>
-<dd>
-<div class="desc"><p>The very class exposing <code><a title="PySDM.core.Core.run" href="core.html#PySDM.core.Core.run">Core.run()</a></code> method for launching simulations</p></div>
+<code>PySDM.Particulator</code> instances</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></dt>
 <dd>
@@ -120,6 +116,10 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 <code><a title="PySDM.initialisation.spectral_sampling" href="initialisation/spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code>,
 <code><a title="PySDM.initialisation.spatial_sampling" href="initialisation/spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code>,
 <code>PySDM.initialisation.spectra</code></p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></dt>
+<dd>
+<div class="desc"><p>The very class exposing <code>PySDM.Particulator.run()</code> method for launching simulations</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></dt>
 <dd>
@@ -159,11 +159,11 @@ and <code>GPU</code>=<code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRT
 <li><code><a title="PySDM.attributes" href="attributes/index.html">PySDM.attributes</a></code></li>
 <li><code><a title="PySDM.backends" href="backends/index.html">PySDM.backends</a></code></li>
 <li><code><a title="PySDM.builder" href="builder.html">PySDM.builder</a></code></li>
-<li><code><a title="PySDM.core" href="core.html">PySDM.core</a></code></li>
 <li><code><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></li>
 <li><code><a title="PySDM.environments" href="environments/index.html">PySDM.environments</a></code></li>
 <li><code><a title="PySDM.exporters" href="exporters/index.html">PySDM.exporters</a></code></li>
 <li><code><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></li>
+<li><code><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></li>
 <li><code><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></li>
 <li><code><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></li>
 <li><code><a title="PySDM.state" href="state/index.html">PySDM.state</a></code></li>

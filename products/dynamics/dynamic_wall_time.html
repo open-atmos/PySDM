@@ -41,7 +41,7 @@ class DynamicWallTime(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
         self.shape = ()
 
     def get(self):
@@ -50,7 +50,7 @@ class DynamicWallTime(Product):
         return tmp
 
     def notify(self):
-        self.value += self.core.timers[self.dynamic].time</code></pre>
+        self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 </section>
 <section>
@@ -84,7 +84,7 @@ class DynamicWallTime(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
         self.shape = ()
 
     def get(self):
@@ -93,7 +93,7 @@ class DynamicWallTime(Product):
         return tmp
 
     def notify(self):
-        self.value += self.core.timers[self.dynamic].time</code></pre>
+        self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -126,7 +126,7 @@ class DynamicWallTime(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def notify(self):
-    self.value += self.core.timers[self.dynamic].time</code></pre>
+    self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 </dd>
 <dt id="PySDM.products.dynamics.dynamic_wall_time.DynamicWallTime.register"><code class="name flex">
@@ -140,7 +140,7 @@ class DynamicWallTime(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.core.observers.append(self)
+    self.particulator.observers.append(self)
     self.shape = ()</code></pre>
 </details>
 </dd>

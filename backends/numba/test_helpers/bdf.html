@@ -41,37 +41,37 @@ idx_x = 1
 rtol = 1e-4
 
 
-def patch_core(core):
-    core.condensation_solver = _make_solve(core.formulae)
-    core.condensation = types.MethodType(_bdf_condensation, core)
+def patch_particulator(particulator):
+    particulator.condensation_solver = _make_solve(particulator.formulae)
+    particulator.condensation = types.MethodType(_bdf_condensation, particulator)
 
 
-def _bdf_condensation(core, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+def _bdf_condensation(particulator, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:
         func = func.py_func
     func(
-        solver=core.condensation_solver,
+        solver=particulator.condensation_solver,
         n_threads=1,
-        n_cell=core.mesh.n_cell,
-        cell_start_arg=core.particles.cell_start.data,
-        v=core.particles[&#34;volume&#34;].data,
+        n_cell=particulator.mesh.n_cell,
+        cell_start_arg=particulator.particles.cell_start.data,
+        v=particulator.particles[&#34;volume&#34;].data,
         v_cr=None,
-        n=core.particles[&#39;n&#39;].data,
-        vdry=core.particles[&#34;dry volume&#34;].data,
-        idx=core.particles._Particles__idx.data,
-        rhod=core.env[&#34;rhod&#34;].data,
-        thd=core.env[&#34;thd&#34;].data,
-        qv=core.env[&#34;qv&#34;].data,
-        dv_mean=core.env.dv,
-        prhod=core.env.get_predicted(&#34;rhod&#34;).data,
-        pthd=core.env.get_predicted(&#34;thd&#34;).data,
-        pqv=core.env.get_predicted(&#34;qv&#34;).data,
-        kappa=core.particles[&#34;kappa&#34;].data,
-        f_org=core.particles[&#34;dry volume organic fraction&#34;].data,
+        n=particulator.particles[&#39;n&#39;].data,
+        vdry=particulator.particles[&#34;dry volume&#34;].data,
+        idx=particulator.particles._Particles__idx.data,
+        rhod=particulator.env[&#34;rhod&#34;].data,
+        thd=particulator.env[&#34;thd&#34;].data,
+        qv=particulator.env[&#34;qv&#34;].data,
+        dv_mean=particulator.env.dv,
+        prhod=particulator.env.get_predicted(&#34;rhod&#34;).data,
+        pthd=particulator.env.get_predicted(&#34;thd&#34;).data,
+        pqv=particulator.env.get_predicted(&#34;qv&#34;).data,
+        kappa=particulator.particles[&#34;kappa&#34;].data,
+        f_org=particulator.particles[&#34;dry volume organic fraction&#34;].data,
         rtol_x=rtol_x,
         rtol_thd=rtol_thd,
-        dt=core.dt,
+        dt=particulator.dt,
         counter_n_substeps=counters[&#39;n_substeps&#39;],
         counter_n_activating=counters[&#39;n_activating&#39;],
         counter_n_deactivating=counters[&#39;n_deactivating&#39;],
@@ -185,8 +185,8 @@ def _make_solve(formulae):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.backends.numba.test_helpers.bdf.patch_core"><code class="name flex">
-<span>def <span class="ident">patch_core</span></span>(<span>core)</span>
+<dt id="PySDM.backends.numba.test_helpers.bdf.patch_particulator"><code class="name flex">
+<span>def <span class="ident">patch_particulator</span></span>(<span>particulator)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -194,9 +194,9 @@ def _make_solve(formulae):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def patch_core(core):
-    core.condensation_solver = _make_solve(core.formulae)
-    core.condensation = types.MethodType(_bdf_condensation, core)</code></pre>
+<pre><code class="python">def patch_particulator(particulator):
+    particulator.condensation_solver = _make_solve(particulator.formulae)
+    particulator.condensation = types.MethodType(_bdf_condensation, particulator)</code></pre>
 </details>
 </dd>
 </dl>
@@ -217,7 +217,7 @@ def _make_solve(formulae):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.backends.numba.test_helpers.bdf.patch_core" href="#PySDM.backends.numba.test_helpers.bdf.patch_core">patch_core</a></code></li>
+<li><code><a title="PySDM.backends.numba.test_helpers.bdf.patch_particulator" href="#PySDM.backends.numba.test_helpers.bdf.patch_particulator">patch_particulator</a></code></li>
 </ul>
 </li>
 </ul>

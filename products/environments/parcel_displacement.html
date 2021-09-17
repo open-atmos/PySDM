@@ -42,8 +42,8 @@ class ParcelDisplacement(Product):
 
     def register(self, builder):
         super().register(builder)
-        assert isinstance(builder.core.env, Parcel)
-        self.environment = builder.core.env
+        assert isinstance(builder.particulator.env, Parcel)
+        self.environment = builder.particulator.env
 
     def get(self):
         self.download_to_buffer(self.environment[&#39;z&#39;])
@@ -80,8 +80,8 @@ class ParcelDisplacement(Product):
 
     def register(self, builder):
         super().register(builder)
-        assert isinstance(builder.core.env, Parcel)
-        self.environment = builder.core.env
+        assert isinstance(builder.particulator.env, Parcel)
+        self.environment = builder.particulator.env
 
     def get(self):
         self.download_to_buffer(self.environment[&#39;z&#39;])
@@ -118,8 +118,8 @@ class ParcelDisplacement(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    assert isinstance(builder.core.env, Parcel)
-    self.environment = builder.core.env</code></pre>
+    assert isinstance(builder.particulator.env, Parcel)
+    self.environment = builder.particulator.env</code></pre>
 </details>
 </dd>
 </dl>

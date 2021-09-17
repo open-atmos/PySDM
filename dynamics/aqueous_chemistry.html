@@ -49,7 +49,7 @@ class AqueousChemistry:
                  pH_rtol=default_pH_rtol):
         self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
-        self.core = None
+        self.particulator = None
 
         assert system_type in (&#39;open&#39;, &#39;closed&#39;)
         self.system_type = system_type
@@ -68,61 +68,61 @@ class AqueousChemistry:
         self.do_chemistry_flag = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
-                self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
+                self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
                     self.environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
             )
         self.environment_mole_fractions = None
 
         if self.pH_H_max is None:
-            self.pH_H_max = self.core.formulae.trivia.pH2H(default_pH_min)
+            self.pH_H_max = self.particulator.formulae.trivia.pH2H(default_pH_min)
         if self.pH_H_min is None:
-            self.pH_H_min = self.core.formulae.trivia.pH2H(default_pH_max)
+            self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
         for key in AQUEOUS_COMPOUNDS.keys():
             builder.request_attribute(&#34;conc_&#34; + key)
 
-        for key in self.core.backend.KINETIC_CONST.KINETIC_CONST.keys():
-            self.kinetic_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-        for key in self.core.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
-            self.equilibrium_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+            self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+            self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
         for key in DIFFUSION_CONST.keys():
-            self.dissociation_factors[key] = self.core.Storage.empty(self.core.n_sd, dtype=float)
-        self.do_chemistry_flag = self.core.Storage.empty(self.core.n_sd, dtype=bool)
+            self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+        self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
     def __call__(self):
-        self.core.particles.chem_recalculate_cell_data(
+        self.particulator.particles.chem_recalculate_cell_data(
             equilibrium_consts=self.equilibrium_consts,
             kinetic_consts=self.kinetic_consts
         )
         for _ in range(self.n_substep):
-            self.core.particles.chem_recalculate_drop_data(
+            self.particulator.particles.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.core.particles.dissolution(
+            self.particulator.particles.dissolution(
                 gaseous_compounds=GASEOUS_COMPOUNDS,
                 system_type=self.system_type,
                 dissociation_factors=self.dissociation_factors,
                 environment_mixing_ratios=self.environment_mixing_ratios,
-                dt=self.core.dt / self.n_substep,
+                dt=self.particulator.dt / self.n_substep,
                 do_chemistry_flag=self.do_chemistry_flag
             )
-            self.core.particles.chem_recalculate_drop_data(
+            self.particulator.particles.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.core.particles.oxidation(
+            self.particulator.particles.oxidation(
                 kinetic_consts=self.kinetic_consts,
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,
                 do_chemistry_flag=self.do_chemistry_flag,
-                dt=self.core.dt / self.n_substep
+                dt=self.particulator.dt / self.n_substep
             )</code></pre>
 </details>
 </section>
@@ -153,7 +153,7 @@ class AqueousChemistry:
                  pH_rtol=default_pH_rtol):
         self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
-        self.core = None
+        self.particulator = None
 
         assert system_type in (&#39;open&#39;, &#39;closed&#39;)
         self.system_type = system_type
@@ -172,61 +172,61 @@ class AqueousChemistry:
         self.do_chemistry_flag = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
 
         for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
-                self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
+                self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
                     self.environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
             )
         self.environment_mole_fractions = None
 
         if self.pH_H_max is None:
-            self.pH_H_max = self.core.formulae.trivia.pH2H(default_pH_min)
+            self.pH_H_max = self.particulator.formulae.trivia.pH2H(default_pH_min)
         if self.pH_H_min is None:
-            self.pH_H_min = self.core.formulae.trivia.pH2H(default_pH_max)
+            self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
         for key in AQUEOUS_COMPOUNDS.keys():
             builder.request_attribute(&#34;conc_&#34; + key)
 
-        for key in self.core.backend.KINETIC_CONST.KINETIC_CONST.keys():
-            self.kinetic_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-        for key in self.core.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
-            self.equilibrium_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+            self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+            self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
         for key in DIFFUSION_CONST.keys():
-            self.dissociation_factors[key] = self.core.Storage.empty(self.core.n_sd, dtype=float)
-        self.do_chemistry_flag = self.core.Storage.empty(self.core.n_sd, dtype=bool)
+            self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+        self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
     def __call__(self):
-        self.core.particles.chem_recalculate_cell_data(
+        self.particulator.particles.chem_recalculate_cell_data(
             equilibrium_consts=self.equilibrium_consts,
             kinetic_consts=self.kinetic_consts
         )
         for _ in range(self.n_substep):
-            self.core.particles.chem_recalculate_drop_data(
+            self.particulator.particles.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.core.particles.dissolution(
+            self.particulator.particles.dissolution(
                 gaseous_compounds=GASEOUS_COMPOUNDS,
                 system_type=self.system_type,
                 dissociation_factors=self.dissociation_factors,
                 environment_mixing_ratios=self.environment_mixing_ratios,
-                dt=self.core.dt / self.n_substep,
+                dt=self.particulator.dt / self.n_substep,
                 do_chemistry_flag=self.do_chemistry_flag
             )
-            self.core.particles.chem_recalculate_drop_data(
+            self.particulator.particles.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.core.particles.oxidation(
+            self.particulator.particles.oxidation(
                 kinetic_consts=self.kinetic_consts,
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,
                 do_chemistry_flag=self.do_chemistry_flag,
-                dt=self.core.dt / self.n_substep
+                dt=self.particulator.dt / self.n_substep
             )</code></pre>
 </details>
 <h3>Methods</h3>
@@ -241,32 +241,32 @@ class AqueousChemistry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    self.core = builder.core
+    self.particulator = builder.particulator
 
     for key, compound in GASEOUS_COMPOUNDS.items():
         shape = (1,)
         self.environment_mixing_ratios[compound] = np.full(
             shape,
-            self.core.formulae.trivia.mole_fraction_2_mixing_ratio(
+            self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
                 self.environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
         )
     self.environment_mole_fractions = None
 
     if self.pH_H_max is None:
-        self.pH_H_max = self.core.formulae.trivia.pH2H(default_pH_min)
+        self.pH_H_max = self.particulator.formulae.trivia.pH2H(default_pH_min)
     if self.pH_H_min is None:
-        self.pH_H_min = self.core.formulae.trivia.pH2H(default_pH_max)
+        self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
     for key in AQUEOUS_COMPOUNDS.keys():
         builder.request_attribute(&#34;conc_&#34; + key)
 
-    for key in self.core.backend.KINETIC_CONST.KINETIC_CONST.keys():
-        self.kinetic_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-    for key in self.core.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
-        self.equilibrium_consts[key] = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
+    for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+        self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+    for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+        self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
     for key in DIFFUSION_CONST.keys():
-        self.dissociation_factors[key] = self.core.Storage.empty(self.core.n_sd, dtype=float)
-    self.do_chemistry_flag = self.core.Storage.empty(self.core.n_sd, dtype=bool)</code></pre>
+        self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+    self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)</code></pre>
 </details>
 </dd>
 </dl>

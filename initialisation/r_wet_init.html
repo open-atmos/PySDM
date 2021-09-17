@@ -54,7 +54,7 @@ def r_wet_init(r_dry: np.ndarray, environment,
     T = environment[&#34;T&#34;].to_ndarray()
     RH = environment[&#34;RH&#34;].to_ndarray()
 
-    formulae = environment.core.formulae
+    formulae = environment.particulator.formulae
     r_cr = formulae.hygroscopicity.r_cr
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma
@@ -145,7 +145,7 @@ def r_wet_init(r_dry: np.ndarray, environment,
     T = environment[&#34;T&#34;].to_ndarray()
     RH = environment[&#34;RH&#34;].to_ndarray()
 
-    formulae = environment.core.formulae
+    formulae = environment.particulator.formulae
     r_cr = formulae.hygroscopicity.r_cr
     RH_eq = formulae.hygroscopicity.RH_eq
     sigma = formulae.surface_tension.sigma

@@ -46,8 +46,8 @@ class EventRate(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.condensation = self.core.dynamics[&#39;Condensation&#39;]
+        self.particulator.observers.append(self)
+        self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
         self.event_count = np.zeros_like(self.buffer)
 
     def notify(self):
@@ -59,8 +59,8 @@ class EventRate(Product):
         if self.timestep_count == 0:
             return self.event_count
         else:
-            self.event_count[:] /= (self.timestep_count * self.core.dt * self.core.mesh.dv)
-            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            self.event_count[:] /= (self.timestep_count * self.particulator.dt * self.particulator.mesh.dv)
+            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
             self.event_count[:] /= self.buffer[:]
             self.buffer[:] = self.event_count[:]
             self.timestep_count = 0
@@ -156,8 +156,8 @@ class DeactivatingRate(EventRate):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.condensation = self.core.dynamics[&#39;Condensation&#39;]
+        self.particulator.observers.append(self)
+        self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
         self.event_count = np.zeros_like(self.buffer)
 
     def notify(self):
@@ -169,8 +169,8 @@ class DeactivatingRate(EventRate):
         if self.timestep_count == 0:
             return self.event_count
         else:
-            self.event_count[:] /= (self.timestep_count * self.core.dt * self.core.mesh.dv)
-            self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+            self.event_count[:] /= (self.timestep_count * self.particulator.dt * self.particulator.mesh.dv)
+            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
             self.event_count[:] /= self.buffer[:]
             self.buffer[:] = self.event_count[:]
             self.timestep_count = 0
@@ -203,8 +203,8 @@ class DeactivatingRate(EventRate):
     if self.timestep_count == 0:
         return self.event_count
     else:
-        self.event_count[:] /= (self.timestep_count * self.core.dt * self.core.mesh.dv)
-        self.download_to_buffer(self.core.environment[&#39;rhod&#39;])
+        self.event_count[:] /= (self.timestep_count * self.particulator.dt * self.particulator.mesh.dv)
+        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
         self.event_count[:] /= self.buffer[:]
         self.buffer[:] = self.event_count[:]
         self.timestep_count = 0
@@ -239,8 +239,8 @@ class DeactivatingRate(EventRate):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.core.observers.append(self)
-    self.condensation = self.core.dynamics[&#39;Condensation&#39;]
+    self.particulator.observers.append(self)
+    self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
     self.event_count = np.zeros_like(self.buffer)</code></pre>
 </details>
 </dd>

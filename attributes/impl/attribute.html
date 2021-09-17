@@ -29,19 +29,19 @@
 <pre><code class="python">class Attribute:
 
     def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
+        self.particulator = builder.particulator
         self.timestamp: int = 0
         self.data = None
         self.dtype = dtype
         self.size = size
         self.name = name
-        self.formulae = self.core.formulae
+        self.formulae = self.particulator.formulae
 
     def allocate(self, idx):
         if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
         else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
 
     def set_data(self, data):
         self.data = data
@@ -82,19 +82,19 @@
 <pre><code class="python">class Attribute:
 
     def __init__(self, builder, name, dtype=float, size=0):
-        self.core = builder.core
+        self.particulator = builder.particulator
         self.timestamp: int = 0
         self.data = None
         self.dtype = dtype
         self.size = size
         self.name = name
-        self.formulae = self.core.formulae
+        self.formulae = self.particulator.formulae
 
     def allocate(self, idx):
         if self.size &gt;= 1:
-            self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
         else:
-            self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
 
     def set_data(self, data):
         self.data = data
@@ -131,9 +131,9 @@
 </summary>
 <pre><code class="python">def allocate(self, idx):
     if self.size &gt;= 1:
-        self.data = self.core.IndexedStorage.empty(idx, (self.size, self.core.n_sd), dtype=self.dtype)
+        self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
     else:
-        self.data = self.core.IndexedStorage.empty(idx, (self.core.n_sd,), dtype=self.dtype)</code></pre>
+        self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.attributes.impl.attribute.Attribute.get"><code class="name flex">
