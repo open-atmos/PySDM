@@ -19,21 +19,21 @@ authors:
     affiliation: "1"
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "1"
+    affiliation: "2, 1"
   - name: Oleksii Bulenok
     orcid: 0000-0003-2272-8548
     affiliation: "1"
   - name: Kamil Górski
     affiliation: "1"
   - name: Anna Jaruga
-    affiliation: "2"
+    affiliation: "3"
     orcid: 0000-0003-3194-6440
   - name: Grzegorz Łazarski
-    affiliation: "1, 3"
+    affiliation: "1, 4"
     orcid: 0000-0002-5595-371X
   - name: Michael Olesik
     orcid: 0000-0002-6319-9358
-    affiliation: "4"
+    affiliation: "5"
   - name: Bartosz Piasecki
     affiliation: "1"
   - name: Aleksandra Talar
@@ -41,12 +41,14 @@ authors:
 affiliations:
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
+ - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 2
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
    index: 3
- - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 4
+ - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   index: 5
 bibliography: paper.bib
 
 ---
