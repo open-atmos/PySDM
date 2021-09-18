@@ -17,26 +17,26 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "1"
-  - name: Sylwester Arabas
+  - name: Sylwester&nbsp;Arabas
     orcid: 0000-0003-2361-0082
     affiliation: "2, 1"
-  - name: Oleksii Bulenok
+  - name: Oleksii&nbsp;Bulenok
     orcid: 0000-0003-2272-8548
     affiliation: "1"
-  - name: Kamil Górski
+  - name: Kamil&nbsp;Górski
     affiliation: "1"
-  - name: Anna Jaruga
+  - name: Anna&nbsp;Jaruga
     affiliation: "3"
     orcid: 0000-0003-3194-6440
-  - name: Grzegorz Łazarski
+  - name: Grzegorz&nbsp;Łazarski
     affiliation: "1, 4"
     orcid: 0000-0002-5595-371X
-  - name: Michael Olesik
+  - name: Michael&nbsp;Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "5"
-  - name: Bartosz Piasecki
+  - name: Bartosz&nbsp;Piasecki
     affiliation: "1"
-  - name: Aleksandra Talar
+  - name: Aleksandra&nbsp;Talar
     affiliation: "1"
 affiliations:
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -45,7 +45,7 @@ affiliations:
    index: 2
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
    index: 3
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
    index: 4
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 5
