@@ -14,7 +14,7 @@ setup(
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     install_requires=[
-        'ThrustRTC==0.3.8',  # https://github.com/fynv/ThrustRTC/issues/19
+        'ThrustRTC==0.3.13',  # https://github.com/fynv/ThrustRTC/issues/19
         'CURandRTC' + ('==0.1.6' if 'CI' in os.environ else '>=0.1.2'),
         'numba' + ('==0.54.0' if 'CI' in os.environ else '>=0.51.2'),
         'numpy' + ('==1.20.2' if 'CI' in os.environ else ''),
