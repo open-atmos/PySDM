@@ -1,5 +1,7 @@
 from PySDM_examples.Lowe_et_al_2019 import aerosol
 from PySDM.physics import si, Formulae, constants as const
+from PySDM.physics.surface_tension import compressed_film
+from .constants import constants
 from scipy import signal
 import numpy as np
 import pytest
@@ -34,7 +36,7 @@ class TestFig1:
                 (aerosol.AerosolNascent(), 500 * si.nm)
         )
     )
-    def test_kink_location(aerosol, cutoff):
+    def test_kink_location(constants, aerosol, cutoff):
         # arrange
         formulae = Formulae(surface_tension='CompressedFilm')
 
@@ -43,8 +45,8 @@ class TestFig1:
 
         # assert
         cutoff_idx = (np.abs(r_wet - cutoff)).argmin()
-        assert (sigma[:cutoff_idx] == const.sgm_org).all()
-        assert sigma[cutoff_idx] > const.sgm_org
+        assert (sigma[:cutoff_idx] == compressed_film.sgm_org).all()
+        assert sigma[cutoff_idx] > compressed_film.sgm_org
         assert .98 * const.sgm_w < sigma[-1] <= const.sgm_w
 
     @staticmethod
@@ -58,7 +60,7 @@ class TestFig1:
                 (aerosol.AerosolNascent(), 'CompressedFilm', 670 * si.nm, .104, True)
         )
     )
-    def test_koehler_maxima(aerosol, surface_tension, maximum_x, maximum_y, bimodal):
+    def test_koehler_maxima(constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
         label = {'CompressedFilm': 'film', 'Constant': 'bulk'}[surface_tension]
         formulae = Formulae(surface_tension=surface_tension)

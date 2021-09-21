@@ -1,9 +1,10 @@
+from PySDM.physics import constants as const, Formulae
+from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.dynamics import Freezing
 from PySDM.products import IceWaterContent
-from PySDM.physics import constants as const
 
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend  # TODO #599
@@ -31,7 +32,8 @@ class TestFreezingMethods:
         )
         rate = 1e-9
         immersed_surface_area = 1
-        J_het = rate / immersed_surface_area
+        constant.J_het = rate / immersed_surface_area
+
         number_of_real_droplets = 1024
         total_time = 2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
 
@@ -53,9 +55,10 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {'unfrozen_fraction': [], 'dt': case['dt'], 'N': case['N']}
 
-            builder = Builder(n_sd=n_sd, backend=CPU)
+            formulae = Formulae(heterogeneous_ice_nucleation_rate='Constant')
+            builder = Builder(n_sd=n_sd, backend=CPU, formulae=formulae)
             builder.set_environment(Box(dt=case['dt'], dv=dv))
-            builder.add_dynamic(Freezing(singular=False, J_het=J_het))
+            builder.add_dynamic(Freezing(singular=False))
             attributes = {
                 'n': np.full(n_sd, int(case['N'])),
                 'immersed surface area': np.full(n_sd, immersed_surface_area),
