@@ -36,12 +36,13 @@ Collection of physical constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)&#39;s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 &#34;&#34;&#34;
-
+import numpy as np
 import pint
 from scipy import constants as sci
 from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
 from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
+from numpy import nan
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:
@@ -113,11 +114,6 @@ rho_w = 1 * si.kilograms / si.litres
 rho_i = 916.8 * si.kg / si.metres**3
 pH_w = 7
 sgm_w = 0.072 * si.joule / si.metre ** 2
-sgm_org = 40 * si.mN / si.m
-
-# minimum organic film thickness
-# TODO #604 0.2 in the paper, but 0.1 matches the paper plots
-delta_min = 0.1 * si.nm
 
 p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
