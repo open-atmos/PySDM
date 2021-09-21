@@ -93,7 +93,8 @@ class Formulae:
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
                  hydrostatics: str = 'Default',
-                 freezing_temperature_spectrum: str = 'Niemand_et_al_2012'
+                 freezing_temperature_spectrum: str = 'Niemand_et_al_2012',
+                 heterogeneous_ice_nucleation_rate: str = 'Null'
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -113,6 +114,8 @@ class Formulae:
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
         self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
+        self.heterogeneous_ice_nucleation_rate = _magick(heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
+        self.check()
 
     def __str__(self):
         description = []
@@ -124,3 +127,9 @@ class Formulae:
                     value = getattr(self, attr).__class__.__name__
                 description.append(f"{attr}: {value}")
         return ', '.join(description)
+
+    def check(self):
+        for attr in dir(self):
+            if not attr.startswith('__'):
+                if hasattr(getattr(self, attr), '_check'):
+                    getattr(self, attr)._check()

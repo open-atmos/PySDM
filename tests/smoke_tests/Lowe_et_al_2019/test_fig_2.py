@@ -1,6 +1,7 @@
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
 from PySDM.initialisation import spectral_sampling
 from PySDM.physics import si
+from .constants import constants
 import pytest
 import numpy as np
 
@@ -15,7 +16,7 @@ class TestFig2:
         (aerosol.AerosolNascent(), "Constant", .42, 90),
         (aerosol.AerosolNascent(), "CompressedFilm", .34, 150)
     ))
-    def test_peak_supersaturation_and_final_concentration(aerosol, surface_tension, s_max, n_final):
+    def test_peak_supersaturation_and_final_concentration(constants, aerosol, surface_tension, s_max, n_final):
         # arrange
         settings = Settings(
             dt=2 * si.s, n_sd_per_mode=32,

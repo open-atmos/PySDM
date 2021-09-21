@@ -23,12 +23,14 @@ class FreezingMethods:
                     _freeze(v_wet, i)
         self.freeze_singular_body = freeze_singular_body
 
+        J_het = self.formulae.heterogeneous_ice_nucleation_rate.J_het
+
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, immersed_surface_area, volume, J_het, dt):
+        def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt):
             n_sd = len(volume)
             for i in numba.prange(n_sd):
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het * immersed_surface_area[i] * dt)  # TODO #599: assert if > 1?
+                    p = 1 - np.exp(-J_het() * immersed_surface_area[i] * dt)  # TODO #599: assert if > 1?
                     if rand[i] < p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -36,5 +38,5 @@ class FreezingMethods:
     def freeze_singular(self, T_fz, v_wet, T, RH, cell):
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
-    def freeze_time_dependent(self, rand, immersed_surface_area, volume, J_het, dt):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, J_het, dt)
+    def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt):
+        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt)
