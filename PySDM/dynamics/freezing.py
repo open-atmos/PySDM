@@ -40,7 +40,10 @@ class Freezing:
                 rand=self.rand,
                 immersed_surface_area=self.particulator.attributes['immersed surface area'],
                 volume=self.particulator.attributes['volume'],
-                dt=self.particulator.dt
+                dt=self.particulator.dt,
+                T=self.particulator.environment['T'],
+                cell=self.particulator.attributes['cell id'],
+                a_w_ice=self.particulator.environment['a_w_ice']
             )
 
         self.particulator.attributes.attributes['volume'].mark_updated()

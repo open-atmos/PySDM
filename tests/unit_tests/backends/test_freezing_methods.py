@@ -57,7 +57,8 @@ class TestFreezingMethods:
 
             formulae = Formulae(heterogeneous_ice_nucleation_rate='Constant')
             builder = Builder(n_sd=n_sd, backend=CPU, formulae=formulae)
-            builder.set_environment(Box(dt=case['dt'], dv=dv))
+            env = Box(dt=case['dt'], dv=dv)
+            builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
                 'n': np.full(n_sd, int(case['N'])),
@@ -66,6 +67,9 @@ class TestFreezingMethods:
             }
             products = (IceWaterContent(specific=False),)
             particulator = builder.build(attributes=attributes, products=products)
+
+            env['T'] = np.nan
+            env['a_w_ice'] = np.nan
 
             cell_id = 0
             for i in range(int(total_time / case['dt']) + 1):

@@ -115,7 +115,7 @@ class Formulae:
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
         self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
         self.heterogeneous_ice_nucleation_rate = _magick(heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
-        self.check()
+        self.__check()
 
     def __str__(self):
         description = []
@@ -128,7 +128,7 @@ class Formulae:
                 description.append(f"{attr}: {value}")
         return ', '.join(description)
 
-    def check(self):
+    def __check(self):
         for attr in dir(self):
             if not attr.startswith('__'):
                 if hasattr(getattr(self, attr), '_check'):
