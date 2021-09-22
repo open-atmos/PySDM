@@ -8,5 +8,5 @@ class Constant:
         assert np.isfinite(J_het)
 
     @staticmethod
-    def J_het(T, a_w_ice):
+    def J_het(a_w_ice):
         return J_het

@@ -1,4 +1,4 @@
 class Null:
     @staticmethod
-    def J_het(T, a_w_ice):
+    def J_het(a_w_ice):
         pass

@@ -68,7 +68,6 @@ class TestFreezingMethods:
             products = (IceWaterContent(specific=False),)
             particulator = builder.build(attributes=attributes, products=products)
 
-            env['T'] = np.nan
             env['a_w_ice'] = np.nan
 
             cell_id = 0
