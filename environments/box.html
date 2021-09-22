@@ -32,6 +32,7 @@ Bare zero-dimensional framework
 &#34;&#34;&#34;
 
 from PySDM.state.mesh import Mesh
+import numpy as np
 
 
 class Box:
@@ -40,6 +41,13 @@ class Box:
         self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
         self.particulator = None
+        self._ambient_air = {}
+
+    def __getitem__(self, item):
+        return self._ambient_air[item]
+
+    def __setitem__(self, key, value):
+        self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -75,6 +83,13 @@ class Box:
         self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
         self.particulator = None
+        self._ambient_air = {}
+
+    def __getitem__(self, item):
+        return self._ambient_air[item]
+
+    def __setitem__(self, key, value):
+        self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
 
     def register(self, builder):
         self.particulator = builder.particulator

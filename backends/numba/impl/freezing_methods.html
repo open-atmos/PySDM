@@ -54,11 +54,11 @@ class FreezingMethods:
         J_het = self.formulae.heterogeneous_ice_nucleation_rate.J_het
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt):
+        def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt, cell, a_w_ice):
             n_sd = len(volume)
             for i in numba.prange(n_sd):
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het() * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
+                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -66,8 +66,8 @@ class FreezingMethods:
     def freeze_singular(self, T_fz, v_wet, T, RH, cell):
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
-    def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt)</code></pre>
+    def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
+        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
 </details>
 </section>
 <section>
@@ -110,11 +110,11 @@ class FreezingMethods:
         J_het = self.formulae.heterogeneous_ice_nucleation_rate.J_het
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt):
+        def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt, cell, a_w_ice):
             n_sd = len(volume)
             for i in numba.prange(n_sd):
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het() * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
+                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -122,8 +122,8 @@ class FreezingMethods:
     def freeze_singular(self, T_fz, v_wet, T, RH, cell):
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
-    def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt)</code></pre>
+    def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
+        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -145,7 +145,7 @@ class FreezingMethods:
 </details>
 </dd>
 <dt id="PySDM.backends.numba.impl.freezing_methods.FreezingMethods.freeze_time_dependent"><code class="name flex">
-<span>def <span class="ident">freeze_time_dependent</span></span>(<span>self, rand, immersed_surface_area, volume, dt)</span>
+<span>def <span class="ident">freeze_time_dependent</span></span>(<span>self, rand, immersed_surface_area, volume, dt, cell, a_w_ice)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -153,8 +153,8 @@ class FreezingMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt):
-    self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt)</code></pre>
+<pre><code class="python">def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
+    self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
 </details>
 </dd>
 </dl>

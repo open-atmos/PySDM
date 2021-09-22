@@ -144,7 +144,7 @@ class Formulae:
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
         self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
         self.heterogeneous_ice_nucleation_rate = _magick(heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
-        self.check()
+        self.__check()
 
     def __str__(self):
         description = []
@@ -157,7 +157,7 @@ class Formulae:
                 description.append(f&#34;{attr}: {value}&#34;)
         return &#39;, &#39;.join(description)
 
-    def check(self):
+    def __check(self):
         for attr in dir(self):
             if not attr.startswith(&#39;__&#39;):
                 if hasattr(getattr(self, attr), &#39;_check&#39;):
@@ -221,7 +221,7 @@ class Formulae:
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
         self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
         self.heterogeneous_ice_nucleation_rate = _magick(heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
-        self.check()
+        self.__check()
 
     def __str__(self):
         description = []
@@ -234,31 +234,12 @@ class Formulae:
                 description.append(f&#34;{attr}: {value}&#34;)
         return &#39;, &#39;.join(description)
 
-    def check(self):
+    def __check(self):
         for attr in dir(self):
             if not attr.startswith(&#39;__&#39;):
                 if hasattr(getattr(self, attr), &#39;_check&#39;):
                     getattr(self, attr)._check()</code></pre>
 </details>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.physics.formulae.Formulae.check"><code class="name flex">
-<span>def <span class="ident">check</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def check(self):
-    for attr in dir(self):
-        if not attr.startswith(&#39;__&#39;):
-            if hasattr(getattr(self, attr), &#39;_check&#39;):
-                getattr(self, attr)._check()</code></pre>
-</details>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -278,9 +259,6 @@ class Formulae:
 <ul>
 <li>
 <h4><code><a title="PySDM.physics.formulae.Formulae" href="#PySDM.physics.formulae.Formulae">Formulae</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.physics.formulae.Formulae.check" href="#PySDM.physics.formulae.Formulae.check">check</a></code></li>
-</ul>
 </li>
 </ul>
 </li>
