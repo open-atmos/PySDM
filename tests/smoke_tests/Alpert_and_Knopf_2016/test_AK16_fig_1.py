@@ -35,7 +35,7 @@ def test_AK16_fig_1(multiplicity, plot=False):
             assert int(n_sd) == n_sd
             n_sd = int(n_sd)
 
-            data = simulation(seed=i, n_sd=n_sd, dt=dt, dv=dv, spectrum=case['ISA'],
+            data, _ = simulation(seed=i, n_sd=n_sd, dt=dt, dv=dv, spectrum=case['ISA'],
                           droplet_volume=droplet_volume, multiplicity=multiplicity, J_het=J_het,
                           total_time=total_time, number_of_real_droplets=number_of_real_droplets)
             output[key].append(data)
