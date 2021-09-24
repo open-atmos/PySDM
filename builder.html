@@ -48,10 +48,10 @@ import inspect
 
 class Builder:
 
-    def __init__(self, n_sd, backend, formulae=Formulae()):
-        assert inspect.isclass(backend)
-        self.formulae = formulae
-        self.particulator = Particulator(n_sd, backend(formulae))
+    def __init__(self, n_sd, backend):
+        assert not inspect.isclass(backend)
+        self.formulae = backend.formulae
+        self.particulator = Particulator(n_sd, backend)
         self.req_attr = {&#39;n&#39;: Multiplicities(self), &#39;volume&#39;: Volume(self), &#39;cell id&#39;: CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
@@ -144,7 +144,7 @@ def assert_none(*params):
 <dl>
 <dt id="PySDM.builder.Builder"><code class="flex name class">
 <span>class <span class="ident">Builder</span></span>
-<span>(</span><span>n_sd, backend, formulae=&lt;PySDM.physics.formulae.Formulae object&gt;)</span>
+<span>(</span><span>n_sd, backend)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -154,10 +154,10 @@ def assert_none(*params):
 </summary>
 <pre><code class="python">class Builder:
 
-    def __init__(self, n_sd, backend, formulae=Formulae()):
-        assert inspect.isclass(backend)
-        self.formulae = formulae
-        self.particulator = Particulator(n_sd, backend(formulae))
+    def __init__(self, n_sd, backend):
+        assert not inspect.isclass(backend)
+        self.formulae = backend.formulae
+        self.particulator = Particulator(n_sd, backend)
         self.req_attr = {&#39;n&#39;: Multiplicities(self), &#39;volume&#39;: Volume(self), &#39;cell id&#39;: CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None

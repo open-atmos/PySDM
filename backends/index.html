@@ -122,7 +122,7 @@ alias for ThrustRTC
 <dl>
 <dt id="PySDM.backends.Numba"><code class="flex name class">
 <span>class <span class="ident">CPU</span></span>
-<span>(</span><span>formulae)</span>
+<span>(</span><span>formulae=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -145,8 +145,8 @@ alias for ThrustRTC
 
     default_croupier = &#39;local&#39;
 
-    def __init__(self, formulae):
-        self.formulae = formulae
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
         PhysicsMethods.__init__(self)
         ChemistryMethods.__init__(self)
         FreezingMethods.__init__(self)</code></pre>
@@ -199,7 +199,7 @@ alias for ThrustRTC
 </dd>
 <dt id="PySDM.backends.ThrustRTC"><code class="flex name class">
 <span>class <span class="ident">GPU</span></span>
-<span>(</span><span>formulae)</span>
+<span>(</span><span>formulae=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -221,8 +221,8 @@ alias for ThrustRTC
 
     default_croupier = &#39;global&#39;
 
-    def __init__(self, formulae):
-        self.formulae = formulae
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
         AlgorithmicMethods.__init__(self)
