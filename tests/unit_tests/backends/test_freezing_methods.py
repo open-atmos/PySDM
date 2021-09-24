@@ -56,7 +56,7 @@ class TestFreezingMethods:
             output[key] = {'unfrozen_fraction': [], 'dt': case['dt'], 'N': case['N']}
 
             formulae = Formulae(heterogeneous_ice_nucleation_rate='Constant')
-            builder = Builder(n_sd=n_sd, backend=CPU, formulae=formulae)
+            builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
             env = Box(dt=case['dt'], dv=dv)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))

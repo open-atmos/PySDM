@@ -12,6 +12,7 @@ from PySDM.backends.thrustRTC.impl.moments_methods import MomentsMethods
 from PySDM.backends.thrustRTC.impl.condensation_methods import CondensationMethods
 from PySDM.backends.thrustRTC.storage import Storage as ImportedStorage
 from PySDM.backends.thrustRTC.random import Random as ImportedRandom
+from PySDM.physics import Formulae
 
 
 class ThrustRTC(
@@ -28,8 +29,8 @@ class ThrustRTC(
 
     default_croupier = 'global'
 
-    def __init__(self, formulae):
-        self.formulae = formulae
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
         AlgorithmicMethods.__init__(self)

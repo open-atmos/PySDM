@@ -49,7 +49,7 @@ def test_coalescence(backend, croupier, adaptive):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    builder = Builder(n_sd=n_sd, backend=backend, formulae=formulae)
+    builder = Builder(n_sd=n_sd, backend=backend(formulae=formulae))
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)

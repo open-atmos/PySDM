@@ -17,10 +17,10 @@ import inspect
 
 class Builder:
 
-    def __init__(self, n_sd, backend, formulae=Formulae()):
-        assert inspect.isclass(backend)
-        self.formulae = formulae
-        self.particulator = Particulator(n_sd, backend(formulae))
+    def __init__(self, n_sd, backend):
+        assert not inspect.isclass(backend)
+        self.formulae = backend.formulae
+        self.particulator = Particulator(n_sd, backend)
         self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
         self.aerosol_radius_threshold = 0
         self.condensation_params = None

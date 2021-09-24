@@ -12,6 +12,7 @@ from .impl.freezing_methods import FreezingMethods
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.random import Random as ImportedRandom
 from PySDM.backends.numba.storage import Storage as ImportedStorage
+from PySDM.physics import Formulae
 
 
 class Numba(
@@ -29,8 +30,8 @@ class Numba(
 
     default_croupier = 'local'
 
-    def __init__(self, formulae):
-        self.formulae = formulae
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
         PhysicsMethods.__init__(self)
         ChemistryMethods.__init__(self)
         FreezingMethods.__init__(self)

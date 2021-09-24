@@ -25,7 +25,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
     s.formulae.seed = 0
     steps = [0, 800]
 
-    builder = Builder(n_sd=s.n_sd, backend=backend, formulae=s.formulae)
+    builder = Builder(n_sd=s.n_sd, backend=backend(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
@@ -55,7 +55,7 @@ def test_coalescence_2_sd(backend):
     steps = [0, 200]
     s.n_sd = 2
 
-    builder = Builder(n_sd=s.n_sd, backend=backend, formulae=s.formulae)
+    builder = Builder(n_sd=s.n_sd, backend=backend(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)

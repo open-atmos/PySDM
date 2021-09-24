@@ -180,7 +180,7 @@ ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectr
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
-builder = Builder(n_sd=n_sd, backend=CPU)
+builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
@@ -200,7 +200,7 @@ ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').Par
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
@@ -221,7 +221,7 @@ from PySDM.products.state import ParticlesVolumeSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU)
+builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)]
@@ -369,7 +369,7 @@ output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU, n_sd=n_sd)
+builder = Builder(backend=CPU(), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
@@ -450,7 +450,7 @@ output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-builder = Builder(pyargs('backend', CPU, 'n_sd', int32(n_sd)));
+builder = Builder(pyargs('backend', CPU(), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
@@ -545,7 +545,7 @@ output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU, n_sd=n_sd)
+builder = Builder(backend=CPU(), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
