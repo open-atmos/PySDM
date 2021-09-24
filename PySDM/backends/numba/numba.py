@@ -30,8 +30,8 @@ class Numba(
 
     default_croupier = 'local'
 
-    def __init__(self, formulae=Formulae()):
-        self.formulae = formulae
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
         PhysicsMethods.__init__(self)
         ChemistryMethods.__init__(self)
         FreezingMethods.__init__(self)
