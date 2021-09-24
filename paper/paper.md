@@ -161,14 +161,14 @@ from PySDM.products import ParticlesVolumeSpectrum
 radius_bins_edges = np.logspace(
     np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU)
+builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticlesVolumeSpectrum(radius_bins_edges)]
 particulator = builder.build(attributes, products)
 ```
 
-The `backend` argument may be set to either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
+The `backend` argument may be set to an instance of either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
 The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
 The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of v1.3 represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
 Finally, the `build()` method is used to obtain an instance of the `Particulator` class which can then be used to control time-stepping and access simulation state
