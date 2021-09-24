@@ -32,7 +32,7 @@ class _TestParticulator:
     def __init__(self, backend, n_sd=-1, max_iters=-1, multiplicity=-1,
                  dt=np.nan, dv=np.nan, rhod=np.nan, thd=np.nan, qv=np.nan, T=np.nan, p=np.nan, RH=np.nan,
                  dry_volume=np.nan, wet_radius=np.nan):
-        builder = Builder(n_sd=n_sd, backend=backend)
+        builder = Builder(n_sd=n_sd, backend=backend())
         builder.set_environment(_TestEnv(dt=dt, dv=dv, rhod=rhod, thd=thd, qv=qv, T=T, p=p, RH=RH))
         builder.add_dynamic(Condensation(max_iters=max_iters))
         self.particulator = builder.build(attributes={
