@@ -28,9 +28,11 @@ class pH(DerivedAttribute):
         S_IV = self.conc["S_IV"].get()
         S_VI = self.conc["S_VI"].get()
 
-        self.particulator.bck.equilibrate_H(dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
-                                    dynamic.do_chemistry_flag, self.data,
-                                    H_min=dynamic.pH_H_min,
-                                    H_max=dynamic.pH_H_max,
-                                    ionic_strength_threshold=dynamic.ionic_strength_threshold,
-                                    rtol=dynamic.pH_rtol)
+        self.particulator.bck.equilibrate_H(
+            dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+            dynamic.do_chemistry_flag, self.data,
+            H_min=dynamic.pH_H_min,
+            H_max=dynamic.pH_H_max,
+            ionic_strength_threshold=dynamic.ionic_strength_threshold,
+            rtol=dynamic.pH_rtol
+        )

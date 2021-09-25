@@ -14,16 +14,17 @@ For details on PySDM dependencies and installation procedures, see project
 which also includes basic usage examples in **Python**, **Julia** and **Matlab**.
 
 A set of more elaborate examples engineered in Python and accompanied with Jupyter
-notebooks are maintained in the [PySDM-examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples).
+notebooks are maintained in the
+[PySDM-examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples).
 
 PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in the
 [tests package](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/tests).
 """
 
+from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 from .builder import Builder
 from .particulator import Particulator
 
-from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 try:
     __version__ = get_distribution(__name__).version
 except (DistributionNotFound, VersionConflict):

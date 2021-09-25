@@ -1,12 +1,12 @@
-import PySDM.physics.constants as const
-from PySDM.backends.numba.numba import Numba
-from PySDM.backends.numba.conf import JIT_FLAGS
 import numpy as np
 import numba
 import scipy.integrate
 import types
 import warnings
 from functools import lru_cache
+import PySDM.physics.constants as const
+from PySDM.backends.numba.numba import Numba
+from PySDM.backends.numba.conf import JIT_FLAGS
 
 idx_thd = 0
 idx_x = 1

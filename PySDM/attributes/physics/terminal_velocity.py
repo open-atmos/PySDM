@@ -13,4 +13,3 @@ class TerminalVelocity(DerivedAttribute):
 
     def recalculate(self):
         self.approximation(self.data, self.radius.get())
-
