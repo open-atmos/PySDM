@@ -145,14 +145,14 @@ class ChemistryMethods:
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts, cell_id, pH):
         for i in range(len(pH)):
             H = self.formulae.trivia.pH2H(pH.data[i])
-            for key in DIFFUSION_CONST.keys():
+            for key in DIFFUSION_CONST:
                 dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
 
     def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
         for i in range(len(T)):
-            for key in equilibrium_consts.keys():
+            for key in equilibrium_consts:
                 equilibrium_consts[key].data[i] = self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
-            for key in kinetic_consts.keys():
+            for key in kinetic_consts:
                 kinetic_consts[key].data[i] = self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
 
     def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,

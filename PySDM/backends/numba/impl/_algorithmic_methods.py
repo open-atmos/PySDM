@@ -93,11 +93,11 @@ class AlgorithmicMethods:
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
-            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data, cell_origin.data,
-                                                              position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data,
+                                                              cell_origin.data, position_in_cell.data)
         elif n_dims == 2:
-            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data, cell_origin.data,
-                                                              position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data,
+                                                              cell_origin.data, position_in_cell.data)
         else:
             raise NotImplementedError()
 
@@ -135,7 +135,8 @@ class AlgorithmicMethods:
     @staticmethod
     def coalescence(n, idx, attributes, gamma, healthy, is_first_in_pair):
         AlgorithmicMethods.coalescence_body(n.data, idx.data, len(idx),
-                                            attributes.data, gamma.data, healthy.data, is_first_in_pair.indicator.data)
+                                            attributes.data, gamma.data, healthy.data,
+                                            is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -213,7 +214,8 @@ class AlgorithmicMethods:
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         return AlgorithmicMethods.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, len(is_first_in_pair), unit)
+            params, output.data, radii.data, is_first_in_pair.indicator.data,
+            radii.idx.data, len(is_first_in_pair), unit)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

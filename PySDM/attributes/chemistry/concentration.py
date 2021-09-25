@@ -10,5 +10,3 @@ def Concentration(what):
     def _constructor(pb):
         return ConcentrationImpl(pb, what=what)
     return _constructor
-
-

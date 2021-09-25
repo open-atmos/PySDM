@@ -1,6 +1,7 @@
 import numpy as np
 
-from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, MaximumAttribute, DummyAttribute
+from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, \
+    MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.state.particles import Particles
 
@@ -18,7 +19,8 @@ class ParticlesFactory:
                 extensive_attr.append(attr_name)
             elif isinstance(req_attr[attr_name], MaximumAttribute):
                 maximum_attr.append(attr_name)
-            elif not isinstance(req_attr[attr_name], (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
+            elif not isinstance(req_attr[attr_name],
+                                (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
         extensive_attributes = particulator.IndexedStorage.empty(idx, (len(extensive_attr), particulator.n_sd), float)
@@ -40,7 +42,7 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError:
-                    raise ValueError(f"attribute '{attr}' required by one of the processes but initial values not provided")
+                    raise ValueError(f"attribute '{attr}' required by one of the dynamics but no initial values given")
 
         helper(req_attr, attributes, extensive_attr, extensive_attributes, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)

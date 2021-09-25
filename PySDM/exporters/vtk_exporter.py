@@ -64,4 +64,3 @@ class VTKExporter:
 
     def add_leading_zeros(self, a):
         return ''.join(['0' for i in range(self.num_len - len(str(a)))]) + str(a)
-    

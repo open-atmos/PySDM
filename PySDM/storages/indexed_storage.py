@@ -37,13 +37,12 @@ def make_IndexedStorage(backend):
             dim = len(self.shape)
             if raw:
                 return result
-            elif dim == 1:
+            if dim == 1:
                 idx = self.idx.to_ndarray()
                 return result[idx[:len(self)]]
-            elif dim == 2:
+            if dim == 2:
                 idx = self.idx.to_ndarray()
                 return result[:, idx[:len(self)]]
-            else:
-                raise NotImplementedError()
+            raise NotImplementedError()
 
     return IndexedStorage

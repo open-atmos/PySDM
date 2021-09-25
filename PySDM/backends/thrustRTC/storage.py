@@ -219,4 +219,3 @@ class Storage:
             trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
             self.data
         )
-

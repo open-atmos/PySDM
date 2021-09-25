@@ -57,13 +57,13 @@ else:
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
     ThrustRTC.Random = Random
-   
+
 CPU = Numba
-""" 
-alias for Numba 
+"""
+alias for Numba
 """
 
 GPU = ThrustRTC
-""" 
-alias for ThrustRTC 
+"""
+alias for ThrustRTC
 """
