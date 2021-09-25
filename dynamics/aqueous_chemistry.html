@@ -84,14 +84,14 @@ class AqueousChemistry:
         if self.pH_H_min is None:
             self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
-        for key in AQUEOUS_COMPOUNDS.keys():
+        for key in AQUEOUS_COMPOUNDS:
             builder.request_attribute(&#34;conc_&#34; + key)
 
-        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
             self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-        for key in DIFFUSION_CONST.keys():
+        for key in DIFFUSION_CONST:
             self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
         self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
@@ -188,14 +188,14 @@ class AqueousChemistry:
         if self.pH_H_min is None:
             self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
-        for key in AQUEOUS_COMPOUNDS.keys():
+        for key in AQUEOUS_COMPOUNDS:
             builder.request_attribute(&#34;conc_&#34; + key)
 
-        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+        for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+        for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
             self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-        for key in DIFFUSION_CONST.keys():
+        for key in DIFFUSION_CONST:
             self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
         self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
@@ -257,14 +257,14 @@ class AqueousChemistry:
     if self.pH_H_min is None:
         self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
 
-    for key in AQUEOUS_COMPOUNDS.keys():
+    for key in AQUEOUS_COMPOUNDS:
         builder.request_attribute(&#34;conc_&#34; + key)
 
-    for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST.keys():
+    for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
         self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-    for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST.keys():
+    for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
         self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-    for key in DIFFUSION_CONST.keys():
+    for key in DIFFUSION_CONST:
         self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
     self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)</code></pre>
 </details>
