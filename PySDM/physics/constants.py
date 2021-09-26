@@ -10,6 +10,8 @@ from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
 from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
 from numpy import nan
+import os
+import time 
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:
@@ -102,4 +104,6 @@ dT_u = si.K
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 K_H2O = 1e-14 * M * M
 
-default_random_seed = 44  # https://en.wikipedia.org/wiki/44_(number)
+default_random_seed = \
+    44 if 'CI' in os.environ \ # https://en.wikipedia.org/wiki/44_(number)
+    else int(time.time()) 
