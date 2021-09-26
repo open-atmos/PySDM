@@ -1,7 +1,7 @@
-import numba
 import warnings
 import os
-    
+import numba
+
 JIT_FLAGS = dict(
     parallel=True,
     fastmath=True,
@@ -15,4 +15,3 @@ except numba.core.errors.UnsupportedParforsError:
     if 'CI' not in os.environ:
         warnings.warn("Numba version used does not support parallel for (32 bits?)")
     JIT_FLAGS['parallel'] = False
-
