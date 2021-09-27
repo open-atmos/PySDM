@@ -1,8 +1,8 @@
-import numba
 import numpy as np
 import math
 from functools import lru_cache
 from .warnings import warn
+import numba
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
