@@ -1,3 +1,4 @@
+from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM_examples.Alpert_and_Knopf_2016 import simulation, Table1
 from PySDM.physics import si, constants as const, Formulae
 from PySDM.physics.spectra import Lognormal
@@ -10,7 +11,7 @@ n_runs_per_case = 3
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
 def test_AK16_fig_1(multiplicity, plot=False):
     # Arrange
-    J_het = 1e3 / si.cm ** 2 / si.s
+    constant.J_het = 1e3 / si.cm ** 2 / si.s
     A_g = 1e-5 * si.cm ** 2
 
     dt = 1 * si.s
@@ -36,7 +37,7 @@ def test_AK16_fig_1(multiplicity, plot=False):
             n_sd = int(n_sd)
 
             data, _ = simulation(seed=i, n_sd=n_sd, dt=dt, dv=dv, spectrum=case['ISA'],
-                          droplet_volume=droplet_volume, multiplicity=multiplicity, J_het=J_het,
+                          droplet_volume=droplet_volume, multiplicity=multiplicity,
                           total_time=total_time, number_of_real_droplets=number_of_real_droplets)
             output[key].append(data)
 
