@@ -81,7 +81,6 @@ class Particulator:
             self.env.get_predicted('p'),
             self.env.get_predicted('RH')
         )
-        # TODO #443: mark_updated
 
     def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
