@@ -26,4 +26,4 @@ jobs:
         pip install -r test-time-requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --disable=fixme $(git ls-files '*.py')
+        pylint --exit-zero --disable=fixme $(git ls-files '*.py')
