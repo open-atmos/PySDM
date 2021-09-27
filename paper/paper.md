@@ -37,6 +37,7 @@ authors:
   - name: Bartosz&nbsp;Piasecki
     affiliation: "1"
   - name: Clare&nbsp;E.&nbsp;Singer
+    orcid: 0000-0002-1708-0997
     affiliation: "3"
   - name: Aleksandra&nbsp;Talar
     affiliation: "1"
