@@ -36,6 +36,8 @@ authors:
     affiliation: "5"
   - name: Bartosz&nbsp;Piasecki
     affiliation: "1"
+  - name: Clare&nbsp;E.&nbsp;Singer
+    affiliation: "3"
   - name: Aleksandra&nbsp;Talar
     affiliation: "1"
 affiliations:
@@ -244,6 +246,10 @@ A polydisperse lognormal spectrum represented with multiple super-droplets is us
   based on the work of @Yang_et_al_2018.
 Presented simulations involve repeated ascent-descent cycles and depict the evolution of partitioning between
   activated and unactivated particles.
+Similarly, polydisperse lognormal spectra are used in the example based on @Lowe_et_al_2019, where additionally
+  each lognormal mode has a different hygroscopicity.
+The @Lowe_et_al_2019 example additionally features representation of droplet surface tension reduction 
+  by organics.
   
 Finally, there are two examples featuring adiabatic
   parcel simulations involving representation of the dynamics of chemical composition of both ambient air and
@@ -326,7 +332,7 @@ PySDM 1.0 release accompanied PB's MSc thesis prepared under the mentorship of S
 MO contributed to the development of the condensation solver and led the development of relevant examples.
 GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM under guidance from AJ.
 KG and BP contributed to the GPU backend.
-AT contributed to the examples.
+CS and AT contributed to the examples.
 OB contributed the VTK exporter.
 The paper was composed by SA and PB and is partially based on the content of the PySDM README file and PB's MSc thesis.
 
