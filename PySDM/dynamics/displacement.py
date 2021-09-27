@@ -56,7 +56,7 @@ class Displacement:
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
-            self.particulfator.bck.calculate_displacement(
+            self.particulator.bck.calculate_displacement(
                 dim, displacement, courant[dim], cell_origin, position_in_cell)
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]
