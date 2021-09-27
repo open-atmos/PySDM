@@ -56,7 +56,7 @@ class Displacement:
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):
-            self.particulator.bck.calculate_displacement(
+            self.particulfator.bck.calculate_displacement(
                 dim, displacement, courant[dim], cell_origin, position_in_cell)
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]
@@ -75,6 +75,4 @@ class Displacement:
         position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
-        # TODO #414 hardcoded periodic
-        # TODO #414 droplets above the mesh
         cell_origin %= self.grid
