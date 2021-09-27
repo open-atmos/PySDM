@@ -106,5 +106,5 @@ K_H2O = 1e-14 * M * M
 
 default_random_seed = (
     44 if 'CI' in os.environ  # https://en.wikipedia.org/wiki/44_(number)
-    else int(time.time())
+    else time.time_ns()
 )

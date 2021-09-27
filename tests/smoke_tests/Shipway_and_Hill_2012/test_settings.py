@@ -25,4 +25,4 @@ class TestSettings:
     @staticmethod
     def test_rhod():
         settings = Settings(n_sd_per_gridbox=1, rho_times_w_1=1)
-        assert settings.rhod  # TODO #414
+        assert settings.rhod
