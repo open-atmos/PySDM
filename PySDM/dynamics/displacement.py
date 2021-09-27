@@ -50,7 +50,6 @@ class Displacement:
         self.boundary_condition(cell_origin)
         self.particulator.attributes.recalculate_cell_id()
 
-        # TODO #443
         self.particulator.attributes.attributes['position in cell'].mark_updated()
         self.particulator.attributes.attributes['cell origin'].mark_updated()
         self.particulator.attributes.attributes['cell id'].mark_updated()
@@ -76,6 +75,4 @@ class Displacement:
         position_in_cell -= floor_of_position
 
     def boundary_condition(self, cell_origin):
-        # TODO #414 hardcoded periodic
-        # TODO #414 droplets above the mesh
         cell_origin %= self.grid
