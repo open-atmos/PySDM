@@ -21,7 +21,7 @@ def test_AK16_fig_1(multiplicity, plot=False):
     dv = 1 * si.cm ** 3  # will become used if coalescence or other processes are turned on
     droplet_volume = 1 * si.um ** 3  # ditto
 
-    cases = Table1(dv=dv)
+    cases = Table1(volume=dv)
 
     # Act
     output = {}
@@ -36,7 +36,7 @@ def test_AK16_fig_1(multiplicity, plot=False):
             assert int(n_sd) == n_sd
             n_sd = int(n_sd)
 
-            data, _ = simulation(seed=i, n_sd=n_sd, dt=dt, dv=dv, spectrum=case['ISA'],
+            data, _ = simulation(seed=i, n_sd=n_sd, time_step=dt, volume=dv, spectrum=case['ISA'],
                           droplet_volume=droplet_volume, multiplicity=multiplicity,
                           total_time=total_time, number_of_real_droplets=number_of_real_droplets)
             output[key].append(data)
