@@ -130,7 +130,7 @@ class Particles:
                               attr_range[0], attr_range[1],
                               self[attr_name])
 
-    def coalescence(self, gamma, is_first_in_pair):
+    '''def coalescence(self, gamma, is_first_in_pair):
         self.core.bck.coalescence(n=self['n'],
                                   idx=self.__idx,
                                   length=self.SD_num,
@@ -144,10 +144,32 @@ class Particles:
         self.attributes['n'].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
-                attr.mark_updated()
+                attr.mark_updated()'''
                 
+    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment, is_first_in_pair):
+        self.core.bck.collision(n=self['n'],
+                                idx=self.__idx,
+                                length=self.SD_num,
+                                attributes=self.get_extensive_attrs(),
+                                gamma=gamma,
+                                rand=rand,
+                                dyn=dyn,
+                                Ec=Ec,
+                                Eb=Eb,
+                                n_fragment=n_fragment,
+                                healthy=self.__healthy_memory,
+                                is_first_in_pair=is_first_in_pair
+                               )
+        self.healthy = bool(self.__healthy_memory)
+        self.core.particles.sanitize()
+        self.attributes['n'].mark_updated()
+        for attr in self.attributes.values():
+            if isinstance(attr, ExtensiveAttribute):
+                attr.mark_updated()
+            
+        
     ## TODO Emily: def breakup(self, gamma, n_fragment, is_first_in_pair)
-    def breakup(self, gamma, n_fragment, is_first_in_pair):
+    '''def breakup(self, gamma, n_fragment, is_first_in_pair):
         self.core.bck.breakup(n=self['n'],
                               idx=self.__idx,
                               length=self.SD_num,
@@ -162,7 +184,7 @@ class Particles:
         self.attributes['n'].mark_updated()
         for attr in self.attributes.values():
             if isinstance(attr, ExtensiveAttribute):
-                attr.mark_updated()
+                attr.mark_updated()'''
 
     def adaptive_sdm_end(self, dt_left):
         return self.core.bck.adaptive_sdm_end(dt_left, self.core.particles.cell_start)
