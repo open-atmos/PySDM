@@ -76,6 +76,8 @@ attributes = {
 
 
 def get_class(name, dynamics):
+    if name not in attributes:
+        raise ValueError(f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;)
     return attributes[name](dynamics)</code></pre>
 </details>
 </section>
@@ -96,6 +98,8 @@ def get_class(name, dynamics):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_class(name, dynamics):
+    if name not in attributes:
+        raise ValueError(f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;)
     return attributes[name](dynamics)</code></pre>
 </details>
 </dd>
