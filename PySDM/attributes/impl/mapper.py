@@ -48,4 +48,6 @@ attributes = {
 
 
 def get_class(name, dynamics):
+    if name not in attributes:
+        raise ValueError(f"Unknown attribute name: {name}; valid names: {', '.join(attributes)}")
     return attributes[name](dynamics)
