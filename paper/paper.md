@@ -260,7 +260,7 @@ The examples reproduce the simulations discussed in @Kreidenweis_et_al_2003 and 
 ### Kinematic (prescribed-flow) examples
 
 Coupling of `PySDM` with fluid-flow simulation is depicted with both 1D and 2D prescribed-flow simulations,
-  both dependent on the `PyMPDATA` package [@Arabas_et_al_2021] implementing the MPDATA advection 
+  both dependent on the `PyMPDATA` package [@Bartman_et_al_2021] implementing the MPDATA advection 
   algorithm. For a review on MPDATA, see e.g., @Smolarkiewicz_2006.
 
 Usage of the `kinematic_1d` environment is depicted in an example based on the work of @Shipway_and_Hill_2012,
