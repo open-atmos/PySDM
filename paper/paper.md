@@ -17,40 +17,40 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "1"
-  - name: Sylwester&nbsp;Arabas
-    orcid: 0000-0003-2361-0082
-    affiliation: "2, 1"
   - name: Oleksii&nbsp;Bulenok
     orcid: 0000-0003-2272-8548
     affiliation: "1"
   - name: Kamil&nbsp;Górski
     affiliation: "1"
   - name: Anna&nbsp;Jaruga
-    affiliation: "3"
+    affiliation: "2"
     orcid: 0000-0003-3194-6440
   - name: Grzegorz&nbsp;Łazarski
-    affiliation: "1, 4"
+    affiliation: "1, 3"
     orcid: 0000-0002-5595-371X
   - name: Michael&nbsp;Olesik
     orcid: 0000-0002-6319-9358
-    affiliation: "5"
+    affiliation: "4"
   - name: Bartosz&nbsp;Piasecki
     affiliation: "1"
   - name: Clare&nbsp;E.&nbsp;Singer
     orcid: 0000-0002-1708-0997
-    affiliation: "3"
+    affiliation: "2"
   - name: Aleksandra&nbsp;Talar
     affiliation: "1"
+  - name: Sylwester&nbsp;Arabas
+    orcid: 0000-0003-2361-0082
+    affiliation: "5, 1"
 affiliations:
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 1
- - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
-   index: 2
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-   index: 3
+   index: 2
  - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
-   index: 4
+   index: 3
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   index: 4
+ - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 5
 bibliography: paper.bib
 
@@ -328,7 +328,7 @@ PySDM is released under the GNU GPL v3 license.
 
 # Author contributions
 
-PB has been the architect and lead developer of PySDM v1 with SA as the main co-developer.
+PB had been the architect and lead developer of PySDM v1 with SA taking the role of main developer and maintainer over the time.
 PySDM 1.0 release accompanied PB's MSc thesis prepared under the mentorship of SA. 
 MO contributed to the development of the condensation solver and led the development of relevant examples.
 GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM under guidance from AJ.
