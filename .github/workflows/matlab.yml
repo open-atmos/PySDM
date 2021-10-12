@@ -25,6 +25,8 @@ jobs:
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
+        with:
+          release: R2021a
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
