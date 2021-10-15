@@ -39,7 +39,7 @@ class CondensationMethods():
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
-                    auto vol = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
+                    auto vol = {phys.condensation_coordinate.volme.c_inline(x="x_new")};
                     auto r_new = {phys.trivia.radius.c_inline(volume="vol")};
                     auto sgm = {phys.surface_tension.sigma.c_inline(T=args('_T'), v_wet="vol", v_dry=f"const.pi_4_3 * {args('rd3')}", f_org=args("f_org"))};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r="r_new", T=args('_T'), kp=args("kappa"), rd3=args("rd3"), sgm="sgm")};
