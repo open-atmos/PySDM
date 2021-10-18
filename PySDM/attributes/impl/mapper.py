@@ -7,6 +7,7 @@ from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
 from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
+from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
@@ -43,7 +44,8 @@ attributes = {
     'pH': lambda _: pH,
     'conc_H': lambda _: HydrogenIonConcentration,
     'freezing temperature': lambda _: FreezingTemperature,
-    'immersed surface area': lambda _: ImmersedSurfaceArea
+    'immersed surface area': lambda _: ImmersedSurfaceArea,
+    'critical supersaturation': lambda _: CriticalSupersaturation
 }
 
 
