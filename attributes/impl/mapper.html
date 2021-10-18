@@ -35,6 +35,7 @@ from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
 from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
+from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
@@ -43,14 +44,20 @@ attributes = {
     &#39;volume&#39;: lambda _: Volume,
     &#39;dry volume organic&#39;: lambda dynamics: (
         DummyAttributeImpl(&#39;dry volume organic&#39;)
-        if isinstance(dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension, Constant)
+        if &#39;Condensation&#39; in dynamics and isinstance(
+            dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension,
+            Constant
+        )
         else DryVolumeOrganic
     ),
     &#39;dry volume&#39;: lambda dynamics:
     DryVolumeDynamic if &#39;AqueousChemistry&#39; in dynamics else DryVolume,
     &#39;dry volume organic fraction&#39;: lambda dynamics: (
         DummyAttributeImpl(&#39;dry volume organic fraction&#39;)
-        if isinstance(dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension, Constant)
+        if &#39;Condensation&#39; in dynamics and isinstance(
+            dynamics[&#39;Condensation&#39;].particulator.formulae.surface_tension,
+            Constant
+        )
         else OrganicFraction
     ),
     &#39;kappa times dry volume&#39;: lambda _: KappaTimesDryVolume,
@@ -71,7 +78,8 @@ attributes = {
     &#39;pH&#39;: lambda _: pH,
     &#39;conc_H&#39;: lambda _: HydrogenIonConcentration,
     &#39;freezing temperature&#39;: lambda _: FreezingTemperature,
-    &#39;immersed surface area&#39;: lambda _: ImmersedSurfaceArea
+    &#39;immersed surface area&#39;: lambda _: ImmersedSurfaceArea,
+    &#39;critical supersaturation&#39;: lambda _: CriticalSupersaturation
 }
 
 

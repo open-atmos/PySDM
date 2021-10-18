@@ -37,7 +37,6 @@ class DryRadius(DerivedAttribute):
         super().__init__(builder, name=&#39;dry radius&#39;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume_dry.data.idx
         self.data.product(self.volume_dry.get(), 1/const.pi_4_3)
         self.data **= 1/3</code></pre>
 </details>
@@ -68,7 +67,6 @@ class DryRadius(DerivedAttribute):
         super().__init__(builder, name=&#39;dry radius&#39;, dependencies=dependencies)
 
     def recalculate(self):
-        self.data.idx = self.volume_dry.data.idx
         self.data.product(self.volume_dry.get(), 1/const.pi_4_3)
         self.data **= 1/3</code></pre>
 </details>
@@ -89,7 +87,6 @@ class DryRadius(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    self.data.idx = self.volume_dry.data.idx
     self.data.product(self.volume_dry.get(), 1/const.pi_4_3)
     self.data **= 1/3</code></pre>
 </details>

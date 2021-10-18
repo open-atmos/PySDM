@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.dynamics.freezing.ice_water_content API documentation</title>
+<title>PySDM.attributes.physics.critical_supersaturation API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,41 +19,49 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.dynamics.freezing.ice_water_content</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.physics.critical_supersaturation</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
-from ...product import MomentProduct
-from ....physics import constants as const
+<pre><code class="python">from PySDM.attributes.impl.derived_attribute import DerivedAttribute
+from PySDM.physics import constants as const
 
 
-class IceWaterContent(MomentProduct):
+class CriticalSupersaturation(DerivedAttribute):
+    def __init__(self, builder):
+        self.v_crit = builder.get_attribute(&#39;critical volume&#39;)
+        self.v_dry = builder.get_attribute(&#39;dry volume&#39;)
+        self.kappa = builder.get_attribute(&#39;kappa&#39;)
+        self.f_org = builder.get_attribute(&#39;dry volume organic fraction&#39;)
 
-    def __init__(self, specific=True):
         super().__init__(
-            name=&#39;qi&#39;,
-            unit=&#39;g/kg&#39; if specific else &#39;kg/m3&#39;,
-            description=f&#39;Ice water mixing ratio&#39;
+            builder=builder,
+            name=&#39;critical supersaturation&#39;,
+            dependencies=(self.v_crit, self.kappa, self.v_dry, self.f_org)
         )
-        self.specific = specific
+        self.formulae = builder.particulator.formulae
+        self.environment = builder.particulator.environment
 
-    def get(self):
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
-        conc = self.buffer.copy()
+    def recalculate(self):
+        if len(self.environment[&#39;T&#39;]) != 1:
+            raise NotImplementedError()
+        T = self.environment[&#39;T&#39;][0]
+        r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
+        rd3 = self.v_dry.data.data / const.pi_4_3
+        sgm = self.formulae.surface_tension.sigma(
+            T, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
+        )
 
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
-        result = self.buffer.copy()
-        result[:] *= -const.rho_i * conc  / self.particulator.mesh.dv
-
-        if self.specific:
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-            result[:] /= self.buffer
-            const.convert_to(result, const.si.gram / const.si.kilogram)
-        return result</code></pre>
+        self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+            r_cr,
+            T=T,
+            kp=self.kappa.data.data,
+            rd3=rd3,
+            sgm=sgm
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -65,9 +73,9 @@ class IceWaterContent(MomentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent"><code class="flex name class">
-<span>class <span class="ident">IceWaterContent</span></span>
-<span>(</span><span>specific=True)</span>
+<dt id="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation"><code class="flex name class">
+<span>class <span class="ident">CriticalSupersaturation</span></span>
+<span>(</span><span>builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -75,39 +83,48 @@ class IceWaterContent(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class IceWaterContent(MomentProduct):
+<pre><code class="python">class CriticalSupersaturation(DerivedAttribute):
+    def __init__(self, builder):
+        self.v_crit = builder.get_attribute(&#39;critical volume&#39;)
+        self.v_dry = builder.get_attribute(&#39;dry volume&#39;)
+        self.kappa = builder.get_attribute(&#39;kappa&#39;)
+        self.f_org = builder.get_attribute(&#39;dry volume organic fraction&#39;)
 
-    def __init__(self, specific=True):
         super().__init__(
-            name=&#39;qi&#39;,
-            unit=&#39;g/kg&#39; if specific else &#39;kg/m3&#39;,
-            description=f&#39;Ice water mixing ratio&#39;
+            builder=builder,
+            name=&#39;critical supersaturation&#39;,
+            dependencies=(self.v_crit, self.kappa, self.v_dry, self.f_org)
         )
-        self.specific = specific
+        self.formulae = builder.particulator.formulae
+        self.environment = builder.particulator.environment
 
-    def get(self):
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
-        conc = self.buffer.copy()
+    def recalculate(self):
+        if len(self.environment[&#39;T&#39;]) != 1:
+            raise NotImplementedError()
+        T = self.environment[&#39;T&#39;][0]
+        r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
+        rd3 = self.v_dry.data.data / const.pi_4_3
+        sgm = self.formulae.surface_tension.sigma(
+            T, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
+        )
 
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
-        result = self.buffer.copy()
-        result[:] *= -const.rho_i * conc  / self.particulator.mesh.dv
-
-        if self.specific:
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-            result[:] /= self.buffer
-            const.convert_to(result, const.si.gram / const.si.kilogram)
-        return result</code></pre>
+        self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+            r_cr,
+            T=T,
+            kp=self.kappa.data.data,
+            rd3=rd3,
+            sgm=sgm
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.product.MomentProduct" href="../../product.html#PySDM.products.product.MomentProduct">MomentProduct</a></li>
-<li><a title="PySDM.products.product.Product" href="../../product.html#PySDM.products.product.Product">Product</a></li>
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+<dt id="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -115,19 +132,23 @@ class IceWaterContent(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):
-    self.download_moment_to_buffer(&#39;volume&#39;, rank=0, filter_range=(-np.inf, 0))
-    conc = self.buffer.copy()
+<pre><code class="python">def recalculate(self):
+    if len(self.environment[&#39;T&#39;]) != 1:
+        raise NotImplementedError()
+    T = self.environment[&#39;T&#39;][0]
+    r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
+    rd3 = self.v_dry.data.data / const.pi_4_3
+    sgm = self.formulae.surface_tension.sigma(
+        T, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
+    )
 
-    self.download_moment_to_buffer(&#39;volume&#39;, rank=1, filter_range=(-np.inf, 0))
-    result = self.buffer.copy()
-    result[:] *= -const.rho_i * conc  / self.particulator.mesh.dv
-
-    if self.specific:
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-        result[:] /= self.buffer
-        const.convert_to(result, const.si.gram / const.si.kilogram)
-    return result</code></pre>
+    self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
+        r_cr,
+        T=T,
+        kp=self.kappa.data.data,
+        rd3=rd3,
+        sgm=sgm
+    )</code></pre>
 </details>
 </dd>
 </dl>
@@ -143,15 +164,15 @@ class IceWaterContent(MomentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.dynamics.freezing" href="index.html">PySDM.products.dynamics.freezing</a></code></li>
+<li><code><a title="PySDM.attributes.physics" href="index.html">PySDM.attributes.physics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent" href="#PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent">IceWaterContent</a></code></h4>
+<h4><code><a title="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation" href="#PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation">CriticalSupersaturation</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent.get" href="#PySDM.products.dynamics.freezing.ice_water_content.IceWaterContent.get">get</a></code></li>
+<li><code><a title="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation.recalculate" href="#PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation.recalculate">recalculate</a></code></li>
 </ul>
 </li>
 </ul>
