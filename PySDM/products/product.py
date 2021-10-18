@@ -79,14 +79,14 @@ class MoistEnvironmentProduct(Product):
         self.source = None
 
     def register(self, builder):
-        assert isinstance(builder.particulator.env, _Moist)
         super().register(builder)
         self.particulator.observers.append(self)
         self.environment = builder.particulator.env
         self.source = self.environment[self._name]
 
     def notify(self):
-        self.source = self.environment.get_predicted(self._name)
+        if isinstance(self.environment, _Moist):
+            self.source = self.environment.get_predicted(self._name)
 
     def get(self):
         self.download_to_buffer(self.source)

@@ -1,0 +1,2 @@
+class Null:
+    pass
