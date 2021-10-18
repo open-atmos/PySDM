@@ -7,3 +7,4 @@ from .terminal_velocity import TerminalVelocity
 from .temperature import Temperature
 from .heat import Heat
 from .critical_volume import CriticalVolume
+from .critical_supersaturation import CriticalSupersaturation
