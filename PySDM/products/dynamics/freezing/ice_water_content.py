@@ -1,6 +1,7 @@
+import numpy as np
 from ...product import MomentProduct
 from ....physics import constants as const
-import numpy as np
+
 
 class IceWaterContent(MomentProduct):
 
