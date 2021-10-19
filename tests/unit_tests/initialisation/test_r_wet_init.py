@@ -1,6 +1,6 @@
 from PySDM.initialisation import r_wet_init
 from PySDM.physics import Formulae, si, constants as const
-from PySDM.physics.surface_tension import compressed_film
+from PySDM.physics.surface_tension import compressed_film_Ovadnevaite
 from PySDM.backends import CPU
 import numpy as np
 import pytest
@@ -9,11 +9,11 @@ from matplotlib import pylab
 
 @pytest.fixture()
 def constants():
-    compressed_film.sgm_org = 40 * si.mN / si.m
-    compressed_film.delta_min = 0.1 * si.nm
+    compressed_film_Ovadnevaite.sgm_org = 40 * si.mN / si.m
+    compressed_film_Ovadnevaite.delta_min = 0.1 * si.nm
     yield
-    compressed_film.sgm_org = np.nan
-    compressed_film.delta_min = np.nan
+    compressed_film_Ovadnevaite.sgm_org = np.nan
+    compressed_film_Ovadnevaite.delta_min = np.nan
 
 @pytest.mark.parametrize('r_dry', [
     pytest.param(2.4e-09),
@@ -27,7 +27,7 @@ def test_r_wet_init(constants, r_dry, plot=False):
     kappa = .356
 
     class Particulator:
-        formulae = Formulae(surface_tension='CompressedFilm')
+        formulae = Formulae(surface_tension='CompressedFilm_Ovadnevaite')
 
     class Env:
         particulator = Particulator()

@@ -4,8 +4,7 @@ import numpy as np
 sgm_org = np.nan
 delta_min = np.nan
 
-
-class CompressedFilm:
+class CompressedFilm_Ovadnevaite:
     @staticmethod
     def _check():
         assert np.isfinite(sgm_org)
