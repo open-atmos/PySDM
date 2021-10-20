@@ -47,7 +47,10 @@ class Box:
         return self._ambient_air[item]
 
     def __setitem__(self, key, value):
-        self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
+        if key not in self._ambient_air:
+            self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
+        else:
+            self._ambient_air[key][:] = value
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -89,7 +92,10 @@ class Box:
         return self._ambient_air[item]
 
     def __setitem__(self, key, value):
-        self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
+        if key not in self._ambient_air:
+            self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
+        else:
+            self._ambient_air[key][:] = value
 
     def register(self, builder):
         self.particulator = builder.particulator

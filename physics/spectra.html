@@ -51,6 +51,9 @@ class Spectrum:
         result = self.norm_factor * self.distribution.pdf(x, *self.distribution_params)
         return result
 
+    def pdf(self, x):
+        return self.size_distribution(x) / self.norm_factor
+
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
         return result
@@ -86,6 +89,10 @@ class Lognormal(Spectrum):
     def m_mode(self):
         return self.distribution_params[2]
 
+    def __str__(self):
+        return f&#34;{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})&#34;
+
+
 class TopHat:
     def __init__(self, norm_factor, endpoints):
         self.norm_factor = norm_factor
@@ -98,6 +105,7 @@ class TopHat:
 
     def percentiles(self, cdf_values):
         return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))
+
 
 class Sum:
 
@@ -179,7 +187,10 @@ class Sum:
 
     @property
     def m_mode(self):
-        return self.distribution_params[2]</code></pre>
+        return self.distribution_params[2]
+
+    def __str__(self):
+        return f&#34;{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -234,6 +245,9 @@ def s_geom(self):
         result = self.norm_factor * self.distribution.pdf(x, *self.distribution_params)
         return result
 
+    def pdf(self, x):
+        return self.size_distribution(x) / self.norm_factor
+
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
         return result
@@ -265,6 +279,19 @@ def s_geom(self):
 <pre><code class="python">def cumulative(self, x):
     result = self.norm_factor * self.distribution.cdf(x, *self.distribution_params)
     return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.spectra.Spectrum.pdf"><code class="name flex">
+<span>def <span class="ident">pdf</span></span>(<span>self, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pdf(self, x):
+    return self.size_distribution(x) / self.norm_factor</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.spectra.Spectrum.percentiles"><code class="name flex">
@@ -479,6 +506,7 @@ def s_geom(self):
 <h4><code><a title="PySDM.physics.spectra.Spectrum" href="#PySDM.physics.spectra.Spectrum">Spectrum</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.spectra.Spectrum.cumulative" href="#PySDM.physics.spectra.Spectrum.cumulative">cumulative</a></code></li>
+<li><code><a title="PySDM.physics.spectra.Spectrum.pdf" href="#PySDM.physics.spectra.Spectrum.pdf">pdf</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.percentiles" href="#PySDM.physics.spectra.Spectrum.percentiles">percentiles</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.size_distribution" href="#PySDM.physics.spectra.Spectrum.size_distribution">size_distribution</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.stats" href="#PySDM.physics.spectra.Spectrum.stats">stats</a></code></li>

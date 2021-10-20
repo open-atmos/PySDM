@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012 API documentation</title>
+<title>PySDM.physics.freezing_temperature_spectrum.null API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,37 +19,17 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012</code></h1>
+<h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum.null</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.physics import constants as const
-import numpy as np
-
-a = np.nan
-b = np.nan
-
-
-class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
-
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
-
+<pre><code class="python">class Null:
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
-
-    @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+    def cdf(T):
+        pass</code></pre>
 </details>
 </section>
 <section>
@@ -61,8 +41,8 @@ class Niemand_et_al_2012:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012"><code class="flex name class">
-<span>class <span class="ident">Niemand_et_al_2012</span></span>
+<dt id="PySDM.physics.freezing_temperature_spectrum.null.Null"><code class="flex name class">
+<span>class <span class="ident">Null</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -70,28 +50,15 @@ class Niemand_et_al_2012:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Niemand_et_al_2012:
-    def __str__(self):
-        return &#39;Niemand et al. 2012&#39;
-
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
-
+<pre><code class="python">class Null:
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
-
-    @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+    def cdf(T):
+        pass</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf"><code class="name flex">
-<span>def <span class="ident">cdf</span></span>(<span>T, A_insol)</span>
+<dt id="PySDM.physics.freezing_temperature_spectrum.null.Null.cdf"><code class="name flex">
+<span>def <span class="ident">cdf</span></span>(<span>T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -100,24 +67,8 @@ class Niemand_et_al_2012:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def cdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
-</details>
-</dd>
-<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
-<span>def <span class="ident">pdf</span></span>(<span>T, A_insol)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def pdf(T, A_insol):
-    ns_T = np.exp(a * (T - const.T0) + b)
-    return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)</code></pre>
+def cdf(T):
+    pass</code></pre>
 </details>
 </dd>
 </dl>
@@ -139,10 +90,9 @@ def pdf(T, A_insol):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012">Niemand_et_al_2012</a></code></h4>
+<h4><code><a title="PySDM.physics.freezing_temperature_spectrum.null.Null" href="#PySDM.physics.freezing_temperature_spectrum.null.Null">Null</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
-<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
+<li><code><a title="PySDM.physics.freezing_temperature_spectrum.null.Null.cdf" href="#PySDM.physics.freezing_temperature_spectrum.null.Null.cdf">cdf</a></code></li>
 </ul>
 </li>
 </ul>
