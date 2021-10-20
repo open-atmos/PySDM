@@ -1,2 +1,4 @@
 class Null:
-    pass
+    @staticmethod
+    def cdf(T):
+        pass

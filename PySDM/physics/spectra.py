@@ -22,6 +22,9 @@ class Spectrum:
         result = self.norm_factor * self.distribution.pdf(x, *self.distribution_params)
         return result
 
+    def pdf(self, x):
+        return self.size_distribution(x) / self.norm_factor
+
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
         return result
@@ -57,6 +60,10 @@ class Lognormal(Spectrum):
     def m_mode(self):
         return self.distribution_params[2]
 
+    def __str__(self):
+        return f"{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})"
+
+
 class TopHat:
     def __init__(self, norm_factor, endpoints):
         self.norm_factor = norm_factor
@@ -69,6 +76,7 @@ class TopHat:
 
     def percentiles(self, cdf_values):
         return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))
+
 
 class Sum:
 
