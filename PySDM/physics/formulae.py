@@ -65,7 +65,7 @@ def _pick(value: str, choices: dict):
     for name, cls in choices.items():
         if name == value:
             return cls()
-    raise ValueError(f"Unknown setting: '{value}';, choices are: {tuple(choices.keys())}")
+    raise ValueError(f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}")
 
 
 def _choices(module):
@@ -93,7 +93,7 @@ class Formulae:
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
                  hydrostatics: str = 'Default',
-                 freezing_temperature_spectrum: str = 'Niemand_et_al_2012',
+                 freezing_temperature_spectrum: str = 'Null',
                  heterogeneous_ice_nucleation_rate: str = 'Null'
                  ):
         self.seed = seed

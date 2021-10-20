@@ -7,6 +7,7 @@ from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
 from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
+from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
@@ -15,14 +16,20 @@ attributes = {
     'volume': lambda _: Volume,
     'dry volume organic': lambda dynamics: (
         DummyAttributeImpl('dry volume organic')
-        if isinstance(dynamics['Condensation'].particulator.formulae.surface_tension, Constant)
+        if 'Condensation' in dynamics and isinstance(
+            dynamics['Condensation'].particulator.formulae.surface_tension,
+            Constant
+        )
         else DryVolumeOrganic
     ),
     'dry volume': lambda dynamics:
     DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
     'dry volume organic fraction': lambda dynamics: (
         DummyAttributeImpl('dry volume organic fraction')
-        if isinstance(dynamics['Condensation'].particulator.formulae.surface_tension, Constant)
+        if 'Condensation' in dynamics and isinstance(
+            dynamics['Condensation'].particulator.formulae.surface_tension,
+            Constant
+        )
         else OrganicFraction
     ),
     'kappa times dry volume': lambda _: KappaTimesDryVolume,
@@ -43,7 +50,8 @@ attributes = {
     'pH': lambda _: pH,
     'conc_H': lambda _: HydrogenIonConcentration,
     'freezing temperature': lambda _: FreezingTemperature,
-    'immersed surface area': lambda _: ImmersedSurfaceArea
+    'immersed surface area': lambda _: ImmersedSurfaceArea,
+    'critical supersaturation': lambda _: CriticalSupersaturation
 }
 
 
