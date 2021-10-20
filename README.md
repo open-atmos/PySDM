@@ -602,7 +602,8 @@ the license of the contributed code must be compatible with GPL v3.
 
 Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
 the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
-The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html).
+The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
+and [Pylint](https://pylint.org) code analysis (which constitutes one of the CI workflows).
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).
@@ -616,10 +617,24 @@ We look forward to your contributions and feedback.
 
 ## Credits:
 
-Development of PySDM is supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
+The development and maintenance of PySDM is led by [Sylwester Arabas](https://github.com/slayoo/).
+[Piotr Bartman](https://github.com/piotrbartman/) had been the architect and main developer 
+of technological solutions in PySDM. 
+The suite of examples shipped with PySDM includes contributions from researchers 
+from [Jagiellonian University](https://en.uj.edu.pl/en) departments of computer science, physics and chemistry;
+and from 
+[Caltech's Climate Modelling Alliance](https://clima.caltech.edu/).
 
-copyright: Jagiellonian University   
-licence: GPL v3   
+Development of PySDM had been initially supported by the EU through a grant of the 
+[Foundation for Polish Science](https://www.fnp.org.pl/)) (POIR.04.04.00-00-5E1C/18) 
+realised at the [Jagiellonian University](https://en.uj.edu.pl/en).
+The immersion freezing support in PySDM is developed with support from the
+US Department of Energy [Atmospheric System Research](https://asr.science.energy.gov/) programme
+through a grant realised at the 
+[University of Illinois at Urbana-Champaign](https://illinois.edu/).
+
+copyright: [Jagiellonian University](https://en.uj.edu.pl/en)    
+licence: [GPL v3](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Related resources and open-source projects
 

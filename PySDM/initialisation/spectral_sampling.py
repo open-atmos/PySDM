@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Tuple
+from scipy import optimize
 from PySDM.physics import constants as const
 
 default_cdf_range = (.00001, .99999)
@@ -10,7 +11,14 @@ class SpectralSampling:
         self.spectrum = spectrum
 
         if size_range is None:
-            self.size_range = spectrum.percentiles(default_cdf_range)
+            if hasattr(spectrum, 'percentiles'):
+                self.size_range = spectrum.percentiles(default_cdf_range)
+            else:
+                self.size_range = [np.nan, np.nan]
+                for i in (0, 1):
+                    result = optimize.root(lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median())
+                    assert result.success
+                    self.size_range[i] = result.x
         else:
             assert len(size_range) == 2
             assert size_range[0] > 0
@@ -69,6 +77,7 @@ class ConstantMultiplicity(SpectralSampling):
 
         return self._sample(percentiles, self.spectrum)
 
+
 class UniformRandom(SpectralSampling):
     def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
         super().__init__(spectrum, size_range)
@@ -76,5 +85,5 @@ class UniformRandom(SpectralSampling):
 
     def sample(self, n_sd):
         pdf_arg = self.rng.uniform(*self.size_range, n_sd)
-        dr = (self.size_range[1] - self.size_range[0]) / n_sd
+        dr = abs(self.size_range[1] - self.size_range[0]) / n_sd
         return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)
