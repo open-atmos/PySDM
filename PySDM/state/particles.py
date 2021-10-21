@@ -76,6 +76,9 @@ class Particles:
     def __getitem__(self, item):
         return self.attributes[item].get()
 
+    def __contains__(self, key):
+        return key in self.attributes
+
     def permutation(self, u01, local):
         if local:
             """

@@ -12,6 +12,6 @@ def discretise_n(y_float):
         raise Exception(f"{percent_diff}% error in total real-droplet number due to casting multiplicities to ints")
 
     if not (y_int > 0).all():
-        raise Exception("int-casting resulted in multiplicity of zero")
+        raise Exception(f"int-casting resulted in multiplicity of zero (min(y_float)={min(y_float)})")
 
     return y_int
