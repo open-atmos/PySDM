@@ -31,7 +31,7 @@ def test_export(backend, tmp_path):
     sut.run(controller=DummyController())
 
     # Assert
-    filenames_list = os.listdir(os.path.join(tempdir.name, 'output'))
+    filenames_list = os.listdir(os.path.join(tmp_path, 'output'))
     assert len(list(filter(lambda x: x.endswith('.pvd'), filenames_list))) > 0
     assert len(list(filter(lambda x: x.endswith('.vts'), filenames_list))) > 0
     assert len(list(filter(lambda x: x.endswith('.vtu'), filenames_list))) > 0
