@@ -32,4 +32,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             readme.svg
-          README.md
