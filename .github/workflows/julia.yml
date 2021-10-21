@@ -18,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
+      - run: pip install --upgrade pip
       - run: pip install -e .
       - run: pip install exdown pytest
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
