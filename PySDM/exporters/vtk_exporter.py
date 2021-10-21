@@ -1,7 +1,7 @@
 import numpy as np
 from pyevtk.hl import pointsToVTK, gridToVTK
 from pyevtk.vtk import VtkGroup
-import numbers, os
+import numbers, os, sys
 
 
 """
@@ -90,13 +90,13 @@ class VTKExporter:
                             payload[k] = v.T[:, :, np.newaxis]
                         else:
                             if self.verbose:
-                                print(f'{k} shape {v.shape} not equals data shape {data_shape} and will not be exported')
+                                print(f'{k} shape {v.shape} not equals data shape {data_shape} and will not be exported', file=sys.stderr)
                     elif isinstance(v, numbers.Number):
                         if self.verbose:
-                            print(f'{k} is a Number and will not be exported')
+                            print(f'{k} is a Number and will not be exported', file=sys.stderr)
                     else:
                         if self.verbose:
-                            print(f'{k} export is not possible')    
+                            print(f'{k} export is not possible', file=sys.stderr)    
 
                 x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
             else:
