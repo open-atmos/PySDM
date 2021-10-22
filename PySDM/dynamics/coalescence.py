@@ -2,18 +2,21 @@
 SDM implementation with adaptive timestepping
 """
 import numpy as np
+from PySDM.dynamics.collision import Collision
 from PySDM.physics import si
+from PySDM.physics import breakup_fragmentations
+from PySDM.physics.coalescence_efficiencies import ConstEc
+from PySDM.physics.breakup_efficiencies import ConstEb
+from PySDM.physics.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 import warnings
 
 default_dt_coal_range = (.1 * si.second, 100 * si.second)
 
-
-class Coalescence:
+class Coalescence(Collision):
 
     def __init__(self,
                  kernel,
-                 coal_eff,
                  seed=None,
                  croupier=None,
                  optimized_random=False,
@@ -21,68 +24,22 @@ class Coalescence:
                  adaptive: bool = False,
                  dt_coal_range=default_dt_coal_range
                  ):
-        assert substeps == 1 or adaptive is False
-
-        self.core = None
-        self.enable = True
-
-        self.kernel = kernel
-        self.coal_eff = coal_eff
-        self.seed = seed
-
-        assert dt_coal_range[0] > 0
-        self.croupier = croupier
-        self.optimized_random = optimized_random
-        self.__substeps = substeps
-        self.adaptive = adaptive
-        self.stats_n_substep = None
-        self.stats_dt_min = None
-        self.dt_coal_range = tuple(dt_coal_range)
-
-        self.kernel_temp = None
-        self.coal_eff_temp = None
-        self.norm_factor_temp = None
-        self.prob = None
-        self.is_first_in_pair = None
-        self.dt_left = None
-
-        self.collision_rate = None
-        self.collision_rate_deficit = None
-
-    def register(self, builder):
-        self.core = builder.core
-        self.rnd_opt = RandomGeneratorOptimizer(optimized_random=self.optimized_random,
-                                                dt_min=self.dt_coal_range[0],
-                                                seed=self.seed) #self.core.formulae.seed)
-        self.optimised_random = None
-
-        if self.core.n_sd < 2:
-            raise ValueError("No one to collide with!")
-        if self.dt_coal_range[1] > self.core.dt:
-            self.dt_coal_range = (self.dt_coal_range[0], self.core.dt)
-        assert self.dt_coal_range[0] <= self.dt_coal_range[1]
-
-        self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.coal_eff_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.norm_factor_temp = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)  # TODO #372
-        self.prob = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.is_first_in_pair = self.core.PairIndicator(self.core.n_sd)
-        self.dt_left = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-
-        self.stats_n_substep = self.core.Storage.empty(self.core.mesh.n_cell, dtype=int)
-        self.stats_n_substep[:] = 0 if self.adaptive else self.__substeps
-        self.stats_dt_min = self.core.Storage.empty(self.core.mesh.n_cell, dtype=float)
-        self.stats_dt_min[:] = np.nan
-
-        self.rnd_opt.register(builder)
-        self.kernel.register(builder)
-        self.coal_eff.register(builder)
-
-        if self.croupier is None:
-            self.croupier = self.core.backend.default_croupier
-
-        self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
-        self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        coal_eff = ConstEc(Ec=1)
+        break_eff = ConstEb(Eb=1)
+        fragmentation = AlwaysN(n=1)
+        super().__init__(
+                 kernel,    # collision kernel
+                 coal_eff,  # coalescence efficiency
+                 break_eff, # breakup efficiency
+                 fragmentation, # fragmentation function
+                 seed=seed,
+                 croupier=croupier,
+                 optimized_random=optimized_random,
+                 substeps = substeps,
+                 adaptive = adaptive,
+                 dt_coal_range=dt_coal_range
+                 )
+'''
 
     def __call__(self):
         if self.enable:
@@ -153,4 +110,4 @@ class Coalescence:
             self.collision_rate_deficit,
             self.collision_rate,
             is_first_in_pair
-        )
+        ) '''

@@ -244,6 +244,19 @@ class AlgorithmicMethods:
     @staticmethod
     def slams_fragmentation(n_fragment, probs, rand):
         AlgorithmicMethods.slams_fragmentation_body(n_fragment.data, probs.data, rand.data)
+
+    # Emily: Low and List 1982 fragmentation function
+    @numba.njit(**{**conf.JIT_FLAGS})
+    def ll1982_fragmentation_body(n_fragment, probs, rand):
+        for i in numba.prange(len(n_fragment)):
+            probs[i] = 0.0
+            n_fragment[i] = 1
+            
+            # first consider filament breakup
+    
+    @staticmethod
+    def ll1982_fragmentation(n_fragment, probs, rand):
+        AlgorithmicMethods.ll1982_fragmentation_body(n_fragment.data, probs.data, rand.data)
         
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
