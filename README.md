@@ -507,7 +507,7 @@ for pykey = py.list(keys(particulator.products))
     end
     i=i+1;
 end
-saveas(gcf, "parcel.svg")
+saveas(gcf, "parcel.png")
 ```
 </details>
 <details open>
@@ -584,7 +584,7 @@ pyplot.savefig('parcel.svg')
 
 The resultant plot (generated with the Matlab code) looks as follows:
 
-![plot](https://raw.githubusercontent.com/atmos-cloud-sim-uj/PySDM/master/parcel.svg)
+![plot](https://github.com/atmos-cloud-sim-uj/PySDM/releases/download/tip/parcel.png)
 
 ## Contributing, reporting issues, seeking support 
 
