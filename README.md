@@ -303,7 +303,7 @@ pyplot.xscale('log')
 pyplot.xlabel('particle radius [µm]')
 pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
 pyplot.legend()
-pyplot.savefig('readme.svg')
+pyplot.savefig('readme.png')
 ```
 </details>
 
