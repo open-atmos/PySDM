@@ -34,3 +34,12 @@ jobs:
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
+
+      - name: artefacts
+        if: github.ref == 'refs/heads/master'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            parcel.png
+
