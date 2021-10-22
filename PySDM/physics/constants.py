@@ -3,12 +3,15 @@ Collection of physical constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
-
+import numpy as np
 import pint
 from scipy import constants as sci
 from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
 from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
+from numpy import nan
+import os
+import time 
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:
@@ -66,8 +69,21 @@ FWC_C6 = 0.702620698e-10 * si.hPa / si.K**6
 FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
 FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
 
+FWC_I0 = 6.098689930e000 * si.hPa
+FWC_I1 = 0.499320233e000 * si.hPa / si.K
+FWC_I2 = 0.184672631e-01 * si.hPa / si.K**2
+FWC_I3 = 0.402737184e-03 * si.hPa / si.K**3
+FWC_I4 = 0.565392987e-05 * si.hPa / si.K**4
+FWC_I5 = 0.521693933e-07 * si.hPa / si.K**5
+FWC_I6 = 0.307839583e-09 * si.hPa / si.K**6
+FWC_I7 = 0.105785160e-11 * si.hPa / si.K**7
+FWC_I8 = 0.161444444e-14 * si.hPa / si.K**8
+
 rho_w = 1 * si.kilograms / si.litres
-sgm = 0.072 * si.joule / si.metre ** 2  # TODO #223 temperature dependence
+rho_i = 916.8 * si.kg / si.metres**3
+pH_w = 7
+sgm_w = 0.072 * si.joule / si.metre ** 2
+nu_w = Mv / rho_w
 
 p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
@@ -88,3 +104,8 @@ dT_u = si.K
 
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 K_H2O = 1e-14 * M * M
+
+default_random_seed = (
+    44 if 'CI' in os.environ  # https://en.wikipedia.org/wiki/44_(number)
+    else time.time_ns()
+)

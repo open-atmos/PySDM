@@ -1,10 +1,13 @@
-from PySDM.backends.numba import conf
-from PySDM import physics
-from functools import lru_cache, partial
-import numba
-import re
+"""
+Logic for enabling common CPU/GPU physics formulae code
+"""
 import inspect
+import re
+from functools import lru_cache, partial
 
+import numba
+from PySDM import physics
+from PySDM.backends.numba import conf
 # noinspection PyUnresolvedReferences
 from PySDM.physics import constants as const
 
@@ -62,7 +65,7 @@ def _pick(value: str, choices: dict):
     for name, cls in choices.items():
         if name == value:
             return cls()
-    raise ValueError(f"Unknown setting: '{value}';, choices are: {tuple(choices.keys())}")
+    raise ValueError(f"Unknown setting: '{value}'; choices are: {tuple(choices.keys())}")
 
 
 def _choices(module):
@@ -76,7 +79,7 @@ def _magick(value, module, fastmath):
 
 class Formulae:
     def __init__(self, *,
-                 seed: int = 44,  # # https://en.wikipedia.org/wiki/44_(number)
+                 seed: int = const.default_random_seed,
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
                  saturation_vapour_pressure: str = 'FlatauWalkoCotton',
@@ -89,7 +92,9 @@ class Formulae:
                  ventilation: str = 'Neglect',
                  state_variable_triplet: str = 'RhodThdQv',
                  particle_advection: str = 'ImplicitInSpace',
-                 hydrostatics: str = 'Default'
+                 hydrostatics: str = 'Default',
+                 freezing_temperature_spectrum: str = 'Null',
+                 heterogeneous_ice_nucleation_rate: str = 'Null'
                  ):
         self.seed = seed
         self.fastmath = fastmath
@@ -108,6 +113,9 @@ class Formulae:
         self.state_variable_triplet = _magick(state_variable_triplet, physics.state_variable_triplet, fastmath)
         self.particle_advection = _magick(particle_advection, physics.particle_advection, fastmath)
         self.hydrostatics = _magick(hydrostatics, physics.hydrostatics, fastmath)
+        self.freezing_temperature_spectrum = _magick(freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
+        self.heterogeneous_ice_nucleation_rate = _magick(heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
+        self.__check()
 
     def __str__(self):
         description = []
@@ -119,3 +127,9 @@ class Formulae:
                     value = getattr(self, attr).__class__.__name__
                 description.append(f"{attr}: {value}")
         return ', '.join(description)
+
+    def __check(self):
+        for attr in dir(self):
+            if not attr.startswith('__'):
+                if hasattr(getattr(self, attr), '_check'):
+                    getattr(self, attr)._check()

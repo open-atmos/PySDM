@@ -40,7 +40,7 @@ class Parcel(_Moist):
         return self.formulae.trivia.volume_of_density_mass(rhod_mean, self.mass_of_dry_air)
 
     def register(self, builder):
-        self.formulae = builder.core.formulae
+        self.formulae = builder.particulator.formulae
         pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
         self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
@@ -66,13 +66,14 @@ class Parcel(_Moist):
 
         attributes = {}
         attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
+        attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
         attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(r_dry, self, kappa, rtol=rtol)
+        r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol)
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
         return attributes
 
     def advance_parcel_vars(self):
-        dt = self.core.dt
+        dt = self.particulator.dt
         T = self['T'][0]
         p = self['p'][0]
         t = self['t'][0]
@@ -85,9 +86,9 @@ class Parcel(_Moist):
         drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        self.core.bck.explicit_euler(self._tmp['t'], dt, 1)
-        self.core.bck.explicit_euler(self._tmp['z'], dt, dz_dt)
-        self.core.bck.explicit_euler(self._tmp['rhod'], dt, dz_dt * drhod_dz)
+        self.particulator.bck.explicit_euler(self._tmp['t'], dt, 1)
+        self.particulator.bck.explicit_euler(self._tmp['z'], dt, dz_dt)
+        self.particulator.bck.explicit_euler(self._tmp['rhod'], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,

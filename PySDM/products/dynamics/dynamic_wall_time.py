@@ -13,7 +13,7 @@ class DynamicWallTime(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
         self.shape = ()
 
     def get(self):
@@ -22,4 +22,4 @@ class DynamicWallTime(Product):
         return tmp
 
     def notify(self):
-        self.value += self.core.timers[self.dynamic].time
+        self.value += self.particulator.timers[self.dynamic].time

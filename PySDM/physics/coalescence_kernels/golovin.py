@@ -6,14 +6,14 @@ class Golovin:
 
     def __init__(self, b):
         self.b = b
-        self.core = None
+        self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.core.particles['volume'], is_first_in_pair)
+        output.sum(self.particulator.attributes['volume'], is_first_in_pair)
         output *= self.b
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         builder.request_attribute('volume')
 
     def analytic_solution(self, x, t, x_0, N_0):

@@ -1,5 +1,6 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics import constants as const
 
 
 class pH(DerivedAttribute):
@@ -9,13 +10,13 @@ class pH(DerivedAttribute):
             if len(v) > 1:
                 self.conc[k] = builder.get_attribute('conc_' + k)
         super().__init__(builder, name='pH', dependencies=self.conc.values())
-        self.environment = builder.core.environment
+        self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute('cell id')
-        self.particles = builder.core
+        self.particles = builder.particulator
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = 7
+        self.data[:] = const.pH_w
 
     def recalculate(self):
         dynamic = self.particles.dynamics['AqueousChemistry']
@@ -27,9 +28,11 @@ class pH(DerivedAttribute):
         S_IV = self.conc["S_IV"].get()
         S_VI = self.conc["S_VI"].get()
 
-        self.core.bck.equilibrate_H(dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
-                                    dynamic.do_chemistry_flag, self.data,
-                                    H_min=dynamic.pH_H_min,
-                                    H_max=dynamic.pH_H_max,
-                                    ionic_strength_threshold=dynamic.ionic_strength_threshold,
-                                    rtol=dynamic.pH_rtol)
+        self.particulator.bck.equilibrate_H(
+            dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+            dynamic.do_chemistry_flag, self.data,
+            H_min=dynamic.pH_H_min,
+            H_max=dynamic.pH_H_max,
+            ionic_strength_threshold=dynamic.ionic_strength_threshold,
+            rtol=dynamic.pH_rtol
+        )

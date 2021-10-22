@@ -18,3 +18,5 @@ import PySDM.physics.particle_advection
 import PySDM.physics.hydrostatics
 import PySDM.physics.breakup_fragmentations
 import PySDM.physics.coalescence_efficiencies
+import PySDM.physics.freezing_temperature_spectrum
+import PySDM.physics.heterogeneous_ice_nucleation_rate

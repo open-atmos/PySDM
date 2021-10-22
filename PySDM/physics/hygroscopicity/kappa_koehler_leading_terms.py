@@ -14,4 +14,3 @@ class KappaKoehlerLeadingTerms:
     @staticmethod
     def r_cr(kp, rd3, T, sgm):
         return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))
-

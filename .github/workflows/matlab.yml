@@ -20,10 +20,13 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.8
-      - run: pip install -e .
-      - run: pip install exdown pytest
+      - run: pip --use-deprecated=legacy-resolver install -e .
+      - run: pip --use-deprecated=legacy-resolver install exdown pytest
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
+        with:
+          release: R2021a
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
@@ -31,3 +34,12 @@ jobs:
       - uses: matlab-actions/run-command@v0
         with:
           command: readme
+
+      - name: artefacts
+        if: github.ref == 'refs/heads/master'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            parcel.png
+

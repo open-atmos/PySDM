@@ -1,6 +1,7 @@
 import numpy as np
-from PySDM.backends.thrustRTC.impl import storage_impl as impl
+
 from PySDM.backends.thrustRTC.conf import trtc
+from PySDM.backends.thrustRTC.impl import storage_impl as impl
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
@@ -29,20 +30,19 @@ class Storage:
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
-        elif isinstance(item, tuple) and dim == 2 and isinstance(item[0], int):
-            if isinstance(item[1], slice):
-                assert item[1].start is None or item[1].start == 0
-                assert item[1].stop is None or item[1].stop == self.shape[1]
-                assert item[1].step is None or item[1].step == 1
-                result_data = self.data.range(self.shape[1] * item[0], self.shape[1] * (item[0] + 1))
-            else:
-                raise NotImplementedError()
+        elif isinstance(item, tuple) and dim == 2 and isinstance(item[0], int) and isinstance(item[1], slice):
+            assert item[1].start is None or item[1].start == 0
+            assert item[1].stop is None or item[1].stop == self.shape[1]
+            assert item[1].step is None or item[1].step == 1
+            result_data = self.data.range(self.shape[1] * item[0], self.shape[1] * (item[0] + 1))
             result = Storage(result_data, (*self.shape[1:],), self.dtype)
         else:
             result = self.to_ndarray()[item]
         return result
 
     def __setitem__(self, key, value):
+        if not (isinstance(key, slice) and key.start is None and key.stop is None and key.step is None):
+            raise NotImplementedError()
         if hasattr(value, 'data') and hasattr(value, 'shape') and len(value.shape) != 0:
             if isinstance(value, np.ndarray):
                 vector = trtc.device_vector_from_numpy(value)
@@ -196,6 +196,10 @@ class Storage:
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
+    def sum(self, a, b):
+        impl.sum_out_of_place(self, a, b)
+        return self
+
     def ravel(self, other):
         if isinstance(other, Storage):
             trtc.Copy(other.data, self.data)
@@ -215,4 +219,3 @@ class Storage:
             trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
             self.data
         )
-

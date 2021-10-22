@@ -44,6 +44,9 @@ def multiply_out_of_place(output, multiplicand, multiplier):
 def divide_out_of_place(output, dividend, divisor):
     output[:] = dividend / divisor
 
+@numba.njit(**conf.JIT_FLAGS)
+def sum_out_of_place(output, a, b):
+    output[:] = a + b
 
 @numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):

@@ -18,10 +18,10 @@ class PhysicsMethods:
             y[i] = {phys.trivia.explicit_euler.c_inline(y="y[i]", dt="dt", dy_dt="dy_dt")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__critical_volume_body = trtc.For(("v_cr", "kappa", "v_dry", "v_wet", "T", "cell"), "i", f'''
-            auto sigma = {phys.surface_tension.sigma.c_inline(T="T[cell[i]]", v_wet="v_wet[i]", v_dry="v_dry[i]")};
+        self.__critical_volume_body = trtc.For(("v_cr", "kappa", "f_org", "v_dry", "v_wet", "T", "cell"), "i", f'''
+            auto sigma = {phys.surface_tension.sigma.c_inline(T="T[cell[i]]", v_wet="v_wet[i]", v_dry="v_dry[i]", f_org="f_org[i]")};
             auto r_cr = {phys.hygroscopicity.r_cr.c_inline(
-                kp="kappa",
+                kp="kappa[i]",
                 rd3="v_dry[i] / const.pi_4_3",
                 T="T[cell[i]]",
                 sgm="sigma"
@@ -44,10 +44,9 @@ class PhysicsMethods:
             '''.replace("real_type", PrecisionResolver.get_C_type()))
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def critical_volume(self, v_cr, kappa, v_dry, v_wet, T, cell):
-        kappa = PrecisionResolver.get_floating_point(kappa)
+    def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
-            v_cr.shape[0], (v_cr.data, kappa, v_dry.data, v_wet.data, T.data, cell.data)
+            v_cr.shape[0], (v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

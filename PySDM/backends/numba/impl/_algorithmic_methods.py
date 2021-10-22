@@ -43,7 +43,7 @@ class AlgorithmicMethods:
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
-        for i in range(length // 2):  # TODO #401
+        for i in range(length // 2):  # TODO #571
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -93,21 +93,18 @@ class AlgorithmicMethods:
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
-            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data, cell_origin.data,
-                                                              position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data,
+                                                              cell_origin.data, position_in_cell.data)
         elif n_dims == 2:
-            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data, cell_origin.data,
-                                                              position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data,
+                                                              cell_origin.data, position_in_cell.data)
         else:
             raise NotImplementedError()
 
     @staticmethod
     # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
     def cell_id_body(cell_id, cell_origin, strides):
-        if strides.size == 1:
-            cell_id[:] = cell_origin
-        else:
-            cell_id[:] = np.dot(strides, cell_origin)
+        cell_id[:] = np.dot(strides, cell_origin)
 
     @staticmethod
     def cell_id(cell_id, cell_origin, strides):
@@ -210,7 +207,7 @@ class AlgorithmicMethods:
             # (5) Successful collision
             j, k = pair_indices(i, idx, is_first_in_pair)
             prop = n[j] // n[k]
-            g = min(int(gamma[i]), prop)  # TODO #416: test asserting that min is not needed with adaptivity
+            g = min(int(gamma[i]), prop)
             cid = cell_id[j]
             # compute the number of collisions
             collision_rate[cid] += g * n[k]
@@ -268,7 +265,8 @@ class AlgorithmicMethods:
     @staticmethod
     def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
         return AlgorithmicMethods.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, len(is_first_in_pair), unit)
+            params, output.data, radii.data, is_first_in_pair.indicator.data,
+            radii.idx.data, len(is_first_in_pair), unit)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

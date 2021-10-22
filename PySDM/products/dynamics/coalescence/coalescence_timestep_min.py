@@ -13,10 +13,10 @@ class CoalescenceTimestepMin(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.core.dynamics['Coalescence']
+        self.coalescence = self.particulator.dynamics['Coalescence']
         self.range = self.coalescence.dt_coal_range
 
     def get(self):
         self.download_to_buffer(self.coalescence.stats_dt_min)
-        self.coalescence.stats_dt_min[:] = self.coalescence.core.dt
+        self.coalescence.stats_dt_min[:] = self.coalescence.particulator.dt
         return self.buffer
