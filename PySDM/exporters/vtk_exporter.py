@@ -1,7 +1,7 @@
 import numpy as np
-from pyevtk.hl import pointsToVTK
+from pyevtk.hl import pointsToVTK, gridToVTK
 from pyevtk.vtk import VtkGroup
-import numbers, os
+import numbers, os, sys
 
 
 """
@@ -12,34 +12,43 @@ exporter = VTKExporter()
 for step in range(settings.n_steps):
     simulation.particulator.run(1)
 
-    exporter.export_particles(simulation.particulator)
+    exporter.export_attributes(simulation.particulator)
+    exporter.export_products(simulation.particulator)
 
 """
 
 class VTKExporter:
 
-    def __init__(self, path='.', particles_filename="sd_points", file_num_len=4, verbose=False):
+    def __init__(self, path='.', attributes_filename="sd_attributes", products_filename="sd_products", file_num_len=4, verbose=False):
         self.path = os.path.join(path, 'output')
         
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 
-        self.particles_file_path = os.path.join(self.path, particles_filename)
+        self.attributes_file_path = os.path.join(self.path, attributes_filename)
+        self.products_file_path = os.path.join(self.path, products_filename)
         self.num_len = file_num_len
         self.exported_times = {}
+        self.exported_times['attributes'] = {}
+        self.exported_times['products'] = {}
         self.verbose = verbose
 
     def write_pvd(self):
-        pvd = VtkGroup(self.particles_file_path)
-        for k, v in self.exported_times.items():
-            pvd.addFile(k + '.vtu', sim_time=v)
-        pvd.save()
+        pvd_attributes = VtkGroup(self.attributes_file_path)
+        for k, v in self.exported_times['attributes'].items():
+            pvd_attributes.addFile(k + '.vtu', sim_time=v)
+        pvd_attributes.save()
 
-    def export_particles(self, particulator):
-        path = self.particles_file_path + '_num' + self.add_leading_zeros(particulator.n_steps)
-        self.exported_times[path] = particulator.n_steps * particulator.dt
+        pvd_products = VtkGroup(self.products_file_path)
+        for k, v in self.exported_times['products'].items():
+            pvd_products.addFile(k + '.vts', sim_time=v)
+        pvd_products.save()
+
+    def export_attributes(self, particulator):
+        path = self.attributes_file_path + '_num' + self.add_leading_zeros(particulator.n_steps)
+        self.exported_times['attributes'][path] = particulator.n_steps * particulator.dt
         if self.verbose:
-            print("Exporting Particles to vtk, path: " + path)
+            print("Exporting Attributes to vtk, path: " + path)
         payload = {}
 
         for k in particulator.attributes.keys():
@@ -61,6 +70,42 @@ class VTKExporter:
             raise NotImplementedError("Only 2 dimensions array is supported at the moment.")
 
         pointsToVTK(path, x, y, z, data = payload)
+
+    def export_products(self, particulator):
+        if len(particulator.products) != 0:
+            path = self.products_file_path + '_num' + self.add_leading_zeros(particulator.n_steps)
+            self.exported_times['products'][path] = particulator.n_steps * particulator.dt
+            if self.verbose:
+                print("Exporting Products to vtk, path: " + path)
+            payload = {}
+
+            if particulator.mesh.dimension == 2:
+                data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+
+                for k in particulator.products.keys():
+                    v = particulator.products[k].get()
+
+                    if isinstance(v, np.ndarray):
+                        if v.shape == particulator.mesh.grid:
+                            payload[k] = v.T[:, :, np.newaxis]
+                        else:
+                            if self.verbose:
+                                print(f'{k} shape {v.shape} not equals data shape {data_shape} and will not be exported', file=sys.stderr)
+                    elif isinstance(v, numbers.Number):
+                        if self.verbose:
+                            print(f'{k} is a Number and will not be exported', file=sys.stderr)
+                    else:
+                        if self.verbose:
+                            print(f'{k} export is not possible', file=sys.stderr)    
+
+                x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
+            else:
+                raise NotImplementedError("Only 2 dimensions data is supported at the moment.")    
+
+            gridToVTK(path, x, y, z, cellData = payload)           
+        else:
+            if self.verbose:
+                print('No products to export')    
 
     def add_leading_zeros(self, a):
         return ''.join(['0' for i in range(self.num_len - len(str(a)))]) + str(a)
