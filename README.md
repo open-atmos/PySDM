@@ -309,7 +309,7 @@ pyplot.savefig('readme.png')
 
 The resultant plot (generated with the Python code) looks as follows:
 
-![plot](https://github.com/atmos-cloud-sim-uj/PySDM/releases/download/tip/readme.svg)
+![plot](https://github.com/atmos-cloud-sim-uj/PySDM/releases/download/tip/readme.png)
 
 ## Hello-world condensation example in Python, Julia and Matlab
 
