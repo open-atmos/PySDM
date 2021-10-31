@@ -1,5 +1,5 @@
-from ...product import Product
 import numpy as np
+from ...product import Product
 
 
 class PeakSupersaturation(Product):

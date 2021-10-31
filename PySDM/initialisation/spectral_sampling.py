@@ -1,5 +1,5 @@
-import numpy as np
 from typing import Tuple
+import numpy as np
 from scipy import optimize
 from PySDM.physics import constants as const
 

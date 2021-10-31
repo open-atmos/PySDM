@@ -1,3 +1,4 @@
+# pylint:disable=invalid-name
 """
 PySDM offers a set of building blocks for development of atmospheric cloud
 simulation systems revolving around the particle-based microphysics modelling concept

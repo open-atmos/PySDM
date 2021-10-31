@@ -14,7 +14,9 @@ def pair_indices(i, idx, is_first_in_pair):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell):
+def calculate_displacement_body_common(
+        dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+):
     omega = position_in_cell[dim, droplet]
     displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
@@ -34,11 +36,14 @@ class AlgorithmicMethods:
 
     @staticmethod
     def adaptive_sdm_end(dt_left, cell_start):
-        return AlgorithmicMethods.adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)
+        return AlgorithmicMethods.adaptive_sdm_end_body(
+            dt_left.data, len(dt_left), cell_start.data
+        )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
+    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt,
+                                dt_range, is_first_in_pair,
                                 stats_n_substep, stats_dt_min):
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):
@@ -64,10 +69,12 @@ class AlgorithmicMethods:
                 stats_n_substep[cid] += 1
 
     @staticmethod
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min):
+    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
+                           stats_n_substep, stats_dt_min):
         return AlgorithmicMethods.adaptive_sdm_gamma_body(
             gamma.data, n.idx.data, len(n), n.data, cell_id.data,
-            dt_left.data, dt, dt_range, is_first_in_pair.indicator.data, stats_n_substep.data, stats_dt_min.data)
+            dt_left.data, dt, dt_range, is_first_in_pair.indicator.data,
+            stats_n_substep.data, stats_dt_min.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
@@ -93,11 +100,15 @@ class AlgorithmicMethods:
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
-            AlgorithmicMethods.calculate_displacement_body_1d(dim, scheme, displacement.data, courant.data,
-                                                              cell_origin.data, position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_1d(
+                dim, scheme, displacement.data, courant.data,
+                cell_origin.data, position_in_cell.data
+            )
         elif n_dims == 2:
-            AlgorithmicMethods.calculate_displacement_body_2d(dim, scheme, displacement.data, courant.data,
-                                                              cell_origin.data, position_in_cell.data)
+            AlgorithmicMethods.calculate_displacement_body_2d(
+                dim, scheme, displacement.data, courant.data,
+                cell_origin.data, position_in_cell.data
+            )
         else:
             raise NotImplementedError()
 
@@ -185,11 +196,14 @@ class AlgorithmicMethods:
     @staticmethod
     def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy) -> float:
         return AlgorithmicMethods.flag_precipitated_body(
-            cell_origin.data, position_in_cell.data, volume.data, n.data, idx.data, length, healthy.data)
+            cell_origin.data, position_in_cell.data, volume.data,
+            n.data, idx.data, length, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def linear_collection_efficiency_body(params, output, radii, is_first_in_pair, idx, length, unit):
+    def linear_collection_efficiency_body(
+            params, output, radii, is_first_in_pair, idx, length, unit
+    ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         output[:] = 0
         for i in numba.prange(length - 1):
@@ -242,7 +256,10 @@ class AlgorithmicMethods:
                 if scheme == "counting_sort" or scheme == "counting_sort_parallel":
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
                 if scheme == "counting_sort_parallel":
-                    self.cell_starts = Storage.empty((numba.config.NUMBA_NUM_THREADS, len(cell_start)), dtype=int)
+                    self.cell_starts = Storage.empty(
+                        (numba.config.NUMBA_NUM_THREADS, len(cell_start)),
+                        dtype=int
+                    )
 
             def __call__(self, cell_id, cell_idx, cell_start, idx):
                 length = len(idx)
@@ -292,7 +309,9 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def _counting_sort_by_cell_id_and_update_cell_start(new_idx, idx, cell_id, cell_idx, length, cell_start):
+    def _counting_sort_by_cell_id_and_update_cell_start(
+            new_idx, idx, cell_id, cell_idx, length, cell_start
+    ):
         cell_end = cell_start
         # Warning: Assuming len(cell_end) == n_cell+1
         cell_end[:] = 0
@@ -330,9 +349,11 @@ class AlgorithmicMethods:
             cell_end_thread[t, :] = cell_start[:]
 
         for t in numba.prange(thread_num):
-            for i in range((t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
-                           t * length // thread_num - 1,
-                           -1):
+            for i in range(
+                (t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
+                t * length // thread_num - 1,
+                -1
+            ):
                 cell_end_thread[t, cell_idx[cell_id[idx[i]]]] -= 1
                 new_idx[cell_end_thread[t, cell_idx[cell_id[idx[i]]]]] = idx[i]
 

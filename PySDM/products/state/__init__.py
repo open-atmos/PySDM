@@ -1,5 +1,5 @@
 from .aerosol_specific_concentration import AerosolSpecificConcentration
-from PySDM.products.state.particle_mean_radius import ParticleMeanRadius
+from .particle_mean_radius import ParticleMeanRadius
 from .particles_size_spectrum import ParticlesWetSizeSpectrum, ParticlesDrySizeSpectrum
 from .total_particle_concentration import TotalParticleConcentration
 from .particles_concentration import ParticlesConcentration, AerosolConcentration, CloudDropletConcentration, DrizzleConcentration

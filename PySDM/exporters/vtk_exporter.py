@@ -6,24 +6,22 @@ from pyevtk.hl import pointsToVTK, gridToVTK
 from pyevtk.vtk import VtkGroup
 
 
-"""
-Example of use:
-
-exporter = VTKExporter()
-
-for step in range(settings.n_steps):
-    simulation.particulator.run(1)
-
-    exporter.export_attributes(simulation.particulator)
-    exporter.export_products(simulation.particulator)
-
-"""
-
 class VTKExporter:
+    """
+    Example of use:
 
+    exporter = VTKExporter()
+
+    for step in range(settings.n_steps):
+        simulation.particulator.run(1)
+
+        exporter.export_attributes(simulation.particulator)
+        exporter.export_products(simulation.particulator)
+
+    """
     def __init__(self, path='.', attributes_filename="sd_attributes", products_filename="sd_products", file_num_len=4, verbose=False):
         self.path = os.path.join(path, 'output')
-        
+
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 

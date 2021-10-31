@@ -69,4 +69,3 @@ def test_coalescence(backend, croupier, adaptive):
     for volume in volumes.values():
         assert x_max < np.amax(volume)
         x_max = np.amax(volume)
-

@@ -1,16 +1,15 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from collections import defaultdict
+import numpy as np
+import pytest
+from chempy import Equilibrium
+from chempy.equilibria import EqSystem
+from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
 from PySDM.dynamics import aqueous_chemistry
-from chempy import Equilibrium
-from chempy.equilibria import EqSystem
-from chempy.chemistry import Species
-
-import numpy as np
-import pytest
-from collections import defaultdict
 
 
 formulae = Formulae()
@@ -66,15 +65,22 @@ class Test_pH:
     def test_equilibrate_pH_non_trivial(init_conc, env_T):
 
         equilibria = {
-            'water': Equilibrium.from_string(f"H2O = H+ + OH-; {K_H2O / M / M}"),
-            'ammonia': Equilibrium.from_string(f"NH3 + H2O = NH4+ + OH-; {EQUILIBRIUM_CONST['K_NH3'].at(env_T) / M}"),
-            'sulfonic_first': Equilibrium.from_string(f"H2SO3(aq) = H+ + HSO3-; {EQUILIBRIUM_CONST['K_SO2'].at(env_T) / M}"),
-            'sulfonic_second': Equilibrium.from_string(f"HSO3- = H+ + SO3-2; {EQUILIBRIUM_CONST['K_HSO3'].at(env_T) / M}"),
-            'carbonic_first': Equilibrium.from_string(f"H2CO3(aq) = H+ + HCO3-; {EQUILIBRIUM_CONST['K_CO2'].at(env_T) / M}"),
-            'carbonic_second': Equilibrium.from_string(f"HCO3- = H+ + CO3-2; {EQUILIBRIUM_CONST['K_HCO3'].at(env_T) / M}")
+            'water': Equilibrium.from_string(
+                f"H2O = H+ + OH-; {K_H2O / M / M}"),
+            'ammonia': Equilibrium.from_string(
+                f"NH3 + H2O = NH4+ + OH-; {EQUILIBRIUM_CONST['K_NH3'].at(env_T) / M}"),
+            'sulfonic_first': Equilibrium.from_string(
+                f"H2SO3(aq) = H+ + HSO3-; {EQUILIBRIUM_CONST['K_SO2'].at(env_T) / M}"),
+            'sulfonic_second': Equilibrium.from_string(
+                f"HSO3- = H+ + SO3-2; {EQUILIBRIUM_CONST['K_HSO3'].at(env_T) / M}"),
+            'carbonic_first': Equilibrium.from_string(
+                f"H2CO3(aq) = H+ + HCO3-; {EQUILIBRIUM_CONST['K_CO2'].at(env_T) / M}"),
+            'carbonic_second': Equilibrium.from_string(
+                f"HCO3- = H+ + CO3-2; {EQUILIBRIUM_CONST['K_HCO3'].at(env_T) / M}")
         }
         substances = [
-            Species.from_formula(f) for f in 'H2O OH- H+ NH3 NH4+ H2CO3(aq) HCO3- CO3-2 H2SO3(aq) HSO3- SO3-2'.split()
+            Species.from_formula(f)
+            for f in 'H2O OH- H+ NH3 NH4+ H2CO3(aq) HCO3- CO3-2 H2SO3(aq) HSO3- SO3-2'.split()
         ]
         eqsys = EqSystem(equilibria.values(), substances)
 

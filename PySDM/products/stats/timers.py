@@ -1,5 +1,5 @@
-from PySDM.products.product import Product
 import time
+from PySDM.products.product import Product
 
 
 class _Timer(Product):

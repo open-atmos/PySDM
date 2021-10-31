@@ -24,4 +24,3 @@ class GaseousMoleFraction(Product):
         )
         convert_to(tmp, ppb)
         return tmp
-

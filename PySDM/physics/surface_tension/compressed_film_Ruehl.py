@@ -1,13 +1,14 @@
-from PySDM.physics import constants as const
 import numpy as np
 from scipy import constants as sci
 from scipy import optimize
+from PySDM.physics import constants as const
 
 nu_org = np.nan
 A0 = np.nan
 C0 = np.nan
 m_sigma = np.nan
 sgm_min = np.nan
+
 
 class CompressedFilm_Ruehl:
     @staticmethod
@@ -32,7 +33,7 @@ class CompressedFilm_Ruehl:
         f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T))
         sol = optimize.root_scalar(f, bracket=[0,1])
         f_surf = sol.root
-        
+
         # calculate surface tension
         sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma # m^2 * J/m^2 = J = N*m --> N/m - N*m ?
         sgm = np.minimum(np.maximum(sgm, sgm_min), const.sgm_w)

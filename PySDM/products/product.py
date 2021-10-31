@@ -91,4 +91,3 @@ class MoistEnvironmentProduct(Product):
     def get(self):
         self.download_to_buffer(self.source)
         return self.buffer
-

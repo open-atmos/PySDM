@@ -1,6 +1,5 @@
-from ...product import MomentProduct
 import numpy as np
-from PySDM.physics.constants import convert_to, si
+from ...product import MomentProduct
 
 
 class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
