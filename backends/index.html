@@ -33,11 +33,11 @@ and <code><a title="PySDM.backends.ThrustRTC" href="#PySDM.backends.ThrustRTC">T
 Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
 and `GPU`=`PySDM.backends.thrustRTC.thrustRTC.ThrustRTC`
 &#34;&#34;&#34;
-from .numba.numba import Numba
 import ctypes
 import warnings
-from numba import cuda
 import sys
+from numba import cuda
+from .numba.numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
@@ -58,10 +58,14 @@ def _cuda_is_available():
         error_str = ctypes.c_char_p()
         cuda_lib.cuGetErrorString(result, ctypes.byref(error_str))
         warnings.warn(
-            &#34;CUDA library found but cuInit() failed (error code: %d; message: %s)&#34; % (result, error_str.value.decode()))
+            f&#34;CUDA library found but cuInit() failed (error code: {result};&#34;
+            f&#34; message: {error_str.value.decode()})&#34;
+        )
         if &#39;google.colab&#39; in sys.modules:
-            warnings.warn(&#34;to use GPU on Colab set hardware accelerator to &#39;GPU&#39; before session start&#34;
-                         &#39;in the &#34;Runtime :: Change runtime type :: Hardware accelerator&#34; menu&#39;)
+            warnings.warn(
+                &#34;to use GPU on Colab set hardware accelerator to &#39;GPU&#39; before session start&#34;
+                &#39; in the &#34;Runtime :: Change runtime type :: Hardware accelerator&#34; menu&#39;
+            )
         return False
 
     return True

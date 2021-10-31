@@ -26,30 +26,30 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">import numbers
+import os
+import sys
+import numpy as np
 from pyevtk.hl import pointsToVTK, gridToVTK
 from pyevtk.vtk import VtkGroup
-import numbers, os, sys
 
-
-&#34;&#34;&#34;
-Example of use:
-
-exporter = VTKExporter()
-
-for step in range(settings.n_steps):
-    simulation.particulator.run(1)
-
-    exporter.export_attributes(simulation.particulator)
-    exporter.export_products(simulation.particulator)
-
-&#34;&#34;&#34;
 
 class VTKExporter:
+    &#34;&#34;&#34;
+    Example of use:
 
+    exporter = VTKExporter()
+
+    for step in range(settings.n_steps):
+        simulation.particulator.run(1)
+
+        exporter.export_attributes(simulation.particulator)
+        exporter.export_products(simulation.particulator)
+
+    &#34;&#34;&#34;
     def __init__(self, path=&#39;.&#39;, attributes_filename=&#34;sd_attributes&#34;, products_filename=&#34;sd_products&#34;, file_num_len=4, verbose=False):
         self.path = os.path.join(path, &#39;output&#39;)
-        
+
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 
@@ -124,16 +124,16 @@ class VTKExporter:
                             print(f&#39;{k} is a Number and will not be exported&#39;, file=sys.stderr)
                     else:
                         if self.verbose:
-                            print(f&#39;{k} export is not possible&#39;, file=sys.stderr)    
+                            print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
                 x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
             else:
-                raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)    
+                raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-            gridToVTK(path, x, y, z, cellData = payload)           
+            gridToVTK(path, x, y, z, cellData = payload)
         else:
             if self.verbose:
-                print(&#39;No products to export&#39;)    
+                print(&#39;No products to export&#39;)
 
     def add_leading_zeros(self, a):
         return &#39;&#39;.join([&#39;0&#39; for i in range(self.num_len - len(str(a)))]) + str(a)</code></pre>
@@ -153,16 +153,33 @@ class VTKExporter:
 <span>(</span><span>path='.', attributes_filename='sd_attributes', products_filename='sd_products', file_num_len=4, verbose=False)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Example of use:</p>
+<p>exporter = VTKExporter()</p>
+<p>for step in range(settings.n_steps):
+simulation.particulator.run(1)</p>
+<pre><code>exporter.export_attributes(simulation.particulator)
+exporter.export_products(simulation.particulator)
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class VTKExporter:
+    &#34;&#34;&#34;
+    Example of use:
 
+    exporter = VTKExporter()
+
+    for step in range(settings.n_steps):
+        simulation.particulator.run(1)
+
+        exporter.export_attributes(simulation.particulator)
+        exporter.export_products(simulation.particulator)
+
+    &#34;&#34;&#34;
     def __init__(self, path=&#39;.&#39;, attributes_filename=&#34;sd_attributes&#34;, products_filename=&#34;sd_products&#34;, file_num_len=4, verbose=False):
         self.path = os.path.join(path, &#39;output&#39;)
-        
+
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 
@@ -237,16 +254,16 @@ class VTKExporter:
                             print(f&#39;{k} is a Number and will not be exported&#39;, file=sys.stderr)
                     else:
                         if self.verbose:
-                            print(f&#39;{k} export is not possible&#39;, file=sys.stderr)    
+                            print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
                 x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
             else:
-                raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)    
+                raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-            gridToVTK(path, x, y, z, cellData = payload)           
+            gridToVTK(path, x, y, z, cellData = payload)
         else:
             if self.verbose:
-                print(&#39;No products to export&#39;)    
+                print(&#39;No products to export&#39;)
 
     def add_leading_zeros(self, a):
         return &#39;&#39;.join([&#39;0&#39; for i in range(self.num_len - len(str(a)))]) + str(a)</code></pre>
@@ -337,16 +354,16 @@ class VTKExporter:
                         print(f&#39;{k} is a Number and will not be exported&#39;, file=sys.stderr)
                 else:
                     if self.verbose:
-                        print(f&#39;{k} export is not possible&#39;, file=sys.stderr)    
+                        print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
             x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
         else:
-            raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)    
+            raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-        gridToVTK(path, x, y, z, cellData = payload)           
+        gridToVTK(path, x, y, z, cellData = payload)
     else:
         if self.verbose:
-            print(&#39;No products to export&#39;)    </code></pre>
+            print(&#39;No products to export&#39;)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.exporters.vtk_exporter.VTKExporter.write_pvd"><code class="name flex">

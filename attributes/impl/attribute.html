@@ -39,9 +39,17 @@
 
     def allocate(self, idx):
         if self.size &gt;= 1:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.size, self.particulator.n_sd),
+                dtype=self.dtype
+            )
         else:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.particulator.n_sd,),
+                dtype=self.dtype
+            )
 
     def set_data(self, data):
         self.data = data
@@ -92,9 +100,17 @@
 
     def allocate(self, idx):
         if self.size &gt;= 1:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.size, self.particulator.n_sd),
+                dtype=self.dtype
+            )
         else:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.particulator.n_sd,),
+                dtype=self.dtype
+            )
 
     def set_data(self, data):
         self.data = data
@@ -131,9 +147,17 @@
 </summary>
 <pre><code class="python">def allocate(self, idx):
     if self.size &gt;= 1:
-        self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
+        self.data = self.particulator.IndexedStorage.empty(
+            idx,
+            (self.size, self.particulator.n_sd),
+            dtype=self.dtype
+        )
     else:
-        self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)</code></pre>
+        self.data = self.particulator.IndexedStorage.empty(
+            idx,
+            (self.particulator.n_sd,),
+            dtype=self.dtype
+        )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.attributes.impl.attribute.Attribute.get"><code class="name flex">

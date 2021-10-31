@@ -30,10 +30,10 @@
 # https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
 # Boost version: (C) Copyright John Maddock 2006 (http://www.boost.org/LICENSE_1_0.txt)
 
-import numba
 from sys import float_info
-from PySDM.backends.numba.conf import JIT_FLAGS
+import numba
 from numpy import nan
+from PySDM.backends.numba.conf import JIT_FLAGS
 
 float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max

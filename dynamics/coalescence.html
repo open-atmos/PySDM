@@ -30,10 +30,10 @@
 <pre><code class="python">&#34;&#34;&#34;
 SDM implementation with adaptive timestepping
 &#34;&#34;&#34;
+import warnings
 import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
-import warnings
 
 default_dt_coal_range = (.1 * si.second, 100 * si.second)
 
