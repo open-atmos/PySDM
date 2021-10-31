@@ -26,3 +26,11 @@ jobs:
       - run: python -We readme.py
       - run: sed -i 's/CPU/GPU/g' readme.py
       - run: python -We readme.py
+      
+      - name: artefacts
+        if: github.ref == 'refs/heads/master'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            readme.png
