@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 #from ....backends_fixture import backend # TODO #588
 from PySDM.backends import CPU
 from PySDM import Builder

@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae

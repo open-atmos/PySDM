@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.backends.numba.toms748 import toms748_solve
 from scipy.optimize.zeros import toms748
 from PySDM.physics.formulae import Formulae

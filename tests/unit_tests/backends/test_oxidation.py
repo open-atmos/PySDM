@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.storage import Storage

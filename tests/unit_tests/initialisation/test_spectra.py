@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.physics.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 import numpy as np

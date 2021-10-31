@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.physics import constants as const, Formulae
 from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM import Builder

@@ -1,5 +1,5 @@
-import numba
 import sys
+import numba
 from PySDM.backends.numba import conf
 
 

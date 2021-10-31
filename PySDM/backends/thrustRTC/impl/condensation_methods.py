@@ -3,10 +3,10 @@ from typing import Dict, Optional
 from PySDM.physics import constants as const
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust
-from .precision_resolver import PrecisionResolver
 from PySDM.backends.thrustRTC.bisection import BISECTION
-from ..conf import trtc
 from PySDM.backends.thrustRTC.storage import Storage
+from .precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class CondensationMethods():

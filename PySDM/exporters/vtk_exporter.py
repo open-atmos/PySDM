@@ -1,7 +1,7 @@
+import os
 import numpy as np
 from pyevtk.hl import pointsToVTK
 from pyevtk.vtk import VtkGroup
-import numbers, os
 
 
 """

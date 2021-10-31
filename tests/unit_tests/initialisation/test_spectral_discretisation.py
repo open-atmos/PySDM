@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.initialisation import spectral_sampling, spectro_glacial
 from PySDM.physics.spectra import Lognormal
 from PySDM.physics import Formulae, constants as const

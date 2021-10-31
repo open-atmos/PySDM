@@ -1,5 +1,5 @@
 import numpy as np
-from PySDM.physics import si
+from ..constants import si
 
 m = np.inf
 c = np.inf

@@ -1,9 +1,9 @@
-import numpy as np
-import numba
-import scipy.integrate
 import types
 import warnings
 from functools import lru_cache
+import numpy as np
+import numba
+import scipy.integrate
 import PySDM.physics.constants as const
 from PySDM.backends.numba.numba import Numba
 from PySDM.backends.numba.conf import JIT_FLAGS

@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 from PySDM.physics import si, Formulae

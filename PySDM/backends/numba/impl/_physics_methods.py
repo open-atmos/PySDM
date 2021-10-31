@@ -2,7 +2,6 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
-import numpy as np
 
 
 class PhysicsMethods:

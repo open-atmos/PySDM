@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.dynamics import EulerianAdvection
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment

@@ -1,7 +1,7 @@
-from ..conf import trtc
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class PhysicsMethods:

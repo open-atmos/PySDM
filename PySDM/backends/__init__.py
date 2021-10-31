@@ -2,11 +2,11 @@
 Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
 and `GPU`=`PySDM.backends.thrustRTC.thrustRTC.ThrustRTC`
 """
-from .numba.numba import Numba
 import ctypes
 import warnings
-from numba import cuda
 import sys
+from numba import cuda
+from .numba.numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549

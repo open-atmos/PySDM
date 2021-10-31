@@ -1,5 +1,5 @@
-from .attribute import Attribute
 import numpy as np
+from .attribute import Attribute
 
 
 class DummyAttribute(Attribute):
