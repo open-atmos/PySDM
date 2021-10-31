@@ -1,6 +1,7 @@
 from functools import partial
 from PySDM.attributes.impl.dummy_attribute import DummyAttributeImpl
-from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolume, DryVolumeDynamic, OrganicFraction
+from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolume, DryVolumeDynamic,
+                                                 OrganicFraction)
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)

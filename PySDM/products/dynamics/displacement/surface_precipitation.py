@@ -37,4 +37,3 @@ class SurfacePrecipitation(Product):
     def notify(self):
         self.accumulated_rainfall += self.displacement.precipitation_in_last_step
         self.elapsed_time += self.displacement.particulator.dt
-

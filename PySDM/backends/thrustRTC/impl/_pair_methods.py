@@ -19,7 +19,10 @@ class PairMethods:
         PairMethods.__distance_pair_body.launch_n(
             len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
 
-    __find_pairs_body = trtc.For(['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'], "i", '''
+    __find_pairs_body = trtc.For(
+        ['cell_start', 'perm_cell_id', 'is_first_in_pair', 'length'],
+        "i",
+        '''
         is_first_in_pair[i] = (
             i < length - 1 && // note: just to set the last element within the same loop
             perm_cell_id[i] == perm_cell_id[i+1] &&
@@ -29,7 +32,8 @@ class PairMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):  # TODO #330 handle cell_idx
+    # TODO #330 handle cell_idx
+    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(

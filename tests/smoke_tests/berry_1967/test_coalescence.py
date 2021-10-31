@@ -1,6 +1,6 @@
+import struct
 import numpy as np
 import pytest
-import struct
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence

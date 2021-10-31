@@ -2,7 +2,6 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
-import numpy as np
 
 
 class PhysicsMethods:
@@ -62,4 +61,6 @@ class PhysicsMethods:
         self.explicit_euler_body(y.data, dt, dy_dt)
 
     def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
-        self.critical_volume_body(v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)
+        self.critical_volume_body(
+            v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data
+        )

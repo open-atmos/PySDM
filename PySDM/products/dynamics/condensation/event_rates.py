@@ -1,5 +1,5 @@
-from PySDM.products.product import Product
 import numpy as np
+from PySDM.products.product import Product
 from PySDM.physics.constants import convert_to, si
 
 

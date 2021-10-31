@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
 
@@ -47,9 +48,30 @@ class TestParticles:
 
     @staticmethod
     @pytest.mark.parametrize('n, cells, n_sd, idx, new_idx, cell_start', [
-        ([1, 1, 1], [2, 0, 1], 3, [2, 0, 1], [1, 2, 0], [0, 1, 2, 3]),
-        ([0, 1, 0, 1, 1], [3, 4, 0, 1, 2], 3, [4, 1, 3, 2, 0], [3, 4, 1], [0, 0, 1, 2, 2, 3]),
-        ([1, 2, 3, 4, 5, 6, 0], [2, 2, 2, 2, 1, 1, 1], 6, [0, 1, 2, 3, 4, 5, 6], [4, 5, 0, 1, 2, 3], [0, 0, 2, 6])
+        (
+            [1, 1, 1],
+            [2, 0, 1],
+            3,
+            [2, 0, 1],
+            [1, 2, 0],
+            [0, 1, 2, 3]
+        ),
+        (
+            [0, 1, 0, 1, 1],
+            [3, 4, 0, 1, 2],
+            3,
+            [4, 1, 3, 2, 0],
+            [3, 4, 1],
+            [0, 0, 1, 2, 2, 3]
+        ),
+        (
+            [1, 2, 3, 4, 5, 6, 0],
+            [2, 2, 2, 2, 1, 1, 1],
+            6,
+            [0, 1, 2, 3, 4, 5, 6],
+            [4, 5, 0, 1, 2, 3],
+            [0, 0, 2, 6]
+        )
     ])
     def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):
         from PySDM.backends import ThrustRTC
@@ -62,21 +84,34 @@ class TestParticles:
         particulator.environment.mesh.n_cell = n_cell
         particulator.build(attributes={'n': np.ones(n_sd)})
         sut = particulator.attributes
-        sut._Particles__idx = TestParticles.make_indexed_storage(backend, idx)
-        sut.attributes['n'].data = TestParticles.make_indexed_storage(backend, n, sut._Particles__idx)
-        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend, cells, sut._Particles__idx)
-        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend, [0] * (n_cell + 1))
+        sut._Particles__idx = TestParticles.make_indexed_storage(
+            backend, idx)
+        sut.attributes['n'].data = TestParticles.make_indexed_storage(
+            backend, n, sut._Particles__idx)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(
+            backend, cells, sut._Particles__idx)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(
+            backend, [0] * (n_cell + 1))
         sut._Particles__n_sd = particulator.n_sd
         sut.healthy = 0 not in n
-        sut._Particles__cell_caretaker = backend.make_cell_caretaker(sut._Particles__idx, sut._Particles__cell_start)
+        sut._Particles__cell_caretaker = backend.make_cell_caretaker(
+            sut._Particles__idx,
+            sut._Particles__cell_start
+        )
 
         # Act
         sut.sanitize()
         sut._Particles__sort_by_cell_id()
 
         # Assert
-        np.testing.assert_array_equal(np.array(new_idx), sut._Particles__idx.to_ndarray()[:sut.SD_num])
-        np.testing.assert_array_equal(np.array(cell_start), sut._Particles__cell_start.to_ndarray())
+        np.testing.assert_array_equal(
+            np.array(new_idx),
+            sut._Particles__idx.to_ndarray()[:sut.SD_num]
+        )
+        np.testing.assert_array_equal(
+            np.array(cell_start),
+            sut._Particles__cell_start.to_ndarray()
+        )
 
     @staticmethod
     def test_recalculate_cell_id(backend):
@@ -87,11 +122,18 @@ class TestParticles:
         grid = (1, 1)
         particulator = DummyParticulator(backend, n_sd=1)
         particulator.environment = DummyEnvironment(grid=grid)
-        cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(initial_position)
+        cell_id, cell_origin, position_in_cell = particulator.mesh.cellular_attributes(
+            initial_position
+        )
         cell_origin[0, droplet_id] = .1
         cell_origin[1, droplet_id] = .2
         cell_id[droplet_id] = -1
-        attribute = {'n': n, 'cell id': cell_id, 'cell origin': cell_origin, 'position in cell': position_in_cell}
+        attribute = {
+            'n': n,
+            'cell id': cell_id,
+            'cell origin': cell_origin,
+            'position in cell': position_in_cell
+        }
         particulator.build(attribute)
         sut = particulator.attributes
 

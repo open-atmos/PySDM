@@ -11,4 +11,3 @@ class Random:
 
     def __call__(self, storage):
         storage.data[:] = self.generator.uniform(0, 1, storage.shape)
-

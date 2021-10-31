@@ -1,8 +1,8 @@
 """
 The Builder class handling creation of  `PySDM.Particulator` instances
 """
+import inspect
 import numpy as np
-
 from PySDM.particulator import Particulator
 from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
 from PySDM.state.particles_factory import ParticlesFactory
@@ -11,8 +11,6 @@ from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.attributes.physics.volume import Volume
 from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.physics.formulae import Formulae
-import inspect
 
 
 class Builder:
@@ -21,7 +19,11 @@ class Builder:
         assert not inspect.isclass(backend)
         self.formulae = backend.formulae
         self.particulator = Particulator(n_sd, backend)
-        self.req_attr = {'n': Multiplicities(self), 'volume': Volume(self), 'cell id': CellID(self)}
+        self.req_attr = {
+            'n': Multiplicities(self),
+            'volume': Volume(self),
+            'cell id': CellID(self)
+        }
         self.aerosol_radius_threshold = 0
         self.condensation_params = None
 
@@ -66,11 +68,19 @@ class Builder:
             self.request_attribute(attribute)
         if 'Condensation' in self.particulator.dynamics:
             self.particulator.condensation_solver = \
-                self.particulator.backend.make_condensation_solver(self.particulator.dt, self.particulator.mesh.n_cell, **self.condensation_params)
+                self.particulator.backend.make_condensation_solver(
+                    self.particulator.dt,
+                    self.particulator.mesh.n_cell,
+                    **self.condensation_params
+                )
         attributes['n'] = int_caster(attributes['n'])
         if self.particulator.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
-        self.particulator.attributes = ParticlesFactory.attributes(self.particulator, self.req_attr, attributes)
+        self.particulator.attributes = ParticlesFactory.attributes(
+            self.particulator,
+            self.req_attr,
+            attributes
+        )
 
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()

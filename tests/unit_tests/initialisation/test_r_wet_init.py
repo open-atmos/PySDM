@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.initialisation import r_wet_init
 from PySDM.physics import Formulae, si, constants as const
 from PySDM.physics.surface_tension import compressed_film_Ovadnevaite

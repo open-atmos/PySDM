@@ -1,8 +1,9 @@
-from PySDM.physics import constants as const
 import numpy as np
+from PySDM.physics import constants as const
 
 sgm_org = np.nan
 delta_min = np.nan
+
 
 class CompressedFilm_Ovadnevaite:
     @staticmethod
@@ -23,7 +24,7 @@ class CompressedFilm_Ovadnevaite:
 
         # calculate the coverage parameter
         c_beta = np.minimum(v_beta / v_delta, 1)
-        
+
         # calculate sigma
         sgm = (1-c_beta) * const.sgm_w + c_beta * sgm_org
         return sgm

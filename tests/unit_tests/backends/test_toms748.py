@@ -1,10 +1,11 @@
-from PySDM.backends.numba.toms748 import toms748_solve
-from scipy.optimize.zeros import toms748
-from PySDM.physics.formulae import Formulae
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import os
 import numba
 import numpy as np
-import os
 import pytest
+from scipy.optimize.zeros import toms748
+from PySDM.backends.numba.toms748 import toms748_solve
+from PySDM.physics.formulae import Formulae
 
 # relevant
 # https://github.com/scipy/scipy/blob/master/scipy/optimize/tests/test_zeros.py

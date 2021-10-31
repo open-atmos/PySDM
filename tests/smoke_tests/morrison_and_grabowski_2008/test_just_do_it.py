@@ -1,7 +1,7 @@
-from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
-from PySDM_examples.Morrison_and_Grabowski_2008 import ColdCumulus
 from contextlib import AbstractContextManager
 import numpy as np
+from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
+from PySDM_examples.Morrison_and_Grabowski_2008 import ColdCumulus
 
 
 class FlowFieldAsserts(AbstractContextManager):

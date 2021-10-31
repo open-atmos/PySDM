@@ -1,5 +1,5 @@
-from ..conf import trtc
 import numpy as np
+from ..conf import trtc
 
 
 class PrecisionResolver:

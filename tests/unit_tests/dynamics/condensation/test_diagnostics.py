@@ -1,11 +1,12 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 #from ....backends_fixture import backend # TODO #588
+import re
+import fnmatch
+import numpy as np
 from PySDM.backends import CPU
 from PySDM import Builder
 from PySDM.state.mesh import Mesh
 from PySDM.dynamics.condensation import Condensation
-import numpy as np
-import re
-import fnmatch
 
 
 class _TestEnv:
@@ -51,7 +52,7 @@ def _try(particulator, capsys):
     try:
         particulator.run(steps=1)
     except Exception as e:
-       exception = e
+        exception = e
     captured = capsys.readouterr()
     assert captured.out == ""
     assert isinstance(exception, RuntimeError)

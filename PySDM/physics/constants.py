@@ -3,15 +3,13 @@ Collection of physical constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
-import numpy as np
+import os
+import time
 import pint
 from scipy import constants as sci
-from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
-from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
-from numpy import nan
-import os
-import time 
+from .impl.fake_unit_registry import FakeUnitRegistry
+from .impl.flag import DIMENSIONAL_ANALYSIS
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:

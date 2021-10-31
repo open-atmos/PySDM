@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from .dummy_particulator import DummyParticulator
 # noinspection PyUnresolvedReferences
 from ..backends_fixture import backend

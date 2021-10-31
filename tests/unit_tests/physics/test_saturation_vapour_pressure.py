@@ -1,7 +1,9 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import inspect
 import numpy as np
 from matplotlib import pylab
 from PySDM.physics import Formulae, constants as const
-import inspect
+
 
 def test_saturation_vapour_pressures(plot=False):
     # Arrange
@@ -28,17 +30,23 @@ def test_saturation_vapour_pressures(plot=False):
     # Assert
     T = np.linspace(-20, 20, 100)
     np.testing.assert_allclose(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T),
-        Formulae(saturation_vapour_pressure='AugustRocheMagnus').saturation_vapour_pressure.pvs_Celsius(T),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(T),
+        Formulae(saturation_vapour_pressure='AugustRocheMagnus')
+            .saturation_vapour_pressure.pvs_Celsius(T),
         rtol=1e-2
     )
     T = np.linspace(-20, 0.3, 100)
     np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.ice_Celsius(T),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T)
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.ice_Celsius(T),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(T)
     )
     T = np.linspace(0.35, 20, 100)
     np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.ice_Celsius(T)
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(T),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.ice_Celsius(T)
     )

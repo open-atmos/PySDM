@@ -1,8 +1,8 @@
-import pytest
 import os
 import re
 import sys
 import pathlib
+import pytest
 from ghapi.all import GhApi, paged
 from fastcore.net import ExceptionsHTTP
 

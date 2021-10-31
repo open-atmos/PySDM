@@ -31,7 +31,9 @@ class PairMethods:
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return PairMethods.find_pairs_body(
-            cell_start.data, is_first_in_pair.indicator.data, cell_id.data, cell_idx.data, idx.data, len(idx))
+            cell_start.data, is_first_in_pair.indicator.data, cell_id.data,
+            cell_idx.data, idx.data, len(idx)
+        )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

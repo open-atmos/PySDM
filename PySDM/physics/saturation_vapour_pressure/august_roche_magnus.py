@@ -1,5 +1,5 @@
-from PySDM.physics import constants as const
 from numpy import exp
+from PySDM.physics import constants as const
 
 
 class AugustRocheMagnus:

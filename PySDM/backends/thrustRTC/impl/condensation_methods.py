@@ -3,10 +3,10 @@ from typing import Dict, Optional
 from PySDM.physics import constants as const
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust
-from .precision_resolver import PrecisionResolver
 from PySDM.backends.thrustRTC.bisection import BISECTION
-from ..conf import trtc
 from PySDM.backends.thrustRTC.storage import Storage
+from .precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class CondensationMethods():
@@ -34,8 +34,13 @@ class CondensationMethods():
         def args(arg):
             return f"args[{args_vars.index(arg)}]"
 
-        self.__update_volume = trtc.For(("v", "vdry", *CondensationMethods.keys, "_kappa", "_f_org", "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"), "i",
-            f'''            
+        self.__update_volume = trtc.For(
+            (
+                "v", "vdry", *CondensationMethods.keys, "_kappa", "_f_org",
+                "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"
+             ),
+            "i",
+            f'''
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
@@ -48,7 +53,7 @@ class CondensationMethods():
                 }}
             }};
             {BISECTION}
-            
+
             auto _T = T[cell_id[i]];
             auto _pv = pv[cell_id[i]];
             auto _lv = lv[cell_id[i]];
@@ -57,7 +62,7 @@ class CondensationMethods():
             auto _DTp = DTp[cell_id[i]];
             auto _lambdaK = lambdaK[cell_id[i]];
             auto _lambdaD = lambdaD[cell_id[i]];
-            
+
             auto x_old = {phys.condensation_coordinate.x.c_inline(volume="v[i]")};
             auto r_old = {phys.trivia.radius.c_inline(volume="v[i]")};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume="vdry[i]/100")};
@@ -66,7 +71,7 @@ class CondensationMethods():
             auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(r="r_old", T="_T", kp="_kappa[i]", rd3="rd3", sgm="sgm")};
 
             real_type Dr=0;
-            real_type Kr=0; 
+            real_type Kr=0;
             real_type r_dr_dt_old=0;
             real_type dx_old=0;
 
@@ -110,10 +115,10 @@ class CondensationMethods():
                 //    break
                 if (a != b) {{
                     if (a > b) {{
-                        auto tmp = a; 
+                        auto tmp = a;
                         a = b;
                         b = tmp;
-                        auto ftmp = fa; 
+                        auto ftmp = fa;
                         fa = fb;
                         fb = ftmp;
                     }}
@@ -131,8 +136,13 @@ class CondensationMethods():
             v[i] = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__pre_for = trtc.For(("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd", "pqv", "qv", "prhod", "rhod", "dt", "RH_max"),
-                              "i", f'''
+        self.__pre_for = trtc.For(
+            (
+                "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd",
+                "pqv", "qv", "prhod", "rhod", "dt", "RH_max"
+            ),
+            "i",
+            f'''
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
@@ -140,7 +150,10 @@ class CondensationMethods():
         ''')
 
         self.__pre = trtc.For(
-            (*CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt", "RH_max"),
+            (
+                *CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean",
+                "thd", "qv", "rhod", "dt", "RH_max"
+            ),
             "i", f'''
             thd[i] += dt * dthd_dt_pred[i] / 2;
             qv[i] += dt * dqv_dt_pred[i] / 2;
@@ -158,8 +171,10 @@ class CondensationMethods():
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
         self.__post = trtc.For(
-            ("dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt", "ml_new", "ml_old", "dv_mean", "T",
-             "lv"),
+            (
+                "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt",
+                "ml_new", "ml_old", "dv_mean", "T", "lv"
+            ),
             "i", f'''
             auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
             auto dqv_dt_corr = - dml_dt / (rhod_mean[i] * dv_mean);
@@ -193,22 +208,43 @@ class CondensationMethods():
         success[:] = True  # TODO #588
         dvfloat = PrecisionResolver.get_floating_point
 
-        self.__pre_for.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt), RH_max.data))
+        self.__pre_for.launch_n(
+            n_cell,
+            (
+                self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data,
+                thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt), RH_max.data
+            )
+        )
 
         dt /= n_substeps
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for _ in range(n_substeps):
-            self.__pre.launch_n(n_cell, (*self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), RH_max.data))
+            self.__pre.launch_n(
+                n_cell,
+                (
+                    *self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data,
+                    self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt),
+                    RH_max.data
+                )
+            )
             self.__update_volume.launch_n(len(n), (v.data, vdry.data, *self.vars.values(),
                                                    kappa.data, f_org.data,
                                                    dvfloat(dt), dvfloat(self.RH_rtol), dvfloat(rtol_x),
                                                    dvfloat(self.max_iters), cell_id.data)
                                           )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
-            self.__post.launch_n(n_cell, (self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data, self.ml_old.data, dvfloat(dv_mean), self.vars['T'], self.vars['lv']))
+            self.__post.launch_n(
+                n_cell,
+                (
+                    self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data,
+                    pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data,
+                    self.ml_old.data, dvfloat(dv_mean), self.vars['T'], self.vars['lv']
+                )
+            )
 
-    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
+    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier,
+                                 RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters

@@ -1,5 +1,5 @@
-from ...numba.conf import JIT_FLAGS
 import re
+from ...numba.conf import JIT_FLAGS
 
 
 jit_opts = "error_model='numpy', fastmath=True"

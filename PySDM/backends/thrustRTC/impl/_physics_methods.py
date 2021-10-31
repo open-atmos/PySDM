@@ -1,7 +1,7 @@
-from ..conf import trtc
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class PhysicsMethods:
@@ -29,7 +29,10 @@ class PhysicsMethods:
             v_cr[i] = {phys.trivia.volume.c_inline(radius="r_cr")};
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__terminal_velocity_body = trtc.For(["values", "radius", "k1", "k2", "k3", "r1", "r2"], "i", '''
+        self.__terminal_velocity_body = trtc.For(
+            ["values", "radius", "k1", "k2", "k3", "r1", "r2"],
+            "i",
+            '''
             if (radius[i] < r1) {
                 values[i] = k1 * radius[i] * radius[i];
             }
@@ -46,7 +49,8 @@ class PhysicsMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def critical_volume(self, v_cr, kappa, f_org, v_dry, v_wet, T, cell):
         self.__critical_volume_body.launch_n(
-            v_cr.shape[0], (v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)
+            v_cr.shape[0],
+            (v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data)
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)

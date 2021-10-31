@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 
 from PySDM.initialisation.multiplicities import discretise_n
@@ -59,7 +60,7 @@ class TestMaths:
 
         true_mrsq = true_var + true_mean**2
         assert abs(discr_mean_radius_squared - true_mrsq) / true_mrsq < .05e-1
-        
+
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.
         np.testing.assert_approx_equal(discr_mean_T_squared, 300. ** 2, significant=6)

@@ -1,27 +1,27 @@
+import numbers
+import os
+import sys
 import numpy as np
 from pyevtk.hl import pointsToVTK, gridToVTK
 from pyevtk.vtk import VtkGroup
-import numbers, os, sys
 
-
-"""
-Example of use:
-
-exporter = VTKExporter()
-
-for step in range(settings.n_steps):
-    simulation.particulator.run(1)
-
-    exporter.export_attributes(simulation.particulator)
-    exporter.export_products(simulation.particulator)
-
-"""
 
 class VTKExporter:
+    """
+    Example of use:
 
+    exporter = VTKExporter()
+
+    for step in range(settings.n_steps):
+        simulation.particulator.run(1)
+
+        exporter.export_attributes(simulation.particulator)
+        exporter.export_products(simulation.particulator)
+
+    """
     def __init__(self, path='.', attributes_filename="sd_attributes", products_filename="sd_products", file_num_len=4, verbose=False):
         self.path = os.path.join(path, 'output')
-        
+
         if not os.path.isdir(self.path):
             os.mkdir(self.path)
 
@@ -96,16 +96,16 @@ class VTKExporter:
                             print(f'{k} is a Number and will not be exported', file=sys.stderr)
                     else:
                         if self.verbose:
-                            print(f'{k} export is not possible', file=sys.stderr)    
+                            print(f'{k} export is not possible', file=sys.stderr)
 
                 x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
             else:
-                raise NotImplementedError("Only 2 dimensions data is supported at the moment.")    
+                raise NotImplementedError("Only 2 dimensions data is supported at the moment.")
 
-            gridToVTK(path, x, y, z, cellData = payload)           
+            gridToVTK(path, x, y, z, cellData = payload)
         else:
             if self.verbose:
-                print('No products to export')    
+                print('No products to export')
 
     def add_leading_zeros(self, a):
         return ''.join(['0' for i in range(self.num_len - len(str(a)))]) + str(a)

@@ -21,9 +21,9 @@ class ChemistryMethods:
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
 
-    def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag, mole_amounts,
-                    env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors, dt, dv, system_type, droplet_volume,
-                    multiplicity):
+    def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag,
+                    mole_amounts, env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors,
+                    dt, dv, system_type, droplet_volume, multiplicity):
         for thread_id in numba.prange(n_threads):
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
@@ -58,15 +58,16 @@ class ChemistryMethods:
                         system_type=system_type,
                         specific_gravity=SPECIFIC_GRAVITY[compound],
                         alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
-                        diffusion_constant=DIFFUSION_CONST[compound],
+                        diffusion_const=DIFFUSION_CONST[compound],
                         dissociation_factor=dissociation_factors[compound].data,
                         radius=self.formulae.trivia.radius
                     )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p, env_T, env_rho_d, dt, dv,
-                    droplet_volume, multiplicity, system_type, specific_gravity, alpha, diffusion_constant, dissociation_factor, radius):
+    def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p,
+                         env_T, env_rho_d, dt, dv, droplet_volume, multiplicity, system_type,
+                         specific_gravity, alpha, diffusion_const, dissociation_factor, radius):
         mole_amount_taken = 0
         for i in super_droplet_ids:
             Mc = specific_gravity * Md
@@ -74,14 +75,16 @@ class ChemistryMethods:
             cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
-            dt_over_scale = dt / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_constant))
+            dt_over_scale = dt / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_const))
             A_old = mole_amounts[i] / droplet_volume[i]
             H_eff = henrysConstant * dissociation_factor[i]
             A_new = (A_old + dt_over_scale * cinf) / (1 + dt_over_scale / H_eff / R_str / env_T)
             new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
             assert new_mole_amount_per_real_droplet >= 0
 
-            mole_amount_taken += multiplicity[i] * (new_mole_amount_per_real_droplet - mole_amounts[i])
+            mole_amount_taken += multiplicity[i] * (
+                    new_mole_amount_per_real_droplet - mole_amounts[i]
+            )
             mole_amounts[i] = new_mole_amount_per_real_droplet
         delta_mr = mole_amount_taken * specific_gravity * Md / (dv * env_rho_d)
         assert delta_mr <= env_mixing_ratio
@@ -120,8 +123,18 @@ class ChemistryMethods:
             # https://agupubs.onlinelibrary.wiley.com/doi/abs/10.1029/JD092iD04p04171
             # https://www.atmos-chem-phys.net/16/1693/2016/acp-16-1693-2016.pdf
 
-            ozone = (k0[cid] + (k1[cid] * K_SO2[cid] / H) + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)) * (moles_O3[i] / droplet_volume[i]) * SO2aq
-            peroxide = k3[cid] * K_SO2[cid] / (1 + k4 * H) * (moles_H2O2[i] / droplet_volume[i]) * SO2aq
+            ozone = (
+                k0[cid] + (
+                    k1[cid] * K_SO2[cid] / H
+                ) + (
+                    k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2
+                )
+            ) * (
+                moles_O3[i] / droplet_volume[i]
+            ) * SO2aq
+            peroxide = k3[cid] * K_SO2[cid] / (1 + k4 * H) * (
+                moles_H2O2[i] / droplet_volume[i]
+            ) * SO2aq
             dt_times_volume = dt * droplet_volume[i]
 
             dconc_dt_O3 = -ozone
@@ -146,17 +159,21 @@ class ChemistryMethods:
         for i in range(len(pH)):
             H = self.formulae.trivia.pH2H(pH.data[i])
             for key in DIFFUSION_CONST:
-                dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](H, equilibrium_consts, cell_id.data[i])
+                dissociation_factors[key].data[i] = DISSOCIATION_FACTORS[key](
+                    H, equilibrium_consts, cell_id.data[i]
+                )
 
     def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
         for i in range(len(T)):
             for key in equilibrium_consts:
-                equilibrium_consts[key].data[i] = self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
+                equilibrium_consts[key].data[i] = \
+                    self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
             for key in kinetic_consts:
-                kinetic_consts[key].data[i] = self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
+                kinetic_consts[key].data[i] = \
+                    self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
 
-    def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI, do_chemistry_flag, pH,
-                      H_min, H_max, ionic_strength_threshold, rtol):
+    def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+                      do_chemistry_flag, pH, H_min, H_max, ionic_strength_threshold, rtol):
         ChemistryMethods.equilibrate_H_body(within_tolerance=self.formulae.trivia.within_tolerance,
                                             pH2H=self.formulae.trivia.pH2H,
                                             H2pH=self.formulae.trivia.H2pH,
@@ -227,8 +244,8 @@ class ChemistryMethods:
                 max_iter = _max_iter_default
             else:
                 max_iter = _max_iter_quite_close
-            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iter,
-                                            within_tolerance=within_tolerance)
+            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=rtol,
+                                            max_iter=max_iter, within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
             pH[i] = H2pH(H)
             ionic_strength = calc_ionic_strength(H, *args)
@@ -236,7 +253,8 @@ class ChemistryMethods:
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
+def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI,
+                        K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
     # Directly adapted
     # https://github.com/igfuw/libcloudphxx/blob/0b4e2455fba4f95c7387623fc21481a85e7b151f/src/impl/particles_impl_chem_strength.ipp#L50
     # https://en.wikipedia.org/wiki/Ionic_strength
@@ -265,7 +283,8 @@ def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, 
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
+def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI,
+              K_NH3, K_SO2, K_HSO3, K_HSO4, K_HCO3, K_CO2, K_HNO3):
     ammonia = (N_mIII * H * K_NH3) / (K_H2O + K_NH3 * H)
     nitric = N_V * K_HNO3 / (H + K_HNO3)
     sulfous = S_IV * K_SO2 * (H + 2 * K_HSO3) / (H * H + H * K_SO2 + K_SO2 * K_HSO3)

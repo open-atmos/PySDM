@@ -1,6 +1,8 @@
+import numba
 import numpy as np
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
+from PySDM.backends.numba import conf
 
 
 class Interpolation:
@@ -87,10 +89,6 @@ class TpDependent:
 
         c4 = np.array([10.5035, 1.08750, -0.133245, -0.00659969])
 
-        import numba
-        from numba import prange
-        from PySDM.backends.numba import conf
-
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
@@ -107,7 +105,7 @@ class TpDependent:
 
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False})
         def terminal_velocity(values, radius, threshold):
-            for i in prange(len(values)):
+            for i in numba.prange(len(values)):
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:

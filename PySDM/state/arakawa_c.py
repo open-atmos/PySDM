@@ -14,4 +14,3 @@ def make_rhod(grid, rhod_of_zZ):
         grid[0],
         axis=0
     )
-

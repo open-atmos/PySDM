@@ -1,9 +1,9 @@
-from PySDM.builder import Builder
-from PySDM.physics.formulae import Formulae
-from PySDM.particulator import Particulator
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from PySDM import Builder, Particulator
+from PySDM.physics import Formulae
+from PySDM.attributes.physics import Multiplicities
+from PySDM.attributes.numerics import CellID
 from .dummy_environment import DummyEnvironment
-from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.numerics.cell_id import CellID
 
 
 class DummyParticulator(Builder, Particulator):

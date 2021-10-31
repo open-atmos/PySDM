@@ -19,7 +19,8 @@ class Kinematic2D(_Moist):
     def register(self, builder):
         super().register(builder)
         self.formulae = builder.particulator.formulae
-        rhod = builder.particulator.Storage.from_ndarray(arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
+        rhod = builder.particulator.Storage.from_ndarray(
+            arakawa_c.make_rhod(self.mesh.grid, self.rhod_of).ravel())
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
@@ -47,7 +48,8 @@ class Kinematic2D(_Moist):
             if spectral_discretisation:
                 r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             elif spectro_glacial_discretisation:
-                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(self.particulator.n_sd)
+                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(
+                    self.particulator.n_sd)
                 attributes['freezing temperature'] = T_fz
             else:
                 raise NotImplementedError()
@@ -57,8 +59,13 @@ class Kinematic2D(_Moist):
             if kappa == 0:
                 r_wet = r_dry
             else:
-                r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol,
-                                   cell_id=attributes['cell id'])
+                r_wet = r_wet_init(
+                    r_dry=r_dry,
+                    environment=self,
+                    kappa_times_dry_volume=attributes['kappa times dry volume'],
+                    rtol=rtol,
+                    cell_id=attributes['cell id']
+                )
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))

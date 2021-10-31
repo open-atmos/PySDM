@@ -208,7 +208,7 @@ class AlgorithmicMethods:
             length, [idx.data, n_sd, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
                      volume.data, n.data, rainfall])
         return rainfall.to_host()[0]
-    
+
     __linear_collection_efficiency_body = trtc.For(
         ['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii',
          'is_first_in_pair', 'idx', 'unit'], "i", '''
@@ -239,7 +239,7 @@ class AlgorithmicMethods:
             }
         }
     '''.replace("real_type", PrecisionResolver.get_C_type()))
-    
+
     def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = PrecisionResolver.get_floating_point(A)

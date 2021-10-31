@@ -2,9 +2,8 @@
 A context manager (for use with the `with` statement) for use in unit tests which disables Numba and enables Pint
 """
 from importlib import reload
-from PySDM.physics import constants
-from PySDM.physics import formulae
-from PySDM.physics.impl import flag
+from . import constants, formulae
+from .impl import flag
 
 
 class DimensionalAnalysis:

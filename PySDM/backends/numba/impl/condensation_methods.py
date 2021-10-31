@@ -1,11 +1,11 @@
-import numpy as np
 import math
 from functools import lru_cache
-from .warnings import warn
+import numpy as np
 import numba
 from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
+from .warnings import warn
 
 
 class CondensationMethods:
@@ -18,10 +18,9 @@ class CondensationMethods:
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         CondensationMethods._condensation(
-            solver, n_threads, n_cell, cell_start_arg.data,
-            v.data, v_cr.data, n.data, vdry.data, idx.data,
-            rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data, pqv.data, kappa.data, f_org.data,
-            rtol_x, rtol_thd, dt,
+            solver, n_threads, n_cell, cell_start_arg.data, v.data, v_cr.data, n.data,
+            vdry.data, idx.data, rhod.data, thd.data, qv.data, dv, prhod.data, pthd.data,
+            pqv.data, kappa.data, f_org.data, rtol_x, rtol_thd, dt,
             counters['n_substeps'].data,
             counters['n_activating'].data,
             counters['n_deactivating'].data,
@@ -86,7 +85,12 @@ class CondensationMethods:
             success = False
             for burnout in range(fuse + 1):
                 if burnout == fuse:
-                    return warn("burnout (long)", __file__, context=("thd", thd,), return_value=(0, False))
+                    return warn(
+                        "burnout (long)",
+                        __file__,
+                        context=("thd", thd,),
+                        return_value=(0, False)
+                    )
                 thd_new_long, success = step_fake(args, dt, n_substeps)
                 if success:
                     break
@@ -130,18 +134,23 @@ class CondensationMethods:
         return step
 
     @staticmethod
-    def make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T, phys_p, phys_pv,
-                       phys_dthd_dt, phys_D):
+    def make_step_impl(
+        jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T,
+        phys_p, phys_pv, phys_dthd_dt, phys_D
+    ):
         @numba.njit(**jit_flags)
-        def step_impl(v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt_pred, dqv_dt_pred,
-                      m_d, rhod_mean, rtol_x, dt, n_substeps, fake):
+        def step_impl(
+            v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt_pred, dqv_dt_pred,
+            m_d, rhod_mean, rtol_x, dt, n_substeps, fake
+        ):
             dt /= n_substeps
             ml_old = calculate_ml_old(v, n, cell_idx)
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             success = True
             for t in range(n_substeps):
-                thd += dt * dthd_dt_pred / 2  # note: we do not have yet an example showing that it brings any improvement 
+                # note: no example yet showing that the trapezoidal scheme brings any improvement
+                thd += dt * dthd_dt_pred / 2
                 qv += dt * dqv_dt_pred / 2
 
                 T = phys_T(rhod_mean, thd)
@@ -152,7 +161,10 @@ class CondensationMethods:
                 RH = pv / pvs
                 DTp = phys_D(T, p)
                 ml_new, success_within_substep, n_activating, n_deactivating, n_ripening = \
-                    calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, f_org, lv, pvs, DTp, rtol_x)
+                    calculate_ml_new(
+                        dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx,
+                        kappa, f_org, lv, pvs, DTp, rtol_x
+                    )
                 dml_dt = (ml_new - ml_old) / dt
                 dqv_dt_corr = - dml_dt / m_d
                 dthd_dt_corr = phys_dthd_dt(rhod=rhod_mean, thd=thd, T=T, dqv_dt=dqv_dt_corr, lv=lv)
@@ -182,9 +194,10 @@ class CondensationMethods:
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-                              phys_lambdaK, phys_lambdaD, phys_DK,
-                              within_tolerance, max_iters, RH_rtol):
+    def make_calculate_ml_new(
+        jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+        phys_lambdaK, phys_lambdaD, phys_DK, within_tolerance, max_iters, RH_rtol
+    ):
         @numba.njit(**jit_flags)
         def minfun(x_new, x_old, dt, kappa, f_org, rd3, T, RH, lv, pvs, D, K):
             vol = volume_of_x(x_new)
@@ -195,7 +208,9 @@ class CondensationMethods:
             return x_old - x_new + dt * dx_dt(x_new, r_dr_dt)
 
         @numba.njit(**jit_flags)
-        def calculate_ml_new(dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, f_org, lv, pvs, DTp, rtol_x):
+        def calculate_ml_new(
+            dt, fake, T, p, RH, v, v_cr, n, vdry, cell_idx, kappa, f_org, lv, pvs, DTp, rtol_x
+        ):
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -233,8 +248,18 @@ class CondensationMethods:
                         counter += 1
                         if counter > max_iters:
                             if not fake:
-                                warn("failed to find interval", __file__,
-                                      context=("T", T, "p", p, "RH", RH, "a", a, "b", b, "fa", fa, "fb", fb))
+                                warn(
+                                    "failed to find interval", __file__,
+                                    context=(
+                                        "T", T,
+                                        "p", p,
+                                        "RH", RH,
+                                        "a", a,
+                                        "b", b,
+                                        "fa", fa,
+                                        "fb", fb
+                                    )
+                                )
                             success = False
                             break
                         b = max(x_insane, a + math.ldexp(dx_old, counter))
@@ -247,7 +272,9 @@ class CondensationMethods:
                             a, b = b, a
                             fa, fb = fb, fa
 
-                        x_new, iters_taken = toms748_solve(minfun, args, a, b, fa, fb, rtol_x, max_iters, within_tolerance)
+                        x_new, iters_taken = toms748_solve(
+                            minfun, args, a, b, fa, fb, rtol_x, max_iters, within_tolerance
+                        )
                         if iters_taken in (-1, max_iters):
                             if not fake:
                                 warn("TOMS failed", __file__)
@@ -271,7 +298,9 @@ class CondensationMethods:
 
         return calculate_ml_new
 
-    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier, RH_rtol, max_iters):
+    def make_condensation_solver(self,
+                                 dt, n_cell, *, dt_range, adaptive, fuse,
+                                 multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,
             phys_pvs_C=self.formulae.saturation_vapour_pressure.pvs_Celsius,
@@ -303,33 +332,43 @@ class CondensationMethods:
 
     @staticmethod
     @lru_cache()
-    def make_condensation_solver_impl(fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-                                      phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
-                                      within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
-                                      fuse, multiplier, RH_rtol, max_iters):
+    def make_condensation_solver_impl(
+        fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+        phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
+        within_tolerance, dx_dt, volume, x, dt, dt_range, adaptive,
+        fuse, multiplier, RH_rtol, max_iters
+    ):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
         calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
-        calculate_ml_new = CondensationMethods.make_calculate_ml_new(jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq,
-                                                                     phys_sigma, radius,
-                                                                     phys_lambdaK, phys_lambdaD, phys_DK,
-                                                                     within_tolerance, max_iters, RH_rtol)
-        step_impl = CondensationMethods.make_step_impl(jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
-                                                       phys_T, phys_p, phys_pv, phys_dthd_dt, phys_D)
+        calculate_ml_new = CondensationMethods.make_calculate_ml_new(
+            jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+            phys_lambdaK, phys_lambdaD, phys_DK, within_tolerance, max_iters, RH_rtol
+        )
+        step_impl = CondensationMethods.make_step_impl(
+            jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
+            phys_T, phys_p, phys_pv, phys_dthd_dt, phys_D
+        )
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
-        adapt_substeps = CondensationMethods.make_adapt_substeps(jit_flags, dt, step_fake, dt_range, fuse, multiplier,
-                                                                 within_tolerance)
+        adapt_substeps = CondensationMethods.make_adapt_substeps(
+            jit_flags, dt, step_fake, dt_range, fuse, multiplier, within_tolerance
+        )
         step = CondensationMethods.make_step(jit_flags, step_impl)
 
         @numba.njit(**jit_flags)
-        def solve(v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean,
-                  rtol_x, rtol_thd, dt, n_substeps):
-            args = (v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x)
+        def solve(v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt, dqv_dt,
+                  m_d, rhod_mean, rtol_x, rtol_thd, dt, n_substeps):
+            args = (
+                v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv,
+                dthd_dt, dqv_dt, m_d, rhod_mean, rtol_x
+            )
             success = True
             if adaptive:
                 n_substeps, success = adapt_substeps(args, n_substeps, thd, rtol_thd)
             if success:
-                qv, thd, n_activating, n_deactivating, n_ripening, RH_max, success = step(args, dt, n_substeps)
+                qv, thd, n_activating, n_deactivating, n_ripening, RH_max, success = step(
+                    args, dt, n_substeps
+                )
             else:
                 n_activating, n_deactivating, n_ripening, RH_max = -1, -1, -1, -1
             return success, qv, thd, n_substeps, n_activating, n_deactivating, n_ripening, RH_max
