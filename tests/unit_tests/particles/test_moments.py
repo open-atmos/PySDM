@@ -88,19 +88,35 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO #217 : add a moments_0 wrapper
-        spectrum_moment_0 = particles.backend.Storage.empty((len(v_bins) - 1, 1), dtype=float)
-        spectrum_moments = particles.backend.Storage.empty((len(v_bins) - 1, 1), dtype=float)
+        spectrum_moment_0 = particles.backend.Storage.empty(
+            (len(v_bins) - 1, 1),
+            dtype=float
+        )
+        spectrum_moments = particles.backend.Storage.empty(
+            (len(v_bins) - 1, 1),
+            dtype=float
+        )
         moment_0 = particles.backend.Storage.empty((1,), dtype=float)
         moments = particles.backend.Storage.empty((1, 1), dtype=float)
         v_bins_edges= particles.backend.Storage.from_ndarray(v_bins)
 
         # Act
-        state.spectrum_moments(spectrum_moment_0, spectrum_moments, attr='volume', rank=1, attr_bins=v_bins_edges)
+        state.spectrum_moments(
+            spectrum_moment_0,
+            spectrum_moments,
+            attr='volume',
+            rank=1,
+            attr_bins=v_bins_edges
+        )
         actual = spectrum_moments.to_ndarray()
 
         expected = np.empty((len(v_bins) - 1, 1), dtype=float)
         for i in range(len(v_bins) - 1):
-            state.moments(moment_0, moments, specs={'volume': (1,)}, attr_range=(v_bins[i], v_bins[i+1]))
+            state.moments(
+                moment_0,
+                moments,
+                specs={'volume': (1,)}, attr_range=(v_bins[i], v_bins[i+1])
+            )
             expected[i, 0] = moments[0, 0]
 
         # Assert

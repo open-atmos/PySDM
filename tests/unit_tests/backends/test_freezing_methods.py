@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from matplotlib import pylab
+import numpy as np
 from PySDM.physics import constants as const, Formulae
 from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM import Builder
@@ -9,9 +11,6 @@ from PySDM.products import IceWaterContent
 
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend  # TODO #599
-
-from matplotlib import pylab
-import numpy as np
 
 
 class TestFreezingMethods:
@@ -82,33 +81,33 @@ class TestFreezingMethods:
                 output[key]['unfrozen_fraction'].append(unfrozen_fraction)
 
         # Plot
+        fit_x = np.linspace(0, total_time, num=100)
+        fit_y = np.exp(-rate * fit_x)
+
+        for key in output:
+            pylab.step(
+                output[key]['dt'] * np.arange(len(output[key]['unfrozen_fraction'])),
+                output[key]['unfrozen_fraction'],
+                label=f"dt={output[key]['dt']:.2g} / N={output[key]['N']}",
+                marker='.',
+                linewidth=1 + output[key]['N']//8
+            )
+
+        pylab.plot(fit_x, fit_y, color='black', linestyle='--', label='theory', linewidth=5)
+        pylab.plot(fit_x, hgh(fit_x), color='black', linestyle=':', label='assert upper bound')
+        pylab.plot(fit_x, low(fit_x), color='black', linestyle=':', label='assert lower bound')
+        pylab.legend()
+        pylab.yscale('log')
+        pylab.ylim(fit_y[-1], fit_y[0])
+        pylab.xlim(0, total_time)
+        pylab.xlabel("time")
+        pylab.ylabel("unfrozen fraction")
+        pylab.grid()
         if plot:
-            fit_x = np.linspace(0, total_time, num=100)
-            fit_y = np.exp(-rate * fit_x)
-
-            for key in output.keys():
-                pylab.step(
-                    output[key]['dt'] * np.arange(len(output[key]['unfrozen_fraction'])),
-                    output[key]['unfrozen_fraction'],
-                    label=f"dt={output[key]['dt']:.2g} / N={output[key]['N']}",
-                    marker='.',
-                    linewidth=1 + output[key]['N']//8
-                )
-
-            pylab.plot(fit_x, fit_y, color='black', linestyle='--', label='theory', linewidth=5)
-            pylab.plot(fit_x, hgh(fit_x), color='black', linestyle=':', label='assert upper bound')
-            pylab.plot(fit_x, low(fit_x), color='black', linestyle=':', label='assert lower bound')
-            pylab.legend()
-            pylab.yscale('log')
-            pylab.ylim(fit_y[-1], fit_y[0])
-            pylab.xlim(0, total_time)
-            pylab.xlabel("time")
-            pylab.ylabel("unfrozen fraction")
-            pylab.grid()
             pylab.show()
 
         # Assert
-        for key in output.keys():
+        for key in output:
             data = np.asarray(output[key]['unfrozen_fraction'])
             x = output[key]['dt'] * np.arange(len(data))
             np.testing.assert_array_less(data, hgh(x))

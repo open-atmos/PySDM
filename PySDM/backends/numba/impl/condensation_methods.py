@@ -37,7 +37,7 @@ class CondensationMethods:
             counter_n_substeps, counter_n_activating, counter_n_deactivating, counter_n_ripening,
             cell_order, RH_max, success
     ):
-        for thread_id in numba.prange(n_threads):
+        for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
 
@@ -52,12 +52,13 @@ class CondensationMethods:
                 rhod_mean = (prhod[cell_id] + rhod[cell_id]) / 2
                 md = rhod_mean * dv_mean
 
-                success_in_cell, qv_new, thd_new, substeps_hint, n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
-                    v, v_cr, n, vdry,
-                    idx[cell_start:cell_end],
-                    kappa, f_org, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
-                    rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
-                )
+                success_in_cell, qv_new, thd_new, substeps_hint, \
+                    n_activating, n_deactivating, n_ripening, RH_max_in_cell = solver(
+                        v, v_cr, n, vdry,
+                        idx[cell_start:cell_end],
+                        kappa, f_org, thd[cell_id], qv[cell_id], dthd_dt, dqv_dt, md, rhod_mean,
+                        rtol_x, rtol_thd, dt, counter_n_substeps[cell_id]
+                    )
                 counter_n_substeps[cell_id] = substeps_hint
                 counter_n_activating[cell_id] = n_activating
                 counter_n_deactivating[cell_id] = n_deactivating
@@ -148,7 +149,7 @@ class CondensationMethods:
             count_activating, count_deactivating, count_ripening = 0, 0, 0
             RH_max = 0
             success = True
-            for t in range(n_substeps):
+            for _ in range(n_substeps):
                 # note: no example yet showing that the trapezoidal scheme brings any improvement
                 thd += dt * dthd_dt_pred / 2
                 qv += dt * dqv_dt_pred / 2

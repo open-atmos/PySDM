@@ -2,7 +2,6 @@
 import importlib
 import os
 import numpy as np
-import pytest
 from PySDM.physics import constants
 
 
@@ -13,6 +12,7 @@ def consecutive_seeds():
         seeds.append(constants.default_random_seed)
     print(seeds)
     return np.asarray(seeds)
+
 
 class TestConstants:
     @staticmethod

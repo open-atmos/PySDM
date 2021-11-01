@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 from PySDM.physics.surface_tension import compressed_film_Ovadnevaite
 from PySDM.physics import si

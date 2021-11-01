@@ -1,8 +1,8 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
-from PySDM.physics.constants import si
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM.physics.constants import si
 
 
 def test_environment():

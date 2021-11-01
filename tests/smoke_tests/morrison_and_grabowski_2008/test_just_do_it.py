@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from contextlib import AbstractContextManager
 import numpy as np
 from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
@@ -26,7 +27,7 @@ class FlowFieldAsserts(AbstractContextManager):
 def test_just_do_it():
     settings = ColdCumulus()
     settings.kappa = 0
-    for process in settings.processes.keys():
+    for process in settings.processes:
         settings.processes[process] = False
     settings.processes['particle advection'] += 1
     settings.processes['fluid advection'] += 1

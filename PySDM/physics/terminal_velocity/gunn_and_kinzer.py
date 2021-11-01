@@ -105,7 +105,7 @@ class TpDependent:
 
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False})
         def terminal_velocity(values, radius, threshold):
-            for i in numba.prange(len(values)):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:

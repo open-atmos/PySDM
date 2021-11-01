@@ -10,6 +10,7 @@ from PySDM.storages.indexed_storage import make_IndexedStorage
 class TestIndex:
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_remove_zero_n_or_flagged(backend):
         # Arrange
         n_sd = 44

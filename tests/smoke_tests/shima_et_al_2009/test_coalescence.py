@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
 
@@ -31,6 +32,7 @@ def check(n_part, dv, n_sd, rho, state, step):
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 @pytest.mark.parametrize('adaptive', [True, False])
+# pylint: disable=redefined-outer-name
 def test_coalescence(backend, croupier, adaptive):
     if backend == ThrustRTC and croupier == 'local':  # TODO #358
         return

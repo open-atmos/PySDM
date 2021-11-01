@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
 from PySDM.initialisation import spectral_sampling
 from PySDM.physics import si

@@ -1,5 +1,5 @@
-import PySDM.physics.constants as const
 from numpy import sqrt, exp
+import PySDM.physics.constants as const
 
 
 class KappaKoehler:

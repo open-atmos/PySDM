@@ -1,11 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import numpy as np
+import pytest
+from matplotlib import pyplot
 from PySDM.initialisation import r_wet_init
 from PySDM.physics import Formulae, si, constants as const
 from PySDM.physics.surface_tension import compressed_film_Ovadnevaite
 from PySDM.backends import CPU
-import numpy as np
-import pytest
-from matplotlib import pylab
 
 
 @pytest.fixture()
@@ -43,31 +43,31 @@ def test_r_wet_init(constants, r_dry, plot=False):
     r_dry_arr = np.full(1, r_dry)
 
     # Plot
+    r_wet = np.logspace(np.log(.9*r_dry), np.log(10 * si.nm), base=np.e, num=100)
+    sigma = Env.particulator.formulae.surface_tension.sigma(np.nan,
+                                                            Env.particulator.formulae.trivia.volume(r_wet),
+                                                            Env.particulator.formulae.trivia.volume(r_dry),
+                                                            f_org)
+    RH_eq = Env.particulator.formulae.hygroscopicity.RH_eq(r_wet, T, kappa, r_dry ** 3, sigma)
+    pyplot.plot(
+        r_wet / si.nm,
+        (RH_eq - 1) * 100,
+        label='RH_eq'
+    )
+    pyplot.axhline((RH-1)*100, color='orange', label='RH')
+    pyplot.axvline(r_dry / si.nm, label='a', color='red')
+    pyplot.axvline(
+        Env.particulator.formulae.hygroscopicity.r_cr(kappa, r_dry ** 3, T, const.sgm_w) / si.nm,
+        color='green', label='b'
+    )
+    pyplot.grid()
+    pyplot.xscale('log')
+    pyplot.xlabel('Wet radius [nm]')
+    pyplot.xlim(r_wet[0] / si.nm, r_wet[-1] / si.nm)
+    pyplot.ylabel('Equilibrium supersaturation [%]')
+    pyplot.legend()
     if plot:
-        r_wet = np.logspace(np.log(.9*r_dry), np.log(10 * si.nm), base=np.e, num=100)
-        sigma = Env.particulator.formulae.surface_tension.sigma(np.nan,
-                                                                Env.particulator.formulae.trivia.volume(r_wet),
-                                                                Env.particulator.formulae.trivia.volume(r_dry),
-                                                                f_org)
-        RH_eq = Env.particulator.formulae.hygroscopicity.RH_eq(r_wet, T, kappa, r_dry ** 3, sigma)
-        pylab.plot(
-            r_wet / si.nm,
-            (RH_eq - 1) * 100,
-            label='RH_eq'
-        )
-        pylab.axhline((RH-1)*100, color='orange', label='RH')
-        pylab.axvline(r_dry / si.nm, label='a', color='red')
-        pylab.axvline(
-            Env.particulator.formulae.hygroscopicity.r_cr(kappa, r_dry ** 3, T, const.sgm_w) / si.nm,
-            color='green', label='b'
-        )
-        pylab.grid()
-        pylab.xscale('log')
-        pylab.xlabel('Wet radius [nm]')
-        pylab.xlim(r_wet[0] / si.nm, r_wet[-1] / si.nm)
-        pylab.ylabel('Equilibrium supersaturation [%]')
-        pylab.legend()
-        pylab.show()
+        pyplot.show()
 
     # Act & Assert
     r_wet_init(

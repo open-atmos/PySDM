@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM.physics import si
@@ -24,6 +25,7 @@ class DummyStorage:
         pytest.param(False, id="fastmath: False"),
         pytest.param(True, id="fastmath: True")
 ))
+# pylint: disable=redefined-outer-name
 def test_spin_up(backend, fastmath, plot=False):
     # Arrange
     settings = Settings(fastmath=fastmath)

@@ -9,9 +9,10 @@ class MomentsMethods:
     def __init__(self):
 
         self.__moments_body_0 = trtc.For(
-            ['idx', 'min_x', 'attr_data', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
-             'n_ranks', 'moments', 'ranks',
-             'n_sd', 'n_cell'],
+            (
+                'idx', 'min_x', 'attr_data', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
+                'n_ranks', 'moments', 'ranks', 'n_sd', 'n_cell'
+             ),
             "fake_i",
             '''
             auto i = idx[fake_i];
@@ -23,7 +24,10 @@ class MomentsMethods:
             }
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__moments_body_1 = trtc.For(['n_ranks', 'moments', 'moment_0', 'n_cell'], "c_id", '''
+        self.__moments_body_1 = trtc.For(
+            ('n_ranks', 'moments', 'moment_0', 'n_cell'),
+            "c_id",
+            '''
             for (auto k = 0; k < n_ranks; k+=1) {
                 if (moment_0[c_id] == 0) {
                     moments[n_cell * k  + c_id] = 0;
@@ -35,8 +39,8 @@ class MomentsMethods:
         ''')
 
         self.__spectrum_moments_body_0 = trtc.For(
-            ['idx', 'attr_data', 'x_attr', 'moment_0', 'cell_id', 'n',
-             'x_bins', 'n_bins', 'moments', 'rank', 'n_sd', 'n_cell'],
+            ('idx', 'attr_data', 'x_attr', 'moment_0', 'cell_id', 'n',
+             'x_bins', 'n_bins', 'moments', 'rank', 'n_sd', 'n_cell'),
             "fake_i",
             '''
             auto i = idx[fake_i];
@@ -49,7 +53,10 @@ class MomentsMethods:
             }
         '''.replace("real_type", PrecisionResolver.get_C_type()))
 
-        self.__spectrum_moments_body_1 = trtc.For(['n_bins', 'moments', 'moment_0', 'n_cell'], "i", '''
+        self.__spectrum_moments_body_1 = trtc.For(
+            ('n_bins', 'moments', 'moment_0', 'n_cell'),
+            "i",
+            '''
             for (auto k = 0; k < n_bins; k+=1) {
                 if (moment_0[n_cell * k + i] == 0) {
                     moments[n_cell * k  + i] = 0;

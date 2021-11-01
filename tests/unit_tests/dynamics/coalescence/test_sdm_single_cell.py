@@ -32,18 +32,32 @@ class TestSDMSingleCell:
         b = particles['volume'].to_ndarray()
         c = particles['temperature'].to_ndarray()
         np.testing.assert_approx_equal(
-            const * np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray() * particles['temperature'].to_ndarray()),
+            const * np.sum(
+                particles['n'].to_ndarray()
+                * particles['volume'].to_ndarray()
+                * particles['temperature'].to_ndarray()
+            ),
             const * np.sum(n_2 * T_2 * v_2),
             significant=7
         )
         new_T = np.sum(T_2 * v_2) / np.sum(v_2)
-        assert np.isin(round(new_T, 7), np.round(particles['temperature'].to_ndarray().astype(float), 7))
+        assert np.isin(
+            round(new_T, 7), np.round(particles['temperature'].to_ndarray().astype(float), 7)
+        )
 
-        assert np.sum(particles['n'].to_ndarray() * particles['volume'].to_ndarray()) == np.sum(n_2 * v_2)
-        assert np.sum(particulator.attributes['n'].to_ndarray()) == np.sum(n_2) - np.amin(n_2)
+        assert np.sum(
+            particles['n'].to_ndarray() * particles['volume'].to_ndarray()
+        ) == np.sum(n_2 * v_2)
+        assert np.sum(
+            particulator.attributes['n'].to_ndarray()
+        ) == np.sum(n_2) - np.amin(n_2)
         if np.amin(n_2) > 0:
             assert np.amax(particulator.attributes['volume'].to_ndarray()) == np.sum(v_2)
-        assert np.amax(particulator.attributes['n'].to_ndarray()) == max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+        assert (
+            np.amax(particulator.attributes['n'].to_ndarray())
+            ==
+            max(np.amax(n_2) - np.amin(n_2), np.amin(n_2))
+        )
 
     @staticmethod
     @pytest.mark.parametrize("n_in, n_out", [
@@ -62,7 +76,10 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(sorted(particulator.attributes['n'].to_ndarray(raw=True)), sorted(n_out))
+        np.testing.assert_array_equal(
+            sorted(particulator.attributes['n'].to_ndarray(raw=True)),
+            sorted(n_out)
+        )
 
     @staticmethod
     @pytest.mark.parametrize("p", [
@@ -92,10 +109,14 @@ class TestSDMSingleCell:
         state = particulator.attributes
         gamma = min(p, max(n_2[0] // n_2[1], n_2[1] // n_2[1]))
         assert np.amin(state['n']) >= 0
-        assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray()) == np.sum(n_2 * v_2)
-        assert np.sum(state['n'].to_ndarray()) == np.sum(n_2) - gamma * np.amin(n_2)
-        assert np.amax(state['volume'].to_ndarray()) == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
-        assert np.amax(state['n'].to_ndarray()) == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
+        assert np.sum(state['n'].to_ndarray() * state['volume'].to_ndarray()) \
+               == np.sum(n_2 * v_2)
+        assert np.sum(state['n'].to_ndarray()) \
+               == np.sum(n_2) - gamma * np.amin(n_2)
+        assert np.amax(state['volume'].to_ndarray()) \
+               == gamma * v_2[np.argmax(n_2)] + v_2[np.argmax(n_2) - 1]
+        assert np.amax(state['n'].to_ndarray()) \
+               == max(np.amax(n_2) - gamma * np.amin(n_2), np.amin(n_2))
 
     @staticmethod
     @pytest.mark.parametrize("v, n, p", [
@@ -120,7 +141,10 @@ class TestSDMSingleCell:
 
         # Assert
         assert np.amin(particulator.attributes['n'].to_ndarray()) >= 0
-        assert np.sum(particulator.attributes['n'].to_ndarray() * particulator.attributes['volume'].to_ndarray()) == np.sum(n * v)
+        assert np.sum(
+            particulator.attributes['n'].to_ndarray()
+            * particulator.attributes['volume'].to_ndarray()
+        ) == np.sum(n * v)
 
     @staticmethod
     def test_multi_step(backend):
@@ -146,7 +170,10 @@ class TestSDMSingleCell:
 
         # Assert
         assert np.amin(particulator.attributes['n'].to_ndarray()) >= 0
-        actual = np.sum(particulator.attributes['n'].to_ndarray() * particulator.attributes['volume'].to_ndarray())
+        actual = np.sum(
+            particulator.attributes['n'].to_ndarray()
+            * particulator.attributes['volume'].to_ndarray()
+        )
         desired = np.sum(n * v)
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
@@ -165,7 +192,10 @@ class TestSDMSingleCell:
                 prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
                 rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
                 idx = make_Index(backend).from_ndarray(np.arange(n_sd))
-                mult = make_IndexedStorage(backend).from_ndarray(idx, np.asarray([expected(p, r), 1]).astype(backend.Storage.INT))
+                mult = make_IndexedStorage(backend).from_ndarray(
+                    idx,
+                    np.asarray([expected(p, r), 1]).astype(backend.Storage.INT)
+                )
                 _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
                 cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
 
@@ -180,8 +210,18 @@ class TestSDMSingleCell:
                 assert expected(p, r) == prob_arr.to_ndarray()[0]
 
     @staticmethod
-    @pytest.mark.parametrize("optimized_random", (pytest.param(True, id='optimized'), pytest.param(False, id='non-optimized')))
-    @pytest.mark.parametrize("adaptive", (pytest.param(True, id='adaptive_dt'), pytest.param(False, id='const_dt')))
+    @pytest.mark.parametrize(
+        "optimized_random", (
+            pytest.param(True, id='optimized'),
+            pytest.param(False, id='non-optimized')
+        )
+    )
+    @pytest.mark.parametrize(
+        "adaptive", (
+            pytest.param(True, id='adaptive_dt'),
+            pytest.param(False, id='const_dt')
+        )
+    )
     def test_rnd_reuse(backend, optimized_random, adaptive):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
@@ -193,7 +233,12 @@ class TestSDMSingleCell:
         v = np.random.uniform(size=n_sd)
         n_substeps = 5
 
-        particles, sut = get_dummy_particulator_and_sdm(backend, n_sd, optimized_random=optimized_random, substeps=n_substeps)
+        particles, sut = get_dummy_particulator_and_sdm(
+            backend,
+            n_sd,
+            optimized_random=optimized_random,
+            substeps=n_substeps
+        )
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 

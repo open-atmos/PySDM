@@ -1,5 +1,5 @@
-from PySDM.physics import constants as const
 from numpy import power
+from PySDM.physics import constants as const
 
 
 class Volume:

@@ -46,7 +46,7 @@ class AlgorithmicMethods:
                                 dt_range, is_first_in_pair,
                                 stats_n_substep, stats_dt_min):
         dt_todo = np.empty_like(dt_left)
-        for cid in numba.prange(len(dt_todo)):
+        for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO #571
             if gamma[i] == 0:
@@ -58,12 +58,12 @@ class AlgorithmicMethods:
             dt_optimal = max(dt_optimal, dt_range[0])
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
             stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
-        for i in numba.prange(length // 2):
+        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             if gamma[i] == 0:
                 continue
             j, _ = pair_indices(i, idx, is_first_in_pair)
             gamma[i] *= dt_todo[cell_id[j]] / dt
-        for cid in numba.prange(len(dt_todo)):
+        for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
             if dt_todo[cid] > 0:
                 stats_n_substep[cid] += 1
@@ -78,23 +78,29 @@ class AlgorithmicMethods:
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-    def calculate_displacement_body_1d(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement_body_1d(dim, scheme, displacement, courant,
+                                       cell_origin, position_in_cell):
         length = displacement.shape[1]
-        for droplet in numba.prange(length):
+        for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell)
+            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
+                                               displacement, courant, position_in_cell)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
-    def calculate_displacement_body_2d(dim, scheme, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement_body_2d(dim, scheme, displacement, courant,
+                                       cell_origin, position_in_cell):
         length = displacement.shape[1]
-        for droplet in numba.prange(length):
+        for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
-            _r = (cell_origin[0, droplet] + 1 * (dim == 0), cell_origin[1, droplet] + 1 * (dim == 1))
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell)
+            _l = (cell_origin[0, droplet],
+                  cell_origin[1, droplet])
+            _r = (cell_origin[0, droplet] + 1 * (dim == 0),
+                  cell_origin[1, droplet] + 1 * (dim == 1))
+            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
+                                               displacement, courant, position_in_cell)
 
     def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
         n_dims = len(courant.shape)
@@ -113,7 +119,7 @@ class AlgorithmicMethods:
             raise NotImplementedError()
 
     @staticmethod
-    # @numba.njit(**conf.JIT_FLAGS)  # Note: in Numba 0.51 "np.dot() only supported on float and complex arrays"
+    # @numba.njit(**conf.JIT_FLAGS)  # note: as of Numba 0.51, np.dot() does not support ints
     def cell_id_body(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin)
 
@@ -124,7 +130,7 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def coalescence_body(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
-        for i in numba.prange(length // 2):
+        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -160,7 +166,7 @@ class AlgorithmicMethods:
         gamma = floor(prob) + 1 if rand <  prob - floor(prob)
               = floor(prob)     if rand >= prob - floor(prob)
         """
-        for i in numba.prange(length // 2):
+        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             gamma[i] = np.ceil(gamma[i] - rand[i])
 
             if gamma[i] == 0:
@@ -206,7 +212,7 @@ class AlgorithmicMethods:
     ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         output[:] = 0
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 if radii[idx[i]] > radii[idx[i + 1]]:
                     r = radii[idx[i]] / unit
@@ -234,14 +240,16 @@ class AlgorithmicMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):
+        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
             r_id = int(factor * radius[i])
             r_rest = ((factor * radius[i]) % 1) / factor
             output[i] = b[r_id] + r_rest * c[r_id]
 
     @staticmethod
     def interpolation(output, radius, factor, b, c):
-        return AlgorithmicMethods.interpolation_body(output.data, radius.data, factor, b.data, c.data)
+        return AlgorithmicMethods.interpolation_body(
+            output.data, radius.data, factor, b.data, c.data
+        )
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
@@ -265,11 +273,12 @@ class AlgorithmicMethods:
                 length = len(idx)
                 if self.scheme == "counting_sort":
                     AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data, length, cell_start.data)
+                        self.tmp_idx.data, idx.data, cell_id.data,
+                        cell_idx.data, length, cell_start.data)
                 elif self.scheme == "counting_sort_parallel":
                     AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
-                        self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data, length, cell_start.data,
-                        self.cell_starts.data)
+                        self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data,
+                        length, cell_start.data, self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
         return CellCaretaker(idx, cell_start, scheme)
@@ -284,7 +293,7 @@ class AlgorithmicMethods:
                 norm_factor[i] = 0
             else:
                 norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
-        for d in numba.prange(prob.shape[0]):
+        for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
@@ -330,7 +339,7 @@ class AlgorithmicMethods:
         cell_end_thread = cell_start_p
         # Warning: Assuming len(cell_end) == n_cell+1
         thread_num = cell_end_thread.shape[0]
-        for t in numba.prange(thread_num):
+        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
             cell_end_thread[t, :] = 0
             for i in range(t * length // thread_num,
                            (t + 1) * length // thread_num if t < thread_num - 1 else length):
@@ -348,7 +357,7 @@ class AlgorithmicMethods:
             tmp[:] = cell_end_thread[t, :]
             cell_end_thread[t, :] = cell_start[:]
 
-        for t in numba.prange(thread_num):
+        for t in numba.prange(thread_num):  # pylint: disable=not-an-iterable
             for i in range(
                 (t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
                 t * length // thread_num - 1,

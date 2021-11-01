@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import struct
 import numpy as np
 import pytest
@@ -15,6 +16,7 @@ from ...backends_fixture import backend
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 @pytest.mark.parametrize('adaptive', [True, False])
 @pytest.mark.parametrize('kernel', [Geometric(), Electric(), Hydrodynamic()])
+# pylint: disable=redefined-outer-name
 def test_coalescence(backend, kernel, croupier, adaptive):
     if backend == ThrustRTC and croupier == 'local':  # TODO #358
         return
@@ -47,6 +49,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
 
 
 @pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=False)
+# pylint: disable=redefined-outer-name
 def test_coalescence_2_sd(backend):
     # Arrange
     s = Settings()

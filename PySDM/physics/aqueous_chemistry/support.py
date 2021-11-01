@@ -1,7 +1,7 @@
 from chempy import Substance
+import numpy as np
 from PySDM.physics import si
 from PySDM.physics.constants import R_str, ROOM_TEMP, H_u, dT_u, M, Md, K_H2O
-import numpy as np
 
 
 class EqConst:

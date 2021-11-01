@@ -1,9 +1,8 @@
 """
 Bare zero-dimensional framework
 """
-
-from PySDM.state.mesh import Mesh
 import numpy as np
+from PySDM.state.mesh import Mesh
 
 
 class Box:

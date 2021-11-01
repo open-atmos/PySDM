@@ -31,7 +31,10 @@ class Storage:
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             if stop > self.data.shape[0]:
-                raise IndexError(f"requested a slice ({start}:{stop}) of Storage with first dim of length {self.data.shape[0]}")
+                raise IndexError(
+                    f"requested a slice ({start}:{stop}) of Storage"
+                    f" with first dim of length {self.data.shape[0]}"
+                )
             result = Storage(result_data, result_shape, self.dtype)
         elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
             result = Storage(self.data[item[0]], (*self.shape[1:],), self.dtype)

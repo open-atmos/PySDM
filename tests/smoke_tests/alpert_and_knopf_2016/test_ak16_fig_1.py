@@ -1,12 +1,13 @@
-from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
-from PySDM_examples.Alpert_and_Knopf_2016 import simulation, Table1
-from PySDM.physics import si, constants as const, Formulae
-from PySDM.physics.spectra import Lognormal
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pylab
 import pytest
+from PySDM_examples.Alpert_and_Knopf_2016 import simulation, Table1
+from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
+from PySDM.physics import si
 
 n_runs_per_case = 3
+
 
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
 def test_AK16_fig_1(multiplicity, plot=False):
@@ -30,22 +31,24 @@ def test_AK16_fig_1(multiplicity, plot=False):
         case = cases[key]
         output[key] = []
         for i in range(n_runs_per_case):
-            seed = i
             number_of_real_droplets = case['ISA'].norm_factor * dv
             n_sd = number_of_real_droplets / multiplicity
             assert int(n_sd) == n_sd
             n_sd = int(n_sd)
 
-            data, _ = simulation(seed=i, n_sd=n_sd, time_step=dt, volume=dv, spectrum=case['ISA'],
-                          droplet_volume=droplet_volume, multiplicity=multiplicity,
-                          total_time=total_time, number_of_real_droplets=number_of_real_droplets)
+            data, _ = simulation(
+                seed=i, n_sd=n_sd, time_step=dt, volume=dv, spectrum=case['ISA'],
+                droplet_volume=droplet_volume, multiplicity=multiplicity,
+                total_time=total_time, number_of_real_droplets=number_of_real_droplets
+            )
             output[key].append(data)
 
     # Plot
     if plot:
-        for key in output.keys():
+        for key in output:
             for run in range(n_runs_per_case):
-                label = f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),N={int(cases[key]['ISA'].norm_factor * dv)}"
+                label = f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),"\
+                        f"N={int(cases[key]['ISA'].norm_factor * dv)}"
                 pylab.step(
                     dt / si.min * np.arange(len(output[key][run])),
                     output[key][run],
@@ -83,6 +86,6 @@ def test_AK16_fig_1(multiplicity, plot=False):
         output['Iso2'][int(.5 * si.min / dt):],
         output['Iso1'][int(.5 * si.min / dt):]
     )
-    for key in output.keys():
+    for key in output:
         np.testing.assert_array_less(1e-3, output[key][-1][:int(.25 * si.min / dt)])
         np.testing.assert_array_less(output[key][-1][:], 1 + 1e-10)

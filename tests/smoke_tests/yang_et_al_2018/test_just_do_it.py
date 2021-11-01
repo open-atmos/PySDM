@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 import numpy as np
 
@@ -9,12 +10,10 @@ from PySDM.backends import GPU
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 
-scheme = ('default', 'BDF')
-adaptive = (True, False)
 
-
-@pytest.mark.parametrize("scheme", scheme)
-@pytest.mark.parametrize("adaptive", adaptive)
+@pytest.mark.parametrize("scheme", ('default', 'BDF'))
+@pytest.mark.parametrize("adaptive", (True, False))
+# pylint: disable=redefined-outer-name
 def test_just_do_it(backend, scheme, adaptive):
     # Arrange
     if scheme == 'BDF' and (not adaptive or backend is GPU):

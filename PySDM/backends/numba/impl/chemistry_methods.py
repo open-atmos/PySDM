@@ -24,7 +24,7 @@ class ChemistryMethods:
     def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag,
                     mole_amounts, env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors,
                     dt, dv, system_type, droplet_volume, multiplicity):
-        for thread_id in numba.prange(n_threads):
+        for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
 
@@ -111,7 +111,7 @@ class ChemistryMethods:
                   K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
-        for i in numba.prange(n_sd):
+        for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             if not do_chemistry_flag[i]:
                 continue
 
@@ -211,7 +211,7 @@ class ChemistryMethods:
                            # params
                            H_min, H_max, ionic_strength_threshold, rtol
     ):
-        for i in range(len(pH)):
+        for i, _ in enumerate(pH):
             cid = cell_id[i]
             args = (
                 N_mIII[i], N_V[i], C_IV[i], S_IV[i], S_VI[i],

@@ -15,10 +15,10 @@ from PySDM.backends import CPU, GPU
 class TestParticles:
 
     @staticmethod
-    def make_indexed_storage(backend, iterable, idx=None):
-        index = make_Index(backend).from_ndarray(np.array(iterable))
+    def make_indexed_storage(bck, iterable, idx=None):
+        index = make_Index(bck).from_ndarray(np.array(iterable))
         if idx is not None:
-            result = make_IndexedStorage(backend).indexed(idx, index)
+            result = make_IndexedStorage(bck).indexed(idx, index)
         else:
             result = index
         return result
@@ -29,6 +29,7 @@ class TestParticles:
         pytest.param(np.array([1., 2, 1, 1]), np.array([2, 0, 2, 0])),
         pytest.param(np.array([1., 1, 4]), np.array([5, 0, 0]))
     ])
+    # pylint: disable=redefined-outer-name
     def test_housekeeping(backend, volume, n):
         # Arrange
         particulator = DummyParticulator(backend, n_sd=len(n))
@@ -73,6 +74,7 @@ class TestParticles:
             [0, 0, 2, 6]
         )
     ])
+    # pylint: disable=redefined-outer-name
     def test_sort_by_cell_id(backend, n, cells, n_sd, idx, new_idx, cell_start):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
@@ -114,6 +116,7 @@ class TestParticles:
         )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_recalculate_cell_id(backend):
         # Arrange
         n = np.ones(1, dtype=np.int64)
@@ -144,7 +147,7 @@ class TestParticles:
         assert sut['cell id'][droplet_id] == 0
 
     @staticmethod
-    def test_permutation_global_as_implemented_in_Numba():
+    def test_permutation_global_as_implemented_in_numba():
         n_sd = 8
         u01 = [.1, .4, .2, .5, .9, .1, .6, .3]
 
@@ -166,6 +169,7 @@ class TestParticles:
         assert not sut._Particles__sorted
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_permutation_local(backend):
         if backend==GPU:  # TODO #358
             return
@@ -192,6 +196,7 @@ class TestParticles:
         assert sut._Particles__sorted
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_permutation_global_repeatable(backend):
         from PySDM.backends import ThrustRTC
         if backend is ThrustRTC:
@@ -220,6 +225,7 @@ class TestParticles:
         assert not sut._Particles__sorted
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_permutation_local_repeatable(backend):
         if backend==GPU:  # TODO #358
             return
