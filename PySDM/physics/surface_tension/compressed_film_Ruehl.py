@@ -9,8 +9,18 @@ C0 = np.nan
 m_sigma = np.nan
 sgm_min = np.nan
 
-
 class CompressedFilm_Ruehl:
+    """
+    Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
+    Described in supplementary materials equations (13) and (15).
+
+    Allows for more realistic thermodynamic partitioning of some organic to the surface,
+    while some remains dissolved in the bulk phase. The surface concentration is solved 
+    implicitly from the isotherm equation that relates the bulk organic concentration
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates 
+    the surface concentration to the surface tension. For the compressed film model it 
+    is linear, with slope `m_sigma`.
+    """
     @staticmethod
     def _check():
         assert np.isfinite(nu_org)
