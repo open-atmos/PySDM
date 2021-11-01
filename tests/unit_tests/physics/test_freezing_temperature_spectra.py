@@ -13,7 +13,7 @@ A = 1 * si.um**2
         'Niemand_et_al_2012',
         'Bigg_1953'
 ))
-def test_freezing_temperature_spectra(model, plot=False):
+def test_freezing_temperature_spectra(model, plot=True):
     # Arrange
     bigg_1953.DT_median = 33
     niemand_et_al_2012.a = -0.517
@@ -46,3 +46,7 @@ def test_freezing_temperature_spectra(model, plot=False):
     np.testing.assert_approx_equal(np.sum(pdf * dT), 1, significant=3)
     np.testing.assert_approx_equal(cdf[0]+1, 1, significant=3)
     np.testing.assert_approx_equal(cdf[-1], 1, significant=3)
+
+    if hasattr(formulae.freezing_temperature_spectrum, 'invcdf'):
+        invcdf = formulae.freezing_temperature_spectrum.invcdf(cdf, A)
+        np.testing.assert_allclose(invcdf, T)

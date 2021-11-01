@@ -1,5 +1,5 @@
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
 
 
 def get_long_description():
@@ -10,7 +10,9 @@ def get_long_description():
 
 setup(
     name='PySDM',
-    description='Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab',
+    description='Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry'
+                ' cloud microphysics package with box, parcel & 1D/2D prescribed-flow'
+                ' examples in Python, Julia and Matlab',
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     install_requires=[
@@ -21,7 +23,8 @@ setup(
         'Pint' + ('==0.17' if 'CI' in os.environ else ''),
         'chempy' + ('==0.7.10' if 'CI' in os.environ else ''),
         'scipy' + ('==1.6.3' if 'CI' in os.environ else ''),
-        'pyevtk' + ('==1.2.0' if 'CI' in os.environ else '')
+        'pyevtk' + ('==1.2.0' if 'CI' in os.environ else ''),
+        'pyvinecopulib' + ('==0.6.1' if 'CI' in os.environ else '')
     ],
     author='https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors',
     author_email='sylwester.arabas@uj.edu.pl',
@@ -41,6 +44,8 @@ setup(
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Software Development :: Libraries'
     ],
-    keywords='physics-simulation, monte-carlo-simulation, gpu-computing, atmospheric-modelling, particle-system, numba, thrust, nvrtc, pint, atmospheric-physics',
+    keywords='physics-simulation, monte-carlo-simulation, gpu-computing,'
+             ' atmospheric-modelling, particle-system, numba, thrust,'
+             ' nvrtc, pint, atmospheric-physics',
     packages=find_packages(include=['PySDM', 'PySDM.*'])
 )

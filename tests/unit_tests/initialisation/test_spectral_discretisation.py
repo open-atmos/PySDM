@@ -21,14 +21,14 @@ formulae = Formulae(
 
 
 @pytest.mark.parametrize("discretisation", [
-	pytest.param(spectral_sampling.Linear(spectrum, m_range)),
-	pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
-	pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
-	pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
-	# TODO #599
+    pytest.param(spectral_sampling.Linear(spectrum, m_range)),
+    pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
+    pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
+    pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
+    # TODO #599
 ])
 def test_spectral_discretisation(discretisation):
-	# Arrange
+    # Arrange
     n_sd = 100000
 
     # Act

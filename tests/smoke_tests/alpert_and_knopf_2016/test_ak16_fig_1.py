@@ -10,7 +10,7 @@ n_runs_per_case = 3
 
 
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
-def test_AK16_fig_1(multiplicity, plot=False):
+def test_ak16_fig_1(multiplicity, plot=False):
     # Arrange
     constant.J_het = 1e3 / si.cm ** 2 / si.s
     A_g = 1e-5 * si.cm ** 2
@@ -44,33 +44,33 @@ def test_AK16_fig_1(multiplicity, plot=False):
             output[key].append(data)
 
     # Plot
-    if plot:
-        for key in output:
-            for run in range(n_runs_per_case):
-                label = f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),"\
-                        f"N={int(cases[key]['ISA'].norm_factor * dv)}"
-                pylab.step(
-                    dt / si.min * np.arange(len(output[key][run])),
-                    output[key][run],
-                    label=label if run == 0 else None,
-                    color=cases[key]['color'],
-                    linewidth=.666
-                )
-            output[key].append(np.mean(np.asarray(output[key]), axis=0))
+    for key in output:
+        for run in range(n_runs_per_case):
+            label = f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),"\
+                    f"N={int(cases[key]['ISA'].norm_factor * dv)}"
             pylab.step(
-                dt / si.min * np.arange(len(output[key][-1])),
-                output[key][-1],
+                dt / si.min * np.arange(len(output[key][run])),
+                output[key][run],
+                label=label if run == 0 else None,
                 color=cases[key]['color'],
-                linewidth=1.666
+                linewidth=.666
             )
+        output[key].append(np.mean(np.asarray(output[key]), axis=0))
+        pylab.step(
+            dt / si.min * np.arange(len(output[key][-1])),
+            output[key][-1],
+            color=cases[key]['color'],
+            linewidth=1.666
+        )
 
-        pylab.legend()
-        pylab.yscale('log')
-        pylab.ylim(1e-2, 1)
-        pylab.xlim(0, total_time / si.min)
-        pylab.xlabel("t / min")
-        pylab.ylabel("$f_{ufz}$")
-        pylab.gca().set_box_aspect(1)
+    pylab.legend()
+    pylab.yscale('log')
+    pylab.ylim(1e-2, 1)
+    pylab.xlim(0, total_time / si.min)
+    pylab.xlabel("t / min")
+    pylab.ylabel("$f_{ufz}$")
+    pylab.gca().set_box_aspect(1)
+    if plot:
         pylab.show()
 
     # Assert
