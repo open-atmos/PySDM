@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Yang_et_al_2018 import Simulation, Settings
 from PySDM.physics.constants import si
 import matplotlib.pyplot as plt

@@ -1,6 +1,6 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 import numpy as np
-
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
@@ -9,13 +9,10 @@ from PySDM.physics import constants as const
 from PySDM.backends import CPU, GPU
 
 
-def ql(simulation: Simulation):
+def liquid_water_mixing_ratio(simulation: Simulation):
     droplet_volume = simulation.particulator.attributes['volume'].to_ndarray()[0]
-
     droplet_number = simulation.particulator.attributes['n'].to_ndarray()[0]
-
     droplet_mass = droplet_number * droplet_volume * const.rho_w
-
     env = simulation.particulator.environment
     return droplet_mass / env.mass_of_dry_air
 
@@ -38,7 +35,7 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     settings.n_output = 50
     settings.coord = coord
     simulation = Simulation(settings, GPU if scheme == 'GPU' else CPU)
-    qt0 = settings.q0 + ql(simulation)
+    qt0 = settings.q0 + liquid_water_mixing_ratio(simulation)
 
     if scheme == 'BDF':
         bdf.patch_particulator(simulation.particulator)
@@ -48,7 +45,8 @@ def test_water_mass_conservation(settings_idx, mass_of_dry_air, scheme, coord):
     output = simulation.run()
 
     # Assert
-    qt = simulation.particulator.environment["qv"].to_ndarray() + ql(simulation)
+    ql = liquid_water_mixing_ratio(simulation)
+    qt = simulation.particulator.environment["qv"].to_ndarray() + ql
     significant = 6 if scheme == 'GPU' else 14  # TODO #540
     np.testing.assert_approx_equal(qt, qt0, significant)
     if scheme != 'BDF':

@@ -1,7 +1,8 @@
-from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
-from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 import numpy as np
+from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
 
 
 @pytest.mark.parametrize("w_idx", range(len(w_avgs)))

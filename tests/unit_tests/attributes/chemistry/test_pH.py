@@ -8,7 +8,7 @@ from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
-from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
+from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
 from PySDM.dynamics import aqueous_chemistry
 
 
@@ -21,7 +21,7 @@ class Test_pH:
     def test_equilibrate_pH_pure_water():
         # Arrange
         eqs = {}
-        for key in EQUILIBRIUM_CONST.keys():
+        for key in EQUILIBRIUM_CONST:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(ROOM_TEMP))
 
         # Act
@@ -92,7 +92,7 @@ class Test_pH:
         expected_pH = -np.log10(x[H_idx])
 
         eqs = {}
-        for key in EQUILIBRIUM_CONST.keys():
+        for key in EQUILIBRIUM_CONST:
             eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
 
         actual_pH = np.empty(1)

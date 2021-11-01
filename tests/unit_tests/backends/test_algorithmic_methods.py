@@ -4,7 +4,7 @@ import os
 import numpy as np
 import pytest
 
-from PySDM.backends.numba.impl._algorithmic_methods import pair_indices
+from PySDM.backends.numba.impl.algorithmic_methods import pair_indices
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.pair_indicator import make_PairIndicator
@@ -34,6 +34,7 @@ class TestAlgorithmicMethods:
         ((4, 5, 4.5, 0, 0), (0, 1, 2, 3, 4, 5), 3),
         ((4, 5, 4.5, 3, .1), (0, 1, 2, 3, 4, 5), 5)
     ])
+    # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_end(backend, dt_left, cell_start, expected):
         # Arrange
         dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
@@ -54,6 +55,7 @@ class TestAlgorithmicMethods:
             ((10.,), (0, 1), (440, 44), (0, 0), (10.,), 10., 10., (True, False), (0.,), (1,)),
             ((.5, 6), (0, 1, 2, 3, 4), (44, 44, 22, 33, 11), (0, 0, 0, 1, 1), (10., 10), 10., 10., (True, False, False, True, False), (0., 5.), (1, 1)),
         ])
+    # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected_dt_left, expected_n_substep):
         # Arrange
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))

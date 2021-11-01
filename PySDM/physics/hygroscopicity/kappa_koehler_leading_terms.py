@@ -1,5 +1,5 @@
-import PySDM.physics.constants as const
 from numpy import sqrt, power
+import PySDM.physics.constants as const
 
 
 class KappaKoehlerLeadingTerms:

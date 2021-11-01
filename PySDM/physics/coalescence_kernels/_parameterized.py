@@ -1,5 +1,5 @@
-from ._gravitational import Gravitational
 from PySDM.physics import constants as const
+from ._gravitational import Gravitational
 
 
 class Parameterized(Gravitational):

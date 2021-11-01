@@ -6,6 +6,7 @@ from PySDM.physics import Formulae
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend as Backend
 
+
 @pytest.mark.parametrize("min_x, max_x, value, expected", [
     (0, 1, .5, 1),
     (0, 1, 0, 1),
@@ -13,6 +14,7 @@ from ...backends_fixture import backend as Backend
     (0, 1, -.5, 0),
     (0, 1, 1.5, 0),
 ])
+# pylint: disable=redefined-outer-name
 def test_moments_range(Backend, min_x, max_x, value, expected):
     # Arrange
     backend = Backend(Formulae())

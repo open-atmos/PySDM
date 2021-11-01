@@ -8,6 +8,7 @@ from PySDM.backends import CPU, GPU
     pytest.param(GPU, marks=pytest.mark.xfail(strict=True)),
     CPU
 ))
+# pylint: disable=redefined-outer-name
 def test_setitem(backend):
     # arrange
     arr = backend.Storage.from_ndarray(np.zeros(3))

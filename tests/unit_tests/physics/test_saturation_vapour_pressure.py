@@ -11,7 +11,7 @@ def test_saturation_vapour_pressures(plot=False):
         k: Formulae(saturation_vapour_pressure=k)
         for k in ('FlatauWalkoCotton', 'AugustRocheMagnus')
     }
-    T = np.linspace(-.2, .4)
+    temperature = np.linspace(-.2, .4)
 
     # Plot
     if plot:
@@ -20,7 +20,7 @@ def test_saturation_vapour_pressures(plot=False):
         for k, v in formulae.items():
             for name, func in inspect.getmembers(v.saturation_vapour_pressure):
                 if not name.startswith('__'):
-                    pylab.plot(T, func(T), label=f"{k}::{name}")
+                    pylab.plot(temperature, func(temperature), label=f"{k}::{name}")
         pylab.grid()
         pylab.legend()
         pylab.xlabel('T [C]')
@@ -28,25 +28,25 @@ def test_saturation_vapour_pressures(plot=False):
         pylab.show()
 
     # Assert
-    T = np.linspace(-20, 20, 100)
+    temperature = np.linspace(-20, 20, 100)
     np.testing.assert_allclose(
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(T),
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
         Formulae(saturation_vapour_pressure='AugustRocheMagnus')
-            .saturation_vapour_pressure.pvs_Celsius(T),
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
         rtol=1e-2
     )
-    T = np.linspace(-20, 0.3, 100)
+    temperature = np.linspace(-20, 0.3, 100)
     np.testing.assert_array_less(
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.ice_Celsius(T),
+            .saturation_vapour_pressure.ice_Celsius(temperature),
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(T)
+            .saturation_vapour_pressure.pvs_Celsius(temperature)
     )
-    T = np.linspace(0.35, 20, 100)
+    temperature = np.linspace(0.35, 20, 100)
     np.testing.assert_array_less(
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(T),
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.ice_Celsius(T)
+            .saturation_vapour_pressure.ice_Celsius(temperature)
     )

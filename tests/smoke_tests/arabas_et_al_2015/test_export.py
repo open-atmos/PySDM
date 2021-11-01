@@ -1,14 +1,16 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import tempfile
 import os
-from PySDM.exporters import NetCDFExporter, VTKExporter
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
 from PySDM_examples.utils import DummyController
+from PySDM.exporters import NetCDFExporter, VTKExporter
 
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 
 
+# pylint: disable=redefined-outer-name
 def test_export(backend, tmp_path):
     # Arrange
     settings = Settings()

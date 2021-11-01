@@ -69,7 +69,7 @@ def _pick(value: str, choices: dict):
 
 
 def _choices(module):
-    return dict([(name, cls) for name, cls in module.__dict__.items() if isinstance(cls, type)])
+    return {name: cls for name, cls in module.__dict__.items() if isinstance(cls, type)}
 
 
 @lru_cache()

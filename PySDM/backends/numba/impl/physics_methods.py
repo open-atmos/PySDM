@@ -22,7 +22,7 @@ class PhysicsMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def critical_volume(v_cr, kappa, f_org, v_dry, v_wet, T, cell):
-            for i in prange(len(v_cr)):
+            for i in prange(len(v_cr)):  # pylint: disable=not-an-iterable
                 sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
                 v_cr[i] = phys_volume(phys_r_cr(
                     kp=kappa[i],
@@ -34,7 +34,7 @@ class PhysicsMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):
-            for i in prange(T.shape[0]):
+            for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = phys_T(rhod[i], thd[i])
                 p[i] = phys_p(rhod[i], T[i], qv[i])
                 RH[i] = phys_pv(p[i], qv[i]) / pvs_C(T[i] - const.T0)
@@ -42,7 +42,7 @@ class PhysicsMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def terminal_velocity_body(values, radius, k1, k2, k3, r1, r2):
-            for i in prange(len(values)):
+            for i in prange(len(values)):  # pylint: disable=not-an-iterable
                 if radius[i] < r1:
                     values[i] = k1 * radius[i] ** 2
                 elif radius[i] < r2:

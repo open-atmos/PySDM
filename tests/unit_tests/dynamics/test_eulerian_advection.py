@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import numpy as np
 from PySDM.dynamics import EulerianAdvection
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment
-import numpy as np
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 

@@ -9,7 +9,7 @@ class PairMethods:
     @numba.njit(**conf.JIT_FLAGS)
     def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i//2] = np.abs(data_in[idx[i]] - data_in[idx[i + 1]])
 
@@ -21,7 +21,7 @@ class PairMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             is_first_in_pair[i] = (
                     cell_id[idx[i]] == cell_id[idx[i + 1]] and
                     (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
@@ -39,7 +39,7 @@ class PairMethods:
     @numba.njit(**conf.JIT_FLAGS)
     def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i//2] = max(data_in[idx[i]], data_in[idx[i + 1]])
 
@@ -52,7 +52,7 @@ class PairMethods:
     @numba.njit(**conf.JIT_FLAGS)
     def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 if data_in[idx[i]] < data_in[idx[i + 1]]:
                     data_out[i], data_out[i + 1] = data_in[idx[i + 1]], data_in[idx[i]]
@@ -67,7 +67,7 @@ class PairMethods:
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def sort_within_pair_by_attr_body(idx, length, is_first_in_pair, attr):
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 if attr[idx[i]] < attr[idx[i + 1]]:
                     idx[i], idx[i + 1] = idx[i + 1], idx[i]
@@ -81,7 +81,7 @@ class PairMethods:
     @numba.njit(**conf.JIT_FLAGS)
     def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
-        for i in numba.prange(length - 1):
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             if is_first_in_pair[i]:
                 data_out[i//2] = (data_in[idx[i]] + data_in[idx[i + 1]])
 

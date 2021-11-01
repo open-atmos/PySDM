@@ -3,11 +3,11 @@ Single-column time-varying-updraft framework with moisture advection handled by
 [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 """
 
+import numpy as np
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
 from ..state import arakawa_c
-import numpy as np
 
 
 class Kinematic1D(_Moist):

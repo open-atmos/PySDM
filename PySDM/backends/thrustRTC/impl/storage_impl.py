@@ -113,11 +113,17 @@ def truediv(output, multiplier):
     loop.launch_n(output.shape[0], thrust([output, multiplier]))
 
 
-__multiply_out_of_place_elementwise_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
+__multiply_out_of_place_elementwise_body = trtc.For(
+    ('output', 'multiplicand', 'multiplier'),
+    "i",
+    '''
         output[i] = multiplicand[i] * multiplier[i];
     ''')
 
-__multiply_out_of_place_body = trtc.For(['output', 'multiplicand', 'multiplier'], "i", '''
+__multiply_out_of_place_body = trtc.For(
+    ('output', 'multiplicand', 'multiplier'),
+    "i",
+    '''
         output[i] = multiplicand[i] * multiplier;
     ''')
 
@@ -133,9 +139,13 @@ def multiply_out_of_place(output, multiplicand, multiplier):
     loop.launch_n(output.shape[0], thrust([output, multiplicand, multiplier]))
 
 
-__divide_out_of_place_elementwise_body = trtc.For(['output', 'dividend', 'divisor'], "i", '''
+__divide_out_of_place_elementwise_body = trtc.For(
+    ('output', 'dividend', 'divisor'),
+    "i",
+    '''
         output[i] = dividend[i] / divisor[i];
-    ''')
+    '''
+)
 
 
 @nice_thrust(**NICE_THRUST_FLAGS)
@@ -147,9 +157,13 @@ def divide_out_of_place(output, dividend, divisor):
     loop.launch_n(output.shape[0], thrust([output, dividend, divisor]))
 
 
-__sum_out_of_place_elementwise_body = trtc.For(['output', 'a', 'b'], "i", '''
+__sum_out_of_place_elementwise_body = trtc.For(
+    ('output', 'a', 'b'),
+    "i",
+    '''
         output[i] = a[i] + b[i];
-    ''')
+    '''
+)
 
 
 @nice_thrust(**NICE_THRUST_FLAGS)
@@ -161,23 +175,31 @@ def sum_out_of_place(output, a, b):
     loop.launch_n(output.shape[0], thrust([output, a, b]))
 
 
-__power_body = trtc.For(['output', 'exponent'], "i", '''
+__power_body = trtc.For(
+    ('output', 'exponent'),
+    "i",
+    '''
         output[i] = pow(output[i], exponent);
-    ''')
+    '''
+)
 
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def power(output, exponent: int):
     if exponent == 1:
         return
-    __power_body.launch_n(output.shape[0], thrust([output, float(exponent)]))
+    __power_body.launch_n(output.shape[0], thrust((output, float(exponent))))
 
 
-__subtract_body = trtc.For(['output', 'subtrahend'], 'i', '''
+__subtract_body = trtc.For(
+    ('output', 'subtrahend'),
+    'i',
+    '''
         output[i] -= subtrahend[i];
-    ''')
+    '''
+)
 
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def subtract(output, subtrahend):
-    __subtract_body.launch_n(output.shape[0], thrust([output, subtrahend]))
+    __subtract_body.launch_n(output.shape[0], thrust((output, subtrahend)))

@@ -18,7 +18,7 @@ class FreezingMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def freeze_singular_body(T_fz, v_wet, T, RH, cell):
-            for i in numba.prange(len(T_fz)):
+            for i in numba.prange(len(T_fz)):  # pylint: disable=not-an-iterable
                 if _unfrozen(v_wet, i) and RH[cell[i]] > 1 and T[cell[i]] <= T_fz[i]:
                     _freeze(v_wet, i)
         self.freeze_singular_body = freeze_singular_body
@@ -28,9 +28,9 @@ class FreezingMethods:
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt, cell, a_w_ice):
             n_sd = len(volume)
-            for i in numba.prange(n_sd):
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)  # TODO #599: assert if > 1?
+                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)
                     if rand[i] < p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -39,4 +39,6 @@ class FreezingMethods:
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
     def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)
+        self.freeze_time_dependent_body(
+            rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data
+        )

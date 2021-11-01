@@ -1,9 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.physics.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
-
 import numpy as np
 from numpy.testing import assert_approx_equal
 import pytest
+from PySDM.physics.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
 
 
 class TestLognormal:

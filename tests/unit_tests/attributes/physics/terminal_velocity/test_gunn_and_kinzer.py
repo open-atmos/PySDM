@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -8,6 +9,8 @@ from PySDM.physics.terminal_velocity.gunn_and_kinzer import RogersYau, Interpola
 from .....backends_fixture import backend
 from ....dummy_particulator import DummyParticulator
 
+
+# pylint: disable=redefined-outer-name
 def test_approximation(backend, plot=False):
     r = np.array([.078, .1, .2, .3, .4, .5, .6, .7, .8, .9, 1.0, 1.2, 1.4, 1.6]) * const.si.mm / 2
     r = backend.Storage.from_ndarray(r)

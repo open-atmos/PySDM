@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics.constants import convert_to, ppb
@@ -40,11 +41,11 @@ class TestTable3:
             rtol=rtol
         )
 
-        expected = {k: 0 for k in AQUEOUS_COMPOUNDS.keys()}
+        expected = {k: 0 for k in AQUEOUS_COMPOUNDS}
         expected['S_VI'] = mass_conc_SO4mm * si.ug / si.m**3
         expected['N_mIII'] = mass_conc_NH4p * si.ug / si.m**3
 
-        for key in expected.keys():
+        for key in expected:
             mole_fraction = np.asarray(output[f"aq_{key}_ppb"])
             convert_to(mole_fraction, 1/ppb)
             compound = AQUEOUS_COMPOUNDS[key][0]  # sic!

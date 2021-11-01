@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic, UniformRandom

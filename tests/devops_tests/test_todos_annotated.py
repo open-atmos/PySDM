@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 import re
 import sys
@@ -48,6 +49,7 @@ def gh_issues():
     return res
 
 
+# pylint: disable=redefined-outer-name
 def test_todos_annotated(file, gh_issues):
     if os.path.basename(file) == 'test_todos_annotated.py' or file.endswith("-checkpoint.ipynb") or ".eggs" in file:
         return

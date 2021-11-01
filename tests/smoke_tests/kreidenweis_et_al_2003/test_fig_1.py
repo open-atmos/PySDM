@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
 from PySDM.physics import si
@@ -19,6 +20,7 @@ Z_CB = 196 * si.m
 
 class TestFig1:
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_a(example_output, plot=False):
         # Plot
         if plot:
@@ -32,10 +34,11 @@ class TestFig1:
         assert (np.diff(example_output['ql']) >= 0).all()
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_b(example_output, plot=False):
         # Plot
         if plot:
-            for key in GASEOUS_COMPOUNDS.keys():
+            for key in GASEOUS_COMPOUNDS:
                 pyplot.plot(
                     np.asarray(example_output[f'aq_{key}_ppb']),
                     np.asarray(example_output['t']) - Z_CB * si.s, label='aq')
@@ -60,6 +63,7 @@ class TestFig1:
         assert 0.03 < example_output['aq_S_IV_ppb'][-1] + example_output['gas_S_IV_ppb'][-1] < 0.05
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_c(example_output, plot=False):
         if plot:
             pyplot.plot(example_output['pH'], np.asarray(example_output['t']) - Z_CB * si.s)

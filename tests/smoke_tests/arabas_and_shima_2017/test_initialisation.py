@@ -1,8 +1,9 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM.physics import Formulae, constants as const
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
+from PySDM.physics import Formulae, constants as const
 
 
 class TestInitialisation:
