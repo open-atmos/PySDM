@@ -30,14 +30,14 @@
 
 
 class ConcentrationImpl(IntensiveAttribute):
-    def __init__(self, particles_builder, *, what):
-        super().__init__(particles_builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)
+    def __init__(self, builder, *, what):
+        super().__init__(builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)
 
 
-def Concentration(what):
-    def _constructor(pb):
-        return ConcentrationImpl(pb, what=what)
-    return _constructor</code></pre>
+def make_concentration_factory(what):
+    def _factory(builder):
+        return ConcentrationImpl(builder, what=what)
+    return _factory</code></pre>
 </details>
 </section>
 <section>
@@ -47,8 +47,8 @@ def Concentration(what):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.chemistry.concentration.Concentration"><code class="name flex">
-<span>def <span class="ident">Concentration</span></span>(<span>what)</span>
+<dt id="PySDM.attributes.chemistry.concentration.make_concentration_factory"><code class="name flex">
+<span>def <span class="ident">make_concentration_factory</span></span>(<span>what)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -56,10 +56,10 @@ def Concentration(what):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def Concentration(what):
-    def _constructor(pb):
-        return ConcentrationImpl(pb, what=what)
-    return _constructor</code></pre>
+<pre><code class="python">def make_concentration_factory(what):
+    def _factory(builder):
+        return ConcentrationImpl(builder, what=what)
+    return _factory</code></pre>
 </details>
 </dd>
 </dl>
@@ -69,7 +69,7 @@ def Concentration(what):
 <dl>
 <dt id="PySDM.attributes.chemistry.concentration.ConcentrationImpl"><code class="flex name class">
 <span>class <span class="ident">ConcentrationImpl</span></span>
-<span>(</span><span>particles_builder, *, what)</span>
+<span>(</span><span>builder, *, what)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -78,8 +78,8 @@ def Concentration(what):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ConcentrationImpl(IntensiveAttribute):
-    def __init__(self, particles_builder, *, what):
-        super().__init__(particles_builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)</code></pre>
+    def __init__(self, builder, *, what):
+        super().__init__(builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -104,7 +104,7 @@ def Concentration(what):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.attributes.chemistry.concentration.Concentration" href="#PySDM.attributes.chemistry.concentration.Concentration">Concentration</a></code></li>
+<li><code><a title="PySDM.attributes.chemistry.concentration.make_concentration_factory" href="#PySDM.attributes.chemistry.concentration.make_concentration_factory">make_concentration_factory</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

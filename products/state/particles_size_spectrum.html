@@ -78,12 +78,22 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
 
 class ParticlesWetSizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=False, normalise_by_dv=normalise_by_dv, name=&#39;Particles Wet Size Spectrum&#39;)
+        super().__init__(
+            radius_bins_edges,
+            dry=False,
+            normalise_by_dv=normalise_by_dv,
+            name=&#39;Particles Wet Size Spectrum&#39;
+        )
 
 
 class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=True, normalise_by_dv=normalise_by_dv, name=&#39;Particles Dry Size Spectrum&#39;)</code></pre>
+        super().__init__(
+            radius_bins_edges,
+            dry=True,
+            normalise_by_dv=normalise_by_dv,
+            name=&#39;Particles Dry Size Spectrum&#39;
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -107,7 +117,12 @@ class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
 </summary>
 <pre><code class="python">class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=True, normalise_by_dv=normalise_by_dv, name=&#39;Particles Dry Size Spectrum&#39;)</code></pre>
+        super().__init__(
+            radius_bins_edges,
+            dry=True,
+            normalise_by_dv=normalise_by_dv,
+            name=&#39;Particles Dry Size Spectrum&#39;
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -248,7 +263,12 @@ class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
 </summary>
 <pre><code class="python">class ParticlesWetSizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=False, normalise_by_dv=normalise_by_dv, name=&#39;Particles Wet Size Spectrum&#39;)</code></pre>
+        super().__init__(
+            radius_bins_edges,
+            dry=False,
+            normalise_by_dv=normalise_by_dv,
+            name=&#39;Particles Wet Size Spectrum&#39;
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

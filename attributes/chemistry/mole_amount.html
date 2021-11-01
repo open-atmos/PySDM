@@ -30,14 +30,14 @@
 
 
 class MoleAmountImpl(ExtensiveAttribute):
-    def __init__(self, particles_builder, *, name):
-        super().__init__(particles_builder, name=name)
+    def __init__(self, builder, *, name):
+        super().__init__(builder, name=name)
 
 
-def MoleAmount(compound):
-    def _constructor(pb):
-        return MoleAmountImpl(pb, name=&#39;moles_&#39;+compound)
-    return _constructor</code></pre>
+def make_mole_amount_factory(compound):
+    def _factory(builder):
+        return MoleAmountImpl(builder, name=&#39;moles_&#39;+compound)
+    return _factory</code></pre>
 </details>
 </section>
 <section>
@@ -47,8 +47,8 @@ def MoleAmount(compound):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.chemistry.mole_amount.MoleAmount"><code class="name flex">
-<span>def <span class="ident">MoleAmount</span></span>(<span>compound)</span>
+<dt id="PySDM.attributes.chemistry.mole_amount.make_mole_amount_factory"><code class="name flex">
+<span>def <span class="ident">make_mole_amount_factory</span></span>(<span>compound)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -56,10 +56,10 @@ def MoleAmount(compound):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def MoleAmount(compound):
-    def _constructor(pb):
-        return MoleAmountImpl(pb, name=&#39;moles_&#39;+compound)
-    return _constructor</code></pre>
+<pre><code class="python">def make_mole_amount_factory(compound):
+    def _factory(builder):
+        return MoleAmountImpl(builder, name=&#39;moles_&#39;+compound)
+    return _factory</code></pre>
 </details>
 </dd>
 </dl>
@@ -69,7 +69,7 @@ def MoleAmount(compound):
 <dl>
 <dt id="PySDM.attributes.chemistry.mole_amount.MoleAmountImpl"><code class="flex name class">
 <span>class <span class="ident">MoleAmountImpl</span></span>
-<span>(</span><span>particles_builder, *, name)</span>
+<span>(</span><span>builder, *, name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -78,8 +78,8 @@ def MoleAmount(compound):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MoleAmountImpl(ExtensiveAttribute):
-    def __init__(self, particles_builder, *, name):
-        super().__init__(particles_builder, name=name)</code></pre>
+    def __init__(self, builder, *, name):
+        super().__init__(builder, name=name)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -104,7 +104,7 @@ def MoleAmount(compound):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.attributes.chemistry.mole_amount.MoleAmount" href="#PySDM.attributes.chemistry.mole_amount.MoleAmount">MoleAmount</a></code></li>
+<li><code><a title="PySDM.attributes.chemistry.mole_amount.make_mole_amount_factory" href="#PySDM.attributes.chemistry.mole_amount.make_mole_amount_factory">make_mole_amount_factory</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

@@ -43,9 +43,20 @@ from PySDM.physics import constants as const
 
 def _formula(func=None, **kw):
     if func is None:
-        return numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}})
+        return numba.njit(
+            **{
+                **conf.JIT_FLAGS,
+                **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}
+            }
+        )
     else:
-        return numba.njit(func, **{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}})
+        return numba.njit(
+            func,
+            **{
+                **conf.JIT_FLAGS,
+                **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}
+            }
+        )
 
 
 def _boost(obj, fastmath):
@@ -68,7 +79,7 @@ def _c_inline(fun, return_type=None, **args):
     post = r&#34;([ )/*\-+,]|$)&#34;
     real_fmt = &#34;.32g&#34;
     source = &#39;&#39;
-    for lineno, line in enumerate(inspect.getsourcelines(fun)[0]):
+    for line in inspect.getsourcelines(fun)[0]:
         stripped = line.strip()
         if stripped.startswith(&#39;@&#39;):
             continue

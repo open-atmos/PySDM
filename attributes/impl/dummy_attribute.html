@@ -42,10 +42,10 @@ class DummyAttribute(Attribute):
         return self.data
 
 
-def DummyAttributeImpl(name):
-    def _constructor(pb):
-        return DummyAttribute(pb, name=name)
-    return _constructor</code></pre>
+def make_dummy_attribute_factory(name):
+    def _factory(builder):
+        return DummyAttribute(builder, name=name)
+    return _factory</code></pre>
 </details>
 </section>
 <section>
@@ -55,8 +55,8 @@ def DummyAttributeImpl(name):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl"><code class="name flex">
-<span>def <span class="ident">DummyAttributeImpl</span></span>(<span>name)</span>
+<dt id="PySDM.attributes.impl.dummy_attribute.make_dummy_attribute_factory"><code class="name flex">
+<span>def <span class="ident">make_dummy_attribute_factory</span></span>(<span>name)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -64,10 +64,10 @@ def DummyAttributeImpl(name):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def DummyAttributeImpl(name):
-    def _constructor(pb):
-        return DummyAttribute(pb, name=name)
-    return _constructor</code></pre>
+<pre><code class="python">def make_dummy_attribute_factory(name):
+    def _factory(builder):
+        return DummyAttribute(builder, name=name)
+    return _factory</code></pre>
 </details>
 </dd>
 </dl>
@@ -147,7 +147,7 @@ def DummyAttributeImpl(name):
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl" href="#PySDM.attributes.impl.dummy_attribute.DummyAttributeImpl">DummyAttributeImpl</a></code></li>
+<li><code><a title="PySDM.attributes.impl.dummy_attribute.make_dummy_attribute_factory" href="#PySDM.attributes.impl.dummy_attribute.make_dummy_attribute_factory">make_dummy_attribute_factory</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
