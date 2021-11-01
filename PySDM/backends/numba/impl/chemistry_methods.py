@@ -215,7 +215,9 @@ class ChemistryMethods:
             cid = cell_id[i]
             args = (
                 N_mIII[i], N_V[i], C_IV[i], S_IV[i], S_VI[i],
-                K_NH3[cid], K_SO2[cid], K_HSO3[cid], K_HSO4[cid], K_HCO3[cid], K_CO2[cid], K_HNO3[cid]
+
+                K_NH3[cid], K_SO2[cid], K_HSO3[cid], K_HSO4[cid],
+                K_HCO3[cid], K_CO2[cid], K_HNO3[cid]
             )
             a = pH2H(pH[i])
             fa = pH_minfun(a, *args)

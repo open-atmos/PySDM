@@ -14,7 +14,7 @@ class DummyAttribute(Attribute):
         return self.data
 
 
-def DummyAttributeImpl(name):
-    def _constructor(pb):
-        return DummyAttribute(pb, name=name)
-    return _constructor
+def make_dummy_attribute_factory(name):
+    def _factory(builder):
+        return DummyAttribute(builder, name=name)
+    return _factory

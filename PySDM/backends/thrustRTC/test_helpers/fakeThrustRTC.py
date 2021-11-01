@@ -45,28 +45,28 @@ class FakeThrustRTC:
             self.ndarray = number
 
     @staticmethod
-    def DVInt64(number: int):
+    def DVInt64(number: int):  # pylint: disable=invalid-name
         return FakeThrustRTC.Number(number)
 
     @staticmethod
-    def DVDouble(number: float):
+    def DVDouble(number: float):  # pylint: disable=invalid-name
         return FakeThrustRTC.Number(number)
 
     @staticmethod
-    def DVBool(number: bool):
+    def DVBool(number: bool):  # pylint: disable=invalid-name
         return FakeThrustRTC.Number(number)
 
     @staticmethod
-    def DVFloat(number: float):
+    def DVFloat(number: float):  # pylint: disable=invalid-name
         return FakeThrustRTC.Number(number)
 
     class For:
         def __init__(self, args, iter_var, body):
-            d = dict()
+            d = {}
             self.code = to_numba("__internal_python_method__", args, iter_var, body)
-            exec(self.code, d)
+            exec(self.code, d)  # pylint: disable=exec-used
             self.make = types.MethodType(d["make"], self)
-            self.__internal_python_method__ = self.make()
+            self.__internal_python_method__ = self.make()  # pylint: disable=not-callable
 
         def launch_n(self, size, args):
             if size == 0:
@@ -79,21 +79,21 @@ class FakeThrustRTC:
             return result
 
     @staticmethod
-    def Sort(dvvector):
+    def Sort(dvvector):  # pylint: disable=invalid-name
         dvvector.ndarray[:] = np.sort(dvvector.ndarray)
 
     @staticmethod
-    def Copy(vector_in, vector_out):
+    def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
             raise ValueError(f"Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}")
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
-    def Fill(vector, value):
+    def Fill(vector, value):  # pylint: disable=invalid-name
         vector[:] = value
 
     @staticmethod
-    def Find(vector, value):
+    def Find(vector, value):  # pylint: disable=invalid-name
         for i in range(len(vector.ndarray)):
             if vector[i] == value.ndarray:
                 return i
@@ -122,22 +122,22 @@ class FakeThrustRTC:
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
-    def Max_Element(dvvector):
+    def Max_Element(dvvector):  # pylint: disable=invalid-name
         np.amax(dvvector.ndarray)
 
     @staticmethod
-    def Min_Element(dvvector):
+    def Min_Element(dvvector):  # pylint: disable=invalid-name
         np.amin(dvvector.ndarray)
 
     @staticmethod
-    def DVPermutation(dvvector, idx):
+    def DVPermutation(dvvector, idx):  # pylint: disable=invalid-name
         _length = np.where(idx.ndarray == idx.size())[0]
         length = _length[0] if len(_length) != 0 else idx.size()
         result = dvvector.ndarray[idx.ndarray[:length]]
         return FakeThrustRTC.DVVector(result)
 
     @staticmethod
-    def Count(dvvector, value):
+    def Count(dvvector, value):  # pylint: disable=invalid-name
         unique, counts = np.unique(dvvector.ndarray, return_counts=True)
         results = dict(zip(unique, counts))
         if value.ndarray in results:
@@ -146,7 +146,7 @@ class FakeThrustRTC:
             return 0
 
     @staticmethod
-    def Reduce(dvvector, start, operator):
+    def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
         if operator == "+":
             return start.ndarray + dvvector.ndarray.sum()
         if operator == "-":
@@ -157,33 +157,33 @@ class FakeThrustRTC:
             return min(start.ndarray, np.amin(dvvector.ndarray))
 
     @staticmethod
-    def Plus():
+    def Plus():  # pylint: disable=invalid-name
         return "+"
 
     @staticmethod
-    def Minus():
+    def Minus():  # pylint: disable=invalid-name
         return "-"
 
     @staticmethod
-    def Maximum():
+    def Maximum():  # pylint: disable=invalid-name
         return "max"
 
     @staticmethod
-    def Minimum():
+    def Minimum():  # pylint: disable=invalid-name
         return "min"
 
     @staticmethod
-    def Transform_Binary(vec_in1, vec_in2, vec_out, op):
+    def Transform_Binary(vec_in1, vec_in2, vec_out, op):  # pylint: disable=invalid-name
         if op == "+":
             vec_out.ndarray[:] = vec_in1.ndarray + vec_in2.ndarray
         if op == "-":
             vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray
 
     @staticmethod
-    def Wait():
+    def Wait():  # pylint: disable=invalid-name
         pass
 
     @staticmethod
-    def Sort_By_Key(keys, values):
+    def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
         values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
         # TODO #328 Thrust sorts keys as well

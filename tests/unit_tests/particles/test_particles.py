@@ -5,13 +5,15 @@ import pytest
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.state.particles_factory import ParticlesFactory
-# noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment
 from PySDM.backends import CPU, GPU
 
+assert hasattr(backend, '_pytestfixturefunction')
 
+
+# pylint: disable=protected-access
 class TestParticles:
 
     @staticmethod

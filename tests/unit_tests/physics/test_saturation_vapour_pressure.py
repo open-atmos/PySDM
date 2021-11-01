@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
 import numpy as np
-from matplotlib import pylab
+from matplotlib import pyplot
 from PySDM.physics import Formulae, constants as const
 
 
@@ -14,18 +14,18 @@ def test_saturation_vapour_pressures(plot=False):
     temperature = np.linspace(-.2, .4)
 
     # Plot
+    pyplot.axhline(const.p_tri, label='triple point', color='red')
+    pyplot.axvline(const.T_tri - const.T0, color='red')
+    for key, val in formulae.items():
+        for name, func in inspect.getmembers(val.saturation_vapour_pressure):
+            if name[:2] not in ('__', 'a_'):
+                pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
+    pyplot.grid()
+    pyplot.legend()
+    pyplot.xlabel('T [C]')
+    pyplot.ylabel('p [Pa]')
     if plot:
-        pylab.axhline(const.p_tri, label='triple point', color='red')
-        pylab.axvline(const.T_tri - const.T0, color='red')
-        for k, v in formulae.items():
-            for name, func in inspect.getmembers(v.saturation_vapour_pressure):
-                if not name.startswith('__'):
-                    pylab.plot(temperature, func(temperature), label=f"{k}::{name}")
-        pylab.grid()
-        pylab.legend()
-        pylab.xlabel('T [C]')
-        pylab.ylabel('p [Pa]')
-        pylab.show()
+        pyplot.show()
 
     # Assert
     temperature = np.linspace(-20, 20, 100)
