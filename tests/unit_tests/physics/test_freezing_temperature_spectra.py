@@ -13,7 +13,7 @@ A = 1 * si.um**2
         'Niemand_et_al_2012',
         'Bigg_1953'
 ))
-def test_freezing_temperature_spectra(model, plot=True):
+def test_freezing_temperature_spectra(model, plot=False):
     # Arrange
     bigg_1953.DT_median = 33
     niemand_et_al_2012.a = -0.517
