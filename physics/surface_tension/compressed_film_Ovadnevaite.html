@@ -32,8 +32,16 @@ from PySDM.physics import constants as const
 sgm_org = np.nan
 delta_min = np.nan
 
-
 class CompressedFilm_Ovadnevaite:
+    &#34;&#34;&#34;
+    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
+    and as described in Lowe et al. (2019).
+
+    Assumes a surface tension of the organic material `sgm_org` and minimum film thickness, 
+    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic
+    partitions to the surface of the droplet and that the surface tension is a weighted
+    average of the surface tension of water and the organic material.
+    &#34;&#34;&#34;
     @staticmethod
     def _check():
         assert np.isfinite(sgm_org)
@@ -71,12 +79,26 @@ class CompressedFilm_Ovadnevaite:
 <span>class <span class="ident">CompressedFilm_Ovadnevaite</span></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
+and as described in Lowe et al. (2019).</p>
+<p>Assumes a surface tension of the organic material <code>sgm_org</code> and minimum film thickness,
+the thickness of a monolayer of the organic molecules, <code>delta_min</code>. Assumes all organic
+partitions to the surface of the droplet and that the surface tension is a weighted
+average of the surface tension of water and the organic material.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CompressedFilm_Ovadnevaite:
+    &#34;&#34;&#34;
+    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
+    and as described in Lowe et al. (2019).
+
+    Assumes a surface tension of the organic material `sgm_org` and minimum film thickness, 
+    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic
+    partitions to the surface of the droplet and that the surface tension is a weighted
+    average of the surface tension of water and the organic material.
+    &#34;&#34;&#34;
     @staticmethod
     def _check():
         assert np.isfinite(sgm_org)

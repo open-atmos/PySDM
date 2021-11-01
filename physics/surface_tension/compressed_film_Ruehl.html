@@ -37,8 +37,18 @@ C0 = np.nan
 m_sigma = np.nan
 sgm_min = np.nan
 
-
 class CompressedFilm_Ruehl:
+    &#34;&#34;&#34;
+    Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
+    Described in supplementary materials equations (13) and (15).
+
+    Allows for more realistic thermodynamic partitioning of some organic to the surface,
+    while some remains dissolved in the bulk phase. The surface concentration is solved 
+    implicitly from the isotherm equation that relates the bulk organic concentration
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates 
+    the surface concentration to the surface tension. For the compressed film model it 
+    is linear, with slope `m_sigma`.
+    &#34;&#34;&#34;
     @staticmethod
     def _check():
         assert np.isfinite(nu_org)
@@ -81,12 +91,30 @@ class CompressedFilm_Ruehl:
 <span>class <span class="ident">CompressedFilm_Ruehl</span></span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
+Described in supplementary materials equations (13) and (15).</p>
+<p>Allows for more realistic thermodynamic partitioning of some organic to the surface,
+while some remains dissolved in the bulk phase. The surface concentration is solved
+implicitly from the isotherm equation that relates the bulk organic concentration
+<code>C_bulk</code> to the surface average molecular area <code>A</code>. The equation of state relates
+the surface concentration to the surface tension. For the compressed film model it
+is linear, with slope <code>m_sigma</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CompressedFilm_Ruehl:
+    &#34;&#34;&#34;
+    Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
+    Described in supplementary materials equations (13) and (15).
+
+    Allows for more realistic thermodynamic partitioning of some organic to the surface,
+    while some remains dissolved in the bulk phase. The surface concentration is solved 
+    implicitly from the isotherm equation that relates the bulk organic concentration
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates 
+    the surface concentration to the surface tension. For the compressed film model it 
+    is linear, with slope `m_sigma`.
+    &#34;&#34;&#34;
     @staticmethod
     def _check():
         assert np.isfinite(nu_org)
