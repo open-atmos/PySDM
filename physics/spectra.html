@@ -30,12 +30,12 @@
 <pre><code class="python">&#34;&#34;&#34;
 Classes representing particle size spectra (based on SciPy.stats logic)
 &#34;&#34;&#34;
-from scipy.stats import lognorm
-from scipy.stats import expon
 import math
 import numpy as np
+from scipy.stats import lognorm
+from scipy.stats import expon
 from scipy.interpolate import interp1d
-from PySDM.initialisation.spectral_sampling import default_cdf_range
+from ..initialisation.spectral_sampling import default_cdf_range
 
 default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
@@ -53,6 +53,9 @@ class Spectrum:
 
     def pdf(self, x):
         return self.size_distribution(x) / self.norm_factor
+
+    def cdf(self, x):
+        return self.distribution.cdf(x, *self.distribution_params)
 
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
@@ -89,8 +92,19 @@ class Lognormal(Spectrum):
     def m_mode(self):
         return self.distribution_params[2]
 
+    @property
+    def median(self):
+        return self.m_mode
+
+    @property
+    def geometric_mean(self):
+        return self.s_geom
+
     def __str__(self):
-        return f&#34;{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})&#34;
+        return f&#34;{self.__class__.__name__}:&#34;\
+               f&#34; (N={self.norm_factor:.3g},&#34;\
+               f&#34; m_mode={self.m_mode:.3g},&#34;\
+               f&#34; s_geom={self.s_geom:.3g})&#34;
 
 
 class TopHat:
@@ -189,8 +203,19 @@ class Sum:
     def m_mode(self):
         return self.distribution_params[2]
 
+    @property
+    def median(self):
+        return self.m_mode
+
+    @property
+    def geometric_mean(self):
+        return self.s_geom
+
     def __str__(self):
-        return f&#34;{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})&#34;</code></pre>
+        return f&#34;{self.__class__.__name__}:&#34;\
+               f&#34; (N={self.norm_factor:.3g},&#34;\
+               f&#34; m_mode={self.m_mode:.3g},&#34;\
+               f&#34; s_geom={self.s_geom:.3g})&#34;</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -198,6 +223,18 @@ class Sum:
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="PySDM.physics.spectra.Lognormal.geometric_mean"><code class="name">var <span class="ident">geometric_mean</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def geometric_mean(self):
+    return self.s_geom</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.spectra.Lognormal.m_mode"><code class="name">var <span class="ident">m_mode</span></code></dt>
 <dd>
 <div class="desc"></div>
@@ -208,6 +245,18 @@ class Sum:
 <pre><code class="python">@property
 def m_mode(self):
     return self.distribution_params[2]</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.spectra.Lognormal.median"><code class="name">var <span class="ident">median</span></code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def median(self):
+    return self.m_mode</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.spectra.Lognormal.s_geom"><code class="name">var <span class="ident">s_geom</span></code></dt>
@@ -248,6 +297,9 @@ def s_geom(self):
     def pdf(self, x):
         return self.size_distribution(x) / self.norm_factor
 
+    def cdf(self, x):
+        return self.distribution.cdf(x, *self.distribution_params)
+
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
         return result
@@ -267,6 +319,19 @@ def s_geom(self):
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="PySDM.physics.spectra.Spectrum.cdf"><code class="name flex">
+<span>def <span class="ident">cdf</span></span>(<span>self, x)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cdf(self, x):
+    return self.distribution.cdf(x, *self.distribution_params)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.spectra.Spectrum.cumulative"><code class="name flex">
 <span>def <span class="ident">cumulative</span></span>(<span>self, x)</span>
 </code></dt>
@@ -498,13 +563,16 @@ def s_geom(self):
 <li>
 <h4><code><a title="PySDM.physics.spectra.Lognormal" href="#PySDM.physics.spectra.Lognormal">Lognormal</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.physics.spectra.Lognormal.geometric_mean" href="#PySDM.physics.spectra.Lognormal.geometric_mean">geometric_mean</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Lognormal.m_mode" href="#PySDM.physics.spectra.Lognormal.m_mode">m_mode</a></code></li>
+<li><code><a title="PySDM.physics.spectra.Lognormal.median" href="#PySDM.physics.spectra.Lognormal.median">median</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Lognormal.s_geom" href="#PySDM.physics.spectra.Lognormal.s_geom">s_geom</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="PySDM.physics.spectra.Spectrum" href="#PySDM.physics.spectra.Spectrum">Spectrum</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="PySDM.physics.spectra.Spectrum.cdf" href="#PySDM.physics.spectra.Spectrum.cdf">cdf</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.cumulative" href="#PySDM.physics.spectra.Spectrum.cumulative">cumulative</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.pdf" href="#PySDM.physics.spectra.Spectrum.pdf">pdf</a></code></li>
 <li><code><a title="PySDM.physics.spectra.Spectrum.percentiles" href="#PySDM.physics.spectra.Spectrum.percentiles">percentiles</a></code></li>

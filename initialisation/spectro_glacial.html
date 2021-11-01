@@ -26,45 +26,57 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.initialisation.spectral_sampling import SpectralSampling, default_cdf_range
+<pre><code class="python">import numpy as np
+from PySDM.initialisation.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const
-from scipy.interpolate import interp1d
-import numpy as np
 
-DIM_SIZE = 0
-DIM_TEMP = 1
+# DIM_SIZE = 0
+DIM_TEMP = 0
+DIM_SURF = 1
 N_DIMS = 2
 
-class SpectroGlacialSampling(SpectralSampling):
-    pass
 
-class Independent(SpectroGlacialSampling):
-    def __init__(self,
-                 size_spectrum, freezing_temperature_spectrum,
-                 size_range=None, temperature_range=None,
-                 seed=const.default_random_seed):
-        super().__init__(size_spectrum, size_range)
+class SpectroGlacialSampling:
+    def __init__(self, *,
+        freezing_temperature_spectrum,
+        insoluble_surface_spectrum,
+        seed=const.default_random_seed
+    ):
+        self.insoluble_surface_spectrum = insoluble_surface_spectrum
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
-        if temperature_range is None:
-            cdf_arg = np.linspace(const.T0+10, const.T0-60)
-            cdf_val = freezing_temperature_spectrum.cdf(cdf_arg)
-            inv_cdf = interp1d(cdf_val, cdf_arg)
-            temperature_range = inv_cdf(default_cdf_range)
 
-        self.temp_range = temperature_range
-        self.rng = np.random.default_rng(seed)
+        self.insoluble_surface_range = insoluble_surface_spectrum.percentiles(default_cdf_range)
+        self.temperature_range = freezing_temperature_spectrum.invcdf(
+            np.asarray(default_cdf_range),
+            insoluble_surface_spectrum.median
+        )
+        self.seed = seed
 
     def sample(self, n_sd):
-        pdf_arg = (
-            self.rng.uniform(*self.size_range, n_sd),
-            self.rng.uniform(*sorted(self.temp_range), n_sd)
-        )
-        dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-        dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        copula = False
+        if copula:
+            import pyvinecopulib as pv
+
+            simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
+            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+                1 - simulated[:, DIM_TEMP],
+                self.insoluble_surface_spectrum.median
+            )
+            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
+                simulated[:, DIM_SURF]
+            )
+        else:
+            simulated = np.empty((n_sd, N_DIMS))
+            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(np.random.random(n_sd))
+            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+                np.random.random(n_sd),
+                simulated[:, DIM_SURF]
+            )
+
         return (
-            *pdf_arg, dr * dT \
-               * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
-               * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+            simulated[:, DIM_TEMP],
+            simulated[:, DIM_SURF],
+            np.full((n_sd,), self.insoluble_surface_spectrum.norm_factor/n_sd)
         )</code></pre>
 </details>
 </section>
@@ -77,9 +89,9 @@ class Independent(SpectroGlacialSampling):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.initialisation.spectro_glacial.Independent"><code class="flex name class">
-<span>class <span class="ident">Independent</span></span>
-<span>(</span><span>size_spectrum, freezing_temperature_spectrum, size_range=None, temperature_range=None, seed=44)</span>
+<dt id="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling"><code class="flex name class">
+<span>class <span class="ident">SpectroGlacialSampling</span></span>
+<span>(</span><span>*, freezing_temperature_spectrum, insoluble_surface_spectrum, seed=44)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -87,43 +99,52 @@ class Independent(SpectroGlacialSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Independent(SpectroGlacialSampling):
-    def __init__(self,
-                 size_spectrum, freezing_temperature_spectrum,
-                 size_range=None, temperature_range=None,
-                 seed=const.default_random_seed):
-        super().__init__(size_spectrum, size_range)
+<pre><code class="python">class SpectroGlacialSampling:
+    def __init__(self, *,
+        freezing_temperature_spectrum,
+        insoluble_surface_spectrum,
+        seed=const.default_random_seed
+    ):
+        self.insoluble_surface_spectrum = insoluble_surface_spectrum
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
-        if temperature_range is None:
-            cdf_arg = np.linspace(const.T0+10, const.T0-60)
-            cdf_val = freezing_temperature_spectrum.cdf(cdf_arg)
-            inv_cdf = interp1d(cdf_val, cdf_arg)
-            temperature_range = inv_cdf(default_cdf_range)
 
-        self.temp_range = temperature_range
-        self.rng = np.random.default_rng(seed)
+        self.insoluble_surface_range = insoluble_surface_spectrum.percentiles(default_cdf_range)
+        self.temperature_range = freezing_temperature_spectrum.invcdf(
+            np.asarray(default_cdf_range),
+            insoluble_surface_spectrum.median
+        )
+        self.seed = seed
 
     def sample(self, n_sd):
-        pdf_arg = (
-            self.rng.uniform(*self.size_range, n_sd),
-            self.rng.uniform(*sorted(self.temp_range), n_sd)
-        )
-        dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-        dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+        copula = False
+        if copula:
+            import pyvinecopulib as pv
+
+            simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
+            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+                1 - simulated[:, DIM_TEMP],
+                self.insoluble_surface_spectrum.median
+            )
+            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
+                simulated[:, DIM_SURF]
+            )
+        else:
+            simulated = np.empty((n_sd, N_DIMS))
+            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(np.random.random(n_sd))
+            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+                np.random.random(n_sd),
+                simulated[:, DIM_SURF]
+            )
+
         return (
-            *pdf_arg, dr * dT \
-               * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
-               * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+            simulated[:, DIM_TEMP],
+            simulated[:, DIM_SURF],
+            np.full((n_sd,), self.insoluble_surface_spectrum.norm_factor/n_sd)
         )</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling" href="#PySDM.initialisation.spectro_glacial.SpectroGlacialSampling">SpectroGlacialSampling</a></li>
-<li><a title="PySDM.initialisation.spectral_sampling.SpectralSampling" href="spectral_sampling.html#PySDM.initialisation.spectral_sampling.SpectralSampling">SpectralSampling</a></li>
-</ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.initialisation.spectro_glacial.Independent.sample"><code class="name flex">
+<dt id="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling.sample"><code class="name flex">
 <span>def <span class="ident">sample</span></span>(<span>self, n_sd)</span>
 </code></dt>
 <dd>
@@ -133,42 +154,34 @@ class Independent(SpectroGlacialSampling):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sample(self, n_sd):
-    pdf_arg = (
-        self.rng.uniform(*self.size_range, n_sd),
-        self.rng.uniform(*sorted(self.temp_range), n_sd)
-    )
-    dr = (self.size_range[1] - self.size_range[0]) / n_sd**(1/N_DIMS)
-    dT = abs(self.temp_range[1] - self.temp_range[0]) / n_sd**(1/N_DIMS)
+    copula = False
+    if copula:
+        import pyvinecopulib as pv
+
+        simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
+        simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+            1 - simulated[:, DIM_TEMP],
+            self.insoluble_surface_spectrum.median
+        )
+        simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
+            simulated[:, DIM_SURF]
+        )
+    else:
+        simulated = np.empty((n_sd, N_DIMS))
+        simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(np.random.random(n_sd))
+        simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+            np.random.random(n_sd),
+            simulated[:, DIM_SURF]
+        )
+
     return (
-        *pdf_arg, dr * dT \
-           * self.spectrum.size_distribution(pdf_arg[DIM_SIZE]) \
-           * self.freezing_temperature_spectrum.pdf(pdf_arg[DIM_TEMP])
+        simulated[:, DIM_TEMP],
+        simulated[:, DIM_SURF],
+        np.full((n_sd,), self.insoluble_surface_spectrum.norm_factor/n_sd)
     )</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-<dt id="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling"><code class="flex name class">
-<span>class <span class="ident">SpectroGlacialSampling</span></span>
-<span>(</span><span>spectrum, size_range: [None, typing.Tuple[float, float]] = None)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class SpectroGlacialSampling(SpectralSampling):
-    pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.initialisation.spectral_sampling.SpectralSampling" href="spectral_sampling.html#PySDM.initialisation.spectral_sampling.SpectralSampling">SpectralSampling</a></li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="PySDM.initialisation.spectro_glacial.Independent" href="#PySDM.initialisation.spectro_glacial.Independent">Independent</a></li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -187,13 +200,10 @@ class Independent(SpectroGlacialSampling):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.initialisation.spectro_glacial.Independent" href="#PySDM.initialisation.spectro_glacial.Independent">Independent</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.initialisation.spectro_glacial.Independent.sample" href="#PySDM.initialisation.spectro_glacial.Independent.sample">sample</a></code></li>
-</ul>
-</li>
-<li>
 <h4><code><a title="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling" href="#PySDM.initialisation.spectro_glacial.SpectroGlacialSampling">SpectroGlacialSampling</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.initialisation.spectro_glacial.SpectroGlacialSampling.sample" href="#PySDM.initialisation.spectro_glacial.SpectroGlacialSampling.sample">sample</a></code></li>
+</ul>
 </li>
 </ul>
 </li>

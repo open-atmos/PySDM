@@ -26,8 +26,8 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.physics import constants as const
-import numpy as np
+<pre><code class="python">import numpy as np
+from PySDM.physics import constants as const
 
 a = np.nan
 b = np.nan
@@ -49,7 +49,12 @@ class Niemand_et_al_2012:
     @staticmethod
     def cdf(T, A_insol):
         ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
+
+    @staticmethod
+    def invcdf(cdf, A_insol):
+        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
+        return const.T0 + (tmp - b) / a</code></pre>
 </details>
 </section>
 <section>
@@ -86,7 +91,12 @@ class Niemand_et_al_2012:
     @staticmethod
     def cdf(T, A_insol):
         ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
+
+    @staticmethod
+    def invcdf(cdf, A_insol):
+        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
+        return const.T0 + (tmp - b) / a</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -103,6 +113,21 @@ class Niemand_et_al_2012:
 def cdf(T, A_insol):
     ns_T = np.exp(a * (T - const.T0) + b)
     return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf"><code class="name flex">
+<span>def <span class="ident">invcdf</span></span>(<span>cdf, A_insol)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def invcdf(cdf, A_insol):
+    tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
+    return const.T0 + (tmp - b) / a</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
@@ -142,6 +167,7 @@ def pdf(T, A_insol):
 <h4><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012">Niemand_et_al_2012</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
+<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf">invcdf</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
 </ul>
 </li>
