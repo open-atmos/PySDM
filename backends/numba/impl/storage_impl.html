@@ -44,7 +44,7 @@ def amin(data):
 @numba.njit(**conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(output.shape[0]):
-        for i in numba.prange(output.shape[1]):
+        for i in numba.prange(output.shape[1]):  # pylint: disable=not-an-iterable
             output[d, i] %= divisor[d]
 
 
@@ -72,9 +72,11 @@ def multiply_out_of_place(output, multiplicand, multiplier):
 def divide_out_of_place(output, dividend, divisor):
     output[:] = dividend / divisor
 
+
 @numba.njit(**conf.JIT_FLAGS)
 def sum_out_of_place(output, a, b):
     output[:] = a + b
+
 
 @numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):
@@ -222,7 +224,7 @@ def power(output, exponent):
 <pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
 def row_modulo(output, divisor):
     for d in range(output.shape[0]):
-        for i in numba.prange(output.shape[1]):
+        for i in numba.prange(output.shape[1]):  # pylint: disable=not-an-iterable
             output[d, i] %= divisor[d]</code></pre>
 </details>
 </dd>

@@ -32,11 +32,11 @@ Zero-dimensional adiabatic parcel framework
 &#34;&#34;&#34;
 
 import numpy as np
+from PySDM.state.mesh import Mesh
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
 from ..physics import constants as const
 from ._moist import _Moist
-from PySDM.state.mesh import Mesh
 
 
 class Parcel(_Moist):

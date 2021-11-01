@@ -34,12 +34,12 @@ Two-dimensional single-eddy prescribed-flow framework with moisture and heat adv
 handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 &#34;&#34;&#34;
 
-from ._moist import _Moist
-from PySDM.state.mesh import Mesh
-from ..state import arakawa_c
 import numpy as np
+from PySDM.state.mesh import Mesh
 from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
 from PySDM.initialisation.multiplicities import discretise_n
+from ._moist import _Moist
+from ..state import arakawa_c
 
 
 class Kinematic2D(_Moist):

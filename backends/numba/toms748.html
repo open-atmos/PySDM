@@ -98,7 +98,7 @@ def quadratic_interpolate(a, b, d, fa, fb, fd, count):
         c = a
     else:
         c = b
-    for i in range(1, count + 1):
+    for _ in range(1, count + 1):
         c -= safe_div(
             fa + (B + A * (c - b)) * (c - a),
             B + A * (2. * c - a - b),
@@ -333,7 +333,7 @@ def quadratic_interpolate(a, b, d, fa, fb, fd, count):
         c = a
     else:
         c = b
-    for i in range(1, count + 1):
+    for _ in range(1, count + 1):
         c -= safe_div(
             fa + (B + A * (c - b)) * (c - a),
             B + A * (2. * c - a - b),

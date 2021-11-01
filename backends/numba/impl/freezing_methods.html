@@ -46,7 +46,7 @@ class FreezingMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_singular_body(T_fz, v_wet, T, RH, cell):
-            for i in numba.prange(len(T_fz)):
+            for i in numba.prange(len(T_fz)):  # pylint: disable=not-an-iterable
                 if _unfrozen(v_wet, i) and RH[cell[i]] &gt; 1 and T[cell[i]] &lt;= T_fz[i]:
                     _freeze(v_wet, i)
         self.freeze_singular_body = freeze_singular_body
@@ -56,9 +56,9 @@ class FreezingMethods:
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt, cell, a_w_ice):
             n_sd = len(volume)
-            for i in numba.prange(n_sd):
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
+                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -67,7 +67,9 @@ class FreezingMethods:
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
     def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
+        self.freeze_time_dependent_body(
+            rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -102,7 +104,7 @@ class FreezingMethods:
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_singular_body(T_fz, v_wet, T, RH, cell):
-            for i in numba.prange(len(T_fz)):
+            for i in numba.prange(len(T_fz)):  # pylint: disable=not-an-iterable
                 if _unfrozen(v_wet, i) and RH[cell[i]] &gt; 1 and T[cell[i]] &lt;= T_fz[i]:
                     _freeze(v_wet, i)
         self.freeze_singular_body = freeze_singular_body
@@ -112,9 +114,9 @@ class FreezingMethods:
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_time_dependent_body(rand, immersed_surface_area, volume, dt, cell, a_w_ice):
             n_sd = len(volume)
-            for i in numba.prange(n_sd):
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if _unfrozen(volume, i):
-                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)  # TODO #599: assert if &gt; 1?
+                    p = 1 - np.exp(-J_het(a_w_ice[cell[i]]) * immersed_surface_area[i] * dt)
                     if rand[i] &lt; p:
                         _freeze(volume, i)
         self.freeze_time_dependent_body = freeze_time_dependent_body
@@ -123,7 +125,9 @@ class FreezingMethods:
         self.freeze_singular_body(T_fz.data, v_wet.data, T.data, RH.data, cell.data)
 
     def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
-        self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
+        self.freeze_time_dependent_body(
+            rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data
+        )</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -154,7 +158,9 @@ class FreezingMethods:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def freeze_time_dependent(self, rand, immersed_surface_area, volume, dt, cell, a_w_ice):
-    self.freeze_time_dependent_body(rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data)</code></pre>
+    self.freeze_time_dependent_body(
+        rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data
+    )</code></pre>
 </details>
 </dd>
 </dl>

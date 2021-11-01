@@ -31,14 +31,14 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 &#34;&#34;&#34;
 
-from PySDM.backends.numba.impl._algorithmic_methods import AlgorithmicMethods
-from PySDM.backends.numba.impl._pair_methods import PairMethods
-from PySDM.backends.numba.impl._physics_methods import PhysicsMethods
-from PySDM.backends.numba.impl._index_methods import IndexMethods
+from PySDM.backends.numba.impl.algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.numba.impl.pair_methods import PairMethods
+from PySDM.backends.numba.impl.physics_methods import PhysicsMethods
+from PySDM.backends.numba.impl.index_methods import IndexMethods
 from PySDM.backends.numba.impl.condensation_methods import CondensationMethods
 from PySDM.backends.numba.impl.moments_methods import MomentsMethods
 from PySDM.backends.numba.impl.freezing_methods import FreezingMethods
-from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
+from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.random import Random as ImportedRandom
 from PySDM.backends.numba.storage import Storage as ImportedStorage
 from PySDM.physics import Formulae
@@ -108,12 +108,12 @@ class Numba(
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>PySDM.backends.numba.impl._algorithmic_methods.AlgorithmicMethods</li>
-<li>PySDM.backends.numba.impl._pair_methods.PairMethods</li>
-<li>PySDM.backends.numba.impl._index_methods.IndexMethods</li>
-<li>PySDM.backends.numba.impl._physics_methods.PhysicsMethods</li>
+<li><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods" href="impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.pair_methods.PairMethods" href="impl/pair_methods.html#PySDM.backends.numba.impl.pair_methods.PairMethods">PairMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.index_methods.IndexMethods" href="impl/index_methods.html#PySDM.backends.numba.impl.index_methods.IndexMethods">IndexMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.physics_methods.PhysicsMethods" href="impl/physics_methods.html#PySDM.backends.numba.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods" href="impl/condensation_methods.html#PySDM.backends.numba.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
-<li>PySDM.backends.numba.impl._chemistry_methods.ChemistryMethods</li>
+<li><a title="PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods" href="impl/chemistry_methods.html#PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods">ChemistryMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods" href="impl/moments_methods.html#PySDM.backends.numba.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.freezing_methods.FreezingMethods" href="impl/freezing_methods.html#PySDM.backends.numba.impl.freezing_methods.FreezingMethods">FreezingMethods</a></li>
 </ul>
@@ -132,6 +132,14 @@ class Numba(
 <div class="desc"></div>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods" href="impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods.compute_gamma_body" href="impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>

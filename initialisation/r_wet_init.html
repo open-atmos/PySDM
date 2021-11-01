@@ -30,12 +30,12 @@
 <pre><code class="python">&#34;&#34;&#34;
 Koehler-curve equilibrium in unsaturated conditions
 &#34;&#34;&#34;
+import numba
+import numpy as np
 from ..backends.numba.toms748 import toms748_solve
 from ..physics import constants as const
 from ..backends.numba.conf import JIT_FLAGS
 from ..backends.numba.impl.warnings import warn
-import numba
-import numpy as np
 
 default_rtol = 1e-5
 default_max_iters = 64
@@ -74,7 +74,7 @@ def r_wet_init(r_dry: np.ndarray, environment,
     def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
-        for i in numba.prange(len(r_dry)):
+        for i in numba.prange(len(r_dry)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
 
             # root-finding initial guess
@@ -165,7 +165,7 @@ def r_wet_init(r_dry: np.ndarray, environment,
     def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
                         RH_range=(0, 1)):
         r_wet = np.empty_like(r_dry)
-        for i in numba.prange(len(r_dry)):
+        for i in numba.prange(len(r_dry)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
 
             # root-finding initial guess
