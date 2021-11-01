@@ -3,12 +3,12 @@ from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics import constants as const
 
 
-class pH(DerivedAttribute):
+class Acidity(DerivedAttribute):
     def __init__(self, builder):
         self.conc = {}
-        for k, v in AQUEOUS_COMPOUNDS.items():
-            if len(v) > 1:
-                self.conc[k] = builder.get_attribute('conc_' + k)
+        for key, val in AQUEOUS_COMPOUNDS.items():
+            if len(val) > 1:
+                self.conc[key] = builder.get_attribute('conc_' + key)
         super().__init__(builder, name='pH', dependencies=self.conc.values())
         self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute('cell id')
