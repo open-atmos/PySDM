@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
-from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM.physics import si
 import numpy as np
 from matplotlib import pyplot
 import pytest
+from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
+from PySDM.physics import si
 
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
@@ -14,9 +14,10 @@ class DummyStorage:
     def __init__(self):
         self.profiles = []
 
-    def init(*_): pass
+    def init(*_):  # pylint: disable=no-method-argument
+        pass
 
-    def save(self, data: np.ndarray, step: int, name: str):
+    def save(self, data: np.ndarray, step: int, name: str):  # pylint: disable=unused-argument
         if name == "qv_env":
             self.profiles.append({"qv_env": np.mean(data, axis=0)})
 

@@ -2,20 +2,20 @@
 import struct
 import numpy as np
 import pytest
+from PySDM_examples.Berry_1967.settings import Settings
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.coalescence_kernels import Golovin, Geometric, Electric, Hydrodynamic
-from PySDM_examples.Berry_1967.settings import Settings
 # noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 
 
-@pytest.mark.parametrize('croupier', ['local', 'global'])
-@pytest.mark.parametrize('adaptive', [True, False])
-@pytest.mark.parametrize('kernel', [Geometric(), Electric(), Hydrodynamic()])
+@pytest.mark.parametrize('croupier', ('local', 'global'))
+@pytest.mark.parametrize('adaptive', (True, False))
+@pytest.mark.parametrize('kernel', (Geometric(), Electric(), Hydrodynamic()))
 # pylint: disable=redefined-outer-name
 def test_coalescence(backend, kernel, croupier, adaptive):
     if backend == ThrustRTC and croupier == 'local':  # TODO #358

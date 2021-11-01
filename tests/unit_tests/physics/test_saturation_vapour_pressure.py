@@ -14,17 +14,17 @@ def test_saturation_vapour_pressures(plot=False):
     temperature = np.linspace(-.2, .4)
 
     # Plot
+    pylab.axhline(const.p_tri, label='triple point', color='red')
+    pylab.axvline(const.T_tri - const.T0, color='red')
+    for key, val in formulae.items():
+        for name, func in inspect.getmembers(val.saturation_vapour_pressure):
+            if not name.startswith('__'):
+                pylab.plot(temperature, func(temperature), label=f"{key}::{name}")
+    pylab.grid()
+    pylab.legend()
+    pylab.xlabel('T [C]')
+    pylab.ylabel('p [Pa]')
     if plot:
-        pylab.axhline(const.p_tri, label='triple point', color='red')
-        pylab.axvline(const.T_tri - const.T0, color='red')
-        for k, v in formulae.items():
-            for name, func in inspect.getmembers(v.saturation_vapour_pressure):
-                if not name.startswith('__'):
-                    pylab.plot(temperature, func(temperature), label=f"{k}::{name}")
-        pylab.grid()
-        pylab.legend()
-        pylab.xlabel('T [C]')
-        pylab.ylabel('p [Pa]')
         pylab.show()
 
     # Assert

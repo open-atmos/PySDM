@@ -15,8 +15,8 @@ s_geom = 1.5
 spectrum = Lognormal(n_part, m_mode, s_geom)
 m_range = (.1e-6, 100e-6)
 formulae = Formulae(
-	freezing_temperature_spectrum='Niemand_et_al_2012',
-	seed=const.default_random_seed
+    freezing_temperature_spectrum='Niemand_et_al_2012',
+    seed=const.default_random_seed
 )
 
 

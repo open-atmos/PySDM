@@ -247,7 +247,7 @@ class TestSDMSingleCell:
 
             def __call__(self, storage):
                 CountingRandom.calls += 1
-                super(CountingRandom, self).__call__(storage)
+                super().__call__(storage)
 
         sut.rnd_opt.rnd = CountingRandom(n_sd, seed=44)
         sut.stats_n_substep[:] = n_substeps

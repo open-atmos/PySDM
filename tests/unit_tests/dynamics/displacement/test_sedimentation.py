@@ -17,6 +17,7 @@ class ConstantTerminalVelocity:
 class TestSedimentation:
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_boundary_condition(backend):
         # Arrange
         settings = DisplacementSettings()
@@ -24,7 +25,8 @@ class TestSedimentation:
         settings.sedimentation = True
         sut, particles = settings.get_displacement(backend, scheme='ImplicitInSpace')
 
-        particles.attributes.attributes['terminal velocity'] = ConstantTerminalVelocity(backend, particles)
+        particles.attributes.attributes['terminal velocity'] = \
+            ConstantTerminalVelocity(backend, particles)
         assert sut.precipitation_in_last_step == 0
 
         # Act

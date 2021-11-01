@@ -8,6 +8,7 @@ from PySDM.physics import constants
 
 assert numba.config.DISABLE_JIT is not None
 
+
 class TestDimensionalAnalysis:
 
     @staticmethod

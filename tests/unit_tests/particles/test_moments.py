@@ -1,17 +1,18 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM.physics.spectra import Lognormal
-# noinspection PyUnresolvedReferences
 from ...backends_fixture import backend
 from ..dummy_particulator import DummyParticulator
+
+assert hasattr(backend, '_pytestfixturefunction')
 
 
 class TestMaths:
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_moment_0d(backend):
         # Arrange
         n_part = 100000
@@ -65,8 +66,8 @@ class TestMaths:
         assert discr_mean_T == 300.
         np.testing.assert_approx_equal(discr_mean_T_squared, 300. ** 2, significant=6)
 
-
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_spectrum_moment_0d(backend):
         # Arrange
         n_part = 100000
@@ -85,8 +86,6 @@ class TestMaths:
 
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
 
-        true_mean, true_var = spectrum.stats(moments='mv')
-
         # TODO #217 : add a moments_0 wrapper
         spectrum_moment_0 = particles.backend.Storage.empty(
             (len(v_bins) - 1, 1),
@@ -98,7 +97,7 @@ class TestMaths:
         )
         moment_0 = particles.backend.Storage.empty((1,), dtype=float)
         moments = particles.backend.Storage.empty((1, 1), dtype=float)
-        v_bins_edges= particles.backend.Storage.from_ndarray(v_bins)
+        v_bins_edges = particles.backend.Storage.from_ndarray(v_bins)
 
         # Act
         state.spectrum_moments(

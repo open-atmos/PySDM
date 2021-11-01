@@ -50,9 +50,19 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
 
 class ParticlesWetSizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=False, normalise_by_dv=normalise_by_dv, name='Particles Wet Size Spectrum')
+        super().__init__(
+            radius_bins_edges,
+            dry=False,
+            normalise_by_dv=normalise_by_dv,
+            name='Particles Wet Size Spectrum'
+        )
 
 
 class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
     def __init__(self, radius_bins_edges, normalise_by_dv=False):
-        super().__init__(radius_bins_edges, dry=True, normalise_by_dv=normalise_by_dv, name='Particles Dry Size Spectrum')
+        super().__init__(
+            radius_bins_edges,
+            dry=True,
+            normalise_by_dv=normalise_by_dv,
+            name='Particles Dry Size Spectrum'
+        )
