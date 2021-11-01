@@ -6,8 +6,8 @@ from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 
 
 def thrust(obj):
-    if isinstance(obj, list):
-        result = [thrust(o) for o in obj]
+    if isinstance(obj, tuple):
+        result = tuple(thrust(o) for o in obj)
     elif hasattr(obj, 'data'):
         result = obj.data
     elif isinstance(obj, float):
@@ -29,7 +29,7 @@ def amin(data):
     return trtc.Reduce(data, thrust(np.inf), trtc.Minimum())
 
 
-__row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
+__row_modulo_body = trtc.For(('output', 'divisor', 'length'), "i", '''
         auto d = (int64_t)(i / length);
         output[i] %= divisor[d];
     ''')
@@ -37,10 +37,10 @@ __row_modulo_body = trtc.For(['output', 'divisor', 'length'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def row_modulo(output, divisor):
-    __row_modulo_body.launch_n(output.shape[0], thrust([output, divisor, output.shape[1]]))
+    __row_modulo_body.launch_n(output.shape[0], thrust((output, divisor, output.shape[1])))
 
 
-__floor_body = trtc.For(['arr'], "i", '''
+__floor_body = trtc.For(('arr',), "i", '''
         if (arr[i] >= 0) {
             arr[i] = (int64_t)(arr[i]);
         }
@@ -56,10 +56,10 @@ __floor_body = trtc.For(['arr'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def floor(output):
-    __floor_body.launch_n(output.shape[0], thrust([output]))
+    __floor_body.launch_n(output.shape[0], thrust((output,)))
 
 
-__floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
+__floor_out_of_place_body = trtc.For(('output', 'input_data'), "i", '''
         if (input_data[i] >= 0) {
             output[i] = (int64_t)(input_data[i]);
         }
@@ -74,10 +74,10 @@ __floor_out_of_place_body = trtc.For(['output', 'input_data'], "i", '''
 
 @nice_thrust(**NICE_THRUST_FLAGS)
 def floor_out_of_place(output, input_data):
-    __floor_out_of_place_body.launch_n(output.shape[0], thrust([output, input_data]))
+    __floor_out_of_place_body.launch_n(output.shape[0], thrust((output, input_data)))
 
 
-__multiply_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
+__multiply_elementwise_body = trtc.For(('output', 'multiplier'), "i", '''
         output[i] *= multiplier[i];
     ''')
 
@@ -92,10 +92,10 @@ def multiply(output, multiplier):
         loop = __multiply_elementwise_body
     else:
         loop = __multiply_body
-    loop.launch_n(output.shape[0], thrust([output, multiplier]))
+    loop.launch_n(output.shape[0], thrust((output, multiplier)))
 
 
-__truediv_elementwise_body = trtc.For(['output', 'multiplier'], "i", '''
+__truediv_elementwise_body = trtc.For(('output', 'multiplier'), "i", '''
         output[i] /= multiplier[i];
     ''')
 
@@ -110,7 +110,7 @@ def truediv(output, multiplier):
         loop = __truediv_elementwise_body
     else:
         loop = __truediv_body
-    loop.launch_n(output.shape[0], thrust([output, multiplier]))
+    loop.launch_n(output.shape[0], thrust((output, multiplier)))
 
 
 __multiply_out_of_place_elementwise_body = trtc.For(
@@ -136,7 +136,7 @@ def multiply_out_of_place(output, multiplicand, multiplier):
         loop = __multiply_out_of_place_body
     else:
         raise NotImplementedError()
-    loop.launch_n(output.shape[0], thrust([output, multiplicand, multiplier]))
+    loop.launch_n(output.shape[0], thrust((output, multiplicand, multiplier)))
 
 
 __divide_out_of_place_elementwise_body = trtc.For(
@@ -154,7 +154,7 @@ def divide_out_of_place(output, dividend, divisor):
         loop = __divide_out_of_place_elementwise_body
     else:
         raise NotImplementedError()
-    loop.launch_n(output.shape[0], thrust([output, dividend, divisor]))
+    loop.launch_n(output.shape[0], thrust((output, dividend, divisor)))
 
 
 __sum_out_of_place_elementwise_body = trtc.For(
@@ -172,7 +172,7 @@ def sum_out_of_place(output, a, b):
         loop = __sum_out_of_place_elementwise_body
     else:
         raise NotImplementedError()
-    loop.launch_n(output.shape[0], thrust([output, a, b]))
+    loop.launch_n(output.shape[0], thrust((output, a, b)))
 
 
 __power_body = trtc.For(
