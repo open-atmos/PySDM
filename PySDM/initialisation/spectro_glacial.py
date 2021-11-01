@@ -1,4 +1,3 @@
-import pyvinecopulib as pv
 import numpy as np
 from PySDM.initialisation.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const
@@ -28,6 +27,8 @@ class SpectroGlacialSampling:
     def sample(self, n_sd):
         copula = False
         if copula:
+            import pyvinecopulib as pv
+
             simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
                 1 - simulated[:, DIM_TEMP],
