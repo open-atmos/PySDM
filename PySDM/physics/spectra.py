@@ -1,12 +1,12 @@
 """
 Classes representing particle size spectra (based on SciPy.stats logic)
 """
-from scipy.stats import lognorm
-from scipy.stats import expon
 import math
 import numpy as np
+from scipy.stats import lognorm
+from scipy.stats import expon
 from scipy.interpolate import interp1d
-from PySDM.initialisation.spectral_sampling import default_cdf_range
+from ..initialisation.spectral_sampling import default_cdf_range
 
 default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
@@ -24,6 +24,9 @@ class Spectrum:
 
     def pdf(self, x):
         return self.size_distribution(x) / self.norm_factor
+
+    def cdf(self, x):
+        return self.distribution.cdf(x, *self.distribution_params)
 
     def stats(self, moments):
         result = self.distribution.stats(*self.distribution_params, moments)
@@ -60,8 +63,19 @@ class Lognormal(Spectrum):
     def m_mode(self):
         return self.distribution_params[2]
 
+    @property
+    def median(self):
+        return self.m_mode
+
+    @property
+    def geometric_mean(self):
+        return self.s_geom
+
     def __str__(self):
-        return f"{self.__class__.__name__}:(N={self.norm_factor}, m_mode={self.m_mode}, s_geom={self.s_geom})"
+        return f"{self.__class__.__name__}:"\
+               f" (N={self.norm_factor:.3g},"\
+               f" m_mode={self.m_mode:.3g},"\
+               f" s_geom={self.s_geom:.3g})"
 
 
 class TopHat:

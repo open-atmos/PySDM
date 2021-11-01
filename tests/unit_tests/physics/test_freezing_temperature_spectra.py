@@ -46,3 +46,7 @@ def test_freezing_temperature_spectra(model, plot=False):
     np.testing.assert_approx_equal(np.sum(pdf * dT), 1, significant=3)
     np.testing.assert_approx_equal(cdf[0]+1, 1, significant=3)
     np.testing.assert_approx_equal(cdf[-1], 1, significant=3)
+
+    if hasattr(formulae.freezing_temperature_spectrum, 'invcdf'):
+        invcdf = formulae.freezing_temperature_spectrum.invcdf(cdf, A)
+        np.testing.assert_allclose(invcdf, T)
