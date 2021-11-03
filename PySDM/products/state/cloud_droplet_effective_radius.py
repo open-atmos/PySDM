@@ -25,13 +25,15 @@ class CloudDropletEffectiveRadius(MomentProduct):
 
     def get(self):
         tmp = np.empty_like(self.buffer)
-        self.download_moment_to_buffer('volume', rank=2/3,
-                                       filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                                                     self.formulae.trivia.volume(self.radius_range[1])))
+        self.download_moment_to_buffer(
+            'volume', rank=2/3,
+            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                          self.formulae.trivia.volume(self.radius_range[1])))
         tmp[:] = self.buffer[:]
-        self.download_moment_to_buffer('volume', rank=1,
-                                       filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                                                     self.formulae.trivia.volume(self.radius_range[1])))
+        self.download_moment_to_buffer(
+            'volume', rank=1,
+            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                          self.formulae.trivia.volume(self.radius_range[1])))
         CloudDropletEffectiveRadius.__get_impl(self.buffer, tmp)
         const.convert_to(self.buffer, const.si.micrometre)
         return self.buffer

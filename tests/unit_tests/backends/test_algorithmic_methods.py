@@ -48,15 +48,29 @@ class TestAlgorithmicMethods:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected_dt_left, expected_n_substep", [
-            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10., (True, False), (9.,), (1,)),
-            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., .1, (True, False), (9.9,), (1,)),
-            ((0.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10., (False, True), (0.,), (1,)),
-            ((10.,), (0, 1), (440, 44), (0, 0), (10.,), 10., 10., (True, False), (0.,), (1,)),
-            ((.5, 6), (0, 1, 2, 3, 4), (44, 44, 22, 33, 11), (0, 0, 0, 1, 1), (10., 10), 10., 10., (True, False, False, True, False), (0., 5.), (1, 1)),
-        ])
+        "gamma, idx, n, cell_id, dt_left, dt, dt_max, "
+        "is_first_in_pair, "
+        "expected_dt_left, expected_n_substep", (
+            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10.,
+             (True, False),
+             (9.,), (1,)),
+            ((10.,), (0, 1), (44, 44), (0, 0), (10.,), 10., .1,
+             (True, False),
+             (9.9,), (1,)),
+            ((0.,), (0, 1), (44, 44), (0, 0), (10.,), 10., 10.,
+             (False, True),
+             (0.,), (1,)),
+            ((10.,), (0, 1), (440, 44), (0, 0), (10.,), 10., 10.,
+             (True, False),
+             (0.,), (1,)),
+            ((.5, 6), (0, 1, 2, 3, 4), (44, 44, 22, 33, 11), (0, 0, 0, 1, 1), (10., 10), 10., 10.,
+             (True, False, False, True, False),
+             (0., 5.), (1, 1)),
+        ))
     # pylint: disable=redefined-outer-name
-    def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max, is_first_in_pair, expected_dt_left, expected_n_substep):
+    def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max,
+                                is_first_in_pair,
+                                expected_dt_left, expected_n_substep):
         # Arrange
         _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
         _idx = make_Index(backend).from_ndarray(np.asarray(idx))
@@ -70,14 +84,17 @@ class TestAlgorithmicMethods:
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range, _is_first_in_pair, _n_substep, _dt_min)
+        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range,
+                                   _is_first_in_pair,
+                                   _n_substep, _dt_min)
 
         # Assert
         np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected_dt_left))
         expected_gamma = np.empty_like(np.asarray(gamma))
         for i in range(len(idx)):
             if is_first_in_pair[i]:
-                expected_gamma[i // 2] = (dt - np.asarray(expected_dt_left[cell_id[i]])) / dt * np.asarray(gamma)[
-                    i // 2]
+                expected_gamma[i // 2] = (
+                     dt - np.asarray(expected_dt_left[cell_id[i]])
+                 ) / dt * np.asarray(gamma)[i // 2]
         np.testing.assert_array_almost_equal(_gamma.to_ndarray(), expected_gamma)
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))

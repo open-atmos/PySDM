@@ -20,10 +20,12 @@ class WaterMixingRatio(MomentProduct):
         self.radius_range = None
 
     def get(self):  # TODO #217
-        self.download_moment_to_buffer('volume', rank=0, filter_range=self.volume_range, filter_attr='volume')
+        self.download_moment_to_buffer('volume', rank=0,
+                                       filter_range=self.volume_range, filter_attr='volume')
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer('volume', rank=1, filter_range=self.volume_range, filter_attr='volume')
+        self.download_moment_to_buffer('volume', rank=1,
+                                       filter_range=self.volume_range, filter_attr='volume')
         result = self.buffer.copy()
         result[:] *= const.rho_w
         result[:] *= conc

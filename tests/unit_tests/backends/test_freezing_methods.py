@@ -38,8 +38,8 @@ class TestFreezingMethods:
         total_time = 2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
 
         # dummy (but must-be-set) values
-        vol = 44  # just to enable sign flipping (ice water uses negative volumes), actual value does not matter
-        dv = 666  # products use concentration, just dividing there and multiplying back here, actual value does not matter
+        vol = 44  # for sign flip (ice water has negative volumes), value does not matter
+        dv = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         hgh = lambda t: np.exp(-0.8 * rate * (t - total_time / 10))
         low = lambda t: np.exp(-1.2 * rate * (t + total_time / 10))

@@ -31,7 +31,9 @@ class EventRate(Product):
         if self.timestep_count == 0:
             return self.event_count
         else:
-            self.event_count[:] /= (self.timestep_count * self.particulator.dt * self.particulator.mesh.dv)
+            self.event_count[:] /= (
+                    self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            )
             self.download_to_buffer(self.particulator.environment['rhod'])
             self.event_count[:] /= self.buffer[:]
             self.buffer[:] = self.event_count[:]

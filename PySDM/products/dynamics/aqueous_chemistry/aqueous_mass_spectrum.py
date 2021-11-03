@@ -15,15 +15,17 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
         )
         self.key = key
         self.dry_radius_bins_edges = dry_radius_bins_edges
-        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.gram / si.mole
+        self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.g / si.mole
         self.specific = specific
 
     def register(self, builder):
         builder.request_attribute('dry volume')
         builder.request_attribute(f'moles_{self.key}')
 
-        dry_volume_bins_edges = builder.particulator.formulae.trivia.volume(self.dry_radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(dry_volume_bins_edges)
+        dry_volume_bins_edges = builder.particulator.formulae.trivia.volume(
+            self.dry_radius_bins_edges)
+        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(
+            dry_volume_bins_edges)
 
         super().register(builder)
 
@@ -31,15 +33,19 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 
     def get(self):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(attr=f'moles_{self.key}', rank=1, filter_attr='dry volume')
+        self.recalculate_spectrum_moment(
+            attr=f'moles_{self.key}',
+            rank=1,
+            filter_attr='dry volume'
+        )
 
         for i in range(vals.shape[1]):
             self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
             vals[:, i] = self.buffer.ravel()
             self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] *= self.buffer.ravel()
-
-        vals *= self.molar_mass / np.diff(np.log10(2 * self.dry_radius_bins_edges)) / self.particulator.mesh.dv
+        d_log10_diameter = np.diff(np.log10(2 * self.dry_radius_bins_edges))
+        vals *= self.molar_mass / d_log10_diameter / self.particulator.mesh.dv
         convert_to(vals, si.ug)
 
         if self.specific:

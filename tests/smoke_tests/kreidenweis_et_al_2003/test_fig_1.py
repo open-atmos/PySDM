@@ -46,7 +46,10 @@ class TestFig1:
                     np.asarray(example_output[f'gas_{key}_ppb']),
                     np.asarray(example_output['t']) - Z_CB * si.s, label='gas')
                 pyplot.plot(
-                    np.asarray(example_output[f'aq_{key}_ppb']) + np.asarray(example_output[f'gas_{key}_ppb']),
+                    (
+                        np.asarray(example_output[f'aq_{key}_ppb']) +
+                        np.asarray(example_output[f'gas_{key}_ppb'])
+                    ),
                     np.asarray(example_output['t']) - Z_CB * si.s, label='sum')
                 pyplot.legend()
                 pyplot.xlabel(key + ' [ppb]')

@@ -6,7 +6,10 @@ class RhodThdQv:
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
     def T(rhod, thd):
-        return thd * power(rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd))
+        return thd * power(
+            rhod * thd / const.p1000 * const.Rd,
+            const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
+        )
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
@@ -27,7 +30,11 @@ class RhodThdQv:
 
     @staticmethod
     def rho_d(p, qv, theta_std):
-        return p * (1 - 1 / (1 + const.eps / qv)) / (power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std)
+        return p * (
+                1 - 1 / (1 + const.eps / qv)
+        ) / (
+                power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+        )
 
     @staticmethod
     def rho_of_rhod_qv(rhod, qv):

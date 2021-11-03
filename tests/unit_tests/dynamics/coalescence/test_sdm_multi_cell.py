@@ -40,4 +40,7 @@ class TestSDMMultiCell:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(cell_id, particulator.attributes['cell id'].to_ndarray(raw=True))
+        np.testing.assert_array_equal(
+            cell_id,
+            particulator.attributes['cell id'].to_ndarray(raw=True)
+        )

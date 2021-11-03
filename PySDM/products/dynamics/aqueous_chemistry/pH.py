@@ -29,10 +29,11 @@ class pH(MomentProduct):
         super().register(builder)
 
     def get(self):
-        self.download_moment_to_buffer(self.attr, rank=1,
-                                       filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                                                     self.formulae.trivia.volume(self.radius_range[1])),
-                                       weighting_attribute='volume', weighting_rank=self.weighting_rank)
+        self.download_moment_to_buffer(
+            self.attr, rank=1,
+            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                          self.formulae.trivia.volume(self.radius_range[1])),
+            weighting_attribute='volume', weighting_rank=self.weighting_rank)
         if self.attr == 'conc_H':
             self.buffer[:] = self.formulae.trivia.H2pH(self.buffer[:])
         elif self.attr == 'pH':

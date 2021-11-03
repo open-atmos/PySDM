@@ -40,7 +40,9 @@ class CompressedFilm_Ruehl:
         A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / nu_org) # m^2 = A*f_surf
 
         # solve implicitly for fraction of organic at surface
-        f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T))
+        f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(
+            ((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T)
+        )
         sol = optimize.root_scalar(f, bracket=[0,1])
         f_surf = sol.root
 

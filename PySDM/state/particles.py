@@ -29,8 +29,9 @@ class Particles:
 
         self.cell_idx = self.particulator.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = self.particulator.Storage.from_ndarray(cell_start)
-        self.__cell_caretaker = self.particulator.bck.make_cell_caretaker(self.__idx, self.__cell_start,
-                                                                          scheme=particulator.sorting_scheme)
+        self.__cell_caretaker = self.particulator.bck.make_cell_caretaker(
+            self.__idx, self.__cell_start, scheme=particulator.sorting_scheme
+        )
         self.__sorted = False
         self.attributes = attributes
 
@@ -107,9 +108,12 @@ class Particles:
             self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.particulator.bck.sort_within_pair_by_attr(self.__idx, is_first_in_pair, self[attr_name])
+        self.particulator.bck.sort_within_pair_by_attr(
+            self.__idx, is_first_in_pair, self[attr_name])
 
-    def moments(self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-np.inf, np.inf),
+    def moments(self, moment_0, moments,
+                specs: dict,
+                attr_name='volume', attr_range=(-np.inf, np.inf),
                 weighting_attribute='volume', weighting_rank=0):
         attr_data, ranks = [], []
         for attr in specs:
@@ -171,20 +175,23 @@ class Particles:
                 attr.mark_updated()
 
     def adaptive_sdm_end(self, dt_left):
-        return self.particulator.bck.adaptive_sdm_end(dt_left, self.particulator.attributes.cell_start)
+        return self.particulator.bck.adaptive_sdm_end(
+            dt_left, self.particulator.attributes.cell_start)
 
     def has_attribute(self, attr):
         return attr in self.attributes
 
     def remove_precipitated(self) -> float:
-        res = self.particulator.bck.flag_precipitated(self['cell origin'], self['position in cell'],
-                                                      self['volume'], self['n'],
-                                                      self.__idx, self.SD_num, self.__healthy_memory)
+        res = self.particulator.bck.flag_precipitated(
+            self['cell origin'], self['position in cell'],
+            self['volume'], self['n'],
+            self.__idx, self.SD_num, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
 
-    def oxidation(self, kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+    def oxidation(self,
+                  kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
         self.particulator.bck.oxidation(
             n_sd=self.particulator.n_sd,
             cell_ids=self['cell id'],

@@ -33,9 +33,15 @@ def test_final_state(croupier, backend):
     particulator.croupier = croupier
 
     attributes['cell id'] = np.array((n_sd,), dtype=int)
-    cell_origin_np = np.concatenate([np.random.randint(0, x, n_sd), np.random.randint(0, y, n_sd)]).reshape((2, -1))
+    cell_origin_np = np.concatenate([
+        np.random.randint(0, x, n_sd),
+        np.random.randint(0, y, n_sd)
+    ]).reshape((2, -1))
     attributes['cell origin'] = cell_origin_np
-    position_in_cell_np = np.concatenate([np.random.rand(n_sd), np.random.rand(n_sd)]).reshape((2, -1))
+    position_in_cell_np = np.concatenate([
+        np.random.rand(n_sd),
+        np.random.rand(n_sd)
+    ]).reshape((2, -1))
     attributes['position in cell'] = position_in_cell_np
     particulator.build(attributes)
 
@@ -45,4 +51,5 @@ def test_final_state(croupier, backend):
     _ = particulator.attributes.cell_start
 
     # Assert
-    assert (np.diff(particulator.attributes['cell id'][particulator.attributes._Particles__idx]) >= 0).all()
+    diff = np.diff(particulator.attributes['cell id'][particulator.attributes._Particles__idx])
+    assert (diff >= 0).all()

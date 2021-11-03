@@ -75,8 +75,10 @@ class TestExplicitEulerWithInterpolation:
         sut, particulator = settings.get_displacement(backend, scheme='ExplicitInSpace')
 
         # Act
-        sut.calculate_displacement(sut.displacement, sut.courant,
-                                   particulator.attributes['cell origin'], particulator.attributes['position in cell'])
+        sut.calculate_displacement(
+            sut.displacement, sut.courant,
+            particulator.attributes['cell origin'], particulator.attributes['position in cell']
+        )
 
         # Assert
         np.testing.assert_equal(
@@ -122,8 +124,11 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         for d in range(2):
             assert state['cell origin'][d, droplet_id] == settings.positions[d][droplet_id] + 1
-            assert state['position in cell'][d, droplet_id] == (state['position in cell'][d, droplet_id]
-                                                                - np.floor(state['position in cell'][d, droplet_id]))
+            assert state['position in cell'][d, droplet_id] == (
+                state['position in cell'][d, droplet_id]
+                -
+                np.floor(state['position in cell'][d, droplet_id])
+            )
 
     @staticmethod
     def test_boundary_condition(backend):

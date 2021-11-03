@@ -45,10 +45,11 @@ def test_r_wet_init(constants, r_dry, plot=False):
 
     # Plot
     r_wet = np.logspace(np.log(.9*r_dry), np.log(10 * si.nm), base=np.e, num=100)
-    sigma = Env.particulator.formulae.surface_tension.sigma(np.nan,
-                                                            Env.particulator.formulae.trivia.volume(r_wet),
-                                                            Env.particulator.formulae.trivia.volume(r_dry),
-                                                            f_org)
+    sigma = Env.particulator.formulae.surface_tension.sigma(
+        np.nan,
+        Env.particulator.formulae.trivia.volume(r_wet),
+        Env.particulator.formulae.trivia.volume(r_dry),
+        f_org)
     RH_eq = Env.particulator.formulae.hygroscopicity.RH_eq(r_wet, T, kappa, r_dry ** 3, sigma)
     pyplot.plot(
         r_wet / si.nm,

@@ -7,14 +7,15 @@ from PySDM_examples.Morrison_and_Grabowski_2008 import ColdCumulus
 
 class FlowFieldAsserts(AbstractContextManager):
     def __init__(self, simulation):
-        self.simulation = simulation
+        self.particulator = simulation.particulator
         self.panic = None
 
     def set_percent(self, percent):
         if percent == 0:
             return
         advector = None
-        for solver in self.simulation.particulator.dynamics['EulerianAdvection'].solvers.mpdatas.values():
+        solvers = self.particulator.dynamics['EulerianAdvection'].solvers.mpdatas.values()
+        for solver in solvers:
             assert advector is None or advector is solver.advector
             advector = solver.advector
         np.testing.assert_allclose(advector.get_component(1)[:, 0], 0)

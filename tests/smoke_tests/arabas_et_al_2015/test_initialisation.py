@@ -42,14 +42,19 @@ def test_initialisation(backend, plot=False):
 
     for i in range(len(histogram_dry)):
         particulator.attributes.moments(
-            moment_0, moments, specs={}, attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1]))
+            moment_0, moments, specs={},
+            attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1])
+        )
         moment_0.download(tmp)
-        histogram_dry[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
+        histogram_dry[i, :] = tmp.reshape(
+            settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
         particulator.attributes.moments(
-            moment_0, moments, specs={}, attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
+            moment_0, moments, specs={},
+            attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
-        histogram_wet[i, :] = tmp.reshape(settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
+        histogram_wet[i, :] = tmp.reshape(
+            settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
     # Plot
     if plot:
