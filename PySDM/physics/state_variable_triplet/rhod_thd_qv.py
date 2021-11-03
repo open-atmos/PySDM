@@ -7,8 +7,7 @@ class RhodThdQv:
     @staticmethod
     def T(rhod, thd):
         return thd * power(
-            rhod * thd / const.p1000 * const.Rd,
-            const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
+            rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
         )
 
     # A15 in libcloudph++ 1.0 paper
