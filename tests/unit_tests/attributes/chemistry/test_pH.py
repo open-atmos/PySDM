@@ -8,7 +8,7 @@ from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
-from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
+from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods, _K
 from PySDM.dynamics import aqueous_chemistry
 
 
@@ -35,13 +35,15 @@ class Test_pH:
             C_IV=np.zeros(1),
             S_IV=np.zeros(1),
             S_VI=np.zeros(1),
-            K_HNO3=eqs['K_HNO3'].data,
-            K_HCO3=eqs['K_HCO3'].data,
-            K_HSO3=eqs['K_HSO3'].data,
-            K_HSO4=eqs['K_HSO4'].data,
-            K_CO2=eqs['K_CO2'].data,
-            K_NH3=eqs['K_NH3'].data,
-            K_SO2=eqs['K_SO2'].data,
+            K=_K(
+                HNO3=eqs['K_HNO3'].data,
+                HCO3=eqs['K_HCO3'].data,
+                HSO3=eqs['K_HSO3'].data,
+                HSO4=eqs['K_HSO4'].data,
+                CO2=eqs['K_CO2'].data,
+                NH3=eqs['K_NH3'].data,
+                SO2=eqs['K_SO2'].data
+            ),
             cell_id=np.zeros(1, dtype=int),
             # output
             do_chemistry_flag=np.empty(1),
@@ -106,13 +108,15 @@ class Test_pH:
             C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
             S_IV=np.full(1, init_conc['H2SO3(aq)'] * 1e3),
             S_VI=np.full(1, init_conc['HSO4-'] * 1e3),
-            K_HNO3=eqs['K_HNO3'].data,
-            K_HCO3=eqs['K_HCO3'].data,
-            K_HSO3=eqs['K_HSO3'].data,
-            K_HSO4=eqs['K_HSO4'].data,
-            K_CO2=eqs['K_CO2'].data,
-            K_NH3=eqs['K_NH3'].data,
-            K_SO2=eqs['K_SO2'].data,
+            K=_K(
+                HNO3=eqs['K_HNO3'].data,
+                HCO3=eqs['K_HCO3'].data,
+                HSO3=eqs['K_HSO3'].data,
+                HSO4=eqs['K_HSO4'].data,
+                CO2=eqs['K_CO2'].data,
+                NH3=eqs['K_NH3'].data,
+                SO2=eqs['K_SO2'].data
+            ),
             cell_id=np.zeros(1, dtype=int),
             # output
             do_chemistry_flag=np.empty(1),
