@@ -8,7 +8,10 @@ class PhysicsMethods:
     def __init__(self):
         phys = self.formulae
 
-        self._temperature_pressure_RH_body = trtc.For(["rhod", "thd", "qv", "T", "p", "RH"], "i", f'''
+        self._temperature_pressure_RH_body = trtc.For(
+            ("rhod", "thd", "qv", "T", "p", "RH"),
+            "i",
+            f'''
             T[i] = {phys.state_variable_triplet.T.c_inline(
                 rhod="rhod[i]", thd="thd[i]")};
             p[i] = {phys.state_variable_triplet.p.c_inline(
@@ -18,7 +21,7 @@ class PhysicsMethods:
             )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T="T[i] - const.T0"
             )};
-        '''.replace("real_type", PrecisionResolver.get_C_type()))
+            '''.replace("real_type", PrecisionResolver.get_C_type()))
 
         self.__explicit_euler_body = trtc.For(("y", "dt", "dy_dt"), "i", f'''
             y[i] = {phys.trivia.explicit_euler.c_inline(y="y[i]", dt="dt", dy_dt="dy_dt")};

@@ -30,7 +30,12 @@ class Storage:
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
             result = Storage(result_data, result_shape, self.dtype)
-        elif isinstance(item, tuple) and dim == 2 and isinstance(item[0], int) and isinstance(item[1], slice):
+        elif (
+            dim == 2 and
+            isinstance(item, tuple) and
+            isinstance(item[0], int) and
+            isinstance(item[1], slice)
+        ):
             assert item[1].start is None or item[1].start == 0
             assert item[1].stop is None or item[1].stop == self.shape[1]
             assert item[1].step is None or item[1].step == 1
@@ -41,7 +46,12 @@ class Storage:
         return result
 
     def __setitem__(self, key, value):
-        if not (isinstance(key, slice) and key.start is None and key.stop is None and key.step is None):
+        if not (
+            isinstance(key, slice) and
+            key.start is None and
+            key.stop is None and
+            key.step is None
+        ):
             raise NotImplementedError()
         if hasattr(value, 'data') and hasattr(value, 'shape') and len(value.shape) != 0:
             if isinstance(value, np.ndarray):

@@ -11,10 +11,10 @@ from numba.np.arrayobj import basic_indexing, make_array, normalize_indices
 __all__ = ["atomic_add", "atomic_sub", "atomic_max", "atomic_min"]
 
 
-def atomic_rmw(context, builder, op, arrayty, val, ptr):
+def atomic_rmw(context, builder, operation, arrayty, val, ptr):
     assert arrayty.aligned  # We probably have to have aligned arrays.
     dataval = context.get_value_as_data(builder, arrayty.dtype, val)
-    return builder.atomic_rmw(op, ptr, dataval, "monotonic")
+    return builder.atomic_rmw(operation, ptr, dataval, "monotonic")
 
 
 def declare_atomic_array_op(iop, uop, fop):
@@ -62,16 +62,16 @@ def declare_atomic_array_op(iop, uop, fop):
 
             # Store source value the given location
             val = context.cast(builder, val, valty, aryty.dtype)
-            op = None
+            operation = None
             if isinstance(aryty.dtype, types.Integer) and aryty.dtype.signed:
-                op = iop
+                operation = iop
             elif isinstance(aryty.dtype, types.Integer) and not aryty.dtype.signed:
-                op = uop
+                operation = uop
             elif isinstance(aryty.dtype, types.Float):
-                op = fop
-            if op is None:
+                operation = fop
+            if operation is None:
                 raise TypeError("Atomic operation not supported on " + str(aryty))
-            return atomic_rmw(context, builder, op, aryty, val, dataptr)
+            return atomic_rmw(context, builder, operation, aryty, val, dataptr)
 
         _ = func_impl
 

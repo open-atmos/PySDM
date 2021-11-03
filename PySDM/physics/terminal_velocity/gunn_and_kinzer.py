@@ -43,7 +43,9 @@ class RogersYau:
     """
     Rogers & Yau, equations: (8.5), (8.6), (8.8)
     """
-    def __init__(self, particles, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None):
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -53,8 +55,11 @@ class RogersYau:
         self.medium_r_limit = medium_r_limit or 600 * si.um
 
     def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(output.data, radius.data, self.small_k, self.medium_k, self.large_k,
-                                                 self.small_r_limit, self.medium_r_limit)
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )
 
 
 # TODO #348 implement in backend logic
@@ -93,7 +98,9 @@ class TpDependent:
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
-        c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
+        c8 = np.asarray(
+            (6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208)
+        )
 
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f8(r):

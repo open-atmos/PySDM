@@ -18,7 +18,7 @@ cppython = {
     "&&": "and",
     "! ": "not ",
     "&": "",
-    "(int64_t)": "np.int64",  # TODO #324 unit test depicting what fails when this is changed to int16
+    "(int64_t)": "np.int64",  # TODO #324 test depicting failure when set to int16
     "(double)": "np.float64",
     "(float)": "np.float32",
     "return;": "continue",
@@ -142,7 +142,10 @@ def extract_struct_defs(cpp: str) -> (str, str):
         names.append(re.match(r'(struct )(.*)(:)', struct)[2])
 
     for i, struct in enumerate(structs):
-        structs[i] = struct.replace('static __device__ ', f'\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_')
+        structs[i] = struct.replace(
+            'static __device__ ',
+            f'\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_'
+        )
 
     return cpp, '\n'.join(structs)
 

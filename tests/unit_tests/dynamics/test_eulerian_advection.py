@@ -30,5 +30,9 @@ class TestEulerianAdvection:
         sut()
 
         # Assert
-        np.testing.assert_array_equal(env.get_qv(), env.get_predicted('qv').to_ndarray().reshape(grid))
-        np.testing.assert_array_equal(env.get_thd(), env.get_predicted('thd').to_ndarray().reshape(grid))
+        np.testing.assert_array_equal(
+            env.get_qv(),
+            env.get_predicted('qv').to_ndarray().reshape(grid))
+        np.testing.assert_array_equal(
+            env.get_thd(),
+            env.get_predicted('thd').to_ndarray().reshape(grid))

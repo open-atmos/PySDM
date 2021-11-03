@@ -57,15 +57,22 @@ class Coalescence:
             self.dt_coal_range = (self.dt_coal_range[0], self.particulator.dt)
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
-        self.kernel_temp = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
-        self.norm_factor_temp = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
-        self.prob = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
-        self.is_first_in_pair = self.particulator.PairIndicator(self.particulator.n_sd)
-        self.dt_left = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        self.kernel_temp = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float)
+        self.norm_factor_temp = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float)
+        self.prob = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float)
+        self.is_first_in_pair = self.particulator.PairIndicator(
+            self.particulator.n_sd)
+        self.dt_left = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float)
 
-        self.stats_n_substep = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=int)
+        self.stats_n_substep = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=int)
         self.stats_n_substep[:] = 0 if self.adaptive else self.__substeps
-        self.stats_dt_min = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        self.stats_dt_min = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float)
         self.stats_dt_min[:] = np.nan
 
         self.rnd_opt.register(builder)
@@ -74,8 +81,10 @@ class Coalescence:
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
 
-        self.collision_rate = self.particulator.Storage.from_ndarray(np.zeros(self.particulator.mesh.n_cell, dtype=int))
-        self.collision_rate_deficit = self.particulator.Storage.from_ndarray(np.zeros(self.particulator.mesh.n_cell, dtype=int))
+        self.collision_rate = self.particulator.Storage.from_ndarray(
+            np.zeros(self.particulator.mesh.n_cell, dtype=int))
+        self.collision_rate_deficit = self.particulator.Storage.from_ndarray(
+            np.zeros(self.particulator.mesh.n_cell, dtype=int))
 
     def __call__(self):
         if self.enable:
@@ -98,9 +107,11 @@ class Coalescence:
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
         self.compute_probability(self.prob, self.is_first_in_pair)
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        self.particulator.attributes.coalescence(gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
+        self.particulator.attributes.coalescence(
+            gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         if self.adaptive:
-            self.particulator.attributes.cut_working_length(self.particulator.attributes.adaptive_sdm_end(self.dt_left))
+            self.particulator.attributes.cut_working_length(
+                self.particulator.attributes.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.particulator.attributes.permutation(u01, self.croupier == 'local')

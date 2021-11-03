@@ -54,7 +54,15 @@ def r_wet_init(r_dry: np.ndarray, environment,
 
             if not a < b:
                 warn(msg="dry radius larger than critical radius", file=__file__,
-                     context=("i", i, "r_d", r_dry[i], "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
+                     context=(
+                         "i", i,
+                         "r_d", r_dry[i],
+                         "T", T[cid],
+                         "RH", RH[cid],
+                         "f_org", f_org[i],
+                         "kappa", kappa[i]
+                     )
+                 )
                 iters[i] = -1
                 continue
 
@@ -74,11 +82,21 @@ def r_wet_init(r_dry: np.ndarray, environment,
                 continue
             fb = minfun(b, *args)
 
-            r_wet[i], iters[i] = toms748_solve(minfun, args, a, b, fa, fb, rtol=rtol, max_iter=max_iters,
-                                               within_tolerance=within_tolerance)
+            r_wet[i], iters[i] = toms748_solve(
+                minfun, args, a, b, fa, fb,
+                rtol=rtol, max_iter=max_iters, within_tolerance=within_tolerance
+            )
             if iters[i] == -1:
                 warn(msg="failed to find wet radius for particle", file=__file__,
-                     context=("i", i, "r_d", r_dry[i], "T", T[cid], "RH", RH[cid], "f_org", f_org[i], "kappa", kappa[i]))
+                     context=(
+                         "i", i,
+                         "r_d", r_dry[i],
+                         "T", T[cid],
+                         "RH", RH[cid],
+                         "f_org", f_org[i],
+                         "kappa", kappa[i]
+                     )
+                 )
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)

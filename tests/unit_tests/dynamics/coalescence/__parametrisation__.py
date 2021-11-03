@@ -39,11 +39,16 @@ def insert_zeros(array):
     return result
 
 
-def get_dummy_particulator_and_sdm(backend, n_length, optimized_random=False, environment=None, substeps=1):
+def get_dummy_particulator_and_sdm(backend, n_length,
+                                   optimized_random=False, environment=None, substeps=1):
     particulator = DummyParticulator(backend, n_sd=n_length)
     particulator.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
-    sdm = Coalescence(StubKernel(particulator.backend), optimized_random=optimized_random, substeps=substeps,
-                      adaptive=False)
+    sdm = Coalescence(
+        StubKernel(particulator.backend),
+        optimized_random=optimized_random,
+        substeps=substeps,
+        adaptive=False
+    )
     sdm.register(particulator)
     return particulator, sdm
 

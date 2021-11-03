@@ -19,7 +19,8 @@ class MomentsMethods:
             if (min_x <= x_attr[i] && x_attr[i] < max_x) {
                 atomicAdd((real_type*)&moment_0[cell_id[i]], (real_type)(n[i]));
                 for (auto k = 0; k < n_ranks; k+=1) {
-                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k])));
+                    auto value = n[i] * pow((real_type)(attr_data[i]), (real_type)(ranks[k]));
+                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                }
             }
         '''.replace("real_type", PrecisionResolver.get_C_type()))
@@ -47,7 +48,8 @@ class MomentsMethods:
             for (auto k = 0; k < n_bins; k+=1) {
                 if (x_bins[k] <= x_attr[i] and x_attr[i] < x_bins[k + 1]) {
                     atomicAdd((real_type*)&moment_0[n_cell * k + cell_id[i]], (real_type)(n[i]));
-                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], n[i] * pow((real_type)(attr_data[i]), (real_type)(rank)));
+                    auto value = n[i] * pow((real_type)(attr_data[i]), (real_type)(rank));
+                    atomicAdd((real_type*) &moments[n_cell * k + cell_id[i]], value);
                     break;
                 }
             }

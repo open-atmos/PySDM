@@ -11,7 +11,10 @@ class TestInitialisation:
     @staticmethod
     def simulation_test(var, expected, setup):
         simulation = Simulation(setup)
-        np.testing.assert_approx_equal(simulation.particulator.environment[var].to_ndarray(), expected)
+        np.testing.assert_approx_equal(
+            simulation.particulator.environment[var].to_ndarray(),
+            expected
+        )
 
     @staticmethod
     @pytest.mark.parametrize("settings_idx", range(len(setups)))

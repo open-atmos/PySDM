@@ -19,7 +19,10 @@ class Freezing:
             assert not isinstance(builder.formulae.heterogeneous_ice_nucleation_rate, Null)
             builder.request_attribute("immersed surface area")
             self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
-            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
+            self.rng = self.particulator.Random(
+                self.particulator.n_sd,
+                self.particulator.bck.formulae.seed
+            )
 
     def __call__(self):
         if 'Coalescence' in self.particulator.dynamics:

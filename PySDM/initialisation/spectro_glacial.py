@@ -39,7 +39,9 @@ class SpectroGlacialSampling:
             )
         else:
             simulated = np.empty((n_sd, N_DIMS))
-            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(np.random.random(n_sd))
+            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
+                np.random.random(n_sd)
+            )
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
                 np.random.random(n_sd),
                 simulated[:, DIM_SURF]

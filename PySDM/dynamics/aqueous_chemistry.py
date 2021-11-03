@@ -59,11 +59,14 @@ class AqueousChemistry:
             builder.request_attribute("conc_" + key)
 
         for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
-            self.kinetic_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+            self.kinetic_consts[key] = self.particulator.Storage.empty(
+                self.particulator.mesh.n_cell, dtype=float)
         for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
-            self.equilibrium_consts[key] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+            self.equilibrium_consts[key] = self.particulator.Storage.empty(
+                self.particulator.mesh.n_cell, dtype=float)
         for key in DIFFUSION_CONST:
-            self.dissociation_factors[key] = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
+            self.dissociation_factors[key] = self.particulator.Storage.empty(
+                self.particulator.n_sd, dtype=float)
         self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
     def __call__(self):

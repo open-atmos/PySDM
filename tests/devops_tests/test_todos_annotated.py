@@ -29,7 +29,10 @@ def grep(filepath, regex):
     return res
 
 
-@pytest.fixture(params=findfiles(pathlib.Path(__file__).parent.parent.parent.absolute(), r'.*\.(ipynb|py|txt|yml|m|jl|md)$'))
+@pytest.fixture(params=findfiles(
+    pathlib.Path(__file__).parent.parent.parent.absolute(),
+    r'.*\.(ipynb|py|txt|yml|m|jl|md)$')
+)
 def file(request):
     return request.param
 
@@ -40,7 +43,13 @@ def gh_issues():
     if 'CI' not in os.environ or ('GITHUB_ACTIONS' in os.environ and sys.version_info.minor >= 8):
         try:
             api = GhApi(owner='atmos-cloud-sim-uj', repo='PySDM')
-            pages = paged(api.issues.list_for_repo, owner='atmos-cloud-sim-uj', repo='PySDM', state='all', per_page=100)
+            pages = paged(
+                api.issues.list_for_repo,
+                owner='atmos-cloud-sim-uj',
+                repo='PySDM',
+                state='all',
+                per_page=100
+            )
             for page in pages:
                 for item in page.items:
                     res[item.number] = item.state
@@ -51,7 +60,11 @@ def gh_issues():
 
 # pylint: disable=redefined-outer-name
 def test_todos_annotated(file, gh_issues):
-    if os.path.basename(file) == 'test_todos_annotated.py' or file.endswith("-checkpoint.ipynb") or ".eggs" in file:
+    if (
+        os.path.basename(file) == 'test_todos_annotated.py' or
+        file.endswith("-checkpoint.ipynb") or
+        ".eggs" in file
+    ):
         return
     for line in grep(file, r'.*TODO.*'):
         match = re.search(r'TODO #(\d+)', line)

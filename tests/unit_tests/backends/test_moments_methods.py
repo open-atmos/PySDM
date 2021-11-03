@@ -36,7 +36,8 @@ def test_moments_range(Backend, min_x, max_x, value, expected):
     backend.moments(
         moment_0=moment_0, moments=moments, n=n, attr_data=attr_data,
         cell_id=cell_id, idx=idx, length=length,
-        ranks=ranks, min_x=min_x, max_x=max_x, x_attr=x_attr, weighting_attribute=weighting_attribute,
+        ranks=ranks, min_x=min_x, max_x=max_x, x_attr=x_attr,
+        weighting_attribute=weighting_attribute,
         weighting_rank=weighting_rank
     )
 
