@@ -44,7 +44,9 @@ class SpectralSampling:
             else:
                 self.size_range = [np.nan, np.nan]
                 for i in (0, 1):
-                    result = optimize.root(lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median())
+                    result = optimize.root(
+                        lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median()
+                    )
                     assert result.success
                     self.size_range[i] = result.x
         else:
@@ -284,7 +286,9 @@ class UniformRandom(SpectralSampling):
             else:
                 self.size_range = [np.nan, np.nan]
                 for i in (0, 1):
-                    result = optimize.root(lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median())
+                    result = optimize.root(
+                        lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median()
+                    )
                     assert result.success
                     self.size_range[i] = result.x
         else:

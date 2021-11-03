@@ -33,7 +33,9 @@ import PySDM.physics.constants as const
 class KappaKoehler:
     @staticmethod
     def RH_eq(r, T, kp, rd3, sgm):
-        return exp((2 * sgm / const.Rv / T / const.rho_w) / r) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
+        return exp(
+            (2 * sgm / const.Rv / T / const.rho_w) / r
+        ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
 
     @staticmethod
     def r_cr(kp, rd3, T, sgm):
@@ -62,7 +64,9 @@ class KappaKoehler:
 <pre><code class="python">class KappaKoehler:
     @staticmethod
     def RH_eq(r, T, kp, rd3, sgm):
-        return exp((2 * sgm / const.Rv / T / const.rho_w) / r) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
+        return exp(
+            (2 * sgm / const.Rv / T / const.rho_w) / r
+        ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
 
     @staticmethod
     def r_cr(kp, rd3, T, sgm):
@@ -82,7 +86,9 @@ class KappaKoehler:
 </summary>
 <pre><code class="python">@staticmethod
 def RH_eq(r, T, kp, rd3, sgm):
-    return exp((2 * sgm / const.Rv / T / const.rho_w) / r) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))</code></pre>
+    return exp(
+        (2 * sgm / const.Rv / T / const.rho_w) / r
+    ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler.KappaKoehler.r_cr"><code class="name flex">

@@ -36,7 +36,10 @@ class PhysicsMethods:
     def __init__(self):
         phys = self.formulae
 
-        self._temperature_pressure_RH_body = trtc.For([&#34;rhod&#34;, &#34;thd&#34;, &#34;qv&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;], &#34;i&#34;, f&#39;&#39;&#39;
+        self._temperature_pressure_RH_body = trtc.For(
+            (&#34;rhod&#34;, &#34;thd&#34;, &#34;qv&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
+            &#34;i&#34;,
+            f&#39;&#39;&#39;
             T[i] = {phys.state_variable_triplet.T.c_inline(
                 rhod=&#34;rhod[i]&#34;, thd=&#34;thd[i]&#34;)};
             p[i] = {phys.state_variable_triplet.p.c_inline(
@@ -46,7 +49,7 @@ class PhysicsMethods:
             )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T=&#34;T[i] - const.T0&#34;
             )};
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+            &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
 
         self.__explicit_euler_body = trtc.For((&#34;y&#34;, &#34;dt&#34;, &#34;dy_dt&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             y[i] = {phys.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};
@@ -135,7 +138,10 @@ class PhysicsMethods:
     def __init__(self):
         phys = self.formulae
 
-        self._temperature_pressure_RH_body = trtc.For([&#34;rhod&#34;, &#34;thd&#34;, &#34;qv&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;], &#34;i&#34;, f&#39;&#39;&#39;
+        self._temperature_pressure_RH_body = trtc.For(
+            (&#34;rhod&#34;, &#34;thd&#34;, &#34;qv&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;),
+            &#34;i&#34;,
+            f&#39;&#39;&#39;
             T[i] = {phys.state_variable_triplet.T.c_inline(
                 rhod=&#34;rhod[i]&#34;, thd=&#34;thd[i]&#34;)};
             p[i] = {phys.state_variable_triplet.p.c_inline(
@@ -145,7 +151,7 @@ class PhysicsMethods:
             )} / {phys.saturation_vapour_pressure.pvs_Celsius.c_inline(
                 T=&#34;T[i] - const.T0&#34;
             )};
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
+            &#39;&#39;&#39;.replace(&#34;real_type&#34;, PrecisionResolver.get_C_type()))
 
         self.__explicit_euler_body = trtc.For((&#34;y&#34;, &#34;dt&#34;, &#34;dy_dt&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             y[i] = {phys.trivia.explicit_euler.c_inline(y=&#34;y[i]&#34;, dt=&#34;dt&#34;, dy_dt=&#34;dy_dt&#34;)};

@@ -69,7 +69,8 @@ def make_Index(backend):
                 backend.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
 
         def remove_zero_n_or_flagged(self, indexed_storage):
-            self.length = backend.remove_zero_n_or_flagged(indexed_storage.data, self.data, self.length)
+            self.length = backend.remove_zero_n_or_flagged(
+                indexed_storage.data, self.data, self.length)
 
     return Index</code></pre>
 </details>
@@ -130,7 +131,8 @@ def make_Index(backend):
                 backend.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
 
         def remove_zero_n_or_flagged(self, indexed_storage):
-            self.length = backend.remove_zero_n_or_flagged(indexed_storage.data, self.data, self.length)
+            self.length = backend.remove_zero_n_or_flagged(
+                indexed_storage.data, self.data, self.length)
 
     return Index</code></pre>
 </details>

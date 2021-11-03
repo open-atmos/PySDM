@@ -113,7 +113,9 @@ class FakeThrustRTC:
     @staticmethod
     def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
-            raise ValueError(f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;)
+            raise ValueError(
+                f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
+            )
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
@@ -313,7 +315,9 @@ class FakeThrustRTC:
     @staticmethod
     def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
-            raise ValueError(f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;)
+            raise ValueError(
+                f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
+            )
         vector_out.ndarray[:] = vector_in.ndarray
 
     @staticmethod
@@ -449,7 +453,9 @@ class FakeThrustRTC:
 <pre><code class="python">@staticmethod
 def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
     if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
-        raise ValueError(f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;)
+        raise ValueError(
+            f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
+        )
     vector_out.ndarray[:] = vector_in.ndarray</code></pre>
 </details>
 </dd>

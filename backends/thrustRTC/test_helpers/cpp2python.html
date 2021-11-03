@@ -46,7 +46,7 @@ cppython = {
     &#34;&amp;&amp;&#34;: &#34;and&#34;,
     &#34;! &#34;: &#34;not &#34;,
     &#34;&amp;&#34;: &#34;&#34;,
-    &#34;(int64_t)&#34;: &#34;np.int64&#34;,  # TODO #324 unit test depicting what fails when this is changed to int16
+    &#34;(int64_t)&#34;: &#34;np.int64&#34;,  # TODO #324 test depicting failure when set to int16
     &#34;(double)&#34;: &#34;np.float64&#34;,
     &#34;(float)&#34;: &#34;np.float32&#34;,
     &#34;return;&#34;: &#34;continue&#34;,
@@ -170,7 +170,10 @@ def extract_struct_defs(cpp: str) -&gt; (str, str):
         names.append(re.match(r&#39;(struct )(.*)(:)&#39;, struct)[2])
 
     for i, struct in enumerate(structs):
-        structs[i] = struct.replace(&#39;static __device__ &#39;, f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;)
+        structs[i] = struct.replace(
+            &#39;static __device__ &#39;,
+            f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;
+        )
 
     return cpp, &#39;\n&#39;.join(structs)
 
@@ -286,7 +289,10 @@ def make(self):
         names.append(re.match(r&#39;(struct )(.*)(:)&#39;, struct)[2])
 
     for i, struct in enumerate(structs):
-        structs[i] = struct.replace(&#39;static __device__ &#39;, f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;)
+        structs[i] = struct.replace(
+            &#39;static __device__ &#39;,
+            f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;
+        )
 
     return cpp, &#39;\n&#39;.join(structs)</code></pre>
 </details>

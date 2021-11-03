@@ -41,8 +41,10 @@ class AerosolSpecificConcentration(MomentProduct):
         )
 
     def get(self):
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=0,
-                                       filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)])
+        self.download_moment_to_buffer(
+            &#39;volume&#39;, rank=0,
+            filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)]
+        )
         result = self.buffer.copy()  # TODO #217
         self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
         result[:] /= self.particulator.mesh.dv
@@ -81,8 +83,10 @@ class AerosolSpecificConcentration(MomentProduct):
         )
 
     def get(self):
-        self.download_moment_to_buffer(&#39;volume&#39;, rank=0,
-                                       filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)])
+        self.download_moment_to_buffer(
+            &#39;volume&#39;, rank=0,
+            filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)]
+        )
         result = self.buffer.copy()  # TODO #217
         self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
         result[:] /= self.particulator.mesh.dv
@@ -107,8 +111,10 @@ class AerosolSpecificConcentration(MomentProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get(self):
-    self.download_moment_to_buffer(&#39;volume&#39;, rank=0,
-                                   filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)])
+    self.download_moment_to_buffer(
+        &#39;volume&#39;, rank=0,
+        filter_range=[0, self.formulae.trivia.volume(self.radius_threshold)]
+    )
     result = self.buffer.copy()  # TODO #217
     self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
     result[:] /= self.particulator.mesh.dv
