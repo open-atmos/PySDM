@@ -1,5 +1,6 @@
 """
-Bespoke condensational growth solver with implicit-in-particle-size integration and adaptive timestepping
+Bespoke condensational growth solver
+with implicit-in-particle-size integration and adaptive timestepping
 """
 import numpy as np
 from ..physics import si
@@ -43,14 +44,16 @@ class Condensation:
     def register(self, builder):
         self.particulator = builder.particulator
 
-        builder._set_condensation_parameters(dt_range=self.dt_cond_range, adaptive=self.adaptive,
-                                             fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
+        builder._set_condensation_parameters(
+            dt_range=self.dt_cond_range, adaptive=self.adaptive,
+            fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
         builder.request_attribute('critical volume')
         builder.request_attribute('kappa')
         builder.request_attribute('dry volume organic fraction')
 
         for counter in ('n_substeps', 'n_activating', 'n_deactivating', 'n_ripening'):
-            self.counters[counter] = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=int)
+            self.counters[counter] = self.particulator.Storage.empty(
+                self.particulator.mesh.n_cell, dtype=int)
             if counter == 'n_substeps':
                 self.counters[counter][:] = self.__substeps if not self.adaptive else -1
             else:
@@ -81,11 +84,18 @@ class Condensation:
             )
             if not self.success.all():
                 raise RuntimeError("Condensation failed")
-            # note: this makes order of dynamics matter (e.g., condensation after chemistry or before)
+            # note: this makes order of dynamics matter
+            #       (e.g., condensation after chemistry or before)
             self.particulator.update_TpRH()
 
             if self.adaptive:
-                self.counters['n_substeps'][:] = np.maximum(self.counters['n_substeps'][:], int(self.particulator.dt / self.dt_cond_range[1]))
+                self.counters['n_substeps'][:] = np.maximum(
+                    self.counters['n_substeps'][:],
+                    int(self.particulator.dt / self.dt_cond_range[1])
+                )
                 if self.dt_cond_range[0] != 0:
-                    self.counters['n_substeps'][:] = np.minimum(self.counters['n_substeps'][:], int(self.particulator.dt / self.dt_cond_range[0]))
+                    self.counters['n_substeps'][:] = np.minimum(
+                        self.counters['n_substeps'][:],
+                        int(self.particulator.dt / self.dt_cond_range[0])
+                    )
             self.particulator.attributes.attributes['volume'].mark_updated()

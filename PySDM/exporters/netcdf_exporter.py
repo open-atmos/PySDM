@@ -19,8 +19,10 @@ class NetCDFExporter:
         ncdf.createDimension("T", len(self.settings.output_steps))
         for index, label in enumerate(self.XZ):
             ncdf.createDimension(label, self.settings.grid[index])
-        ncdf.createDimension("ParticleVolume",
-                             len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1)
+        ncdf.createDimension(
+            "ParticleVolume",
+            len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1
+        )
 
     def _create_variables(self, ncdf):
         self.vars = {}

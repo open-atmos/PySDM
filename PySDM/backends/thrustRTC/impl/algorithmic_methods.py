@@ -234,7 +234,9 @@ class AlgorithmicMethods:
         ),
         "i",
         '''
-        if (cell_origin[n_sd * (n_dims-1) + idx[i]] + position_in_cell[n_sd * (n_dims-1) + idx[i]] < 0) {
+        auto origin = cell_origin[n_sd * (n_dims-1) + idx[i]];
+        auto pic = position_in_cell[n_sd * (n_dims-1) + idx[i]];
+        if (origin + pic < 0) {
             atomicAdd((real_type*) &rainfall[0], n[idx[i]] * volume[idx[i]]);
             idx[i] = n_sd;
             healthy[0] = 0;

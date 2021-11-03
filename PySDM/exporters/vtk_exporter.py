@@ -19,7 +19,14 @@ class VTKExporter:
         exporter.export_products(simulation.particulator)
 
     """
-    def __init__(self, path='.', attributes_filename="sd_attributes", products_filename="sd_products", file_num_len=4, verbose=False):
+    def __init__(
+        self,
+        path='.',
+        attributes_filename="sd_attributes",
+        products_filename="sd_products",
+        file_num_len=4,
+        verbose=False
+    ):
         self.path = os.path.join(path, 'output')
 
         if not os.path.isdir(self.path):
@@ -54,17 +61,27 @@ class VTKExporter:
         for k in particulator.attributes.keys():
             if len(particulator.attributes[k].shape) != 1:
                 tmp = particulator.attributes[k].to_ndarray(raw=True)
-                tmp_dict = {k + '[' + str(i) + ']' : tmp[i] for i in range(len(particulator.attributes[k].shape))}
+                tmp_dict = {
+                    k + '[' + str(i) + ']' : tmp[i]
+                    for i in range(len(particulator.attributes[k].shape))
+                }
 
                 payload.update(tmp_dict)
             else:
                 payload[k] = particulator.attributes[k].to_ndarray(raw=True)
 
-        payload.update({k: np.array(v) for k, v in payload.items() if not (v.flags['C_CONTIGUOUS'] or v.flags['F_CONTIGUOUS'])})
+        payload.update({
+            k: np.array(v)
+            for k, v in payload.items() if not (v.flags['C_CONTIGUOUS'] or v.flags['F_CONTIGUOUS'])
+        })
 
         if particulator.mesh.dimension == 2:
-            y = particulator.mesh.size[0]/particulator.mesh.grid[0] * (payload['cell origin[0]'] + payload['position in cell[0]'])
-            x = particulator.mesh.size[1]/particulator.mesh.grid[1] * (payload['cell origin[1]'] + payload['position in cell[1]'])
+            y = particulator.mesh.size[0]/particulator.mesh.grid[0] * (
+                payload['cell origin[0]'] + payload['position in cell[0]']
+            )
+            x = particulator.mesh.size[1]/particulator.mesh.grid[1] * (
+                payload['cell origin[1]'] + payload['position in cell[1]']
+            )
             z = np.full_like(x, 0)
         else:
             raise NotImplementedError("Only 2 dimensions array is supported at the moment.")
@@ -90,7 +107,8 @@ class VTKExporter:
                             payload[k] = v.T[:, :, np.newaxis]
                         else:
                             if self.verbose:
-                                print(f'{k} shape {v.shape} not equals data shape {data_shape} and will not be exported', file=sys.stderr)
+                                print(f'{k} shape {v.shape} not equals data shape {data_shape}'
+                                      f' and will not be exported', file=sys.stderr)
                     elif isinstance(v, numbers.Number):
                         if self.verbose:
                             print(f'{k} is a Number and will not be exported', file=sys.stderr)
@@ -98,7 +116,11 @@ class VTKExporter:
                         if self.verbose:
                             print(f'{k} export is not possible', file=sys.stderr)
 
-                x, y, z = np.mgrid[:particulator.mesh.grid[0] + 1, :particulator.mesh.grid[1] + 1, :1]
+                x, y, z = np.mgrid[
+                    :particulator.mesh.grid[0] + 1,
+                    :particulator.mesh.grid[1] + 1,
+                    :1
+                ]
             else:
                 raise NotImplementedError("Only 2 dimensions data is supported at the moment.")
 

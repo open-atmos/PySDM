@@ -19,7 +19,8 @@ class Displacement:
         builder.request_attribute('terminal velocity')
         self.particulator = builder.particulator
         self.dimension = len(builder.particulator.environment.mesh.grid)
-        self.grid = self.particulator.Storage.from_ndarray(np.array(builder.particulator.environment.mesh.grid, dtype=np.int64))
+        self.grid = self.particulator.Storage.from_ndarray(
+            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64))
         if self.dimension == 1:
             courant_field = (np.full(self.grid[0]+1, np.nan),)
         elif self.dimension == 2:
@@ -29,9 +30,12 @@ class Displacement:
             )
         else:
             raise NotImplementedError()
-        self.courant = tuple(self.particulator.Storage.from_ndarray(courant_field[i]) for i in range(self.dimension))
-        self.displacement = self.particulator.Storage.from_ndarray(np.zeros((self.dimension, self.particulator.n_sd)))
-        self.temp = self.particulator.Storage.from_ndarray(np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64))
+        self.courant = tuple(self.particulator.Storage.from_ndarray(
+            courant_field[i]) for i in range(self.dimension))
+        self.displacement = self.particulator.Storage.from_ndarray(
+            np.zeros((self.dimension, self.particulator.n_sd)))
+        self.temp = self.particulator.Storage.from_ndarray(
+            np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64))
 
     def upload_courant_field(self, courant_field):
         for i, component in enumerate(courant_field):
