@@ -31,9 +31,11 @@ class ThrustRTC(
 
     def __init__(self, formulae=None):
         self.formulae = formulae or Formulae()
+        AlgorithmicMethods.__init__(self)
+        PairMethods.__init__(self)
+        IndexMethods.__init__(self)
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
-        AlgorithmicMethods.__init__(self)
         MomentsMethods.__init__(self)
 
         if not ThrustRTC.ENABLE \
