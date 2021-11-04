@@ -23,14 +23,17 @@ class ParticlesFactory:
                                 (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
-        extensive_attributes = particulator.IndexedStorage.empty(idx, (len(extensive_attr), particulator.n_sd), float)
-        maximum_attributes = particulator.IndexedStorage.empty(idx, (len(maximum_attr), particulator.n_sd), float)
+        extensive_attributes = particulator.IndexedStorage.empty(
+            idx, (len(extensive_attr), particulator.n_sd), float)
+        maximum_attributes = particulator.IndexedStorage.empty(
+            idx, (len(maximum_attr), particulator.n_sd), float)
 
         for attr in req_attr.values():
             if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
                 attr.allocate(idx)
             if isinstance(attr, DummyAttribute) and attr.name in attributes:
-                raise ValueError(f"attribute '{attr.name}' indicated as dummy but values were provided")
+                raise ValueError(f"attribute '{attr.name}' indicated as dummy"
+                                 f" but values were provided")
 
         extensive_keys = {}
         maximum_keys = {}
@@ -42,7 +45,8 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError:
-                    raise ValueError(f"attribute '{attr}' required by one of the dynamics but no initial values given")
+                    raise ValueError(f"attribute '{attr}' required by one of the dynamics"
+                                     f" but no initial values given")
 
         helper(req_attr, attributes, extensive_attr, extensive_attributes, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
@@ -59,14 +63,16 @@ class ParticlesFactory:
             cell_origin = req_attr['cell origin']
             cell_origin.allocate(idx)
             cell_origin.init(attributes['cell origin'])
-            req_attr['cell origin'].data = particulator.IndexedStorage.indexed(idx, cell_origin.data)
+            req_attr['cell origin'].data = particulator.IndexedStorage.indexed(
+                idx, cell_origin.data)
         except KeyError:
             cell_origin = None
         try:
             position_in_cell = req_attr['position in cell']
             position_in_cell.allocate(idx)
             position_in_cell.init(attributes['position in cell'])
-            req_attr['position in cell'].data = particulator.IndexedStorage.indexed(idx, position_in_cell.data)
+            req_attr['position in cell'].data = particulator.IndexedStorage.indexed(
+                idx, position_in_cell.data)
         except KeyError:
             position_in_cell = None
 

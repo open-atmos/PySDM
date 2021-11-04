@@ -3,10 +3,12 @@ from PySDM.backends.thrustRTC.impl import nice_thrust
 
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class AlgorithmicMethods:
+class AlgorithmicMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.__calculate_displacement_body = trtc.For(
             (
                 'dim', 'n_sd', 'displacement', 'courant', 'courant_length',

@@ -6,9 +6,10 @@ from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from .warnings import warn
+from PySDM.backends.impl.methods import Methods
 
 
-class CondensationMethods:
+class CondensationMethods(Methods):
     @staticmethod
     def condensation(
             solver,
@@ -76,8 +77,7 @@ class CondensationMethods:
             dt_range = (dt_range[0], dt)
         if dt_range[0] == 0:
             raise NotImplementedError()
-        else:
-            n_substeps_max = math.floor(dt / dt_range[0])
+        n_substeps_max = math.floor(dt / dt_range[0])
         n_substeps_min = math.ceil(dt / dt_range[1])
 
         @numba.njit(**jit_flags)
@@ -95,8 +95,7 @@ class CondensationMethods:
                 thd_new_long, success = step_fake(args, dt, n_substeps)
                 if success:
                     break
-                else:
-                    n_substeps *= multiplier
+                n_substeps *= multiplier
             for burnout in range(fuse + 1):
                 if burnout == fuse:
                     return warn("burnout (short)", __file__, return_value=(0, False))

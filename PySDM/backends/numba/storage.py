@@ -1,17 +1,13 @@
 import numpy as np
 from PySDM.backends.numba.impl import storage_impl as impl
+from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
 
 
-class Storage:
+class Storage(StorageBase):
 
     FLOAT = np.float64
     INT = np.int64
     BOOL = np.bool_
-
-    def __init__(self, data, shape, dtype):
-        self.data = data
-        self.shape = (shape,) if isinstance(shape, int) else shape
-        self.dtype = dtype
 
     def __getitem__(self, item):
         dim = len(self.shape)
@@ -35,9 +31,9 @@ class Storage:
                     f"requested a slice ({start}:{stop}) of Storage"
                     f" with first dim of length {self.data.shape[0]}"
                 )
-            result = Storage(result_data, result_shape, self.dtype)
+            result = Storage(StorageSignature(result_data, result_shape, self.dtype))
         elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
-            result = Storage(self.data[item[0]], (*self.shape[1:],), self.dtype)
+            result = Storage(StorageSignature(self.data[item[0]], (*self.shape[1:],), self.dtype))
         else:
             result = self.data[item]
         return result
@@ -135,27 +131,19 @@ class Storage:
         else:
             raise NotImplementedError()
 
-        return data, shape, dtype
+        return StorageSignature(data, shape, dtype)
 
     @staticmethod
     def empty(shape, dtype):
-        result = Storage(*Storage._get_empty_data(shape, dtype))
-        return result
+        return empty(shape, dtype, Storage)
 
     @staticmethod
     def _get_data_from_ndarray(array):
-        if str(array.dtype).startswith('int'):
-            dtype = Storage.INT
-        elif str(array.dtype).startswith('float'):
-            dtype = Storage.FLOAT
-        elif str(array.dtype).startswith('bool'):
-            dtype = Storage.BOOL
-        else:
-            raise NotImplementedError()
-
-        data = array.astype(dtype).copy()
-
-        return data, array.shape, dtype
+        return get_data_from_ndarray(
+            array=array,
+            storage_class=Storage,
+            copy_fun=lambda array_astype: array_astype.copy()
+        )
 
     def amin(self):
         return impl.amin(self.data)
@@ -165,7 +153,7 @@ class Storage:
 
     @staticmethod
     def from_ndarray(array):
-        result = Storage(*Storage._get_data_from_ndarray(array))
+        result = Storage(Storage._get_data_from_ndarray(array))
         return result
 
     def floor(self, other=None):

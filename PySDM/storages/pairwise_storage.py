@@ -1,18 +1,21 @@
+from .storage_utils import StorageSignature
+
+
 def make_PairwiseStorage(backend):
 
     class PairwiseStorage(backend.Storage):
 
-        def __init__(self, data, shape, dtype):
-            super().__init__(data, shape, dtype)
+        def __init__(self, signature: StorageSignature):
+            super().__init__(signature)
 
         @staticmethod
         def empty(shape, dtype):
-            result = PairwiseStorage(*backend.Storage._get_empty_data(shape, dtype))
+            result = PairwiseStorage(backend.Storage._get_empty_data(shape, dtype))
             return result
 
         @staticmethod
         def from_ndarray(array):
-            result = PairwiseStorage(*backend.Storage._get_data_from_ndarray(array))
+            result = PairwiseStorage(backend.Storage._get_data_from_ndarray(array))
             return result
 
         def distance(self, other, is_first_in_pair):

@@ -2,10 +2,12 @@ from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class PhysicsMethods:
+class PhysicsMethods(Methods):
     def __init__(self):
+        super().__init__()
         phys = self.formulae
 
         self._temperature_pressure_RH_body = trtc.For(

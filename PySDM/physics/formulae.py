@@ -20,14 +20,13 @@ def _formula(func=None, **kw):
                 **{'parallel': False, 'inline': 'always', 'cache': False, **kw}
             }
         )
-    else:
-        return numba.njit(
-            func,
-            **{
-                **conf.JIT_FLAGS,
-                **{'parallel': False, 'inline': 'always', 'cache': False, **kw}
-            }
-        )
+    return numba.njit(
+        func,
+        **{
+            **conf.JIT_FLAGS,
+            **{'parallel': False, 'inline': 'always', 'cache': False, **kw}
+        }
+    )
 
 
 def _boost(obj, fastmath):
@@ -68,7 +67,7 @@ def _c_inline(fun, return_type=None, **args):
         "\\1(" + real_t + ")({const.\\2:" + real_fmt + "})\\3",
         source
     )
-    source = eval(f'f"""{source}"""')
+    source = eval(f'f"""{source}"""')  # pylint: disable=eval-used
     return f'({return_type})({source})'
 
 

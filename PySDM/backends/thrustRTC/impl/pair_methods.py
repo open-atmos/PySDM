@@ -1,10 +1,10 @@
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
-
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class PairMethods:
+class PairMethods(Methods):
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);

@@ -3,18 +3,14 @@ import numpy as np
 from PySDM.backends.thrustRTC.conf import trtc
 from PySDM.backends.thrustRTC.impl import storage_impl as impl
 from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
 
 
-class Storage:
+class Storage(StorageBase):
 
     FLOAT = PrecisionResolver.get_np_dtype()
     INT = np.int64
     BOOL = np.bool_
-
-    def __init__(self, data, shape, dtype):
-        self.data = data
-        self.shape = (shape,) if isinstance(shape, int) else shape
-        self.dtype = dtype
 
     def __getitem__(self, item):
         dim = len(self.shape)
@@ -29,7 +25,7 @@ class Storage:
                 result_shape = (stop - start, self.shape[1])
             else:
                 raise NotImplementedError("Only 2 or less dimensions array is supported.")
-            result = Storage(result_data, result_shape, self.dtype)
+            result = Storage(StorageSignature(result_data, result_shape, self.dtype))
         elif (
             dim == 2 and
             isinstance(item, tuple) and
@@ -40,7 +36,7 @@ class Storage:
             assert item[1].stop is None or item[1].stop == self.shape[1]
             assert item[1].step is None or item[1].step == 1
             result_data = self.data.range(self.shape[1] * item[0], self.shape[1] * (item[0] + 1))
-            result = Storage(result_data, (*self.shape[1:],), self.dtype)
+            result = Storage(StorageSignature(result_data, (*self.shape[1:],), self.dtype))
         else:
             result = self.to_ndarray()[item]
         return result
@@ -165,30 +161,23 @@ class Storage:
             raise NotImplementedError
 
         data = trtc.device_vector(elem_cls, int(np.prod(shape)))
-        return data, shape, dtype
+        return StorageSignature(data, shape, dtype)
 
     @staticmethod
     def empty(shape, dtype):
-        result = Storage(*Storage._get_empty_data(shape, dtype))
-        return result
+        return empty(shape, dtype, Storage)
 
     @staticmethod
     def _get_data_from_ndarray(array):
-        if str(array.dtype).startswith('int'):
-            dtype = Storage.INT
-        elif str(array.dtype).startswith('float'):
-            dtype = Storage.FLOAT
-        elif str(array.dtype).startswith('bool'):
-            dtype = Storage.BOOL
-        else:
-            raise NotImplementedError()
-
-        data = trtc.device_vector_from_numpy(array.astype(dtype).ravel())
-        return data, array.shape, dtype
+        return get_data_from_ndarray(
+            array=array,
+            storage_class=Storage,
+            copy_fun=lambda array_astype: trtc.device_vector_from_numpy(array_astype.ravel())
+        )
 
     @staticmethod
     def from_ndarray(array):
-        result = Storage(*Storage._get_data_from_ndarray(array))
+        result = Storage(Storage._get_data_from_ndarray(array))
         return result
 
     def floor(self, other=None):

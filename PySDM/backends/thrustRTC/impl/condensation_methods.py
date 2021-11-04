@@ -7,12 +7,14 @@ from PySDM.backends.thrustRTC.bisection import BISECTION
 from PySDM.backends.thrustRTC.storage import Storage
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class CondensationMethods:
+class CondensationMethods(Methods):
     keys = ['T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD']
 
     def __init__(self):
+        super().__init__()
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None

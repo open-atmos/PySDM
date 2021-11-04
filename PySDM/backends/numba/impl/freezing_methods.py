@@ -2,10 +2,13 @@ import numba
 import numpy as np
 from ...numba import conf
 from ....physics import constants as const
+from PySDM.backends.impl.methods import Methods
 
 
-class FreezingMethods:
+class FreezingMethods(Methods):
     def __init__(self):
+        super().__init__()
+
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath, 'parallel': False})
         def _unfrozen(volume, i):
             return volume[i] > 0

@@ -1,4 +1,5 @@
 import numpy as np
+from .storage_utils import StorageSignature
 
 
 def make_Index(backend):
@@ -7,7 +8,7 @@ def make_Index(backend):
 
         def __init__(self, data, length):
             assert isinstance(length, int)
-            super().__init__(data, length, backend.Storage.INT)
+            super().__init__(StorageSignature(data, length, backend.Storage.INT))
             self.length = backend.Storage.INT(length)
 
         def __len__(self):

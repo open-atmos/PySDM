@@ -1,9 +1,10 @@
 from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class IndexMethods:
+class IndexMethods(Methods):
 
     __identity_index_body = trtc.For(['idx'], 'i', '''
         idx[i] = i;
