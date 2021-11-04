@@ -35,6 +35,8 @@ from PySDM.physics.constants import Md, R_str, Rd, K_H2O
 from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KineticConsts, EquilibriumConsts, k4
+from PySDM.backends.impl.methods import Methods
+
 
 _max_iter_quite_close = 8
 _max_iter_default = 32
@@ -45,8 +47,9 @@ _quite_close_multiplier = 2
 _K = namedtuple(&#34;_K&#34;, (&#39;NH3&#39;, &#39;SO2&#39;, &#39;HSO3&#39;, &#39;HSO4&#39;, &#39;HCO3&#39;, &#39;CO2&#39;, &#39;HNO3&#39;))
 
 
-class ChemistryMethods:
+class ChemistryMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
@@ -408,8 +411,9 @@ def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ChemistryMethods:
+<pre><code class="python">class ChemistryMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
@@ -649,6 +653,10 @@ def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
             ionic_strength = calc_ionic_strength(H, *args)
             do_chemistry_flag[i] = (ionic_strength &lt;= ionic_strength_threshold)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>

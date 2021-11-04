@@ -35,12 +35,14 @@ from PySDM.backends.thrustRTC.bisection import BISECTION
 from PySDM.backends.thrustRTC.storage import Storage
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class CondensationMethods:
+class CondensationMethods(Methods):
     keys = [&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;]
 
     def __init__(self):
+        super().__init__()
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None
@@ -352,10 +354,11 @@ class CondensationMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CondensationMethods:
+<pre><code class="python">class CondensationMethods(Methods):
     keys = [&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;]
 
     def __init__(self):
+        super().__init__()
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None
@@ -648,6 +651,10 @@ class CondensationMethods:
                      for key in CondensationMethods.keys}
         return None</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="../thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></li>

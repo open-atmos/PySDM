@@ -29,9 +29,10 @@
 <pre><code class="python">from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class IndexMethods:
+class IndexMethods(Methods):
 
     __identity_index_body = trtc.For([&#39;idx&#39;], &#39;i&#39;, &#39;&#39;&#39;
         idx[i] = i;
@@ -94,7 +95,7 @@ class IndexMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class IndexMethods:
+<pre><code class="python">class IndexMethods(Methods):
 
     __identity_index_body = trtc.For([&#39;idx&#39;], &#39;i&#39;, &#39;&#39;&#39;
         idx[i] = i;
@@ -138,6 +139,10 @@ class IndexMethods:
         d_attr_data_copy, _, _ = attr._get_empty_data(attr.shape, attr.dtype)
         trtc.Sort_By_Key(d_attr_data_copy, idx.data)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="../thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></li>

@@ -172,8 +172,7 @@ class FakeThrustRTC:
         results = dict(zip(unique, counts))
         if value.ndarray in results:
             return results[value.ndarray]
-        else:
-            return 0
+        return 0
 
     @staticmethod
     def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
@@ -374,8 +373,7 @@ class FakeThrustRTC:
         results = dict(zip(unique, counts))
         if value.ndarray in results:
             return results[value.ndarray]
-        else:
-            return 0
+        return 0
 
     @staticmethod
     def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
@@ -474,8 +472,7 @@ def Count(dvvector, value):  # pylint: disable=invalid-name
     results = dict(zip(unique, counts))
     if value.ndarray in results:
         return results[value.ndarray]
-    else:
-        return 0</code></pre>
+    return 0</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.thrustRTC.test_helpers.fakeThrustRTC.FakeThrustRTC.DVBool"><code class="name flex">

@@ -131,9 +131,8 @@ class Particles:
     def recalculate_cell_id(self):
         if &#39;cell origin&#39; not in self.attributes:
             return
-        else:
-            self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
-            self.__sorted = False
+        self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+        self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
         self.particulator.bck.sort_within_pair_by_attr(
@@ -404,9 +403,8 @@ class Particles:
     def recalculate_cell_id(self):
         if &#39;cell origin&#39; not in self.attributes:
             return
-        else:
-            self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
-            self.__sorted = False
+        self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+        self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
         self.particulator.bck.sort_within_pair_by_attr(
@@ -880,9 +878,8 @@ def cell_start(self):
 <pre><code class="python">def recalculate_cell_id(self):
     if &#39;cell origin&#39; not in self.attributes:
         return
-    else:
-        self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
-        self.__sorted = False</code></pre>
+    self.particulator.bck.cell_id(self[&#39;cell id&#39;], self[&#39;cell origin&#39;], self.__strides)
+    self.__sorted = False</code></pre>
 </details>
 </dd>
 <dt id="PySDM.state.particles.Particles.remove_precipitated"><code class="name flex">

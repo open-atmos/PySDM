@@ -30,10 +30,12 @@
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
+from PySDM.backends.impl.methods import Methods
 
 
-class PhysicsMethods:
+class PhysicsMethods(Methods):
     def __init__(self):
+        super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
@@ -112,8 +114,9 @@ class PhysicsMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PhysicsMethods:
+<pre><code class="python">class PhysicsMethods(Methods):
     def __init__(self):
+        super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
@@ -173,6 +176,10 @@ class PhysicsMethods:
             v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data
         )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>

@@ -29,9 +29,10 @@
 <pre><code class="python">import numba
 import numpy as np
 from PySDM.backends.numba import conf
+from PySDM.backends.impl.methods import Methods
 
 
-class PairMethods:
+class PairMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -137,7 +138,7 @@ class PairMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PairMethods:
+<pre><code class="python">class PairMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -224,6 +225,10 @@ class PairMethods:
         return PairMethods.sum_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>

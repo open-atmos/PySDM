@@ -28,9 +28,10 @@
 </summary>
 <pre><code class="python">import numba
 from PySDM.backends.numba import conf
+from PySDM.backends.impl.methods import Methods
 
 
-class IndexMethods:
+class IndexMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -76,7 +77,7 @@ class IndexMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class IndexMethods:
+<pre><code class="python">class IndexMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -103,6 +104,10 @@ class IndexMethods:
     def sort_by_key(idx, attr):
         idx.data[:] = attr.data.argsort(kind=&#34;stable&#34;)[::-1]</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>

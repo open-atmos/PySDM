@@ -30,10 +30,13 @@
 import numpy as np
 from ...numba import conf
 from ....physics import constants as const
+from PySDM.backends.impl.methods import Methods
 
 
-class FreezingMethods:
+class FreezingMethods(Methods):
     def __init__(self):
+        super().__init__()
+
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath, &#39;parallel&#39;: False})
         def _unfrozen(volume, i):
             return volume[i] &gt; 0
@@ -90,8 +93,10 @@ class FreezingMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class FreezingMethods:
+<pre><code class="python">class FreezingMethods(Methods):
     def __init__(self):
+        super().__init__()
+
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath, &#39;parallel&#39;: False})
         def _unfrozen(volume, i):
             return volume[i] &gt; 0
@@ -129,6 +134,10 @@ class FreezingMethods:
             rand.data, immersed_surface_area.data, volume.data, dt, cell.data, a_w_ice.data
         )</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>

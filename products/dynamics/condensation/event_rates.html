@@ -58,17 +58,17 @@ class EventRate(Product):
     def get(self):
         if self.timestep_count == 0:
             return self.event_count
-        else:
-            self.event_count[:] /= (
-                    self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
-            )
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-            self.event_count[:] /= self.buffer[:]
-            self.buffer[:] = self.event_count[:]
-            self.timestep_count = 0
-            self.event_count[:] = 0
-            convert_to(self.buffer, 1/si.mg)
-            return self.buffer
+
+        self.event_count[:] /= (
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+        )
+        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self.event_count[:] /= self.buffer[:]
+        self.buffer[:] = self.event_count[:]
+        self.timestep_count = 0
+        self.event_count[:] = 0
+        convert_to(self.buffer, 1/si.mg)
+        return self.buffer
 
 
 class RipeningRate(EventRate):
@@ -170,17 +170,17 @@ class DeactivatingRate(EventRate):
     def get(self):
         if self.timestep_count == 0:
             return self.event_count
-        else:
-            self.event_count[:] /= (
-                    self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
-            )
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-            self.event_count[:] /= self.buffer[:]
-            self.buffer[:] = self.event_count[:]
-            self.timestep_count = 0
-            self.event_count[:] = 0
-            convert_to(self.buffer, 1/si.mg)
-            return self.buffer</code></pre>
+
+        self.event_count[:] /= (
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+        )
+        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self.event_count[:] /= self.buffer[:]
+        self.buffer[:] = self.event_count[:]
+        self.timestep_count = 0
+        self.event_count[:] = 0
+        convert_to(self.buffer, 1/si.mg)
+        return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -206,17 +206,17 @@ class DeactivatingRate(EventRate):
 <pre><code class="python">def get(self):
     if self.timestep_count == 0:
         return self.event_count
-    else:
-        self.event_count[:] /= (
-                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
-        )
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-        self.event_count[:] /= self.buffer[:]
-        self.buffer[:] = self.event_count[:]
-        self.timestep_count = 0
-        self.event_count[:] = 0
-        convert_to(self.buffer, 1/si.mg)
-        return self.buffer</code></pre>
+
+    self.event_count[:] /= (
+            self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+    )
+    self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+    self.event_count[:] /= self.buffer[:]
+    self.buffer[:] = self.event_count[:]
+    self.timestep_count = 0
+    self.event_count[:] = 0
+    convert_to(self.buffer, 1/si.mg)
+    return self.buffer</code></pre>
 </details>
 </dd>
 <dt id="PySDM.products.dynamics.condensation.event_rates.EventRate.notify"><code class="name flex">

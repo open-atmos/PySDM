@@ -28,9 +28,9 @@
 </summary>
 <pre><code class="python">import numba
 import numpy as np
-
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage import Storage
+from PySDM.backends.impl.methods import Methods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
@@ -49,7 +49,7 @@ def calculate_displacement_body_common(
     displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
 
-class AlgorithmicMethods:
+class AlgorithmicMethods(Methods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -57,9 +57,8 @@ class AlgorithmicMethods:
         for i in range(n_cell - 1, -1, -1):
             if dt_left[i] == 0:
                 continue
-            else:
-                end = cell_start[i + 1]
-                break
+            end = cell_start[i + 1]
+            break
         return end
 
     @staticmethod
@@ -452,7 +451,7 @@ def pair_indices(i, idx, is_first_in_pair):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AlgorithmicMethods:
+<pre><code class="python">class AlgorithmicMethods(Methods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -460,9 +459,8 @@ def pair_indices(i, idx, is_first_in_pair):
         for i in range(n_cell - 1, -1, -1):
             if dt_left[i] == 0:
                 continue
-            else:
-                end = cell_start[i + 1]
-                break
+            end = cell_start[i + 1]
+            break
         return end
 
     @staticmethod
@@ -799,6 +797,10 @@ def pair_indices(i, idx, is_first_in_pair):
 
         cell_start[:] = cell_end_thread[0, :]</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.numba.numba.Numba" href="../numba.html#PySDM.backends.numba.numba.Numba">Numba</a></li>
@@ -837,9 +839,8 @@ def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
     for i in range(n_cell - 1, -1, -1):
         if dt_left[i] == 0:
             continue
-        else:
-            end = cell_start[i + 1]
-            break
+        end = cell_start[i + 1]
+        break
     return end</code></pre>
 </details>
 </dd>

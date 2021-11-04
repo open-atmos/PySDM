@@ -31,11 +31,12 @@ from PySDM.backends.thrustRTC.impl import nice_thrust
 
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class MomentsMethods:
+class MomentsMethods(Methods):
     def __init__(self):
-
+        super().__init__()
         self.__moments_body_0 = trtc.For(
             (
                 &#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
@@ -183,9 +184,9 @@ class MomentsMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MomentsMethods:
+<pre><code class="python">class MomentsMethods(Methods):
     def __init__(self):
-
+        super().__init__()
         self.__moments_body_0 = trtc.For(
             (
                 &#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
@@ -314,6 +315,10 @@ class MomentsMethods:
         self.__spectrum_moments_body_1.launch_n(
             moment_0.shape[1], [n_bins, moments.data, moment_0.data, n_cell])</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="../thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></li>

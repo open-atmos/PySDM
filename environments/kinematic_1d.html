@@ -46,6 +46,7 @@ class Kinematic1D(_Moist):
         super().__init__(dt, mesh, [])
         self.thd0 = thd_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.formulae = None
 
     def register(self, builder):
         super().register(builder)
@@ -121,6 +122,7 @@ class Kinematic1D(_Moist):
         super().__init__(dt, mesh, [])
         self.thd0 = thd_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.formulae = None
 
     def register(self, builder):
         super().register(builder)

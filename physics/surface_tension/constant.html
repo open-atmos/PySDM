@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import PySDM.physics.constants as const
 
+
 class Constant:
     &#34;&#34;&#34;
     Assumes aerosol is dissolved in the bulk of the droplet, and the 
@@ -35,7 +36,7 @@ class Constant:
     tension `sgm_w`.
     &#34;&#34;&#34;
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):
+    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         return const.sgm_w</code></pre>
 </details>
 </section>
@@ -66,7 +67,7 @@ tension <code>sgm_w</code>.</p></div>
     tension `sgm_w`.
     &#34;&#34;&#34;
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):
+    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         return const.sgm_w</code></pre>
 </details>
 <h3>Static methods</h3>
@@ -81,7 +82,7 @@ tension <code>sgm_w</code>.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sigma(T, v_wet, v_dry, f_org):
+def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
     return const.sgm_w</code></pre>
 </details>
 </dd>

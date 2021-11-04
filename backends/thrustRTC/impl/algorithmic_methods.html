@@ -31,10 +31,12 @@ from PySDM.backends.thrustRTC.impl import nice_thrust
 
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class AlgorithmicMethods:
+class AlgorithmicMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.__calculate_displacement_body = trtc.For(
             (
                 &#39;dim&#39;, &#39;n_sd&#39;, &#39;displacement&#39;, &#39;courant&#39;, &#39;courant_length&#39;,
@@ -449,8 +451,9 @@ class AlgorithmicMethods:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AlgorithmicMethods:
+<pre><code class="python">class AlgorithmicMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.__calculate_displacement_body = trtc.For(
             (
                 &#39;dim&#39;, &#39;n_sd&#39;, &#39;displacement&#39;, &#39;courant&#39;, &#39;courant_length&#39;,
@@ -846,6 +849,10 @@ class AlgorithmicMethods:
             )
         return idx</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="../thrustRTC.html#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></li>
