@@ -5,11 +5,12 @@ from PySDM.state.mesh import Mesh
 
 class DummyEnvironment:
 
-    def __init__(self, dt=None, grid=None, size=None, dv=None, courant_field_data=None, halo=None):
+    def __init__(self, timestep=None, grid=None, size=None, volume=None,
+                 courant_field_data=None, halo=None):
         self.particulator = None
-        self.dt = dt
+        self.dt = timestep
         if grid is None:
-            self.mesh = Mesh.mesh_0d(dv)
+            self.mesh = Mesh.mesh_0d(volume)
         else:
             if size is None:
                 size = tuple(1 for _ in range(len(grid)))

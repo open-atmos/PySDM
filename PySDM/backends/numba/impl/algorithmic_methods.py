@@ -1,8 +1,8 @@
 import numba
 import numpy as np
-
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage import Storage
+from PySDM.backends.impl.methods import Methods
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -21,7 +21,7 @@ def calculate_displacement_body_common(
     displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
 
 
-class AlgorithmicMethods:
+class AlgorithmicMethods(Methods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -29,9 +29,8 @@ class AlgorithmicMethods:
         for i in range(n_cell - 1, -1, -1):
             if dt_left[i] == 0:
                 continue
-            else:
-                end = cell_start[i + 1]
-                break
+            end = cell_start[i + 1]
+            break
         return end
 
     @staticmethod

@@ -15,10 +15,10 @@ class CompressedFilm_Ruehl:
     Described in supplementary materials equations (13) and (15).
 
     Allows for more realistic thermodynamic partitioning of some organic to the surface,
-    while some remains dissolved in the bulk phase. The surface concentration is solved 
+    while some remains dissolved in the bulk phase. The surface concentration is solved
     implicitly from the isotherm equation that relates the bulk organic concentration
-    `C_bulk` to the surface average molecular area `A`. The equation of state relates 
-    the surface concentration to the surface tension. For the compressed film model it 
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates
+    the surface concentration to the surface tension. For the compressed film model it
     is linear, with slope `m_sigma`.
     """
     @staticmethod

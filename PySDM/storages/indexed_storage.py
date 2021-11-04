@@ -1,8 +1,11 @@
+from .storage_utils import StorageSignature
+
+
 def make_IndexedStorage(backend):
     class IndexedStorage(backend.Storage):
 
-        def __init__(self, idx, data, shape, dtype):
-            super().__init__(data, shape, dtype)
+        def __init__(self, idx, signature):
+            super().__init__(signature)
             assert idx is not None
             self.idx = idx
 
@@ -13,12 +16,12 @@ def make_IndexedStorage(backend):
             result = backend.Storage.__getitem__(self, item)
             if isinstance(result, backend.Storage):
                 return IndexedStorage.indexed(self.idx, result)
-            else:
-                return result
+            return result
 
         @staticmethod
         def indexed(idx, storage):
-            return IndexedStorage(idx, storage.data, storage.shape, storage.dtype)
+            return IndexedStorage(idx,
+                                  StorageSignature(storage.data, storage.shape, storage.dtype))
 
         @staticmethod
         def empty(idx, shape, dtype):

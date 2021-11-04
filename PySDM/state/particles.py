@@ -103,9 +103,8 @@ class Particles:
     def recalculate_cell_id(self):
         if 'cell origin' not in self.attributes:
             return
-        else:
-            self.particulator.bck.cell_id(self['cell id'], self['cell origin'], self.__strides)
-            self.__sorted = False
+        self.particulator.bck.cell_id(self['cell id'], self['cell origin'], self.__strides)
+        self.__sorted = False
 
     def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
         self.particulator.bck.sort_within_pair_by_attr(

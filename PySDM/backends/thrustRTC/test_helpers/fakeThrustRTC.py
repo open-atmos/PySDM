@@ -144,8 +144,7 @@ class FakeThrustRTC:
         results = dict(zip(unique, counts))
         if value.ndarray in results:
             return results[value.ndarray]
-        else:
-            return 0
+        return 0
 
     @staticmethod
     def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name

@@ -20,7 +20,7 @@ class DisplacementSettings:
         formulae = Formulae(particle_advection=scheme)
         particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
         particulator.environment = DummyEnvironment(
-            dt=self.dt,
+            timestep=self.dt,
             grid=self.grid,
             courant_field_data=self.courant_field_data)
         positions = np.array(self.positions)

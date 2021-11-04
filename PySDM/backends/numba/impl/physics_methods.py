@@ -2,10 +2,12 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
+from PySDM.backends.impl.methods import Methods
 
 
-class PhysicsMethods:
+class PhysicsMethods(Methods):
     def __init__(self):
+        super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p

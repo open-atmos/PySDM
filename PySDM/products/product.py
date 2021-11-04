@@ -11,6 +11,7 @@ class Product:
         self.shape = None
         self.buffer = None
         self.particulator = None
+        self.formulae = None
 
     def register(self, builder):
         self.particulator = builder.particulator

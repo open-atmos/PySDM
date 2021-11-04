@@ -15,6 +15,7 @@ class Kinematic2D(_Moist):
     def __init__(self, dt, grid, size, rhod_of):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of
+        self.formulae = None
 
     def register(self, builder):
         super().register(builder)

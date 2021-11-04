@@ -7,6 +7,8 @@ from PySDM.physics.constants import Md, R_str, Rd, K_H2O
 from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KineticConsts, EquilibriumConsts, k4
+from PySDM.backends.impl.methods import Methods
+
 
 _max_iter_quite_close = 8
 _max_iter_default = 32
@@ -17,8 +19,9 @@ _quite_close_multiplier = 2
 _K = namedtuple("_K", ('NH3', 'SO2', 'HSO3', 'HSO4', 'HCO3', 'CO2', 'HNO3'))
 
 
-class ChemistryMethods:
+class ChemistryMethods(Methods):
     def __init__(self):
+        super().__init__()
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)

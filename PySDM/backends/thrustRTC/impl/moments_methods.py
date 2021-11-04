@@ -3,11 +3,12 @@ from PySDM.backends.thrustRTC.impl import nice_thrust
 
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
+from ...impl.methods import Methods
 
 
-class MomentsMethods:
+class MomentsMethods(Methods):
     def __init__(self):
-
+        super().__init__()
         self.__moments_body_0 = trtc.For(
             (
                 'idx', 'min_x', 'attr_data', 'x_attr', 'max_x', 'moment_0', 'cell_id', 'n',
