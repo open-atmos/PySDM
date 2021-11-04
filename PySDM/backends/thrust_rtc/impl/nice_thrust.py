@@ -1,4 +1,4 @@
-from PySDM.backends.thrustRTC.conf import trtc
+from PySDM.backends.thrust_rtc.conf import trtc
 
 
 def nice_thrust(*, wait=False, debug_print=False):

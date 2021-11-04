@@ -1,4 +1,4 @@
-from PySDM.backends.thrustRTC.test_helpers._flag import fakeThrustRTC
+from PySDM.backends.thrust_rtc.test_helpers._flag import fakeThrustRTC
 
 if not fakeThrustRTC:
     # noinspection PyUnresolvedReferences

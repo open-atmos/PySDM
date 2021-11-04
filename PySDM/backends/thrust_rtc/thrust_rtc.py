@@ -4,14 +4,14 @@ GPU-resident backend using NVRTC runtime compilation library for CUDA
 
 import os
 import warnings
-from PySDM.backends.thrustRTC.impl.algorithmic_methods import AlgorithmicMethods
-from PySDM.backends.thrustRTC.impl.pair_methods import PairMethods
-from PySDM.backends.thrustRTC.impl.index_methods import IndexMethods
-from PySDM.backends.thrustRTC.impl.physics_methods import PhysicsMethods
-from PySDM.backends.thrustRTC.impl.moments_methods import MomentsMethods
-from PySDM.backends.thrustRTC.impl.condensation_methods import CondensationMethods
-from PySDM.backends.thrustRTC.storage import Storage as ImportedStorage
-from PySDM.backends.thrustRTC.random import Random as ImportedRandom
+from PySDM.backends.thrust_rtc.impl.algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.thrust_rtc.impl.pair_methods import PairMethods
+from PySDM.backends.thrust_rtc.impl.index_methods import IndexMethods
+from PySDM.backends.thrust_rtc.impl.physics_methods import PhysicsMethods
+from PySDM.backends.thrust_rtc.impl.moments_methods import MomentsMethods
+from PySDM.backends.thrust_rtc.impl.condensation_methods import CondensationMethods
+from PySDM.backends.thrust_rtc.storage import Storage as ImportedStorage
+from PySDM.backends.thrust_rtc.random import Random as ImportedRandom
 from PySDM.physics import Formulae
 
 

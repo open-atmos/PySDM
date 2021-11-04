@@ -36,7 +36,7 @@ class Numba(  # pylint: disable=too-many-ancestors
         PairMethods.__init__(self)
         IndexMethods.__init__(self)
         PhysicsMethods.__init__(self)
-        CondensationMethods.__init__()
+        CondensationMethods.__init__(self)
         ChemistryMethods.__init__(self)
         MomentsMethods.__init__(self)
         FreezingMethods.__init__(self)
