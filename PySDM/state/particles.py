@@ -159,7 +159,7 @@ class Particles:
                                                )
 
     def coalescence(self, gamma, is_first_in_pair):
-        self.particulator.bck.coalescence(n=self['n'],
+        self.particulator.bck.coalescence(multiplicity=self['n'],
                                           idx=self.__idx,
                                           attributes=self.get_extensive_attrs(),
                                           gamma=gamma,

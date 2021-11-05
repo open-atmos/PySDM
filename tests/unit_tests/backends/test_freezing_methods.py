@@ -10,7 +10,7 @@ from PySDM.dynamics import Freezing
 from PySDM.products import IceWaterContent
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend  # TODO #599
+from ...backends_fixture import backend_class  # TODO #599
 
 
 class TestFreezingMethods:

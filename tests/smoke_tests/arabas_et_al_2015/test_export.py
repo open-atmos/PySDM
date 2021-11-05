@@ -7,7 +7,7 @@ from PySDM_examples.utils import DummyController
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 # pylint: disable=redefined-outer-name

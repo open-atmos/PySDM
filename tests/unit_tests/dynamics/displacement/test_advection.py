@@ -2,19 +2,19 @@
 import numpy as np
 
 # noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
+from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
 
 
 class TestExplicitEulerWithInterpolation:
 
     @staticmethod
-    def test_single_cell(backend):
+    def test_single_cell(backend_class):
         # Arrange
         settings = DisplacementSettings()
         settings.courant_field_data = (np.array([[.1, .2]]).T, np.array([[.3, .4]]))
         settings.positions = [[0.5], [0.5]]
-        sut, _ = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, _ = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -23,13 +23,13 @@ class TestExplicitEulerWithInterpolation:
         pass
 
     @staticmethod
-    def test_advection(backend):
+    def test_advection(backend_class):
         # Arrange
         settings = DisplacementSettings()
         settings.grid = (3, 3)
         settings.courant_field_data = (np.ones((4, 3)), np.zeros((3, 4)))
         settings.positions = [[1.5], [1.5]]
-        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         # Act
         sut()
@@ -42,7 +42,7 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
-    def test_calculate_displacement(backend):
+    def test_calculate_displacement(backend_class):
         # Arrange
         settings = DisplacementSettings()
         a = .1
@@ -50,7 +50,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
         settings.positions = [[w], [0]]
-        sut, particulator = settings.get_displacement(backend, scheme='ExplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(sut.displacement, sut.courant,
@@ -64,7 +64,7 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
-    def test_calculate_displacement_dim1(backend):
+    def test_calculate_displacement_dim1(backend_class):
         # Arrange
         settings = DisplacementSettings()
         a = .1
@@ -72,7 +72,7 @@ class TestExplicitEulerWithInterpolation:
         w = .25
         settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
         settings.positions = [[0], [w]]
-        sut, particulator = settings.get_displacement(backend, scheme='ExplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ExplicitInSpace')
 
         # Act
         sut.calculate_displacement(
@@ -87,16 +87,16 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
-    def test_update_position(backend):
+    def test_update_position(backend_class):
         # Arrange
         settings = DisplacementSettings()
         px = .1
         py = .2
         settings.positions = [[px], [py]]
-        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         droplet_id = slice(0, 1)
-        sut.displacement[:] = backend.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
+        sut.displacement[:] = backend_class.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
 
         # Act
         sut.update_position(particulator.attributes['position in cell'], sut.displacement)
@@ -109,14 +109,14 @@ class TestExplicitEulerWithInterpolation:
             )
 
     @staticmethod
-    def test_update_cell_origin(backend):
+    def test_update_cell_origin(backend_class):
         # Arrange
         settings = DisplacementSettings()
-        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = particulator.attributes
-        state['position in cell'][:] = backend.Storage.from_ndarray(np.asarray([[1.1], [1.2]]))
+        state['position in cell'][:] = backend_class.Storage.from_ndarray(np.asarray([[1.1], [1.2]]))
 
         # Act
         sut.update_cell_origin(state['cell origin'], state['position in cell'])
@@ -131,14 +131,14 @@ class TestExplicitEulerWithInterpolation:
             )
 
     @staticmethod
-    def test_boundary_condition(backend):
+    def test_boundary_condition(backend_class):
         # Arrange
         settings = DisplacementSettings()
-        sut, particulator = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         droplet_id = 0
         state = particulator.attributes
-        state['cell origin'][:] = backend.Storage.from_ndarray(np.asarray([[1], [1]]))
+        state['cell origin'][:] = backend_class.Storage.from_ndarray(np.asarray([[1], [1]]))
 
         # Act
         sut.boundary_condition(state['cell origin'])

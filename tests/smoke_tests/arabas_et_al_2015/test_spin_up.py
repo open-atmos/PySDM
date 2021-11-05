@@ -7,7 +7,7 @@ from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM.physics import si
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 class DummyStorage:

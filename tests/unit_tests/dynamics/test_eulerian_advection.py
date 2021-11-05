@@ -4,15 +4,15 @@ from PySDM.dynamics import EulerianAdvection
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 class TestEulerianAdvection:
 
     @staticmethod
-    def test_update(backend):
+    def test_update(backend_class):
         # Arrange
-        particulator = DummyParticulator(backend)
+        particulator = DummyParticulator(backend_class)
         halo = 3
         grid = (11, 13)
         env = DummyEnvironment(grid=grid, halo=halo)

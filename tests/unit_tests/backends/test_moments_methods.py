@@ -4,7 +4,7 @@ import pytest
 from PySDM.physics import Formulae
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend as Backend
+from ...backends_fixture import backend_class as Backend
 
 
 @pytest.mark.parametrize("min_x, max_x, value, expected", [

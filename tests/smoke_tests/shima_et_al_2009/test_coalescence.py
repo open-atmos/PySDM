@@ -13,7 +13,7 @@ from PySDM.physics.constants import si
 from PySDM.physics.formulae import Formulae
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 def check(n_part, dv, n_sd, rho, state, step):

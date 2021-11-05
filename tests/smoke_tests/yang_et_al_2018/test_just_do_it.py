@@ -8,7 +8,7 @@ from PySDM.backends.numba.test_helpers import bdf
 from PySDM.backends import GPU
 
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 @pytest.mark.parametrize("scheme", ('default', 'BDF'))

@@ -1,13 +1,13 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-
+from PySDM.backends import ThrustRTC
 from PySDM.environments import Box
 from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
 from PySDM.dynamics.coalescence import default_dt_coal_range
 # noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
+from ....backends_fixture import backend_class
 from .__parametrisation__ import get_dummy_particulator_and_sdm
 
 
@@ -16,10 +16,9 @@ class TestSDMMultiCell:
     @staticmethod
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
-    def test_coalescence_call(n_sd, backend, adaptive):
+    def test_coalescence_call(n_sd, backend_class, adaptive):
         # TODO #330
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
+        if backend_class is ThrustRTC:
             return
 
         # Arrange
@@ -28,7 +27,7 @@ class TestSDMMultiCell:
         env = Box(dv=1, dt=default_dt_coal_range[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
-        particulator, sut = get_dummy_particulator_and_sdm(backend, len(n), environment=env)
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n), environment=env)
         cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
         attributes = {'n': n, 'volume': v, 'cell id': cell_id}
         particulator.build(attributes)

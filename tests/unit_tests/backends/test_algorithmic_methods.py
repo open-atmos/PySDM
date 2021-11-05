@@ -9,7 +9,7 @@ from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.pair_indicator import make_PairIndicator
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 @pytest.mark.parametrize("i, idx, is_first_in_pair, expected", [
@@ -35,13 +35,13 @@ class TestAlgorithmicMethods:
         ((4, 5, 4.5, 3, .1), (0, 1, 2, 3, 4, 5), 5)
     ])
     # pylint: disable=redefined-outer-name
-    def test_adaptive_sdm_end(backend, dt_left, cell_start, expected):
+    def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
         # Arrange
-        dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
-        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
+        dt_left = backend_class.Storage.from_ndarray(np.asarray(dt_left))
+        cell_start = backend_class.Storage.from_ndarray(np.asarray(cell_start))
 
         # Act
-        actual = backend.adaptive_sdm_end(dt_left, cell_start)
+        actual = backend_class.adaptive_sdm_end(dt_left, cell_start)
 
         # Assert
         assert actual == expected
@@ -68,23 +68,23 @@ class TestAlgorithmicMethods:
              (0., 5.), (1, 1)),
         ))
     # pylint: disable=redefined-outer-name
-    def test_adaptive_sdm_gamma(backend, gamma, idx, n, cell_id, dt_left, dt, dt_max,
+    def test_adaptive_sdm_gamma(backend_class, gamma, idx, n, cell_id, dt_left, dt, dt_max,
                                 is_first_in_pair,
                                 expected_dt_left, expected_n_substep):
         # Arrange
-        _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
-        _idx = make_Index(backend).from_ndarray(np.asarray(idx))
-        _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))
-        _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
-        _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
-        _is_first_in_pair = make_PairIndicator(backend)(len(n))
+        _gamma = backend_class.Storage.from_ndarray(np.asarray(gamma))
+        _idx = make_Index(backend_class).from_ndarray(np.asarray(idx))
+        _n = make_IndexedStorage(backend_class).from_ndarray(_idx, np.asarray(n))
+        _cell_id = backend_class.Storage.from_ndarray(np.asarray(cell_id))
+        _dt_left = backend_class.Storage.from_ndarray(np.asarray(dt_left))
+        _is_first_in_pair = make_PairIndicator(backend_class)(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
-        _n_substep = backend.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
-        _dt_min = backend.Storage.from_ndarray(np.zeros_like(dt_left))
+        _n_substep = backend_class.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
+        _dt_min = backend_class.Storage.from_ndarray(np.zeros_like(dt_left))
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range,
+        backend_class.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range,
                                    _is_first_in_pair,
                                    _n_substep, _dt_min)
 

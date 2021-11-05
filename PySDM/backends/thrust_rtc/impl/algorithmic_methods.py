@@ -189,15 +189,15 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, idx, attributes, gamma, healthy, is_first_in_pair):
+    def coalescence(multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
         if len(idx) < 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         AlgorithmicMethods.__coalescence_body.launch_n(len(idx) // 2,
-                                                       [n.data, idx.data, n_sd,
+                                                       (multiplicity.data, idx.data, n_sd,
                                                         attributes.data,
-                                                        n_attr, gamma.data, healthy.data])
+                                                        n_attr, gamma.data, healthy.data))
 
     __compute_gamma_body = trtc.For(('gamma', 'rand', "idx", "n", "cell_id",
                                      "collision_rate_deficit", "collision_rate"), "i", '''
@@ -220,14 +220,14 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def compute_gamma(gamma, rand, n, cell_id,
+    def compute_gamma(gamma, rand, multiplicity, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
-        if len(n) < 2:
+        if len(multiplicity) < 2:
             return
         AlgorithmicMethods.__compute_gamma_body.launch_n(
-            len(n) // 2,
-            [gamma.data, rand.data, n.idx.data, n.data, cell_id.data,
-             collision_rate_deficit.data, collision_rate.data])
+            len(multiplicity) // 2,
+            (gamma.data, rand.data, multiplicity.idx.data, multiplicity.data, cell_id.data,
+             collision_rate_deficit.data, collision_rate.data))
 
     __flag_precipitated_body = trtc.For(
         (

@@ -15,7 +15,7 @@ from PySDM.backends.numba.storage import Storage as ImportedStorage
 from PySDM.physics import Formulae
 
 
-class Numba(  # pylint: disable=too-many-ancestors
+class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     AlgorithmicMethods,
     PairMethods,
     IndexMethods,

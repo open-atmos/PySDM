@@ -10,7 +10,7 @@ from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.coalescence_kernels import Golovin, Geometric, Electric, Hydrodynamic
 # noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 
 
 @pytest.mark.parametrize('croupier', ('local', 'global'))

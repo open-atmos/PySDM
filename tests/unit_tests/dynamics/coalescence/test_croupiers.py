@@ -1,20 +1,19 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-
+from PySDM.backends import ThrustRTC
 from PySDM.physics.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
 from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 
 # noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
+from ....backends_fixture import backend_class
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])
-def test_final_state(croupier, backend):
-    from PySDM.backends import ThrustRTC
-    if backend is ThrustRTC:
+def test_final_state(croupier, backend_class):
+    if backend_class is ThrustRTC:
         return  # TODO #330
 
     # Arrange
@@ -28,7 +27,7 @@ def test_final_state(croupier, backend):
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
     attributes['volume'], attributes['n'] = Linear(spectrum).sample(n_sd)
-    particulator = DummyParticulator(backend, n_sd)
+    particulator = DummyParticulator(backend_class, n_sd)
     particulator.environment = DummyEnvironment(grid=(x, y))
     particulator.croupier = croupier
 
@@ -46,7 +45,7 @@ def test_final_state(croupier, backend):
     particulator.build(attributes)
 
     # Act
-    u01 = backend.Storage.from_ndarray(np.random.random(n_sd))
+    u01 = backend_class.Storage.from_ndarray(np.random.random(n_sd))
     particulator.attributes.permutation(u01, local=particulator.croupier == 'local')
     _ = particulator.attributes.cell_start
 
