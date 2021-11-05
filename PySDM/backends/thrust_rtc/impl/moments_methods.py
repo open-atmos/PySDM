@@ -33,7 +33,7 @@ class MomentsMethods(Methods):
             for (auto k = 0; k < n_ranks; k+=1) {
                 if (moment_0[c_id] == 0) {
                     moments[n_cell * k  + c_id] = 0;
-                } 
+                }
                 else {
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
                 }
@@ -63,7 +63,7 @@ class MomentsMethods(Methods):
             for (auto k = 0; k < n_bins; k+=1) {
                 if (moment_0[n_cell * k + i] == 0) {
                     moments[n_cell * k  + i] = 0;
-                } 
+                }
                 else {
                     moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }
@@ -71,7 +71,7 @@ class MomentsMethods(Methods):
         ''')
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(self, moment_0, moments, n, attr_data, cell_id, idx, length, ranks,
+    def moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks,
                 min_x, max_x, x_attr, weighting_attribute, weighting_rank):
         if weighting_rank != 0:
             raise NotImplementedError()
@@ -91,7 +91,7 @@ class MomentsMethods(Methods):
             PrecisionResolver.get_floating_point(max_x),
             moment_0.data,
             cell_id.data,
-            n.data,
+            multiplicity.data,
             n_ranks,
             moments.data,
             ranks.data,
@@ -102,9 +102,8 @@ class MomentsMethods(Methods):
         self.__moments_body_1.launch_n(
             moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
 
-
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def spectrum_moments(self, moment_0, moments, n, attr_data, cell_id, idx, length,
+    def spectrum_moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
             rank, x_bins, x_attr, weighting_attribute, weighting_rank):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
@@ -125,7 +124,7 @@ class MomentsMethods(Methods):
             x_attr.data,
             moment_0.data,
             cell_id.data,
-            n.data,
+            multiplicity.data,
             x_bins.data,
             n_bins,
             moments.data,

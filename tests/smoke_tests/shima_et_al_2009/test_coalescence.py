@@ -12,8 +12,8 @@ from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
 from PySDM.physics.formulae import Formulae
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -33,10 +33,10 @@ def check(n_part, dv, n_sd, rho, state, step):
 @pytest.mark.parametrize('croupier', ['local', 'global'])
 @pytest.mark.parametrize('adaptive', [True, False])
 # pylint: disable=redefined-outer-name
-def test_coalescence(backend, croupier, adaptive):
-    if backend == ThrustRTC and croupier == 'local':  # TODO #358
+def test_coalescence(backend_class, croupier, adaptive):
+    if backend_class == ThrustRTC and croupier == 'local':  # TODO #358
         return
-    if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
+    if backend_class == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
         return
     # Arrange
     formulae = Formulae(seed=256)
@@ -51,7 +51,7 @@ def test_coalescence(backend, croupier, adaptive):
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
-    builder = Builder(n_sd=n_sd, backend=backend(formulae=formulae))
+    builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)

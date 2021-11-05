@@ -3,17 +3,17 @@ import numpy as np
 from PySDM.initialisation.multiplicities import discretise_n
 from PySDM.initialisation.spectral_sampling import Linear
 from PySDM.physics.spectra import Lognormal
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
 
-assert hasattr(backend, '_pytestfixturefunction')
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestMaths:
 
     @staticmethod
     # pylint: disable=redefined-outer-name
-    def test_moment_0d(backend):
+    def test_moment_0d(backend_class):
         # Arrange
         n_part = 100000
         v_mean = 2e-6
@@ -24,7 +24,7 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyParticulator(backend, n_sd)
+        particles = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
         state = particles.attributes
@@ -32,8 +32,8 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO #217 : add a moments_0 wrapper
-        moment_0 = particles.backend.Storage.empty((1,), dtype=float)
-        moments = particles.backend.Storage.empty((1, 1), dtype=float)
+        moment_0 = backend_class.Storage.empty((1,), dtype=float)
+        moments = backend_class.Storage.empty((1, 1), dtype=float)
 
         # Act
         state.moments(moment_0, moments, specs={'volume': (0,)})
@@ -68,7 +68,7 @@ class TestMaths:
 
     @staticmethod
     # pylint: disable=redefined-outer-name
-    def test_spectrum_moment_0d(backend):
+    def test_spectrum_moment_0d(backend_class):
         # Arrange
         n_part = 100000
         v_mean = 2e-6
@@ -79,7 +79,7 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyParticulator(backend, n_sd)
+        particles = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particles.build(attribute)
         state = particles.attributes
@@ -87,17 +87,17 @@ class TestMaths:
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
 
         # TODO #217 : add a moments_0 wrapper
-        spectrum_moment_0 = particles.backend.Storage.empty(
+        spectrum_moment_0 = backend_class.Storage.empty(
             (len(v_bins) - 1, 1),
             dtype=float
         )
-        spectrum_moments = particles.backend.Storage.empty(
+        spectrum_moments = backend_class.Storage.empty(
             (len(v_bins) - 1, 1),
             dtype=float
         )
-        moment_0 = particles.backend.Storage.empty((1,), dtype=float)
-        moments = particles.backend.Storage.empty((1, 1), dtype=float)
-        v_bins_edges = particles.backend.Storage.from_ndarray(v_bins)
+        moment_0 = backend_class.Storage.empty((1,), dtype=float)
+        moments = backend_class.Storage.empty((1, 1), dtype=float)
+        v_bins_edges = backend_class.Storage.from_ndarray(v_bins)
 
         # Act
         state.spectrum_moments(

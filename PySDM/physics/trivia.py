@@ -1,7 +1,7 @@
 """
 Various (hopefully) undebatable formulae
 """
-from numpy import abs, log10, exp, power
+from numpy import abs, log10, exp, power  # pylint: disable=redefined-builtin
 from . import constants as const
 
 

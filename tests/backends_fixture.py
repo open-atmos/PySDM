@@ -7,5 +7,5 @@ from PySDM.backends import CPU, GPU
     CPU,
     GPU
 ])
-def backend(request):
+def backend_class(request):
     return request.param

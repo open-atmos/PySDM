@@ -9,25 +9,26 @@ from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.coalescence_kernels import Golovin, Geometric, Electric, Hydrodynamic
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 @pytest.mark.parametrize('croupier', ('local', 'global'))
 @pytest.mark.parametrize('adaptive', (True, False))
 @pytest.mark.parametrize('kernel', (Geometric(), Electric(), Hydrodynamic()))
 # pylint: disable=redefined-outer-name
-def test_coalescence(backend, kernel, croupier, adaptive):
-    if backend == ThrustRTC and croupier == 'local':  # TODO #358
+def test_coalescence(backend_class, kernel, croupier, adaptive):
+    if backend_class == ThrustRTC and croupier == 'local':  # TODO #358
         return
-    if backend == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
+    if backend_class == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
         return
     # Arrange
     s = Settings()
     s.formulae.seed = 0
     steps = [0, 800]
 
-    builder = Builder(n_sd=s.n_sd, backend=backend(formulae=s.formulae))
+    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
@@ -50,7 +51,7 @@ def test_coalescence(backend, kernel, croupier, adaptive):
 
 @pytest.mark.xfail(struct.calcsize("P") * 8 == 32, reason="32 bit", strict=False)
 # pylint: disable=redefined-outer-name
-def test_coalescence_2_sd(backend):
+def test_coalescence_2_sd(backend_class):
     # Arrange
     s = Settings()
     s.kernel = Golovin(b=1.5e12)
@@ -58,7 +59,7 @@ def test_coalescence_2_sd(backend):
     steps = [0, 200]
     s.n_sd = 2
 
-    builder = Builder(n_sd=s.n_sd, backend=backend(formulae=s.formulae))
+    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)

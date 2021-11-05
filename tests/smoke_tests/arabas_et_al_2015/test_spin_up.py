@@ -6,8 +6,8 @@ from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM.physics import si
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class DummyStorage:
@@ -27,7 +27,7 @@ class DummyStorage:
         pytest.param(True, id="fastmath: True")
 ))
 # pylint: disable=redefined-outer-name
-def test_spin_up(backend, fastmath, plot=False):
+def test_spin_up(backend_class, fastmath, plot=False):
     # Arrange
     settings = Settings(fastmath=fastmath)
     settings.dt = .5 * si.second
@@ -36,7 +36,7 @@ def test_spin_up(backend, fastmath, plot=False):
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend=backend)
+    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_class)
     simulation.reinit()
 
     # Act

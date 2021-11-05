@@ -30,10 +30,11 @@ def test_toms748(fun):
     b = .5
     rtol = 1e-6
     wt = Formulae().trivia.within_tolerance
-    actual, iters = sut(f2, (),
-                        ax=a, bx=b,
-                        fax=f2(a), fbx=f2(b),
-                        max_iter=10, rtol=rtol, within_tolerance=wt)
-    expected = toms748(f2, a, b)
+    actual, _ = sut(
+        fun, (),
+        ax=a, bx=b,
+        fax=fun(a), fbx=fun(b),
+        max_iter=10, rtol=rtol, within_tolerance=wt)
+    expected = toms748(fun, a, b)
 
     np.testing.assert_almost_equal(actual, expected)

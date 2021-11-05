@@ -11,12 +11,33 @@ class StorageBase:
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
 
+    def __len__(self):
+        return self.shape[0]
+
+    def __pow__(self, other):
+        raise TypeError("Use **=")
+
+    def __mod__(self, other):
+        raise TypeError("Use %=")
+
+    def __truediv__(self, other):
+        raise TypeError("Use /=")
+
+    def __mul__(self, other):
+        raise TypeError("Use *=")
+
+    def __sub__(self, other):
+        raise TypeError("Use -=")
+
+    def __add__(self, other):
+        raise TypeError("Use +=")
+
     @abstractmethod
     def to_ndarray(self):
         raise NotImplementedError()
 
     @abstractmethod
-    def urand(self, generator=None):
+    def urand(self, generator):
         raise NotImplementedError()
 
     @abstractmethod

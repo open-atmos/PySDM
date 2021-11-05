@@ -159,7 +159,7 @@ class Particles:
                                                )
 
     def coalescence(self, gamma, is_first_in_pair):
-        self.particulator.bck.coalescence(n=self['n'],
+        self.particulator.bck.coalescence(multiplicity=self['n'],
                                           idx=self.__idx,
                                           attributes=self.get_extensive_attrs(),
                                           gamma=gamma,
@@ -190,7 +190,8 @@ class Particles:
         return res
 
     def oxidation(self,
-                  kinetic_consts, dt, equilibrium_consts, dissociation_factors, do_chemistry_flag):
+        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
+    ):
         self.particulator.bck.oxidation(
             n_sd=self.particulator.n_sd,
             cell_ids=self['cell id'],
@@ -202,7 +203,7 @@ class Particles:
             K_SO2=equilibrium_consts["K_SO2"],
             K_HSO3=equilibrium_consts["K_HSO3"],
             dissociation_factor_SO2=dissociation_factors['SO2'],
-            dt=dt,
+            timestep=timestep,
             # input
             droplet_volume=self["volume"],
             pH=self["pH"],
@@ -217,7 +218,7 @@ class Particles:
         self.attributes['moles_H2O2'].mark_updated()
         self.attributes['moles_O3'].mark_updated()
 
-    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, dt,
+    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, timestep,
                     environment_mixing_ratios, do_chemistry_flag):
         self.particulator.bck.dissolution(
             n_cell=self.particulator.mesh.n_cell,
@@ -232,7 +233,7 @@ class Particles:
             env_p=self.particulator.env.get_predicted('p'),
             env_T=self.particulator.env.get_predicted('T'),
             env_rho_d=self.particulator.env.get_predicted('rhod'),
-            dt=dt,
+            timestep=timestep,
             dv=self.particulator.mesh.dv,
             droplet_volume=self["volume"],
             multiplicity=self["n"],
@@ -246,7 +247,7 @@ class Particles:
         self.particulator.bck.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
-            T=self.particulator.env.get_predicted('T')
+            temperature=self.particulator.env.get_predicted('T')
         )
 
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):

@@ -7,16 +7,16 @@ from PySDM.physics.constants import si
 from PySDM.backends.numba.test_helpers import bdf
 from PySDM.backends import GPU
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 @pytest.mark.parametrize("scheme", ('default', 'BDF'))
 @pytest.mark.parametrize("adaptive", (True, False))
 # pylint: disable=redefined-outer-name
-def test_just_do_it(backend, scheme, adaptive):
+def test_just_do_it(backend_class, scheme, adaptive):
     # Arrange
-    if scheme == 'BDF' and (not adaptive or backend is GPU):
+    if scheme == 'BDF' and (not adaptive or backend_class is GPU):
         return
 
     settings = Settings(dt_output=10 * si.second)
@@ -26,7 +26,7 @@ def test_just_do_it(backend, scheme, adaptive):
     elif not adaptive:
         settings.dt_max = 1 * si.second
 
-    simulation = Simulation(settings, backend)
+    simulation = Simulation(settings, backend_class)
     if scheme == 'BDF':
         bdf.patch_particulator(simulation.particulator)
 
@@ -51,7 +51,7 @@ def test_just_do_it(backend, scheme, adaptive):
     assert .27 * n_unit < max(N3) < .4 * n_unit
 
     # TODO #527
-    if backend is not GPU:
+    if backend_class is not GPU:
         assert max(output['ripening_rate']) > 0
 
 

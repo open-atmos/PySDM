@@ -32,7 +32,7 @@ class Golovin:
         result = float(
             (1 - tau) *
             1 / (x * np.sqrt(tau)) *
-            special.ive(1, 2 * x / x_0 * sqrt_tau) *
+            special.ive(1, 2 * x / x_0 * sqrt_tau) *  # pylint: disable=no-member
             np.exp(-(1 + tau -2 * sqrt_tau) * x / x_0)
         )
         return result

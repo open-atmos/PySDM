@@ -6,19 +6,19 @@ from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
 from PySDM_examples.utils import DummyController
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 # pylint: disable=redefined-outer-name
-def test_export(backend, tmp_path):
+def test_export(backend_class, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
     settings.output_interval = settings.dt
 
     storage = Storage()
-    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend)
+    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_class)
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 

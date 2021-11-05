@@ -1,9 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
-# noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
+from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class ConstantTerminalVelocity:
@@ -18,15 +18,15 @@ class TestSedimentation:
 
     @staticmethod
     # pylint: disable=redefined-outer-name
-    def test_boundary_condition(backend):
+    def test_boundary_condition(backend_class):
         # Arrange
         settings = DisplacementSettings()
         settings.dt = 1
         settings.sedimentation = True
-        sut, particles = settings.get_displacement(backend, scheme='ImplicitInSpace')
+        sut, particles = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         particles.attributes.attributes['terminal velocity'] = \
-            ConstantTerminalVelocity(backend, particles)
+            ConstantTerminalVelocity(backend_class, particles)
         assert sut.precipitation_in_last_step == 0
 
         # Act

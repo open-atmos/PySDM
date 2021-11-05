@@ -1,24 +1,26 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-
+from PySDM.backends import ThrustRTC
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.index import make_Index
-# noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
+from ....backends_fixture import backend_class
 from .__parametrisation__ import backend_fill, get_dummy_particulator_and_sdm
 # noinspection PyUnresolvedReferences
 from .__parametrisation__ import v_2, T_2, n_2
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestSDMSingleCell:
 
     @staticmethod
-    def test_single_collision(backend, v_2, T_2, n_2):
+    # pylint: disable=redefined-outer-name
+    def test_single_collision(backend_class, v_2, T_2, n_2):
         # Arrange
         const = 1.
-        particulator, sut = get_dummy_particulator_and_sdm(backend, len(n_2))
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n_2))
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'heat': const*T_2*v_2, 'temperature': T_2}
         particulator.build(attributes)
@@ -65,9 +67,10 @@ class TestSDMSingleCell:
         pytest.param(2, np.array([1, 1])),
         pytest.param(3, np.array([2, 1])),
     ])
-    def test_single_collision_same_n(backend, n_in, n_out):
+    # pylint: disable=redefined-outer-name
+    def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend, 2)
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, 2)
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         particulator.build(attributes)
@@ -88,9 +91,10 @@ class TestSDMSingleCell:
         pytest.param(5),
         pytest.param(7),
     ])
-    def test_multi_collision(backend, v_2, n_2, p):
+    # pylint: disable=redefined-outer-name
+    def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend, len(n_2))
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n_2))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
@@ -124,9 +128,10 @@ class TestSDMSingleCell:
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
     ])
-    def test_multi_droplet(backend, v, n, p):
+    # pylint: disable=redefined-outer-name
+    def test_multi_droplet(backend_class, v, n, p):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend, len(n))
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
@@ -147,13 +152,14 @@ class TestSDMSingleCell:
         ) == np.sum(n * v)
 
     @staticmethod
-    def test_multi_step(backend):
+    # pylint: disable=redefined-outer-name
+    def test_multi_step(backend_class):
         # Arrange
         n_sd = 256
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particulator, sut = get_dummy_particulator_and_sdm(backend, n_sd)
+        particulator, sut = get_dummy_particulator_and_sdm(backend_class, n_sd)
 
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(
             prob,
@@ -178,7 +184,8 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
-    def test_compute_gamma(backend):
+    # pylint: disable=redefined-outer-name
+    def test_compute_gamma(backend_class):
         # Arrange
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
@@ -189,20 +196,22 @@ class TestSDMSingleCell:
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
-                rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
-                idx = make_Index(backend).from_ndarray(np.arange(n_sd))
-                mult = make_IndexedStorage(backend).from_ndarray(
+                prob_arr = backend_class.Storage.from_ndarray(np.full((n_sd//2,), p))
+                rand_arr = backend_class.Storage.from_ndarray(np.full((n_sd//2,), r))
+                idx = make_Index(backend_class).from_ndarray(np.arange(n_sd))
+                mult = make_IndexedStorage(backend_class).from_ndarray(
                     idx,
-                    np.asarray([expected(p, r), 1]).astype(backend.Storage.INT)
+                    np.asarray([expected(p, r), 1]).astype(backend_class.Storage.INT)
                 )
-                _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
-                cell_id = backend.Storage.from_ndarray(np.zeros(n_sd, dtype=backend.Storage.INT))
+                _ = backend_class.Storage.from_ndarray(np.zeros(n_sd//2))
+                cell_id = backend_class.Storage.from_ndarray(
+                    np.zeros(n_sd, dtype=backend_class.Storage.INT))
 
-                indicator = make_PairIndicator(backend)(n_sd)
-                indicator.indicator[:] = backend.Storage.from_ndarray(np.asarray((True, False)))
+                indicator = make_PairIndicator(backend_class)(n_sd)
+                indicator.indicator[:] = backend_class.Storage.from_ndarray(
+                    np.asarray((True, False)))
 
-                backend.compute_gamma(prob_arr, rand_arr, mult,
+                backend_class.compute_gamma(prob_arr, rand_arr, mult,
                                       cell_id=cell_id, is_first_in_pair=indicator,
                                       collision_rate=_, collision_rate_deficit=_)
 
@@ -222,9 +231,9 @@ class TestSDMSingleCell:
             pytest.param(False, id='const_dt')
         )
     )
-    def test_rnd_reuse(backend, optimized_random, adaptive):
-        from PySDM.backends import ThrustRTC
-        if backend is ThrustRTC:
+    # pylint: disable=redefined-outer-name
+    def test_rnd_reuse(backend_class, optimized_random, adaptive):
+        if backend_class is ThrustRTC:
             return  # TODO #330
 
         # Arrange
@@ -234,7 +243,7 @@ class TestSDMSingleCell:
         n_substeps = 5
 
         particles, sut = get_dummy_particulator_and_sdm(
-            backend,
+            backend_class,
             n_sd,
             optimized_random=optimized_random,
             substeps=n_substeps
@@ -242,7 +251,7 @@ class TestSDMSingleCell:
         attributes = {'n': n, 'volume': v}
         particles.build(attributes)
 
-        class CountingRandom(backend.Random):
+        class CountingRandom(backend_class.Random):
             calls = 0
 
             def __call__(self, storage):

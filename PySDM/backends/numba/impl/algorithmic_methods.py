@@ -14,6 +14,7 @@ def pair_indices(i, idx, is_first_in_pair):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+# pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
         dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
 ):
@@ -41,7 +42,8 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def adaptive_sdm_gamma_body(gamma, idx, length, n, cell_id, dt_left, dt,
+    # pylint: disable=too-many-arguments,too-many-locals
+    def adaptive_sdm_gamma_body(gamma, idx, length, multiplicity, cell_id, dt_left, dt,
                                 dt_range, is_first_in_pair,
                                 stats_n_substep, stats_dt_min):
         dt_todo = np.empty_like(dt_left)
@@ -51,7 +53,7 @@ class AlgorithmicMethods(Methods):
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
-            prop = n[j] // n[k]
+            prop = multiplicity[j] // multiplicity[k]
             dt_optimal = dt * prop / gamma[i]
             cid = cell_id[j]
             dt_optimal = max(dt_optimal, dt_range[0])
@@ -68,6 +70,7 @@ class AlgorithmicMethods(Methods):
                 stats_n_substep[cid] += 1
 
     @staticmethod
+    # pylint: disable=too-many-arguments
     def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
                            stats_n_substep, stats_dt_min):
         return AlgorithmicMethods.adaptive_sdm_gamma_body(
@@ -77,6 +80,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    # pylint: disable=too-many-arguments
     def calculate_displacement_body_1d(dim, scheme, displacement, courant,
                                        cell_origin, position_in_cell):
         length = displacement.shape[1]
@@ -89,6 +93,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False, 'cache': False}})
+    # pylint: disable=too-many-arguments
     def calculate_displacement_body_2d(dim, scheme, displacement, courant,
                                        cell_origin, position_in_cell):
         length = displacement.shape[1]
@@ -101,6 +106,7 @@ class AlgorithmicMethods(Methods):
             calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
                                                displacement, courant, position_in_cell)
 
+    # pylint: disable=too-many-arguments
     def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
@@ -128,35 +134,38 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def coalescence_body(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
+    # pylint: disable=too-many-arguments
+    def coalescence_body(multiplicity, idx, length, attributes, gamma, healthy, is_first_in_pair):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
 
-            new_n = n[j] - gamma[i] * n[k]
+            new_n = multiplicity[j] - gamma[i] * multiplicity[k]
             if new_n > 0:
-                n[j] = new_n
+                multiplicity[j] = new_n
                 for a in range(0, len(attributes)):
                     attributes[a, k] += gamma[i] * attributes[a, j]
             else:  # new_n == 0
-                n[j] = n[k] // 2
-                n[k] = n[k] - n[j]
+                multiplicity[j] = multiplicity[k] // 2
+                multiplicity[k] = multiplicity[k] - multiplicity[j]
                 for a in range(0, len(attributes)):
                     attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
                     attributes[a, k] = attributes[a, j]
-            if n[k] == 0 or n[j] == 0:
+            if multiplicity[k] == 0 or multiplicity[j] == 0:
                 healthy[0] = 0
 
     @staticmethod
-    def coalescence(n, idx, attributes, gamma, healthy, is_first_in_pair):
-        AlgorithmicMethods.coalescence_body(n.data, idx.data, len(idx),
+    # pylint: disable=too-many-arguments
+    def coalescence(multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
+        AlgorithmicMethods.coalescence_body(multiplicity.data, idx.data, len(idx),
                                             attributes.data, gamma.data, healthy.data,
                                             is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def compute_gamma_body(gamma, rand, idx, length, n, cell_id,
+    # pylint: disable=too-many-arguments
+    def compute_gamma_body(gamma, rand, idx, length, multiplicity, cell_id,
                            collision_rate_deficit, collision_rate, is_first_in_pair):
 
         """
@@ -172,40 +181,49 @@ class AlgorithmicMethods(Methods):
                 continue
 
             j, k = pair_indices(i, idx, is_first_in_pair)
-            prop = n[j] // n[k]
+            prop = multiplicity[j] // multiplicity[k]
             g = min(int(gamma[i]), prop)
             cid = cell_id[j]
-            collision_rate[cid] += g * n[k]
-            collision_rate_deficit[cid] += (int(gamma[i]) - g) * n[k]
+            collision_rate[cid] += g * multiplicity[k]
+            collision_rate_deficit[cid] += (int(gamma[i]) - g) * multiplicity[k]
             gamma[i] = g
 
     @staticmethod
-    def compute_gamma(gamma, rand, n, cell_id,
+    # pylint: disable=too-many-arguments
+    def compute_gamma(gamma, rand, multiplicity, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
         return AlgorithmicMethods.compute_gamma_body(
-            gamma.data, rand.data, n.idx.data, len(n), n.data, cell_id.data,
+            gamma.data, rand.data, multiplicity.idx.data, len(multiplicity), multiplicity.data,
+            cell_id.data,
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def flag_precipitated_body(cell_origin, position_in_cell, volume, n, idx, length, healthy):
+    # pylint: disable=too-many-arguments
+    def flag_precipitated_body(
+        cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
+    ):
         rainfall = 0.
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] < 0:
-                rainfall += volume[idx[i]] * n[idx[i]]
+                rainfall += volume[idx[i]] * multiplicity[idx[i]]
                 idx[i] = flag
                 healthy[0] = 0
         return rainfall
 
     @staticmethod
-    def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy) -> float:
+    # pylint: disable=too-many-arguments
+    def flag_precipitated(
+        cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
+    ) -> float:
         return AlgorithmicMethods.flag_precipitated_body(
             cell_origin.data, position_in_cell.data, volume.data,
-            n.data, idx.data, length, healthy.data)
+            multiplicity.data, idx.data, length, healthy.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
+    # pylint: disable=too-many-arguments,too-many-locals
     def linear_collection_efficiency_body(
             params, output, radii, is_first_in_pair, idx, length, unit
     ):
@@ -264,7 +282,7 @@ class AlgorithmicMethods(Methods):
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty(
-                        (numba.config.NUMBA_NUM_THREADS, len(cell_start)),
+                        (numba.config.NUMBA_NUM_THREADS, len(cell_start)),  # pylint: disable=no-member
                         dtype=int
                     )
 
@@ -284,21 +302,24 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    # pylint: disable=too-many-arguments
+    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    # pylint: disable=too-many-arguments
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
+            prob.data, cell_id.data, cell_idx.data, cell_start.data,
+            norm_factor.data, timestep, dv)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -317,6 +338,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
+    # pylint: disable=too-many-arguments
     def _counting_sort_by_cell_id_and_update_cell_start(
             new_idx, idx, cell_id, cell_idx, length, cell_start
     ):
@@ -333,6 +355,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
+    # pylint: disable=too-many-arguments
     def _parallel_counting_sort_by_cell_id_and_update_cell_start(
             new_idx, idx, cell_id, cell_idx, length, cell_start, cell_start_p):
         cell_end_thread = cell_start_p

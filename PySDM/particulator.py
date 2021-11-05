@@ -27,10 +27,10 @@ class Particulator:
         self.sorting_scheme = 'default'
         self.condensation_solver = None
 
-        self.Index = make_Index(backend)
-        self.PairIndicator = make_PairIndicator(backend)
-        self.PairwiseStorage = make_PairwiseStorage(backend)
-        self.IndexedStorage = make_IndexedStorage(backend)
+        self.Index = make_Index(backend)  # pylint: disable=invalid-name
+        self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
+        self.PairwiseStorage = make_PairwiseStorage(backend)  # pylint: disable=invalid-name
+        self.IndexedStorage = make_IndexedStorage(backend)  # pylint: disable=invalid-name
 
         self.timers = {}
         self.null = self.Storage.empty(0, dtype=float)
@@ -103,7 +103,7 @@ class Particulator:
             rtol_x=rtol_x,
             rtol_thd=rtol_thd,
             v_cr=self.attributes["critical volume"],
-            dt=self.dt,
+            timestep=self.dt,
             counters=counters,
             cell_order=cell_order,
             RH_max=RH_max,

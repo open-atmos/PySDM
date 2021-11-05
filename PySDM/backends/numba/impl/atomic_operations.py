@@ -34,6 +34,7 @@ def declare_atomic_array_op(iop, uop, fop):
         _ = func_type
 
         @lower_builtin(func, types.Buffer, types.Any, types.Any)
+        # pylint: disable=too-many-locals
         def func_impl(context, builder, sig, args):
             """
             array[a] = scalar_or_array

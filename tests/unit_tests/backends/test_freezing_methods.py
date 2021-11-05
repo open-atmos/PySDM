@@ -8,9 +8,9 @@ from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.dynamics import Freezing
 from PySDM.products import IceWaterContent
+from ...backends_fixture import backend_class  # TODO #599
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend  # TODO #599
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestFreezingMethods:

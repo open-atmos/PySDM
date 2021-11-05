@@ -84,7 +84,7 @@ class AqueousChemistry:
                 system_type=self.system_type,
                 dissociation_factors=self.dissociation_factors,
                 environment_mixing_ratios=self.environment_mixing_ratios,
-                dt=self.particulator.dt / self.n_substep,
+                timestep=self.particulator.dt / self.n_substep,
                 do_chemistry_flag=self.do_chemistry_flag
             )
             self.particulator.attributes.chem_recalculate_drop_data(
@@ -96,5 +96,5 @@ class AqueousChemistry:
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,
                 do_chemistry_flag=self.do_chemistry_flag,
-                dt=self.particulator.dt / self.n_substep
+                timestep=self.particulator.dt / self.n_substep
             )

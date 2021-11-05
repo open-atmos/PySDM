@@ -5,18 +5,19 @@ from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM.physics.constants import si
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 # pylint: disable=redefined-outer-name
-def test_initialisation(backend, plot=False):
+def test_initialisation(backend_class, plot=False):
     settings = Settings()
     settings.simulation_time = -1 * settings.dt
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None, SpinUp=SpinUp, backend=backend)
+    simulation = Simulation(settings, None, SpinUp=SpinUp, backend=backend_class)
 
     n_levels = settings.grid[1]
     n_cell = int(np.prod(np.array(settings.grid)))
@@ -27,8 +28,8 @@ def test_initialisation(backend, plot=False):
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
 
-    moment_0 = backend.Storage.empty(n_cell, dtype=int)
-    moments = backend.Storage.empty((n_moments, n_cell), dtype=float)
+    moment_0 = backend_class.Storage.empty(n_cell, dtype=int)
+    moments = backend_class.Storage.empty((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
     simulation.reinit()
 

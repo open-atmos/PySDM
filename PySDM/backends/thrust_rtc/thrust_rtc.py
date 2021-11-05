@@ -15,7 +15,7 @@ from PySDM.backends.thrust_rtc.random import Random as ImportedRandom
 from PySDM.physics import Formulae
 
 
-class ThrustRTC(
+class ThrustRTC(  # pylint: disable=duplicate-code
     AlgorithmicMethods,
     PairMethods,
     IndexMethods,

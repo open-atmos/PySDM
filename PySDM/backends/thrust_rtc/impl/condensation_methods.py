@@ -181,7 +181,7 @@ class CondensationMethods(Methods):
                 "pqv", "qv", "prhod", "rhod", "dt", "RH_max"
             ),
             "i",
-            f'''
+            '''
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
@@ -243,7 +243,7 @@ class CondensationMethods(Methods):
         solver,
         n_cell, cell_start_arg,
         v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
-        rtol_x, rtol_thd, dt, counters, cell_order, RH_max, success, cell_id
+        rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
 
@@ -260,11 +260,11 @@ class CondensationMethods(Methods):
             n_cell,
             (
                 self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data,
-                thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(dt), RH_max.data
+                thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(timestep), RH_max.data
             )
         )
 
-        dt /= n_substeps
+        timestep /= n_substeps
         self.calculate_m_l(self.ml_old, v, n, cell_id)
 
         for _ in range(n_substeps):
@@ -272,14 +272,15 @@ class CondensationMethods(Methods):
                 n_cell,
                 (
                     *self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data,
-                    self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(dt),
+                    self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(timestep),
                     RH_max.data
                 )
             )
             self.__update_volume.launch_n(
                 len(n),
                 (
-                    v.data, vdry.data, *self.vars.values(), kappa.data, f_org.data, dvfloat(dt),
+                    v.data, vdry.data, *self.vars.values(),
+                    kappa.data, f_org.data, dvfloat(timestep),
                     dvfloat(self.RH_rtol), dvfloat(rtol_x), dvfloat(self.max_iters), cell_id.data)
             )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
@@ -287,12 +288,12 @@ class CondensationMethods(Methods):
                 n_cell,
                 (
                     self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data,
-                    pthd.data, pqv.data, rhod.data, dvfloat(dt), self.ml_new.data,
+                    pthd.data, pqv.data, rhod.data, dvfloat(timestep), self.ml_new.data,
                     self.ml_old.data, dvfloat(dv_mean), self.vars['T'], self.vars['lv']
                 )
             )
 
-    def make_condensation_solver(self, dt, n_cell, *, dt_range, adaptive, fuse, multiplier,
+    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse, multiplier,
                                  RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
@@ -305,4 +306,3 @@ class CondensationMethods(Methods):
         self.rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.vars = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data
                      for key in CondensationMethods.keys}
-        return None

@@ -1,12 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.storage import Storage
 from PySDM.physics import si, Formulae
 from PySDM.physics.aqueous_chemistry.support import KineticConsts, EquilibriumConsts, \
     DISSOCIATION_FACTORS, k4
 from PySDM.physics.constants import T_STP, pi_4_3
-import pytest
 
 
 formulae = Formulae()
@@ -113,7 +113,7 @@ def test_oxidation(conc, dt):
         k3=k3,
         K_SO2=K_SO2,
         K_HSO3=K_HSO3,
-        dt=dt,
+        timestep=dt,
         droplet_volume=Storage.from_ndarray(np.full(n_sd, volume)),
         pH=Storage.from_ndarray(np.full(n_sd, pH)),
         dissociation_factor_SO2=Storage.from_ndarray(np.full(n_sd, DF)),
