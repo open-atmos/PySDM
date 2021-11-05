@@ -30,7 +30,7 @@ def test_r_wet_init(constants, r_dry, plot=False):
     kappa = .356
 
     class Particulator:
-        formulae = Formulae(surface_tension='CompressedFilm_Ovadnevaite')
+        formulae = Formulae(surface_tension='CompressedFilmOvadnevaite')
 
     class Env:
         particulator = Particulator()
