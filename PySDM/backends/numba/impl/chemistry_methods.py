@@ -1,6 +1,6 @@
+from collections import namedtuple
 import numba
 import numpy as np
-from collections import namedtuple
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from PySDM.physics.constants import Md, R_str, Rd, K_H2O
@@ -228,7 +228,7 @@ class ChemistryMethods(Methods):
                 )
             )
             a = pH2H(pH[i])
-            fa = pH_minfun(a, *args)
+            fa = acidity_minfun(a, *args)
             if abs(fa) < _realy_close_threshold:
                 continue
             b = np.nan
@@ -236,12 +236,12 @@ class ChemistryMethods(Methods):
             use_default_range = False
             if abs(fa) < _quite_close_threshold:
                 b = a * _quite_close_multiplier
-                fb = pH_minfun(b, *args)
+                fb = acidity_minfun(b, *args)
                 if fa * fb > 0:
                     b = a
                     fb = fa
                     a = b / _quite_close_multiplier / _quite_close_multiplier
-                    fa = pH_minfun(a, *args)
+                    fa = acidity_minfun(a, *args)
                     if fa * fb > 0:
                         use_default_range = True
             else:
@@ -249,12 +249,12 @@ class ChemistryMethods(Methods):
             if use_default_range:
                 a = H_min
                 b = H_max
-                fa = pH_minfun(a, *args)
-                fb = pH_minfun(b, *args)
+                fa = acidity_minfun(a, *args)
+                fb = acidity_minfun(b, *args)
                 max_iter = _max_iter_default
             else:
                 max_iter = _max_iter_quite_close
-            H, _iters_taken = toms748_solve(pH_minfun, args, a, b, fa, fb, rtol=rtol,
+            H, _iters_taken = toms748_solve(acidity_minfun, args, a, b, fa, fb, rtol=rtol,
                                             max_iter=max_iter, within_tolerance=within_tolerance)
             assert _iters_taken != max_iter
             pH[i] = H2pH(H)
@@ -292,7 +292,7 @@ def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def pH_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
+def acidity_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
     ammonia = (N_mIII * H * K.NH3) / (K_H2O + K.NH3 * H)
     nitric = N_V * K.HNO3 / (H + K.HNO3)
     sulfous = S_IV * K.SO2 * (H + 2 * K.HSO3) / (H * H + H * K.SO2 + K.SO2 * K.HSO3)
