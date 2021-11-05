@@ -10,21 +10,21 @@ from fastcore.net import ExceptionsHTTP
 
 # https://stackoverflow.com/questions/7012921/recursive-grep-using-python
 def findfiles(path, regex):
-    regObj = re.compile(regex)
+    reg_obj = re.compile(regex)
     res = []
     for root, dirs, fnames in os.walk(path):
         for fname in fnames:
-            if regObj.match(fname):
+            if reg_obj.match(fname):
                 res.append(os.path.join(root, fname))
     return res
 
 
 def grep(filepath, regex):
-    regObj = re.compile(regex)
+    reg_obj = re.compile(regex)
     res = []
     with open(filepath, encoding="utf8") as f:
         for line in f:
-            if regObj.match(line):
+            if reg_obj.match(line):
                 res.append(line)
     return res
 

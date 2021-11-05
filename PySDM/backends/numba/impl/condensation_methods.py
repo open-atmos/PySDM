@@ -201,12 +201,16 @@ class CondensationMethods(Methods):
         phys_lambdaK, phys_lambdaD, phys_DK, within_tolerance, max_iters, RH_rtol
     ):
         @numba.njit(**jit_flags)
-        def minfun(x_new, x_old, timestep, kappa, f_org, rd3, T, RH, lv, pvs, D, K):
-            vol = volume_of_x(x_new)
-            r_new = radius(vol)
-            sgm = phys_sigma(T, vol, const.pi_4_3 * rd3, f_org)
-            RH_eq = phys_RH_eq(r_new, T, kappa, rd3, sgm)
-            r_dr_dt = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, D, K)
+        def minfun(x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, lv, pvs, D, K):
+            volume = volume_of_x(x_new)
+            RH_eq = phys_RH_eq(
+                radius(volume),
+                temperature,
+                kappa,
+                rd3,
+                phys_sigma(temperature, volume, const.pi_4_3 * rd3, f_org)
+            )
+            r_dr_dt = phys_r_dr_dt(RH_eq, temperature, RH, lv, pvs, D, K)
             return x_old - x_new + timestep * dx_dt(x_new, r_dr_dt)
 
         @numba.njit(**jit_flags)

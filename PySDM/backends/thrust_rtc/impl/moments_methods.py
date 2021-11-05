@@ -33,7 +33,7 @@ class MomentsMethods(Methods):
             for (auto k = 0; k < n_ranks; k+=1) {
                 if (moment_0[c_id] == 0) {
                     moments[n_cell * k  + c_id] = 0;
-                } 
+                }
                 else {
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
                 }
@@ -63,7 +63,7 @@ class MomentsMethods(Methods):
             for (auto k = 0; k < n_bins; k+=1) {
                 if (moment_0[n_cell * k + i] == 0) {
                     moments[n_cell * k  + i] = 0;
-                } 
+                }
                 else {
                     moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }

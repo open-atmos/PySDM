@@ -27,7 +27,7 @@ class FakeThrustRTC:
         def __init__(self, ndarray):
             FakeThrustRTC.DVVector.DVVector = FakeThrustRTC.DVVector
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
-            self.ndarray = ndarray
+            self.ndarray: np.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
@@ -79,11 +79,11 @@ class FakeThrustRTC:
             return result
 
     @staticmethod
-    def Sort(dvvector):  # pylint: disable=invalid-name
+    def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
         dvvector.ndarray[:] = np.sort(dvvector.ndarray)
 
     @staticmethod
-    def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
+    def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
             raise ValueError(
                 f"Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}"
@@ -95,7 +95,7 @@ class FakeThrustRTC:
         vector[:] = value
 
     @staticmethod
-    def Find(vector, value):  # pylint: disable=invalid-name
+    def Find(vector: DVVector, value):  # pylint: disable=invalid-name
         for i in range(len(vector.ndarray)):
             if vector[i] == value.ndarray:
                 return i

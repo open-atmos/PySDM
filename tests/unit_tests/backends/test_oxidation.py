@@ -1,12 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
 from PySDM.backends.numba.storage import Storage
 from PySDM.physics import si, Formulae
 from PySDM.physics.aqueous_chemistry.support import KineticConsts, EquilibriumConsts, \
     DISSOCIATION_FACTORS, k4
 from PySDM.physics.constants import T_STP, pi_4_3
-import pytest
 
 
 formulae = Formulae()

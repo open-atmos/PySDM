@@ -181,7 +181,7 @@ class CondensationMethods(Methods):
                 "pqv", "qv", "prhod", "rhod", "dt", "RH_max"
             ),
             "i",
-            f'''
+            '''
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
@@ -306,4 +306,3 @@ class CondensationMethods(Methods):
         self.rhod_mean = Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype())
         self.vars = {key: Storage.empty(shape=n_cell, dtype=PrecisionResolver.get_np_dtype()).data
                      for key in CondensationMethods.keys}
-        return None

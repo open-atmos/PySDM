@@ -6,7 +6,7 @@ from PySDM.physics.formulae import Formulae
 from PySDM.physics import constants
 
 
-assert numba.config.DISABLE_JIT is not None
+assert numba.config.DISABLE_JIT is not None  # pylint: disable=no-member
 
 
 class TestDimensionalAnalysis:

@@ -48,11 +48,11 @@ class TestExplicitEulerWithInterpolation:
     def test_calculate_displacement(backend_class):
         # Arrange
         settings = DisplacementSettings()
-        a = .1
-        b = .2
-        w = .25
-        settings.courant_field_data = (np.array([[a, b]]).T, np.array([[0, 0]]))
-        settings.positions = [[w], [0]]
+        value_a = .1
+        value_b = .2
+        weight = .25
+        settings.courant_field_data = (np.array([[value_a, value_b]]).T, np.array([[0, 0]]))
+        settings.positions = [[weight], [0]]
         sut, particulator = settings.get_displacement(backend_class, scheme='ExplicitInSpace')
 
         # Act
@@ -63,7 +63,7 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_equal(
             sut.displacement[0, slice(0, 1)].to_ndarray(),
-            (1 - w) * a + w * b
+            (1 - weight) * value_a + weight * value_b
         )
 
     @staticmethod
@@ -71,11 +71,11 @@ class TestExplicitEulerWithInterpolation:
     def test_calculate_displacement_dim1(backend_class):
         # Arrange
         settings = DisplacementSettings()
-        a = .1
-        b = .2
-        w = .25
-        settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[a, b]]))
-        settings.positions = [[0], [w]]
+        value_a = .1
+        value_b = .2
+        weight = .25
+        settings.courant_field_data = (np.array([[0, 0]]).T, np.array([[value_a, value_b]]))
+        settings.positions = [[0], [weight]]
         sut, particulator = settings.get_displacement(backend_class, scheme='ExplicitInSpace')
 
         # Act
@@ -87,7 +87,7 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_equal(
             sut.displacement[1, slice(0, 1)].to_ndarray(),
-            (1 - w) * a + w * b
+            (1 - weight) * value_a + weight * value_b
         )
 
     @staticmethod
@@ -95,9 +95,9 @@ class TestExplicitEulerWithInterpolation:
     def test_update_position(backend_class):
         # Arrange
         settings = DisplacementSettings()
-        px = .1
-        py = .2
-        settings.positions = [[px], [py]]
+        p_x = .1
+        p_y = .2
+        settings.positions = [[p_x], [p_y]]
         sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         droplet_id = slice(0, 1)

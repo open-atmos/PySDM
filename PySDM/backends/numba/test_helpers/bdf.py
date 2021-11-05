@@ -20,7 +20,7 @@ def patch_particulator(particulator):
 
 def _bdf_condensation(particulator, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     func = Numba._condensation
-    if not numba.config.DISABLE_JIT:
+    if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
         func = func.py_func
     func(
         solver=particulator.condensation_solver,

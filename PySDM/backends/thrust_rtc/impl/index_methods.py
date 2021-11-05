@@ -40,7 +40,7 @@ class IndexMethods(Methods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
         raise NotImplementedError("Unpredictable behavior")  # TODO #358
-        IndexMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
+        # IndexMethods.__shuffle_local_body.launch_n(cell_start.size() - 1, [cell_start, u01, idx])
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)

@@ -21,6 +21,7 @@ def constants():
     pytest.param(2.4e-09),
     pytest.param(2.5e-09)
 ])
+# pylint: disable=unused-argument
 def test_r_wet_init(constants, r_dry, plot=False):
     # Arrange
     T = 280

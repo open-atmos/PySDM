@@ -42,7 +42,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-locals
     def adaptive_sdm_gamma_body(gamma, idx, length, multiplicity, cell_id, dt_left, dt,
                                 dt_range, is_first_in_pair,
                                 stats_n_substep, stats_dt_min):
@@ -223,7 +223,7 @@ class AlgorithmicMethods(Methods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-locals
     def linear_collection_efficiency_body(
             params, output, radii, is_first_in_pair, idx, length, unit
     ):
@@ -282,7 +282,7 @@ class AlgorithmicMethods(Methods):
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty(
-                        (numba.config.NUMBA_NUM_THREADS, len(cell_start)),
+                        (numba.config.NUMBA_NUM_THREADS, len(cell_start)),  # pylint: disable=no-member
                         dtype=int
                     )
 

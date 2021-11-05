@@ -1,3 +1,5 @@
+# pylint: disable=invalid-name
+
 # adapted from Maciej Waruszewski's libcloudph++ version of Boost implementation
 # https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
 # Boost version: (C) Copyright John Maddock 2006 (http://www.boost.org/LICENSE_1_0.txt)
