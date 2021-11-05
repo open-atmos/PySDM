@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.backends.thrustRTC.impl API documentation</title>
-<meta name="description" content="" />
+<title>PySDM.backends.thrust_rtc.thrust_rtc API documentation</title>
+<meta name="description" content="GPU-resident backend using NVRTC runtime compilation library for CUDA" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,62 +19,136 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.backends.thrustRTC.impl</code></h1>
+<h1 class="title">Module <code>PySDM.backends.thrust_rtc.thrust_rtc</code></h1>
 </header>
 <section id="section-intro">
+<p>GPU-resident backend using NVRTC runtime compilation library for CUDA</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .nice_thrust import nice_thrust</code></pre>
+<pre><code class="python">&#34;&#34;&#34;
+GPU-resident backend using NVRTC runtime compilation library for CUDA
+&#34;&#34;&#34;
+
+import os
+import warnings
+from PySDM.backends.thrust_rtc.impl.algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.thrust_rtc.impl.pair_methods import PairMethods
+from PySDM.backends.thrust_rtc.impl.index_methods import IndexMethods
+from PySDM.backends.thrust_rtc.impl.physics_methods import PhysicsMethods
+from PySDM.backends.thrust_rtc.impl.moments_methods import MomentsMethods
+from PySDM.backends.thrust_rtc.impl.condensation_methods import CondensationMethods
+from PySDM.backends.thrust_rtc.storage import Storage as ImportedStorage
+from PySDM.backends.thrust_rtc.random import Random as ImportedRandom
+from PySDM.physics import Formulae
+
+
+class ThrustRTC(
+    AlgorithmicMethods,
+    PairMethods,
+    IndexMethods,
+    PhysicsMethods,
+    CondensationMethods,
+    MomentsMethods
+):
+    ENABLE = True
+    Storage = ImportedStorage
+    Random = ImportedRandom
+
+    default_croupier = &#39;global&#39;
+
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
+        AlgorithmicMethods.__init__(self)
+        PairMethods.__init__(self)
+        IndexMethods.__init__(self)
+        PhysicsMethods.__init__(self)
+        CondensationMethods.__init__(self)
+        MomentsMethods.__init__(self)
+
+        if not ThrustRTC.ENABLE \
+           and &#39;CI&#39; not in os.environ:
+            warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.algorithmic_methods" href="algorithmic_methods.html">PySDM.backends.thrustRTC.impl.algorithmic_methods</a></code></dt>
+<dt id="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC"><code class="flex name class">
+<span>class <span class="ident">ThrustRTC</span></span>
+<span>(</span><span>formulae=None)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ThrustRTC(
+    AlgorithmicMethods,
+    PairMethods,
+    IndexMethods,
+    PhysicsMethods,
+    CondensationMethods,
+    MomentsMethods
+):
+    ENABLE = True
+    Storage = ImportedStorage
+    Random = ImportedRandom
+
+    default_croupier = &#39;global&#39;
+
+    def __init__(self, formulae=None):
+        self.formulae = formulae or Formulae()
+        AlgorithmicMethods.__init__(self)
+        PairMethods.__init__(self)
+        IndexMethods.__init__(self)
+        PhysicsMethods.__init__(self)
+        CondensationMethods.__init__(self)
+        MomentsMethods.__init__(self)
+
+        if not ThrustRTC.ENABLE \
+           and &#39;CI&#39; not in os.environ:
+            warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods" href="impl/algorithmic_methods.html#PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods" href="impl/pair_methods.html#PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods">PairMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods" href="impl/index_methods.html#PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods">IndexMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods" href="impl/physics_methods.html#PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods" href="impl/condensation_methods.html#PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods" href="impl/moments_methods.html#PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
+<li><a title="PySDM.backends.impl.methods.Methods" href="../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.ENABLE"><code class="name">var <span class="ident">ENABLE</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.condensation_methods" href="condensation_methods.html">PySDM.backends.thrustRTC.impl.condensation_methods</a></code></dt>
+<dt id="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Random"><code class="name">var <span class="ident">Random</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.index_methods" href="index_methods.html">PySDM.backends.thrustRTC.impl.index_methods</a></code></dt>
+<dt id="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.moments_methods" href="moments_methods.html">PySDM.backends.thrustRTC.impl.moments_methods</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.nice_thrust" href="nice_thrust.html">PySDM.backends.thrustRTC.impl.nice_thrust</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.pair_methods" href="pair_methods.html">PySDM.backends.thrustRTC.impl.pair_methods</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.physics_methods" href="physics_methods.html">PySDM.backends.thrustRTC.impl.physics_methods</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.precision_resolver" href="precision_resolver.html">PySDM.backends.thrustRTC.impl.precision_resolver</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.backends.thrustRTC.impl.storage_impl" href="storage_impl.html">PySDM.backends.thrustRTC.impl.storage_impl</a></code></dt>
+<dt id="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.default_croupier"><code class="name">var <span class="ident">default_croupier</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -85,20 +159,20 @@
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.backends.thrustRTC" href="../index.html">PySDM.backends.thrustRTC</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc" href="index.html">PySDM.backends.thrust_rtc</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.backends.thrustRTC.impl.algorithmic_methods" href="algorithmic_methods.html">PySDM.backends.thrustRTC.impl.algorithmic_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.condensation_methods" href="condensation_methods.html">PySDM.backends.thrustRTC.impl.condensation_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.index_methods" href="index_methods.html">PySDM.backends.thrustRTC.impl.index_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.moments_methods" href="moments_methods.html">PySDM.backends.thrustRTC.impl.moments_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.nice_thrust" href="nice_thrust.html">PySDM.backends.thrustRTC.impl.nice_thrust</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.pair_methods" href="pair_methods.html">PySDM.backends.thrustRTC.impl.pair_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.physics_methods" href="physics_methods.html">PySDM.backends.thrustRTC.impl.physics_methods</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.precision_resolver" href="precision_resolver.html">PySDM.backends.thrustRTC.impl.precision_resolver</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.impl.storage_impl" href="storage_impl.html">PySDM.backends.thrustRTC.impl.storage_impl</a></code></li>
+<li>
+<h4><code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC" href="#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC">ThrustRTC</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.ENABLE" href="#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.ENABLE">ENABLE</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Random" href="#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Random">Random</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Storage" href="#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.Storage">Storage</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.default_croupier" href="#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC.default_croupier">default_croupier</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

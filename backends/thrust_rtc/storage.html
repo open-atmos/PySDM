@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.backends.thrustRTC.storage API documentation</title>
+<title>PySDM.backends.thrust_rtc.storage API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.backends.thrustRTC.storage</code></h1>
+<h1 class="title">Module <code>PySDM.backends.thrust_rtc.storage</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -28,9 +28,9 @@
 </summary>
 <pre><code class="python">import numpy as np
 
-from PySDM.backends.thrustRTC.conf import trtc
-from PySDM.backends.thrustRTC.impl import storage_impl as impl
-from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrust_rtc.conf import trtc
+from PySDM.backends.thrust_rtc.impl import storage_impl as impl
+from PySDM.backends.thrust_rtc.impl.precision_resolver import PrecisionResolver
 from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
 
 
@@ -257,7 +257,7 @@ class Storage(StorageBase):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.thrustRTC.storage.Storage"><code class="flex name class">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage"><code class="flex name class">
 <span>class <span class="ident">Storage</span></span>
 <span>(</span><span>signature: <a title="PySDM.storages.storage_utils.StorageSignature" href="../../storages/storage_utils.html#PySDM.storages.storage_utils.StorageSignature">StorageSignature</a>)</span>
 </code></dt>
@@ -486,7 +486,7 @@ class Storage(StorageBase):
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.BOOL"><code class="name">var <span class="ident">BOOL</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.BOOL"><code class="name">var <span class="ident">BOOL</span></code></dt>
 <dd>
 <div class="desc"><p>Boolean type (True or False), stored as a byte.</p>
 <div class="admonition warning">
@@ -499,14 +499,14 @@ sub-class of :class:<code>int</code>.</p>
 <p>:Character code: <code>'?'</code>
 :Alias: <code>numpy.bool8</code></p></div>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.FLOAT"><code class="name">var <span class="ident">FLOAT</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.FLOAT"><code class="name">var <span class="ident">FLOAT</span></code></dt>
 <dd>
 <div class="desc"><p>Single-precision floating-point number type, compatible with C <code>float</code>.</p>
 <p>:Character code: <code>'f'</code>
 :Canonical name: <code>numpy.single</code>
 :Alias on this platform: <code>numpy.float32</code>: 32-bit-precision floating-point number type: sign bit, 8 bits exponent, 23 bits mantissa.</p></div>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.INT"><code class="name">var <span class="ident">INT</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.INT"><code class="name">var <span class="ident">INT</span></code></dt>
 <dd>
 <div class="desc"><p>Signed integer type, compatible with Python <code>int</code> and C <code>long</code>.</p>
 <p>:Character code: <code>'l'</code>
@@ -517,7 +517,7 @@ sub-class of :class:<code>int</code>.</p>
 </dl>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.empty"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.empty"><code class="name flex">
 <span>def <span class="ident">empty</span></span>(<span>shape, dtype)</span>
 </code></dt>
 <dd>
@@ -531,7 +531,7 @@ def empty(shape, dtype):
     return empty(shape, dtype, Storage)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.from_ndarray"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.from_ndarray"><code class="name flex">
 <span>def <span class="ident">from_ndarray</span></span>(<span>array)</span>
 </code></dt>
 <dd>
@@ -549,7 +549,7 @@ def from_ndarray(array):
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.all"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.all"><code class="name flex">
 <span>def <span class="ident">all</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -563,7 +563,7 @@ def from_ndarray(array):
     return self.amin()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.amin"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.amin"><code class="name flex">
 <span>def <span class="ident">amin</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -576,7 +576,7 @@ def from_ndarray(array):
     return impl.amin(self.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.download"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.download"><code class="name flex">
 <span>def <span class="ident">download</span></span>(<span>self, target, reshape=False)</span>
 </code></dt>
 <dd>
@@ -590,7 +590,7 @@ def from_ndarray(array):
     target[:] = np.reshape(self._to_host(), shape)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.floor"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.floor"><code class="name flex">
 <span>def <span class="ident">floor</span></span>(<span>self, other=None)</span>
 </code></dt>
 <dd>
@@ -607,7 +607,7 @@ def from_ndarray(array):
     return self</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.product"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.product"><code class="name flex">
 <span>def <span class="ident">product</span></span>(<span>self, multiplicand, multiplier)</span>
 </code></dt>
 <dd>
@@ -621,7 +621,7 @@ def from_ndarray(array):
     return self</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.ratio"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.ratio"><code class="name flex">
 <span>def <span class="ident">ratio</span></span>(<span>self, dividend, divisor)</span>
 </code></dt>
 <dd>
@@ -635,7 +635,7 @@ def from_ndarray(array):
     return self</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.ravel"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.ravel"><code class="name flex">
 <span>def <span class="ident">ravel</span></span>(<span>self, other)</span>
 </code></dt>
 <dd>
@@ -651,7 +651,7 @@ def from_ndarray(array):
         self.data = trtc.device_vector_from_numpy(other.ravel())</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.sum"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.sum"><code class="name flex">
 <span>def <span class="ident">sum</span></span>(<span>self, a, b)</span>
 </code></dt>
 <dd>
@@ -665,7 +665,7 @@ def from_ndarray(array):
     return self</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.to_ndarray"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.to_ndarray"><code class="name flex">
 <span>def <span class="ident">to_ndarray</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -680,7 +680,7 @@ def from_ndarray(array):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.upload"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.upload"><code class="name flex">
 <span>def <span class="ident">upload</span></span>(<span>self, data)</span>
 </code></dt>
 <dd>
@@ -696,7 +696,7 @@ def from_ndarray(array):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.storage.Storage.urand"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.storage.Storage.urand"><code class="name flex">
 <span>def <span class="ident">urand</span></span>(<span>self, generator=None)</span>
 </code></dt>
 <dd>
@@ -722,30 +722,30 @@ def from_ndarray(array):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.backends.thrustRTC" href="index.html">PySDM.backends.thrustRTC</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc" href="index.html">PySDM.backends.thrust_rtc</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.thrustRTC.storage.Storage" href="#PySDM.backends.thrustRTC.storage.Storage">Storage</a></code></h4>
+<h4><code><a title="PySDM.backends.thrust_rtc.storage.Storage" href="#PySDM.backends.thrust_rtc.storage.Storage">Storage</a></code></h4>
 <ul class="two-column">
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.BOOL" href="#PySDM.backends.thrustRTC.storage.Storage.BOOL">BOOL</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.FLOAT" href="#PySDM.backends.thrustRTC.storage.Storage.FLOAT">FLOAT</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.INT" href="#PySDM.backends.thrustRTC.storage.Storage.INT">INT</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.all" href="#PySDM.backends.thrustRTC.storage.Storage.all">all</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.amin" href="#PySDM.backends.thrustRTC.storage.Storage.amin">amin</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.download" href="#PySDM.backends.thrustRTC.storage.Storage.download">download</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.empty" href="#PySDM.backends.thrustRTC.storage.Storage.empty">empty</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.floor" href="#PySDM.backends.thrustRTC.storage.Storage.floor">floor</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.from_ndarray" href="#PySDM.backends.thrustRTC.storage.Storage.from_ndarray">from_ndarray</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.product" href="#PySDM.backends.thrustRTC.storage.Storage.product">product</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.ratio" href="#PySDM.backends.thrustRTC.storage.Storage.ratio">ratio</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.ravel" href="#PySDM.backends.thrustRTC.storage.Storage.ravel">ravel</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.sum" href="#PySDM.backends.thrustRTC.storage.Storage.sum">sum</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.to_ndarray" href="#PySDM.backends.thrustRTC.storage.Storage.to_ndarray">to_ndarray</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.upload" href="#PySDM.backends.thrustRTC.storage.Storage.upload">upload</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.storage.Storage.urand" href="#PySDM.backends.thrustRTC.storage.Storage.urand">urand</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.BOOL" href="#PySDM.backends.thrust_rtc.storage.Storage.BOOL">BOOL</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.FLOAT" href="#PySDM.backends.thrust_rtc.storage.Storage.FLOAT">FLOAT</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.INT" href="#PySDM.backends.thrust_rtc.storage.Storage.INT">INT</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.all" href="#PySDM.backends.thrust_rtc.storage.Storage.all">all</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.amin" href="#PySDM.backends.thrust_rtc.storage.Storage.amin">amin</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.download" href="#PySDM.backends.thrust_rtc.storage.Storage.download">download</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.empty" href="#PySDM.backends.thrust_rtc.storage.Storage.empty">empty</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.floor" href="#PySDM.backends.thrust_rtc.storage.Storage.floor">floor</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.from_ndarray" href="#PySDM.backends.thrust_rtc.storage.Storage.from_ndarray">from_ndarray</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.product" href="#PySDM.backends.thrust_rtc.storage.Storage.product">product</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.ratio" href="#PySDM.backends.thrust_rtc.storage.Storage.ratio">ratio</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.ravel" href="#PySDM.backends.thrust_rtc.storage.Storage.ravel">ravel</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.sum" href="#PySDM.backends.thrust_rtc.storage.Storage.sum">sum</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.to_ndarray" href="#PySDM.backends.thrust_rtc.storage.Storage.to_ndarray">to_ndarray</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.upload" href="#PySDM.backends.thrust_rtc.storage.Storage.upload">upload</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.storage.Storage.urand" href="#PySDM.backends.thrust_rtc.storage.Storage.urand">urand</a></code></li>
 </ul>
 </li>
 </ul>

@@ -34,13 +34,14 @@ from sys import float_info
 import numba
 from numpy import nan
 from PySDM.backends.numba.conf import JIT_FLAGS
+from .impl.warnings import warn
 
 float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max
 float_info_min = float_info.min
 
 
-@numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;:False}})
+@numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
 def bracket(f, args, a, b, c, fa, fb):
     tol = float_info_epsilon * 2
     if (b - a) &lt; 2 * tol * a:
@@ -129,7 +130,7 @@ def cubic_interpolate(a, b, d, e, fa, fb, fd, fe):
 
 
 @numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False}})
-def tol(a, b, rtol, within_tolerance):
+def tol_check(a, b, rtol, within_tolerance):
     return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)
 
 
@@ -142,10 +143,9 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
     fa = fax
     fb = fbx
     if not a &lt; b:
-        print(&#34;TOMS748 problem: not a &lt; b&#34;)
-        return nan, -1
+        return warn(&#34;TOMS748 problem: not a &lt; b&#34;, __file__, return_value=(nan, -1))
 
-    if tol(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
+    if tol_check(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
         max_iter = 0
         if fa == 0:
             b = a
@@ -154,8 +154,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         return (a + b) / 2, max_iter
 
     if not fa * fb &lt; 0:
-        print(&#34;TOMS748 problem: not fa * fb &lt; 0&#34;)
-        return nan, -1
+        return warn(&#34;TOMS748 problem: not fa * fb &lt; 0&#34;, __file__, return_value=(nan, -1))
 
     fe = e = fd = 1e5
 
@@ -164,14 +163,14 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
         count -= 1
 
-        if count &gt; 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
+        if count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
             c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
             e = d
             fe = fd
             a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
             count -= 1
 
-    while count &gt; 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
+    while count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
         a0 = a
         b0 = b
         min_diff = float_info_min * 32
@@ -190,7 +189,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         prof = (
@@ -206,7 +205,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         else:
             c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         if abs(fa) &lt; abs(fb):
@@ -221,7 +220,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         if (b - a) &lt; mu * (b0 - a0):
@@ -255,7 +254,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;:False}})
+<pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
 def bracket(f, args, a, b, c, fa, fb):
     tol = float_info_epsilon * 2
     if (b - a) &lt; 2 * tol * a:
@@ -379,8 +378,8 @@ def secant_interpolate(a, b, fa, fb):
     return c</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.numba.toms748.tol"><code class="name flex">
-<span>def <span class="ident">tol</span></span>(<span>a, b, rtol, within_tolerance)</span>
+<dt id="PySDM.backends.numba.toms748.tol_check"><code class="name flex">
+<span>def <span class="ident">tol_check</span></span>(<span>a, b, rtol, within_tolerance)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -389,7 +388,7 @@ def secant_interpolate(a, b, fa, fb):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False}})
-def tol(a, b, rtol, within_tolerance):
+def tol_check(a, b, rtol, within_tolerance):
     return within_tolerance(abs(a - b), min(abs(a), abs(b)), rtol)</code></pre>
 </details>
 </dd>
@@ -411,10 +410,9 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
     fa = fax
     fb = fbx
     if not a &lt; b:
-        print(&#34;TOMS748 problem: not a &lt; b&#34;)
-        return nan, -1
+        return warn(&#34;TOMS748 problem: not a &lt; b&#34;, __file__, return_value=(nan, -1))
 
-    if tol(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
+    if tol_check(a, b, rtol, within_tolerance) or fa == 0 or fb == 0:
         max_iter = 0
         if fa == 0:
             b = a
@@ -423,8 +421,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         return (a + b) / 2, max_iter
 
     if not fa * fb &lt; 0:
-        print(&#34;TOMS748 problem: not fa * fb &lt; 0&#34;)
-        return nan, -1
+        return warn(&#34;TOMS748 problem: not fa * fb &lt; 0&#34;, __file__, return_value=(nan, -1))
 
     fe = e = fd = 1e5
 
@@ -433,14 +430,14 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
         count -= 1
 
-        if count &gt; 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
+        if count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
             c = quadratic_interpolate(a, b, d, fa, fb, fd, 2)
             e = d
             fe = fd
             a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
             count -= 1
 
-    while count &gt; 0 and fa != 0 and not tol(a, b, rtol, within_tolerance):
+    while count &gt; 0 and fa != 0 and not tol_check(a, b, rtol, within_tolerance):
         a0 = a
         b0 = b
         min_diff = float_info_min * 32
@@ -459,7 +456,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         prof = (
@@ -475,7 +472,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         else:
             c = cubic_interpolate(a, b, d, e, fa, fb, fd, fe)
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         if abs(fa) &lt; abs(fb):
@@ -490,7 +487,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
         e = d
         fe = fd
         a, b, fa, fb, d, fd = bracket(f, args, a, b, c, fa, fb)
-        if 1 == count or fa == 0 or tol(a, b, rtol, within_tolerance):
+        if count == 1 or fa == 0 or tol_check(a, b, rtol, within_tolerance):
             count -= 1
             break
         if (b - a) &lt; mu * (b0 - a0):
@@ -531,7 +528,7 @@ def toms748_solve(f, args, ax, bx, fax, fbx, rtol, max_iter, within_tolerance):
 <li><code><a title="PySDM.backends.numba.toms748.quadratic_interpolate" href="#PySDM.backends.numba.toms748.quadratic_interpolate">quadratic_interpolate</a></code></li>
 <li><code><a title="PySDM.backends.numba.toms748.safe_div" href="#PySDM.backends.numba.toms748.safe_div">safe_div</a></code></li>
 <li><code><a title="PySDM.backends.numba.toms748.secant_interpolate" href="#PySDM.backends.numba.toms748.secant_interpolate">secant_interpolate</a></code></li>
-<li><code><a title="PySDM.backends.numba.toms748.tol" href="#PySDM.backends.numba.toms748.tol">tol</a></code></li>
+<li><code><a title="PySDM.backends.numba.toms748.tol_check" href="#PySDM.backends.numba.toms748.tol_check">tol_check</a></code></li>
 <li><code><a title="PySDM.backends.numba.toms748.toms748_solve" href="#PySDM.backends.numba.toms748.toms748_solve">toms748_solve</a></code></li>
 </ul>
 </li>

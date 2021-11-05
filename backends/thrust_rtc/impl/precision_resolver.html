@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.backends.thrustRTC.thrustRTC API documentation</title>
-<meta name="description" content="GPU-resident backend using NVRTC runtime compilation library for CUDA" />
+<title>PySDM.backends.thrust_rtc.impl.precision_resolver API documentation</title>
+<meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,55 +19,35 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.backends.thrustRTC.thrustRTC</code></h1>
+<h1 class="title">Module <code>PySDM.backends.thrust_rtc.impl.precision_resolver</code></h1>
 </header>
 <section id="section-intro">
-<p>GPU-resident backend using NVRTC runtime compilation library for CUDA</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-GPU-resident backend using NVRTC runtime compilation library for CUDA
-&#34;&#34;&#34;
-
-import os
-import warnings
-from PySDM.backends.thrustRTC.impl.algorithmic_methods import AlgorithmicMethods
-from PySDM.backends.thrustRTC.impl.pair_methods import PairMethods
-from PySDM.backends.thrustRTC.impl.index_methods import IndexMethods
-from PySDM.backends.thrustRTC.impl.physics_methods import PhysicsMethods
-from PySDM.backends.thrustRTC.impl.moments_methods import MomentsMethods
-from PySDM.backends.thrustRTC.impl.condensation_methods import CondensationMethods
-from PySDM.backends.thrustRTC.storage import Storage as ImportedStorage
-from PySDM.backends.thrustRTC.random import Random as ImportedRandom
-from PySDM.physics import Formulae
+<pre><code class="python">import numpy as np
+from ..conf import trtc
 
 
-class ThrustRTC(
-    AlgorithmicMethods,
-    PairMethods,
-    IndexMethods,
-    PhysicsMethods,
-    CondensationMethods,
-    MomentsMethods
-):
-    ENABLE = True
-    Storage = ImportedStorage
-    Random = ImportedRandom
+class PrecisionResolver:
+    _double_precision = False
+    _conv_function = trtc.DVDouble if _double_precision else trtc.DVFloat
+    _real_type = &#34;double&#34; if _double_precision else &#34;float&#34;
+    _np_dtype = np.float64 if _double_precision else np.float32
 
-    default_croupier = &#39;global&#39;
+    @staticmethod
+    def get_floating_point(number):
+        return PrecisionResolver._conv_function(number)
 
-    def __init__(self, formulae=None):
-        self.formulae = formulae or Formulae()
-        PhysicsMethods.__init__(self)
-        CondensationMethods.__init__(self)
-        AlgorithmicMethods.__init__(self)
-        MomentsMethods.__init__(self)
+    # noinspection PyPep8Naming
+    @staticmethod
+    def get_C_type():
+        return PrecisionResolver._real_type
 
-        if not ThrustRTC.ENABLE \
-           and &#39;CI&#39; not in os.environ:
-            warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
+    @staticmethod
+    def get_np_dtype():
+        return PrecisionResolver._np_dtype</code></pre>
 </details>
 </section>
 <section>
@@ -79,9 +59,8 @@ class ThrustRTC(
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC"><code class="flex name class">
-<span>class <span class="ident">ThrustRTC</span></span>
-<span>(</span><span>formulae=None)</span>
+<dt id="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver"><code class="flex name class">
+<span>class <span class="ident">PrecisionResolver</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -89,58 +68,68 @@ class ThrustRTC(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ThrustRTC(
-    AlgorithmicMethods,
-    PairMethods,
-    IndexMethods,
-    PhysicsMethods,
-    CondensationMethods,
-    MomentsMethods
-):
-    ENABLE = True
-    Storage = ImportedStorage
-    Random = ImportedRandom
+<pre><code class="python">class PrecisionResolver:
+    _double_precision = False
+    _conv_function = trtc.DVDouble if _double_precision else trtc.DVFloat
+    _real_type = &#34;double&#34; if _double_precision else &#34;float&#34;
+    _np_dtype = np.float64 if _double_precision else np.float32
 
-    default_croupier = &#39;global&#39;
+    @staticmethod
+    def get_floating_point(number):
+        return PrecisionResolver._conv_function(number)
 
-    def __init__(self, formulae=None):
-        self.formulae = formulae or Formulae()
-        PhysicsMethods.__init__(self)
-        CondensationMethods.__init__(self)
-        AlgorithmicMethods.__init__(self)
-        MomentsMethods.__init__(self)
+    # noinspection PyPep8Naming
+    @staticmethod
+    def get_C_type():
+        return PrecisionResolver._real_type
 
-        if not ThrustRTC.ENABLE \
-           and &#39;CI&#39; not in os.environ:
-            warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
+    @staticmethod
+    def get_np_dtype():
+        return PrecisionResolver._np_dtype</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.backends.thrustRTC.impl.algorithmic_methods.AlgorithmicMethods" href="impl/algorithmic_methods.html#PySDM.backends.thrustRTC.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
-<li><a title="PySDM.backends.thrustRTC.impl.pair_methods.PairMethods" href="impl/pair_methods.html#PySDM.backends.thrustRTC.impl.pair_methods.PairMethods">PairMethods</a></li>
-<li><a title="PySDM.backends.thrustRTC.impl.index_methods.IndexMethods" href="impl/index_methods.html#PySDM.backends.thrustRTC.impl.index_methods.IndexMethods">IndexMethods</a></li>
-<li><a title="PySDM.backends.thrustRTC.impl.physics_methods.PhysicsMethods" href="impl/physics_methods.html#PySDM.backends.thrustRTC.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
-<li><a title="PySDM.backends.thrustRTC.impl.condensation_methods.CondensationMethods" href="impl/condensation_methods.html#PySDM.backends.thrustRTC.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
-<li><a title="PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods" href="impl/moments_methods.html#PySDM.backends.thrustRTC.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
-<li><a title="PySDM.backends.impl.methods.Methods" href="../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
-</ul>
-<h3>Class variables</h3>
+<h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.ENABLE"><code class="name">var <span class="ident">ENABLE</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_C_type"><code class="name flex">
+<span>def <span class="ident">get_C_type</span></span>(<span>)</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_C_type():
+    return PrecisionResolver._real_type</code></pre>
+</details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Random"><code class="name">var <span class="ident">Random</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_floating_point"><code class="name flex">
+<span>def <span class="ident">get_floating_point</span></span>(<span>number)</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_floating_point(number):
+    return PrecisionResolver._conv_function(number)</code></pre>
+</details>
 </dd>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_np_dtype"><code class="name flex">
+<span>def <span class="ident">get_np_dtype</span></span>(<span>)</span>
+</code></dt>
 <dd>
 <div class="desc"></div>
-</dd>
-<dt id="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.default_croupier"><code class="name">var <span class="ident">default_croupier</span></code></dt>
-<dd>
-<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def get_np_dtype():
+    return PrecisionResolver._np_dtype</code></pre>
+</details>
 </dd>
 </dl>
 </dd>
@@ -155,18 +144,17 @@ class ThrustRTC(
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.backends.thrustRTC" href="index.html">PySDM.backends.thrustRTC</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.impl" href="index.html">PySDM.backends.thrust_rtc.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC">ThrustRTC</a></code></h4>
+<h4><code><a title="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver" href="#PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver">PrecisionResolver</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.ENABLE" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.ENABLE">ENABLE</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Random" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Random">Random</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Storage" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.Storage">Storage</a></code></li>
-<li><code><a title="PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.default_croupier" href="#PySDM.backends.thrustRTC.thrustRTC.ThrustRTC.default_croupier">default_croupier</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_C_type" href="#PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_C_type">get_C_type</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_floating_point" href="#PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_floating_point">get_floating_point</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_np_dtype" href="#PySDM.backends.thrust_rtc.impl.precision_resolver.PrecisionResolver.get_np_dtype">get_np_dtype</a></code></li>
 </ul>
 </li>
 </ul>
