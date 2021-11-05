@@ -5,7 +5,7 @@ sgm_org = np.nan
 delta_min = np.nan
 
 
-class CompressedFilm_Ovadnevaite:
+class CompressedFilmOvadnevaite:
     """
     Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
     and as described in Lowe et al. (2019).
@@ -21,7 +21,7 @@ class CompressedFilm_Ovadnevaite:
         assert np.isfinite(delta_min)
 
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):
+    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         # convert wet volume to wet radius
         r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
 

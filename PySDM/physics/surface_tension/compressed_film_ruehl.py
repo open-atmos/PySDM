@@ -9,7 +9,8 @@ C0 = np.nan
 m_sigma = np.nan
 sgm_min = np.nan
 
-class CompressedFilm_Ruehl:
+
+class CompressedFilmRuehl:
     """
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).

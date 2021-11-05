@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Lowe_et_al_2019 import aerosol
 from PySDM.physics import si, Formulae, constants as const
-from PySDM.physics.surface_tension import compressed_film_Ovadnevaite
+from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from .constants import constants
 from scipy import signal
 import numpy as np
@@ -48,8 +48,8 @@ class TestFig1:
 
         # assert
         cutoff_idx = (np.abs(R_WET - cutoff)).argmin()
-        assert (sigma[:cutoff_idx] == compressed_film_Ovadnevaite.sgm_org).all()
-        assert sigma[cutoff_idx] > compressed_film_Ovadnevaite.sgm_org
+        assert (sigma[:cutoff_idx] == compressed_film_ovadnevaite.sgm_org).all()
+        assert sigma[cutoff_idx] > compressed_film_ovadnevaite.sgm_org
         assert .98 * const.sgm_w < sigma[-1] <= const.sgm_w
 
     @staticmethod
