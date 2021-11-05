@@ -45,9 +45,6 @@ class Storage(StorageBase):
             self.data[key] = value
         return self
 
-    def __add__(self, other):
-        raise TypeError("Use +=")
-
     def __iadd__(self, other):
         if isinstance(other, Storage):
             impl.add(self.data, other.data)
@@ -55,15 +52,9 @@ class Storage(StorageBase):
             impl.add(self.data, other)
         return self
 
-    def __sub__(self, other):
-        raise TypeError("Use -=")
-
     def __isub__(self, other):
         impl.subtract(self.data, other.data)
         return self
-
-    def __mul__(self, other):
-        raise TypeError("Use *=")
 
     def __imul__(self, other):
         if hasattr(other, 'data'):
@@ -72,9 +63,6 @@ class Storage(StorageBase):
             impl.multiply(self.data, other)
         return self
 
-    def __truediv__(self, other):
-        raise TypeError("Use /=")
-
     def __itruediv__(self, other):
         if hasattr(other, 'data'):
             self.data[:] /= other.data[:]
@@ -82,22 +70,13 @@ class Storage(StorageBase):
             self.data[:] /= other
         return self
 
-    def __mod__(self, other):
-        raise TypeError("Use %=")
-
     def __imod__(self, other):
         impl.row_modulo(self.data, other.data)
         return self
 
-    def __pow__(self, other):
-        raise TypeError("Use **=")
-
     def __ipow__(self, other):
         impl.power(self.data, other)
         return self
-
-    def __len__(self):
-        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:

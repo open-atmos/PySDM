@@ -65,50 +65,29 @@ class Storage(StorageBase):
             trtc.Fill(self.data, dvalue)
         return self
 
-    def __add__(self, other):
-        raise TypeError("Use +=")
-
     def __iadd__(self, other):
         impl.add(self, other)
         return self
-
-    def __sub__(self, other):
-        raise TypeError("Use -=")
 
     def __isub__(self, other):
         impl.subtract(self, other)
         return self
 
-    def __mul__(self, other):
-        raise TypeError("Use *=")
-
     def __imul__(self, other):
         impl.multiply(self, other)
         return self
-
-    def __truediv__(self, other):
-        raise TypeError("Use /=")
 
     def __itruediv__(self, other):
         impl.truediv(self, other)
         return self
 
-    def __mod__(self, other):
-        raise TypeError("Use %=")
-
     def __imod__(self, other):
         impl.row_modulo(self, other)
         return self
 
-    def __pow__(self, other):
-        raise TypeError("Use **=")
-
     def __ipow__(self, other):
         impl.power(self, other)
         return self
-
-    def __len__(self):
-        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:
@@ -210,7 +189,7 @@ class Storage(StorageBase):
         result = np.reshape(result, self.shape)
         return result
 
-    def urand(self, generator=None):
+    def urand(self, generator):
         generator(self)
 
     def upload(self, data):
