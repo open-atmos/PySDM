@@ -5,7 +5,7 @@ from PySDM.backends import ThrustRTC
 from PySDM.environments import Box
 from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
-from PySDM.dynamics.coalescence import default_dt_coal_range
+from PySDM.dynamics.coalescence import DEFAULT_DT_COAL_RANGE
 from ....backends_fixture import backend_class
 from .__parametrisation__ import get_dummy_particulator_and_sdm
 
@@ -26,7 +26,7 @@ class TestSDMMultiCell:
         # Arrange
         n = np.ones(n_sd)
         v = np.ones_like(n)
-        env = Box(dv=1, dt=default_dt_coal_range[1])
+        env = Box(dv=1, dt=DEFAULT_DT_COAL_RANGE[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
         particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n), environment=env)

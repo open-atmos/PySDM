@@ -15,9 +15,9 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 
 class TestFreezingMethods:
     # TODO #599
-    # @staticmethod
-    # def test_freeze_singular(backend):
-    #     pass
+    @staticmethod
+    def test_freeze_singular(backend):
+        pass
 
     @staticmethod
     def test_freeze_time_dependent(plot=False):
@@ -39,7 +39,7 @@ class TestFreezingMethods:
 
         # dummy (but must-be-set) values
         vol = 44  # for sign flip (ice water has negative volumes), value does not matter
-        dv = 666  # products use conc., dividing there, multiplying here, value does not matter
+        d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         hgh = lambda t: np.exp(-0.8 * rate * (t - total_time / 10))
         low = lambda t: np.exp(-1.2 * rate * (t + total_time / 10))
@@ -57,7 +57,7 @@ class TestFreezingMethods:
 
             formulae = Formulae(heterogeneous_ice_nucleation_rate='Constant')
             builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
-            env = Box(dt=case['dt'], dv=dv)
+            env = Box(dt=case['dt'], dv=d_v)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
             attributes = {
@@ -75,7 +75,7 @@ class TestFreezingMethods:
                 particulator.run(0 if i == 0 else 1)
 
                 ice_mass_per_volume = particulator.products['qi'].get()[cell_id]
-                ice_mass = ice_mass_per_volume * dv
+                ice_mass = ice_mass_per_volume * d_v
                 ice_number = ice_mass / (const.rho_w * vol)
                 unfrozen_fraction = 1 - ice_number / number_of_real_droplets
                 output[key]['unfrozen_fraction'].append(unfrozen_fraction)
@@ -84,31 +84,35 @@ class TestFreezingMethods:
         fit_x = np.linspace(0, total_time, num=100)
         fit_y = np.exp(-rate * fit_x)
 
-        for key in output:
+        for out in output.values():
             pylab.step(
-                output[key]['dt'] * np.arange(len(output[key]['unfrozen_fraction'])),
-                output[key]['unfrozen_fraction'],
-                label=f"dt={output[key]['dt']:.2g} / N={output[key]['N']}",
+                out['dt'] * np.arange(len(out['unfrozen_fraction'])),
+                out['unfrozen_fraction'],
+                label=f"dt={out['dt']:.2g} / N={out['N']}",
                 marker='.',
-                linewidth=1 + output[key]['N']//8
+                linewidth=1 + out['N']//8
             )
 
-        pylab.plot(fit_x, fit_y, color='black', linestyle='--', label='theory', linewidth=5)
-        pylab.plot(fit_x, hgh(fit_x), color='black', linestyle=':', label='assert upper bound')
-        pylab.plot(fit_x, low(fit_x), color='black', linestyle=':', label='assert lower bound')
-        pylab.legend()
-        pylab.yscale('log')
-        pylab.ylim(fit_y[-1], fit_y[0])
-        pylab.xlim(0, total_time)
-        pylab.xlabel("time")
-        pylab.ylabel("unfrozen fraction")
-        pylab.grid()
+        _plot_fit(fit_x, fit_y, low, hgh, total_time)
         if plot:
             pylab.show()
 
         # Assert
-        for key in output:
-            data = np.asarray(output[key]['unfrozen_fraction'])
-            x = output[key]['dt'] * np.arange(len(data))
-            np.testing.assert_array_less(data, hgh(x))
-            np.testing.assert_array_less(low(x), data)
+        for out in output.values():
+            data = np.asarray(out['unfrozen_fraction'])
+            arg = out['dt'] * np.arange(len(data))
+            np.testing.assert_array_less(data, hgh(arg))
+            np.testing.assert_array_less(low(arg), data)
+
+
+def _plot_fit(fit_x, fit_y, low, hgh, total_time):
+    pylab.plot(fit_x, fit_y, color='black', linestyle='--', label='theory', linewidth=5)
+    pylab.plot(fit_x, hgh(fit_x), color='black', linestyle=':', label='assert upper bound')
+    pylab.plot(fit_x, low(fit_x), color='black', linestyle=':', label='assert lower bound')
+    pylab.legend()
+    pylab.yscale('log')
+    pylab.ylim(fit_y[-1], fit_y[0])
+    pylab.xlim(0, total_time)
+    pylab.xlabel("time")
+    pylab.ylabel("unfrozen fraction")
+    pylab.grid()

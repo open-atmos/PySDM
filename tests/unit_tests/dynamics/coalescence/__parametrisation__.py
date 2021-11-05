@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM.dynamics.coalescence import Coalescence, default_dt_coal_range
+from PySDM.dynamics.coalescence import Coalescence, DEFAULT_DT_COAL_RANGE
 from PySDM.environments import Box
 from ....unit_tests.dummy_particulator import DummyParticulator
 
@@ -42,7 +42,7 @@ def insert_zeros(array):
 def get_dummy_particulator_and_sdm(backend, n_length,
                                    optimized_random=False, environment=None, substeps=1):
     particulator = DummyParticulator(backend, n_sd=n_length)
-    particulator.environment = environment or Box(dv=1, dt=default_dt_coal_range[1])
+    particulator.environment = environment or Box(dv=1, dt=DEFAULT_DT_COAL_RANGE[1])
     sdm = Coalescence(
         StubKernel(particulator.backend),
         optimized_random=optimized_random,
