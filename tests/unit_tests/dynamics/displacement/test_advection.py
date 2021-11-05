@@ -1,14 +1,15 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
-# noinspection PyUnresolvedReferences
 from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestExplicitEulerWithInterpolation:
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_single_cell(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -23,6 +24,7 @@ class TestExplicitEulerWithInterpolation:
         pass
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_advection(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -42,6 +44,7 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_calculate_displacement(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -64,6 +67,7 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_calculate_displacement_dim1(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -87,6 +91,7 @@ class TestExplicitEulerWithInterpolation:
         )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_update_position(backend_class):
         # Arrange
         settings = DisplacementSettings()
@@ -109,6 +114,7 @@ class TestExplicitEulerWithInterpolation:
             )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_update_cell_origin(backend_class):
         # Arrange
         settings = DisplacementSettings()

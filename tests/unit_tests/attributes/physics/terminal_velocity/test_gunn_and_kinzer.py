@@ -1,13 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import matplotlib.pyplot as plt
 import numpy as np
-
 from PySDM.physics import constants as const
 from PySDM.physics.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
-
-# noinspection PyUnresolvedReferences
 from .....backends_fixture import backend_class
 from ....dummy_particulator import DummyParticulator
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 # pylint: disable=redefined-outer-name

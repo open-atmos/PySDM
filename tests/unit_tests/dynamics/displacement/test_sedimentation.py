@@ -1,9 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
-# noinspection PyUnresolvedReferences
 from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class ConstantTerminalVelocity:

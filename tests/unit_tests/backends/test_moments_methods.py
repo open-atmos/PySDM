@@ -2,9 +2,9 @@
 import numpy as np
 import pytest
 from PySDM.physics import Formulae
+from ...backends_fixture import backend_class
 
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend_class as Backend
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 @pytest.mark.parametrize("min_x, max_x, value, expected", [
@@ -15,9 +15,9 @@ from ...backends_fixture import backend_class as Backend
     (0, 1, 1.5, 0),
 ])
 # pylint: disable=redefined-outer-name
-def test_moments_range(Backend, min_x, max_x, value, expected):
+def test_moments_range(backend_class, min_x, max_x, value, expected):
     # Arrange
-    backend = Backend(Formulae())
+    backend = backend_class(Formulae())
     arr = lambda x: backend.Storage.from_ndarray(np.asarray((x,)))
 
     moment_0 = arr(0)

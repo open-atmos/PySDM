@@ -6,8 +6,8 @@ from PySDM_examples.Szumowski_et_al_1998 import Simulation, Storage
 from PySDM_examples.utils import DummyController
 from PySDM.exporters import NetCDFExporter, VTKExporter
 
-# noinspection PyUnresolvedReferences
 from ...backends_fixture import backend_class
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 # pylint: disable=redefined-outer-name

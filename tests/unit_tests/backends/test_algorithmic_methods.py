@@ -1,15 +1,14 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
-
 import numpy as np
 import pytest
-
 from PySDM.backends.numba.impl.algorithmic_methods import pair_indices
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.pair_indicator import make_PairIndicator
-# noinspection PyUnresolvedReferences
 from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 @pytest.mark.parametrize("i, idx, is_first_in_pair, expected", [

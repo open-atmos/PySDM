@@ -5,16 +5,18 @@ from PySDM.backends import ThrustRTC
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.index import make_Index
-# noinspection PyUnresolvedReferences
 from ....backends_fixture import backend_class
 from .__parametrisation__ import backend_fill, get_dummy_particulator_and_sdm
 # noinspection PyUnresolvedReferences
 from .__parametrisation__ import v_2, T_2, n_2
 
+assert hasattr(backend_class, '_pytestfixturefunction')
+
 
 class TestSDMSingleCell:
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_single_collision(backend_class, v_2, T_2, n_2):
         # Arrange
         const = 1.
@@ -65,6 +67,7 @@ class TestSDMSingleCell:
         pytest.param(2, np.array([1, 1])),
         pytest.param(3, np.array([2, 1])),
     ])
+    # pylint: disable=redefined-outer-name
     def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
         particulator, sut = get_dummy_particulator_and_sdm(backend_class, 2)
@@ -88,6 +91,7 @@ class TestSDMSingleCell:
         pytest.param(5),
         pytest.param(7),
     ])
+    # pylint: disable=redefined-outer-name
     def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n_2))
@@ -124,6 +128,7 @@ class TestSDMSingleCell:
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 1),
         pytest.param(np.array([1., 1, 1, 1, 1]), np.array([5, 1, 2, 1, 1]), 6),
     ])
+    # pylint: disable=redefined-outer-name
     def test_multi_droplet(backend_class, v, n, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n))
@@ -147,6 +152,7 @@ class TestSDMSingleCell:
         ) == np.sum(n * v)
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_multi_step(backend_class):
         # Arrange
         n_sd = 256
@@ -178,6 +184,7 @@ class TestSDMSingleCell:
         np.testing.assert_approx_equal(actual=actual, desired=desired, significant=8)
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_compute_gamma(backend_class):
         # Arrange
         n = 87
@@ -222,6 +229,7 @@ class TestSDMSingleCell:
             pytest.param(False, id='const_dt')
         )
     )
+    # pylint: disable=redefined-outer-name
     def test_rnd_reuse(backend_class, optimized_random, adaptive):
         if backend_class is ThrustRTC:
             return  # TODO #330

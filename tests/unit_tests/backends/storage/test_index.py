@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-
-# noinspection PyUnresolvedReferences
-from ....backends_fixture import backend_class
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestIndex:
