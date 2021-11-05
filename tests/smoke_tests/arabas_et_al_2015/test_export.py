@@ -11,14 +11,14 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 # pylint: disable=redefined-outer-name
-def test_export(backend, tmp_path):
+def test_export(backend_class, tmp_path):
     # Arrange
     settings = Settings()
     settings.simulation_time = settings.dt
     settings.output_interval = settings.dt
 
     storage = Storage()
-    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend)
+    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_class)
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 

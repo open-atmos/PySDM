@@ -52,7 +52,7 @@ else:
     from .thrust_rtc.thrust_rtc import ThrustRTC
     ThrustRTC.ENABLE = False
 
-    class Random:
+    class Random:  # pylint: disable=too-few-public-methods
         def __init__(self, size, seed):
             self.size = size
             self.generator = np.random.default_rng(seed)

@@ -22,7 +22,7 @@ def test_moments_range(backend_class, min_x, max_x, value, expected):
 
     moment_0 = arr(0)
     moments = backend.Storage.from_ndarray(np.full((1,1), 0))
-    n = arr(1)
+    multiplicity = arr(1)
     attr_data = arr(0)
     cell_id = arr(0)
     idx = arr(0)
@@ -34,7 +34,7 @@ def test_moments_range(backend_class, min_x, max_x, value, expected):
 
     # Act
     backend.moments(
-        moment_0=moment_0, moments=moments, n=n, attr_data=attr_data,
+        moment_0=moment_0, moments=moments, multiplicity=multiplicity, attr_data=attr_data,
         cell_id=cell_id, idx=idx, length=length,
         ranks=ranks, min_x=min_x, max_x=max_x, x_attr=x_attr,
         weighting_attribute=weighting_attribute,

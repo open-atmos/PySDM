@@ -204,10 +204,12 @@ class TestSDMSingleCell:
                     np.asarray([expected(p, r), 1]).astype(backend_class.Storage.INT)
                 )
                 _ = backend_class.Storage.from_ndarray(np.zeros(n_sd//2))
-                cell_id = backend_class.Storage.from_ndarray(np.zeros(n_sd, dtype=backend_class.Storage.INT))
+                cell_id = backend_class.Storage.from_ndarray(
+                    np.zeros(n_sd, dtype=backend_class.Storage.INT))
 
                 indicator = make_PairIndicator(backend_class)(n_sd)
-                indicator.indicator[:] = backend_class.Storage.from_ndarray(np.asarray((True, False)))
+                indicator.indicator[:] = backend_class.Storage.from_ndarray(
+                    np.asarray((True, False)))
 
                 backend_class.compute_gamma(prob_arr, rand_arr, mult,
                                       cell_id=cell_id, is_first_in_pair=indicator,

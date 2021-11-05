@@ -122,7 +122,8 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = particulator.attributes
-        state['position in cell'][:] = backend_class.Storage.from_ndarray(np.asarray([[1.1], [1.2]]))
+        state['position in cell'][:] = backend_class.Storage.from_ndarray(
+            np.asarray([[1.1], [1.2]]))
 
         # Act
         sut.update_cell_origin(state['cell origin'], state['position in cell'])
@@ -137,6 +138,7 @@ class TestExplicitEulerWithInterpolation:
             )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_boundary_condition(backend_class):
         # Arrange
         settings = DisplacementSettings()

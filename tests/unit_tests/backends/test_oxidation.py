@@ -113,7 +113,7 @@ def test_oxidation(conc, dt):
         k3=k3,
         K_SO2=K_SO2,
         K_HSO3=K_HSO3,
-        dt=dt,
+        timestep=dt,
         droplet_volume=Storage.from_ndarray(np.full(n_sd, volume)),
         pH=Storage.from_ndarray(np.full(n_sd, pH)),
         dissociation_factor_SO2=Storage.from_ndarray(np.full(n_sd, DF)),

@@ -5,7 +5,7 @@ from .conf import trtc, rndrtc
 
 #  TIP: sometimes only half array is needed
 
-class Random:
+class Random:  # pylint: disable=too-few-public-methods
     __urand_init_rng_state_body = trtc.For(['rng', 'states', 'seed'], 'i', '''
         rng.state_init(seed, i, 0, states[i]);
         ''')

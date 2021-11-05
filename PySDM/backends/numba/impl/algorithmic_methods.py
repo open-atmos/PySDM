@@ -303,22 +303,23 @@ class AlgorithmicMethods(Methods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     # pylint: disable=too-many-arguments
-    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         n_cell = cell_start.shape[0] - 1
         for i in range(n_cell):
             sd_num = cell_start[i + 1] - cell_start[i]
             if sd_num < 2:
                 norm_factor[i] = 0
             else:
-                norm_factor[i] = dt / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
+                norm_factor[i] = timestep / dv * sd_num * (sd_num - 1) / 2 / (sd_num // 2)
         for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
     @staticmethod
     # pylint: disable=too-many-arguments
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
         return AlgorithmicMethods.normalize_body(
-            prob.data, cell_id.data, cell_idx.data, cell_start.data, norm_factor.data, dt, dv)
+            prob.data, cell_id.data, cell_idx.data, cell_start.data,
+            norm_factor.data, timestep, dv)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

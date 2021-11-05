@@ -46,7 +46,11 @@ class TestParticles:
         # Assert
         assert sut.SD_num == (multiplicity != 0).sum()
         assert sut['n'].to_ndarray().sum() == multiplicity.sum()
-        assert (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum() == (volume * multiplicity).sum()
+        assert (
+            (sut['volume'].to_ndarray() * sut['n'].to_ndarray()).sum()
+            ==
+            (volume * multiplicity).sum()
+        )
 
     @staticmethod
     @pytest.mark.parametrize('multiplicity, cells, n_sd, idx, new_idx, cell_start', [
@@ -181,8 +185,10 @@ class TestParticles:
         particulator = DummyParticulator(backend_class, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend_class, [0] * idx_length)
-        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend_class, cell_start)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(
+            backend_class, [0] * idx_length)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(
+            backend_class, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = particulator.n_sd
         u01 = TestParticles.make_indexed_storage(backend_class, u01)
@@ -208,7 +214,8 @@ class TestParticles:
         particulator = DummyParticulator(backend_class, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend_class, [0] * idx_length)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(
+            backend_class, [0] * idx_length)
         sut._Particles__sorted = True
         u01 = TestParticles.make_indexed_storage(backend_class, u01)
 
@@ -216,7 +223,8 @@ class TestParticles:
         sut.permutation(u01, local=False)
         expected = sut._Particles__idx.to_ndarray()
         sut._Particles__sorted = True
-        sut._Particles__idx = TestParticles.make_indexed_storage(backend_class, range(n_sd))
+        sut._Particles__idx = TestParticles.make_indexed_storage(
+            backend_class, range(n_sd))
         sut.permutation(u01, local=False)
 
         # Assert
@@ -244,9 +252,12 @@ class TestParticles:
         sut = particulator.attributes
         sut._Particles__idx = TestParticles.make_indexed_storage(backend_class, idx)
         idx_length = len(sut._Particles__idx)
-        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(backend_class, [0] * idx_length)
-        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(backend_class, cell_id)
-        sut._Particles__cell_start = TestParticles.make_indexed_storage(backend_class, cell_start)
+        sut._Particles__tmp_idx = TestParticles.make_indexed_storage(
+            backend_class, [0] * idx_length)
+        sut.attributes['cell id'].data = TestParticles.make_indexed_storage(
+            backend_class, cell_id)
+        sut._Particles__cell_start = TestParticles.make_indexed_storage(
+            backend_class, cell_start)
         sut._Particles__sorted = True
         sut._Particles__n_sd = particulator.n_sd
         u01 = TestParticles.make_indexed_storage(backend_class, u01)

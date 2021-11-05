@@ -202,7 +202,7 @@ class Particles:
             K_SO2=equilibrium_consts["K_SO2"],
             K_HSO3=equilibrium_consts["K_HSO3"],
             dissociation_factor_SO2=dissociation_factors['SO2'],
-            dt=dt,
+            timestep=dt,
             # input
             droplet_volume=self["volume"],
             pH=self["pH"],
@@ -232,7 +232,7 @@ class Particles:
             env_p=self.particulator.env.get_predicted('p'),
             env_T=self.particulator.env.get_predicted('T'),
             env_rho_d=self.particulator.env.get_predicted('rhod'),
-            dt=dt,
+            timestep=dt,
             dv=self.particulator.mesh.dv,
             droplet_volume=self["volume"],
             multiplicity=self["n"],
@@ -246,7 +246,7 @@ class Particles:
         self.particulator.bck.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
-            T=self.particulator.env.get_predicted('T')
+            temperature=self.particulator.env.get_predicted('T')
         )
 
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):

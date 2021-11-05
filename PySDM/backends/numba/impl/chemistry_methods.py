@@ -28,7 +28,7 @@ class ChemistryMethods(Methods):
 
     def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag,
                     mole_amounts, env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors,
-                    dt, dv, system_type, droplet_volume, multiplicity):
+                    timestep, dv, system_type, droplet_volume, multiplicity):
         for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
             for i in range(thread_id, n_cell, n_threads):
                 cell_id = cell_order[i]
@@ -56,7 +56,7 @@ class ChemistryMethods(Methods):
                         env_p=env_p[cell_id],
                         env_T=env_T[cell_id],
                         env_rho_d=env_rho_d[cell_id],
-                        dt=dt,
+                        timestep=timestep,
                         dv=dv,
                         droplet_volume=droplet_volume.data,
                         multiplicity=multiplicity.data,
@@ -71,7 +71,7 @@ class ChemistryMethods(Methods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p,
-                         env_T, env_rho_d, dt, dv, droplet_volume, multiplicity, system_type,
+                         env_T, env_rho_d, timestep, dv, droplet_volume, multiplicity, system_type,
                          specific_gravity, alpha, diffusion_const, dissociation_factor, radius):
         mole_amount_taken = 0
         for i in super_droplet_ids:
@@ -80,7 +80,7 @@ class ChemistryMethods(Methods):
             cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
-            dt_over_scale = dt / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_const))
+            dt_over_scale = timestep / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_const))
             A_old = mole_amounts[i] / droplet_volume[i]
             H_eff = henrysConstant * dissociation_factor[i]
             A_new = (A_old + dt_over_scale * cinf) / (1 + dt_over_scale / H_eff / R_str / env_T)
@@ -97,14 +97,15 @@ class ChemistryMethods(Methods):
             env_mixing_ratio -= delta_mr
 
     def oxidation(self, n_sd, cell_ids, do_chemistry_flag,
-                  k0, k1, k2, k3, K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
+                  k0, k1, k2, k3, K_SO2, K_HSO3, timestep,
+                  droplet_volume, pH, dissociation_factor_SO2,
                   # output
                   moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         ChemistryMethods.oxidation_body(
             n_sd, cell_ids.data, do_chemistry_flag.data, self.formulae.trivia.explicit_euler,
             self.formulae.trivia.pH2H,
             k0.data, k1.data, k2.data, k3.data, K_SO2.data, K_HSO3.data,
-            dt, droplet_volume.data, pH.data, dissociation_factor_SO2.data,
+            timestep, droplet_volume.data, pH.data, dissociation_factor_SO2.data,
             # output
             moles_O3.data, moles_H2O2.data, moles_S_IV.data, moles_S_VI.data
         )
@@ -112,10 +113,10 @@ class ChemistryMethods(Methods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(n_sd, cell_ids, do_chemistry_flag, explicit_euler, pH2H,
-                  k0, k1, k2, k3,
-                  K_SO2, K_HSO3, dt, droplet_volume, pH, dissociation_factor_SO2,
-                  # output
-                  moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
+                       k0, k1, k2, k3,
+                       K_SO2, K_HSO3, timestep, droplet_volume, pH, dissociation_factor_SO2,
+                       # output
+                       moles_O3, moles_H2O2, moles_S_IV, moles_S_VI):
         for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             if not do_chemistry_flag[i]:
                 continue
@@ -140,7 +141,7 @@ class ChemistryMethods(Methods):
             peroxide = k3[cid] * K_SO2[cid] / (1 + k4 * H) * (
                 moles_H2O2[i] / droplet_volume[i]
             ) * SO2aq
-            dt_times_volume = dt * droplet_volume[i]
+            dt_times_volume = timestep * droplet_volume[i]
 
             dconc_dt_O3 = -ozone
             dconc_dt_S_IV = -(ozone + peroxide)
@@ -168,14 +169,14 @@ class ChemistryMethods(Methods):
                     H, equilibrium_consts, cell_id.data[i]
                 )
 
-    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, T):
-        for i in range(len(T)):
+    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts, temperature):
+        for i in range(len(temperature)):
             for key in equilibrium_consts:
                 equilibrium_consts[key].data[i] = \
-                    self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(T.data[i])
+                    self.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST[key].at(temperature.data[i])
             for key in kinetic_consts:
                 kinetic_consts[key].data[i] = \
-                    self.KINETIC_CONST.KINETIC_CONST[key].at(T.data[i])
+                    self.KINETIC_CONST.KINETIC_CONST[key].at(temperature.data[i])
 
     def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
                       do_chemistry_flag, pH, H_min, H_max, ionic_strength_threshold, rtol):
