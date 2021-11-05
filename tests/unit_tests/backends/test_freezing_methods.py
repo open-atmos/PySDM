@@ -16,7 +16,7 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 class TestFreezingMethods:
     # TODO #599
     @staticmethod
-    def test_freeze_singular(backend):
+    def test_freeze_singular(backend_class):
         pass
 
     @staticmethod
