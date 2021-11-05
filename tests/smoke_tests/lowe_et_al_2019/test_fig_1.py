@@ -40,7 +40,7 @@ class TestFig1:
     # pylint: disable=redefined-outer-name
     def test_kink_location(constants, aerosol, cutoff):
         # arrange
-        formulae = Formulae(surface_tension='CompressedFilm_Ovadnevaite')
+        formulae = Formulae(surface_tension='CompressedFilmOvadnevaite')
 
         # act
         sigma = formulae.surface_tension.sigma(
@@ -58,15 +58,15 @@ class TestFig1:
                 (aerosol.AerosolBoreal(),  'Constant', 320 * si.nm, .217, False),
                 (aerosol.AerosolMarine(),  'Constant', 420 * si.nm, .164, False),
                 (aerosol.AerosolNascent(), 'Constant', 360 * si.nm, .194, False),
-                (aerosol.AerosolBoreal(),  'CompressedFilm_Ovadnevaite', 360 * si.nm, .108, True),
-                (aerosol.AerosolMarine(),  'CompressedFilm_Ovadnevaite', 600 * si.nm, .115, False),
-                (aerosol.AerosolNascent(), 'CompressedFilm_Ovadnevaite', 670 * si.nm, .104, True)
+                (aerosol.AerosolBoreal(),  'CompressedFilmOvadnevaite', 360 * si.nm, .108, True),
+                (aerosol.AerosolMarine(),  'CompressedFilmOvadnevaite', 600 * si.nm, .115, False),
+                (aerosol.AerosolNascent(), 'CompressedFilmOvadnevaite', 670 * si.nm, .104, True)
         )
     )
     # pylint: disable=redefined-outer-name
     def test_koehler_maxima(constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
-        label = {'CompressedFilm_Ovadnevaite': 'film', 'Constant': 'bulk'}[surface_tension]
+        label = {'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension]
         formulae = Formulae(surface_tension=surface_tension)
         sigma = formulae.surface_tension.sigma(
             np.nan, V_WET, V_DRY, aerosol.aerosol_modes_per_cc[0]['f_org'])
