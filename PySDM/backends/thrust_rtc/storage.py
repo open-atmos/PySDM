@@ -1,8 +1,8 @@
 import numpy as np
 
-from PySDM.backends.thrustRTC.conf import trtc
-from PySDM.backends.thrustRTC.impl import storage_impl as impl
-from PySDM.backends.thrustRTC.impl.precision_resolver import PrecisionResolver
+from PySDM.backends.thrust_rtc.conf import trtc
+from PySDM.backends.thrust_rtc.impl import storage_impl as impl
+from PySDM.backends.thrust_rtc.impl.precision_resolver import PrecisionResolver
 from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
 
 

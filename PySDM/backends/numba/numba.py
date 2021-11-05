@@ -15,7 +15,7 @@ from PySDM.backends.numba.storage import Storage as ImportedStorage
 from PySDM.physics import Formulae
 
 
-class Numba(
+class Numba(  # pylint: disable=too-many-ancestors
     AlgorithmicMethods,
     PairMethods,
     IndexMethods,
@@ -32,6 +32,11 @@ class Numba(
 
     def __init__(self, formulae=None):
         self.formulae = formulae or Formulae()
+        AlgorithmicMethods.__init__(self)
+        PairMethods.__init__(self)
+        IndexMethods.__init__(self)
         PhysicsMethods.__init__(self)
+        CondensationMethods.__init__(self)
         ChemistryMethods.__init__(self)
+        MomentsMethods.__init__(self)
         FreezingMethods.__init__(self)

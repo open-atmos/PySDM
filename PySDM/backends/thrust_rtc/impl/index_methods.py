@@ -1,5 +1,5 @@
-from PySDM.backends.thrustRTC.impl.nice_thrust import nice_thrust
-from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
+from PySDM.backends.thrust_rtc.impl.nice_thrust import nice_thrust
+from PySDM.backends.thrust_rtc.conf import NICE_THRUST_FLAGS
 from ..conf import trtc
 from ...impl.methods import Methods
 
