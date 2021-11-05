@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC API documentation</title>
+<title>PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC</code></h1>
+<h1 class="title">Module <code>PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -55,7 +55,7 @@ class FakeThrustRTC:
         def __init__(self, ndarray):
             FakeThrustRTC.DVVector.DVVector = FakeThrustRTC.DVVector
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
-            self.ndarray = ndarray
+            self.ndarray: np.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
@@ -107,11 +107,11 @@ class FakeThrustRTC:
             return result
 
     @staticmethod
-    def Sort(dvvector):  # pylint: disable=invalid-name
+    def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
         dvvector.ndarray[:] = np.sort(dvvector.ndarray)
 
     @staticmethod
-    def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
+    def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
             raise ValueError(
                 f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
@@ -123,7 +123,7 @@ class FakeThrustRTC:
         vector[:] = value
 
     @staticmethod
-    def Find(vector, value):  # pylint: disable=invalid-name
+    def Find(vector: DVVector, value):  # pylint: disable=invalid-name
         for i in range(len(vector.ndarray)):
             if vector[i] == value.ndarray:
                 return i
@@ -227,7 +227,7 @@ class FakeThrustRTC:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC"><code class="flex name class">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC"><code class="flex name class">
 <span>class <span class="ident">FakeThrustRTC</span></span>
 </code></dt>
 <dd>
@@ -256,7 +256,7 @@ class FakeThrustRTC:
         def __init__(self, ndarray):
             FakeThrustRTC.DVVector.DVVector = FakeThrustRTC.DVVector
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
-            self.ndarray = ndarray
+            self.ndarray: np.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
             self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
             self.to_host = lambda: np.copy(self.ndarray)
@@ -308,11 +308,11 @@ class FakeThrustRTC:
             return result
 
     @staticmethod
-    def Sort(dvvector):  # pylint: disable=invalid-name
+    def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
         dvvector.ndarray[:] = np.sort(dvvector.ndarray)
 
     @staticmethod
-    def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
+    def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
         if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
             raise ValueError(
                 f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
@@ -324,7 +324,7 @@ class FakeThrustRTC:
         vector[:] = value
 
     @staticmethod
-    def Find(vector, value):  # pylint: disable=invalid-name
+    def Find(vector: DVVector, value):  # pylint: disable=invalid-name
         for i in range(len(vector.ndarray)):
             if vector[i] == value.ndarray:
                 return i
@@ -420,27 +420,27 @@ class FakeThrustRTC:
 </details>
 <h3>Class variables</h3>
 <dl>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVRange"><code class="name">var <span class="ident">DVRange</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVRange"><code class="name">var <span class="ident">DVRange</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVVector"><code class="name">var <span class="ident">DVVector</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector"><code class="name">var <span class="ident">DVVector</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.For"><code class="name">var <span class="ident">For</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.For"><code class="name">var <span class="ident">For</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Number"><code class="name">var <span class="ident">Number</span></code></dt>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Number"><code class="name">var <span class="ident">Number</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 </dl>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Copy"><code class="name flex">
-<span>def <span class="ident">Copy</span></span>(<span>vector_in, vector_out)</span>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Copy"><code class="name flex">
+<span>def <span class="ident">Copy</span></span>(<span>vector_in: <a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>, vector_out: <a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -449,7 +449,7 @@ class FakeThrustRTC:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
+def Copy(vector_in: DVVector, vector_out: DVVector):  # pylint: disable=invalid-name
     if vector_out.ndarray.dtype != vector_in.ndarray.dtype:
         raise ValueError(
             f&#34;Incompatible types {vector_out.ndarray.dtype} and {vector_in.ndarray.dtype}&#34;
@@ -457,7 +457,7 @@ def Copy(vector_in, vector_out):  # pylint: disable=invalid-name
     vector_out.ndarray[:] = vector_in.ndarray</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Count"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Count"><code class="name flex">
 <span>def <span class="ident">Count</span></span>(<span>dvvector, value)</span>
 </code></dt>
 <dd>
@@ -475,7 +475,7 @@ def Count(dvvector, value):  # pylint: disable=invalid-name
     return 0</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVBool"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVBool"><code class="name flex">
 <span>def <span class="ident">DVBool</span></span>(<span>number: bool)</span>
 </code></dt>
 <dd>
@@ -489,7 +489,7 @@ def DVBool(number: bool):  # pylint: disable=invalid-name
     return FakeThrustRTC.Number(number)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVDouble"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVDouble"><code class="name flex">
 <span>def <span class="ident">DVDouble</span></span>(<span>number: float)</span>
 </code></dt>
 <dd>
@@ -503,7 +503,7 @@ def DVDouble(number: float):  # pylint: disable=invalid-name
     return FakeThrustRTC.Number(number)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVFloat"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVFloat"><code class="name flex">
 <span>def <span class="ident">DVFloat</span></span>(<span>number: float)</span>
 </code></dt>
 <dd>
@@ -517,7 +517,7 @@ def DVFloat(number: float):  # pylint: disable=invalid-name
     return FakeThrustRTC.Number(number)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVInt64"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVInt64"><code class="name flex">
 <span>def <span class="ident">DVInt64</span></span>(<span>number: int)</span>
 </code></dt>
 <dd>
@@ -531,7 +531,7 @@ def DVInt64(number: int):  # pylint: disable=invalid-name
     return FakeThrustRTC.Number(number)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVPermutation"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVPermutation"><code class="name flex">
 <span>def <span class="ident">DVPermutation</span></span>(<span>dvvector, idx)</span>
 </code></dt>
 <dd>
@@ -548,7 +548,7 @@ def DVPermutation(dvvector, idx):  # pylint: disable=invalid-name
     return FakeThrustRTC.DVVector(result)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Fill"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill"><code class="name flex">
 <span>def <span class="ident">Fill</span></span>(<span>vector, value)</span>
 </code></dt>
 <dd>
@@ -562,8 +562,8 @@ def Fill(vector, value):  # pylint: disable=invalid-name
     vector[:] = value</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Find"><code class="name flex">
-<span>def <span class="ident">Find</span></span>(<span>vector, value)</span>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find"><code class="name flex">
+<span>def <span class="ident">Find</span></span>(<span>vector: <a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>, value)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -572,14 +572,14 @@ def Fill(vector, value):  # pylint: disable=invalid-name
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def Find(vector, value):  # pylint: disable=invalid-name
+def Find(vector: DVVector, value):  # pylint: disable=invalid-name
     for i in range(len(vector.ndarray)):
         if vector[i] == value.ndarray:
             return i
     return None</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Max_Element"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element"><code class="name flex">
 <span>def <span class="ident">Max_Element</span></span>(<span>dvvector)</span>
 </code></dt>
 <dd>
@@ -593,7 +593,7 @@ def Max_Element(dvvector):  # pylint: disable=invalid-name
     np.amax(dvvector.ndarray)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Maximum"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum"><code class="name flex">
 <span>def <span class="ident">Maximum</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -607,7 +607,7 @@ def Maximum():  # pylint: disable=invalid-name
     return &#34;max&#34;</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Min_Element"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element"><code class="name flex">
 <span>def <span class="ident">Min_Element</span></span>(<span>dvvector)</span>
 </code></dt>
 <dd>
@@ -621,7 +621,7 @@ def Min_Element(dvvector):  # pylint: disable=invalid-name
     np.amin(dvvector.ndarray)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minimum"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minimum"><code class="name flex">
 <span>def <span class="ident">Minimum</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -635,7 +635,7 @@ def Minimum():  # pylint: disable=invalid-name
     return &#34;min&#34;</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minus"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minus"><code class="name flex">
 <span>def <span class="ident">Minus</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -649,7 +649,7 @@ def Minus():  # pylint: disable=invalid-name
     return &#34;-&#34;</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Plus"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus"><code class="name flex">
 <span>def <span class="ident">Plus</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -663,7 +663,7 @@ def Plus():  # pylint: disable=invalid-name
     return &#34;+&#34;</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Reduce"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce"><code class="name flex">
 <span>def <span class="ident">Reduce</span></span>(<span>dvvector, start, operator)</span>
 </code></dt>
 <dd>
@@ -684,8 +684,8 @@ def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
         return min(start.ndarray, np.amin(dvvector.ndarray))</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort"><code class="name flex">
-<span>def <span class="ident">Sort</span></span>(<span>dvvector)</span>
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort"><code class="name flex">
+<span>def <span class="ident">Sort</span></span>(<span>dvvector: <a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">FakeThrustRTC.DVVector</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -694,11 +694,11 @@ def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def Sort(dvvector):  # pylint: disable=invalid-name
+def Sort(dvvector: DVVector):  # pylint: disable=invalid-name
     dvvector.ndarray[:] = np.sort(dvvector.ndarray)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort_By_Key"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key"><code class="name flex">
 <span>def <span class="ident">Sort_By_Key</span></span>(<span>keys, values)</span>
 </code></dt>
 <dd>
@@ -713,7 +713,7 @@ def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
     # TODO #328 Thrust sorts keys as well</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Transform_Binary"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary"><code class="name flex">
 <span>def <span class="ident">Transform_Binary</span></span>(<span>vec_in1, vec_in2, vec_out, op)</span>
 </code></dt>
 <dd>
@@ -730,7 +730,7 @@ def Transform_Binary(vec_in1, vec_in2, vec_out, op):  # pylint: disable=invalid-
         vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Wait"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Wait"><code class="name flex">
 <span>def <span class="ident">Wait</span></span>(<span>)</span>
 </code></dt>
 <dd>
@@ -744,7 +744,7 @@ def Wait():  # pylint: disable=invalid-name
     pass</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector"><code class="name flex">
 <span>def <span class="ident">device_vector</span></span>(<span>elem_cls, size)</span>
 </code></dt>
 <dd>
@@ -771,7 +771,7 @@ def device_vector(elem_cls, size):
     return FakeThrustRTC.DVVector(result)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector_from_numpy"><code class="name flex">
+<dt id="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector_from_numpy"><code class="name flex">
 <span>def <span class="ident">device_vector_from_numpy</span></span>(<span>ndarray)</span>
 </code></dt>
 <dd>
@@ -805,34 +805,34 @@ def device_vector_from_numpy(ndarray):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC">FakeThrustRTC</a></code></h4>
+<h4><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC">FakeThrustRTC</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Copy" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Copy">Copy</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Count" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Count">Count</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVBool" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVBool">DVBool</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVDouble" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVDouble">DVDouble</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVFloat" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVFloat">DVFloat</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVInt64" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVInt64">DVInt64</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVPermutation" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVPermutation">DVPermutation</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVRange" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVRange">DVRange</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.DVVector">DVVector</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Fill" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Fill">Fill</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Find" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Find">Find</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.For" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.For">For</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Max_Element" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Max_Element">Max_Element</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Maximum" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Maximum">Maximum</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Min_Element" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Min_Element">Min_Element</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minimum" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minimum">Minimum</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minus" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Minus">Minus</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Number" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Number">Number</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Plus" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Plus">Plus</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Reduce" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Reduce">Reduce</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort">Sort</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort_By_Key" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Sort_By_Key">Sort_By_Key</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Transform_Binary" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Transform_Binary">Transform_Binary</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Wait" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.Wait">Wait</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector">device_vector</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector_from_numpy" href="#PySDM.backends.thrust_rtc.test_helpers.fakeThrustRTC.FakeThrustRTC.device_vector_from_numpy">device_vector_from_numpy</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Copy" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Copy">Copy</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Count" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Count">Count</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVBool" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVBool">DVBool</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVDouble" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVDouble">DVDouble</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVFloat" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVFloat">DVFloat</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVInt64" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVInt64">DVInt64</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVPermutation" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVPermutation">DVPermutation</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVRange" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVRange">DVRange</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.DVVector">DVVector</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Fill">Fill</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Find">Find</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.For" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.For">For</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Max_Element">Max_Element</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Maximum">Maximum</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Min_Element">Min_Element</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minimum" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minimum">Minimum</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minus" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Minus">Minus</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Number" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Number">Number</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Plus">Plus</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Reduce">Reduce</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort">Sort</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Sort_By_Key">Sort_By_Key</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Transform_Binary">Transform_Binary</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Wait" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.Wait">Wait</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector">device_vector</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector_from_numpy" href="#PySDM.backends.thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC.device_vector_from_numpy">device_vector_from_numpy</a></code></li>
 </ul>
 </li>
 </ul>

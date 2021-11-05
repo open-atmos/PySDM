@@ -93,50 +93,29 @@ class Storage(StorageBase):
             trtc.Fill(self.data, dvalue)
         return self
 
-    def __add__(self, other):
-        raise TypeError(&#34;Use +=&#34;)
-
     def __iadd__(self, other):
         impl.add(self, other)
         return self
-
-    def __sub__(self, other):
-        raise TypeError(&#34;Use -=&#34;)
 
     def __isub__(self, other):
         impl.subtract(self, other)
         return self
 
-    def __mul__(self, other):
-        raise TypeError(&#34;Use *=&#34;)
-
     def __imul__(self, other):
         impl.multiply(self, other)
         return self
-
-    def __truediv__(self, other):
-        raise TypeError(&#34;Use /=&#34;)
 
     def __itruediv__(self, other):
         impl.truediv(self, other)
         return self
 
-    def __mod__(self, other):
-        raise TypeError(&#34;Use %=&#34;)
-
     def __imod__(self, other):
         impl.row_modulo(self, other)
         return self
 
-    def __pow__(self, other):
-        raise TypeError(&#34;Use **=&#34;)
-
     def __ipow__(self, other):
         impl.power(self, other)
         return self
-
-    def __len__(self):
-        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:
@@ -223,8 +202,8 @@ class Storage(StorageBase):
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
-    def sum(self, a, b):
-        impl.sum_out_of_place(self, a, b)
+    def sum(self, arg_a, arg_b):
+        impl.sum_out_of_place(self, arg_a, arg_b)
         return self
 
     def ravel(self, other):
@@ -238,7 +217,7 @@ class Storage(StorageBase):
         result = np.reshape(result, self.shape)
         return result
 
-    def urand(self, generator=None):
+    def urand(self, generator):
         generator(self)
 
     def upload(self, data):
@@ -326,50 +305,29 @@ class Storage(StorageBase):
             trtc.Fill(self.data, dvalue)
         return self
 
-    def __add__(self, other):
-        raise TypeError(&#34;Use +=&#34;)
-
     def __iadd__(self, other):
         impl.add(self, other)
         return self
-
-    def __sub__(self, other):
-        raise TypeError(&#34;Use -=&#34;)
 
     def __isub__(self, other):
         impl.subtract(self, other)
         return self
 
-    def __mul__(self, other):
-        raise TypeError(&#34;Use *=&#34;)
-
     def __imul__(self, other):
         impl.multiply(self, other)
         return self
-
-    def __truediv__(self, other):
-        raise TypeError(&#34;Use /=&#34;)
 
     def __itruediv__(self, other):
         impl.truediv(self, other)
         return self
 
-    def __mod__(self, other):
-        raise TypeError(&#34;Use %=&#34;)
-
     def __imod__(self, other):
         impl.row_modulo(self, other)
         return self
 
-    def __pow__(self, other):
-        raise TypeError(&#34;Use **=&#34;)
-
     def __ipow__(self, other):
         impl.power(self, other)
         return self
-
-    def __len__(self):
-        return self.shape[0]
 
     def __bool__(self):
         if len(self) == 1:
@@ -456,8 +414,8 @@ class Storage(StorageBase):
         impl.divide_out_of_place(self, dividend, divisor)
         return self
 
-    def sum(self, a, b):
-        impl.sum_out_of_place(self, a, b)
+    def sum(self, arg_a, arg_b):
+        impl.sum_out_of_place(self, arg_a, arg_b)
         return self
 
     def ravel(self, other):
@@ -471,7 +429,7 @@ class Storage(StorageBase):
         result = np.reshape(result, self.shape)
         return result
 
-    def urand(self, generator=None):
+    def urand(self, generator):
         generator(self)
 
     def upload(self, data):
@@ -652,7 +610,7 @@ def from_ndarray(array):
 </details>
 </dd>
 <dt id="PySDM.backends.thrust_rtc.storage.Storage.sum"><code class="name flex">
-<span>def <span class="ident">sum</span></span>(<span>self, a, b)</span>
+<span>def <span class="ident">sum</span></span>(<span>self, arg_a, arg_b)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -660,8 +618,8 @@ def from_ndarray(array):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def sum(self, a, b):
-    impl.sum_out_of_place(self, a, b)
+<pre><code class="python">def sum(self, arg_a, arg_b):
+    impl.sum_out_of_place(self, arg_a, arg_b)
     return self</code></pre>
 </details>
 </dd>
@@ -697,7 +655,7 @@ def from_ndarray(array):
 </details>
 </dd>
 <dt id="PySDM.backends.thrust_rtc.storage.Storage.urand"><code class="name flex">
-<span>def <span class="ident">urand</span></span>(<span>self, generator=None)</span>
+<span>def <span class="ident">urand</span></span>(<span>self, generator)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -705,7 +663,7 @@ def from_ndarray(array):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def urand(self, generator=None):
+<pre><code class="python">def urand(self, generator):
     generator(self)</code></pre>
 </details>
 </dd>

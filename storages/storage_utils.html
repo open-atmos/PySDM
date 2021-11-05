@@ -39,12 +39,33 @@ class StorageBase:
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
 
+    def __len__(self):
+        return self.shape[0]
+
+    def __pow__(self, other):
+        raise TypeError(&#34;Use **=&#34;)
+
+    def __mod__(self, other):
+        raise TypeError(&#34;Use %=&#34;)
+
+    def __truediv__(self, other):
+        raise TypeError(&#34;Use /=&#34;)
+
+    def __mul__(self, other):
+        raise TypeError(&#34;Use *=&#34;)
+
+    def __sub__(self, other):
+        raise TypeError(&#34;Use -=&#34;)
+
+    def __add__(self, other):
+        raise TypeError(&#34;Use +=&#34;)
+
     @abstractmethod
     def to_ndarray(self):
         raise NotImplementedError()
 
     @abstractmethod
-    def urand(self, generator=None):
+    def urand(self, generator):
         raise NotImplementedError()
 
     @abstractmethod
@@ -136,12 +157,33 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
 
+    def __len__(self):
+        return self.shape[0]
+
+    def __pow__(self, other):
+        raise TypeError(&#34;Use **=&#34;)
+
+    def __mod__(self, other):
+        raise TypeError(&#34;Use %=&#34;)
+
+    def __truediv__(self, other):
+        raise TypeError(&#34;Use /=&#34;)
+
+    def __mul__(self, other):
+        raise TypeError(&#34;Use *=&#34;)
+
+    def __sub__(self, other):
+        raise TypeError(&#34;Use -=&#34;)
+
+    def __add__(self, other):
+        raise TypeError(&#34;Use +=&#34;)
+
     @abstractmethod
     def to_ndarray(self):
         raise NotImplementedError()
 
     @abstractmethod
-    def urand(self, generator=None):
+    def urand(self, generator):
         raise NotImplementedError()
 
     @abstractmethod
@@ -184,7 +226,7 @@ def upload(self, data):
 </details>
 </dd>
 <dt id="PySDM.storages.storage_utils.StorageBase.urand"><code class="name flex">
-<span>def <span class="ident">urand</span></span>(<span>self, generator=None)</span>
+<span>def <span class="ident">urand</span></span>(<span>self, generator)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -193,7 +235,7 @@ def upload(self, data):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
-def urand(self, generator=None):
+def urand(self, generator):
     raise NotImplementedError()</code></pre>
 </details>
 </dd>

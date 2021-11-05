@@ -33,7 +33,7 @@ from .conf import trtc, rndrtc
 
 #  TIP: sometimes only half array is needed
 
-class Random:
+class Random:  # pylint: disable=too-few-public-methods
     __urand_init_rng_state_body = trtc.For([&#39;rng&#39;, &#39;states&#39;, &#39;seed&#39;], &#39;i&#39;, &#39;&#39;&#39;
         rng.state_init(seed, i, 0, states[i]);
         &#39;&#39;&#39;)
@@ -74,7 +74,7 @@ class Random:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Random:
+<pre><code class="python">class Random:  # pylint: disable=too-few-public-methods
     __urand_init_rng_state_body = trtc.For([&#39;rng&#39;, &#39;states&#39;, &#39;seed&#39;], &#39;i&#39;, &#39;&#39;&#39;
         rng.state_init(seed, i, 0, states[i]);
         &#39;&#39;&#39;)
