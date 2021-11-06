@@ -1,6 +1,6 @@
 from ...product import Product
 from ....physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY
-from ....physics.constants import convert_to, ppb
+from ....physics.constants import convert_to, PPB
 
 
 class GaseousMoleFraction(Product):
@@ -22,5 +22,5 @@ class GaseousMoleFraction(Product):
             self.aqueous_chemistry.environment_mixing_ratios[self.compound],
             specific_gravity=SPECIFIC_GRAVITY[self.compound]
         )
-        convert_to(tmp, ppb)
+        convert_to(tmp, PPB)
         return tmp

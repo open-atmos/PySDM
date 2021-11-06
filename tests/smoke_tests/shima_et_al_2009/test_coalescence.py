@@ -17,7 +17,7 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 def check(n_part, dv, n_sd, rho, state, step):
-    check_LWC = 1e-3 * si.kilogram / si.metre ** 3
+    check_lwc = 1e-3 * si.kilogram / si.metre ** 3
     check_ksi = n_part * dv / n_sd
 
     # multiplicities
@@ -27,7 +27,7 @@ def check(n_part, dv, n_sd, rho, state, step):
 
     # liquid water content
     LWC = rho * np.dot(state['n'], state['volume']) / dv
-    np.testing.assert_approx_equal(LWC, check_LWC, 3)
+    np.testing.assert_approx_equal(LWC, check_lwc, 3)
 
 
 @pytest.mark.parametrize('croupier', ['local', 'global'])

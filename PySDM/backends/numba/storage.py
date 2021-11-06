@@ -153,8 +153,8 @@ class Storage(StorageBase):
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
-    def sum(self, a, b):
-        impl.sum_out_of_place(self.data, a.data, b.data)
+    def sum(self, arg_a, arg_b):
+        impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
         return self
 
     def ravel(self, other):

@@ -9,12 +9,12 @@ from .impl import flag
 
 class DimensionalAnalysis:
 
-    def __enter__(*_):
+    def __enter__(*_):  # pylint: disable=no-method-argument
         flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
         reload(formulae)
 
-    def __exit__(*_):
+    def __exit__(*_):  # pylint: disable=no-method-argument
         flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
         reload(formulae)

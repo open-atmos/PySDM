@@ -13,7 +13,7 @@ class Parameterized(Gravitational):
             self.params, output, self.particulator.attributes['radius'],
             is_first_in_pair, const.si.um)
         output **= 2
-        output *= const.pi
+        output *= const.PI
         self.pair_tmp.max(
             self.particulator.attributes['radius'], is_first_in_pair)
         self.pair_tmp **= 2

@@ -1,11 +1,13 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from scipy import signal
+import numpy as np
+import pytest
 from PySDM_examples.Lowe_et_al_2019 import aerosol
 from PySDM.physics import si, Formulae, constants as const
 from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from .constants import constants
-from scipy import signal
-import numpy as np
-import pytest
+
+assert hasattr(constants, '_pytestfixturefunction')
 
 TRIVIA = Formulae().trivia
 R_WET = np.logspace(np.log(150 * si.nm), np.log(3000 * si.nm), base=np.e, num=100)

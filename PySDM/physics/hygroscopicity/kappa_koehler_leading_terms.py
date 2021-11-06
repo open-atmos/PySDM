@@ -8,7 +8,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / power(r, const.three)
+           kp * rd3 / power(r, const.THREE)
         )
 
     @staticmethod

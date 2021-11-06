@@ -69,7 +69,8 @@ class Displacement:
             displacement_z -= self.particulator.attributes['terminal velocity']
             displacement_z *= dt_over_dz
 
-    def update_position(self, position_in_cell, displacement):
+    @staticmethod
+    def update_position(position_in_cell, displacement):
         position_in_cell += displacement
 
     def update_cell_origin(self, cell_origin, position_in_cell):

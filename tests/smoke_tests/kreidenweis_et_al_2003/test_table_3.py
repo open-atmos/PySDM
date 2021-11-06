@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
-from PySDM.physics.constants import convert_to, ppb
+from PySDM.physics.constants import convert_to, PPB
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
 import numpy as np
 from chempy import Substance
@@ -47,7 +47,7 @@ class TestTable3:
 
         for key in expected:
             mole_fraction = np.asarray(output[f"aq_{key}_ppb"])
-            convert_to(mole_fraction, 1/ppb)
+            convert_to(mole_fraction, 1 / PPB)
             compound = AQUEOUS_COMPOUNDS[key][0]  # sic!
             np.testing.assert_allclose(
                 actual=(
@@ -86,7 +86,8 @@ class TestTable3:
         assert output['RH_env'][-1] > 100
         assert output['RH_env'][-8] < 100
 
-    def test_at_1200m_above_cloud_base(self):
+    @staticmethod
+    def test_at_1200m_above_cloud_base():
         # Arrange
         settings = Settings(n_sd=10, dt=1 * si.s, n_substep=5)
         simulation = Simulation(settings)

@@ -1,10 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import pytest
+import numpy as np
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
 from PySDM.initialisation import spectral_sampling
 from PySDM.physics import si
 from .constants import constants
-import pytest
-import numpy as np
+
+assert hasattr(constants, '_pytestfixturefunction')
 
 
 class TestFig2:
@@ -17,6 +19,7 @@ class TestFig2:
         (aerosol.AerosolNascent(), "Constant", .42, 90),
         (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .34, 150)
     ))
+    # pylint: disable=redefined-outer-name
     def test_peak_supersaturation_and_final_concentration(
         constants, aerosol, surface_tension, s_max, n_final
     ):

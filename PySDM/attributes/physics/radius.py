@@ -10,5 +10,5 @@ class Radius(DerivedAttribute):
 
     def recalculate(self):
         self.data.idx = self.volume.data.idx
-        self.data.product(self.volume.get(), 1/const.pi_4_3)
+        self.data.product(self.volume.get(), 1 / const.PI_4_3)
         self.data **= 1/3

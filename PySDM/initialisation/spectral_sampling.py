@@ -41,9 +41,6 @@ class SpectralSampling:
 
 
 class Linear(SpectralSampling):
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
-        super().__init__(spectrum, size_range)
-
     def sample(self, n_sd):
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)

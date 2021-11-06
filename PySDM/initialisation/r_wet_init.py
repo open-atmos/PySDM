@@ -38,7 +38,7 @@ def r_wet_init(r_dry: np.ndarray, environment,
 
     @numba.njit(**{**jit_flags, 'parallel': False})
     def minfun(r, T, RH, kp, rd3, f_org):
-        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.pi_4_3 * rd3, f_org=f_org)
+        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org)
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
