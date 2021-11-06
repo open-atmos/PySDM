@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.surface_tension.compressed_film_Ruehl API documentation</title>
+<title>PySDM.physics.surface_tension.compressed_film_ruehl API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.surface_tension.compressed_film_Ruehl</code></h1>
+<h1 class="title">Module <code>PySDM.physics.surface_tension.compressed_film_ruehl</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -37,7 +37,8 @@ C0 = np.nan
 m_sigma = np.nan
 sgm_min = np.nan
 
-class CompressedFilm_Ruehl:
+
+class CompressedFilmRuehl:
     &#34;&#34;&#34;
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).
@@ -89,8 +90,8 @@ class CompressedFilm_Ruehl:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl"><code class="flex name class">
-<span>class <span class="ident">CompressedFilm_Ruehl</span></span>
+<dt id="PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl"><code class="flex name class">
+<span>class <span class="ident">CompressedFilmRuehl</span></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
@@ -105,7 +106,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CompressedFilm_Ruehl:
+<pre><code class="python">class CompressedFilmRuehl:
     &#34;&#34;&#34;
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).
@@ -149,7 +150,7 @@ is linear, with slope <code>m_sigma</code>.</p></div>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma"><code class="name flex">
+<dt id="PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl.sigma"><code class="name flex">
 <span>def <span class="ident">sigma</span></span>(<span>T, v_wet, v_dry, f_org)</span>
 </code></dt>
 <dd>
@@ -200,9 +201,9 @@ def sigma(T, v_wet, v_dry, f_org):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl" href="#PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl">CompressedFilm_Ruehl</a></code></h4>
+<h4><code><a title="PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl" href="#PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl">CompressedFilmRuehl</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma" href="#PySDM.physics.surface_tension.compressed_film_Ruehl.CompressedFilm_Ruehl.sigma">sigma</a></code></li>
+<li><code><a title="PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl.sigma" href="#PySDM.physics.surface_tension.compressed_film_ruehl.CompressedFilmRuehl.sigma">sigma</a></code></li>
 </ul>
 </li>
 </ul>

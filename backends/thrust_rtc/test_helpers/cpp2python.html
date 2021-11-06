@@ -30,9 +30,9 @@
 from ...numba.conf import JIT_FLAGS
 
 
-jit_opts = &#34;error_model=&#39;numpy&#39;, fastmath=True&#34;
+JIT_OPTS = &#34;error_model=&#39;numpy&#39;, fastmath=True&#34;
 
-cppython = {
+CPPYTHON = {
     &#34;int &#34;: &#34;&#34;,
     &#34;double &#34;: &#34;&#34;,
     &#34;float &#34;: &#34;&#34;,
@@ -172,7 +172,7 @@ def extract_struct_defs(cpp: str) -&gt; (str, str):
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
             &#39;static __device__ &#39;,
-            f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;
+            f&#39;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#39;
         )
 
     return cpp, &#39;\n&#39;.join(structs)
@@ -182,7 +182,7 @@ def to_numba(name, args, iter_var, body):
     body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#39;&#39;, body)
     body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#39;&#39;, body)
     body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
-    for cpp, python in cppython.items():
+    for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
     body = replace_fors(body)
     body, parallel_add = replace_atomic_adds(body)
@@ -197,12 +197,12 @@ def make(self):
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
     
-    @numba.njit(parallel=False, {jit_opts})
+    @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
     
     {structs}
-    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {jit_opts})
+    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
         for {iter_var} in numba.prange(__python_n__):
             {body}
@@ -291,7 +291,7 @@ def make(self):
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
             &#39;static __device__ &#39;,
-            f&#39;\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_&#39;
+            f&#39;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#39;
         )
 
     return cpp, &#39;\n&#39;.join(structs)</code></pre>
@@ -426,7 +426,7 @@ def make(self):
     body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#39;&#39;, body)
     body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#39;&#39;, body)
     body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
-    for cpp, python in cppython.items():
+    for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
     body = replace_fors(body)
     body, parallel_add = replace_atomic_adds(body)
@@ -441,12 +441,12 @@ def make(self):
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
     
-    @numba.njit(parallel=False, {jit_opts})
+    @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
     
     {structs}
-    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {jit_opts})
+    @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
         for {iter_var} in numba.prange(__python_n__):
             {body}

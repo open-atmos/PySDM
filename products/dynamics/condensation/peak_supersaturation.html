@@ -52,7 +52,7 @@ class PeakSupersaturation(Product):
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.RH_max)
+        self.download_to_buffer(self.condensation.rh_max)
         self.RH_max[:] = np.maximum(self.buffer[:], self.RH_max[:])</code></pre>
 </details>
 </section>
@@ -96,7 +96,7 @@ class PeakSupersaturation(Product):
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.RH_max)
+        self.download_to_buffer(self.condensation.rh_max)
         self.RH_max[:] = np.maximum(self.buffer[:], self.RH_max[:])</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -130,7 +130,7 @@ class PeakSupersaturation(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def notify(self):
-    self.download_to_buffer(self.condensation.RH_max)
+    self.download_to_buffer(self.condensation.rh_max)
     self.RH_max[:] = np.maximum(self.buffer[:], self.RH_max[:])</code></pre>
 </details>
 </dd>
