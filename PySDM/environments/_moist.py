@@ -1,6 +1,4 @@
-"""
-"""
-
+from abc import abstractmethod
 import numpy as np
 
 
@@ -49,9 +47,11 @@ class _Moist:
         )
         self._values["predicted"] = target
 
+    @abstractmethod
     def get_qv(self) -> np.ndarray:
         raise NotImplementedError()
 
+    @abstractmethod
     def get_thd(self) -> np.ndarray:
         raise NotImplementedError()
 

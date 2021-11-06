@@ -24,5 +24,5 @@ class PeakSupersaturation(Product):
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.RH_max)
+        self.download_to_buffer(self.condensation.rh_max)
         self.RH_max[:] = np.maximum(self.buffer[:], self.RH_max[:])

@@ -7,7 +7,7 @@ from numba.core.errors import NumbaError
 from .cpp2python import to_numba
 
 
-class FakeThrustRTC:
+class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     class DVRange:
         def __init__(self, ndarray):
             self.ndarray = ndarray

@@ -1,23 +1,26 @@
 """
 Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
+from collections import namedtuple
 import numpy as np
 from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
     GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY, M
 
 
-default_pH_min = -1.
-default_pH_max = 14.
-default_pH_rtol = 1e-6
-default_ionic_strength_threshold = 0.02 * M
+DEFAULTS = namedtuple("_", ('pH_min', 'pH_max', 'pH_rtol', 'ionic_strength_threshold'))(
+    pH_min=-1.,
+    pH_max=14.,
+    pH_rtol=1e-6,
+    ionic_strength_threshold=0.02 * M
+)
 
 
 class AqueousChemistry:
     def __init__(self, environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass,
-                 ionic_strength_threshold=default_ionic_strength_threshold,
+                 ionic_strength_threshold=DEFAULTS.ionic_strength_threshold,
                  pH_H_min=None,
                  pH_H_max=None,
-                 pH_rtol=default_pH_rtol):
+                 pH_rtol=DEFAULTS.pH_rtol):
         self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
         self.particulator = None
@@ -51,9 +54,9 @@ class AqueousChemistry:
         self.environment_mole_fractions = None
 
         if self.pH_H_max is None:
-            self.pH_H_max = self.particulator.formulae.trivia.pH2H(default_pH_min)
+            self.pH_H_max = self.particulator.formulae.trivia.pH2H(DEFAULTS.pH_min)
         if self.pH_H_min is None:
-            self.pH_H_min = self.particulator.formulae.trivia.pH2H(default_pH_max)
+            self.pH_H_min = self.particulator.formulae.trivia.pH2H(DEFAULTS.pH_max)
 
         for key in AQUEOUS_COMPOUNDS:
             builder.request_attribute("conc_" + key)

@@ -2,11 +2,14 @@
 SDM implementation with adaptive timestepping
 """
 import warnings
+from collections import namedtuple
 import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 
-default_dt_coal_range = (.1 * si.second, 100 * si.second)
+DEFAULTS = namedtuple("_", ('dt_coal_range',))(
+  dt_coal_range=(.1 * si.second, 100 * si.second)
+)
 
 
 class Coalescence:
@@ -17,7 +20,7 @@ class Coalescence:
                  optimized_random=False,
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_coal_range=default_dt_coal_range
+                 dt_coal_range=DEFAULTS.dt_coal_range
                  ):
         assert substeps == 1 or adaptive is False
 
@@ -43,6 +46,9 @@ class Coalescence:
 
         self.collision_rate = None
         self.collision_rate_deficit = None
+
+        self.rnd_opt = None
+        self.optimized_random = None
 
     def register(self, builder):
         self.particulator = builder.particulator

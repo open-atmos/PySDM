@@ -49,10 +49,10 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=result,
             # params
-            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
-            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
-            ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
-            rtol=aqueous_chemistry.default_pH_rtol
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
+            ionic_strength_threshold=aqueous_chemistry.DEFAULTS.ionic_strength_threshold,
+            rtol=aqueous_chemistry.DEFAULTS.pH_rtol
         )
 
         # Assert
@@ -122,10 +122,10 @@ class Test_pH:
             do_chemistry_flag=np.empty(1),
             pH=actual_pH,
             # params
-            H_min=formulae.trivia.pH2H(aqueous_chemistry.default_pH_max),
-            H_max=formulae.trivia.pH2H(aqueous_chemistry.default_pH_min),
-            ionic_strength_threshold=aqueous_chemistry.default_ionic_strength_threshold,
-            rtol=aqueous_chemistry.default_pH_rtol
+            H_min=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
+            H_max=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
+            ionic_strength_threshold=aqueous_chemistry.DEFAULTS.ionic_strength_threshold,
+            rtol=aqueous_chemistry.DEFAULTS.pH_rtol
         )
 
         np.testing.assert_allclose(actual_pH[0], expected_pH, rtol=1e-5)

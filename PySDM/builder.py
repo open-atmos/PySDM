@@ -55,7 +55,7 @@ class Builder:
         if variant is not None:
             assert variant == self.req_attr[attribute]
 
-    def build(self, attributes: dict, products: list = (), int_caster=discretise_n):
+    def build(self, attributes: dict, products: tuple = (), int_caster=discretise_n):
         assert self.particulator.environment is not None
 
         for dynamic in self.particulator.dynamics.values():

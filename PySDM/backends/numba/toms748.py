@@ -1,4 +1,4 @@
-# pylint: disable=invalid-name
+# pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
 
 # adapted from Maciej Waruszewski's libcloudph++ version of Boost implementation
 # https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp

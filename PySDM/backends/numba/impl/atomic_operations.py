@@ -82,7 +82,7 @@ def declare_atomic_array_op(iop, uop, fop):
 
 
 @declare_atomic_array_op("add", "add", "fadd")
-def atomic_add(ary, i, v):
+def atomic_add(ary, index, value):
     """
     Atomically, perform `ary[i] += v` and return the previous value of `ary[i]`.
 
@@ -91,13 +91,13 @@ def atomic_add(ary, i, v):
 
     This should be used from numba compiled code.
     """
-    orig = ary[i]
-    ary[i] += v
+    orig = ary[index]
+    ary[index] += value
     return orig
 
 
 @declare_atomic_array_op("sub", "sub", "fsub")
-def atomic_sub(ary, i, v):
+def atomic_sub(ary, index, value):
     """
     Atomically, perform `ary[i] -= v` and return the previous value of `ary[i]`.
 
@@ -106,13 +106,13 @@ def atomic_sub(ary, i, v):
 
     This should be used from numba compiled code.
     """
-    orig = ary[i]
-    ary[i] -= v
+    orig = ary[index]
+    ary[index] -= value
     return orig
 
 
 @declare_atomic_array_op("max", "umax", None)
-def atomic_max(ary, i, v):
+def atomic_max(ary, index, value):
     """
     Atomically, perform `ary[i] = max(ary[i], v)` and return the previous value of `ary[i]`.
     This operation does not support floating-point values.
@@ -122,13 +122,13 @@ def atomic_max(ary, i, v):
 
     This should be used from numba compiled code.
     """
-    orig = ary[i]
-    ary[i] = max(ary[i], v)
+    orig = ary[index]
+    ary[index] = max(ary[index], value)
     return orig
 
 
 @declare_atomic_array_op("min", "umin", None)
-def atomic_min(ary, i, v):
+def atomic_min(ary, index, value):
     """
     Atomically, perform `ary[i] = min(ary[i], v)` and return the previous value of `ary[i]`.
     This operation does not support floating-point values.
@@ -138,6 +138,6 @@ def atomic_min(ary, i, v):
 
     This should be used from numba compiled code.
     """
-    orig = ary[i]
-    ary[i] = min(ary[i], v)
+    orig = ary[index]
+    ary[index] = min(ary[index], value)
     return orig

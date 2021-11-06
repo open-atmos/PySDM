@@ -2,9 +2,9 @@ import re
 from ...numba.conf import JIT_FLAGS
 
 
-jit_opts = "error_model='numpy', fastmath=True"
+JIT_OPTS = "error_model='numpy', fastmath=True"
 
-cppython = {
+CPPYTHON = {
     "int ": "",
     "double ": "",
     "float ": "",
@@ -144,7 +144,7 @@ def extract_struct_defs(cpp: str) -> (str, str):
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
             'static __device__ ',
-            f'\n    @numba.njit(parallel=False, {jit_opts})\n    def {names[i]}_'
+            f'\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_'
         )
 
     return cpp, '\n'.join(structs)
@@ -154,7 +154,7 @@ def to_numba(name, args, iter_var, body):
     body = re.sub(r"static_assert\([^;]*;", '', body)
     body = re.sub(r"static_cast<[^;]*>", '', body)
     body = body.replace("\n", "\n    ")
-    for cpp, python in cppython.items():
+    for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
     body = replace_fors(body)
     body, parallel_add = replace_atomic_adds(body)
@@ -169,12 +169,12 @@ def make(self):
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
     
-    @numba.njit(parallel=False, {jit_opts})
+    @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
     
     {structs}
-    @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, {jit_opts})
+    @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
         for {iter_var} in numba.prange(__python_n__):
             {body}

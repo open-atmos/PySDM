@@ -11,11 +11,11 @@ class TestFig2:
     @staticmethod
     @pytest.mark.parametrize("aerosol, surface_tension, s_max, n_final", (
         (aerosol.AerosolMarine(),  "Constant", .30, 140),
-        (aerosol.AerosolMarine(),  "CompressedFilm_Ovadnevaite", .27, 160),
+        (aerosol.AerosolMarine(),  "CompressedFilmOvadnevaite", .27, 160),
         (aerosol.AerosolBoreal(),  "Constant", .21, 395),
-        (aerosol.AerosolBoreal(),  "CompressedFilm_Ovadnevaite", .16, 495),
+        (aerosol.AerosolBoreal(),  "CompressedFilmOvadnevaite", .16, 495),
         (aerosol.AerosolNascent(), "Constant", .42, 90),
-        (aerosol.AerosolNascent(), "CompressedFilm_Ovadnevaite", .34, 150)
+        (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .34, 150)
     ))
     def test_peak_supersaturation_and_final_concentration(
         constants, aerosol, surface_tension, s_max, n_final
@@ -23,7 +23,7 @@ class TestFig2:
         # arrange
         settings = Settings(
             dt=2 * si.s, n_sd_per_mode=32,
-            model={'CompressedFilm_Ovadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
+            model={'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
             aerosol=aerosol,
             spectral_sampling=spectral_sampling.ConstantMultiplicity
         )

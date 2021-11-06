@@ -7,10 +7,12 @@ from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.index import make_Index
 from ....backends_fixture import backend_class
 from .__parametrisation__ import backend_fill, get_dummy_particulator_and_sdm
-# noinspection PyUnresolvedReferences
 from .__parametrisation__ import v_2, T_2, n_2
 
 assert hasattr(backend_class, '_pytestfixturefunction')
+assert hasattr(v_2, '_pytestfixturefunction')
+assert hasattr(T_2, '_pytestfixturefunction')
+assert hasattr(n_2, '_pytestfixturefunction')
 
 
 class TestSDMSingleCell:
@@ -30,9 +32,6 @@ class TestSDMSingleCell:
 
         # Assert
         particles = particulator.attributes
-        a = particles['n'].to_ndarray()
-        b = particles['volume'].to_ndarray()
-        c = particles['temperature'].to_ndarray()
         np.testing.assert_approx_equal(
             const * np.sum(
                 particles['n'].to_ndarray()
