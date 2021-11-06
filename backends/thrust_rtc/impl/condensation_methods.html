@@ -81,7 +81,7 @@ class CondensationMethods(Methods):
                     auto sgm = {phys.surface_tension.sigma.c_inline(
                         T=args(&#39;_T&#39;),
                         v_wet=&#34;vol&#34;,
-                        v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;,
+                        v_dry=f&#34;const.PI_4_3 * {args(&#39;rd3&#39;)}&#34;,
                         f_org=args(&#34;f_org&#34;)
                     )};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(
@@ -119,7 +119,7 @@ class CondensationMethods(Methods):
             auto x_old = {phys.condensation_coordinate.x.c_inline(volume=&#34;v[i]&#34;)};
             auto r_old = {phys.trivia.radius.c_inline(volume=&#34;v[i]&#34;)};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume=&#34;vdry[i]/100&#34;)};
-            auto rd3 = vdry[i] / {const.pi_4_3};
+            auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
                 T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;, f_org=&#34;_f_org[i]&#34;
             )};
@@ -397,7 +397,7 @@ class CondensationMethods(Methods):
                     auto sgm = {phys.surface_tension.sigma.c_inline(
                         T=args(&#39;_T&#39;),
                         v_wet=&#34;vol&#34;,
-                        v_dry=f&#34;const.pi_4_3 * {args(&#39;rd3&#39;)}&#34;,
+                        v_dry=f&#34;const.PI_4_3 * {args(&#39;rd3&#39;)}&#34;,
                         f_org=args(&#34;f_org&#34;)
                     )};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(
@@ -435,7 +435,7 @@ class CondensationMethods(Methods):
             auto x_old = {phys.condensation_coordinate.x.c_inline(volume=&#34;v[i]&#34;)};
             auto r_old = {phys.trivia.radius.c_inline(volume=&#34;v[i]&#34;)};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume=&#34;vdry[i]/100&#34;)};
-            auto rd3 = vdry[i] / {const.pi_4_3};
+            auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
                 T=&#34;_T&#34;, v_wet=&#34;v[i]&#34;, v_dry=&#34;vdry[i]&#34;, f_org=&#34;_f_org[i]&#34;
             )};

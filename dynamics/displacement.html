@@ -98,7 +98,8 @@ class Displacement:
             displacement_z -= self.particulator.attributes[&#39;terminal velocity&#39;]
             displacement_z *= dt_over_dz
 
-    def update_position(self, position_in_cell, displacement):
+    @staticmethod
+    def update_position(position_in_cell, displacement):
         position_in_cell += displacement
 
     def update_cell_origin(self, cell_origin, position_in_cell):
@@ -195,7 +196,8 @@ class Displacement:
             displacement_z -= self.particulator.attributes[&#39;terminal velocity&#39;]
             displacement_z *= dt_over_dz
 
-    def update_position(self, position_in_cell, displacement):
+    @staticmethod
+    def update_position(position_in_cell, displacement):
         position_in_cell += displacement
 
     def update_cell_origin(self, cell_origin, position_in_cell):
@@ -207,6 +209,23 @@ class Displacement:
     def boundary_condition(self, cell_origin):
         cell_origin %= self.grid</code></pre>
 </details>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.dynamics.displacement.Displacement.update_position"><code class="name flex">
+<span>def <span class="ident">update_position</span></span>(<span>position_in_cell, displacement)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def update_position(position_in_cell, displacement):
+    position_in_cell += displacement</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.dynamics.displacement.Displacement.boundary_condition"><code class="name flex">
@@ -289,19 +308,6 @@ class Displacement:
     floor_of_position.floor(position_in_cell)
     cell_origin += floor_of_position
     position_in_cell -= floor_of_position</code></pre>
-</details>
-</dd>
-<dt id="PySDM.dynamics.displacement.Displacement.update_position"><code class="name flex">
-<span>def <span class="ident">update_position</span></span>(<span>self, position_in_cell, displacement)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update_position(self, position_in_cell, displacement):
-    position_in_cell += displacement</code></pre>
 </details>
 </dd>
 <dt id="PySDM.dynamics.displacement.Displacement.upload_courant_field"><code class="name flex">

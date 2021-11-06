@@ -36,7 +36,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / power(r, const.three)
+           kp * rd3 / power(r, const.THREE)
         )
 
     @staticmethod
@@ -68,7 +68,7 @@ class KappaKoehlerLeadingTerms:
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / power(r, const.three)
+           kp * rd3 / power(r, const.THREE)
         )
 
     @staticmethod
@@ -91,7 +91,7 @@ def RH_eq(r, T, kp, rd3, sgm):
     return (
        1 +
        (2 * sgm / const.Rv / T / const.rho_w) / r -
-       kp * rd3 / power(r, const.three)
+       kp * rd3 / power(r, const.THREE)
     )</code></pre>
 </details>
 </dd>

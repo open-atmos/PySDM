@@ -236,7 +236,7 @@ class CondensationMethods(Methods):
                 temperature,
                 kappa,
                 rd3,
-                phys_sigma(temperature, volume, const.pi_4_3 * rd3, f_org)
+                phys_sigma(temperature, volume, const.PI_4_3 * rd3, f_org)
             )
             r_dr_dt = phys_r_dr_dt(RH_eq, temperature, RH, lv, pvs, D, K)
             return x_old - x_new + timestep * dx_dt(x_new, r_dr_dt)
@@ -259,7 +259,7 @@ class CondensationMethods(Methods):
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 x_insane = x(vdry[drop]/100)
-                rd3 = vdry[drop] / const.pi_4_3
+                rd3 = vdry[drop] / const.PI_4_3
                 sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
@@ -628,7 +628,7 @@ class CondensationMethods(Methods):
                 temperature,
                 kappa,
                 rd3,
-                phys_sigma(temperature, volume, const.pi_4_3 * rd3, f_org)
+                phys_sigma(temperature, volume, const.PI_4_3 * rd3, f_org)
             )
             r_dr_dt = phys_r_dr_dt(RH_eq, temperature, RH, lv, pvs, D, K)
             return x_old - x_new + timestep * dx_dt(x_new, r_dr_dt)
@@ -651,7 +651,7 @@ class CondensationMethods(Methods):
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
                 x_insane = x(vdry[drop]/100)
-                rd3 = vdry[drop] / const.pi_4_3
+                rd3 = vdry[drop] / const.PI_4_3
                 sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
@@ -921,7 +921,7 @@ def make_calculate_ml_new(
             temperature,
             kappa,
             rd3,
-            phys_sigma(temperature, volume, const.pi_4_3 * rd3, f_org)
+            phys_sigma(temperature, volume, const.PI_4_3 * rd3, f_org)
         )
         r_dr_dt = phys_r_dr_dt(RH_eq, temperature, RH, lv, pvs, D, K)
         return x_old - x_new + timestep * dx_dt(x_new, r_dr_dt)
@@ -944,7 +944,7 @@ def make_calculate_ml_new(
             x_old = x(v[drop])
             r_old = radius(v[drop])
             x_insane = x(vdry[drop]/100)
-            rd3 = vdry[drop] / const.pi_4_3
+            rd3 = vdry[drop] / const.PI_4_3
             sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
             RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
             if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):

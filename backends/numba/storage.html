@@ -181,8 +181,8 @@ class Storage(StorageBase):
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
-    def sum(self, a, b):
-        impl.sum_out_of_place(self.data, a.data, b.data)
+    def sum(self, arg_a, arg_b):
+        impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
         return self
 
     def ravel(self, other):
@@ -370,8 +370,8 @@ class Storage(StorageBase):
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
-    def sum(self, a, b):
-        impl.sum_out_of_place(self.data, a.data, b.data)
+    def sum(self, arg_a, arg_b):
+        impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
         return self
 
     def ravel(self, other):
@@ -582,7 +582,7 @@ def from_ndarray(array):
 </details>
 </dd>
 <dt id="PySDM.backends.numba.storage.Storage.sum"><code class="name flex">
-<span>def <span class="ident">sum</span></span>(<span>self, a, b)</span>
+<span>def <span class="ident">sum</span></span>(<span>self, arg_a, arg_b)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -590,8 +590,8 @@ def from_ndarray(array):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def sum(self, a, b):
-    impl.sum_out_of_place(self.data, a.data, b.data)
+<pre><code class="python">def sum(self, arg_a, arg_b):
+    impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
     return self</code></pre>
 </details>
 </dd>

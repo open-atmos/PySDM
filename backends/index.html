@@ -59,7 +59,7 @@ def _cuda_is_available():
         cuda_lib.cuGetErrorString(result, ctypes.byref(error_str))
         warnings.warn(
             f&#34;CUDA library found but cuInit() failed (error code: {result};&#34;
-            f&#34; message: {error_str.value.decode()})&#34;
+            f&#34; message: {error_str.value.decode()})&#34;  # pylint: disable=no-member
         )
         if &#39;google.colab&#39; in sys.modules:
             warnings.warn(
