@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.state.particles API documentation</title>
+<title>PySDM.state.particle_attributes API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.state.particles</code></h1>
+<h1 class="title">Module <code>PySDM.state.particle_attributes</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -33,7 +33,7 @@ from PySDM.attributes.impl.attribute import Attribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
-class Particles:
+class ParticleAttributes:
 
     def __init__(
             self, particulator,
@@ -72,7 +72,10 @@ class Particles:
         return self.__cell_start
 
     @property
-    def SD_num(self):
+    def super_droplet_count(self):
+        &#34;&#34;&#34; returns the number of super-droplets in the system
+            (which might differ from the initial one due to precipitation
+            or removal during collision of multiplicity-of-one particles) &#34;&#34;&#34;
         assert self.healthy
         return len(self.__idx)
 
@@ -161,7 +164,7 @@ class Particles:
                                       attr_data,
                                       self[&#39;cell id&#39;],
                                       self.__idx,
-                                      self.SD_num,
+                                      self.super_droplet_count,
                                       ranks,
                                       attr_range[0], attr_range[1],
                                       self[attr_name],
@@ -178,7 +181,7 @@ class Particles:
                                                attr_data,
                                                self[&#39;cell id&#39;],
                                                self.__idx,
-                                               self.SD_num,
+                                               self.super_droplet_count,
                                                rank,
                                                attr_bins,
                                                self[attr_name],
@@ -212,7 +215,7 @@ class Particles:
         res = self.particulator.bck.flag_precipitated(
             self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
             self[&#39;volume&#39;], self[&#39;n&#39;],
-            self.__idx, self.SD_num, self.__healthy_memory)
+            self.__idx, self.super_droplet_count, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
@@ -253,7 +256,7 @@ class Particles:
             n_threads=1,
             cell_order=np.arange(self.particulator.mesh.n_cell),
             cell_start_arg=self.cell_start,
-            idx=self._Particles__idx,
+            idx=self._ParticleAttributes__idx,
             do_chemistry_flag=do_chemistry_flag,
             mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
@@ -296,8 +299,8 @@ class Particles:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.state.particles.Particles"><code class="flex name class">
-<span>class <span class="ident">Particles</span></span>
+<dt id="PySDM.state.particle_attributes.ParticleAttributes"><code class="flex name class">
+<span>class <span class="ident">ParticleAttributes</span></span>
 <span>(</span><span>particulator, idx, extensive_attributes, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
 </code></dt>
 <dd>
@@ -306,7 +309,7 @@ class Particles:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Particles:
+<pre><code class="python">class ParticleAttributes:
 
     def __init__(
             self, particulator,
@@ -345,7 +348,10 @@ class Particles:
         return self.__cell_start
 
     @property
-    def SD_num(self):
+    def super_droplet_count(self):
+        &#34;&#34;&#34; returns the number of super-droplets in the system
+            (which might differ from the initial one due to precipitation
+            or removal during collision of multiplicity-of-one particles) &#34;&#34;&#34;
         assert self.healthy
         return len(self.__idx)
 
@@ -434,7 +440,7 @@ class Particles:
                                       attr_data,
                                       self[&#39;cell id&#39;],
                                       self.__idx,
-                                      self.SD_num,
+                                      self.super_droplet_count,
                                       ranks,
                                       attr_range[0], attr_range[1],
                                       self[attr_name],
@@ -451,7 +457,7 @@ class Particles:
                                                attr_data,
                                                self[&#39;cell id&#39;],
                                                self.__idx,
-                                               self.SD_num,
+                                               self.super_droplet_count,
                                                rank,
                                                attr_bins,
                                                self[attr_name],
@@ -485,7 +491,7 @@ class Particles:
         res = self.particulator.bck.flag_precipitated(
             self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
             self[&#39;volume&#39;], self[&#39;n&#39;],
-            self.__idx, self.SD_num, self.__healthy_memory)
+            self.__idx, self.super_droplet_count, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
@@ -526,7 +532,7 @@ class Particles:
             n_threads=1,
             cell_order=np.arange(self.particulator.mesh.n_cell),
             cell_start_arg=self.cell_start,
-            idx=self._Particles__idx,
+            idx=self._ParticleAttributes__idx,
             do_chemistry_flag=do_chemistry_flag,
             mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
@@ -561,20 +567,7 @@ class Particles:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="PySDM.state.particles.Particles.SD_num"><code class="name">var <span class="ident">SD_num</span></code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def SD_num(self):
-    assert self.healthy
-    return len(self.__idx)</code></pre>
-</details>
-</dd>
-<dt id="PySDM.state.particles.Particles.cell_start"><code class="name">var <span class="ident">cell_start</span></code></dt>
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.cell_start"><code class="name">var <span class="ident">cell_start</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -588,10 +581,28 @@ def cell_start(self):
     return self.__cell_start</code></pre>
 </details>
 </dd>
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.super_droplet_count"><code class="name">var <span class="ident">super_droplet_count</span></code></dt>
+<dd>
+<div class="desc"><p>returns the number of super-droplets in the system
+(which might differ from the initial one due to precipitation
+or removal during collision of multiplicity-of-one particles)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def super_droplet_count(self):
+    &#34;&#34;&#34; returns the number of super-droplets in the system
+        (which might differ from the initial one due to precipitation
+        or removal during collision of multiplicity-of-one particles) &#34;&#34;&#34;
+    assert self.healthy
+    return len(self.__idx)</code></pre>
+</details>
+</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.state.particles.Particles.adaptive_sdm_end"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.adaptive_sdm_end"><code class="name flex">
 <span>def <span class="ident">adaptive_sdm_end</span></span>(<span>self, dt_left)</span>
 </code></dt>
 <dd>
@@ -605,7 +616,7 @@ def cell_start(self):
         dt_left, self.particulator.attributes.cell_start)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.chem_recalculate_cell_data"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_cell_data"><code class="name flex">
 <span>def <span class="ident">chem_recalculate_cell_data</span></span>(<span>self, equilibrium_consts, kinetic_consts)</span>
 </code></dt>
 <dd>
@@ -622,7 +633,7 @@ def cell_start(self):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.chem_recalculate_drop_data"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_drop_data"><code class="name flex">
 <span>def <span class="ident">chem_recalculate_drop_data</span></span>(<span>self, dissociation_factors, equilibrium_consts)</span>
 </code></dt>
 <dd>
@@ -640,7 +651,7 @@ def cell_start(self):
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.coalescence"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.coalescence"><code class="name flex">
 <span>def <span class="ident">coalescence</span></span>(<span>self, gamma, is_first_in_pair)</span>
 </code></dt>
 <dd>
@@ -665,7 +676,7 @@ def cell_start(self):
             attr.mark_updated()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.cut_working_length"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.cut_working_length"><code class="name flex">
 <span>def <span class="ident">cut_working_length</span></span>(<span>self, length)</span>
 </code></dt>
 <dd>
@@ -679,7 +690,7 @@ def cell_start(self):
     self.__idx.length = length</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.dissolution"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.dissolution"><code class="name flex">
 <span>def <span class="ident">dissolution</span></span>(<span>self, gaseous_compounds, system_type, dissociation_factors, timestep, environment_mixing_ratios, do_chemistry_flag)</span>
 </code></dt>
 <dd>
@@ -695,7 +706,7 @@ def cell_start(self):
         n_threads=1,
         cell_order=np.arange(self.particulator.mesh.n_cell),
         cell_start_arg=self.cell_start,
-        idx=self._Particles__idx,
+        idx=self._ParticleAttributes__idx,
         do_chemistry_flag=do_chemistry_flag,
         mole_amounts={key: self[&#34;moles_&#34; + key] for key in gaseous_compounds.keys()},
         env_mixing_ratio=environment_mixing_ratios,
@@ -714,7 +725,7 @@ def cell_start(self):
         self.attributes[f&#39;moles_{key}&#39;].mark_updated()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.get_extensive_attrs"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.get_extensive_attrs"><code class="name flex">
 <span>def <span class="ident">get_extensive_attrs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -727,7 +738,7 @@ def cell_start(self):
     return self.extensive_attributes</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.get_working_length"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.get_working_length"><code class="name flex">
 <span>def <span class="ident">get_working_length</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -740,7 +751,7 @@ def cell_start(self):
     return len(self.__idx)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.has_attribute"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.has_attribute"><code class="name flex">
 <span>def <span class="ident">has_attribute</span></span>(<span>self, attr)</span>
 </code></dt>
 <dd>
@@ -753,7 +764,7 @@ def cell_start(self):
     return attr in self.attributes</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.keys"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.keys"><code class="name flex">
 <span>def <span class="ident">keys</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -766,7 +777,7 @@ def cell_start(self):
     return self.attributes.keys()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.moments"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0)</span>
 </code></dt>
 <dd>
@@ -798,7 +809,7 @@ def cell_start(self):
                                   attr_data,
                                   self[&#39;cell id&#39;],
                                   self.__idx,
-                                  self.SD_num,
+                                  self.super_droplet_count,
                                   ranks,
                                   attr_range[0], attr_range[1],
                                   self[attr_name],
@@ -807,7 +818,7 @@ def cell_start(self):
                                   )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.oxidation"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.oxidation"><code class="name flex">
 <span>def <span class="ident">oxidation</span></span>(<span>self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag)</span>
 </code></dt>
 <dd>
@@ -846,7 +857,7 @@ def cell_start(self):
     self.attributes[&#39;moles_O3&#39;].mark_updated()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.permutation"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.permutation"><code class="name flex">
 <span>def <span class="ident">permutation</span></span>(<span>self, u01, local)</span>
 </code></dt>
 <dd>
@@ -869,7 +880,7 @@ def cell_start(self):
         self.__sorted = False</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.recalculate_cell_id"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.recalculate_cell_id"><code class="name flex">
 <span>def <span class="ident">recalculate_cell_id</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -885,7 +896,7 @@ def cell_start(self):
     self.__sorted = False</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.remove_precipitated"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.remove_precipitated"><code class="name flex">
 <span>def <span class="ident">remove_precipitated</span></span>(<span>self) ‑> float</span>
 </code></dt>
 <dd>
@@ -898,13 +909,13 @@ def cell_start(self):
     res = self.particulator.bck.flag_precipitated(
         self[&#39;cell origin&#39;], self[&#39;position in cell&#39;],
         self[&#39;volume&#39;], self[&#39;n&#39;],
-        self.__idx, self.SD_num, self.__healthy_memory)
+        self.__idx, self.super_droplet_count, self.__healthy_memory)
     self.healthy = bool(self.__healthy_memory)
     self.sanitize()
     return res</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.reset_cell_idx"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.reset_cell_idx"><code class="name flex">
 <span>def <span class="ident">reset_cell_idx</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -918,7 +929,7 @@ def cell_start(self):
     self.__sort_by_cell_id()</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.reset_working_length"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.reset_working_length"><code class="name flex">
 <span>def <span class="ident">reset_working_length</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -931,7 +942,7 @@ def cell_start(self):
     self.__idx.length = self.__valid_n_sd</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.sanitize"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.sanitize"><code class="name flex">
 <span>def <span class="ident">sanitize</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -950,7 +961,7 @@ def cell_start(self):
         self.__sorted = False</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.sort_within_pair_by_attr"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.sort_within_pair_by_attr"><code class="name flex">
 <span>def <span class="ident">sort_within_pair_by_attr</span></span>(<span>self, is_first_in_pair, attr_name)</span>
 </code></dt>
 <dd>
@@ -964,7 +975,7 @@ def cell_start(self):
         self.__idx, is_first_in_pair, self[attr_name])</code></pre>
 </details>
 </dd>
-<dt id="PySDM.state.particles.Particles.spectrum_moments"><code class="name flex">
+<dt id="PySDM.state.particle_attributes.ParticleAttributes.spectrum_moments"><code class="name flex">
 <span>def <span class="ident">spectrum_moments</span></span>(<span>self, moment_0, moments, attr, rank, attr_bins, attr_name='volume', weighting_attribute='volume', weighting_rank=0)</span>
 </code></dt>
 <dd>
@@ -982,7 +993,7 @@ def cell_start(self):
                                            attr_data,
                                            self[&#39;cell id&#39;],
                                            self.__idx,
-                                           self.SD_num,
+                                           self.super_droplet_count,
                                            rank,
                                            attr_bins,
                                            self[attr_name],
@@ -1010,30 +1021,30 @@ def cell_start(self):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.state.particles.Particles" href="#PySDM.state.particles.Particles">Particles</a></code></h4>
+<h4><code><a title="PySDM.state.particle_attributes.ParticleAttributes" href="#PySDM.state.particle_attributes.ParticleAttributes">ParticleAttributes</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.state.particles.Particles.SD_num" href="#PySDM.state.particles.Particles.SD_num">SD_num</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.adaptive_sdm_end" href="#PySDM.state.particles.Particles.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.cell_start" href="#PySDM.state.particles.Particles.cell_start">cell_start</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.chem_recalculate_cell_data" href="#PySDM.state.particles.Particles.chem_recalculate_cell_data">chem_recalculate_cell_data</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.chem_recalculate_drop_data" href="#PySDM.state.particles.Particles.chem_recalculate_drop_data">chem_recalculate_drop_data</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.coalescence" href="#PySDM.state.particles.Particles.coalescence">coalescence</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.cut_working_length" href="#PySDM.state.particles.Particles.cut_working_length">cut_working_length</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.dissolution" href="#PySDM.state.particles.Particles.dissolution">dissolution</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.get_extensive_attrs" href="#PySDM.state.particles.Particles.get_extensive_attrs">get_extensive_attrs</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.get_working_length" href="#PySDM.state.particles.Particles.get_working_length">get_working_length</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.has_attribute" href="#PySDM.state.particles.Particles.has_attribute">has_attribute</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.keys" href="#PySDM.state.particles.Particles.keys">keys</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.moments" href="#PySDM.state.particles.Particles.moments">moments</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.oxidation" href="#PySDM.state.particles.Particles.oxidation">oxidation</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.permutation" href="#PySDM.state.particles.Particles.permutation">permutation</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.recalculate_cell_id" href="#PySDM.state.particles.Particles.recalculate_cell_id">recalculate_cell_id</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.remove_precipitated" href="#PySDM.state.particles.Particles.remove_precipitated">remove_precipitated</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.reset_cell_idx" href="#PySDM.state.particles.Particles.reset_cell_idx">reset_cell_idx</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.reset_working_length" href="#PySDM.state.particles.Particles.reset_working_length">reset_working_length</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.sanitize" href="#PySDM.state.particles.Particles.sanitize">sanitize</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.sort_within_pair_by_attr" href="#PySDM.state.particles.Particles.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
-<li><code><a title="PySDM.state.particles.Particles.spectrum_moments" href="#PySDM.state.particles.Particles.spectrum_moments">spectrum_moments</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.adaptive_sdm_end" href="#PySDM.state.particle_attributes.ParticleAttributes.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.cell_start" href="#PySDM.state.particle_attributes.ParticleAttributes.cell_start">cell_start</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_cell_data" href="#PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_cell_data">chem_recalculate_cell_data</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_drop_data" href="#PySDM.state.particle_attributes.ParticleAttributes.chem_recalculate_drop_data">chem_recalculate_drop_data</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.coalescence" href="#PySDM.state.particle_attributes.ParticleAttributes.coalescence">coalescence</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.cut_working_length" href="#PySDM.state.particle_attributes.ParticleAttributes.cut_working_length">cut_working_length</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.dissolution" href="#PySDM.state.particle_attributes.ParticleAttributes.dissolution">dissolution</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.get_extensive_attrs" href="#PySDM.state.particle_attributes.ParticleAttributes.get_extensive_attrs">get_extensive_attrs</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.get_working_length" href="#PySDM.state.particle_attributes.ParticleAttributes.get_working_length">get_working_length</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.has_attribute" href="#PySDM.state.particle_attributes.ParticleAttributes.has_attribute">has_attribute</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.keys" href="#PySDM.state.particle_attributes.ParticleAttributes.keys">keys</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.moments" href="#PySDM.state.particle_attributes.ParticleAttributes.moments">moments</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.oxidation" href="#PySDM.state.particle_attributes.ParticleAttributes.oxidation">oxidation</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.permutation" href="#PySDM.state.particle_attributes.ParticleAttributes.permutation">permutation</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.recalculate_cell_id" href="#PySDM.state.particle_attributes.ParticleAttributes.recalculate_cell_id">recalculate_cell_id</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.remove_precipitated" href="#PySDM.state.particle_attributes.ParticleAttributes.remove_precipitated">remove_precipitated</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.reset_cell_idx" href="#PySDM.state.particle_attributes.ParticleAttributes.reset_cell_idx">reset_cell_idx</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.reset_working_length" href="#PySDM.state.particle_attributes.ParticleAttributes.reset_working_length">reset_working_length</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.sanitize" href="#PySDM.state.particle_attributes.ParticleAttributes.sanitize">sanitize</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.sort_within_pair_by_attr" href="#PySDM.state.particle_attributes.ParticleAttributes.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.spectrum_moments" href="#PySDM.state.particle_attributes.ParticleAttributes.spectrum_moments">spectrum_moments</a></code></li>
+<li><code><a title="PySDM.state.particle_attributes.ParticleAttributes.super_droplet_count" href="#PySDM.state.particle_attributes.ParticleAttributes.super_droplet_count">super_droplet_count</a></code></li>
 </ul>
 </li>
 </ul>
