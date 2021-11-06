@@ -1,7 +1,7 @@
 """
-The very class exposing `PySDM.Particulator.run()` method for launching simulations
+The very class exposing `PySDM.Particulator.run()` method for launching simulations,
 """
-from PySDM.state.particles import Particles
+from PySDM.state.particle_attributes import ParticleAttributes
 from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.pairwise_storage import make_PairwiseStorage
@@ -17,7 +17,7 @@ class Particulator:
         self.backend = backend
         self.formulae = backend.formulae
         self.environment = None
-        self.attributes: (Particles, None) = None
+        self.attributes: (ParticleAttributes, None) = None
         self.dynamics = {}
         self.products = {}
         self.observers = []
@@ -90,7 +90,7 @@ class Particulator:
             v=self.attributes["volume"],
             n=self.attributes['n'],
             vdry=self.attributes["dry volume"],
-            idx=self.attributes._Particles__idx,
+            idx=self.attributes._ParticleAttributes__idx,
             rhod=self.env["rhod"],
             thd=self.env["thd"],
             qv=self.env["qv"],

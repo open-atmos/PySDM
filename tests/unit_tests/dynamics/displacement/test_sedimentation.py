@@ -34,5 +34,5 @@ class TestSedimentation:
         particles.attributes.sanitize()
 
         # Assert
-        assert particles.attributes.SD_num == 0
+        assert particles.attributes.super_droplet_count == 0
         assert sut.precipitation_in_last_step != 0

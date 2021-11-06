@@ -5,7 +5,7 @@ import inspect
 import numpy as np
 from PySDM.particulator import Particulator
 from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
-from PySDM.state.particles_factory import ParticlesFactory
+from PySDM.state.particle_attributes_factory import ParticlesFactory
 from PySDM.state.wall_timer import WallTimer
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.physics.multiplicities import Multiplicities

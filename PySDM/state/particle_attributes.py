@@ -5,7 +5,7 @@ from PySDM.attributes.impl.attribute import Attribute
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
-class Particles:
+class ParticleAttributes:
 
     def __init__(
             self, particulator,
@@ -44,7 +44,10 @@ class Particles:
         return self.__cell_start
 
     @property
-    def SD_num(self):
+    def super_droplet_count(self):
+        """ returns the number of super-droplets in the system
+            (which might differ from the initial one due to precipitation
+            or removal during collision of multiplicity-of-one particles) """
         assert self.healthy
         return len(self.__idx)
 
@@ -133,7 +136,7 @@ class Particles:
                                       attr_data,
                                       self['cell id'],
                                       self.__idx,
-                                      self.SD_num,
+                                      self.super_droplet_count,
                                       ranks,
                                       attr_range[0], attr_range[1],
                                       self[attr_name],
@@ -150,7 +153,7 @@ class Particles:
                                                attr_data,
                                                self['cell id'],
                                                self.__idx,
-                                               self.SD_num,
+                                               self.super_droplet_count,
                                                rank,
                                                attr_bins,
                                                self[attr_name],
@@ -184,7 +187,7 @@ class Particles:
         res = self.particulator.bck.flag_precipitated(
             self['cell origin'], self['position in cell'],
             self['volume'], self['n'],
-            self.__idx, self.SD_num, self.__healthy_memory)
+            self.__idx, self.super_droplet_count, self.__healthy_memory)
         self.healthy = bool(self.__healthy_memory)
         self.sanitize()
         return res
@@ -225,7 +228,7 @@ class Particles:
             n_threads=1,
             cell_order=np.arange(self.particulator.mesh.n_cell),
             cell_start_arg=self.cell_start,
-            idx=self._Particles__idx,
+            idx=self._ParticleAttributes__idx,
             do_chemistry_flag=do_chemistry_flag,
             mole_amounts={key: self["moles_" + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
