@@ -38,7 +38,7 @@ class PhysicsMethods(Methods):
             )};
             auto r_cr = {phys.hygroscopicity.r_cr.c_inline(
                 kp="kappa[i]",
-                rd3="v_dry[i] / const.pi_4_3",
+                rd3="v_dry[i] / const.PI_4_3",
                 T="T[cell[i]]",
                 sgm="sigma"
             )};

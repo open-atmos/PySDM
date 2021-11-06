@@ -53,7 +53,7 @@ class CondensationMethods(Methods):
                     auto sgm = {phys.surface_tension.sigma.c_inline(
                         T=args('_T'),
                         v_wet="vol",
-                        v_dry=f"const.pi_4_3 * {args('rd3')}",
+                        v_dry=f"const.PI_4_3 * {args('rd3')}",
                         f_org=args("f_org")
                     )};
                     auto RH_eq = {phys.hygroscopicity.RH_eq.c_inline(
