@@ -93,7 +93,7 @@ def _make_solve(formulae):
             dy_dt[idx_x + i] = dx_dt(
                 x_i,
                 r_dr_dt(
-                    RH_eq(r, T, kappa[i], dry_volume[i] / const.pi_4_3, sgm),
+                    RH_eq(r, T, kappa[i], dry_volume[i] / const.PI_4_3, sgm),
                     T, RH, lv, pvs, Dr, Kr
                 )
             )

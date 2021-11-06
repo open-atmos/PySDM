@@ -6,7 +6,7 @@ from PySDM.backends.numba.storage import Storage
 from PySDM.physics import si, Formulae
 from PySDM.physics.aqueous_chemistry.support import KineticConsts, EquilibriumConsts, \
     DISSOCIATION_FACTORS, k4
-from PySDM.physics.constants import T_STP, pi_4_3
+from PySDM.physics.constants import T_STP, PI_4_3
 
 
 formulae = Formulae()
@@ -30,7 +30,7 @@ k3 = Storage.from_ndarray(np.full(1, kinetic_consts.KINETIC_CONST['k3'].at(T)))
 K_SO2 = Storage.from_ndarray(np.full(1, equilibrium_consts.EQUILIBRIUM_CONST['K_SO2'].at(T)))
 K_HSO3 = Storage.from_ndarray(np.full(1, equilibrium_consts.EQUILIBRIUM_CONST['K_HSO3'].at(T)))
 
-volume = pi_4_3 * (1 * si.um)**3
+volume = PI_4_3 * (1 * si.um) ** 3
 pH = 5.
 n_sd = 1
 eqc = {

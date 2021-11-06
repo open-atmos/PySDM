@@ -8,16 +8,14 @@ from numba.core.typing.arraydecl import get_array_index_type
 from numba.extending import lower_builtin, type_callable
 from numba.np.arrayobj import basic_indexing, make_array, normalize_indices
 
-__all__ = ["atomic_add", "atomic_sub", "atomic_max", "atomic_min"]
 
-
-def atomic_rmw(context, builder, operation, arrayty, val, ptr):
+def _atomic_rmw(context, builder, operation, arrayty, val, ptr):  # pylint: disable=too-many-arguments
     assert arrayty.aligned  # We probably have to have aligned arrays.
     dataval = context.get_value_as_data(builder, arrayty.dtype, val)
-    return builder.atomic_rmw(operation, ptr, dataval, "monotonic")
+    return builder._atomic_rmw(operation, ptr, dataval, "monotonic")
 
 
-def declare_atomic_array_op(iop, uop, fop):
+def _declare_atomic_array_op(iop, uop, fop):
     def decorator(func):
         @type_callable(func)
         def func_type(context):
@@ -72,7 +70,7 @@ def declare_atomic_array_op(iop, uop, fop):
                 operation = fop
             if operation is None:
                 raise TypeError("Atomic operation not supported on " + str(aryty))
-            return atomic_rmw(context, builder, operation, aryty, val, dataptr)
+            return _atomic_rmw(context, builder, operation, aryty, val, dataptr)
 
         _ = func_impl
 
@@ -81,7 +79,7 @@ def declare_atomic_array_op(iop, uop, fop):
     return decorator
 
 
-@declare_atomic_array_op("add", "add", "fadd")
+@_declare_atomic_array_op("add", "add", "fadd")
 def atomic_add(ary, index, value):
     """
     Atomically, perform `ary[i] += v` and return the previous value of `ary[i]`.
@@ -96,7 +94,7 @@ def atomic_add(ary, index, value):
     return orig
 
 
-@declare_atomic_array_op("sub", "sub", "fsub")
+@_declare_atomic_array_op("sub", "sub", "fsub")
 def atomic_sub(ary, index, value):
     """
     Atomically, perform `ary[i] -= v` and return the previous value of `ary[i]`.
@@ -111,7 +109,7 @@ def atomic_sub(ary, index, value):
     return orig
 
 
-@declare_atomic_array_op("max", "umax", None)
+@_declare_atomic_array_op("max", "umax", None)
 def atomic_max(ary, index, value):
     """
     Atomically, perform `ary[i] = max(ary[i], v)` and return the previous value of `ary[i]`.
@@ -127,7 +125,7 @@ def atomic_max(ary, index, value):
     return orig
 
 
-@declare_atomic_array_op("min", "umin", None)
+@_declare_atomic_array_op("min", "umin", None)
 def atomic_min(ary, index, value):
     """
     Atomically, perform `ary[i] = min(ary[i], v)` and return the previous value of `ary[i]`.

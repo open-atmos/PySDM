@@ -91,7 +91,7 @@ class CondensationMethods(Methods):
             auto x_old = {phys.condensation_coordinate.x.c_inline(volume="v[i]")};
             auto r_old = {phys.trivia.radius.c_inline(volume="v[i]")};
             auto x_insane = {phys.condensation_coordinate.x.c_inline(volume="vdry[i]/100")};
-            auto rd3 = vdry[i] / {const.pi_4_3};
+            auto rd3 = vdry[i] / {const.PI_4_3};
             auto sgm = {phys.surface_tension.sigma.c_inline(
                 T="_T", v_wet="v[i]", v_dry="vdry[i]", f_org="_f_org[i]"
             )};

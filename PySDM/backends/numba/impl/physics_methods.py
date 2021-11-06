@@ -28,7 +28,7 @@ class PhysicsMethods(Methods):
                 sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
                 v_cr[i] = phys_volume(phys_r_cr(
                     kp=kappa[i],
-                    rd3=v_dry[i] / const.pi_4_3,
+                    rd3=v_dry[i] / const.PI_4_3,
                     T=T[cell[i]],
                     sgm=sigma
                 ))
