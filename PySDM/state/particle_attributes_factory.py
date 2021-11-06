@@ -3,7 +3,7 @@ import numpy as np
 from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, \
     MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.state.particles import Particles
+from PySDM.state.particle_attributes import ParticleAttributes
 
 
 class ParticlesFactory:
@@ -78,7 +78,7 @@ class ParticlesFactory:
 
         cell_start = np.empty(particulator.mesh.n_cell + 1, dtype=int)
 
-        state = Particles(
+        state = ParticleAttributes(
             particulator,
             idx,
             extensive_attributes, extensive_keys,
@@ -90,9 +90,9 @@ class ParticlesFactory:
         return state
 
     @staticmethod
-    def empty_particles(particles, n_sd) -> Particles:
+    def empty_particles(particles, n_sd) -> ParticleAttributes:
         idx = particles.Index.identity_index(n_sd)
-        return Particles(
+        return ParticleAttributes(
             particulator=particles, idx=idx,
             extensive_attributes=None, extensive_keys={},
             cell_start=np.zeros(0, dtype=np.int64), attributes={}

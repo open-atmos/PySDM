@@ -78,4 +78,4 @@ def test_coalescence_2_sd(backend_class):
     for volume in volumes.values():
         assert x_max < np.amax(volume)
         x_max = np.amax(volume)
-    assert particulator.attributes.SD_num == 1
+    assert particulator.attributes.super_droplet_count == 1

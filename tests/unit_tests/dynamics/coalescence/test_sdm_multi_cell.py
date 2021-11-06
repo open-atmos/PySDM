@@ -34,7 +34,7 @@ class TestSDMMultiCell:
         attributes = {'n': n, 'volume': v, 'cell id': cell_id}
         particulator.build(attributes)
         u01, _ = sut.rnd_opt.get_random_arrays()
-        sut.actual_length = particulator.attributes._Particles__idx.length
+        sut.actual_length = particulator.attributes._ParticleAttributes__idx.length
         sut.adaptive = adaptive
 
         # Act
