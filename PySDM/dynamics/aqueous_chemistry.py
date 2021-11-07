@@ -73,16 +73,16 @@ class AqueousChemistry:
         self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
 
     def __call__(self):
-        self.particulator.attributes.chem_recalculate_cell_data(
+        self.particulator.chem_recalculate_cell_data(
             equilibrium_consts=self.equilibrium_consts,
             kinetic_consts=self.kinetic_consts
         )
         for _ in range(self.n_substep):
-            self.particulator.attributes.chem_recalculate_drop_data(
+            self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.particulator.attributes.dissolution(
+            self.particulator.dissolution(
                 gaseous_compounds=GASEOUS_COMPOUNDS,
                 system_type=self.system_type,
                 dissociation_factors=self.dissociation_factors,
@@ -90,11 +90,11 @@ class AqueousChemistry:
                 timestep=self.particulator.dt / self.n_substep,
                 do_chemistry_flag=self.do_chemistry_flag
             )
-            self.particulator.attributes.chem_recalculate_drop_data(
+            self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors
             )
-            self.particulator.attributes.oxidation(
+            self.particulator.oxidation(
                 kinetic_consts=self.kinetic_consts,
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,

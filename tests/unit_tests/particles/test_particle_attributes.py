@@ -92,9 +92,9 @@ class TestParticleAttributes:
         sut = particulator.attributes
         sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(
             backend_class, idx)
-        sut.attributes['n'].data = TestParticleAttributes.make_indexed_storage(
+        sut._ParticleAttributes__attributes['n'].data = TestParticleAttributes.make_indexed_storage(
             backend_class, multiplicity, sut._ParticleAttributes__idx)
-        sut.attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
+        sut._ParticleAttributes__attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
             backend_class, cells, sut._ParticleAttributes__idx)
         sut._ParticleAttributes__cell_start = TestParticleAttributes.make_indexed_storage(
             backend_class, [0] * (n_cell + 1))
@@ -142,13 +142,12 @@ class TestParticleAttributes:
             'position in cell': position_in_cell
         }
         particulator.build(attribute)
-        sut = particulator.attributes
 
         # Act
-        sut.recalculate_cell_id()
+        particulator.recalculate_cell_id()
 
         # Assert
-        assert sut['cell id'][droplet_id] == 0
+        assert particulator.attributes['cell id'][droplet_id] == 0
 
     @staticmethod
     def test_permutation_global_as_implemented_in_numba():
@@ -254,7 +253,7 @@ class TestParticleAttributes:
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(
             backend_class, [0] * idx_length)
-        sut.attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
+        sut._ParticleAttributes__attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
             backend_class, cell_id)
         sut._ParticleAttributes__cell_start = TestParticleAttributes.make_indexed_storage(
             backend_class, cell_start)

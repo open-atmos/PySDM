@@ -50,4 +50,4 @@ class Freezing:
                 a_w_ice=self.particulator.environment['a_w_ice']
             )
 
-        self.particulator.attributes.attributes['volume'].mark_updated()
+        self.particulator.attributes.mark_updated('volume')

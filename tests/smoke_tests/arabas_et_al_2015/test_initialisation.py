@@ -42,7 +42,7 @@ def test_initialisation(backend_class, plot=False):
     v_bins = settings.formulae.trivia.volume(settings.r_bins_edges)
 
     for i in range(len(histogram_dry)):
-        particulator.attributes.moments(
+        particulator.moments(
             moment_0, moments, specs={},
             attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1])
         )
@@ -50,7 +50,7 @@ def test_initialisation(backend_class, plot=False):
         histogram_dry[i, :] = tmp.reshape(
             settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
-        particulator.attributes.moments(
+        particulator.moments(
             moment_0, moments, specs={},
             attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)

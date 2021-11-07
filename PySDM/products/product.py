@@ -42,7 +42,7 @@ class MomentProduct(Product):
         filter_attr='volume', filter_range=(-np.inf, np.inf),
         weighting_attribute='volume', weighting_rank=0
     ):
-        self.particulator.attributes.moments(
+        self.particulator.moments(
             self.moment_0, self.moments, {attr: (rank,)},
             attr_name=filter_attr, attr_range=filter_range,
             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank
@@ -72,7 +72,7 @@ class SpectrumMomentProduct(Product):
         rank, filter_attr='volume',
         weighting_attribute='volume', weighting_rank=0
     ):
-        self.particulator.attributes.spectrum_moments(
+        self.particulator.spectrum_moments(
             self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
             attr_name=filter_attr,
             weighting_attribute=weighting_attribute, weighting_rank=weighting_rank
