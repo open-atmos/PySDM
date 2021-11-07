@@ -17,6 +17,7 @@ _quite_close_threshold = 1
 _quite_close_multiplier = 2
 
 _K = namedtuple("_K", ('NH3', 'SO2', 'HSO3', 'HSO4', 'HCO3', 'CO2', 'HNO3'))
+_conc = namedtuple("_conc", ('N_mIII', 'N_V', 'C_IV', 'S_IV', 'S_VI'))
 
 
 class ChemistryMethods(Methods):
@@ -178,17 +179,19 @@ class ChemistryMethods(Methods):
                 kinetic_consts[key].data[i] = \
                     self.KINETIC_CONST.KINETIC_CONST[key].at(temperature.data[i])
 
-    def equilibrate_H(self, equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
+    def equilibrate_H(self, equilibrium_consts, cell_id, conc,
                       do_chemistry_flag, pH, H_min, H_max, ionic_strength_threshold, rtol):
         ChemistryMethods.equilibrate_H_body(within_tolerance=self.formulae.trivia.within_tolerance,
                                             pH2H=self.formulae.trivia.pH2H,
                                             H2pH=self.formulae.trivia.H2pH,
                                             cell_id=cell_id.data,
-                                            N_mIII=N_mIII.data,
-                                            N_V=N_V.data,
-                                            C_IV=C_IV.data,
-                                            S_IV=S_IV.data,
-                                            S_VI=S_VI.data,
+                                            conc=_conc(
+                                                N_mIII=conc.N_mIII.data,
+                                                N_V=conc.N_V.data,
+                                                C_IV=conc.C_IV.data,
+                                                S_IV=conc.S_IV.data,
+                                                S_VI=conc.S_VI.data,
+                                            ),
                                             K=_K(
                                                 NH3=equilibrium_consts["K_NH3"].data,
                                                 SO2=equilibrium_consts["K_SO2"].data,
@@ -213,7 +216,7 @@ class ChemistryMethods(Methods):
     def equilibrate_H_body(within_tolerance,
                            pH2H, H2pH,
                            cell_id,
-                           N_mIII, N_V, C_IV, S_IV, S_VI,
+                           conc,
                            K,
                            do_chemistry_flag, pH,
                            # params
@@ -222,7 +225,13 @@ class ChemistryMethods(Methods):
         for i, _ in enumerate(pH):
             cid = cell_id[i]
             args = (
-                N_mIII[i], N_V[i], C_IV[i], S_IV[i], S_VI[i],
+                _conc(
+                    N_mIII=conc.N_mIII[i],
+                    N_V=conc.N_V[i],
+                    C_IV=conc.C_IV[i],
+                    S_IV=conc.S_IV[i],
+                    S_VI=conc.S_VI[i],
+                ),
                 _K(
                     NH3=K.NH3[cid], SO2=K.SO2[cid], HSO3=K.HSO3[cid], HSO4=K.HSO4[cid],
                     HCO3=K.HCO3[cid], CO2=K.CO2[cid], HNO3=K.HNO3[cid]
@@ -264,7 +273,7 @@ class ChemistryMethods(Methods):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
+def calc_ionic_strength(H, conc, K):
     # Directly adapted
     # https://github.com/igfuw/libcloudphxx/blob/0b4e2455fba4f95c7387623fc21481a85e7b151f/src/impl/particles_impl_chem_strength.ipp#L50
     # https://en.wikipedia.org/wiki/Ionic_strength
@@ -273,32 +282,32 @@ def calc_ionic_strength(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
     water = H + K_H2O / H
 
     # HSO4- and SO4 2-
-    cz_S_VI = H * S_VI / (H + K.HSO4) + 4 * K.HSO4 * S_VI / (H + K.HSO4)
+    cz_S_VI = H * conc.S_VI / (H + K.HSO4) + 4 * K.HSO4 * conc.S_VI / (H + K.HSO4)
 
     # HCO3- and CO3 2-
-    cz_CO2 = K.CO2 * H * C_IV / (H * H + K.CO2 * H + K.CO2 * K.HCO3) + \
-        4 * K.CO2 * K.HCO3 * C_IV / (H * H + K.CO2 * H + K.CO2 * K.HCO3)
+    cz_CO2 = K.CO2 * H * conc.C_IV / (H * H + K.CO2 * H + K.CO2 * K.HCO3) + \
+        4 * K.CO2 * K.HCO3 * conc.C_IV / (H * H + K.CO2 * H + K.CO2 * K.HCO3)
 
     # HSO3- and HSO4 2-
-    cz_SO2 = K.SO2 * H * S_IV / (H * H + K.SO2 * H + K.SO2 * K.HSO3) + \
-        4 * K.SO2 * K.HSO3 * S_IV / (H * H + K.SO2 * H + K.SO2 * K.HSO3)
+    cz_SO2 = K.SO2 * H * conc.S_IV / (H * H + K.SO2 * H + K.SO2 * K.HSO3) + \
+        4 * K.SO2 * K.HSO3 * conc.S_IV / (H * H + K.SO2 * H + K.SO2 * K.HSO3)
 
     # NO3-
-    cz_HNO3 = K.HNO3 * N_V / (H + K.HNO3)
+    cz_HNO3 = K.HNO3 * conc.N_V / (H + K.HNO3)
 
     # NH4+
-    cz_NH3 = K.NH3 * H * N_mIII / (K_H2O + K.NH3 * H)
+    cz_NH3 = K.NH3 * H * conc.N_mIII / (K_H2O + K.NH3 * H)
 
     return 0.5 * (water + cz_S_VI + cz_CO2 + cz_SO2 + cz_HNO3 + cz_NH3)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
-def acidity_minfun(H, N_mIII, N_V, C_IV, S_IV, S_VI, K):
-    ammonia = (N_mIII * H * K.NH3) / (K_H2O + K.NH3 * H)
-    nitric = N_V * K.HNO3 / (H + K.HNO3)
-    sulfous = S_IV * K.SO2 * (H + 2 * K.HSO3) / (H * H + H * K.SO2 + K.SO2 * K.HSO3)
+def acidity_minfun(H, conc, K):
+    ammonia = (conc.N_mIII * H * K.NH3) / (K_H2O + K.NH3 * H)
+    nitric = conc.N_V * K.HNO3 / (H + K.HNO3)
+    sulfous = conc.S_IV * K.SO2 * (H + 2 * K.HSO3) / (H * H + H * K.SO2 + K.SO2 * K.HSO3)
     water = K_H2O / H
-    sulfuric = S_VI * (H + 2 * K.HSO4) / (H + K.HSO4)
-    carbonic = C_IV * K.CO2 * (H + 2 * K.HCO3) / (H * H + H * K.CO2 + K.CO2 * K.HCO3)
+    sulfuric = conc.S_VI * (H + 2 * K.HSO4) / (H + K.HSO4)
+    carbonic = conc.C_IV * K.CO2 * (H + 2 * K.HCO3) / (H * H + H * K.CO2 + K.CO2 * K.HCO3)
     zero = H + ammonia - (nitric + sulfous + water + sulfuric + carbonic)
     return zero
