@@ -101,4 +101,4 @@ class Condensation:
                         self.counters['n_substeps'][:],
                         int(self.particulator.dt / self.dt_cond_range[0])
                     )
-            self.particulator.attributes.attributes['volume'].mark_updated()
+            self.particulator.attributes.mark_updated('volume')

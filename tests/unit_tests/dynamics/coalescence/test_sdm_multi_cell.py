@@ -7,7 +7,7 @@ from PySDM.initialisation.spatial_sampling import Pseudorandom
 from PySDM.state.mesh import Mesh
 from PySDM.dynamics.coalescence import DEFAULTS
 from ....backends_fixture import backend_class
-from .__parametrisation__ import get_dummy_particulator_and_sdm
+from .__parametrisation__ import get_dummy_particulator_and_coalescence
 
 assert hasattr(backend_class, '_pytestfixturefunction')
 
@@ -29,7 +29,7 @@ class TestSDMMultiCell:
         env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n), environment=env)
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n), environment=env)
         cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
         attributes = {'n': n, 'volume': v, 'cell id': cell_id}
         particulator.build(attributes)

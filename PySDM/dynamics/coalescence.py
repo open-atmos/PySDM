@@ -113,11 +113,11 @@ class Coalescence:
         self.toss_pairs(self.is_first_in_pair, pairs_rand)
         self.compute_probability(self.prob, self.is_first_in_pair)
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
-        self.particulator.attributes.coalescence(
+        self.particulator.coalescence(
             gamma=self.prob, is_first_in_pair=self.is_first_in_pair)
         if self.adaptive:
             self.particulator.attributes.cut_working_length(
-                self.particulator.attributes.adaptive_sdm_end(self.dt_left))
+                self.particulator.adaptive_sdm_end(self.dt_left))
 
     def toss_pairs(self, is_first_in_pair, u01):
         self.particulator.attributes.permutation(u01, self.croupier == 'local')
@@ -126,7 +126,7 @@ class Coalescence:
             self.particulator.attributes.cell_idx,
             self.particulator.attributes['cell id']
         )
-        self.particulator.attributes.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)

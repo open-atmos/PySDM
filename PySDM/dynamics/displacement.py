@@ -49,14 +49,13 @@ class Displacement:
         self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
         self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
-            self.precipitation_in_last_step = self.particulator.attributes.remove_precipitated()
+            self.precipitation_in_last_step = self.particulator.remove_precipitated()
         self.update_cell_origin(cell_origin, position_in_cell)
         self.boundary_condition(cell_origin)
-        self.particulator.attributes.recalculate_cell_id()
+        self.particulator.recalculate_cell_id()
 
-        self.particulator.attributes.attributes['position in cell'].mark_updated()
-        self.particulator.attributes.attributes['cell origin'].mark_updated()
-        self.particulator.attributes.attributes['cell id'].mark_updated()
+        for key in ('position in cell', 'cell origin', 'cell id'):
+            self.particulator.attributes.mark_updated(key)
 
     def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
         for dim in range(self.dimension):

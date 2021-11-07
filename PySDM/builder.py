@@ -81,6 +81,7 @@ class Builder:
             self.req_attr,
             attributes
         )
+        self.particulator.recalculate_cell_id()
 
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()

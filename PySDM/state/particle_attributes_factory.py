@@ -23,7 +23,7 @@ class ParticlesFactory:
                                 (DerivedAttribute, Multiplicities, CellAttribute, DummyAttribute)):
                 raise AssertionError()
 
-        extensive_attributes = particulator.IndexedStorage.empty(
+        extensive_attribute_storage = particulator.IndexedStorage.empty(
             idx, (len(extensive_attr), particulator.n_sd), float)
         maximum_attributes = particulator.IndexedStorage.empty(
             idx, (len(maximum_attr), particulator.n_sd), float)
@@ -48,7 +48,7 @@ class ParticlesFactory:
                     raise ValueError(f"attribute '{attr}' required by one of the dynamics"
                                      f" but no initial values given")
 
-        helper(req_attr, attributes, extensive_attr, extensive_attributes, extensive_keys)
+        helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
 
         n = req_attr['n']
@@ -78,22 +78,20 @@ class ParticlesFactory:
 
         cell_start = np.empty(particulator.mesh.n_cell + 1, dtype=int)
 
-        state = ParticleAttributes(
+        return ParticleAttributes(
             particulator,
             idx,
-            extensive_attributes, extensive_keys,
+            extensive_attribute_storage, extensive_keys,
             # maximum_attributes, maximum_keys, # TODO #594
             cell_start,
             req_attr
         )
-
-        return state
 
     @staticmethod
     def empty_particles(particles, n_sd) -> ParticleAttributes:
         idx = particles.Index.identity_index(n_sd)
         return ParticleAttributes(
             particulator=particles, idx=idx,
-            extensive_attributes=None, extensive_keys={},
+            extensive_attribute_storage=None, extensive_keys={},
             cell_start=np.zeros(0, dtype=np.int64), attributes={}
         )

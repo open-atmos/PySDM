@@ -1,8 +1,6 @@
 from typing import Dict
-
 import numpy as np
 from PySDM.attributes.impl.attribute import Attribute
-from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 
 class ParticleAttributes:
@@ -10,32 +8,28 @@ class ParticleAttributes:
     def __init__(
             self, particulator,
             idx,
-            extensive_attributes,
+            extensive_attribute_storage,
             extensive_keys: dict,
             cell_start,
             attributes: Dict[str, Attribute]
     ):
-        self.particulator = particulator
-
         self.__n_sd = particulator.n_sd
         self.__valid_n_sd = particulator.n_sd
         self.healthy = True
-        self.__healthy_memory = self.particulator.Storage.from_ndarray(np.full((1,), 1))
+        self.__healthy_memory = particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
-        self.__strides = self.particulator.Storage.from_ndarray(self.particulator.mesh.strides)
+        self.__strides = particulator.Storage.from_ndarray(particulator.mesh.strides)
 
-        self.extensive_attributes = extensive_attributes
-        self.extensive_keys = extensive_keys
+        self.__extensive_attribute_storage = extensive_attribute_storage
+        self.__extensive_keys = extensive_keys
 
-        self.cell_idx = self.particulator.Index.identity_index(len(cell_start) - 1)
-        self.__cell_start = self.particulator.Storage.from_ndarray(cell_start)
-        self.__cell_caretaker = self.particulator.bck.make_cell_caretaker(
+        self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
+        self.__cell_start = particulator.Storage.from_ndarray(cell_start)
+        self.__cell_caretaker = particulator.bck.make_cell_caretaker(
             self.__idx, self.__cell_start, scheme=particulator.sorting_scheme
         )
         self.__sorted = False
-        self.attributes = attributes
-
-        self.recalculate_cell_id()
+        self.__attributes = attributes
 
     @property
     def cell_start(self):
@@ -50,6 +44,9 @@ class ParticleAttributes:
             or removal during collision of multiplicity-of-one particles) """
         assert self.healthy
         return len(self.__idx)
+
+    def mark_updated(self, key):
+        self.__attributes[key].mark_updated()
 
     def sanitize(self):
         if not self.healthy:
@@ -75,13 +72,13 @@ class ParticleAttributes:
         self.__sort_by_cell_id()
 
     def keys(self):
-        return self.attributes.keys()
+        return self.__attributes.keys()
 
     def __getitem__(self, item):
-        return self.attributes[item].get()
+        return self.__attributes[item].get()
 
     def __contains__(self, key):
-        return key in self.attributes
+        return key in self.__attributes
 
     def permutation(self, u01, local):
         if local:
@@ -100,163 +97,11 @@ class ParticleAttributes:
         self.__cell_caretaker(self['cell id'], self.cell_idx, self.__cell_start, self.__idx)
         self.__sorted = True
 
-    def get_extensive_attrs(self):
-        return self.extensive_attributes
+    def get_extensive_attribute_storage(self):
+        return self.__extensive_attribute_storage
 
-    def recalculate_cell_id(self):
-        if 'cell origin' not in self.attributes:
-            return
-        self.particulator.bck.cell_id(self['cell id'], self['cell origin'], self.__strides)
-        self.__sorted = False
-
-    def sort_within_pair_by_attr(self, is_first_in_pair, attr_name):
-        self.particulator.bck.sort_within_pair_by_attr(
-            self.__idx, is_first_in_pair, self[attr_name])
-
-    def moments(self, moment_0, moments,
-                specs: dict,
-                attr_name='volume', attr_range=(-np.inf, np.inf),
-                weighting_attribute='volume', weighting_rank=0):
-        attr_data, ranks = [], []
-        for attr in specs:
-            for rank in specs[attr]:
-                attr_data.append(self.attributes[attr].get())
-                ranks.append(rank)
-        assert len(set(attr_data)) <= 1
-        if len(attr_data) == 0:
-            attr_data = self.particulator.backend.Storage.empty((0,), dtype=float)
-        else:
-            attr_data = attr_data[0]
-
-        ranks = self.particulator.bck.Storage.from_ndarray(np.array(ranks, dtype=float))
-
-        self.particulator.bck.moments(moment_0,
-                                      moments,
-                                      self['n'],
-                                      attr_data,
-                                      self['cell id'],
-                                      self.__idx,
-                                      self.super_droplet_count,
-                                      ranks,
-                                      attr_range[0], attr_range[1],
-                                      self[attr_name],
-                                      weighting_attribute=self[weighting_attribute],
-                                      weighting_rank=weighting_rank
-                                      )
-
-    def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name='volume',
-                         weighting_attribute='volume', weighting_rank=0):
-        attr_data = self.attributes[attr].get()
-        self.particulator.bck.spectrum_moments(moment_0,
-                                               moments,
-                                               self['n'],
-                                               attr_data,
-                                               self['cell id'],
-                                               self.__idx,
-                                               self.super_droplet_count,
-                                               rank,
-                                               attr_bins,
-                                               self[attr_name],
-                                               weighting_attribute=self[weighting_attribute],
-                                               weighting_rank=weighting_rank
-                                               )
-
-    def coalescence(self, gamma, is_first_in_pair):
-        self.particulator.bck.coalescence(multiplicity=self['n'],
-                                          idx=self.__idx,
-                                          attributes=self.get_extensive_attrs(),
-                                          gamma=gamma,
-                                          healthy=self.__healthy_memory,
-                                          is_first_in_pair=is_first_in_pair
-                                          )
-        self.healthy = bool(self.__healthy_memory)
-        self.particulator.attributes.sanitize()
-        self.attributes['n'].mark_updated()
-        for attr in self.attributes.values():
-            if isinstance(attr, ExtensiveAttribute):
-                attr.mark_updated()
-
-    def adaptive_sdm_end(self, dt_left):
-        return self.particulator.bck.adaptive_sdm_end(
-            dt_left, self.particulator.attributes.cell_start)
+    def get_extensive_attribute_keys(self):
+        return self.__extensive_keys.keys()
 
     def has_attribute(self, attr):
-        return attr in self.attributes
-
-    def remove_precipitated(self) -> float:
-        res = self.particulator.bck.flag_precipitated(
-            self['cell origin'], self['position in cell'],
-            self['volume'], self['n'],
-            self.__idx, self.super_droplet_count, self.__healthy_memory)
-        self.healthy = bool(self.__healthy_memory)
-        self.sanitize()
-        return res
-
-    def oxidation(self,
-        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
-    ):
-        self.particulator.bck.oxidation(
-            n_sd=self.particulator.n_sd,
-            cell_ids=self['cell id'],
-            do_chemistry_flag=do_chemistry_flag,
-            k0=kinetic_consts["k0"],
-            k1=kinetic_consts["k1"],
-            k2=kinetic_consts["k2"],
-            k3=kinetic_consts["k3"],
-            K_SO2=equilibrium_consts["K_SO2"],
-            K_HSO3=equilibrium_consts["K_HSO3"],
-            dissociation_factor_SO2=dissociation_factors['SO2'],
-            timestep=timestep,
-            # input
-            droplet_volume=self["volume"],
-            pH=self["pH"],
-            # output
-            moles_O3=self["moles_O3"],
-            moles_H2O2=self["moles_H2O2"],
-            moles_S_IV=self["moles_S_IV"],
-            moles_S_VI=self["moles_S_VI"]
-        )
-        self.attributes['moles_S_IV'].mark_updated()
-        self.attributes['moles_S_VI'].mark_updated()
-        self.attributes['moles_H2O2'].mark_updated()
-        self.attributes['moles_O3'].mark_updated()
-
-    def dissolution(self, gaseous_compounds, system_type, dissociation_factors, timestep,
-                    environment_mixing_ratios, do_chemistry_flag):
-        self.particulator.bck.dissolution(
-            n_cell=self.particulator.mesh.n_cell,
-            n_threads=1,
-            cell_order=np.arange(self.particulator.mesh.n_cell),
-            cell_start_arg=self.cell_start,
-            idx=self._ParticleAttributes__idx,
-            do_chemistry_flag=do_chemistry_flag,
-            mole_amounts={key: self["moles_" + key] for key in gaseous_compounds.keys()},
-            env_mixing_ratio=environment_mixing_ratios,
-            # note: assuming condensation was called
-            env_p=self.particulator.env.get_predicted('p'),
-            env_T=self.particulator.env.get_predicted('T'),
-            env_rho_d=self.particulator.env.get_predicted('rhod'),
-            timestep=timestep,
-            dv=self.particulator.mesh.dv,
-            droplet_volume=self["volume"],
-            multiplicity=self["n"],
-            system_type=system_type,
-            dissociation_factors=dissociation_factors
-        )
-        for key in gaseous_compounds.keys():
-            self.attributes[f'moles_{key}'].mark_updated()
-
-    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
-        self.particulator.bck.chem_recalculate_cell_data(
-            equilibrium_consts=equilibrium_consts,
-            kinetic_consts=kinetic_consts,
-            temperature=self.particulator.env.get_predicted('T')
-        )
-
-    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
-        self.particulator.bck.chem_recalculate_drop_data(
-            dissociation_factors=dissociation_factors,
-            equilibrium_consts=equilibrium_consts,
-            pH=self['pH'],
-            cell_id=self['cell id']
-        )
+        return attr in self.__attributes

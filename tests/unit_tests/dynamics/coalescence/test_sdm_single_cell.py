@@ -6,7 +6,7 @@ from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.index import make_Index
 from ....backends_fixture import backend_class
-from .__parametrisation__ import backend_fill, get_dummy_particulator_and_sdm
+from .__parametrisation__ import backend_fill, get_dummy_particulator_and_coalescence
 from .__parametrisation__ import v_2, T_2, n_2
 
 assert hasattr(backend_class, '_pytestfixturefunction')
@@ -22,7 +22,7 @@ class TestSDMSingleCell:
     def test_single_collision(backend_class, v_2, T_2, n_2):
         # Arrange
         const = 1.
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n_2))
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n_2))
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': n_2, 'volume': v_2, 'heat': const*T_2*v_2, 'temperature': T_2}
         particulator.build(attributes)
@@ -69,7 +69,7 @@ class TestSDMSingleCell:
     # pylint: disable=redefined-outer-name
     def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, 2)
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
         attributes = {'n': np.full(2, n_in), 'volume': np.full(2, 1.)}
         particulator.build(attributes)
@@ -93,7 +93,7 @@ class TestSDMSingleCell:
     # pylint: disable=redefined-outer-name
     def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n_2))
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n_2))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
@@ -130,7 +130,7 @@ class TestSDMSingleCell:
     # pylint: disable=redefined-outer-name
     def test_multi_droplet(backend_class, v, n, p):
         # Arrange
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, len(n))
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
             from PySDM.dynamics import Coalescence
@@ -158,7 +158,7 @@ class TestSDMSingleCell:
         n = np.random.randint(1, 64, size=n_sd)
         v = np.random.uniform(size=n_sd)
 
-        particulator, sut = get_dummy_particulator_and_sdm(backend_class, n_sd)
+        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, n_sd)
 
         sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(
             prob,
@@ -241,7 +241,7 @@ class TestSDMSingleCell:
         v = np.random.uniform(size=n_sd)
         n_substeps = 5
 
-        particles, sut = get_dummy_particulator_and_sdm(
+        particles, sut = get_dummy_particulator_and_coalescence(
             backend_class,
             n_sd,
             optimized_random=optimized_random,

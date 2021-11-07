@@ -24,10 +24,9 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyParticulator(backend_class, n_sd)
+        particulator = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
-        particles.build(attribute)
-        state = particles.attributes
+        particulator.build(attribute)
 
         true_mean, true_var = spectrum.stats(moments='mv')
 
@@ -36,22 +35,22 @@ class TestMaths:
         moments = backend_class.Storage.empty((1, 1), dtype=float)
 
         # Act
-        state.moments(moment_0, moments, specs={'volume': (0,)})
+        particulator.moments(moment_0, moments, specs={'volume': (0,)})
         discr_zero = moments[0, slice(0, 1)].to_ndarray()
 
-        state.moments(moment_0, moments, specs={'volume': (1,)})
+        particulator.moments(moment_0, moments, specs={'volume': (1,)})
         discr_mean = moments[0, slice(0, 1)].to_ndarray()
 
-        state.moments(moment_0, moments, specs={'volume': (2,)})
+        particulator.moments(moment_0, moments, specs={'volume': (2,)})
         discr_mean_radius_squared = moments[0, slice(0, 1)].to_ndarray()
 
-        state.moments(moment_0, moments, specs={'temperature': (0,)})
+        particulator.moments(moment_0, moments, specs={'temperature': (0,)})
         discr_zero_T = moments[0, slice(0, 1)].to_ndarray()
 
-        state.moments(moment_0, moments, specs={'temperature': (1,)})
+        particulator.moments(moment_0, moments, specs={'temperature': (1,)})
         discr_mean_T = moments[0, slice(0, 1)].to_ndarray()
 
-        state.moments(moment_0, moments, specs={'temperature': (2,)})
+        particulator.moments(moment_0, moments, specs={'temperature': (2,)})
         discr_mean_T_squared = moments[0, slice(0, 1)].to_ndarray()
 
         # Assert
@@ -79,10 +78,9 @@ class TestMaths:
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
         n = discretise_n(n)
-        particles = DummyParticulator(backend_class, n_sd)
+        particulator = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
-        particles.build(attribute)
-        state = particles.attributes
+        particulator.build(attribute)
 
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
 
@@ -100,7 +98,7 @@ class TestMaths:
         v_bins_edges = backend_class.Storage.from_ndarray(v_bins)
 
         # Act
-        state.spectrum_moments(
+        particulator.spectrum_moments(
             spectrum_moment_0,
             spectrum_moments,
             attr='volume',
@@ -111,7 +109,7 @@ class TestMaths:
 
         expected = np.empty((len(v_bins) - 1, 1), dtype=float)
         for i in range(len(v_bins) - 1):
-            state.moments(
+            particulator.moments(
                 moment_0,
                 moments,
                 specs={'volume': (1,)}, attr_range=(v_bins[i], v_bins[i+1])
