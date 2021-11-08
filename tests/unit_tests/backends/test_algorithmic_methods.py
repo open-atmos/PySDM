@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import pytest
-from PySDM.backends.numba.impl.algorithmic_methods import pair_indices
+from PySDM.backends.numba.impl.collisions_methods import pair_indices
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.pair_indicator import make_PairIndicator

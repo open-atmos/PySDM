@@ -1,9 +1,9 @@
 import numba
 from PySDM.backends.numba import conf
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class IndexMethods(Methods):
+class IndexMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

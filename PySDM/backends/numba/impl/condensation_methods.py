@@ -6,10 +6,10 @@ from PySDM.physics import constants as const
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.toms748 import toms748_solve
 from .warnings import warn
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class CondensationMethods(Methods):
+class CondensationMethods(BackendMethods):
     @staticmethod
     def condensation(
             solver,

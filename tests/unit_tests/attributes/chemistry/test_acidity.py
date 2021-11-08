@@ -16,7 +16,7 @@ formulae = Formulae()
 EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
 
 
-class Test_pH:
+class TestAcidity:
     @staticmethod
     def test_equilibrate_pH_pure_water():
         # Arrange

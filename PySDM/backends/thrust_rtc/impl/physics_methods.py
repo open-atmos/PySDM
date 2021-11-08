@@ -2,10 +2,10 @@ from PySDM.backends.thrust_rtc.impl.nice_thrust import nice_thrust
 from PySDM.backends.thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrust_rtc.impl.precision_resolver import PrecisionResolver
 from ..conf import trtc
-from ...impl.methods import Methods
+from ...impl.backend_methods import BackendMethods
 
 
-class PhysicsMethods(Methods):
+class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         phys = self.formulae

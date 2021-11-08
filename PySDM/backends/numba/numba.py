@@ -2,7 +2,7 @@
 Multi-threaded CPU backend using LLVM-powered just-in-time compilation
 """
 
-from PySDM.backends.numba.impl.algorithmic_methods import AlgorithmicMethods
+from PySDM.backends.numba.impl.collisions_methods import AlgorithmicMethods
 from PySDM.backends.numba.impl.pair_methods import PairMethods
 from PySDM.backends.numba.impl.physics_methods import PhysicsMethods
 from PySDM.backends.numba.impl.index_methods import IndexMethods
@@ -10,6 +10,7 @@ from PySDM.backends.numba.impl.condensation_methods import CondensationMethods
 from PySDM.backends.numba.impl.moments_methods import MomentsMethods
 from PySDM.backends.numba.impl.freezing_methods import FreezingMethods
 from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods
+from PySDM.backends.numba.impl.displacement_methods import DisplacementMethods
 from PySDM.backends.numba.random import Random as ImportedRandom
 from PySDM.backends.numba.storage import Storage as ImportedStorage
 from PySDM.physics import Formulae
@@ -23,7 +24,8 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
     CondensationMethods,
     ChemistryMethods,
     MomentsMethods,
-    FreezingMethods
+    FreezingMethods,
+    DisplacementMethods
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -40,3 +42,4 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
         ChemistryMethods.__init__(self)
         MomentsMethods.__init__(self)
         FreezingMethods.__init__(self)
+        DisplacementMethods.__init__(self)
