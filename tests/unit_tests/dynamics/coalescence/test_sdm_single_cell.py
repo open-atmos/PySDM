@@ -186,6 +186,7 @@ class TestSDMSingleCell:
     # pylint: disable=redefined-outer-name
     def test_compute_gamma(backend_class):
         # Arrange
+        backend = backend_class()
         n = 87
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
@@ -210,9 +211,11 @@ class TestSDMSingleCell:
                 indicator.indicator[:] = backend_class.Storage.from_ndarray(
                     np.asarray((True, False)))
 
-                backend_class.compute_gamma(prob_arr, rand_arr, mult,
-                                      cell_id=cell_id, is_first_in_pair=indicator,
-                                      collision_rate=_, collision_rate_deficit=_)
+                backend.compute_gamma(
+                    prob_arr, rand_arr, mult,
+                    cell_id=cell_id, is_first_in_pair=indicator,
+                    collision_rate=_, collision_rate_deficit=_
+                )
 
                 # Assert
                 assert expected(p, r) == prob_arr.to_ndarray()[0]

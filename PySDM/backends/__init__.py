@@ -26,9 +26,10 @@ def _cuda_is_available():
     if result != 0:  # cuda.h: CUDA_SUCCESS = 0
         error_str = ctypes.c_char_p()
         cuda_lib.cuGetErrorString(result, ctypes.byref(error_str))
+        # pylint: disable=no-member
         warnings.warn(
             f"CUDA library found but cuInit() failed (error code: {result};"
-            f" message: {error_str.value.decode()})"  # pylint: disable=no-member
+            f" message: {error_str.value.decode()})"
         )
         if 'google.colab' in sys.modules:
             warnings.warn(
@@ -58,6 +59,7 @@ else:
             self.generator = np.random.default_rng(seed)
 
         def __call__(self, storage):
+            # pylint: disable=unsupported-assignment-operation
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
     ThrustRTC.Random = Random

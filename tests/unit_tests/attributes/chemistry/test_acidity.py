@@ -8,7 +8,7 @@ from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
-from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods, _K
+from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods, _K, _conc
 from PySDM.dynamics import aqueous_chemistry
 
 
@@ -16,7 +16,7 @@ formulae = Formulae()
 EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
 
 
-class Test_pH:
+class TestAcidity:
     @staticmethod
     def test_equilibrate_pH_pure_water():
         # Arrange
@@ -30,11 +30,13 @@ class Test_pH:
             within_tolerance=formulae.trivia.within_tolerance,
             pH2H=formulae.trivia.pH2H,
             H2pH=formulae.trivia.H2pH,
-            N_mIII=np.zeros(1),
-            N_V=np.zeros(1),
-            C_IV=np.zeros(1),
-            S_IV=np.zeros(1),
-            S_VI=np.zeros(1),
+            conc=_conc(
+                N_mIII=np.zeros(1),
+                N_V=np.zeros(1),
+                C_IV=np.zeros(1),
+                S_IV=np.zeros(1),
+                S_VI=np.zeros(1),
+            ),
             K=_K(
                 HNO3=eqs['K_HNO3'].data,
                 HCO3=eqs['K_HCO3'].data,
@@ -103,11 +105,13 @@ class Test_pH:
             within_tolerance=formulae.trivia.within_tolerance,
             pH2H=formulae.trivia.pH2H,
             H2pH=formulae.trivia.H2pH,
-            N_mIII=np.full(1, init_conc['NH3'] * 1e3),
-            N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
-            C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
-            S_IV=np.full(1, init_conc['H2SO3(aq)'] * 1e3),
-            S_VI=np.full(1, init_conc['HSO4-'] * 1e3),
+            conc=_conc(
+                N_mIII=np.full(1, init_conc['NH3'] * 1e3),
+                N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
+                C_IV=np.full(1, init_conc['H2CO3(aq)'] * 1e3),
+                S_IV=np.full(1, init_conc['H2SO3(aq)'] * 1e3),
+                S_VI=np.full(1, init_conc['HSO4-'] * 1e3),
+            ),
             K=_K(
                 HNO3=eqs['K_HNO3'].data,
                 HCO3=eqs['K_HCO3'].data,

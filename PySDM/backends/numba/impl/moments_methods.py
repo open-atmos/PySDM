@@ -1,10 +1,10 @@
 import numba
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.impl.atomic_operations import atomic_add
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class MomentsMethods(Methods):
+class MomentsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(

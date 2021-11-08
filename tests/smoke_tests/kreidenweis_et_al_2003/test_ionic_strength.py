@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from chempy.electrolytes import ionic_strength
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
-from PySDM.backends.numba.impl.chemistry_methods import calc_ionic_strength, _K
+from PySDM.backends.numba.impl.chemistry_methods import calc_ionic_strength, _K, _conc
 from PySDM.physics.constants import rho_w, ROOM_TEMP, K_H2O
 from PySDM.physics import Formulae
 from PySDM.physics.aqueous_chemistry.support import EquilibriumConsts
@@ -16,13 +16,13 @@ def test_calc_ionic_strength(nt, n_sd):
     EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
 
     K = _K(
-        NH3 = EQUILIBRIUM_CONST["K_NH3"].at(ROOM_TEMP),
-        SO2 = EQUILIBRIUM_CONST["K_SO2"].at(ROOM_TEMP),
-        HSO3 = EQUILIBRIUM_CONST["K_HSO3"].at(ROOM_TEMP),
-        HSO4 = EQUILIBRIUM_CONST["K_HSO4"].at(ROOM_TEMP),
-        HCO3 = EQUILIBRIUM_CONST["K_HCO3"].at(ROOM_TEMP),
-        CO2 = EQUILIBRIUM_CONST["K_CO2"].at(ROOM_TEMP),
-        HNO3 = EQUILIBRIUM_CONST["K_HNO3"].at(ROOM_TEMP)
+        NH3=EQUILIBRIUM_CONST["K_NH3"].at(ROOM_TEMP),
+        SO2=EQUILIBRIUM_CONST["K_SO2"].at(ROOM_TEMP),
+        HSO3=EQUILIBRIUM_CONST["K_HSO3"].at(ROOM_TEMP),
+        HSO4=EQUILIBRIUM_CONST["K_HSO4"].at(ROOM_TEMP),
+        HCO3=EQUILIBRIUM_CONST["K_HCO3"].at(ROOM_TEMP),
+        CO2=EQUILIBRIUM_CONST["K_CO2"].at(ROOM_TEMP),
+        HNO3=EQUILIBRIUM_CONST["K_HNO3"].at(ROOM_TEMP)
     )
 
     settings = Settings(dt=1, n_sd=n_sd, n_substep=5)
@@ -48,11 +48,13 @@ def test_calc_ionic_strength(nt, n_sd):
 
     actual = calc_ionic_strength(
         H=conc['H+'],
-        N_mIII=conc['N-3'],
-        N_V=conc['N+5'],
-        C_IV=conc['C+4'],
-        S_IV=conc['S+4'],
-        S_VI=conc['S+6'],
+        conc=_conc(
+            N_mIII=conc['N-3'],
+            N_V=conc['N+5'],
+            C_IV=conc['C+4'],
+            S_IV=conc['S+4'],
+            S_VI=conc['S+6'],
+        ),
         K=K
     )
 

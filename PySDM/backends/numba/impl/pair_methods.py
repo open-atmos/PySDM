@@ -1,10 +1,10 @@
 import numba
 import numpy as np
 from PySDM.backends.numba import conf
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class PairMethods(Methods):
+class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

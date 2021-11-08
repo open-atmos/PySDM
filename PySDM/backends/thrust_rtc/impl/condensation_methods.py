@@ -7,11 +7,11 @@ from PySDM.backends.thrust_rtc.bisection import BISECTION
 from PySDM.backends.thrust_rtc.storage import Storage
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
-from ...impl.methods import Methods
+from ...impl.backend_methods import BackendMethods
 
 
-class CondensationMethods(Methods):
-    keys = ['T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD']
+class CondensationMethods(BackendMethods):
+    keys = ('T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD')
 
     def __init__(self):
         super().__init__()

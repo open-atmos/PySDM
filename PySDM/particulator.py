@@ -7,13 +7,13 @@ from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 from PySDM.attributes.impl import ExtensiveAttribute
 
 
 class Particulator:
 
-    def __init__(self, n_sd, backend: Methods):
+    def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, object)
         self.__n_sd = n_sd
 

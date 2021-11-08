@@ -20,16 +20,16 @@ class CriticalSupersaturation(DerivedAttribute):
     def recalculate(self):
         if len(self.environment['T']) != 1:
             raise NotImplementedError()
-        T = self.environment['T'][0]
+        temperature = self.environment['T'][0]
         r_cr = self.formulae.trivia.radius(self.v_crit.data.data)
         rd3 = self.v_dry.data.data / const.PI_4_3
         sgm = self.formulae.surface_tension.sigma(
-            T, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
+            temperature, self.v_crit.data.data, self.v_dry.data.data, self.f_org.data.data
         )
 
         self.data.data[:] = self.formulae.hygroscopicity.RH_eq(
             r_cr,
-            T=T,
+            T=temperature,
             kp=self.kappa.data.data,
             rd3=rd3,
             sgm=sgm

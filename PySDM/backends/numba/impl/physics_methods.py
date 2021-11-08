@@ -2,10 +2,10 @@ import numba
 from numba import prange
 from PySDM.backends.numba import conf
 from PySDM.physics import constants as const
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class PhysicsMethods(Methods):
+class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius

@@ -2,10 +2,10 @@ import numba
 import numpy as np
 from ...numba import conf
 from ....physics import constants as const
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class FreezingMethods(Methods):
+class FreezingMethods(BackendMethods):
     def __init__(self):
         super().__init__()
 
