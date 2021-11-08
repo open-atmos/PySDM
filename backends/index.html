@@ -57,9 +57,10 @@ def _cuda_is_available():
     if result != 0:  # cuda.h: CUDA_SUCCESS = 0
         error_str = ctypes.c_char_p()
         cuda_lib.cuGetErrorString(result, ctypes.byref(error_str))
+        # pylint: disable=no-member
         warnings.warn(
             f&#34;CUDA library found but cuInit() failed (error code: {result};&#34;
-            f&#34; message: {error_str.value.decode()})&#34;  # pylint: disable=no-member
+            f&#34; message: {error_str.value.decode()})&#34;
         )
         if &#39;google.colab&#39; in sys.modules:
             warnings.warn(
@@ -89,6 +90,7 @@ else:
             self.generator = np.random.default_rng(seed)
 
         def __call__(self, storage):
+            # pylint: disable=unsupported-assignment-operation
             storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)
 
     ThrustRTC.Random = Random
@@ -146,7 +148,8 @@ alias for ThrustRTC
     CondensationMethods,
     ChemistryMethods,
     MomentsMethods,
-    FreezingMethods
+    FreezingMethods,
+    DisplacementMethods
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
@@ -162,11 +165,12 @@ alias for ThrustRTC
         CondensationMethods.__init__(self)
         ChemistryMethods.__init__(self)
         MomentsMethods.__init__(self)
-        FreezingMethods.__init__(self)</code></pre>
+        FreezingMethods.__init__(self)
+        DisplacementMethods.__init__(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods" href="numba/impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.pair_methods.PairMethods" href="numba/impl/pair_methods.html#PySDM.backends.numba.impl.pair_methods.PairMethods">PairMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.index_methods.IndexMethods" href="numba/impl/index_methods.html#PySDM.backends.numba.impl.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.physics_methods.PhysicsMethods" href="numba/impl/physics_methods.html#PySDM.backends.numba.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
@@ -174,7 +178,8 @@ alias for ThrustRTC
 <li><a title="PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods" href="numba/impl/chemistry_methods.html#PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods">ChemistryMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods" href="numba/impl/moments_methods.html#PySDM.backends.numba.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.freezing_methods.FreezingMethods" href="numba/impl/freezing_methods.html#PySDM.backends.numba.impl.freezing_methods.FreezingMethods">FreezingMethods</a></li>
-<li><a title="PySDM.backends.impl.methods.Methods" href="impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+<li><a title="PySDM.backends.numba.impl.displacement_methods.DisplacementMethods" href="numba/impl/displacement_methods.html#PySDM.backends.numba.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -193,9 +198,9 @@ alias for ThrustRTC
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods" href="numba/impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></b></code>:
+<li><code><b><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods.compute_gamma_body" href="numba/impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
+<li><code><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods.compute_gamma_body" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
 </ul>
 </li>
 </ul>
@@ -216,6 +221,7 @@ alias for ThrustRTC
         self.generator = np.random.default_rng(seed)
 
     def __call__(self, storage):
+        # pylint: disable=unsupported-assignment-operation
         storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)</code></pre>
 </details>
 </dd>
@@ -230,12 +236,13 @@ alias for ThrustRTC
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ThrustRTC(  # pylint: disable=duplicate-code
-    AlgorithmicMethods,
+    CollisionsMethods,
     PairMethods,
     IndexMethods,
     PhysicsMethods,
     CondensationMethods,
-    MomentsMethods
+    MomentsMethods,
+    DisplacementMethods
 ):
     ENABLE = True
     Storage = ImportedStorage
@@ -245,12 +252,13 @@ alias for ThrustRTC
 
     def __init__(self, formulae=None):
         self.formulae = formulae or Formulae()
-        AlgorithmicMethods.__init__(self)
+        CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
         IndexMethods.__init__(self)
         PhysicsMethods.__init__(self)
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
+        DisplacementMethods.__init__(self)
 
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:
@@ -258,13 +266,14 @@ alias for ThrustRTC
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods" href="thrust_rtc/impl/algorithmic_methods.html#PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods" href="thrust_rtc/impl/collisions_methods.html#PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods" href="thrust_rtc/impl/pair_methods.html#PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods">PairMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods" href="thrust_rtc/impl/index_methods.html#PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods" href="thrust_rtc/impl/physics_methods.html#PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods" href="thrust_rtc/impl/condensation_methods.html#PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods" href="thrust_rtc/impl/moments_methods.html#PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
-<li><a title="PySDM.backends.impl.methods.Methods" href="impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods" href="thrust_rtc/impl/displacement_methods.html#PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>

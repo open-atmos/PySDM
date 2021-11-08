@@ -30,10 +30,10 @@
 from PySDM.backends.thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrust_rtc.impl.precision_resolver import PrecisionResolver
 from ..conf import trtc
-from ...impl.methods import Methods
+from ...impl.backend_methods import BackendMethods
 
 
-class PhysicsMethods(Methods):
+class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         phys = self.formulae
@@ -136,7 +136,7 @@ class PhysicsMethods(Methods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PhysicsMethods(Methods):
+<pre><code class="python">class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         phys = self.formulae
@@ -222,7 +222,7 @@ class PhysicsMethods(Methods):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="../../impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">

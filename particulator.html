@@ -36,13 +36,13 @@ from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 from PySDM.attributes.impl import ExtensiveAttribute
 
 
 class Particulator:
 
-    def __init__(self, n_sd, backend: Methods):
+    def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, object)
         self.__n_sd = n_sd
 
@@ -332,7 +332,7 @@ class Particulator:
 <dl>
 <dt id="PySDM.particulator.Particulator"><code class="flex name class">
 <span>class <span class="ident">Particulator</span></span>
-<span>(</span><span>n_sd, backend: <a title="PySDM.backends.impl.methods.Methods" href="backends/impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a>)</span>
+<span>(</span><span>n_sd, backend: <a title="PySDM.backends.impl.backend_methods.BackendMethods" href="backends/impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -342,7 +342,7 @@ class Particulator:
 </summary>
 <pre><code class="python">class Particulator:
 
-    def __init__(self, n_sd, backend: Methods):
+    def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, object)
         self.__n_sd = n_sd
 

@@ -35,11 +35,11 @@ from PySDM.backends.thrust_rtc.bisection import BISECTION
 from PySDM.backends.thrust_rtc.storage import Storage
 from .precision_resolver import PrecisionResolver
 from ..conf import trtc
-from ...impl.methods import Methods
+from ...impl.backend_methods import BackendMethods
 
 
-class CondensationMethods(Methods):
-    keys = [&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;]
+class CondensationMethods(BackendMethods):
+    keys = (&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;)
 
     def __init__(self):
         super().__init__()
@@ -354,8 +354,8 @@ class CondensationMethods(Methods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CondensationMethods(Methods):
-    keys = [&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;]
+<pre><code class="python">class CondensationMethods(BackendMethods):
+    keys = (&#39;T&#39;, &#39;p&#39;, &#39;pv&#39;, &#39;lv&#39;, &#39;pvs&#39;, &#39;RH&#39;, &#39;DTp&#39;, &#39;lambdaK&#39;, &#39;lambdaD&#39;)
 
     def __init__(self):
         super().__init__()
@@ -653,7 +653,7 @@ class CondensationMethods(Methods):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="../../impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">

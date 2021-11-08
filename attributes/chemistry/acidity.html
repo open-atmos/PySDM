@@ -29,6 +29,7 @@
 <pre><code class="python">from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics import constants as const
+from PySDM.backends.numba.impl.chemistry_methods import _conc
 
 
 class Acidity(DerivedAttribute):
@@ -49,16 +50,18 @@ class Acidity(DerivedAttribute):
     def recalculate(self):
         dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
 
-        cell_id = self.cell_id.get()
-        N_mIII = self.conc[&#34;N_mIII&#34;].get()
-        N_V = self.conc[&#34;N_V&#34;].get()
-        C_IV = self.conc[&#34;C_IV&#34;].get()
-        S_IV = self.conc[&#34;S_IV&#34;].get()
-        S_VI = self.conc[&#34;S_VI&#34;].get()
-
         self.particulator.bck.equilibrate_H(
-            dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
-            dynamic.do_chemistry_flag, self.data,
+            dynamic.equilibrium_consts,
+            self.cell_id.get(),
+            _conc(
+                N_mIII=self.conc[&#34;N_mIII&#34;].get(),
+                N_V=self.conc[&#34;N_V&#34;].get(),
+                C_IV=self.conc[&#34;C_IV&#34;].get(),
+                S_IV=self.conc[&#34;S_IV&#34;].get(),
+                S_VI=self.conc[&#34;S_VI&#34;].get(),
+            ),
+            dynamic.do_chemistry_flag,
+            self.data,
             H_min=dynamic.pH_H_min,
             H_max=dynamic.pH_H_max,
             ionic_strength_threshold=dynamic.ionic_strength_threshold,
@@ -103,16 +106,18 @@ class Acidity(DerivedAttribute):
     def recalculate(self):
         dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
 
-        cell_id = self.cell_id.get()
-        N_mIII = self.conc[&#34;N_mIII&#34;].get()
-        N_V = self.conc[&#34;N_V&#34;].get()
-        C_IV = self.conc[&#34;C_IV&#34;].get()
-        S_IV = self.conc[&#34;S_IV&#34;].get()
-        S_VI = self.conc[&#34;S_VI&#34;].get()
-
         self.particulator.bck.equilibrate_H(
-            dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
-            dynamic.do_chemistry_flag, self.data,
+            dynamic.equilibrium_consts,
+            self.cell_id.get(),
+            _conc(
+                N_mIII=self.conc[&#34;N_mIII&#34;].get(),
+                N_V=self.conc[&#34;N_V&#34;].get(),
+                C_IV=self.conc[&#34;C_IV&#34;].get(),
+                S_IV=self.conc[&#34;S_IV&#34;].get(),
+                S_VI=self.conc[&#34;S_VI&#34;].get(),
+            ),
+            dynamic.do_chemistry_flag,
+            self.data,
             H_min=dynamic.pH_H_min,
             H_max=dynamic.pH_H_max,
             ionic_strength_threshold=dynamic.ionic_strength_threshold,
@@ -152,16 +157,18 @@ class Acidity(DerivedAttribute):
 <pre><code class="python">def recalculate(self):
     dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
 
-    cell_id = self.cell_id.get()
-    N_mIII = self.conc[&#34;N_mIII&#34;].get()
-    N_V = self.conc[&#34;N_V&#34;].get()
-    C_IV = self.conc[&#34;C_IV&#34;].get()
-    S_IV = self.conc[&#34;S_IV&#34;].get()
-    S_VI = self.conc[&#34;S_VI&#34;].get()
-
     self.particulator.bck.equilibrate_H(
-        dynamic.equilibrium_consts, cell_id, N_mIII, N_V, C_IV, S_IV, S_VI,
-        dynamic.do_chemistry_flag, self.data,
+        dynamic.equilibrium_consts,
+        self.cell_id.get(),
+        _conc(
+            N_mIII=self.conc[&#34;N_mIII&#34;].get(),
+            N_V=self.conc[&#34;N_V&#34;].get(),
+            C_IV=self.conc[&#34;C_IV&#34;].get(),
+            S_IV=self.conc[&#34;S_IV&#34;].get(),
+            S_VI=self.conc[&#34;S_VI&#34;].get(),
+        ),
+        dynamic.do_chemistry_flag,
+        self.data,
         H_min=dynamic.pH_H_min,
         H_max=dynamic.pH_H_max,
         ionic_strength_threshold=dynamic.ionic_strength_threshold,

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.backends.impl.methods API documentation</title>
+<title>PySDM.backends.impl.backend_methods API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,14 +19,15 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.backends.impl.methods</code></h1>
+<h1 class="title">Module <code>PySDM.backends.impl.backend_methods</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Methods:
+<pre><code class="python"># pylint: disable=too-few-public-methods
+class BackendMethods:
     def __init__(self):
         if not hasattr(self, &#39;formulae&#39;):
             self.formulae = None</code></pre>
@@ -41,8 +42,8 @@
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.impl.methods.Methods"><code class="flex name class">
-<span>class <span class="ident">Methods</span></span>
+<dt id="PySDM.backends.impl.backend_methods.BackendMethods"><code class="flex name class">
+<span>class <span class="ident">BackendMethods</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -50,23 +51,25 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Methods:
+<pre><code class="python">class BackendMethods:
     def __init__(self):
         if not hasattr(self, &#39;formulae&#39;):
             self.formulae = None</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods" href="../numba/impl/algorithmic_methods.html#PySDM.backends.numba.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods" href="../numba/impl/chemistry_methods.html#PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods">ChemistryMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods" href="../numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods" href="../numba/impl/condensation_methods.html#PySDM.backends.numba.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
+<li><a title="PySDM.backends.numba.impl.displacement_methods.DisplacementMethods" href="../numba/impl/displacement_methods.html#PySDM.backends.numba.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.freezing_methods.FreezingMethods" href="../numba/impl/freezing_methods.html#PySDM.backends.numba.impl.freezing_methods.FreezingMethods">FreezingMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.index_methods.IndexMethods" href="../numba/impl/index_methods.html#PySDM.backends.numba.impl.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods" href="../numba/impl/moments_methods.html#PySDM.backends.numba.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.pair_methods.PairMethods" href="../numba/impl/pair_methods.html#PySDM.backends.numba.impl.pair_methods.PairMethods">PairMethods</a></li>
 <li><a title="PySDM.backends.numba.impl.physics_methods.PhysicsMethods" href="../numba/impl/physics_methods.html#PySDM.backends.numba.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods" href="../thrust_rtc/impl/algorithmic_methods.html#PySDM.backends.thrust_rtc.impl.algorithmic_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods" href="../thrust_rtc/impl/collisions_methods.html#PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods" href="../thrust_rtc/impl/condensation_methods.html#PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
+<li><a title="PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods" href="../thrust_rtc/impl/displacement_methods.html#PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods" href="../thrust_rtc/impl/index_methods.html#PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods">IndexMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods" href="../thrust_rtc/impl/moments_methods.html#PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
 <li><a title="PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods" href="../thrust_rtc/impl/pair_methods.html#PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods">PairMethods</a></li>
@@ -90,7 +93,7 @@
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.impl.methods.Methods" href="#PySDM.backends.impl.methods.Methods">Methods</a></code></h4>
+<h4><code><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></code></h4>
 </li>
 </ul>
 </li>

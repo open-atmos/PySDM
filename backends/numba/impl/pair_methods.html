@@ -29,10 +29,10 @@
 <pre><code class="python">import numba
 import numpy as np
 from PySDM.backends.numba import conf
-from PySDM.backends.impl.methods import Methods
+from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-class PairMethods(Methods):
+class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -138,7 +138,7 @@ class PairMethods(Methods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class PairMethods(Methods):
+<pre><code class="python">class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -227,7 +227,7 @@ class PairMethods(Methods):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.impl.methods.Methods" href="../../impl/methods.html#PySDM.backends.impl.methods.Methods">Methods</a></li>
+<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="../../impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
