@@ -40,7 +40,7 @@ class TestAlgorithmicMethods:
         cell_start = backend_class.Storage.from_ndarray(np.asarray(cell_start))
 
         # Act
-        actual = backend_class.adaptive_sdm_end(dt_left, cell_start)
+        actual = backend_class().adaptive_sdm_end(dt_left, cell_start)
 
         # Assert
         assert actual == expected
@@ -83,9 +83,9 @@ class TestAlgorithmicMethods:
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend_class.adaptive_sdm_gamma(_gamma, _n, _cell_id, _dt_left, dt, dt_range,
-                                   _is_first_in_pair,
-                                   _n_substep, _dt_min)
+        backend_class().adaptive_sdm_gamma(
+            _gamma, _n, _cell_id, _dt_left, dt, dt_range,
+            _is_first_in_pair, _n_substep, _dt_min)
 
         # Assert
         np.testing.assert_array_almost_equal(_dt_left.to_ndarray(), np.asarray(expected_dt_left))

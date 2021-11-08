@@ -4,7 +4,7 @@ GPU-resident backend using NVRTC runtime compilation library for CUDA
 
 import os
 import warnings
-from PySDM.backends.thrust_rtc.impl.collisions_methods import AlgorithmicMethods
+from PySDM.backends.thrust_rtc.impl.collisions_methods import CollisionsMethods
 from PySDM.backends.thrust_rtc.impl.pair_methods import PairMethods
 from PySDM.backends.thrust_rtc.impl.index_methods import IndexMethods
 from PySDM.backends.thrust_rtc.impl.physics_methods import PhysicsMethods
@@ -17,7 +17,7 @@ from PySDM.physics import Formulae
 
 
 class ThrustRTC(  # pylint: disable=duplicate-code
-    AlgorithmicMethods,
+    CollisionsMethods,
     PairMethods,
     IndexMethods,
     PhysicsMethods,
@@ -33,7 +33,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code
 
     def __init__(self, formulae=None):
         self.formulae = formulae or Formulae()
-        AlgorithmicMethods.__init__(self)
+        CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
         IndexMethods.__init__(self)
         PhysicsMethods.__init__(self)
