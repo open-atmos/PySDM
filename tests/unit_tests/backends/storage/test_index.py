@@ -18,7 +18,7 @@ class TestIndex:
         idx = make_Index(backend).identity_index(n_sd)
         data = np.ones(n_sd).astype(np.int64)
         data[0], data[n_sd // 2], data[-1] = 0, 0, 0
-        data = backend_class.Storage.from_ndarray(data)
+        data = backend.Storage.from_ndarray(data)
         data = make_IndexedStorage(backend).indexed(storage=data, idx=idx)
 
         # Act
@@ -26,4 +26,4 @@ class TestIndex:
 
         # Assert
         assert len(idx) == n_sd - 3
-        assert (backend_class.Storage.to_ndarray(data)[idx.to_ndarray()[:len(idx)]] > 0).all()
+        assert (backend.Storage.to_ndarray(data)[idx.to_ndarray()[:len(idx)]] > 0).all()

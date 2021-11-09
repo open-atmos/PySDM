@@ -10,6 +10,7 @@ class StorageBase:
         self.data = signature.data
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
+        self.backend = None
 
     def __len__(self):
         return self.shape[0]

@@ -101,7 +101,7 @@ class TestExplicitEulerWithInterpolation:
         sut, particulator = settings.get_displacement(backend_class, scheme='ImplicitInSpace')
 
         droplet_id = slice(0, 1)
-        sut.displacement[:] = backend_class.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
+        sut.displacement[:] = particulator.backend.Storage.from_ndarray(np.asarray([[.1,], [.2]]))
 
         # Act
         sut.update_position(particulator.attributes['position in cell'], sut.displacement)
@@ -122,7 +122,7 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = particulator.attributes
-        state['position in cell'][:] = backend_class.Storage.from_ndarray(
+        state['position in cell'][:] = particulator.backend.Storage.from_ndarray(
             np.asarray([[1.1], [1.2]]))
 
         # Act
@@ -146,7 +146,7 @@ class TestExplicitEulerWithInterpolation:
 
         droplet_id = 0
         state = particulator.attributes
-        state['cell origin'][:] = backend_class.Storage.from_ndarray(np.asarray([[1], [1]]))
+        state['cell origin'][:] = particulator.backend.Storage.from_ndarray(np.asarray([[1], [1]]))
 
         # Act
         sut.boundary_condition(state['cell origin'])

@@ -7,7 +7,7 @@ from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl.backend_methods import BackendMethods
+from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
 class Particulator:

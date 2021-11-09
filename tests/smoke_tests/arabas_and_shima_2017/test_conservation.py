@@ -4,7 +4,7 @@ import numpy as np
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
-from PySDM.backends.numba.test_helpers import bdf
+from PySDM.backends.impl_numba.test_helpers import bdf
 from PySDM.physics import constants as const
 from PySDM.backends import CPU, GPU
 

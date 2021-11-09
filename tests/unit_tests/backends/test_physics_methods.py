@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.physics import si, Formulae
+from PySDM.physics import si
 from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, '_pytestfixturefunction')
@@ -11,14 +11,15 @@ class TestPhysicsMethods:
     # pylint: disable=redefined-outer-name
     def test_temperature_pressure_RH(backend_class):
         # Arrange
-        sut = backend_class(Formulae()).temperature_pressure_RH
-        rhod = backend_class.Storage.from_ndarray(np.asarray((1, 1.1)))
-        thd = backend_class.Storage.from_ndarray(np.asarray((300., 301)))
-        qv = backend_class.Storage.from_ndarray(np.asarray((.01, .02)))
+        backend = backend_class()
+        sut = backend.temperature_pressure_RH
+        rhod = backend.Storage.from_ndarray(np.asarray((1, 1.1)))
+        thd = backend.Storage.from_ndarray(np.asarray((300., 301)))
+        qv = backend.Storage.from_ndarray(np.asarray((.01, .02)))
 
-        T = backend_class.Storage.from_ndarray(np.zeros_like(qv))
-        p = backend_class.Storage.from_ndarray(np.zeros_like(qv))
-        RH = backend_class.Storage.from_ndarray(np.zeros_like(qv))
+        T = backend.Storage.from_ndarray(np.zeros_like(qv))
+        p = backend.Storage.from_ndarray(np.zeros_like(qv))
+        RH = backend.Storage.from_ndarray(np.zeros_like(qv))
 
         # Act
         sut(rhod, thd, qv, T, p, RH)

@@ -1,7 +1,7 @@
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from PySDM.physics import constants as const
-from PySDM.backends.numba.impl.chemistry_methods import _conc
+from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
 
 
 class Acidity(DerivedAttribute):

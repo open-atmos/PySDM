@@ -16,10 +16,10 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 class TestParticleAttributes:
 
     @staticmethod
-    def make_indexed_storage(bck, iterable, idx=None):
-        index = make_Index(bck).from_ndarray(np.array(iterable))
+    def make_indexed_storage(backend, iterable, idx=None):
+        index = make_Index(backend).from_ndarray(np.array(iterable))
         if idx is not None:
-            result = make_IndexedStorage(bck).indexed(idx, index)
+            result = make_IndexedStorage(backend).indexed(idx, index)
         else:
             result = index
         return result
@@ -91,13 +91,13 @@ class TestParticleAttributes:
         particulator.build(attributes={'n': np.ones(n_sd)})
         sut = particulator.attributes
         sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(
-            backend_class, idx)
+            particulator.backend, idx)
         sut._ParticleAttributes__attributes['n'].data = TestParticleAttributes.make_indexed_storage(
-            backend_class, multiplicity, sut._ParticleAttributes__idx)
+            particulator.backend, multiplicity, sut._ParticleAttributes__idx)
         sut._ParticleAttributes__attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
-            backend_class, cells, sut._ParticleAttributes__idx)
+            particulator.backend, cells, sut._ParticleAttributes__idx)
         sut._ParticleAttributes__cell_start = TestParticleAttributes.make_indexed_storage(
-            backend_class, [0] * (n_cell + 1))
+            particulator.backend, [0] * (n_cell + 1))
         sut._ParticleAttributes__n_sd = particulator.n_sd
         sut.healthy = 0 not in multiplicity
         sut._ParticleAttributes__cell_caretaker = backend_class.make_cell_caretaker(
@@ -158,10 +158,10 @@ class TestParticleAttributes:
         particulator = DummyParticulator(CPU, n_sd=n_sd)
         sut = ParticlesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
-        sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(CPU, [0] * idx_length)
+        sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(particulator.backend, [0] * idx_length)
         sut._ParticleAttributes__sorted = True
         sut._ParticleAttributes__n_sd = particulator.n_sd
-        u01 = TestParticleAttributes.make_indexed_storage(CPU, u01)
+        u01 = TestParticleAttributes.make_indexed_storage(particulator.backend, u01)
 
         # Act
         sut.permutation(u01, local=False)
@@ -185,12 +185,12 @@ class TestParticleAttributes:
         sut = ParticlesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(
-            backend_class, [0] * idx_length)
+            particulator.backend, [0] * idx_length)
         sut._ParticleAttributes__cell_start = TestParticleAttributes.make_indexed_storage(
-            backend_class, cell_start)
+            particulator.backend, cell_start)
         sut._ParticleAttributes__sorted = True
         sut._ParticleAttributes__n_sd = particulator.n_sd
-        u01 = TestParticleAttributes.make_indexed_storage(backend_class, u01)
+        u01 = TestParticleAttributes.make_indexed_storage(particulator.backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
@@ -214,16 +214,16 @@ class TestParticleAttributes:
         sut = ParticlesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(
-            backend_class, [0] * idx_length)
+            particulator.backend, [0] * idx_length)
         sut._ParticleAttributes__sorted = True
-        u01 = TestParticleAttributes.make_indexed_storage(backend_class, u01)
+        u01 = TestParticleAttributes.make_indexed_storage(particulator.backend, u01)
 
         # Act
         sut.permutation(u01, local=False)
         expected = sut._ParticleAttributes__idx.to_ndarray()
         sut._ParticleAttributes__sorted = True
         sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(
-            backend_class, range(n_sd))
+            particulator.backend, range(n_sd))
         sut.permutation(u01, local=False)
 
         # Assert
@@ -249,22 +249,25 @@ class TestParticleAttributes:
         assert len(cell_id) == n_sd
         particulator.build(attributes={'n': np.ones(n_sd)})
         sut = particulator.attributes
-        sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(backend_class, idx)
+        sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(
+            particulator.backend, idx)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = TestParticleAttributes.make_indexed_storage(
-            backend_class, [0] * idx_length)
+            particulator.backend, [0] * idx_length)
         sut._ParticleAttributes__attributes['cell id'].data = TestParticleAttributes.make_indexed_storage(
-            backend_class, cell_id)
+            particulator.backend, cell_id)
         sut._ParticleAttributes__cell_start = TestParticleAttributes.make_indexed_storage(
-            backend_class, cell_start)
+            particulator.backend, cell_start)
         sut._ParticleAttributes__sorted = True
         sut._ParticleAttributes__n_sd = particulator.n_sd
-        u01 = TestParticleAttributes.make_indexed_storage(backend_class, u01)
+        u01 = TestParticleAttributes.make_indexed_storage(
+            particulator.backend, u01)
 
         # Act
         sut.permutation(u01, local=True)
         expected = sut._ParticleAttributes__idx.to_ndarray()
-        sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(backend_class, idx)
+        sut._ParticleAttributes__idx = TestParticleAttributes.make_indexed_storage(
+            particulator.backend, idx)
         sut.permutation(u01, local=True)
 
         # Assert

@@ -8,7 +8,7 @@ from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
 from PySDM.physics.constants import ROOM_TEMP, K_H2O
 from PySDM.physics.formulae import Formulae
-from PySDM.backends.numba.impl.chemistry_methods import ChemistryMethods, _K, _conc
+from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods, _K, _conc
 from PySDM.dynamics import aqueous_chemistry
 
 
