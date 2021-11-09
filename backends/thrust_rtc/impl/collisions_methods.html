@@ -139,15 +139,6 @@ class CollisionsMethods(BackendMethods):
             &#39;&#39;&#39;
         )
 
-        self.__distance_pair_body = trtc.For(
-            (&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;),
-            &#34;i&#34;, &#39;&#39;&#39;
-            if (is_first_in_pair[i]) {
-                data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
-            }
-            &#39;&#39;&#39;
-        )
-
         self.__coalescence_body = trtc.For(
             (&#39;n&#39;, &#39;idx&#39;, &#39;n_sd&#39;, &#39;attributes&#39;, &#39;n_attr&#39;, &#39;gamma&#39;, &#39;healthy&#39;), &#34;i&#34;, &#39;&#39;&#39;
             if (gamma[i] == 0) {
@@ -506,15 +497,6 @@ class CollisionsMethods(BackendMethods):
                 for (auto j = 1; j &lt; diff + 1; j += 1) {
                     cell_start[cell_id_curr + j] = idx[i + 1];
                 }
-            }
-            &#39;&#39;&#39;
-        )
-
-        self.__distance_pair_body = trtc.For(
-            (&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;),
-            &#34;i&#34;, &#39;&#39;&#39;
-            if (is_first_in_pair[i]) {
-                data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
             }
             &#39;&#39;&#39;
         )

@@ -38,7 +38,7 @@ import numpy as np
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
-from ..state import arakawa_c
+from ..impl import arakawa_c
 
 
 class Kinematic1D(_Moist):
@@ -89,9 +89,6 @@ class Kinematic1D(_Moist):
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
-
-    def sync(self):
-        super().sync()
 
     @property
     def dv(self):
@@ -165,9 +162,6 @@ class Kinematic1D(_Moist):
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
-
-    def sync(self):
-        super().sync()
 
     @property
     def dv(self):
@@ -276,19 +270,6 @@ def dv(self):
     self._tmp[&#34;rhod&#34;] = rhod</code></pre>
 </details>
 </dd>
-<dt id="PySDM.environments.kinematic_1d.Kinematic1D.sync"><code class="name flex">
-<span>def <span class="ident">sync</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def sync(self):
-    super().sync()</code></pre>
-</details>
-</dd>
 </dl>
 </dd>
 </dl>
@@ -309,13 +290,12 @@ def dv(self):
 <ul>
 <li>
 <h4><code><a title="PySDM.environments.kinematic_1d.Kinematic1D" href="#PySDM.environments.kinematic_1d.Kinematic1D">Kinematic1D</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.dv" href="#PySDM.environments.kinematic_1d.Kinematic1D.dv">dv</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.get_qv" href="#PySDM.environments.kinematic_1d.Kinematic1D.get_qv">get_qv</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.get_thd" href="#PySDM.environments.kinematic_1d.Kinematic1D.get_thd">get_thd</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.init_attributes" href="#PySDM.environments.kinematic_1d.Kinematic1D.init_attributes">init_attributes</a></code></li>
 <li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.register" href="#PySDM.environments.kinematic_1d.Kinematic1D.register">register</a></code></li>
-<li><code><a title="PySDM.environments.kinematic_1d.Kinematic1D.sync" href="#PySDM.environments.kinematic_1d.Kinematic1D.sync">sync</a></code></li>
 </ul>
 </li>
 </ul>
