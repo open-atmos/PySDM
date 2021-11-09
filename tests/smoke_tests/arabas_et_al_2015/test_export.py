@@ -18,7 +18,7 @@ def test_export(backend_class, tmp_path):
     settings.output_interval = settings.dt
 
     storage = Storage()
-    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_class)
+    simulator = Simulation(settings, storage, SpinUp=SpinUp, backend_class=backend_class)
     _, temp_file = tempfile.mkstemp(dir=tmp_path, suffix='.nc')
     sut = NetCDFExporter(storage, settings, simulator, temp_file)
 

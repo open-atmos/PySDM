@@ -36,7 +36,7 @@ def test_spin_up(backend_class, fastmath, plot=False):
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend=backend_class)
+    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend_class=backend_class)
     simulation.reinit()
 
     # Act
