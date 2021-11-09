@@ -7,7 +7,7 @@ import numpy as np
 from ._moist import _Moist
 from ..initialisation.r_wet_init import r_wet_init
 from ..initialisation.multiplicities import discretise_n
-from ..state import arakawa_c
+from ..impl import arakawa_c
 
 
 class Kinematic1D(_Moist):
@@ -58,9 +58,6 @@ class Kinematic1D(_Moist):
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
-
-    def sync(self):
-        super().sync()
 
     @property
     def dv(self):

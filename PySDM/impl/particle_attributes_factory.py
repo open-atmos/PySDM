@@ -3,7 +3,7 @@ import numpy as np
 from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, \
     MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.state.particle_attributes import ParticleAttributes
+from PySDM.impl.particle_attributes import ParticleAttributes
 
 
 class ParticlesFactory:

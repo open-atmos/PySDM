@@ -24,7 +24,7 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 
         dry_volume_bins_edges = builder.particulator.formulae.trivia.volume(
             self.dry_radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
             dry_volume_bins_edges)
 
         super().register(builder)

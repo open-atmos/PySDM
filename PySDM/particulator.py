@@ -1,20 +1,19 @@
 """
-The very class exposing `PySDM.Particulator.run()` method for launching simulations,
+The very class exposing `PySDM.Particulator.run()` method for launching simulations
 """
 import numpy as np
-from PySDM.state.particle_attributes import ParticleAttributes
+from PySDM.impl.particle_attributes import ParticleAttributes
 from PySDM.storages.index import make_Index
 from PySDM.storages.pair_indicator import make_PairIndicator
 from PySDM.storages.pairwise_storage import make_PairwiseStorage
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl.backend_methods import BackendMethods
-from PySDM.attributes.impl import ExtensiveAttribute
 
 
 class Particulator:
 
     def __init__(self, n_sd, backend: BackendMethods):
-        assert isinstance(backend, object)
+        assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
 
         self.backend = backend
@@ -54,10 +53,6 @@ class Particulator:
     @property
     def env(self):
         return self.environment
-
-    @property
-    def bck(self):
-        return self.backend
 
     @property
     def Storage(self):

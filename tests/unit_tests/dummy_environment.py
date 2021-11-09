@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.state.mesh import Mesh
+from PySDM.impl.mesh import Mesh
 
 
 class DummyEnvironment:
@@ -26,8 +26,8 @@ class DummyEnvironment:
     def register(self, particulator):
         self.particulator = particulator
         if hasattr(self, 'halo'):
-            self.pred['qv'] = particulator.bck.Storage.empty(self.mesh.n_cell, dtype=float)
-            self.pred['thd'] = particulator.bck.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred['qv'] = particulator.backend.Storage.empty(self.mesh.n_cell, dtype=float)
+            self.pred['thd'] = particulator.backend.Storage.empty(self.mesh.n_cell, dtype=float)
 
     def get_courant_field_data(self):
         return self.courant_field_data

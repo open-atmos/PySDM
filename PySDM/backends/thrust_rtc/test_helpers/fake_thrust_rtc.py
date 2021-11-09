@@ -156,6 +156,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             return max(start.ndarray, np.amax(dvvector.ndarray))
         if operator == "min":
             return min(start.ndarray, np.amin(dvvector.ndarray))
+        raise NotImplementedError()
 
     @staticmethod
     def Plus():  # pylint: disable=invalid-name
@@ -177,8 +178,10 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     def Transform_Binary(vec_in1, vec_in2, vec_out, op):  # pylint: disable=invalid-name
         if op == "+":
             vec_out.ndarray[:] = vec_in1.ndarray + vec_in2.ndarray
-        if op == "-":
+        elif op == "-":
             vec_out.ndarray[:] = vec_in1.ndarray - vec_in2.ndarray
+        else:
+            raise NotImplementedError()
 
     @staticmethod
     def Wait():  # pylint: disable=invalid-name

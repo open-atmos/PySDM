@@ -21,18 +21,19 @@ class Freezing:
             self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
             self.rng = self.particulator.Random(
                 self.particulator.n_sd,
-                self.particulator.bck.formulae.seed
+                self.particulator.backend.formulae.seed
             )
 
     def __call__(self):
         if 'Coalescence' in self.particulator.dynamics:
-            raise NotImplementedError("handling T_fz during collisions not implemented yet")  # TODO #594
+            # TODO #594
+            raise NotImplementedError("handling T_fz during collisions not implemented yet")
 
         if not self.enable:
             return
 
         if self.singular:
-            self.particulator.bck.freeze_singular(
+            self.particulator.backend.freeze_singular(
                 T_fz=self.particulator.attributes['freezing temperature'],
                 v_wet=self.particulator.attributes['volume'],
                 T=self.particulator.environment['T'],
@@ -41,7 +42,7 @@ class Freezing:
             )
         else:
             self.rand.urand(self.rng)
-            self.particulator.bck.freeze_time_dependent(
+            self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
                 immersed_surface_area=self.particulator.attributes['immersed surface area'],
                 volume=self.particulator.attributes['volume'],

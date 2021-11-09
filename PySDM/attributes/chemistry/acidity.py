@@ -22,7 +22,7 @@ class Acidity(DerivedAttribute):
     def recalculate(self):
         dynamic = self.particles.dynamics['AqueousChemistry']
 
-        self.particulator.bck.equilibrate_H(
+        self.particulator.backend.equilibrate_H(
             dynamic.equilibrium_consts,
             self.cell_id.get(),
             _conc(

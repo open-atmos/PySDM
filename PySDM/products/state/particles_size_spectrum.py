@@ -19,7 +19,7 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
         builder.request_attribute(self.volume_attr)
 
         volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.bck.Storage.from_ndarray(volume_bins_edges)
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bins_edges)
 
         super().register(builder)
 

@@ -111,15 +111,6 @@ class CollisionsMethods(BackendMethods):
             '''
         )
 
-        self.__distance_pair_body = trtc.For(
-            ('data_out', 'data_in', 'is_first_in_pair'),
-            "i", '''
-            if (is_first_in_pair[i]) {
-                data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
-            }
-            '''
-        )
-
         self.__coalescence_body = trtc.For(
             ('n', 'idx', 'n_sd', 'attributes', 'n_attr', 'gamma', 'healthy'), "i", '''
             if (gamma[i] == 0) {

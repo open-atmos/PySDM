@@ -5,7 +5,7 @@ import fnmatch
 import numpy as np
 from PySDM.backends import CPU
 from PySDM import Builder
-from PySDM.state.mesh import Mesh
+from PySDM.impl.mesh import Mesh
 from PySDM.dynamics.condensation import Condensation
 
 

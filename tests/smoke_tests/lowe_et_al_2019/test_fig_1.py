@@ -39,7 +39,7 @@ class TestFig1:
                 (aerosol.AerosolNascent(), 500 * si.nm)
         )
     )
-    # pylint: disable=redefined-outer-name
+    # pylint: disable=redefined-outer-name,unused-argument
     def test_kink_location(constants, aerosol, cutoff):
         # arrange
         formulae = Formulae(surface_tension='CompressedFilmOvadnevaite')
