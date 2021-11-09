@@ -2,7 +2,7 @@
 import os
 import numpy as np
 import pytest
-from PySDM.backends.numba.impl.collisions_methods import pair_indices
+from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
 from PySDM.storages.pair_indicator import make_PairIndicator
@@ -36,11 +36,12 @@ class TestAlgorithmicMethods:
     # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
         # Arrange
-        dt_left = backend_class.Storage.from_ndarray(np.asarray(dt_left))
-        cell_start = backend_class.Storage.from_ndarray(np.asarray(cell_start))
+        backend = backend_class()
+        dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
+        cell_start = backend.Storage.from_ndarray(np.asarray(cell_start))
 
         # Act
-        actual = backend_class().adaptive_sdm_end(dt_left, cell_start)
+        actual = backend.adaptive_sdm_end(dt_left, cell_start)
 
         # Assert
         assert actual == expected
@@ -71,15 +72,16 @@ class TestAlgorithmicMethods:
                                 is_first_in_pair,
                                 expected_dt_left, expected_n_substep):
         # Arrange
-        _gamma = backend_class.Storage.from_ndarray(np.asarray(gamma))
-        _idx = make_Index(backend_class).from_ndarray(np.asarray(idx))
-        _n = make_IndexedStorage(backend_class).from_ndarray(_idx, np.asarray(n))
-        _cell_id = backend_class.Storage.from_ndarray(np.asarray(cell_id))
-        _dt_left = backend_class.Storage.from_ndarray(np.asarray(dt_left))
-        _is_first_in_pair = make_PairIndicator(backend_class)(len(n))
+        backend = backend_class()
+        _gamma = backend.Storage.from_ndarray(np.asarray(gamma))
+        _idx = make_Index(backend).from_ndarray(np.asarray(idx))
+        _n = make_IndexedStorage(backend).from_ndarray(_idx, np.asarray(n))
+        _cell_id = backend.Storage.from_ndarray(np.asarray(cell_id))
+        _dt_left = backend.Storage.from_ndarray(np.asarray(dt_left))
+        _is_first_in_pair = make_PairIndicator(backend)(len(n))
         _is_first_in_pair.indicator[:] = np.asarray(is_first_in_pair)
-        _n_substep = backend_class.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
-        _dt_min = backend_class.Storage.from_ndarray(np.zeros_like(dt_left))
+        _n_substep = backend.Storage.from_ndarray(np.zeros_like(dt_left, dtype=int))
+        _dt_min = backend.Storage.from_ndarray(np.zeros_like(dt_left))
         dt_range = (np.nan, dt_max)
 
         # Act

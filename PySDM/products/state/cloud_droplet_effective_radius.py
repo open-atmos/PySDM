@@ -2,7 +2,7 @@ import numpy as np
 import numba
 from PySDM.physics import constants as const
 from PySDM.products.product import MomentProduct
-from ...backends.numba.conf import JIT_FLAGS
+from ...backends.impl_numba.conf import JIT_FLAGS
 
 GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 

@@ -1,12 +1,12 @@
 """
-Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
+Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
 and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`
 """
 import ctypes
 import warnings
 import sys
 from numba import cuda
-from .numba.numba import Numba
+from .numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
@@ -42,15 +42,15 @@ def _cuda_is_available():
 
 
 if _cuda_is_available() or cuda.is_available():
-    from .thrust_rtc.thrust_rtc import ThrustRTC
+    from PySDM.backends.thrust_rtc import ThrustRTC
 else:
-    from .thrust_rtc.test_helpers import _flag
+    from .impl_thrust_rtc.test_helpers import _flag
 
     _flag.fakeThrustRTC = True
 
     import numpy as np
 
-    from .thrust_rtc.thrust_rtc import ThrustRTC
+    from PySDM.backends.thrust_rtc import ThrustRTC
     ThrustRTC.ENABLE = False
 
     class Random:  # pylint: disable=too-few-public-methods

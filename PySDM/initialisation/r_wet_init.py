@@ -3,10 +3,10 @@ Koehler-curve equilibrium in unsaturated conditions
 """
 import numba
 import numpy as np
-from ..backends.numba.toms748 import toms748_solve
+from ..backends.impl_numba.toms748 import toms748_solve
 from ..physics import constants as const
-from ..backends.numba.conf import JIT_FLAGS
-from ..backends.numba.impl.warnings import warn
+from ..backends.impl_numba.conf import JIT_FLAGS
+from PySDM.backends.impl_numba.warnings import warn
 
 default_rtol = 1e-5
 default_max_iters = 64

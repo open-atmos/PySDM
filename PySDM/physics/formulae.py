@@ -7,7 +7,7 @@ from functools import lru_cache, partial
 
 import numba
 from PySDM import physics
-from PySDM.backends.numba import conf
+from PySDM.backends.impl_numba import conf
 # noinspection PyUnresolvedReferences
 from PySDM.physics import constants as const
 

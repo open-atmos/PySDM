@@ -1,6 +1,6 @@
 import numpy as np
 import numba
-from PySDM.backends.numba.conf import JIT_FLAGS
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.product import Product
 
 

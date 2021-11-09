@@ -196,19 +196,19 @@ class TestSDMSingleCell:
         for p in prob:
             for r in rand:
                 # Act
-                prob_arr = backend_class.Storage.from_ndarray(np.full((n_sd//2,), p))
-                rand_arr = backend_class.Storage.from_ndarray(np.full((n_sd//2,), r))
-                idx = make_Index(backend_class).from_ndarray(np.arange(n_sd))
-                mult = make_IndexedStorage(backend_class).from_ndarray(
+                prob_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), p))
+                rand_arr = backend.Storage.from_ndarray(np.full((n_sd//2,), r))
+                idx = make_Index(backend).from_ndarray(np.arange(n_sd))
+                mult = make_IndexedStorage(backend).from_ndarray(
                     idx,
-                    np.asarray([expected(p, r), 1]).astype(backend_class.Storage.INT)
+                    np.asarray([expected(p, r), 1]).astype(backend.Storage.INT)
                 )
-                _ = backend_class.Storage.from_ndarray(np.zeros(n_sd//2))
-                cell_id = backend_class.Storage.from_ndarray(
-                    np.zeros(n_sd, dtype=backend_class.Storage.INT))
+                _ = backend.Storage.from_ndarray(np.zeros(n_sd//2))
+                cell_id = backend.Storage.from_ndarray(
+                    np.zeros(n_sd, dtype=backend.Storage.INT))
 
-                indicator = make_PairIndicator(backend_class)(n_sd)
-                indicator.indicator[:] = backend_class.Storage.from_ndarray(
+                indicator = make_PairIndicator(backend)(n_sd)
+                indicator.indicator[:] = backend.Storage.from_ndarray(
                     np.asarray((True, False)))
 
                 backend.compute_gamma(

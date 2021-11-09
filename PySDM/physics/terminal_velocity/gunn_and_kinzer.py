@@ -2,7 +2,7 @@ import numba
 import numpy as np
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
-from PySDM.backends.numba import conf
+from PySDM.backends.impl_numba import conf
 
 
 class Interpolation:

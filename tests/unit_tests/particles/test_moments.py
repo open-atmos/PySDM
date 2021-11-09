@@ -31,8 +31,8 @@ class TestMaths:
         true_mean, true_var = spectrum.stats(moments='mv')
 
         # TODO #217 : add a moments_0 wrapper
-        moment_0 = backend_class.Storage.empty((1,), dtype=float)
-        moments = backend_class.Storage.empty((1, 1), dtype=float)
+        moment_0 = particulator.backend.Storage.empty((1,), dtype=float)
+        moments = particulator.backend.Storage.empty((1, 1), dtype=float)
 
         # Act
         particulator.moments(moment_0, moments, specs={'volume': (0,)})
@@ -85,17 +85,17 @@ class TestMaths:
         v_bins = np.linspace(0, 5e-6, num=5, endpoint=True)
 
         # TODO #217 : add a moments_0 wrapper
-        spectrum_moment_0 = backend_class.Storage.empty(
+        spectrum_moment_0 = particulator.backend.Storage.empty(
             (len(v_bins) - 1, 1),
             dtype=float
         )
-        spectrum_moments = backend_class.Storage.empty(
+        spectrum_moments = particulator.backend.Storage.empty(
             (len(v_bins) - 1, 1),
             dtype=float
         )
-        moment_0 = backend_class.Storage.empty((1,), dtype=float)
-        moments = backend_class.Storage.empty((1, 1), dtype=float)
-        v_bins_edges = backend_class.Storage.from_ndarray(v_bins)
+        moment_0 = particulator.backend.Storage.empty((1,), dtype=float)
+        moments = particulator.backend.Storage.empty((1, 1), dtype=float)
+        v_bins_edges = particulator.backend.Storage.from_ndarray(v_bins)
 
         # Act
         particulator.spectrum_moments(
