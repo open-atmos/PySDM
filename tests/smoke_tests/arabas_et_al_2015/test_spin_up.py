@@ -53,8 +53,8 @@ def test_spin_up(backend_class, fastmath, plot=False):
     # Assert
     step_num = len(storage.profiles) - 1
     for step in range(step_num):
-        next = storage.profiles[step + 1]["qv_env"]
-        prev = storage.profiles[step]["qv_env"]
+        next_profile = storage.profiles[step + 1]["qv_env"]
+        prev_profile = storage.profiles[step]["qv_env"]
         eps = 1e-3
-        assert ((prev + eps) >= next).all()
+        assert ((prev_profile + eps) >= next_profile).all()
     assert storage.profiles[step_num]["qv_env"][-1] < 7.1

@@ -48,7 +48,7 @@ class Coalescence:
         self.collision_rate_deficit = None
 
         self.rnd_opt = None
-        self.optimized_random = None
+        self.optimised_random = None
 
     def register(self, builder):
         self.particulator = builder.particulator

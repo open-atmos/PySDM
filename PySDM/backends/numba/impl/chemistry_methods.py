@@ -10,11 +10,11 @@ from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVIT
 from PySDM.backends.impl.backend_methods import BackendMethods
 
 
-_max_iter_quite_close = 8
-_max_iter_default = 32
-_realy_close_threshold = 1e-6
-_quite_close_threshold = 1
-_quite_close_multiplier = 2
+_MAX_ITER_QUITE_CLOSE = 8
+_MAX_ITER_DEFAULT = 32
+_REALY_CLOSE_THRESHOLD = 1e-6
+_QUITE_CLOSE_THRESHOLD = 1
+_QUITE_CLOSE_MULTIPLIER = 2
 
 _K = namedtuple("_K", ('NH3', 'SO2', 'HSO3', 'HSO4', 'HCO3', 'CO2', 'HNO3'))
 _conc = namedtuple("_conc", ('N_mIII', 'N_V', 'C_IV', 'S_IV', 'S_VI'))
@@ -81,7 +81,10 @@ class ChemistryMethods(BackendMethods):
             cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
-            dt_over_scale = timestep / (4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_const))
+            dt_over_scale = timestep / (
+                    4 * r_w / (3 * v_avg * alpha) +
+                    r_w ** 2 / (3 * diffusion_const)
+            )
             A_old = mole_amounts[i] / droplet_volume[i]
             H_eff = henrysConstant * dissociation_factor[i]
             A_new = (A_old + dt_over_scale * cinf) / (1 + dt_over_scale / H_eff / R_str / env_T)
@@ -239,18 +242,18 @@ class ChemistryMethods(BackendMethods):
             )
             a = pH2H(pH[i])
             fa = acidity_minfun(a, *args)
-            if abs(fa) < _realy_close_threshold:
+            if abs(fa) < _REALY_CLOSE_THRESHOLD:
                 continue
             b = np.nan
             fb = np.nan
             use_default_range = False
-            if abs(fa) < _quite_close_threshold:
-                b = a * _quite_close_multiplier
+            if abs(fa) < _QUITE_CLOSE_THRESHOLD:
+                b = a * _QUITE_CLOSE_MULTIPLIER
                 fb = acidity_minfun(b, *args)
                 if fa * fb > 0:
                     b = a
                     fb = fa
-                    a = b / _quite_close_multiplier / _quite_close_multiplier
+                    a = b / _QUITE_CLOSE_MULTIPLIER / _QUITE_CLOSE_MULTIPLIER
                     fa = acidity_minfun(a, *args)
                     if fa * fb > 0:
                         use_default_range = True
@@ -261,9 +264,9 @@ class ChemistryMethods(BackendMethods):
                 b = H_max
                 fa = acidity_minfun(a, *args)
                 fb = acidity_minfun(b, *args)
-                max_iter = _max_iter_default
+                max_iter = _MAX_ITER_DEFAULT
             else:
-                max_iter = _max_iter_quite_close
+                max_iter = _MAX_ITER_QUITE_CLOSE
             H, _iters_taken = toms748_solve(acidity_minfun, args, a, b, fa, fb, rtol=rtol,
                                             max_iter=max_iter, within_tolerance=within_tolerance)
             assert _iters_taken != max_iter

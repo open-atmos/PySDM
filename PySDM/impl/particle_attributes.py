@@ -25,7 +25,7 @@ class ParticleAttributes:
 
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = particulator.Storage.from_ndarray(cell_start)
-        self.__cell_caretaker = particulator.bck.make_cell_caretaker(
+        self.__cell_caretaker = particulator.backend.make_cell_caretaker(
             self.__idx, self.__cell_start, scheme=particulator.sorting_scheme
         )
         self.__sorted = False
@@ -81,15 +81,11 @@ class ParticleAttributes:
         return key in self.__attributes
 
     def permutation(self, u01, local):
+        """ apply Fisher-Yates algorithm to all super-droplets (local=False) or
+            otherwise on a per-cell basis """
         if local:
-            """
-            apply Fisher-Yates algorithm per cell
-            """
             self.__idx.shuffle(u01, parts=self.cell_start)
         else:
-            """
-            apply Fisher-Yates algorithm to all super-droplets
-            """
             self.__idx.shuffle(u01)
             self.__sorted = False
 

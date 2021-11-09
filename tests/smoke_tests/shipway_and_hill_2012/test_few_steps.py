@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.physics import si
 from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
+from PySDM.physics import si
 
 
 # pylint: disable=redefined-outer-name

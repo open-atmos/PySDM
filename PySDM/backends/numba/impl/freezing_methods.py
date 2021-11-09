@@ -1,8 +1,8 @@
 import numba
 import numpy as np
+from PySDM.backends.impl.backend_methods import BackendMethods
 from ...numba import conf
 from ....physics import constants as const
-from PySDM.backends.impl.backend_methods import BackendMethods
 
 
 class FreezingMethods(BackendMethods):

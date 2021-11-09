@@ -4,7 +4,7 @@ import pytest
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.storages.index import make_Index
 from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.state.particle_attributes_factory import ParticlesFactory
+from PySDM.impl.particle_attributes_factory import ParticlesFactory
 from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment

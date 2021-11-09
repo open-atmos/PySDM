@@ -25,9 +25,8 @@ class AlgorithmicMethods(BackendMethods):
             break
         return end
 
-    @staticmethod
-    def adaptive_sdm_end(dt_left, cell_start):
-        return AlgorithmicMethods.adaptive_sdm_end_body(
+    def adaptive_sdm_end(self, dt_left, cell_start):
+        return self.adaptive_sdm_end_body(
             dt_left.data, len(dt_left), cell_start.data
         )
 
@@ -60,11 +59,10 @@ class AlgorithmicMethods(BackendMethods):
             if dt_todo[cid] > 0:
                 stats_n_substep[cid] += 1
 
-    @staticmethod
     # pylint: disable=too-many-arguments
-    def adaptive_sdm_gamma(gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
+    def adaptive_sdm_gamma(self, gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair,
                            stats_n_substep, stats_dt_min):
-        return AlgorithmicMethods.adaptive_sdm_gamma_body(
+        return self.adaptive_sdm_gamma_body(
             gamma.data, n.idx.data, len(n), n.data, cell_id.data,
             dt_left.data, dt, dt_range, is_first_in_pair.indicator.data,
             stats_n_substep.data, stats_dt_min.data)
@@ -74,9 +72,8 @@ class AlgorithmicMethods(BackendMethods):
     def cell_id_body(cell_id, cell_origin, strides):
         cell_id[:] = np.dot(strides, cell_origin)
 
-    @staticmethod
-    def cell_id(cell_id, cell_origin, strides):
-        return AlgorithmicMethods.cell_id_body(cell_id.data, cell_origin.data, strides.data)
+    def cell_id(self, cell_id, cell_origin, strides):
+        return self.cell_id_body(cell_id.data, cell_origin.data, strides.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -101,12 +98,11 @@ class AlgorithmicMethods(BackendMethods):
             if multiplicity[k] == 0 or multiplicity[j] == 0:
                 healthy[0] = 0
 
-    @staticmethod
     # pylint: disable=too-many-arguments
-    def coalescence(multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
-        AlgorithmicMethods.coalescence_body(multiplicity.data, idx.data, len(idx),
-                                            attributes.data, gamma.data, healthy.data,
-                                            is_first_in_pair.indicator.data)
+    def coalescence(self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
+        self.coalescence_body(multiplicity.data, idx.data, len(idx),
+                              attributes.data, gamma.data, healthy.data,
+                              is_first_in_pair.indicator.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -134,11 +130,10 @@ class AlgorithmicMethods(BackendMethods):
             collision_rate_deficit[cid] += (int(gamma[i]) - g) * multiplicity[k]
             gamma[i] = g
 
-    @staticmethod
     # pylint: disable=too-many-arguments
-    def compute_gamma(gamma, rand, multiplicity, cell_id,
+    def compute_gamma(self, gamma, rand, multiplicity, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
-        return AlgorithmicMethods.compute_gamma_body(
+        return self.compute_gamma_body(
             gamma.data, rand.data, multiplicity.idx.data, len(multiplicity), multiplicity.data,
             cell_id.data,
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
@@ -160,7 +155,7 @@ class AlgorithmicMethods(BackendMethods):
                     r = radii[idx[i + 1]] / unit
                     r_s = radii[idx[i]] / unit
                 p = r_s / r
-                if p != 0 and p != 1:
+                if p not in (0, 1):
                     G = (G1 / r) ** Mg + G2 + G3 * r
                     Gp = (1 - p) ** G
                     if Gp != 0:
@@ -170,9 +165,8 @@ class AlgorithmicMethods(BackendMethods):
                         output[i // 2] = A + B * p + D / p ** F + E / Gp
                         output[i // 2] = max(0, output[i // 2])
 
-    @staticmethod
-    def linear_collection_efficiency(params, output, radii, is_first_in_pair, unit):
-        return AlgorithmicMethods.linear_collection_efficiency_body(
+    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+        return self.linear_collection_efficiency_body(
             params, output.data, radii.data, is_first_in_pair.indicator.data,
             radii.idx.data, len(is_first_in_pair), unit)
 
@@ -184,15 +178,14 @@ class AlgorithmicMethods(BackendMethods):
             r_rest = ((factor * radius[i]) % 1) / factor
             output[i] = b[r_id] + r_rest * c[r_id]
 
-    @staticmethod
-    def interpolation(output, radius, factor, b, c):
-        return AlgorithmicMethods.interpolation_body(
+    def interpolation(self, output, radius, factor, b, c):
+        return self.interpolation_body(
             output.data, radius.data, factor, b.data, c.data
         )
 
     @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
-        class CellCaretaker:
+        class CellCaretaker:  # pylint: disable=too-few-public-methods
             def __init__(self, idx, cell_start, scheme):
                 if scheme == "default":
                     if conf.JIT_FLAGS['parallel']:
@@ -200,7 +193,7 @@ class AlgorithmicMethods(BackendMethods):
                     else:
                         scheme = "counting_sort"
                 self.scheme = scheme
-                if scheme == "counting_sort" or scheme == "counting_sort_parallel":
+                if scheme in ("counting_sort", "counting_sort_parallel"):
                     self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty(
@@ -236,10 +229,9 @@ class AlgorithmicMethods(BackendMethods):
         for d in numba.prange(prob.shape[0]):  # pylint: disable=not-an-iterable
             prob[d] *= norm_factor[cell_idx[cell_id[d]]]
 
-    @staticmethod
     # pylint: disable=too-many-arguments
-    def normalize(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
-        return AlgorithmicMethods.normalize_body(
+    def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv):
+        return self.normalize_body(
             prob.data, cell_id.data, cell_idx.data, cell_start.data,
             norm_factor.data, timestep, dv)
 
