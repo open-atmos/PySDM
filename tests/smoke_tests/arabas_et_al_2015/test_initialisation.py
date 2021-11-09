@@ -17,7 +17,7 @@ def test_initialisation(backend_class, plot=False):
     settings.grid = (10, 5)
     settings.n_sd_per_gridbox = 5000
 
-    simulation = Simulation(settings, None, SpinUp=SpinUp, backend=backend_class)
+    simulation = Simulation(settings, None, SpinUp=SpinUp, backend_class=backend_class)
 
     n_levels = settings.grid[1]
     n_cell = int(np.prod(np.array(settings.grid)))
@@ -28,9 +28,6 @@ def test_initialisation(backend_class, plot=False):
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
 
-    backend = simulation.particulator.backend
-    moment_0 = backend.Storage.empty(n_cell, dtype=int)
-    moments = backend.Storage.empty((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
     simulation.reinit()
 
@@ -42,6 +39,8 @@ def test_initialisation(backend_class, plot=False):
 
     v_bins = settings.formulae.trivia.volume(settings.r_bins_edges)
 
+    moment_0 = particulator.backend.Storage.empty(n_cell, dtype=int)
+    moments = particulator.backend.Storage.empty((n_moments, n_cell), dtype=float)
     for i in range(len(histogram_dry)):
         particulator.moments(
             moment_0, moments, specs={},
