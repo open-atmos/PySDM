@@ -4,6 +4,7 @@ Classes representing physicochemical processes:
 `PySDM.dynamics.condensation.Condensation`, ...
 """
 from .coalescence import Coalescence
+from .breakup import Breakup
 from .condensation import Condensation
 from .displacement import Displacement
 from .eulerian_advection import EulerianAdvection

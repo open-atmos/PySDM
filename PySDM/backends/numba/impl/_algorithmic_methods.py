@@ -196,7 +196,6 @@ class AlgorithmicMethods:
                                             attributes.data, gamma.data, rand.data, dyn.data, Ec.data, Eb.data, 
                                             n_fragment.data, healthy.data, is_first_in_pair.indicator.data)
         
-    ## TODO: Emily implement breakup
     '''@staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def breakup_body(n, idx, length, attributes, gamma, n_fragment, healthy, is_first_in_pair):
@@ -244,6 +243,22 @@ class AlgorithmicMethods:
     @staticmethod
     def slams_fragmentation(n_fragment, probs, rand):
         AlgorithmicMethods.slams_fragmentation_body(n_fragment.data, probs.data, rand.data)
+
+    '''
+    Exponential PDF
+    '''
+    @numba.njit(**{**conf.JIT_FLAGS})
+    def exp_fragmentation_body(n_fragment, scale, frag_size, r, rand):
+        for i in numba.prange(len(n_fragment)):
+            frag_size[i] = -scale * np.log(1-rand[i])
+            if (frag_size[i] > r[i]):
+                n_fragment[i] = 1
+            else:
+                n_fragment[i] = r[i] / frag_size[i]
+    
+    @staticmethod
+    def exp_fragmentation(n_fragment, scale, frag_size, r, rand):
+        AlgorithmicMethods.exp_fragmentation_body(n_fragment.data, scale, frag_size.data, r.data, rand.data)
 
     # Emily: Low and List 1982 fragmentation function
     @numba.njit(**{**conf.JIT_FLAGS})

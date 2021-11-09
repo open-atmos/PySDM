@@ -1,7 +1,8 @@
 """
 Created at 30.10.2021
 """
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants import rho_w, sgm
+import numpy as np
 # TODO: TEST
 
 class Schlottke2010:
@@ -14,7 +15,7 @@ class Schlottke2010:
         self.core = builder.core
         builder.request_attribute('volume')
         builder.request_attribute('terminal velocity')
-        self.sigma = 0.0073 #constant from LL82a
+        self.sigma = sgm #constant from LL82a
         self.Sc = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.tmp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.tmp2 = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
@@ -24,8 +25,8 @@ class Schlottke2010:
         self.tmp.sum(self.core.particles['volume'], is_first_in_pair)
         self.tmp /= (np.pi / 6)
         
-        self.tmp2[:] = self.core.particles['terminal velocity']
-        self.tmp2[:] **= 2
+        self.tmp2.difference(self.core.particles['terminal velocity'])
+        self.tmp2 **= 2
         self.We.multiply(self.core.particles['volume'], is_first_in_pair)
         self.We /= self.tmp
         self.We *= self.tmp2
@@ -37,5 +38,5 @@ class Schlottke2010:
 
         self.We /= self.Sc
 
-        output.exp(-1.15 * self.We)
-
+        output[:] = np.exp(-1.15 * self.We)
+        print(output.data)

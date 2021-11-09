@@ -2,10 +2,15 @@
 Created at 05.21.2021
 """
 
-from ._parameterized import Parameterized
-
-
-class ConstEc(Parameterized):
+class ConstEc():
 
     def __init__(self, Ec=1.0):
-        super().__init__((Ec, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        self.Ec = Ec
+        self.core = None
+
+    def register(self, builder):
+        self.core = builder.core
+    
+    def __call__(self, output, is_first_in_pair):
+        output.data[:] = self.Ec
+        print(output.data)

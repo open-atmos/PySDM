@@ -1,10 +1,9 @@
 """
-SDM implementation with adaptive timestepping
+Collisional coalescence of a superdroplet pair
 """
 import numpy as np
 from PySDM.dynamics.collision import Collision
 from PySDM.physics import si
-from PySDM.physics import breakup_fragmentations
 from PySDM.physics.coalescence_efficiencies import ConstEc
 from PySDM.physics.breakup_efficiencies import ConstEb
 from PySDM.physics.breakup_fragmentations import AlwaysN
