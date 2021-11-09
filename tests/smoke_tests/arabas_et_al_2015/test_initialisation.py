@@ -28,8 +28,9 @@ def test_initialisation(backend_class, plot=False):
     histogram_dry = np.empty((len(r_bins) - 1, n_levels))
     histogram_wet = np.empty_like(histogram_dry)
 
-    moment_0 = backend_class.Storage.empty(n_cell, dtype=int)
-    moments = backend_class.Storage.empty((n_moments, n_cell), dtype=float)
+    backend = simulation.particulator.backend
+    moment_0 = backend.Storage.empty(n_cell, dtype=int)
+    moments = backend.Storage.empty((n_moments, n_cell), dtype=float)
     tmp = np.empty(n_cell)
     simulation.reinit()
 
