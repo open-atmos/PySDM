@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.dynamics.coalescence.coalescence_timestep_mean API documentation</title>
+<title>PySDM.backends.impl_numba.warnings API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,50 +19,28 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.dynamics.coalescence.coalescence_timestep_mean</code></h1>
+<h1 class="title">Module <code>PySDM.backends.impl_numba.warnings</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
+<pre><code class="python">import sys
 import numba
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.products.product import Product
+from PySDM.backends.impl_numba import conf
 
 
-class CoalescenceTimestepMean(Product):
-
-    def __init__(self):
-        super().__init__(
-            name=&#39;dt_coal_avg&#39;,
-            unit=&#39;s&#39;,
-            description=&#39;Coalescence timestep (mean)&#39;
-        )
-        self.count = 0
-        self.coalescence = None
-
-    def register(self, builder):
-        super().register(builder)
-        self.particulator.observers.append(self)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-        self.range = self.coalescence.dt_coal_range
-
-    @staticmethod
-    @numba.njit(**JIT_FLAGS)
-    def __get_impl(buffer, count, dt):
-        buffer[:] = np.where(buffer[:] &gt; 0, count * dt / buffer[:], np.nan)
-
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_n_substep)
-        CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
-        self.coalescence.stats_n_substep[:] = 0
-        self.count = 0
-        return self.buffer
-
-    def notify(self):
-        self.count += 1</code></pre>
+@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+def warn(msg, file, context=None, return_value=None):
+    with numba.objmode():
+        print(msg, file=sys.stderr)
+        print(&#34;\tfile:&#34;, file, file=sys.stderr)
+        if context is not None:
+            print(&#34;\tcontext:&#34;, file=sys.stderr)
+            for var in context:
+                print(&#34;\t\t&#34;, var, file=sys.stderr)
+    return return_value</code></pre>
 </details>
 </section>
 <section>
@@ -70,12 +48,10 @@ class CoalescenceTimestepMean(Product):
 <section>
 </section>
 <section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean"><code class="flex name class">
-<span>class <span class="ident">CoalescenceTimestepMean</span></span>
+<dt id="PySDM.backends.impl_numba.warnings.warn"><code class="name flex">
+<span>def <span class="ident">warn</span></span>(<span>msg, file, context=None, return_value=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -83,93 +59,21 @@ class CoalescenceTimestepMean(Product):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CoalescenceTimestepMean(Product):
-
-    def __init__(self):
-        super().__init__(
-            name=&#39;dt_coal_avg&#39;,
-            unit=&#39;s&#39;,
-            description=&#39;Coalescence timestep (mean)&#39;
-        )
-        self.count = 0
-        self.coalescence = None
-
-    def register(self, builder):
-        super().register(builder)
-        self.particulator.observers.append(self)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-        self.range = self.coalescence.dt_coal_range
-
-    @staticmethod
-    @numba.njit(**JIT_FLAGS)
-    def __get_impl(buffer, count, dt):
-        buffer[:] = np.where(buffer[:] &gt; 0, count * dt / buffer[:], np.nan)
-
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_n_substep)
-        CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
-        self.coalescence.stats_n_substep[:] = 0
-        self.count = 0
-        return self.buffer
-
-    def notify(self):
-        self.count += 1</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.product.Product" href="../../product.html#PySDM.products.product.Product">Product</a></li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self):
-    self.download_to_buffer(self.coalescence.stats_n_substep)
-    CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
-    self.coalescence.stats_n_substep[:] = 0
-    self.count = 0
-    return self.buffer</code></pre>
-</details>
-</dd>
-<dt id="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify"><code class="name flex">
-<span>def <span class="ident">notify</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def notify(self):
-    self.count += 1</code></pre>
-</details>
-</dd>
-<dt id="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def register(self, builder):
-    super().register(builder)
-    self.particulator.observers.append(self)
-    self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-    self.range = self.coalescence.dt_coal_range</code></pre>
+<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+def warn(msg, file, context=None, return_value=None):
+    with numba.objmode():
+        print(msg, file=sys.stderr)
+        print(&#34;\tfile:&#34;, file, file=sys.stderr)
+        if context is not None:
+            print(&#34;\tcontext:&#34;, file=sys.stderr)
+            for var in context:
+                print(&#34;\t\t&#34;, var, file=sys.stderr)
+    return return_value</code></pre>
 </details>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -180,19 +84,12 @@ class CoalescenceTimestepMean(Product):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.dynamics.coalescence" href="index.html">PySDM.products.dynamics.coalescence</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba" href="index.html">PySDM.backends.impl_numba</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean" href="#PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean">CoalescenceTimestepMean</a></code></h4>
+<li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get" href="#PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get">get</a></code></li>
-<li><code><a title="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify" href="#PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify">notify</a></code></li>
-<li><code><a title="PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.register" href="#PySDM.products.dynamics.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.register">register</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM.backends.impl_numba.warnings.warn" href="#PySDM.backends.impl_numba.warnings.warn">warn</a></code></li>
 </ul>
 </li>
 </ul>

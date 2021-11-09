@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends API documentation</title>
-<meta name="description" content="Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
+<meta name="description" content="Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
 and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -23,21 +23,21 @@ and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`" />
 <h1 class="title">Module <code>PySDM.backends</code></h1>
 </header>
 <section id="section-intro">
-<p>Backend classes: <code><a title="PySDM.backends.Numba" href="#PySDM.backends.Numba">Numba</a></code>=<code><a title="PySDM.backends.numba.numba.Numba" href="numba/numba.html#PySDM.backends.numba.numba.Numba">Numba</a></code>
-and <code><a title="PySDM.backends.ThrustRTC" href="#PySDM.backends.ThrustRTC">ThrustRTC</a></code>=<code><a title="PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC" href="thrust_rtc/thrust_rtc.html#PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC">ThrustRTC</a></code></p>
+<p>Backend classes: <code><a title="PySDM.backends.Numba" href="#PySDM.backends.Numba">Numba</a></code>=<code>PySDM.backends.impl_numba.impl_numba.Numba</code>
+and <code><a title="PySDM.backends.ThrustRTC" href="#PySDM.backends.ThrustRTC">ThrustRTC</a></code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Backend classes: `CPU`=`PySDM.backends.numba.numba.Numba`
+Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
 and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`
 &#34;&#34;&#34;
 import ctypes
 import warnings
 import sys
 from numba import cuda
-from .numba.numba import Numba
+from .numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
@@ -73,15 +73,15 @@ def _cuda_is_available():
 
 
 if _cuda_is_available() or cuda.is_available():
-    from .thrust_rtc.thrust_rtc import ThrustRTC
+    from PySDM.backends.thrust_rtc import ThrustRTC
 else:
-    from .thrust_rtc.test_helpers import _flag
+    from .impl_thrust_rtc.test_helpers import _flag
 
     _flag.fakeThrustRTC = True
 
     import numpy as np
 
-    from .thrust_rtc.thrust_rtc import ThrustRTC
+    from PySDM.backends.thrust_rtc import ThrustRTC
     ThrustRTC.ENABLE = False
 
     class Random:  # pylint: disable=too-few-public-methods
@@ -109,17 +109,25 @@ alias for ThrustRTC
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.backends.impl" href="impl/index.html">PySDM.backends.impl</a></code></dt>
+<dt><code class="name"><a title="PySDM.backends.impl_common" href="impl_common/index.html">PySDM.backends.impl_common</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.backends.numba" href="numba/index.html">PySDM.backends.numba</a></code></dt>
+<dt><code class="name"><a title="PySDM.backends.impl_numba" href="impl_numba/index.html">PySDM.backends.impl_numba</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.backends.thrust_rtc" href="thrust_rtc/index.html">PySDM.backends.thrust_rtc</a></code></dt>
+<dt><code class="name"><a title="PySDM.backends.impl_thrust_rtc" href="impl_thrust_rtc/index.html">PySDM.backends.impl_thrust_rtc</a></code></dt>
 <dd>
 <div class="desc"></div>
+</dd>
+<dt><code class="name"><a title="PySDM.backends.numba" href="numba.html">PySDM.backends.numba</a></code></dt>
+<dd>
+<div class="desc"><p>Multi-threaded CPU backend using LLVM-powered just-in-time compilation</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.backends.thrust_rtc" href="thrust_rtc.html">PySDM.backends.thrust_rtc</a></code></dt>
+<dd>
+<div class="desc"><p>GPU-resident backend using NVRTC runtime compilation library for CUDA</p></div>
 </dd>
 </dl>
 </section>
@@ -170,16 +178,16 @@ alias for ThrustRTC
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.pair_methods.PairMethods" href="numba/impl/pair_methods.html#PySDM.backends.numba.impl.pair_methods.PairMethods">PairMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.index_methods.IndexMethods" href="numba/impl/index_methods.html#PySDM.backends.numba.impl.index_methods.IndexMethods">IndexMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.physics_methods.PhysicsMethods" href="numba/impl/physics_methods.html#PySDM.backends.numba.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.condensation_methods.CondensationMethods" href="numba/impl/condensation_methods.html#PySDM.backends.numba.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods" href="numba/impl/chemistry_methods.html#PySDM.backends.numba.impl.chemistry_methods.ChemistryMethods">ChemistryMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.moments_methods.MomentsMethods" href="numba/impl/moments_methods.html#PySDM.backends.numba.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.freezing_methods.FreezingMethods" href="numba/impl/freezing_methods.html#PySDM.backends.numba.impl.freezing_methods.FreezingMethods">FreezingMethods</a></li>
-<li><a title="PySDM.backends.numba.impl.displacement_methods.DisplacementMethods" href="numba/impl/displacement_methods.html#PySDM.backends.numba.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
-<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods" href="impl_numba/methods/collisions_methods.html#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods" href="impl_numba/methods/pair_methods.html#PySDM.backends.impl_numba.methods.pair_methods.PairMethods">PairMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.index_methods.IndexMethods" href="impl_numba/methods/index_methods.html#PySDM.backends.impl_numba.methods.index_methods.IndexMethods">IndexMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods" href="impl_numba/methods/physics_methods.html#PySDM.backends.impl_numba.methods.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.condensation_methods.CondensationMethods" href="impl_numba/methods/condensation_methods.html#PySDM.backends.impl_numba.methods.condensation_methods.CondensationMethods">CondensationMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.chemistry_methods.ChemistryMethods" href="impl_numba/methods/chemistry_methods.html#PySDM.backends.impl_numba.methods.chemistry_methods.ChemistryMethods">ChemistryMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods" href="impl_numba/methods/moments_methods.html#PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods">MomentsMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods" href="impl_numba/methods/freezing_methods.html#PySDM.backends.impl_numba.methods.freezing_methods.FreezingMethods">FreezingMethods</a></li>
+<li><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods" href="impl_numba/methods/displacement_methods.html#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl_common.backend_methods.BackendMethods" href="impl_common/backend_methods.html#PySDM.backends.impl_common.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -198,9 +206,9 @@ alias for ThrustRTC
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></b></code>:
+<li><code><b><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods" href="impl_numba/methods/collisions_methods.html#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods.compute_gamma_body" href="numba/impl/collisions_methods.html#PySDM.backends.numba.impl.collisions_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma_body" href="impl_numba/methods/collisions_methods.html#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
 </ul>
 </li>
 </ul>
@@ -227,7 +235,7 @@ alias for ThrustRTC
 </dd>
 <dt id="PySDM.backends.ThrustRTC"><code class="flex name class">
 <span>class <span class="ident">GPU</span></span>
-<span>(</span><span>formulae=None)</span>
+<span>(</span><span>formulae=None, double_precision=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -245,13 +253,19 @@ alias for ThrustRTC
     DisplacementMethods
 ):
     ENABLE = True
-    Storage = ImportedStorage
     Random = ImportedRandom
 
     default_croupier = &#39;global&#39;
 
-    def __init__(self, formulae=None):
+    def __init__(self, formulae=None, double_precision=False):
         self.formulae = formulae or Formulae()
+
+        self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
+        self._real_type = &#34;double&#34; if double_precision else &#34;float&#34;
+        self._np_dtype = np.float64 if double_precision else np.float32
+
+        self.Storage = make_storage_class(self)
+
         CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
         IndexMethods.__init__(self)
@@ -266,14 +280,15 @@ alias for ThrustRTC
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods" href="thrust_rtc/impl/collisions_methods.html#PySDM.backends.thrust_rtc.impl.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods" href="thrust_rtc/impl/pair_methods.html#PySDM.backends.thrust_rtc.impl.pair_methods.PairMethods">PairMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods" href="thrust_rtc/impl/index_methods.html#PySDM.backends.thrust_rtc.impl.index_methods.IndexMethods">IndexMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods" href="thrust_rtc/impl/physics_methods.html#PySDM.backends.thrust_rtc.impl.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods" href="thrust_rtc/impl/condensation_methods.html#PySDM.backends.thrust_rtc.impl.condensation_methods.CondensationMethods">CondensationMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods" href="thrust_rtc/impl/moments_methods.html#PySDM.backends.thrust_rtc.impl.moments_methods.MomentsMethods">MomentsMethods</a></li>
-<li><a title="PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods" href="thrust_rtc/impl/displacement_methods.html#PySDM.backends.thrust_rtc.impl.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
-<li><a title="PySDM.backends.impl.backend_methods.BackendMethods" href="impl/backend_methods.html#PySDM.backends.impl.backend_methods.BackendMethods">BackendMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods" href="impl_thrust_rtc/methods/collisions_methods.html#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods" href="impl_thrust_rtc/methods/pair_methods.html#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods">PairMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods" href="impl_thrust_rtc/methods/index_methods.html#PySDM.backends.impl_thrust_rtc.methods.index_methods.IndexMethods">IndexMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods" href="impl_thrust_rtc/methods/physics_methods.html#PySDM.backends.impl_thrust_rtc.methods.physics_methods.PhysicsMethods">PhysicsMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.condensation_methods.CondensationMethods" href="impl_thrust_rtc/methods/condensation_methods.html#PySDM.backends.impl_thrust_rtc.methods.condensation_methods.CondensationMethods">CondensationMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods" href="impl_thrust_rtc/methods/moments_methods.html#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods">MomentsMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods" href="impl_thrust_rtc/methods/displacement_methods.html#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></li>
+<li><a title="PySDM.backends.impl_thrust_rtc.methods.thrust_rtc_backend_methods.ThrustRTCBackendMethods" href="impl_thrust_rtc/methods/thrust_rtc_backend_methods.html#PySDM.backends.impl_thrust_rtc.methods.thrust_rtc_backend_methods.ThrustRTCBackendMethods">ThrustRTCBackendMethods</a></li>
+<li><a title="PySDM.backends.impl_common.backend_methods.BackendMethods" href="impl_common/backend_methods.html#PySDM.backends.impl_common.backend_methods.BackendMethods">BackendMethods</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>
@@ -282,10 +297,6 @@ alias for ThrustRTC
 <div class="desc"></div>
 </dd>
 <dt id="PySDM.backends.ThrustRTC.Random"><code class="name">var <span class="ident">Random</span></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="PySDM.backends.ThrustRTC.Storage"><code class="name">var <span class="ident">Storage</span></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -311,9 +322,11 @@ alias for ThrustRTC
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="PySDM.backends.impl" href="impl/index.html">PySDM.backends.impl</a></code></li>
-<li><code><a title="PySDM.backends.numba" href="numba/index.html">PySDM.backends.numba</a></code></li>
-<li><code><a title="PySDM.backends.thrust_rtc" href="thrust_rtc/index.html">PySDM.backends.thrust_rtc</a></code></li>
+<li><code><a title="PySDM.backends.impl_common" href="impl_common/index.html">PySDM.backends.impl_common</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba" href="impl_numba/index.html">PySDM.backends.impl_numba</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc" href="impl_thrust_rtc/index.html">PySDM.backends.impl_thrust_rtc</a></code></li>
+<li><code><a title="PySDM.backends.numba" href="numba.html">PySDM.backends.numba</a></code></li>
+<li><code><a title="PySDM.backends.thrust_rtc" href="thrust_rtc.html">PySDM.backends.thrust_rtc</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
@@ -334,7 +347,6 @@ alias for ThrustRTC
 <ul class="">
 <li><code><a title="PySDM.backends.ThrustRTC.ENABLE" href="#PySDM.backends.ThrustRTC.ENABLE">ENABLE</a></code></li>
 <li><code><a title="PySDM.backends.ThrustRTC.Random" href="#PySDM.backends.ThrustRTC.Random">Random</a></code></li>
-<li><code><a title="PySDM.backends.ThrustRTC.Storage" href="#PySDM.backends.ThrustRTC.Storage">Storage</a></code></li>
 <li><code><a title="PySDM.backends.ThrustRTC.default_croupier" href="#PySDM.backends.ThrustRTC.default_croupier">default_croupier</a></code></li>
 </ul>
 </li>

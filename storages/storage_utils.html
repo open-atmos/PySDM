@@ -38,6 +38,7 @@ class StorageBase:
         self.data = signature.data
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
+        self.backend = None
 
     def __len__(self):
         return self.shape[0]
@@ -156,6 +157,7 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
         self.data = signature.data
         self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
         self.dtype = signature.dtype
+        self.backend = None
 
     def __len__(self):
         return self.shape[0]
@@ -192,8 +194,7 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="PySDM.backends.numba.storage.Storage" href="../backends/numba/storage.html#PySDM.backends.numba.storage.Storage">Storage</a></li>
-<li><a title="PySDM.backends.thrust_rtc.storage.Storage" href="../backends/thrust_rtc/storage.html#PySDM.backends.thrust_rtc.storage.Storage">Storage</a></li>
+<li><a title="PySDM.backends.impl_numba.storage.Storage" href="../backends/impl_numba/storage.html#PySDM.backends.impl_numba.storage.Storage">Storage</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
