@@ -4,7 +4,6 @@ import pytest
 from PySDM.backends import ThrustRTC
 from PySDM.physics.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
-from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 from ....backends_fixture import backend_class
 
