@@ -27,7 +27,9 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
-
+from PySDM.backends.impl_common.freezing_attributes import (
+    SingularAttributes, TimeDependentAttributes
+)
 
 class Freezing:
     def __init__(self, *, singular=True):
@@ -62,19 +64,23 @@ class Freezing:
 
         if self.singular:
             self.particulator.backend.freeze_singular(
-                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.attributes[&#39;volume&#39;],
-                T=self.particulator.environment[&#39;T&#39;],
-                RH=self.particulator.environment[&#39;RH&#39;],
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes[&#39;freezing temperature&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                temperature=self.particulator.environment[&#39;T&#39;],
+                relative_humidity=self.particulator.environment[&#39;RH&#39;],
                 cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
             self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
-                volume=self.particulator.attributes[&#39;volume&#39;],
-                dt=self.particulator.dt,
+                attributes=TimeDependentAttributes(
+                    immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#39;cell id&#39;],
                 a_w_ice=self.particulator.environment[&#39;a_w_ice&#39;]
             )
@@ -134,19 +140,23 @@ class Freezing:
 
         if self.singular:
             self.particulator.backend.freeze_singular(
-                T_fz=self.particulator.attributes[&#39;freezing temperature&#39;],
-                v_wet=self.particulator.attributes[&#39;volume&#39;],
-                T=self.particulator.environment[&#39;T&#39;],
-                RH=self.particulator.environment[&#39;RH&#39;],
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes[&#39;freezing temperature&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                temperature=self.particulator.environment[&#39;T&#39;],
+                relative_humidity=self.particulator.environment[&#39;RH&#39;],
                 cell=self.particulator.attributes[&#39;cell id&#39;]
             )
         else:
             self.rand.urand(self.rng)
             self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
-                volume=self.particulator.attributes[&#39;volume&#39;],
-                dt=self.particulator.dt,
+                attributes=TimeDependentAttributes(
+                    immersed_surface_area=self.particulator.attributes[&#39;immersed surface area&#39;],
+                    wet_volume=self.particulator.attributes[&#39;volume&#39;]
+                ),
+                timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#39;cell id&#39;],
                 a_w_ice=self.particulator.environment[&#39;a_w_ice&#39;]
             )
