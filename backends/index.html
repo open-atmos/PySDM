@@ -81,7 +81,7 @@ else:
 
     import numpy as np
 
-    from PySDM.backends.thrust_rtc import ThrustRTC
+    from PySDM.backends.thrust_rtc import ThrustRTC  # pylint: disable=ungrouped-imports
     ThrustRTC.ENABLE = False
 
     class Random:  # pylint: disable=too-few-public-methods
@@ -243,7 +243,7 @@ alias for ThrustRTC
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ThrustRTC(  # pylint: disable=duplicate-code
+<pre><code class="python">class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     CollisionsMethods,
     PairMethods,
     IndexMethods,

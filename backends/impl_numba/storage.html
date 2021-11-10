@@ -28,8 +28,9 @@
 </summary>
 <pre><code class="python">import numpy as np
 from PySDM.backends.impl_numba import storage_impl as impl
-from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
-
+from PySDM.backends.impl_common.storage_utils import (
+    get_data_from_ndarray, StorageSignature, StorageBase, empty
+)
 
 class Storage(StorageBase):
 
@@ -212,7 +213,7 @@ class Storage(StorageBase):
 <dl>
 <dt id="PySDM.backends.impl_numba.storage.Storage"><code class="flex name class">
 <span>class <span class="ident">Storage</span></span>
-<span>(</span><span>signature: <a title="PySDM.storages.storage_utils.StorageSignature" href="../../storages/storage_utils.html#PySDM.storages.storage_utils.StorageSignature">StorageSignature</a>)</span>
+<span>(</span><span>signature: <a title="PySDM.backends.impl_common.storage_utils.StorageSignature" href="../impl_common/storage_utils.html#PySDM.backends.impl_common.storage_utils.StorageSignature">StorageSignature</a>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -391,7 +392,7 @@ class Storage(StorageBase):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.storages.storage_utils.StorageBase" href="../../storages/storage_utils.html#PySDM.storages.storage_utils.StorageBase">StorageBase</a></li>
+<li><a title="PySDM.backends.impl_common.storage_utils.StorageBase" href="../impl_common/storage_utils.html#PySDM.backends.impl_common.storage_utils.StorageBase">StorageBase</a></li>
 </ul>
 <h3>Class variables</h3>
 <dl>

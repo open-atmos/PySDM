@@ -102,7 +102,7 @@ class Condensation:
     def __call__(self):
         if self.enable:
             if self.schedule == &#39;dynamic&#39;:
-                self.condensation_cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
+                self.cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
             elif self.schedule == &#39;static&#39;:
                 pass
             else:
@@ -211,7 +211,7 @@ class Condensation:
     def __call__(self):
         if self.enable:
             if self.schedule == &#39;dynamic&#39;:
-                self.condensation_cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
+                self.cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
             elif self.schedule == &#39;static&#39;:
                 pass
             else:

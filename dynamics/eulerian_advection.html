@@ -42,10 +42,10 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.env.get_predicted(&#39;qv&#39;).download(
-            self.particulator.env.get_qv(), reshape=True)
-        self.particulator.env.get_predicted(&#39;thd&#39;).download(
-            self.particulator.env.get_thd(), reshape=True)
+        self.particulator.environment.get_predicted(&#39;qv&#39;).download(
+            self.particulator.environment.get_qv(), reshape=True)
+        self.particulator.environment.get_predicted(&#39;thd&#39;).download(
+            self.particulator.environment.get_thd(), reshape=True)
         self.solvers()</code></pre>
 </details>
 </section>
@@ -78,10 +78,10 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.env.get_predicted(&#39;qv&#39;).download(
-            self.particulator.env.get_qv(), reshape=True)
-        self.particulator.env.get_predicted(&#39;thd&#39;).download(
-            self.particulator.env.get_thd(), reshape=True)
+        self.particulator.environment.get_predicted(&#39;qv&#39;).download(
+            self.particulator.environment.get_qv(), reshape=True)
+        self.particulator.environment.get_predicted(&#39;thd&#39;).download(
+            self.particulator.environment.get_thd(), reshape=True)
         self.solvers()</code></pre>
 </details>
 <h3>Methods</h3>

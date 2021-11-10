@@ -57,7 +57,7 @@ class ParticlesFactory:
             idx, (len(maximum_attr), particulator.n_sd), float)
 
         for attr in req_attr.values():
-            if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
+            if isinstance(attr, (DerivedAttribute, DummyAttribute)):
                 attr.allocate(idx)
             if isinstance(attr, DummyAttribute) and attr.name in attributes:
                 raise ValueError(f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
@@ -72,9 +72,9 @@ class ParticlesFactory:
                 req_attr[attr].set_data(data[i, :])
                 try:
                     req_attr[attr].init(all_attr[attr])
-                except KeyError:
+                except KeyError as err:
                     raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
-                                     f&#34; but no initial values given&#34;)
+                                     f&#34; but no initial values given&#34;) from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
@@ -166,7 +166,7 @@ class ParticlesFactory:
             idx, (len(maximum_attr), particulator.n_sd), float)
 
         for attr in req_attr.values():
-            if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
+            if isinstance(attr, (DerivedAttribute, DummyAttribute)):
                 attr.allocate(idx)
             if isinstance(attr, DummyAttribute) and attr.name in attributes:
                 raise ValueError(f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
@@ -181,9 +181,9 @@ class ParticlesFactory:
                 req_attr[attr].set_data(data[i, :])
                 try:
                     req_attr[attr].init(all_attr[attr])
-                except KeyError:
+                except KeyError as err:
                     raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
-                                     f&#34; but no initial values given&#34;)
+                                     f&#34; but no initial values given&#34;) from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)
@@ -265,7 +265,7 @@ def attributes(particulator, req_attr, attributes):
         idx, (len(maximum_attr), particulator.n_sd), float)
 
     for attr in req_attr.values():
-        if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
+        if isinstance(attr, (DerivedAttribute, DummyAttribute)):
             attr.allocate(idx)
         if isinstance(attr, DummyAttribute) and attr.name in attributes:
             raise ValueError(f&#34;attribute &#39;{attr.name}&#39; indicated as dummy&#34;
@@ -280,9 +280,9 @@ def attributes(particulator, req_attr, attributes):
             req_attr[attr].set_data(data[i, :])
             try:
                 req_attr[attr].init(all_attr[attr])
-            except KeyError:
+            except KeyError as err:
                 raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
-                                 f&#34; but no initial values given&#34;)
+                                 f&#34; but no initial values given&#34;) from err
 
     helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
     helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)

@@ -37,7 +37,6 @@ class Mesh:
         self.strides = Mesh.__strides(grid)
         self.n_cell = int(np.prod(grid))
         self.dv = np.prod((np.array(size) / np.array(grid)))
-        self.__dimension = len(self.grid)
 
     @property
     def dz(self):
@@ -45,7 +44,7 @@ class Mesh:
 
     @property
     def dimension(self):
-        return self.__dimension
+        return 0 if self.grid == (1,) else len(self.grid)
 
     @property
     def dim(self):
@@ -55,7 +54,6 @@ class Mesh:
     def mesh_0d(dv=None):
         mesh = Mesh((1,), ())
         mesh.dv = dv
-        mesh.__dimension = 0
         return mesh
 
     @staticmethod
@@ -106,7 +104,6 @@ class Mesh:
         self.strides = Mesh.__strides(grid)
         self.n_cell = int(np.prod(grid))
         self.dv = np.prod((np.array(size) / np.array(grid)))
-        self.__dimension = len(self.grid)
 
     @property
     def dz(self):
@@ -114,7 +111,7 @@ class Mesh:
 
     @property
     def dimension(self):
-        return self.__dimension
+        return 0 if self.grid == (1,) else len(self.grid)
 
     @property
     def dim(self):
@@ -124,7 +121,6 @@ class Mesh:
     def mesh_0d(dv=None):
         mesh = Mesh((1,), ())
         mesh.dv = dv
-        mesh.__dimension = 0
         return mesh
 
     @staticmethod
@@ -162,7 +158,6 @@ class Mesh:
 def mesh_0d(dv=None):
     mesh = Mesh((1,), ())
     mesh.dv = dv
-    mesh.__dimension = 0
     return mesh</code></pre>
 </details>
 </dd>
@@ -190,7 +185,7 @@ def dim(self):
 </summary>
 <pre><code class="python">@property
 def dimension(self):
-    return self.__dimension</code></pre>
+    return 0 if self.grid == (1,) else len(self.grid)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.impl.mesh.Mesh.dz"><code class="name">var <span class="ident">dz</span></code></dt>
