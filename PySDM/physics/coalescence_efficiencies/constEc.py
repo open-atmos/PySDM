@@ -13,4 +13,3 @@ class ConstEc():
     
     def __call__(self, output, is_first_in_pair):
         output.data[:] = self.Ec
-        print(output.data)

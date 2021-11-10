@@ -19,3 +19,4 @@ import PySDM.physics.hydrostatics
 import PySDM.physics.breakup_fragmentations
 import PySDM.physics.coalescence_efficiencies
 import PySDM.physics.breakup_efficiencies
+import PySDM.physics.collision_kernels

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 from PySDM.physics.formulae import Formulae
-from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.physics.collision_kernels import Golovin
 
 
 class TestGolovin:
