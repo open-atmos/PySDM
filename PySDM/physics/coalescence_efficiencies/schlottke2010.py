@@ -15,7 +15,6 @@ class Schlottke2010:
         self.core = builder.core
         builder.request_attribute('volume')
         builder.request_attribute('terminal velocity')
-        self.sigma = sgm #constant from LL82a
         self.Sc = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.tmp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.tmp2 = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
@@ -34,9 +33,9 @@ class Schlottke2010:
         
         self.Sc[:] = self.tmp[:]
         self.Sc **= (2/3)
-        self.Sc *= (np.pi * self.sigma)
+        self.Sc *= (np.pi * sgm)
 
         self.We /= self.Sc
+        self.We *= -1.15
 
-        output[:] = np.exp(-1.15 * self.We)
-        print(output.data)
+        output[:] = np.exp(self.We)
