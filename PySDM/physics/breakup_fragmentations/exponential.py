@@ -6,7 +6,7 @@ Created at 13.05.2021 by edejong
 import numpy as np
 
 
-class Exponential:
+class ExponFrag:
 
     def __init__(self, scale):
         self.core = None
