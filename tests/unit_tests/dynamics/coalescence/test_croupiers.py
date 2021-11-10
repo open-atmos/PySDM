@@ -51,5 +51,7 @@ def test_final_state(croupier, backend_class):
     _ = particulator.attributes.cell_start
 
     # Assert
-    diff = np.diff(particulator.attributes['cell id'][particulator.attributes._ParticleAttributes__idx])
+    diff = np.diff(
+        particulator.attributes['cell id'][particulator.attributes._ParticleAttributes__idx]
+    )
     assert (diff >= 0).all()

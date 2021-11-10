@@ -9,7 +9,6 @@ class Mesh:
         self.strides = Mesh.__strides(grid)
         self.n_cell = int(np.prod(grid))
         self.dv = np.prod((np.array(size) / np.array(grid)))
-        self.__dimension = len(self.grid)
 
     @property
     def dz(self):
@@ -17,7 +16,7 @@ class Mesh:
 
     @property
     def dimension(self):
-        return self.__dimension
+        return 0 if self.grid == (1,) else len(self.grid)
 
     @property
     def dim(self):
@@ -27,7 +26,6 @@ class Mesh:
     def mesh_0d(dv=None):
         mesh = Mesh((1,), ())
         mesh.dv = dv
-        mesh.__dimension = 0
         return mesh
 
     @staticmethod

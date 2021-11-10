@@ -29,11 +29,11 @@ class TestSDMMultiCell:
         env = Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
-        particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n), environment=env)
+        particulator, sut = get_dummy_particulator_and_coalescence(
+            backend_class, len(n), environment=env)
         cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
         attributes = {'n': n, 'volume': v, 'cell id': cell_id}
         particulator.build(attributes)
-        u01, _ = sut.rnd_opt.get_random_arrays()
         sut.actual_length = particulator.attributes._ParticleAttributes__idx.length
         sut.adaptive = adaptive
 

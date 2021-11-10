@@ -29,7 +29,7 @@ class ParticlesFactory:
             idx, (len(maximum_attr), particulator.n_sd), float)
 
         for attr in req_attr.values():
-            if isinstance(attr, DerivedAttribute) or isinstance(attr, DummyAttribute):
+            if isinstance(attr, (DerivedAttribute, DummyAttribute)):
                 attr.allocate(idx)
             if isinstance(attr, DummyAttribute) and attr.name in attributes:
                 raise ValueError(f"attribute '{attr.name}' indicated as dummy"
@@ -44,9 +44,9 @@ class ParticlesFactory:
                 req_attr[attr].set_data(data[i, :])
                 try:
                     req_attr[attr].init(all_attr[attr])
-                except KeyError:
+                except KeyError as err:
                     raise ValueError(f"attribute '{attr}' required by one of the dynamics"
-                                     f" but no initial values given")
+                                     f" but no initial values given") from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
         helper(req_attr, attributes, maximum_attr, maximum_attributes, maximum_keys)

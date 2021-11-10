@@ -33,6 +33,7 @@ class Parcel(_Moist):
 
         self.formulae = None
         self.dql = None
+        self.params = None
 
     @property
     def dv(self):

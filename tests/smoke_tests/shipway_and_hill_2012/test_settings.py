@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
+from PySDM_examples.Shipway_and_Hill_2012 import Settings
 import numpy as np
 
 

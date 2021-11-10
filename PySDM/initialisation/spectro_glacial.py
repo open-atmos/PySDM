@@ -27,7 +27,7 @@ class SpectroGlacialSampling:
     def sample(self, n_sd):
         copula = False
         if copula:
-            import pyvinecopulib as pv
+            import pyvinecopulib as pv  # pylint: disable=import-outside-toplevel
 
             simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(

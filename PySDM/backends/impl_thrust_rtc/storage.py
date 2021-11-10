@@ -1,5 +1,7 @@
 import numpy as np
-from PySDM.storages.storage_utils import get_data_from_ndarray, StorageSignature, StorageBase, empty
+from PySDM.backends.impl_common.storage_utils import (
+    get_data_from_ndarray, StorageSignature, StorageBase, empty
+)
 from PySDM.backends.impl_thrust_rtc.conf import trtc
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
@@ -24,7 +26,12 @@ def make_storage_class(BACKEND):
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def add(output, addend):
-            trtc.Transform_Binary(Impl.thrust(addend), Impl.thrust(output), Impl.thrust(output), trtc.Plus())
+            trtc.Transform_Binary(
+                Impl.thrust(addend),
+                Impl.thrust(output),
+                Impl.thrust(output),
+                trtc.Plus()
+            )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
@@ -39,7 +46,10 @@ def make_storage_class(BACKEND):
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def row_modulo(output, divisor):
-            Impl.__row_modulo_body.launch_n(output.shape[0], Impl.thrust((output, divisor, output.shape[1])))
+            Impl.__row_modulo_body.launch_n(
+                output.shape[0],
+                Impl.thrust((output, divisor, output.shape[1]))
+            )
 
         __floor_body = trtc.For(('arr',), "i", '''
                 if (arr[i] >= 0) {
@@ -74,7 +84,10 @@ def make_storage_class(BACKEND):
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def floor_out_of_place(output, input_data):
-            Impl.__floor_out_of_place_body.launch_n(output.shape[0], Impl.thrust((output, input_data)))
+            Impl.__floor_out_of_place_body.launch_n(
+                output.shape[0],
+                Impl.thrust((output, input_data))
+            )
 
         __multiply_elementwise_body = trtc.For(('output', 'multiplier'), "i", '''
                 output[i] *= multiplier[i];
@@ -225,7 +238,10 @@ def make_storage_class(BACKEND):
                 assert item[1].start is None or item[1].start == 0
                 assert item[1].stop is None or item[1].stop == self.shape[1]
                 assert item[1].step is None or item[1].step == 1
-                result_data = self.data.range(self.shape[1] * item[0], self.shape[1] * (item[0] + 1))
+                result_data = self.data.range(
+                    self.shape[1] * item[0],
+                    self.shape[1] * (item[0] + 1)
+                )
                 result = Storage(StorageSignature(result_data, (*self.shape[1:],), self.dtype))
             else:
                 result = self.to_ndarray()[item]

@@ -1,7 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import numpy as np
+from matplotlib import pyplot
 from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
 from PySDM.physics import si
-import numpy as np
 
 
 class TestInitialCondition:
@@ -16,7 +17,6 @@ class TestInitialCondition:
 
         # Plot
         if plot:
-            from matplotlib import pyplot
             for var in ('RH_env', 'T_env', 'qv_env', 'p_env'):
                 pyplot.plot(output[var][:, 0], output['z'], linestyle='--', marker='o')
                 pyplot.ylabel('Z [m]')

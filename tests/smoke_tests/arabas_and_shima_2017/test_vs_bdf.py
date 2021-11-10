@@ -23,15 +23,15 @@ def split(arg1, arg2):
 @pytest.mark.parametrize("settings_idx", range(setups_num))
 @pytest.mark.parametrize("rtol", rtols)
 @pytest.mark.parametrize("leg", ['ascent', 'descent'])
-@pytest.mark.parametrize("scheme", ('CPU', 'GPU'))
+@pytest.mark.parametrize("scheme", ('CPU',))  # 'GPU'))  # TODO #588
 # pylint: disable=redefined-outer-name
 def test_vs_BDF(settings_idx, data, rtol, leg, scheme):
     # Arrange
     supersaturation = {}
-    for scheme in schemes:
-        sut = data[scheme][rtol][settings_idx]
+    for sch in schemes:
+        sut = data[sch][rtol][settings_idx]
         ascent, descent = split(sut['S'], sut['z'])
-        supersaturation[scheme] = ascent if leg == 'ascent' else descent
+        supersaturation[sch] = ascent if leg == 'ascent' else descent
 
     # Assert
     desired = np.array(supersaturation['BDF'])

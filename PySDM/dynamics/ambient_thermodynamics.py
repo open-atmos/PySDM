@@ -12,4 +12,4 @@ class AmbientThermodynamics:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.env.sync()
+        self.particulator.environment.sync()

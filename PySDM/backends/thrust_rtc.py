@@ -18,7 +18,7 @@ from PySDM.physics import Formulae
 from PySDM.backends.impl_thrust_rtc.conf import trtc
 
 
-class ThrustRTC(  # pylint: disable=duplicate-code
+class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     CollisionsMethods,
     PairMethods,
     IndexMethods,
