@@ -33,6 +33,9 @@ class Builder:
     def set_environment(self, environment):
         assert_none(self.particulator.environment)
         self.particulator.environment = environment
+        self.particulator.strides = self.particulator.backend.Storage.from_ndarray(
+            environment.mesh.strides
+        )
         self.particulator.environment.register(self)
 
     def add_dynamic(self, dynamic):
