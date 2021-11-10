@@ -17,8 +17,12 @@ from .dry_air_potential_temperature import DryAirPotentialTemperature
 from .dynamic_wall_time import DynamicWallTime
 from .parcel_displacement import ParcelDisplacement
 from .particle_mean_radius import ParticleMeanRadius
-from .particles_concentration import ParticlesConcentration
-from .particles_size_spectrum import ParticlesSizeSpectrum
+from .particles_concentration import (
+    ParticlesConcentration, AerosolConcentration, CloudDropletConcentration, DrizzleConcentration
+)
+from .particles_size_spectrum import (
+    ParticlesSizeSpectrum, ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum
+)
 from .particles_volume_spectrum import ParticlesVolumeSpectrum
 from .pressure import Pressure
 from .relative_humidity import RelativeHumidity
