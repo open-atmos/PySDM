@@ -2,6 +2,7 @@
 import pytest
 from scipy.signal import find_peaks
 import numpy as np
+from matplotlib import pyplot
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic, UniformRandom
@@ -23,7 +24,6 @@ def test_spectrum_at_t_0(spectral_sampling, plot=False):
 
     # Plot
     if plot:
-        from matplotlib import pyplot
         pyplot.step(
             2e6 * settings.dry_radius_bins_edges[:-1],
             output['dm_S_VI/dlog_10(dry diameter)'][-1]
@@ -38,6 +38,6 @@ def test_spectrum_at_t_0(spectral_sampling, plot=False):
     # Assert
     key = 'S_VI'
     spectrum = output[f'dm_{key}/dlog_10(dry diameter)'][0]
-    peaks, props = find_peaks(spectrum)
+    peaks, _ = find_peaks(spectrum)
     assert len(peaks) == 1
     assert 3 < np.amax(spectrum) < 5

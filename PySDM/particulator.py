@@ -3,10 +3,10 @@ The very class exposing `PySDM.Particulator.run()` method for launching simulati
 """
 import numpy as np
 from PySDM.impl.particle_attributes import ParticleAttributes
-from PySDM.storages.index import make_Index
-from PySDM.storages.pair_indicator import make_PairIndicator
-from PySDM.storages.pairwise_storage import make_PairwiseStorage
-from PySDM.storages.indexed_storage import make_IndexedStorage
+from PySDM.backends.impl_common.index import make_Index
+from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
+from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
+from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
@@ -51,10 +51,6 @@ class Particulator:
             observer.notify()
 
     @property
-    def env(self):
-        return self.environment
-
-    @property
     def Storage(self):
         return self.backend.Storage
 
@@ -70,11 +66,13 @@ class Particulator:
     def dt(self) -> float:
         if self.environment is not None:
             return self.environment.dt
+        return None
 
     @property
     def mesh(self):
         if self.environment is not None:
             return self.environment.mesh
+        return None
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
@@ -84,13 +82,13 @@ class Particulator:
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
             # input
-            self.env.get_predicted('rhod'),
-            self.env.get_predicted('thd'),
-            self.env.get_predicted('qv'),
+            self.environment.get_predicted('rhod'),
+            self.environment.get_predicted('thd'),
+            self.environment.get_predicted('qv'),
             # output
-            self.env.get_predicted('T'),
-            self.env.get_predicted('p'),
-            self.env.get_predicted('RH')
+            self.environment.get_predicted('T'),
+            self.environment.get_predicted('p'),
+            self.environment.get_predicted('RH')
         )
 
     def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
@@ -102,13 +100,13 @@ class Particulator:
             n=self.attributes['n'],
             vdry=self.attributes["dry volume"],
             idx=self.attributes._ParticleAttributes__idx,
-            rhod=self.env["rhod"],
-            thd=self.env["thd"],
-            qv=self.env["qv"],
-            dv=self.env.dv,
-            prhod=self.env.get_predicted("rhod"),
-            pthd=self.env.get_predicted("thd"),
-            pqv=self.env.get_predicted("qv"),
+            rhod=self.environment["rhod"],
+            thd=self.environment["thd"],
+            qv=self.environment["qv"],
+            dv=self.environment.dv,
+            prhod=self.environment.get_predicted("rhod"),
+            pthd=self.environment.get_predicted("thd"),
+            pqv=self.environment.get_predicted("qv"),
             kappa=self.attributes["kappa"],
             f_org=self.attributes["dry volume organic fraction"],
             rtol_x=rtol_x,
@@ -176,9 +174,9 @@ class Particulator:
             mole_amounts={key: self.attributes["moles_" + key] for key in gaseous_compounds.keys()},
             env_mixing_ratio=environment_mixing_ratios,
             # note: assuming condensation was called
-            env_p=self.env.get_predicted('p'),
-            env_T=self.env.get_predicted('T'),
-            env_rho_d=self.env.get_predicted('rhod'),
+            env_p=self.environment.get_predicted('p'),
+            env_T=self.environment.get_predicted('T'),
+            env_rho_d=self.environment.get_predicted('rhod'),
             timestep=timestep,
             dv=self.mesh.dv,
             droplet_volume=self.attributes["volume"],
@@ -193,7 +191,7 @@ class Particulator:
         self.backend.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
-            temperature=self.env.get_predicted('T')
+            temperature=self.environment.get_predicted('T')
         )
 
     def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
@@ -210,7 +208,7 @@ class Particulator:
         self.backend.cell_id(
             self.attributes['cell id'],
             self.attributes['cell origin'],
-            self.attributes._ParticleAttributes__strides
+            self.backend.Storage.from_ndarray(self.environment.mesh.strides)
         )
         self.attributes._ParticleAttributes__sorted = False
 

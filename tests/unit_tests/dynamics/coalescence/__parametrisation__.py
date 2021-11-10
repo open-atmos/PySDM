@@ -53,10 +53,6 @@ def get_dummy_particulator_and_coalescence(backend, n_length,
     return particulator, coalescence
 
 
-'''
-x parametrisation: v_2
-'''
-
 __x__ = {'ones_2': pytest.param(np.array([1., 1.])),
          'random_2': pytest.param(np.array([4., 2.]))
          }
@@ -70,11 +66,6 @@ def v_2(request):
     return request.param
 
 
-'''
-T parametrisation: T_2
-'''
-
-
 @pytest.fixture(params=[
     __x__['ones_2'],
     __x__['random_2']
@@ -82,10 +73,6 @@ T parametrisation: T_2
 def T_2(request):
     return request.param
 
-
-'''
-n parametrisation: 
-'''
 
 __n__ = {'1_1': pytest.param(np.array([1, 1])),
          '5_1': pytest.param(np.array([5, 1])),

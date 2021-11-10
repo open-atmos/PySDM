@@ -96,33 +96,33 @@ class VTKExporter:
                 print("Exporting Products to vtk, path: " + path)
             payload = {}
 
-            if particulator.mesh.dimension == 2:
-                data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+            if particulator.mesh.dimension != 2:
+                raise NotImplementedError("Only 2 dimensions data is supported at the moment.")
 
-                for k in particulator.products.keys():
-                    v = particulator.products[k].get()
+            data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
 
-                    if isinstance(v, np.ndarray):
-                        if v.shape == particulator.mesh.grid:
-                            payload[k] = v.T[:, :, np.newaxis]
-                        else:
-                            if self.verbose:
-                                print(f'{k} shape {v.shape} not equals data shape {data_shape}'
-                                      f' and will not be exported', file=sys.stderr)
-                    elif isinstance(v, numbers.Number):
-                        if self.verbose:
-                            print(f'{k} is a Number and will not be exported', file=sys.stderr)
+            for k in particulator.products.keys():
+                v = particulator.products[k].get()
+
+                if isinstance(v, np.ndarray):
+                    if v.shape == particulator.mesh.grid:
+                        payload[k] = v.T[:, :, np.newaxis]
                     else:
                         if self.verbose:
-                            print(f'{k} export is not possible', file=sys.stderr)
+                            print(f'{k} shape {v.shape} not equals data shape {data_shape}'
+                                  f' and will not be exported', file=sys.stderr)
+                elif isinstance(v, numbers.Number):
+                    if self.verbose:
+                        print(f'{k} is a Number and will not be exported', file=sys.stderr)
+                else:
+                    if self.verbose:
+                        print(f'{k} export is not possible', file=sys.stderr)
 
-                x, y, z = np.mgrid[
-                    :particulator.mesh.grid[0] + 1,
-                    :particulator.mesh.grid[1] + 1,
-                    :1
-                ]
-            else:
-                raise NotImplementedError("Only 2 dimensions data is supported at the moment.")
+            x, y, z = np.mgrid[
+                :particulator.mesh.grid[0] + 1,
+                :particulator.mesh.grid[1] + 1,
+                :1
+            ]
 
             gridToVTK(path, x, y, z, cellData = payload)
         else:

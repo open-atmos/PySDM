@@ -36,10 +36,16 @@ class DummyEnvironment:
         return self.pred[key]
 
     def get_qv(self):
-        return self.qv[self.halo:-self.halo, self.halo:-self.halo]
+        if self.halo is not None:
+            halo = int(self.halo)
+            return self.qv[halo:-halo, halo:-halo]
+        raise ValueError()
 
     def get_thd(self):
-        return self.thd[self.halo:-self.halo, self.halo:-self.halo]
+        if self.halo is not None:
+            halo = int(self.halo)
+            return self.thd[halo:-halo, halo:-halo]
+        raise ValueError()
 
     def sync(self):
         pass

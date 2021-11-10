@@ -21,7 +21,6 @@ class TestExplicitEulerWithInterpolation:
         sut()
 
         # Assert
-        pass
 
     @staticmethod
     # pylint: disable=redefined-outer-name

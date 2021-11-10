@@ -29,7 +29,7 @@ class TestLognormal:
         sut = Lognormal(1, r_mode, s)
 
         # Act
-        m, dm = np.linspace(.01e-6, 100e-6, 10000, retstep=True)
+        m, _ = np.linspace(.01e-6, 100e-6, 10000, retstep=True)
         sd = sut.size_distribution(m)
 
         # Assert

@@ -3,9 +3,9 @@ import os
 import numpy as np
 import pytest
 from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
-from PySDM.storages.index import make_Index
-from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.storages.pair_indicator import make_PairIndicator
+from PySDM.backends.impl_common.index import make_Index
+from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
+from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, '_pytestfixturefunction')

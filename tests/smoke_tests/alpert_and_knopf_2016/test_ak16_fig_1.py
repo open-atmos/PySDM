@@ -13,7 +13,6 @@ n_runs_per_case = 3
 def test_ak16_fig_1(multiplicity, plot=False):
     # Arrange
     constant.J_HET = 1e3 / si.cm ** 2 / si.s
-    A_g = 1e-5 * si.cm ** 2
 
     dt = 1 * si.s
     total_time = 6 * si.min
@@ -44,21 +43,21 @@ def test_ak16_fig_1(multiplicity, plot=False):
             output[key].append(data)
 
     # Plot
-    for key in output:
+    for key, output_item in output.items():
         for run in range(n_runs_per_case):
             label = f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),"\
                     f"N={int(cases[key]['ISA'].norm_factor * dv)}"
             pylab.step(
-                dt / si.min * np.arange(len(output[key][run])),
-                output[key][run],
+                dt / si.min * np.arange(len(output_item[run])),
+                output_item[run],
                 label=label if run == 0 else None,
                 color=cases[key]['color'],
                 linewidth=.666
             )
-        output[key].append(np.mean(np.asarray(output[key]), axis=0))
+        output_item.append(np.mean(np.asarray(output_item), axis=0))
         pylab.step(
-            dt / si.min * np.arange(len(output[key][-1])),
-            output[key][-1],
+            dt / si.min * np.arange(len(output_item[-1])),
+            output_item[-1],
             color=cases[key]['color'],
             linewidth=1.666
         )
@@ -86,6 +85,6 @@ def test_ak16_fig_1(multiplicity, plot=False):
         output['Iso2'][int(.5 * si.min / dt):],
         output['Iso1'][int(.5 * si.min / dt):]
     )
-    for key in output:
-        np.testing.assert_array_less(1e-3, output[key][-1][:int(.25 * si.min / dt)])
-        np.testing.assert_array_less(output[key][-1][:], 1 + 1e-10)
+    for out in output.values():
+        np.testing.assert_array_less(1e-3, out[-1][:int(.25 * si.min / dt)])
+        np.testing.assert_array_less(out[-1][:], 1 + 1e-10)

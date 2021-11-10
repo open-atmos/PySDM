@@ -1,3 +1,4 @@
+# pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
 import types
 import warnings
 

@@ -17,7 +17,8 @@ class SpectralSampling:
                 self.size_range = [np.nan, np.nan]
                 for i in (0, 1):
                     result = optimize.root(
-                        lambda x: spectrum.cdf(x) - default_cdf_range[i], x0=spectrum.median()
+                        lambda x, value=default_cdf_range[i]: spectrum.cdf(x) - value,
+                        x0=spectrum.median()
                     )
                     assert result.success
                     self.size_range[i] = result.x

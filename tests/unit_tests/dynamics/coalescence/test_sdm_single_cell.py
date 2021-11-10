@@ -2,9 +2,10 @@
 import numpy as np
 import pytest
 from PySDM.backends import ThrustRTC
-from PySDM.storages.pair_indicator import make_PairIndicator
-from PySDM.storages.indexed_storage import make_IndexedStorage
-from PySDM.storages.index import make_Index
+from PySDM.dynamics import Coalescence
+from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
+from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
+from PySDM.backends.impl_common.index import make_Index
 from ....backends_fixture import backend_class
 from .__parametrisation__ import backend_fill, get_dummy_particulator_and_coalescence
 from .__parametrisation__ import v_2, T_2, n_2
@@ -96,7 +97,6 @@ class TestSDMSingleCell:
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n_2))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
-            from PySDM.dynamics import Coalescence
             backend_fill(prob, p)
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
 
@@ -133,9 +133,9 @@ class TestSDMSingleCell:
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n))
 
         def _compute_gamma(prob, rand, is_first_in_pair):
-            from PySDM.dynamics import Coalescence
             backend_fill(prob, p, odd_zeros=True)
             Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
+
         sut.compute_gamma = _compute_gamma
         attributes = {'n': n, 'volume': v}
         particulator.build(attributes)

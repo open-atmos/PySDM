@@ -169,7 +169,7 @@ Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
 Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
-ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
+ParticlesVolumeSpectrum = pyimport("PySDM.products").ParticlesVolumeSpectrum
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
@@ -189,7 +189,7 @@ Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
 Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
-ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticlesVolumeSpectrum;
+ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products').ParticlesVolumeSpectrum;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
@@ -210,7 +210,7 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
-from PySDM.products.state import ParticlesVolumeSpectrum
+from PySDM.products import ParticlesVolumeSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
@@ -325,7 +325,7 @@ Results of the simulation are plotted against vertical
 and depict the evolution of 
 [`Supersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/dynamics/condensation/peak_supersaturation.html), 
 [`CloudDropletEffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/cloud_droplet_effective_radius.html), 
-[`CloudDropletConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/particles_concentration.html#PySDM.products.state.particles_concentration.CloudDropletConcentration) 
+[`CloudDropletConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/particles_concentration.html#PySDM.products.particles_concentration.CloudDropletConcentration) 
 and the 
 [`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/water_mixing_ratio.html).
 

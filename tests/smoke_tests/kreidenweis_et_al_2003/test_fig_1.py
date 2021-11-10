@@ -26,7 +26,7 @@ class TestFig1:
         if plot:
             name = 'ql'
             pyplot.plot(example_output[name], np.asarray(example_output['t']) - Z_CB * si.s)
-            pyplot.ylabel(f"time above cloud base [s]")
+            pyplot.ylabel("time above cloud base [s]")
             pyplot.grid()
             pyplot.show()
 
@@ -57,7 +57,7 @@ class TestFig1:
                 pyplot.show()
 
             pyplot.plot(
-                np.asarray(example_output[f'aq_S_VI_ppb']),
+                np.asarray(example_output['aq_S_VI_ppb']),
                 np.asarray(example_output['t']) - Z_CB * si.s, label='S_VI')
             pyplot.xlabel('S_VI (aq) [ppb]')
             pyplot.show()

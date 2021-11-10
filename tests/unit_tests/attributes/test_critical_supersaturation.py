@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.products.dynamics.condensation import ActivableFraction
+from PySDM.products.condensation import ActivableFraction
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box

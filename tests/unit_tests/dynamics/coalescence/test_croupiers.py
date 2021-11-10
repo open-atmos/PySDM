@@ -4,7 +4,6 @@ import pytest
 from PySDM.backends import ThrustRTC
 from PySDM.physics.spectra import Lognormal
 from PySDM.initialisation.spectral_sampling import Linear
-from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 from ....backends_fixture import backend_class
 
@@ -28,8 +27,7 @@ def test_final_state(croupier, backend_class):
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
     attributes['volume'], attributes['n'] = Linear(spectrum).sample(n_sd)
-    particulator = DummyParticulator(backend_class, n_sd)
-    particulator.environment = DummyEnvironment(grid=(x, y))
+    particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
     particulator.croupier = croupier
 
     attributes['cell id'] = np.array((n_sd,), dtype=int)
@@ -51,5 +49,7 @@ def test_final_state(croupier, backend_class):
     _ = particulator.attributes.cell_start
 
     # Assert
-    diff = np.diff(particulator.attributes['cell id'][particulator.attributes._ParticleAttributes__idx])
+    diff = np.diff(
+        particulator.attributes['cell id'][particulator.attributes._ParticleAttributes__idx]
+    )
     assert (diff >= 0).all()

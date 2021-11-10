@@ -16,6 +16,7 @@ assert hasattr(backend_class, '_pytestfixturefunction')
 class TestFreezingMethods:
     # TODO #599
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_freeze_singular(backend_class):
         pass
 

@@ -12,8 +12,8 @@ from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods
 from PySDM.dynamics import aqueous_chemistry
 
 
-formulae = Formulae()
-EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
+FORMULAE = Formulae()
+EQUILIBRIUM_CONST = EquilibriumConsts(FORMULAE).EQUILIBRIUM_CONST
 
 
 class TestAcidity:
@@ -21,15 +21,15 @@ class TestAcidity:
     def test_equilibrate_pH_pure_water():
         # Arrange
         eqs = {}
-        for key in EQUILIBRIUM_CONST:
-            eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(ROOM_TEMP))
+        for key, const in EQUILIBRIUM_CONST.items():
+            eqs[key] = np.full(1, const.at(ROOM_TEMP))
 
         # Act
         result = np.empty(1)
         ChemistryMethods.equilibrate_H_body(
-            within_tolerance=formulae.trivia.within_tolerance,
-            pH2H=formulae.trivia.pH2H,
-            H2pH=formulae.trivia.H2pH,
+            within_tolerance=FORMULAE.trivia.within_tolerance,
+            pH2H=FORMULAE.trivia.pH2H,
+            H2pH=FORMULAE.trivia.H2pH,
             conc=_conc(
                 N_mIII=np.zeros(1),
                 N_V=np.zeros(1),
@@ -51,8 +51,8 @@ class TestAcidity:
             do_chemistry_flag=np.empty(1),
             pH=result,
             # params
-            H_min=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
-            H_max=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
+            H_min=FORMULAE.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
+            H_max=FORMULAE.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
             ionic_strength_threshold=aqueous_chemistry.DEFAULTS.ionic_strength_threshold,
             rtol=aqueous_chemistry.DEFAULTS.pH_rtol
         )
@@ -96,15 +96,14 @@ class TestAcidity:
         expected_pH = -np.log10(x[H_idx])
 
         eqs = {}
-        for key in EQUILIBRIUM_CONST:
-            eqs[key] = np.full(1, EQUILIBRIUM_CONST[key].at(env_T))
+        for key, const in EQUILIBRIUM_CONST.items():
+            eqs[key] = np.full(1, const.at(env_T))
 
         actual_pH = np.empty(1)
-        formulae = Formulae()
         ChemistryMethods.equilibrate_H_body(
-            within_tolerance=formulae.trivia.within_tolerance,
-            pH2H=formulae.trivia.pH2H,
-            H2pH=formulae.trivia.H2pH,
+            within_tolerance=FORMULAE.trivia.within_tolerance,
+            pH2H=FORMULAE.trivia.pH2H,
+            H2pH=FORMULAE.trivia.H2pH,
             conc=_conc(
                 N_mIII=np.full(1, init_conc['NH3'] * 1e3),
                 N_V=np.full(1, init_conc['HNO3(aq)'] * 1e3),
@@ -126,8 +125,8 @@ class TestAcidity:
             do_chemistry_flag=np.empty(1),
             pH=actual_pH,
             # params
-            H_min=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
-            H_max=formulae.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
+            H_min=FORMULAE.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_max),
+            H_max=FORMULAE.trivia.pH2H(aqueous_chemistry.DEFAULTS.pH_min),
             ionic_strength_threshold=aqueous_chemistry.DEFAULTS.ionic_strength_threshold,
             rtol=aqueous_chemistry.DEFAULTS.pH_rtol
         )

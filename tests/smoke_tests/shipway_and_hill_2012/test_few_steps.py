@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+from matplotlib import pyplot
 from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
 from PySDM.physics import si
 
@@ -18,7 +19,6 @@ def test_few_steps(plot=False):
         return np.mean(output[var][:, -20:], axis=1)
 
     if plot:
-        from matplotlib import pyplot
         for var in ('RH_env', 'S_max', 'T_env', 'qv_env', 'p_env', 'ql',
                     'ripening_rate', 'activating_rate', 'deactivating_rate'):
             pyplot.plot(profile(var), output['z'], linestyle='--', marker='o')

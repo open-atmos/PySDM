@@ -13,12 +13,10 @@ class ParticleAttributes:
             cell_start,
             attributes: Dict[str, Attribute]
     ):
-        self.__n_sd = particulator.n_sd
         self.__valid_n_sd = particulator.n_sd
         self.healthy = True
         self.__healthy_memory = particulator.Storage.from_ndarray(np.full((1,), 1))
         self.__idx = idx
-        self.__strides = particulator.Storage.from_ndarray(particulator.mesh.strides)
 
         self.__extensive_attribute_storage = extensive_attribute_storage
         self.__extensive_keys = extensive_keys

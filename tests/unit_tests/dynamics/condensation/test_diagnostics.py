@@ -58,7 +58,7 @@ def _try(particulator, capsys):
     exception = None
     try:
         particulator.run(steps=1)
-    except Exception as e:
+    except Exception as e:  # pylint: disable=broad-except
         exception = e
     captured = capsys.readouterr()
     assert captured.out == ""
@@ -80,7 +80,7 @@ class TestDiagnostics:
         )
 
         # act
-        exception, captured_err = _try(particulator, capsys)
+        _, captured_err = _try(particulator, capsys)
 
         # assert
         pattern = re.compile(

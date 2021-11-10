@@ -13,8 +13,8 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.env.get_predicted('qv').download(
-            self.particulator.env.get_qv(), reshape=True)
-        self.particulator.env.get_predicted('thd').download(
-            self.particulator.env.get_thd(), reshape=True)
+        self.particulator.environment.get_predicted('qv').download(
+            self.particulator.environment.get_qv(), reshape=True)
+        self.particulator.environment.get_predicted('thd').download(
+            self.particulator.environment.get_thd(), reshape=True)
         self.solvers()
