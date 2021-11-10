@@ -12,7 +12,7 @@ n_runs_per_case = 3
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
 def test_ak16_fig_1(multiplicity, plot=False):
     # Arrange
-    constant.J_het = 1e3 / si.cm ** 2 / si.s
+    constant.J_HET = 1e3 / si.cm ** 2 / si.s
     A_g = 1e-5 * si.cm ** 2
 
     dt = 1 * si.s
