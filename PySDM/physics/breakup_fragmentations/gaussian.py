@@ -1,15 +1,14 @@
 """
-P(x) = exp(-x / lambda)
-Created at 13.05.2021 by edejong
+P(x) = exp(-(x-mu)^2 / 2 sigma^2)
 """
 
 import numpy as np
 
+class Gaussian:
 
-class ExponFrag:
-
-    def __init__(self, scale):
+    def __init__(self, mu, scale):
         self.core = None
+        self.mu = mu
         self.scale = scale
         
     def register(self, builder):
@@ -20,8 +19,6 @@ class ExponFrag:
 
     def __call__(self, output, u01, is_first_in_pair):
         self.max_size.max(self.core.particles['radius'],is_first_in_pair)
-        self.core.backend.exp_fragmentation(output, self.scale, self.frag_size,
+        self.core.backend.gauss_fragmentation(output, self.mu, self.scale, self.frag_size,
             self.max_size, u01)
-        print(self.frag_size.data)
-        print(output.data)
         

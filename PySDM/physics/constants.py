@@ -6,6 +6,7 @@ purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry
 
 import pint
 from scipy import constants as sci
+import numpy as np
 from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
 from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
 from chempy import Substance
@@ -24,6 +25,7 @@ pi_4_3 = pi * 4 / 3
 three = 3
 one_third = 1/3
 two_thirds = 2/3
+sqrt_two = np.sqrt(2)
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +
