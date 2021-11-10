@@ -19,7 +19,6 @@ class Particulator:
         self.backend = backend
         self.formulae = backend.formulae
         self.environment = None
-        self.strides = None
         self.attributes: (ParticleAttributes, None) = None
         self.dynamics = {}
         self.products = {}
@@ -209,7 +208,7 @@ class Particulator:
         self.backend.cell_id(
             self.attributes['cell id'],
             self.attributes['cell origin'],
-            self.strides
+            self.backend.Storage.from_ndarray(self.environment.mesh.strides)
         )
         self.attributes._ParticleAttributes__sorted = False
 
