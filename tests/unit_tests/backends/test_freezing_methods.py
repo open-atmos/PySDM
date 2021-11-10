@@ -32,7 +32,7 @@ class TestFreezingMethods:
         )
         rate = 1e-9
         immersed_surface_area = 1
-        constant.J_het = rate / immersed_surface_area
+        constant.J_HET = rate / immersed_surface_area
 
         number_of_real_droplets = 1024
         total_time = 2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
