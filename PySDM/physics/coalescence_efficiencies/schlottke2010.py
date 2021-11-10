@@ -25,7 +25,7 @@ class Schlottke2010:
         self.tmp.sum(self.core.particles['volume'], is_first_in_pair)
         self.tmp /= (np.pi / 6)
         
-        self.tmp2.difference(self.core.particles['terminal velocity'])
+        self.tmp2.distance(self.core.particles['terminal velocity'], is_first_in_pair)
         self.tmp2 **= 2
         self.We.multiply(self.core.particles['volume'], is_first_in_pair)
         self.We /= self.tmp
