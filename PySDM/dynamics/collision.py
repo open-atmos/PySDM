@@ -93,7 +93,7 @@ class Collision:
         assert self.dt_coal_range[0] <= self.dt_coal_range[1]
 
         self.kernel_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=int)
+        self.n_fragment = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.Ec_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.Eb_temp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
         self.dyn = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
@@ -182,14 +182,9 @@ class Collision:
     # (3a) Compute probability of a collision
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
-        #self.coal_eff(self.Ec_temp, is_first_in_pair)
-        #self.break_eff(self.Eb_temp, is_first_in_pair)
-        #self.coal_eff_temp *= self.neg_ones
-        #self.coal_eff_temp -= self.neg_ones
         # P_jk = max(xi_j, xi_k)*P_jk*E_c
         prob.max(self.core.particles['n'], is_first_in_pair)
         prob *= self.kernel_temp
-        #prob *= self.coal_eff_temp
 
         self.core.normalize(prob, self.norm_factor_temp)
         

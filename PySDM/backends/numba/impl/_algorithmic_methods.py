@@ -150,15 +150,12 @@ class AlgorithmicMethods:
         for i in numba.prange(length // 2):
             dyn[i] = rand[i] - Ec[i] - Eb[i]
             if dyn[i] > 0: # bouncing
-                #print('bounce')
                 continue
 
             dyn[i] = rand[i] - Ec[i]
-            #print(dyn[i])
             j, k = pair_indices(i, idx, is_first_in_pair)
                 
             if dyn[i] < 0: # coalescence
-                #print('coalescence')
                 new_n = n[j] - gamma[i] * n[k]
                 if new_n > 0:
                     n[j] = new_n
@@ -174,11 +171,12 @@ class AlgorithmicMethods:
                     healthy[0] = 0
                     
             else: # breakup
-                #print('breakup')
                 new_n = n[j] - gamma[i] * n[k]
+                # perform rounding to keep n[k] as integer
+                n_fragment[i] = int(n[k] * n_fragment[i]) / n[k]
                 if new_n > 0:
                     n[j] = new_n
-                    n[k] = n[k] * int(n_fragment[i])
+                    n[k] = int(n[k] * n_fragment[i])
                     for a in range(0, len(attributes)):
                         attributes[a, k] += gamma[i] * attributes[a, j]
                         attributes[a, k] /= n_fragment[i]
