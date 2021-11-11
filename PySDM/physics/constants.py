@@ -26,6 +26,7 @@ three = 3
 one_third = 1/3
 two_thirds = 2/3
 sqrt_two = np.sqrt(2)
+sqrt_pi = np.sqrt(sci.pi)
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +

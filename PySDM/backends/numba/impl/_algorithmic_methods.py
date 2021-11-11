@@ -1,7 +1,7 @@
 import numba
 import numpy as np
 from scipy.special import erfinv
-from PySDM.physics.constants import sqrt_two
+from PySDM.physics.constants import sqrt_pi, sqrt_two
 
 from PySDM.backends.numba import conf
 from PySDM.backends.numba.storage import Storage
@@ -262,15 +262,18 @@ class AlgorithmicMethods:
     def exp_fragmentation(n_fragment, scale, frag_size, r_max, rand):
         AlgorithmicMethods.exp_fragmentation_body(n_fragment.data, scale, frag_size.data, r_max.data, rand.data)
 
+    '''
+    Gaussian PDF
+    CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
+    '''
     @numba.njit(**{**conf.JIT_FLAGS})
     def gauss_fragmentation_body(n_fragment, mu, scale, frag_size, r_max, rand):
         for i in numba.prange(len(n_fragment)):
-            frag_size[i] = sqrt_two * scale * erfinv(2 * rand - 1) + mu
+            frag_size[i] = mu + sqrt_pi * sqrt_two * scale / 4 * np.log((1 + rand[i])/(1 - rand[i]))
             if (frag_size[i] > r_max[i]):
-                n_fragment[i] = 1
+                n_fragment[i] = 1.0
             else:
                 n_fragment[i] = r_max[i] / frag_size[i]
-                
     
     @staticmethod
     def gauss_fragmentation(n_fragment, mu, scale, frag_size, r_max, rand):

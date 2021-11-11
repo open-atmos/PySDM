@@ -21,4 +21,5 @@ class Gaussian:
         self.max_size.max(self.core.particles['radius'],is_first_in_pair)
         self.core.backend.gauss_fragmentation(output, self.mu, self.scale, self.frag_size,
             self.max_size, u01)
+        print(output.data)
         
