@@ -16,6 +16,7 @@ class Coalescence(Collision):
 
     def __init__(self,
                  kernel,
+                 coal_eff=ConstEc(Ec=1),
                  seed=None,
                  croupier=None,
                  optimized_random=False,
@@ -23,7 +24,7 @@ class Coalescence(Collision):
                  adaptive: bool = False,
                  dt_coal_range=default_dt_coal_range
                  ):
-        coal_eff = ConstEc(Ec=1)
+        #coal_eff = ConstEc(Ec=1)
         break_eff = ConstEb(Eb=1)
         fragmentation = AlwaysN(n=1)
         super().__init__(
