@@ -22,6 +22,4 @@ class ExponFrag:
         self.max_size.max(self.core.particles['radius'],is_first_in_pair)
         self.core.backend.exp_fragmentation(output, self.scale, self.frag_size,
             self.max_size, u01)
-        print(self.frag_size.data)
-        print(output.data)
         
