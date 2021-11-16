@@ -235,13 +235,14 @@ class CondensationMethods(ThrustRTCBackendMethods):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
-        self,
+        self, *,
         solver,
-        n_cell, _,
-        v, __, n, vdry, ___, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
-        rtol_x, ____, timestep, counters, _____, RH_max, success, cell_id
+        n_cell, cell_start_arg,
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
+        rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
     ):
         assert solver is None
 
