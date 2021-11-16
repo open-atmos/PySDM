@@ -33,7 +33,8 @@ class _Moist:
 
     def get_predicted(self, index):
         if self._values['predicted'] is None:
-            raise AssertionError("Environment is not synchronized.")
+            raise AssertionError("It seems the AmbientThermodynamics dynamic was not added"
+                                 " when building particulator")
         return self._values['predicted'][index]
 
     def sync(self):
