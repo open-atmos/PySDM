@@ -235,9 +235,10 @@ class CondensationMethods(ThrustRTCBackendMethods):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
-        self,
+        self, *,
         solver,
         n_cell, cell_start_arg,
         v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
@@ -291,8 +292,9 @@ class CondensationMethods(ThrustRTCBackendMethods):
                 )
             )
 
-    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse, multiplier,
-                                 RH_rtol, max_iters):
+    # pylint disable=unused-argument
+    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse,
+                                 multiplier, RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters

@@ -64,7 +64,7 @@ class RogersYau:
 
 # TODO #348 implement in backend logic
 class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()

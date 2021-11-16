@@ -222,6 +222,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             i = len(dt_left)
         return cell_start[i]
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_gamma(self, gamma, n, cell_id, dt_left, dt, dt_range,
                            is_first_in_pair, stats_n_substep, stats_dt_min):
@@ -260,6 +261,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             (cell_id.data, cell_origin.data, strides.data, n_dims, size)
         )
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def coalescence(self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
         if len(idx) < 2:
@@ -271,6 +273,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
                                                         attributes.data,
                                                         n_attr, gamma.data, healthy.data))
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(self, gamma, rand, multiplicity, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
@@ -311,9 +314,11 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             (output.data, radius.data, factor_device, b.data, c.data)
         )
 
+    # pylint: disable=unused-argument
     def make_cell_caretaker(self, idx, cell_start, scheme=None):
         return self._sort_by_cell_id_and_update_cell_start
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
@@ -335,6 +340,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
         result = idx.size() - trtc.Count(idx, n_sd)
         return result
 
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(self, cell_id, cell_idx, cell_start, idx):
         # TODO #330

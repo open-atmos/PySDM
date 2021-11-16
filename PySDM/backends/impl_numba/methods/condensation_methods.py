@@ -10,6 +10,7 @@ from PySDM.backends.impl_numba.warnings import warn
 
 
 class CondensationMethods(BackendMethods):
+    # pylint: disable=unused-argument
     @staticmethod
     def condensation(
             solver,
@@ -305,6 +306,7 @@ class CondensationMethods(BackendMethods):
 
         return calculate_ml_new
 
+    # pylint disable=unused-argument
     def make_condensation_solver(self,
                                  timestep, n_cell, *, dt_range, adaptive, fuse,
                                  multiplier, RH_rtol, max_iters):

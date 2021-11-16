@@ -68,6 +68,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
             }
         ''')
 
+    # TODO #684
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks,
                 min_x, max_x, x_attr, weighting_attribute, weighting_rank):
@@ -100,6 +102,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
         self.__moments_body_1.launch_n(
             moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
 
+    # TODO #684
+    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def spectrum_moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
             rank, x_bins, x_attr, weighting_attribute, weighting_rank):
