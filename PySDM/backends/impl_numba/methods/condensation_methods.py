@@ -306,8 +306,9 @@ class CondensationMethods(BackendMethods):
 
         return calculate_ml_new
 
+    # pylint disable=unused-argument
     def make_condensation_solver(self,
-                                 timestep, _, *, dt_range, adaptive, fuse,
+                                 timestep, n_cell, *, dt_range, adaptive, fuse,
                                  multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,

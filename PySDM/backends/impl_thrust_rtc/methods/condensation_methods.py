@@ -292,8 +292,9 @@ class CondensationMethods(ThrustRTCBackendMethods):
                 )
             )
 
-    def make_condensation_solver(self, _, n_cell, *, __, adaptive, ___, ____,
-                                 RH_rtol, max_iters):
+    # pylint disable=unused-argument
+    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse,
+                                 multiplier, RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
