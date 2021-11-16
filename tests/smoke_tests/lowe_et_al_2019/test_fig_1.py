@@ -65,7 +65,7 @@ class TestFig1:
                 (aerosol.AerosolNascent(), 'CompressedFilmOvadnevaite', 670 * si.nm, .104, True)
         )
     )
-    # pylint: disable=redefined-outer-name
+    # pylint: disable=redefined-outer-name,unused-argument
     def test_koehler_maxima(constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
         label = {'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension]
