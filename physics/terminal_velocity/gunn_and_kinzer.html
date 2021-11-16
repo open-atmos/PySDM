@@ -92,7 +92,7 @@ class RogersYau:
 
 # TODO #348 implement in backend logic
 class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()
@@ -250,7 +250,7 @@ class TpDependent:
 </dd>
 <dt id="PySDM.physics.terminal_velocity.gunn_and_kinzer.TpDependent"><code class="flex name class">
 <span>class <span class="ident">TpDependent</span></span>
-<span>(</span><span>particles, small_r_limit)</span>
+<span>(</span><span>_, small_r_limit)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -259,7 +259,7 @@ class TpDependent:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()

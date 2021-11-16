@@ -60,8 +60,8 @@ class PairMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    # TODO #330 handle cell_idx
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+    # TODO #330 handle cell_idx (_ below)
+    def find_pairs(cell_start, is_first_in_pair, cell_id, _, idx):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(
@@ -181,8 +181,8 @@ class PairMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    # TODO #330 handle cell_idx
-    def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
+    # TODO #330 handle cell_idx (_ below)
+    def find_pairs(cell_start, is_first_in_pair, cell_id, _, idx):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(
