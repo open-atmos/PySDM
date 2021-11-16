@@ -239,9 +239,9 @@ class CondensationMethods(ThrustRTCBackendMethods):
     def condensation(
         self,
         solver,
-        n_cell, cell_start_arg,
-        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
-        rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
+        n_cell, _,
+        v, __, n, vdry, ___, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
+        rtol_x, ____, timestep, counters, _____, RH_max, success, cell_id
     ):
         assert solver is None
 
@@ -291,7 +291,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
                 )
             )
 
-    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse, multiplier,
+    def make_condensation_solver(self, _, n_cell, *, __, adaptive, ___, ____,
                                  RH_rtol, max_iters):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol

@@ -15,7 +15,7 @@ class CondensationMethods(BackendMethods):
             solver,
             n_cell, cell_start_arg,
             v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
-            rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
+            rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, _
     ):
         n_threads = min(numba.get_num_threads(), n_cell)
         CondensationMethods._condensation(
@@ -306,7 +306,7 @@ class CondensationMethods(BackendMethods):
         return calculate_ml_new
 
     def make_condensation_solver(self,
-                                 timestep, n_cell, *, dt_range, adaptive, fuse,
+                                 timestep, _, *, dt_range, adaptive, fuse,
                                  multiplier, RH_rtol, max_iters):
         return CondensationMethods.make_condensation_solver_impl(
             fastmath=self.formulae.fastmath,

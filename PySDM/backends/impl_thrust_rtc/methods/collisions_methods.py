@@ -224,7 +224,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_gamma(self, gamma, n, cell_id, dt_left, dt, dt_range,
-                           is_first_in_pair, stats_n_substep, stats_dt_min):
+                           is_first_in_pair, stats_n_substep, _):
         # TODO #406 implement stats_dt_min
         dt_todo = trtc.device_vector('float', len(dt_left))
         d_dt_max = self._get_floating_point(dt_range[1])
@@ -261,7 +261,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
+    def coalescence(self, multiplicity, idx, attributes, gamma, healthy, _):
         if len(idx) < 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
@@ -273,7 +273,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(self, gamma, rand, multiplicity, cell_id,
-                      collision_rate_deficit, collision_rate, is_first_in_pair):
+                      collision_rate_deficit, collision_rate, _):
         if len(multiplicity) < 2:
             return
         self.__compute_gamma_body.launch_n(
@@ -311,11 +311,11 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             (output.data, radius.data, factor_device, b.data, c.data)
         )
 
-    def make_cell_caretaker(self, idx, cell_start, scheme=None):
+    def make_cell_caretaker(self, _, __, ___=None):
         return self._sort_by_cell_id_and_update_cell_start
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    def normalize(self, prob, cell_id, _, cell_start, norm_factor, dt, dv):
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = self._get_floating_point(dt / dv)
         self.__normalize_body_0.launch_n(
@@ -336,7 +336,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
         return result
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def _sort_by_cell_id_and_update_cell_start(self, cell_id, cell_idx, cell_start, idx):
+    def _sort_by_cell_id_and_update_cell_start(self, cell_id, _, cell_start, idx):
         # TODO #330
         n_sd = cell_id.shape[0]
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
