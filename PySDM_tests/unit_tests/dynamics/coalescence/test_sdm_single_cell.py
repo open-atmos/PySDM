@@ -205,7 +205,7 @@ class TestSDMSingleCell:
                 CountingRandom.calls += 1
                 super(CountingRandom, self).__call__(storage)
 
-        sut.rnd_opt.rnd = CountingRandom(n_sd, seed=44)
+        sut.rnd_opt_coll.rnd = CountingRandom(n_sd, seed=44)
         sut.stats_n_substep[:] = n_substeps
         sut.adaptive = adaptive
 
@@ -213,7 +213,7 @@ class TestSDMSingleCell:
         sut()
 
         # Assert
-        if sut.rnd_opt.optimized_random:
+        if sut.rnd_opt_coll.optimized_random:
             assert CountingRandom.calls == 2
         else:
             if adaptive:
