@@ -31,7 +31,7 @@ class TestSDMMultiCell:
         cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
         attributes = {'n': n, 'volume': v, 'cell id': cell_id}
         core.build(attributes)
-        u01, _ = sut.rnd_opt.get_random_arrays()
+        u01, _ = sut.rnd_opt_coll.get_random_arrays()
         sut.actual_length = core.particles._Particles__idx.length
         sut.adaptive = adaptive
 
