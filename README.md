@@ -559,7 +559,7 @@ attributes = {
 particulator = builder.build(attributes, products=[
   products.PeakSupersaturation(name='S_max', unit='%'),
   products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
-  products.CloudDropletConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
+  products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
   products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
   products.ParcelDisplacement(name='z')
 ])
