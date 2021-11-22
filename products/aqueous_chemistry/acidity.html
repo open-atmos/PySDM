@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.relative_humidity API documentation</title>
-<meta name="description" content="" />
+<title>PySDM.products.aqueous_chemistry.acidity API documentation</title>
+<meta name="description" content="average pH (averaging after or before taking the logarithm in pH definition)
+with weighting either by number or volume" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,28 +20,60 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.relative_humidity</code></h1>
+<h1 class="title">Module <code>PySDM.products.aqueous_chemistry.acidity</code></h1>
 </header>
 <section id="section-intro">
+<p>average pH (averaging after or before taking the logarithm in pH definition)
+with weighting either by number or volume</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.impl.product import MoistEnvironmentProduct
+<pre><code class="python">&#34;&#34;&#34;
+average pH (averaging after or before taking the logarithm in pH definition)
+with weighting either by number or volume
+&#34;&#34;&#34;
+import numpy as np
+from PySDM.products.impl.moment_product import MomentProduct
 
 
-class RelativeHumidity(MoistEnvironmentProduct):
+class Acidity(MomentProduct):
+    def __init__(self, *,
+                 radius_range=(0, np.inf),
+                 weighting=&#39;volume&#39;,
+                 attr=&#39;conc_H&#39;,
+                 unit=&#39;dimensionless&#39;,
+                 name=None):
+        assert attr in (&#39;pH&#39;, &#39;moles_H&#39;, &#39;conc_H&#39;)
+        self.attr = attr
 
-    def __init__(self):
-        super().__init__(
-            description=&#34;Relative humidity&#34;,
-            name=&#34;RH&#34;,
-            unit=&#34;%&#34;
-        )
+        if weighting == &#39;number&#39;:
+            self.weighting_rank = 0
+        elif weighting == &#39;volume&#39;:
+            self.weighting_rank = 1
+        else:
+            raise NotImplementedError()
 
-    def get(self):
-        super().get()
-        self.buffer *= 100
+        self.radius_range = radius_range
+        super().__init__(name=name, unit=unit)
+
+    def register(self, builder):
+        builder.request_attribute(&#39;conc_H&#39;)
+        super().register(builder)
+
+    def _impl(self, **kwargs):
+        self._download_moment_to_buffer(
+            self.attr, rank=1,
+            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                          self.formulae.trivia.volume(self.radius_range[1])),
+            weighting_attribute=&#39;volume&#39;, weighting_rank=self.weighting_rank)
+        if self.attr == &#39;conc_H&#39;:
+            self.buffer[:] = self.formulae.trivia.H2pH(self.buffer[:])
+        elif self.attr == &#39;pH&#39;:
+            pass
+        else:
+            raise NotImplementedError()
+
         return self.buffer</code></pre>
 </details>
 </section>
@@ -53,52 +86,70 @@ class RelativeHumidity(MoistEnvironmentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.relative_humidity.RelativeHumidity"><code class="flex name class">
-<span>class <span class="ident">RelativeHumidity</span></span>
+<dt id="PySDM.products.aqueous_chemistry.acidity.Acidity"><code class="flex name class">
+<span>class <span class="ident">Acidity</span></span>
+<span>(</span><span>*, radius_range=(0, inf), weighting='volume', attr='conc_H', unit='dimensionless', name=None)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RelativeHumidity(MoistEnvironmentProduct):
+<pre><code class="python">class Acidity(MomentProduct):
+    def __init__(self, *,
+                 radius_range=(0, np.inf),
+                 weighting=&#39;volume&#39;,
+                 attr=&#39;conc_H&#39;,
+                 unit=&#39;dimensionless&#39;,
+                 name=None):
+        assert attr in (&#39;pH&#39;, &#39;moles_H&#39;, &#39;conc_H&#39;)
+        self.attr = attr
 
-    def __init__(self):
-        super().__init__(
-            description=&#34;Relative humidity&#34;,
-            name=&#34;RH&#34;,
-            unit=&#34;%&#34;
-        )
+        if weighting == &#39;number&#39;:
+            self.weighting_rank = 0
+        elif weighting == &#39;volume&#39;:
+            self.weighting_rank = 1
+        else:
+            raise NotImplementedError()
 
-    def get(self):
-        super().get()
-        self.buffer *= 100
+        self.radius_range = radius_range
+        super().__init__(name=name, unit=unit)
+
+    def register(self, builder):
+        builder.request_attribute(&#39;conc_H&#39;)
+        super().register(builder)
+
+    def _impl(self, **kwargs):
+        self._download_moment_to_buffer(
+            self.attr, rank=1,
+            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
+                          self.formulae.trivia.volume(self.radius_range[1])),
+            weighting_attribute=&#39;volume&#39;, weighting_rank=self.weighting_rank)
+        if self.attr == &#39;conc_H&#39;:
+            self.buffer[:] = self.formulae.trivia.H2pH(self.buffer[:])
+        elif self.attr == &#39;pH&#39;:
+            pass
+        else:
+            raise NotImplementedError()
+
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.MoistEnvironmentProduct" href="../impl/product.html#PySDM.impl.product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+<li>abc.ABC</li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.relative_humidity.RelativeHumidity.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self):
-    super().get()
-    self.buffer *= 100
-    return self.buffer</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.products.impl.moment_product.MomentProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -111,16 +162,13 @@ class RelativeHumidity(MoistEnvironmentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.aqueous_chemistry" href="index.html">PySDM.products.aqueous_chemistry</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.relative_humidity.RelativeHumidity" href="#PySDM.products.relative_humidity.RelativeHumidity">RelativeHumidity</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.products.relative_humidity.RelativeHumidity.get" href="#PySDM.products.relative_humidity.RelativeHumidity.get">get</a></code></li>
-</ul>
+<h4><code><a title="PySDM.products.aqueous_chemistry.acidity.Acidity" href="#PySDM.products.aqueous_chemistry.acidity.Acidity">Acidity</a></code></h4>
 </li>
 </ul>
 </li>

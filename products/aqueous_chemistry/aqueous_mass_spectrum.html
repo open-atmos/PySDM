@@ -28,19 +28,14 @@
 </summary>
 <pre><code class="python">import numpy as np
 from chempy import Substance
-from PySDM.physics.constants import convert_to, si
-from PySDM.impl.product import SpectrumMomentProduct
+from PySDM.physics.constants import si
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 
 
 class AqueousMassSpectrum(SpectrumMomentProduct):
-
-    def __init__(self, key, dry_radius_bins_edges, specific=False):
-        super().__init__(
-            name=f&#39;dm_{key}/dlog_10(dry diameter){&#34;_spec&#34; if specific else &#34;&#34;}&#39;,
-            unit=f&#39;µg / {&#34;kg&#34; if specific else &#34;m3&#34;} / (unit dD/D)&#39;,
-            description=f&#39;... {key} ...&#39;
-        )
+    def __init__(self, key, dry_radius_bins_edges, specific=False, name=None, unit=&#39;kg/m^3&#39;):
+        super().__init__(name=name, unit=unit)
         self.key = key
         self.dry_radius_bins_edges = dry_radius_bins_edges
         self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.g / si.mole
@@ -59,27 +54,32 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(
+        self._recalculate_spectrum_moment(
             attr=f&#39;moles_{self.key}&#39;,
             rank=1,
             filter_attr=&#39;dry volume&#39;
         )
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
             vals[:, i] = self.buffer.ravel()
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] *= self.buffer.ravel()
         d_log10_diameter = np.diff(np.log10(2 * self.dry_radius_bins_edges))
         vals *= self.molar_mass / d_log10_diameter / self.particulator.mesh.dv
-        convert_to(vals, si.ug)
 
         if self.specific:
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+            self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
             vals[:] /= self.buffer
-        return vals</code></pre>
+        return vals
+
+
+class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
+    def __init__(self, key, dry_radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
+        super().__init__(key=key, dry_radius_bins_edges=dry_radius_bins_edges,
+                         name=name, unit=unit, specific=True)</code></pre>
 </details>
 </section>
 <section>
@@ -93,22 +93,18 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 <dl>
 <dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum"><code class="flex name class">
 <span>class <span class="ident">AqueousMassSpectrum</span></span>
-<span>(</span><span>key, dry_radius_bins_edges, specific=False)</span>
+<span>(</span><span>key, dry_radius_bins_edges, specific=False, name=None, unit='kg/m^3')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AqueousMassSpectrum(SpectrumMomentProduct):
-
-    def __init__(self, key, dry_radius_bins_edges, specific=False):
-        super().__init__(
-            name=f&#39;dm_{key}/dlog_10(dry diameter){&#34;_spec&#34; if specific else &#34;&#34;}&#39;,
-            unit=f&#39;µg / {&#34;kg&#34; if specific else &#34;m3&#34;} / (unit dD/D)&#39;,
-            description=f&#39;... {key} ...&#39;
-        )
+    def __init__(self, key, dry_radius_bins_edges, specific=False, name=None, unit=&#39;kg/m^3&#39;):
+        super().__init__(name=name, unit=unit)
         self.key = key
         self.dry_radius_bins_edges = dry_radius_bins_edges
         self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.g / si.mole
@@ -127,91 +123,77 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(
+        self._recalculate_spectrum_moment(
             attr=f&#39;moles_{self.key}&#39;,
             rank=1,
             filter_attr=&#39;dry volume&#39;
         )
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
             vals[:, i] = self.buffer.ravel()
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] *= self.buffer.ravel()
         d_log10_diameter = np.diff(np.log10(2 * self.dry_radius_bins_edges))
         vals *= self.molar_mass / d_log10_diameter / self.particulator.mesh.dv
-        convert_to(vals, si.ug)
 
         if self.specific:
-            self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+            self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
             vals[:] /= self.buffer
         return vals</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.SpectrumMomentProduct" href="../../impl/product.html#PySDM.impl.product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
+<li>abc.ABC</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum">SpecificAqueousMassSpectrum</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register">register</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum"><code class="flex name class">
+<span>class <span class="ident">SpecificAqueousMassSpectrum</span></span>
+<span>(</span><span>key, dry_radius_bins_edges, name=None, unit='dimensionless')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):
-    vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-    self.recalculate_spectrum_moment(
-        attr=f&#39;moles_{self.key}&#39;,
-        rank=1,
-        filter_attr=&#39;dry volume&#39;
-    )
-
-    for i in range(vals.shape[1]):
-        self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
-        vals[:, i] = self.buffer.ravel()
-        self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
-        vals[:, i] *= self.buffer.ravel()
-    d_log10_diameter = np.diff(np.log10(2 * self.dry_radius_bins_edges))
-    vals *= self.molar_mass / d_log10_diameter / self.particulator.mesh.dv
-    convert_to(vals, si.ug)
-
-    if self.specific:
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-        vals[:] /= self.buffer
-    return vals</code></pre>
+<pre><code class="python">class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
+    def __init__(self, key, dry_radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
+        super().__init__(key=key, dry_radius_bins_edges=dry_radius_bins_edges,
+                         name=name, unit=unit, specific=True)</code></pre>
 </details>
-</dd>
-<dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def register(self, builder):
-    builder.request_attribute(&#39;dry volume&#39;)
-    builder.request_attribute(f&#39;moles_{self.key}&#39;)
-
-    dry_volume_bins_edges = builder.particulator.formulae.trivia.volume(
-        self.dry_radius_bins_edges)
-    self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
-        dry_volume_bins_edges)
-
-    super().register(builder)
-
-    self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></li>
+<li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
+<li>abc.ABC</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.register" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register">register</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -231,10 +213,9 @@ class AqueousMassSpectrum(SpectrumMomentProduct):
 <ul>
 <li>
 <h4><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.get" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.get">get</a></code></li>
-<li><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.register" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum.register">register</a></code></li>
-</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum" href="#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.SpecificAqueousMassSpectrum">SpecificAqueousMassSpectrum</a></code></h4>
 </li>
 </ul>
 </li>

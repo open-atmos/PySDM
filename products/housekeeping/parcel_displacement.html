@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.water_vapour_mixing_ratio API documentation</title>
+<title>PySDM.products.housekeeping.parcel_displacement API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,29 +19,30 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.water_vapour_mixing_ratio</code></h1>
+<h1 class="title">Module <code>PySDM.products.housekeeping.parcel_displacement</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.physics import constants as const
-from PySDM.impl.product import MoistEnvironmentProduct
+<pre><code class="python">from PySDM.environments import Parcel
+from PySDM.products.impl.product import Product
 
 
-class WaterVapourMixingRatio(MoistEnvironmentProduct):
+class ParcelDisplacement(Product):
 
-    def __init__(self):
-        super().__init__(
-            description=&#34;Water vapour mixing ratio&#34;,
-            name=&#34;qv&#34;,
-            unit=&#34;g/kg&#34;
-        )
+    def __init__(self, unit=&#34;m&#34;, name=None):
+        super().__init__(unit=unit, name=name)
+        self.environment = None
 
-    def get(self):
-        super().get()
-        const.convert_to(self.buffer, const.si.gram / const.si.kilogram)
+    def register(self, builder):
+        super().register(builder)
+        assert isinstance(builder.particulator.environment, Parcel)
+        self.environment = builder.particulator.environment
+
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.environment[&#39;z&#39;])
         return self.buffer</code></pre>
 </details>
 </section>
@@ -54,8 +55,9 @@ class WaterVapourMixingRatio(MoistEnvironmentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio"><code class="flex name class">
-<span>class <span class="ident">WaterVapourMixingRatio</span></span>
+<dt id="PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement"><code class="flex name class">
+<span>class <span class="ident">ParcelDisplacement</span></span>
+<span>(</span><span>unit='m', name=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -63,29 +65,29 @@ class WaterVapourMixingRatio(MoistEnvironmentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class WaterVapourMixingRatio(MoistEnvironmentProduct):
+<pre><code class="python">class ParcelDisplacement(Product):
 
-    def __init__(self):
-        super().__init__(
-            description=&#34;Water vapour mixing ratio&#34;,
-            name=&#34;qv&#34;,
-            unit=&#34;g/kg&#34;
-        )
+    def __init__(self, unit=&#34;m&#34;, name=None):
+        super().__init__(unit=unit, name=name)
+        self.environment = None
 
-    def get(self):
-        super().get()
-        const.convert_to(self.buffer, const.si.gram / const.si.kilogram)
+    def register(self, builder):
+        super().register(builder)
+        assert isinstance(builder.particulator.environment, Parcel)
+        self.environment = builder.particulator.environment
+
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.environment[&#39;z&#39;])
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.MoistEnvironmentProduct" href="../impl/product.html#PySDM.impl.product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+<dt id="PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -93,10 +95,10 @@ class WaterVapourMixingRatio(MoistEnvironmentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):
-    super().get()
-    const.convert_to(self.buffer, const.si.gram / const.si.kilogram)
-    return self.buffer</code></pre>
+<pre><code class="python">def register(self, builder):
+    super().register(builder)
+    assert isinstance(builder.particulator.environment, Parcel)
+    self.environment = builder.particulator.environment</code></pre>
 </details>
 </dd>
 </dl>
@@ -112,15 +114,15 @@ class WaterVapourMixingRatio(MoistEnvironmentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.housekeeping" href="index.html">PySDM.products.housekeeping</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio" href="#PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio">WaterVapourMixingRatio</a></code></h4>
+<h4><code><a title="PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement" href="#PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement">ParcelDisplacement</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio.get" href="#PySDM.products.water_vapour_mixing_ratio.WaterVapourMixingRatio.get">get</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement.register" href="#PySDM.products.housekeeping.parcel_displacement.ParcelDisplacement.register">register</a></code></li>
 </ul>
 </li>
 </ul>

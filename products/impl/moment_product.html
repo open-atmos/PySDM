@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.coalescence.coalescence_timestep_min API documentation</title>
+<title>PySDM.products.impl.moment_product API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,31 +19,48 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.coalescence.coalescence_timestep_min</code></h1>
+<h1 class="title">Module <code>PySDM.products.impl.moment_product</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.products.impl.product import Product
+<pre><code class="python">from abc import ABC
+
+import numpy as np
+
+from PySDM.products.impl.product import Product
 
 
-class CoalescenceTimestepMin(Product):
-    def __init__(self, unit=&#39;s&#39;, name=None):
-        super().__init__(unit=unit, name=name)
-        self.coalescence = None
-        self.range = None
+class MomentProduct(Product, ABC):
+
+    def __init__(self, name, unit):
+        super().__init__(name=name, unit=unit)
+        self.moment_0 = None
+        self.moments = None
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-        self.range = self.coalescence.dt_coal_range
+        self.moment_0 = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float)
+        self.moments = self.particulator.Storage.empty(
+            (1, self.particulator.mesh.n_cell), dtype=float)
 
-    def _impl(self, **kwargs):
-        self._download_to_buffer(self.coalescence.stats_dt_min)
-        self.coalescence.stats_dt_min[:] = self.coalescence.particulator.dt
-        return self.buffer</code></pre>
+    def _download_moment_to_buffer(
+        self, attr, rank,
+        filter_attr=&#39;volume&#39;, filter_range=(-np.inf, np.inf),
+        weighting_attribute=&#39;volume&#39;, weighting_rank=0
+    ):
+        self.particulator.moments(
+            self.moment_0, self.moments, {attr: (rank,)},
+            attr_name=filter_attr, attr_range=filter_range,
+            weighting_attribute=weighting_attribute, weighting_rank=weighting_rank
+        )
+        if rank == 0:  # TODO #217
+            self._download_to_buffer(self.moment_0)
+        else:
+            self._download_to_buffer(self.moments[0, :])</code></pre>
 </details>
 </section>
 <section>
@@ -55,51 +72,84 @@ class CoalescenceTimestepMin(Product):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin"><code class="flex name class">
-<span>class <span class="ident">CoalescenceTimestepMin</span></span>
-<span>(</span><span>unit='s', name=None)</span>
+<dt id="PySDM.products.impl.moment_product.MomentProduct"><code class="flex name class">
+<span>class <span class="ident">MomentProduct</span></span>
+<span>(</span><span>name, unit)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CoalescenceTimestepMin(Product):
-    def __init__(self, unit=&#39;s&#39;, name=None):
-        super().__init__(unit=unit, name=name)
-        self.coalescence = None
-        self.range = None
+<pre><code class="python">class MomentProduct(Product, ABC):
+
+    def __init__(self, name, unit):
+        super().__init__(name=name, unit=unit)
+        self.moment_0 = None
+        self.moments = None
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-        self.range = self.coalescence.dt_coal_range
+        self.moment_0 = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float)
+        self.moments = self.particulator.Storage.empty(
+            (1, self.particulator.mesh.n_cell), dtype=float)
 
-    def _impl(self, **kwargs):
-        self._download_to_buffer(self.coalescence.stats_dt_min)
-        self.coalescence.stats_dt_min[:] = self.coalescence.particulator.dt
-        return self.buffer</code></pre>
+    def _download_moment_to_buffer(
+        self, attr, rank,
+        filter_attr=&#39;volume&#39;, filter_range=(-np.inf, np.inf),
+        weighting_attribute=&#39;volume&#39;, weighting_rank=0
+    ):
+        self.particulator.moments(
+            self.moment_0, self.moments, {attr: (rank,)},
+            attr_name=filter_attr, attr_range=filter_range,
+            weighting_attribute=weighting_attribute, weighting_rank=weighting_rank
+        )
+        if rank == 0:  # TODO #217
+            self._download_to_buffer(self.moment_0)
+        else:
+            self._download_to_buffer(self.moments[0, :])</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="product.html#PySDM.products.impl.product.Product">Product</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.aqueous_chemistry.acidity.Acidity" href="../aqueous_chemistry/acidity.html#PySDM.products.aqueous_chemistry.acidity.Acidity">Acidity</a></li>
+<li><a title="PySDM.products.aqueous_chemistry.aqueous_mole_fraction.AqueousMoleFraction" href="../aqueous_chemistry/aqueous_mole_fraction.html#PySDM.products.aqueous_chemistry.aqueous_mole_fraction.AqueousMoleFraction">AqueousMoleFraction</a></li>
+<li><a title="PySDM.products.aqueous_chemistry.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio" href="../aqueous_chemistry/total_dry_mass_mixing_ratio.html#PySDM.products.aqueous_chemistry.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio">TotalDryMassMixingRatio</a></li>
+<li><a title="PySDM.products.condensation.activable_fraction.ActivableFraction" href="../condensation/activable_fraction.html#PySDM.products.condensation.activable_fraction.ActivableFraction">ActivableFraction</a></li>
+<li><a title="PySDM.products.freezing.ice_water_content.IceWaterContent" href="../freezing/ice_water_content.html#PySDM.products.freezing.ice_water_content.IceWaterContent">IceWaterContent</a></li>
+<li><a title="PySDM.products.freezing.total_unfrozen_immersed_surface_area.TotalUnfrozenImmersedSurfaceArea" href="../freezing/total_unfrozen_immersed_surface_area.html#PySDM.products.freezing.total_unfrozen_immersed_surface_area.TotalUnfrozenImmersedSurfaceArea">TotalUnfrozenImmersedSurfaceArea</a></li>
+<li><a title="PySDM.products.size_spectral.effective_radius.EffectiveRadius" href="../size_spectral/effective_radius.html#PySDM.products.size_spectral.effective_radius.EffectiveRadius">EffectiveRadius</a></li>
+<li><a title="PySDM.products.size_spectral.mean_radius.MeanRadius" href="../size_spectral/mean_radius.html#PySDM.products.size_spectral.mean_radius.MeanRadius">MeanRadius</a></li>
+<li><a title="PySDM.products.size_spectral.particles_concentration.ParticleConcentration" href="../size_spectral/particles_concentration.html#PySDM.products.size_spectral.particles_concentration.ParticleConcentration">ParticleConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration" href="../size_spectral/total_particle_concentration.html#PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration">TotalParticleConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration" href="../size_spectral/total_particle_specific_concentration.html#PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration">TotalParticleSpecificConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.water_mixing_ratio.WaterMixingRatio" href="../size_spectral/water_mixing_ratio.html#PySDM.products.size_spectral.water_mixing_ratio.WaterMixingRatio">WaterMixingRatio</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin.register"><code class="name flex">
+<dt id="PySDM.products.impl.moment_product.MomentProduct.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Register a virtual subclass of an ABC.</p>
+<p>Returns the subclass, to allow usage as a class decorator.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
-    self.range = self.coalescence.dt_coal_range</code></pre>
+    self.moment_0 = self.particulator.Storage.empty(
+        self.particulator.mesh.n_cell, dtype=float)
+    self.moments = self.particulator.Storage.empty(
+        (1, self.particulator.mesh.n_cell), dtype=float)</code></pre>
 </details>
 </dd>
 </dl>
@@ -115,15 +165,15 @@ class CoalescenceTimestepMin(Product):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.coalescence" href="index.html">PySDM.products.coalescence</a></code></li>
+<li><code><a title="PySDM.products.impl" href="index.html">PySDM.products.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin" href="#PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin">CoalescenceTimestepMin</a></code></h4>
+<h4><code><a title="PySDM.products.impl.moment_product.MomentProduct" href="#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin.register" href="#PySDM.products.coalescence.coalescence_timestep_min.CoalescenceTimestepMin.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.moment_product.MomentProduct.register" href="#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>

@@ -27,18 +27,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import numpy as np
-from PySDM.physics import constants as const
-from PySDM.impl.product import SpectrumMomentProduct
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class FreezableSpecificConcentration(SpectrumMomentProduct):
-
-    def __init__(self, temperature_bins_edges):
-        super().__init__(
-            name=&#39;Freezable specific concentration&#39;,
-            unit=&#34;mg-1 K-1&#34;,
-            description=&#39;Freezable specific concentration&#39;
-        )
+    def __init__(self, temperature_bins_edges, name=None, unit=&#39;kg^-1 K^-1&#39;):
+        super().__init__(name=name, unit=unit)
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):
@@ -48,21 +42,19 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
         super().register(builder)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
             vals[:, i] /= rhod * dT * self.particulator.mesh.dv
-
-        const.convert_to(vals, const.si.milligram**-1 / const.si.K)
 
         return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
@@ -78,22 +70,18 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
 <dl>
 <dt id="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration"><code class="flex name class">
 <span>class <span class="ident">FreezableSpecificConcentration</span></span>
-<span>(</span><span>temperature_bins_edges)</span>
+<span>(</span><span>temperature_bins_edges, name=None, unit='kg^-1 K^-1')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FreezableSpecificConcentration(SpectrumMomentProduct):
-
-    def __init__(self, temperature_bins_edges):
-        super().__init__(
-            name=&#39;Freezable specific concentration&#39;,
-            unit=&#34;mg-1 K-1&#34;,
-            description=&#39;Freezable specific concentration&#39;
-        )
+    def __init__(self, temperature_bins_edges, name=None, unit=&#39;kg^-1 K^-1&#39;):
+        super().__init__(name=name, unit=unit)
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):
@@ -103,77 +91,36 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
         super().register(builder)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
             vals[:, i] /= rhod * dT * self.particulator.mesh.dv
 
-        const.convert_to(vals, const.si.milligram**-1 / const.si.K)
-
         return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.SpectrumMomentProduct" href="../../impl/product.html#PySDM.impl.product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
+<li>abc.ABC</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self):
-    vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-    self.recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
-
-    for i in range(vals.shape[1]):
-        self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
-        vals[:, i] = self.buffer.ravel()
-
-    self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-    rhod = self.buffer.ravel()
-    for i in range(len(self.attr_bins_edges) - 1):
-        dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
-        vals[:, i] /= rhod * dT * self.particulator.mesh.dv
-
-    const.convert_to(vals, const.si.milligram**-1 / const.si.K)
-
-    return np.squeeze(vals.reshape(self.shape))</code></pre>
-</details>
-</dd>
-<dt id="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register"><code class="name flex">
-<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def register(self, builder):
-    builder.request_attribute(&#39;freezing temperature&#39;)
-    particulator = builder.particulator
-    self.attr_bins_edges = particulator.backend.Storage.from_ndarray(self.attr_bins_edges)
-    super().register(builder)
-    self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register">register</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -193,10 +140,6 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
 <ul>
 <li>
 <h4><code><a title="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration" href="#PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration">FreezableSpecificConcentration</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get" href="#PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.get">get</a></code></li>
-<li><code><a title="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register" href="#PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration.register">register</a></code></li>
-</ul>
 </li>
 </ul>
 </li>

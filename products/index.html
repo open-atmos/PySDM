@@ -41,51 +41,19 @@ from .coalescence import *
 from .condensation import *
 from .displacement import *
 from .freezing import *
-from .PartMC import *
-
-from .aerosol_specific_concentration import AerosolSpecificConcentration
-from .cloud_droplet_effective_radius import CloudDropletEffectiveRadius
-from .dry_air_density import DryAirDensity
-from .dry_air_potential_temperature import DryAirPotentialTemperature
-from .dynamic_wall_time import DynamicWallTime
-from .parcel_displacement import ParcelDisplacement
-from .particle_mean_radius import ParticleMeanRadius
-from .particles_concentration import (
-    ParticlesConcentration, AerosolConcentration, CloudDropletConcentration, DrizzleConcentration
-)
-from .particles_size_spectrum import (
-    ParticlesSizeSpectrum, ParticlesDrySizeSpectrum, ParticlesWetSizeSpectrum
-)
-from .particles_volume_spectrum import ParticlesVolumeSpectrum
-from .pressure import Pressure
-from .relative_humidity import RelativeHumidity
-from .super_droplet_count import SuperDropletCount
-from .temperature import Temperature
-from .time import Time
-from .timers import CPUTime, WallTime
-from .total_dry_mass_mixing_ratio import TotalDryMassMixingRatio
-from .total_particle_concentration import TotalParticleConcentration
-from .total_particle_specific_concentration import TotalParticleSpecificConcentration
-from .water_mixing_ratio import WaterMixingRatio
-from .water_vapour_mixing_ratio import WaterVapourMixingRatio</code></pre>
+from .ambient_thermodynamics import *
+from .housekeeping import *
+from .size_spectral import *</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.products.PartMC" href="PartMC/index.html">PySDM.products.PartMC</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.aerosol_specific_concentration" href="aerosol_specific_concentration.html">PySDM.products.aerosol_specific_concentration</a></code></dt>
+<dt><code class="name"><a title="PySDM.products.ambient_thermodynamics" href="ambient_thermodynamics/index.html">PySDM.products.ambient_thermodynamics</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.aqueous_chemistry" href="aqueous_chemistry/index.html">PySDM.products.aqueous_chemistry</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.cloud_droplet_effective_radius" href="cloud_droplet_effective_radius.html">PySDM.products.cloud_droplet_effective_radius</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -101,83 +69,19 @@ from .water_vapour_mixing_ratio import WaterVapourMixingRatio</code></pre>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.products.dry_air_density" href="dry_air_density.html">PySDM.products.dry_air_density</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.dry_air_potential_temperature" href="dry_air_potential_temperature.html">PySDM.products.dry_air_potential_temperature</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.dynamic_wall_time" href="dynamic_wall_time.html">PySDM.products.dynamic_wall_time</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
 <dt><code class="name"><a title="PySDM.products.freezing" href="freezing/index.html">PySDM.products.freezing</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.products.parcel_displacement" href="parcel_displacement.html">PySDM.products.parcel_displacement</a></code></dt>
+<dt><code class="name"><a title="PySDM.products.housekeeping" href="housekeeping/index.html">PySDM.products.housekeeping</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.products.particle_mean_radius" href="particle_mean_radius.html">PySDM.products.particle_mean_radius</a></code></dt>
+<dt><code class="name"><a title="PySDM.products.impl" href="impl/index.html">PySDM.products.impl</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt><code class="name"><a title="PySDM.products.particles_concentration" href="particles_concentration.html">PySDM.products.particles_concentration</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.particles_size_spectrum" href="particles_size_spectrum.html">PySDM.products.particles_size_spectrum</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.particles_volume_spectrum" href="particles_volume_spectrum.html">PySDM.products.particles_volume_spectrum</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.pressure" href="pressure.html">PySDM.products.pressure</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.relative_humidity" href="relative_humidity.html">PySDM.products.relative_humidity</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.super_droplet_count" href="super_droplet_count.html">PySDM.products.super_droplet_count</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.temperature" href="temperature.html">PySDM.products.temperature</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.time" href="time.html">PySDM.products.time</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.timers" href="timers.html">PySDM.products.timers</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.total_dry_mass_mixing_ratio" href="total_dry_mass_mixing_ratio.html">PySDM.products.total_dry_mass_mixing_ratio</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.total_particle_concentration" href="total_particle_concentration.html">PySDM.products.total_particle_concentration</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.total_particle_specific_concentration" href="total_particle_specific_concentration.html">PySDM.products.total_particle_specific_concentration</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.water_mixing_ratio" href="water_mixing_ratio.html">PySDM.products.water_mixing_ratio</a></code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.water_vapour_mixing_ratio" href="water_vapour_mixing_ratio.html">PySDM.products.water_vapour_mixing_ratio</a></code></dt>
+<dt><code class="name"><a title="PySDM.products.size_spectral" href="size_spectral/index.html">PySDM.products.size_spectral</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
@@ -203,33 +107,15 @@ from .water_vapour_mixing_ratio import WaterVapourMixingRatio</code></pre>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="PySDM.products.PartMC" href="PartMC/index.html">PySDM.products.PartMC</a></code></li>
-<li><code><a title="PySDM.products.aerosol_specific_concentration" href="aerosol_specific_concentration.html">PySDM.products.aerosol_specific_concentration</a></code></li>
+<li><code><a title="PySDM.products.ambient_thermodynamics" href="ambient_thermodynamics/index.html">PySDM.products.ambient_thermodynamics</a></code></li>
 <li><code><a title="PySDM.products.aqueous_chemistry" href="aqueous_chemistry/index.html">PySDM.products.aqueous_chemistry</a></code></li>
-<li><code><a title="PySDM.products.cloud_droplet_effective_radius" href="cloud_droplet_effective_radius.html">PySDM.products.cloud_droplet_effective_radius</a></code></li>
 <li><code><a title="PySDM.products.coalescence" href="coalescence/index.html">PySDM.products.coalescence</a></code></li>
 <li><code><a title="PySDM.products.condensation" href="condensation/index.html">PySDM.products.condensation</a></code></li>
 <li><code><a title="PySDM.products.displacement" href="displacement/index.html">PySDM.products.displacement</a></code></li>
-<li><code><a title="PySDM.products.dry_air_density" href="dry_air_density.html">PySDM.products.dry_air_density</a></code></li>
-<li><code><a title="PySDM.products.dry_air_potential_temperature" href="dry_air_potential_temperature.html">PySDM.products.dry_air_potential_temperature</a></code></li>
-<li><code><a title="PySDM.products.dynamic_wall_time" href="dynamic_wall_time.html">PySDM.products.dynamic_wall_time</a></code></li>
 <li><code><a title="PySDM.products.freezing" href="freezing/index.html">PySDM.products.freezing</a></code></li>
-<li><code><a title="PySDM.products.parcel_displacement" href="parcel_displacement.html">PySDM.products.parcel_displacement</a></code></li>
-<li><code><a title="PySDM.products.particle_mean_radius" href="particle_mean_radius.html">PySDM.products.particle_mean_radius</a></code></li>
-<li><code><a title="PySDM.products.particles_concentration" href="particles_concentration.html">PySDM.products.particles_concentration</a></code></li>
-<li><code><a title="PySDM.products.particles_size_spectrum" href="particles_size_spectrum.html">PySDM.products.particles_size_spectrum</a></code></li>
-<li><code><a title="PySDM.products.particles_volume_spectrum" href="particles_volume_spectrum.html">PySDM.products.particles_volume_spectrum</a></code></li>
-<li><code><a title="PySDM.products.pressure" href="pressure.html">PySDM.products.pressure</a></code></li>
-<li><code><a title="PySDM.products.relative_humidity" href="relative_humidity.html">PySDM.products.relative_humidity</a></code></li>
-<li><code><a title="PySDM.products.super_droplet_count" href="super_droplet_count.html">PySDM.products.super_droplet_count</a></code></li>
-<li><code><a title="PySDM.products.temperature" href="temperature.html">PySDM.products.temperature</a></code></li>
-<li><code><a title="PySDM.products.time" href="time.html">PySDM.products.time</a></code></li>
-<li><code><a title="PySDM.products.timers" href="timers.html">PySDM.products.timers</a></code></li>
-<li><code><a title="PySDM.products.total_dry_mass_mixing_ratio" href="total_dry_mass_mixing_ratio.html">PySDM.products.total_dry_mass_mixing_ratio</a></code></li>
-<li><code><a title="PySDM.products.total_particle_concentration" href="total_particle_concentration.html">PySDM.products.total_particle_concentration</a></code></li>
-<li><code><a title="PySDM.products.total_particle_specific_concentration" href="total_particle_specific_concentration.html">PySDM.products.total_particle_specific_concentration</a></code></li>
-<li><code><a title="PySDM.products.water_mixing_ratio" href="water_mixing_ratio.html">PySDM.products.water_mixing_ratio</a></code></li>
-<li><code><a title="PySDM.products.water_vapour_mixing_ratio" href="water_vapour_mixing_ratio.html">PySDM.products.water_vapour_mixing_ratio</a></code></li>
+<li><code><a title="PySDM.products.housekeeping" href="housekeeping/index.html">PySDM.products.housekeeping</a></code></li>
+<li><code><a title="PySDM.products.impl" href="impl/index.html">PySDM.products.impl</a></code></li>
+<li><code><a title="PySDM.products.size_spectral" href="size_spectral/index.html">PySDM.products.size_spectral</a></code></li>
 </ul>
 </li>
 </ul>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.temperature API documentation</title>
+<title>PySDM.products.ambient_thermodynamics.ambient_dry_air_potential_temperature API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,24 +19,19 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.temperature</code></h1>
+<h1 class="title">Module <code>PySDM.products.ambient_thermodynamics.ambient_dry_air_potential_temperature</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.impl.product import MoistEnvironmentProduct
+<pre><code class="python">from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduct
 
 
-class Temperature(MoistEnvironmentProduct):
-
-    def __init__(self):
-        super().__init__(
-            description=&#34;Temperature&#34;,
-            name=&#34;T&#34;,
-            unit=&#34;K&#34;
-        )</code></pre>
+class AmbientDryAirPotentialTemperature(MoistEnvironmentProduct):
+    def __init__(self, unit=&#39;K&#39;, name=None, var=None):
+        super().__init__(unit=unit, name=name, var=var)</code></pre>
 </details>
 </section>
 <section>
@@ -48,8 +43,9 @@ class Temperature(MoistEnvironmentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.temperature.Temperature"><code class="flex name class">
-<span>class <span class="ident">Temperature</span></span>
+<dt id="PySDM.products.ambient_thermodynamics.ambient_dry_air_potential_temperature.AmbientDryAirPotentialTemperature"><code class="flex name class">
+<span>class <span class="ident">AmbientDryAirPotentialTemperature</span></span>
+<span>(</span><span>unit='K', name=None, var=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -57,19 +53,14 @@ class Temperature(MoistEnvironmentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Temperature(MoistEnvironmentProduct):
-
-    def __init__(self):
-        super().__init__(
-            description=&#34;Temperature&#34;,
-            name=&#34;T&#34;,
-            unit=&#34;K&#34;
-        )</code></pre>
+<pre><code class="python">class AmbientDryAirPotentialTemperature(MoistEnvironmentProduct):
+    def __init__(self, unit=&#39;K&#39;, name=None, var=None):
+        super().__init__(unit=unit, name=name, var=var)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.MoistEnvironmentProduct" href="../impl/product.html#PySDM.impl.product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct" href="../impl/moist_environment_product.html#PySDM.products.impl.moist_environment_product.MoistEnvironmentProduct">MoistEnvironmentProduct</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 </dd>
 </dl>
@@ -83,13 +74,13 @@ class Temperature(MoistEnvironmentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.ambient_thermodynamics" href="index.html">PySDM.products.ambient_thermodynamics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.temperature.Temperature" href="#PySDM.products.temperature.Temperature">Temperature</a></code></h4>
+<h4><code><a title="PySDM.products.ambient_thermodynamics.ambient_dry_air_potential_temperature.AmbientDryAirPotentialTemperature" href="#PySDM.products.ambient_thermodynamics.ambient_dry_air_potential_temperature.AmbientDryAirPotentialTemperature">AmbientDryAirPotentialTemperature</a></code></h4>
 </li>
 </ul>
 </li>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.total_dry_mass_mixing_ratio API documentation</title>
+<title>PySDM.products.coalescence.collision_rates API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,38 +19,46 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.total_dry_mass_mixing_ratio</code></h1>
+<h1 class="title">Module <code>PySDM.products.coalescence.collision_rates</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
-from PySDM.physics.constants import convert_to, si
-from PySDM.impl.product import MomentProduct
+<pre><code class="python">from PySDM.products.impl.product import Product
 
 
-class TotalDryMassMixingRatio(MomentProduct):
-    def __init__(self, density):
-        super().__init__(
-            name=&#39;q_dry&#39;,
-            description=&#39;total dry mass mixing ratio&#39;,
-            unit=&#39;μg/kg&#39;
-        )
-        self.density = density
+class _CollisionRateProduct(Product):
+    def __init__(self, name, unit, counter):
+        super().__init__(name=name, unit=unit)
+        self.timestep_count = 0
+        self.counter = counter
 
-    def get(self):
-        self.download_moment_to_buffer(&#39;dry volume&#39;, rank=1)
-        self.buffer[:] *= self.density
-        result = np.copy(self.buffer)
-        self.download_moment_to_buffer(&#39;dry volume&#39;, rank=0)
-        result[:] *= self.buffer
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-        result[:] /= self.particulator.mesh.dv
-        result[:] /= self.buffer
-        convert_to(result, si.ug / si.kg)
-        return result</code></pre>
+    def register(self, builder):
+        super().register(builder)
+        self.counter = getattr(self.particulator.dynamics[&#39;Coalescence&#39;], self.counter)
+        self.particulator.observers.append(self)
+
+    def notify(self):
+        self.timestep_count += 1
+
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.counter)
+        if self.timestep_count != 0:
+            self.buffer[:] /= self.timestep_count * self.particulator.dt
+        self.counter[:] = 0
+        return self.buffer
+
+
+class CollisionRateDeficitPerGridbox(_CollisionRateProduct):
+    def __init__(self, name=None, unit=&#39;s^-1&#39;):
+        super().__init__(name=name, unit=unit, counter=&#39;collision_rate_deficit&#39;)
+
+
+class CollisionRatePerGridbox(_CollisionRateProduct):
+    def __init__(self, name=None, unit=&#39;s^-1&#39;):
+        super().__init__(name=name, unit=unit, counter=&#39;collision_rate&#39;)</code></pre>
 </details>
 </section>
 <section>
@@ -62,9 +70,9 @@ class TotalDryMassMixingRatio(MomentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio"><code class="flex name class">
-<span>class <span class="ident">TotalDryMassMixingRatio</span></span>
-<span>(</span><span>density)</span>
+<dt id="PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox"><code class="flex name class">
+<span>class <span class="ident">CollisionRateDeficitPerGridbox</span></span>
+<span>(</span><span>name=None, unit='s^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -72,36 +80,19 @@ class TotalDryMassMixingRatio(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class TotalDryMassMixingRatio(MomentProduct):
-    def __init__(self, density):
-        super().__init__(
-            name=&#39;q_dry&#39;,
-            description=&#39;total dry mass mixing ratio&#39;,
-            unit=&#39;μg/kg&#39;
-        )
-        self.density = density
-
-    def get(self):
-        self.download_moment_to_buffer(&#39;dry volume&#39;, rank=1)
-        self.buffer[:] *= self.density
-        result = np.copy(self.buffer)
-        self.download_moment_to_buffer(&#39;dry volume&#39;, rank=0)
-        result[:] *= self.buffer
-        self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-        result[:] /= self.particulator.mesh.dv
-        result[:] /= self.buffer
-        convert_to(result, si.ug / si.kg)
-        return result</code></pre>
+<pre><code class="python">class CollisionRateDeficitPerGridbox(_CollisionRateProduct):
+    def __init__(self, name=None, unit=&#39;s^-1&#39;):
+        super().__init__(name=name, unit=unit, counter=&#39;collision_rate_deficit&#39;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.MomentProduct" href="../impl/product.html#PySDM.impl.product.MomentProduct">MomentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li>PySDM.products.coalescence.collision_rates._CollisionRateProduct</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+</dd>
+<dt id="PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox"><code class="flex name class">
+<span>class <span class="ident">CollisionRatePerGridbox</span></span>
+<span>(</span><span>name=None, unit='s^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -109,20 +100,15 @@ class TotalDryMassMixingRatio(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):
-    self.download_moment_to_buffer(&#39;dry volume&#39;, rank=1)
-    self.buffer[:] *= self.density
-    result = np.copy(self.buffer)
-    self.download_moment_to_buffer(&#39;dry volume&#39;, rank=0)
-    result[:] *= self.buffer
-    self.download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
-    result[:] /= self.particulator.mesh.dv
-    result[:] /= self.buffer
-    convert_to(result, si.ug / si.kg)
-    return result</code></pre>
+<pre><code class="python">class CollisionRatePerGridbox(_CollisionRateProduct):
+    def __init__(self, name=None, unit=&#39;s^-1&#39;):
+        super().__init__(name=name, unit=unit, counter=&#39;collision_rate&#39;)</code></pre>
 </details>
-</dd>
-</dl>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>PySDM.products.coalescence.collision_rates._CollisionRateProduct</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -135,16 +121,16 @@ class TotalDryMassMixingRatio(MomentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.coalescence" href="index.html">PySDM.products.coalescence</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio" href="#PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio">TotalDryMassMixingRatio</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio.get" href="#PySDM.products.total_dry_mass_mixing_ratio.TotalDryMassMixingRatio.get">get</a></code></li>
-</ul>
+<h4><code><a title="PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox" href="#PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox">CollisionRateDeficitPerGridbox</a></code></h4>
+</li>
+<li>
+<h4><code><a title="PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox" href="#PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox">CollisionRatePerGridbox</a></code></h4>
 </li>
 </ul>
 </li>

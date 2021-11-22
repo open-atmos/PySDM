@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.coalescence.collision_rate_deficit API documentation</title>
+<title>PySDM.products.housekeeping.dynamic_wall_time API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,33 +19,34 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.coalescence.collision_rate_deficit</code></h1>
+<h1 class="title">Module <code>PySDM.products.housekeeping.dynamic_wall_time</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.impl.product import Product
+<pre><code class="python">from PySDM.products.impl.product import Product
 
 
-class CollisionRateDeficit(Product):
-
-    def __init__(self):
-        super().__init__(
-            name=&#39;collision_rate_deficit&#39;,
-            description=&#39;Collision rate deficit&#39;
-        )
-        self.coalescence = None
+class DynamicWallTime(Product):
+    def __init__(self, dynamic, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit)
+        self.value = 0
+        self.dynamic = dynamic
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
+        self.particulator.observers.append(self)
+        self.shape = ()
 
-    def get(self):  # TODO #345 take into account NUMBER of substeps (?)
-        self.download_to_buffer(self.coalescence.collision_rate_deficit)
-        self.coalescence.collision_rate_deficit[:] = 0
-        return self.buffer</code></pre>
+    def _impl(self, **kwargs):
+        tmp = self.value
+        self.value = 0
+        return tmp
+
+    def notify(self):
+        self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 </section>
 <section>
@@ -57,8 +58,9 @@ class CollisionRateDeficit(Product):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit"><code class="flex name class">
-<span>class <span class="ident">CollisionRateDeficit</span></span>
+<dt id="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime"><code class="flex name class">
+<span>class <span class="ident">DynamicWallTime</span></span>
+<span>(</span><span>dynamic, name=None, unit='s')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -66,32 +68,33 @@ class CollisionRateDeficit(Product):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CollisionRateDeficit(Product):
-
-    def __init__(self):
-        super().__init__(
-            name=&#39;collision_rate_deficit&#39;,
-            description=&#39;Collision rate deficit&#39;
-        )
-        self.coalescence = None
+<pre><code class="python">class DynamicWallTime(Product):
+    def __init__(self, dynamic, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit)
+        self.value = 0
+        self.dynamic = dynamic
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]
+        self.particulator.observers.append(self)
+        self.shape = ()
 
-    def get(self):  # TODO #345 take into account NUMBER of substeps (?)
-        self.download_to_buffer(self.coalescence.collision_rate_deficit)
-        self.coalescence.collision_rate_deficit[:] = 0
-        return self.buffer</code></pre>
+    def _impl(self, **kwargs):
+        tmp = self.value
+        self.value = 0
+        return tmp
+
+    def notify(self):
+        self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+<dt id="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.notify"><code class="name flex">
+<span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -99,13 +102,11 @@ class CollisionRateDeficit(Product):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):  # TODO #345 take into account NUMBER of substeps (?)
-    self.download_to_buffer(self.coalescence.collision_rate_deficit)
-    self.coalescence.collision_rate_deficit[:] = 0
-    return self.buffer</code></pre>
+<pre><code class="python">def notify(self):
+    self.value += self.particulator.timers[self.dynamic].time</code></pre>
 </details>
 </dd>
-<dt id="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.register"><code class="name flex">
+<dt id="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.register"><code class="name flex">
 <span>def <span class="ident">register</span></span>(<span>self, builder)</span>
 </code></dt>
 <dd>
@@ -116,7 +117,8 @@ class CollisionRateDeficit(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.coalescence = self.particulator.dynamics[&#39;Coalescence&#39;]</code></pre>
+    self.particulator.observers.append(self)
+    self.shape = ()</code></pre>
 </details>
 </dd>
 </dl>
@@ -132,16 +134,16 @@ class CollisionRateDeficit(Product):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.coalescence" href="index.html">PySDM.products.coalescence</a></code></li>
+<li><code><a title="PySDM.products.housekeeping" href="index.html">PySDM.products.housekeeping</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit" href="#PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit">CollisionRateDeficit</a></code></h4>
+<h4><code><a title="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime" href="#PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime">DynamicWallTime</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.get" href="#PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.get">get</a></code></li>
-<li><code><a title="PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.register" href="#PySDM.products.coalescence.collision_rate_deficit.CollisionRateDeficit.register">register</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.notify" href="#PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.notify">notify</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.register" href="#PySDM.products.housekeeping.dynamic_wall_time.DynamicWallTime.register">register</a></code></li>
 </ul>
 </li>
 </ul>

@@ -28,17 +28,13 @@
 </summary>
 <pre><code class="python">import numpy as np
 
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class _CondensationTimestep(Product):
 
-    def __init__(self, extremum, label, reset_value):
-        super().__init__(
-            name=f&#39;dt_cond_{label}&#39;,
-            unit=&#39;s&#39;,
-            description=f&#39;Condensation timestep ({label})&#39;
-        )
+    def __init__(self, name, unit, extremum, reset_value):
+        super().__init__(name=name, unit=unit,)
         self.extremum = extremum
         self.reset_value = reset_value
         self.value = None
@@ -53,24 +49,24 @@ class _CondensationTimestep(Product):
         self.value = np.full_like(self.buffer, np.nan)
 
     def notify(self):
-        self.download_to_buffer(self.condensation.counters[&#39;n_substeps&#39;])
+        self._download_to_buffer(self.condensation.counters[&#39;n_substeps&#39;])
         self.buffer[:] = self.condensation.particulator.dt / self.buffer
         self.value = self.extremum(self.buffer, self.value)
 
-    def get(self):
+    def _impl(self, **kwargs):
         self.buffer[:] = self.value[:]
         self.value[:] = self.reset_value
         return self.buffer
 
 
 class CondensationTimestepMin(_CondensationTimestep):
-    def __init__(self):
-        super().__init__(np.minimum, &#39;min&#39;, np.inf)
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit, extremum=np.minimum, reset_value=np.inf)
 
 
 class CondensationTimestepMax(_CondensationTimestep):
-    def __init__(self):
-        super().__init__(np.maximum, &#39;max&#39;, -np.inf)</code></pre>
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit, extremum=np.maximum, reset_value=-np.inf)</code></pre>
 </details>
 </section>
 <section>
@@ -84,6 +80,7 @@ class CondensationTimestepMax(_CondensationTimestep):
 <dl>
 <dt id="PySDM.products.condensation.condensation_timestep.CondensationTimestepMax"><code class="flex name class">
 <span>class <span class="ident">CondensationTimestepMax</span></span>
+<span>(</span><span>name=None, unit='s')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -92,17 +89,18 @@ class CondensationTimestepMax(_CondensationTimestep):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CondensationTimestepMax(_CondensationTimestep):
-    def __init__(self):
-        super().__init__(np.maximum, &#39;max&#39;, -np.inf)</code></pre>
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit, extremum=np.maximum, reset_value=-np.inf)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>PySDM.products.condensation.condensation_timestep._CondensationTimestep</li>
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 </dd>
 <dt id="PySDM.products.condensation.condensation_timestep.CondensationTimestepMin"><code class="flex name class">
 <span>class <span class="ident">CondensationTimestepMin</span></span>
+<span>(</span><span>name=None, unit='s')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -111,13 +109,13 @@ class CondensationTimestepMax(_CondensationTimestep):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CondensationTimestepMin(_CondensationTimestep):
-    def __init__(self):
-        super().__init__(np.minimum, &#39;min&#39;, np.inf)</code></pre>
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(name=name, unit=unit, extremum=np.minimum, reset_value=np.inf)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>PySDM.products.condensation.condensation_timestep._CondensationTimestep</li>
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 </dd>
 </dl>

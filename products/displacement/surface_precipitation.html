@@ -26,18 +26,14 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.impl.product import Product
-from PySDM.physics.constants import rho_w, convert_to, si
+<pre><code class="python">from PySDM.products.impl.product import Product
+from PySDM.physics.constants import rho_w
 
 
 class SurfacePrecipitation(Product):
 
-    def __init__(self):
-        super().__init__(
-            name=&#39;surf_precip&#39;,
-            unit=&#39;mm/day&#39;,
-            description=&#39;Surface precipitation&#39;
-        )
+    def __init__(self, name=None, unit=&#39;m/s&#39;):
+        super().__init__(unit=unit, name=name)
         self.displacement = None
         self.dv = None
         self.dz = None
@@ -55,13 +51,12 @@ class SurfacePrecipitation(Product):
         self.dv = self.particulator.mesh.dv
         self.dz = self.particulator.mesh.dz
 
-    def get(self) -&gt; float:
+    def _impl(self, **kwargs) -&gt; float:
         if self.elapsed_time == 0.:
             return 0.
 
         result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
         self._reset_counters()
-        convert_to(result, si.mm / si.day)
         return result
 
     def notify(self):
@@ -80,6 +75,7 @@ class SurfacePrecipitation(Product):
 <dl>
 <dt id="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation"><code class="flex name class">
 <span>class <span class="ident">SurfacePrecipitation</span></span>
+<span>(</span><span>name=None, unit='m/s')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -89,12 +85,8 @@ class SurfacePrecipitation(Product):
 </summary>
 <pre><code class="python">class SurfacePrecipitation(Product):
 
-    def __init__(self):
-        super().__init__(
-            name=&#39;surf_precip&#39;,
-            unit=&#39;mm/day&#39;,
-            description=&#39;Surface precipitation&#39;
-        )
+    def __init__(self, name=None, unit=&#39;m/s&#39;):
+        super().__init__(unit=unit, name=name)
         self.displacement = None
         self.dv = None
         self.dz = None
@@ -112,13 +104,12 @@ class SurfacePrecipitation(Product):
         self.dv = self.particulator.mesh.dv
         self.dz = self.particulator.mesh.dz
 
-    def get(self) -&gt; float:
+    def _impl(self, **kwargs) -&gt; float:
         if self.elapsed_time == 0.:
             return 0.
 
         result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
         self._reset_counters()
-        convert_to(result, si.mm / si.day)
         return result
 
     def notify(self):
@@ -127,29 +118,10 @@ class SurfacePrecipitation(Product):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self) ‑> float</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self) -&gt; float:
-    if self.elapsed_time == 0.:
-        return 0.
-
-    result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
-    self._reset_counters()
-    convert_to(result, si.mm / si.day)
-    return result</code></pre>
-</details>
-</dd>
 <dt id="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.notify"><code class="name flex">
 <span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
@@ -203,7 +175,6 @@ class SurfacePrecipitation(Product):
 <li>
 <h4><code><a title="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation" href="#PySDM.products.displacement.surface_precipitation.SurfacePrecipitation">SurfacePrecipitation</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.get" href="#PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.get">get</a></code></li>
 <li><code><a title="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.notify" href="#PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.notify">notify</a></code></li>
 <li><code><a title="PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.register" href="#PySDM.products.displacement.surface_precipitation.SurfacePrecipitation.register">register</a></code></li>
 </ul>

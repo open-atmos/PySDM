@@ -29,17 +29,13 @@
 <pre><code class="python">import numpy as np
 import numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class CoalescenceTimestepMean(Product):
 
-    def __init__(self):
-        super().__init__(
-            name=&#39;dt_coal_avg&#39;,
-            unit=&#39;s&#39;,
-            description=&#39;Coalescence timestep (mean)&#39;
-        )
+    def __init__(self, unit=&#39;s&#39;, name=None):
+        super().__init__(unit=unit, name=name)
         self.count = 0
         self.coalescence = None
         self.range = None
@@ -55,8 +51,8 @@ class CoalescenceTimestepMean(Product):
     def __get_impl(buffer, count, dt):
         buffer[:] = np.where(buffer[:] &gt; 0, count * dt / buffer[:], np.nan)
 
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_n_substep)
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.coalescence.stats_n_substep)
         CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
         self.coalescence.stats_n_substep[:] = 0
         self.count = 0
@@ -77,6 +73,7 @@ class CoalescenceTimestepMean(Product):
 <dl>
 <dt id="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean"><code class="flex name class">
 <span>class <span class="ident">CoalescenceTimestepMean</span></span>
+<span>(</span><span>unit='s', name=None)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -86,12 +83,8 @@ class CoalescenceTimestepMean(Product):
 </summary>
 <pre><code class="python">class CoalescenceTimestepMean(Product):
 
-    def __init__(self):
-        super().__init__(
-            name=&#39;dt_coal_avg&#39;,
-            unit=&#39;s&#39;,
-            description=&#39;Coalescence timestep (mean)&#39;
-        )
+    def __init__(self, unit=&#39;s&#39;, name=None):
+        super().__init__(unit=unit, name=name)
         self.count = 0
         self.coalescence = None
         self.range = None
@@ -107,8 +100,8 @@ class CoalescenceTimestepMean(Product):
     def __get_impl(buffer, count, dt):
         buffer[:] = np.where(buffer[:] &gt; 0, count * dt / buffer[:], np.nan)
 
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_n_substep)
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.coalescence.stats_n_substep)
         CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
         self.coalescence.stats_n_substep[:] = 0
         self.count = 0
@@ -119,27 +112,10 @@ class CoalescenceTimestepMean(Product):
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.Product" href="../../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self):
-    self.download_to_buffer(self.coalescence.stats_n_substep)
-    CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
-    self.coalescence.stats_n_substep[:] = 0
-    self.count = 0
-    return self.buffer</code></pre>
-</details>
-</dd>
 <dt id="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify"><code class="name flex">
 <span>def <span class="ident">notify</span></span>(<span>self)</span>
 </code></dt>
@@ -190,7 +166,6 @@ class CoalescenceTimestepMean(Product):
 <li>
 <h4><code><a title="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean" href="#PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean">CoalescenceTimestepMean</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get" href="#PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.get">get</a></code></li>
 <li><code><a title="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify" href="#PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.notify">notify</a></code></li>
 <li><code><a title="PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.register" href="#PySDM.products.coalescence.coalescence_timestep_mean.CoalescenceTimestepMean.register">register</a></code></li>
 </ul>

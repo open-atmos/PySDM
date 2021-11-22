@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.cloud_droplet_effective_radius API documentation</title>
+<title>PySDM.products.housekeeping.timers API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,52 +19,60 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.cloud_droplet_effective_radius</code></h1>
+<h1 class="title">Module <code>PySDM.products.housekeeping.timers</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">import numpy as np
-import numba
-from PySDM.physics import constants as const
-from PySDM.impl.product import MomentProduct
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
-
-GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
+<pre><code class="python">from abc import abstractmethod
+import time
+from PySDM.products.impl.product import Product
 
 
-class CloudDropletEffectiveRadius(MomentProduct):
+class _Timer(Product):
 
-    def __init__(self, radius_range):
-        self.radius_range = radius_range
+    def __init__(self, name, unit):
+        super().__init__(name=name, unit=unit)
+        self._time = -1
+        self.reset()
 
-        super().__init__(
-            name=&#39;r_eff&#39;,
-            unit=&#39;um&#39;,
-            description=&#39;Cloud Droplet Effective Radius&#39;
-        )
+    def reset(self):
+        self._time = self.clock()
+
+    def register(self, builder):
+        super().register(builder)
+        self.shape = ()
+
+    def _impl(self, **kwargs) -&gt; float:
+        result = -self._time
+        self.reset()
+        result += self._time
+        return result
 
     @staticmethod
-    @numba.njit(**JIT_FLAGS)
-    def __get_impl(buffer, tmp):
-        buffer[:] = np.where(tmp[:] &gt; 0, buffer[:] * GEOM_FACTOR / tmp[:], np.nan)
+    @abstractmethod
+    def clock():
+        raise NotImplementedError()
 
-    def get(self):
-        tmp = np.empty_like(self.buffer)
-        self.download_moment_to_buffer(
-            &#39;volume&#39;, rank=2/3,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
-        tmp[:] = self.buffer[:]
-        self.download_moment_to_buffer(
-            &#39;volume&#39;, rank=1,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
-        CloudDropletEffectiveRadius.__get_impl(self.buffer, tmp)
-        const.convert_to(self.buffer, const.si.micrometre)
-        return self.buffer</code></pre>
+
+class CPUTime(_Timer):
+    def __init__(self, name=&#39;CPU Time&#39;, unit=&#39;s&#39;):
+        super().__init__(unit=unit, name=name)
+
+    @staticmethod
+    def clock():
+        return time.process_time()
+
+
+class WallTime(_Timer):
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(unit=unit, name=name)
+
+    @staticmethod
+    def clock():
+        return time.perf_counter()</code></pre>
 </details>
 </section>
 <section>
@@ -76,9 +84,9 @@ class CloudDropletEffectiveRadius(MomentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius"><code class="flex name class">
-<span>class <span class="ident">CloudDropletEffectiveRadius</span></span>
-<span>(</span><span>radius_range)</span>
+<dt id="PySDM.products.housekeeping.timers.CPUTime"><code class="flex name class">
+<span>class <span class="ident">CPUTime</span></span>
+<span>(</span><span>name='CPU Time', unit='s')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -86,46 +94,23 @@ class CloudDropletEffectiveRadius(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CloudDropletEffectiveRadius(MomentProduct):
-
-    def __init__(self, radius_range):
-        self.radius_range = radius_range
-
-        super().__init__(
-            name=&#39;r_eff&#39;,
-            unit=&#39;um&#39;,
-            description=&#39;Cloud Droplet Effective Radius&#39;
-        )
+<pre><code class="python">class CPUTime(_Timer):
+    def __init__(self, name=&#39;CPU Time&#39;, unit=&#39;s&#39;):
+        super().__init__(unit=unit, name=name)
 
     @staticmethod
-    @numba.njit(**JIT_FLAGS)
-    def __get_impl(buffer, tmp):
-        buffer[:] = np.where(tmp[:] &gt; 0, buffer[:] * GEOM_FACTOR / tmp[:], np.nan)
-
-    def get(self):
-        tmp = np.empty_like(self.buffer)
-        self.download_moment_to_buffer(
-            &#39;volume&#39;, rank=2/3,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
-        tmp[:] = self.buffer[:]
-        self.download_moment_to_buffer(
-            &#39;volume&#39;, rank=1,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
-        CloudDropletEffectiveRadius.__get_impl(self.buffer, tmp)
-        const.convert_to(self.buffer, const.si.micrometre)
-        return self.buffer</code></pre>
+    def clock():
+        return time.process_time()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.impl.product.MomentProduct" href="../impl/product.html#PySDM.impl.product.MomentProduct">MomentProduct</a></li>
-<li><a title="PySDM.impl.product.Product" href="../impl/product.html#PySDM.impl.product.Product">Product</a></li>
+<li>PySDM.products.housekeeping.timers._Timer</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 </ul>
-<h3>Methods</h3>
+<h3>Static methods</h3>
 <dl>
-<dt id="PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self)</span>
+<dt id="PySDM.products.housekeeping.timers.CPUTime.clock"><code class="name flex">
+<span>def <span class="ident">clock</span></span>(<span>)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -133,20 +118,50 @@ class CloudDropletEffectiveRadius(MomentProduct):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self):
-    tmp = np.empty_like(self.buffer)
-    self.download_moment_to_buffer(
-        &#39;volume&#39;, rank=2/3,
-        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                      self.formulae.trivia.volume(self.radius_range[1])))
-    tmp[:] = self.buffer[:]
-    self.download_moment_to_buffer(
-        &#39;volume&#39;, rank=1,
-        filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                      self.formulae.trivia.volume(self.radius_range[1])))
-    CloudDropletEffectiveRadius.__get_impl(self.buffer, tmp)
-    const.convert_to(self.buffer, const.si.micrometre)
-    return self.buffer</code></pre>
+<pre><code class="python">@staticmethod
+def clock():
+    return time.process_time()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="PySDM.products.housekeeping.timers.WallTime"><code class="flex name class">
+<span>class <span class="ident">WallTime</span></span>
+<span>(</span><span>name=None, unit='s')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WallTime(_Timer):
+    def __init__(self, name=None, unit=&#39;s&#39;):
+        super().__init__(unit=unit, name=name)
+
+    @staticmethod
+    def clock():
+        return time.perf_counter()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>PySDM.products.housekeeping.timers._Timer</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.products.housekeeping.timers.WallTime.clock"><code class="name flex">
+<span>def <span class="ident">clock</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def clock():
+    return time.perf_counter()</code></pre>
 </details>
 </dd>
 </dl>
@@ -162,15 +177,21 @@ class CloudDropletEffectiveRadius(MomentProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.housekeeping" href="index.html">PySDM.products.housekeeping</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius" href="#PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius">CloudDropletEffectiveRadius</a></code></h4>
+<h4><code><a title="PySDM.products.housekeeping.timers.CPUTime" href="#PySDM.products.housekeeping.timers.CPUTime">CPUTime</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius.get" href="#PySDM.products.cloud_droplet_effective_radius.CloudDropletEffectiveRadius.get">get</a></code></li>
+<li><code><a title="PySDM.products.housekeeping.timers.CPUTime.clock" href="#PySDM.products.housekeeping.timers.CPUTime.clock">clock</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="PySDM.products.housekeeping.timers.WallTime" href="#PySDM.products.housekeeping.timers.WallTime">WallTime</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.housekeeping.timers.WallTime.clock" href="#PySDM.products.housekeeping.timers.WallTime.clock">clock</a></code></li>
 </ul>
 </li>
 </ul>
