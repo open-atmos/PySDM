@@ -1,14 +1,9 @@
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class CoalescenceTimestepMin(Product):
-
-    def __init__(self):
-        super().__init__(
-            name='dt_coal_min',
-            unit='s',
-            description='Coalescence timestep (minimal)'
-        )
+    def __init__(self, unit='s', name=None):
+        super().__init__(unit=unit, name=name)
         self.coalescence = None
         self.range = None
 
@@ -17,7 +12,7 @@ class CoalescenceTimestepMin(Product):
         self.coalescence = self.particulator.dynamics['Coalescence']
         self.range = self.coalescence.dt_coal_range
 
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_dt_min)
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.coalescence.stats_dt_min)
         self.coalescence.stats_dt_min[:] = self.coalescence.particulator.dt
         return self.buffer

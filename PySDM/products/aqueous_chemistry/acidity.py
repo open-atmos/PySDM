@@ -2,11 +2,17 @@
 average pH (averaging after or before taking the logarithm in pH definition)
 with weighting either by number or volume
 """
-from PySDM.impl.product import MomentProduct
+import numpy as np
+from PySDM.products.impl.moment_product import MomentProduct
 
 
-class pH(MomentProduct):
-    def __init__(self, radius_range, weighting='volume', attr='conc_H'):
+class Acidity(MomentProduct):
+    def __init__(self, *,
+                 radius_range=(0, np.inf),
+                 weighting='volume',
+                 attr='conc_H',
+                 unit='dimensionless',
+                 name=None):
         assert attr in ('pH', 'moles_H', 'conc_H')
         self.attr = attr
 
@@ -18,18 +24,14 @@ class pH(MomentProduct):
             raise NotImplementedError()
 
         self.radius_range = radius_range
-        super().__init__(
-            name='pH_' + attr + '_' + weighting + '_weighted',
-            unit='',
-            description='number-weighted pH'
-        )
+        super().__init__(name=name, unit=unit)
 
     def register(self, builder):
         builder.request_attribute('conc_H')
         super().register(builder)
 
-    def get(self):
-        self.download_moment_to_buffer(
+    def _impl(self, **kwargs):
+        self._download_moment_to_buffer(
             self.attr, rank=1,
             filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
                           self.formulae.trivia.volume(self.radius_range[1])),

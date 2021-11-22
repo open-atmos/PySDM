@@ -1,13 +1,9 @@
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class DynamicWallTime(Product):
-    def __init__(self, dynamic):
-        super().__init__(
-            name=f'{dynamic}_wall_time',
-            unit='s',
-            description=f'{dynamic} wall time',
-        )
+    def __init__(self, dynamic, name=None, unit='s'):
+        super().__init__(name=name, unit=unit)
         self.value = 0
         self.dynamic = dynamic
 
@@ -16,7 +12,7 @@ class DynamicWallTime(Product):
         self.particulator.observers.append(self)
         self.shape = ()
 
-    def get(self):
+    def _impl(self, **kwargs):
         tmp = self.value
         self.value = 0
         return tmp

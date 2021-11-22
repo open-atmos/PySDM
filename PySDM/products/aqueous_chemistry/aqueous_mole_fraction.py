@@ -1,14 +1,12 @@
-from PySDM.impl.product import MomentProduct
-from PySDM.physics.constants import convert_to, PPB, Md
+from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.physics.constants import Md
+
+DUMMY_SPECIFIC_GRAVITY = 44
 
 
 class AqueousMoleFraction(MomentProduct):
-    def __init__(self, key):
-        super().__init__(
-            name=f'aq_{key}_ppb',
-            unit='ppb',
-            description=f'aqueous {key} mole fraction'
-        )
+    def __init__(self, key, unit='dimensionless', name=None):
+        super().__init__(unit=unit, name=name)
         self.aqueous_chemistry = None
         self.key = key
 
@@ -16,20 +14,22 @@ class AqueousMoleFraction(MomentProduct):
         super().register(builder)
         self.aqueous_chemistry = self.particulator.dynamics['AqueousChemistry']
 
-    def get(self):
+    def _impl(self, **kwargs):
         attr = 'moles_' + self.key
 
-        self.download_moment_to_buffer(attr, rank=0)
+        self._download_moment_to_buffer(attr, rank=0)
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer(attr, rank=1)
+        self._download_moment_to_buffer(attr, rank=1)
         tmp = self.buffer.copy()
         tmp[:] *= conc
-        tmp[:] *= 44 * Md
+        tmp[:] *= DUMMY_SPECIFIC_GRAVITY * Md
 
-        self.download_to_buffer(self.particulator.environment['rhod'])
+        self._download_to_buffer(self.particulator.environment['rhod'])
         tmp[:] /= self.particulator.mesh.dv
         tmp[:] /= self.buffer
-        tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(tmp[:], specific_gravity=44)
-        convert_to(tmp, PPB)
+        tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(
+            tmp[:],
+            specific_gravity=DUMMY_SPECIFIC_GRAVITY
+        )
         return tmp

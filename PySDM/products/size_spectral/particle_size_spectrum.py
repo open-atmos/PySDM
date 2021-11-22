@@ -1,19 +1,14 @@
+from abc import ABC
 import numpy as np
-from PySDM.physics import constants as const
-from PySDM.impl.product import SpectrumMomentProduct
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
-class ParticlesSizeSpectrum(SpectrumMomentProduct):
-
-    def __init__(self, radius_bins_edges, name, dry=False, normalise_by_dv=False):
+class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
+    def __init__(self, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False):
         self.volume_attr = 'dry volume' if dry else 'volume'
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
-        super().__init__(
-            name=name,
-            unit=f"mg-1 um-1{'' if normalise_by_dv else ' m^3'}",
-            description='Specific concentration density'
-        )
+        super().__init__(name=name, unit=unit)
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
@@ -25,48 +20,48 @@ class ParticlesSizeSpectrum(SpectrumMomentProduct):
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(
+        self._recalculate_spectrum_moment(
             attr=self.volume_attr,
             rank=1,
             filter_attr=self.volume_attr
         )
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
         if self.normalise_by_dv:
             vals[:] /= self.particulator.mesh.dv
 
-        self.download_to_buffer(self.particulator.environment['rhod'])
+        self._download_to_buffer(self.particulator.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dr = self.formulae.trivia.radius(volume=self.attr_bins_edges[i + 1]) - \
                  self.formulae.trivia.radius(volume=self.attr_bins_edges[i])
             vals[:, i] /= rhod * dr
 
-        const.convert_to(vals, const.si.micrometre**-1 * const.si.milligram**-1)
-
         return np.squeeze(vals.reshape(self.shape))
 
 
-class ParticlesWetSizeSpectrum(ParticlesSizeSpectrum):
-    def __init__(self, radius_bins_edges, normalise_by_dv=False):
+class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
+    def __init__(self, radius_bins_edges, dry=False, name=None, unit='kg^-1 m^-1'):
         super().__init__(
             radius_bins_edges,
-            dry=False,
-            normalise_by_dv=normalise_by_dv,
-            name='Particles Wet Size Spectrum'
+            dry=dry,
+            normalise_by_dv=True,
+            name=name,
+            unit=unit
         )
 
 
-class ParticlesDrySizeSpectrum(ParticlesSizeSpectrum):
-    def __init__(self, radius_bins_edges, normalise_by_dv=False):
+class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
+    def __init__(self, radius_bins_edges, dry=False, name=None, unit='m^-3 m^-1'):
         super().__init__(
             radius_bins_edges,
-            dry=True,
-            normalise_by_dv=normalise_by_dv,
-            name='Particles Dry Size Spectrum'
+            dry=dry,
+            normalise_by_dv=False,
+            name=name,
+            unit=unit
         )

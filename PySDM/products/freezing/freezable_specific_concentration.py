@@ -1,16 +1,10 @@
 import numpy as np
-from PySDM.physics import constants as const
-from PySDM.impl.product import SpectrumMomentProduct
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class FreezableSpecificConcentration(SpectrumMomentProduct):
-
-    def __init__(self, temperature_bins_edges):
-        super().__init__(
-            name='Freezable specific concentration',
-            unit="mg-1 K-1",
-            description='Freezable specific concentration'
-        )
+    def __init__(self, temperature_bins_edges, name=None, unit='kg^-1 K^-1'):
+        super().__init__(name=name, unit=unit)
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):
@@ -20,20 +14,18 @@ class FreezableSpecificConcentration(SpectrumMomentProduct):
         super().register(builder)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(attr='volume', filter_attr='freezing temperature', rank=0)
+        self._recalculate_spectrum_moment(attr='volume', filter_attr='freezing temperature', rank=0)
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self.download_to_buffer(self.particulator.environment['rhod'])
+        self._download_to_buffer(self.particulator.environment['rhod'])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
             vals[:, i] /= rhod * dT * self.particulator.mesh.dv
-
-        const.convert_to(vals, const.si.milligram**-1 / const.si.K)
 
         return np.squeeze(vals.reshape(self.shape))

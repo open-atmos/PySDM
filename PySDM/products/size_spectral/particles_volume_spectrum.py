@@ -1,15 +1,10 @@
 import numpy as np
-from PySDM.impl.product import SpectrumMomentProduct
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticlesVolumeSpectrum(SpectrumMomentProduct):
-
-    def __init__(self, radius_bins_edges):
-        super().__init__(
-            name='dv/dlnr',
-            unit='1/(unit dr/r)',
-            description='Particles volume distribution'
-        )
+    def __init__(self, radius_bins_edges, name=None, unit='dimensionless'):
+        super().__init__(name=name, unit=unit)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
@@ -24,14 +19,14 @@ class ParticlesVolumeSpectrum(SpectrumMomentProduct):
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
-    def get(self):
+    def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self.recalculate_spectrum_moment(attr='volume', rank=1, filter_attr='volume')
+        self._recalculate_spectrum_moment(attr='volume', rank=1, filter_attr='volume')
 
         for i in range(vals.shape[1]):
-            self.download_spectrum_moment_to_buffer(rank=1, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
             vals[:, i] = self.buffer.ravel()
-            self.download_spectrum_moment_to_buffer(rank=0, bin_number=i)
+            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] *= self.buffer.ravel()
 
         vals *= 1 / np.diff(np.log(self.radius_bins_edges)) / self.particulator.mesh.dv

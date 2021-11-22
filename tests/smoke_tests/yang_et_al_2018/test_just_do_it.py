@@ -52,7 +52,7 @@ def test_just_do_it(backend_class, scheme, adaptive):
 
     # TODO #527
     if backend_class is not GPU:
-        assert max(output['ripening_rate']) > 0
+        assert max(output['ripening rate']) > 0
 
 
 def n_tot(n, condition):

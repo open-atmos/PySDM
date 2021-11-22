@@ -176,7 +176,7 @@ radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
+products = [ParticlesVolumeSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -196,7 +196,10 @@ radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
+products = py.list({ ParticlesVolumeSpectrum(pyargs( ...
+  'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
+  'name', 'dv/dlnr' ...
+)) });
 particulator = builder.build(attributes, products);
 ```
 </details>
@@ -217,7 +220,7 @@ radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges)]
+products = [ParticlesVolumeSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -321,13 +324,13 @@ initial humidity.
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical 
-[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/environments/parcel_displacement.html)
+[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/housekeeping/parcel_displacement.html)
 and depict the evolution of 
-[`Supersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/dynamics/condensation/peak_supersaturation.html), 
-[`CloudDropletEffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/cloud_droplet_effective_radius.html), 
-[`CloudDropletConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/particles_concentration.html#PySDM.products.particles_concentration.CloudDropletConcentration) 
+[`PeakSupersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/condensation/peak_supersaturation.html), 
+[`EffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/effective_radius.html), 
+[`ParticleConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
 and the 
-[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/water_mixing_ratio.html).
+[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/water_mixing_ratio.html).
 
 <details>
 <summary>Julia (click to expand)</summary>
@@ -379,11 +382,11 @@ attributes["kappa times dry volume"] = kappa * v_dry
 attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
 
 particulator = builder.build(attributes, products=[
-    products.PeakSupersaturation(),
-    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-    products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range),
-    products.ParcelDisplacement()
+    products.PeakSupersaturation(name="S_max", unit="%"),
+    products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
+    products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
+    products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+    products.ParcelDisplacement(name="z")
 ])
     
 cell_id=1
@@ -462,11 +465,11 @@ attributes = py.dict(pyargs( ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
-    products.PeakSupersaturation(), ...
-    products.CloudDropletEffectiveRadius(pyargs('radius_range', cloud_range)), ...
-    products.CloudDropletConcentration(pyargs('radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('radius_range', cloud_range)) ...
-    products.ParcelDisplacement() ...
+    products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
+    products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
+    products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
+    products.WaterMixingRatio(pyargs('name', 'ql', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+    products.ParcelDisplacement(pyargs('name', 'z')) ...
 }));
 
 cell_id = int32(0);
@@ -514,7 +517,6 @@ saveas(gcf, "parcel.png")
 <summary>Python (click to expand)</summary>
 
 ```Python
-import numpy as np
 from matplotlib import pyplot
 from PySDM.physics import si, spectra
 from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
@@ -524,12 +526,12 @@ from PySDM.environments import Parcel
 from PySDM import Builder, products
 
 env = Parcel(
-    dt=.25 * si.s,
-    mass_of_dry_air=1e3 * si.kg,
-    p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
-    T0=300 * si.K,
-    w=2.5 * si.m / si.s
+  dt=.25 * si.s,
+  mass_of_dry_air=1e3 * si.kg,
+  p0=1122 * si.hPa,
+  q0=20 * si.g / si.kg,
+  T0=300 * si.K,
+  w=2.5 * si.m / si.s
 )
 spectrum = spectra.Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
@@ -548,35 +550,35 @@ v_dry = builder.formulae.trivia.volume(radius=r_dry)
 r_wet = r_wet_init(r_dry, env, kappa * v_dry)
 
 attributes = {
-    'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume': v_dry,
-    'kappa times dry volume': kappa * v_dry,
-    'volume': builder.formulae.trivia.volume(radius=r_wet)
+  'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
+  'dry volume': v_dry,
+  'kappa times dry volume': kappa * v_dry,
+  'volume': builder.formulae.trivia.volume(radius=r_wet)
 }
 
 particulator = builder.build(attributes, products=[
-    products.PeakSupersaturation(),
-    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-    products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range),
-    products.ParcelDisplacement()
+  products.PeakSupersaturation(name='S_max', unit='%'),
+  products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
+  products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
+  products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
+  products.ParcelDisplacement(name='z')
 ])
 
 cell_id = 0
 output = {product.name: [product.get()[cell_id]] for product in particulator.products.values()}
 
 for step in range(output_points):
-    particulator.run(steps=output_interval)
-    for product in particulator.products.values():
-        output[product.name].append(product.get()[cell_id])
+  particulator.run(steps=output_interval)
+  for product in particulator.products.values():
+    output[product.name].append(product.get()[cell_id])
 
 fig, axs = pyplot.subplots(1, len(particulator.products) - 1, sharey="all")
 for i, (key, product) in enumerate(particulator.products.items()):
-    if key != 'z':
-        axs[i].plot(output[key], output['z'], marker='.')
-        axs[i].set_title(product.name)
-        axs[i].set_xlabel(product.unit)
-        axs[i].grid()
+  if key != 'z':
+    axs[i].plot(output[key], output['z'], marker='.')
+    axs[i].set_title(product.name)
+    axs[i].set_xlabel(product.unit)
+    axs[i].grid()
 axs[0].set_ylabel(particulator.products['z'].unit)
 pyplot.savefig('parcel.svg')
 ```

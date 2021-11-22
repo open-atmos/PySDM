@@ -17,7 +17,7 @@ class TestInitialCondition:
 
         # Plot
         if plot:
-            for var in ('RH_env', 'T_env', 'qv_env', 'p_env'):
+            for var in ('RH', 'T', 'qv', 'p'):
                 pyplot.plot(output[var][:, 0], output['z'], linestyle='--', marker='o')
                 pyplot.ylabel('Z [m]')
                 pyplot.xlabel(var + ' [' + simulation.particulator.products[var].unit + ']')
@@ -25,15 +25,15 @@ class TestInitialCondition:
                 pyplot.show()
 
         # Assert
-        assert output['RH_env'].shape == (settings.nz, 1)
+        assert output['RH'].shape == (settings.nz, 1)
 
-        assert 35 < np.amin(output['RH_env']) < 40
-        assert 110 < np.amax(output['RH_env']) < 115
+        assert 35 < np.amin(output['RH']) < 40
+        assert 110 < np.amax(output['RH']) < 115
 
-        assert 700 * si.hPa < np.amin(output['p_env']) < 710 * si.hPa
-        assert (np.diff(output['p_env']) < 0).all()
-        assert 950 * si.hPa < np.amax(output['p_env']) < 1000 * si.hPa
+        assert 700 * si.hPa < np.amin(output['p']) < 710 * si.hPa
+        assert (np.diff(output['p']) < 0).all()
+        assert 950 * si.hPa < np.amax(output['p']) < 1000 * si.hPa
 
-        assert 280 * si.K < np.amin(output['T_env']) < 285 * si.K
-        assert output['T_env'][0] > np.amin(output['T_env'])
-        assert 295 * si.K < np.amax(output['T_env']) < 300 * si.K
+        assert 280 * si.K < np.amin(output['T']) < 285 * si.K
+        assert output['T'][0] > np.amin(output['T'])
+        assert 295 * si.K < np.amax(output['T']) < 300 * si.K
