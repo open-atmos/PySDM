@@ -1,23 +1,19 @@
 import numpy as np
-from PySDM.impl.product import MomentProduct
+from PySDM.products.impl.moment_product import MomentProduct
 
 
 class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
-    def __init__(self):
-        super().__init__(
-            name='A_tot',
-            description='total unfrozen immersed surface area',
-            unit='m2'
-        )
+    def __init__(self, unit='m^2', name=None):
+        super().__init__(unit=unit, name=name)
 
-    def get(self):
+    def _impl(self, **kwargs):
         params = {
             'attr': 'immersed surface area',
             'filter_attr': 'volume',
             'filter_range': (0, np.inf)
         }
-        self.download_moment_to_buffer(**params, rank=1)
+        self._download_moment_to_buffer(**params, rank=1)
         result = np.copy(self.buffer)
-        self.download_moment_to_buffer(**params, rank=0)
+        self._download_moment_to_buffer(**params, rank=0)
         result[:] *= self.buffer
         return result

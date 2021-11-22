@@ -66,7 +66,7 @@ class TestFreezingMethods:
                 'immersed surface area': np.full(n_sd, immersed_surface_area),
                 'volume': np.full(n_sd, vol)
             }
-            products = (IceWaterContent(specific=False),)
+            products = (IceWaterContent(name='qi'),)
             particulator = builder.build(attributes=attributes, products=products)
 
             env['a_w_ice'] = np.nan

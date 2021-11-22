@@ -1,15 +1,11 @@
 from PySDM.environments import Parcel
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class ParcelDisplacement(Product):
 
-    def __init__(self):
-        super().__init__(
-            description="Parcel displacement",
-            name="z",
-            unit="m"
-        )
+    def __init__(self, unit="m", name=None):
+        super().__init__(unit=unit, name=name)
         self.environment = None
 
     def register(self, builder):
@@ -17,6 +13,6 @@ class ParcelDisplacement(Product):
         assert isinstance(builder.particulator.environment, Parcel)
         self.environment = builder.particulator.environment
 
-    def get(self):
-        self.download_to_buffer(self.environment['z'])
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.environment['z'])
         return self.buffer

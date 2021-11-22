@@ -1,16 +1,12 @@
 from abc import abstractmethod
 import time
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class _Timer(Product):
 
-    def __init__(self, name, description):
-        super().__init__(
-            name=name,
-            unit='s',
-            description=description
-        )
+    def __init__(self, name, unit):
+        super().__init__(name=name, unit=unit)
         self._time = -1
         self.reset()
 
@@ -21,7 +17,7 @@ class _Timer(Product):
         super().register(builder)
         self.shape = ()
 
-    def get(self) -> float:
+    def _impl(self, **kwargs) -> float:
         result = -self._time
         self.reset()
         result += self._time
@@ -34,8 +30,8 @@ class _Timer(Product):
 
 
 class CPUTime(_Timer):
-    def __init__(self):
-        super().__init__('cpu_time', 'CPU Time')
+    def __init__(self, name='CPU Time', unit='s'):
+        super().__init__(unit=unit, name=name)
 
     @staticmethod
     def clock():
@@ -43,8 +39,8 @@ class CPUTime(_Timer):
 
 
 class WallTime(_Timer):
-    def __init__(self):
-        super().__init__('wall_time', 'Wall Time')
+    def __init__(self, name=None, unit='s'):
+        super().__init__(unit=unit, name=name)
 
     @staticmethod
     def clock():

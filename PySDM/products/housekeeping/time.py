@@ -1,21 +1,17 @@
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class Time(Product):
 
-    def __init__(self):
-        super().__init__(
-            name='t',
-            unit='s',
-            description='Time'
-        )
+    def __init__(self, name=None, unit='s'):
+        super().__init__(name=name, unit=unit)
         self.t = 0
 
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
 
-    def get(self):
+    def _impl(self, **kwargs):
         return self.t
 
     def notify(self):

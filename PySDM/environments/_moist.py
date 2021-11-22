@@ -46,6 +46,14 @@ class _Moist:
             target['rhod'], target['thd'], target['qv'],
             target['T'], target['p'], target['RH']
         )
+        if 'a_w_ice' in self.variables:
+            self.particulator.backend.a_w_ice(
+                T=target['T'],
+                p=target['p'],
+                RH=target['RH'],
+                qv=target['qv'],
+                a_w_ice=target['a_w_ice']
+            )
         self._values["predicted"] = target
 
     @abstractmethod

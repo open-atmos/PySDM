@@ -1,28 +1,27 @@
 import numpy as np
-from PySDM.impl.product import MomentProduct
+from PySDM.products.impl.moment_product import MomentProduct
 from PySDM.physics import constants as const
 
 
 class IceWaterContent(MomentProduct):
+    def __init__(self, unit='kg/kg', name=None, __specific=False):
+        super().__init__(unit=unit, name=name)
+        self.specific = __specific
 
-    def __init__(self, specific=True):
-        super().__init__(
-            name='qi',
-            unit='g/kg' if specific else 'kg/m3',
-            description='Ice water mixing ratio'
-        )
-        self.specific = specific
-
-    def get(self):
-        self.download_moment_to_buffer('volume', rank=0, filter_range=(-np.inf, 0))
+    def _impl(self, **kwargs):
+        self._download_moment_to_buffer('volume', rank=0, filter_range=(-np.inf, 0))
         conc = self.buffer.copy()
 
-        self.download_moment_to_buffer('volume', rank=1, filter_range=(-np.inf, 0))
+        self._download_moment_to_buffer('volume', rank=1, filter_range=(-np.inf, 0))
         result = self.buffer.copy()
-        result[:] *= -const.rho_i * conc  / self.particulator.mesh.dv
+        result[:] *= -const.rho_i * conc / self.particulator.mesh.dv
 
         if self.specific:
-            self.download_to_buffer(self.particulator.environment['rhod'])
+            self._download_to_buffer(self.particulator.environment['rhod'])
             result[:] /= self.buffer
-            const.convert_to(result, const.si.gram / const.si.kilogram)
         return result
+
+
+class SpecificIceWaterContent(IceWaterContent):
+    def __init__(self, unit='kg/m^3', name=None, __specific=True):
+        super().__init__(unit=unit, name=name)

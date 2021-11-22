@@ -1,14 +1,10 @@
 import numpy as np
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class PeakSupersaturation(Product):
-    def __init__(self):
-        super().__init__(
-            name='S_max',
-            unit='%',
-            description='Peak supersaturation'
-        )
+    def __init__(self, unit='dimensionless', name=None):
+        super().__init__(unit=unit, name=name)
         self.condensation = None
         self.RH_max = None
 
@@ -18,11 +14,11 @@ class PeakSupersaturation(Product):
         self.condensation = self.particulator.dynamics['Condensation']
         self.RH_max = np.full_like(self.buffer, np.nan)
 
-    def get(self):
-        self.buffer[:] = (self.RH_max[:] - 1) * 100
-        self.RH_max[:] = -100
+    def _impl(self, **kwargs):
+        self.buffer[:] = (self.RH_max[:] - 1)
+        self.RH_max[:] = -1
         return self.buffer
 
     def notify(self):
-        self.download_to_buffer(self.condensation.rh_max)
+        self._download_to_buffer(self.condensation.rh_max)
         self.RH_max[:] = np.maximum(self.buffer[:], self.RH_max[:])

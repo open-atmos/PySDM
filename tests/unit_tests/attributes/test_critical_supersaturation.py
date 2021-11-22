@@ -26,11 +26,11 @@ def test_critical_supersaturation():
             'kappa times dry volume': .9 * vdry,
             'dry volume organic': np.zeros(n_sd)
         },
-        products=[ActivableFraction()]
+        products=(ActivableFraction(),)
     )
 
     # act
-    AF = particulator.products['activable fraction'].get(S_max)
+    AF = particulator.products['activable fraction'].get(S_max=S_max)
 
     # assert
     assert 0 < AF < 1

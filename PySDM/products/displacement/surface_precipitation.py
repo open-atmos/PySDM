@@ -1,15 +1,11 @@
-from PySDM.impl.product import Product
-from PySDM.physics.constants import rho_w, convert_to, si
+from PySDM.products.impl.product import Product
+from PySDM.physics.constants import rho_w
 
 
 class SurfacePrecipitation(Product):
 
-    def __init__(self):
-        super().__init__(
-            name='surf_precip',
-            unit='mm/day',
-            description='Surface precipitation'
-        )
+    def __init__(self, name=None, unit='m/s'):
+        super().__init__(unit=unit, name=name)
         self.displacement = None
         self.dv = None
         self.dz = None
@@ -27,13 +23,12 @@ class SurfacePrecipitation(Product):
         self.dv = self.particulator.mesh.dv
         self.dz = self.particulator.mesh.dz
 
-    def get(self) -> float:
+    def _impl(self, **kwargs) -> float:
         if self.elapsed_time == 0.:
             return 0.
 
         result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
         self._reset_counters()
-        convert_to(result, si.mm / si.day)
         return result
 
     def notify(self):

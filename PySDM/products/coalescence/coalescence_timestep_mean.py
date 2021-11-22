@@ -1,17 +1,13 @@
 import numpy as np
 import numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
-from PySDM.impl.product import Product
+from PySDM.products.impl.product import Product
 
 
 class CoalescenceTimestepMean(Product):
 
-    def __init__(self):
-        super().__init__(
-            name='dt_coal_avg',
-            unit='s',
-            description='Coalescence timestep (mean)'
-        )
+    def __init__(self, unit='s', name=None):
+        super().__init__(unit=unit, name=name)
         self.count = 0
         self.coalescence = None
         self.range = None
@@ -27,8 +23,8 @@ class CoalescenceTimestepMean(Product):
     def __get_impl(buffer, count, dt):
         buffer[:] = np.where(buffer[:] > 0, count * dt / buffer[:], np.nan)
 
-    def get(self):
-        self.download_to_buffer(self.coalescence.stats_n_substep)
+    def _impl(self, **kwargs):
+        self._download_to_buffer(self.coalescence.stats_n_substep)
         CoalescenceTimestepMean.__get_impl(self.buffer, self.count, self.particulator.dt)
         self.coalescence.stats_n_substep[:] = 0
         self.count = 0

@@ -19,8 +19,8 @@ def test_few_steps(plot=False):
         return np.mean(output[var][:, -20:], axis=1)
 
     if plot:
-        for var in ('RH_env', 'S_max', 'T_env', 'qv_env', 'p_env', 'ql',
-                    'ripening_rate', 'activating_rate', 'deactivating_rate'):
+        for var in ('RH', 'S_max', 'T', 'qv', 'p', 'ql',
+                    'ripening rate', 'activating rate', 'deactivating rate'):
             pyplot.plot(profile(var), output['z'], linestyle='--', marker='o')
             pyplot.ylabel('Z [m]')
             pyplot.xlabel(var + ' [' + simulation.particulator.products[var].unit + ']')
@@ -31,5 +31,5 @@ def test_few_steps(plot=False):
     assert min(profile('ql')) == 0
     assert .1 < max(profile('ql')) < 1
     # assert max(profile('ripening_rate')) > 0 # TODO #521
-    assert max(profile('activating_rate')) == 0
+    assert max(profile('activating rate')) == 0
     # assert max(profile('deactivating_rate')) > 0 TODO #521

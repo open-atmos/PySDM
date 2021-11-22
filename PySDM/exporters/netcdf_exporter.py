@@ -38,7 +38,8 @@ class NetCDFExporter:
         # TODO #340 ParticleVolume var
 
         for name, instance in self.simulator.products.items():
-            assert name not in self.vars
+            if name in self.vars:
+                raise AssertionError(f"product ({name}) has same name as one of netCDF dimensions")
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
@@ -51,7 +52,6 @@ class NetCDFExporter:
                 raise NotImplementedError()
             self.vars[name] = ncdf.createVariable(name, "f", dimensions)
             self.vars[name].units = instance.unit
-            self.vars[name].long_name = instance.description
 
     def _write_variables(self, i):
         self.vars["T"][i] = self.settings.output_steps[i] * self.settings.dt
