@@ -97,8 +97,8 @@ The usage examples are built on top of four different `environment` classes incl
 
 In addition, the package ships with tutorial code depicting how `PySDM` can be used from `Julia` and `Matlab` using
   the `PyCall.jl` and the Matlab-bundled Python interface, respectively.
-Two exporter classes are available as of time of writing enabling storage of particle attributes in the VTK
-  format and storage of gridded products in netCDF format.
+Two exporter classes are available as of time of writing enabling storage of particle attributes and
+  gridded products in the VTK format, and storage of gridded products in netCDF format.
 
 # Dependencies and supported platforms 
 
@@ -167,13 +167,14 @@ radius_bins_edges = np.logspace(
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges)]
+products = [ParticlesVolumeSpectrum(radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
 
 The `backend` argument may be set to an instance of either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
 The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
-The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of v1.3 represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
+The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of time of writing
+  represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
 Finally, the `build()` method is used to obtain an instance of the `Particulator` class which can then be used to control time-stepping and access simulation state
   through the products registered with the builder.
 A minimal simulation example is depicted below with a code snippet and a resultant plot (\autoref{fig:readme_fig_1}):
