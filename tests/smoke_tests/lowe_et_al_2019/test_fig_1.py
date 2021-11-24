@@ -3,7 +3,8 @@ from scipy import signal
 import numpy as np
 import pytest
 from PySDM_examples.Lowe_et_al_2019 import aerosol
-from PySDM.physics import si, Formulae, constants as const
+from PySDM import Formulae
+from PySDM.physics import si, constants as const
 from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from .constants import constants
 

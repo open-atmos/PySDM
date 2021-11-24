@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from PySDM.dynamics import Displacement
-from PySDM.physics import Formulae
+from PySDM import Formulae
 from ...dummy_particulator import DummyParticulator
 from ...dummy_environment import DummyEnvironment
 

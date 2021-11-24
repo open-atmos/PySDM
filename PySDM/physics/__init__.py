@@ -6,4 +6,3 @@ from . import (condensation_coordinate, latent_heat, saturation_vapour_pressure,
     ventilation, state_variable_triplet, trivia, particle_advection, hydrostatics,
     freezing_temperature_spectrum, heterogeneous_ice_nucleation_rate)
 from .constants import si
-from .formulae import Formulae

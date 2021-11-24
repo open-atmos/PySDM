@@ -3,7 +3,8 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 from PySDM.initialisation import r_wet_init
-from PySDM.physics import Formulae, si, constants as const
+from PySDM import Formulae
+from PySDM.physics import si, constants as const
 from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from PySDM.backends import CPU
 

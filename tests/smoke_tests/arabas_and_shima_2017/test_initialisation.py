@@ -3,7 +3,8 @@ import numpy as np
 import pytest
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
-from PySDM.physics import Formulae, constants as const
+from PySDM import Formulae
+from PySDM.physics import constants as const
 
 
 class TestInitialisation:

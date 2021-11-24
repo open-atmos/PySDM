@@ -5,7 +5,7 @@ from chempy.electrolytes import ionic_strength
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.backends.impl_numba.methods.chemistry_methods import calc_ionic_strength, _K, _conc
 from PySDM.physics.constants import rho_w, ROOM_TEMP, K_H2O
-from PySDM.physics import Formulae
+from PySDM import Formulae
 from PySDM.physics.aqueous_chemistry.support import EquilibriumConsts
 
 

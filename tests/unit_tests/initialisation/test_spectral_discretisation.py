@@ -3,7 +3,8 @@ import numpy as np
 import pytest
 from PySDM.initialisation import spectral_sampling, spectro_glacial
 from PySDM.physics.spectra import Lognormal
-from PySDM.physics import Formulae, constants as const
+from PySDM import Formulae
+from PySDM.physics import constants as const
 from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
 
 niemand_et_al_2012.a = -0.517
