@@ -115,7 +115,7 @@ Pkg.add("PlotlyJS")
 
 using PyCall
 si = pyimport("PySDM.physics").si
-ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
+ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.physics.spectra").Exponential
 
 n_sd = 2^15
@@ -129,7 +129,7 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.spectral_sampling').ConstantMultiplicity;
+ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.sampling.spectral_sampling').ConstantMultiplicity;
 Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
 
 n_sd = 2^15;
@@ -339,7 +339,7 @@ and the
 using PyCall
 using Plots; plotlyjs()
 si = pyimport("PySDM.physics").si
-spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
+spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
 discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
 Lognormal = pyimport("PySDM.initialisation.spectra").Lognormal
 equilibrate_wet_radii = pyimport("PySDM.initialisation").equilibrate_wet_radii
@@ -421,7 +421,7 @@ savefig("parcel.svg")
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-spectral_sampling = py.importlib.import_module('PySDM.initialisation').spectral_sampling;
+spectral_sampling = py.importlib.import_module('PySDM.initialisation.sampling').spectral_sampling;
 discretise_multiplicities = py.importlib.import_module('PySDM.initialisation').discretise_multiplicities;
 Lognormal = py.importlib.import_module('PySDM.initialisation.spectra').Lognormal;
 equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation').equilibrate_wet_radii;
