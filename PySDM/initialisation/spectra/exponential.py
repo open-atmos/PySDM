@@ -1,5 +1,5 @@
 from scipy.stats import expon
-from ..impl.spectrum import Spectrum
+from PySDM.initialisation.impl.spectrum import Spectrum
 
 class Exponential(Spectrum):
 
