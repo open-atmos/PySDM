@@ -5,7 +5,8 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity, Logarithmic, UniformRandom
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity,\
+    Logarithmic, UniformRandom
 
 
 @pytest.mark.parametrize("spectral_sampling", [

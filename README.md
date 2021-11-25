@@ -115,8 +115,8 @@ Pkg.add("PlotlyJS")
 
 using PyCall
 si = pyimport("PySDM.physics").si
-ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
-Exponential = pyimport("PySDM.physics.spectra").Exponential
+ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
+Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
@@ -129,8 +129,8 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.spectral_sampling').ConstantMultiplicity;
-Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
+ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.sampling.spectral_sampling').ConstantMultiplicity;
+Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
 
 n_sd = 2^15;
 initial_spectrum = Exponential(pyargs(...
@@ -146,8 +146,8 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 
 ```Python
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.physics.spectra import Exponential
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra.exponential import Exponential
 
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
@@ -318,7 +318,7 @@ The resultant plot (generated with the Python code) looks as follows:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/physics/spectra.html#PySDM.physics.spectra.Lognormal)
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
@@ -339,15 +339,16 @@ and the
 using PyCall
 using Plots; plotlyjs()
 si = pyimport("PySDM.physics").si
-spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
-multiplicities = pyimport("PySDM.initialisation").multiplicities
-spectra = pyimport("PySDM.physics").spectra
-r_wet_init = pyimport("PySDM.initialisation").r_wet_init
+spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
+discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
+Lognormal = pyimport("PySDM.initialisation.spectra").Lognormal
+equilibrate_wet_radii = pyimport("PySDM.initialisation").equilibrate_wet_radii
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
 Condensation = pyimport("PySDM.dynamics").Condensation
 Parcel = pyimport("PySDM.environments").Parcel
 Builder = pyimport("PySDM").Builder
+Formulae = pyimport("PySDM").Formulae
 products = pyimport("PySDM.products")
 
 env = Parcel(
@@ -358,28 +359,28 @@ env = Parcel(
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
-spectrum=spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
+spectrum = Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU(), n_sd=n_sd)
+formulae = Formulae()
+builder = Builder(backend=CPU(formulae), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-v_dry = builder.formulae.trivia.volume(radius=r_dry)
-r_wet = r_wet_init(r_dry, env, kappa * v_dry)
-
+v_dry = formulae.trivia.volume(radius=r_dry)
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
 
 attributes = Dict()
-attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
+attributes["n"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
-attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
+attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
 
 particulator = builder.build(attributes, products=[
     products.PeakSupersaturation(name="S_max", unit="%"),
@@ -420,15 +421,16 @@ savefig("parcel.svg")
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-spectral_sampling = py.importlib.import_module('PySDM.initialisation').spectral_sampling;
-multiplicities = py.importlib.import_module('PySDM.initialisation').multiplicities;
-spectra = py.importlib.import_module('PySDM.physics').spectra;
-r_wet_init = py.importlib.import_module('PySDM.initialisation').r_wet_init;
+spectral_sampling = py.importlib.import_module('PySDM.initialisation.sampling').spectral_sampling;
+discretise_multiplicities = py.importlib.import_module('PySDM.initialisation').discretise_multiplicities;
+Lognormal = py.importlib.import_module('PySDM.initialisation.spectra').Lognormal;
+equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation').equilibrate_wet_radii;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
 Condensation = py.importlib.import_module('PySDM.dynamics').Condensation;
 Parcel = py.importlib.import_module('PySDM.environments').Parcel;
 Builder = py.importlib.import_module('PySDM').Builder;
+Formulae = py.importlib.import_module('PySDM').Formulae;
 products = py.importlib.import_module('PySDM.products');
 
 env = Parcel(pyargs( ...
@@ -439,29 +441,30 @@ env = Parcel(pyargs( ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
-spectrum = spectra.Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
+spectrum = Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
 kappa = .5;
 cloud_range = py.tuple({.5 * si.um, 25 * si.um});
 output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-builder = Builder(pyargs('backend', CPU(), 'n_sd', int32(n_sd)));
+formulae = Formulae()
+builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = builder.formulae.trivia.volume(r_dry);
+v_dry = formulae.trivia.volume(r_dry);
 specific_concentration = tmp{2};
-r_wet = r_wet_init(r_dry, env, kappa * v_dry);
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry);
 
 attributes = py.dict(pyargs( ...
-    'n', multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air), ...
+    'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
-    'volume', builder.formulae.trivia.volume(r_wet) ...
+    'volume', formulae.trivia.volume(r_wet) ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
@@ -517,13 +520,16 @@ saveas(gcf, "parcel.png")
 <summary>Python (click to expand)</summary>
 
 ```Python
+import PySDM.initialisation.spectra.lognormal
 from matplotlib import pyplot
-from PySDM.physics import si, spectra
-from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
+from PySDM.physics import si
+from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM import Builder, products
+from PySDM import Builder, Formulae, products
 
 env = Parcel(
   dt=.25 * si.s,
@@ -533,27 +539,28 @@ env = Parcel(
   T0=300 * si.K,
   w=2.5 * si.m / si.s
 )
-spectrum = spectra.Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU(), n_sd=n_sd)
+formulae = Formulae()
+builder = Builder(backend=CPU(formulae), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-v_dry = builder.formulae.trivia.volume(radius=r_dry)
-r_wet = r_wet_init(r_dry, env, kappa * v_dry)
+v_dry = formulae.trivia.volume(radius=r_dry)
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
 
 attributes = {
-  'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
+  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
   'dry volume': v_dry,
   'kappa times dry volume': kappa * v_dry,
-  'volume': builder.formulae.trivia.volume(radius=r_wet)
+  'volume': formulae.trivia.volume(radius=r_wet)
 }
 
 particulator = builder.build(attributes, products=[

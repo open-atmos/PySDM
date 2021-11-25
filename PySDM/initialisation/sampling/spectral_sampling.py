@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 import numpy as np
 from scipy import optimize
 from PySDM.physics import constants as const
@@ -7,8 +7,13 @@ default_cdf_range = (.00001, .99999)
 
 
 class SpectralSampling:
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
+    def __init__(self,
+                 spectrum,
+                 size_range: [None, Tuple[float, float]] = None,
+                 error_threshold: Optional[float] = None
+     ):
         self.spectrum = spectrum
+        self.error_threshold = error_threshold or .01
 
         if size_range is None:
             if hasattr(spectrum, 'percentiles'):
@@ -28,15 +33,14 @@ class SpectralSampling:
             assert size_range[1] > size_range[0]
             self.size_range = size_range
 
-    @staticmethod
-    def _sample(grid, spectrum):
+    def _sample(self, grid, spectrum):
         x = grid[1: -1: 2]
         cdf = spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
 
-        percent_diff = 100 * abs(1 - np.sum(y_float) / spectrum.norm_factor)
-        if percent_diff > 1:
-            raise Exception(f"{percent_diff}% error in total real-droplet number due to sampling")
+        diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
+        if diff > self.error_threshold:
+            raise Exception(f"{100*diff}% error in total real-droplet number due to sampling")
 
         return x, y_float
 
@@ -48,8 +52,12 @@ class Linear(SpectralSampling):
 
 
 class Logarithmic(SpectralSampling):
-    def __init__(self, spectrum, size_range: [None, Tuple[float, float]] = None):
-        super().__init__(spectrum, size_range)
+    def __init__(self,
+                 spectrum,
+                 size_range: [None, Tuple[float, float]] = None,
+                 error_threshold: Optional[float] = None
+                 ):
+        super().__init__(spectrum, size_range, error_threshold)
         self.start = np.log10(self.size_range[0])
         self.stop = np.log10(self.size_range[1])
 

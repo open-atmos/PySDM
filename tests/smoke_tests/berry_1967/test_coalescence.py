@@ -7,7 +7,7 @@ from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.coalescence_kernels import Golovin, Geometric, Electric, Hydrodynamic
 from ...backends_fixture import backend_class
 

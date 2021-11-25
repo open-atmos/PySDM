@@ -2,7 +2,8 @@
 import numpy as np
 import pytest
 from matplotlib import pylab
-from PySDM.physics import Formulae, si, constants as const
+from PySDM import Formulae
+from PySDM.physics import si, constants as const
 from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012, bigg_1953
 
 

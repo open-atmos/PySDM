@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 from scipy.optimize.zeros import toms748
 from PySDM.backends.impl_numba.toms748 import toms748_solve
-from PySDM.physics.formulae import Formulae
+from PySDM.formulae import Formulae
 
 # relevant
 # https://github.com/scipy/scipy/blob/master/scipy/optimize/tests/test_zeros.py

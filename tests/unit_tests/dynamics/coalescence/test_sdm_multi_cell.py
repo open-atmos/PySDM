@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from PySDM.backends import ThrustRTC
 from PySDM.environments import Box
-from PySDM.initialisation.spatial_sampling import Pseudorandom
+from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
 from PySDM.impl.mesh import Mesh
 from PySDM.dynamics.coalescence import DEFAULTS
 from ....backends_fixture import backend_class

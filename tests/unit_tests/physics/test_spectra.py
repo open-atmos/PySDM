@@ -2,7 +2,8 @@
 import numpy as np
 from numpy.testing import assert_approx_equal
 import pytest
-from PySDM.physics.spectra import Lognormal, Exponential, Sum, default_interpolation_grid
+from PySDM.initialisation.spectra import Exponential, Lognormal, Sum
+from PySDM.initialisation.impl.spectrum import default_interpolation_grid
 
 
 class TestLognormal:

@@ -14,7 +14,7 @@ from PySDM.backends.impl_thrust_rtc.methods.condensation_methods import Condensa
 from PySDM.backends.impl_thrust_rtc.methods.displacement_methods import DisplacementMethods
 from PySDM.backends.impl_thrust_rtc.storage import make_storage_class
 from PySDM.backends.impl_thrust_rtc.random import Random as ImportedRandom
-from PySDM.physics import Formulae
+from PySDM.formulae import Formulae
 from PySDM.backends.impl_thrust_rtc.conf import trtc
 
 

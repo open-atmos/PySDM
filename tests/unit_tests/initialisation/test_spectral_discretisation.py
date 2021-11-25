@@ -1,9 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from PySDM.initialisation import spectral_sampling, spectro_glacial
-from PySDM.physics.spectra import Lognormal
-from PySDM.physics import Formulae, constants as const
+from PySDM.initialisation.sampling import spectral_sampling, spectro_glacial_sampling
+from PySDM.initialisation.spectra.lognormal import Lognormal
+from PySDM import Formulae
+from PySDM.physics import constants as const
 from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
 
 niemand_et_al_2012.a = -0.517
@@ -32,7 +33,7 @@ def test_spectral_discretisation(discretisation):
     n_sd = 100000
 
     # Act
-    if isinstance(discretisation, spectro_glacial.SpectroGlacialSampling):
+    if isinstance(discretisation, spectro_glacial_sampling.SpectroGlacialSampling):
         m, _, __, n = discretisation.sample(n_sd)
     else:
         m, n = discretisation.sample(n_sd)

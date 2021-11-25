@@ -2,8 +2,9 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
-from PySDM.initialisation import r_wet_init
-from PySDM.physics import Formulae, si, constants as const
+from PySDM.initialisation import equilibrate_wet_radii
+from PySDM import Formulae
+from PySDM.physics import si, constants as const
 from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from PySDM.backends import CPU
 
@@ -73,7 +74,7 @@ def test_r_wet_init(constants, r_dry, plot=False):
         pyplot.show()
 
     # Act & Assert
-    r_wet_init(
+    equilibrate_wet_radii(
         r_dry=r_dry_arr,
         environment=Env(),
         kappa_times_dry_volume=Env.particulator.formulae.trivia.volume(r_dry_arr) * kappa,

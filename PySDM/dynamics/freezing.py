@@ -3,6 +3,7 @@ from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes, TimeDependentAttributes
 )
 
+
 class Freezing:
     def __init__(self, *, singular=True):
         self.singular = singular

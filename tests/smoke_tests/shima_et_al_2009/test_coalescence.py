@@ -7,10 +7,10 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.environments import Box
-from PySDM.physics.spectra import Exponential
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra import Exponential
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.physics.constants import si
-from PySDM.physics.formulae import Formulae
+from PySDM.formulae import Formulae
 
 from ...backends_fixture import backend_class
 assert hasattr(backend_class, '_pytestfixturefunction')

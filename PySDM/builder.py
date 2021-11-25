@@ -4,7 +4,7 @@ The Builder class handling creation of  `PySDM.Particulator` instances
 import inspect
 import numpy as np
 from PySDM.particulator import Particulator
-from PySDM.initialisation.multiplicities import discretise_n  # TODO #324
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities  # TODO #324
 from PySDM.impl.particle_attributes_factory import ParticlesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.attributes.impl.mapper import get_class as attr_class
@@ -55,7 +55,7 @@ class Builder:
         if variant is not None:
             assert variant == self.req_attr[attribute]
 
-    def build(self, attributes: dict, products: tuple = (), int_caster=discretise_n):
+    def build(self, attributes: dict, products: tuple = (), int_caster=discretise_multiplicities):
         assert self.particulator.environment is not None
 
         for dynamic in self.particulator.dynamics.values():

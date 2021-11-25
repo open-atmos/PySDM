@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from PySDM.physics import constants
-from PySDM.physics.formulae import Formulae
+from PySDM.formulae import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 

@@ -5,8 +5,8 @@ handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 
 import numpy as np
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
-from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from ._moist import _Moist
 from ..impl import arakawa_c
 
@@ -60,7 +60,7 @@ class Kinematic2D(_Moist):
             if kappa == 0:
                 r_wet = r_dry
             else:
-                r_wet = r_wet_init(
+                r_wet = equilibrate_wet_radii(
                     r_dry=r_dry,
                     environment=self,
                     kappa_times_dry_volume=attributes['kappa times dry volume'],
@@ -71,7 +71,7 @@ class Kinematic2D(_Moist):
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
+        attributes['n'] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes

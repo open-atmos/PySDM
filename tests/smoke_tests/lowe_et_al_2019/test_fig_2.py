@@ -2,7 +2,7 @@
 import pytest
 import numpy as np
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
-from PySDM.initialisation import spectral_sampling
+from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
 from .constants import constants
 

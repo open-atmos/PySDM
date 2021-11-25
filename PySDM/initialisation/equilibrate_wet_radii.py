@@ -12,11 +12,11 @@ default_rtol = 1e-5
 default_max_iters = 64
 
 
-def r_wet_init(r_dry: np.ndarray, environment,
-               kappa_times_dry_volume: np.ndarray,
-               f_org: np.ndarray = None,
-               cell_id: np.ndarray = None,
-               rtol=default_rtol, max_iters=default_max_iters):
+def equilibrate_wet_radii(r_dry: np.ndarray, environment,
+                          kappa_times_dry_volume: np.ndarray,
+                          f_org: np.ndarray = None,
+                          cell_id: np.ndarray = None,
+                          rtol=default_rtol, max_iters=default_max_iters):
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
     if f_org is None:

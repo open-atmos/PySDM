@@ -1,9 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from matplotlib import pylab
 import numpy as np
-from PySDM.physics import constants as const, Formulae
+from PySDM.physics import constants as const
 from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.dynamics import Freezing

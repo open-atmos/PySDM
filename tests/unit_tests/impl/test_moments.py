@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.initialisation.multiplicities import discretise_n
-from PySDM.initialisation.spectral_sampling import Linear
-from PySDM.physics.spectra import Lognormal
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
+from PySDM.initialisation.sampling.spectral_sampling import Linear
+from PySDM.initialisation.spectra.lognormal import Lognormal
 from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
 
@@ -23,7 +23,7 @@ class TestMaths:
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
-        n = discretise_n(n)
+        n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particulator.build(attribute)
@@ -77,7 +77,7 @@ class TestMaths:
         spectrum = Lognormal(n_part, v_mean, d)
         v, n = Linear(spectrum).sample(n_sd)
         T = np.full_like(v, 300.)
-        n = discretise_n(n)
+        n = discretise_multiplicities(n)
         particulator = DummyParticulator(backend_class, n_sd)
         attribute = {'n': n, 'volume': v, 'temperature': T, 'heat': T*v}
         particulator.build(attribute)
