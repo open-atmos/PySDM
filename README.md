@@ -116,7 +116,7 @@ Pkg.add("PlotlyJS")
 using PyCall
 si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
-Exponential = pyimport("PySDM.physics.spectra").Exponential
+Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
