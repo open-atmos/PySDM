@@ -130,7 +130,7 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
 ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.sampling.spectral_sampling').ConstantMultiplicity;
-Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
+Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
 
 n_sd = 2^15;
 initial_spectrum = Exponential(pyargs(...
@@ -318,7 +318,7 @@ The resultant plot (generated with the Python code) looks as follows:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/physics/spectra.html#PySDM.physics.spectra.Lognormal)
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
