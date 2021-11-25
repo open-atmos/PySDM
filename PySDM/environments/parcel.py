@@ -4,8 +4,8 @@ Zero-dimensional adiabatic parcel framework
 
 import numpy as np
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
-from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from ..physics import constants as const
 from ._moist import _Moist
 
@@ -73,8 +73,8 @@ class Parcel(_Moist):
         attributes = {}
         attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
         attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
-        attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(
+        attributes['n'] = discretise_multiplicities(n_in_dv)
+        r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
             environment=self,
             kappa_times_dry_volume=attributes['kappa times dry volume'],

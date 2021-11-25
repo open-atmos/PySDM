@@ -47,8 +47,10 @@ class Kinematic1D(_Moist):
             r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
             attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
             attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
-            r_wet = equilibrate_wet_radii(r_dry, self, cell_id=attributes['cell id'],
-                                          kappa_times_dry_volume=attributes['kappa times dry volume'])
+            r_wet = equilibrate_wet_radii(
+                r_dry, self, cell_id=attributes['cell id'],
+                kappa_times_dry_volume=attributes['kappa times dry volume']
+            )
 
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
