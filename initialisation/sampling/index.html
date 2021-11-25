@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.initialisation.spatial_sampling API documentation</title>
+<title>PySDM.initialisation.sampling API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,81 +19,32 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.initialisation.spatial_sampling</code></h1>
+<h1 class="title">Module <code>PySDM.initialisation.sampling</code></h1>
 </header>
 <section id="section-intro">
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">import numpy as np
-
-# TODO #305 QUASIRANDOM &amp; GRID
-#  http://ww2.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
-
-
-class Pseudorandom:
-
-    @staticmethod
-    def sample(grid, n_sd):
-        dimension = len(grid)
-        positions = np.random.rand(dimension, n_sd)
-        for dim in range(dimension):
-            positions[dim, :] *= grid[dim]
-        return positions</code></pre>
-</details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="PySDM.initialisation.spatial_sampling.Pseudorandom"><code class="flex name class">
-<span>class <span class="ident">Pseudorandom</span></span>
-</code></dt>
+<dt><code class="name"><a title="PySDM.initialisation.sampling.spatial_sampling" href="spatial_sampling.html">PySDM.initialisation.sampling.spatial_sampling</a></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Pseudorandom:
-
-    @staticmethod
-    def sample(grid, n_sd):
-        dimension = len(grid)
-        positions = np.random.rand(dimension, n_sd)
-        for dim in range(dimension):
-            positions[dim, :] *= grid[dim]
-        return positions</code></pre>
-</details>
-<h3>Static methods</h3>
-<dl>
-<dt id="PySDM.initialisation.spatial_sampling.Pseudorandom.sample"><code class="name flex">
-<span>def <span class="ident">sample</span></span>(<span>grid, n_sd)</span>
-</code></dt>
+</dd>
+<dt><code class="name"><a title="PySDM.initialisation.sampling.spectral_sampling" href="spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a></code></dt>
 <dd>
 <div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-def sample(grid, n_sd):
-    dimension = len(grid)
-    positions = np.random.rand(dimension, n_sd)
-    for dim in range(dimension):
-        positions[dim, :] *= grid[dim]
-    return positions</code></pre>
-</details>
+</dd>
+<dt><code class="name"><a title="PySDM.initialisation.sampling.spectro_glacial_sampling" href="spectro_glacial_sampling.html">PySDM.initialisation.sampling.spectro_glacial_sampling</a></code></dt>
+<dd>
+<div class="desc"></div>
 </dd>
 </dl>
-</dd>
-</dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -104,17 +55,14 @@ def sample(grid, n_sd):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.initialisation" href="index.html">PySDM.initialisation</a></code></li>
+<li><code><a title="PySDM.initialisation" href="../index.html">PySDM.initialisation</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="PySDM.initialisation.spatial_sampling.Pseudorandom" href="#PySDM.initialisation.spatial_sampling.Pseudorandom">Pseudorandom</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.initialisation.spatial_sampling.Pseudorandom.sample" href="#PySDM.initialisation.spatial_sampling.Pseudorandom.sample">sample</a></code></li>
-</ul>
-</li>
+<li><code><a title="PySDM.initialisation.sampling.spatial_sampling" href="spatial_sampling.html">PySDM.initialisation.sampling.spatial_sampling</a></code></li>
+<li><code><a title="PySDM.initialisation.sampling.spectral_sampling" href="spectral_sampling.html">PySDM.initialisation.sampling.spectral_sampling</a></code></li>
+<li><code><a title="PySDM.initialisation.sampling.spectro_glacial_sampling" href="spectro_glacial_sampling.html">PySDM.initialisation.sampling.spectro_glacial_sampling</a></code></li>
 </ul>
 </li>
 </ul>

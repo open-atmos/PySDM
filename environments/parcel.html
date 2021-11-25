@@ -33,8 +33,8 @@ Zero-dimensional adiabatic parcel framework
 
 import numpy as np
 from PySDM.impl.mesh import Mesh
-from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
-from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from ..physics import constants as const
 from ._moist import _Moist
 
@@ -102,8 +102,8 @@ class Parcel(_Moist):
         attributes = {}
         attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
         attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
-        attributes[&#39;n&#39;] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(
+        attributes[&#39;n&#39;] = discretise_multiplicities(n_in_dv)
+        r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
             environment=self,
             kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;],
@@ -234,8 +234,8 @@ class Parcel(_Moist):
         attributes = {}
         attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
         attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
-        attributes[&#39;n&#39;] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(
+        attributes[&#39;n&#39;] = discretise_multiplicities(n_in_dv)
+        r_wet = equilibrate_wet_radii(
             r_dry=r_dry,
             environment=self,
             kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;],
@@ -387,8 +387,8 @@ def dv(self):
     attributes = {}
     attributes[&#39;dry volume&#39;] = self.formulae.trivia.volume(radius=r_dry)
     attributes[&#39;kappa times dry volume&#39;] = attributes[&#39;dry volume&#39;] * kappa
-    attributes[&#39;n&#39;] = discretise_n(n_in_dv)
-    r_wet = r_wet_init(
+    attributes[&#39;n&#39;] = discretise_multiplicities(n_in_dv)
+    r_wet = equilibrate_wet_radii(
         r_dry=r_dry,
         environment=self,
         kappa_times_dry_volume=attributes[&#39;kappa times dry volume&#39;],

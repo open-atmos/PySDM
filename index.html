@@ -70,6 +70,7 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 from .builder import Builder
 from .particulator import Particulator
+from .formulae import Formulae
 
 try:
     __version__ = get_distribution(__name__).version
@@ -113,16 +114,18 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 <dd>
 <div class="desc"><p>Exporters module</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></dt>
+<dd>
+<div class="desc"><p>Logic for enabling common CPU/GPU physics formulae code</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></dt>
 <dd>
-<div class="desc"><p>Initialisation logic incl.
-<code><a title="PySDM.initialisation.spectral_sampling" href="initialisation/spectral_sampling.html">PySDM.initialisation.spectral_sampling</a></code>,
-<code><a title="PySDM.initialisation.spatial_sampling" href="initialisation/spatial_sampling.html">PySDM.initialisation.spatial_sampling</a></code>,
-<code>PySDM.initialisation.spectra</code></p></div>
+<div class="desc"><p>Initialisation logic particle size spectra, sampling methods and
+wet radii equilibration</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></dt>
 <dd>
@@ -130,7 +133,7 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 </dd>
 <dt><code class="name"><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></dt>
 <dd>
-<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code><a title="PySDM.physics.formulae.Formulae" href="physics/formulae.html#PySDM.physics.formulae.Formulae">Formulae</a></code></p></div>
+<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code>PySDM.physics.formulae.Formulae</code></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></dt>
 <dd>
@@ -161,6 +164,7 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 <li><code><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></li>
 <li><code><a title="PySDM.environments" href="environments/index.html">PySDM.environments</a></code></li>
 <li><code><a title="PySDM.exporters" href="exporters/index.html">PySDM.exporters</a></code></li>
+<li><code><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></li>
 <li><code><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></li>
 <li><code><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></li>
 <li><code><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></li>
