@@ -557,7 +557,7 @@ v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
 
 attributes = {
-  'n': discretise_multiplicities.discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
   'dry volume': v_dry,
   'kappa times dry volume': kappa * v_dry,
   'volume': formulae.trivia.volume(radius=r_wet)
