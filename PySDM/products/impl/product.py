@@ -15,7 +15,7 @@ class Product:
         self.name = name or self._camel_case_to_words(self.__class__.__name__)
 
         self._unit = self.__parse_unit(unit)
-        self._base_unit = self._unit.to_base_units().magnitude
+        self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
         self.__check_unit()
 
         self.shape = None
@@ -85,5 +85,5 @@ class Product:
 
     def get(self, **kwargs):
         result = self._impl(**kwargs)
-        const.convert_to(result, self._base_unit)
+        result /= self.unit_magnitude_in_base_units
         return result
