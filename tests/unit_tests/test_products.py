@@ -38,6 +38,24 @@ class TestProducts:
         product(**(_ARGUMENTS[product] if product in _ARGUMENTS else {}))
 
     @staticmethod
+    def test_unit_conversion():
+        # arrange
+        class SUT(Product):
+            def __init__(self, unit='m'):
+                super().__init__(unit=unit)
+
+            def _impl(self, **kwargs):
+                return 1
+
+        sut = SUT(unit="mm")
+
+        # act
+        value = sut.get()
+
+        # assert
+        assert value == 1e3
+
+    @staticmethod
     @pytest.mark.parametrize('in_out_pair', (
         ('CPUTime', 'CPU time'),
         ('WallTime', 'wall time')
