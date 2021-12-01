@@ -44,7 +44,7 @@ class TestProducts:
             def __init__(self, unit='m'):
                 super().__init__(unit=unit)
 
-            def _impl(self, *kwargs):
+            def _impl(self, **kwargs):
                 return 1
 
         sut = SUT(unit="mm")
