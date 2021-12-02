@@ -1,10 +1,13 @@
 import inspect
 from typing import Tuple
+from collections import namedtuple
 import sys
 import numpy as np
 import pytest
 from PySDM import products
+from PySDM.backends import CPU
 from PySDM.products.impl.product import Product
+from PySDM.products.impl.rate_product import RateProduct
 from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMassMixingRatio,
                             ParticleSizeSpectrumPerMass, GaseousMoleFraction,
                             FreezableSpecificConcentration, DynamicWallTime,
@@ -54,6 +57,39 @@ class TestProducts:
 
         # assert
         assert value == 1e3
+
+    @staticmethod
+    def test_rate_product():
+        # arrange
+        n_steps = 10
+        dt = 44
+        count = 666
+        size = 1
+
+        class SUT(RateProduct):
+            def __init__(self, unit='s^-1'):
+                super().__init__(unit=unit, name=None, counter='', dynamic=None)
+
+        backend = CPU()
+        sut = SUT()
+        sut.buffer = np.empty(size)
+        sut.particulator = namedtuple('_', ('dt',))(dt=dt)
+
+        def set_and_notify():
+            sut.counter = backend.Storage.from_ndarray(np.full(size, count))
+            for _ in range(n_steps):
+                sut.notify()
+
+        # act
+        set_and_notify()
+        value1 = sut.get()
+        set_and_notify()
+        value2 = sut.get()
+
+        # assert
+        np.testing.assert_allclose(value1, count / n_steps / dt)
+        np.testing.assert_allclose(value2, count / n_steps / dt)
+
 
     @staticmethod
     @pytest.mark.parametrize('in_out_pair', (
