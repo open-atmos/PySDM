@@ -122,7 +122,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
             else {{
                 dx_old = 0;
             }}
-            real_type kappa = _kappa[i]
+            real_type kappa = _kappa[i];
             real_type f_org = _f_org[i];
             real_type args[] = {{{','.join(args_vars)}}}; // array
 
