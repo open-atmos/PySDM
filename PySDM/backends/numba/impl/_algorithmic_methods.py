@@ -146,9 +146,12 @@ class AlgorithmicMethods:
         
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def collision_body(n, idx, length, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, is_first_in_pair):
+    def collision_body(n, idx, length, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, cell_id,
+                        coalescence_rate, breakup_rate, is_first_in_pair):
         for i in numba.prange(length // 2):
+            cid = cell_id[i]
             dyn[i] = rand[i] - Ec[i] - Eb[i]
+
             if dyn[i] > 0: # bouncing
                 continue
 
@@ -169,6 +172,8 @@ class AlgorithmicMethods:
                         attributes[a, k] = attributes[a, j]
                 if n[k] == 0 or n[j] == 0:
                     healthy[0] = 0
+
+                coalescence_rate[cid] += gamma[i] * n[k]
                     
             else: # breakup
                 new_n = n[j] - gamma[i] * n[k]
@@ -190,11 +195,15 @@ class AlgorithmicMethods:
                 if n[k] == 0 or n[j] == 0:
                     healthy[0] = 0
 
+                breakup_rate[cid] += gamma[i] * n[k]
+
     @staticmethod
-    def collision(n, idx, length, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, is_first_in_pair):
+    def collision(n, idx, length, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, cell_id,
+                        coalescence_rate, breakup_rate, is_first_in_pair):
         AlgorithmicMethods.collision_body(n.data, idx.data, length,
                                             attributes.data, gamma.data, rand.data, dyn.data, Ec.data, Eb.data, 
-                                            n_fragment.data, healthy.data, is_first_in_pair.indicator.data)
+                                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data, 
+                                            breakup_rate.data, is_first_in_pair.indicator.data)
         
     '''@staticmethod
     @numba.njit(**conf.JIT_FLAGS)

@@ -2,3 +2,5 @@ from .coalescence_timestep_mean import CoalescenceTimestepMean
 from .coalescence_timestep_min import CoalescenceTimestepMin
 from .collision_rate import CollisionRate
 from .collision_rate_deficit import CollisionRateDeficit
+from .coalescence_rate import CoalescenceRate
+from .breakup_rate import BreakupRate

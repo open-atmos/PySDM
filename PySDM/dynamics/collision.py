@@ -68,6 +68,8 @@ class Collision:
 
         self.collision_rate = None
         self.collision_rate_deficit = None
+        self.coalescence_rate = None
+        self.breakup_rate = None
                 
 
     def register(self, builder):
@@ -122,6 +124,8 @@ class Collision:
         
         self.collision_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
         self.collision_rate_deficit = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.coalescence_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
+        self.breakup_rate = self.core.Storage.from_ndarray(np.zeros(self.core.mesh.n_cell, dtype=int))
 
     def __call__(self):
         if self.enable:
@@ -164,7 +168,9 @@ class Collision:
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
         
         # (5) Perform the collisional-coalescence/breakup step: 
-        self.core.particles.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment, is_first_in_pair=self.is_first_in_pair)
+        self.core.particles.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment, 
+                                    cell_id=self.core.particles["cell id"], coalescence_rate=self.coalescence_rate, 
+                                    breakup_rate=self.breakup_rate, is_first_in_pair=self.is_first_in_pair)
         
         if self.adaptive:
             self.core.particles.cut_working_length(self.core.particles.adaptive_sdm_end(self.dt_left))

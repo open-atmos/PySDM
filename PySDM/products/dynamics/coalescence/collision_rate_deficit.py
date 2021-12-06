@@ -8,13 +8,13 @@ class CollisionRateDeficit(Product):
             name='collision_rate_deficit',
             description='Collision rate deficit'
         )
-        self.coalescence = None
+        self.collision = None
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.core.dynamics['Coalescence']
+        self.collision = self.core.dynamics['Collision']
 
     def get(self):  # TODO #345 take into account NUMBER of substeps (?)
-        self.download_to_buffer(self.coalescence.collision_rate_deficit)
-        self.coalescence.collision_rate_deficit[:] = 0
+        self.download_to_buffer(self.collision.collision_rate_deficit)
+        self.collision.collision_rate_deficit[:] = 0
         return self.buffer

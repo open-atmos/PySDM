@@ -146,7 +146,8 @@ class Particles:
             if isinstance(attr, ExtensiveAttribute):
                 attr.mark_updated()'''
                 
-    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment, is_first_in_pair):
+    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment, cell_id, coalescence_rate, breakup_rate, 
+                is_first_in_pair):
         self.core.bck.collision(n=self['n'],
                                 idx=self.__idx,
                                 length=self.SD_num,
@@ -158,6 +159,9 @@ class Particles:
                                 Eb=Eb,
                                 n_fragment=n_fragment,
                                 healthy=self.__healthy_memory,
+                                cell_id = cell_id,
+                                coalescence_rate = coalescence_rate,
+                                breakup_rate = breakup_rate,
                                 is_first_in_pair=is_first_in_pair
                                )
         self.healthy = bool(self.__healthy_memory)

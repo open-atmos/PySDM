@@ -1,12 +1,12 @@
 from PySDM.products.product import Product
 
 
-class CollisionRate(Product):
+class BreakupRate(Product):
 
     def __init__(self):
         super().__init__(
-            name='collision_rate',
-            description='Collision rate'
+            name='breakup_rate',
+            description='Breakup rate'
         )
         self.collision = None
 
@@ -15,6 +15,6 @@ class CollisionRate(Product):
         self.collision = self.core.dynamics['Collision']
 
     def get(self):  # TODO #345 take into account NUMBER of substeps (?)
-        self.download_to_buffer(self.collision.collision_rate)
-        self.collision.collision_rate[:] = 0
+        self.download_to_buffer(self.collision.breakup_rate)
+        self.collision.breakup_rate[:] = 0
         return self.buffer
