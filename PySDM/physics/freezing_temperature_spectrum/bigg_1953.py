@@ -4,9 +4,6 @@ from PySDM.physics import constants as const
 P_median = .5
 DT_median = np.nan
 
-# TODO #599: there are two Bigg 1953 papers
-# TODO #599: relate DT to drop volume to A_insol? (the second paper!)
-
 
 class Bigg_1953:
     def __init__(self):
