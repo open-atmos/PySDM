@@ -196,3 +196,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     @staticmethod
     def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
         pass
+
+    @staticmethod
+    def Set_Verbose(_):  # pylint: disable=invalid-name
+        pass
