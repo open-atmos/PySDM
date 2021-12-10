@@ -61,7 +61,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
     default_croupier = &#39;global&#39;
 
-    def __init__(self, formulae=None, double_precision=False):
+    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
@@ -77,6 +77,9 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
+
+        trtc.Set_Kernel_Debug(debug)
+        trtc.Set_Verbose(verbose)
 
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:
@@ -94,7 +97,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 <dl>
 <dt id="PySDM.backends.thrust_rtc.ThrustRTC"><code class="flex name class">
 <span>class <span class="ident">ThrustRTC</span></span>
-<span>(</span><span>formulae=None, double_precision=False)</span>
+<span>(</span><span>formulae=None, double_precision=False, debug=False, verbose=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -116,7 +119,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
     default_croupier = &#39;global&#39;
 
-    def __init__(self, formulae=None, double_precision=False):
+    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
@@ -132,6 +135,9 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
+
+        trtc.Set_Kernel_Debug(debug)
+        trtc.Set_Verbose(verbose)
 
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:

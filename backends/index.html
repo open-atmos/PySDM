@@ -235,7 +235,7 @@ alias for ThrustRTC
 </dd>
 <dt id="PySDM.backends.ThrustRTC"><code class="flex name class">
 <span>class <span class="ident">GPU</span></span>
-<span>(</span><span>formulae=None, double_precision=False)</span>
+<span>(</span><span>formulae=None, double_precision=False, debug=False, verbose=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -257,7 +257,7 @@ alias for ThrustRTC
 
     default_croupier = &#39;global&#39;
 
-    def __init__(self, formulae=None, double_precision=False):
+    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
@@ -273,6 +273,9 @@ alias for ThrustRTC
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
+
+        trtc.Set_Kernel_Debug(debug)
+        trtc.Set_Verbose(verbose)
 
         if not ThrustRTC.ENABLE \
            and &#39;CI&#39; not in os.environ:
