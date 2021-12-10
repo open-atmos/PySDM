@@ -1,25 +1,39 @@
-from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.physics.volume import Volume
-from PySDM.attributes.physics.dry_volume import DryVolumeDynamic, DryVolumeStatic
-from PySDM.attributes.physics.radius import Radius
-from PySDM.attributes.physics.dry_radius import DryRadius
-from PySDM.attributes.physics.terminal_velocity import TerminalVelocity
-from PySDM.attributes.numerics.cell_id import CellID
-from PySDM.attributes.numerics.cell_origin import CellOrigin
-from PySDM.attributes.numerics.position_in_cell import PositionInCell
-from PySDM.attributes.physics.temperature import Temperature
-from PySDM.attributes.physics.heat import Heat
-from PySDM.attributes.physics.critical_volume import CriticalVolume
-from PySDM.attributes.chemistry.mole_amount import MoleAmount
-from PySDM.attributes.chemistry.concentration import Concentration
-from PySDM.attributes.chemistry.pH import pH
-from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
 from functools import partial
+from PySDM.attributes.impl.dummy_attribute import DummyAttributeImpl
+from PySDM.attributes.physics.dry_volume import DryVolumeOrganic, DryVolume, DryVolumeDynamic, OrganicFraction
+from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
+from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
+                                      TerminalVelocity, Temperature, Heat, CriticalVolume)
+from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
+from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
+from PySDM.attributes.chemistry import MoleAmount, Concentration, pH, HydrogenIonConcentration
+from PySDM.attributes.physics.critical_supersaturation import CriticalSupersaturation
+from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.physics.surface_tension import Constant
 
 attributes = {
     'n': lambda _: Multiplicities,
     'volume': lambda _: Volume,
-    'dry volume': lambda dynamics: DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolumeStatic,
+    'dry volume organic': lambda dynamics: (
+        DummyAttributeImpl('dry volume organic')
+        if 'Condensation' in dynamics and isinstance(
+            dynamics['Condensation'].particulator.formulae.surface_tension,
+            Constant
+        )
+        else DryVolumeOrganic
+    ),
+    'dry volume': lambda dynamics:
+    DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
+    'dry volume organic fraction': lambda dynamics: (
+        DummyAttributeImpl('dry volume organic fraction')
+        if 'Condensation' in dynamics and isinstance(
+            dynamics['Condensation'].particulator.formulae.surface_tension,
+            Constant
+        )
+        else OrganicFraction
+    ),
+    'kappa times dry volume': lambda _: KappaTimesDryVolume,
+    'kappa': lambda _: Kappa,
     'radius': lambda _: Radius,
     'dry radius': lambda _: DryRadius,
     'terminal velocity': lambda _: TerminalVelocity,
@@ -30,12 +44,18 @@ attributes = {
     'heat': lambda _: Heat,
     'critical volume': lambda _: CriticalVolume,
     **{"moles_" + compound: partial(lambda _, c: MoleAmount(c), c=compound)
-       for compound in AQUEOUS_COMPOUNDS.keys()},
+       for compound in AQUEOUS_COMPOUNDS},
     **{"conc_" + compound: partial(lambda _, c: Concentration(c), c=compound)
-       for compound in AQUEOUS_COMPOUNDS.keys()},
-    'pH': lambda _: pH
+       for compound in AQUEOUS_COMPOUNDS},
+    'pH': lambda _: pH,
+    'conc_H': lambda _: HydrogenIonConcentration,
+    'freezing temperature': lambda _: FreezingTemperature,
+    'immersed surface area': lambda _: ImmersedSurfaceArea,
+    'critical supersaturation': lambda _: CriticalSupersaturation
 }
 
 
 def get_class(name, dynamics):
+    if name not in attributes:
+        raise ValueError(f"Unknown attribute name: {name}; valid names: {', '.join(attributes)}")
     return attributes[name](dynamics)

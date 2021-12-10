@@ -18,14 +18,14 @@ class _CondensationTimestep(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
-        self.condensation = self.core.dynamics['Condensation']
+        self.particulator.observers.append(self)
+        self.condensation = self.particulator.dynamics['Condensation']
         self.range = self.condensation.dt_cond_range
         self.value = np.full_like(self.buffer, np.nan)
 
     def notify(self):
         self.download_to_buffer(self.condensation.counters['n_substeps'])
-        self.buffer[:] = self.condensation.core.dt / self.buffer
+        self.buffer[:] = self.condensation.particulator.dt / self.buffer
         self.value = self.extremum(self.buffer, self.value)
 
     def get(self):

@@ -11,3 +11,4 @@ from .eulerian_advection import EulerianAdvection
 from .ambient_thermodynamics import AmbientThermodynamics
 from .aqueous_chemistry import AqueousChemistry
 from .collision import Collision
+from .freezing import Freezing

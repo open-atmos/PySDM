@@ -18,13 +18,13 @@ class Kinematic1D(_Moist):
 
     def register(self, builder):
         super().register(builder)
-        self.formulae = builder.core.formulae
-        rhod = builder.core.Storage.from_ndarray(self.rhod)
+        self.formulae = builder.particulator.formulae
+        rhod = builder.particulator.Storage.from_ndarray(self.rhod)
         self._values["current"]["rhod"] = rhod
         self._tmp["rhod"] = rhod
 
     def get_qv(self) -> np.ndarray:
-        return self.core.dynamics['EulerianAdvection'].solvers.advectee.get()
+        return self.particulator.dynamics['EulerianAdvection'].solvers.advectee.get()
 
     def get_thd(self) -> np.ndarray:
         return self.thd0
@@ -39,12 +39,15 @@ class Kinematic1D(_Moist):
 
         attributes = {}
         with np.errstate(all='raise'):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.core.n_sd)
+            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.core.n_sd)
-            r_wet = r_wet_init(r_dry, self, cell_id=attributes['cell id'], kappa=kappa)
+            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+            attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
+            attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
+            r_wet = r_wet_init(r_dry, self, cell_id=attributes['cell id'],
+                               kappa_times_dry_volume=attributes['kappa times dry volume'])
 
             rhod = self['rhod'].to_ndarray()
             cell_id = attributes['cell id']
@@ -52,14 +55,12 @@ class Kinematic1D(_Moist):
 
         attributes['n'] = discretise_n(n_per_kg * rhod[cell_id] * domain_volume)
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
-        attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
 
         return attributes
 
     def sync(self):
         super().sync()
 
-    # TODO #418: common with 2D
     @property
     def dv(self):
         return self.mesh.dv

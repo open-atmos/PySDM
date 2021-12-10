@@ -18,9 +18,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
       - run: pip install -e .
       - run: pip install exdown pytest
       - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.py', 'w'); f.writelines(block.code for block in code if block.syntax=='Python'); f.close()"
       - run: python -We readme.py
       - run: sed -i 's/CPU/GPU/g' readme.py
       - run: python -We readme.py
+      
+      - name: artefacts
+        if: github.ref == 'refs/heads/master'
+        uses: eine/tip@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            readme.png

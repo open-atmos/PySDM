@@ -20,3 +20,5 @@ import PySDM.physics.breakup_fragmentations
 import PySDM.physics.coalescence_efficiencies
 import PySDM.physics.breakup_efficiencies
 import PySDM.physics.collision_kernels
+import PySDM.physics.freezing_temperature_spectrum
+import PySDM.physics.heterogeneous_ice_nucleation_rate

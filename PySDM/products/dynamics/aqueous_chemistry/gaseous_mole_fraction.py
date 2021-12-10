@@ -15,7 +15,7 @@ class GaseousMoleFraction(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.aqueous_chemistry = self.core.dynamics['AqueousChemistry']
+        self.aqueous_chemistry = self.particulator.dynamics['AqueousChemistry']
 
     def get(self):
         tmp = self.formulae.trivia.mixing_ratio_2_mole_fraction(

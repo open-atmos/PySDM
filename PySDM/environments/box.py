@@ -3,7 +3,7 @@ Bare zero-dimensional framework
 """
 
 from PySDM.state.mesh import Mesh
-from PySDM.builder import Builder
+import numpy as np
 
 
 class Box:
@@ -11,12 +11,22 @@ class Box:
     def __init__(self, dt, dv):
         self.dt = dt
         self.mesh = Mesh.mesh_0d(dv)
-        self.core = None
+        self.particulator = None
+        self._ambient_air = {}
 
-    def register(self, builder: Builder):
-        self.core = builder.core
+    def __getitem__(self, item):
+        return self._ambient_air[item]
+
+    def __setitem__(self, key, value):
+        if key not in self._ambient_air:
+            self._ambient_air[key] = self.particulator.backend.Storage.from_ndarray(np.array([value]))
+        else:
+            self._ambient_air[key][:] = value
+
+    def register(self, builder):
+        self.particulator = builder.particulator
 
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
-        attributes['volume'], attributes['n'] = spectral_discretisation.sample(self.core.n_sd)
+        attributes['volume'], attributes['n'] = spectral_discretisation.sample(self.particulator.n_sd)
         return attributes

@@ -71,9 +71,9 @@ class PairMethods:
                     idx[i], idx[i + 1] = idx[i + 1], idx[i]
 
     @staticmethod
-    def sort_within_pair_by_attr(idx, length, is_first_in_pair, attr):
+    def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
         PairMethods.sort_within_pair_by_attr_body(
-            idx.data, length, is_first_in_pair.indicator.data, attr.data)
+            idx.data, len(idx), is_first_in_pair.indicator.data, attr.data)
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)

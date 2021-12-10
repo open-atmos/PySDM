@@ -1,7 +1,8 @@
 from PySDM.backends.thrustRTC.conf import NICE_THRUST_FLAGS
 from PySDM.backends.thrustRTC.impl import nice_thrust
-from ..conf import trtc
+
 from .precision_resolver import PrecisionResolver
+from ..conf import trtc
 
 
 class AlgorithmicMethods:
@@ -100,12 +101,16 @@ class AlgorithmicMethods:
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def cell_id(cell_id, cell_origin, strides):
+        if len(cell_id) == 0:
+            return
+
         assert cell_origin.shape[0] == strides.shape[1]
         assert cell_id.shape[0] == cell_origin.shape[1]
         assert strides.shape[0] == 1
         n_dims = trtc.DVInt64(cell_origin.shape[0])
         size = trtc.DVInt64(cell_origin.shape[1])
-        AlgorithmicMethods.__cell_id_body.launch_n(len(cell_id), [cell_id.data, cell_origin.data, strides.data, n_dims, size])
+        AlgorithmicMethods.__cell_id_body.launch_n(len(cell_id),
+                                                   [cell_id.data, cell_origin.data, strides.data, n_dims, size])
 
     __distance_pair_body = trtc.For(['data_out', 'data_in', 'is_first_in_pair'], "i", '''
         if (is_first_in_pair[i]) {
@@ -143,10 +148,12 @@ class AlgorithmicMethods:
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(n, idx, length, attributes, gamma, healthy, is_first_in_pair):
+    def coalescence(n, idx, attributes, gamma, healthy, is_first_in_pair):
+        if len(idx) < 2:
+            return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
-        AlgorithmicMethods.__coalescence_body.launch_n(length // 2,
+        AlgorithmicMethods.__coalescence_body.launch_n(len(idx) // 2,
                                                        [n.data, idx.data, n_sd,
                                                         attributes.data,
                                                         n_attr, gamma.data, healthy.data])
@@ -233,28 +240,33 @@ class AlgorithmicMethods:
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(gamma, rand, n, cell_id,
                       collision_rate_deficit, collision_rate, is_first_in_pair):
+        if len(n) < 2:
+            return
         AlgorithmicMethods.__compute_gamma_body.launch_n(
             len(n) // 2,
             [gamma.data, rand.data, n.idx.data, n.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data])
 
     __flag_precipitated_body = trtc.For(['idx', 'n_sd', 'n_dims', 'healthy', 'cell_origin', 'position_in_cell',
-                                         'volume', 'n'], "i", '''
+                                         'volume', 'n', 'rainfall'], "i", '''
         if (cell_origin[n_sd * (n_dims-1) + idx[i]] + position_in_cell[n_sd * (n_dims-1) + idx[i]] < 0) {
+            atomicAdd((real_type*) &rainfall[0], n[idx[i]] * volume[idx[i]]);
             idx[i] = n_sd;
             healthy[0] = 0;
         }
-        ''')
+        '''.replace('real_type', PrecisionResolver.get_C_type()))
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(cell_origin, position_in_cell, volume, n, idx, length, healthy):
         n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
+        rainfall = trtc.device_vector(PrecisionResolver.get_C_type(), 1)
+        trtc.Fill(rainfall, PrecisionResolver.get_floating_point(0))
         AlgorithmicMethods.__flag_precipitated_body.launch_n(
             length, [idx.data, n_sd, n_dims, healthy.data, cell_origin.data, position_in_cell.data,
-                     volume.data, n.data])
-        return 0  # TODO #332
+                     volume.data, n.data, rainfall])
+        return rainfall.to_host()[0]
     
     __linear_collection_efficiency_body = trtc.For(
         ['A', 'B', 'D1', 'D2', 'E1', 'E2', 'F1', 'F2', 'G1', 'G2', 'G3', 'Mf', 'Mg', 'output', 'radii',

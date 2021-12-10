@@ -2,14 +2,13 @@
 """
 
 import numpy as np
-from PySDM.builder import Builder
 
 
 class _Moist:
 
     def __init__(self, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
-        self.core = None
+        self.particulator = None
         self.dt = dt
         self.mesh = mesh
         self.variables = variables
@@ -17,8 +16,8 @@ class _Moist:
         self._tmp = None
 
     def register(self, builder):
-        self.core = builder.core
-        self.core.observers.append(self)
+        self.particulator = builder.particulator
+        self.particulator.observers.append(self)
         self._values = {
             "predicted": None,
             "current": self._allocate(self.variables)
@@ -28,7 +27,7 @@ class _Moist:
     def _allocate(self, variables):
         result = {}
         for var in variables:
-            result[var] = self.core.Storage.empty((self.mesh.n_cell,), float)
+            result[var] = self.particulator.Storage.empty((self.mesh.n_cell,), float)
         return result
 
     def __getitem__(self, index):
@@ -44,14 +43,14 @@ class _Moist:
         target['qv'].ravel(self.get_qv())
         target['thd'].ravel(self.get_thd())
 
-        self.core.backend.temperature_pressure_RH(
+        self.particulator.backend.temperature_pressure_RH(
             target['rhod'], target['thd'], target['qv'],
             target['T'], target['p'], target['RH']
         )
         self._values["predicted"] = target
 
-    def get_qv(self) -> np.ndarray: raise NotImplemented()
-    def get_thd(self) -> np.ndarray: raise NotImplemented()
+    def get_qv(self) -> np.ndarray: raise NotImplementedError()
+    def get_thd(self) -> np.ndarray: raise NotImplementedError()
 
     def notify(self):
         if self._values["predicted"] is None:

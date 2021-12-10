@@ -19,11 +19,11 @@ class SurfacePrecipitation(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.core.observers.append(self)
+        self.particulator.observers.append(self)
         self.shape = ()
-        self.displacement = self.core.dynamics['Displacement']
-        self.dv = self.core.mesh.dv
-        self.dz = self.core.mesh.dz
+        self.displacement = self.particulator.dynamics['Displacement']
+        self.dv = self.particulator.mesh.dv
+        self.dz = self.particulator.mesh.dz
 
     def get(self) -> float:
         if self.elapsed_time == 0.:
@@ -36,5 +36,5 @@ class SurfacePrecipitation(Product):
 
     def notify(self):
         self.accumulated_rainfall += self.displacement.precipitation_in_last_step
-        self.elapsed_time += self.displacement.core.dt
+        self.elapsed_time += self.displacement.particulator.dt
 

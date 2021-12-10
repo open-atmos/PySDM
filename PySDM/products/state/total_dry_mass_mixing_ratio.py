@@ -18,8 +18,8 @@ class TotalDryMassMixingRatio(MomentProduct):
         result = np.copy(self.buffer)
         self.download_moment_to_buffer('dry volume', rank=0)
         result[:] *= self.buffer
-        self.download_to_buffer(self.core.environment['rhod'])
-        result[:] /= self.core.mesh.dv
+        self.download_to_buffer(self.particulator.environment['rhod'])
+        result[:] /= self.particulator.mesh.dv
         result[:] /= self.buffer
         convert_to(result, si.ug / si.kg)
         return result
