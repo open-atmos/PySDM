@@ -192,3 +192,11 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
         values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
         # TODO #328 Thrust sorts keys as well
+
+    @staticmethod
+    def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
+        pass
+
+    @staticmethod
+    def Set_Verbose(_):  # pylint: disable=invalid-name
+        pass
