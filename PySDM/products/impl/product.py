@@ -42,7 +42,7 @@ class Product:
             return const.PPM * _UNIT_REGISTRY.dimensionless
         if unit in ('PPT', 'ppt'):
             return const.PPT * _UNIT_REGISTRY.dimensionless
-        return _UNIT_REGISTRY[unit]
+        return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod
     def _camel_case_to_words(string: str):
