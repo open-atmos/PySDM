@@ -1,8 +1,12 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 import numba
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
-from PySDM.physics.formulae import Formulae
+from PySDM.formulae import Formulae
 from PySDM.physics import constants
+
+
+assert numba.config.DISABLE_JIT is not None  # pylint: disable=no-member
 
 
 class TestDimensionalAnalysis:
@@ -13,11 +17,11 @@ class TestDimensionalAnalysis:
         sut = DimensionalAnalysis()
 
         # Act & Assert
-        assert type(constants.D0) == float
+        assert isinstance(constants.D0, float)
         with sut:
-            assert type(constants.D0) != float
-            assert type(constants.D0.magnitude) == float
-        assert type(constants.D0) == float
+            assert not isinstance(constants.D0, float)
+            assert isinstance(constants.D0.magnitude, float)
+        assert isinstance(constants.D0, float)
 
     @staticmethod
     @pytest.mark.skipif("numba.config.DISABLE_JIT")

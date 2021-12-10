@@ -1,19 +1,17 @@
-from PySDM.builder import Builder
-from PySDM.physics.formulae import Formulae
-from PySDM.particulator import Particulator
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from PySDM import Builder, Particulator
+from PySDM.attributes.physics import Multiplicities
+from PySDM.attributes.numerics import CellID
 from .dummy_environment import DummyEnvironment
-from PySDM.attributes.physics.multiplicities import Multiplicities
-from PySDM.attributes.numerics.cell_id import CellID
 
 
 class DummyParticulator(Builder, Particulator):
 
-    def __init__(self, backend, n_sd=0, formulae=None):
-        if formulae is None:
-            formulae = Formulae()
-        Particulator.__init__(self, n_sd, backend(formulae))
+    def __init__(self, backend_class, n_sd=0, formulae=None, grid=None):
+        backend = backend_class(formulae)
+        Builder.__init__(self, n_sd, backend)
+        Particulator.__init__(self, n_sd, backend)
         self.particulator = self
-        self.environment = DummyEnvironment()
-        self.environment.register(self)
+        Builder.set_environment(self, DummyEnvironment(grid=grid))
         self.req_attr = {'n': Multiplicities(self), 'cell id': CellID(self)}
         self.attributes = None

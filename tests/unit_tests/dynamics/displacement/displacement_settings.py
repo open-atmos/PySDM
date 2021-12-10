@@ -1,8 +1,9 @@
-from ...dummy_particulator import DummyParticulator
-from PySDM.dynamics import Displacement
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+from PySDM.dynamics import Displacement
+from PySDM import Formulae
+from ...dummy_particulator import DummyParticulator
 from ...dummy_environment import DummyEnvironment
-from PySDM.physics import Formulae
 
 
 class DisplacementSettings:
@@ -19,7 +20,7 @@ class DisplacementSettings:
         formulae = Formulae(particle_advection=scheme)
         particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
         particulator.environment = DummyEnvironment(
-            dt=self.dt,
+            timestep=self.dt,
             grid=self.grid,
             courant_field_data=self.courant_field_data)
         positions = np.array(self.positions)

@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 from PySDM.backends import CPU, GPU
 
@@ -6,5 +7,5 @@ from PySDM.backends import CPU, GPU
     CPU,
     GPU
 ])
-def backend(request):
+def backend_class(request):
     return request.param

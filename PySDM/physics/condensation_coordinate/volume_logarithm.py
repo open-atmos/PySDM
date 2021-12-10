@@ -5,7 +5,7 @@ from PySDM.physics import constants as const
 class VolumeLogarithm:
     @staticmethod
     def dx_dt(x, r_dr_dt):
-        return exp(-const.two_thirds*x) * r_dr_dt * 3 * power(const.pi_4_3, const.two_thirds)
+        return exp(-const.TWO_THIRDS * x) * r_dr_dt * 3 * power(const.PI_4_3, const.TWO_THIRDS)
 
     @staticmethod
     def volume(x):

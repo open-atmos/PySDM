@@ -1,5 +1,5 @@
-from setuptools import setup, find_packages
 import os
+from setuptools import setup, find_packages
 
 
 def get_long_description():
@@ -10,11 +10,13 @@ def get_long_description():
 
 setup(
     name='PySDM',
-    description='Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab',
+    description='Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry'
+                ' cloud microphysics package with box, parcel & 1D/2D prescribed-flow'
+                ' examples in Python, Julia and Matlab',
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
     install_requires=[
-        'ThrustRTC==0.3.15',
+        'ThrustRTC==0.3.16',
         'CURandRTC' + ('==0.1.6' if 'CI' in os.environ else '>=0.1.2'),
         'numba' + ('==0.54.0' if 'CI' in os.environ else '>=0.51.2'),
         'numpy' + ('==1.20.2' if 'CI' in os.environ else ''),
@@ -41,6 +43,8 @@ setup(
         'Topic :: Scientific/Engineering :: Physics',
         'Topic :: Software Development :: Libraries'
     ],
-    keywords='physics-simulation, monte-carlo-simulation, gpu-computing, atmospheric-modelling, particle-system, numba, thrust, nvrtc, pint, atmospheric-physics',
+    keywords='physics-simulation, monte-carlo-simulation, gpu-computing,'
+             ' atmospheric-modelling, particle-system, numba, thrust,'
+             ' nvrtc, pint, atmospheric-physics',
     packages=find_packages(include=['PySDM', 'PySDM.*'])
 )

@@ -1,11 +1,13 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from PySDM.backends.numba.impl._chemistry_methods import ChemistryMethods
-from PySDM.backends.numba.storage import Storage
-from PySDM.physics import si, Formulae
+import pytest
+from PySDM import Formulae
+from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods
+from PySDM.backends.impl_numba.storage import Storage
+from PySDM.physics import si
 from PySDM.physics.aqueous_chemistry.support import KineticConsts, EquilibriumConsts, \
     DISSOCIATION_FACTORS, k4
-from PySDM.physics.constants import T_STP, pi_4_3
-import pytest
+from PySDM.physics.constants import T_STP, PI_4_3
 
 
 formulae = Formulae()
@@ -29,7 +31,7 @@ k3 = Storage.from_ndarray(np.full(1, kinetic_consts.KINETIC_CONST['k3'].at(T)))
 K_SO2 = Storage.from_ndarray(np.full(1, equilibrium_consts.EQUILIBRIUM_CONST['K_SO2'].at(T)))
 K_HSO3 = Storage.from_ndarray(np.full(1, equilibrium_consts.EQUILIBRIUM_CONST['K_HSO3'].at(T)))
 
-volume = pi_4_3 * (1 * si.um)**3
+volume = PI_4_3 * (1 * si.um) ** 3
 pH = 5.
 n_sd = 1
 eqc = {
@@ -112,7 +114,7 @@ def test_oxidation(conc, dt):
         k3=k3,
         K_SO2=K_SO2,
         K_HSO3=K_HSO3,
-        dt=dt,
+        timestep=dt,
         droplet_volume=Storage.from_ndarray(np.full(n_sd, volume)),
         pH=Storage.from_ndarray(np.full(n_sd, pH)),
         dissociation_factor_SO2=Storage.from_ndarray(np.full(n_sd, DF)),

@@ -1,0 +1,89 @@
+from abc import abstractmethod
+from typing import Optional
+import re
+import inspect
+import numpy as np
+import pint
+from PySDM.physics import constants as const
+
+_UNIT_REGISTRY = pint.UnitRegistry()
+_CAMEL_CASE_PATTERN = re.compile(r'[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])')
+
+
+class Product:
+    def __init__(self, *, unit: str, name: Optional[str] = None):
+        self.name = name or self._camel_case_to_words(self.__class__.__name__)
+
+        self._unit = self.__parse_unit(unit)
+        self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
+        self.__check_unit()
+
+        self.shape = None
+        self.buffer = None
+        self.particulator = None
+        self.formulae = None
+
+    def register(self, builder):
+        self.particulator = builder.particulator
+        self.formulae = self.particulator.formulae
+        self.shape = self.particulator.mesh.grid
+        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def _download_to_buffer(self, storage):
+        storage.download(self.buffer.ravel())
+
+    @staticmethod
+    def __parse_unit(unit: str):
+        if unit in ('%', 'percent'):
+            return .01 * _UNIT_REGISTRY.dimensionless
+        if unit in ('PPB', 'ppb'):
+            return const.PPB * _UNIT_REGISTRY.dimensionless
+        if unit in ('PPM', 'ppm'):
+            return const.PPM * _UNIT_REGISTRY.dimensionless
+        if unit in ('PPT', 'ppt'):
+            return const.PPT * _UNIT_REGISTRY.dimensionless
+        return _UNIT_REGISTRY.parse_expression(unit)
+
+    @staticmethod
+    def _camel_case_to_words(string: str):
+        words = _CAMEL_CASE_PATTERN.findall(string)
+        words = (word if word.isupper() else word.lower() for word in words)
+        return ' '.join(words)
+
+    def __check_unit(self):
+        init = inspect.signature(self.__init__)
+        if 'unit' not in init.parameters:
+            raise AssertionError(f"method __init__ of class {type(self).__name__}"
+                                 f" is expected to have a unit parameter")
+
+        default_unit_arg = init.parameters['unit'].default
+
+        if default_unit_arg is None or str(default_unit_arg).strip() == '':
+            raise AssertionError(f"unit parameter of {type(self).__name__}.__init__"
+                                 f" is expected to have a non-empty default value")
+
+        default_unit = self.__parse_unit(default_unit_arg)
+
+        if default_unit.to_base_units().magnitude != 1:
+            raise AssertionError(f'default value "{default_unit_arg}"'
+                                 f' of {type(self).__name__}.__init__() unit parameter'
+                                 f' is not a base SI unit')
+
+        if self._unit.dimensionality != default_unit.dimensionality:
+            raise AssertionError(f'provided unit ({self._unit}) has different dimensionality'
+                                 f' ({self._unit.dimensionality}) than the default one'
+                                 f' ({default_unit.dimensionality})'
+                                 f' for product {type(self).__name__}')
+
+    @property
+    def unit(self):
+        return str(self._unit)
+
+    @abstractmethod
+    def _impl(self, **kwargs):
+        raise NotImplementedError()
+
+    def get(self, **kwargs):
+        result = self._impl(**kwargs)
+        result /= self.unit_magnitude_in_base_units
+        return result

@@ -1,14 +1,18 @@
-# noinspection PyUnresolvedReferences
-from ...backends_fixture import backend
-from PySDM.physics import si, Formulae
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+from PySDM.physics import si
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestPhysicsMethods:
     @staticmethod
-    def test_temperature_pressure_RH(backend):
+    # pylint: disable=redefined-outer-name
+    def test_temperature_pressure_RH(backend_class):
         # Arrange
-        sut = backend(Formulae()).temperature_pressure_RH
+        backend = backend_class()
+        sut = backend.temperature_pressure_RH
         rhod = backend.Storage.from_ndarray(np.asarray((1, 1.1)))
         thd = backend.Storage.from_ndarray(np.asarray((300., 301)))
         qv = backend.Storage.from_ndarray(np.asarray((.01, .02)))

@@ -3,11 +3,11 @@ Zero-dimensional adiabatic parcel framework
 """
 
 import numpy as np
-from PySDM.initialisation.r_wet_init import r_wet_init, default_rtol
-from PySDM.initialisation.multiplicities import discretise_n
+from PySDM.impl.mesh import Mesh
+from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
+from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from ..physics import constants as const
 from ._moist import _Moist
-from PySDM.state.mesh import Mesh
 
 
 class Parcel(_Moist):
@@ -33,6 +33,7 @@ class Parcel(_Moist):
 
         self.formulae = None
         self.dql = None
+        self.params = None
 
     @property
     def dv(self):
@@ -58,8 +59,13 @@ class Parcel(_Moist):
         _Moist.sync(self)
         self.notify()
 
-    def init_attributes(self, *, n_in_dv: [float, np.ndarray], kappa: float, r_dry: [float, np.ndarray],
-                        rtol=default_rtol):
+    def init_attributes(
+        self, *,
+        n_in_dv: [float, np.ndarray],
+        kappa: float,
+        r_dry: [float, np.ndarray],
+        rtol=default_rtol
+    ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
             n_in_dv = np.array([n_in_dv])
@@ -67,8 +73,13 @@ class Parcel(_Moist):
         attributes = {}
         attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
         attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
-        attributes['n'] = discretise_n(n_in_dv)
-        r_wet = r_wet_init(r_dry, self, kappa_times_dry_volume=attributes['kappa times dry volume'], rtol=rtol)
+        attributes['n'] = discretise_multiplicities(n_in_dv)
+        r_wet = equilibrate_wet_radii(
+            r_dry=r_dry,
+            environment=self,
+            kappa_times_dry_volume=attributes['kappa times dry volume'],
+            rtol=rtol
+        )
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
         return attributes
 
@@ -86,9 +97,9 @@ class Parcel(_Moist):
         drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
-        self.particulator.bck.explicit_euler(self._tmp['t'], dt, 1)
-        self.particulator.bck.explicit_euler(self._tmp['z'], dt, dz_dt)
-        self.particulator.bck.explicit_euler(self._tmp['rhod'], dt, dz_dt * drhod_dz)
+        self.particulator.backend.explicit_euler(self._tmp['t'], dt, 1)
+        self.particulator.backend.explicit_euler(self._tmp['z'], dt, dz_dt)
+        self.particulator.backend.explicit_euler(self._tmp['rhod'], dt, dz_dt * drhod_dz)
 
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(
             (self._tmp['rhod'][0] + self["rhod"][0]) / 2,

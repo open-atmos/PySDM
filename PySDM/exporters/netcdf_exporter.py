@@ -19,8 +19,10 @@ class NetCDFExporter:
         ncdf.createDimension("T", len(self.settings.output_steps))
         for index, label in enumerate(self.XZ):
             ncdf.createDimension(label, self.settings.grid[index])
-        ncdf.createDimension("ParticleVolume",
-                             len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1)
+        ncdf.createDimension(
+            "ParticleVolume",
+            len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1
+        )
 
     def _create_variables(self, ncdf):
         self.vars = {}
@@ -36,7 +38,8 @@ class NetCDFExporter:
         # TODO #340 ParticleVolume var
 
         for name, instance in self.simulator.products.items():
-            assert name not in self.vars
+            if name in self.vars:
+                raise AssertionError(f"product ({name}) has same name as one of netCDF dimensions")
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
@@ -49,7 +52,6 @@ class NetCDFExporter:
                 raise NotImplementedError()
             self.vars[name] = ncdf.createVariable(name, "f", dimensions)
             self.vars[name].units = instance.unit
-            self.vars[name].long_name = instance.description
 
     def _write_variables(self, i):
         self.vars["T"][i] = self.settings.output_steps[i] * self.settings.dt

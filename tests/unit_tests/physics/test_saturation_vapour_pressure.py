@@ -1,7 +1,10 @@
-import numpy as np
-from matplotlib import pylab
-from PySDM.physics import Formulae, constants as const
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
+import numpy as np
+from matplotlib import pyplot
+from PySDM import Formulae
+from PySDM.physics import constants as const
+
 
 def test_saturation_vapour_pressures(plot=False):
     # Arrange
@@ -9,36 +12,42 @@ def test_saturation_vapour_pressures(plot=False):
         k: Formulae(saturation_vapour_pressure=k)
         for k in ('FlatauWalkoCotton', 'AugustRocheMagnus')
     }
-    T = np.linspace(-.2, .4)
+    temperature = np.linspace(-.2, .4)
 
     # Plot
+    pyplot.axhline(const.p_tri, label='triple point', color='red')
+    pyplot.axvline(const.T_tri - const.T0, color='red')
+    for key, val in formulae.items():
+        for name, func in inspect.getmembers(val.saturation_vapour_pressure):
+            if name[:2] not in ('__', 'a_'):
+                pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
+    pyplot.grid()
+    pyplot.legend()
+    pyplot.xlabel('T [C]')
+    pyplot.ylabel('p [Pa]')
     if plot:
-        pylab.axhline(const.p_tri, label='triple point', color='red')
-        pylab.axvline(const.T_tri - const.T0, color='red')
-        for k, v in formulae.items():
-            for name, func in inspect.getmembers(v.saturation_vapour_pressure):
-                if not name.startswith('__'):
-                    pylab.plot(T, func(T), label=f"{k}::{name}")
-        pylab.grid()
-        pylab.legend()
-        pylab.xlabel('T [C]')
-        pylab.ylabel('p [Pa]')
-        pylab.show()
+        pyplot.show()
 
     # Assert
-    T = np.linspace(-20, 20, 100)
+    temperature = np.linspace(-20, 20, 100)
     np.testing.assert_allclose(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T),
-        Formulae(saturation_vapour_pressure='AugustRocheMagnus').saturation_vapour_pressure.pvs_Celsius(T),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        Formulae(saturation_vapour_pressure='AugustRocheMagnus')
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
         rtol=1e-2
     )
-    T = np.linspace(-20, 0.3, 100)
+    temperature = np.linspace(-20, 0.3, 100)
     np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.ice_Celsius(T),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T)
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.ice_Celsius(temperature),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(temperature)
     )
-    T = np.linspace(0.35, 20, 100)
+    temperature = np.linspace(0.35, 20, 100)
     np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.pvs_Celsius(T),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton').saturation_vapour_pressure.ice_Celsius(T)
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.ice_Celsius(temperature)
     )

@@ -1,3 +1,4 @@
+# pylint:disable=invalid-name
 """
 PySDM offers a set of building blocks for development of atmospheric cloud
 simulation systems revolving around the particle-based microphysics modelling concept
@@ -24,6 +25,7 @@ PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in th
 from pkg_resources import get_distribution, DistributionNotFound, VersionConflict
 from .builder import Builder
 from .particulator import Particulator
+from .formulae import Formulae
 
 try:
     __version__ = get_distribution(__name__).version

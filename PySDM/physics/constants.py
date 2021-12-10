@@ -3,16 +3,14 @@ Collection of physical constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)'s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 """
-import numpy as np
-import pint
-from scipy import constants as sci
-import numpy as np
-from PySDM.physics.impl.fake_unit_registry import FakeUnitRegistry
-from PySDM.physics.impl.flag import DIMENSIONAL_ANALYSIS
-from chempy import Substance
-from numpy import nan
 import os
-import time 
+import time
+import pint
+import numpy as np
+from scipy import constants as sci
+from chempy import Substance
+from .impl.fake_unit_registry import FakeUnitRegistry
+from .impl.flag import DIMENSIONAL_ANALYSIS
 
 si = pint.UnitRegistry()
 if not DIMENSIONAL_ANALYSIS:
@@ -22,14 +20,13 @@ if not DIMENSIONAL_ANALYSIS:
 def convert_to(value, unit):
     value /= unit
 
-
-pi = sci.pi
-pi_4_3 = pi * 4 / 3
-three = 3
-one_third = 1/3
-two_thirds = 2/3
 sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
+PI = sci.pi
+PI_4_3 = PI * 4 / 3
+THREE = 3
+ONE_THIRD = 1 / 3
+TWO_THIRDS = 2 / 3
 
 Md = (
         0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +
@@ -97,9 +94,9 @@ T_STP = T0 + 15 * si.kelvin
 p_STP = 101325 * si.pascal
 rho_STP = p_STP / Rd / T_STP
 
-ppt = 1e-12
-ppb = 1e-9
-ppm = 1e-6
+PPT = 1e-12
+PPB = 1e-9
+PPM = 1e-6
 ROOM_TEMP = T_tri + 25 * si.K
 M = si.mole / si.litre
 H_u = M / p_STP

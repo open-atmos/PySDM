@@ -1,6 +1,8 @@
 """
 Collisional coalescence of a superdroplet pair
 """
+import warnings
+from collections import namedtuple
 import numpy as np
 from PySDM.dynamics.collision import Collision
 from PySDM.physics import si
@@ -8,9 +10,10 @@ from PySDM.physics.coalescence_efficiencies import ConstEc
 from PySDM.physics.breakup_efficiencies import ConstEb
 from PySDM.physics.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
-import warnings
 
-default_dt_coal_range = (.1 * si.second, 100 * si.second)
+DEFAULTS = namedtuple("_", ('dt_coal_range',))(
+  dt_coal_range=(.1 * si.second, 100 * si.second)
+)
 
 class Coalescence(Collision):
 
@@ -22,7 +25,7 @@ class Coalescence(Collision):
                  optimized_random=False,
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_coal_range=default_dt_coal_range
+                 dt_coal_range=DEFAULTS.dt_coal_range
                  ):
         break_eff = ConstEb(Eb=0)
         fragmentation = AlwaysN(n=1)

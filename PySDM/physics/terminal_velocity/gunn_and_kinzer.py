@@ -1,6 +1,8 @@
+import numba
 import numpy as np
 from scipy.interpolate import Rbf
 from PySDM.physics import constants as const
+from PySDM.backends.impl_numba import conf
 
 
 class Interpolation:
@@ -29,9 +31,9 @@ class Interpolation:
         approximation_small = TpDependent.make(only_small=True)
         small_r_limit = small_r_limit or 40 * const.si.um
         approximation_small(u[1:], space[1:], small_r_limit)
-        self.a = particulator.bck.Storage.from_ndarray(u)
+        self.a = particulator.backend.Storage.from_ndarray(u)
         b = np.append(np.diff(u), [u[-1] - u[-2]]) / step
-        self.b = particulator.bck.Storage.from_ndarray(b)
+        self.b = particulator.backend.Storage.from_ndarray(b)
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(output, radius, self.factor, self.a, self.b)
@@ -41,7 +43,9 @@ class RogersYau:
     """
     Rogers & Yau, equations: (8.5), (8.6), (8.8)
     """
-    def __init__(self, particles, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None):
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -51,13 +55,16 @@ class RogersYau:
         self.medium_r_limit = medium_r_limit or 600 * si.um
 
     def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(output.data, radius.data, self.small_k, self.medium_k, self.large_k,
-                                                 self.small_r_limit, self.medium_r_limit)
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )
 
 
 # TODO #348 implement in backend logic
 class TpDependent:
-    def __init__(self, particles, small_r_limit):
+    def __init__(self, _, small_r_limit):
         si = const.si
         self.small_r_limit = small_r_limit or 40 * si.um
         self.approximation = TpDependent.make()
@@ -87,15 +94,13 @@ class TpDependent:
 
         c4 = np.array([10.5035, 1.08750, -0.133245, -0.00659969])
 
-        import numba
-        from numba import prange
-        from PySDM.backends.numba import conf
-
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f4(r):
             return (n0 / n) * (1 + 1.255 * l / r) / (1 + 1.255 * l0 / r)
 
-        c8 = np.array([6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208])
+        c8 = np.asarray(
+            (6.5639, -1.0391, -1.4001, -0.82736, -0.34277, -0.083072, -0.010583, -0.00054208)
+        )
 
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False, "parallel": False})
         def f8(r):
@@ -107,7 +112,7 @@ class TpDependent:
 
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False})
         def terminal_velocity(values, radius, threshold):
-            for i in prange(len(values)):
+            for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:

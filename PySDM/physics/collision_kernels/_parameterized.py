@@ -1,5 +1,5 @@
-from ._gravitational import Gravitational
 from PySDM.physics import constants as const
+from ._gravitational import Gravitational
 
 
 class Parameterized(Gravitational):
@@ -10,12 +10,15 @@ class Parameterized(Gravitational):
 
     def __call__(self, output, is_first_in_pair):
         self.particulator.backend.linear_collection_efficiency(
-            self.params, output, self.particulator.attributes['radius'], is_first_in_pair, const.si.um)
+            self.params, output, self.particulator.attributes['radius'],
+            is_first_in_pair, const.si.um)
         output **= 2
-        output *= const.pi
-        self.pair_tmp.max(self.particulator.attributes['radius'], is_first_in_pair)
+        output *= const.PI
+        self.pair_tmp.max(
+            self.particulator.attributes['radius'], is_first_in_pair)
         self.pair_tmp **= 2
         output *= self.pair_tmp
 
-        self.pair_tmp.distance(self.particulator.attributes['terminal velocity'], is_first_in_pair)
+        self.pair_tmp.distance(
+            self.particulator.attributes['terminal velocity'], is_first_in_pair)
         output *= self.pair_tmp

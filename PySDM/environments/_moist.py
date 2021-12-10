@@ -1,6 +1,4 @@
-"""
-"""
-
+from abc import abstractmethod
 import numpy as np
 
 
@@ -35,7 +33,8 @@ class _Moist:
 
     def get_predicted(self, index):
         if self._values['predicted'] is None:
-            raise AssertionError("Environment is not synchronized.")
+            raise AssertionError("It seems the AmbientThermodynamics dynamic was not added"
+                                 " when building particulator")
         return self._values['predicted'][index]
 
     def sync(self):
@@ -47,10 +46,23 @@ class _Moist:
             target['rhod'], target['thd'], target['qv'],
             target['T'], target['p'], target['RH']
         )
+        if 'a_w_ice' in self.variables:
+            self.particulator.backend.a_w_ice(
+                T=target['T'],
+                p=target['p'],
+                RH=target['RH'],
+                qv=target['qv'],
+                a_w_ice=target['a_w_ice']
+            )
         self._values["predicted"] = target
 
-    def get_qv(self) -> np.ndarray: raise NotImplementedError()
-    def get_thd(self) -> np.ndarray: raise NotImplementedError()
+    @abstractmethod
+    def get_qv(self) -> np.ndarray:
+        raise NotImplementedError()
+
+    @abstractmethod
+    def get_thd(self) -> np.ndarray:
+        raise NotImplementedError()
 
     def notify(self):
         if self._values["predicted"] is None:

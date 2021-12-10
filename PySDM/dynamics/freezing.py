@@ -1,4 +1,7 @@
 from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
+from PySDM.backends.impl_common.freezing_attributes import (
+    SingularAttributes, TimeDependentAttributes
+)
 
 
 class Freezing:
@@ -19,32 +22,40 @@ class Freezing:
             assert not isinstance(builder.formulae.heterogeneous_ice_nucleation_rate, Null)
             builder.request_attribute("immersed surface area")
             self.rand = self.particulator.Storage.empty(self.particulator.n_sd, dtype=float)
-            self.rng = self.particulator.Random(self.particulator.n_sd, self.particulator.bck.formulae.seed)
+            self.rng = self.particulator.Random(
+                self.particulator.n_sd,
+                self.particulator.backend.formulae.seed
+            )
 
     def __call__(self):
         if 'Coalescence' in self.particulator.dynamics:
-            raise NotImplementedError("handling T_fz during collisions not implemented yet")  # TODO #594
+            # TODO #594
+            raise NotImplementedError("handling T_fz during collisions not implemented yet")
 
         if not self.enable:
             return
 
         if self.singular:
-            self.particulator.bck.freeze_singular(
-                T_fz=self.particulator.attributes['freezing temperature'],
-                v_wet=self.particulator.attributes['volume'],
-                T=self.particulator.environment['T'],
-                RH=self.particulator.environment['RH'],
+            self.particulator.backend.freeze_singular(
+                attributes=SingularAttributes(
+                    freezing_temperature=self.particulator.attributes['freezing temperature'],
+                    wet_volume=self.particulator.attributes['volume']
+                ),
+                temperature=self.particulator.environment['T'],
+                relative_humidity=self.particulator.environment['RH'],
                 cell=self.particulator.attributes['cell id']
             )
         else:
             self.rand.urand(self.rng)
-            self.particulator.bck.freeze_time_dependent(
+            self.particulator.backend.freeze_time_dependent(
                 rand=self.rand,
-                immersed_surface_area=self.particulator.attributes['immersed surface area'],
-                volume=self.particulator.attributes['volume'],
-                dt=self.particulator.dt,
+                attributes=TimeDependentAttributes(
+                    immersed_surface_area=self.particulator.attributes['immersed surface area'],
+                    wet_volume=self.particulator.attributes['volume']
+                ),
+                timestep=self.particulator.dt,
                 cell=self.particulator.attributes['cell id'],
                 a_w_ice=self.particulator.environment['a_w_ice']
             )
 
-        self.particulator.attributes.attributes['volume'].mark_updated()
+        self.particulator.attributes.mark_updated('volume')

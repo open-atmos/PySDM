@@ -1,6 +1,7 @@
-from PySDM.physics import spectra
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from matplotlib import pylab
 import numpy as np
+from PySDM.initialisation import spectra
 
 
 class TestSpectraTopHat:

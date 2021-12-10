@@ -11,9 +11,17 @@ class Attribute:
 
     def allocate(self, idx):
         if self.size >= 1:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.size, self.particulator.n_sd),
+                dtype=self.dtype
+            )
         else:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx,
+                (self.particulator.n_sd,),
+                dtype=self.dtype
+            )
 
     def set_data(self, data):
         self.data = data

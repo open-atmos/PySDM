@@ -1,16 +1,19 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+from PySDM.backends.impl_common.index import make_Index
+from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
+from ....backends_fixture import backend_class
 
-# noinspection PyUnresolvedReferences
-from ....backends_fixture import backend
-from PySDM.storages.index import make_Index
-from PySDM.storages.indexed_storage import make_IndexedStorage
+assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 class TestIndex:
 
     @staticmethod
-    def test_remove_zero_n_or_flagged(backend):
+    # pylint: disable=redefined-outer-name
+    def test_remove_zero_n_or_flagged(backend_class):
         # Arrange
+        backend = backend_class()
         n_sd = 44
         idx = make_Index(backend).identity_index(n_sd)
         data = np.ones(n_sd).astype(np.int64)
