@@ -42,9 +42,12 @@ class CompressedFilmRuehl:
 
         # solve implicitly for fraction of organic at surface
         c = m_sigma*sci.N_A/(2*sci.R*T)
-        f = lambda f_surf: np.log(Cb_iso*(1-f_surf)/C0) - c*(A0**2 - (A_iso/f_surf)**2)
-        sol = optimize.root(f, np.ones(len(v_wet)))
-        f_surf = sol.x
+        f = lambda f_surf: Cb_iso*(1-f_surf)/C0 - np.exp(c*(A0**2 - (A_iso/f_surf)**2))
+        if type(v_wet) == np.float64:
+            sol = optimize.root(f, 0.5)
+        else:
+            sol = optimize.root(f, 0.5*np.ones(len(v_wet)))
+        f_surf = np.minimum(np.maximum(sol.x, 0), 1)
 
         # calculate surface tension
         sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma

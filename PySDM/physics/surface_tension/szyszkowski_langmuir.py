@@ -39,8 +39,8 @@ class SzyszkowskiLangmuir:
 
         # solve implicitly for fraction of organic at surface
         f = lambda f_surf: A0/(A_iso/f_surf) - (Cb_iso*(1-f_surf)/C0)/(1 + (Cb_iso*(1-f_surf)/C0))
-        sol = optimize.root(f, np.ones(len(v_wet)))
-        f_surf = sol.x
+        sol = optimize.root(f, 0.5*np.ones(len(v_wet)))
+        f_surf = np.minimum(np.maximum(sol.x, 0), 1)
 
         # calculate surface tension
         sgm = const.sgm_w - ((sci.R*T)/(A0*sci.N_A))*np.log(1 + Cb_iso*(1-f_surf)/C0)
