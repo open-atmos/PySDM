@@ -345,7 +345,11 @@ def make_storage_class(BACKEND):
             else:
                 raise NotImplementedError
 
-            data = trtc.device_vector(elem_cls, int(np.prod(shape)))
+            size = int(np.prod(shape))
+            if size > 0:
+                data = trtc.device_vector(elem_cls, size)
+            else:
+                data = None
             return StorageSignature(data, shape, dtype)
 
         @staticmethod
