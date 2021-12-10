@@ -100,7 +100,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         ])
 
         self.__moments_body_1.launch_n(
-            moment_0.shape[0], [n_ranks, moments.data, moment_0.data, n_cell])
+            moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
 
     # TODO #684
     # pylint: disable=unused-argument
@@ -120,7 +120,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__spectrum_moments_body_0.launch_n(length, [
+        self.__spectrum_moments_body_0.launch_n(length, (
             idx.data,
             attr_data.data,
             x_attr.data,
@@ -133,7 +133,8 @@ class MomentsMethods(ThrustRTCBackendMethods):
             d_rank,
             n_sd,
             n_cell
-        ])
+        ))
 
         self.__spectrum_moments_body_1.launch_n(
-            moment_0.shape[1], [n_bins, moments.data, moment_0.data, n_cell])
+            moment_0.shape[1], (n_bins, moments.data, moment_0.data, n_cell)
+        )
