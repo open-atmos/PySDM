@@ -32,7 +32,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
 
     default_croupier = 'global'
 
-    def __init__(self, formulae=None, double_precision=False, debug=True, verbose=False):
+    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
