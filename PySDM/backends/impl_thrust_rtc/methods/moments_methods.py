@@ -76,6 +76,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         if weighting_rank != 0:
             raise NotImplementedError()
 
+        assert moment_0.data.name_elem_cls() in ('float', 'double')
+        assert moments.data.name_elem_cls() in ('float', 'double')
+
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
@@ -83,7 +86,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__moments_body_0.launch_n(length, [
+        self.__moments_body_0.launch_n(length, (
             idx.data,
             self._get_floating_point(min_x),
             attr_data.data,
@@ -97,7 +100,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ranks.data,
             n_sd,
             n_cell
-        ])
+        ))
 
         self.__moments_body_1.launch_n(
             moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))

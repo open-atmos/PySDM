@@ -39,23 +39,25 @@ def test_initialisation(backend_class, plot=False):
 
     v_bins = settings.formulae.trivia.volume(settings.r_bins_edges)
 
-    moment_0 = particulator.backend.Storage.empty(n_cell, dtype=int)
+    moment_0 = particulator.backend.Storage.empty(n_cell, dtype=float)
     moments = particulator.backend.Storage.empty((n_moments, n_cell), dtype=float)
-    for i in range(len(histogram_dry)):
+    for i in range(len(v_bins)-1):
         particulator.moments(
-            moment_0, moments, specs={},
+            moment_0, moments, specs={'n': (0,)},
             attr_name='dry volume', attr_range=(v_bins[i], v_bins[i + 1])
         )
         moment_0.download(tmp)
         histogram_dry[i, :] = tmp.reshape(
-            settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
+            settings.grid
+        ).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
         particulator.moments(
-            moment_0, moments, specs={},
+            moment_0, moments, specs={'n': (0,)},
             attr_name='volume', attr_range=(v_bins[i], v_bins[i + 1]))
         moment_0.download(tmp)
         histogram_wet[i, :] = tmp.reshape(
-            settings.grid).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
+            settings.grid
+        ).sum(axis=0) / (particulator.mesh.dv * settings.grid[0])
 
     # Plot
     if plot:
@@ -91,9 +93,8 @@ def test_initialisation(backend_class, plot=False):
         np.testing.assert_approx_equal(mass_conc_dry, mass_conc_wet, significant=5)
 
     # Assert - decreasing number density
-    # TODO #607
-    # total_above = 0
-    # for level in reversed(range(n_levels)):
-    #     total_below = np.sum(histogram_dry[:, level])
-    #     assert total_below > total_above
-    #     total_above = total_below
+    total_above = 0
+    for level in reversed(range(n_levels)):
+        total_below = np.sum(histogram_dry[:, level])
+        assert total_below > total_above
+        total_above = total_below
