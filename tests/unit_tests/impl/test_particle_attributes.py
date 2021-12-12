@@ -203,7 +203,7 @@ class TestParticleAttributes:
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_permutation_global_repeatable(backend_class):
-        if isinstance(backend_class, ThrustRTC):
+        if backend_class is ThrustRTC:
             return  # TODO #328
 
         n_sd = 800
