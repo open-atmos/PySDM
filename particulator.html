@@ -252,6 +252,8 @@ class Particulator:
                 specs: dict,
                 attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        if len(specs) == 0:
+            raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
@@ -546,6 +548,8 @@ class Particulator:
                 specs: dict,
                 attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
                 weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+        if len(specs) == 0:
+            raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
@@ -837,6 +841,8 @@ def n_sd(self) -&gt; int:
             specs: dict,
             attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
             weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+    if len(specs) == 0:
+        raise ValueError(&#34;empty specs passed&#34;)
     attr_data, ranks = [], []
     for attr in specs:
         for rank in specs[attr]:

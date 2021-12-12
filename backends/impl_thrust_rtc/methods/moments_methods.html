@@ -96,6 +96,12 @@ class MomentsMethods(ThrustRTCBackendMethods):
             }
         &#39;&#39;&#39;)
 
+    @staticmethod
+    def ensure_floating_point(data):
+        data_type = data.data.name_elem_cls()
+        if data_type not in (&#39;float&#39;, &#39;double&#39;):
+            raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)
+
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -104,6 +110,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         if weighting_rank != 0:
             raise NotImplementedError()
 
+        self.ensure_floating_point(moment_0)
+        self.ensure_floating_point(moments)
+
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
@@ -111,7 +120,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__moments_body_0.launch_n(length, [
+        self.__moments_body_0.launch_n(length, (
             idx.data,
             self._get_floating_point(min_x),
             attr_data.data,
@@ -125,7 +134,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ranks.data,
             n_sd,
             n_cell
-        ])
+        ))
 
         self.__moments_body_1.launch_n(
             moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
@@ -139,6 +148,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         assert moment_0.shape == moments.shape
         if weighting_rank != 0:
             raise NotImplementedError()
+
+        self.ensure_floating_point(moment_0)
+        self.ensure_floating_point(moments)
 
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
@@ -250,6 +262,12 @@ class MomentsMethods(ThrustRTCBackendMethods):
             }
         &#39;&#39;&#39;)
 
+    @staticmethod
+    def ensure_floating_point(data):
+        data_type = data.data.name_elem_cls()
+        if data_type not in (&#39;float&#39;, &#39;double&#39;):
+            raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)
+
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -258,6 +276,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         if weighting_rank != 0:
             raise NotImplementedError()
 
+        self.ensure_floating_point(moment_0)
+        self.ensure_floating_point(moments)
+
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
         n_ranks = trtc.DVInt64(ranks.shape[0])
@@ -265,7 +286,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__moments_body_0.launch_n(length, [
+        self.__moments_body_0.launch_n(length, (
             idx.data,
             self._get_floating_point(min_x),
             attr_data.data,
@@ -279,7 +300,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ranks.data,
             n_sd,
             n_cell
-        ])
+        ))
 
         self.__moments_body_1.launch_n(
             moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
@@ -293,6 +314,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
         assert moment_0.shape == moments.shape
         if weighting_rank != 0:
             raise NotImplementedError()
+
+        self.ensure_floating_point(moment_0)
+        self.ensure_floating_point(moments)
 
         n_cell = trtc.DVInt64(moments.shape[1])
         n_sd = trtc.DVInt64(moments.shape[0])
@@ -330,6 +354,25 @@ class MomentsMethods(ThrustRTCBackendMethods):
 <ul class="hlist">
 <li><a title="PySDM.backends.thrust_rtc.ThrustRTC" href="../../thrust_rtc.html#PySDM.backends.thrust_rtc.ThrustRTC">ThrustRTC</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.ensure_floating_point"><code class="name flex">
+<span>def <span class="ident">ensure_floating_point</span></span>(<span>data)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def ensure_floating_point(data):
+    data_type = data.data.name_elem_cls()
+    if data_type not in (&#39;float&#39;, &#39;double&#39;):
+        raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.moments"><code class="name flex">
@@ -389,6 +432,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
 <li>
 <h4><code><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods" href="#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods">MomentsMethods</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.ensure_floating_point" href="#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.ensure_floating_point">ensure_floating_point</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.moments" href="#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.moments">moments</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.spectrum_moments" href="#PySDM.backends.impl_thrust_rtc.methods.moments_methods.MomentsMethods.spectrum_moments">spectrum_moments</a></code></li>
 </ul>

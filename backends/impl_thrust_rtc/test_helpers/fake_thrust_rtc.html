@@ -69,6 +69,13 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
         def __getitem__(self, item):
             return self.ndarray[item]
 
+        def name_elem_cls(self):
+            return {
+                &#39;f&#39;: &#39;float&#39;,
+                &#39;d&#39;: &#39;double&#39;,
+                &#39;l&#39;: &#39;long&#39;
+            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
+
     class Number:
         def __init__(self, number):
             self.ndarray = number
@@ -280,6 +287,13 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
         def __getitem__(self, item):
             return self.ndarray[item]
+
+        def name_elem_cls(self):
+            return {
+                &#39;f&#39;: &#39;float&#39;,
+                &#39;d&#39;: &#39;double&#39;,
+                &#39;l&#39;: &#39;long&#39;
+            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
 
     class Number:
         def __init__(self, number):
