@@ -8,7 +8,7 @@ def test_device_vector_fails_on_zero_size():
     exception = None
     try:
         sut('float', size=0)
-    except Exception as caught:
+    except ValueError as caught:
         exception = caught
 
     # assert
