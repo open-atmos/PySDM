@@ -223,6 +223,8 @@ class Particulator:
                 specs: dict,
                 attr_name='volume', attr_range=(-np.inf, np.inf),
                 weighting_attribute='volume', weighting_rank=0):
+        if len(specs) == 0:
+            raise ValueError("empty specs passed")
         attr_data, ranks = [], []
         for attr in specs:
             for rank in specs[attr]:
