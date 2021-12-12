@@ -139,6 +139,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def device_vector(elem_cls, size):
+        if not size &gt; 0:
+            raise ValueError(&#39;size must be &gt;0&#39;)
         if elem_cls == &#39;double&#39;:
             dtype = np.float64
         elif elem_cls == &#39;float&#39;:
@@ -358,6 +360,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def device_vector(elem_cls, size):
+        if not size &gt; 0:
+            raise ValueError(&#39;size must be &gt;0&#39;)
         if elem_cls == &#39;double&#39;:
             dtype = np.float64
         elif elem_cls == &#39;float&#39;:
@@ -823,6 +827,8 @@ def Wait():  # pylint: disable=invalid-name
 </summary>
 <pre><code class="python">@staticmethod
 def device_vector(elem_cls, size):
+    if not size &gt; 0:
+        raise ValueError(&#39;size must be &gt;0&#39;)
     if elem_cls == &#39;double&#39;:
         dtype = np.float64
     elif elem_cls == &#39;float&#39;:
