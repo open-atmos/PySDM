@@ -1,6 +1,6 @@
 """
-Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
-and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`
+Backend classes: CPU=`PySDM.backends.numba.Numba`
+and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 """
 import ctypes
 import warnings
