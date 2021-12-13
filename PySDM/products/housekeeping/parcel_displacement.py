@@ -1,3 +1,6 @@
+"""
+parcel displacement, for use with `PySDM.environments.parcel.Parcel` environment only
+"""
 from PySDM.environments import Parcel
 from PySDM.products.impl.product import Product
 

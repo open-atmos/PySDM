@@ -1,3 +1,6 @@
+"""
+common code for products based on moist environment variables (e.g., ambient humidity)
+"""
 from PySDM.environments._moist import _Moist
 from PySDM.products.impl.product import Product
 
