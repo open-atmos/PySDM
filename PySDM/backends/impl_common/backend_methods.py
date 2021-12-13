@@ -1,5 +1,5 @@
 """
-logic around the `PySDM.backend.impl_common.backend_methods.Backend_Methods` - the parent
+logic around the `PySDM.backend.impl_common.backend_methods.BackendMethods` - the parent
  class for all backend methods classes
 """
 
