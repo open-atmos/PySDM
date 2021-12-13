@@ -1,3 +1,6 @@
+"""
+permutation-defining Index class (can be shared between multiple IndexedStorage instances)
+"""
 import numpy as np
 from .storage_utils import StorageSignature
 

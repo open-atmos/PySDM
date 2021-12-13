@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for aqueous chemistry
+"""
 from collections import namedtuple
 import numba
 import numpy as np

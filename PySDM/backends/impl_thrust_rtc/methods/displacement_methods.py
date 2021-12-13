@@ -1,3 +1,6 @@
+"""
+GPU implementation of backend methods for particle displacement (advection and sedimentation)
+"""
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc

@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)
+"""
 import numba
 import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods

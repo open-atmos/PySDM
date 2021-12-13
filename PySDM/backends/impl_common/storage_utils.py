@@ -1,3 +1,8 @@
+"""
+common code for storage classes
+"""
+
+
 from collections import namedtuple
 from typing import Type
 from abc import abstractmethod

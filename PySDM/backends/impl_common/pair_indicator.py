@@ -1,3 +1,8 @@
+"""
+storage abstraction layer facilitating pairwise operations (for use with PairwiseStorage class)
+"""
+
+
 def make_PairIndicator(backend):
 
     class PairIndicator:

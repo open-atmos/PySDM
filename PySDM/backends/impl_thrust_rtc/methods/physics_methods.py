@@ -1,3 +1,6 @@
+"""
+GPU implementation of backend methods wrapping basic physics formulae
+"""
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from ..conf import trtc

@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods wrapping basic physics formulae
+"""
 import numba
 from numba import prange
 from PySDM.backends.impl_numba import conf

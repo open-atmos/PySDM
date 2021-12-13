@@ -1,8 +1,12 @@
+"""
+CPU Numpy-based implementation of Storage class
+"""
 import numpy as np
 from PySDM.backends.impl_numba import storage_impl as impl
 from PySDM.backends.impl_common.storage_utils import (
     get_data_from_ndarray, StorageSignature, StorageBase, empty
 )
+
 
 class Storage(StorageBase):
 

@@ -1,3 +1,6 @@
+"""
+particle (wet) volume, key attribute for coalescence
+"""
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 

@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for water condensation/evaporation
+"""
 import math
 from functools import lru_cache
 import numpy as np
