@@ -1,3 +1,6 @@
+"""
+mole fractions of aqueous-chemistry relevant compounds
+"""
 from PySDM.products.impl.moment_product import MomentProduct
 from PySDM.physics.constants import Md
 

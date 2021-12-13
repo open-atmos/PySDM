@@ -1,3 +1,6 @@
+"""
+ice water content products (mixing ratio and density)
+"""
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
 from PySDM.physics import constants as const

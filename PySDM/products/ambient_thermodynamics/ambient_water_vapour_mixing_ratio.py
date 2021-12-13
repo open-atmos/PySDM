@@ -1,3 +1,6 @@
+"""
+ambient water vapour mixing ratio (mass of water vapour per mass of dry air)
+"""
 from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduct
 
 

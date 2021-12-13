@@ -1,3 +1,6 @@
+"""
+the dn-dlnr particle volume spectrum per volume of air (uses natural logarithm)
+"""
 import numpy as np
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 

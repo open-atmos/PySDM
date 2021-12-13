@@ -1,3 +1,6 @@
+"""
+particle concentration (per volume of air)
+"""
 from PySDM.products.impl.moment_product import MomentProduct
 
 

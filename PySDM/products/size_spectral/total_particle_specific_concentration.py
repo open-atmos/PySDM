@@ -1,3 +1,6 @@
+"""
+particle specific concentration (per mass of dry air)
+"""
 from PySDM.products.impl.moment_product import MomentProduct
 
 
