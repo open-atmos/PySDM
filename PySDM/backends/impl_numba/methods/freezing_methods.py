@@ -39,6 +39,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if _unfrozen(attributes.wet_volume, i):
                     rate = j_het(a_w_ice[cell[i]])
+                    # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(-rate * attributes.immersed_surface_area[i] * timestep)
                     if rand[i] < prob:
                         _freeze(attributes.wet_volume, i)
