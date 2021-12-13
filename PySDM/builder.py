@@ -31,7 +31,8 @@ class Builder:
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
-        assert_none(self.particulator.environment)
+        if environment is not None:
+            raise AssertionError("environment has already been set")
         self.particulator.environment = environment
         self.particulator.environment.register(self)
 
@@ -87,9 +88,3 @@ class Builder:
             self.particulator.timers[key] = WallTimer()
 
         return self.particulator
-
-
-def assert_none(*params):
-    for param in params:
-        if param is not None:
-            raise AssertionError(str(param.__class__.__name__) + " is already initialized.")
