@@ -1,5 +1,5 @@
 """
-Physical `PySDM.physics.constants` and `PySDM.physics.formulae.Formulae`
+Physical `PySDM.physics.constants` and formulae
 """
 from . import (condensation_coordinate, latent_heat, saturation_vapour_pressure,
     hygroscopicity, drop_growth, surface_tension, diffusion_kinetics, diffusion_thermics,

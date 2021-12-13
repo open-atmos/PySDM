@@ -1,5 +1,5 @@
 """
-The Builder class handling creation of  `PySDM.Particulator` instances
+The Builder class handling creation of  `PySDM.particulator.Particulator` instances
 """
 import inspect
 import numpy as np
