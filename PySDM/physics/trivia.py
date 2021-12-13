@@ -19,6 +19,10 @@ class Trivia:
         return const.PI_4_3 * power(radius, const.THREE)
 
     @staticmethod
+    def sphere_surface(diameter):
+        return const.PI * diameter**2
+
+    @staticmethod
     def explicit_euler(y, dt, dy_dt):
         return y + dt * dy_dt
 
