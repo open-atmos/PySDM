@@ -9,6 +9,7 @@ class PhysicsMethods(BackendMethods):
     def __init__(self):
         super().__init__()
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
+        pvi_C = self.formulae.saturation_vapour_pressure.ice_Celsius
         phys_T = self.formulae.state_variable_triplet.T
         phys_p = self.formulae.state_variable_triplet.p
         phys_pv = self.formulae.state_variable_triplet.pv
@@ -53,6 +54,15 @@ class PhysicsMethods(BackendMethods):
                     values[i] = k3 * radius[i] ** (1 / 2)
         self.terminal_velocity_body = terminal_velocity_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        def a_w_ice_body(T_in, p_in, RH_in, qv_in, a_w_ice_out):
+            for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
+                pvi = pvi_C(T_in[i] - const.T0)
+                pv = phys_pv(p_in[i], qv_in[i])
+                pvs = pv / RH_in[i]
+                a_w_ice_out[i] = pvi / pvs
+        self.a_w_ice_body = a_w_ice_body
+
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
         self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
 
@@ -66,3 +76,6 @@ class PhysicsMethods(BackendMethods):
         self.critical_volume_body(
             v_cr.data, kappa.data, f_org.data, v_dry.data, v_wet.data, T.data, cell.data
         )
+
+    def a_w_ice(self, T, p, RH, qv, a_w_ice):
+        self.a_w_ice_body(T.data, p.data, RH.data, qv.data, a_w_ice.data)
