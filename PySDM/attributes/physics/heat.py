@@ -1,3 +1,6 @@
+"""
+particle heat content (test-use only for now, exemplifying intensive/extensive attribute logic)
+"""
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 
 

@@ -1,3 +1,6 @@
+"""
+groups of attributes used in either singular or time-dependent immmersion freezing regimes
+"""
 from collections import namedtuple
 
 

@@ -1,3 +1,6 @@
+"""
+the magick behind "pip install PySDM"
+"""
 import os
 from setuptools import setup, find_packages
 

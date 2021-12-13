@@ -1,3 +1,5 @@
+""" logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
+for do-nothing attributes """
 import numpy as np
 from .attribute import Attribute
 
