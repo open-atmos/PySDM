@@ -2,10 +2,10 @@ from collections import namedtuple
 from typing import Type
 from abc import abstractmethod
 
-__pdoc__ = {}
 
-StorageSignature = namedtuple("StorageSignature", ('data', 'shape', 'dtype'))
-__pdoc__['StorageSignature'] = False
+class StorageSignature(namedtuple("StorageSignature", ('data', 'shape', 'dtype'))):
+    """ groups items defining a storage """
+    __slots__ = ()
 
 
 class StorageBase:

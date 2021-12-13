@@ -1,15 +1,17 @@
 from collections import namedtuple
 
-__pdoc__ = {}
 
-SingularAttributes = namedtuple("SingularAttributes", (
+class SingularAttributes(namedtuple("SingularAttributes", (
     'freezing_temperature',
     'wet_volume'
-))
-__pdoc__['SingularAttributes'] = False
+))):
+    """ groups attributes required in singular regime """
+    __slots__ = ()
 
-TimeDependentAttributes = namedtuple("TimeDependentAttributes", (
+
+class TimeDependentAttributes(namedtuple("TimeDependentAttributes", (
     'immersed_surface_area',
     'wet_volume'
-))
-__pdoc__['TimeDependentAttributes'] = False
+))):
+    """ groups attributes required in time-dependent regime """
+    __slots__ = ()
