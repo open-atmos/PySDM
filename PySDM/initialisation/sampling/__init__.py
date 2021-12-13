@@ -1,0 +1,1 @@
+""" particle attribute sampling logic """

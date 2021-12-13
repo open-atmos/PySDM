@@ -1,5 +1,9 @@
-class Attribute:
+"""
+logic around `PySDM.attributes.impl.attribute.Attribute` - the parent class for all attributes
+"""
 
+
+class Attribute:
     def __init__(self, builder, name, dtype=float, size=0):
         self.particulator = builder.particulator
         self.timestamp: int = 0
