@@ -48,6 +48,10 @@ class Trivia:
         return const.PI_4_3 * power(radius, const.THREE)
 
     @staticmethod
+    def sphere_surface(diameter):
+        return const.PI * diameter**2
+
+    @staticmethod
     def explicit_euler(y, dt, dy_dt):
         return y + dt * dy_dt
 
@@ -122,6 +126,10 @@ class Trivia:
     @staticmethod
     def volume(radius):
         return const.PI_4_3 * power(radius, const.THREE)
+
+    @staticmethod
+    def sphere_surface(diameter):
+        return const.PI * diameter**2
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):
@@ -281,6 +289,20 @@ def radius(volume):
     return power(volume / const.PI_4_3, const.ONE_THIRD)</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.trivia.Trivia.sphere_surface"><code class="name flex">
+<span>def <span class="ident">sphere_surface</span></span>(<span>diameter)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def sphere_surface(diameter):
+    return const.PI * diameter**2</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.trivia.Trivia.tdep2enthalpy"><code class="name flex">
 <span>def <span class="ident">tdep2enthalpy</span></span>(<span>tdep)</span>
 </code></dt>
@@ -394,6 +416,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.pH2H" href="#PySDM.physics.trivia.Trivia.pH2H">pH2H</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.p_d" href="#PySDM.physics.trivia.Trivia.p_d">p_d</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.radius" href="#PySDM.physics.trivia.Trivia.radius">radius</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.sphere_surface" href="#PySDM.physics.trivia.Trivia.sphere_surface">sphere_surface</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.tdep2enthalpy" href="#PySDM.physics.trivia.Trivia.tdep2enthalpy">tdep2enthalpy</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.th_std" href="#PySDM.physics.trivia.Trivia.th_std">th_std</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.vant_hoff" href="#PySDM.physics.trivia.Trivia.vant_hoff">vant_hoff</a></code></li>

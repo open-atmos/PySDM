@@ -47,9 +47,14 @@ class Parcel(_Moist):
             p0: float, q0: float, T0: float,
             w: [float, callable],
             z0: float = 0,
-            g=const.g_std
+            g=const.g_std,
+            mixed_phase=False
     ):
-        super().__init__(dt, Mesh.mesh_0d(), [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;])
+        super().__init__(
+            dt,
+            Mesh.mesh_0d(),
+            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;] + ([&#39;a_w_ice&#39;] if mixed_phase else [])
+        )
 
         self.p0 = p0
         self.q0 = q0
@@ -73,16 +78,16 @@ class Parcel(_Moist):
         self.formulae = builder.particulator.formulae
         pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
         _Moist.register(self, builder)
-        self[&#39;qv&#39;][:] = self.params[0]
-        self[&#39;thd&#39;][:] = self.params[1]
-        self[&#39;rhod&#39;][:] = self.params[2]
-        self[&#39;z&#39;][:] = self.params[3]
-        self[&#39;t&#39;][:] = self.params[4]
-        delattr(self, &#39;params&#39;)
+
+        params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        self[&#39;qv&#39;][:] = params[0]
+        self[&#39;thd&#39;][:] = params[1]
+        self[&#39;rhod&#39;][:] = params[2]
+        self[&#39;z&#39;][:] = params[3]
+        self[&#39;t&#39;][:] = params[4]
 
         self.sync_parcel_vars()
         _Moist.sync(self)
@@ -163,7 +168,7 @@ class Parcel(_Moist):
 <dl>
 <dt id="PySDM.environments.parcel.Parcel"><code class="flex name class">
 <span>class <span class="ident">Parcel</span></span>
-<span>(</span><span>dt, mass_of_dry_air: float, p0: float, q0: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, g=9.80665)</span>
+<span>(</span><span>dt, mass_of_dry_air: float, p0: float, q0: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, g=9.80665, mixed_phase=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -179,9 +184,14 @@ class Parcel(_Moist):
             p0: float, q0: float, T0: float,
             w: [float, callable],
             z0: float = 0,
-            g=const.g_std
+            g=const.g_std,
+            mixed_phase=False
     ):
-        super().__init__(dt, Mesh.mesh_0d(), [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;])
+        super().__init__(
+            dt,
+            Mesh.mesh_0d(),
+            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;] + ([&#39;a_w_ice&#39;] if mixed_phase else [])
+        )
 
         self.p0 = p0
         self.q0 = q0
@@ -205,16 +215,16 @@ class Parcel(_Moist):
         self.formulae = builder.particulator.formulae
         pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
         _Moist.register(self, builder)
-        self[&#39;qv&#39;][:] = self.params[0]
-        self[&#39;thd&#39;][:] = self.params[1]
-        self[&#39;rhod&#39;][:] = self.params[2]
-        self[&#39;z&#39;][:] = self.params[3]
-        self[&#39;t&#39;][:] = self.params[4]
-        delattr(self, &#39;params&#39;)
+
+        params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        self[&#39;qv&#39;][:] = params[0]
+        self[&#39;thd&#39;][:] = params[1]
+        self[&#39;rhod&#39;][:] = params[2]
+        self[&#39;z&#39;][:] = params[3]
+        self[&#39;t&#39;][:] = params[4]
 
         self.sync_parcel_vars()
         _Moist.sync(self)
@@ -411,16 +421,16 @@ def dv(self):
     self.formulae = builder.particulator.formulae
     pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
     rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-    self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
     self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
     _Moist.register(self, builder)
-    self[&#39;qv&#39;][:] = self.params[0]
-    self[&#39;thd&#39;][:] = self.params[1]
-    self[&#39;rhod&#39;][:] = self.params[2]
-    self[&#39;z&#39;][:] = self.params[3]
-    self[&#39;t&#39;][:] = self.params[4]
-    delattr(self, &#39;params&#39;)
+
+    params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
+    self[&#39;qv&#39;][:] = params[0]
+    self[&#39;thd&#39;][:] = params[1]
+    self[&#39;rhod&#39;][:] = params[2]
+    self[&#39;z&#39;][:] = params[3]
+    self[&#39;t&#39;][:] = params[4]
 
     self.sync_parcel_vars()
     _Moist.sync(self)

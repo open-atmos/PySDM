@@ -26,14 +26,18 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from numpy import exp
+<pre><code class="python">from numpy import exp, nan
 from PySDM.physics import constants as const
 
 
 class AugustRocheMagnus:
     @staticmethod
     def pvs_Celsius(T):
-        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))</code></pre>
+        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+
+    @staticmethod
+    def ice_Celsius(T):
+        return nan * T</code></pre>
 </details>
 </section>
 <section>
@@ -57,10 +61,28 @@ class AugustRocheMagnus:
 <pre><code class="python">class AugustRocheMagnus:
     @staticmethod
     def pvs_Celsius(T):
-        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))</code></pre>
+        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+
+    @staticmethod
+    def ice_Celsius(T):
+        return nan * T</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
+<dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius"><code class="name flex">
+<span>def <span class="ident">ice_Celsius</span></span>(<span>T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def ice_Celsius(T):
+    return nan * T</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius"><code class="name flex">
 <span>def <span class="ident">pvs_Celsius</span></span>(<span>T)</span>
 </code></dt>
@@ -96,6 +118,7 @@ def pvs_Celsius(T):
 <li>
 <h4><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus">AugustRocheMagnus</a></code></h4>
 <ul class="">
+<li><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius">ice_Celsius</a></code></li>
 <li><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius">pvs_Celsius</a></code></li>
 </ul>
 </li>
