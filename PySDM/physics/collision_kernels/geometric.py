@@ -2,7 +2,7 @@
 basic geometric kernel
 """
 from PySDM.physics import constants as const
-from PySDM.physics.collision_kernels.impl.gravitational import Gravitational
+from PySDM.physics.collision_kernels.impl._gravitational import Gravitational
 
 
 class Geometric(Gravitational):
