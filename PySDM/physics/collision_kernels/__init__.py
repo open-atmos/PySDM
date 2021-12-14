@@ -9,3 +9,4 @@ from .geometric import Geometric
 from .hydrodynamic import Hydrodynamic
 from .electric import Electric
 from .constantK import ConstantK
+from .linear import Linear
