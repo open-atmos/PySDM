@@ -4,7 +4,6 @@ CPU implementation of backend methods for particle collisions
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
-from PySDM.backends.numba import conf
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_common.backend_methods import BackendMethods
