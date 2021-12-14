@@ -20,8 +20,8 @@ class KMoments(MomentProduct):
 
     def register(self, builder):
         super().register(builder)
-        self.moment_0 = builder.core.backend.Storage.empty(1, dtype=int)
-        self.moments = builder.core.backend.Storage.empty((1, 1), dtype=float)
+        self.moment_0 = builder.particulator.backend.Storage.empty(1, dtype=int)
+        self.moments = builder.particulator.backend.Storage.empty((1, 1), dtype=float)
 
     def get(self, k):
         vals = np.empty(k)
