@@ -31,7 +31,7 @@ class Builder:
         self.condensation_params = kwargs
 
     def set_environment(self, environment):
-        if environment is not None:
+        if self.particulator.environment is not None:
             raise AssertionError("environment has already been set")
         self.particulator.environment = environment
         self.particulator.environment.register(self)
