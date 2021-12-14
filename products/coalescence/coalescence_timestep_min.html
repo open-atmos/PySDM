@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.coalescence.coalescence_timestep_min API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Minimal coalescence timestep used when adaptive timestepping is enabled in the
+`PySDM.dynamics.coalescence.Coalescence` dynamic (fetching a value …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +23,17 @@
 <h1 class="title">Module <code>PySDM.products.coalescence.coalescence_timestep_min</code></h1>
 </header>
 <section id="section-intro">
+<p>Minimal coalescence timestep used when adaptive timestepping is enabled in the
+<code><a title="PySDM.dynamics.coalescence.Coalescence" href="../../dynamics/coalescence.html#PySDM.dynamics.coalescence.Coalescence">Coalescence</a></code> dynamic (fetching a value reset the counter)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from PySDM.products.impl.product import Product
+<pre><code class="python">&#34;&#34;&#34;
+Minimal coalescence timestep used when adaptive timestepping is enabled in the
+ `PySDM.dynamics.coalescence.Coalescence` dynamic (fetching a value reset the counter)
+&#34;&#34;&#34;
+from PySDM.products.impl.product import Product
 
 
 class CoalescenceTimestepMin(Product):

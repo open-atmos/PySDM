@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.aqueous_chemistry.support API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="aqueous chemistry helper utils including specific gravity constants with
+values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +23,17 @@
 <h1 class="title">Module <code>PySDM.physics.aqueous_chemistry.support</code></h1>
 </header>
 <section id="section-intro">
+<p>aqueous chemistry helper utils including specific gravity constants with
+values obtained using <a href="https://pythonhosted.org/chempy/">chempy</a>'s <code>Substance</code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from chempy import Substance
+<pre><code class="python">&#34;&#34;&#34;
+aqueous chemistry helper utils including specific gravity constants with
+ values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`
+&#34;&#34;&#34;
+from chempy import Substance
 import numpy as np
 from PySDM.physics import si
 from PySDM.physics.constants import R_str, ROOM_TEMP, H_u, dT_u, M, Md, K_H2O

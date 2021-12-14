@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.attributes.physics API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="attributes carrying information on particle physical properties" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.attributes.physics</code></h1>
 </header>
 <section id="section-intro">
+<p>attributes carrying information on particle physical properties</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .multiplicities import Multiplicities
+<pre><code class="python">&#34;&#34;&#34;
+attributes carrying information on particle physical properties
+&#34;&#34;&#34;
+from .multiplicities import Multiplicities
 from .volume import Volume
 from .dry_volume import DryVolume
 from .radius import Radius
@@ -43,47 +47,50 @@ from .critical_supersaturation import CriticalSupersaturation</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.attributes.physics.critical_supersaturation" href="critical_supersaturation.html">PySDM.attributes.physics.critical_supersaturation</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>kappa-Koehler critical supersaturation calculated for actual environment temperature</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.critical_volume" href="critical_volume.html">PySDM.attributes.physics.critical_volume</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>critical wet volume (kappa-Koehler, computed using actual temperature)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.dry_radius" href="dry_radius.html">PySDM.attributes.physics.dry_radius</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle dry radius computed from dry volume</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.dry_volume" href="dry_volume.html">PySDM.attributes.physics.dry_volume</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle dry volume (subject to evolution due to collisions or aqueous chemistry)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.heat" href="heat.html">PySDM.attributes.physics.heat</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle heat content (test-use only for now, exemplifying intensive/extensive attribute logic)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.hygroscopicity" href="hygroscopicity.html">PySDM.attributes.physics.hygroscopicity</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>kappa-Koehler hygroscopicity representation:
+the <code><a title="PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume" href="hygroscopicity.html#PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume">KappaTimesDryVolume</a></code> base attribute
+and the derived …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.multiplicities" href="multiplicities.html">PySDM.attributes.physics.multiplicities</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>super-particle multiplicity (aka weighting factor) - the number of real-world particles
+represented in the simulation with a given super particle</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.radius" href="radius.html">PySDM.attributes.physics.radius</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle wet radius (calculated from the volume)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.temperature" href="temperature.html">PySDM.attributes.physics.temperature</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle temperature (test-use only for now, exemplifying intensive/extensive attribute logic)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.terminal_velocity" href="terminal_velocity.html">PySDM.attributes.physics.terminal_velocity</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle terminal velocity (used for collision probability and particle displacement)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.physics.volume" href="volume.html">PySDM.attributes.physics.volume</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>particle (wet) volume, key attribute for coalescence</p></div>
 </dd>
 </dl>
 </section>

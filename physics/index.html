@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics API documentation</title>
-<meta name="description" content="Physical `PySDM.physics.constants` and `PySDM.physics.formulae.Formulae`" />
+<meta name="description" content="Physical `PySDM.physics.constants` and formulae" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +22,13 @@
 <h1 class="title">Module <code>PySDM.physics</code></h1>
 </header>
 <section id="section-intro">
-<p>Physical <code><a title="PySDM.physics.constants" href="constants.html">PySDM.physics.constants</a></code> and <code>PySDM.physics.formulae.Formulae</code></p>
+<p>Physical <code><a title="PySDM.physics.constants" href="constants.html">PySDM.physics.constants</a></code> and formulae</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Physical `PySDM.physics.constants` and `PySDM.physics.formulae.Formulae`
+Physical `PySDM.physics.constants` and formulae
 &#34;&#34;&#34;
 from . import (condensation_coordinate, latent_heat, saturation_vapour_pressure,
     hygroscopicity, drop_growth, surface_tension, diffusion_kinetics, diffusion_thermics,
@@ -42,7 +42,8 @@ from .constants import si</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.physics.aqueous_chemistry" href="aqueous_chemistry/index.html">PySDM.physics.aqueous_chemistry</a></code></dt>
 <dd>
-<div class="desc"><p>Support classes and constants for the representation of aqueous chemistry</p></div>
+<div class="desc"><p>support classes and constants for the
+<code><a title="PySDM.dynamics.aqueous_chemistry.AqueousChemistry" href="../dynamics/aqueous_chemistry.html#PySDM.dynamics.aqueous_chemistry.AqueousChemistry">AqueousChemistry</a></code> dynamic</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.coalescence_kernels" href="coalescence_kernels/index.html">PySDM.physics.coalescence_kernels</a></code></dt>
 <dd>
@@ -52,7 +53,7 @@ from .constants import si</code></pre>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.condensation_coordinate" href="condensation_coordinate/index.html">PySDM.physics.condensation_coordinate</a></code></dt>
 <dd>
-<div class="desc"><p>Definitions of particle-size coordinates for the condensation solver</p></div>
+<div class="desc"><p>definitions of particle-size coordinates for the condensation solver</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.constants" href="constants.html">PySDM.physics.constants</a></code></dt>
 <dd>
@@ -79,15 +80,15 @@ for use in unit tests which disables Numba and enables Pint</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.freezing_temperature_spectrum" href="freezing_temperature_spectrum/index.html">PySDM.physics.freezing_temperature_spectrum</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>freezing temperature spectra for use with singular immersion freezing representations</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.heterogeneous_ice_nucleation_rate" href="heterogeneous_ice_nucleation_rate/index.html">PySDM.physics.heterogeneous_ice_nucleation_rate</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>immersion-freezing rate (aka J_het) formulations</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.hydrostatics" href="hydrostatics/index.html">PySDM.physics.hydrostatics</a></code></dt>
 <dd>
-<div class="desc"><p>Helper routins for deriving hydrostatic pressure and density profiles</p></div>
+<div class="desc"><p>Helper routines for hydrostatic pressure and density profiles</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.hygroscopicity" href="hygroscopicity/index.html">PySDM.physics.hygroscopicity</a></code></dt>
 <dd>
@@ -95,11 +96,12 @@ for use in unit tests which disables Numba and enables Pint</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.impl" href="impl/index.html">PySDM.physics.impl</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>physics stuff not intended to be imported from user code
+(incl. the <code><a title="PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry" href="impl/fake_unit_registry.html#PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry">FakeUnitRegistry</a></code>)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.latent_heat" href="latent_heat/index.html">PySDM.physics.latent_heat</a></code></dt>
 <dd>
-<div class="desc"><p>Alternative formulations of latent heat temperature dependence (or lack thereof)</p></div>
+<div class="desc"><p>alternative formulations of latent heat temperature dependence (or lack thereof)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.particle_advection" href="particle_advection/index.html">PySDM.physics.particle_advection</a></code></dt>
 <dd>
@@ -119,7 +121,7 @@ for use in unit tests which disables Numba and enables Pint</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.terminal_velocity" href="terminal_velocity/index.html">PySDM.physics.terminal_velocity</a></code></dt>
 <dd>
-<div class="desc"><p>Particle terminal velocity formulae</p></div>
+<div class="desc"><p>particle terminal velocity formulae</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.trivia" href="trivia.html">PySDM.physics.trivia</a></code></dt>
 <dd>

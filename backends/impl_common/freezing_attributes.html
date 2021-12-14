@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_common.freezing_attributes API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="groups of attributes used in either singular or time-dependent immmersion freezing regimes" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,14 +22,31 @@
 <h1 class="title">Module <code>PySDM.backends.impl_common.freezing_attributes</code></h1>
 </header>
 <section id="section-intro">
+<p>groups of attributes used in either singular or time-dependent immmersion freezing regimes</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from collections import namedtuple
+<pre><code class="python">&#34;&#34;&#34;
+groups of attributes used in either singular or time-dependent immmersion freezing regimes
+&#34;&#34;&#34;
+from collections import namedtuple
 
-SingularAttributes = namedtuple(&#34;_&#34;, (&#39;freezing_temperature&#39;, &#39;wet_volume&#39;))
-TimeDependentAttributes = namedtuple(&#34;_&#34;, (&#39;immersed_surface_area&#39;, &#39;wet_volume&#39;))</code></pre>
+
+class SingularAttributes(namedtuple(&#34;SingularAttributes&#34;, (
+    &#39;freezing_temperature&#39;,
+    &#39;wet_volume&#39;
+))):
+    &#34;&#34;&#34; groups attributes required in singular regime &#34;&#34;&#34;
+    __slots__ = ()
+
+
+class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
+    &#39;immersed_surface_area&#39;,
+    &#39;wet_volume&#39;
+))):
+    &#34;&#34;&#34; groups attributes required in time-dependent regime &#34;&#34;&#34;
+    __slots__ = ()</code></pre>
 </details>
 </section>
 <section>
@@ -41,49 +58,49 @@ TimeDependentAttributes = namedtuple(&#34;_&#34;, (&#39;immersed_surface_area&#3
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.impl_common.freezing_attributes._"><code class="flex name class">
+<dt id="PySDM.backends.impl_common.freezing_attributes.SingularAttributes"><code class="flex name class">
 <span>class <span class="ident">SingularAttributes</span></span>
 <span>(</span><span>freezing_temperature, wet_volume)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>_(freezing_temperature, wet_volume)</p></div>
+<div class="desc"><p>groups attributes required in singular regime</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SingularAttributes(namedtuple(&#34;SingularAttributes&#34;, (
+    &#39;freezing_temperature&#39;,
+    &#39;wet_volume&#39;
+))):
+    &#34;&#34;&#34; groups attributes required in singular regime &#34;&#34;&#34;
+    __slots__ = ()</code></pre>
+</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.tuple</li>
 </ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="PySDM.backends.impl_common.freezing_attributes._.freezing_temperature"><code class="name">var <span class="ident">freezing_temperature</span></code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 0</p></div>
 </dd>
-<dt id="PySDM.backends.impl_common.freezing_attributes._.wet_volume"><code class="name">var <span class="ident">wet_volume</span></code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 1</p></div>
-</dd>
-</dl>
-</dd>
-<dt id="PySDM.backends.impl_common.freezing_attributes._"><code class="flex name class">
+<dt id="PySDM.backends.impl_common.freezing_attributes.TimeDependentAttributes"><code class="flex name class">
 <span>class <span class="ident">TimeDependentAttributes</span></span>
 <span>(</span><span>immersed_surface_area, wet_volume)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>_(immersed_surface_area, wet_volume)</p></div>
+<div class="desc"><p>groups attributes required in time-dependent regime</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
+    &#39;immersed_surface_area&#39;,
+    &#39;wet_volume&#39;
+))):
+    &#34;&#34;&#34; groups attributes required in time-dependent regime &#34;&#34;&#34;
+    __slots__ = ()</code></pre>
+</details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.tuple</li>
 </ul>
-<h3>Instance variables</h3>
-<dl>
-<dt id="PySDM.backends.impl_common.freezing_attributes._.immersed_surface_area"><code class="name">var <span class="ident">immersed_surface_area</span></code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 0</p></div>
-</dd>
-<dt id="PySDM.backends.impl_common.freezing_attributes._.wet_volume"><code class="name">var <span class="ident">wet_volume</span></code></dt>
-<dd>
-<div class="desc"><p>Alias for field number 1</p></div>
-</dd>
-</dl>
 </dd>
 </dl>
 </section>
@@ -102,18 +119,10 @@ TimeDependentAttributes = namedtuple(&#34;_&#34;, (&#39;immersed_surface_area&#3
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.impl_common.freezing_attributes._" href="#PySDM.backends.impl_common.freezing_attributes._">_</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.backends.impl_common.freezing_attributes._.freezing_temperature" href="#PySDM.backends.impl_common.freezing_attributes._.freezing_temperature">freezing_temperature</a></code></li>
-<li><code><a title="PySDM.backends.impl_common.freezing_attributes._.wet_volume" href="#PySDM.backends.impl_common.freezing_attributes._.wet_volume">wet_volume</a></code></li>
-</ul>
+<h4><code><a title="PySDM.backends.impl_common.freezing_attributes.SingularAttributes" href="#PySDM.backends.impl_common.freezing_attributes.SingularAttributes">SingularAttributes</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.backends.impl_common.freezing_attributes._" href="#PySDM.backends.impl_common.freezing_attributes._">_</a></code></h4>
-<ul class="">
-<li><code><a title="PySDM.backends.impl_common.freezing_attributes._.immersed_surface_area" href="#PySDM.backends.impl_common.freezing_attributes._.immersed_surface_area">immersed_surface_area</a></code></li>
-<li><code><a title="PySDM.backends.impl_common.freezing_attributes._.wet_volume" href="#PySDM.backends.impl_common.freezing_attributes._.wet_volume">wet_volume</a></code></li>
-</ul>
+<h4><code><a title="PySDM.backends.impl_common.freezing_attributes.TimeDependentAttributes" href="#PySDM.backends.impl_common.freezing_attributes.TimeDependentAttributes">TimeDependentAttributes</a></code></h4>
 </li>
 </ul>
 </li>

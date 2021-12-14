@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.housekeeping API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Housekeeping products: time, parcel displacement, super-particle counts, wall-time timers..." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.products.housekeeping</code></h1>
 </header>
 <section id="section-intro">
+<p>Housekeeping products: time, parcel displacement, super-particle counts, wall-time timers&hellip;</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .time import Time
+<pre><code class="python">&#34;&#34;&#34;
+Housekeeping products: time, parcel displacement, super-particle counts, wall-time timers...
+&#34;&#34;&#34;
+from .time import Time
 from .timers import CPUTime, WallTime
 from .parcel_displacement import ParcelDisplacement
 from .super_droplet_count_per_gridbox import SuperDropletCountPerGridbox
@@ -38,23 +42,23 @@ from .dynamic_wall_time import DynamicWallTime</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.products.housekeeping.dynamic_wall_time" href="dynamic_wall_time.html">PySDM.products.housekeeping.dynamic_wall_time</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>wall-time for a given dynamic (fetching a value resets the counter)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.housekeeping.parcel_displacement" href="parcel_displacement.html">PySDM.products.housekeeping.parcel_displacement</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>parcel displacement, for use with <code><a title="PySDM.environments.parcel.Parcel" href="../../environments/parcel.html#PySDM.environments.parcel.Parcel">Parcel</a></code> environment only</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.housekeeping.super_droplet_count_per_gridbox" href="super_droplet_count_per_gridbox.html">PySDM.products.housekeeping.super_droplet_count_per_gridbox</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>super-droplet count per gridbox (dimensionless)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.housekeeping.time" href="time.html">PySDM.products.housekeeping.time</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>physical time (in dt increments)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.housekeeping.timers" href="timers.html">PySDM.products.housekeeping.timers</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>CPU- and wall-time counters (fetching a value resets the counter)</p></div>
 </dd>
 </dl>
 </section>

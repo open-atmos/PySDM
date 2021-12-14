@@ -84,19 +84,17 @@ except (DistributionNotFound, VersionConflict):
 <dl>
 <dt><code class="name"><a title="PySDM.attributes" href="attributes/index.html">PySDM.attributes</a></code></dt>
 <dd>
-<div class="desc"><p>Classes representing particle properties such as
-<code><a title="PySDM.attributes.physics.multiplicities.Multiplicities" href="attributes/physics/multiplicities.html#PySDM.attributes.physics.multiplicities.Multiplicities">Multiplicities</a></code>,
-<code>PySDM.attributes.chemistry.pH.pH</code>, …</p></div>
+<div class="desc"><p>Classes representing super-particle attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends" href="backends/index.html">PySDM.backends</a></code></dt>
 <dd>
-<div class="desc"><p>Backend classes: <code>CPU</code>=<code>PySDM.backends.impl_numba.impl_numba.Numba</code>
-and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code></p></div>
+<div class="desc"><p>Backend classes: CPU=<code><a title="PySDM.backends.numba.Numba" href="backends/numba.html#PySDM.backends.numba.Numba">Numba</a></code>
+and GPU=<code><a title="PySDM.backends.thrust_rtc.ThrustRTC" href="backends/thrust_rtc.html#PySDM.backends.thrust_rtc.ThrustRTC">ThrustRTC</a></code></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.builder" href="builder.html">PySDM.builder</a></code></dt>
 <dd>
 <div class="desc"><p>The Builder class handling creation of
-<code>PySDM.Particulator</code> instances</p></div>
+<code><a title="PySDM.particulator.Particulator" href="particulator.html#PySDM.particulator.Particulator">Particulator</a></code> instances</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics" href="dynamics/index.html">PySDM.dynamics</a></code></dt>
 <dd>
@@ -112,7 +110,7 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 </dd>
 <dt><code class="name"><a title="PySDM.exporters" href="exporters/index.html">PySDM.exporters</a></code></dt>
 <dd>
-<div class="desc"><p>Exporters module</p></div>
+<div class="desc"><p>Exporters handling output to metadata-rich file formats incl. netCDF and VTK</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.formulae" href="formulae.html">PySDM.formulae</a></code></dt>
 <dd>
@@ -120,7 +118,7 @@ and <code>GPU</code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code>
 </dd>
 <dt><code class="name"><a title="PySDM.impl" href="impl/index.html">PySDM.impl</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>stuff not intended to be used from user code</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation" href="initialisation/index.html">PySDM.initialisation</a></code></dt>
 <dd>
@@ -129,16 +127,16 @@ wet radii equilibration</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.particulator" href="particulator.html">PySDM.particulator</a></code></dt>
 <dd>
-<div class="desc"><p>The very class exposing <code>PySDM.Particulator.run()</code> method for launching simulations</p></div>
+<div class="desc"><p>The very class exposing <code><a title="PySDM.particulator.Particulator.run" href="particulator.html#PySDM.particulator.Particulator.run">Particulator.run()</a></code> method for launching simulations</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics" href="physics/index.html">PySDM.physics</a></code></dt>
 <dd>
-<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and <code>PySDM.physics.formulae.Formulae</code></p></div>
+<div class="desc"><p>Physical <code><a title="PySDM.physics.constants" href="physics/constants.html">PySDM.physics.constants</a></code> and formulae</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products" href="products/index.html">PySDM.products</a></code></dt>
 <dd>
 <div class="desc"><p>Simulation output products such as:
-<code>PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum</code>,
+<code><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum" href="products/size_spectral/particle_size_spectrum.html#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum">ParticleSizeSpectrum</a></code>,
 &hellip;</p></div>
 </dd>
 </dl>

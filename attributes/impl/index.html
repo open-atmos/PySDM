@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.attributes.impl API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="common code intended for use from within attribute classes (not in user code)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.attributes.impl</code></h1>
 </header>
 <section id="section-intro">
+<p>common code intended for use from within attribute classes (not in user code)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .maximum_attribute import MaximumAttribute
+<pre><code class="python">&#34;&#34;&#34;
+common code intended for use from within attribute classes (not in user code)
+&#34;&#34;&#34;
+from .maximum_attribute import MaximumAttribute
 from .extensive_attribute import ExtensiveAttribute
 from .cell_attribute import CellAttribute
 from .derived_attribute import DerivedAttribute
@@ -40,39 +44,46 @@ from .dummy_attribute import DummyAttribute</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.attributes.impl.attribute" href="attribute.html">PySDM.attributes.impl.attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.attribute.Attribute" href="attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></code> - the parent class for all attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.base_attribute" href="base_attribute.html">PySDM.attributes.impl.base_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.base_attribute.BaseAttribute" href="base_attribute.html#PySDM.attributes.impl.base_attribute.BaseAttribute">BaseAttribute</a></code> - the parent class
+for non-derived attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.cell_attribute" href="cell_attribute.html">PySDM.attributes.impl.cell_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.cell_attribute.CellAttribute" href="cell_attribute.html#PySDM.attributes.impl.cell_attribute.CellAttribute">CellAttribute</a></code> - the parent class
+for grid-particle mapping attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.derived_attribute" href="derived_attribute.html">PySDM.attributes.impl.derived_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></code> - the parent class
+for all derived attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.dummy_attribute" href="dummy_attribute.html">PySDM.attributes.impl.dummy_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.dummy_attribute.DummyAttribute" href="dummy_attribute.html#PySDM.attributes.impl.dummy_attribute.DummyAttribute">DummyAttribute</a></code> - parent class
+for do-nothing attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.extensive_attribute" href="extensive_attribute.html">PySDM.attributes.impl.extensive_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute" href="extensive_attribute.html#PySDM.attributes.impl.extensive_attribute.ExtensiveAttribute">ExtensiveAttribute</a></code> - parent class
+for all extensive attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.intensive_attribute" href="intensive_attribute.html">PySDM.attributes.impl.intensive_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.intensive_attribute.IntensiveAttribute" href="intensive_attribute.html#PySDM.attributes.impl.intensive_attribute.IntensiveAttribute">IntensiveAttribute</a></code> - parent class
+for all intensive attributes</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.mapper" href="mapper.html">PySDM.attributes.impl.mapper</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>attribute name-class mapping logic (each new attribute must be added here)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.attributes.impl.maximum_attribute" href="maximum_attribute.html">PySDM.attributes.impl.maximum_attribute</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic around <code><a title="PySDM.attributes.impl.maximum_attribute.MaximumAttribute" href="maximum_attribute.html#PySDM.attributes.impl.maximum_attribute.MaximumAttribute">MaximumAttribute</a></code> - parent class
+for attributes for which under coalescence the newly collided …</p></div>
 </dd>
 </dl>
 </section>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.aqueous_chemistry API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="products pertinent to the `PySDM.dynamics.aqueous_chemistry.AqueousChemistry` dynamic" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.products.aqueous_chemistry</code></h1>
 </header>
 <section id="section-intro">
+<p>products pertinent to the <code><a title="PySDM.dynamics.aqueous_chemistry.AqueousChemistry" href="../../dynamics/aqueous_chemistry.html#PySDM.dynamics.aqueous_chemistry.AqueousChemistry">AqueousChemistry</a></code> dynamic</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .gaseous_mole_fraction import GaseousMoleFraction
+<pre><code class="python">&#34;&#34;&#34;
+products pertinent to the `PySDM.dynamics.aqueous_chemistry.AqueousChemistry` dynamic
+&#34;&#34;&#34;
+from .gaseous_mole_fraction import GaseousMoleFraction
 from .aqueous_mole_fraction import AqueousMoleFraction
 from .acidity import Acidity
 from .aqueous_mass_spectrum import AqueousMassSpectrum
@@ -43,19 +47,20 @@ with weighting either by number or volume</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum" href="aqueous_mass_spectrum.html">PySDM.products.aqueous_chemistry.aqueous_mass_spectrum</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>dry-radius-binned concentration of aqueous-chemistry relevant compounds (optionally
+expressed as specific concentration)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.aqueous_chemistry.aqueous_mole_fraction" href="aqueous_mole_fraction.html">PySDM.products.aqueous_chemistry.aqueous_mole_fraction</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>mole fractions of aqueous-chemistry relevant compounds</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.aqueous_chemistry.gaseous_mole_fraction" href="gaseous_mole_fraction.html">PySDM.products.aqueous_chemistry.gaseous_mole_fraction</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>mole fractions of gaseous compounds relevant for aqueous chemistry</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.aqueous_chemistry.total_dry_mass_mixing_ratio" href="total_dry_mass_mixing_ratio.html">PySDM.products.aqueous_chemistry.total_dry_mass_mixing_ratio</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>dry aerosol mass summed over all particles in a grid box per mass of dry air</p></div>
 </dd>
 </dl>
 </section>

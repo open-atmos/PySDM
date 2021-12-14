@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends API documentation</title>
-<meta name="description" content="Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
-and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`" />
+<meta name="description" content="Backend classes: CPU=`PySDM.backends.numba.Numba`
+and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,15 +23,15 @@ and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`" />
 <h1 class="title">Module <code>PySDM.backends</code></h1>
 </header>
 <section id="section-intro">
-<p>Backend classes: <code><a title="PySDM.backends.Numba" href="#PySDM.backends.Numba">Numba</a></code>=<code>PySDM.backends.impl_numba.impl_numba.Numba</code>
-and <code><a title="PySDM.backends.ThrustRTC" href="#PySDM.backends.ThrustRTC">ThrustRTC</a></code>=<code>PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC</code></p>
+<p>Backend classes: CPU=<code><a title="PySDM.backends.numba.Numba" href="numba.html#PySDM.backends.numba.Numba">Numba</a></code>
+and GPU=<code><a title="PySDM.backends.thrust_rtc.ThrustRTC" href="thrust_rtc.html#PySDM.backends.thrust_rtc.ThrustRTC">ThrustRTC</a></code></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
-and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`
+Backend classes: CPU=`PySDM.backends.numba.Numba`
+and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 &#34;&#34;&#34;
 import ctypes
 import warnings
@@ -75,9 +75,9 @@ def _cuda_is_available():
 if _cuda_is_available() or cuda.is_available():
     from PySDM.backends.thrust_rtc import ThrustRTC
 else:
-    from .impl_thrust_rtc.test_helpers import _flag
+    from .impl_thrust_rtc.test_helpers import flag
 
-    _flag.fakeThrustRTC = True
+    flag.fakeThrustRTC = True
 
     import numpy as np
 
@@ -111,15 +111,15 @@ alias for ThrustRTC
 <dl>
 <dt><code class="name"><a title="PySDM.backends.impl_common" href="impl_common/index.html">PySDM.backends.impl_common</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>common code for all backends</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba" href="impl_numba/index.html">PySDM.backends.impl_numba</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>the guts of the CPU backend</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_thrust_rtc" href="impl_thrust_rtc/index.html">PySDM.backends.impl_thrust_rtc</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>the guts of the GPU backend</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.numba" href="numba.html">PySDM.backends.numba</a></code></dt>
 <dd>

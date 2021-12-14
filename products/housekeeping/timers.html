@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.housekeeping.timers API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="CPU- and wall-time counters (fetching a value resets the counter)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.products.housekeeping.timers</code></h1>
 </header>
 <section id="section-intro">
+<p>CPU- and wall-time counters (fetching a value resets the counter)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from abc import abstractmethod
+<pre><code class="python">&#34;&#34;&#34;
+CPU- and wall-time counters (fetching a value resets the counter)
+&#34;&#34;&#34;
+from abc import abstractmethod
 import time
 from PySDM.products.impl.product import Product
 

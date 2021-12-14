@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.initialisation.spectra API documentation</title>
-<meta name="description" content="Classes representing logic around size spectra and more generally
+<meta name="description" content="classes representing logic around size spectra and more generally
 probability density functions (based on SciPy.stats logic)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -23,14 +23,14 @@ probability density functions (based on SciPy.stats logic)" />
 <h1 class="title">Module <code>PySDM.initialisation.spectra</code></h1>
 </header>
 <section id="section-intro">
-<p>Classes representing logic around size spectra and more generally
+<p>classes representing logic around size spectra and more generally
 probability density functions (based on SciPy.stats logic)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Classes representing logic around size spectra and more generally
+classes representing logic around size spectra and more generally
 probability density functions (based on SciPy.stats logic)
 &#34;&#34;&#34;
 from .exponential import Exponential
@@ -44,19 +44,22 @@ from .sum import Sum</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.initialisation.spectra.exponential" href="exponential.html">PySDM.initialisation.spectra.exponential</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>exponential spectrum implemented using
+<a href="https://docs.scipy.org/doc/scipy/reference/stats.html">SciPy.stats</a></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation.spectra.lognormal" href="lognormal.html">PySDM.initialisation.spectra.lognormal</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>lognormal spectrum implemented using
+<a href="https://docs.scipy.org/doc/scipy/reference/stats.html">SciPy.stats</a></p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation.spectra.sum" href="sum.html">PySDM.initialisation.spectra.sum</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>spectrum defined as a sum of an arbitrary set of
+<code><a title="PySDM.initialisation.impl.spectrum.Spectrum" href="../impl/spectrum.html#PySDM.initialisation.impl.spectrum.Spectrum">Spectrum</a></code> instances</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.initialisation.spectra.top_hat" href="top_hat.html">PySDM.initialisation.spectra.top_hat</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>top-hat spectrum</p></div>
 </dd>
 </dl>
 </section>

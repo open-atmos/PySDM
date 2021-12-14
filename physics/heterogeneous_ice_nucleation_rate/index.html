@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.heterogeneous_ice_nucleation_rate API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="immersion-freezing rate (aka J_het) formulations" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.physics.heterogeneous_ice_nucleation_rate</code></h1>
 </header>
 <section id="section-intro">
+<p>immersion-freezing rate (aka J_het) formulations</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .constant import Constant
+<pre><code class="python">&#34;&#34;&#34;
+immersion-freezing rate (aka J_het) formulations
+&#34;&#34;&#34;
+from .constant import Constant
 from .null import Null
 from .abifm import ABIFM</code></pre>
 </details>
@@ -36,15 +40,17 @@ from .abifm import ABIFM</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.physics.heterogeneous_ice_nucleation_rate.abifm" href="abifm.html">PySDM.physics.heterogeneous_ice_nucleation_rate.abifm</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>ABIFM heterogeneous freezing rate parameterization
+(<a href="https://doi.org/10.1039/C3FD00035D">Knopf &amp; Alpert 2013</a>)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.heterogeneous_ice_nucleation_rate.constant" href="constant.html">PySDM.physics.heterogeneous_ice_nucleation_rate.constant</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>constant rate formulation (for tests)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.heterogeneous_ice_nucleation_rate.null" href="null.html">PySDM.physics.heterogeneous_ice_nucleation_rate.null</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>do-nothing null formulation (needed as other formulations require parameters
+to be set before instantiation of Formulae)</p></div>
 </dd>
 </dl>
 </section>

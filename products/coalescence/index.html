@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.coalescence API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="products pertinent to the `PySDM.dynamics.coalescence.Coalescence` dynamic" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.products.coalescence</code></h1>
 </header>
 <section id="section-intro">
+<p>products pertinent to the <code><a title="PySDM.dynamics.coalescence.Coalescence" href="../../dynamics/coalescence.html#PySDM.dynamics.coalescence.Coalescence">Coalescence</a></code> dynamic</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .coalescence_timestep_mean import CoalescenceTimestepMean
+<pre><code class="python">&#34;&#34;&#34;
+products pertinent to the `PySDM.dynamics.coalescence.Coalescence` dynamic
+&#34;&#34;&#34;
+from .coalescence_timestep_mean import CoalescenceTimestepMean
 from .coalescence_timestep_min import CoalescenceTimestepMin
 from .collision_rates import CollisionRatePerGridbox, CollisionRateDeficitPerGridbox</code></pre>
 </details>
@@ -36,15 +40,18 @@ from .collision_rates import CollisionRatePerGridbox, CollisionRateDeficitPerGri
 <dl>
 <dt><code class="name"><a title="PySDM.products.coalescence.coalescence_timestep_mean" href="coalescence_timestep_mean.html">PySDM.products.coalescence.coalescence_timestep_mean</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Average coalescence timestep length used when adaptive timestepping is enabled in the
+<code><a title="PySDM.dynamics.coalescence.Coalescence" href="../../dynamics/coalescence.html#PySDM.dynamics.coalescence.Coalescence">Coalescence</a></code> dynamic (fetching a …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.coalescence.coalescence_timestep_min" href="coalescence_timestep_min.html">PySDM.products.coalescence.coalescence_timestep_min</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Minimal coalescence timestep used when adaptive timestepping is enabled in the
+<code><a title="PySDM.dynamics.coalescence.Coalescence" href="../../dynamics/coalescence.html#PySDM.dynamics.coalescence.Coalescence">Coalescence</a></code> dynamic (fetching a value …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.coalescence.collision_rates" href="collision_rates.html">PySDM.products.coalescence.collision_rates</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Rates of collision events and their deficit wrt expected values in case mutiplicity
+values preclude representation of resultant multiplicity in …</p></div>
 </dd>
 </dl>
 </section>

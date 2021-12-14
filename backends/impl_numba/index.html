@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_numba API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="the guts of the CPU backend" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,6 +22,13 @@
 <h1 class="title">Module <code>PySDM.backends.impl_numba</code></h1>
 </header>
 <section id="section-intro">
+<p>the guts of the CPU backend</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34; the guts of the CPU backend &#34;&#34;&#34;</code></pre>
+</details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
@@ -32,35 +39,37 @@
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.conf" href="conf.html">PySDM.backends.impl_numba.conf</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>default settings for Numba just-in-time compilation</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.methods" href="methods/index.html">PySDM.backends.impl_numba.methods</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>method classes of the CPU backend</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.random" href="random.html">PySDM.backends.impl_numba.random</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>random number generator class for Numba backend</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.storage" href="storage.html">PySDM.backends.impl_numba.storage</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>CPU Numpy-based implementation of Storage class</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.storage_impl" href="storage_impl.html">PySDM.backends.impl_numba.storage_impl</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Numba njit-ted basic arithmetics routines for CPU backend</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.test_helpers" href="test_helpers/index.html">PySDM.backends.impl_numba.test_helpers</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>logic intended to be used in tests only including the SciPy-based BDF condensation solver</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.toms748" href="toms748.html">PySDM.backends.impl_numba.toms748</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski's
+libcloudph++ version (GPL) which in turn was based on …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.backends.impl_numba.warnings" href="warnings.html">PySDM.backends.impl_numba.warnings</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>warning reporting logic for use whithin Numba njitted code (printing to standard
+error using numba.objmode() allowing to capture the output from …</p></div>
 </dd>
 </dl>
 </section>

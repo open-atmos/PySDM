@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.condensation API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="products pertinent to the `PySDM.dynamics.condensation.Condensation` dynamic" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.products.condensation</code></h1>
 </header>
 <section id="section-intro">
+<p>products pertinent to the <code><a title="PySDM.dynamics.condensation.Condensation" href="../../dynamics/condensation.html#PySDM.dynamics.condensation.Condensation">Condensation</a></code> dynamic</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .condensation_timestep import CondensationTimestepMin, CondensationTimestepMax
+<pre><code class="python">&#34;&#34;&#34;
+products pertinent to the `PySDM.dynamics.condensation.Condensation` dynamic
+&#34;&#34;&#34;
+from .condensation_timestep import CondensationTimestepMin, CondensationTimestepMax
 from .event_rates import RipeningRate, ActivatingRate, DeactivatingRate
 from .peak_supersaturation import PeakSupersaturation
 from .activable_fraction import ActivableFraction</code></pre>
@@ -37,19 +41,22 @@ from .activable_fraction import ActivableFraction</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.products.condensation.activable_fraction" href="activable_fraction.html">PySDM.products.condensation.activable_fraction</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>fraction of particles with critical supersaturation lower than a given supersaturation
+(passed as keyword argument while calling <code>get()</code>)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.condensation.condensation_timestep" href="condensation_timestep.html">PySDM.products.condensation.condensation_timestep</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>minimum and maximum condensation timestep (fetching a value resets the counter)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.condensation.event_rates" href="event_rates.html">PySDM.products.condensation.event_rates</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>rates of activation, deactivation and ripening events (take into account substeps,
+fetching a value resets the given counter)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.condensation.peak_supersaturation" href="peak_supersaturation.html">PySDM.products.condensation.peak_supersaturation</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>highest supersaturation encountered while solving for condensation/evaporation (takes into account
+substeps thus values might differ from ambient …</p></div>
 </dd>
 </dl>
 </section>

@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_numba.toms748 API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski&#39;s
+libcloudph++ version (GPL) which in turn was based on …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,15 +23,22 @@
 <h1 class="title">Module <code>PySDM.backends.impl_numba.toms748</code></h1>
 </header>
 <section id="section-intro">
+<p>Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski's
+libcloudph++ version (GPL) which in turn was based on Boost implementation
+(Copyright John Maddock 2006 <a href="http://www.boost.org/LICENSE_1_0.txt">http://www.boost.org/LICENSE_1_0.txt</a>)</p>
+<p><a href="https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp">https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python"># pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+&#34;&#34;&#34;
+Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski&#39;s
+libcloudph++ version (GPL) which in turn was based on Boost implementation
+(Copyright John Maddock 2006 http://www.boost.org/LICENSE_1_0.txt)
 
-# adapted from Maciej Waruszewski&#39;s libcloudph++ version of Boost implementation
-# https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
-# Boost version: (C) Copyright John Maddock 2006 (http://www.boost.org/LICENSE_1_0.txt)
+https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
+&#34;&#34;&#34;
 
 from sys import float_info
 import numba

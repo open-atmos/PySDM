@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.freezing_temperature_spectrum API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="freezing temperature spectra for use with singular immersion freezing representations" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,11 +22,15 @@
 <h1 class="title">Module <code>PySDM.physics.freezing_temperature_spectrum</code></h1>
 </header>
 <section id="section-intro">
+<p>freezing temperature spectra for use with singular immersion freezing representations</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from .niemand_et_al_2012 import Niemand_et_al_2012
+<pre><code class="python">&#34;&#34;&#34;
+freezing temperature spectra for use with singular immersion freezing representations
+&#34;&#34;&#34;
+from .niemand_et_al_2012 import Niemand_et_al_2012
 from .bigg_1953 import Bigg_1953
 from .null import Null</code></pre>
 </details>
@@ -36,15 +40,18 @@ from .null import Null</code></pre>
 <dl>
 <dt><code class="name"><a title="PySDM.physics.freezing_temperature_spectrum.bigg_1953" href="bigg_1953.html">PySDM.physics.freezing_temperature_spectrum.bigg_1953</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>freezing temperature spectrum based on <a href="https://doi.org/10.1088/0370-1301/66/8/309">Bigg 1953</a>
+formulae (i.e. immersed surface independent)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012" href="niemand_et_al_2012.html">PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>freezing temperature spectrum based on
+<a href="https://doi.org/10.1175/JAS-D-11-0249.1">Niemand et al. 2012</a> INAS density parameterization</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.freezing_temperature_spectrum.null" href="null.html">PySDM.physics.freezing_temperature_spectrum.null</a></code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>null spectrum (needed as other formulations require parameters
+to be set before instantiation of Formulae)</p></div>
 </dd>
 </dl>
 </section>
