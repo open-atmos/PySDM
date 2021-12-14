@@ -1,7 +1,15 @@
-from ._parameterized import Parameterized
+"""
+Created at 05.21.2021
+"""
 
-
-class ConstEb(Parameterized):
+class ConstEb():
 
     def __init__(self, Eb=1.0):
-        super().__init__((Eb, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0))
+        self.Eb = Eb
+        self.particulator = None
+
+    def register(self, builder):
+        self.particulator = builder.particulator
+    
+    def __call__(self, output, is_first_in_pair):
+        output.data[:] = self.Eb
