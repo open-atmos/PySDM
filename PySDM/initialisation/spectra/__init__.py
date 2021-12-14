@@ -6,3 +6,5 @@ from .exponential import Exponential
 from .lognormal import Lognormal
 from .top_hat import TopHat
 from .sum import Sum
+from .gamma import Gamma
+from .gaussian import Gaussian
