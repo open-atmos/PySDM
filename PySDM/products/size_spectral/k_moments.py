@@ -3,7 +3,7 @@
 Created at 10.7.2020 by edejong
 """
 
-from PySDM.products.product import MomentProduct
+from PySDM.products.impl.moment_product import MomentProduct
 import numpy as np
 
 
