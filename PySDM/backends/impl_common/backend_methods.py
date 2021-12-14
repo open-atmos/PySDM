@@ -1,3 +1,9 @@
+"""
+logic around the `PySDM.backends.impl_common.backend_methods.BackendMethods` - the parent
+ class for all backend methods classes
+"""
+
+
 # pylint: disable=too-few-public-methods
 class BackendMethods:
     def __init__(self):

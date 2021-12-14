@@ -1,3 +1,6 @@
+"""
+mean immersed surface area per particle for unfrozen particles
+"""
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
 

@@ -1,3 +1,6 @@
+"""
+particle dry radius computed from dry volume
+"""
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 from PySDM.physics import constants as const
 

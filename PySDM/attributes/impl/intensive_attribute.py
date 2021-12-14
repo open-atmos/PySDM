@@ -1,3 +1,7 @@
+"""
+logic around `PySDM.attributes.impl.intensive_attribute.IntensiveAttribute` - parent class
+ for all intensive attributes
+"""
 from .derived_attribute import DerivedAttribute
 
 

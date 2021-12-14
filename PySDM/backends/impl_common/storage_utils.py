@@ -1,8 +1,16 @@
+"""
+common code for storage classes
+"""
+
+
 from collections import namedtuple
 from typing import Type
 from abc import abstractmethod
 
-StorageSignature = namedtuple("StorageSignature", ('data', 'shape', 'dtype'))
+
+class StorageSignature(namedtuple("StorageSignature", ('data', 'shape', 'dtype'))):
+    """ groups items defining a storage """
+    __slots__ = ()
 
 
 class StorageBase:

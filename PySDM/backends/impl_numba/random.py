@@ -1,3 +1,6 @@
+"""
+random number generator class for Numba backend
+"""
 import numpy as np
 
 

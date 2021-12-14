@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for particle collisions
+"""
 import numba
 import numpy as np
 from PySDM.backends.impl_numba import conf

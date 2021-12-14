@@ -1,5 +1,5 @@
 """
-The very class exposing `PySDM.Particulator.run()` method for launching simulations
+The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
 import numpy as np
 from PySDM.impl.particle_attributes import ParticleAttributes

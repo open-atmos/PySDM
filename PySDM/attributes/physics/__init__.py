@@ -1,3 +1,6 @@
+"""
+attributes carrying information on particle physical properties
+"""
 from .multiplicities import Multiplicities
 from .volume import Volume
 from .dry_volume import DryVolume

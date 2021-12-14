@@ -1,3 +1,9 @@
+"""
+August-Roche-Magnus formula (see, e.g.,
+[Wikipedia](https://en.wikipedia.org/wiki/Clausius–Clapeyron_relation#August–Roche–Magnus_formula)
+and references therein)
+"""
+
 from numpy import exp, nan
 from PySDM.physics import constants as const
 

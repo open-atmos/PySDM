@@ -1,3 +1,6 @@
+"""
+CPU- and wall-time counters (fetching a value resets the counter)
+"""
 from abc import abstractmethod
 import time
 from PySDM.products.impl.product import Product

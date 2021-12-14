@@ -7,11 +7,11 @@ import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
-from ._moist import _Moist
+from PySDM.environments.impl.moist import Moist
 from ..impl import arakawa_c
 
 
-class Kinematic2D(_Moist):
+class Kinematic2D(Moist):
     def __init__(self, dt, grid, size, rhod_of):
         super().__init__(dt, Mesh(grid, size), [])
         self.rhod_of = rhod_of

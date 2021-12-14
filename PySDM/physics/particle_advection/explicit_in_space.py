@@ -1,3 +1,8 @@
+"""
+basic explicit-in-space Euler scheme
+"""
+
+
 class ExplicitInSpace:
     @staticmethod
     def displacement(omega, c_l, c_r):

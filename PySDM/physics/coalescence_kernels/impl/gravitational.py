@@ -1,3 +1,6 @@
+""" common parent class for gravitational kernels """
+
+
 class Gravitational:
 
     def __init__(self):

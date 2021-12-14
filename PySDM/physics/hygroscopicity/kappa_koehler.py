@@ -1,3 +1,7 @@
+"""
+kappa-Koehler parameterization
+ ([Petters & Kreidenweis 2007](https://doi.org/10.5194/acp-7-1961-2007))
+"""
 from numpy import sqrt, exp
 import PySDM.physics.constants as const
 

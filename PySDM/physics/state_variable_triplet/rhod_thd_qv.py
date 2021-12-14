@@ -1,3 +1,7 @@
+"""
+dry-air density / dry-air potential temperature / water vapour mixing ratio triplet
+(as in libcloudph++)
+"""
 from numpy import power
 from PySDM.physics import constants as const
 

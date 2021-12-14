@@ -1,3 +1,6 @@
+"""
+spatial mesh representation (incl. memory strides)
+"""
 import numpy as np
 
 

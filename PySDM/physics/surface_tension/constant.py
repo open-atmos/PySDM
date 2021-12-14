@@ -1,3 +1,6 @@
+"""
+constant surface tension coefficient
+"""
 import PySDM.physics.constants as const
 
 

@@ -1,3 +1,4 @@
+""" products expressing particle size-spectral quantities """
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .particle_size_spectrum import ParticleSizeSpectrumPerMass, ParticleSizeSpectrumPerVolume

@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
 from typing import Tuple
 from collections import namedtuple

@@ -1,3 +1,6 @@
+"""
+single-equation approximation of the vapour and heat diffusion problem
+"""
 import PySDM.physics.constants as const
 
 

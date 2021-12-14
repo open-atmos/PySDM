@@ -1,3 +1,6 @@
+"""
+Numba njit-ted basic arithmetics routines for CPU backend
+"""
 import numpy as np
 import numba
 from PySDM.backends.impl_numba import conf

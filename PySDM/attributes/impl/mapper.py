@@ -1,3 +1,6 @@
+"""
+attribute name-class mapping logic (each new attribute must be added here)
+"""
 from functools import partial
 from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
 from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolume, DryVolumeDynamic,

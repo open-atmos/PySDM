@@ -1,3 +1,6 @@
+"""
+VTK exporter implemented using [pyevtk](https://pypi.org/project/pyevtk/)
+"""
 import numbers
 import os
 import sys

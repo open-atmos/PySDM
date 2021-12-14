@@ -1,3 +1,4 @@
 """
-Support classes and constants for the representation of aqueous chemistry
+support classes and constants for the
+ `PySDM.dynamics.aqueous_chemistry.AqueousChemistry` dynamic
 """

@@ -1,3 +1,6 @@
+"""
+wet radius-binned particle size spectra (per mass of dry air or per volume of air)
+"""
 from abc import ABC
 import numpy as np
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct

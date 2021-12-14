@@ -1,3 +1,6 @@
+"""
+default settings for Numba just-in-time compilation
+"""
 import warnings
 import os
 import numba

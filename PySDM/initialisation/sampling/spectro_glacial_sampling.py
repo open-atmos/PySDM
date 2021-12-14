@@ -1,3 +1,7 @@
+"""
+two-dimensional sampling for singular immersion freezing (freezing temperature and
+ immersed surface area pdf) WORK IN PROGRESS TODO #599
+"""
 import numpy as np
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const

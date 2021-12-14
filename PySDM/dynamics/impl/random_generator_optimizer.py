@@ -1,3 +1,6 @@
+"""
+clever reuser of random numbers for use in adaptive coalescence
+"""
 import math
 
 

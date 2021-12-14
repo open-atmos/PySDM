@@ -1,3 +1,6 @@
+"""
+products offering access to environment variables (ambient temperature, pressure, ...)
+"""
 from .ambient_pressure import AmbientPressure
 from .ambient_temperature import AmbientTemperature
 from .ambient_relative_humidity import AmbientRelativeHumidity

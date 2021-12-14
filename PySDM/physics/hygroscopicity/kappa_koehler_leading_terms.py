@@ -1,3 +1,8 @@
+"""
+leading-terms of the kappa-Koehler parameterization resulting in classic
+ two-term formulation with 1/r and 1/r^3 terms corresponding to surface-tension
+ (Kelvin) and soluble substance (Raoult/Wüllner) effects, respectively
+"""
 from numpy import sqrt, power
 import PySDM.physics.constants as const
 

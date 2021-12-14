@@ -1,3 +1,7 @@
+"""
+immersed INP surface area (assigned at initialisation, modified through collisions only,
+ used in time-dependent regime)
+"""
 from ..impl import ExtensiveAttribute
 
 
