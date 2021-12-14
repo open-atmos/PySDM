@@ -6,11 +6,11 @@ Created at 24.01.2020
 class Gravitational:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
         self.pair_tmp = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         builder.request_attribute('radius')
         builder.request_attribute('terminal velocity')
-        self.pair_tmp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.pair_tmp = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)

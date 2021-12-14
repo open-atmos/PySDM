@@ -9,12 +9,12 @@ import numpy as np
 class SLAMS:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
         self.p_vec = None
 
     def __call__(self, output, u01, is_first_in_pair):
-        self.core.backend.slams_fragmentation(output, self.p_vec, u01)
+        self.particulator.backend.slams_fragmentation(output, self.p_vec, u01)
         
     def register(self, builder):
-        self.core = builder.core
-        self.p_vec = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.particulator = builder.particulator
+        self.p_vec = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)

@@ -8,25 +8,25 @@ import numpy as np
 class Schlottke2010:
 
     def __init__(self):
-        self.core = None
+        self.particulator = None
         self.pair_tmp = None
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator
         builder.request_attribute('volume')
         builder.request_attribute('terminal velocity')
-        self.Sc = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.tmp = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.tmp2 = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
-        self.We = self.core.PairwiseStorage.empty(self.core.n_sd // 2, dtype=float)
+        self.Sc = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
+        self.tmp = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
+        self.tmp2 = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
+        self.We = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
 
     def __call__(self, output, is_first_in_pair):
-        self.tmp.sum(self.core.particles['volume'], is_first_in_pair)
+        self.tmp.sum(self.particulator.particles['volume'], is_first_in_pair)
         self.tmp /= (np.pi / 6)
         
-        self.tmp2.distance(self.core.particles['terminal velocity'], is_first_in_pair)
+        self.tmp2.distance(self.particulator.particles['terminal velocity'], is_first_in_pair)
         self.tmp2 **= 2
-        self.We.multiply(self.core.particles['volume'], is_first_in_pair)
+        self.We.multiply(self.particulator.particles['volume'], is_first_in_pair)
         self.We /= self.tmp
         self.We *= self.tmp2
         self.We *= (np.pi / 12 * rho_w)
