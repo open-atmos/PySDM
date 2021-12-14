@@ -1,3 +1,7 @@
+"""
+polynomial fits from
+[Flatau et al. 1992](https://doi.org/10.1175/1520-0450(1992)031%3C1507:PFTSVP%3E2.0.CO;2)
+"""
 from PySDM.physics import constants as const
 
 

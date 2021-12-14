@@ -1,5 +1,5 @@
 """
-Environment-sync triggering class
+environment-sync triggering class
 """
 
 

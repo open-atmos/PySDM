@@ -1,8 +1,11 @@
+"""
+common logic for environments featuring moist-air thermodynamics
+"""
 from abc import abstractmethod
 import numpy as np
 
 
-class _Moist:
+class Moist:
 
     def __init__(self, dt, mesh, variables):
         variables += ['qv', 'thd', 'T', 'p', 'RH']

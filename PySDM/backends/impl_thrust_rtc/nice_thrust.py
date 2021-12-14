@@ -1,3 +1,6 @@
+"""
+a decorator triggering ThrustRTC.Wait() after each function call
+"""
 from PySDM.backends.impl_thrust_rtc.conf import trtc
 
 

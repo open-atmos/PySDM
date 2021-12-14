@@ -1,3 +1,6 @@
+"""
+storage internals for the ThrustRTC backend
+"""
 import numpy as np
 from PySDM.backends.impl_common.storage_utils import (
     get_data_from_ndarray, StorageSignature, StorageBase, empty

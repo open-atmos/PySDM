@@ -1,3 +1,7 @@
+"""
+spectrum defined as a sum of an arbitrary set of
+ `PySDM.initialisation.impl.spectrum.Spectrum` instances
+"""
 import numpy as np
 from scipy.interpolate import interp1d
 from PySDM.initialisation.impl.spectrum import default_interpolation_grid

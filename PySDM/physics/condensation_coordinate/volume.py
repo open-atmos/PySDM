@@ -1,3 +1,6 @@
+"""
+particle volume as condensation coordinate (i.e. no transformation)
+"""
 from numpy import power
 from PySDM.physics import constants as const
 

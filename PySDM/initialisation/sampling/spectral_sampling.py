@@ -1,3 +1,7 @@
+"""
+spectral sampling logic incl. linear, logarithmic, uniform-random and constant-multiplicity
+ sampling classes
+"""
 from typing import Tuple, Optional
 import numpy as np
 from scipy import optimize

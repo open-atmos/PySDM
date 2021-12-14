@@ -1,3 +1,8 @@
+"""
+no transition-regime corrections formulation
+"""
+
+
 class Neglect:
     @staticmethod
     def lambdaD(D, T):  # pylint: disable=unused-argument

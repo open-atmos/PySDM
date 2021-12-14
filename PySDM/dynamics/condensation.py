@@ -1,5 +1,5 @@
 """
-Bespoke condensational growth solver
+bespoke condensational growth solver
 with implicit-in-particle-size integration and adaptive timestepping
 """
 from collections import namedtuple

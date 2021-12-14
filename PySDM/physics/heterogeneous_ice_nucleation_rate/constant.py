@@ -1,3 +1,6 @@
+"""
+constant rate formulation (for tests)
+"""
 import numpy as np
 
 J_HET = np.nan

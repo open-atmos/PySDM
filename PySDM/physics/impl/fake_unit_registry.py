@@ -1,3 +1,10 @@
+""" logic around `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` - PySDM mock of Pint's
+ [UnitRegistry](https://pint.readthedocs.io/en/stable/developers_reference.html#pint.UnitRegistry),
+ with the genuine Pint class used only within unit tests through the
+ `PySDM.physics.dimensional_analysis.DimensionalAnalysis` context manager
+"""
+
+
 def _fake(si_unit):
     return (1. * si_unit).to_base_units().magnitude
 

@@ -1,7 +1,7 @@
 """
 common code for products based on moist environment variables (e.g., ambient humidity)
 """
-from PySDM.environments._moist import _Moist
+from PySDM.environments.impl.moist import Moist
 from PySDM.products.impl.product import Product
 
 
@@ -19,7 +19,7 @@ class MoistEnvironmentProduct(Product):
         self.source = self.environment[self.var]
 
     def notify(self):
-        if isinstance(self.environment, _Moist):
+        if isinstance(self.environment, Moist):
             self.source = self.environment.get_predicted(self.var)
 
     def _impl(self, **kwargs):

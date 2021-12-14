@@ -1,5 +1,5 @@
 """
-Particle displacement due to advection by the flow & sedimentation
+particle displacement due to advection by the flow & sedimentation
 """
 import numpy as np
 

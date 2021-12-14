@@ -1,3 +1,6 @@
+"""
+logarithm of particle volume as coordinate (ensures non-negative values)
+"""
 from numpy import log, exp, power
 from PySDM.physics import constants as const
 

@@ -3,7 +3,7 @@ ThrustRTC import logic implementing the switch between the genuine ThrustRTC and
 default nice_thrust flags
 """
 from warnings import warn
-from PySDM.backends.impl_thrust_rtc.test_helpers._flag import fakeThrustRTC
+from PySDM.backends.impl_thrust_rtc.test_helpers.flag import fakeThrustRTC
 
 if not fakeThrustRTC:
     try:
