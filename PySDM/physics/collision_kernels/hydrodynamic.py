@@ -3,7 +3,7 @@ hydrodynamic kernel using
  [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2) parameterization
 """
 
-from PySDM.physics.collision_kernels.impl._parameterized import Parameterized
+from PySDM.physics.collision_kernels.impl.parameterized import Parameterized
 
 
 class Hydrodynamic(Parameterized):
