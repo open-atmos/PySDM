@@ -347,8 +347,9 @@ def make_storage_class(BACKEND):
 
             size = int(np.prod(shape))
             if size == 0:
-                size = 1
-            data = trtc.device_vector(elem_cls, size)
+                data = None
+            else:
+                data = trtc.device_vector(elem_cls, size)
             return StorageSignature(data, shape, dtype)
 
         @staticmethod

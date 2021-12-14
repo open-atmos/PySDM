@@ -93,5 +93,5 @@ class ParticlesFactory:
         return ParticleAttributes(
             particulator=particles, idx=idx,
             extensive_attribute_storage=None, extensive_keys={},
-            cell_start=np.zeros(0, dtype=np.int64), attributes={}
+            cell_start=np.zeros(2, dtype=np.int64), attributes={}
         )
