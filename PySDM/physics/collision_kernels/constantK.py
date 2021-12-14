@@ -5,11 +5,11 @@ class ConstantK:
 
     def __init__(self, a):
         self.a = a
-        self.core = None
+        self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
         output *= 0
         output += self.a
 
     def register(self, builder):
-        self.core = builder.core
+        self.particulator = builder.particulator

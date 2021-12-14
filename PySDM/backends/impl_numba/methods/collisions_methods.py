@@ -188,7 +188,7 @@ class AlgorithmicMethods(BackendMethods):
     def gauss_fragmentation(n_fragment, mu, scale, frag_size, r_max, rand):
         AlgorithmicMethods.gauss_fragmentation_body(n_fragment.data, mu, scale, frag_size.data, r_max.data, rand.data)
 
-    # Emily: Low and List 1982 fragmentation function
+    # TODO Emily: Low and List 1982 fragmentation function 
     @numba.njit(**{**conf.JIT_FLAGS})
     def ll1982_fragmentation_body(n_fragment, probs, rand):
         for i in numba.prange(len(n_fragment)):
