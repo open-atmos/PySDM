@@ -1,13 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-<<<<<<< HEAD
-from PySDM.physics.formulae import Formulae
 from PySDM.physics.collision_kernels import Golovin
-=======
 from PySDM.formulae import Formulae
-from PySDM.physics.coalescence_kernels import Golovin
->>>>>>> uj/master
 
 
 class TestGolovin:
