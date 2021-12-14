@@ -1,3 +1,6 @@
+"""
+critical wet volume (kappa-Koehler, computed using actual temperature)
+"""
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 

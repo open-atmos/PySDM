@@ -1,3 +1,7 @@
+"""
+surface tension coefficient model featuring surface-partitioning
+ as in [Ruehl et al. (2016)](https://doi.org/10.1126/science.aad4889)
+"""
 import numpy as np
 from scipy import constants as sci
 from scipy import optimize

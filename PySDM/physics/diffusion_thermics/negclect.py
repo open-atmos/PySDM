@@ -1,3 +1,6 @@
+"""
+constant diffusion coefficient formulation
+"""
 from PySDM.physics import constants as const
 
 

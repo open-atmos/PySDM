@@ -1,3 +1,6 @@
+"""
+GPU implementation of backend methods for water condensation/evaporation
+"""
 from typing import Dict, Optional
 from PySDM.physics import constants as const
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS

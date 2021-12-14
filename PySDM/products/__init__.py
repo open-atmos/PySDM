@@ -1,6 +1,6 @@
 """
 Simulation output products such as:
-`PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum`,
+`PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum`,
 ...
 """
 from .aqueous_chemistry import *

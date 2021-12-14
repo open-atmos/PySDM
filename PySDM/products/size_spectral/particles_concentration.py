@@ -1,3 +1,7 @@
+"""
+concentration of particles within a grid cell (either per-volume of per-mass-of-dry air,
+ optionally restricted to a given size range)
+"""
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
 

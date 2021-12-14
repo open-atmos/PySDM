@@ -1,3 +1,7 @@
+"""
+logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for all
+ spectra
+"""
 import numpy as np
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 

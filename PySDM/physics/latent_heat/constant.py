@@ -1,3 +1,6 @@
+"""
+temperature-independent latent heat of vaporization
+"""
 from PySDM.physics import constants as const
 
 

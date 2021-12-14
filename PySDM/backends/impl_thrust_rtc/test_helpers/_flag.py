@@ -1,1 +1,0 @@
-fakeThrustRTC = False

@@ -1,3 +1,6 @@
+"""
+super-droplet count per gridbox (dimensionless)
+"""
 from PySDM.products.impl.product import Product
 
 

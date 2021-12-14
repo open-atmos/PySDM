@@ -1,3 +1,7 @@
+"""
+condensation/evaporation solver drop-in replacement implemented using
+ SciPy adaptive-timestep BDF solver, for use in tests only
+"""
 import types
 import warnings
 from functools import lru_cache

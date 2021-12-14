@@ -1,6 +1,8 @@
+"""
+basic geometric kernel
+"""
 from PySDM.physics import constants as const
-
-from ._gravitational import Gravitational
+from PySDM.physics.coalescence_kernels.impl.gravitational import Gravitational
 
 
 class Geometric(Gravitational):

@@ -1,3 +1,6 @@
+"""
+particle temperature (test-use only for now, exemplifying intensive/extensive attribute logic)
+"""
 from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 

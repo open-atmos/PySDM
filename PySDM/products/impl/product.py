@@ -1,3 +1,6 @@
+"""
+logic around the `PySDM.products.impl.product.Product` - parent class for all products
+"""
 from abc import abstractmethod
 from typing import Optional
 import re

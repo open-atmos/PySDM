@@ -1,3 +1,7 @@
+"""
+Minimal coalescence timestep used when adaptive timestepping is enabled in the
+ `PySDM.dynamics.coalescence.Coalescence` dynamic (fetching a value reset the counter)
+"""
 from PySDM.products.impl.product import Product
 
 

@@ -1,3 +1,6 @@
+"""
+CPU implementation of pairwise operations backend methods
+"""
 import numba
 import numpy as np
 from PySDM.backends.impl_numba import conf

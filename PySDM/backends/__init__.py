@@ -1,6 +1,6 @@
 """
-Backend classes: `CPU`=`PySDM.backends.impl_numba.impl_numba.Numba`
-and `GPU`=`PySDM.backends.thrust_rtc.thrust_rtc.ThrustRTC`
+Backend classes: CPU=`PySDM.backends.numba.Numba`
+and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 """
 import ctypes
 import warnings
@@ -44,9 +44,9 @@ def _cuda_is_available():
 if _cuda_is_available() or cuda.is_available():
     from PySDM.backends.thrust_rtc import ThrustRTC
 else:
-    from .impl_thrust_rtc.test_helpers import _flag
+    from .impl_thrust_rtc.test_helpers import flag
 
-    _flag.fakeThrustRTC = True
+    flag.fakeThrustRTC = True
 
     import numpy as np
 

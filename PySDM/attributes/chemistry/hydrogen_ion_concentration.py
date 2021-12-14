@@ -1,3 +1,6 @@
+"""
+hydrogen ion concentration derived from pH
+"""
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
 
 

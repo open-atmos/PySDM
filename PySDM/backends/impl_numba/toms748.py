@@ -1,8 +1,11 @@
 # pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+"""
+Numba-based TOM 748 root-finding algorithm implementation adapted from Maciej Waruszewski's
+libcloudph++ version (GPL) which in turn was based on Boost implementation
+(Copyright John Maddock 2006 http://www.boost.org/LICENSE_1_0.txt)
 
-# adapted from Maciej Waruszewski's libcloudph++ version of Boost implementation
-# https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
-# Boost version: (C) Copyright John Maddock 2006 (http://www.boost.org/LICENSE_1_0.txt)
+https://github.com/igfuw/libcloudphxx/blob/master/include/libcloudph%2B%2B/common/detail/toms748.hpp
+"""
 
 from sys import float_info
 import numba

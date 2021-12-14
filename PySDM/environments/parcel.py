@@ -1,16 +1,15 @@
 """
 Zero-dimensional adiabatic parcel framework
 """
-
 import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
+from PySDM.environments.impl.moist import Moist
 from ..physics import constants as const
-from ._moist import _Moist
 
 
-class Parcel(_Moist):
+class Parcel(Moist):
 
     def __init__(
             self, dt,
@@ -51,7 +50,7 @@ class Parcel(_Moist):
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
-        _Moist.register(self, builder)
+        Moist.register(self, builder)
 
         params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self['qv'][:] = params[0]
@@ -61,7 +60,7 @@ class Parcel(_Moist):
         self['t'][:] = params[4]
 
         self.sync_parcel_vars()
-        _Moist.sync(self)
+        Moist.sync(self)
         self.notify()
 
     def init_attributes(
