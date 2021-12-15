@@ -135,12 +135,12 @@ class Collision:
             else:
                 self.dt_left[:] = self.particulator.dt
 
-                while self.particulator.particles.get_working_length() != 0:
-                    self.particulator.particles.cell_idx.sort_by_key(self.dt_left)
+                while self.particulator.attributes.get_working_length() != 0:
+                    self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
                     self.step()
 
-                self.particulator.particles.reset_working_length()
-                self.particulator.particles.reset_cell_idx()
+                self.particulator.attributes.reset_working_length()
+                self.particulator.attributes.reset_cell_idx()
             self.rnd_opt_coll.reset()
             self.rnd_opt_proc.reset()
             self.rnd_opt_frag.reset()
@@ -168,28 +168,28 @@ class Collision:
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
         
         # (5) Perform the collisional-coalescence/breakup step: 
-        self.particulator.particles.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment, 
-                                    cell_id=self.particulator.particles["cell id"], coalescence_rate=self.coalescence_rate, 
+        self.particulator.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment, 
+                                    cell_id=self.particulator.attributes["cell id"], coalescence_rate=self.coalescence_rate, 
                                     breakup_rate=self.breakup_rate, is_first_in_pair=self.is_first_in_pair)
         
         if self.adaptive:
-            self.particulator.particles.cut_working_length(self.particulator.particles.adaptive_sdm_end(self.dt_left))
+            self.particulator.attributes.cut_working_length(self.particulator.attributes.adaptive_sdm_end(self.dt_left))
 
     # (2) candidate-pair list: put them in order by multiplicity
     def toss_pairs(self, is_first_in_pair, u01):
-        self.particulator.particles.permutation(u01, self.croupier == 'local')
+        self.particulator.attributes.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
-            self.particulator.particles.cell_start,
-            self.particulator.particles.cell_idx,
-            self.particulator.particles['cell id']
+            self.particulator.attributes.cell_start,
+            self.particulator.attributes.cell_idx,
+            self.particulator.attributes['cell id']
         )
-        self.particulator.particles.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
+        self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
     # (3a) Compute probability of a collision
     def compute_probability(self, prob, is_first_in_pair):
         self.kernel(self.kernel_temp, is_first_in_pair)
         # P_jk = max(xi_j, xi_k)*P_jk*E_c
-        prob.max(self.particulator.particles['n'], is_first_in_pair)
+        prob.max(self.particulator.attributes['n'], is_first_in_pair)
         prob *= self.kernel_temp
 
         self.particulator.normalize(prob, self.norm_factor_temp)
@@ -203,8 +203,8 @@ class Collision:
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
                 prob,
-                self.particulator.particles['n'],
-                self.particulator.particles["cell id"],
+                self.particulator.attributes['n'],
+                self.particulator.attributes["cell id"],
                 self.dt_left,
                 self.particulator.dt,
                 self.dt_coal_range,
@@ -221,8 +221,8 @@ class Collision:
         self.particulator.backend.compute_gamma(
             prob,
             rand,
-            self.particulator.particles['n'],
-            self.particulator.particles["cell id"],
+            self.particulator.attributes['n'],
+            self.particulator.attributes["cell id"],
             self.collision_rate_deficit,
             self.collision_rate,
             is_first_in_pair
