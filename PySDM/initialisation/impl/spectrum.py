@@ -1,11 +1,8 @@
 """
-logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for all
- spectra
+logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for most
+ of the spectra
 """
 import numpy as np
-from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
-
-default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
 
 class Spectrum:
