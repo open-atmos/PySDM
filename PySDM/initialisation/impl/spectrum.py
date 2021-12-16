@@ -2,7 +2,6 @@
 logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for most
  of the spectra
 """
-import numpy as np
 
 
 class Spectrum:
