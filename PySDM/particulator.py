@@ -119,14 +119,23 @@ class Particulator:
             success=success,
             cell_id=self.attributes['cell id']
         )
-
-    def coalescence(self, gamma, is_first_in_pair):
-        self.backend.coalescence(
+# TODO: make this collision backend not coalescence backend
+    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment, 
+                coalescence_rate, breakup_rate, is_first_in_pair):
+        self.backend.collision(
             multiplicity=self.attributes['n'],
             idx=self.attributes._ParticleAttributes__idx,
             attributes=self.attributes.get_extensive_attribute_storage(),
             gamma=gamma,
+            rand=rand,
+            dyn=dyn,
+            Ec=Ec,
+            Eb=Eb,
+            n_fragment=n_fragment,
             healthy=self.attributes._ParticleAttributes__healthy_memory,
+            cell_id=self.attributes["cell id"],
+            coalescence_rate=coalescence_rate,
+            breakup_rate=breakup_rate,
             is_first_in_pair=is_first_in_pair
         )
         self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)

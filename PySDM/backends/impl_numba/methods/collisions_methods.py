@@ -109,7 +109,8 @@ class AlgorithmicMethods(BackendMethods):
                     healthy[0] = 0
 
                 coalescence_rate[cid] += gamma[i] * multiplicity[k]
-                    
+                    # TODO: write a unit test with gamma of 2 -- should lead to two collisions
+                    # Results should be consistent, ex: gamma 5 and 1 timestep, as gamma 1 and 5 timesteps
             else: # breakup
                 new_n = multiplicity[j] - gamma[i] * multiplicity[k]
                 # perform rounding to keep multiplicity[k] as integer
@@ -133,12 +134,13 @@ class AlgorithmicMethods(BackendMethods):
                 breakup_rate[cid] += gamma[i] * multiplicity[k]
 
     @staticmethod
-    def collision(n, idx, length, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, cell_id,
+    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, cell_id,
                         coalescence_rate, breakup_rate, is_first_in_pair):
-        AlgorithmicMethods.collision_body(n.data, idx.data, length,
-                                            attributes.data, gamma.data, rand.data, dyn.data, Ec.data, Eb.data, 
-                                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data, 
-                                            breakup_rate.data, is_first_in_pair.indicator.data)
+        self.collision_body(multiplicity.data, idx.data, len(idx),
+                            attributes.data, gamma.data, rand.data, dyn.data, Ec.data, Eb.data, 
+                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data, 
+                            breakup_rate.data, is_first_in_pair.indicator.data)
+
         
     @numba.njit(**{**conf.JIT_FLAGS})
     def slams_fragmentation_body(n_fragment, probs, rand):
