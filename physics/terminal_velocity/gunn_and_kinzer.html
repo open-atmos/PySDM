@@ -148,6 +148,9 @@ class TpDependent:
         @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False})
         def terminal_velocity(values, radius, threshold):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; 0:
+                    values[i] = 0
+                    continue  # TODO #599
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] &lt; threshold:
@@ -315,6 +318,9 @@ class TpDependent:
         @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False})
         def terminal_velocity(values, radius, threshold):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] &lt; 0:
+                    values[i] = 0
+                    continue  # TODO #599
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] &lt; threshold:
@@ -380,6 +386,9 @@ def make(only_small=False):
     @numba.njit(**{**conf.JIT_FLAGS, &#34;cache&#34;: False})
     def terminal_velocity(values, radius, threshold):
         for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+            if radius[i] &lt; 0:
+                values[i] = 0
+                continue  # TODO #599
             r = radius[i] / cm
             sum_r = 0
             if radius[i] &lt; threshold:

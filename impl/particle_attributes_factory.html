@@ -76,7 +76,7 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError as err:
-                    raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
+                    raise ValueError(f&#34;attribute &#39;{attr}&#39; requested by one of the components&#34;
                                      f&#34; but no initial values given&#34;) from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
@@ -185,7 +185,7 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError as err:
-                    raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
+                    raise ValueError(f&#34;attribute &#39;{attr}&#39; requested by one of the components&#34;
                                      f&#34; but no initial values given&#34;) from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
@@ -284,7 +284,7 @@ def attributes(particulator, req_attr, attributes):
             try:
                 req_attr[attr].init(all_attr[attr])
             except KeyError as err:
-                raise ValueError(f&#34;attribute &#39;{attr}&#39; required by one of the dynamics&#34;
+                raise ValueError(f&#34;attribute &#39;{attr}&#39; requested by one of the components&#34;
                                  f&#34; but no initial values given&#34;) from err
 
     helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)

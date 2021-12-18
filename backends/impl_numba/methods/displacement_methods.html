@@ -100,7 +100,7 @@ class DisplacementMethods(BackendMethods):
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]
+                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
                 idx[i] = flag
                 healthy[0] = 0
         return rainfall
@@ -210,7 +210,7 @@ def calculate_displacement_body_common(
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]
+                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
                 idx[i] = flag
                 healthy[0] = 0
         return rainfall
@@ -320,7 +320,7 @@ def flag_precipitated_body(
     flag = len(idx)
     for i in range(length):
         if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
-            rainfall += volume[idx[i]] * multiplicity[idx[i]]
+            rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
             idx[i] = flag
             healthy[0] = 0
     return rainfall</code></pre>
