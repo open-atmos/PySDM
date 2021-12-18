@@ -30,6 +30,7 @@ class SurfacePrecipitation(Product):
         if self.elapsed_time == 0.:
             return 0.
 
+        # TODO #708
         result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
         self._reset_counters()
         return result
