@@ -1,6 +1,4 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import numpy as np
-from matplotlib import pyplot
 import pytest
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
@@ -15,7 +13,7 @@ from .dummy_storage import DummyStorage
         pytest.param(True, id="singular: True")
 ))
 # pylint: disable=redefined-outer-name
-def test_freezing(singular, plot=False):
+def test_freezing(singular):
     # Arrange
     settings = Settings()
     settings.dt = .5 * si.second
@@ -39,10 +37,6 @@ def test_freezing(singular, plot=False):
 
     # Act
     simulation.run()
-
-    # Plot
-    if plot:
-        pass
 
     # Assert
     assert (simulation.products['ice water content'].get() > 0).any()
