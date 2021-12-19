@@ -1,5 +1,5 @@
 """
-Initialisation logic particle size spectra, sampling methods and
+initialisation logic, particle size spectra, sampling methods and
 wet radii equilibration
 """
 from .discretise_multiplicities import discretise_multiplicities
