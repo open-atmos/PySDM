@@ -2,10 +2,18 @@
 import pytest
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
+from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.backends import CPU
 from .dummy_storage import DummyStorage
+from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
+from PySDM.physics.heterogeneous_ice_nucleation_rate import abifm
 
+# TODO #599
+niemand_et_al_2012.a = -0.517
+niemand_et_al_2012.b = 8.934
+abifm.m = 28.13797
+abifm.c = -2.92414
 
 
 @pytest.mark.parametrize("singular", (
@@ -15,7 +23,12 @@ from .dummy_storage import DummyStorage
 # pylint: disable=redefined-outer-name
 def test_freezing(singular):
     # Arrange
-    settings = Settings()
+    settings = Settings(Formulae(
+        condensation_coordinate='VolumeLogarithm',
+        fastmath=True,
+        freezing_temperature_spectrum='Niemand_et_al_2012',
+        heterogeneous_ice_nucleation_rate='ABIFM'
+    ))
     settings.dt = .5 * si.second
     settings.grid = (3, 25)
 
