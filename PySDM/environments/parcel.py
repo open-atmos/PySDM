@@ -23,7 +23,8 @@ class Parcel(Moist):
         super().__init__(
             dt,
             Mesh.mesh_0d(),
-            mixed_phase
+            ['rhod', 'z', 't'],
+            mixed_phase=mixed_phase
         )
 
         self.p0 = p0
