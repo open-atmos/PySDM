@@ -29,7 +29,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] > 1 and  # TODO #599 - it is in Shima's formulation, is it needed?
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
