@@ -25,10 +25,11 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def freeze_singular_body(attributes, temperature, relative_humidity, cell):
-            for i in numba.prange(len(attributes.freezing_temperature)):  # pylint: disable=not-an-iterable
+            n_sd = len(attributes.freezing_temperature)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] > 1 and
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 - it is in Shima's formulation, is it needed?
                     temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
