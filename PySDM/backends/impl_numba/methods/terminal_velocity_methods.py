@@ -2,7 +2,6 @@
 CPU implementation of backend methods for terminal velocities
 """
 import numba
-import numpy as np
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 

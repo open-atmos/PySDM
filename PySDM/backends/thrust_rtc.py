@@ -51,6 +51,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
+        TerminalVelocityMethods.__init__(self)
 
         trtc.Set_Kernel_Debug(debug)
         trtc.Set_Verbose(verbose)
