@@ -164,6 +164,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             '''
         )
 
+        # TODO #599 r<0
         self.__interpolation_body = trtc.For(
             ('output', 'radius', 'factor', 'a', 'b'),
             'i',

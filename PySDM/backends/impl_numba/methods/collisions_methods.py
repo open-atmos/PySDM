@@ -177,9 +177,12 @@ class AlgorithmicMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def interpolation_body(output, radius, factor, b, c):
         for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            r_id = int(factor * radius[i])
-            r_rest = ((factor * radius[i]) % 1) / factor
-            output[i] = b[r_id] + r_rest * c[r_id]
+            if radius[i] < 0:
+                output[i] = 0
+            else:
+                r_id = int(factor * radius[i])
+                r_rest = ((factor * radius[i]) % 1) / factor
+                output[i] = b[r_id] + r_rest * c[r_id]
 
     def interpolation(self, output, radius, factor, b, c):
         return self.interpolation_body(
