@@ -2,7 +2,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from PySDM.physics import constants as const
-from PySDM.physics.terminal_velocity.gunn_and_kinzer import RogersYau, Interpolation
+from PySDM.physics.terminal_velocity.gunn_and_kinzer import Interpolation
+from PySDM.physics.terminal_velocity.rogers_and_yau import RogersYau
 from tests.backends_fixture import backend_class
 from tests.unit_tests.dummy_particulator import DummyParticulator
 
