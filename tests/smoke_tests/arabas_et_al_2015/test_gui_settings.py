@@ -6,7 +6,7 @@ from PySDM_examples.Szumowski_et_al_1998.gui_settings import GUISettings
 class TestGUISettings:
     @staticmethod
     def test_instantiate():
-        gui_settings = GUISettings(Settings())
+        _ = GUISettings(Settings())
 
     @staticmethod
     def test_stream_function():
