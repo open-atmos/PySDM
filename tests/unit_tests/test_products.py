@@ -12,7 +12,8 @@ from PySDM.products.impl.rate_product import RateProduct
 from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMassMixingRatio,
                             ParticleSizeSpectrumPerMass, GaseousMoleFraction,
                             FreezableSpecificConcentration, DynamicWallTime,
-                            ParticleSizeSpectrumPerVolume, ParticlesVolumeSpectrum)
+                            ParticleSizeSpectrumPerVolume, ParticlesVolumeSpectrum,
+                            RadiusBinnedNumberAveragedTerminalVelocity)
 
 _ARGUMENTS = {
     AqueousMassSpectrum: {'key': 'S_VI', 'dry_radius_bins_edges': (0, np.inf)},
@@ -23,7 +24,8 @@ _ARGUMENTS = {
     FreezableSpecificConcentration: {'temperature_bins_edges': (0, 300)},
     DynamicWallTime: {'dynamic': 'Condensation'},
     ParticleSizeSpectrumPerVolume: {'radius_bins_edges': (0, np.inf)},
-    ParticlesVolumeSpectrum: {'radius_bins_edges': (0, np.inf)}
+    ParticlesVolumeSpectrum: {'radius_bins_edges': (0, np.inf)},
+    RadiusBinnedNumberAveragedTerminalVelocity: {'radius_bin_edges': (0, np.inf)}
 }
 
 
