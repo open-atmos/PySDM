@@ -24,6 +24,7 @@ abifm.c = -2.92414
 def test_freezing(singular):
     # Arrange
     settings = Settings(Formulae(
+        seed=44,
         condensation_coordinate='VolumeLogarithm',
         fastmath=True,
         freezing_temperature_spectrum='Niemand_et_al_2012',
