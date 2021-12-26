@@ -7,3 +7,5 @@ from .particles_volume_spectrum import ParticlesVolumeSpectrum
 from .total_particle_concentration import TotalParticleConcentration
 from .total_particle_specific_concentration import TotalParticleSpecificConcentration
 from .water_mixing_ratio import WaterMixingRatio
+from .radius_binned_number_averaged_terminal_velocity \
+    import RadiusBinnedNumberAveragedTerminalVelocity
