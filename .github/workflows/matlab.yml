@@ -22,7 +22,7 @@ jobs:
           python-version: 3.8
       - run: pip install -e .
       - run: pip install pytest-codeblocks pytest
-      - run: python -c "import pytest-codeblocks; code=pytest-codeblocks.extract_from_file('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: python -c "import pytest_codeblocks; code=pytest_codeblocks.extract_from_file('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
         with:
