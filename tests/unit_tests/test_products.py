@@ -12,7 +12,8 @@ from PySDM.products.impl.rate_product import RateProduct
 from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMassMixingRatio,
                             ParticleSizeSpectrumPerMass, GaseousMoleFraction,
                             FreezableSpecificConcentration, DynamicWallTime,
-                            ParticleSizeSpectrumPerVolume, ParticleVolumeVersusRadiusLogarithmSpectrum,
+                            ParticleSizeSpectrumPerVolume,
+                            ParticleVolumeVersusRadiusLogarithmSpectrum,
                             RadiusBinnedNumberAveragedTerminalVelocity)
 
 _ARGUMENTS = {
