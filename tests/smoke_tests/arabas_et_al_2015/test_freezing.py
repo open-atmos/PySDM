@@ -32,7 +32,7 @@ def test_freezing(singular):
     ))
     settings.dt = .5 * si.second
     settings.grid = (5, 15)
-    settings.n_sd_per_gridbox = 16
+    settings.n_sd_per_gridbox = 64
 
     settings.simulation_time = 100 * settings.dt
     settings.spin_up_time = 10 * settings.dt
