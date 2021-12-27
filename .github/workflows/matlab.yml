@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: 3.8
       - run: pip install -e .
-      - run: pip install exdown pytest
-      - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest-codeblocks; code=pytest-codeblocks.extract_from_file('README.md'); f=open('readme.m', 'w'); f.writelines(block.code for block in code if block.syntax=='Matlab'); f.close()"
       - run: cat -n readme.m
       - uses: matlab-actions/setup-matlab@v0
         with:

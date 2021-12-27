@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: 3.9
       - run: pip install -e .
-      - run: pip install exdown pytest
-      - run: python -c "import exdown; code=exdown.extract('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
+      - run: pip install pytest-codeblocks pytest
+      - run: python -c "import pytest-codeblocks; code=pytest-codeblocks.extract_from_file('README.md'); f=open('readme.jl', 'w'); f.writelines(block.code for block in code if block.syntax=='Julia'); f.close()"
       - uses: julia-actions/setup-julia@v1
       - run: cat -n readme.jl
       - run: julia readme.jl
