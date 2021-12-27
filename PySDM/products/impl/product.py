@@ -17,7 +17,7 @@ class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
         self.name = name or self._camel_case_to_words(self.__class__.__name__)
 
-        self._unit = self.__parse_unit(unit)
+        self._unit = self._parse_unit(unit)
         self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
         self.__check_unit()
 
@@ -36,7 +36,7 @@ class Product:
         storage.download(self.buffer.ravel())
 
     @staticmethod
-    def __parse_unit(unit: str):
+    def _parse_unit(unit: str):
         if unit in ('%', 'percent'):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in ('PPB', 'ppb'):
@@ -65,7 +65,7 @@ class Product:
             raise AssertionError(f"unit parameter of {type(self).__name__}.__init__"
                                  f" is expected to have a non-empty default value")
 
-        default_unit = self.__parse_unit(default_unit_arg)
+        default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
             raise AssertionError(f'default value "{default_unit_arg}"'
