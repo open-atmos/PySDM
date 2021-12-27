@@ -52,7 +52,8 @@ class Parcel(Moist):
         super().__init__(
             dt,
             Mesh.mesh_0d(),
-            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;] + ([&#39;a_w_ice&#39;] if mixed_phase else [])
+            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;],
+            mixed_phase=mixed_phase
         )
 
         self.p0 = p0
@@ -189,7 +190,8 @@ class Parcel(Moist):
         super().__init__(
             dt,
             Mesh.mesh_0d(),
-            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;] + ([&#39;a_w_ice&#39;] if mixed_phase else [])
+            [&#39;rhod&#39;, &#39;z&#39;, &#39;t&#39;],
+            mixed_phase=mixed_phase
         )
 
         self.p0 = p0

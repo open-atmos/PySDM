@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.size_spectral.particles_volume_spectrum API documentation</title>
-<meta name="description" content="the dn-dlnr particle volume spectrum per volume of air (uses natural logarithm)" />
+<title>PySDM.physics.terminal_velocity.rogers_and_yau API documentation</title>
+<meta name="description" content="Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,50 +19,38 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.size_spectral.particles_volume_spectrum</code></h1>
+<h1 class="title">Module <code>PySDM.physics.terminal_velocity.rogers_and_yau</code></h1>
 </header>
 <section id="section-intro">
-<p>the dn-dlnr particle volume spectrum per volume of air (uses natural logarithm)</p>
+<p>Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-the dn-dlnr particle volume spectrum per volume of air (uses natural logarithm)
+Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)
 &#34;&#34;&#34;
-import numpy as np
-from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+from PySDM.physics import constants as const
 
 
-class ParticlesVolumeSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
-        super().__init__(name=name, unit=unit)
-        self.radius_bins_edges = radius_bins_edges
-        self.moment_0 = None
-        self.moments = None
+class RogersYau:
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
+        si = const.si
+        self.particles = particles
+        self.small_k = small_k or 1.19e6 / si.cm / si.s
+        self.medium_k = medium_k or 8e3 / si.s
+        self.large_k = large_k or 2.01e3 * si.cm ** (1 / 2) / si.s
+        self.small_r_limit = small_r_limit or 35 * si.um
+        self.medium_r_limit = medium_r_limit or 600 * si.um
 
-    def register(self, builder):
-        builder.request_attribute(&#39;volume&#39;)
-
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bins_edges)
-
-        super().register(builder)
-
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
-
-    def _impl(self, **kwargs):
-        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, rank=1, filter_attr=&#39;volume&#39;)
-
-        for i in range(vals.shape[1]):
-            self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
-            vals[:, i] = self.buffer.ravel()
-            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
-            vals[:, i] *= self.buffer.ravel()
-
-        vals *= 1 / np.diff(np.log(self.radius_bins_edges)) / self.particulator.mesh.dv
-        return vals</code></pre>
+    def __call__(self, output, radius):
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -74,61 +62,35 @@ class ParticlesVolumeSpectrum(SpectrumMomentProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.size_spectral.particles_volume_spectrum.ParticlesVolumeSpectrum"><code class="flex name class">
-<span>class <span class="ident">ParticlesVolumeSpectrum</span></span>
-<span>(</span><span>radius_bins_edges, name=None, unit='dimensionless')</span>
+<dt id="PySDM.physics.terminal_velocity.rogers_and_yau.RogersYau"><code class="flex name class">
+<span>class <span class="ident">RogersYau</span></span>
+<span>(</span><span>particles, small_k=None, medium_k=None, large_k=None, small_r_limit=None, medium_r_limit=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ParticlesVolumeSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
-        super().__init__(name=name, unit=unit)
-        self.radius_bins_edges = radius_bins_edges
-        self.moment_0 = None
-        self.moments = None
+<pre><code class="python">class RogersYau:
+    def __init__(self, particles,
+                 small_k=None, medium_k=None, large_k=None,
+                 small_r_limit=None, medium_r_limit=None):
+        si = const.si
+        self.particles = particles
+        self.small_k = small_k or 1.19e6 / si.cm / si.s
+        self.medium_k = medium_k or 8e3 / si.s
+        self.large_k = large_k or 2.01e3 * si.cm ** (1 / 2) / si.s
+        self.small_r_limit = small_r_limit or 35 * si.um
+        self.medium_r_limit = medium_r_limit or 600 * si.um
 
-    def register(self, builder):
-        builder.request_attribute(&#39;volume&#39;)
-
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bins_edges)
-
-        super().register(builder)
-
-        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
-
-    def _impl(self, **kwargs):
-        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, rank=1, filter_attr=&#39;volume&#39;)
-
-        for i in range(vals.shape[1]):
-            self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
-            vals[:, i] = self.buffer.ravel()
-            self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
-            vals[:, i] *= self.buffer.ravel()
-
-        vals *= 1 / np.diff(np.log(self.radius_bins_edges)) / self.particulator.mesh.dv
-        return vals</code></pre>
+    def __call__(self, output, radius):
+        self.particles.backend.terminal_velocity(
+            output.data, radius.data,
+            self.small_k, self.medium_k, self.large_k,
+            self.small_r_limit, self.medium_r_limit
+        )</code></pre>
 </details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
-<li>abc.ABC</li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
-<h3>Inherited members</h3>
-<ul class="hlist">
-<li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
-<ul class="hlist">
-<li><code><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register">register</a></code></li>
-</ul>
-</li>
-</ul>
 </dd>
 </dl>
 </section>
@@ -141,13 +103,13 @@ inheritance.</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.size_spectral" href="index.html">PySDM.products.size_spectral</a></code></li>
+<li><code><a title="PySDM.physics.terminal_velocity" href="index.html">PySDM.physics.terminal_velocity</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.size_spectral.particles_volume_spectrum.ParticlesVolumeSpectrum" href="#PySDM.products.size_spectral.particles_volume_spectrum.ParticlesVolumeSpectrum">ParticlesVolumeSpectrum</a></code></h4>
+<h4><code><a title="PySDM.physics.terminal_velocity.rogers_and_yau.RogersYau" href="#PySDM.physics.terminal_velocity.rogers_and_yau.RogersYau">RogersYau</a></code></h4>
 </li>
 </ul>
 </li>

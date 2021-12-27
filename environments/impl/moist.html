@@ -36,8 +36,10 @@ import numpy as np
 
 class Moist:
 
-    def __init__(self, dt, mesh, variables):
+    def __init__(self, dt, mesh, variables, mixed_phase=False):
         variables += [&#39;qv&#39;, &#39;thd&#39;, &#39;T&#39;, &#39;p&#39;, &#39;RH&#39;]
+        if mixed_phase:
+            variables += [&#39;a_w_ice&#39;]
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
@@ -116,7 +118,7 @@ class Moist:
 <dl>
 <dt id="PySDM.environments.impl.moist.Moist"><code class="flex name class">
 <span>class <span class="ident">Moist</span></span>
-<span>(</span><span>dt, mesh, variables)</span>
+<span>(</span><span>dt, mesh, variables, mixed_phase=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -126,8 +128,10 @@ class Moist:
 </summary>
 <pre><code class="python">class Moist:
 
-    def __init__(self, dt, mesh, variables):
+    def __init__(self, dt, mesh, variables, mixed_phase=False):
         variables += [&#39;qv&#39;, &#39;thd&#39;, &#39;T&#39;, &#39;p&#39;, &#39;RH&#39;]
+        if mixed_phase:
+            variables += [&#39;a_w_ice&#39;]
         self.particulator = None
         self.dt = dt
         self.mesh = mesh

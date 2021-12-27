@@ -39,40 +39,6 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 class CollisionsMethods(ThrustRTCBackendMethods):
     def __init__(self):
         super().__init__()
-        self.__linear_collection_efficiency_body = trtc.For(
-            (
-                &#39;A&#39;, &#39;B&#39;, &#39;D1&#39;, &#39;D2&#39;, &#39;E1&#39;, &#39;E2&#39;, &#39;F1&#39;, &#39;F2&#39;, &#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;, &#39;Mf&#39;, &#39;Mg&#39;,
-                &#39;output&#39;, &#39;radii&#39;, &#39;is_first_in_pair&#39;, &#39;idx&#39;, &#39;unit&#39;
-            ),
-            &#34;i&#34;,
-            &#39;&#39;&#39;
-            if (is_first_in_pair[i]) {
-                real_type r = 0;
-                real_type r_s = 0;
-                if (radii[idx[i]] &gt; radii[idx[i + 1]]) {
-                    r = radii[idx[i]] / unit;
-                    r_s = radii[idx[i + 1]] / unit;
-                }
-                else {
-                    r = radii[idx[i + 1]] / unit;
-                    r_s = radii[idx[i]] / unit;
-                }
-                real_type p = r_s / r;
-                if (p != 0 &amp;&amp; p != 1) {
-                    real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
-                    real_type Gp = pow((1 - p), G);
-                    if (Gp != 0) {
-                        real_type D = D1 / pow(r, D2);
-                        real_type E = E1 / pow(r, E2);
-                        real_type F = pow((F1 / r), Mf) + F2;
-                        output[int(i / 2)] = A + B * p + D / pow(p, F) + E / Gp;
-                        if (output[int(i / 2)] &lt; 0) {
-                            output[int(i / 2)] = 0;
-                        }
-                    }
-                }
-            }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             (&#39;dt_todo&#39;, &#39;dt_left&#39;, &#39;dt_max&#39;),
@@ -193,16 +159,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             &#39;&#39;&#39;
         )
 
-        self.__interpolation_body = trtc.For(
-            (&#39;output&#39;, &#39;radius&#39;, &#39;factor&#39;, &#39;a&#39;, &#39;b&#39;),
-            &#39;i&#39;,
-            &#39;&#39;&#39;
-            auto r_id = (int64_t)(factor * radius[i]);
-            auto r_rest = (factor * radius[i] - r_id) / factor;
-            output[i] = a[r_id] + r_rest * b[r_id];
-            &#39;&#39;&#39;
-        )
-
         self.__normalize_body_0 = trtc.For(
             (&#39;cell_start&#39;, &#39;norm_factor&#39;, &#39;dt_div_dv&#39;),
             &#34;i&#34;,
@@ -315,36 +271,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             len(multiplicity) // 2,
             (gamma.data, rand.data, multiplicity.idx.data, multiplicity.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data))
-
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        dA = self._get_floating_point(A)
-        dB = self._get_floating_point(B)
-        dD1 = self._get_floating_point(D1)
-        dD2 = self._get_floating_point(D2)
-        dE1 = self._get_floating_point(E1)
-        dE2 = self._get_floating_point(E2)
-        dF1 = self._get_floating_point(F1)
-        dF2 = self._get_floating_point(F2)
-        dG1 = self._get_floating_point(G1)
-        dG2 = self._get_floating_point(G2)
-        dG3 = self._get_floating_point(G3)
-        dMf = self._get_floating_point(Mf)
-        dMg = self._get_floating_point(Mg)
-        dunit = self._get_floating_point(unit)
-        trtc.Fill(output.data, trtc.DVDouble(0))
-        self.__linear_collection_efficiency_body.launch_n(
-            len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-             output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def interpolation(self, output, radius, factor, b, c):
-        factor_device = trtc.DVInt64(factor)
-        self.__interpolation_body.launch_n(
-            len(radius),
-            (output.data, radius.data, factor_device, b.data, c.data)
-        )
 
     # pylint: disable=unused-argument
     def make_cell_caretaker(self, idx, cell_start, scheme=None):
@@ -407,40 +333,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 <pre><code class="python">class CollisionsMethods(ThrustRTCBackendMethods):
     def __init__(self):
         super().__init__()
-        self.__linear_collection_efficiency_body = trtc.For(
-            (
-                &#39;A&#39;, &#39;B&#39;, &#39;D1&#39;, &#39;D2&#39;, &#39;E1&#39;, &#39;E2&#39;, &#39;F1&#39;, &#39;F2&#39;, &#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;, &#39;Mf&#39;, &#39;Mg&#39;,
-                &#39;output&#39;, &#39;radii&#39;, &#39;is_first_in_pair&#39;, &#39;idx&#39;, &#39;unit&#39;
-            ),
-            &#34;i&#34;,
-            &#39;&#39;&#39;
-            if (is_first_in_pair[i]) {
-                real_type r = 0;
-                real_type r_s = 0;
-                if (radii[idx[i]] &gt; radii[idx[i + 1]]) {
-                    r = radii[idx[i]] / unit;
-                    r_s = radii[idx[i + 1]] / unit;
-                }
-                else {
-                    r = radii[idx[i + 1]] / unit;
-                    r_s = radii[idx[i]] / unit;
-                }
-                real_type p = r_s / r;
-                if (p != 0 &amp;&amp; p != 1) {
-                    real_type G = pow((G1 / r), Mg) + G2 + G3 * r;
-                    real_type Gp = pow((1 - p), G);
-                    if (Gp != 0) {
-                        real_type D = D1 / pow(r, D2);
-                        real_type E = E1 / pow(r, E2);
-                        real_type F = pow((F1 / r), Mf) + F2;
-                        output[int(i / 2)] = A + B * p + D / pow(p, F) + E / Gp;
-                        if (output[int(i / 2)] &lt; 0) {
-                            output[int(i / 2)] = 0;
-                        }
-                    }
-                }
-            }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             (&#39;dt_todo&#39;, &#39;dt_left&#39;, &#39;dt_max&#39;),
@@ -561,16 +453,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             &#39;&#39;&#39;
         )
 
-        self.__interpolation_body = trtc.For(
-            (&#39;output&#39;, &#39;radius&#39;, &#39;factor&#39;, &#39;a&#39;, &#39;b&#39;),
-            &#39;i&#39;,
-            &#39;&#39;&#39;
-            auto r_id = (int64_t)(factor * radius[i]);
-            auto r_rest = (factor * radius[i] - r_id) / factor;
-            output[i] = a[r_id] + r_rest * b[r_id];
-            &#39;&#39;&#39;
-        )
-
         self.__normalize_body_0 = trtc.For(
             (&#39;cell_start&#39;, &#39;norm_factor&#39;, &#39;dt_div_dv&#39;),
             &#34;i&#34;,
@@ -683,36 +565,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
             len(multiplicity) // 2,
             (gamma.data, rand.data, multiplicity.idx.data, multiplicity.data, cell_id.data,
              collision_rate_deficit.data, collision_rate.data))
-
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        dA = self._get_floating_point(A)
-        dB = self._get_floating_point(B)
-        dD1 = self._get_floating_point(D1)
-        dD2 = self._get_floating_point(D2)
-        dE1 = self._get_floating_point(E1)
-        dE2 = self._get_floating_point(E2)
-        dF1 = self._get_floating_point(F1)
-        dF2 = self._get_floating_point(F2)
-        dG1 = self._get_floating_point(G1)
-        dG2 = self._get_floating_point(G2)
-        dG3 = self._get_floating_point(G3)
-        dMf = self._get_floating_point(Mf)
-        dMg = self._get_floating_point(Mg)
-        dunit = self._get_floating_point(unit)
-        trtc.Fill(output.data, trtc.DVDouble(0))
-        self.__linear_collection_efficiency_body.launch_n(
-            len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-             output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])
-
-    @nice_thrust(**NICE_THRUST_FLAGS)
-    def interpolation(self, output, radius, factor, b, c):
-        factor_device = trtc.DVInt64(factor)
-        self.__interpolation_body.launch_n(
-            len(radius),
-            (output.data, radius.data, factor_device, b.data, c.data)
-        )
 
     # pylint: disable=unused-argument
     def make_cell_caretaker(self, idx, cell_start, scheme=None):
@@ -854,56 +706,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.interpolation"><code class="name flex">
-<span>def <span class="ident">interpolation</span></span>(<span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, params, output, radii, is_first_in_pair, unit)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-    dA = self._get_floating_point(A)
-    dB = self._get_floating_point(B)
-    dD1 = self._get_floating_point(D1)
-    dD2 = self._get_floating_point(D2)
-    dE1 = self._get_floating_point(E1)
-    dE2 = self._get_floating_point(E2)
-    dF1 = self._get_floating_point(F1)
-    dF2 = self._get_floating_point(F2)
-    dG1 = self._get_floating_point(G1)
-    dG2 = self._get_floating_point(G2)
-    dG3 = self._get_floating_point(G3)
-    dMf = self._get_floating_point(Mf)
-    dMg = self._get_floating_point(Mg)
-    dunit = self._get_floating_point(unit)
-    trtc.Fill(output.data, trtc.DVDouble(0))
-    self.__linear_collection_efficiency_body.launch_n(
-        len(is_first_in_pair) - 1,
-        [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-         output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker"><code class="name flex">
 <span>def <span class="ident">make_cell_caretaker</span></span>(<span>self, idx, cell_start, scheme=None)</span>
 </code></dt>
@@ -979,8 +781,6 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id">cell_id</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.coalescence" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.coalescence">coalescence</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma">compute_gamma</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.interpolation" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.interpolation">interpolation</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize">normalize</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged">remove_zero_n_or_flagged</a></code></li>

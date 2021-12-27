@@ -84,7 +84,8 @@ def sum_out_of_place(output, a, b):
 
 @numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):
-    output[:] = np.power(output, exponent)
+    # TODO #599 (was: output[:] = np.power(output, exponent))
+    output[:] = np.sign(output) * np.power(np.abs(output), exponent)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
@@ -213,7 +214,8 @@ def multiply_out_of_place(output, multiplicand, multiplier):
 </summary>
 <pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):
-    output[:] = np.power(output, exponent)</code></pre>
+    # TODO #599 (was: output[:] = np.power(output, exponent))
+    output[:] = np.sign(output) * np.power(np.abs(output), exponent)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.storage_impl.row_modulo"><code class="name flex">

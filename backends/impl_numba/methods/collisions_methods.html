@@ -45,7 +45,7 @@ def pair_indices(i, idx, is_first_in_pair):
     return j, k
 
 
-class AlgorithmicMethods(BackendMethods):
+class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -171,51 +171,6 @@ class AlgorithmicMethods(BackendMethods):
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-            params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
-                else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r ** D2
-                        E = E1 / r ** E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p ** F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
-
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-        return self.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data,
-            radii.idx.data, len(is_first_in_pair), unit)
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            r_id = int(factor * radius[i])
-            r_rest = ((factor * radius[i]) % 1) / factor
-            output[i] = b[r_id] + r_rest * c[r_id]
-
-    def interpolation(self, output, radius, factor, b, c):
-        return self.interpolation_body(
-            output.data, radius.data, factor, b.data, c.data
-        )
-
-    @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
             def __init__(self, idx, cell_start, scheme):
@@ -236,11 +191,11 @@ class AlgorithmicMethods(BackendMethods):
             def __call__(self, cell_id, cell_idx, cell_start, idx):
                 length = len(idx)
                 if self.scheme == &#34;counting_sort&#34;:
-                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data,
                         cell_idx.data, length, cell_start.data)
                 elif self.scheme == &#34;counting_sort_parallel&#34;:
-                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data,
                         length, cell_start.data, self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
@@ -366,8 +321,8 @@ def pair_indices(i, idx, is_first_in_pair):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods"><code class="flex name class">
-<span>class <span class="ident">AlgorithmicMethods</span></span>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods"><code class="flex name class">
+<span>class <span class="ident">CollisionsMethods</span></span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -375,7 +330,7 @@ def pair_indices(i, idx, is_first_in_pair):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AlgorithmicMethods(BackendMethods):
+<pre><code class="python">class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -501,51 +456,6 @@ def pair_indices(i, idx, is_first_in_pair):
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-            params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
-                else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r ** D2
-                        E = E1 / r ** E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p ** F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
-
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-        return self.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data,
-            radii.idx.data, len(is_first_in_pair), unit)
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            r_id = int(factor * radius[i])
-            r_rest = ((factor * radius[i]) % 1) / factor
-            output[i] = b[r_id] + r_rest * c[r_id]
-
-    def interpolation(self, output, radius, factor, b, c):
-        return self.interpolation_body(
-            output.data, radius.data, factor, b.data, c.data
-        )
-
-    @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
             def __init__(self, idx, cell_start, scheme):
@@ -566,11 +476,11 @@ def pair_indices(i, idx, is_first_in_pair):
             def __call__(self, cell_id, cell_idx, cell_start, idx):
                 length = len(idx)
                 if self.scheme == &#34;counting_sort&#34;:
-                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data,
                         cell_idx.data, length, cell_start.data)
                 elif self.scheme == &#34;counting_sort_parallel&#34;:
-                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data,
                         length, cell_start.data, self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
@@ -676,7 +586,7 @@ def pair_indices(i, idx, is_first_in_pair):
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end_body"><code class="name flex">
 <span>def <span class="ident">adaptive_sdm_end_body</span></span>(<span>dt_left, n_cell, cell_start)</span>
 </code></dt>
 <dd>
@@ -697,7 +607,7 @@ def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
     return end</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma_body"><code class="name flex">
 <span>def <span class="ident">adaptive_sdm_gamma_body</span></span>(<span>gamma, idx, length, multiplicity, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
 </code></dt>
 <dd>
@@ -736,7 +646,7 @@ def adaptive_sdm_gamma_body(gamma, idx, length, multiplicity, cell_id, dt_left, 
             stats_n_substep[cid] += 1</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id_body"><code class="name flex">
 <span>def <span class="ident">cell_id_body</span></span>(<span>cell_id, cell_origin, strides)</span>
 </code></dt>
 <dd>
@@ -751,7 +661,7 @@ def cell_id_body(cell_id, cell_origin, strides):
     cell_id[:] = np.dot(strides, cell_origin)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence_body"><code class="name flex">
 <span>def <span class="ident">coalescence_body</span></span>(<span>multiplicity, idx, length, attributes, gamma, healthy, is_first_in_pair)</span>
 </code></dt>
 <dd>
@@ -784,7 +694,7 @@ def coalescence_body(multiplicity, idx, length, attributes, gamma, healthy, is_f
             healthy[0] = 0</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma_body"><code class="name flex">
 <span>def <span class="ident">compute_gamma_body</span></span>(<span>gamma, rand, idx, length, multiplicity, cell_id, collision_rate_deficit, collision_rate, is_first_in_pair)</span>
 </code></dt>
 <dd>
@@ -825,62 +735,7 @@ def compute_gamma_body(gamma, rand, idx, length, multiplicity, cell_id,
         gamma[i] = g</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation_body"><code class="name flex">
-<span>def <span class="ident">interpolation_body</span></span>(<span>output, radius, factor, b, c)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-def interpolation_body(output, radius, factor, b, c):
-    for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-        r_id = int(factor * radius[i])
-        r_rest = ((factor * radius[i]) % 1) / factor
-        output[i] = b[r_id] + r_rest * c[r_id]</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency_body"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency_body</span></span>(<span>params, output, radii, is_first_in_pair, idx, length, unit)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@staticmethod
-@numba.njit(**conf.JIT_FLAGS)
-# pylint: disable=too-many-arguments,too-many-locals
-def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
-):
-    A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-    output[:] = 0
-    for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-        if is_first_in_pair[i]:
-            if radii[idx[i]] &gt; radii[idx[i + 1]]:
-                r = radii[idx[i]] / unit
-                r_s = radii[idx[i + 1]] / unit
-            else:
-                r = radii[idx[i + 1]] / unit
-                r_s = radii[idx[i]] / unit
-            p = r_s / r
-            if p not in (0, 1):
-                G = (G1 / r) ** Mg + G2 + G3 * r
-                Gp = (1 - p) ** G
-                if Gp != 0:
-                    D = D1 / r ** D2
-                    E = E1 / r ** E2
-                    F = (F1 / r) ** Mf + F2
-                    output[i // 2] = A + B * p + D / p ** F + E / Gp
-                    output[i // 2] = max(0, output[i // 2])</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.make_cell_caretaker"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker"><code class="name flex">
 <span>def <span class="ident">make_cell_caretaker</span></span>(<span>idx, cell_start, scheme='default')</span>
 </code></dt>
 <dd>
@@ -910,11 +765,11 @@ def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
         def __call__(self, cell_id, cell_idx, cell_start, idx):
             length = len(idx)
             if self.scheme == &#34;counting_sort&#34;:
-                AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
+                CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
                     self.tmp_idx.data, idx.data, cell_id.data,
                     cell_idx.data, length, cell_start.data)
             elif self.scheme == &#34;counting_sort_parallel&#34;:
-                AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
+                CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
                     self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data,
                     length, cell_start.data, self.cell_starts.data)
             idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
@@ -922,7 +777,7 @@ def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
     return CellCaretaker(idx, cell_start, scheme)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize_body"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize_body"><code class="name flex">
 <span>def <span class="ident">normalize_body</span></span>(<span>prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv)</span>
 </code></dt>
 <dd>
@@ -946,7 +801,7 @@ def normalize_body(prob, cell_id, cell_idx, cell_start, norm_factor, timestep, d
         prob[d] *= norm_factor[cell_idx[cell_id[d]]]</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.remove_zero_n_or_flagged"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged"><code class="name flex">
 <span>def <span class="ident">remove_zero_n_or_flagged</span></span>(<span>multiplicity, idx, length) ‑> int</span>
 </code></dt>
 <dd>
@@ -974,7 +829,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end"><code class="name flex">
 <span>def <span class="ident">adaptive_sdm_end</span></span>(<span>self, dt_left, cell_start)</span>
 </code></dt>
 <dd>
@@ -989,7 +844,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma"><code class="name flex">
 <span>def <span class="ident">adaptive_sdm_gamma</span></span>(<span>self, gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
 </code></dt>
 <dd>
@@ -1006,7 +861,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
         stats_n_substep.data, stats_dt_min.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id"><code class="name flex">
 <span>def <span class="ident">cell_id</span></span>(<span>self, cell_id, cell_origin, strides)</span>
 </code></dt>
 <dd>
@@ -1019,7 +874,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     return self.cell_id_body(cell_id.data, cell_origin.data, strides.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence"><code class="name flex">
 <span>def <span class="ident">coalescence</span></span>(<span>self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair)</span>
 </code></dt>
 <dd>
@@ -1034,7 +889,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
                           is_first_in_pair.indicator.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma"><code class="name flex">
 <span>def <span class="ident">compute_gamma</span></span>(<span>self, gamma, rand, multiplicity, cell_id, collision_rate_deficit, collision_rate, is_first_in_pair)</span>
 </code></dt>
 <dd>
@@ -1051,37 +906,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
         collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation"><code class="name flex">
-<span>def <span class="ident">interpolation</span></span>(<span>self, output, radius, factor, b, c)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def interpolation(self, output, radius, factor, b, c):
-    return self.interpolation_body(
-        output.data, radius.data, factor, b.data, c.data
-    )</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, params, output, radii, is_first_in_pair, unit)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-    return self.linear_collection_efficiency_body(
-        params, output.data, radii.data, is_first_in_pair.indicator.data,
-        radii.idx.data, len(is_first_in_pair), unit)</code></pre>
-</details>
-</dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize"><code class="name flex">
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize"><code class="name flex">
 <span>def <span class="ident">normalize</span></span>(<span>self, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv)</span>
 </code></dt>
 <dd>
@@ -1120,26 +945,22 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods">AlgorithmicMethods</a></code></h4>
+<h4><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_end_body">adaptive_sdm_end_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma">adaptive_sdm_gamma</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.adaptive_sdm_gamma_body">adaptive_sdm_gamma_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id">cell_id</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.cell_id_body">cell_id_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence">coalescence</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.coalescence_body">coalescence_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma">compute_gamma</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.compute_gamma_body">compute_gamma_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation">interpolation</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.interpolation_body">interpolation_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency">linear_collection_efficiency</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.linear_collection_efficiency_body">linear_collection_efficiency_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.make_cell_caretaker" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize">normalize</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.normalize_body">normalize_body</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.remove_zero_n_or_flagged" href="#PySDM.backends.impl_numba.methods.collisions_methods.AlgorithmicMethods.remove_zero_n_or_flagged">remove_zero_n_or_flagged</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end_body">adaptive_sdm_end_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma">adaptive_sdm_gamma</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma_body">adaptive_sdm_gamma_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id">cell_id</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id_body">cell_id_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence">coalescence</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.coalescence_body">coalescence_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma">compute_gamma</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma_body">compute_gamma_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize">normalize</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize_body" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize_body">normalize_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged">remove_zero_n_or_flagged</a></code></li>
 </ul>
 </li>
 </ul>

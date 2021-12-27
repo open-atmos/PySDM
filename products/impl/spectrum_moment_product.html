@@ -38,9 +38,11 @@ from PySDM.products.impl.product import Product
 
 
 class SpectrumMomentProduct(ABC, Product):
-    def __init__(self, name, unit):
+    def __init__(self, name, unit, attr_unit):
         super().__init__(name=name, unit=unit)
+        _ = self._parse_unit(unit)
         self.attr_bins_edges = None
+        self.attr_unit = attr_unit
         self.moment_0 = None
         self.moments = None
 
@@ -80,7 +82,7 @@ class SpectrumMomentProduct(ABC, Product):
 <dl>
 <dt id="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct"><code class="flex name class">
 <span>class <span class="ident">SpectrumMomentProduct</span></span>
-<span>(</span><span>name, unit)</span>
+<span>(</span><span>name, unit, attr_unit)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -90,9 +92,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SpectrumMomentProduct(ABC, Product):
-    def __init__(self, name, unit):
+    def __init__(self, name, unit, attr_unit):
         super().__init__(name=name, unit=unit)
+        _ = self._parse_unit(unit)
         self.attr_bins_edges = None
+        self.attr_unit = attr_unit
         self.moment_0 = None
         self.moments = None
 
@@ -130,7 +134,8 @@ inheritance.</p></div>
 <li><a title="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum" href="../aqueous_chemistry/aqueous_mass_spectrum.html#PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum">AqueousMassSpectrum</a></li>
 <li><a title="PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration" href="../freezing/freezable_specific_concentration.html#PySDM.products.freezing.freezable_specific_concentration.FreezableSpecificConcentration">FreezableSpecificConcentration</a></li>
 <li><a title="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum" href="../size_spectral/particle_size_spectrum.html#PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum">ParticleSizeSpectrum</a></li>
-<li><a title="PySDM.products.size_spectral.particles_volume_spectrum.ParticlesVolumeSpectrum" href="../size_spectral/particles_volume_spectrum.html#PySDM.products.size_spectral.particles_volume_spectrum.ParticlesVolumeSpectrum">ParticlesVolumeSpectrum</a></li>
+<li><a title="PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum.ParticleVolumeVersusRadiusLogarithmSpectrum" href="../size_spectral/particle_volume_versus_radius_logarithm_spectrum.html#PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum.ParticleVolumeVersusRadiusLogarithmSpectrum">ParticleVolumeVersusRadiusLogarithmSpectrum</a></li>
+<li><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity.RadiusBinnedNumberAveragedTerminalVelocity" href="../size_spectral/radius_binned_number_averaged_terminal_velocity.html#PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity.RadiusBinnedNumberAveragedTerminalVelocity">RadiusBinnedNumberAveragedTerminalVelocity</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>

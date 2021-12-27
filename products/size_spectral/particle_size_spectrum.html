@@ -40,7 +40,7 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
         self.volume_attr = &#39;dry volume&#39; if dry else &#39;volume&#39;
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
@@ -124,7 +124,7 @@ inheritance.</p></div>
         self.volume_attr = &#39;dry volume&#39; if dry else &#39;volume&#39;
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)

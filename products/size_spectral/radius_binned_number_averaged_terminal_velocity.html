@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.attributes.physics API documentation</title>
-<meta name="description" content="attributes carrying information on particle physical properties" />
+<title>PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity API documentation</title>
+<meta name="description" content="Provides radius bin-resolved average terminal velocity (average is particle-number weighted)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,88 +19,120 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.attributes.physics</code></h1>
+<h1 class="title">Module <code>PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity</code></h1>
 </header>
 <section id="section-intro">
-<p>attributes carrying information on particle physical properties</p>
+<p>Provides radius bin-resolved average terminal velocity (average is particle-number weighted)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-attributes carrying information on particle physical properties
+Provides radius bin-resolved average terminal velocity (average is particle-number weighted)
 &#34;&#34;&#34;
-from .multiplicities import Multiplicities
-from .volume import Volume
-from .dry_volume import DryVolume
-from .radius import Radius
-from .dry_radius import DryRadius
-from .terminal_velocity import TerminalVelocity
-from .temperature import Temperature
-from .heat import Heat
-from .critical_volume import CriticalVolume
-from .critical_supersaturation import CriticalSupersaturation</code></pre>
+import numpy as np
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
+
+ATTR = &#39;terminal velocity&#39;
+RANK = 1
+
+class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
+    def __init__(self, radius_bin_edges, name=None, unit=&#39;m/s&#39;):
+        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+        self.radius_bin_edges = radius_bin_edges
+
+    def register(self, builder):
+        builder.request_attribute(ATTR)
+
+        volume_bin_edges = builder.particulator.formulae.trivia.volume(self.radius_bin_edges)
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bin_edges)
+
+        super().register(builder)
+
+        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+
+
+    def _impl(self, **kwargs):
+        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
+
+        self._recalculate_spectrum_moment(
+            attr=ATTR,
+            rank=RANK,
+        )
+
+        for i in range(vals.shape[1]):
+            self._download_spectrum_moment_to_buffer(rank=RANK, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+
+        return np.squeeze(vals.reshape(self.shape))</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.attributes.physics.critical_supersaturation" href="critical_supersaturation.html">PySDM.attributes.physics.critical_supersaturation</a></code></dt>
+<dt id="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity.RadiusBinnedNumberAveragedTerminalVelocity"><code class="flex name class">
+<span>class <span class="ident">RadiusBinnedNumberAveragedTerminalVelocity</span></span>
+<span>(</span><span>radius_bin_edges, name=None, unit='m/s')</span>
+</code></dt>
 <dd>
-<div class="desc"><p>kappa-Koehler critical supersaturation calculated for actual environment temperature</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.critical_volume" href="critical_volume.html">PySDM.attributes.physics.critical_volume</a></code></dt>
-<dd>
-<div class="desc"><p>critical wet volume (kappa-Koehler, computed using actual temperature)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.dry_radius" href="dry_radius.html">PySDM.attributes.physics.dry_radius</a></code></dt>
-<dd>
-<div class="desc"><p>particle dry radius computed from dry volume</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.dry_volume" href="dry_volume.html">PySDM.attributes.physics.dry_volume</a></code></dt>
-<dd>
-<div class="desc"><p>particle dry volume (subject to evolution due to collisions or aqueous chemistry)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.heat" href="heat.html">PySDM.attributes.physics.heat</a></code></dt>
-<dd>
-<div class="desc"><p>particle heat content (test-use only for now, exemplifying intensive/extensive attribute logic)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.hygroscopicity" href="hygroscopicity.html">PySDM.attributes.physics.hygroscopicity</a></code></dt>
-<dd>
-<div class="desc"><p>kappa-Koehler hygroscopicity representation:
-the <code><a title="PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume" href="hygroscopicity.html#PySDM.attributes.physics.hygroscopicity.KappaTimesDryVolume">KappaTimesDryVolume</a></code> base attribute
-and the derived …</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.multiplicities" href="multiplicities.html">PySDM.attributes.physics.multiplicities</a></code></dt>
-<dd>
-<div class="desc"><p>super-particle multiplicity (aka weighting factor) - the number of real-world particles
-represented in the simulation with a given super particle</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.radius" href="radius.html">PySDM.attributes.physics.radius</a></code></dt>
-<dd>
-<div class="desc"><p>particle wet radius (calculated from the volume)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.temperature" href="temperature.html">PySDM.attributes.physics.temperature</a></code></dt>
-<dd>
-<div class="desc"><p>particle temperature (test-use only for now, exemplifying intensive/extensive attribute logic)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.terminal_velocity" href="terminal_velocity.html">PySDM.attributes.physics.terminal_velocity</a></code></dt>
-<dd>
-<div class="desc"><p>particle terminal velocity (used for collision probability and particle displacement)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.attributes.physics.volume" href="volume.html">PySDM.attributes.physics.volume</a></code></dt>
-<dd>
-<div class="desc"><p>particle (wet) volume, key attribute for coalescence
-in simmulation involving mixed-phase clouds, positive values correspond to
-liquid water and …</p></div>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
+    def __init__(self, radius_bin_edges, name=None, unit=&#39;m/s&#39;):
+        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+        self.radius_bin_edges = radius_bin_edges
+
+    def register(self, builder):
+        builder.request_attribute(ATTR)
+
+        volume_bin_edges = builder.particulator.formulae.trivia.volume(self.radius_bin_edges)
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bin_edges)
+
+        super().register(builder)
+
+        self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
+
+
+    def _impl(self, **kwargs):
+        vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
+
+        self._recalculate_spectrum_moment(
+            attr=ATTR,
+            rank=RANK,
+        )
+
+        for i in range(vals.shape[1]):
+            self._download_spectrum_moment_to_buffer(rank=RANK, bin_number=i)
+            vals[:, i] = self.buffer.ravel()
+
+        return np.squeeze(vals.reshape(self.shape))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></li>
+<li>abc.ABC</li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct">SpectrumMomentProduct</a></b></code>:
+<ul class="hlist">
+<li><code><a title="PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register" href="../impl/spectrum_moment_product.html#PySDM.products.impl.spectrum_moment_product.SpectrumMomentProduct.register">register</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -111,22 +143,14 @@ liquid water and …</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.attributes" href="../index.html">PySDM.attributes</a></code></li>
+<li><code><a title="PySDM.products.size_spectral" href="index.html">PySDM.products.size_spectral</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.attributes.physics.critical_supersaturation" href="critical_supersaturation.html">PySDM.attributes.physics.critical_supersaturation</a></code></li>
-<li><code><a title="PySDM.attributes.physics.critical_volume" href="critical_volume.html">PySDM.attributes.physics.critical_volume</a></code></li>
-<li><code><a title="PySDM.attributes.physics.dry_radius" href="dry_radius.html">PySDM.attributes.physics.dry_radius</a></code></li>
-<li><code><a title="PySDM.attributes.physics.dry_volume" href="dry_volume.html">PySDM.attributes.physics.dry_volume</a></code></li>
-<li><code><a title="PySDM.attributes.physics.heat" href="heat.html">PySDM.attributes.physics.heat</a></code></li>
-<li><code><a title="PySDM.attributes.physics.hygroscopicity" href="hygroscopicity.html">PySDM.attributes.physics.hygroscopicity</a></code></li>
-<li><code><a title="PySDM.attributes.physics.multiplicities" href="multiplicities.html">PySDM.attributes.physics.multiplicities</a></code></li>
-<li><code><a title="PySDM.attributes.physics.radius" href="radius.html">PySDM.attributes.physics.radius</a></code></li>
-<li><code><a title="PySDM.attributes.physics.temperature" href="temperature.html">PySDM.attributes.physics.temperature</a></code></li>
-<li><code><a title="PySDM.attributes.physics.terminal_velocity" href="terminal_velocity.html">PySDM.attributes.physics.terminal_velocity</a></code></li>
-<li><code><a title="PySDM.attributes.physics.volume" href="volume.html">PySDM.attributes.physics.volume</a></code></li>
+<li>
+<h4><code><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity.RadiusBinnedNumberAveragedTerminalVelocity" href="#PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity.RadiusBinnedNumberAveragedTerminalVelocity">RadiusBinnedNumberAveragedTerminalVelocity</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>

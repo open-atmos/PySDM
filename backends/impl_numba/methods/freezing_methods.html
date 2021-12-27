@@ -54,10 +54,11 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_singular_body(attributes, temperature, relative_humidity, cell):
-            for i in numba.prange(len(attributes.freezing_temperature)):  # pylint: disable=not-an-iterable
+            n_sd = len(attributes.freezing_temperature)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] &gt; 1 and
+                    relative_humidity[cell[i]] &gt; 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] &lt;= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
@@ -129,10 +130,11 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**conf.JIT_FLAGS, &#39;fastmath&#39;: self.formulae.fastmath})
         def freeze_singular_body(attributes, temperature, relative_humidity, cell):
-            for i in numba.prange(len(attributes.freezing_temperature)):  # pylint: disable=not-an-iterable
+            n_sd = len(attributes.freezing_temperature)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] &gt; 1 and
+                    relative_humidity[cell[i]] &gt; 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] &lt;= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
