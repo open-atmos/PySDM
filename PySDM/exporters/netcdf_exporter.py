@@ -3,7 +3,10 @@
 """
 import numpy as np
 from scipy.io.netcdf import netcdf_file
+from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
+
+DIM_SUFFIX = '_bin_left_edges'
 
 class NetCDFExporter:
     def __init__(self, storage, settings, simulator, filename):
@@ -20,12 +23,16 @@ class NetCDFExporter:
 
     def _create_dimensions(self, ncdf):
         ncdf.createDimension("T", len(self.settings.output_steps))
+
         for index, label in enumerate(self.XZ):
             ncdf.createDimension(label, self.settings.grid[index])
-        ncdf.createDimension(
-            "ParticleVolume",
-            len(self.settings.formulae.trivia.volume(self.settings.r_bins_edges)) - 1
-        )
+
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                ncdf.createDimension(
+                    f"{name}{DIM_SUFFIX}",
+                    len(instance.attr_bins_edges) - 1
+                )
 
     def _create_variables(self, ncdf):
         self.vars = {}
@@ -38,7 +45,12 @@ class NetCDFExporter:
                                    * (1 / 2 + np.arange(self.settings.grid[index])))
             self.vars[label].units = "metres"
 
-        # TODO #340 ParticleVolume var
+        for name, instance in self.simulator.products.items():
+            if isinstance(instance, SpectrumMomentProduct):
+                label = f"{name}{DIM_SUFFIX}"
+                self.vars[label] = ncdf.createVariable(label, 'f', (label,))
+                self.vars[label][:] = instance.attr_bins_edges.to_ndarray()[:-1]
+                self.vars[label].units = instance.attr_unit
 
         for name, instance in self.simulator.products.items():
             if name in self.vars:
@@ -46,7 +58,7 @@ class NetCDFExporter:
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
-                dimensions = ("T", "X", "Z", "ParticleVolume")
+                dimensions = ("T", "X", "Z", f"{name}{DIM_SUFFIX}")
             elif n_dimensions == 2:
                 dimensions = ("T", "X", "Z")
             elif n_dimensions == 0:

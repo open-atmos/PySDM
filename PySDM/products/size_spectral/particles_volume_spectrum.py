@@ -7,7 +7,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 class ParticlesVolumeSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit='dimensionless'):
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit='m')
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None

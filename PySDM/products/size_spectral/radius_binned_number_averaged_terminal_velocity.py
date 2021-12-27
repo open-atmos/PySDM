@@ -9,7 +9,7 @@ RANK = 1
 
 class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
     def __init__(self, radius_bin_edges, name=None, unit='m/s'):
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit='m')
         self.radius_bin_edges = radius_bin_edges
 
     def register(self, builder):
