@@ -213,14 +213,14 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
-from PySDM.products import ParticlesVolumeSpectrum
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
 </details>

@@ -1,11 +1,13 @@
 """
-the dn-dlnr particle volume spectrum per volume of air (uses natural logarithm)
+n_V^e(ln(r)) particle volume spectrum per volume of air (uses natural logarithm),
+i.e. volume of particles per volume of air having in the size range ln(r) to
+ln(r) + dln(r)
 """
 import numpy as np
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
-class ParticlesVolumeSpectrum(SpectrumMomentProduct):
+class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit='dimensionless'):
         super().__init__(name=name, unit=unit, attr_unit='m')
         self.radius_bins_edges = radius_bins_edges
