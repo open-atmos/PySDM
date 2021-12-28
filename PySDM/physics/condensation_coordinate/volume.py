@@ -1,19 +1,21 @@
 """
 particle volume as condensation coordinate (i.e. no transformation)
 """
-from numpy import power
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class Volume:
-    @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return 4 * const.PI * power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+    def __init__(self, const):
+        pass
 
     @staticmethod
-    def volume(x):
+    def dx_dt(const, x, r_dr_dt):
+        return 4 * const.PI * np.power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+
+    @staticmethod
+    def volume(const, x):
         return x
 
     @staticmethod
-    def x(volume):
+    def x(const, volume):
         return volume

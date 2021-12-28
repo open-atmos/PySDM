@@ -10,6 +10,10 @@ class Constant:
     droplet surface is composed of pure water with constant surface
     tension `sgm_w`.
     """
+
+    def __init__(self, const):
+        pass
+
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         return const.sgm_w

@@ -5,6 +5,9 @@ do-nothing null formulation (needed as other formulations require parameters
 
 
 class Null:
+    def __init__(self, const):
+        pass
+
     @staticmethod
-    def j_het(a_w_ice):
+    def j_het(const, a_w_ice):
         pass

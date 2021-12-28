@@ -16,7 +16,7 @@ class TestFormulae:
             T = 300 * si.kelvins
 
             # Act
-            pvs = sut(T)
+            pvs = sut(constants, T)
 
             # Assert
             assert pvs.units == si.hectopascals
@@ -35,7 +35,7 @@ class TestFormulae:
             sgm = constants.sgm_w
 
             # Act
-            r_cr = sut(kp, rd**3, T, sgm)
+            r_cr = sut(constants, kp, rd**3, T, sgm)
 
             # Assert
             assert r_cr.to_base_units().units == si.metres
@@ -51,7 +51,7 @@ class TestFormulae:
             sut = formulae.latent_heat.lv
 
             # Act
-            latent_heat = sut(T)
+            latent_heat = sut(constants, T)
 
             # Assert
             assert latent_heat.check('[energy]/[mass]')

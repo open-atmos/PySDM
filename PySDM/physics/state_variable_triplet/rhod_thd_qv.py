@@ -2,15 +2,16 @@
 dry-air density / dry-air potential temperature / water vapour mixing ratio triplet
 (as in libcloudph++)
 """
-from numpy import power
-from PySDM.physics import constants as const
-
+import numpy as np
 
 class RhodThdQv:
+    def __init__(self, const):
+        pass
+
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
     def T(rhod, thd):
-        return thd * power(
+        return thd * np.power(
             rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
         )
 
@@ -29,14 +30,14 @@ class RhodThdQv:
 
     @staticmethod
     def th_dry(th_std, qv):
-        return th_std * power(1 + qv / const.eps, const.Rd / const.c_pd)
+        return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
 
     @staticmethod
     def rho_d(p, qv, theta_std):
         return p * (
                 1 - 1 / (1 + const.eps / qv)
         ) / (
-                power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+                np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
         )
 
     @staticmethod

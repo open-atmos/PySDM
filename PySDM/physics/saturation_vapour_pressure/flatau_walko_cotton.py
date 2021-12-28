@@ -2,12 +2,14 @@
 polynomial fits from
 [Flatau et al. 1992](https://doi.org/10.1175/1520-0450(1992)031%3C1507:PFTSVP%3E2.0.CO;2)
 """
-from PySDM.physics import constants as const
 
 
 class FlatauWalkoCotton:
+    def __init__(self, const):
+        pass
+
     @staticmethod
-    def pvs_Celsius(T):
+    def pvs_Celsius(const, T):
         return (
                 const.FWC_C0 + T * (
                 const.FWC_C1 + T * (
@@ -21,7 +23,7 @@ class FlatauWalkoCotton:
         ))))))))
 
     @staticmethod
-    def ice_Celsius(T):
+    def ice_Celsius(const, T):
         return (
                 const.FWC_I0 + T * (
                 const.FWC_I1 + T * (
@@ -35,9 +37,9 @@ class FlatauWalkoCotton:
         ))))))))
 
     @staticmethod
-    def a_w_ice(T):
+    def a_w_ice(const, T):
         return (
-            FlatauWalkoCotton.ice_Celsius(T - const.T0)
+            FlatauWalkoCotton.ice_Celsius(const, T - const.T0)
             /
-            FlatauWalkoCotton.pvs_Celsius(T - const.T0)
+            FlatauWalkoCotton.pvs_Celsius(const, T - const.T0)
         )

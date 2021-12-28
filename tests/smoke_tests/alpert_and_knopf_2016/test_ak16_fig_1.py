@@ -3,7 +3,6 @@ import numpy as np
 from matplotlib import pylab
 import pytest
 from PySDM_examples.Alpert_and_Knopf_2016 import simulation, Table1
-from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM.physics import si
 
 n_runs_per_case = 3
@@ -12,8 +11,6 @@ n_runs_per_case = 3
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
 def test_ak16_fig_1(multiplicity, plot=False):
     # Arrange
-    constant.J_HET = 1e3 / si.cm ** 2 / si.s
-
     dt = 1 * si.s
     total_time = 6 * si.min
 
@@ -36,6 +33,7 @@ def test_ak16_fig_1(multiplicity, plot=False):
             n_sd = int(n_sd)
 
             data, _ = simulation(
+                J_HET=1e3 / si.cm ** 2 / si.s,
                 seed=i, n_sd=n_sd, time_step=dt, volume=dv, spectrum=case['ISA'],
                 droplet_volume=droplet_volume, multiplicity=multiplicity,
                 total_time=total_time, number_of_real_droplets=number_of_real_droplets

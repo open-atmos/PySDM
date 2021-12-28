@@ -5,17 +5,7 @@ from matplotlib import pyplot
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM import Formulae
 from PySDM.physics import si, constants as const
-from PySDM.physics.surface_tension import compressed_film_ovadnevaite
 from PySDM.backends import CPU
-
-
-@pytest.fixture()
-def constants():
-    compressed_film_ovadnevaite.sgm_org = 40 * si.mN / si.m
-    compressed_film_ovadnevaite.delta_min = 0.1 * si.nm
-    yield
-    compressed_film_ovadnevaite.sgm_org = np.nan
-    compressed_film_ovadnevaite.delta_min = np.nan
 
 
 @pytest.mark.parametrize('r_dry', [
@@ -23,7 +13,7 @@ def constants():
     pytest.param(2.5e-09)
 ])
 # pylint: disable=unused-argument,redefined-outer-name
-def test_r_wet_init(constants, r_dry, plot=False):
+def test_r_wet_init(r_dry, plot=False):
     # Arrange
     T = 280
     RH = .9
@@ -31,7 +21,13 @@ def test_r_wet_init(constants, r_dry, plot=False):
     kappa = .356
 
     class Particulator:
-        formulae = Formulae(surface_tension='CompressedFilmOvadnevaite')
+        formulae = Formulae(
+            surface_tension='CompressedFilmOvadnevaite',
+            constants={
+                'sgm_org': 40 * si.mN / si.m,
+                'delta_min': 0.1 * si.nm
+            }
+        )
 
     class Env:
         particulator = Particulator()

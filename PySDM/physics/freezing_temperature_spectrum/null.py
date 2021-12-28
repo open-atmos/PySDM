@@ -5,6 +5,9 @@ null spectrum (needed as other formulations require parameters
 
 
 class Null:
+    def __init__(self, const):
+        pass
+
     @staticmethod
-    def cdf(T):
+    def cdf(const, T):
         pass

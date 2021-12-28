@@ -3,31 +3,27 @@ freezing temperature spectrum based on
  [Niemand et al. 2012](https://doi.org/10.1175/JAS-D-11-0249.1) INAS density parameterization
 """
 import numpy as np
-from PySDM.physics import constants as const
-
-a = np.nan
-b = np.nan
 
 
 class Niemand_et_al_2012:
     def __str__(self):
         return 'Niemand et al. 2012'
 
-    def __init__(self):
-        assert np.isfinite(a)
-        assert np.isfinite(b)
+    def __init__(self, const):
+        assert np.isfinite(const.NIEMAND_A)
+        assert np.isfinite(const.NIEMAND_B)
 
     @staticmethod
-    def pdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return -A_insol * a * ns_T * np.exp(-A_insol * ns_T)
+    def pdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)
 
     @staticmethod
-    def cdf(T, A_insol):
-        ns_T = np.exp(a * (T - const.T0) + b)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-a * const.T0 + b))
+    def cdf(const, T, A_insol):
+        ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+        return 1 - np.exp(-A_insol * ns_T) - np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
 
     @staticmethod
-    def invcdf(cdf, A_insol):
-        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-a * const.T0 + b))) / -A_insol)
-        return const.T0 + (tmp - b) / a
+    def invcdf(const, cdf, A_insol):
+        tmp = np.log((np.log(1 - cdf) + np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))) / -A_insol)
+        return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A

@@ -33,7 +33,6 @@ class TestFreezingMethods:
         )
         rate = 1e-9
         immersed_surface_area = 1
-        constant.J_HET = rate / immersed_surface_area
 
         number_of_real_droplets = 1024
         total_time = 2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
@@ -56,7 +55,12 @@ class TestFreezingMethods:
             key = f"{case['dt']}:{case['N']}"
             output[key] = {'unfrozen_fraction': [], 'dt': case['dt'], 'N': case['N']}
 
-            formulae = Formulae(heterogeneous_ice_nucleation_rate='Constant')
+            formulae = Formulae(
+                heterogeneous_ice_nucleation_rate='Constant',
+                constants={
+                    'J_HET': rate / immersed_surface_area
+                }
+            )
             builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
             env = Box(dt=case['dt'], dv=d_v)
             builder.set_environment(env)

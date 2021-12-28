@@ -27,15 +27,15 @@ class CompressedFilmRuehl:
     is linear, with slope `m_sigma`.
     """
     @staticmethod
-    def _check():
-        assert np.isfinite(nu_org)
-        assert np.isfinite(A0)
-        assert np.isfinite(C0)
-        assert np.isfinite(m_sigma)
-        assert np.isfinite(sgm_min)
+    def __init__(self, const):
+        assert np.isfinite(const.nu_org)
+        assert np.isfinite(const.A0)
+        assert np.isfinite(const.C0)
+        assert np.isfinite(const.m_sigma)
+        assert np.isfinite(const.sgm_min)
 
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):
+    def sigma(const, T, v_wet, v_dry, f_org):
         r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
         # C_bulk is the concentration of the organic in the bulk phase

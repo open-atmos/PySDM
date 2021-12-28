@@ -1,10 +1,12 @@
 """
 constant diffusion coefficient formulation
 """
-from PySDM.physics import constants as const
 
 
 class Neglect:
+    def __init__(self, const):
+        pass
+
     @staticmethod
-    def D(T, p):  # pylint: disable=unused-argument
+    def D(const, T, p):  # pylint: disable=unused-argument
         return const.D0

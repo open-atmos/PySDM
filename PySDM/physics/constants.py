@@ -5,6 +5,8 @@ purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry
 """
 import os
 import time
+
+import numpy as np
 import pint
 from scipy import constants as sci
 from chempy import Substance
@@ -107,3 +109,17 @@ default_random_seed = (
     44 if 'CI' in os.environ  # https://en.wikipedia.org/wiki/44_(number)
     else time.time_ns()
 )
+
+sgm_org = np.nan
+delta_min = np.nan
+
+BIGG_DT_MEDIAN = np.nan
+
+NIEMAND_A = np.nan
+NIEMAND_B = np.nan
+
+ABIFM_M = np.inf
+ABIFM_C = np.inf
+ABIFM_UNIT = 1 / si.cm**2 / si.s
+
+J_HET = np.nan
