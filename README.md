@@ -272,7 +272,7 @@ savefig("plot.svg")
 rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
 
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps))
+    particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
@@ -513,7 +513,7 @@ for pykey = py.list(keys(particulator.products))
     end
     i=i+1;
 end
-saveas(gcf, "parcel.png")
+saveas(gcf, "parcel.png");
 ```
 </details>
 <details open>

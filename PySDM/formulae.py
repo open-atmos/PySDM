@@ -3,6 +3,7 @@ Logic for enabling common CPU/GPU physics formulae code
 """
 import inspect
 from typing import Optional
+from types import SimpleNamespace
 import re
 from functools import lru_cache, partial
 from collections import namedtuple
@@ -20,8 +21,6 @@ def _formula(func=None, constants=None, **kw):
     loc = {}
     for arg_name in ('_', 'const'):
         source = source.replace(f'def {func.__name__}({arg_name},', f'def {func.__name__}(')
-    if func.__name__ == 'volume':
-        print(" TEMP ", source)
     exec(  # pylint:disable=exec-used
         source,
         {'const': constants, 'np': np},
@@ -38,18 +37,20 @@ def _formula(func=None, constants=None, **kw):
 
 def _boost(obj, fastmath, constants):
     if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
+        formulae = {}
         for item in dir(obj):
             if item.startswith('__'):
                 continue
             attr = getattr(obj, item)
             if callable(attr):
                 formula = _formula(attr, constants=constants, fastmath=fastmath)
-                setattr(obj, item, formula)
                 setattr(
-                    getattr(obj, item),
+                    formula,
                     'c_inline',
                     partial(_c_inline, constants=constants, fun=attr)
                 )
+                formulae[attr.__name__] = formula
+        return SimpleNamespace(**formulae)
     return obj
 
 

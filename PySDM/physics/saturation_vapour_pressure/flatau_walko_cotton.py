@@ -35,4 +35,3 @@ class FlatauWalkoCotton:
                 const.FWC_I7 + T *
                 const.FWC_I8
         ))))))))
-

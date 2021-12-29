@@ -5,8 +5,6 @@ from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM import Formulae
 from PySDM.physics import si
 from PySDM.backends import CPU
-from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
-from PySDM.physics.heterogeneous_ice_nucleation_rate import abifm
 from .dummy_storage import DummyStorage
 
 
