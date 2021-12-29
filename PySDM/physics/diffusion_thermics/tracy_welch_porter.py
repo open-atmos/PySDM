@@ -6,7 +6,7 @@ import numpy as np
 
 
 class TracyWelchPorter:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

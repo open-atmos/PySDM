@@ -6,7 +6,7 @@ import numpy as np
 
 
 class KappaKoehler:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

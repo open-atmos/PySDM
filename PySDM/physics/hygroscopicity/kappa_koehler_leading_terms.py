@@ -7,7 +7,7 @@ import numpy as np
 
 
 class KappaKoehlerLeadingTerms:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

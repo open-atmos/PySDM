@@ -5,7 +5,7 @@ do-nothing null formulation (needed as other formulations require parameters
 
 
 class Null:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

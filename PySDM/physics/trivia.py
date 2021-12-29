@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Trivia:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

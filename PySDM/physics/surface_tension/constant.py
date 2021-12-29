@@ -1,7 +1,6 @@
 """
 constant surface tension coefficient
 """
-import PySDM.physics.constants as const
 
 
 class Constant:
@@ -11,7 +10,7 @@ class Constant:
     tension `sgm_w`.
     """
 
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

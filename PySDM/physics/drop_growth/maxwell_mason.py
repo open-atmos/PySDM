@@ -4,7 +4,7 @@ single-equation approximation of the vapour and heat diffusion problem
 
 
 class MaxwellMason:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

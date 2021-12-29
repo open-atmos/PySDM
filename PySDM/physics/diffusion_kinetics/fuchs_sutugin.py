@@ -6,7 +6,7 @@ import numpy as np
 
 
 class FuchsSutugin:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod
@@ -18,5 +18,5 @@ class FuchsSutugin:
         return (4. / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def DK(const, DK, r, lmbd):
+    def DK(_, DK, r, lmbd):
         return DK * (1 + lmbd/r) / (1 + 1.71 * lmbd/r + 1.33 * lmbd/r * lmbd/r)

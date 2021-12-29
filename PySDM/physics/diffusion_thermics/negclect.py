@@ -4,7 +4,7 @@ constant diffusion coefficient formulation
 
 
 class Neglect:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

@@ -4,7 +4,7 @@ temperature-independent latent heat of vaporization
 
 
 class Constant:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod

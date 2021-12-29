@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Volume:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod
@@ -13,9 +13,9 @@ class Volume:
         return 4 * const.PI * np.power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
 
     @staticmethod
-    def volume(const, x):
+    def volume(_, x):
         return x
 
     @staticmethod
-    def x(const, volume):
+    def x(_, volume):
         return volume

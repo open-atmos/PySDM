@@ -2,7 +2,6 @@
 from matplotlib import pylab
 import numpy as np
 from PySDM.physics import constants as const
-from PySDM.physics.heterogeneous_ice_nucleation_rate import constant
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.environments import Box

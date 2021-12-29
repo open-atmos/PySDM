@@ -7,7 +7,7 @@ import numpy as np
 
 
 class AugustRocheMagnus:
-    def __init__(self, const):
+    def __init__(self, _):
         pass
 
     @staticmethod
@@ -15,5 +15,5 @@ class AugustRocheMagnus:
         return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def ice_Celsius(_, T):
         return np.nan * T

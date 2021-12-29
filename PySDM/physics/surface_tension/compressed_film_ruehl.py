@@ -5,7 +5,6 @@ surface tension coefficient model featuring surface-partitioning
 import numpy as np
 from scipy import constants as sci
 from scipy import optimize
-from PySDM.physics import constants as const
 
 nu_org = np.nan
 A0 = np.nan
@@ -26,7 +25,6 @@ class CompressedFilmRuehl:
     the surface concentration to the surface tension. For the compressed film model it
     is linear, with slope `m_sigma`.
     """
-    @staticmethod
     def __init__(self, const):
         assert np.isfinite(const.nu_org)
         assert np.isfinite(const.A0)

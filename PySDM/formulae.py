@@ -2,6 +2,7 @@
 Logic for enabling common CPU/GPU physics formulae code
 """
 import inspect
+from typing import Optional
 import re
 from functools import lru_cache, partial
 from collections import namedtuple
@@ -17,8 +18,10 @@ def _formula(func=None, constants=None, **kw):
     for line in inspect.getsourcelines(func)[0]:
         source += f"{line}\n"
     loc = {}
-    exec(
-        source.replace(f'def {func.__name__}(const,', f'def {func.__name__}('),
+    for arg_name in ('_', 'const'):
+        source = source.replace(f'def {func.__name__}({arg_name},', f'def {func.__name__}(')
+    exec(  # pylint:disable=exec-used
+        source,
         {'const': constants, 'np': np},
         loc
     )
@@ -40,7 +43,11 @@ def _boost(obj, fastmath, constants):
             if callable(attr):
                 formula = _formula(attr, constants=constants, fastmath=fastmath)
                 setattr(obj, item, formula)
-                setattr(getattr(obj, item), 'c_inline', partial(_c_inline, constants=constants, fun=attr))
+                setattr(
+                    getattr(obj, item),
+                    'c_inline',
+                    partial(_c_inline, constants=constants, fun=attr)
+                )
     return obj
 
 
@@ -70,6 +77,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         "\\1(" + real_t + ")({constants.\\2:" + real_fmt + "})\\3",
         source
     )
+    assert constants
     source = eval(f'f"""{source}"""')  # pylint: disable=eval-used
     return f'({return_type})({source})'
 
@@ -92,7 +100,7 @@ def _magick(value, module, fastmath, constants):
 
 class Formulae:
     def __init__(self, *,
-                 constants: dict = {},
+                 constants: Optional[dict] = None,
                  seed: int = physics.constants.default_random_seed,
                  fastmath: bool = True,
                  condensation_coordinate: str = 'VolumeLogarithm',
@@ -111,7 +119,7 @@ class Formulae:
                  heterogeneous_ice_nucleation_rate: str = 'Null'
                  ):
         constants_defaults = {
-            k:getattr(physics.constants, k)
+            k: getattr(physics.constants, k)
             for k in dir(physics.constants)
             if isinstance(getattr(physics.constants, k), numbers.Number)
         }
@@ -119,7 +127,7 @@ class Formulae:
             "Constants",
             tuple(constants_defaults.keys())
         )(
-            **{**constants_defaults, **constants}
+            **{**constants_defaults, **(constants or {})}
         )
         self.constants = constants
         self.seed = seed
@@ -128,33 +136,47 @@ class Formulae:
         self.trivia = _magick('Trivia', physics.trivia, fastmath, constants)
 
         self.condensation_coordinate = _magick(
-            condensation_coordinate, physics.condensation_coordinate, fastmath, constants)
+            condensation_coordinate,
+            physics.condensation_coordinate, fastmath, constants)
         self.saturation_vapour_pressure = _magick(
-            saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath, constants)
+            saturation_vapour_pressure,
+            physics.saturation_vapour_pressure, fastmath, constants)
         self.latent_heat = _magick(
-            latent_heat, physics.latent_heat, fastmath, constants)
+            latent_heat,
+            physics.latent_heat, fastmath, constants)
         self.hygroscopicity = _magick(
-            hygroscopicity, physics.hygroscopicity, fastmath, constants)
+            hygroscopicity,
+            physics.hygroscopicity, fastmath, constants)
         self.drop_growth = _magick(
-            drop_growth, physics.drop_growth, fastmath, constants)
+            drop_growth,
+            physics.drop_growth, fastmath, constants)
         self.surface_tension = _magick(
-            surface_tension, physics.surface_tension, fastmath, constants)
+            surface_tension,
+            physics.surface_tension, fastmath, constants)
         self.diffusion_kinetics = _magick(
-            diffusion_kinetics, physics.diffusion_kinetics, fastmath, constants)
+            diffusion_kinetics,
+            physics.diffusion_kinetics, fastmath, constants)
         self.diffusion_thermics = _magick(
-            diffusion_thermics, physics.diffusion_thermics, fastmath, constants)
+            diffusion_thermics,
+            physics.diffusion_thermics, fastmath, constants)
         self.ventilation = _magick(
-            ventilation, physics.ventilation, fastmath, constants)
+            ventilation,
+            physics.ventilation, fastmath, constants)
         self.state_variable_triplet = _magick(
-            state_variable_triplet, physics.state_variable_triplet, fastmath, constants)
+            state_variable_triplet,
+            physics.state_variable_triplet, fastmath, constants)
         self.particle_advection = _magick(
-            particle_advection, physics.particle_advection, fastmath, constants)
+            particle_advection,
+            physics.particle_advection, fastmath, constants)
         self.hydrostatics = _magick(
-            hydrostatics, physics.hydrostatics, fastmath, constants)
+            hydrostatics,
+            physics.hydrostatics, fastmath, constants)
         self.freezing_temperature_spectrum = _magick(
-            freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath, constants)
+            freezing_temperature_spectrum,
+            physics.freezing_temperature_spectrum, fastmath, constants)
         self.heterogeneous_ice_nucleation_rate = _magick(
-            heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath, constants)
+            heterogeneous_ice_nucleation_rate,
+            physics.heterogeneous_ice_nucleation_rate, fastmath, constants)
 
     def __str__(self):
         description = []

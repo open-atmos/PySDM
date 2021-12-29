@@ -4,7 +4,6 @@ import pytest
 from PySDM.initialisation.sampling import spectral_sampling, spectro_glacial_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
 from PySDM import Formulae
-from PySDM.physics import constants as const
 
 
 m_mode = .5e-5
