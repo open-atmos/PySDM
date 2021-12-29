@@ -6,12 +6,6 @@ import numpy as np
 from scipy import constants as sci
 from scipy import optimize
 
-nu_org = np.nan
-A0 = np.nan
-C0 = np.nan
-m_sigma = np.nan
-sgm_min = np.nan
-
 
 class CompressedFilmRuehl:
     """
@@ -26,30 +20,30 @@ class CompressedFilmRuehl:
     is linear, with slope `m_sigma`.
     """
     def __init__(self, const):
-        assert np.isfinite(const.nu_org)
-        assert np.isfinite(const.A0)
-        assert np.isfinite(const.C0)
-        assert np.isfinite(const.m_sigma)
-        assert np.isfinite(const.sgm_min)
+        assert np.isfinite(const.RUEHL_nu_org)
+        assert np.isfinite(const.RUEHL_A0)
+        assert np.isfinite(const.RUEHL_C0)
+        assert np.isfinite(const.RUEHL_m_sigma)
+        assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):
         r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
         # C_bulk is the concentration of the organic in the bulk phase
-        Cb_iso = (f_org*v_dry/nu_org) / (v_wet/const.nu_w) # = C_bulk / (1-f_surf)
+        Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w)  # = C_bulk / (1-f_surf)
 
-        # A is the area that one molecule of organic occupies at the droplet surface
-        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / nu_org) # m^2 = A*f_surf
+        # A is the area one molecule of organic occupies at the droplet surface (m^2 = A*f_surf)
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
 
         # solve implicitly for fraction of organic at surface
-        f = lambda f_surf: Cb_iso*(1-f_surf) - C0*np.exp(
-            ((A0**2 - (A_iso/f_surf)**2)*m_sigma*sci.N_A)/(2*sci.R*T)
+        f = lambda f_surf: Cb_iso*(1-f_surf) - const.RUEHL_C0*np.exp(
+            ((const.RUEHL_A0**2 - (A_iso/f_surf)**2)*const.RUEHL_m_sigma*sci.N_A)/(2*sci.R*T)
         )
-        sol = optimize.root_scalar(f, bracket=[0,1])
+        sol = optimize.root_scalar(f, bracket=[0, 1])
         f_surf = sol.root
 
-        # calculate surface tension
-        sgm = const.sgm_w - (A0 - A_iso/f_surf)*m_sigma # m^2 * J/m^2 = J = N*m --> N/m - N*m ?
-        sgm = np.minimum(np.maximum(sgm, sgm_min), const.sgm_w)
+        # calculate surface tension (m^2 * J/m^2 = J = N*m --> N/m - N*m ?)
+        sgm = const.sgm_w - (const.RUEHL_A0 - A_iso/f_surf)*const.RUEHL_m_sigma
+        sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
         return sgm

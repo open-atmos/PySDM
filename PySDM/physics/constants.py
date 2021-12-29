@@ -113,6 +113,12 @@ default_random_seed = (
 sgm_org = np.nan
 delta_min = np.nan
 
+RUEHL_nu_org = np.nan
+RUEHL_A0 = np.nan
+RUEHL_C0 = np.nan
+RUEHL_m_sigma = np.nan
+RUEHL_sgm_min = np.nan
+
 BIGG_DT_MEDIAN = np.nan
 
 NIEMAND_A = np.nan
