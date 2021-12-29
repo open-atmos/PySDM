@@ -448,15 +448,15 @@ output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-formulae = Formulae()
+formulae = Formulae();
 builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder.add_dynamic(AmbientThermodynamics());
+builder.add_dynamic(Condensation());
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = formulae.trivia.volume(r_dry);
+v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry);
 
@@ -464,7 +464,7 @@ attributes = py.dict(pyargs( ...
     'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
-    'volume', formulae.trivia.volume(r_wet) ...
+    'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
@@ -520,7 +520,6 @@ saveas(gcf, "parcel.png")
 <summary>Python (click to expand)</summary>
 
 ```Python
-import PySDM.initialisation.spectra.lognormal
 from matplotlib import pyplot
 from PySDM.physics import si
 from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii

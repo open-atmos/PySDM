@@ -33,7 +33,7 @@ def test_ak16_fig_1(multiplicity, plot=False):
             n_sd = int(n_sd)
 
             data, _ = simulation(
-                J_HET=1e3 / si.cm ** 2 / si.s,
+                constants={'J_HET': 1e3 / si.cm ** 2 / si.s},
                 seed=i, n_sd=n_sd, time_step=dt, volume=dv, spectrum=case['ISA'],
                 droplet_volume=droplet_volume, multiplicity=multiplicity,
                 total_time=total_time, number_of_real_droplets=number_of_real_droplets
