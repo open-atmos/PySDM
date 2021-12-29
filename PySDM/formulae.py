@@ -70,7 +70,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
     # source = source.replace("power(", "pow(")
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
-        if arg != 'const':
+        if arg not in ('_', 'const'):
             source = re.sub(f"{prae}({arg}){post}", f"\\1({real_t})({args[arg]})\\3", source)
     source = re.sub(
         f"{prae}const\\.([^\\d\\W]\\w*]*){post}",
