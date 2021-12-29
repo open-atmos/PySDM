@@ -9,12 +9,6 @@ from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
 from PySDM.physics.heterogeneous_ice_nucleation_rate import abifm
 from .dummy_storage import DummyStorage
 
-# TODO #599
-niemand_et_al_2012.a = -0.517
-niemand_et_al_2012.b = 8.934
-abifm.m = 28.13797
-abifm.c = -2.92414
-
 
 @pytest.mark.parametrize("singular", (
         pytest.param(False, id="singular: False"),
@@ -28,7 +22,13 @@ def test_freezing(singular):
         condensation_coordinate='VolumeLogarithm',
         fastmath=True,
         freezing_temperature_spectrum='Niemand_et_al_2012',
-        heterogeneous_ice_nucleation_rate='ABIFM'
+        heterogeneous_ice_nucleation_rate='ABIFM',
+        constants={
+            'NIEMAND_A': -0.517,
+            'NIEMAND_B': 8.934,
+            'ABIFM_M': 28.13797,
+            'ABIFM_C': -2.92414
+        }
     ))
     settings.dt = .5 * si.second
     settings.grid = (5, 15)
