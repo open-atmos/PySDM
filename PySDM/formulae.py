@@ -20,6 +20,8 @@ def _formula(func=None, constants=None, **kw):
     loc = {}
     for arg_name in ('_', 'const'):
         source = source.replace(f'def {func.__name__}({arg_name},', f'def {func.__name__}(')
+    if func.__name__ == 'volume':
+        print(" TEMP ", source)
     exec(  # pylint:disable=exec-used
         source,
         {'const': constants, 'np': np},
