@@ -10,6 +10,8 @@ from collections import namedtuple
 import numbers
 import numba
 import numpy as np
+import pint
+
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
 
@@ -37,7 +39,7 @@ class Formulae:
         constants_defaults = {
             k: getattr(physics.constants, k)
             for k in dir(physics.constants)
-            if isinstance(getattr(physics.constants, k), numbers.Number)
+            if isinstance(getattr(physics.constants, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(
             "Constants",
@@ -48,51 +50,52 @@ class Formulae:
         self.constants = constants
         self.seed = seed
         self.fastmath = fastmath
+        dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
-        self.trivia = _magick('Trivia', physics.trivia, fastmath, constants)
+        self.trivia = _magick('Trivia', physics.trivia, fastmath, constants, dimensional_analysis)
 
         self.condensation_coordinate = _magick(
             condensation_coordinate,
-            physics.condensation_coordinate, fastmath, constants)
+            physics.condensation_coordinate, fastmath, constants, dimensional_analysis)
         self.saturation_vapour_pressure = _magick(
             saturation_vapour_pressure,
-            physics.saturation_vapour_pressure, fastmath, constants)
+            physics.saturation_vapour_pressure, fastmath, constants, dimensional_analysis)
         self.latent_heat = _magick(
             latent_heat,
-            physics.latent_heat, fastmath, constants)
+            physics.latent_heat, fastmath, constants, dimensional_analysis)
         self.hygroscopicity = _magick(
             hygroscopicity,
-            physics.hygroscopicity, fastmath, constants)
+            physics.hygroscopicity, fastmath, constants, dimensional_analysis)
         self.drop_growth = _magick(
             drop_growth,
-            physics.drop_growth, fastmath, constants)
+            physics.drop_growth, fastmath, constants, dimensional_analysis)
         self.surface_tension = _magick(
             surface_tension,
-            physics.surface_tension, fastmath, constants)
+            physics.surface_tension, fastmath, constants, dimensional_analysis)
         self.diffusion_kinetics = _magick(
             diffusion_kinetics,
-            physics.diffusion_kinetics, fastmath, constants)
+            physics.diffusion_kinetics, fastmath, constants, dimensional_analysis)
         self.diffusion_thermics = _magick(
             diffusion_thermics,
-            physics.diffusion_thermics, fastmath, constants)
+            physics.diffusion_thermics, fastmath, constants, dimensional_analysis)
         self.ventilation = _magick(
             ventilation,
-            physics.ventilation, fastmath, constants)
+            physics.ventilation, fastmath, constants, dimensional_analysis)
         self.state_variable_triplet = _magick(
             state_variable_triplet,
-            physics.state_variable_triplet, fastmath, constants)
+            physics.state_variable_triplet, fastmath, constants, dimensional_analysis)
         self.particle_advection = _magick(
             particle_advection,
-            physics.particle_advection, fastmath, constants)
+            physics.particle_advection, fastmath, constants, dimensional_analysis)
         self.hydrostatics = _magick(
             hydrostatics,
-            physics.hydrostatics, fastmath, constants)
+            physics.hydrostatics, fastmath, constants, dimensional_analysis)
         self.freezing_temperature_spectrum = _magick(
             freezing_temperature_spectrum,
-            physics.freezing_temperature_spectrum, fastmath, constants)
+            physics.freezing_temperature_spectrum, fastmath, constants, dimensional_analysis)
         self.heterogeneous_ice_nucleation_rate = _magick(
             heterogeneous_ice_nucleation_rate,
-            physics.heterogeneous_ice_nucleation_rate, fastmath, constants)
+            physics.heterogeneous_ice_nucleation_rate, fastmath, constants, dimensional_analysis)
 
     def __str__(self):
         description = []
@@ -111,11 +114,11 @@ class Formulae:
         return ', '.join(description)
 
 
-def _formula(func=None, constants=None, **kw):
-    if physics.impl.flag.DIMENSIONAL_ANALYSIS:
+def _formula(func, constants, dimensional_analysis, **kw):
+    if dimensional_analysis:
         first_param = tuple(inspect.signature(func).parameters.keys())[0]
         if first_param in ('_', 'const'):
-            return partial(func, **{first_param: constants})
+            return partial(func, constants)
         return func
 
     source = "class _:\n"
@@ -138,14 +141,15 @@ def _formula(func=None, constants=None, **kw):
     )
 
 
-def _boost(obj, fastmath, constants):
+def _boost(obj, fastmath, constants, dimensional_analysis):
     formulae = {'__name__': obj.__class__.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
         if item.startswith('__') or not callable(attr):
             pass
         else:
-            formula = _formula(attr, constants=constants, fastmath=fastmath)
+            formula = _formula(attr, constants=constants, fastmath=fastmath,
+                               dimensional_analysis=dimensional_analysis)
             setattr(
                 formula,
                 'c_inline',
@@ -198,5 +202,10 @@ def _choices(module):
 
 
 @lru_cache()
-def _magick(value, module, fastmath, constants):
-    return _boost(_pick(value, _choices(module), constants), fastmath, constants)
+def _magick(value, module, fastmath, constants, dimensional_analysis):
+    return _boost(
+        _pick(value, _choices(module), constants),
+        fastmath,
+        constants,
+        dimensional_analysis
+    )
