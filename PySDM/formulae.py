@@ -116,9 +116,8 @@ def _formula(func=None, constants=None, **kw):
         first_param = tuple(inspect.signature(func).parameters.keys())[0]
         if first_param in ('_', 'const'):
             return partial(func, **{first_param: constants})
-        else:
-            return func
-        
+        return func
+
     source = "class _:\n"
     for line in inspect.getsourcelines(func)[0]:
         source += f"{line}\n"
