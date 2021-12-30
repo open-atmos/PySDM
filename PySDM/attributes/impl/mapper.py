@@ -23,7 +23,7 @@ attributes = {
         make_dummy_attribute_factory('dry volume organic')
         if 'Condensation' in dynamics and (
             dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
-            Constant.__class__.__name__
+            Constant.__name__
         )
         else DryVolumeOrganic
     ),
@@ -33,7 +33,7 @@ attributes = {
         make_dummy_attribute_factory('dry volume organic fraction')
         if 'Condensation' in dynamics and (
             dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
-            Constant.__class__.__name__
+            Constant.__name__
         )
         else OrganicFraction
     ),
