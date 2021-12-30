@@ -15,6 +15,13 @@ from PySDM.backends.impl_numba import conf
 
 
 def _formula(func=None, constants=None, **kw):
+    if physics.impl.flag.DIMENSIONAL_ANALYSIS:
+        first_param = inspect.signature(func).parameters[0]
+        if first_param in ('_', 'const'):
+            return partial(func, **{first_param: constants})
+        else:
+            return func
+        
     source = "class _:\n"
     for line in inspect.getsourcelines(func)[0]:
         source += f"{line}\n"
@@ -36,22 +43,20 @@ def _formula(func=None, constants=None, **kw):
 
 
 def _boost(obj, fastmath, constants):
-    if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
-        formulae = {}
-        for item in dir(obj):
-            if item.startswith('__'):
-                continue
-            attr = getattr(obj, item)
-            if callable(attr):
-                formula = _formula(attr, constants=constants, fastmath=fastmath)
-                setattr(
-                    formula,
-                    'c_inline',
-                    partial(_c_inline, constants=constants, fun=attr)
-                )
-                formulae[attr.__name__] = formula
-        return SimpleNamespace(**formulae)
-    return obj
+    formulae = {'__name__': obj.__class__.__name__}
+    for item in dir(obj):
+        attr = getattr(obj, item)
+        if item.startswith('__') or not callable(attr):
+            pass
+        else:
+            formula = _formula(attr, constants=constants, fastmath=fastmath)
+            setattr(
+                formula,
+                'c_inline',
+                partial(_c_inline, constants=constants, fun=attr)
+            )
+            formulae[attr.__name__] = formula
+    return SimpleNamespace(**formulae)
 
 
 def _c_inline(fun, return_type=None, constants=None, **args):
