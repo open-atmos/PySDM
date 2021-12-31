@@ -4,7 +4,7 @@ import pytest
 from matplotlib import pyplot
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM import Formulae
-from PySDM.physics import si, constants as const
+from PySDM.physics import si, constants_defaults as const
 from PySDM.backends import CPU
 
 

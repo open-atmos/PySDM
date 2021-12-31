@@ -7,6 +7,7 @@ import re
 import inspect
 import numpy as np
 import pint
+from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
 _CAMEL_CASE_PATTERN = re.compile(r'[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])')
@@ -34,16 +35,16 @@ class Product:
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
 
-    def _parse_unit(self, unit: str):
-        const = self.formulae.constants
+    @staticmethod
+    def _parse_unit(unit: str):
         if unit in ('%', 'percent'):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in ('PPB', 'ppb'):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in ('PPM', 'ppm'):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in ('PPT', 'ppt'):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
+            return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod

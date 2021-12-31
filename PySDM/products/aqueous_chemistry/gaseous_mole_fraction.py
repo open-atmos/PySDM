@@ -2,7 +2,7 @@
 mole fractions of gaseous compounds relevant for aqueous chemistry
 """
 from PySDM.products.impl.product import Product
-from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY
+from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
 
 
 class GaseousMoleFraction(Product):
@@ -18,6 +18,6 @@ class GaseousMoleFraction(Product):
     def _impl(self, **kwargs):
         tmp = self.formulae.trivia.mixing_ratio_2_mole_fraction(
             self.aqueous_chemistry.environment_mixing_ratios[self.compound],
-            specific_gravity=SPECIFIC_GRAVITY[self.compound]
+            specific_gravity=self.aqueous_chemistry.specific_gravities[self.compound]
         )
         return tmp

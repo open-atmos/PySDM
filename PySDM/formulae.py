@@ -37,9 +37,9 @@ class Formulae:
                  heterogeneous_ice_nucleation_rate: str = 'Null'
                  ):
         constants_defaults = {
-            k: getattr(physics.constants, k)
-            for k in dir(physics.constants)
-            if isinstance(getattr(physics.constants, k), (numbers.Number, pint.Quantity))
+            k: getattr(physics.constants_defaults, k)
+            for k in dir(physics.constants_defaults)
+            if isinstance(getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(
             "Constants",

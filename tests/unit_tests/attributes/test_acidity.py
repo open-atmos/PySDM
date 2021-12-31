@@ -6,7 +6,7 @@ from chempy import Equilibrium
 from chempy.equilibria import EqSystem
 from chempy.chemistry import Species
 from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
-from PySDM.physics.constants import ROOM_TEMP, K_H2O
+from PySDM.physics.constants import K_H2O
 from PySDM.formulae import Formulae
 from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods, _K, _conc
 from PySDM.dynamics import aqueous_chemistry
@@ -22,7 +22,7 @@ class TestAcidity:
         # Arrange
         eqs = {}
         for key, const in EQUILIBRIUM_CONST.items():
-            eqs[key] = np.full(1, const.at(ROOM_TEMP))
+            eqs[key] = np.full(1, const.at(FORMULAE.constants.ROOM_TEMP))
 
         # Act
         result = np.empty(1)
@@ -65,7 +65,11 @@ class TestAcidity:
         defaultdict(float, {'H2O': 1, 'NH3': 5e-3, 'H2CO3(aq)': 0.01e-3, 'H2SO3(aq)': 0.005e-3}),
         defaultdict(float, {'H2O': 1, 'NH3': .5e-3, 'H2CO3(aq)': 0.1e-3, 'H2SO3(aq)': 0.05e-3}),
     ))
-    @pytest.mark.parametrize('env_T', (ROOM_TEMP, ROOM_TEMP-30, ROOM_TEMP+30))
+    @pytest.mark.parametrize('env_T', (
+            FORMULAE.constants.ROOM_TEMP,
+            FORMULAE.constants.ROOM_TEMP-30,
+            FORMULAE.constants.ROOM_TEMP+30
+    ))
     def test_equilibrate_pH_non_trivial(init_conc, env_T):
 
         equilibria = {

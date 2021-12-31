@@ -3,7 +3,7 @@ import inspect
 import numpy as np
 from matplotlib import pyplot
 from PySDM import Formulae
-from PySDM.physics import constants as const
+from PySDM.physics import constants_defaults as const
 
 
 def test_saturation_vapour_pressures(plot=False):

@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from matplotlib import pylab
 import numpy as np
-from PySDM.physics import constants as const
+from PySDM.physics import constants_defaults as const
 from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.environments import Box
