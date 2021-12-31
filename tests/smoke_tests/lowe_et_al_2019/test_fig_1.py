@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 from PySDM_examples.Lowe_et_al_2019 import aerosol
 from PySDM import Formulae
-from PySDM.physics import si, constants as const
+from PySDM.physics import si, constants_defaults as const
 from .constants import constants
 
 assert hasattr(constants, '_pytestfixturefunction')
