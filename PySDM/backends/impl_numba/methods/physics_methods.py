@@ -4,7 +4,6 @@ CPU implementation of backend methods wrapping basic physics formulae
 import numba
 from numba import prange
 from PySDM.backends.impl_numba import conf
-from PySDM.physics import constants as const
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 
 
@@ -20,6 +19,7 @@ class PhysicsMethods(BackendMethods):
         phys_sigma = self.formulae.surface_tension.sigma
         phys_volume = self.formulae.trivia.volume
         phys_r_cr = self.formulae.hygroscopicity.r_cr
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def explicit_euler_body(y, dt, dy_dt):

@@ -3,7 +3,6 @@ pH calculated by finding equilibrium hydrogen ion concentration
 """
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
-from PySDM.physics import constants as const
 from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
 
 
@@ -16,14 +15,13 @@ class Acidity(DerivedAttribute):
         super().__init__(builder, name='pH', dependencies=self.conc.values())
         self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute('cell id')
-        self.particles = builder.particulator
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = const.pH_w
+        self.data[:] = self.formulae.constants.pH_w
 
     def recalculate(self):
-        dynamic = self.particles.dynamics['AqueousChemistry']
+        dynamic = self.particulator.dynamics['AqueousChemistry']
 
         self.particulator.backend.equilibrate_H(
             dynamic.equilibrium_consts,

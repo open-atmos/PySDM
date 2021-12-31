@@ -3,7 +3,6 @@ ice water content products (mixing ratio and density)
 """
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.physics import constants as const
 
 
 class IceWaterContent(MomentProduct):
@@ -18,7 +17,7 @@ class IceWaterContent(MomentProduct):
         self._download_moment_to_buffer('volume', rank=0, filter_range=(-np.inf, 0))
         conc = self.buffer
 
-        result[:] *= -const.rho_i * conc / self.particulator.mesh.dv
+        result[:] *= -self.formulae.constants.const.rho_i * conc / self.particulator.mesh.dv
 
         if self.specific:
             self._download_to_buffer(self.particulator.environment['rhod'])

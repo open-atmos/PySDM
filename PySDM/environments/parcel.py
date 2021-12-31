@@ -6,18 +6,15 @@ from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from PySDM.environments.impl.moist import Moist
-from ..physics import constants as const
 
 
 class Parcel(Moist):
-
     def __init__(
             self, dt,
             mass_of_dry_air: float,
             p0: float, q0: float, T0: float,
             w: [float, callable],
             z0: float = 0,
-            g=const.g_std,
             mixed_phase=False
     ):
         super().__init__(
@@ -32,7 +29,6 @@ class Parcel(Moist):
         self.T0 = T0
         self.z0 = z0
         self.mass_of_dry_air = mass_of_dry_air
-        self.g = g
 
         self.w = w if callable(w) else lambda _: w
 
@@ -99,7 +95,8 @@ class Parcel(Moist):
 
         dql_dz = self.dql / dz_dt / dt
         lv = self.formulae.latent_heat.lv(T)
-        drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
+        drho_dz = self.formulae.hydrostatics.drho_dz(
+            self.formulae.constants.g_std, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
         self.particulator.backend.explicit_euler(self._tmp['t'], dt, 1)

@@ -2,7 +2,6 @@
 GPU implementation of backend methods for water condensation/evaporation
 """
 from typing import Dict, Optional
-from PySDM.physics import constants as const
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
@@ -27,6 +26,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.dqv_dt_pred: Optional[StorageBase] = None
         self.rhod_mean: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
+        const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
