@@ -175,7 +175,8 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         if stripped.startswith('def '):
             continue
         source += stripped
-    # source = source.replace("power(", "pow(")
+    source = source.replace("np.power(", "np.pow(")
+    source = source.replace("np.", "")
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
         if arg not in ('_', 'const'):
