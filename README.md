@@ -247,7 +247,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants").rho_w
+rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
@@ -269,7 +269,7 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
+rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
 
 for step = 0:1200:3600
     particulator.run(int32(step - particulator.n_steps));
@@ -293,7 +293,7 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
