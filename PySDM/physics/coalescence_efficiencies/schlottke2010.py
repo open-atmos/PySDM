@@ -21,12 +21,12 @@ class Schlottke2010:
         self.We = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2, dtype=float)
 
     def __call__(self, output, is_first_in_pair):
-        self.tmp.sum(self.particulator.particles['volume'], is_first_in_pair)
+        self.tmp.sum(self.particulator.attributes['volume'], is_first_in_pair)
         self.tmp /= (np.pi / 6)
         
-        self.tmp2.distance(self.particulator.particles['terminal velocity'], is_first_in_pair)
+        self.tmp2.distance(self.particulator.attributes['terminal velocity'], is_first_in_pair)
         self.tmp2 **= 2
-        self.We.multiply(self.particulator.particles['volume'], is_first_in_pair)
+        self.We.multiply(self.particulator.attributes['volume'], is_first_in_pair)
         self.We /= self.tmp
         self.We *= self.tmp2
         self.We *= (np.pi / 12 * rho_w)

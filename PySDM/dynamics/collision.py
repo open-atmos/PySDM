@@ -169,7 +169,7 @@ class Collision:
         
         # (5) Perform the collisional-coalescence/breakup step: 
         self.particulator.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment, 
-                                    cell_id=self.particulator.attributes["cell id"], coalescence_rate=self.coalescence_rate, 
+                                    coalescence_rate=self.coalescence_rate, 
                                     breakup_rate=self.breakup_rate, is_first_in_pair=self.is_first_in_pair)
         
         if self.adaptive:

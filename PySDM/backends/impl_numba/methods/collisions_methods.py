@@ -133,7 +133,6 @@ class AlgorithmicMethods(BackendMethods):
 
                 breakup_rate[cid] += gamma[i] * multiplicity[k]
 
-    @staticmethod
     def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb, n_fragment, healthy, cell_id,
                         coalescence_rate, breakup_rate, is_first_in_pair):
         self.collision_body(multiplicity.data, idx.data, len(idx),

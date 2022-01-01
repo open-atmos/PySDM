@@ -10,7 +10,7 @@ class Linear:
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.particulator.particles['volume'], is_first_in_pair)
+        output.sum_pair(self.particulator.attributes['volume'], is_first_in_pair)
         output *= self.b
         output += self.a
 
