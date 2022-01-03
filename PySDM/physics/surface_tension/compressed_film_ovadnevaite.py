@@ -3,10 +3,6 @@ surface tension coefficient model featuring surface-partitioning
  as in [Ovadnevaite et al. (2017)](https://doi.org/10.1038/nature22806)
 """
 import numpy as np
-from PySDM.physics import constants as const
-
-sgm_org = np.nan
-delta_min = np.nan
 
 
 class CompressedFilmOvadnevaite:
@@ -19,18 +15,17 @@ class CompressedFilmOvadnevaite:
     partitions to the surface of the droplet and that the surface tension is a weighted
     average of the surface tension of water and the organic material.
     """
-    @staticmethod
-    def _check():
-        assert np.isfinite(sgm_org)
-        assert np.isfinite(delta_min)
+    def __init__(self, const):
+        assert np.isfinite(const.sgm_org)
+        assert np.isfinite(const.delta_min)
 
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         # convert wet volume to wet radius
         r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
 
         # calculate the minimum shell volume, v_delta
-        v_delta = v_wet - ((4 * np.pi) / 3 * (r_wet - delta_min) ** 3)
+        v_delta = v_wet - ((4 * np.pi) / 3 * (r_wet - const.delta_min) ** 3)
 
         # calculate the total volume of organic, v_beta
         v_beta = f_org * v_dry
@@ -39,5 +34,5 @@ class CompressedFilmOvadnevaite:
         c_beta = np.minimum(v_beta / v_delta, 1)
 
         # calculate sigma
-        sgm = (1-c_beta) * const.sgm_w + c_beta * sgm_org
+        sgm = (1-c_beta) * const.sgm_w + c_beta * const.sgm_org
         return sgm

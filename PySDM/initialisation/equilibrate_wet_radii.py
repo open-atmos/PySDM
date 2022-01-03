@@ -4,7 +4,6 @@ Koehler-curve equilibrium in unsaturated conditions
 import numba
 import numpy as np
 from ..backends.impl_numba.toms748 import toms748_solve
-from ..physics import constants as const
 from ..backends.impl_numba.conf import JIT_FLAGS
 from ..backends.impl_numba.warnings import warn
 
@@ -22,6 +21,7 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
     if f_org is None:
         f_org = np.zeros_like(r_dry, dtype=float)
 
+    const = environment.particulator.formulae.constants
     T = environment["T"].to_ndarray()
     RH = environment["RH"].to_ndarray()
 

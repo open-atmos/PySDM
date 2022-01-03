@@ -4,7 +4,6 @@ import pytest
 from matplotlib import pylab
 from PySDM import Formulae
 from PySDM.physics import si, constants as const
-from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012, bigg_1953
 
 
 A = 1 * si.um**2
@@ -16,12 +15,14 @@ A = 1 * si.um**2
 ))
 def test_freezing_temperature_spectra(model, plot=False):
     # Arrange
-    bigg_1953.DT_median = 33
-    niemand_et_al_2012.a = -0.517
-    niemand_et_al_2012.b = 8.934
-    niemand_et_al_2012.A_insol = 1 * si.um ** 2
-
-    formulae = Formulae(freezing_temperature_spectrum=model)
+    formulae = Formulae(
+        freezing_temperature_spectrum=model,
+        constants={
+            'NIEMAND_A': -0.517,
+            'NIEMAND_B': 8.934,
+            'BIGG_DT_MEDIAN': 33
+        }
+    )
     temperature = np.linspace(const.T0, const.T0 - 40, num=100)
 
     # Act

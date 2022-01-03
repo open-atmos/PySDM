@@ -21,9 +21,9 @@ attributes = {
     'volume': lambda _: Volume,
     'dry volume organic': lambda dynamics: (
         make_dummy_attribute_factory('dry volume organic')
-        if 'Condensation' in dynamics and isinstance(
-            dynamics['Condensation'].particulator.formulae.surface_tension,
-            Constant
+        if 'Condensation' in dynamics and (
+            dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
+            Constant.__name__
         )
         else DryVolumeOrganic
     ),
@@ -31,9 +31,9 @@ attributes = {
     DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
     'dry volume organic fraction': lambda dynamics: (
         make_dummy_attribute_factory('dry volume organic fraction')
-        if 'Condensation' in dynamics and isinstance(
-            dynamics['Condensation'].particulator.formulae.surface_tension,
-            Constant
+        if 'Condensation' in dynamics and (
+            dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
+            Constant.__name__
         )
         else OrganicFraction
     ),

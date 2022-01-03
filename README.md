@@ -247,7 +247,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants").rho_w
+rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
@@ -269,10 +269,10 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
+rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
 
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps))
+    particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
@@ -293,7 +293,7 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
@@ -448,15 +448,15 @@ output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-formulae = Formulae()
+formulae = Formulae();
 builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder.add_dynamic(AmbientThermodynamics());
+builder.add_dynamic(Condensation());
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = formulae.trivia.volume(r_dry);
+v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry);
 
@@ -464,7 +464,7 @@ attributes = py.dict(pyargs( ...
     'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
-    'volume', formulae.trivia.volume(r_wet) ...
+    'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
@@ -513,14 +513,13 @@ for pykey = py.list(keys(particulator.products))
     end
     i=i+1;
 end
-saveas(gcf, "parcel.png")
+saveas(gcf, "parcel.png");
 ```
 </details>
 <details open>
 <summary>Python (click to expand)</summary>
 
 ```Python
-import PySDM.initialisation.spectra.lognormal
 from matplotlib import pyplot
 from PySDM.physics import si
 from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii

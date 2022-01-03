@@ -6,12 +6,12 @@ import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from ...impl_numba import conf
 from ...impl_common.freezing_attributes import TimeDependentAttributes, SingularAttributes
-from ....physics import constants as const
 
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
         super().__init__()
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath, 'parallel': False})
         def _unfrozen(volume, i):

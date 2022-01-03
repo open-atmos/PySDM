@@ -4,8 +4,7 @@ import numpy as np
 import pytest
 from PySDM_examples.Lowe_et_al_2019 import aerosol
 from PySDM import Formulae
-from PySDM.physics import si, constants as const
-from PySDM.physics.surface_tension import compressed_film_ovadnevaite
+from PySDM.physics import si, constants_defaults as const
 from .constants import constants
 
 assert hasattr(constants, '_pytestfixturefunction')
@@ -43,7 +42,13 @@ class TestFig1:
     # pylint: disable=redefined-outer-name,unused-argument
     def test_kink_location(constants, aerosol, cutoff):
         # arrange
-        formulae = Formulae(surface_tension='CompressedFilmOvadnevaite')
+        formulae = Formulae(
+            surface_tension='CompressedFilmOvadnevaite',
+            constants={
+                'sgm_org': 40 * si.mN / si.m,
+                'delta_min': 0.1 * si.nm
+            }
+        )
 
         # act
         sigma = formulae.surface_tension.sigma(
@@ -51,8 +56,8 @@ class TestFig1:
 
         # assert
         cutoff_idx = (np.abs(R_WET - cutoff)).argmin()
-        assert (sigma[:cutoff_idx] == compressed_film_ovadnevaite.sgm_org).all()
-        assert sigma[cutoff_idx] > compressed_film_ovadnevaite.sgm_org
+        assert (sigma[:cutoff_idx] == formulae.constants.sgm_org).all()
+        assert sigma[cutoff_idx] > formulae.constants.sgm_org
         assert .98 * const.sgm_w < sigma[-1] <= const.sgm_w
 
     @staticmethod
@@ -70,7 +75,13 @@ class TestFig1:
     def test_koehler_maxima(constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal):
         # arrange
         label = {'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension]
-        formulae = Formulae(surface_tension=surface_tension)
+        formulae = Formulae(
+            surface_tension=surface_tension,
+            constants={
+                'sgm_org': 40 * si.mN / si.m,
+                'delta_min': 0.1 * si.nm
+            }
+        )
         sigma = formulae.surface_tension.sigma(
             np.nan, V_WET, V_DRY, aerosol.aerosol_modes_per_cc[0]['f_org'])
         RH_eq = formulae.hygroscopicity.RH_eq(
