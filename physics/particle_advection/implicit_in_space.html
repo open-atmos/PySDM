@@ -33,8 +33,11 @@ eqs. 14-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015)
 
 
 class ImplicitInSpace:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 </section>
@@ -49,6 +52,7 @@ class ImplicitInSpace:
 <dl>
 <dt id="PySDM.physics.particle_advection.implicit_in_space.ImplicitInSpace"><code class="flex name class">
 <span>class <span class="ident">ImplicitInSpace</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -57,14 +61,17 @@ class ImplicitInSpace:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ImplicitInSpace:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.particle_advection.implicit_in_space.ImplicitInSpace.displacement"><code class="name flex">
-<span>def <span class="ident">displacement</span></span>(<span>omega, c_l, c_r)</span>
+<span>def <span class="ident">displacement</span></span>(<span>_, omega, c_l, c_r)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,7 +80,7 @@ class ImplicitInSpace:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def displacement(omega, c_l, c_r):
+def displacement(_, omega, c_l, c_r):
     return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)</code></pre>
 </details>
 </dd>

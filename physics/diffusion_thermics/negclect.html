@@ -30,12 +30,14 @@
 <pre><code class="python">&#34;&#34;&#34;
 constant diffusion coefficient formulation
 &#34;&#34;&#34;
-from PySDM.physics import constants as const
 
 
 class Neglect:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def D(T, p):  # pylint: disable=unused-argument
+    def D(const, T, p):  # pylint: disable=unused-argument
         return const.D0</code></pre>
 </details>
 </section>
@@ -50,6 +52,7 @@ class Neglect:
 <dl>
 <dt id="PySDM.physics.diffusion_thermics.negclect.Neglect"><code class="flex name class">
 <span>class <span class="ident">Neglect</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -58,14 +61,17 @@ class Neglect:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Neglect:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def D(T, p):  # pylint: disable=unused-argument
+    def D(const, T, p):  # pylint: disable=unused-argument
         return const.D0</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.diffusion_thermics.negclect.Neglect.D"><code class="name flex">
-<span>def <span class="ident">D</span></span>(<span>T, p)</span>
+<span>def <span class="ident">D</span></span>(<span>const, T, p)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -74,7 +80,7 @@ class Neglect:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def D(T, p):  # pylint: disable=unused-argument
+def D(const, T, p):  # pylint: disable=unused-argument
     return const.D0</code></pre>
 </details>
 </dd>

@@ -30,25 +30,27 @@
 <pre><code class="python">&#34;&#34;&#34;
 Various (hopefully) undebatable formulae
 &#34;&#34;&#34;
-from numpy import abs, log10, exp, power  # pylint: disable=redefined-builtin
-from . import constants as const
+import numpy as np
 
 
 class Trivia:
+    def __init__(self, _):
+        pass
+
     @staticmethod
     def volume_of_density_mass(rho, m):
         return m / rho
 
     @staticmethod
-    def radius(volume):
-        return power(volume / const.PI_4_3, const.ONE_THIRD)
+    def radius(const, volume):
+        return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
     @staticmethod
-    def volume(radius):
-        return const.PI_4_3 * power(radius, const.THREE)
+    def volume(const, radius):
+        return const.PI_4_3 * np.power(radius, const.THREE)
 
     @staticmethod
-    def sphere_surface(diameter):
+    def sphere_surface(const, diameter):
         return const.PI * diameter**2
 
     @staticmethod
@@ -57,27 +59,27 @@ class Trivia:
 
     @staticmethod
     def within_tolerance(error_estimate, value, rtol):
-        return error_estimate &lt; rtol * abs(value)
+        return error_estimate &lt; rtol * np.abs(value)
 
     @staticmethod
     def H2pH(H):
-        return -log10(H * 1e-3)
+        return -np.log10(H * 1e-3)
 
     @staticmethod
     def pH2H(pH):
-        return power(10, -pH) * 1e3
+        return np.power(10, -pH) * 1e3
 
     @staticmethod
-    def vant_hoff(K, dH, T, *, T_0):
-        return K * exp(-dH / const.R_str * (1 / T - 1 / T_0))
+    def vant_hoff(const, K, dH, T, *, T_0):
+        return K * np.exp(-dH / const.R_str * (1 / T - 1 / T_0))
 
     @staticmethod
-    def tdep2enthalpy(tdep):
+    def tdep2enthalpy(const, tdep):
         return -tdep * const.R_str
 
     @staticmethod
-    def arrhenius(A, Ea, T):
-        return A * exp(-Ea / (const.R_str * T))
+    def arrhenius(const, A, Ea, T):
+        return A * np.exp(-Ea / (const.R_str * T))
 
     @staticmethod
     def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
@@ -88,12 +90,12 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(p, qv):
+    def p_d(const, p, qv):
         return p * (1 - 1 / (1 + const.eps / qv))
 
     @staticmethod
-    def th_std(p, T):
-        return T * power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
+    def th_std(const, p, T):
+        return T * np.power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
 </details>
 </section>
 <section>
@@ -107,6 +109,7 @@ class Trivia:
 <dl>
 <dt id="PySDM.physics.trivia.Trivia"><code class="flex name class">
 <span>class <span class="ident">Trivia</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -115,20 +118,23 @@ class Trivia:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Trivia:
+    def __init__(self, _):
+        pass
+
     @staticmethod
     def volume_of_density_mass(rho, m):
         return m / rho
 
     @staticmethod
-    def radius(volume):
-        return power(volume / const.PI_4_3, const.ONE_THIRD)
+    def radius(const, volume):
+        return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
     @staticmethod
-    def volume(radius):
-        return const.PI_4_3 * power(radius, const.THREE)
+    def volume(const, radius):
+        return const.PI_4_3 * np.power(radius, const.THREE)
 
     @staticmethod
-    def sphere_surface(diameter):
+    def sphere_surface(const, diameter):
         return const.PI * diameter**2
 
     @staticmethod
@@ -137,27 +143,27 @@ class Trivia:
 
     @staticmethod
     def within_tolerance(error_estimate, value, rtol):
-        return error_estimate &lt; rtol * abs(value)
+        return error_estimate &lt; rtol * np.abs(value)
 
     @staticmethod
     def H2pH(H):
-        return -log10(H * 1e-3)
+        return -np.log10(H * 1e-3)
 
     @staticmethod
     def pH2H(pH):
-        return power(10, -pH) * 1e3
+        return np.power(10, -pH) * 1e3
 
     @staticmethod
-    def vant_hoff(K, dH, T, *, T_0):
-        return K * exp(-dH / const.R_str * (1 / T - 1 / T_0))
+    def vant_hoff(const, K, dH, T, *, T_0):
+        return K * np.exp(-dH / const.R_str * (1 / T - 1 / T_0))
 
     @staticmethod
-    def tdep2enthalpy(tdep):
+    def tdep2enthalpy(const, tdep):
         return -tdep * const.R_str
 
     @staticmethod
-    def arrhenius(A, Ea, T):
-        return A * exp(-Ea / (const.R_str * T))
+    def arrhenius(const, A, Ea, T):
+        return A * np.exp(-Ea / (const.R_str * T))
 
     @staticmethod
     def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
@@ -168,12 +174,12 @@ class Trivia:
         return mixing_ratio / (specific_gravity + mixing_ratio)
 
     @staticmethod
-    def p_d(p, qv):
+    def p_d(const, p, qv):
         return p * (1 - 1 / (1 + const.eps / qv))
 
     @staticmethod
-    def th_std(p, T):
-        return T * power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
+    def th_std(const, p, T):
+        return T * np.power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -188,11 +194,11 @@ class Trivia:
 </summary>
 <pre><code class="python">@staticmethod
 def H2pH(H):
-    return -log10(H * 1e-3)</code></pre>
+    return -np.log10(H * 1e-3)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.arrhenius"><code class="name flex">
-<span>def <span class="ident">arrhenius</span></span>(<span>A, Ea, T)</span>
+<span>def <span class="ident">arrhenius</span></span>(<span>const, A, Ea, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -201,8 +207,8 @@ def H2pH(H):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def arrhenius(A, Ea, T):
-    return A * exp(-Ea / (const.R_str * T))</code></pre>
+def arrhenius(const, A, Ea, T):
+    return A * np.exp(-Ea / (const.R_str * T))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.explicit_euler"><code class="name flex">
@@ -258,11 +264,11 @@ def mole_fraction_2_mixing_ratio(mole_fraction, specific_gravity):
 </summary>
 <pre><code class="python">@staticmethod
 def pH2H(pH):
-    return power(10, -pH) * 1e3</code></pre>
+    return np.power(10, -pH) * 1e3</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.p_d"><code class="name flex">
-<span>def <span class="ident">p_d</span></span>(<span>p, qv)</span>
+<span>def <span class="ident">p_d</span></span>(<span>const, p, qv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -271,12 +277,12 @@ def pH2H(pH):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p_d(p, qv):
+def p_d(const, p, qv):
     return p * (1 - 1 / (1 + const.eps / qv))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.radius"><code class="name flex">
-<span>def <span class="ident">radius</span></span>(<span>volume)</span>
+<span>def <span class="ident">radius</span></span>(<span>const, volume)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -285,12 +291,12 @@ def p_d(p, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def radius(volume):
-    return power(volume / const.PI_4_3, const.ONE_THIRD)</code></pre>
+def radius(const, volume):
+    return np.power(volume / const.PI_4_3, const.ONE_THIRD)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.sphere_surface"><code class="name flex">
-<span>def <span class="ident">sphere_surface</span></span>(<span>diameter)</span>
+<span>def <span class="ident">sphere_surface</span></span>(<span>const, diameter)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -299,12 +305,12 @@ def radius(volume):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sphere_surface(diameter):
+def sphere_surface(const, diameter):
     return const.PI * diameter**2</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.tdep2enthalpy"><code class="name flex">
-<span>def <span class="ident">tdep2enthalpy</span></span>(<span>tdep)</span>
+<span>def <span class="ident">tdep2enthalpy</span></span>(<span>const, tdep)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -313,12 +319,12 @@ def sphere_surface(diameter):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def tdep2enthalpy(tdep):
+def tdep2enthalpy(const, tdep):
     return -tdep * const.R_str</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.th_std"><code class="name flex">
-<span>def <span class="ident">th_std</span></span>(<span>p, T)</span>
+<span>def <span class="ident">th_std</span></span>(<span>const, p, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -327,12 +333,12 @@ def tdep2enthalpy(tdep):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def th_std(p, T):
-    return T * power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
+def th_std(const, p, T):
+    return T * np.power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.vant_hoff"><code class="name flex">
-<span>def <span class="ident">vant_hoff</span></span>(<span>K, dH, T, *, T_0)</span>
+<span>def <span class="ident">vant_hoff</span></span>(<span>const, K, dH, T, *, T_0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -341,12 +347,12 @@ def th_std(p, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def vant_hoff(K, dH, T, *, T_0):
-    return K * exp(-dH / const.R_str * (1 / T - 1 / T_0))</code></pre>
+def vant_hoff(const, K, dH, T, *, T_0):
+    return K * np.exp(-dH / const.R_str * (1 / T - 1 / T_0))</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.volume"><code class="name flex">
-<span>def <span class="ident">volume</span></span>(<span>radius)</span>
+<span>def <span class="ident">volume</span></span>(<span>const, radius)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -355,8 +361,8 @@ def vant_hoff(K, dH, T, *, T_0):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def volume(radius):
-    return const.PI_4_3 * power(radius, const.THREE)</code></pre>
+def volume(const, radius):
+    return const.PI_4_3 * np.power(radius, const.THREE)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.volume_of_density_mass"><code class="name flex">
@@ -384,7 +390,7 @@ def volume_of_density_mass(rho, m):
 </summary>
 <pre><code class="python">@staticmethod
 def within_tolerance(error_estimate, value, rtol):
-    return error_estimate &lt; rtol * abs(value)</code></pre>
+    return error_estimate &lt; rtol * np.abs(value)</code></pre>
 </details>
 </dd>
 </dl>

@@ -36,7 +36,7 @@ import re
 import inspect
 import numpy as np
 import pint
-from PySDM.physics import constants as const
+from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
 _CAMEL_CASE_PATTERN = re.compile(r&#39;[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])&#39;)
@@ -69,11 +69,11 @@ class Product:
         if unit in (&#39;%&#39;, &#39;percent&#39;):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
+            return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod
@@ -167,11 +167,11 @@ class Product:
         if unit in (&#39;%&#39;, &#39;percent&#39;):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
+            return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod

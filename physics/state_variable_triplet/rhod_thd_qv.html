@@ -33,41 +33,43 @@
 dry-air density / dry-air potential temperature / water vapour mixing ratio triplet
 (as in libcloudph++)
 &#34;&#34;&#34;
-from numpy import power
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class RhodThdQv:
+    def __init__(self, _):
+        pass
+
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
-    def T(rhod, thd):
-        return thd * power(
+    def T(const, rhod, thd):
+        return thd * np.power(
             rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
         )
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
-    def p(rhod, T, qv):
+    def p(const, rhod, T, qv):
         return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T
 
     @staticmethod
-    def pv(p, qv):
+    def pv(const, p, qv):
         return p * qv / (qv + const.eps)
 
     @staticmethod
-    def dthd_dt(rhod, thd, T, dqv_dt, lv):
+    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
         return - lv * dqv_dt / const.c_pd / T * thd * rhod
 
     @staticmethod
-    def th_dry(th_std, qv):
-        return th_std * power(1 + qv / const.eps, const.Rd / const.c_pd)
+    def th_dry(const, th_std, qv):
+        return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
 
     @staticmethod
-    def rho_d(p, qv, theta_std):
+    def rho_d(const, p, qv, theta_std):
         return p * (
                 1 - 1 / (1 + const.eps / qv)
         ) / (
-                power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+                np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
         )
 
     @staticmethod
@@ -75,7 +77,7 @@ class RhodThdQv:
         return rhod * (1 + qv)
 
     @staticmethod
-    def rhod_of_pd_T(pd, T):
+    def rhod_of_pd_T(const, pd, T):
         return pd / const.Rd / T</code></pre>
 </details>
 </section>
@@ -90,6 +92,7 @@ class RhodThdQv:
 <dl>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv"><code class="flex name class">
 <span>class <span class="ident">RhodThdQv</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -98,36 +101,39 @@ class RhodThdQv:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RhodThdQv:
+    def __init__(self, _):
+        pass
+
     # A14 in libcloudph++ 1.0 paper
     @staticmethod
-    def T(rhod, thd):
-        return thd * power(
+    def T(const, rhod, thd):
+        return thd * np.power(
             rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
         )
 
     # A15 in libcloudph++ 1.0 paper
     @staticmethod
-    def p(rhod, T, qv):
+    def p(const, rhod, T, qv):
         return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T
 
     @staticmethod
-    def pv(p, qv):
+    def pv(const, p, qv):
         return p * qv / (qv + const.eps)
 
     @staticmethod
-    def dthd_dt(rhod, thd, T, dqv_dt, lv):
+    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
         return - lv * dqv_dt / const.c_pd / T * thd * rhod
 
     @staticmethod
-    def th_dry(th_std, qv):
-        return th_std * power(1 + qv / const.eps, const.Rd / const.c_pd)
+    def th_dry(const, th_std, qv):
+        return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)
 
     @staticmethod
-    def rho_d(p, qv, theta_std):
+    def rho_d(const, p, qv, theta_std):
         return p * (
                 1 - 1 / (1 + const.eps / qv)
         ) / (
-                power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+                np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
         )
 
     @staticmethod
@@ -135,13 +141,13 @@ class RhodThdQv:
         return rhod * (1 + qv)
 
     @staticmethod
-    def rhod_of_pd_T(pd, T):
+    def rhod_of_pd_T(const, pd, T):
         return pd / const.Rd / T</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.T"><code class="name flex">
-<span>def <span class="ident">T</span></span>(<span>rhod, thd)</span>
+<span>def <span class="ident">T</span></span>(<span>const, rhod, thd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -150,14 +156,14 @@ class RhodThdQv:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def T(rhod, thd):
-    return thd * power(
+def T(const, rhod, thd):
+    return thd * np.power(
         rhod * thd / const.p1000 * const.Rd, const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.dthd_dt"><code class="name flex">
-<span>def <span class="ident">dthd_dt</span></span>(<span>rhod, thd, T, dqv_dt, lv)</span>
+<span>def <span class="ident">dthd_dt</span></span>(<span>const, rhod, thd, T, dqv_dt, lv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -166,12 +172,12 @@ def T(rhod, thd):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def dthd_dt(rhod, thd, T, dqv_dt, lv):
+def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
     return - lv * dqv_dt / const.c_pd / T * thd * rhod</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.p"><code class="name flex">
-<span>def <span class="ident">p</span></span>(<span>rhod, T, qv)</span>
+<span>def <span class="ident">p</span></span>(<span>const, rhod, T, qv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -180,12 +186,12 @@ def dthd_dt(rhod, thd, T, dqv_dt, lv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p(rhod, T, qv):
+def p(const, rhod, T, qv):
     return rhod * (1 + qv) * (const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)) * T</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.pv"><code class="name flex">
-<span>def <span class="ident">pv</span></span>(<span>p, qv)</span>
+<span>def <span class="ident">pv</span></span>(<span>const, p, qv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -194,12 +200,12 @@ def p(rhod, T, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def pv(p, qv):
+def pv(const, p, qv):
     return p * qv / (qv + const.eps)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rho_d"><code class="name flex">
-<span>def <span class="ident">rho_d</span></span>(<span>p, qv, theta_std)</span>
+<span>def <span class="ident">rho_d</span></span>(<span>const, p, qv, theta_std)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -208,11 +214,11 @@ def pv(p, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def rho_d(p, qv, theta_std):
+def rho_d(const, p, qv, theta_std):
     return p * (
             1 - 1 / (1 + const.eps / qv)
     ) / (
-            power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+            np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
     )</code></pre>
 </details>
 </dd>
@@ -231,7 +237,7 @@ def rho_of_rhod_qv(rhod, qv):
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.rhod_of_pd_T"><code class="name flex">
-<span>def <span class="ident">rhod_of_pd_T</span></span>(<span>pd, T)</span>
+<span>def <span class="ident">rhod_of_pd_T</span></span>(<span>const, pd, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -240,12 +246,12 @@ def rho_of_rhod_qv(rhod, qv):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def rhod_of_pd_T(pd, T):
+def rhod_of_pd_T(const, pd, T):
     return pd / const.Rd / T</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.state_variable_triplet.rhod_thd_qv.RhodThdQv.th_dry"><code class="name flex">
-<span>def <span class="ident">th_dry</span></span>(<span>th_std, qv)</span>
+<span>def <span class="ident">th_dry</span></span>(<span>const, th_std, qv)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -254,8 +260,8 @@ def rhod_of_pd_T(pd, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def th_dry(th_std, qv):
-    return th_std * power(1 + qv / const.eps, const.Rd / const.c_pd)</code></pre>
+def th_dry(const, th_std, qv):
+    return th_std * np.power(1 + qv / const.eps, const.Rd / const.c_pd)</code></pre>
 </details>
 </dd>
 </dl>

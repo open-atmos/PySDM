@@ -36,8 +36,11 @@ do-nothing null formulation (needed as other formulations require parameters
 
 
 class Null:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def j_het(a_w_ice):
+    def j_het(const, a_w_ice):
         pass</code></pre>
 </details>
 </section>
@@ -52,6 +55,7 @@ class Null:
 <dl>
 <dt id="PySDM.physics.heterogeneous_ice_nucleation_rate.null.Null"><code class="flex name class">
 <span>class <span class="ident">Null</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -60,14 +64,17 @@ class Null:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Null:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def j_het(a_w_ice):
+    def j_het(const, a_w_ice):
         pass</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.heterogeneous_ice_nucleation_rate.null.Null.j_het"><code class="name flex">
-<span>def <span class="ident">j_het</span></span>(<span>a_w_ice)</span>
+<span>def <span class="ident">j_het</span></span>(<span>const, a_w_ice)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -76,7 +83,7 @@ class Null:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def j_het(a_w_ice):
+def j_het(const, a_w_ice):
     pass</code></pre>
 </details>
 </dd>

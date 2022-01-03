@@ -31,26 +31,138 @@
 Logic for enabling common CPU/GPU physics formulae code
 &#34;&#34;&#34;
 import inspect
+from typing import Optional
+from types import SimpleNamespace
 import re
 from functools import lru_cache, partial
-
+from collections import namedtuple
+import numbers
 import numba
+import numpy as np
+import pint
+
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
-# noinspection PyUnresolvedReferences
-from PySDM.physics import constants as const
 
 
-def _formula(func=None, **kw):
-    if func is None:
-        return numba.njit(
-            **{
-                **conf.JIT_FLAGS,
-                **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}
-            }
+class Formulae:
+    def __init__(self, *,
+                 constants: Optional[dict] = None,
+                 seed: int = physics.constants.default_random_seed,
+                 fastmath: bool = True,
+                 condensation_coordinate: str = &#39;VolumeLogarithm&#39;,
+                 saturation_vapour_pressure: str = &#39;FlatauWalkoCotton&#39;,
+                 latent_heat: str = &#39;Kirchhoff&#39;,
+                 hygroscopicity: str = &#39;KappaKoehlerLeadingTerms&#39;,
+                 drop_growth: str = &#39;MaxwellMason&#39;,
+                 surface_tension: str = &#39;Constant&#39;,
+                 diffusion_kinetics: str = &#39;FuchsSutugin&#39;,
+                 diffusion_thermics: str = &#39;Neglect&#39;,
+                 ventilation: str = &#39;Neglect&#39;,
+                 state_variable_triplet: str = &#39;RhodThdQv&#39;,
+                 particle_advection: str = &#39;ImplicitInSpace&#39;,
+                 hydrostatics: str = &#39;Default&#39;,
+                 freezing_temperature_spectrum: str = &#39;Null&#39;,
+                 heterogeneous_ice_nucleation_rate: str = &#39;Null&#39;
+                 ):
+        constants_defaults = {
+            k: getattr(physics.constants_defaults, k)
+            for k in dir(physics.constants_defaults)
+            if isinstance(getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity))
+        }
+        constants = namedtuple(
+            &#34;Constants&#34;,
+            tuple(constants_defaults.keys())
+        )(
+            **{**constants_defaults, **(constants or {})}
         )
+        self.constants = constants
+        self.seed = seed
+        self.fastmath = fastmath
+        dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
+
+        self.trivia = _magick(&#39;Trivia&#39;, physics.trivia, fastmath, constants, dimensional_analysis)
+
+        self.condensation_coordinate = _magick(
+            condensation_coordinate,
+            physics.condensation_coordinate, fastmath, constants, dimensional_analysis)
+        self.saturation_vapour_pressure = _magick(
+            saturation_vapour_pressure,
+            physics.saturation_vapour_pressure, fastmath, constants, dimensional_analysis)
+        self.latent_heat = _magick(
+            latent_heat,
+            physics.latent_heat, fastmath, constants, dimensional_analysis)
+        self.hygroscopicity = _magick(
+            hygroscopicity,
+            physics.hygroscopicity, fastmath, constants, dimensional_analysis)
+        self.drop_growth = _magick(
+            drop_growth,
+            physics.drop_growth, fastmath, constants, dimensional_analysis)
+        self.surface_tension = _magick(
+            surface_tension,
+            physics.surface_tension, fastmath, constants, dimensional_analysis)
+        self.diffusion_kinetics = _magick(
+            diffusion_kinetics,
+            physics.diffusion_kinetics, fastmath, constants, dimensional_analysis)
+        self.diffusion_thermics = _magick(
+            diffusion_thermics,
+            physics.diffusion_thermics, fastmath, constants, dimensional_analysis)
+        self.ventilation = _magick(
+            ventilation,
+            physics.ventilation, fastmath, constants, dimensional_analysis)
+        self.state_variable_triplet = _magick(
+            state_variable_triplet,
+            physics.state_variable_triplet, fastmath, constants, dimensional_analysis)
+        self.particle_advection = _magick(
+            particle_advection,
+            physics.particle_advection, fastmath, constants, dimensional_analysis)
+        self.hydrostatics = _magick(
+            hydrostatics,
+            physics.hydrostatics, fastmath, constants, dimensional_analysis)
+        self.freezing_temperature_spectrum = _magick(
+            freezing_temperature_spectrum,
+            physics.freezing_temperature_spectrum, fastmath, constants, dimensional_analysis)
+        self.heterogeneous_ice_nucleation_rate = _magick(
+            heterogeneous_ice_nucleation_rate,
+            physics.heterogeneous_ice_nucleation_rate, fastmath, constants, dimensional_analysis)
+
+    def __str__(self):
+        description = []
+        for attr in dir(self):
+            if not attr.startswith(&#39;_&#39;):
+                attr_value = getattr(self, attr)
+                if attr_value.__class__ in (bool, int, float):
+                    value = attr_value
+                elif attr_value.__class__.__name__ == &#39;Constants&#39;:
+                    value = str(attr_value)
+                elif attr_value.__class__ in (SimpleNamespace,):
+                    value = attr_value.__name__
+                else:
+                    value = attr_value.__class__.__name__
+                description.append(f&#34;{attr}: {value}&#34;)
+        return &#39;, &#39;.join(description)
+
+
+def _formula(func, constants, dimensional_analysis, **kw):
+    if dimensional_analysis:
+        first_param = tuple(inspect.signature(func).parameters.keys())[0]
+        if first_param in (&#39;_&#39;, &#39;const&#39;):
+            return partial(func, constants)
+        return func
+
+    source = &#34;class _:\n&#34;
+    for line in inspect.getsourcelines(func)[0]:
+        source += f&#34;{line}\n&#34;
+    loc = {}
+    for arg_name in (&#39;_&#39;, &#39;const&#39;):
+        source = source.replace(f&#39;def {func.__name__}({arg_name},&#39;, f&#39;def {func.__name__}(&#39;)
+    exec(  # pylint:disable=exec-used
+        source,
+        {&#39;const&#39;: constants, &#39;np&#39;: np},
+        loc
+    )
     return numba.njit(
-        func,
+        getattr(loc[&#39;_&#39;], func.__name__),
         **{
             **conf.JIT_FLAGS,
             **{&#39;parallel&#39;: False, &#39;inline&#39;: &#39;always&#39;, &#39;cache&#39;: False, **kw}
@@ -58,20 +170,25 @@ def _formula(func=None, **kw):
     )
 
 
-def _boost(obj, fastmath):
-    if not physics.impl.flag.DIMENSIONAL_ANALYSIS:
-        for item in dir(obj):
-            if item.startswith(&#39;__&#39;):
-                continue
-            attr = getattr(obj, item)
-            if callable(attr):
-                formula = _formula(attr, fastmath=fastmath)
-                setattr(obj, item, formula)
-                setattr(getattr(obj, item), &#39;c_inline&#39;, partial(_c_inline, fun=formula))
-    return obj
+def _boost(obj, fastmath, constants, dimensional_analysis):
+    formulae = {&#39;__name__&#39;: obj.__class__.__name__}
+    for item in dir(obj):
+        attr = getattr(obj, item)
+        if item.startswith(&#39;__&#39;) or not callable(attr):
+            pass
+        else:
+            formula = _formula(attr, constants=constants, fastmath=fastmath,
+                               dimensional_analysis=dimensional_analysis)
+            setattr(
+                formula,
+                &#39;c_inline&#39;,
+                partial(_c_inline, constants=constants, fun=attr)
+            )
+            formulae[attr.__name__] = formula
+    return SimpleNamespace(**formulae)
 
 
-def _c_inline(fun, return_type=None, **args):
+def _c_inline(fun, return_type=None, constants=None, **args):
     real_t = &#39;real_type&#39;
     return_type = return_type or real_t
     prae = r&#34;([,+\-*/( ]|^)&#34;
@@ -87,23 +204,26 @@ def _c_inline(fun, return_type=None, **args):
         if stripped.startswith(&#39;def &#39;):
             continue
         source += stripped
-    source = source.replace(&#34;power(&#34;, &#34;pow(&#34;)
+    source = source.replace(&#34;np.power(&#34;, &#34;np.pow(&#34;)
+    source = source.replace(&#34;np.&#34;, &#34;&#34;)
     source = re.sub(&#34;^return &#34;, &#34;&#34;, source)
     for arg in inspect.signature(fun).parameters:
-        source = re.sub(f&#34;{prae}({arg}){post}&#34;, f&#34;\\1({real_t})({args[arg]})\\3&#34;, source)
+        if arg not in (&#39;_&#39;, &#39;const&#39;):
+            source = re.sub(f&#34;{prae}({arg}){post}&#34;, f&#34;\\1({real_t})({args[arg]})\\3&#34;, source)
     source = re.sub(
         f&#34;{prae}const\\.([^\\d\\W]\\w*]*){post}&#34;,
-        &#34;\\1(&#34; + real_t + &#34;)({const.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
+        &#34;\\1(&#34; + real_t + &#34;)({constants.\\2:&#34; + real_fmt + &#34;})\\3&#34;,
         source
     )
+    assert constants
     source = eval(f&#39;f&#34;&#34;&#34;{source}&#34;&#34;&#34;&#39;)  # pylint: disable=eval-used
     return f&#39;({return_type})({source})&#39;
 
 
-def _pick(value: str, choices: dict):
+def _pick(value: str, choices: dict, constants: namedtuple):
     for name, cls in choices.items():
         if name == value:
-            return cls()
+            return cls(constants)
     raise ValueError(f&#34;Unknown setting: &#39;{value}&#39;; choices are: {tuple(choices.keys())}&#34;)
 
 
@@ -112,80 +232,13 @@ def _choices(module):
 
 
 @lru_cache()
-def _magick(value, module, fastmath):
-    return _boost(_pick(value, _choices(module)), fastmath)
-
-
-class Formulae:
-    def __init__(self, *,
-                 seed: int = const.default_random_seed,
-                 fastmath: bool = True,
-                 condensation_coordinate: str = &#39;VolumeLogarithm&#39;,
-                 saturation_vapour_pressure: str = &#39;FlatauWalkoCotton&#39;,
-                 latent_heat: str = &#39;Kirchhoff&#39;,
-                 hygroscopicity: str = &#39;KappaKoehlerLeadingTerms&#39;,
-                 drop_growth: str = &#39;MaxwellMason&#39;,
-                 surface_tension: str = &#39;Constant&#39;,
-                 diffusion_kinetics: str = &#39;FuchsSutugin&#39;,
-                 diffusion_thermics: str = &#39;Neglect&#39;,
-                 ventilation: str = &#39;Neglect&#39;,
-                 state_variable_triplet: str = &#39;RhodThdQv&#39;,
-                 particle_advection: str = &#39;ImplicitInSpace&#39;,
-                 hydrostatics: str = &#39;Default&#39;,
-                 freezing_temperature_spectrum: str = &#39;Null&#39;,
-                 heterogeneous_ice_nucleation_rate: str = &#39;Null&#39;
-                 ):
-        self.seed = seed
-        self.fastmath = fastmath
-
-        self.trivia = _magick(&#39;Trivia&#39;, physics.trivia, fastmath)
-
-        self.condensation_coordinate = _magick(
-            condensation_coordinate, physics.condensation_coordinate, fastmath)
-        self.saturation_vapour_pressure = _magick(
-            saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
-        self.latent_heat = _magick(
-            latent_heat, physics.latent_heat, fastmath)
-        self.hygroscopicity = _magick(
-            hygroscopicity, physics.hygroscopicity, fastmath)
-        self.drop_growth = _magick(
-            drop_growth, physics.drop_growth, fastmath)
-        self.surface_tension = _magick(
-            surface_tension, physics.surface_tension, fastmath)
-        self.diffusion_kinetics = _magick(
-            diffusion_kinetics, physics.diffusion_kinetics, fastmath)
-        self.diffusion_thermics = _magick(
-            diffusion_thermics, physics.diffusion_thermics, fastmath)
-        self.ventilation = _magick(
-            ventilation, physics.ventilation, fastmath)
-        self.state_variable_triplet = _magick(
-            state_variable_triplet, physics.state_variable_triplet, fastmath)
-        self.particle_advection = _magick(
-            particle_advection, physics.particle_advection, fastmath)
-        self.hydrostatics = _magick(
-            hydrostatics, physics.hydrostatics, fastmath)
-        self.freezing_temperature_spectrum = _magick(
-            freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
-        self.heterogeneous_ice_nucleation_rate = _magick(
-            heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
-        self.__check()
-
-    def __str__(self):
-        description = []
-        for attr in dir(self):
-            if not attr.startswith(&#39;_&#39;):
-                if getattr(self, attr).__class__ in (bool, int, float):
-                    value = getattr(self, attr)
-                else:
-                    value = getattr(self, attr).__class__.__name__
-                description.append(f&#34;{attr}: {value}&#34;)
-        return &#39;, &#39;.join(description)
-
-    def __check(self):
-        for attr in dir(self):
-            if not attr.startswith(&#39;__&#39;):
-                if hasattr(getattr(self, attr), &#39;_check&#39;):
-                    getattr(self, attr)._check()</code></pre>
+def _magick(value, module, fastmath, constants, dimensional_analysis):
+    return _boost(
+        _pick(value, _choices(module), constants),
+        fastmath,
+        constants,
+        dimensional_analysis
+    )</code></pre>
 </details>
 </section>
 <section>
@@ -199,7 +252,7 @@ class Formulae:
 <dl>
 <dt id="PySDM.formulae.Formulae"><code class="flex name class">
 <span>class <span class="ident">Formulae</span></span>
-<span>(</span><span>*, seed: int = 44, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'RhodThdQv', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null')</span>
+<span>(</span><span>*, constants: Optional[dict] = None, seed: int = 44, fastmath: bool = True, condensation_coordinate: str = 'VolumeLogarithm', saturation_vapour_pressure: str = 'FlatauWalkoCotton', latent_heat: str = 'Kirchhoff', hygroscopicity: str = 'KappaKoehlerLeadingTerms', drop_growth: str = 'MaxwellMason', surface_tension: str = 'Constant', diffusion_kinetics: str = 'FuchsSutugin', diffusion_thermics: str = 'Neglect', ventilation: str = 'Neglect', state_variable_triplet: str = 'RhodThdQv', particle_advection: str = 'ImplicitInSpace', hydrostatics: str = 'Default', freezing_temperature_spectrum: str = 'Null', heterogeneous_ice_nucleation_rate: str = 'Null')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -209,7 +262,8 @@ class Formulae:
 </summary>
 <pre><code class="python">class Formulae:
     def __init__(self, *,
-                 seed: int = const.default_random_seed,
+                 constants: Optional[dict] = None,
+                 seed: int = physics.constants.default_random_seed,
                  fastmath: bool = True,
                  condensation_coordinate: str = &#39;VolumeLogarithm&#39;,
                  saturation_vapour_pressure: str = &#39;FlatauWalkoCotton&#39;,
@@ -226,57 +280,82 @@ class Formulae:
                  freezing_temperature_spectrum: str = &#39;Null&#39;,
                  heterogeneous_ice_nucleation_rate: str = &#39;Null&#39;
                  ):
+        constants_defaults = {
+            k: getattr(physics.constants_defaults, k)
+            for k in dir(physics.constants_defaults)
+            if isinstance(getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity))
+        }
+        constants = namedtuple(
+            &#34;Constants&#34;,
+            tuple(constants_defaults.keys())
+        )(
+            **{**constants_defaults, **(constants or {})}
+        )
+        self.constants = constants
         self.seed = seed
         self.fastmath = fastmath
+        dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
-        self.trivia = _magick(&#39;Trivia&#39;, physics.trivia, fastmath)
+        self.trivia = _magick(&#39;Trivia&#39;, physics.trivia, fastmath, constants, dimensional_analysis)
 
         self.condensation_coordinate = _magick(
-            condensation_coordinate, physics.condensation_coordinate, fastmath)
+            condensation_coordinate,
+            physics.condensation_coordinate, fastmath, constants, dimensional_analysis)
         self.saturation_vapour_pressure = _magick(
-            saturation_vapour_pressure, physics.saturation_vapour_pressure, fastmath)
+            saturation_vapour_pressure,
+            physics.saturation_vapour_pressure, fastmath, constants, dimensional_analysis)
         self.latent_heat = _magick(
-            latent_heat, physics.latent_heat, fastmath)
+            latent_heat,
+            physics.latent_heat, fastmath, constants, dimensional_analysis)
         self.hygroscopicity = _magick(
-            hygroscopicity, physics.hygroscopicity, fastmath)
+            hygroscopicity,
+            physics.hygroscopicity, fastmath, constants, dimensional_analysis)
         self.drop_growth = _magick(
-            drop_growth, physics.drop_growth, fastmath)
+            drop_growth,
+            physics.drop_growth, fastmath, constants, dimensional_analysis)
         self.surface_tension = _magick(
-            surface_tension, physics.surface_tension, fastmath)
+            surface_tension,
+            physics.surface_tension, fastmath, constants, dimensional_analysis)
         self.diffusion_kinetics = _magick(
-            diffusion_kinetics, physics.diffusion_kinetics, fastmath)
+            diffusion_kinetics,
+            physics.diffusion_kinetics, fastmath, constants, dimensional_analysis)
         self.diffusion_thermics = _magick(
-            diffusion_thermics, physics.diffusion_thermics, fastmath)
+            diffusion_thermics,
+            physics.diffusion_thermics, fastmath, constants, dimensional_analysis)
         self.ventilation = _magick(
-            ventilation, physics.ventilation, fastmath)
+            ventilation,
+            physics.ventilation, fastmath, constants, dimensional_analysis)
         self.state_variable_triplet = _magick(
-            state_variable_triplet, physics.state_variable_triplet, fastmath)
+            state_variable_triplet,
+            physics.state_variable_triplet, fastmath, constants, dimensional_analysis)
         self.particle_advection = _magick(
-            particle_advection, physics.particle_advection, fastmath)
+            particle_advection,
+            physics.particle_advection, fastmath, constants, dimensional_analysis)
         self.hydrostatics = _magick(
-            hydrostatics, physics.hydrostatics, fastmath)
+            hydrostatics,
+            physics.hydrostatics, fastmath, constants, dimensional_analysis)
         self.freezing_temperature_spectrum = _magick(
-            freezing_temperature_spectrum, physics.freezing_temperature_spectrum, fastmath)
+            freezing_temperature_spectrum,
+            physics.freezing_temperature_spectrum, fastmath, constants, dimensional_analysis)
         self.heterogeneous_ice_nucleation_rate = _magick(
-            heterogeneous_ice_nucleation_rate, physics.heterogeneous_ice_nucleation_rate, fastmath)
-        self.__check()
+            heterogeneous_ice_nucleation_rate,
+            physics.heterogeneous_ice_nucleation_rate, fastmath, constants, dimensional_analysis)
 
     def __str__(self):
         description = []
         for attr in dir(self):
             if not attr.startswith(&#39;_&#39;):
-                if getattr(self, attr).__class__ in (bool, int, float):
-                    value = getattr(self, attr)
+                attr_value = getattr(self, attr)
+                if attr_value.__class__ in (bool, int, float):
+                    value = attr_value
+                elif attr_value.__class__.__name__ == &#39;Constants&#39;:
+                    value = str(attr_value)
+                elif attr_value.__class__ in (SimpleNamespace,):
+                    value = attr_value.__name__
                 else:
-                    value = getattr(self, attr).__class__.__name__
+                    value = attr_value.__class__.__name__
                 description.append(f&#34;{attr}: {value}&#34;)
-        return &#39;, &#39;.join(description)
-
-    def __check(self):
-        for attr in dir(self):
-            if not attr.startswith(&#39;__&#39;):
-                if hasattr(getattr(self, attr), &#39;_check&#39;):
-                    getattr(self, attr)._check()</code></pre>
+        return &#39;, &#39;.join(description)</code></pre>
 </details>
 </dd>
 </dl>

@@ -30,7 +30,6 @@
 <pre><code class="python">&#34;&#34;&#34;
 constant surface tension coefficient
 &#34;&#34;&#34;
-import PySDM.physics.constants as const
 
 
 class Constant:
@@ -39,8 +38,12 @@ class Constant:
     droplet surface is composed of pure water with constant surface
     tension `sgm_w`.
     &#34;&#34;&#34;
+
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         return const.sgm_w</code></pre>
 </details>
 </section>
@@ -55,6 +58,7 @@ class Constant:
 <dl>
 <dt id="PySDM.physics.surface_tension.constant.Constant"><code class="flex name class">
 <span>class <span class="ident">Constant</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Assumes aerosol is dissolved in the bulk of the droplet, and the
@@ -70,14 +74,18 @@ tension <code>sgm_w</code>.</p></div>
     droplet surface is composed of pure water with constant surface
     tension `sgm_w`.
     &#34;&#34;&#34;
+
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
         return const.sgm_w</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.surface_tension.constant.Constant.sigma"><code class="name flex">
-<span>def <span class="ident">sigma</span></span>(<span>T, v_wet, v_dry, f_org)</span>
+<span>def <span class="ident">sigma</span></span>(<span>const, T, v_wet, v_dry, f_org)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -86,7 +94,7 @@ tension <code>sgm_w</code>.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sigma(T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
     return const.sgm_w</code></pre>
 </details>
 </dd>

@@ -30,12 +30,14 @@
 <pre><code class="python">&#34;&#34;&#34;
 single-equation approximation of the vapour and heat diffusion problem
 &#34;&#34;&#34;
-import PySDM.physics.constants as const
 
 
 class MaxwellMason:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def r_dr_dt(RH_eq, T, RH, lv, pvs, D, K):
+    def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
         return (RH - RH_eq) / (
                 const.rho_w * const.Rv * T / D / pvs +
                 const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
@@ -53,6 +55,7 @@ class MaxwellMason:
 <dl>
 <dt id="PySDM.physics.drop_growth.maxwell_mason.MaxwellMason"><code class="flex name class">
 <span>class <span class="ident">MaxwellMason</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -61,8 +64,11 @@ class MaxwellMason:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MaxwellMason:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def r_dr_dt(RH_eq, T, RH, lv, pvs, D, K):
+    def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
         return (RH - RH_eq) / (
                 const.rho_w * const.Rv * T / D / pvs +
                 const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
@@ -71,7 +77,7 @@ class MaxwellMason:
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.drop_growth.maxwell_mason.MaxwellMason.r_dr_dt"><code class="name flex">
-<span>def <span class="ident">r_dr_dt</span></span>(<span>RH_eq, T, RH, lv, pvs, D, K)</span>
+<span>def <span class="ident">r_dr_dt</span></span>(<span>const, RH_eq, T, RH, lv, pvs, D, K)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -80,7 +86,7 @@ class MaxwellMason:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def r_dr_dt(RH_eq, T, RH, lv, pvs, D, K):
+def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
     return (RH - RH_eq) / (
             const.rho_w * const.Rv * T / D / pvs +
             const.rho_w * lv / K / T * (lv / const.Rv / T - 1)

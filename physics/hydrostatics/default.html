@@ -30,27 +30,29 @@
 <pre><code class="python">&#34;&#34;&#34;
 # TODO #407
 &#34;&#34;&#34;
-from numpy import power
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class Default:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def drho_dz(g, p, T, qv, lv, dql_dz=0):
+    def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
         Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
         cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
         rho = p / Rq / T
         return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
 
     @staticmethod
-    def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
+    def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
         z0 = 0
         Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-        arg = power(
+        arg = np.power(
             p0/const.p1000,
             const.Rd_over_c_pd
         ) - (z-z0) * const.Rd_over_c_pd * g / thstd / Rq
-        return const.p1000 * power(arg, 1/const.Rd_over_c_pd)</code></pre>
+        return const.p1000 * np.power(arg, 1/const.Rd_over_c_pd)</code></pre>
 </details>
 </section>
 <section>
@@ -64,6 +66,7 @@ class Default:
 <dl>
 <dt id="PySDM.physics.hydrostatics.default.Default"><code class="flex name class">
 <span>class <span class="ident">Default</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -72,27 +75,30 @@ class Default:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Default:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def drho_dz(g, p, T, qv, lv, dql_dz=0):
+    def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
         Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
         cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
         rho = p / Rq / T
         return (g / T * rho * (Rq / cp - 1) - p * lv / cp / T**2 * dql_dz) / Rq
 
     @staticmethod
-    def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
+    def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
         z0 = 0
         Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-        arg = power(
+        arg = np.power(
             p0/const.p1000,
             const.Rd_over_c_pd
         ) - (z-z0) * const.Rd_over_c_pd * g / thstd / Rq
-        return const.p1000 * power(arg, 1/const.Rd_over_c_pd)</code></pre>
+        return const.p1000 * np.power(arg, 1/const.Rd_over_c_pd)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.hydrostatics.default.Default.drho_dz"><code class="name flex">
-<span>def <span class="ident">drho_dz</span></span>(<span>g, p, T, qv, lv, dql_dz=0)</span>
+<span>def <span class="ident">drho_dz</span></span>(<span>const, g, p, T, qv, lv, dql_dz=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -101,7 +107,7 @@ class Default:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def drho_dz(g, p, T, qv, lv, dql_dz=0):
+def drho_dz(const, g, p, T, qv, lv, dql_dz=0):
     Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
     cp = const.c_pv / (1 / qv + 1) + const.c_pd / (1 + qv)
     rho = p / Rq / T
@@ -109,7 +115,7 @@ def drho_dz(g, p, T, qv, lv, dql_dz=0):
 </details>
 </dd>
 <dt id="PySDM.physics.hydrostatics.default.Default.p_of_z_assuming_const_th_and_qv"><code class="name flex">
-<span>def <span class="ident">p_of_z_assuming_const_th_and_qv</span></span>(<span>g, p0, thstd, qv, z)</span>
+<span>def <span class="ident">p_of_z_assuming_const_th_and_qv</span></span>(<span>const, g, p0, thstd, qv, z)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -118,14 +124,14 @@ def drho_dz(g, p, T, qv, lv, dql_dz=0):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def p_of_z_assuming_const_th_and_qv(g, p0, thstd, qv, z):
+def p_of_z_assuming_const_th_and_qv(const, g, p0, thstd, qv, z):
     z0 = 0
     Rq = const.Rv / (1 / qv + 1) + const.Rd / (1 + qv)
-    arg = power(
+    arg = np.power(
         p0/const.p1000,
         const.Rd_over_c_pd
     ) - (z-z0) * const.Rd_over_c_pd * g / thstd / Rq
-    return const.p1000 * power(arg, 1/const.Rd_over_c_pd)</code></pre>
+    return const.p1000 * np.power(arg, 1/const.Rd_over_c_pd)</code></pre>
 </details>
 </dd>
 </dl>

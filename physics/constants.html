@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.constants API documentation</title>
-<meta name="description" content="Collection of physical constants with dimensional analysis handled with
+<meta name="description" content="Collection of constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)&#39;s package `UnitRegistry` for test
-…" />
+purposes and …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,7 +24,7 @@
 <h1 class="title">Module <code>PySDM.physics.constants</code></h1>
 </header>
 <section id="section-intro">
-<p>Collection of physical constants with dimensional analysis handled with
+<p>Collection of constants with dimensional analysis handled with
 <a href="https://pypi.org/project/Pint/">Pint</a>'s package <code>UnitRegistry</code> for test
 purposes and mocked with <code><a title="PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry" href="impl/fake_unit_registry.html#PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry">FakeUnitRegistry</a></code> by default.</p>
 <details class="source">
@@ -32,15 +32,15 @@ purposes and mocked with <code><a title="PySDM.physics.impl.fake_unit_registry.F
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Collection of physical constants with dimensional analysis handled with
+Collection of constants with dimensional analysis handled with
 [Pint](https://pypi.org/project/Pint/)&#39;s package `UnitRegistry` for test
 purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry` by default.
 &#34;&#34;&#34;
 import os
 import time
+
 import pint
 from scipy import constants as sci
-from chempy import Substance
 from .impl.fake_unit_registry import FakeUnitRegistry
 from .impl.flag import DIMENSIONAL_ANALYSIS
 
@@ -59,87 +59,20 @@ THREE = 3
 ONE_THIRD = 1 / 3
 TWO_THIRDS = 2 / 3
 
-Md = (
-        0.78 * Substance.from_formula(&#39;N2&#39;).mass * si.gram / si.mole +
-        0.21 * Substance.from_formula(&#39;O2&#39;).mass * si.gram / si.mole +
-        0.01 * Substance.from_formula(&#39;Ar&#39;).mass * si.gram / si.mole
+default_random_seed = (
+    44 if &#39;CI&#39; in os.environ  # https://en.wikipedia.org/wiki/44_(number)
+    else time.time_ns()
 )
-Mv = Substance.from_formula(&#39;H2O&#39;).mass * si.gram / si.mole
-
-R_str = sci.R * si.joule / si.kelvin / si.mole
-eps = Mv / Md
-Rd = R_str / Md
-Rv = R_str / Mv
-
-D0 = 2.26e-5 * si.metre ** 2 / si.second
-D_exp = 1.81
-
-K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
-
-p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-T0 = sci.zero_Celsius * si.kelvin
-g_std = sci.g * si.metre / si.second ** 2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
-
-Rd_over_c_pd = Rd / c_pd
-
-ARM_C1 = 6.1094 * si.hectopascal
-ARM_C2 = 17.625 * si.dimensionless
-ARM_C3 = 243.04 * si.kelvin
-
-FWC_C0 = 6.115836990e000 * si.hPa
-FWC_C1 = 0.444606896e000 * si.hPa / si.K
-FWC_C2 = 0.143177157e-01 * si.hPa / si.K**2
-FWC_C3 = 0.264224321e-03 * si.hPa / si.K**3
-FWC_C4 = 0.299291081e-05 * si.hPa / si.K**4
-FWC_C5 = 0.203154182e-07 * si.hPa / si.K**5
-FWC_C6 = 0.702620698e-10 * si.hPa / si.K**6
-FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
-FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
-
-FWC_I0 = 6.098689930e000 * si.hPa
-FWC_I1 = 0.499320233e000 * si.hPa / si.K
-FWC_I2 = 0.184672631e-01 * si.hPa / si.K**2
-FWC_I3 = 0.402737184e-03 * si.hPa / si.K**3
-FWC_I4 = 0.565392987e-05 * si.hPa / si.K**4
-FWC_I5 = 0.521693933e-07 * si.hPa / si.K**5
-FWC_I6 = 0.307839583e-09 * si.hPa / si.K**6
-FWC_I7 = 0.105785160e-11 * si.hPa / si.K**7
-FWC_I8 = 0.161444444e-14 * si.hPa / si.K**8
-
-rho_w = 1 * si.kilograms / si.litres
-rho_i = 916.8 * si.kg / si.metres**3
-pH_w = 7
-sgm_w = 0.072 * si.joule / si.metre ** 2
-nu_w = Mv / rho_w
-
-p_tri = 611.73 * si.pascal
-T_tri = 273.16 * si.kelvin
-l_tri = 2.5e6 * si.joule / si.kilogram
-
-# standard pressure and temperature (ICAO)
-T_STP = T0 + 15 * si.kelvin
-p_STP = 101325 * si.pascal
-rho_STP = p_STP / Rd / T_STP
 
 PPT = 1e-12
 PPB = 1e-9
 PPM = 1e-6
-ROOM_TEMP = T_tri + 25 * si.K
-M = si.mole / si.litre
-H_u = M / p_STP
-dT_u = si.K
+
+T0 = sci.zero_Celsius * si.kelvin
 
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld &amp; Pandis p 345)
-K_H2O = 1e-14 * M * M
-
-default_random_seed = (
-    44 if &#39;CI&#39; in os.environ  # https://en.wikipedia.org/wiki/44_(number)
-    else time.time_ns()
-)</code></pre>
+M = si.mole / si.litre
+K_H2O = 1e-14 * M * M</code></pre>
 </details>
 </section>
 <section>

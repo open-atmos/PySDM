@@ -33,8 +33,11 @@ basic explicit-in-space Euler scheme
 
 
 class ExplicitInSpace:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return c_l * (1 - omega) + c_r * omega</code></pre>
 </details>
 </section>
@@ -49,6 +52,7 @@ class ExplicitInSpace:
 <dl>
 <dt id="PySDM.physics.particle_advection.explicit_in_space.ExplicitInSpace"><code class="flex name class">
 <span>class <span class="ident">ExplicitInSpace</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -57,14 +61,17 @@ class ExplicitInSpace:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ExplicitInSpace:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def displacement(omega, c_l, c_r):
+    def displacement(_, omega, c_l, c_r):
         return c_l * (1 - omega) + c_r * omega</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.particle_advection.explicit_in_space.ExplicitInSpace.displacement"><code class="name flex">
-<span>def <span class="ident">displacement</span></span>(<span>omega, c_l, c_r)</span>
+<span>def <span class="ident">displacement</span></span>(<span>_, omega, c_l, c_r)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -73,7 +80,7 @@ class ExplicitInSpace:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def displacement(omega, c_l, c_r):
+def displacement(_, omega, c_l, c_r):
     return c_l * (1 - omega) + c_r * omega</code></pre>
 </details>
 </dd>

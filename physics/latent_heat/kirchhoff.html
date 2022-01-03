@@ -36,12 +36,14 @@ based temperature-dependent latent heat of vaporization</p>
  law](https://en.wikipedia.org/wiki/Gustav_Kirchhoff#Kirchhoff&#39;s_law_of_thermochemistry)
  based temperature-dependent latent heat of vaporization
 &#34;&#34;&#34;
-from PySDM.physics import constants as const
 
 
 class Kirchhoff:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lv(T):
+    def lv(const, T):
         return const.l_tri + (const.c_pv - const.c_pw) * (T - const.T_tri)</code></pre>
 </details>
 </section>
@@ -56,6 +58,7 @@ class Kirchhoff:
 <dl>
 <dt id="PySDM.physics.latent_heat.kirchhoff.Kirchhoff"><code class="flex name class">
 <span>class <span class="ident">Kirchhoff</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -64,14 +67,17 @@ class Kirchhoff:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Kirchhoff:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lv(T):
+    def lv(const, T):
         return const.l_tri + (const.c_pv - const.c_pw) * (T - const.T_tri)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.latent_heat.kirchhoff.Kirchhoff.lv"><code class="name flex">
-<span>def <span class="ident">lv</span></span>(<span>T)</span>
+<span>def <span class="ident">lv</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -80,7 +86,7 @@ class Kirchhoff:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def lv(T):
+def lv(const, T):
     return const.l_tri + (const.c_pv - const.c_pw) * (T - const.T_tri)</code></pre>
 </details>
 </dd>

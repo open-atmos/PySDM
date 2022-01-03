@@ -36,19 +36,20 @@ August-Roche-Magnus formula (see, e.g.,
 [Wikipedia](https://en.wikipedia.org/wiki/Clausius–Clapeyron_relation#August–Roche–Magnus_formula)
 and references therein)
 &#34;&#34;&#34;
-
-from numpy import exp, nan
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class AugustRocheMagnus:
-    @staticmethod
-    def pvs_Celsius(T):
-        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def ice_Celsius(T):
-        return nan * T</code></pre>
+    def pvs_Celsius(const, T):
+        return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+
+    @staticmethod
+    def ice_Celsius(_, T):
+        return np.nan * T</code></pre>
 </details>
 </section>
 <section>
@@ -62,6 +63,7 @@ class AugustRocheMagnus:
 <dl>
 <dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus"><code class="flex name class">
 <span>class <span class="ident">AugustRocheMagnus</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -70,18 +72,21 @@ class AugustRocheMagnus:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AugustRocheMagnus:
-    @staticmethod
-    def pvs_Celsius(T):
-        return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def ice_Celsius(T):
-        return nan * T</code></pre>
+    def pvs_Celsius(const, T):
+        return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+
+    @staticmethod
+    def ice_Celsius(_, T):
+        return np.nan * T</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius"><code class="name flex">
-<span>def <span class="ident">ice_Celsius</span></span>(<span>T)</span>
+<span>def <span class="ident">ice_Celsius</span></span>(<span>_, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -90,12 +95,12 @@ class AugustRocheMagnus:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def ice_Celsius(T):
-    return nan * T</code></pre>
+def ice_Celsius(_, T):
+    return np.nan * T</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius"><code class="name flex">
-<span>def <span class="ident">pvs_Celsius</span></span>(<span>T)</span>
+<span>def <span class="ident">pvs_Celsius</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -104,8 +109,8 @@ def ice_Celsius(T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def pvs_Celsius(T):
-    return const.ARM_C1 * exp((const.ARM_C2 * T) / (T + const.ARM_C3))</code></pre>
+def pvs_Celsius(const, T):
+    return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))</code></pre>
 </details>
 </dd>
 </dl>

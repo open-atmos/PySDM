@@ -32,17 +32,14 @@ constant rate formulation (for tests)
 &#34;&#34;&#34;
 import numpy as np
 
-J_HET = np.nan
-
 
 class Constant:
-    @staticmethod
-    def _check():
-        assert np.isfinite(J_HET)
+    def __init__(self, const):
+        assert np.isfinite(const.J_HET)
 
     @staticmethod
-    def j_het(a_w_ice):  # pylint: disable=unused-argument
-        return J_HET</code></pre>
+    def j_het(const, a_w_ice):  # pylint: disable=unused-argument
+        return const.J_HET</code></pre>
 </details>
 </section>
 <section>
@@ -56,6 +53,7 @@ class Constant:
 <dl>
 <dt id="PySDM.physics.heterogeneous_ice_nucleation_rate.constant.Constant"><code class="flex name class">
 <span>class <span class="ident">Constant</span></span>
+<span>(</span><span>const)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -64,18 +62,17 @@ class Constant:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Constant:
-    @staticmethod
-    def _check():
-        assert np.isfinite(J_HET)
+    def __init__(self, const):
+        assert np.isfinite(const.J_HET)
 
     @staticmethod
-    def j_het(a_w_ice):  # pylint: disable=unused-argument
-        return J_HET</code></pre>
+    def j_het(const, a_w_ice):  # pylint: disable=unused-argument
+        return const.J_HET</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.heterogeneous_ice_nucleation_rate.constant.Constant.j_het"><code class="name flex">
-<span>def <span class="ident">j_het</span></span>(<span>a_w_ice)</span>
+<span>def <span class="ident">j_het</span></span>(<span>const, a_w_ice)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -84,8 +81,8 @@ class Constant:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def j_het(a_w_ice):  # pylint: disable=unused-argument
-    return J_HET</code></pre>
+def j_het(const, a_w_ice):  # pylint: disable=unused-argument
+    return const.J_HET</code></pre>
 </details>
 </dd>
 </dl>

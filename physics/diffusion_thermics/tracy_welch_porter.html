@@ -33,14 +33,16 @@
 based on &#34;PROPERTIES OF AIR: A Manual for Use in Biophysical Ecology&#34;
 (Fourth Edition - 2010, page 22)
 &#34;&#34;&#34;
-from numpy import power
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class TracyWelchPorter:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def D(T, p):
-        return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
+    def D(const, T, p):
+        return const.D0 * np.power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 </section>
 <section>
@@ -54,6 +56,7 @@ class TracyWelchPorter:
 <dl>
 <dt id="PySDM.physics.diffusion_thermics.tracy_welch_porter.TracyWelchPorter"><code class="flex name class">
 <span>class <span class="ident">TracyWelchPorter</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -62,14 +65,17 @@ class TracyWelchPorter:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TracyWelchPorter:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def D(T, p):
-        return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
+    def D(const, T, p):
+        return const.D0 * np.power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.diffusion_thermics.tracy_welch_porter.TracyWelchPorter.D"><code class="name flex">
-<span>def <span class="ident">D</span></span>(<span>T, p)</span>
+<span>def <span class="ident">D</span></span>(<span>const, T, p)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -78,8 +84,8 @@ class TracyWelchPorter:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def D(T, p):
-    return const.D0 * power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
+def D(const, T, p):
+    return const.D0 * np.power(T / const.T0, const.D_exp) * (const.p1000 / p)</code></pre>
 </details>
 </dd>
 </dl>

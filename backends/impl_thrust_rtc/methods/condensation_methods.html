@@ -31,7 +31,6 @@
 GPU implementation of backend methods for water condensation/evaporation
 &#34;&#34;&#34;
 from typing import Dict, Optional
-from PySDM.physics import constants as const
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
@@ -56,6 +55,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.dqv_dt_pred: Optional[StorageBase] = None
         self.rhod_mean: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
+        const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For((&#34;ml&#34;, &#34;v&#34;, &#34;n&#34;, &#34;cell_id&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
@@ -374,6 +374,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.dqv_dt_pred: Optional[StorageBase] = None
         self.rhod_mean: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
+        const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For((&#34;ml&#34;, &#34;v&#34;, &#34;n&#34;, &#34;cell_id&#34;), &#34;i&#34;, f&#39;&#39;&#39;
             atomicAdd((real_type*) &amp;ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 

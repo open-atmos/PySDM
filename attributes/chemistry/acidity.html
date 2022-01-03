@@ -32,7 +32,6 @@ pH calculated by finding equilibrium hydrogen ion concentration
 &#34;&#34;&#34;
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
 from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
-from PySDM.physics import constants as const
 from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
 
 
@@ -45,14 +44,13 @@ class Acidity(DerivedAttribute):
         super().__init__(builder, name=&#39;pH&#39;, dependencies=self.conc.values())
         self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute(&#39;cell id&#39;)
-        self.particles = builder.particulator
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = const.pH_w
+        self.data[:] = self.formulae.constants.pH_w
 
     def recalculate(self):
-        dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
+        dynamic = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
 
         self.particulator.backend.equilibrate_H(
             dynamic.equilibrium_consts,
@@ -101,14 +99,13 @@ class Acidity(DerivedAttribute):
         super().__init__(builder, name=&#39;pH&#39;, dependencies=self.conc.values())
         self.environment = builder.particulator.environment
         self.cell_id = builder.get_attribute(&#39;cell id&#39;)
-        self.particles = builder.particulator
 
     def allocate(self, idx):
         super().allocate(idx)
-        self.data[:] = const.pH_w
+        self.data[:] = self.formulae.constants.pH_w
 
     def recalculate(self):
-        dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
+        dynamic = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
 
         self.particulator.backend.equilibrate_H(
             dynamic.equilibrium_consts,
@@ -146,7 +143,7 @@ class Acidity(DerivedAttribute):
 </summary>
 <pre><code class="python">def allocate(self, idx):
     super().allocate(idx)
-    self.data[:] = const.pH_w</code></pre>
+    self.data[:] = self.formulae.constants.pH_w</code></pre>
 </details>
 </dd>
 <dt id="PySDM.attributes.chemistry.acidity.Acidity.recalculate"><code class="name flex">
@@ -159,7 +156,7 @@ class Acidity(DerivedAttribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recalculate(self):
-    dynamic = self.particles.dynamics[&#39;AqueousChemistry&#39;]
+    dynamic = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
 
     self.particulator.backend.equilibrate_H(
         dynamic.equilibrium_consts,

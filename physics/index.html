@@ -34,7 +34,9 @@ from . import (condensation_coordinate, latent_heat, saturation_vapour_pressure,
     hygroscopicity, drop_growth, surface_tension, diffusion_kinetics, diffusion_thermics,
     ventilation, state_variable_triplet, trivia, particle_advection, hydrostatics,
     freezing_temperature_spectrum, heterogeneous_ice_nucleation_rate)
-from .constants import si</code></pre>
+from .constants import si
+from . import impl
+from . import constants_defaults</code></pre>
 </details>
 </section>
 <section>
@@ -57,9 +59,14 @@ from .constants import si</code></pre>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.constants" href="constants.html">PySDM.physics.constants</a></code></dt>
 <dd>
-<div class="desc"><p>Collection of physical constants with dimensional analysis handled with
+<div class="desc"><p>Collection of constants with dimensional analysis handled with
 <a href="https://pypi.org/project/Pint/">Pint</a>'s package <code>UnitRegistry</code> for test
-…</p></div>
+purposes and …</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.physics.constants_defaults" href="constants_defaults.html">PySDM.physics.constants_defaults</a></code></dt>
+<dd>
+<div class="desc"><p>default values for constants which can be altered by providing alternative
+values in a constants dictionary passed to Formulae <strong>init</strong> method</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.diffusion_kinetics" href="diffusion_kinetics/index.html">PySDM.physics.diffusion_kinetics</a></code></dt>
 <dd>
@@ -157,6 +164,7 @@ for use in unit tests which disables Numba and enables Pint</p></div>
 <li><code><a title="PySDM.physics.coalescence_kernels" href="coalescence_kernels/index.html">PySDM.physics.coalescence_kernels</a></code></li>
 <li><code><a title="PySDM.physics.condensation_coordinate" href="condensation_coordinate/index.html">PySDM.physics.condensation_coordinate</a></code></li>
 <li><code><a title="PySDM.physics.constants" href="constants.html">PySDM.physics.constants</a></code></li>
+<li><code><a title="PySDM.physics.constants_defaults" href="constants_defaults.html">PySDM.physics.constants_defaults</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics" href="diffusion_kinetics/index.html">PySDM.physics.diffusion_kinetics</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_thermics" href="diffusion_thermics/index.html">PySDM.physics.diffusion_thermics</a></code></li>
 <li><code><a title="PySDM.physics.dimensional_analysis" href="dimensional_analysis.html">PySDM.physics.dimensional_analysis</a></code></li>

@@ -33,16 +33,19 @@ no transition-regime corrections formulation
 
 
 class Neglect:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lambdaD(D, T):  # pylint: disable=unused-argument
+    def lambdaD(_, D, T):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def lambdaK(T, p):  # pylint: disable=unused-argument
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def DK(DK, r, lmbd):  # pylint: disable=unused-argument
+    def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
         return DK</code></pre>
 </details>
 </section>
@@ -57,6 +60,7 @@ class Neglect:
 <dl>
 <dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect"><code class="flex name class">
 <span>class <span class="ident">Neglect</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -65,22 +69,25 @@ class Neglect:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Neglect:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lambdaD(D, T):  # pylint: disable=unused-argument
+    def lambdaD(_, D, T):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def lambdaK(T, p):  # pylint: disable=unused-argument
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def DK(DK, r, lmbd):  # pylint: disable=unused-argument
+    def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
         return DK</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.DK"><code class="name flex">
-<span>def <span class="ident">DK</span></span>(<span>DK, r, lmbd)</span>
+<span>def <span class="ident">DK</span></span>(<span>_, DK, r, lmbd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -89,12 +96,12 @@ class Neglect:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def DK(DK, r, lmbd):  # pylint: disable=unused-argument
+def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
     return DK</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaD"><code class="name flex">
-<span>def <span class="ident">lambdaD</span></span>(<span>D, T)</span>
+<span>def <span class="ident">lambdaD</span></span>(<span>_, D, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -103,12 +110,12 @@ def DK(DK, r, lmbd):  # pylint: disable=unused-argument
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def lambdaD(D, T):  # pylint: disable=unused-argument
+def lambdaD(_, D, T):  # pylint: disable=unused-argument
     return -1</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaK"><code class="name flex">
-<span>def <span class="ident">lambdaK</span></span>(<span>T, p)</span>
+<span>def <span class="ident">lambdaK</span></span>(<span>_, T, p)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -117,7 +124,7 @@ def lambdaD(D, T):  # pylint: disable=unused-argument
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def lambdaK(T, p):  # pylint: disable=unused-argument
+def lambdaK(_, T, p):  # pylint: disable=unused-argument
     return -1</code></pre>
 </details>
 </dd>

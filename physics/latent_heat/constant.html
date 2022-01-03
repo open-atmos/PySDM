@@ -30,12 +30,14 @@
 <pre><code class="python">&#34;&#34;&#34;
 temperature-independent latent heat of vaporization
 &#34;&#34;&#34;
-from PySDM.physics import constants as const
 
 
 class Constant:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lv(T):  # pylint: disable=unused-argument
+    def lv(const, T):  # pylint: disable=unused-argument
         return const.l_tri</code></pre>
 </details>
 </section>
@@ -50,6 +52,7 @@ class Constant:
 <dl>
 <dt id="PySDM.physics.latent_heat.constant.Constant"><code class="flex name class">
 <span>class <span class="ident">Constant</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -58,14 +61,17 @@ class Constant:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Constant:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lv(T):  # pylint: disable=unused-argument
+    def lv(const, T):  # pylint: disable=unused-argument
         return const.l_tri</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.latent_heat.constant.Constant.lv"><code class="name flex">
-<span>def <span class="ident">lv</span></span>(<span>T)</span>
+<span>def <span class="ident">lv</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -74,7 +80,7 @@ class Constant:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def lv(T):  # pylint: disable=unused-argument
+def lv(const, T):  # pylint: disable=unused-argument
     return const.l_tri</code></pre>
 </details>
 </dd>

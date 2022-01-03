@@ -35,22 +35,24 @@ leading-terms of the kappa-Koehler parameterization resulting in classic
  two-term formulation with 1/r and 1/r^3 terms corresponding to surface-tension
  (Kelvin) and soluble substance (Raoult/Wüllner) effects, respectively
 &#34;&#34;&#34;
-from numpy import sqrt, power
-import PySDM.physics.constants as const
+import numpy as np
 
 
 class KappaKoehlerLeadingTerms:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def RH_eq(r, T, kp, rd3, sgm):
+    def RH_eq(const, r, T, kp, rd3, sgm):
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / power(r, const.THREE)
+           kp * rd3 / np.power(r, const.THREE)
         )
 
     @staticmethod
-    def r_cr(kp, rd3, T, sgm):
-        return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+    def r_cr(const, kp, rd3, T, sgm):
+        return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 </section>
 <section>
@@ -64,6 +66,7 @@ class KappaKoehlerLeadingTerms:
 <dl>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler_leading_terms.KappaKoehlerLeadingTerms"><code class="flex name class">
 <span>class <span class="ident">KappaKoehlerLeadingTerms</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -72,22 +75,25 @@ class KappaKoehlerLeadingTerms:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class KappaKoehlerLeadingTerms:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def RH_eq(r, T, kp, rd3, sgm):
+    def RH_eq(const, r, T, kp, rd3, sgm):
         return (
            1 +
            (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / power(r, const.THREE)
+           kp * rd3 / np.power(r, const.THREE)
         )
 
     @staticmethod
-    def r_cr(kp, rd3, T, sgm):
-        return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+    def r_cr(const, kp, rd3, T, sgm):
+        return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler_leading_terms.KappaKoehlerLeadingTerms.RH_eq"><code class="name flex">
-<span>def <span class="ident">RH_eq</span></span>(<span>r, T, kp, rd3, sgm)</span>
+<span>def <span class="ident">RH_eq</span></span>(<span>const, r, T, kp, rd3, sgm)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -96,16 +102,16 @@ class KappaKoehlerLeadingTerms:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def RH_eq(r, T, kp, rd3, sgm):
+def RH_eq(const, r, T, kp, rd3, sgm):
     return (
        1 +
        (2 * sgm / const.Rv / T / const.rho_w) / r -
-       kp * rd3 / power(r, const.THREE)
+       kp * rd3 / np.power(r, const.THREE)
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.hygroscopicity.kappa_koehler_leading_terms.KappaKoehlerLeadingTerms.r_cr"><code class="name flex">
-<span>def <span class="ident">r_cr</span></span>(<span>kp, rd3, T, sgm)</span>
+<span>def <span class="ident">r_cr</span></span>(<span>const, kp, rd3, T, sgm)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -114,8 +120,8 @@ def RH_eq(r, T, kp, rd3, sgm):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def r_cr(kp, rd3, T, sgm):
-    return sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
+def r_cr(const, kp, rd3, T, sgm):
+    return np.sqrt(3 * kp * rd3 / (2 * sgm / const.Rv / T / const.rho_w))</code></pre>
 </details>
 </dd>
 </dl>

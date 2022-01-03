@@ -36,8 +36,11 @@ null spectrum (needed as other formulations require parameters
 
 
 class Null:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def cdf(T):
+    def cdf(const, T):
         pass</code></pre>
 </details>
 </section>
@@ -52,6 +55,7 @@ class Null:
 <dl>
 <dt id="PySDM.physics.freezing_temperature_spectrum.null.Null"><code class="flex name class">
 <span>class <span class="ident">Null</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -60,14 +64,17 @@ class Null:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Null:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def cdf(T):
+    def cdf(const, T):
         pass</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.freezing_temperature_spectrum.null.Null.cdf"><code class="name flex">
-<span>def <span class="ident">cdf</span></span>(<span>T)</span>
+<span>def <span class="ident">cdf</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -76,7 +83,7 @@ class Null:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def cdf(T):
+def cdf(const, T):
     pass</code></pre>
 </details>
 </dd>

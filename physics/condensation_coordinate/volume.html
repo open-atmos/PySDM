@@ -30,21 +30,23 @@
 <pre><code class="python">&#34;&#34;&#34;
 particle volume as condensation coordinate (i.e. no transformation)
 &#34;&#34;&#34;
-from numpy import power
-from PySDM.physics import constants as const
+import numpy as np
 
 
 class Volume:
-    @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return 4 * const.PI * power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def volume(x):
+    def dx_dt(const, x, r_dr_dt):
+        return 4 * const.PI * np.power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+
+    @staticmethod
+    def volume(_, x):
         return x
 
     @staticmethod
-    def x(volume):
+    def x(_, volume):
         return volume</code></pre>
 </details>
 </section>
@@ -59,6 +61,7 @@ class Volume:
 <dl>
 <dt id="PySDM.physics.condensation_coordinate.volume.Volume"><code class="flex name class">
 <span>class <span class="ident">Volume</span></span>
+<span>(</span><span>_)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -67,22 +70,25 @@ class Volume:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Volume:
-    @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return 4 * const.PI * power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+    def __init__(self, _):
+        pass
 
     @staticmethod
-    def volume(x):
+    def dx_dt(const, x, r_dr_dt):
+        return 4 * const.PI * np.power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt
+
+    @staticmethod
+    def volume(_, x):
         return x
 
     @staticmethod
-    def x(volume):
+    def x(_, volume):
         return volume</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.condensation_coordinate.volume.Volume.dx_dt"><code class="name flex">
-<span>def <span class="ident">dx_dt</span></span>(<span>x, r_dr_dt)</span>
+<span>def <span class="ident">dx_dt</span></span>(<span>const, x, r_dr_dt)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -91,12 +97,12 @@ class Volume:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def dx_dt(x, r_dr_dt):
-    return 4 * const.PI * power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt</code></pre>
+def dx_dt(const, x, r_dr_dt):
+    return 4 * const.PI * np.power(x / const.PI_4_3, const.ONE_THIRD) * r_dr_dt</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.condensation_coordinate.volume.Volume.volume"><code class="name flex">
-<span>def <span class="ident">volume</span></span>(<span>x)</span>
+<span>def <span class="ident">volume</span></span>(<span>_, x)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -105,12 +111,12 @@ def dx_dt(x, r_dr_dt):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def volume(x):
+def volume(_, x):
     return x</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.condensation_coordinate.volume.Volume.x"><code class="name flex">
-<span>def <span class="ident">x</span></span>(<span>volume)</span>
+<span>def <span class="ident">x</span></span>(<span>_, volume)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -119,7 +125,7 @@ def volume(x):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def x(volume):
+def x(_, volume):
     return volume</code></pre>
 </details>
 </dd>
