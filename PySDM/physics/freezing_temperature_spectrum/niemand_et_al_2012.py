@@ -14,6 +14,10 @@ class Niemand_et_al_2012:
         assert np.isfinite(const.NIEMAND_B)
 
     @staticmethod
+    def ns(const, T):
+        return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+
+    @staticmethod
     def pdf(const, T, A_insol):
         ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
         return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)
