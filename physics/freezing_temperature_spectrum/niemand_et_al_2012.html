@@ -45,6 +45,10 @@ class Niemand_et_al_2012:
         assert np.isfinite(const.NIEMAND_B)
 
     @staticmethod
+    def ns(const, T):
+        return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
+
+    @staticmethod
     def pdf(const, T, A_insol):
         ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
         return -A_insol * const.NIEMAND_A * ns_T * np.exp(-A_insol * ns_T)
@@ -94,6 +98,10 @@ class Niemand_et_al_2012:
     def __init__(self, const):
         assert np.isfinite(const.NIEMAND_A)
         assert np.isfinite(const.NIEMAND_B)
+
+    @staticmethod
+    def ns(const, T):
+        return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
 
     @staticmethod
     def pdf(const, T, A_insol):
@@ -158,6 +166,20 @@ def invcdf(const, cdf, A_insol):
     return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A</code></pre>
 </details>
 </dd>
+<dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns"><code class="name flex">
+<span>def <span class="ident">ns</span></span>(<span>const, T)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def ns(const, T):
+    return np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf"><code class="name flex">
 <span>def <span class="ident">pdf</span></span>(<span>const, T, A_insol)</span>
 </code></dt>
@@ -196,6 +218,7 @@ def pdf(const, T, A_insol):
 <ul class="">
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.cdf">cdf</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.invcdf">invcdf</a></code></li>
+<li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.ns">ns</a></code></li>
 <li><code><a title="PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf" href="#PySDM.physics.freezing_temperature_spectrum.niemand_et_al_2012.Niemand_et_al_2012.pdf">pdf</a></code></li>
 </ul>
 </li>
