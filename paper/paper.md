@@ -249,9 +249,11 @@ Coupling of `PySDM` with fluid-flow simulation is depicted with both 1D and 2D p
 
 Usage of the `kinematic_1d` environment is depicted in an example based on the work of @Shipway_and_Hill_2012,
   while the `kinematic_2d` environment is showcased with a Jupyter notebook featuring an interactive user interface 
-  and allowing studying aerosol-cloud interactions in drizzling stratocumulus setup based on the work of @Arabas_et_al_2015.
+  and allowing studying aerosol-cloud interactions in drizzling stratocumulus setup based on the works of 
+  @Morrison_and_Grabowski_2007 and @Arabas_et_al_2015.
 
-\autoref{fig:virga} presents a snapshot from the 2D simulation described in detail in @Arabas_et_al_2015 and works cited therein.
+\autoref{fig:virga} presents a snapshot from the 2D simulation performed with a setup described in detail 
+  in @Arabas_et_al_2015.
 Each plot depicts a 1.5 km by 1.5 km vertical slab of an idealised atmosphere in which a prescribed single-eddy non-divergent flow
   is forced (updraft in the left-hand part of the domain, downdraft in the right-hand part). 
 The left plot shows the distribution of aerosol particles in the air. 
