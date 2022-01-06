@@ -1,5 +1,6 @@
 ---
 title: 'PySDM v1: particle-based cloud modelling package for&nbsp;warm-rain microphysics and aqueous chemistry'
+date: 31 March 2021
 tags:
   - Python
   - physics-simulation 
@@ -16,33 +17,41 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "1"
-  - name: Sylwester Arabas
-    orcid: 0000-0003-2361-0082
+  - name: Oleksii&nbsp;Bulenok
+    orcid: 0000-0003-2272-8548
     affiliation: "1"
-  - name: Kamil Górski
+  - name: Kamil&nbsp;Górski
     affiliation: "1"
-  - name: Anna Jaruga
+  - name: Anna&nbsp;Jaruga
     affiliation: "2"
     orcid: 0000-0003-3194-6440
-  - name: Grzegorz Łazarski
+  - name: Grzegorz&nbsp;Łazarski
     affiliation: "1, 3"
     orcid: 0000-0002-5595-371X
-  - name: Michael Olesik
+  - name: Michael&nbsp;Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "4"
-  - name: Bartosz Piasecki
+  - name: Bartosz&nbsp;Piasecki
     affiliation: "1"
-  - name: Aleksandra Talar
+  - name: Clare&nbsp;E.&nbsp;Singer
+    orcid: 0000-0002-1708-0997
+    affiliation: "2"
+  - name: Aleksandra&nbsp;Talar
     affiliation: "1"
+  - name: Sylwester&nbsp;Arabas
+    orcid: 0000-0003-2361-0082
+    affiliation: "5, 1"
 affiliations:
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA  
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 2
- - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
    index: 3
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 4
+ - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
+   index: 5
 bibliography: paper.bib
 
 ---
@@ -88,6 +97,8 @@ The usage examples are built on top of four different `environment` classes incl
 
 In addition, the package ships with tutorial code depicting how `PySDM` can be used from `Julia` and `Matlab` using
   the `PyCall.jl` and the Matlab-bundled Python interface, respectively.
+Two exporter classes are available as of time of writing enabling storage of particle attributes and
+  gridded products in the VTK format, and storage of gridded products in netCDF format.
 
 # Dependencies and supported platforms 
 
@@ -139,7 +150,7 @@ In the above snippet, the `si` is an instance of the `FakeUnitRegistry` class.
 The exponential distribution of particle volumes is sampled at $2^{17}$ points 
   in order to initialise two key attributes of the super-droplets, namely their volume and multiplicity. 
 Subsequently, a `Builder` object is created to orchestrate dependency injection while instantiating
-  the `Core` class of `PySDM`:
+  the `Particulator` class of `PySDM`:
 
 ```python
 import numpy as np
@@ -156,13 +167,14 @@ builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 
 radius_bins_edges=np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges, name='dv/dlnr')]
-core = builder.build(attributes, products)
+particulator = builder.build(attributes, products)
 ```
 
-The `backend` argument may be set to either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
+The `backend` argument may be set to an instance of either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
 The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
-The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of v1.3 represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
-Finally, the `build()` method is used to obtain an instance of the `Core` class which can then be used to control time-stepping and access simulation state
+The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of time of writing
+  represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
+Finally, the `build()` method is used to obtain an instance of the `Particulator` class which can then be used to control time-stepping and access simulation state
   through the products registered with the builder.
 A minimal simulation example is depicted below with a code snippet and a resultant plot (\autoref{fig:readme_fig_1}):
 
@@ -171,10 +183,10 @@ from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
-    core.run(step - core.n_steps)
+    particulator.run(step - particulator.n_steps)
     pyplot.step(
         x=radius_bins_edges[:-1] / si.um,
-        y=core.products['dv/dlnr'].get().squeeze() * rho_w / si.g,
+        y=particulator.products['dv/dlnr'].get().squeeze() * rho_w / si.g,
         where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
@@ -235,6 +247,10 @@ A polydisperse lognormal spectrum represented with multiple super-droplets is us
   based on the work of @Yang_et_al_2018.
 Presented simulations involve repeated ascent-descent cycles and depict the evolution of partitioning between
   activated and unactivated particles.
+Similarly, polydisperse lognormal spectra are used in the example based on @Lowe_et_al_2019, where additionally
+  each lognormal mode has a different hygroscopicity.
+The @Lowe_et_al_2019 example additionally features representation of droplet surface tension reduction 
+  by organics.
   
 Finally, there are two examples featuring adiabatic
   parcel simulations involving representation of the dynamics of chemical composition of both ambient air and
@@ -244,7 +260,7 @@ The examples reproduce the simulations discussed in @Kreidenweis_et_al_2003 and 
 ### Kinematic (prescribed-flow) examples
 
 Coupling of `PySDM` with fluid-flow simulation is depicted with both 1D and 2D prescribed-flow simulations,
-  both dependent on the `PyMPDATA` package [@Arabas_et_al_2021] implementing the MPDATA advection 
+  both dependent on the `PyMPDATA` package [@Bartman_et_al_2021] implementing the MPDATA advection 
   algorithm. For a review on MPDATA, see e.g., @Smolarkiewicz_2006.
 
 Usage of the `kinematic_1d` environment is depicted in an example based on the work of @Shipway_and_Hill_2012,
@@ -314,18 +330,19 @@ PySDM is released under the GNU GPL v3 license.
 
 # Author contributions
 
-PB has been the architect and lead developer of PySDM v1 with SA as the main co-developer.
+PB had been the architect and lead developer of PySDM v1 with SA taking the role of main developer and maintainer over the time.
 PySDM 1.0 release accompanied PB's MSc thesis prepared under the mentorship of SA. 
 MO contributed to the development of the condensation solver and led the development of relevant examples.
 GŁ contributed the initial draft of the aqueous-chemistry extension which was refactored and incorporated into PySDM under guidance from AJ.
 KG and BP contributed to the GPU backend.
-AT contributed to the examples.
+CS and AT contributed to the examples.
+OB contributed the VTK exporter.
 The paper was composed by SA and PB and is partially based on the content of the PySDM README file and PB's MSc thesis.
 
 # Acknowledgements
 
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
 We thank Fei Yang (https://github.com/fynv/) for creating and supporting ThrustRTC.
-Development of PySDM has been supported by the EU through a grant of the Foundation for Polish Science (POIR.04.04.00-00-5E1C/18).
+Development of PySDM has been carried out within the POWROTY/REINTEGRATION programme of the Foundation for Polish Science co-financed by the European Union under the European Regional Development Fund (POIR.04.04.00-00-5E1C/18).
 
 # References
