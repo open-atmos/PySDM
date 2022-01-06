@@ -124,7 +124,7 @@ It is a coalescence-only set-up in which the initial particle size spectrum is e
 
 ```python
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra import Exponential
 
 n_sd = 2 ** 17
@@ -142,17 +142,20 @@ Subsequently, a `Builder` object is created to orchestrate dependency injection 
   the `Core` class of `PySDM`:
 
 ```python
+import numpy as np
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.coalescence.kernels import Golovin
+from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
-from PySDM.products import ParticlesVolumeSpectrum
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
-builder = Builder(n_sd=n_sd, backend=CPU)
+builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum()]
+
+radius_bins_edges=np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges, name='dv/dlnr')]
 core = builder.build(attributes, products)
 ```
 
@@ -164,22 +167,18 @@ Finally, the `build()` method is used to obtain an instance of the `Core` class 
 A minimal simulation example is depicted below with a code snippet and a resultant plot (\autoref{fig:readme_fig_1}):
 
 ```python
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
-import numpy as np
-
-radius_bins_edges = np.logspace(
-    np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 for step in [0, 1200, 2400, 3600]:
     core.run(step - core.n_steps)
     pyplot.step(
         x=radius_bins_edges[:-1] / si.um,
-        y=core.products['dv/dlnr'].get(radius_bins_edges) * rho_w/si.g,
+        y=core.products['dv/dlnr'].get().squeeze() * rho_w / si.g,
         where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
-pyplot.xlabel('particle radius [$\mu$ m]')
+pyplot.xlabel(r'particle radius [$\mu$ m]')
 pyplot.ylabel("dm/dlnr [g/m$^3$/(unit dr/r)]")
 pyplot.legend()
 pyplot.show()
