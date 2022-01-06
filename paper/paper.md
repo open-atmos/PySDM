@@ -26,7 +26,7 @@ authors:
     affiliation: "2"
     orcid: 0000-0003-3194-6440
   - name: Grzegorz&nbsp;Łazarski
-    affiliation: "1, 3"
+    affiliation: "1,3"
     orcid: 0000-0002-5595-371X
   - name: Michael&nbsp;Olesik
     orcid: 0000-0002-6319-9358
@@ -40,15 +40,15 @@ authors:
     affiliation: "1"
   - name: Sylwester&nbsp;Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "5, 1"
+    affiliation: "5,1"
 affiliations:
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
    index: 2
  - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
    index: 3
- - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland
    index: 4
  - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 5
@@ -103,7 +103,8 @@ Two exporter classes are available as of time of writing enabling storage of par
 # Dependencies and supported platforms 
 
 PySDM essential dependencies are: `NumPy`, `SciPy`, `Numba`, `Pint` and `ChemPy` which are all free and open-source software available via the PyPI platform.
-`PySDM` ships with a setup.py file allowing installation using the `pip` package manager (i.e., `pip install git+https://github.com/atmos-cloud-sim-uj/PySDM.git`).
+`PySDM` releases are published at the PyPI Python package index allowing 
+  installation using the `pip` package manager (i.e., `pip install PySDM`).
 
 `PySDM` has two alternative parallel number-crunching backends available: multi-threaded CPU backend based on `Numba` [@Numba] and GPU-resident backend built on top of `ThrustRTC` [@ThrustRTC].
 The optional GPU backend relies on proprietary vendor-specific CUDA technology, the accompanying non-free software and drivers; `ThrustRTC` and `CURandRTC` packages are released under the Anti-996 license.
@@ -135,15 +136,15 @@ It is a coalescence-only set-up in which the initial particle size spectrum is e
 
 ```python
 from PySDM.physics import si
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.initialisation.spectra import Exponential
 
-n_sd = 2 ** 17
+N_SD = 2 ** 17
 initial_spectrum = Exponential(
     norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-spectral_sampling = ConstantMultiplicity(spectrum=initial_spectrum)
-attributes['volume'], attributes['n'] = spectral_sampling.sample(n_sd=n_sd)
+sampling = spectral_sampling.ConstantMultiplicity(initial_spectrum)
+attributes['volume'], attributes['n'] = sampling.sample(N_SD)
 ```
 
 In the above snippet, the `si` is an instance of the `FakeUnitRegistry` class.
@@ -161,12 +162,19 @@ from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
-builder = Builder(n_sd=n_sd, backend=CPU())
+builder = Builder(n_sd=N_SD, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
 
-radius_bins_edges=np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
-products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges, name='dv/dlnr')]
+radius_bins_edges = np.logspace(
+    start=np.log10(10 * si.um),
+    stop=np.log10(5e3 * si.um),
+    num=32
+)
+products = (ParticleVolumeVersusRadiusLogarithmSpectrum(
+    radius_bins_edges=radius_bins_edges,
+    name='dv/dlnr'
+),)
 particulator = builder.build(attributes, products)
 ```
 
@@ -186,7 +194,7 @@ for step in [0, 1200, 2400, 3600]:
     particulator.run(step - particulator.n_steps)
     pyplot.step(
         x=radius_bins_edges[:-1] / si.um,
-        y=particulator.products['dv/dlnr'].get().squeeze() * rho_w / si.g,
+        y=particulator.products['dv/dlnr'].get().squeeze() * rho_w/si.g,
         where='post', label=f"t = {step}s")
 
 pyplot.xscale('log')
@@ -206,7 +214,7 @@ pyplot.show()
 # Usage examples
 
 The PySDM examples are shipped in a separate package
-  that can be installed with `pip` (`pip install git+https://github.com/atmos-cloud-sim-uj/PySDM-examples.git`) or
+  that can also be installed with `pip` (`pip install PySDM-examples`) or
   conveniently experimented with using Colab or mybinder.org platforms (single-click launching badges included in the 
   `PySDM` README file).
 The examples are based on setups from literature, and the package is structured using bibliographic labels (e.g., 
@@ -219,7 +227,7 @@ All examples feature a `settings.py` file with simulation parameters, a `simulat
 
 ### Box environment examples
 
-The `Box` environment is the simplest one available in PySDM and the `PySDM_examples` package ships with two examples based on it.
+The `Box` environment is the simplest one available in `PySDM` and the `PySDM-examples` package ships with two examples based on it.
 The first, is an extension of the code presented in the snippets in the preceding section
   and reproduces Fig. 2 from the seminal paper of @Shima_et_al_2009.
 Coalescence is the only process considered, and the probabilities of collisions of particles
@@ -249,7 +257,7 @@ Presented simulations involve repeated ascent-descent cycles and depict the evol
   activated and unactivated particles.
 Similarly, polydisperse lognormal spectra are used in the example based on @Lowe_et_al_2019, where additionally
   each lognormal mode has a different hygroscopicity.
-The @Lowe_et_al_2019 example additionally features representation of droplet surface tension reduction 
+The @Lowe_et_al_2019 example features representation of droplet surface tension reduction 
   by organics.
   
 Finally, there are two examples featuring adiabatic
