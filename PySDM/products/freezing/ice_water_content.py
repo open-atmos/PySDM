@@ -6,7 +6,7 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 class IceWaterContent(MomentProduct):
-    def __init__(self, unit='kg/kg', name=None, __specific=False):
+    def __init__(self, unit='kg/m^3', name=None, __specific=False):
         super().__init__(unit=unit, name=name)
         self.specific = __specific
 
@@ -26,5 +26,5 @@ class IceWaterContent(MomentProduct):
 
 
 class SpecificIceWaterContent(IceWaterContent):
-    def __init__(self, unit='kg/m^3', name=None, __specific=True):
+    def __init__(self, unit='kg/kg', name=None, __specific=True):
         super().__init__(unit=unit, name=name)
