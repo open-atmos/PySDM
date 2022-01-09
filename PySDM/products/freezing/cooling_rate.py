@@ -1,3 +1,6 @@
+"""
+number-averaged cooling rate
+"""
 from PySDM.products.impl import MomentProduct
 
 
