@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.freezing API documentation</title>
-<meta name="description" content="products pertinent to the `PySDM.dynamics.freezing.Freezing` dynamic" />
+<title>PySDM.attributes.ice.cooling_rate API documentation</title>
+<meta name="description" content="cooling rate estimated as the difference in current and previous grid-cell
+temperatures divided by the timestep (i.e. equals zero if particle has
+…" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,49 +21,113 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.freezing</code></h1>
+<h1 class="title">Module <code>PySDM.attributes.ice.cooling_rate</code></h1>
 </header>
 <section id="section-intro">
-<p>products pertinent to the <code><a title="PySDM.dynamics.freezing.Freezing" href="../../dynamics/freezing.html#PySDM.dynamics.freezing.Freezing">Freezing</a></code> dynamic</p>
+<p>cooling rate estimated as the difference in current and previous grid-cell
+temperatures divided by the timestep (i.e. equals zero if particle has not
+moved to a different cell since the last timestep)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-products pertinent to the `PySDM.dynamics.freezing.Freezing` dynamic
+cooling rate estimated as the difference in current and previous grid-cell
+ temperatures divided by the timestep (i.e. equals zero if particle has not
+ moved to a different cell since the last timestep)
 &#34;&#34;&#34;
-from .ice_water_content import IceWaterContent, SpecificIceWaterContent
-from .freezable_specific_concentration import FreezableSpecificConcentration
-from .total_unfrozen_immersed_surface_area import TotalUnfrozenImmersedSurfaceArea
-from .cooling_rate import CoolingRate</code></pre>
+import numpy as np
+from PySDM.attributes.impl import DerivedAttribute
+
+
+class CoolingRate(DerivedAttribute):
+    def __init__(self, builder):
+        self.cell_id = builder.get_attribute(&#39;cell id&#39;)
+        super().__init__(
+            builder=builder,
+            name=&#39;cooling rate&#39;,
+            dependencies=(self.cell_id,)
+        )
+        self.prev_T = builder.particulator.backend.Storage.from_ndarray(
+            np.full(builder.particulator.n_sd, np.nan)
+        )
+
+    def recalculate(self):
+        cell_id = self.particulator.attributes[&#39;cell id&#39;]
+        env_T = self.particulator.environment[&#39;T&#39;]
+        self.data[:] = env_T[cell_id]
+        self.data -= self.prev_T
+        self.data /= self.particulator.environment.dt
+        self.prev_T[:] = env_T[cell_id]</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.products.freezing.cooling_rate" href="cooling_rate.html">PySDM.products.freezing.cooling_rate</a></code></dt>
+<dt id="PySDM.attributes.ice.cooling_rate.CoolingRate"><code class="flex name class">
+<span>class <span class="ident">CoolingRate</span></span>
+<span>(</span><span>builder)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>number-averaged cooling rate</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.freezing.freezable_specific_concentration" href="freezable_specific_concentration.html">PySDM.products.freezing.freezable_specific_concentration</a></code></dt>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CoolingRate(DerivedAttribute):
+    def __init__(self, builder):
+        self.cell_id = builder.get_attribute(&#39;cell id&#39;)
+        super().__init__(
+            builder=builder,
+            name=&#39;cooling rate&#39;,
+            dependencies=(self.cell_id,)
+        )
+        self.prev_T = builder.particulator.backend.Storage.from_ndarray(
+            np.full(builder.particulator.n_sd, np.nan)
+        )
+
+    def recalculate(self):
+        cell_id = self.particulator.attributes[&#39;cell id&#39;]
+        env_T = self.particulator.environment[&#39;T&#39;]
+        self.data[:] = env_T[cell_id]
+        self.data -= self.prev_T
+        self.data /= self.particulator.environment.dt
+        self.prev_T[:] = env_T[cell_id]</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.attributes.impl.derived_attribute.DerivedAttribute" href="../impl/derived_attribute.html#PySDM.attributes.impl.derived_attribute.DerivedAttribute">DerivedAttribute</a></li>
+<li><a title="PySDM.attributes.impl.attribute.Attribute" href="../impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.attributes.ice.cooling_rate.CoolingRate.recalculate"><code class="name flex">
+<span>def <span class="ident">recalculate</span></span>(<span>self)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>freezing-temperature binned specific concentration of particles</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.freezing.ice_water_content" href="ice_water_content.html">PySDM.products.freezing.ice_water_content</a></code></dt>
-<dd>
-<div class="desc"><p>ice water content products (mixing ratio and density)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.freezing.total_unfrozen_immersed_surface_area" href="total_unfrozen_immersed_surface_area.html">PySDM.products.freezing.total_unfrozen_immersed_surface_area</a></code></dt>
-<dd>
-<div class="desc"><p>mean immersed surface area per particle for unfrozen particles</p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def recalculate(self):
+    cell_id = self.particulator.attributes[&#39;cell id&#39;]
+    env_T = self.particulator.environment[&#39;T&#39;]
+    self.data[:] = env_T[cell_id]
+    self.data -= self.prev_T
+    self.data /= self.particulator.environment.dt
+    self.prev_T[:] = env_T[cell_id]</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -72,15 +138,17 @@ from .cooling_rate import CoolingRate</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="../index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.attributes.ice" href="index.html">PySDM.attributes.ice</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.products.freezing.cooling_rate" href="cooling_rate.html">PySDM.products.freezing.cooling_rate</a></code></li>
-<li><code><a title="PySDM.products.freezing.freezable_specific_concentration" href="freezable_specific_concentration.html">PySDM.products.freezing.freezable_specific_concentration</a></code></li>
-<li><code><a title="PySDM.products.freezing.ice_water_content" href="ice_water_content.html">PySDM.products.freezing.ice_water_content</a></code></li>
-<li><code><a title="PySDM.products.freezing.total_unfrozen_immersed_surface_area" href="total_unfrozen_immersed_surface_area.html">PySDM.products.freezing.total_unfrozen_immersed_surface_area</a></code></li>
+<li>
+<h4><code><a title="PySDM.attributes.ice.cooling_rate.CoolingRate" href="#PySDM.attributes.ice.cooling_rate.CoolingRate">CoolingRate</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.attributes.ice.cooling_rate.CoolingRate.recalculate" href="#PySDM.attributes.ice.cooling_rate.CoolingRate.recalculate">recalculate</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

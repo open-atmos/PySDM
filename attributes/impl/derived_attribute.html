@@ -39,6 +39,7 @@ from .attribute import Attribute
 class DerivedAttribute(Attribute):
 
     def __init__(self, builder, name, dependencies):
+        assert len(dependencies) &gt; 0
         super().__init__(builder, name)
         self.dependencies = dependencies
 
@@ -79,6 +80,7 @@ class DerivedAttribute(Attribute):
 <pre><code class="python">class DerivedAttribute(Attribute):
 
     def __init__(self, builder, name, dependencies):
+        assert len(dependencies) &gt; 0
         super().__init__(builder, name)
         self.dependencies = dependencies
 
@@ -104,6 +106,7 @@ class DerivedAttribute(Attribute):
 <ul class="hlist">
 <li><a title="PySDM.attributes.chemistry.acidity.Acidity" href="../chemistry/acidity.html#PySDM.attributes.chemistry.acidity.Acidity">Acidity</a></li>
 <li><a title="PySDM.attributes.chemistry.hydrogen_ion_concentration.HydrogenIonConcentration" href="../chemistry/hydrogen_ion_concentration.html#PySDM.attributes.chemistry.hydrogen_ion_concentration.HydrogenIonConcentration">HydrogenIonConcentration</a></li>
+<li><a title="PySDM.attributes.ice.cooling_rate.CoolingRate" href="../ice/cooling_rate.html#PySDM.attributes.ice.cooling_rate.CoolingRate">CoolingRate</a></li>
 <li><a title="PySDM.attributes.impl.intensive_attribute.IntensiveAttribute" href="intensive_attribute.html#PySDM.attributes.impl.intensive_attribute.IntensiveAttribute">IntensiveAttribute</a></li>
 <li><a title="PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation" href="../physics/critical_supersaturation.html#PySDM.attributes.physics.critical_supersaturation.CriticalSupersaturation">CriticalSupersaturation</a></li>
 <li><a title="PySDM.attributes.physics.critical_volume.CriticalVolume" href="../physics/critical_volume.html#PySDM.attributes.physics.critical_volume.CriticalVolume">CriticalVolume</a></li>

@@ -31,12 +31,19 @@
 attributes used by the `PySDM.dynamics.freezing.Freezing` dynamic
 &#34;&#34;&#34;
 from .freezing_temperature import FreezingTemperature
-from .immersed_surface_area import ImmersedSurfaceArea</code></pre>
+from .immersed_surface_area import ImmersedSurfaceArea
+from .cooling_rate import CoolingRate</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
+<dt><code class="name"><a title="PySDM.attributes.ice.cooling_rate" href="cooling_rate.html">PySDM.attributes.ice.cooling_rate</a></code></dt>
+<dd>
+<div class="desc"><p>cooling rate estimated as the difference in current and previous grid-cell
+temperatures divided by the timestep (i.e. equals zero if particle has
+…</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.attributes.ice.freezing_temperature" href="freezing_temperature.html">PySDM.attributes.ice.freezing_temperature</a></code></dt>
 <dd>
 <div class="desc"><p>particle freezing temperature (assigned at initialisation, modified through collisions only,
@@ -69,6 +76,7 @@ used in time-dependent regime)</p></div>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
+<li><code><a title="PySDM.attributes.ice.cooling_rate" href="cooling_rate.html">PySDM.attributes.ice.cooling_rate</a></code></li>
 <li><code><a title="PySDM.attributes.ice.freezing_temperature" href="freezing_temperature.html">PySDM.attributes.ice.freezing_temperature</a></code></li>
 <li><code><a title="PySDM.attributes.ice.immersed_surface_area" href="immersed_surface_area.html">PySDM.attributes.ice.immersed_surface_area</a></code></li>
 </ul>
