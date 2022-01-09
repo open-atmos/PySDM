@@ -18,6 +18,11 @@ class CoolingRate(DerivedAttribute):
         self.prev_T = builder.particulator.backend.Storage.from_ndarray(
             np.full(builder.particulator.n_sd, np.nan)
         )
+        builder.particulator.observers.append(self)
+
+    def notify(self):
+        cell_id = self.particulator.attributes['cell id']
+        self.prev_T[:] = self.particulator.environment['T'][cell_id]
 
     def recalculate(self):
         cell_id = self.particulator.attributes['cell id']
@@ -25,4 +30,3 @@ class CoolingRate(DerivedAttribute):
         self.data[:] = env_T[cell_id]
         self.data -= self.prev_T
         self.data /= self.particulator.environment.dt
-        self.prev_T[:] = env_T[cell_id]
