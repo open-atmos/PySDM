@@ -1,5 +1,5 @@
 """
-Wrapper class for triggering integration in the Eulerian advection solver
+wrapper class for triggering integration in the Eulerian advection solver
 """
 
 

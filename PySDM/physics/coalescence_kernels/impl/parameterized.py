@@ -1,5 +1,8 @@
+""" common parent class for kernels specified using Berry's parameterization """
+
+
 from PySDM.physics import constants as const
-from ._gravitational import Gravitational
+from .gravitational import Gravitational
 
 
 class Parameterized(Gravitational):

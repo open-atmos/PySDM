@@ -1,6 +1,9 @@
+"""
+liquid water mixing ratio (per mass of dry air) computed from particle sizes
+ (optionally restricted to a given size range)
+"""
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.physics import constants as const
 
 
 class WaterMixingRatio(MomentProduct):
@@ -23,7 +26,7 @@ class WaterMixingRatio(MomentProduct):
         self._download_moment_to_buffer('volume', rank=1,
                                         filter_range=self.volume_range, filter_attr='volume')
         result = self.buffer.copy()
-        result[:] *= const.rho_w
+        result[:] *= self.formulae.constants.rho_w
         result[:] *= conc
         result[:] /= self.particulator.mesh.dv
 

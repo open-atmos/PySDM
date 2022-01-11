@@ -1,17 +1,16 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.physics import constants
+from PySDM.physics import constants_defaults
 from PySDM.formulae import Formulae
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
 class TestFormulae:
-
     @staticmethod
     def test_pvs():
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae()
-            si = constants.si
+            si = constants_defaults.si
             sut = formulae.saturation_vapour_pressure.pvs_Celsius
             T = 300 * si.kelvins
 
@@ -25,14 +24,14 @@ class TestFormulae:
     def test_r_cr():
         with DimensionalAnalysis():
             # Arrange
-            si = constants.si
+            si = constants_defaults.si
             formulae = Formulae()
             sut = formulae.hygroscopicity.r_cr
 
             kp = .5
             rd = .1 * si.micrometre
             T = 300 * si.kelvins
-            sgm = constants.sgm_w
+            sgm = constants_defaults.sgm_w
 
             # Act
             r_cr = sut(kp, rd**3, T, sgm)
@@ -44,7 +43,7 @@ class TestFormulae:
     def test_lv():
         with DimensionalAnalysis():
             # Arrange
-            si = constants.si
+            si = constants_defaults.si
             T = 300 * si.kelvins
 
             formulae = Formulae()

@@ -1,3 +1,6 @@
+"""
+mean immersed surface area per particle for unfrozen particles
+"""
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct
 
@@ -16,4 +19,5 @@ class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
         result = np.copy(self.buffer)
         self._download_moment_to_buffer(**params, rank=0)
         result[:] *= self.buffer
+        # TODO #599 per volume / per gridbox ?
         return result

@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for particle collisions
+"""
 import numba
 import numpy as np
 from PySDM.backends.impl_numba import conf
@@ -13,7 +16,7 @@ def pair_indices(i, idx, is_first_in_pair):
     return j, k
 
 
-class AlgorithmicMethods(BackendMethods):
+class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -139,51 +142,6 @@ class AlgorithmicMethods(BackendMethods):
             collision_rate_deficit.data, collision_rate.data, is_first_in_pair.indicator.data)
 
     @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments,too-many-locals
-    def linear_collection_efficiency_body(
-            params, output, radii, is_first_in_pair, idx, length, unit
-    ):
-        A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
-        output[:] = 0
-        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            if is_first_in_pair[i]:
-                if radii[idx[i]] > radii[idx[i + 1]]:
-                    r = radii[idx[i]] / unit
-                    r_s = radii[idx[i + 1]] / unit
-                else:
-                    r = radii[idx[i + 1]] / unit
-                    r_s = radii[idx[i]] / unit
-                p = r_s / r
-                if p not in (0, 1):
-                    G = (G1 / r) ** Mg + G2 + G3 * r
-                    Gp = (1 - p) ** G
-                    if Gp != 0:
-                        D = D1 / r ** D2
-                        E = E1 / r ** E2
-                        F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p ** F + E / Gp
-                        output[i // 2] = max(0, output[i // 2])
-
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
-        return self.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data,
-            radii.idx.data, len(is_first_in_pair), unit)
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def interpolation_body(output, radius, factor, b, c):
-        for i in numba.prange(len(radius)):  # pylint: disable=not-an-iterable
-            r_id = int(factor * radius[i])
-            r_rest = ((factor * radius[i]) % 1) / factor
-            output[i] = b[r_id] + r_rest * c[r_id]
-
-    def interpolation(self, output, radius, factor, b, c):
-        return self.interpolation_body(
-            output.data, radius.data, factor, b.data, c.data
-        )
-
-    @staticmethod
     def make_cell_caretaker(idx, cell_start, scheme="default"):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
             def __init__(self, idx, cell_start, scheme):
@@ -204,11 +162,11 @@ class AlgorithmicMethods(BackendMethods):
             def __call__(self, cell_id, cell_idx, cell_start, idx):
                 length = len(idx)
                 if self.scheme == "counting_sort":
-                    AlgorithmicMethods._counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data,
                         cell_idx.data, length, cell_start.data)
                 elif self.scheme == "counting_sort_parallel":
-                    AlgorithmicMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
+                    CollisionsMethods._parallel_counting_sort_by_cell_id_and_update_cell_start(
                         self.tmp_idx.data, idx.data, cell_id.data, cell_idx.data,
                         length, cell_start.data, self.cell_starts.data)
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data

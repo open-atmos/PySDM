@@ -1,2 +1,8 @@
+"""
+constant ventilation coefficient of unity (i.e., neglect ventilation effects)
+"""
+
+
 class Neglect:
-    pass
+    def __init__(self, _):
+        pass

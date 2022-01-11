@@ -1,3 +1,6 @@
+"""
+attribute name-class mapping logic (each new attribute must be added here)
+"""
 from functools import partial
 from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
 from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolume, DryVolumeDynamic,
@@ -5,7 +8,7 @@ from PySDM.attributes.physics.dry_volume import (DryVolumeOrganic, DryVolume, Dr
 from PySDM.attributes.physics.hygroscopicity import Kappa, KappaTimesDryVolume
 from PySDM.attributes.physics import (Multiplicities, Volume, Radius, DryRadius,
                                       TerminalVelocity, Temperature, Heat, CriticalVolume)
-from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea
+from PySDM.attributes.ice import FreezingTemperature, ImmersedSurfaceArea, CoolingRate
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.chemistry import (
     make_mole_amount_factory, make_concentration_factory, Acidity, HydrogenIonConcentration)
@@ -18,9 +21,9 @@ attributes = {
     'volume': lambda _: Volume,
     'dry volume organic': lambda dynamics: (
         make_dummy_attribute_factory('dry volume organic')
-        if 'Condensation' in dynamics and isinstance(
-            dynamics['Condensation'].particulator.formulae.surface_tension,
-            Constant
+        if 'Condensation' in dynamics and (
+            dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
+            Constant.__name__
         )
         else DryVolumeOrganic
     ),
@@ -28,9 +31,9 @@ attributes = {
     DryVolumeDynamic if 'AqueousChemistry' in dynamics else DryVolume,
     'dry volume organic fraction': lambda dynamics: (
         make_dummy_attribute_factory('dry volume organic fraction')
-        if 'Condensation' in dynamics and isinstance(
-            dynamics['Condensation'].particulator.formulae.surface_tension,
-            Constant
+        if 'Condensation' in dynamics and (
+            dynamics['Condensation'].particulator.formulae.surface_tension.__name__ ==
+            Constant.__name__
         )
         else OrganicFraction
     ),
@@ -41,6 +44,7 @@ attributes = {
     'terminal velocity': lambda _: TerminalVelocity,
     'cell id': lambda _: CellID,
     'cell origin': lambda _: CellOrigin,
+    'cooling rate': lambda _: CoolingRate,
     'position in cell': lambda _: PositionInCell,
     'temperature': lambda _: Temperature,
     'heat': lambda _: Heat,

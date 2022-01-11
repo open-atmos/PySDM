@@ -1,14 +1,17 @@
+"""
+CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)
+"""
 import numba
 import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from ...impl_numba import conf
 from ...impl_common.freezing_attributes import TimeDependentAttributes, SingularAttributes
-from ....physics import constants as const
 
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
         super().__init__()
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath, 'parallel': False})
         def _unfrozen(volume, i):
@@ -22,10 +25,11 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def freeze_singular_body(attributes, temperature, relative_humidity, cell):
-            for i in numba.prange(len(attributes.freezing_temperature)):  # pylint: disable=not-an-iterable
+            n_sd = len(attributes.freezing_temperature)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] > 1 and
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
@@ -39,6 +43,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if _unfrozen(attributes.wet_volume, i):
                     rate = j_het(a_w_ice[cell[i]])
+                    # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(-rate * attributes.immersed_surface_area[i] * timestep)
                     if rand[i] < prob:
                         _freeze(attributes.wet_volume, i)

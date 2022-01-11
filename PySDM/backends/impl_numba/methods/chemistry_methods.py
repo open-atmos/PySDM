@@ -1,13 +1,16 @@
+"""
+CPU implementation of backend methods for aqueous chemistry
+"""
 from collections import namedtuple
 import numba
 import numpy as np
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.toms748 import toms748_solve
-from PySDM.physics.constants import Md, R_str, Rd, K_H2O
-from PySDM.physics.aqueous_chemistry.support import HenryConsts, SPECIFIC_GRAVITY, \
+from PySDM.physics.aqueous_chemistry.support import HenryConsts, SpecificGravities, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KineticConsts, EquilibriumConsts, k4
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.physics.constants import K_H2O
 
 
 _MAX_ITER_QUITE_CLOSE = 8
@@ -26,6 +29,7 @@ class ChemistryMethods(BackendMethods):
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
+        self.specific_gravities = SpecificGravities(self.formulae.constants)
 
     def dissolution(self, *, n_cell, n_threads, cell_order, cell_start_arg, idx, do_chemistry_flag,
                     mole_amounts, env_mixing_ratio, env_T, env_p, env_rho_d, dissociation_factors,
@@ -62,32 +66,38 @@ class ChemistryMethods(BackendMethods):
                         droplet_volume=droplet_volume.data,
                         multiplicity=multiplicity.data,
                         system_type=system_type,
-                        specific_gravity=SPECIFIC_GRAVITY[compound],
+                        specific_gravity=self.specific_gravities[compound],
                         alpha=MASS_ACCOMMODATION_COEFFICIENTS[compound],
                         diffusion_const=DIFFUSION_CONST[compound],
                         dissociation_factor=dissociation_factors[compound].data,
-                        radius=self.formulae.trivia.radius
+                        radius=self.formulae.trivia.radius,
+                        const=self.formulae.constants
                     )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
     def dissolution_body(super_droplet_ids, mole_amounts, env_mixing_ratio, henrysConstant, env_p,
                          env_T, env_rho_d, timestep, dv, droplet_volume, multiplicity, system_type,
-                         specific_gravity, alpha, diffusion_const, dissociation_factor, radius):
+                         specific_gravity, alpha, diffusion_const, dissociation_factor, radius,
+                         const):
         mole_amount_taken = 0
         for i in super_droplet_ids:
-            Mc = specific_gravity * Md
-            Rc = R_str / Mc
-            cinf = env_p / env_T / (Rd / env_mixing_ratio[0] + Rc) / Mc
+            Mc = specific_gravity * const.Md
+            Rc = const.R_str / Mc
+            cinf = env_p / env_T / (const.Rd / env_mixing_ratio[0] + Rc) / Mc
             r_w = radius(volume=droplet_volume[i])
-            v_avg = np.sqrt(8 * R_str * env_T / (np.pi * Mc))
+            v_avg = np.sqrt(8 * const.R_str * env_T / (np.pi * Mc))
             dt_over_scale = timestep / (
                     4 * r_w / (3 * v_avg * alpha) +
                     r_w ** 2 / (3 * diffusion_const)
             )
             A_old = mole_amounts[i] / droplet_volume[i]
             H_eff = henrysConstant * dissociation_factor[i]
-            A_new = (A_old + dt_over_scale * cinf) / (1 + dt_over_scale / H_eff / R_str / env_T)
+            A_new = (
+                (A_old + dt_over_scale * cinf)
+                /
+                (1 + dt_over_scale / H_eff / const.R_str / env_T)
+            )
             new_mole_amount_per_real_droplet = A_new * droplet_volume[i]
             assert new_mole_amount_per_real_droplet >= 0
 
@@ -95,7 +105,7 @@ class ChemistryMethods(BackendMethods):
                     new_mole_amount_per_real_droplet - mole_amounts[i]
             )
             mole_amounts[i] = new_mole_amount_per_real_droplet
-        delta_mr = mole_amount_taken * specific_gravity * Md / (dv * env_rho_d)
+        delta_mr = mole_amount_taken * specific_gravity * const.Md / (dv * env_rho_d)
         assert delta_mr <= env_mixing_ratio
         if system_type == 'closed':
             env_mixing_ratio -= delta_mr

@@ -1,3 +1,6 @@
+"""
+Numba njit-ted basic arithmetics routines for CPU backend
+"""
 import numpy as np
 import numba
 from PySDM.backends.impl_numba import conf
@@ -52,7 +55,8 @@ def sum_out_of_place(output, a, b):
 
 @numba.njit(**conf.JIT_FLAGS)
 def power(output, exponent):
-    output[:] = np.power(output, exponent)
+    # TODO #599 (was: output[:] = np.power(output, exponent))
+    output[:] = np.sign(output) * np.power(np.abs(output), exponent)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})

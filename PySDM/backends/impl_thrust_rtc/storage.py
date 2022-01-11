@@ -1,3 +1,6 @@
+"""
+storage internals for the ThrustRTC backend
+"""
 import numpy as np
 from PySDM.backends.impl_common.storage_utils import (
     get_data_from_ndarray, StorageSignature, StorageBase, empty
@@ -345,7 +348,11 @@ def make_storage_class(BACKEND):
             else:
                 raise NotImplementedError
 
-            data = trtc.device_vector(elem_cls, int(np.prod(shape)))
+            size = int(np.prod(shape))
+            if size == 0:
+                data = None
+            else:
+                data = trtc.device_vector(elem_cls, size)
             return StorageSignature(data, shape, dtype)
 
         @staticmethod

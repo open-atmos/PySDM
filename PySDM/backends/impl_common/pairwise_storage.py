@@ -1,5 +1,9 @@
-def make_PairwiseStorage(backend):
+"""
+specialised storage equipped with particle pair-handling methods
+"""
 
+
+def make_PairwiseStorage(backend):
     class PairwiseStorage(backend.Storage):
         @staticmethod
         def empty(shape, dtype):

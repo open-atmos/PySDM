@@ -1,5 +1,7 @@
+"""
+factory logic for creating `PySDM.impl.particle_attributes.ParticleAttributes` instances
+"""
 import numpy as np
-
 from PySDM.attributes.impl import DerivedAttribute, ExtensiveAttribute, CellAttribute, \
     MaximumAttribute, DummyAttribute
 from PySDM.attributes.physics.multiplicities import Multiplicities
@@ -45,7 +47,7 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError as err:
-                    raise ValueError(f"attribute '{attr}' required by one of the dynamics"
+                    raise ValueError(f"attribute '{attr}' requested by one of the components"
                                      f" but no initial values given") from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)
@@ -93,5 +95,5 @@ class ParticlesFactory:
         return ParticleAttributes(
             particulator=particles, idx=idx,
             extensive_attribute_storage=None, extensive_keys={},
-            cell_start=np.zeros(0, dtype=np.int64), attributes={}
+            cell_start=np.zeros(2, dtype=np.int64), attributes={}
         )

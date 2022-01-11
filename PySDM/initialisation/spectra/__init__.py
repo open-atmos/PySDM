@@ -1,5 +1,5 @@
 """
-Classes representing logic around size spectra and more generally
+classes representing logic around size spectra and more generally
 probability density functions (based on SciPy.stats logic)
 """
 from .exponential import Exponential

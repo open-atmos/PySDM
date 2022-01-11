@@ -1,3 +1,6 @@
+"""
+CPU implementation of backend methods for particle displacement (advection and sedimentation)
+"""
 import numba
 from PySDM.backends.impl_numba import conf
 from ...impl_common.backend_methods import BackendMethods
@@ -68,7 +71,7 @@ class DisplacementMethods(BackendMethods):
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] < 0:
-                rainfall += volume[idx[i]] * multiplicity[idx[i]]
+                rainfall += volume[idx[i]] * multiplicity[idx[i]]  # TODO #599
                 idx[i] = flag
                 healthy[0] = 0
         return rainfall

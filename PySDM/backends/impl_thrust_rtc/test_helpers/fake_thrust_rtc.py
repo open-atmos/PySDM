@@ -1,3 +1,8 @@
+"""
+Numba-based implementation of ThrustRTC API involving translation of C++ code
+ to njitted (and multi-threaded) Python code - a hacky workaround enabling
+ testing ThrustRTC code on machines with no GPU/CUDA
+"""
 # pylint: disable=no-member,unsupported-assignment-operation,unsubscriptable-object,no-value-for-parameter
 import types
 import warnings
@@ -40,6 +45,13 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
         def __getitem__(self, item):
             return self.ndarray[item]
+
+        def name_elem_cls(self):
+            return {
+                'f': 'float',
+                'd': 'double',
+                'l': 'long'
+            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
 
     class Number:
         def __init__(self, number):
@@ -104,6 +116,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def device_vector(elem_cls, size):
+        if not size > 0:
+            raise ValueError('size must be >0')
         if elem_cls == 'double':
             dtype = np.float64
         elif elem_cls == 'float':
@@ -192,3 +206,11 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     def Sort_By_Key(keys, values):  # pylint: disable=invalid-name
         values.ndarray[:] = values.ndarray[np.argsort(keys.ndarray)]
         # TODO #328 Thrust sorts keys as well
+
+    @staticmethod
+    def Set_Kernel_Debug(_):  # pylint: disable=invalid-name
+        pass
+
+    @staticmethod
+    def Set_Verbose(_):  # pylint: disable=invalid-name
+        pass

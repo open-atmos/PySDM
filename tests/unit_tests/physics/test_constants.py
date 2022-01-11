@@ -10,7 +10,6 @@ def consecutive_seeds():
     for _ in range(5):
         importlib.reload(constants)
         seeds.append(constants.default_random_seed)
-    print(seeds)
     return np.asarray(seeds)
 
 

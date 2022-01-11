@@ -169,14 +169,14 @@ Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
 Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
-ParticlesVolumeSpectrum = pyimport("PySDM.products").ParticlesVolumeSpectrum
+ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -189,14 +189,14 @@ Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
 Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
-ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products').ParticlesVolumeSpectrum;
+ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum(pyargs( ...
+products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
 )) });
@@ -213,14 +213,14 @@ from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.physics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
-from PySDM.products import ParticlesVolumeSpectrum
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -247,7 +247,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants").rho_w
+rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
@@ -269,10 +269,10 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
+rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
 
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps))
+    particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
@@ -293,7 +293,7 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
@@ -448,15 +448,15 @@ output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-formulae = Formulae()
+formulae = Formulae();
 builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder.add_dynamic(AmbientThermodynamics());
+builder.add_dynamic(Condensation());
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = formulae.trivia.volume(r_dry);
+v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
 r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry);
 
@@ -464,7 +464,7 @@ attributes = py.dict(pyargs( ...
     'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
-    'volume', formulae.trivia.volume(r_wet) ...
+    'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
@@ -513,14 +513,13 @@ for pykey = py.list(keys(particulator.products))
     end
     i=i+1;
 end
-saveas(gcf, "parcel.png")
+saveas(gcf, "parcel.png");
 ```
 </details>
 <details open>
 <summary>Python (click to expand)</summary>
 
 ```Python
-import PySDM.initialisation.spectra.lognormal
 from matplotlib import pyplot
 from PySDM.physics import si
 from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii

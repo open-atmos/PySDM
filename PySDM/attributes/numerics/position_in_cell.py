@@ -1,3 +1,6 @@
+"""
+position-within-cell attribute (multi-dimensional, values normalised to one)
+"""
 from PySDM.attributes.impl.cell_attribute import CellAttribute
 
 

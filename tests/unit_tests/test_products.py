@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
 from typing import Tuple
 from collections import namedtuple
@@ -11,7 +12,9 @@ from PySDM.products.impl.rate_product import RateProduct
 from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMassMixingRatio,
                             ParticleSizeSpectrumPerMass, GaseousMoleFraction,
                             FreezableSpecificConcentration, DynamicWallTime,
-                            ParticleSizeSpectrumPerVolume, ParticlesVolumeSpectrum)
+                            ParticleSizeSpectrumPerVolume,
+                            ParticleVolumeVersusRadiusLogarithmSpectrum,
+                            RadiusBinnedNumberAveragedTerminalVelocity)
 
 _ARGUMENTS = {
     AqueousMassSpectrum: {'key': 'S_VI', 'dry_radius_bins_edges': (0, np.inf)},
@@ -22,7 +25,8 @@ _ARGUMENTS = {
     FreezableSpecificConcentration: {'temperature_bins_edges': (0, 300)},
     DynamicWallTime: {'dynamic': 'Condensation'},
     ParticleSizeSpectrumPerVolume: {'radius_bins_edges': (0, np.inf)},
-    ParticlesVolumeSpectrum: {'radius_bins_edges': (0, np.inf)}
+    ParticleVolumeVersusRadiusLogarithmSpectrum: {'radius_bins_edges': (0, np.inf)},
+    RadiusBinnedNumberAveragedTerminalVelocity: {'radius_bin_edges': (0, np.inf)}
 }
 
 

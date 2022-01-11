@@ -20,8 +20,8 @@ def test_moments_range(backend_class, min_x, max_x, value, expected):
     backend = backend_class(Formulae())
     arr = lambda x: backend.Storage.from_ndarray(np.asarray((x,)))
 
-    moment_0 = arr(0)
-    moments = backend.Storage.from_ndarray(np.full((1, 1), 0))
+    moment_0 = arr(0.)
+    moments = backend.Storage.from_ndarray(np.full((1, 1), 0.))
 
     kw_args = {
         'multiplicity': arr(1),

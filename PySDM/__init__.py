@@ -6,7 +6,7 @@ and the Super-Droplet Method algorithm ([Shima et al. 2009](http://doi.org/10.10
 for numerically tackling the probabilistic representation of particle coagulation.
 
 For an overview of PySDM, see [Bartman, Arabas et al. 2021](https://arxiv.org/abs/2103.17238).
-PySDM is releases under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
+PySDM is released under the [GNU GPL v3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
 PySDM development has been spearheaded at the Faculty of Mathematics and Computer Science,
 [Jagiellonian University in Kraków](https://en.uj.edu.pl/en) (the copyright holder).
 

@@ -1,11 +1,16 @@
+"""
+common code for products computing **binned** statistical moments
+ (e.g., dry radius spectrum in each grid cell)
+"""
 from abc import ABC
 from PySDM.products.impl.product import Product
 
 
 class SpectrumMomentProduct(ABC, Product):
-    def __init__(self, name, unit):
+    def __init__(self, name, unit, attr_unit):
         super().__init__(name=name, unit=unit)
         self.attr_bins_edges = None
+        self.attr_unit = attr_unit
         self.moment_0 = None
         self.moments = None
 
@@ -15,6 +20,7 @@ class SpectrumMomentProduct(ABC, Product):
             (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float)
         self.moments = self.particulator.Storage.empty(
             (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float)
+        _ = self._parse_unit(self.attr_unit)
 
     def _recalculate_spectrum_moment(
         self, attr,

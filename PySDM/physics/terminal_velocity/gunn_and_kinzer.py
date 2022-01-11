@@ -1,3 +1,8 @@
+"""
+[Gunn & Kinzer 1949](https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2)
+ terminal velocities used for both coalescence kernel evaluation as well as for particle
+ displacement
+"""
 import numba
 import numpy as np
 from scipy.interpolate import Rbf
@@ -37,29 +42,6 @@ class Interpolation:
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(output, radius, self.factor, self.a, self.b)
-
-
-class RogersYau:
-    """
-    Rogers & Yau, equations: (8.5), (8.6), (8.8)
-    """
-    def __init__(self, particles,
-                 small_k=None, medium_k=None, large_k=None,
-                 small_r_limit=None, medium_r_limit=None):
-        si = const.si
-        self.particles = particles
-        self.small_k = small_k or 1.19e6 / si.cm / si.s
-        self.medium_k = medium_k or 8e3 / si.s
-        self.large_k = large_k or 2.01e3 * si.cm ** (1 / 2) / si.s
-        self.small_r_limit = small_r_limit or 35 * si.um
-        self.medium_r_limit = medium_r_limit or 600 * si.um
-
-    def __call__(self, output, radius):
-        self.particles.backend.terminal_velocity(
-            output.data, radius.data,
-            self.small_k, self.medium_k, self.large_k,
-            self.small_r_limit, self.medium_r_limit
-        )
 
 
 # TODO #348 implement in backend logic
@@ -113,6 +95,9 @@ class TpDependent:
         @numba.njit(**{**conf.JIT_FLAGS, "cache": False})
         def terminal_velocity(values, radius, threshold):
             for i in numba.prange(len(values)):  # pylint: disable=not-an-iterable
+                if radius[i] < 0:
+                    values[i] = 0
+                    continue  # TODO #599
                 r = radius[i] / cm
                 sum_r = 0
                 if radius[i] < threshold:

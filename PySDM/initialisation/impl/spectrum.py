@@ -1,7 +1,7 @@
-import numpy as np
-from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
-
-default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
+"""
+logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for most
+ of the spectra
+"""
 
 
 class Spectrum:

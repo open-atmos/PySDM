@@ -1,33 +1,34 @@
 """
 Zero-dimensional adiabatic parcel framework
 """
-
 import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
-from ..physics import constants as const
-from ._moist import _Moist
+from PySDM.environments.impl.moist import Moist
 
 
-class Parcel(_Moist):
-
+class Parcel(Moist):
     def __init__(
             self, dt,
             mass_of_dry_air: float,
             p0: float, q0: float, T0: float,
             w: [float, callable],
             z0: float = 0,
-            g=const.g_std
+            mixed_phase=False
     ):
-        super().__init__(dt, Mesh.mesh_0d(), ['rhod', 'z', 't'])
+        super().__init__(
+            dt,
+            Mesh.mesh_0d(),
+            ['rhod', 'z', 't'],
+            mixed_phase=mixed_phase
+        )
 
         self.p0 = p0
         self.q0 = q0
         self.T0 = T0
         self.z0 = z0
         self.mass_of_dry_air = mass_of_dry_air
-        self.g = g
 
         self.w = w if callable(w) else lambda _: w
 
@@ -44,19 +45,19 @@ class Parcel(_Moist):
         self.formulae = builder.particulator.formulae
         pd0 = self.formulae.trivia.p_d(self.p0, self.q0)
         rhod0 = self.formulae.state_variable_triplet.rhod_of_pd_T(pd0, self.T0)
-        self.params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
         self.mesh.dv = self.formulae.trivia.volume_of_density_mass(rhod0, self.mass_of_dry_air)
 
-        _Moist.register(self, builder)
-        self['qv'][:] = self.params[0]
-        self['thd'][:] = self.params[1]
-        self['rhod'][:] = self.params[2]
-        self['z'][:] = self.params[3]
-        self['t'][:] = self.params[4]
-        delattr(self, 'params')
+        Moist.register(self, builder)
+
+        params = (self.q0, self.formulae.trivia.th_std(pd0, self.T0), rhod0, self.z0, 0)
+        self['qv'][:] = params[0]
+        self['thd'][:] = params[1]
+        self['rhod'][:] = params[2]
+        self['z'][:] = params[3]
+        self['t'][:] = params[4]
 
         self.sync_parcel_vars()
-        _Moist.sync(self)
+        Moist.sync(self)
         self.notify()
 
     def init_attributes(
@@ -94,7 +95,8 @@ class Parcel(_Moist):
 
         dql_dz = self.dql / dz_dt / dt
         lv = self.formulae.latent_heat.lv(T)
-        drho_dz = self.formulae.hydrostatics.drho_dz(self.g, p, T, qv, lv, dql_dz=dql_dz)
+        drho_dz = self.formulae.hydrostatics.drho_dz(
+            self.formulae.constants.g_std, p, T, qv, lv, dql_dz=dql_dz)
         drhod_dz = drho_dz
 
         self.particulator.backend.explicit_euler(self._tmp['t'], dt, 1)

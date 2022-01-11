@@ -4,7 +4,7 @@ import numpy as np
 from chempy.electrolytes import ionic_strength
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.backends.impl_numba.methods.chemistry_methods import calc_ionic_strength, _K, _conc
-from PySDM.physics.constants import rho_w, ROOM_TEMP, K_H2O
+from PySDM.physics.constants import K_H2O
 from PySDM import Formulae
 from PySDM.physics.aqueous_chemistry.support import EquilibriumConsts
 
@@ -13,16 +13,17 @@ from PySDM.physics.aqueous_chemistry.support import EquilibriumConsts
 @pytest.mark.parametrize("n_sd", (10, 20))
 def test_calc_ionic_strength(nt, n_sd):
     formulae = Formulae()
+    const = formulae.constants
     EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST
 
     K = _K(
-        NH3=EQUILIBRIUM_CONST["K_NH3"].at(ROOM_TEMP),
-        SO2=EQUILIBRIUM_CONST["K_SO2"].at(ROOM_TEMP),
-        HSO3=EQUILIBRIUM_CONST["K_HSO3"].at(ROOM_TEMP),
-        HSO4=EQUILIBRIUM_CONST["K_HSO4"].at(ROOM_TEMP),
-        HCO3=EQUILIBRIUM_CONST["K_HCO3"].at(ROOM_TEMP),
-        CO2=EQUILIBRIUM_CONST["K_CO2"].at(ROOM_TEMP),
-        HNO3=EQUILIBRIUM_CONST["K_HNO3"].at(ROOM_TEMP)
+        NH3=EQUILIBRIUM_CONST["K_NH3"].at(const.ROOM_TEMP),
+        SO2=EQUILIBRIUM_CONST["K_SO2"].at(const.ROOM_TEMP),
+        HSO3=EQUILIBRIUM_CONST["K_HSO3"].at(const.ROOM_TEMP),
+        HSO4=EQUILIBRIUM_CONST["K_HSO4"].at(const.ROOM_TEMP),
+        HCO3=EQUILIBRIUM_CONST["K_HCO3"].at(const.ROOM_TEMP),
+        CO2=EQUILIBRIUM_CONST["K_CO2"].at(const.ROOM_TEMP),
+        HNO3=EQUILIBRIUM_CONST["K_HNO3"].at(const.ROOM_TEMP)
     )
 
     settings = Settings(dt=1, n_sd=n_sd, n_substep=5)
@@ -59,16 +60,16 @@ def test_calc_ionic_strength(nt, n_sd):
     )
 
     expected = ionic_strength({
-        'H+': conc['H+'] / rho_w,
-        'HCO3-': K.CO2 / conc['H+'] * conc['C+4'] / alpha_C / rho_w,
-        'CO3-2': K.CO2 / conc['H+'] * K.HCO3 / conc['H+'] * conc['C+4'] / alpha_C / rho_w,
-        'HSO3-': K.SO2 / conc['H+'] * conc['S+4'] / alpha_S / rho_w,
-        'SO3-2': K.SO2 / conc['H+'] * K.HSO3 / conc['H+'] * conc['S+4'] / alpha_S / rho_w,
-        'NH4+': K.NH3 / K_H2O * conc['H+'] * conc['N-3'] / alpha_N3 / rho_w,
-        'NO3-': K.HNO3 / conc['H+'] * conc['N+5'] / alpha_N5 / rho_w,
-        'HSO4-': conc['H+'] * conc['S+6'] / (conc['H+'] + K.HSO4) / rho_w,
-        'SO4-2': K.HSO4 * conc['S+6'] / (conc['H+'] + K.HSO4) / rho_w,
-        'OH-': K_H2O / conc['H+'] / rho_w
-    }, warn=False) * rho_w
+        'H+': conc['H+'] / const.rho_w,
+        'HCO3-': K.CO2 / conc['H+'] * conc['C+4'] / alpha_C / const.rho_w,
+        'CO3-2': K.CO2 / conc['H+'] * K.HCO3 / conc['H+'] * conc['C+4'] / alpha_C / const.rho_w,
+        'HSO3-': K.SO2 / conc['H+'] * conc['S+4'] / alpha_S / const.rho_w,
+        'SO3-2': K.SO2 / conc['H+'] * K.HSO3 / conc['H+'] * conc['S+4'] / alpha_S / const.rho_w,
+        'NH4+': K.NH3 / K_H2O * conc['H+'] * conc['N-3'] / alpha_N3 / const.rho_w,
+        'NO3-': K.HNO3 / conc['H+'] * conc['N+5'] / alpha_N5 / const.rho_w,
+        'HSO4-': conc['H+'] * conc['S+6'] / (conc['H+'] + K.HSO4) / const.rho_w,
+        'SO4-2': K.HSO4 * conc['S+6'] / (conc['H+'] + K.HSO4) / const.rho_w,
+        'OH-': K_H2O / conc['H+'] / const.rho_w
+    }, warn=False) * const.rho_w
 
     np.testing.assert_allclose(actual, expected, rtol=1e-15)

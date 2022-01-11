@@ -1,3 +1,7 @@
+"""
+Rates of collision events and their deficit wrt expected values in case mutiplicity
+ values preclude representation of resultant multiplicity in multiple collisions
+"""
 from PySDM.products.impl.rate_product import RateProduct
 
 

@@ -12,6 +12,8 @@ from PySDM.backends.impl_thrust_rtc.methods.physics_methods import PhysicsMethod
 from PySDM.backends.impl_thrust_rtc.methods.moments_methods import MomentsMethods
 from PySDM.backends.impl_thrust_rtc.methods.condensation_methods import CondensationMethods
 from PySDM.backends.impl_thrust_rtc.methods.displacement_methods import DisplacementMethods
+from PySDM.backends.impl_thrust_rtc.methods.terminal_velocity_methods import \
+    TerminalVelocityMethods
 from PySDM.backends.impl_thrust_rtc.storage import make_storage_class
 from PySDM.backends.impl_thrust_rtc.random import Random as ImportedRandom
 from PySDM.formulae import Formulae
@@ -25,14 +27,15 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     PhysicsMethods,
     CondensationMethods,
     MomentsMethods,
-    DisplacementMethods
+    DisplacementMethods,
+    TerminalVelocityMethods
 ):
     ENABLE = True
     Random = ImportedRandom
 
     default_croupier = 'global'
 
-    def __init__(self, formulae=None, double_precision=False):
+    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
@@ -48,6 +51,10 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         CondensationMethods.__init__(self)
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
+        TerminalVelocityMethods.__init__(self)
+
+        trtc.Set_Kernel_Debug(debug)
+        trtc.Set_Verbose(verbose)
 
         if not ThrustRTC.ENABLE \
            and 'CI' not in os.environ:

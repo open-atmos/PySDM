@@ -1,3 +1,6 @@
+"""
+random number generator class for ThrustRTC backend (using CURandRTC)
+"""
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from .conf import trtc, rndrtc

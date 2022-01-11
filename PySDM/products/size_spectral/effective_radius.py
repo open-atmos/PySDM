@@ -1,3 +1,7 @@
+"""
+effective radius of particles within a grid cell (ratio of third to second moments,
+ optionally restricted to a given size range)
+"""
 import numpy as np
 import numba
 from PySDM.physics import constants as const

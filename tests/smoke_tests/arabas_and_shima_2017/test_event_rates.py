@@ -4,7 +4,7 @@ import numpy as np
 from PySDM_examples.Arabas_and_Shima_2017.simulation import Simulation
 from PySDM_examples.Arabas_and_Shima_2017.settings import setups
 from PySDM_examples.Arabas_and_Shima_2017.settings import Settings, w_avgs
-from PySDM.physics.constants import si, rho_STP, convert_to
+from PySDM.physics.constants import si, convert_to
 
 
 @pytest.mark.parametrize("settings_idx", range(len(w_avgs)))
@@ -16,6 +16,7 @@ def test_event_rates(settings_idx):
         r_dry=setups[settings_idx].r_dry,
         mass_of_dry_air=1 * si.kg
     )
+    const = settings.formulae.constants
     settings.n_output = 50
     simulation = Simulation(settings)
 
@@ -26,7 +27,7 @@ def test_event_rates(settings_idx):
     rip = np.asarray(output['ripening_rate'])
     act = np.asarray(output['activating_rate'])
     dea = np.asarray(output['deactivating_rate'])
-    act_max = np.full((1,), settings.n_in_dv / simulation.particulator.dt / rho_STP)
+    act_max = np.full((1,), settings.n_in_dv / simulation.particulator.dt / const.rho_STP)
     convert_to(act_max, 1/si.mg)
     assert (rip == 0).all()
     assert (act > 0).any()
