@@ -17,7 +17,6 @@ class SzyszkowskiLangmuir:
     `C_bulk` to the surface average molecular area `A`. The equation of state relates
     the surface concentration to the surface tension.
     """
-    @staticmethod
     def __init__(self, const):
         assert np.isfinite(const.RUEHL_nu_org)
         assert np.isfinite(const.RUEHL_A0)
@@ -34,12 +33,12 @@ class SzyszkowskiLangmuir:
         # A is the area that one molecule of organic occupies at the droplet surface
         A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org) # m^2 = A*f_surf
 
-        # solve implicitly for fraction of organic at surface
-        a = const.RUEHL_A0 / A_iso
-        c = Cb_iso / const.RUEHL_C0
-        f = lambda f_surf: a*f_surf - (c*(1-f_surf)) / (1 + c*(1-f_surf))
-        sol = optimize.root_scalar(f, bracket=[0, 1])
-        f_surf = sol.root
+        # fraction of organic at surface
+        # quadratic formula, solve equation of state analytically
+        a = -const.RUEHL_A0 / A_iso
+        b = const.RUEHL_A0 / A_iso + (const.RUEHL_A0 / A_iso)*(const.RUEHL_C0 / Cb_iso) + 1
+        c = -1
+        f_surf = (-b + np.sqrt(b**2 - 4*a*c))/(2*a)
 
         # calculate surface tension
         sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(1 + Cb_iso*(1-f_surf)/const.RUEHL_C0)
