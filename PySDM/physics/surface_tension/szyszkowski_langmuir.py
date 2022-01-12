@@ -23,15 +23,17 @@ class SzyszkowskiLangmuir:
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):
-        from scipy import constants as sci
+        from scipy import constants as sci # pylint: disable=import-outside-toplevel
 
         r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
         # C_bulk is the concentration of the organic in the bulk phase
-        Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w) # = C_bulk / (1-f_surf)
+        # Cb_iso = C_bulk / (1-f_surf)
+        Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w)
 
         # A is the area that one molecule of organic occupies at the droplet surface
-        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org) # m^2 = A*f_surf
+        # A_iso = A*f_surf (m^2)
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
 
         # fraction of organic at surface
         # quadratic formula, solve equation of state analytically
@@ -41,6 +43,9 @@ class SzyszkowskiLangmuir:
         f_surf = (-b + np.sqrt(b**2 - 4*a*c))/(2*a)
 
         # calculate surface tension
-        sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(1 + Cb_iso*(1-f_surf)/const.RUEHL_C0)
+        sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(
+            1 + Cb_iso*(1-f_surf)/const.RUEHL_C0
+        )
         sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
         return sgm
+        
