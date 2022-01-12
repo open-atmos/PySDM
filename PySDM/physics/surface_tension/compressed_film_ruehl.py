@@ -3,8 +3,6 @@ surface tension coefficient model featuring surface-partitioning
  as in [Ruehl et al. (2016)](https://doi.org/10.1126/science.aad4889)
 """
 import numpy as np
-from scipy import constants as sci
-from scipy import optimize
 
 class CompressedFilmRuehl:
     """
@@ -27,6 +25,9 @@ class CompressedFilmRuehl:
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):
+        from scipy import constants as sci
+        from scipy import optimize
+
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI))**(1/3)
 

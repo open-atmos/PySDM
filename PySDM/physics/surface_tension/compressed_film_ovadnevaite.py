@@ -4,7 +4,6 @@ surface tension coefficient model featuring surface-partitioning
 """
 import numpy as np
 
-
 class CompressedFilmOvadnevaite:
     """
     Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
