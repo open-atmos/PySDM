@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.surface_tension.compressed_film_ovadnevaite API documentation</title>
+<title>PySDM.physics.surface_tension.szyszkowski_langmuir API documentation</title>
 <meta name="description" content="surface tension coefficient model featuring surface-partitioning
-as in [Ovadnevaite et al. (2017)](https://doi.org/10.1038/nature22806)" />
+as in [Ruehl et al. (2016)](https://doi.org/10.1126/science.aad4889)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,52 +20,66 @@ as in [Ovadnevaite et al. (2017)](https://doi.org/10.1038/nature22806)" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.surface_tension.compressed_film_ovadnevaite</code></h1>
+<h1 class="title">Module <code>PySDM.physics.surface_tension.szyszkowski_langmuir</code></h1>
 </header>
 <section id="section-intro">
 <p>surface tension coefficient model featuring surface-partitioning
-as in <a href="https://doi.org/10.1038/nature22806">Ovadnevaite et al. (2017)</a></p>
+as in <a href="https://doi.org/10.1126/science.aad4889">Ruehl et al. (2016)</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 surface tension coefficient model featuring surface-partitioning
- as in [Ovadnevaite et al. (2017)](https://doi.org/10.1038/nature22806)
+ as in [Ruehl et al. (2016)](https://doi.org/10.1126/science.aad4889)
 &#34;&#34;&#34;
 import numpy as np
 
-class CompressedFilmOvadnevaite:
+class SzyszkowskiLangmuir:
     &#34;&#34;&#34;
-    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
-    and as described in Lowe et al. (2019).
+    Szyszkowski-Langmuir surface-partitioning of organics described in Ruehl et al. (2016).
+    Described in supplementary materials equations (12) and (14).
 
-    Assumes a surface tension of the organic material `sgm_org` and minimum film thickness,
-    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic
-    partitions to the surface of the droplet and that the surface tension is a weighted
-    average of the surface tension of water and the organic material.
+    Allows for more realistic thermodynamic partitioning of some organic to the surface,
+    while some remains dissolved in the bulk phase. The surface concentration is solved
+    implicitly from the isotherm equation that relates the bulk organic concentration
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates
+    the surface concentration to the surface tension.
     &#34;&#34;&#34;
     def __init__(self, const):
-        assert np.isfinite(const.sgm_org)
-        assert np.isfinite(const.delta_min)
+        assert np.isfinite(const.RUEHL_nu_org)
+        assert np.isfinite(const.RUEHL_A0)
+        assert np.isfinite(const.RUEHL_C0)
+        assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
-    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
-        # convert wet volume to wet radius
-        r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
+    def sigma(const, T, v_wet, v_dry, f_org):
+        from scipy import constants as sci # pylint: disable=import-outside-toplevel
 
-        # calculate the minimum shell volume, v_delta
-        v_delta = v_wet - ((4 * np.pi) / 3 * (r_wet - const.delta_min) ** 3)
+        r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
-        # calculate the total volume of organic, v_beta
-        v_beta = f_org * v_dry
+        # C_bulk is the concentration of the organic in the bulk phase
+        # Cb_iso = C_bulk / (1-f_surf)
+        Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w)
 
-        # calculate the coverage parameter
-        c_beta = np.minimum(v_beta / v_delta, 1)
+        # A is the area that one molecule of organic occupies at the droplet surface
+        # A_iso = A*f_surf (m^2)
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
 
-        # calculate sigma
-        sgm = (1-c_beta) * const.sgm_w + c_beta * const.sgm_org
-        return sgm</code></pre>
+        # fraction of organic at surface
+        # quadratic formula, solve equation of state analytically
+        a = -const.RUEHL_A0 / A_iso
+        b = const.RUEHL_A0 / A_iso + (const.RUEHL_A0 / A_iso)*(const.RUEHL_C0 / Cb_iso) + 1
+        c = -1
+        f_surf = (-b + np.sqrt(b**2 - 4*a*c))/(2*a)
+
+        # calculate surface tension
+        sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(
+            1 + Cb_iso*(1-f_surf)/const.RUEHL_C0
+        )
+        sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
+        return sgm
+        </code></pre>
 </details>
 </section>
 <section>
@@ -77,56 +91,70 @@ class CompressedFilmOvadnevaite:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite"><code class="flex name class">
-<span>class <span class="ident">CompressedFilmOvadnevaite</span></span>
+<dt id="PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir"><code class="flex name class">
+<span>class <span class="ident">SzyszkowskiLangmuir</span></span>
 <span>(</span><span>const)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
-and as described in Lowe et al. (2019).</p>
-<p>Assumes a surface tension of the organic material <code>sgm_org</code> and minimum film thickness,
-the thickness of a monolayer of the organic molecules, <code>delta_min</code>. Assumes all organic
-partitions to the surface of the droplet and that the surface tension is a weighted
-average of the surface tension of water and the organic material.</p></div>
+<div class="desc"><p>Szyszkowski-Langmuir surface-partitioning of organics described in Ruehl et al. (2016).
+Described in supplementary materials equations (12) and (14).</p>
+<p>Allows for more realistic thermodynamic partitioning of some organic to the surface,
+while some remains dissolved in the bulk phase. The surface concentration is solved
+implicitly from the isotherm equation that relates the bulk organic concentration
+<code>C_bulk</code> to the surface average molecular area <code>A</code>. The equation of state relates
+the surface concentration to the surface tension.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CompressedFilmOvadnevaite:
+<pre><code class="python">class SzyszkowskiLangmuir:
     &#34;&#34;&#34;
-    Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
-    and as described in Lowe et al. (2019).
+    Szyszkowski-Langmuir surface-partitioning of organics described in Ruehl et al. (2016).
+    Described in supplementary materials equations (12) and (14).
 
-    Assumes a surface tension of the organic material `sgm_org` and minimum film thickness,
-    the thickness of a monolayer of the organic molecules, `delta_min`. Assumes all organic
-    partitions to the surface of the droplet and that the surface tension is a weighted
-    average of the surface tension of water and the organic material.
+    Allows for more realistic thermodynamic partitioning of some organic to the surface,
+    while some remains dissolved in the bulk phase. The surface concentration is solved
+    implicitly from the isotherm equation that relates the bulk organic concentration
+    `C_bulk` to the surface average molecular area `A`. The equation of state relates
+    the surface concentration to the surface tension.
     &#34;&#34;&#34;
     def __init__(self, const):
-        assert np.isfinite(const.sgm_org)
-        assert np.isfinite(const.delta_min)
+        assert np.isfinite(const.RUEHL_nu_org)
+        assert np.isfinite(const.RUEHL_A0)
+        assert np.isfinite(const.RUEHL_C0)
+        assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
-    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
-        # convert wet volume to wet radius
-        r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
+    def sigma(const, T, v_wet, v_dry, f_org):
+        from scipy import constants as sci # pylint: disable=import-outside-toplevel
 
-        # calculate the minimum shell volume, v_delta
-        v_delta = v_wet - ((4 * np.pi) / 3 * (r_wet - const.delta_min) ** 3)
+        r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
-        # calculate the total volume of organic, v_beta
-        v_beta = f_org * v_dry
+        # C_bulk is the concentration of the organic in the bulk phase
+        # Cb_iso = C_bulk / (1-f_surf)
+        Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w)
 
-        # calculate the coverage parameter
-        c_beta = np.minimum(v_beta / v_delta, 1)
+        # A is the area that one molecule of organic occupies at the droplet surface
+        # A_iso = A*f_surf (m^2)
+        A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
 
-        # calculate sigma
-        sgm = (1-c_beta) * const.sgm_w + c_beta * const.sgm_org
+        # fraction of organic at surface
+        # quadratic formula, solve equation of state analytically
+        a = -const.RUEHL_A0 / A_iso
+        b = const.RUEHL_A0 / A_iso + (const.RUEHL_A0 / A_iso)*(const.RUEHL_C0 / Cb_iso) + 1
+        c = -1
+        f_surf = (-b + np.sqrt(b**2 - 4*a*c))/(2*a)
+
+        # calculate surface tension
+        sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(
+            1 + Cb_iso*(1-f_surf)/const.RUEHL_C0
+        )
+        sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
         return sgm</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite.sigma"><code class="name flex">
+<dt id="PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir.sigma"><code class="name flex">
 <span>def <span class="ident">sigma</span></span>(<span>const, T, v_wet, v_dry, f_org)</span>
 </code></dt>
 <dd>
@@ -136,21 +164,31 @@ average of the surface tension of water and the organic material.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
-    # convert wet volume to wet radius
-    r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
+def sigma(const, T, v_wet, v_dry, f_org):
+    from scipy import constants as sci # pylint: disable=import-outside-toplevel
 
-    # calculate the minimum shell volume, v_delta
-    v_delta = v_wet - ((4 * np.pi) / 3 * (r_wet - const.delta_min) ** 3)
+    r_wet = ((3 * v_wet) / (4 * np.pi))**(1/3) # m - wet radius
 
-    # calculate the total volume of organic, v_beta
-    v_beta = f_org * v_dry
+    # C_bulk is the concentration of the organic in the bulk phase
+    # Cb_iso = C_bulk / (1-f_surf)
+    Cb_iso = (f_org*v_dry/const.RUEHL_nu_org) / (v_wet/const.nu_w)
 
-    # calculate the coverage parameter
-    c_beta = np.minimum(v_beta / v_delta, 1)
+    # A is the area that one molecule of organic occupies at the droplet surface
+    # A_iso = A*f_surf (m^2)
+    A_iso = (4 * np.pi * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
 
-    # calculate sigma
-    sgm = (1-c_beta) * const.sgm_w + c_beta * const.sgm_org
+    # fraction of organic at surface
+    # quadratic formula, solve equation of state analytically
+    a = -const.RUEHL_A0 / A_iso
+    b = const.RUEHL_A0 / A_iso + (const.RUEHL_A0 / A_iso)*(const.RUEHL_C0 / Cb_iso) + 1
+    c = -1
+    f_surf = (-b + np.sqrt(b**2 - 4*a*c))/(2*a)
+
+    # calculate surface tension
+    sgm = const.sgm_w - ((sci.R*T)/(const.RUEHL_A0*sci.N_A)) * np.log(
+        1 + Cb_iso*(1-f_surf)/const.RUEHL_C0
+    )
+    sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
     return sgm</code></pre>
 </details>
 </dd>
@@ -173,9 +211,9 @@ def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite" href="#PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite">CompressedFilmOvadnevaite</a></code></h4>
+<h4><code><a title="PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir" href="#PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir">SzyszkowskiLangmuir</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite.sigma" href="#PySDM.physics.surface_tension.compressed_film_ovadnevaite.CompressedFilmOvadnevaite.sigma">sigma</a></code></li>
+<li><code><a title="PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir.sigma" href="#PySDM.physics.surface_tension.szyszkowski_langmuir.SzyszkowskiLangmuir.sigma">sigma</a></code></li>
 </ul>
 </li>
 </ul>
