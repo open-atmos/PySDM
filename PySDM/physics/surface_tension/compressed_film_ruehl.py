@@ -44,7 +44,7 @@ class CompressedFilmRuehl:
         f = lambda f_surf: Cb_iso*(1-f_surf)/const.RUEHL_C0 - np.exp(
             c * (const.RUEHL_A0**2 - (A_iso/f_surf)**2)
         )
-        sol = optimize.root_scalar(f, bracket=[0, 1])
+        sol = optimize.root_scalar(f, bracket=[1e-20, 1])
         f_surf = sol.root
 
         # calculate surface tension
