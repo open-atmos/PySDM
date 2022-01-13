@@ -128,6 +128,7 @@ class VTKExporter:
             ]
             x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
             y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            z = z * 1.
 
             gridToVTK(path, x, y, z, cellData = payload)
         else:
