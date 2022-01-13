@@ -76,8 +76,11 @@ class TestFig1:
         formulae = Formulae(
             surface_tension='CompressedFilmRuehl',
             constants={
-                'sgm_org': 40 * si.mN / si.m,
-                'delta_min': 0.1 * si.nm
+                'RUEHL_nu_org': aer.aerosol_modes_per_cc[0]['nu_org'],
+                'RUEHL_A0': 115e-20 * si.m * si.m,
+                'RUEHL_C0': 6e-7,
+                'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
+                'RUEHL_sgm_min': 40.0 * si.mN / si.m
             }
         )
 
