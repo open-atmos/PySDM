@@ -85,12 +85,14 @@ class TestFig1:
         )
 
         # act
-        sigma = formulae.surface_tension.sigma.py_func(
-            np.nan,
-            V_WET,
-            V_DRY,
-            aer.aerosol_modes_per_cc[0]['f_org']
-        )
+        sigma = np.zeros(len(V_WET))
+        for i,vw in enumerate(V_WET):
+            sigma[i] = formulae.surface_tension.sigma.py_func(
+                TEMPERATURE,
+                vw,
+                V_DRY,
+                aer.aerosol_modes_per_cc[0]['f_org']
+            )
 
         # assert
         test = np.array([
