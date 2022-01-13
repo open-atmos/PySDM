@@ -27,7 +27,7 @@ class VTKExporter:
         path='.',
         attributes_filename="sd_attributes",
         products_filename="sd_products",
-        file_num_len=4,
+        file_num_len=10,
         verbose=False
     ):
         self.path = os.path.join(path, 'output')
@@ -126,6 +126,8 @@ class VTKExporter:
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
+            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
 
             gridToVTK(path, x, y, z, cellData = payload)
         else:
