@@ -56,7 +56,7 @@ class VTKExporter:
         path=&#39;.&#39;,
         attributes_filename=&#34;sd_attributes&#34;,
         products_filename=&#34;sd_products&#34;,
-        file_num_len=4,
+        file_num_len=10,
         verbose=False
     ):
         self.path = os.path.join(path, &#39;output&#39;)
@@ -155,6 +155,9 @@ class VTKExporter:
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
+            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            z = z * 1.
 
             gridToVTK(path, x, y, z, cellData = payload)
         else:
@@ -176,7 +179,7 @@ class VTKExporter:
 <dl>
 <dt id="PySDM.exporters.vtk_exporter.VTKExporter"><code class="flex name class">
 <span>class <span class="ident">VTKExporter</span></span>
-<span>(</span><span>path='.', attributes_filename='sd_attributes', products_filename='sd_products', file_num_len=4, verbose=False)</span>
+<span>(</span><span>path='.', attributes_filename='sd_attributes', products_filename='sd_products', file_num_len=10, verbose=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Example of use:</p>
@@ -208,7 +211,7 @@ exporter.export_products(simulation.particulator)
         path=&#39;.&#39;,
         attributes_filename=&#34;sd_attributes&#34;,
         products_filename=&#34;sd_products&#34;,
-        file_num_len=4,
+        file_num_len=10,
         verbose=False
     ):
         self.path = os.path.join(path, &#39;output&#39;)
@@ -307,6 +310,9 @@ exporter.export_products(simulation.particulator)
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
+            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            z = z * 1.
 
             gridToVTK(path, x, y, z, cellData = payload)
         else:
@@ -422,6 +428,9 @@ exporter.export_products(simulation.particulator)
             :particulator.mesh.grid[1] + 1,
             :1
         ]
+        x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
+        y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+        z = z * 1.
 
         gridToVTK(path, x, y, z, cellData = payload)
     else:
