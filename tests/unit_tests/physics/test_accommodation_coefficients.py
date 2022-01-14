@@ -1,4 +1,4 @@
-import numpy.testing
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 import numpy as np
 from PySDM import Formulae
