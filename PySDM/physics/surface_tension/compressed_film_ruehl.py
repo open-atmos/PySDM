@@ -25,7 +25,6 @@ class CompressedFilmRuehl:
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):
-        from scipy import constants as sci # pylint: disable=import-outside-toplevel
         from scipy import optimize # pylint: disable=import-outside-toplevel
 
         # wet radius (m)
@@ -37,10 +36,10 @@ class CompressedFilmRuehl:
 
         # A is the area one molecule of organic occupies at the droplet surface
         # A_iso = A*f_surf (m^2)
-        A_iso = (4 * const.PI * r_wet**2) / (f_org * v_dry * sci.N_A / const.RUEHL_nu_org)
+        A_iso = (4 * const.PI * r_wet**2) / (f_org * v_dry * const.N_A / const.RUEHL_nu_org)
 
         # solve implicitly for fraction of organic at surface
-        c = (const.RUEHL_m_sigma * sci.N_A) / (2 * sci.R * T)
+        c = (const.RUEHL_m_sigma * const.N_A) / (2 * const.R_str * T)
         f = lambda f_surf: Cb_iso*(1-f_surf)/const.RUEHL_C0 - np.exp(
             c * (const.RUEHL_A0**2 - (A_iso/f_surf)**2)
         )

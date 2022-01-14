@@ -15,6 +15,8 @@ Md = (
 Mv = Substance.from_formula('H2O').mass * si.gram / si.mole
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
+N_A = sci.N_A / si.mole
+
 eps = Mv / Md
 Rd = R_str / Md
 Rv = R_str / Mv
