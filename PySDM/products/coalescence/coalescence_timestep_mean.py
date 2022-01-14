@@ -1,6 +1,6 @@
 """
 Average coalescence timestep length used when adaptive timestepping is enabled in the
- `PySDM.dynamics.coalescence.Coalescence` dynamic (fetching a value reset the counter)
+ `PySDM.dynamics.collisions.Coalescence` dynamic (fetching a value reset the counter)
 """
 import numpy as np
 import numba
