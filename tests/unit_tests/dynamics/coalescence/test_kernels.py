@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 from PySDM.formulae import Formulae
-from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.dynamics.coalescence_kernels import Golovin
 
 
 class TestGolovin:

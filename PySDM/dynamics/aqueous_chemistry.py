@@ -3,7 +3,7 @@ Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
 from collections import namedtuple
 import numpy as np
-from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
+from PySDM.dynamics.impl.chemistry_utils import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
     GASEOUS_COMPOUNDS, SpecificGravities, M
 
 

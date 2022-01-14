@@ -158,7 +158,7 @@ import numpy as np
 from PySDM.builder import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.dynamics.coalescence_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 

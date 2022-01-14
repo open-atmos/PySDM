@@ -5,7 +5,7 @@ import pytest
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
-from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.dynamics.coalescence_kernels import Golovin
 from PySDM.environments import Box
 from PySDM.initialisation.spectra import Exponential
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
