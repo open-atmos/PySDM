@@ -167,7 +167,7 @@ Instantiation of the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PyS
 Builder = pyimport("PySDM").Builder
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
-Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
+Golovin = pyimport("PySDM.physics.collisions.kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
@@ -187,7 +187,7 @@ particulator = builder.build(attributes, products)
 Builder = py.importlib.import_module('PySDM').Builder;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
-Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
+Golovin = py.importlib.import_module('PySDM.physics.collisions.kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
@@ -211,7 +211,7 @@ import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.coalescence_kernels import Golovin
+from PySDM.dynamics.collisions.kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 

@@ -3,7 +3,7 @@ hydrodynamic kernel using
  [Berry 1967](https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2) parameterization
 """
 
-from PySDM.dynamics.coalescence_kernels.impl.parameterized import Parameterized
+from PySDM.dynamics.collisions.kernels.impl.parameterized import Parameterized
 
 
 class Hydrodynamic(Parameterized):
