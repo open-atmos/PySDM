@@ -16,5 +16,9 @@ class Neglect:
         return -1
 
     @staticmethod
-    def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
-        return DK
+    def D(_, D, r, lmbd):  # pylint: disable=unused-argument
+        return D
+
+    @staticmethod
+    def K(_, K, r, lmbd):  # pylint: disable=unused-argument
+        return K

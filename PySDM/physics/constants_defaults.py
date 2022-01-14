@@ -24,6 +24,10 @@ D_exp = 1.81
 
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
+# mass and heat accommodation coefficients
+MAC = 1.
+HAC = 1.
+
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
 c_pv = 1850 * si.joule / si.kilogram / si.kelvin

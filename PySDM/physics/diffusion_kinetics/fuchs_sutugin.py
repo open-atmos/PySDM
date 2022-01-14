@@ -18,5 +18,13 @@ class FuchsSutugin:
         return (4. / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def DK(_, DK, r, lmbd):
-        return DK * (1 + lmbd/r) / (1 + 1.71 * lmbd/r + 1.33 * lmbd/r * lmbd/r)
+    def D(const, D, r, lmbd):
+        return D * (1 + lmbd/r) / (
+                1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+        )
+
+    @staticmethod
+    def K(const, K, r, lmbd):
+        return K * (1 + lmbd/r) / (
+                1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+        )
