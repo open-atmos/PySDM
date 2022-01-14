@@ -1,6 +1,6 @@
 """
 Classes representing physicochemical processes:
-`PySDM.dynamics.collisions.Coalescence`,
+`PySDM.dynamics.collisions.coalescence.Coalescence`,
 `PySDM.dynamics.condensation.Condensation`, ...
 """
 from PySDM.dynamics.collisions.coalescence import Coalescence

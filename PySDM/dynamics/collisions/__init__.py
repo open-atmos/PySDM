@@ -1,5 +1,5 @@
 """
-collisions-related logic including the `PySDM.dynamics.collisions.Coalescence`
+collisions-related logic including the `PySDM.dynamics.collisions.coalescence.Coalescence`
  dynamic and coalescence ``PySDM.dynamics.collisions.kernels`
 """
-from .coalescence import Coalescence
+from PySDM.dynamics.collisions.coalescence import Coalescence
