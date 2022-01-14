@@ -49,8 +49,16 @@ class FuchsSutugin:
         return (4. / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def DK(_, DK, r, lmbd):
-        return DK * (1 + lmbd/r) / (1 + 1.71 * lmbd/r + 1.33 * lmbd/r * lmbd/r)</code></pre>
+    def D(const, D, r, lmbd):
+        return D * (1 + lmbd/r) / (
+                1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+        )
+
+    @staticmethod
+    def K(const, K, r, lmbd):
+        return K * (1 + lmbd/r) / (
+                1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -85,13 +93,21 @@ class FuchsSutugin:
         return (4. / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
-    def DK(_, DK, r, lmbd):
-        return DK * (1 + lmbd/r) / (1 + 1.71 * lmbd/r + 1.33 * lmbd/r * lmbd/r)</code></pre>
+    def D(const, D, r, lmbd):
+        return D * (1 + lmbd/r) / (
+                1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+        )
+
+    @staticmethod
+    def K(const, K, r, lmbd):
+        return K * (1 + lmbd/r) / (
+                1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+        )</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.DK"><code class="name flex">
-<span>def <span class="ident">DK</span></span>(<span>_, DK, r, lmbd)</span>
+<dt id="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.D"><code class="name flex">
+<span>def <span class="ident">D</span></span>(<span>const, D, r, lmbd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -100,8 +116,26 @@ class FuchsSutugin:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def DK(_, DK, r, lmbd):
-    return DK * (1 + lmbd/r) / (1 + 1.71 * lmbd/r + 1.33 * lmbd/r * lmbd/r)</code></pre>
+def D(const, D, r, lmbd):
+    return D * (1 + lmbd/r) / (
+            1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+    )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.K"><code class="name flex">
+<span>def <span class="ident">K</span></span>(<span>const, K, r, lmbd)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def K(const, K, r, lmbd):
+    return K * (1 + lmbd/r) / (
+            1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.lambdaD"><code class="name flex">
@@ -153,7 +187,8 @@ def lambdaK(const, T, p):
 <li>
 <h4><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin">FuchsSutugin</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.DK" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.DK">DK</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.D" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.D">D</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.K" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.K">K</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.lambdaD" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.lambdaD">lambdaD</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.lambdaK" href="#PySDM.physics.diffusion_kinetics.fuchs_sutugin.FuchsSutugin.lambdaK">lambdaK</a></code></li>
 </ul>

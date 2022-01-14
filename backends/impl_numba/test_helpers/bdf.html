@@ -106,7 +106,8 @@ def _make_solve(formulae):
     phys_dthd_dt = formulae.state_variable_triplet.dthd_dt
     phys_lambdaD = formulae.diffusion_kinetics.lambdaD
     phys_lambdaK = formulae.diffusion_kinetics.lambdaK
-    phys_DK = formulae.diffusion_kinetics.DK
+    phys_diff_kin_D = formulae.diffusion_kinetics.D
+    phys_diff_kin_K = formulae.diffusion_kinetics.K
     phys_D = formulae.diffusion_thermics.D
 
     @numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False}})
@@ -122,8 +123,8 @@ def _make_solve(formulae):
         for i, x_i in enumerate(x):
             v = volume(x_i)
             r = phys_radius(v)
-            Dr = phys_DK(DTp, r, lambdaD)
-            Kr = phys_DK(K0, r, lambdaK)
+            Dr = phys_diff_kin_D(DTp, r, lambdaD)
+            Kr = phys_diff_kin_K(K0, r, lambdaK)
             sgm = sigma(T, v, dry_volume[i], f_org[i])
             dy_dt[idx_x + i] = dx_dt(
                 x_i,

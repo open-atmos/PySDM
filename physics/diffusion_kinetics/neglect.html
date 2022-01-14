@@ -45,8 +45,12 @@ class Neglect:
         return -1
 
     @staticmethod
-    def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
-        return DK</code></pre>
+    def D(_, D, r, lmbd):  # pylint: disable=unused-argument
+        return D
+
+    @staticmethod
+    def K(_, K, r, lmbd):  # pylint: disable=unused-argument
+        return K</code></pre>
 </details>
 </section>
 <section>
@@ -81,13 +85,17 @@ class Neglect:
         return -1
 
     @staticmethod
-    def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
-        return DK</code></pre>
+    def D(_, D, r, lmbd):  # pylint: disable=unused-argument
+        return D
+
+    @staticmethod
+    def K(_, K, r, lmbd):  # pylint: disable=unused-argument
+        return K</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.DK"><code class="name flex">
-<span>def <span class="ident">DK</span></span>(<span>_, DK, r, lmbd)</span>
+<dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.D"><code class="name flex">
+<span>def <span class="ident">D</span></span>(<span>_, D, r, lmbd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -96,8 +104,22 @@ class Neglect:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def DK(_, DK, r, lmbd):  # pylint: disable=unused-argument
-    return DK</code></pre>
+def D(_, D, r, lmbd):  # pylint: disable=unused-argument
+    return D</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.K"><code class="name flex">
+<span>def <span class="ident">K</span></span>(<span>_, K, r, lmbd)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def K(_, K, r, lmbd):  # pylint: disable=unused-argument
+    return K</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaD"><code class="name flex">
@@ -149,7 +171,8 @@ def lambdaK(_, T, p):  # pylint: disable=unused-argument
 <li>
 <h4><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect">Neglect</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect.DK" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect.DK">DK</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect.D" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect.D">D</a></code></li>
+<li><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect.K" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect.K">K</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaD" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaD">lambdaD</a></code></li>
 <li><code><a title="PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaK" href="#PySDM.physics.diffusion_kinetics.neglect.Neglect.lambdaK">lambdaK</a></code></li>
 </ul>

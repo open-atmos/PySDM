@@ -138,11 +138,11 @@ class CondensationMethods(ThrustRTCBackendMethods):
             if ( ! {phys.trivia.within_tolerance.c_inline(
                 return_type=&#39;bool&#39;, error_estimate=&#34;abs(_RH - RH_eq)&#34;, value=&#34;_RH&#34;, rtol=&#34;RH_rtol&#34;
             )}) {{
-                Dr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK=&#34;_DTp&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaD&#34;
+                Dr = {phys.diffusion_kinetics.D.c_inline(
+                    D=&#34;_DTp&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaD&#34;
                 )};
-                Kr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK=&#34;const.K0&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaK&#34;
+                Kr = {phys.diffusion_kinetics.K.c_inline(
+                    K=&#34;const.K0&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaK&#34;
                 )};
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
                     RH_eq=&#34;RH_eq&#34;, T=&#34;_T&#34;, RH=&#34;_RH&#34;, lv=&#34;_lv&#34;, pvs=&#34;_pvs&#34;, D=&#34;Dr&#34;, K=&#34;Kr&#34;
@@ -457,11 +457,11 @@ class CondensationMethods(ThrustRTCBackendMethods):
             if ( ! {phys.trivia.within_tolerance.c_inline(
                 return_type=&#39;bool&#39;, error_estimate=&#34;abs(_RH - RH_eq)&#34;, value=&#34;_RH&#34;, rtol=&#34;RH_rtol&#34;
             )}) {{
-                Dr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK=&#34;_DTp&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaD&#34;
+                Dr = {phys.diffusion_kinetics.D.c_inline(
+                    D=&#34;_DTp&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaD&#34;
                 )};
-                Kr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK=&#34;const.K0&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaK&#34;
+                Kr = {phys.diffusion_kinetics.K.c_inline(
+                    K=&#34;const.K0&#34;, r=&#34;r_old&#34;, lmbd=&#34;_lambdaK&#34;
                 )};
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
                     RH_eq=&#34;RH_eq&#34;, T=&#34;_T&#34;, RH=&#34;_RH&#34;, lv=&#34;_lv&#34;, pvs=&#34;_pvs&#34;, D=&#34;Dr&#34;, K=&#34;Kr&#34;
