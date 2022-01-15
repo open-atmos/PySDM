@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.aqueous_chemistry API documentation</title>
-<meta name="description" content="support classes and constants for the
-`PySDM.dynamics.aqueous_chemistry.AqueousChemistry` dynamic" />
+<title>PySDM.dynamics.terminal_velocity API documentation</title>
+<meta name="description" content="particle terminal velocity formulae" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,28 +19,32 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.aqueous_chemistry</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.terminal_velocity</code></h1>
 </header>
 <section id="section-intro">
-<p>support classes and constants for the
-<code><a title="PySDM.dynamics.aqueous_chemistry.AqueousChemistry" href="../../dynamics/aqueous_chemistry.html#PySDM.dynamics.aqueous_chemistry.AqueousChemistry">AqueousChemistry</a></code> dynamic</p>
+<p>particle terminal velocity formulae</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-support classes and constants for the
- `PySDM.dynamics.aqueous_chemistry.AqueousChemistry` dynamic
-&#34;&#34;&#34;</code></pre>
+particle terminal velocity formulae
+&#34;&#34;&#34;
+from PySDM.dynamics.terminal_velocity.gunn_and_kinzer import Interpolation
+from PySDM.dynamics.terminal_velocity.rogers_and_yau import RogersYau</code></pre>
 </details>
 </section>
 <section>
 <h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.physics.aqueous_chemistry.support" href="support.html">PySDM.physics.aqueous_chemistry.support</a></code></dt>
+<dt><code class="name"><a title="PySDM.dynamics.terminal_velocity.gunn_and_kinzer" href="gunn_and_kinzer.html">PySDM.dynamics.terminal_velocity.gunn_and_kinzer</a></code></dt>
 <dd>
-<div class="desc"><p>aqueous chemistry helper utils including specific gravity constants with
-values obtained using <a href="https://pythonhosted.org/chempy/">chempy</a>'s <code>Substance</code></p></div>
+<div class="desc"><p><a href="https://doi.org/10.1175/1520-0469(1949)006%3C0243:TTVOFF%3E2.0.CO;2">Gunn &amp; Kinzer 1949</a>
+terminal velocities used for both coalescence kernel …</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.terminal_velocity.rogers_and_yau" href="rogers_and_yau.html">PySDM.dynamics.terminal_velocity.rogers_and_yau</a></code></dt>
+<dd>
+<div class="desc"><p>Rogers &amp; Yau, equations: (8.5), (8.6), (8.8)</p></div>
 </dd>
 </dl>
 </section>
@@ -60,12 +63,13 @@ values obtained using <a href="https://pythonhosted.org/chempy/">chempy</a>'s <c
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics" href="../index.html">PySDM.physics</a></code></li>
+<li><code><a title="PySDM.dynamics" href="../index.html">PySDM.dynamics</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li><code><a title="PySDM.physics.aqueous_chemistry.support" href="support.html">PySDM.physics.aqueous_chemistry.support</a></code></li>
+<li><code><a title="PySDM.dynamics.terminal_velocity.gunn_and_kinzer" href="gunn_and_kinzer.html">PySDM.dynamics.terminal_velocity.gunn_and_kinzer</a></code></li>
+<li><code><a title="PySDM.dynamics.terminal_velocity.rogers_and_yau" href="rogers_and_yau.html">PySDM.dynamics.terminal_velocity.rogers_and_yau</a></code></li>
 </ul>
 </li>
 </ul>

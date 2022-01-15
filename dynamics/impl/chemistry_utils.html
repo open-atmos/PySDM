@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.aqueous_chemistry.support API documentation</title>
+<title>PySDM.dynamics.impl.chemistry_utils API documentation</title>
 <meta name="description" content="aqueous chemistry helper utils including specific gravity constants with
 values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -20,7 +20,7 @@ values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substanc
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.aqueous_chemistry.support</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.impl.chemistry_utils</code></h1>
 </header>
 <section id="section-intro">
 <p>aqueous chemistry helper utils including specific gravity constants with
@@ -184,7 +184,7 @@ class SpecificGravities:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.EqConst"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EqConst"><code class="flex name class">
 <span>class <span class="ident">EqConst</span></span>
 <span>(</span><span>formulae, constant_at_T0, dT, T_0)</span>
 </code></dt>
@@ -206,7 +206,7 @@ class SpecificGravities:
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.EqConst.at"><code class="name flex">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EqConst.at"><code class="name flex">
 <span>def <span class="ident">at</span></span>(<span>self, T)</span>
 </code></dt>
 <dd>
@@ -221,7 +221,7 @@ class SpecificGravities:
 </dd>
 </dl>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.EquilibriumConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts"><code class="flex name class">
 <span>class <span class="ident">EquilibriumConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -246,7 +246,7 @@ class SpecificGravities:
         }</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.HenryConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.HenryConsts"><code class="flex name class">
 <span>class <span class="ident">HenryConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -270,7 +270,7 @@ class SpecificGravities:
         }</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.KinConst"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KinConst"><code class="flex name class">
 <span>class <span class="ident">KinConst</span></span>
 <span>(</span><span>formulae, k, dT, T_0)</span>
 </code></dt>
@@ -291,7 +291,7 @@ class SpecificGravities:
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="PySDM.physics.aqueous_chemistry.support.KinConst.at"><code class="name flex">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KinConst.at"><code class="name flex">
 <span>def <span class="ident">at</span></span>(<span>self, T)</span>
 </code></dt>
 <dd>
@@ -306,7 +306,7 @@ class SpecificGravities:
 </dd>
 </dl>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.KineticConsts"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.KineticConsts"><code class="flex name class">
 <span>class <span class="ident">KineticConsts</span></span>
 <span>(</span><span>formulae)</span>
 </code></dt>
@@ -329,7 +329,7 @@ class SpecificGravities:
         }</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.aqueous_chemistry.support.SpecificGravities"><code class="flex name class">
+<dt id="PySDM.dynamics.impl.chemistry_utils.SpecificGravities"><code class="flex name class">
 <span>class <span class="ident">SpecificGravities</span></span>
 <span>(</span><span>constants)</span>
 </code></dt>
@@ -366,34 +366,34 @@ class SpecificGravities:
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.aqueous_chemistry" href="index.html">PySDM.physics.aqueous_chemistry</a></code></li>
+<li><code><a title="PySDM.dynamics.impl" href="index.html">PySDM.dynamics.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.EqConst" href="#PySDM.physics.aqueous_chemistry.support.EqConst">EqConst</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.EqConst" href="#PySDM.dynamics.impl.chemistry_utils.EqConst">EqConst</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.aqueous_chemistry.support.EqConst.at" href="#PySDM.physics.aqueous_chemistry.support.EqConst.at">at</a></code></li>
+<li><code><a title="PySDM.dynamics.impl.chemistry_utils.EqConst.at" href="#PySDM.dynamics.impl.chemistry_utils.EqConst.at">at</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.EquilibriumConsts" href="#PySDM.physics.aqueous_chemistry.support.EquilibriumConsts">EquilibriumConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts" href="#PySDM.dynamics.impl.chemistry_utils.EquilibriumConsts">EquilibriumConsts</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.HenryConsts" href="#PySDM.physics.aqueous_chemistry.support.HenryConsts">HenryConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.HenryConsts" href="#PySDM.dynamics.impl.chemistry_utils.HenryConsts">HenryConsts</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.KinConst" href="#PySDM.physics.aqueous_chemistry.support.KinConst">KinConst</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.KinConst" href="#PySDM.dynamics.impl.chemistry_utils.KinConst">KinConst</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.aqueous_chemistry.support.KinConst.at" href="#PySDM.physics.aqueous_chemistry.support.KinConst.at">at</a></code></li>
+<li><code><a title="PySDM.dynamics.impl.chemistry_utils.KinConst.at" href="#PySDM.dynamics.impl.chemistry_utils.KinConst.at">at</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.KineticConsts" href="#PySDM.physics.aqueous_chemistry.support.KineticConsts">KineticConsts</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.KineticConsts" href="#PySDM.dynamics.impl.chemistry_utils.KineticConsts">KineticConsts</a></code></h4>
 </li>
 <li>
-<h4><code><a title="PySDM.physics.aqueous_chemistry.support.SpecificGravities" href="#PySDM.physics.aqueous_chemistry.support.SpecificGravities">SpecificGravities</a></code></h4>
+<h4><code><a title="PySDM.dynamics.impl.chemistry_utils.SpecificGravities" href="#PySDM.dynamics.impl.chemistry_utils.SpecificGravities">SpecificGravities</a></code></h4>
 </li>
 </ul>
 </li>

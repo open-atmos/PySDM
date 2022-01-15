@@ -35,7 +35,7 @@ import numba
 import numpy as np
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.toms748 import toms748_solve
-from PySDM.physics.aqueous_chemistry.support import HenryConsts, SpecificGravities, \
+from PySDM.dynamics.impl.chemistry_utils import HenryConsts, SpecificGravities, \
     MASS_ACCOMMODATION_COEFFICIENTS, DIFFUSION_CONST, GASEOUS_COMPOUNDS, DISSOCIATION_FACTORS, \
     KineticConsts, EquilibriumConsts, k4
 from PySDM.backends.impl_common.backend_methods import BackendMethods

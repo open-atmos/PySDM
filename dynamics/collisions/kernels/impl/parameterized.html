@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.coalescence_kernels.geometric API documentation</title>
-<meta name="description" content="basic geometric kernel" />
+<title>PySDM.dynamics.collisions.kernels.impl.parameterized API documentation</title>
+<meta name="description" content="common parent class for kernels specified using Berry&#39;s parameterization" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,33 +19,40 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.coalescence_kernels.geometric</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.kernels.impl.parameterized</code></h1>
 </header>
 <section id="section-intro">
-<p>basic geometric kernel</p>
+<p>common parent class for kernels specified using Berry's parameterization</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;
-basic geometric kernel
-&#34;&#34;&#34;
+<pre><code class="python">&#34;&#34;&#34; common parent class for kernels specified using Berry&#39;s parameterization &#34;&#34;&#34;
+
+
 from PySDM.physics import constants as const
-from PySDM.physics.coalescence_kernels.impl.gravitational import Gravitational
+from .gravitational import Gravitational
 
 
-class Geometric(Gravitational):
+class Parameterized(Gravitational):
 
-    def __init__(self, collection_efficiency=1, x=&#39;volume&#39;):
+    def __init__(self, params):
         super().__init__()
-        self.collection_efficiency = collection_efficiency
-        self.x = x
+        self.params = params
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        self.particulator.backend.linear_collection_efficiency(
+            self.params, output, self.particulator.attributes[&#39;radius&#39;],
+            is_first_in_pair, const.si.um)
         output **= 2
-        output *= const.PI * self.collection_efficiency
-        self.pair_tmp.distance(self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
+        output *= const.PI
+        self.pair_tmp.max(
+            self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        self.pair_tmp **= 2
+        output *= self.pair_tmp
+
+        self.pair_tmp.distance(
+            self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
         output *= self.pair_tmp</code></pre>
 </details>
 </section>
@@ -58,9 +65,9 @@ class Geometric(Gravitational):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.coalescence_kernels.geometric.Geometric"><code class="flex name class">
-<span>class <span class="ident">Geometric</span></span>
-<span>(</span><span>collection_efficiency=1, x='volume')</span>
+<dt id="PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized"><code class="flex name class">
+<span>class <span class="ident">Parameterized</span></span>
+<span>(</span><span>params)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -68,23 +75,35 @@ class Geometric(Gravitational):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Geometric(Gravitational):
+<pre><code class="python">class Parameterized(Gravitational):
 
-    def __init__(self, collection_efficiency=1, x=&#39;volume&#39;):
+    def __init__(self, params):
         super().__init__()
-        self.collection_efficiency = collection_efficiency
-        self.x = x
+        self.params = params
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        self.particulator.backend.linear_collection_efficiency(
+            self.params, output, self.particulator.attributes[&#39;radius&#39;],
+            is_first_in_pair, const.si.um)
         output **= 2
-        output *= const.PI * self.collection_efficiency
-        self.pair_tmp.distance(self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
+        output *= const.PI
+        self.pair_tmp.max(
+            self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        self.pair_tmp **= 2
+        output *= self.pair_tmp
+
+        self.pair_tmp.distance(
+            self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
         output *= self.pair_tmp</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.physics.coalescence_kernels.impl.gravitational.Gravitational" href="impl/gravitational.html#PySDM.physics.coalescence_kernels.impl.gravitational.Gravitational">Gravitational</a></li>
+<li><a title="PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational" href="gravitational.html#PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational">Gravitational</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.dynamics.collisions.kernels.electric.Electric" href="../electric.html#PySDM.dynamics.collisions.kernels.electric.Electric">Electric</a></li>
+<li><a title="PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic" href="../hydrodynamic.html#PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic">Hydrodynamic</a></li>
 </ul>
 </dd>
 </dl>
@@ -98,13 +117,13 @@ class Geometric(Gravitational):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics.coalescence_kernels" href="index.html">PySDM.physics.coalescence_kernels</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.kernels.impl" href="index.html">PySDM.dynamics.collisions.kernels.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.coalescence_kernels.geometric.Geometric" href="#PySDM.physics.coalescence_kernels.geometric.Geometric">Geometric</a></code></h4>
+<h4><code><a title="PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized" href="#PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized">Parameterized</a></code></h4>
 </li>
 </ul>
 </li>
