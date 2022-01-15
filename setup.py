@@ -22,7 +22,7 @@ setup(
         'ThrustRTC==0.3.17',
         'CURandRTC' + ('==0.1.6' if 'CI' in os.environ else '>=0.1.2'),
         'numba' + ('==0.55.0' if 'CI' in os.environ else '>=0.51.2'),
-        'numpy' + ('==1.20.2' if 'CI' in os.environ else ''),
+        'numpy' + ('==1.21' if 'CI' in os.environ else ''),
         'Pint' + ('==0.17' if 'CI' in os.environ else ''),
         'chempy' + ('==0.7.10' if 'CI' in os.environ else ''),
         'scipy' + ('==1.6.3' if 'CI' in os.environ else ''),
