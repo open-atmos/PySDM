@@ -4,7 +4,7 @@ from chempy import Substance
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics.constants import convert_to, PPB
-from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SpecificGravities
+from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS, SpecificGravities
 
 
 class TestTable3:

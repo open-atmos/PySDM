@@ -6,7 +6,7 @@ from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.backends.impl_numba.methods.chemistry_methods import calc_ionic_strength, _K, _conc
 from PySDM.physics.constants import K_H2O
 from PySDM import Formulae
-from PySDM.physics.aqueous_chemistry.support import EquilibriumConsts
+from PySDM.dynamics.impl.chemistry_utils import EquilibriumConsts
 
 
 @pytest.mark.parametrize("nt", (0, 1, 2, 3))

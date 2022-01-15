@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM.dynamics.coalescence import Coalescence, DEFAULTS
+from PySDM.dynamics.collisions.coalescence import Coalescence, DEFAULTS
 from PySDM.environments import Box
 from ....unit_tests.dummy_particulator import DummyParticulator
 

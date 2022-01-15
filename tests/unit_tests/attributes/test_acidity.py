@@ -5,7 +5,7 @@ import pytest
 from chempy import Equilibrium
 from chempy.equilibria import EqSystem
 from chempy.chemistry import Species
-from PySDM.physics.aqueous_chemistry.support import M, EquilibriumConsts
+from PySDM.dynamics.impl.chemistry_utils import M, EquilibriumConsts
 from PySDM.physics.constants import K_H2O
 from PySDM.formulae import Formulae
 from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods, _K, _conc
