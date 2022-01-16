@@ -34,7 +34,6 @@ from abc import abstractmethod
 from typing import Optional
 import re
 import inspect
-import numpy as np
 import pint
 from PySDM.physics.constants import PPB, PPM, PPT
 
@@ -59,7 +58,9 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
@@ -157,7 +158,9 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
@@ -282,8 +285,20 @@ def unit(self):
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
     self.formulae = self.particulator.formulae
-    self.shape = self.particulator.mesh.grid
-    self.buffer = np.empty(self.particulator.mesh.grid)</code></pre>
+    self.shape = self.particulator.mesh.grid</code></pre>
+</details>
+</dd>
+<dt id="PySDM.products.impl.product.Product.set_buffer"><code class="name flex">
+<span>def <span class="ident">set_buffer</span></span>(<span>self, buffer)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_buffer(self, buffer):
+    self.buffer = buffer</code></pre>
 </details>
 </dd>
 </dl>
@@ -309,6 +324,7 @@ def unit(self):
 <ul class="">
 <li><code><a title="PySDM.products.impl.product.Product.get" href="#PySDM.products.impl.product.Product.get">get</a></code></li>
 <li><code><a title="PySDM.products.impl.product.Product.register" href="#PySDM.products.impl.product.Product.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.product.Product.set_buffer" href="#PySDM.products.impl.product.Product.set_buffer">set_buffer</a></code></li>
 <li><code><a title="PySDM.products.impl.product.Product.unit" href="#PySDM.products.impl.product.Product.unit">unit</a></code></li>
 </ul>
 </li>
