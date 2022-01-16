@@ -5,7 +5,6 @@ from abc import abstractmethod
 from typing import Optional
 import re
 import inspect
-import numpy as np
 import pint
 from PySDM.physics.constants import PPB, PPM, PPT
 
