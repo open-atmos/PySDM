@@ -14,7 +14,8 @@ from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMa
                             FreezableSpecificConcentration, DynamicWallTime,
                             ParticleSizeSpectrumPerVolume,
                             ParticleVolumeVersusRadiusLogarithmSpectrum,
-                            RadiusBinnedNumberAveragedTerminalVelocity)
+                            RadiusBinnedNumberAveragedTerminalVelocity,
+                            FlowVelocityComponent)
 
 _ARGUMENTS = {
     AqueousMassSpectrum: {'key': 'S_VI', 'dry_radius_bins_edges': (0, np.inf)},
@@ -26,7 +27,8 @@ _ARGUMENTS = {
     DynamicWallTime: {'dynamic': 'Condensation'},
     ParticleSizeSpectrumPerVolume: {'radius_bins_edges': (0, np.inf)},
     ParticleVolumeVersusRadiusLogarithmSpectrum: {'radius_bins_edges': (0, np.inf)},
-    RadiusBinnedNumberAveragedTerminalVelocity: {'radius_bin_edges': (0, np.inf)}
+    RadiusBinnedNumberAveragedTerminalVelocity: {'radius_bin_edges': (0, np.inf)},
+    FlowVelocityComponent: {'component': 0}
 }
 
 
