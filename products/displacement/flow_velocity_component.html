@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.displacement API documentation</title>
-<meta name="description" content="products pertinent to the `PySDM.dynamics.displacement.Displacement` dynamic" />
+<title>PySDM.products.displacement.flow_velocity_component API documentation</title>
+<meta name="description" content="reports on the maximum Courant field value for each cell (maximum of
+absolute values of Courant number on all edges of a cell)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,46 +20,123 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.displacement</code></h1>
+<h1 class="title">Module <code>PySDM.products.displacement.flow_velocity_component</code></h1>
 </header>
 <section id="section-intro">
-<p>products pertinent to the <code><a title="PySDM.dynamics.displacement.Displacement" href="../../dynamics/displacement.html#PySDM.dynamics.displacement.Displacement">Displacement</a></code> dynamic</p>
+<p>reports on the maximum Courant field value for each cell (maximum of
+absolute values of Courant number on all edges of a cell)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-products pertinent to the `PySDM.dynamics.displacement.Displacement` dynamic
+reports on the maximum Courant field value for each cell (maximum of
+absolute values of Courant number on all edges of a cell)
 &#34;&#34;&#34;
-from .surface_precipitation import SurfacePrecipitation
-from .max_courant_number import MaxCourantNumber
-from .flow_velocity_component import FlowVelocityComponent</code></pre>
+import numpy as np
+from PySDM.products.impl.product import Product
+
+
+class FlowVelocityComponent(Product):
+    def __init__(self, component: int, name=None, unit=&#39;m/s&#39;):
+        super().__init__(unit=unit, name=name)
+        assert component in (0, 1)
+        self.component = component
+        self.displacement = None
+        self.grid_step = np.nan
+        self.time_step = np.nan
+
+    def register(self, builder):
+        super().register(builder)
+        self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]
+        self.time_step = self.particulator.dt
+        mesh = self.particulator.mesh
+        self.grid_step = mesh.size[self.component] / mesh.grid[self.component]
+
+    def _impl(self, **kwargs):
+        courant_component = self.displacement.courant[self.component].to_ndarray()
+        if self.component == 0:
+            self.buffer[:] = .5 * (courant_component[:-1, :] + courant_component[1:, :])
+        elif self.component == 1:
+            self.buffer[:] = .5 * (courant_component[:, :-1] + courant_component[:, 1:])
+        else:
+            raise NotImplementedError()
+        self.buffer[:] *= self.grid_step / self.time_step
+        return self.buffer</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.products.displacement.flow_velocity_component" href="flow_velocity_component.html">PySDM.products.displacement.flow_velocity_component</a></code></dt>
+<dt id="PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent"><code class="flex name class">
+<span>class <span class="ident">FlowVelocityComponent</span></span>
+<span>(</span><span>component: int, name=None, unit='m/s')</span>
+</code></dt>
 <dd>
-<div class="desc"><p>reports on the maximum Courant field value for each cell (maximum of
-absolute values of Courant number on all edges of a cell)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.displacement.max_courant_number" href="max_courant_number.html">PySDM.products.displacement.max_courant_number</a></code></dt>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FlowVelocityComponent(Product):
+    def __init__(self, component: int, name=None, unit=&#39;m/s&#39;):
+        super().__init__(unit=unit, name=name)
+        assert component in (0, 1)
+        self.component = component
+        self.displacement = None
+        self.grid_step = np.nan
+        self.time_step = np.nan
+
+    def register(self, builder):
+        super().register(builder)
+        self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]
+        self.time_step = self.particulator.dt
+        mesh = self.particulator.mesh
+        self.grid_step = mesh.size[self.component] / mesh.grid[self.component]
+
+    def _impl(self, **kwargs):
+        courant_component = self.displacement.courant[self.component].to_ndarray()
+        if self.component == 0:
+            self.buffer[:] = .5 * (courant_component[:-1, :] + courant_component[1:, :])
+        elif self.component == 1:
+            self.buffer[:] = .5 * (courant_component[:, :-1] + courant_component[:, 1:])
+        else:
+            raise NotImplementedError()
+        self.buffer[:] *= self.grid_step / self.time_step
+        return self.buffer</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>reports on the maximum Courant field value for each cell (maximum of
-absolute values of Courant number on all edges of a cell)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.displacement.surface_precipitation" href="surface_precipitation.html">PySDM.products.displacement.surface_precipitation</a></code></dt>
-<dd>
-<div class="desc"><p>water volume flux derived from sizes of particles crossing bottom domain boundary</p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register(self, builder):
+    super().register(builder)
+    self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]
+    self.time_step = self.particulator.dt
+    mesh = self.particulator.mesh
+    self.grid_step = mesh.size[self.component] / mesh.grid[self.component]</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -69,14 +147,17 @@ absolute values of Courant number on all edges of a cell)</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products" href="../index.html">PySDM.products</a></code></li>
+<li><code><a title="PySDM.products.displacement" href="index.html">PySDM.products.displacement</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.products.displacement.flow_velocity_component" href="flow_velocity_component.html">PySDM.products.displacement.flow_velocity_component</a></code></li>
-<li><code><a title="PySDM.products.displacement.max_courant_number" href="max_courant_number.html">PySDM.products.displacement.max_courant_number</a></code></li>
-<li><code><a title="PySDM.products.displacement.surface_precipitation" href="surface_precipitation.html">PySDM.products.displacement.surface_precipitation</a></code></li>
+<li>
+<h4><code><a title="PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent" href="#PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent">FlowVelocityComponent</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent.register" href="#PySDM.products.displacement.flow_velocity_component.FlowVelocityComponent.register">register</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
