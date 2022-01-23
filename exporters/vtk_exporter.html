@@ -118,7 +118,7 @@ class VTKExporter:
         else:
             raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-        pointsToVTK(path, x, y, z, data = payload)
+        pointsToVTK(path, x, y, z, data=payload)
 
     def export_products(self, particulator):
         if len(particulator.products) != 0:
@@ -131,14 +131,14 @@ class VTKExporter:
             if particulator.mesh.dimension != 2:
                 raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-            data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+            data_shape = (particulator.mesh.grid[1], particulator.mesh.grid[0], 1)
 
             for k in particulator.products.keys():
                 v = particulator.products[k].get()
 
                 if isinstance(v, np.ndarray):
                     if v.shape == particulator.mesh.grid:
-                        payload[k] = v.T[:, :, np.newaxis]
+                        payload[k] = v[:, :, np.newaxis]
                     else:
                         if self.verbose:
                             print(f&#39;{k} shape {v.shape} not equals data shape {data_shape}&#39;
@@ -150,16 +150,16 @@ class VTKExporter:
                     if self.verbose:
                         print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
-            x, y, z = np.mgrid[
+            y, x, z = np.mgrid[
                 :particulator.mesh.grid[0] + 1,
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
-            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
-            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            y = y * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            x = x * particulator.mesh.size[1] / particulator.mesh.grid[1]
             z = z * 1.
 
-            gridToVTK(path, x, y, z, cellData = payload)
+            gridToVTK(path, x, y, z, cellData=payload)
         else:
             if self.verbose:
                 print(&#39;No products to export&#39;)
@@ -273,7 +273,7 @@ exporter.export_products(simulation.particulator)
         else:
             raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-        pointsToVTK(path, x, y, z, data = payload)
+        pointsToVTK(path, x, y, z, data=payload)
 
     def export_products(self, particulator):
         if len(particulator.products) != 0:
@@ -286,14 +286,14 @@ exporter.export_products(simulation.particulator)
             if particulator.mesh.dimension != 2:
                 raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-            data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+            data_shape = (particulator.mesh.grid[1], particulator.mesh.grid[0], 1)
 
             for k in particulator.products.keys():
                 v = particulator.products[k].get()
 
                 if isinstance(v, np.ndarray):
                     if v.shape == particulator.mesh.grid:
-                        payload[k] = v.T[:, :, np.newaxis]
+                        payload[k] = v[:, :, np.newaxis]
                     else:
                         if self.verbose:
                             print(f&#39;{k} shape {v.shape} not equals data shape {data_shape}&#39;
@@ -305,16 +305,16 @@ exporter.export_products(simulation.particulator)
                     if self.verbose:
                         print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
-            x, y, z = np.mgrid[
+            y, x, z = np.mgrid[
                 :particulator.mesh.grid[0] + 1,
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
-            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
-            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            y = y * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            x = x * particulator.mesh.size[1] / particulator.mesh.grid[1]
             z = z * 1.
 
-            gridToVTK(path, x, y, z, cellData = payload)
+            gridToVTK(path, x, y, z, cellData=payload)
         else:
             if self.verbose:
                 print(&#39;No products to export&#39;)
@@ -381,7 +381,7 @@ exporter.export_products(simulation.particulator)
     else:
         raise NotImplementedError(&#34;Only 2 dimensions array is supported at the moment.&#34;)
 
-    pointsToVTK(path, x, y, z, data = payload)</code></pre>
+    pointsToVTK(path, x, y, z, data=payload)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.exporters.vtk_exporter.VTKExporter.export_products"><code class="name flex">
@@ -404,14 +404,14 @@ exporter.export_products(simulation.particulator)
         if particulator.mesh.dimension != 2:
             raise NotImplementedError(&#34;Only 2 dimensions data is supported at the moment.&#34;)
 
-        data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+        data_shape = (particulator.mesh.grid[1], particulator.mesh.grid[0], 1)
 
         for k in particulator.products.keys():
             v = particulator.products[k].get()
 
             if isinstance(v, np.ndarray):
                 if v.shape == particulator.mesh.grid:
-                    payload[k] = v.T[:, :, np.newaxis]
+                    payload[k] = v[:, :, np.newaxis]
                 else:
                     if self.verbose:
                         print(f&#39;{k} shape {v.shape} not equals data shape {data_shape}&#39;
@@ -423,16 +423,16 @@ exporter.export_products(simulation.particulator)
                 if self.verbose:
                     print(f&#39;{k} export is not possible&#39;, file=sys.stderr)
 
-        x, y, z = np.mgrid[
+        y, x, z = np.mgrid[
             :particulator.mesh.grid[0] + 1,
             :particulator.mesh.grid[1] + 1,
             :1
         ]
-        x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
-        y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+        y = y * particulator.mesh.size[0] / particulator.mesh.grid[0]
+        x = x * particulator.mesh.size[1] / particulator.mesh.grid[1]
         z = z * 1.
 
-        gridToVTK(path, x, y, z, cellData = payload)
+        gridToVTK(path, x, y, z, cellData=payload)
     else:
         if self.verbose:
             print(&#39;No products to export&#39;)</code></pre>
