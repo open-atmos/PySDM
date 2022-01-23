@@ -89,7 +89,7 @@ class VTKExporter:
         else:
             raise NotImplementedError("Only 2 dimensions array is supported at the moment.")
 
-        pointsToVTK(path, x, y, z, data = payload)
+        pointsToVTK(path, x, y, z, data=payload)
 
     def export_products(self, particulator):
         if len(particulator.products) != 0:
@@ -102,14 +102,14 @@ class VTKExporter:
             if particulator.mesh.dimension != 2:
                 raise NotImplementedError("Only 2 dimensions data is supported at the moment.")
 
-            data_shape = (particulator.mesh.grid[0], particulator.mesh.grid[1], 1)
+            data_shape = (particulator.mesh.grid[1], particulator.mesh.grid[0], 1)
 
             for k in particulator.products.keys():
                 v = particulator.products[k].get()
 
                 if isinstance(v, np.ndarray):
                     if v.shape == particulator.mesh.grid:
-                        payload[k] = v.T[:, :, np.newaxis]
+                        payload[k] = v[:, :, np.newaxis]
                     else:
                         if self.verbose:
                             print(f'{k} shape {v.shape} not equals data shape {data_shape}'
@@ -121,16 +121,16 @@ class VTKExporter:
                     if self.verbose:
                         print(f'{k} export is not possible', file=sys.stderr)
 
-            x, y, z = np.mgrid[
+            y, x, z = np.mgrid[
                 :particulator.mesh.grid[0] + 1,
                 :particulator.mesh.grid[1] + 1,
                 :1
             ]
-            x = x * particulator.mesh.size[0] / particulator.mesh.grid[0]
-            y = y * particulator.mesh.size[1] / particulator.mesh.grid[1]
+            y = y * particulator.mesh.size[0] / particulator.mesh.grid[0]
+            x = x * particulator.mesh.size[1] / particulator.mesh.grid[1]
             z = z * 1.
 
-            gridToVTK(path, x, y, z, cellData = payload)
+            gridToVTK(path, x, y, z, cellData=payload)
         else:
             if self.verbose:
                 print('No products to export')
