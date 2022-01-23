@@ -5,6 +5,7 @@ import numpy as np
 
 
 def discretise_multiplicities(y_float):
+    assert np.issubdtype(y_float.dtype, np.floating)
     y_int = y_float.round().astype(np.int64)
 
     percent_diff = 100 * abs(1 - np.sum(y_float) / np.sum(y_int.astype(float)))
