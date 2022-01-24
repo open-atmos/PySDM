@@ -4,7 +4,6 @@ Zero-dimensional adiabatic parcel framework
 import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
-from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from PySDM.environments.impl.moist import Moist
 
 

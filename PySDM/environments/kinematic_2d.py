@@ -6,7 +6,6 @@ handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
-from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.environments.impl.moist import Moist
 from ..impl import arakawa_c

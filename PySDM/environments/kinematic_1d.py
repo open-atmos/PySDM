@@ -6,7 +6,6 @@ Single-column time-varying-updraft framework with moisture advection handled by
 import numpy as np
 from PySDM.environments.impl.moist import Moist
 from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
-from ..initialisation.discretise_multiplicities import discretise_multiplicities
 from ..impl import arakawa_c
 
 
