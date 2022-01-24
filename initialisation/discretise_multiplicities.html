@@ -33,22 +33,23 @@ integer-valued discretisation with sanity checks for errors due to type casting
 import numpy as np
 
 
-def discretise_multiplicities(y_float):
-    y_int = y_float.round().astype(np.int64)
+def discretise_multiplicities(values_arg):
+    values_int = values_arg.round().astype(np.int64)
 
-    percent_diff = 100 * abs(1 - np.sum(y_float) / np.sum(y_int.astype(float)))
-    if percent_diff &gt; 1:
-        raise Exception(
-            f&#34;{percent_diff}% error in total real-droplet number&#34;
-            f&#34; due to casting multiplicities to ints&#34;
-        )
+    if np.issubdtype(values_arg.dtype, np.floating):
+        percent_diff = 100 * abs(1 - np.sum(values_arg) / np.sum(values_int.astype(float)))
+        if percent_diff &gt; 1:
+            raise Exception(
+                f&#34;{percent_diff}% error in total real-droplet number&#34;
+                f&#34; due to casting multiplicities to ints&#34;
+            )
 
-    if not (y_int &gt; 0).all():
-        raise Exception(
-            f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(y_float)})&#34;
-        )
+        if not (values_int &gt; 0).all():
+            raise Exception(
+                f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})&#34;
+            )
 
-    return y_int</code></pre>
+    return values_int</code></pre>
 </details>
 </section>
 <section>
@@ -59,7 +60,7 @@ def discretise_multiplicities(y_float):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.initialisation.discretise_multiplicities.discretise_multiplicities"><code class="name flex">
-<span>def <span class="ident">discretise_multiplicities</span></span>(<span>y_float)</span>
+<span>def <span class="ident">discretise_multiplicities</span></span>(<span>values_arg)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -67,22 +68,23 @@ def discretise_multiplicities(y_float):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def discretise_multiplicities(y_float):
-    y_int = y_float.round().astype(np.int64)
+<pre><code class="python">def discretise_multiplicities(values_arg):
+    values_int = values_arg.round().astype(np.int64)
 
-    percent_diff = 100 * abs(1 - np.sum(y_float) / np.sum(y_int.astype(float)))
-    if percent_diff &gt; 1:
-        raise Exception(
-            f&#34;{percent_diff}% error in total real-droplet number&#34;
-            f&#34; due to casting multiplicities to ints&#34;
-        )
+    if np.issubdtype(values_arg.dtype, np.floating):
+        percent_diff = 100 * abs(1 - np.sum(values_arg) / np.sum(values_int.astype(float)))
+        if percent_diff &gt; 1:
+            raise Exception(
+                f&#34;{percent_diff}% error in total real-droplet number&#34;
+                f&#34; due to casting multiplicities to ints&#34;
+            )
 
-    if not (y_int &gt; 0).all():
-        raise Exception(
-            f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(y_float)})&#34;
-        )
+        if not (values_int &gt; 0).all():
+            raise Exception(
+                f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})&#34;
+            )
 
-    return y_int</code></pre>
+    return values_int</code></pre>
 </details>
 </dd>
 </dl>

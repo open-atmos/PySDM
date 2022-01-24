@@ -37,7 +37,6 @@ Single-column time-varying-updraft framework with moisture advection handled by
 import numpy as np
 from PySDM.environments.impl.moist import Moist
 from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
-from ..initialisation.discretise_multiplicities import discretise_multiplicities
 from ..impl import arakawa_c
 
 
@@ -87,7 +86,7 @@ class Kinematic1D(Moist):
             cell_id = attributes[&#39;cell id&#39;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes[&#39;n&#39;] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
+        attributes[&#39;n&#39;] = n_per_kg * rhod[cell_id] * domain_volume
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -162,7 +161,7 @@ class Kinematic1D(Moist):
             cell_id = attributes[&#39;cell id&#39;]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes[&#39;n&#39;] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
+        attributes[&#39;n&#39;] = n_per_kg * rhod[cell_id] * domain_volume
         attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
@@ -253,7 +252,7 @@ def dv(self):
         cell_id = attributes[&#39;cell id&#39;]
         domain_volume = np.prod(np.array(self.mesh.size))
 
-    attributes[&#39;n&#39;] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
+    attributes[&#39;n&#39;] = n_per_kg * rhod[cell_id] * domain_volume
     attributes[&#39;volume&#39;] = self.formulae.trivia.volume(radius=r_wet)
 
     return attributes</code></pre>
