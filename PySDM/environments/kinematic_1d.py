@@ -6,7 +6,6 @@ Single-column time-varying-updraft framework with moisture advection handled by
 import numpy as np
 from PySDM.environments.impl.moist import Moist
 from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
-from ..initialisation.discretise_multiplicities import discretise_multiplicities
 from ..impl import arakawa_c
 
 
@@ -56,7 +55,7 @@ class Kinematic1D(Moist):
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes['n'] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
+        attributes['n'] = n_per_kg * rhod[cell_id] * domain_volume
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
