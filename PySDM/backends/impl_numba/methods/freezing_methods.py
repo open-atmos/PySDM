@@ -31,7 +31,7 @@ class FreezingMethods(BackendMethods):
                     continue
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    #relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
