@@ -5,4 +5,4 @@ pytest
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
 PySDM-examples @ git+git://github.com/slayoo/PySDM-examples@fb4df0f#egg=PySDM-examples
-PyMPDATA @ git+https://github.com/slayoo/PyMPDATA@262f732#egg=PyMPDATA
+PyMPDATA @ git+https://github.com/atmos-cloud-sim-uj/PyMPDATA@e7b73a7#egg=PyMPDATA
