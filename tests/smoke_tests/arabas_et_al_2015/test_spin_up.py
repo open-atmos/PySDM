@@ -5,21 +5,10 @@ import pytest
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM.physics import si
-
+from PySDM.formulae import Formulae
+from .dummy_storage import DummyStorage
 from ...backends_fixture import backend_class
 assert hasattr(backend_class, '_pytestfixturefunction')
-
-
-class DummyStorage:
-    def __init__(self):
-        self.profiles = []
-
-    def init(*_):  # pylint: disable=no-method-argument
-        pass
-
-    def save(self, data: np.ndarray, step: int, name: str):  # pylint: disable=unused-argument
-        if name == "qv_env":
-            self.profiles.append({"qv_env": np.mean(data, axis=0)})
 
 
 @pytest.mark.parametrize("fastmath", (
@@ -29,7 +18,7 @@ class DummyStorage:
 # pylint: disable=redefined-outer-name
 def test_spin_up(backend_class, fastmath, plot=False):
     # Arrange
-    settings = Settings(fastmath=fastmath)
+    settings = Settings(Formulae(fastmath=fastmath))
     settings.dt = .5 * si.second
     settings.grid = (3, 25)
     settings.simulation_time = 20 * settings.dt

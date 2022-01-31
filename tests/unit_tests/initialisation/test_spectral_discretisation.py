@@ -4,11 +4,7 @@ import pytest
 from PySDM.initialisation.sampling import spectral_sampling, spectro_glacial_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
 from PySDM import Formulae
-from PySDM.physics import constants as const
-from PySDM.physics.freezing_temperature_spectrum import niemand_et_al_2012
 
-niemand_et_al_2012.a = -0.517
-niemand_et_al_2012.b = 8.934
 
 m_mode = .5e-5
 n_part = 256 * 16
@@ -17,7 +13,10 @@ spectrum = Lognormal(n_part, m_mode, s_geom)
 m_range = (.1e-6, 100e-6)
 formulae = Formulae(
     freezing_temperature_spectrum='Niemand_et_al_2012',
-    seed=const.default_random_seed
+    constants={
+        'NIEMAND_A': -0.517,
+        'NIEMAND_B': 8.934
+    }
 )
 
 

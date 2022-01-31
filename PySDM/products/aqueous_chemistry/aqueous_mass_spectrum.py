@@ -6,12 +6,12 @@ import numpy as np
 from chempy import Substance
 from PySDM.physics.constants import si
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
-from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS
+from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
 class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(self, key, dry_radius_bins_edges, specific=False, name=None, unit='kg/m^3'):
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit='m')
         self.key = key
         self.dry_radius_bins_edges = dry_radius_bins_edges
         self.molar_mass = Substance.from_formula(AQUEOUS_COMPOUNDS[key][0]).mass * si.g / si.mole

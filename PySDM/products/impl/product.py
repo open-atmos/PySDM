@@ -5,9 +5,8 @@ from abc import abstractmethod
 from typing import Optional
 import re
 import inspect
-import numpy as np
 import pint
-from PySDM.physics import constants as const
+from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
 _CAMEL_CASE_PATTERN = re.compile(r'[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])')
@@ -17,7 +16,7 @@ class Product:
     def __init__(self, *, unit: str, name: Optional[str] = None):
         self.name = name or self._camel_case_to_words(self.__class__.__name__)
 
-        self._unit = self.__parse_unit(unit)
+        self._unit = self._parse_unit(unit)
         self.unit_magnitude_in_base_units = self._unit.to_base_units().magnitude
         self.__check_unit()
 
@@ -30,21 +29,23 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())
 
     @staticmethod
-    def __parse_unit(unit: str):
+    def _parse_unit(unit: str):
         if unit in ('%', 'percent'):
             return .01 * _UNIT_REGISTRY.dimensionless
         if unit in ('PPB', 'ppb'):
-            return const.PPB * _UNIT_REGISTRY.dimensionless
+            return PPB * _UNIT_REGISTRY.dimensionless
         if unit in ('PPM', 'ppm'):
-            return const.PPM * _UNIT_REGISTRY.dimensionless
+            return PPM * _UNIT_REGISTRY.dimensionless
         if unit in ('PPT', 'ppt'):
-            return const.PPT * _UNIT_REGISTRY.dimensionless
+            return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
     @staticmethod
@@ -65,7 +66,7 @@ class Product:
             raise AssertionError(f"unit parameter of {type(self).__name__}.__init__"
                                  f" is expected to have a non-empty default value")
 
-        default_unit = self.__parse_unit(default_unit_arg)
+        default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
             raise AssertionError(f'default value "{default_unit_arg}"'

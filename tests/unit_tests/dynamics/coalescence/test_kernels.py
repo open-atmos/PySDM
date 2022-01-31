@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 from PySDM.physics.collision_kernels import Golovin
 from PySDM.formulae import Formulae
+from PySDM.dynamics.collisions.kernels import Golovin
 
 
 class TestGolovin:

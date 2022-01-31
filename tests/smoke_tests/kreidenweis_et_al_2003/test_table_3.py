@@ -4,7 +4,7 @@ from chempy import Substance
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
 from PySDM.physics import si
 from PySDM.physics.constants import convert_to, PPB
-from PySDM.physics.aqueous_chemistry.support import AQUEOUS_COMPOUNDS, SPECIFIC_GRAVITY
+from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS, SpecificGravities
 
 
 class TestTable3:
@@ -14,6 +14,7 @@ class TestTable3:
         settings = Settings(n_sd=100, dt=1 * si.s, n_substep=5)
         settings.t_max = 0
         simulation = Simulation(settings)
+        specific_gravities = SpecificGravities(simulation.particulator.formulae.constants)
 
         # Act
         output = simulation.run()
@@ -53,7 +54,7 @@ class TestTable3:
                 actual=(
                     settings.formulae.trivia.mole_fraction_2_mixing_ratio(
                         mole_fraction,
-                        specific_gravity=SPECIFIC_GRAVITY[compound]
+                        specific_gravity=specific_gravities[compound]
                     ) * np.asarray(output['rhod'])
                 ),
                 desired=expected[key],

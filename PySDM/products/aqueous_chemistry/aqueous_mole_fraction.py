@@ -2,7 +2,6 @@
 mole fractions of aqueous-chemistry relevant compounds
 """
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.physics.constants import Md
 
 DUMMY_SPECIFIC_GRAVITY = 44
 
@@ -26,7 +25,7 @@ class AqueousMoleFraction(MomentProduct):
         self._download_moment_to_buffer(attr, rank=1)
         tmp = self.buffer.copy()
         tmp[:] *= conc
-        tmp[:] *= DUMMY_SPECIFIC_GRAVITY * Md
+        tmp[:] *= DUMMY_SPECIFIC_GRAVITY * self.formulae.constants.Md
 
         self._download_to_buffer(self.particulator.environment['rhod'])
         tmp[:] /= self.particulator.mesh.dv

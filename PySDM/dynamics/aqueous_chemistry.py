@@ -3,8 +3,8 @@ Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 """
 from collections import namedtuple
 import numpy as np
-from PySDM.physics.aqueous_chemistry.support import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
-    GASEOUS_COMPOUNDS, SPECIFIC_GRAVITY, M
+from PySDM.dynamics.impl.chemistry_utils import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
+    GASEOUS_COMPOUNDS, SpecificGravities, M
 
 
 DEFAULTS = namedtuple("_", ('pH_min', 'pH_max', 'pH_rtol', 'ionic_strength_threshold'))(
@@ -40,16 +40,18 @@ class AqueousChemistry:
         self.equilibrium_consts = {}
         self.dissociation_factors = {}
         self.do_chemistry_flag = None
+        self.specific_gravities = None
 
     def register(self, builder):
         self.particulator = builder.particulator
+        self.specific_gravities = SpecificGravities(self.particulator.formulae.constants)
 
         for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
-                    self.environment_mole_fractions[compound], SPECIFIC_GRAVITY[compound])
+                    self.environment_mole_fractions[compound], self.specific_gravities[compound])
             )
         self.environment_mole_fractions = None
 

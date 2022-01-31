@@ -3,7 +3,7 @@ import numpy as np
 from numpy.testing import assert_approx_equal
 import pytest
 from PySDM.initialisation.spectra import Exponential, Lognormal, Sum
-from PySDM.initialisation.impl.spectrum import default_interpolation_grid
+from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 
 
 class TestLognormal:
@@ -107,7 +107,7 @@ class TestSum:
         sut = Sum(distributions)
 
         # Act
-        cdf_values = default_interpolation_grid
+        cdf_values = np.linspace(*default_cdf_range, 100)
         sut_p = sut.percentiles(cdf_values)
         exp_p = distributions[0].percentiles(cdf_values)
 

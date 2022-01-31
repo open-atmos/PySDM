@@ -40,9 +40,10 @@ class Builder:
         assert self.particulator.environment is not None
         self.particulator.dynamics[dynamic.__class__.__name__] = dynamic
 
-    def register_product(self, product):
+    def register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise Exception(f'product name "{product.name}" already registered')
+        product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product
 
@@ -62,8 +63,9 @@ class Builder:
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
+        single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:
-            self.register_product(product)
+            self.register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
             self.request_attribute(attribute)

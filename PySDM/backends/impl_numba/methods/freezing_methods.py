@@ -6,12 +6,12 @@ import numpy as np
 from PySDM.backends.impl_common.backend_methods import BackendMethods
 from ...impl_numba import conf
 from ...impl_common.freezing_attributes import TimeDependentAttributes, SingularAttributes
-from ....physics import constants as const
 
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
         super().__init__()
+        const = self.formulae.constants
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath, 'parallel': False})
         def _unfrozen(volume, i):
@@ -25,10 +25,13 @@ class FreezingMethods(BackendMethods):
 
         @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
         def freeze_singular_body(attributes, temperature, relative_humidity, cell):
-            for i in numba.prange(len(attributes.freezing_temperature)):  # pylint: disable=not-an-iterable
+            n_sd = len(attributes.freezing_temperature)
+            for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                if attributes.freezing_temperature[i] == 0:
+                    continue
                 if (
                     _unfrozen(attributes.wet_volume, i) and
-                    relative_humidity[cell[i]] > 1 and
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
                     temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
@@ -40,6 +43,8 @@ class FreezingMethods(BackendMethods):
         def freeze_time_dependent_body(rand, attributes, timestep, cell, a_w_ice):
             n_sd = len(attributes.wet_volume)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+                if attributes.immersed_surface_area[i] == 0:
+                    continue
                 if _unfrozen(attributes.wet_volume, i):
                     rate = j_het(a_w_ice[cell[i]])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?

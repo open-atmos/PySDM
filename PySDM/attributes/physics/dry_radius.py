@@ -2,7 +2,6 @@
 particle dry radius computed from dry volume
 """
 from PySDM.attributes.impl.derived_attribute import DerivedAttribute
-from PySDM.physics import constants as const
 
 
 class DryRadius(DerivedAttribute):
@@ -12,5 +11,5 @@ class DryRadius(DerivedAttribute):
         super().__init__(builder, name='dry radius', dependencies=dependencies)
 
     def recalculate(self):
-        self.data.product(self.volume_dry.get(), 1 / const.PI_4_3)
+        self.data.product(self.volume_dry.get(), 1 / self.formulae.constants.PI_4_3)
         self.data **= 1/3

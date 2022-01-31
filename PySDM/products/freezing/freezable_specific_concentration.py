@@ -7,7 +7,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 class FreezableSpecificConcentration(SpectrumMomentProduct):
     def __init__(self, temperature_bins_edges, name=None, unit='kg^-1 K^-1'):
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, attr_unit='K')
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):

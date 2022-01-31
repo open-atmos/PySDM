@@ -6,14 +6,14 @@ handled by [PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
 import numpy as np
 from PySDM.impl.mesh import Mesh
 from PySDM.initialisation.equilibrate_wet_radii import equilibrate_wet_radii, default_rtol
-from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities
+from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.environments.impl.moist import Moist
 from ..impl import arakawa_c
 
 
 class Kinematic2D(Moist):
-    def __init__(self, dt, grid, size, rhod_of):
-        super().__init__(dt, Mesh(grid, size), [])
+    def __init__(self, dt, grid, size, rhod_of, mixed_phase=False):
+        super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None
 
@@ -32,28 +32,21 @@ class Kinematic2D(Moist):
     def init_attributes(self, *,
                         spatial_discretisation,
                         kappa,
-                        spectral_discretisation = None,
-                        spectro_glacial_discretisation = None,
+                        dry_radius_spectrum,
                         rtol=default_rtol
                         ):
         super().sync()
         self.notify()
-
-        assert spectro_glacial_discretisation is None or spectral_discretisation is None
 
         attributes = {}
         with np.errstate(all='raise'):
             positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
             attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
                 self.mesh.cellular_attributes(positions)
-            if spectral_discretisation:
-                r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
-            elif spectro_glacial_discretisation:
-                r_dry, T_fz, n_per_kg = spectro_glacial_discretisation.sample(
-                    self.particulator.n_sd)
-                attributes['freezing temperature'] = T_fz
-            else:
-                raise NotImplementedError()
+
+            r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
+                spectrum=dry_radius_spectrum
+            ).sample(n_sd=self.particulator.n_sd)
 
             attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
             attributes['kappa times dry volume'] = kappa * attributes['dry volume']
@@ -71,7 +64,7 @@ class Kinematic2D(Moist):
             cell_id = attributes['cell id']
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes['n'] = discretise_multiplicities(n_per_kg * rhod[cell_id] * domain_volume)
+        attributes['n'] = n_per_kg * rhod[cell_id] * domain_volume
         attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes

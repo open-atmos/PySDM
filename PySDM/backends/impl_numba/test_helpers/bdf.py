@@ -8,7 +8,7 @@ from functools import lru_cache
 import numpy as np
 import numba
 import scipy.integrate
-import PySDM.physics.constants as const
+from PySDM.physics.constants_defaults import rho_w, K0, T0, PI_4_3
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
@@ -75,12 +75,13 @@ def _make_solve(formulae):
     phys_dthd_dt = formulae.state_variable_triplet.dthd_dt
     phys_lambdaD = formulae.diffusion_kinetics.lambdaD
     phys_lambdaK = formulae.diffusion_kinetics.lambdaK
-    phys_DK = formulae.diffusion_kinetics.DK
+    phys_diff_kin_D = formulae.diffusion_kinetics.D
+    phys_diff_kin_K = formulae.diffusion_kinetics.K
     phys_D = formulae.diffusion_thermics.D
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _ql(n, x, m_d_mean):
-        return np.sum(n * volume(x)) * const.rho_w / m_d_mean
+        return np.sum(n * volume(x)) * rho_w / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
     def _impl(dy_dt, x, T, p, n, RH, kappa, f_org, dry_volume, thd,
@@ -91,17 +92,17 @@ def _make_solve(formulae):
         for i, x_i in enumerate(x):
             v = volume(x_i)
             r = phys_radius(v)
-            Dr = phys_DK(DTp, r, lambdaD)
-            Kr = phys_DK(const.K0, r, lambdaK)
+            Dr = phys_diff_kin_D(DTp, r, lambdaD)
+            Kr = phys_diff_kin_K(K0, r, lambdaK)
             sgm = sigma(T, v, dry_volume[i], f_org[i])
             dy_dt[idx_x + i] = dx_dt(
                 x_i,
                 r_dr_dt(
-                    RH_eq(r, T, kappa[i], dry_volume[i] / const.PI_4_3, sgm),
+                    RH_eq(r, T, kappa[i], dry_volume[i] / PI_4_3, sgm),
                     T, RH, lv, pvs, Dr, Kr
                 )
             )
-        dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * const.rho_w / m_d_mean
+        dqv_dt = dot_qv - np.sum(n * volume(x) * dy_dt[idx_x:]) * rho_w / m_d_mean
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{'parallel': False}})
@@ -114,7 +115,7 @@ def _make_solve(formulae):
         T = phys_T(rhod_mean, thd)
         p = phys_p(rhod_mean, T, qv)
         pv = phys_pv(p, qv)
-        pvs = pvs_C(T - const.T0)
+        pvs = pvs_C(T - T0)
         RH = pv / pvs
 
         dy_dt = np.empty_like(y)
@@ -160,7 +161,7 @@ def _make_solve(formulae):
         m_new = 0
         for i in range(n_sd_in_cell):
             v_new = volume(y1[idx_x + i])
-            m_new += n[cell_idx[i]] * v_new * const.rho_w
+            m_new += n[cell_idx[i]] * v_new * rho_w
             v[cell_idx[i]] = v_new
 
         return integ.success, qt - m_new / m_d_mean, y1[idx_thd], 1, 1, 1, 1, np.nan

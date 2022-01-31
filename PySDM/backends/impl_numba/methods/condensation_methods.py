@@ -5,7 +5,6 @@ import math
 from functools import lru_cache
 import numpy as np
 import numba
-from PySDM.physics import constants as const
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.backends.impl_common.backend_methods import BackendMethods
@@ -142,7 +141,7 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_step_impl(
         jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T,
-        phys_p, phys_pv, phys_dthd_dt, phys_D
+        phys_p, phys_pv, phys_dthd_dt, phys_D, const
     ):
         @numba.njit(**jit_flags)
         def step_impl(
@@ -188,7 +187,7 @@ class CondensationMethods(BackendMethods):
         return step_impl
 
     @staticmethod
-    def make_calculate_ml_old(jit_flags):
+    def make_calculate_ml_old(jit_flags, const):
         @numba.njit(**jit_flags)
         def calculate_ml_old(volume, multiplicity, cell_idx):
             result = 0
@@ -202,7 +201,8 @@ class CondensationMethods(BackendMethods):
     @staticmethod
     def make_calculate_ml_new(
         jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-        phys_lambdaK, phys_lambdaD, phys_DK, within_tolerance, max_iters, RH_rtol
+        phys_lambdaK, phys_lambdaD, phys_dk_D, phys_dk_K, within_tolerance, max_iters, RH_rtol,
+        const
     ):
         @numba.njit(**jit_flags)
         def minfun(x_new, x_old, timestep, kappa, f_org, rd3, temperature, RH, lv, pvs, D, K):
@@ -239,8 +239,8 @@ class CondensationMethods(BackendMethods):
                 sgm = phys_sigma(T, v[drop], vdry[drop], f_org[drop])
                 RH_eq = phys_RH_eq(r_old, T, kappa[drop], rd3, sgm)
                 if not within_tolerance(np.abs(RH - RH_eq), RH, RH_rtol):
-                    Dr = phys_DK(DTp, r_old, lambdaD)
-                    Kr = phys_DK(const.K0, r_old, lambdaK)
+                    Dr = phys_dk_D(DTp, r_old, lambdaD)
+                    Kr = phys_dk_K(const.K0, r_old, lambdaK)
                     args = (x_old, timestep, kappa[drop], f_org[drop], rd3, T, RH, lv, pvs, Dr, Kr)
                     r_dr_dt_old = phys_r_dr_dt(RH_eq, T, RH, lv, pvs, Dr, Kr)
                     dx_old = timestep * dx_dt(x_old, r_dr_dt_old)
@@ -327,7 +327,8 @@ class CondensationMethods(BackendMethods):
             phys_dthd_dt=self.formulae.state_variable_triplet.dthd_dt,
             phys_lambdaK=self.formulae.diffusion_kinetics.lambdaK,
             phys_lambdaD=self.formulae.diffusion_kinetics.lambdaD,
-            phys_DK=self.formulae.diffusion_kinetics.DK,
+            phys_dk_D=self.formulae.diffusion_kinetics.D,
+            phys_dk_K=self.formulae.diffusion_kinetics.K,
             phys_D=self.formulae.diffusion_thermics.D,
             within_tolerance=self.formulae.trivia.within_tolerance,
             dx_dt=self.formulae.condensation_coordinate.dx_dt,
@@ -339,27 +340,29 @@ class CondensationMethods(BackendMethods):
             fuse=fuse,
             multiplier=multiplier,
             RH_rtol=RH_rtol,
-            max_iters=max_iters
+            max_iters=max_iters,
+            const=self.formulae.constants
         )
 
     @staticmethod
     @lru_cache()
     def make_condensation_solver_impl(
         fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-        phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_DK, phys_D,
-        within_tolerance, dx_dt, volume, x, timestep, dt_range, adaptive,
-        fuse, multiplier, RH_rtol, max_iters
+        phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_dk_D, phys_dk_K,
+        phys_D, within_tolerance, dx_dt, volume, x, timestep, dt_range, adaptive,
+        fuse, multiplier, RH_rtol, max_iters, const
     ):
         jit_flags = {**conf.JIT_FLAGS, **{'parallel': False, 'cache': False, 'fastmath': fastmath}}
 
-        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags)
+        calculate_ml_old = CondensationMethods.make_calculate_ml_old(jit_flags, const)
         calculate_ml_new = CondensationMethods.make_calculate_ml_new(
             jit_flags, dx_dt, volume, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
-            phys_lambdaK, phys_lambdaD, phys_DK, within_tolerance, max_iters, RH_rtol
+            phys_lambdaK, phys_lambdaD, phys_dk_D, phys_dk_K, within_tolerance, max_iters, RH_rtol,
+            const
         )
         step_impl = CondensationMethods.make_step_impl(
             jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new,
-            phys_T, phys_p, phys_pv, phys_dthd_dt, phys_D
+            phys_T, phys_p, phys_pv, phys_dthd_dt, phys_D, const
         )
         step_fake = CondensationMethods.make_step_fake(jit_flags, step_impl)
         adapt_substeps = CondensationMethods.make_adapt_substeps(

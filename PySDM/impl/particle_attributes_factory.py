@@ -47,7 +47,7 @@ class ParticlesFactory:
                 try:
                     req_attr[attr].init(all_attr[attr])
                 except KeyError as err:
-                    raise ValueError(f"attribute '{attr}' required by one of the dynamics"
+                    raise ValueError(f"attribute '{attr}' requested by one of the components"
                                      f" but no initial values given") from err
 
         helper(req_attr, attributes, extensive_attr, extensive_attribute_storage, extensive_keys)

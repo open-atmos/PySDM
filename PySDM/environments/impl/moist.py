@@ -7,8 +7,10 @@ import numpy as np
 
 class Moist:
 
-    def __init__(self, dt, mesh, variables):
+    def __init__(self, dt, mesh, variables, mixed_phase=False):
         variables += ['qv', 'thd', 'T', 'p', 'RH']
+        if mixed_phase:
+            variables += ['a_w_ice']
         self.particulator = None
         self.dt = dt
         self.mesh = mesh

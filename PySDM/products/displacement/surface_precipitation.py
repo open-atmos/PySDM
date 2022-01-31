@@ -2,7 +2,6 @@
 water volume flux derived from sizes of particles crossing bottom domain boundary
 """
 from PySDM.products.impl.product import Product
-from PySDM.physics.constants import rho_w
 
 
 class SurfacePrecipitation(Product):
@@ -30,7 +29,9 @@ class SurfacePrecipitation(Product):
         if self.elapsed_time == 0.:
             return 0.
 
-        result = rho_w * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
+        # TODO #708
+        result = self.formulae.constants.rho_w \
+                 * self.accumulated_rainfall / self.elapsed_time / (self.dv / self.dz)
         self._reset_counters()
         return result
 

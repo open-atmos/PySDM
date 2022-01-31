@@ -2,7 +2,6 @@
 GPU implementation of backend methods for water condensation/evaporation
 """
 from typing import Dict, Optional
-from PySDM.physics import constants as const
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
@@ -27,6 +26,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.dqv_dt_pred: Optional[StorageBase] = None
         self.rhod_mean: Optional[StorageBase] = None
         self.vars: Optional[Dict[str, StorageBase]] = None
+        const = self.formulae.constants
 
         self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
             atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
@@ -109,11 +109,11 @@ class CondensationMethods(ThrustRTCBackendMethods):
             if ( ! {phys.trivia.within_tolerance.c_inline(
                 return_type='bool', error_estimate="abs(_RH - RH_eq)", value="_RH", rtol="RH_rtol"
             )}) {{
-                Dr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK="_DTp", r="r_old", lmbd="_lambdaD"
+                Dr = {phys.diffusion_kinetics.D.c_inline(
+                    D="_DTp", r="r_old", lmbd="_lambdaD"
                 )};
-                Kr = {phys.diffusion_kinetics.DK.c_inline(
-                    DK="const.K0", r="r_old", lmbd="_lambdaK"
+                Kr = {phys.diffusion_kinetics.K.c_inline(
+                    K="const.K0", r="r_old", lmbd="_lambdaK"
                 )};
                 r_dr_dt_old = {phys.drop_growth.r_dr_dt.c_inline(
                     RH_eq="RH_eq", T="_T", RH="_RH", lv="_lv", pvs="_pvs", D="Dr", K="Kr"

@@ -4,12 +4,15 @@ spectrum defined as a sum of an arbitrary set of
 """
 import numpy as np
 from scipy.interpolate import interp1d
-from PySDM.initialisation.impl.spectrum import default_interpolation_grid
+from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
+
+default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
 
 class Sum:
 
-    def __init__(self, spectra: tuple, interpolation_grid=default_interpolation_grid):
+    def __init__(self, spectra: tuple, interpolation_grid=None):
+        interpolation_grid = interpolation_grid or default_interpolation_grid
         self.spectra = spectra
         self.norm_factor = sum((s.norm_factor for s in self.spectra))
         percentiles = [s.percentiles(interpolation_grid) for s in self.spectra]
