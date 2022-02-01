@@ -25,10 +25,7 @@ install:
       }
 
   - ps: |
-      iex "$env:PYTHON -m pip install --upgrade pip"
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
-      
-      iex "$env:PYTHON -m pip install pytest"
+      iex "$env:PYTHON -m pip install pytest pip==21.3.1"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
       
       # Add-Content requirements.txt "`npywin32>=300"
