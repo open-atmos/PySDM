@@ -4,7 +4,7 @@ Collisional coalescence of a superdroplet pair
 import warnings
 from collections import namedtuple
 import numpy as np
-from PySDM.dynamics.collision import Collision
+from PySDM.dynamics.collisions import Collision
 from PySDM.physics import si
 from PySDM.physics.coalescence_efficiencies import ConstEc
 from PySDM.physics.breakup_efficiencies import ConstEb

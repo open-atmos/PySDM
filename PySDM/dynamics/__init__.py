@@ -3,7 +3,7 @@ Classes representing physicochemical processes:
 `PySDM.dynamics.collisions.coalescence.Coalescence`,
 `PySDM.dynamics.condensation.Condensation`, ...
 """
-from PySDM.dynamics.collisions.coalescence import Coalescence, Breakup, Collision
+from PySDM.dynamics.collisions import Coalescence, Breakup, Collision
 from PySDM.dynamics.condensation import Condensation
 from PySDM.dynamics.displacement import Displacement
 from PySDM.dynamics.eulerian_advection import EulerianAdvection

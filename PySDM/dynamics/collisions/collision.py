@@ -3,12 +3,18 @@ Created at 09.30.21 by edejong
 """
 
 import numpy as np
+from collections import namedtuple
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import RandomGeneratorOptimizerNoPair
+from PySDM.physics.coalescence_efficiencies import ConstEc
+from PySDM.physics.breakup_efficiencies import ConstEb
+from PySDM.physics.breakup_fragmentations import AlwaysN
 import warnings
 
-default_dt_coal_range = (.1 * si.second, 100 * si.second)
+DEFAULTS = namedtuple("_", ('dt_coal_range',))(
+  dt_coal_range=(.1 * si.second, 100 * si.second)
+)
 
 """
 General algorithm format:
@@ -33,7 +39,7 @@ class Collision:
                  optimized_random=False,
                  substeps: int = 1,
                  adaptive: bool = False,
-                 dt_coal_range=default_dt_coal_range
+                 dt_coal_range=DEFAULTS.dt_coal_range
                  ):
         assert substeps == 1 or adaptive is False
 
@@ -227,5 +233,58 @@ class Collision:
             self.collision_rate,
             is_first_in_pair
         )
-        
+
+class Coalescence(Collision):
+
+    def __init__(self,
+                 kernel,
+                 coal_eff=ConstEc(Ec=1),
+                 seed=None,
+                 croupier=None,
+                 optimized_random=False,
+                 substeps: int = 1,
+                 adaptive: bool = True,
+                 dt_coal_range=DEFAULTS.dt_coal_range
+                 ):
+        break_eff = ConstEb(Eb=0)
+        fragmentation = AlwaysN(n=1)
+        super().__init__(
+                 kernel,    # collision kernel
+                 coal_eff,  # coalescence efficiency
+                 break_eff, # breakup efficiency
+                 fragmentation, # fragmentation function
+                 seed=seed,
+                 croupier=croupier,
+                 optimized_random=optimized_random,
+                 substeps = substeps,
+                 adaptive = adaptive,
+                 dt_coal_range=dt_coal_range
+                 )
+
+class Breakup(Collision):
+
+    def __init__(self,
+                 kernel,
+                 fragmentation,
+                 seed=None,
+                 croupier=None,
+                 optimized_random=False,
+                 substeps: int = 1,
+                 adaptive: bool = False,
+                 dt_coal_range=DEFAULTS.dt_coal_range
+                 ):
+        coal_eff = ConstEc(Ec = 0.0)
+        break_eff = ConstEb(Eb = 1.0)
+        super().__init__(
+                kernel,
+                coal_eff,
+                break_eff,
+                fragmentation,
+                seed=seed,
+                croupier=croupier,
+                optimized_random=optimized_random,
+                substeps=substeps,
+                adaptive=adaptive,
+                dt_coal_range=dt_coal_range
+    )
 

@@ -4,7 +4,7 @@ Created at 05.13.21 by edejong
 """
 
 import numpy as np
-from PySDM.dynamics.collision import Collision
+from PySDM.dynamics import Collision
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import RandomGeneratorOptimizerNoPair

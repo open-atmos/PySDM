@@ -1,7 +1,7 @@
 """
 Created at 30.10.2021
 """
-from PySDM.physics.constants import rho_w, sgm_w
+#from PySDM.physics.constants import rho_w, sgm_w
 import numpy as np
 # TODO: TEST
 
