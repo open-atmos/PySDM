@@ -7,7 +7,6 @@ and other...
 from .geometric import Geometric
 from  .golovin import Golovin
 from .electric import Electric
-# TODO: check on this
-#from .constantK import ConstantK
-#from .linear import Linear
+from .constantK import ConstantK
+from .linear import Linear
 from .hydrodynamic import Hydrodynamic

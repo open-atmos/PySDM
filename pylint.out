@@ -1,0 +1,1868 @@
+    ^                     || (bad-continuation)
+************* Module PySDM.backends.impl_numba.methods.collisions_methods
+PySDM/backends/impl_numba/methods/collisions_methods.py:81:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:84:0: C0301: Line too long (117/100) (line-too-long)
+PySDM/backends/impl_numba/methods/collisions_methods.py:85:0: C0330: Wrong continued indentation (remove 1 space).
+                        coalescence_rate, breakup_rate, is_first_in_pair):
+                       |^ (bad-continuation)
+PySDM/backends/impl_numba/methods/collisions_methods.py:115:0: C0301: Line too long (106/100) (line-too-long)
+PySDM/backends/impl_numba/methods/collisions_methods.py:131:0: C0301: Line too long (105/100) (line-too-long)
+PySDM/backends/impl_numba/methods/collisions_methods.py:138:0: C0301: Line too long (110/100) (line-too-long)
+PySDM/backends/impl_numba/methods/collisions_methods.py:139:0: C0330: Wrong continued indentation (remove 6 spaces).
+                        coalescence_rate, breakup_rate, is_first_in_pair):
+                  |     ^ (bad-continuation)
+PySDM/backends/impl_numba/methods/collisions_methods.py:141:95: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:142:95: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:145:17: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:153:0: C0325: Unnecessary parens after 'if' keyword (superfluous-parens)
+PySDM/backends/impl_numba/methods/collisions_methods.py:156:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:168:0: C0325: Unnecessary parens after 'if' keyword (superfluous-parens)
+PySDM/backends/impl_numba/methods/collisions_methods.py:172:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:185:0: C0325: Unnecessary parens after 'if' keyword (superfluous-parens)
+PySDM/backends/impl_numba/methods/collisions_methods.py:189:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:191:0: C0301: Line too long (104/100) (line-too-long)
+PySDM/backends/impl_numba/methods/collisions_methods.py:193:58: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:200:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:202:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:205:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_numba/methods/collisions_methods.py:356:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                (t + 1) * length // thread_num - 1 if t < thread_num - 1 else length - 1,
+                ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/collisions_methods.py:357:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                t * length // thread_num - 1,
+                ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/collisions_methods.py:358:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                -1
+                ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/collisions_methods.py:86:17: E1133: Non-iterable value numba.prange(length // 2) is used in an iterating context (not-an-iterable)
+PySDM/backends/impl_numba/methods/collisions_methods.py:148:17: E1133: Non-iterable value numba.prange(len(n_fragment)) is used in an iterating context (not-an-iterable)
+PySDM/backends/impl_numba/methods/collisions_methods.py:162:-1: W0105: String statement has no effect (pointless-string-statement)
+PySDM/backends/impl_numba/methods/collisions_methods.py:166:17: E1133: Non-iterable value numba.prange(len(n_fragment)) is used in an iterating context (not-an-iterable)
+PySDM/backends/impl_numba/methods/collisions_methods.py:179:-1: W0105: String statement has no effect (pointless-string-statement)
+PySDM/backends/impl_numba/methods/collisions_methods.py:183:17: E1133: Non-iterable value numba.prange(len(n_fragment)) is used in an iterating context (not-an-iterable)
+PySDM/backends/impl_numba/methods/collisions_methods.py:197:17: E1133: Non-iterable value numba.prange(len(n_fragment)) is used in an iterating context (not-an-iterable)
+PySDM/backends/impl_numba/methods/collisions_methods.py:196:53: W0613: Unused argument 'rand' (unused-argument)
+PySDM/backends/impl_numba/methods/collisions_methods.py:20:0: R0904: Too many public methods (22/20) (too-many-public-methods)
+************* Module PySDM.backends.impl_numba.methods.condensation_methods
+PySDM/backends/impl_numba/methods/condensation_methods.py:77:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        jit_flags, timestep, step_fake, dt_range, fuse, multiplier, within_tolerance
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:143:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        jit_flags, phys_pvs_C, phys_lv, calculate_ml_old, calculate_ml_new, phys_T,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:144:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        phys_p, phys_pv, phys_dthd_dt, phys_D, const
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:148:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+            v, v_cr, n, vdry, cell_idx, kappa, f_org, thd, qv, dthd_dt_pred, dqv_dt_pred,
+            ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:149:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+            m_d, rhod_mean, rtol_x, timestep, n_substeps, fake
+            ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:203:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        jit_flags, dx_dt, volume_of_x, x, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:204:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        phys_lambdaK, phys_lambdaD, phys_dk_D, phys_dk_K, within_tolerance, max_iters, RH_rtol,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:205:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        const
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:222:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+            timestep, fake, T, p, RH, v, v_cr, n, vdry, cell_idx,
+            ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:223:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+            kappa, f_org, lv, pvs, DTp, rtol_x
+            ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:350:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        fastmath, phys_pvs_C, phys_lv, phys_r_dr_dt, phys_RH_eq, phys_sigma, radius,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:351:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        phys_T, phys_p, phys_pv, phys_dthd_dt, phys_lambdaK, phys_lambdaD, phys_dk_D, phys_dk_K,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:352:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        phys_D, within_tolerance, dx_dt, volume, x, timestep, dt_range, adaptive,
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:353:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        fuse, multiplier, RH_rtol, max_iters, const
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/condensation_methods.py:23:24: E1101: Module 'numba' has no 'get_num_threads' member (no-member)
+************* Module PySDM.backends.impl_numba.methods.displacement_methods
+PySDM/backends/impl_numba/methods/displacement_methods.py:68:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
+        ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/displacement_methods.py:82:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
+        ^   | (bad-continuation)
+************* Module PySDM.backends.impl_numba.methods.freezing_methods
+PySDM/backends/impl_numba/methods/freezing_methods.py:33:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                    _unfrozen(attributes.wet_volume, i) and
+                    ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/freezing_methods.py:34:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                    relative_humidity[cell[i]] > 1 and  # TODO #599 as in Shima, but is it needed?
+                    ^   | (bad-continuation)
+PySDM/backends/impl_numba/methods/freezing_methods.py:35:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                    temperature[cell[i]] <= attributes.freezing_temperature[i]
+                    ^   | (bad-continuation)
+************* Module PySDM.backends.impl_numba.methods.pair_methods
+PySDM/backends/impl_numba/methods/pair_methods.py:30:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                    cell_id[idx[i]] == cell_id[idx[i + 1]] and
+                |   ^ (bad-continuation)
+PySDM/backends/impl_numba/methods/pair_methods.py:31:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                    (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
+                |   ^ (bad-continuation)
+PySDM/backends/impl_numba/methods/pair_methods.py:101:17: E1133: Non-iterable value numba.prange(length - 1) is used in an iterating context (not-an-iterable)
+************* Module PySDM.backends.impl_numba.toms748
+PySDM/backends/impl_numba/toms748.py:46:14: C0326: Exactly one space required before assignment
+            fa= fc
+              ^ (bad-whitespace)
+************* Module PySDM.backends.impl_thrust_rtc.methods.collisions_methods
+PySDM/backends/impl_thrust_rtc/methods/collisions_methods.py:225:92: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/backends/impl_thrust_rtc/methods/collisions_methods.py:226:0: C0330: Wrong continued indentation (remove 2 spaces).
+                    healthy, cell_id, coalescence_rate, breakup_rate, is_first_in_pair):
+                  | ^ (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/collisions_methods.py:232:0: C0330: Wrong continued indentation (remove 13 spaces).
+                                                      (multiplicity.data, idx.data, n_sd,
+                                         |            ^ (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/collisions_methods.py:233:0: C0330: Wrong continued indentation (remove 1 space).
+                                                        attributes.data,
+                                                       |^ (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/collisions_methods.py:234:0: C0330: Wrong continued indentation (remove 1 space).
+                                                        n_attr, gamma.data, healthy.data))
+                                                       |^ (bad-continuation)
+************* Module PySDM.backends.impl_thrust_rtc.methods.condensation_methods
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:46:0: C0330: Wrong hanging indentation.
+             ),
+            |^  | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:244:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        self, *,
+        ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:245:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        solver,
+        ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:246:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        n_cell, cell_start_arg,
+        ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:247:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
+        ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:248:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
+        ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/condensation_methods.py:276:39: C0326: Exactly one space required after comma
+                    *self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data,
+                                       ^ (bad-whitespace)
+************* Module PySDM.backends.impl_thrust_rtc.methods.moments_methods
+PySDM/backends/impl_thrust_rtc/methods/moments_methods.py:17:0: C0330: Wrong hanging indentation.
+             ),
+            |^  | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/methods/moments_methods.py:121:0: C0330: Wrong continued indentation (add 13 spaces).
+            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+            ^            | (bad-continuation)
+************* Module PySDM.backends.impl_thrust_rtc.storage
+PySDM/backends/impl_thrust_rtc/storage.py:236:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                dim == 2 and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:237:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                isinstance(item, tuple) and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:238:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                isinstance(item[0], int) and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:239:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                isinstance(item[1], slice)
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:255:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                isinstance(key, slice) and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:256:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                key.start is None and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:257:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                key.stop is None and
+                ^   | (bad-continuation)
+PySDM/backends/impl_thrust_rtc/storage.py:258:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+                key.step is None
+                ^   | (bad-continuation)
+************* Module PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc
+PySDM/backends/impl_thrust_rtc/test_helpers/fake_thrust_rtc.py:11:0: E0611: No name 'core' in module 'numba' (no-name-in-module)
+PySDM/backends/impl_thrust_rtc/test_helpers/fake_thrust_rtc.py:11:0: E0401: Unable to import 'numba.core.errors' (import-error)
+************* Module PySDM.backends.numba
+PySDM/backends/numba.py:21:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    CollisionsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:22:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    PairMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:23:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    IndexMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:24:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    PhysicsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:25:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    CondensationMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:26:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    ChemistryMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:27:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    MomentsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:28:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    FreezingMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:29:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    DisplacementMethods,
+    ^   | (bad-continuation)
+PySDM/backends/numba.py:30:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    TerminalVelocityMethods
+    ^   | (bad-continuation)
+************* Module PySDM.backends.thrust_rtc
+PySDM/backends/thrust_rtc.py:24:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    CollisionsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:25:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    PairMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:26:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    IndexMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:27:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    PhysicsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:28:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    CondensationMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:29:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    MomentsMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:30:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    DisplacementMethods,
+    ^   | (bad-continuation)
+PySDM/backends/thrust_rtc.py:31:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+    TerminalVelocityMethods
+    ^   | (bad-continuation)
+************* Module PySDM.dynamics.aqueous_chemistry
+PySDM/dynamics/aqueous_chemistry.py:34:37: C0326: Exactly one space required around assignment
+        self.ionic_strength_threshold=ionic_strength_threshold
+                                     ^ (bad-whitespace)
+************* Module PySDM.dynamics.collisions.breakup
+PySDM/dynamics/collisions/breakup.py:30:30: C0326: No space allowed around keyword argument assignment
+        coal_eff = ConstEc(Ec = 0.0)
+                              ^ (bad-whitespace)
+PySDM/dynamics/collisions/breakup.py:31:31: C0326: No space allowed around keyword argument assignment
+        break_eff = ConstEb(Eb = 1.0)
+                               ^ (bad-whitespace)
+PySDM/dynamics/collisions/breakup.py:33:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                kernel,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:34:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                coal_eff,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:35:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                break_eff,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:36:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                fragmentation,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:37:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                seed=seed,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:38:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                croupier=croupier,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:39:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                optimized_random=optimized_random,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:40:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                substeps=substeps,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:41:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                adaptive=adaptive,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:42:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                dt_coal_range=dt_coal_range
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:43:0: C0330: Wrong hanging indentation.
+    )    ^   |   | (bad-continuation)
+PySDM/dynamics/collisions/breakup.py:43:0: C0304: Final newline missing (missing-final-newline)
+PySDM/dynamics/collisions/breakup.py:6:0: W0611: Unused numpy imported as np (unused-import)
+PySDM/dynamics/collisions/breakup.py:9:0: W0611: Unused RandomGeneratorOptimizer imported from PySDM.dynamics.impl.random_generator_optimizer (unused-import)
+PySDM/dynamics/collisions/breakup.py:10:0: W0611: Unused RandomGeneratorOptimizerNoPair imported from PySDM.dynamics.impl.random_generator_optimizer_nopair (unused-import)
+PySDM/dynamics/collisions/breakup.py:13:0: W0611: Unused import warnings (unused-import)
+PySDM/dynamics/collisions/breakup.py:13:0: C0411: standard import "import warnings" should be placed before "import numpy as np" (wrong-import-order)
+************* Module PySDM.dynamics.collisions.coalescence
+PySDM/dynamics/collisions/coalescence.py:15:0: C0330: Wrong hanging indentation (add 2 spaces).
+  dt_coal_range=(.1 * si.second, 100 * si.second)
+  ^ | (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:33:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 kernel,    # collision kernel
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:34:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 coal_eff,  # coalescence efficiency
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:35:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 break_eff, # breakup efficiency
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:36:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 fragmentation, # fragmentation function
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:37:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 seed=seed,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:38:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 croupier=croupier,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:39:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 optimized_random=optimized_random,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:40:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 substeps = substeps,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:40:26: C0326: No space allowed around keyword argument assignment
+                 substeps = substeps,
+                          ^ (bad-whitespace)
+PySDM/dynamics/collisions/coalescence.py:41:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 adaptive = adaptive,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:41:26: C0326: No space allowed around keyword argument assignment
+                 adaptive = adaptive,
+                          ^ (bad-whitespace)
+PySDM/dynamics/collisions/coalescence.py:42:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 dt_coal_range=dt_coal_range
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:43:0: C0330: Wrong hanging indentation.
+                 )
+        |   |    ^ (bad-continuation)
+PySDM/dynamics/collisions/coalescence.py:4:0: W0611: Unused import warnings (unused-import)
+PySDM/dynamics/collisions/coalescence.py:6:0: W0611: Unused numpy imported as np (unused-import)
+PySDM/dynamics/collisions/coalescence.py:12:0: W0611: Unused RandomGeneratorOptimizer imported from PySDM.dynamics.impl.random_generator_optimizer (unused-import)
+************* Module PySDM.dynamics.collisions.collision
+PySDM/dynamics/collisions/collision.py:16:0: C0330: Wrong hanging indentation (add 2 spaces).
+  dt_coal_range=(.1 * si.second, 100 * si.second)
+  ^ | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:65:30: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:79:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:85:0: C0330: Wrong continued indentation (add 5 spaces).
+                                                dt_min=self.dt_coal_range[0],
+                                                ^    | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:86:0: C0330: Wrong continued indentation (add 5 spaces).
+                                                seed=self.seed) #self.particulator.formulae.seed+1)
+                                                ^    | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:89:0: C0330: Wrong continued indentation (add 11 spaces).
+                                                dt_min=self.dt_coal_range[0],
+                                                ^          | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:90:0: C0330: Wrong continued indentation (add 11 spaces).
+                                                seed=self.seed) #self.particulator.formulae.seed+1)
+                                                ^          | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:93:0: C0330: Wrong continued indentation (add 11 spaces).
+                                                dt_min=self.dt_coal_range[0],
+                                                ^          | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:94:0: C0330: Wrong continued indentation (add 11 spaces).
+                                                seed=self.seed) #self.particulator.formulae.seed+1)
+                                                ^          | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:103:0: C0301: Line too long (108/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:104:0: C0301: Line too long (107/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:105:0: C0301: Line too long (104/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:106:0: C0301: Line too long (104/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:110:0: C0301: Line too long (107/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:111:0: C0301: Line too long (101/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:115:0: C0301: Line too long (104/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:117:0: C0301: Line too long (103/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:130:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:131:0: C0301: Line too long (120/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:132:0: C0301: Line too long (128/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:133:0: C0301: Line too long (122/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:134:0: C0301: Line too long (118/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:155:0: C0301: Line too long (101/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:159:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:162:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:165:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:169:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:172:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:175:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:176:63: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:177:144: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:177:0: C0301: Line too long (144/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:178:75: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:179:0: C0301: Line too long (107/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:180:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:182:0: C0301: Line too long (109/100) (line-too-long)
+PySDM/dynamics/collisions/collision.py:202:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:225:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/dynamics/collisions/collision.py:252:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 kernel,    # collision kernel
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:253:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 coal_eff,  # coalescence efficiency
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:254:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 break_eff, # breakup efficiency
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:255:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 fragmentation, # fragmentation function
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:256:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 seed=seed,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:257:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 croupier=croupier,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:258:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 optimized_random=optimized_random,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:259:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 substeps = substeps,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:259:26: C0326: No space allowed around keyword argument assignment
+                 substeps = substeps,
+                          ^ (bad-whitespace)
+PySDM/dynamics/collisions/collision.py:260:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 adaptive = adaptive,
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:260:26: C0326: No space allowed around keyword argument assignment
+                 adaptive = adaptive,
+                          ^ (bad-whitespace)
+PySDM/dynamics/collisions/collision.py:261:0: C0330: Wrong hanging indentation (remove 5 spaces).
+                 dt_coal_range=dt_coal_range
+            |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:262:0: C0330: Wrong hanging indentation.
+                 )
+        |   |    ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:276:30: C0326: No space allowed around keyword argument assignment
+        coal_eff = ConstEc(Ec = 0.0)
+                              ^ (bad-whitespace)
+PySDM/dynamics/collisions/collision.py:277:31: C0326: No space allowed around keyword argument assignment
+        break_eff = ConstEb(Eb = 1.0)
+                               ^ (bad-whitespace)
+PySDM/dynamics/collisions/collision.py:279:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                kernel,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:280:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                coal_eff,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:281:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                break_eff,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:282:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                fragmentation,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:283:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                seed=seed,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:284:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                croupier=croupier,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:285:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                optimized_random=optimized_random,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:286:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                substeps=substeps,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:287:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                adaptive=adaptive,
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:288:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                dt_coal_range=dt_coal_range
+            |   ^ (bad-continuation)
+PySDM/dynamics/collisions/collision.py:289:0: C0330: Wrong hanging indentation.
+    )
+    ^   |   | (bad-continuation)
+PySDM/dynamics/collisions/collision.py:290:0: C0305: Trailing newlines (trailing-newlines)
+PySDM/dynamics/collisions/collision.py:84:8: W0201: Attribute 'rnd_opt_coll' defined outside __init__ (attribute-defined-outside-init)
+PySDM/dynamics/collisions/collision.py:88:8: W0201: Attribute 'rnd_opt_proc' defined outside __init__ (attribute-defined-outside-init)
+PySDM/dynamics/collisions/collision.py:92:8: W0201: Attribute 'rnd_opt_frag' defined outside __init__ (attribute-defined-outside-init)
+PySDM/dynamics/collisions/collision.py:95:8: W0201: Attribute 'optimised_random' defined outside __init__ (attribute-defined-outside-init)
+PySDM/dynamics/collisions/collision.py:6:0: C0411: standard import "from collections import namedtuple" should be placed before "import numpy as np" (wrong-import-order)
+PySDM/dynamics/collisions/collision.py:13:0: C0411: standard import "import warnings" should be placed before "import numpy as np" (wrong-import-order)
+************* Module PySDM.dynamics.collisions.kernels.linear
+PySDM/dynamics/collisions/kernels/linear.py:19:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.dynamics.impl.chemistry_utils
+PySDM/dynamics/impl/chemistry_utils.py:101:0: C0330: Wrong continued indentation (add 3 spaces).
+        1 + eqc["K_CO2"].data[cell_id] * (1 / H + eqc["K_HCO3"].data[cell_id] / (H ** 2)),
+        ^  | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:103:0: C0330: Wrong continued indentation (add 3 spaces).
+        1 + eqc["K_SO2"].data[cell_id] * (1 / H + eqc["K_HSO3"].data[cell_id] / (H ** 2)),
+        ^  | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:105:0: C0330: Wrong continued indentation (add 3 spaces).
+        1 + eqc["K_NH3"].data[cell_id] / K_H2O * H,
+        ^  | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:107:0: C0330: Wrong continued indentation (add 4 spaces).
+        1 + eqc["K_HNO3"].data[cell_id] / H,
+        ^   | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:109:0: C0330: Wrong continued indentation (add 2 spaces).
+        1,
+        ^ | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:111:0: C0330: Wrong continued indentation (add 4 spaces).
+        1
+        ^   | (bad-continuation)
+PySDM/dynamics/impl/chemistry_utils.py:5:0: E0401: Unable to import 'chempy' (import-error)
+************* Module PySDM.dynamics.terminal_velocity.gunn_and_kinzer
+PySDM/dynamics/terminal_velocity/gunn_and_kinzer.py:20:60: C0326: No space allowed before comma
+        ir = np.array([.078, .1, .2, .3, .4, .5, .6, .7, .8 , .9, 1.0, 1.2, 1.4, 1.6,
+                                                            ^ (bad-whitespace)
+************* Module PySDM.environments.parcel
+PySDM/environments/parcel.py:63:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        self, *,
+        ^   | (bad-continuation)
+PySDM/environments/parcel.py:64:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        n_in_dv: [float, np.ndarray],
+        ^   | (bad-continuation)
+PySDM/environments/parcel.py:65:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        kappa: float,
+        ^   | (bad-continuation)
+PySDM/environments/parcel.py:66:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        r_dry: [float, np.ndarray],
+        ^   | (bad-continuation)
+PySDM/environments/parcel.py:67:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        rtol=default_rtol
+        ^   | (bad-continuation)
+************* Module PySDM.exporters.vtk_exporter
+PySDM/exporters/vtk_exporter.py:26:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        self,
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:27:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        path='.',
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:28:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        attributes_filename="sd_attributes",
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:29:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        products_filename="sd_products",
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:30:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        file_num_len=10,
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:31:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        verbose=False
+        ^   | (bad-continuation)
+PySDM/exporters/vtk_exporter.py:8:0: E0401: Unable to import 'pyevtk.hl' (import-error)
+PySDM/exporters/vtk_exporter.py:9:0: E0401: Unable to import 'pyevtk.vtk' (import-error)
+************* Module PySDM.initialisation.equilibrate_wet_radii
+PySDM/initialisation/equilibrate_wet_radii.py:65:0: C0330: Wrong continued indentation.
+                 )
+                 ^  || (bad-continuation)
+PySDM/initialisation/equilibrate_wet_radii.py:99:0: C0330: Wrong continued indentation.
+                 )
+                 ^  || (bad-continuation)
+************* Module PySDM.initialisation.sampling.spectral_sampling
+PySDM/initialisation/sampling/spectral_sampling.py:18:0: C0330: Wrong continued indentation.
+     ):
+     ^          || (bad-continuation)
+PySDM/initialisation/sampling/spectral_sampling.py:29:58: W0640: Cell variable i defined in loop (cell-var-from-loop)
+************* Module PySDM.initialisation.sampling.spectro_glacial_sampling
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:17:0: C0330: Wrong continued indentation (add 9 spaces).
+        freezing_temperature_spectrum,
+        ^        | (bad-continuation)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:18:0: C0330: Wrong continued indentation (add 9 spaces).
+        insoluble_surface_spectrum,
+        ^        | (bad-continuation)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:19:0: C0330: Wrong continued indentation (add 9 spaces).
+        seed=const.default_random_seed
+        ^        | (bad-continuation)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:20:0: C0330: Wrong continued indentation.
+    ):
+    ^           || (bad-continuation)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:34:12: E0401: Unable to import 'pyvinecopulib' (import-error)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:47:16: E1101: Module 'numpy.random' has no 'random' member (no-member)
+PySDM/initialisation/sampling/spectro_glacial_sampling.py:50:16: E1101: Module 'numpy.random' has no 'random' member (no-member)
+************* Module PySDM.initialisation.spectra.gamma
+PySDM/initialisation/spectra/gamma.py:5:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/initialisation/spectra/gamma.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.initialisation.spectra.gaussian
+PySDM/initialisation/spectra/gaussian.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.particulator
+PySDM/particulator.py:123:61: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/particulator.py:124:0: C0330: Wrong continued indentation (add 2 spaces).
+                coalescence_rate, breakup_rate, is_first_in_pair):
+                ^ | (bad-continuation)
+PySDM/particulator.py:148:0: C0330: Wrong continued indentation (add 10 spaces).
+        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
+        ^         | (bad-continuation)
+PySDM/particulator.py:149:0: C0330: Wrong continued indentation.
+    ):
+    ^            || (bad-continuation)
+************* Module PySDM.physics.__init__
+PySDM/physics/__init__.py:7:0: C0330: Wrong continued indentation (add 11 spaces).
+    hygroscopicity, drop_growth, surface_tension, diffusion_kinetics, diffusion_thermics,
+    ^          | (bad-continuation)
+PySDM/physics/__init__.py:8:0: C0330: Wrong continued indentation (add 11 spaces).
+    ventilation, state_variable_triplet, trivia, particle_advection, hydrostatics,
+    ^          | (bad-continuation)
+PySDM/physics/__init__.py:9:0: C0330: Wrong continued indentation (add 11 spaces).
+    breakup_fragmentations, coalescence_efficiencies, breakup_efficiencies,
+    ^          | (bad-continuation)
+PySDM/physics/__init__.py:10:0: C0330: Wrong continued indentation (add 11 spaces).
+    freezing_temperature_spectrum, heterogeneous_ice_nucleation_rate)
+    ^          | (bad-continuation)
+************* Module PySDM.physics.breakup_efficiencies.__init__
+PySDM/physics/breakup_efficiencies/__init__.py:1:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.breakup_efficiencies
+PySDM/physics/breakup_efficiencies/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.physics.breakup_efficiencies._parameterized
+PySDM/physics/breakup_efficiencies/_parameterized.py:9:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_efficiencies/_parameterized.py:16:0: C0301: Line too long (102/100) (line-too-long)
+PySDM/physics/breakup_efficiencies/_parameterized.py:18:0: C0305: Trailing newlines (trailing-newlines)
+PySDM/physics/breakup_efficiencies/_parameterized.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.physics.breakup_efficiencies.constEb
+PySDM/physics/breakup_efficiencies/constEb.py:13:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_efficiencies/constEb.py:15:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.breakup_fragmentations.__init__
+PySDM/physics/breakup_fragmentations/__init__.py:7:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.breakup_fragmentations.always_n
+PySDM/physics/breakup_fragmentations/always_n.py:16:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_fragmentations/always_n.py:21:0: C0303: Trailing whitespace (trailing-whitespace)
+************* Module PySDM.physics.breakup_fragmentations.exponential
+PySDM/physics/breakup_fragmentations/exponential.py:14:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_fragmentations/exponential.py:18:0: C0301: Line too long (105/100) (line-too-long)
+PySDM/physics/breakup_fragmentations/exponential.py:19:0: C0301: Line too long (106/100) (line-too-long)
+PySDM/physics/breakup_fragmentations/exponential.py:22:64: C0326: Exactly one space required after comma
+        self.max_size.max(self.particulator.attributes['radius'],is_first_in_pair)
+                                                                ^ (bad-whitespace)
+PySDM/physics/breakup_fragmentations/exponential.py:24:0: C0330: Wrong continued indentation (add 40 spaces).
+            self.max_size, u01)
+            ^                                       | (bad-continuation)
+PySDM/physics/breakup_fragmentations/exponential.py:18:8: W0201: Attribute 'max_size' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/breakup_fragmentations/exponential.py:19:8: W0201: Attribute 'frag_size' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/breakup_fragmentations/exponential.py:6:0: W0611: Unused numpy imported as np (unused-import)
+************* Module PySDM.physics.breakup_fragmentations.gaussian
+PySDM/physics/breakup_fragmentations/gaussian.py:13:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_fragmentations/gaussian.py:17:0: C0301: Line too long (105/100) (line-too-long)
+PySDM/physics/breakup_fragmentations/gaussian.py:18:0: C0301: Line too long (106/100) (line-too-long)
+PySDM/physics/breakup_fragmentations/gaussian.py:21:64: C0326: Exactly one space required after comma
+        self.max_size.max(self.particulator.attributes['radius'],is_first_in_pair)
+                                                                ^ (bad-whitespace)
+PySDM/physics/breakup_fragmentations/gaussian.py:23:0: C0330: Wrong continued indentation (add 42 spaces).
+            self.max_size, u01)
+            ^                                         | (bad-continuation)
+PySDM/physics/breakup_fragmentations/gaussian.py:17:8: W0201: Attribute 'max_size' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/breakup_fragmentations/gaussian.py:18:8: W0201: Attribute 'frag_size' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/breakup_fragmentations/gaussian.py:5:0: W0611: Unused numpy imported as np (unused-import)
+************* Module PySDM.physics.breakup_fragmentations.slams
+PySDM/physics/breakup_fragmentations/slams.py:2:8: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_fragmentations/slams.py:17:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/breakup_fragmentations/slams.py:20:0: C0304: Final newline missing (missing-final-newline)
+PySDM/physics/breakup_fragmentations/slams.py:20:0: C0301: Line too long (102/100) (line-too-long)
+PySDM/physics/breakup_fragmentations/slams.py:6:0: W0611: Unused numpy imported as np (unused-import)
+************* Module PySDM.physics.coalescence_efficiencies.__init__
+PySDM/physics/coalescence_efficiencies/__init__.py:4:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.coalescence_efficiencies
+PySDM/physics/coalescence_efficiencies/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.physics.coalescence_efficiencies._gravitational
+PySDM/physics/coalescence_efficiencies/_gravitational.py:16:0: C0301: Line too long (105/100) (line-too-long)
+************* Module PySDM.physics.coalescence_efficiencies._parameterized
+PySDM/physics/coalescence_efficiencies/_parameterized.py:13:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/coalescence_efficiencies/_parameterized.py:20:0: C0301: Line too long (102/100) (line-too-long)
+PySDM/physics/coalescence_efficiencies/_parameterized.py:22:0: C0305: Trailing newlines (trailing-newlines)
+************* Module PySDM.physics.coalescence_efficiencies.constEc
+PySDM/physics/coalescence_efficiencies/constEc.py:13:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/coalescence_efficiencies/constEc.py:15:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.coalescence_efficiencies.schlottke2010
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:20:0: C0301: Line too long (101/100) (line-too-long)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:26:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:33:0: C0303: Trailing whitespace (trailing-whitespace)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:41:0: C0304: Final newline missing (missing-final-newline)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:32:33: E0602: Undefined variable 'rho_w' (undefined-variable)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:36:28: E0602: Undefined variable 'sgm' (undefined-variable)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:18:8: W0201: Attribute 'Sc' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:19:8: W0201: Attribute 'tmp' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:20:8: W0201: Attribute 'tmp2' defined outside __init__ (attribute-defined-outside-init)
+PySDM/physics/coalescence_efficiencies/schlottke2010.py:21:8: W0201: Attribute 'We' defined outside __init__ (attribute-defined-outside-init)
+************* Module PySDM.physics.coalescence_efficiencies.specified_eff
+PySDM/physics/coalescence_efficiencies/specified_eff.py:15:0: C0301: Line too long (119/100) (line-too-long)
+PySDM/physics/coalescence_efficiencies/specified_eff.py:16:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.physics.constants_defaults
+PySDM/physics/constants_defaults.py:7:0: E0401: Unable to import 'chempy' (import-error)
+************* Module PySDM.physics.diffusion_kinetics.fuchs_sutugin
+PySDM/physics/diffusion_kinetics/fuchs_sutugin.py:23:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+            |   ^ (bad-continuation)
+PySDM/physics/diffusion_kinetics/fuchs_sutugin.py:29:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+            |   ^ (bad-continuation)
+************* Module PySDM.physics.drop_growth.maxwell_mason
+PySDM/physics/drop_growth/maxwell_mason.py:13:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                const.rho_w * const.Rv * T / D / pvs +
+            |   ^ (bad-continuation)
+PySDM/physics/drop_growth/maxwell_mason.py:14:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                const.rho_w * lv / K / T * (lv / const.Rv / T - 1)
+            |   ^ (bad-continuation)
+************* Module PySDM.physics.hygroscopicity.kappa_koehler_leading_terms
+PySDM/physics/hygroscopicity/kappa_koehler_leading_terms.py:16:0: C0330: Wrong hanging indentation (add 1 space).
+           1 +
+           ^| (bad-continuation)
+PySDM/physics/hygroscopicity/kappa_koehler_leading_terms.py:17:0: C0330: Wrong hanging indentation (add 1 space).
+           (2 * sgm / const.Rv / T / const.rho_w) / r -
+           ^| (bad-continuation)
+PySDM/physics/hygroscopicity/kappa_koehler_leading_terms.py:18:0: C0330: Wrong hanging indentation (add 1 space).
+           kp * rd3 / np.power(r, const.THREE)
+           ^| (bad-continuation)
+************* Module PySDM.physics.saturation_vapour_pressure.flatau_walko_cotton
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:14:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                const.FWC_C0 + T * (
+            |   ^ (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:15:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C1 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:16:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C2 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:17:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C3 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:18:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C4 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:19:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C5 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:20:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C6 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:21:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C7 + T *
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:22:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_C8
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:23:0: C0330: Wrong hanging indentation.
+        ))))))))
+        ^       |   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:28:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                const.FWC_I0 + T * (
+            |   ^ (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:29:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I1 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:30:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I2 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:31:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I3 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:32:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I4 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:33:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I5 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:34:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I6 + T * (
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:35:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I7 + T *
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:36:0: C0330: Wrong hanging indentation (add 4 spaces).
+                const.FWC_I8
+                ^   | (bad-continuation)
+PySDM/physics/saturation_vapour_pressure/flatau_walko_cotton.py:37:0: C0330: Wrong hanging indentation.
+        ))))))))
+        ^       |   | (bad-continuation)
+************* Module PySDM.physics.state_variable_triplet.rhod_thd_qv
+PySDM/physics/state_variable_triplet/rhod_thd_qv.py:39:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                1 - 1 / (1 + const.eps / qv)
+            |   ^ (bad-continuation)
+PySDM/physics/state_variable_triplet/rhod_thd_qv.py:41:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                np.power(p / const.p1000, const.Rd_over_c_pd) * const.Rd * theta_std
+            |   ^ (bad-continuation)
+************* Module PySDM.products.aqueous_chemistry.aqueous_mass_spectrum
+PySDM/products/aqueous_chemistry/aqueous_mass_spectrum.py:6:0: E0401: Unable to import 'chempy' (import-error)
+PySDM/products/aqueous_chemistry/aqueous_mass_spectrum.py:41:23: E1136: Value 'vals.shape' is unsubscriptable (unsubscriptable-object)
+************* Module PySDM.products.coalescence
+PySDM/products/coalescence/__init__.py:4:0: E0401: Unable to import 'PySDM.products.coalescence.coalescence_timestep_mean' (import-error)
+PySDM/products/coalescence/__init__.py:5:0: E0401: Unable to import 'PySDM.products.coalescence.coalescence_timestep_min' (import-error)
+PySDM/products/coalescence/__init__.py:6:0: E0401: Unable to import 'PySDM.products.coalescence.collision_rates' (import-error)
+************* Module PySDM.products.collision.__init__
+PySDM/products/collision/__init__.py:3:0: C0304: Final newline missing (missing-final-newline)
+PySDM/products/collision/__init__.py:3:0: C0301: Line too long (134/100) (line-too-long)
+************* Module PySDM.products.collision
+PySDM/products/collision/__init__.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+************* Module PySDM.products.collision.collision_rates
+PySDM/products/collision/collision_rates.py:26:0: C0304: Final newline missing (missing-final-newline)
+************* Module PySDM.products.condensation.event_rates
+PySDM/products/condensation/event_rates.py:34:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            |   ^ (bad-continuation)
+************* Module PySDM.products.freezing.freezable_specific_concentration
+PySDM/products/freezing/freezable_specific_concentration.py:24:23: E1136: Value 'vals.shape' is unsubscriptable (unsubscriptable-object)
+************* Module PySDM.products.impl.moment_product
+PySDM/products/impl/moment_product.py:22:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        self, attr, rank,
+        ^   | (bad-continuation)
+PySDM/products/impl/moment_product.py:23:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        filter_attr='volume', filter_range=(-np.inf, np.inf),
+        ^   | (bad-continuation)
+PySDM/products/impl/moment_product.py:24:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        weighting_attribute='volume', weighting_rank=0
+        ^   | (bad-continuation)
+PySDM/products/impl/moment_product.py:7:0: W0223: Method '_impl' is abstract in class 'Product' but is not overridden (abstract-method)
+************* Module PySDM.products.impl.spectrum_moment_product
+PySDM/products/impl/spectrum_moment_product.py:26:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        self, attr,
+        ^   | (bad-continuation)
+PySDM/products/impl/spectrum_moment_product.py:27:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        rank, filter_attr='volume',
+        ^   | (bad-continuation)
+PySDM/products/impl/spectrum_moment_product.py:28:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        weighting_attribute='volume', weighting_rank=0
+        ^   | (bad-continuation)
+PySDM/products/impl/spectrum_moment_product.py:9:0: W0223: Method '_impl' is abstract in class 'Product' but is not overridden (abstract-method)
+************* Module PySDM.products.size_spectral.k_moments
+PySDM/products/size_spectral/k_moments.py:29:0: C0325: Unnecessary parens after 'if' keyword (superfluous-parens)
+PySDM/products/size_spectral/k_moments.py:37:0: C0304: Final newline missing (missing-final-newline)
+PySDM/products/size_spectral/k_moments.py:10:0: W0223: Method '_impl' is abstract in class 'Product' but is not overridden (abstract-method)
+PySDM/products/size_spectral/k_moments.py:26:4: W0221: Parameters differ from overridden 'get' method (arguments-differ)
+PySDM/products/size_spectral/k_moments.py:30:16: E1101: Instance of 'KMoments' has no 'download_moment_to_buffer' member; maybe '_download_moment_to_buffer'? (no-member)
+PySDM/products/size_spectral/k_moments.py:33:16: E1101: Instance of 'KMoments' has no 'download_moment_to_buffer' member; maybe '_download_moment_to_buffer'? (no-member)
+PySDM/products/size_spectral/k_moments.py:35:16: E1101: Instance of 'KMoments' has no 'download_moment_to_buffer' member; maybe '_download_moment_to_buffer'? (no-member)
+PySDM/products/size_spectral/k_moments.py:7:0: C0411: third party import "import numpy as np" should be placed before "from PySDM.products.impl.moment_product import MomentProduct" (wrong-import-order)
+************* Module PySDM.products.size_spectral.particle_size_spectrum
+PySDM/products/size_spectral/particle_size_spectrum.py:34:23: E1136: Value 'vals.shape' is unsubscriptable (unsubscriptable-object)
+************* Module PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum
+PySDM/products/size_spectral/particle_volume_versus_radius_logarithm_spectrum.py:31:23: E1136: Value 'vals.shape' is unsubscriptable (unsubscriptable-object)
+************* Module PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity
+PySDM/products/size_spectral/radius_binned_number_averaged_terminal_velocity.py:34:23: E1136: Value 'vals.shape' is unsubscriptable (unsubscriptable-object)
+************* Module test_todos_annotated
+tests/devops_tests/test_todos_annotated.py:35:0: C0330: Wrong continued indentation.
+)
+^              || (bad-continuation)
+tests/devops_tests/test_todos_annotated.py:64:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        os.path.basename(file) == 'test_todos_annotated.py' or
+        ^   | (bad-continuation)
+tests/devops_tests/test_todos_annotated.py:65:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        file.endswith("-checkpoint.ipynb") or
+        ^   | (bad-continuation)
+tests/devops_tests/test_todos_annotated.py:66:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        ".eggs" in file
+        ^   | (bad-continuation)
+tests/devops_tests/test_todos_annotated.py:7:0: E0401: Unable to import 'ghapi.all' (import-error)
+tests/devops_tests/test_todos_annotated.py:8:0: E0401: Unable to import 'fastcore.net' (import-error)
+************* Module tests.smoke_tests.alpert_and_knopf_2016.test_ak16_fig_1
+tests/smoke_tests/alpert_and_knopf_2016/test_ak16_fig_1.py:5:0: E0401: Unable to import 'PySDM_examples.Alpert_and_Knopf_2016' (import-error)
+************* Module tests.smoke_tests.arabas_and_shima_2017.test_conservation
+tests/smoke_tests/arabas_and_shima_2017/test_conservation.py:57:42: C0326: Exactly one space required after comma
+@pytest.mark.parametrize("mass_of_dry_air",  [1, 10000])
+                                          ^ (bad-whitespace)
+tests/smoke_tests/arabas_and_shima_2017/test_conservation.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.simulation' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_conservation.py:5:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_conservation.py:6:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+************* Module tests.smoke_tests.arabas_and_shima_2017.test_displacement
+tests/smoke_tests/arabas_and_shima_2017/test_displacement.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.simulation' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_displacement.py:5:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+************* Module tests.smoke_tests.arabas_and_shima_2017.test_event_rates
+tests/smoke_tests/arabas_and_shima_2017/test_event_rates.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.simulation' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_event_rates.py:5:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_event_rates.py:6:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+************* Module tests.smoke_tests.arabas_and_shima_2017.test_initialisation
+tests/smoke_tests/arabas_and_shima_2017/test_initialisation.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_initialisation.py:5:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.simulation' (import-error)
+************* Module tests.smoke_tests.arabas_and_shima_2017.test_vs_bdf
+tests/smoke_tests/arabas_and_shima_2017/test_vs_bdf.py:2:0: E0401: Unable to import 'PySDM_examples.Arabas_and_Shima_2017.settings' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_vs_bdf.py:3:0: E0401: Unable to import 'PySDM_examples.Bartman_2020_MasterThesis.fig_5_BDF_VS_ADAPTIVE' (import-error)
+tests/smoke_tests/arabas_and_shima_2017/test_vs_bdf.py:5:0: C0411: third party import "import pytest" should be placed before "from PySDM_examples.Arabas_and_Shima_2017.settings import setups" (wrong-import-order)
+tests/smoke_tests/arabas_and_shima_2017/test_vs_bdf.py:6:0: C0411: third party import "import numpy as np" should be placed before "from PySDM_examples.Arabas_and_Shima_2017.settings import setups" (wrong-import-order)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_environment
+tests/smoke_tests/arabas_et_al_2015/test_environment.py:3:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_environment.py:4:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998' (import-error)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_export
+tests/smoke_tests/arabas_et_al_2015/test_export.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_export.py:5:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_export.py:6:0: E0401: Unable to import 'PySDM_examples.utils' (import-error)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_freezing
+tests/smoke_tests/arabas_et_al_2015/test_freezing.py:3:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_freezing.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_gui_settings
+tests/smoke_tests/arabas_et_al_2015/test_gui_settings.py:2:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_gui_settings.py:3:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998.gui_settings' (import-error)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_initialisation
+tests/smoke_tests/arabas_et_al_2015/test_initialisation.py:4:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_initialisation.py:5:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998' (import-error)
+************* Module tests.smoke_tests.arabas_et_al_2015.test_spin_up
+tests/smoke_tests/arabas_et_al_2015/test_spin_up.py:5:0: E0401: Unable to import 'PySDM_examples.Szumowski_et_al_1998' (import-error)
+tests/smoke_tests/arabas_et_al_2015/test_spin_up.py:6:0: E0401: Unable to import 'PySDM_examples.Arabas_et_al_2015' (import-error)
+************* Module tests.smoke_tests.berry_1967.test_coalescence
+tests/smoke_tests/berry_1967/test_coalescence.py:5:0: E0401: Unable to import 'PySDM_examples.Berry_1967.settings' (import-error)
+************* Module tests.smoke_tests.kreidenweis_et_al_2003.test_fig_1
+tests/smoke_tests/kreidenweis_et_al_2003/test_fig_1.py:5:0: E0401: Unable to import 'PySDM_examples.Kreidenweis_et_al_2003' (import-error)
+************* Module tests.smoke_tests.kreidenweis_et_al_2003.test_ionic_strength
+tests/smoke_tests/kreidenweis_et_al_2003/test_ionic_strength.py:4:0: E0401: Unable to import 'chempy.electrolytes' (import-error)
+tests/smoke_tests/kreidenweis_et_al_2003/test_ionic_strength.py:5:0: E0401: Unable to import 'PySDM_examples.Kreidenweis_et_al_2003' (import-error)
+************* Module tests.smoke_tests.kreidenweis_et_al_2003.test_spectrum_at_t_0
+tests/smoke_tests/kreidenweis_et_al_2003/test_spectrum_at_t_0.py:6:0: E0401: Unable to import 'PySDM_examples.Kreidenweis_et_al_2003' (import-error)
+************* Module tests.smoke_tests.kreidenweis_et_al_2003.test_table_3
+tests/smoke_tests/kreidenweis_et_al_2003/test_table_3.py:3:0: E0401: Unable to import 'chempy' (import-error)
+tests/smoke_tests/kreidenweis_et_al_2003/test_table_3.py:4:0: E0401: Unable to import 'PySDM_examples.Kreidenweis_et_al_2003' (import-error)
+************* Module tests.smoke_tests.lowe_et_al_2019.test_fig_1
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:37:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolBoreal(), 560 * si.nm),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:38:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolMarine(), 380 * si.nm),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:39:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolNascent(), 500 * si.nm)
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:66:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolBoreal(),  'Constant', 320 * si.nm, .217, False),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:66:40: C0326: Exactly one space required after comma
+                (aerosol.AerosolBoreal(),  'Constant', 320 * si.nm, .217, False),
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:67:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolMarine(),  'Constant', 420 * si.nm, .164, False),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:67:40: C0326: Exactly one space required after comma
+                (aerosol.AerosolMarine(),  'Constant', 420 * si.nm, .164, False),
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:68:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolNascent(), 'Constant', 360 * si.nm, .194, False),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:69:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolBoreal(),  'CompressedFilmOvadnevaite', 360 * si.nm, .108, True),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:69:40: C0326: Exactly one space required after comma
+                (aerosol.AerosolBoreal(),  'CompressedFilmOvadnevaite', 360 * si.nm, .108, True),
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:70:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolMarine(),  'CompressedFilmOvadnevaite', 600 * si.nm, .115, False),
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:70:40: C0326: Exactly one space required after comma
+                (aerosol.AerosolMarine(),  'CompressedFilmOvadnevaite', 600 * si.nm, .115, False),
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:71:0: C0330: Wrong hanging indentation (remove 4 spaces).
+                (aerosol.AerosolNascent(), 'CompressedFilmOvadnevaite', 670 * si.nm, .104, True)
+            |   ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_1.py:5:0: E0401: Unable to import 'PySDM_examples.Lowe_et_al_2019' (import-error)
+************* Module tests.smoke_tests.lowe_et_al_2019.test_fig_2
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:15:32: C0326: Exactly one space required after comma
+        (aerosol.AerosolMarine(),  "Constant", .30, 140),
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:16:32: C0326: Exactly one space required after comma
+        (aerosol.AerosolMarine(),  "CompressedFilmOvadnevaite", .27, 160),
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:17:32: C0326: Exactly one space required after comma
+        (aerosol.AerosolBoreal(),  "Constant", .21, 395),
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:18:32: C0326: Exactly one space required after comma
+        (aerosol.AerosolBoreal(),  "CompressedFilmOvadnevaite", .16, 495),
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:24:0: C0330: Wrong hanging indentation before block (add 4 spaces).
+        constants, aerosol, surface_tension, s_max, n_final
+        ^   | (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_fig_2.py:4:0: E0401: Unable to import 'PySDM_examples.Lowe_et_al_2019' (import-error)
+************* Module tests.smoke_tests.lowe_et_al_2019.test_surface_tension_models
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:24: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:29: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:34: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:39: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:44: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:49: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:54: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:59: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:64: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:69: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:74: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:51:79: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:24: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:29: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:34: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:39: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:44: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:49: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:54: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:59: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:64: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:69: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:74: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:52:79: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:24: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:29: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:34: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:39: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:44: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:49: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:54: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:59: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:64: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:69: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:74: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:53:79: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,0.04,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:24: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:29: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:34: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:39: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:44: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:54:64: C0326: Exactly one space required after comma
+                    0.04,0.04,0.04,0.04,0.04,0.04145185206190185,0.043245940200403225,
+                                                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:55:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.04493465757799464,0.04652419321971498,0.04802037260212956,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:55:39: C0326: Exactly one space required after comma
+                    0.04493465757799464,0.04652419321971498,0.04802037260212956,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:55:59: C0326: Exactly one space required after comma
+                    0.04493465757799464,0.04652419321971498,0.04802037260212956,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:56:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.049428679011056784,0.05075427364458418,0.05200201453477719,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:56:40: C0326: Exactly one space required after comma
+                    0.049428679011056784,0.05075427364458418,0.05200201453477719,
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:56:60: C0326: Exactly one space required after comma
+                    0.049428679011056784,0.05075427364458418,0.05200201453477719,
+                                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:57:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.053176474357604905,0.054281957196414696,0.055322514320391286,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:57:40: C0326: Exactly one space required after comma
+                    0.053176474357604905,0.054281957196414696,0.055322514320391286,
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:57:61: C0326: Exactly one space required after comma
+                    0.053176474357604905,0.054281957196414696,0.055322514320391286,
+                                                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:58:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.056301959036044666,0.05722388066615342,0.05809165770721892,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:58:40: C0326: Exactly one space required after comma
+                    0.056301959036044666,0.05722388066615342,0.05809165770721892,
+                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:58:60: C0326: Exactly one space required after comma
+                    0.056301959036044666,0.05722388066615342,0.05809165770721892,
+                                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:59:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.05890847021403533,0.059677311456651734,0.06040099889241329,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:59:39: C0326: Exactly one space required after comma
+                    0.05890847021403533,0.059677311456651734,0.06040099889241329,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:59:60: C0326: Exactly one space required after comma
+                    0.05890847021403533,0.059677311456651734,0.06040099889241329,
+                                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:60:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06108218449344455,0.061723364467315724,0.06232688840684634,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:60:39: C0326: Exactly one space required after comma
+                    0.06108218449344455,0.061723364467315724,0.06232688840684634,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:60:60: C0326: Exactly one space required after comma
+                    0.06108218449344455,0.061723364467315724,0.06232688840684634,
+                                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:61:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06289496790207844,0.06342968464658641,0.06393299806742464,0.06440675250688739,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:61:39: C0326: Exactly one space required after comma
+                    0.06289496790207844,0.06342968464658641,0.06393299806742464,0.06440675250688739,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:61:59: C0326: Exactly one space required after comma
+                    0.06289496790207844,0.06342968464658641,0.06393299806742464,0.06440675250688739,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:61:79: C0326: Exactly one space required after comma
+                    0.06289496790207844,0.06342968464658641,0.06393299806742464,0.06440675250688739,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:62:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06485268398238773,0.06527242654921248,0.06566751828951929,0.06603940694949924,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:62:39: C0326: Exactly one space required after comma
+                    0.06485268398238773,0.06527242654921248,0.06566751828951929,0.06603940694949924,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:62:59: C0326: Exactly one space required after comma
+                    0.06485268398238773,0.06527242654921248,0.06566751828951929,0.06603940694949924,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:62:79: C0326: Exactly one space required after comma
+                    0.06485268398238773,0.06527242654921248,0.06566751828951929,0.06603940694949924,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:63:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06638945524541608,0.06671894585794522,0.06702908613316425,0.06732101250732575,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:63:39: C0326: Exactly one space required after comma
+                    0.06638945524541608,0.06671894585794522,0.06702908613316425,0.06732101250732575,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:63:59: C0326: Exactly one space required after comma
+                    0.06638945524541608,0.06671894585794522,0.06702908613316425,0.06732101250732575,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:63:79: C0326: Exactly one space required after comma
+                    0.06638945524541608,0.06671894585794522,0.06702908613316425,0.06732101250732575,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:64:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.0675957946718376,0.06785443949346634,0.06809789470435344,0.06832705237523176,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:64:38: C0326: Exactly one space required after comma
+                    0.0675957946718376,0.06785443949346634,0.06809789470435344,0.06832705237523176,
+                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:64:58: C0326: Exactly one space required after comma
+                    0.0675957946718376,0.06785443949346634,0.06809789470435344,0.06832705237523176,
+                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:64:78: C0326: Exactly one space required after comma
+                    0.0675957946718376,0.06785443949346634,0.06809789470435344,0.06832705237523176,
+                                                                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:65:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06854275218466818,0.06874578449624996,0.06893689325503628,0.06911677871385602,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:65:39: C0326: Exactly one space required after comma
+                    0.06854275218466818,0.06874578449624996,0.06893689325503628,0.06911677871385602,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:65:59: C0326: Exactly one space required after comma
+                    0.06854275218466818,0.06874578449624996,0.06893689325503628,0.06911677871385602,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:65:79: C0326: Exactly one space required after comma
+                    0.06854275218466818,0.06874578449624996,0.06893689325503628,0.06911677871385602,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:66:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06928609999950004,0.06944547752817445,0.06959549527907691,0.06973670293439409,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:66:39: C0326: Exactly one space required after comma
+                    0.06928609999950004,0.06944547752817445,0.06959549527907691,0.06973670293439409,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:66:59: C0326: Exactly one space required after comma
+                    0.06928609999950004,0.06944547752817445,0.06959549527907691,0.06973670293439409,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:66:79: C0326: Exactly one space required after comma
+                    0.06928609999950004,0.06944547752817445,0.06959549527907691,0.06973670293439409,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:67:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.06986961789368958,0.06999472716988156,0.0701124891739247,0.07022333539465174,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:67:39: C0326: Exactly one space required after comma
+                    0.06986961789368958,0.06999472716988156,0.0701124891739247,0.07022333539465174,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:67:59: C0326: Exactly one space required after comma
+                    0.06986961789368958,0.06999472716988156,0.0701124891739247,0.07022333539465174,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:67:78: C0326: Exactly one space required after comma
+                    0.06986961789368958,0.06999472716988156,0.0701124891739247,0.07022333539465174,
+                                                                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:68:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.07032767197991878,0.07042588122494463,0.07051832297317082,0.07060533593488776,
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:68:39: C0326: Exactly one space required after comma
+                    0.07032767197991878,0.07042588122494463,0.07051832297317082,0.07060533593488776,
+                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:68:59: C0326: Exactly one space required after comma
+                    0.07032767197991878,0.07042588122494463,0.07051832297317082,0.07060533593488776,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:68:79: C0326: Exactly one space required after comma
+                    0.07032767197991878,0.07042588122494463,0.07051832297317082,0.07060533593488776,
+                                                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:69:0: C0330: Wrong hanging indentation (remove 8 spaces).
+                    0.0706872389283801,0.07076433204821643,0.07083689776487583,0.0709052019598351
+            |       ^ (bad-continuation)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:69:38: C0326: Exactly one space required after comma
+                    0.0706872389283801,0.07076433204821643,0.07083689776487583,0.0709052019598351
+                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:69:58: C0326: Exactly one space required after comma
+                    0.0706872389283801,0.07076433204821643,0.07083689776487583,0.0709052019598351
+                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:69:78: C0326: Exactly one space required after comma
+                    0.0706872389283801,0.07076433204821643,0.07083689776487583,0.0709052019598351
+                                                                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:89:13: C0326: Exactly one space required after comma
+        for i,vw in enumerate(V_WET):
+             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:99:31: C0326: Exactly one space required after comma
+            0.04318990388863848,0.04355416769160859,0.0439421778272239,0.04435543913070772,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:99:51: C0326: Exactly one space required after comma
+            0.04318990388863848,0.04355416769160859,0.0439421778272239,0.04435543913070772,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:99:70: C0326: Exactly one space required after comma
+            0.04318990388863848,0.04355416769160859,0.0439421778272239,0.04435543913070772,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:100:31: C0326: Exactly one space required after comma
+            0.04479551672881958,0.04526402672640544,0.045762623781862244,0.04629298561514597,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:100:51: C0326: Exactly one space required after comma
+            0.04479551672881958,0.04526402672640544,0.045762623781862244,0.04629298561514597,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:100:72: C0326: Exactly one space required after comma
+            0.04479551672881958,0.04526402672640544,0.045762623781862244,0.04629298561514597,
+                                                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:101:31: C0326: Exactly one space required after comma
+            0.04685679492085086,0.04745571976463471,0.048091394314671604,0.04876540264111237,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:101:51: C0326: Exactly one space required after comma
+            0.04685679492085086,0.04745571976463471,0.048091394314671604,0.04876540264111237,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:101:72: C0326: Exactly one space required after comma
+            0.04685679492085086,0.04745571976463471,0.048091394314671604,0.04876540264111237,
+                                                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:102:31: C0326: Exactly one space required after comma
+            0.04947926918577529,0.05023446017823065,0.05103240053506651,0.051874510426880245,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:102:51: C0326: Exactly one space required after comma
+            0.04947926918577529,0.05023446017823065,0.05103240053506651,0.051874510426880245,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:102:71: C0326: Exactly one space required after comma
+            0.04947926918577529,0.05023446017823065,0.05103240053506651,0.051874510426880245,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:103:32: C0326: Exactly one space required after comma
+            0.052762264625474335,0.05369727599685779,0.054681402290397516,0.05571687298813886,
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:103:52: C0326: Exactly one space required after comma
+            0.052762264625474335,0.05369727599685779,0.054681402290397516,0.05571687298813886,
+                                                    ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:103:73: C0326: Exactly one space required after comma
+            0.052762264625474335,0.05369727599685779,0.054681402290397516,0.05571687298813886,
+                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:104:32: C0326: Exactly one space required after comma
+            0.056806430668716615,0.057953479146781645,0.05916222830454722,0.06043782250688807,
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:104:53: C0326: Exactly one space required after comma
+            0.056806430668716615,0.057953479146781645,0.05916222830454722,0.06043782250688807,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:104:73: C0326: Exactly one space required after comma
+            0.056806430668716615,0.057953479146781645,0.05916222830454722,0.06043782250688807,
+                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:105:31: C0326: Exactly one space required after comma
+            0.06178643524956695,0.06321530723603938,0.06473269985853751,0.06634773509867063,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:105:51: C0326: Exactly one space required after comma
+            0.06178643524956695,0.06321530723603938,0.06473269985853751,0.06634773509867063,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:105:71: C0326: Exactly one space required after comma
+            0.06178643524956695,0.06321530723603938,0.06473269985853751,0.06634773509867063,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:30: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:50: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:70: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:76: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                                                                            ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:82: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                                                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:106:88: C0326: Exactly one space required after comma
+            0.0680701033701799,0.06990965125952682,0.07187591399036536,0.072,0.072,0.072,0.072,
+                                                                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:17: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:23: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:29: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:35: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:41: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:47: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:53: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:59: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:107:65: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:17: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:23: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:29: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:35: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:41: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:47: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:53: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:59: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:65: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:71: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:77: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:83: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:108:89: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:17: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:23: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:29: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:35: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:41: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:47: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:53: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:59: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:65: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:71: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:77: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:83: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:109:89: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:17: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:23: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:29: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:35: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:41: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:47: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:53: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:59: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:65: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:71: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:77: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:83: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:110:89: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,
+                                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:17: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:23: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:29: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:35: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:41: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:47: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:53: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:59: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                           ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:65: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                                 ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:71: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:77: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                                             ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:111:83: C0326: Exactly one space required after comma
+            0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072,0.072
+                                                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:138:31: C0326: Exactly one space required after comma
+            0.04170545235068712,0.04207589632089122,0.04244962961646187,0.0428269485292672,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:138:51: C0326: Exactly one space required after comma
+            0.04170545235068712,0.04207589632089122,0.04244962961646187,0.0428269485292672,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:138:71: C0326: Exactly one space required after comma
+            0.04170545235068712,0.04207589632089122,0.04244962961646187,0.0428269485292672,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:139:31: C0326: Exactly one space required after comma
+            0.04320818372912586,0.043593705564928045,0.04398393042681806,0.044379328434762944,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:139:52: C0326: Exactly one space required after comma
+            0.04320818372912586,0.043593705564928045,0.04398393042681806,0.044379328434762944,
+                                                    ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:139:72: C0326: Exactly one space required after comma
+            0.04320818372912586,0.043593705564928045,0.04398393042681806,0.044379328434762944,
+                                                                        ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:140:31: C0326: Exactly one space required after comma
+            0.04478043279935583,0.0451878513103144,0.04560228055915656,0.04602452371335611,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:140:50: C0326: Exactly one space required after comma
+            0.04478043279935583,0.0451878513103144,0.04560228055915656,0.04602452371335611,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:140:70: C0326: Exactly one space required after comma
+            0.04478043279935583,0.0451878513103144,0.04560228055915656,0.04602452371335611,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:141:32: C0326: Exactly one space required after comma
+            0.046455512957773316,0.046896338148322336,0.047348283850285854,0.04781287786790929,
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:141:53: C0326: Exactly one space required after comma
+            0.046455512957773316,0.046896338148322336,0.047348283850285854,0.04781287786790929,
+                                                     ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:141:74: C0326: Exactly one space required after comma
+            0.046455512957773316,0.046896338148322336,0.047348283850285854,0.04781287786790929,
+                                                                          ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:142:32: C0326: Exactly one space required after comma
+            0.048291955790905984,0.04878774828646771,0.049303001368475236,0.04984114559483559,
+                                ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:142:52: C0326: Exactly one space required after comma
+            0.048291955790905984,0.04878774828646771,0.049303001368475236,0.04984114559483559,
+                                                    ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:142:73: C0326: Exactly one space required after comma
+            0.048291955790905984,0.04878774828646771,0.049303001368475236,0.04984114559483559,
+                                                                         ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:143:31: C0326: Exactly one space required after comma
+            0.05040653975448352,0.05100483126948219,0.05164350541293351,0.05233275085500362,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:143:51: C0326: Exactly one space required after comma
+            0.05040653975448352,0.05100483126948219,0.05164350541293351,0.05233275085500362,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:143:71: C0326: Exactly one space required after comma
+            0.05040653975448352,0.05100483126948219,0.05164350541293351,0.05233275085500362,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:144:30: C0326: Exactly one space required after comma
+            0.0530868749743816,0.05392670762306413,0.05488381111799955,0.056007799064006464,
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:144:50: C0326: Exactly one space required after comma
+            0.0530868749743816,0.05392670762306413,0.05488381111799955,0.056007799064006464,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:144:70: C0326: Exactly one space required after comma
+            0.0530868749743816,0.05392670762306413,0.05488381111799955,0.056007799064006464,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:145:30: C0326: Exactly one space required after comma
+            0.0573767511936752,0.059091334616161374,0.06113470871082447,0.0630992101730827,
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:145:51: C0326: Exactly one space required after comma
+            0.0573767511936752,0.059091334616161374,0.06113470871082447,0.0630992101730827,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:145:71: C0326: Exactly one space required after comma
+            0.0573767511936752,0.059091334616161374,0.06113470871082447,0.0630992101730827,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:146:31: C0326: Exactly one space required after comma
+            0.06461657500220883,0.06572817193513107,0.06656632645301724,0.067223028931838,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:146:51: C0326: Exactly one space required after comma
+            0.06461657500220883,0.06572817193513107,0.06656632645301724,0.067223028931838,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:146:71: C0326: Exactly one space required after comma
+            0.06461657500220883,0.06572817193513107,0.06656632645301724,0.067223028931838,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:147:31: C0326: Exactly one space required after comma
+            0.06775426559459131,0.0681947966802138,0.06856720046770072,0.06888681108136241,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:147:50: C0326: Exactly one space required after comma
+            0.06775426559459131,0.0681947966802138,0.06856720046770072,0.06888681108136241,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:147:70: C0326: Exactly one space required after comma
+            0.06775426559459131,0.0681947966802138,0.06856720046770072,0.06888681108136241,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:148:31: C0326: Exactly one space required after comma
+            0.06916445633257737,0.06940803880572587,0.06962348937406575,0.06981536583363962,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:148:51: C0326: Exactly one space required after comma
+            0.06916445633257737,0.06940803880572587,0.06962348937406575,0.06981536583363962,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:148:71: C0326: Exactly one space required after comma
+            0.06916445633257737,0.06940803880572587,0.06962348937406575,0.06981536583363962,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:149:31: C0326: Exactly one space required after comma
+            0.06998724243835744,0.07014197148608561,0.07028186391110573,0.07040881703533021,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:149:51: C0326: Exactly one space required after comma
+            0.06998724243835744,0.07014197148608561,0.07028186391110573,0.07040881703533021,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:149:71: C0326: Exactly one space required after comma
+            0.06998724243835744,0.07014197148608561,0.07028186391110573,0.07040881703533021,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:150:31: C0326: Exactly one space required after comma
+            0.07052440690758358,0.0706299563370761,0.07072658588354233,0.07081525266495645,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:150:50: C0326: Exactly one space required after comma
+            0.07052440690758358,0.0706299563370761,0.07072658588354233,0.07081525266495645,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:150:70: C0326: Exactly one space required after comma
+            0.07052440690758358,0.0706299563370761,0.07072658588354233,0.07081525266495645,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:151:31: C0326: Exactly one space required after comma
+            0.07089678030539454,0.0709718823377164,0.07104118070169195,0.07110522051890375,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:151:50: C0326: Exactly one space required after comma
+            0.07089678030539454,0.0709718823377164,0.07104118070169195,0.07110522051890375,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:151:70: C0326: Exactly one space required after comma
+            0.07089678030539454,0.0709718823377164,0.07104118070169195,0.07110522051890375,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:152:31: C0326: Exactly one space required after comma
+            0.07116448200738978,0.07121939017482383,0.07127032276888652,0.07131761684754595,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:152:51: C0326: Exactly one space required after comma
+            0.07116448200738978,0.07121939017482383,0.07127032276888652,0.07131761684754595,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:152:71: C0326: Exactly one space required after comma
+            0.07116448200738978,0.07121939017482383,0.07127032276888652,0.07131761684754595,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:153:31: C0326: Exactly one space required after comma
+            0.07136157424698915,0.07140246616194773,0.07144053700595183,0.07147600768332182,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:153:51: C0326: Exactly one space required after comma
+            0.07136157424698915,0.07140246616194773,0.07144053700595183,0.07147600768332182,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:153:71: C0326: Exactly one space required after comma
+            0.07136157424698915,0.07140246616194773,0.07144053700595183,0.07147600768332182,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:154:30: C0326: Exactly one space required after comma
+            0.0715090783774165,0.07153993093863077,0.07156873093930102,0.07159562944989181,
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:154:50: C0326: Exactly one space required after comma
+            0.0715090783774165,0.07153993093863077,0.07156873093930102,0.07159562944989181,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:154:70: C0326: Exactly one space required after comma
+            0.0715090783774165,0.07153993093863077,0.07156873093930102,0.07159562944989181,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:155:31: C0326: Exactly one space required after comma
+            0.07162076458075536,0.07164426282575462,0.07166624023764522,0.07168680345997547,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:155:51: C0326: Exactly one space required after comma
+            0.07162076458075536,0.07164426282575462,0.07166624023764522,0.07168680345997547,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:155:71: C0326: Exactly one space required after comma
+            0.07162076458075536,0.07164426282575462,0.07166624023764522,0.07168680345997547,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:156:31: C0326: Exactly one space required after comma
+            0.07170605063610594,0.0717240722125759,0.07174095165128262,0.071756766062675,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:156:50: C0326: Exactly one space required after comma
+            0.07170605063610594,0.0717240722125759,0.07174095165128262,0.071756766062675,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:156:70: C0326: Exactly one space required after comma
+            0.07170605063610594,0.0717240722125759,0.07174095165128262,0.071756766062675,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:157:31: C0326: Exactly one space required after comma
+            0.07177158677029272,0.0717854798154341,0.07179850640944603,0.07181072334005235,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:157:50: C0326: Exactly one space required after comma
+            0.07177158677029272,0.0717854798154341,0.07179850640944603,0.07181072334005235,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:157:70: C0326: Exactly one space required after comma
+            0.07177158677029272,0.0717854798154341,0.07179850640944603,0.07181072334005235,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:158:30: C0326: Exactly one space required after comma
+            0.0718221833372332,0.07183293540340689,0.07184302511202303,0.07185249487812974,
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:158:50: C0326: Exactly one space required after comma
+            0.0718221833372332,0.07183293540340689,0.07184302511202303,0.07185249487812974,
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:158:70: C0326: Exactly one space required after comma
+            0.0718221833372332,0.07183293540340689,0.07184302511202303,0.07185249487812974,
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:159:31: C0326: Exactly one space required after comma
+            0.07186138420401451,0.07186972990262169,0.07187756630111092,0.0718849254266297,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:159:51: C0326: Exactly one space required after comma
+            0.07186138420401451,0.07186972990262169,0.07187756630111092,0.0718849254266297,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:159:71: C0326: Exactly one space required after comma
+            0.07186138420401451,0.07186972990262169,0.07187756630111092,0.0718849254266297,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:160:31: C0326: Exactly one space required after comma
+            0.07189183717612246,0.07189832947178237,0.07190442840356441,0.07191015836001612,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:160:51: C0326: Exactly one space required after comma
+            0.07189183717612246,0.07189832947178237,0.07190442840356441,0.07191015836001612,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:160:71: C0326: Exactly one space required after comma
+            0.07189183717612246,0.07189832947178237,0.07190442840356441,0.07191015836001612,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:161:31: C0326: Exactly one space required after comma
+            0.07191554214854026,0.07192060110608092,0.07192535520111608,0.07192982312774573,
+                               ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:161:51: C0326: Exactly one space required after comma
+            0.07191554214854026,0.07192060110608092,0.07192535520111608,0.07192982312774573,
+                                                   ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:161:71: C0326: Exactly one space required after comma
+            0.07191554214854026,0.07192060110608092,0.07192535520111608,0.07192982312774573,
+                                                                       ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:162:30: C0326: Exactly one space required after comma
+            0.0719340223925809,0.07193796939506661,0.07194167950180663,0.07194516711540175
+                              ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:162:50: C0326: Exactly one space required after comma
+            0.0719340223925809,0.07193796939506661,0.07194167950180663,0.07194516711540175
+                                                  ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:162:70: C0326: Exactly one space required after comma
+            0.0719340223925809,0.07193796939506661,0.07194167950180663,0.07194516711540175
+                                                                      ^ (bad-whitespace)
+tests/smoke_tests/lowe_et_al_2019/test_surface_tension_models.py:3:0: E0401: Unable to import 'PySDM_examples.Lowe_et_al_2019' (import-error)
+************* Module tests.smoke_tests.shipway_and_hill_2012.test_few_steps
+tests/smoke_tests/shipway_and_hill_2012/test_few_steps.py:4:0: E0401: Unable to import 'PySDM_examples.Shipway_and_Hill_2012' (import-error)
+************* Module tests.smoke_tests.shipway_and_hill_2012.test_initial_condition
+tests/smoke_tests/shipway_and_hill_2012/test_initial_condition.py:4:0: E0401: Unable to import 'PySDM_examples.Shipway_and_Hill_2012' (import-error)
+************* Module tests.smoke_tests.shipway_and_hill_2012.test_settings
+tests/smoke_tests/shipway_and_hill_2012/test_settings.py:2:0: E0401: Unable to import 'PySDM_examples.Shipway_and_Hill_2012' (import-error)
+tests/smoke_tests/shipway_and_hill_2012/test_settings.py:3:0: C0411: third party import "import numpy as np" should be placed before "from PySDM_examples.Shipway_and_Hill_2012 import Settings" (wrong-import-order)
+************* Module tests.smoke_tests.yang_et_al_2018.test_displacement
+tests/smoke_tests/yang_et_al_2018/test_displacement.py:2:0: E0401: Unable to import 'PySDM_examples.Yang_et_al_2018' (import-error)
+tests/smoke_tests/yang_et_al_2018/test_displacement.py:3:0: C0411: third party import "import matplotlib.pyplot as plt" should be placed before "from PySDM_examples.Yang_et_al_2018 import Simulation, Settings" (wrong-import-order)
+tests/smoke_tests/yang_et_al_2018/test_displacement.py:4:0: C0411: third party import "from scipy import signal" should be placed before "from PySDM_examples.Yang_et_al_2018 import Simulation, Settings" (wrong-import-order)
+tests/smoke_tests/yang_et_al_2018/test_displacement.py:5:0: C0411: third party import "import numpy as np" should be placed before "from PySDM_examples.Yang_et_al_2018 import Simulation, Settings" (wrong-import-order)
+************* Module tests.smoke_tests.yang_et_al_2018.test_initialisation
+tests/smoke_tests/yang_et_al_2018/test_initialisation.py:15:26: C0326: No space allowed after bracket
+    assert round(dry_radii[  1-1], 0) == 503
+                          ^ (bad-whitespace)
+tests/smoke_tests/yang_et_al_2018/test_initialisation.py:16:26: C0326: No space allowed after bracket
+    assert round(dry_radii[ 10-1], 0) == 355
+                          ^ (bad-whitespace)
+tests/smoke_tests/yang_et_al_2018/test_initialisation.py:17:26: C0326: No space allowed after bracket
+    assert round(dry_radii[ 50-1], 1) == 75.3
+                          ^ (bad-whitespace)
+tests/smoke_tests/yang_et_al_2018/test_initialisation.py:4:0: E0401: Unable to import 'PySDM_examples.Yang_et_al_2018' (import-error)
+************* Module tests.smoke_tests.yang_et_al_2018.test_just_do_it
+tests/smoke_tests/yang_et_al_2018/test_just_do_it.py:5:0: E0401: Unable to import 'PySDM_examples.Yang_et_al_2018' (import-error)
+************* Module tests.unit_tests.attributes.test_acidity
+tests/unit_tests/attributes/test_acidity.py:69:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            FORMULAE.constants.ROOM_TEMP,
+        |   ^ (bad-continuation)
+tests/unit_tests/attributes/test_acidity.py:70:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            FORMULAE.constants.ROOM_TEMP-30,
+        |   ^ (bad-continuation)
+tests/unit_tests/attributes/test_acidity.py:71:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            FORMULAE.constants.ROOM_TEMP+30
+        |   ^ (bad-continuation)
+tests/unit_tests/attributes/test_acidity.py:5:0: E0401: Unable to import 'chempy' (import-error)
+tests/unit_tests/attributes/test_acidity.py:6:0: E0401: Unable to import 'chempy.equilibria' (import-error)
+tests/unit_tests/attributes/test_acidity.py:7:0: E0401: Unable to import 'chempy.chemistry' (import-error)
+************* Module tests.unit_tests.backends.test_collisions_methods
+tests/unit_tests/backends/test_collisions_methods.py:98:0: C0330: Wrong hanging indentation (remove 1 space).
+                     dt - np.asarray(expected_dt_left[cell_id[i]])
+                    |^ (bad-continuation)
+tests/unit_tests/backends/test_collisions_methods.py:99:0: C0330: Wrong hanging indentation.
+                 ) / dt * np.asarray(gamma)[i // 2]
+                |^  | (bad-continuation)
+************* Module tests.unit_tests.backends.test_oxidation
+tests/unit_tests/backends/test_oxidation.py:63:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_VI':  O3_react_consts * O3_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:64:0: C0330: Wrong hanging indentation (remove 1 space).
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:65:0: C0330: Wrong hanging indentation (remove 1 space).
+             'H2O2':  0.0,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:66:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_IV': -O3_react_consts * O3_init * S_IV_init / DF}
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:71:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_VI':  H2O2_react_consts * H2O2_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:72:0: C0330: Wrong hanging indentation (remove 1 space).
+             'O3':    0.0,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:73:0: C0330: Wrong hanging indentation (remove 1 space).
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:74:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_IV': -H2O2_react_consts * H2O2_init * S_IV_init / DF}
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:79:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:80:0: C0330: Wrong hanging indentation (remove 1 space).
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:81:0: C0330: Wrong hanging indentation (remove 1 space).
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:82:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:87:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_VI': (H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:88:0: C0330: Wrong hanging indentation (remove 1 space).
+             'O3':   -O3_react_consts * O3_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:89:0: C0330: Wrong hanging indentation (remove 1 space).
+             'H2O2': -H2O2_react_consts * H2O2_init * S_IV_init / DF,
+            |^ (bad-continuation)
+tests/unit_tests/backends/test_oxidation.py:90:0: C0330: Wrong hanging indentation (remove 1 space).
+             'S_IV': -(H2O2_react_consts * H2O2_init + O3_react_consts * O3_init) * S_IV_init / DF}
+            |^ (bad-continuation)
+************* Module tests.unit_tests.dynamics.coalescence.test_croupiers
+tests/unit_tests/dynamics/coalescence/test_croupiers.py:47:45: E1101: Module 'numpy.random' has no 'random' member (no-member)
+************* Module tests.unit_tests.dynamics.coalescence.test_kernels
+tests/unit_tests/dynamics/coalescence/test_kernels.py:6:0: W0404: Reimport 'Golovin' (imported line 4) (reimported)
+************* Module tests.unit_tests.impl.test_particle_attributes
+tests/unit_tests/impl/test_particle_attributes.py:210:14: E1101: Module 'numpy.random' has no 'random' member (no-member)
+tests/unit_tests/impl/test_particle_attributes.py:240:14: E1101: Module 'numpy.random' has no 'random' member (no-member)
+************* Module tests.unit_tests.physics.test_saturation_vapour_pressure
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:35:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        |   ^ (bad-continuation)
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:37:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        |   ^ (bad-continuation)
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:43:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.ice_Celsius(temperature),
+        |   ^ (bad-continuation)
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:45:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.pvs_Celsius(temperature)
+        |   ^ (bad-continuation)
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:50:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        |   ^ (bad-continuation)
+tests/unit_tests/physics/test_saturation_vapour_pressure.py:52:0: C0330: Wrong hanging indentation (remove 4 spaces).
+            .saturation_vapour_pressure.ice_Celsius(temperature)
+        |   ^ (bad-continuation)
+
+-----------------------------------
+Your code has been rated at 8.67/10
+
