@@ -13,12 +13,12 @@ class AlwaysN:
         self.N = n
         self.N_vec = None
         self.zeros = None
-        
+
 
     def __call__(self, output, u01, is_first_in_pair):
         output *= self.zeros
         output += self.N_vec
-        
+
     def register(self, builder):
         self.particulator = builder.particulator
         N_vec_tmp = np.tile([self.N], self.particulator.n_sd // 2)

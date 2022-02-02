@@ -81,8 +81,8 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def __collision_body(multiplicity, idx, length, attributes, gamma, rand, dyn, 
-                       Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate, 
+    def __collision_body(multiplicity, idx, length, attributes, gamma, rand, dyn,
+                       Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
                        breakup_rate, is_first_in_pair):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             # TODO: open issue on GH explaining double role of gamma and what's in pair-indices
@@ -127,7 +127,7 @@ class CollisionsMethods(BackendMethods):
                     multiplicity[j] = (n_fragment[i] * multiplicity[k]) // 2
                     multiplicity[k] = n_fragment[i] * multiplicity[k] - multiplicity[j]
                     for a in range(0, len(attributes)):
-                        attributes[a, j] = (gamma[i] * attributes[a, j] + 
+                        attributes[a, j] = (gamma[i] * attributes[a, j] +
                                             attributes[a, k])/n_fragment[i]
                         attributes[a, k] = attributes[a, j]
                 if multiplicity[k] == 0 or multiplicity[j] == 0:
@@ -135,15 +135,15 @@ class CollisionsMethods(BackendMethods):
 
                 breakup_rate[cid] += gamma[i] * multiplicity[k]
 
-    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb, 
-                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, 
+    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb,
+                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
                   is_first_in_pair):
-        self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data, 
-                            gamma.data, rand.data, dyn.data, Ec.data, Eb.data, 
-                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data, 
+        self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,
+                            gamma.data, rand.data, dyn.data, Ec.data, Eb.data,
+                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
                             breakup_rate.data, is_first_in_pair.indicator.data)
 
-    @staticmethod 
+    @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __slams_fragmentation_body(n_fragment, probs, rand):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
@@ -154,56 +154,56 @@ class CollisionsMethods(BackendMethods):
                 if rand[i] < probs[i]:
                     n_fragment[i] = n + 2
                     break
-    
+
     def slams_fragmentation(self, n_fragment, probs, rand):
         self.__slams_fragmentation_body(n_fragment.data, probs.data, rand.data)
 
-    '''
-    Exponential PDF
-    '''
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __exp_fragmentation_body(n_fragment, scale, frag_size, r_max, rand):
+        '''
+        Exponential PDF
+        '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1-rand[i])
             if frag_size[i] > r_max[i]:
                 n_fragment[i] = 1
             else:
                 n_fragment[i] = r_max[i] / frag_size[i]
-    
+
     def exp_fragmentation(self, n_fragment, scale, frag_size, r_max, rand):
         self.__exp_fragmentation_body(n_fragment.data, scale, frag_size.data, r_max.data, rand.data)
 
-    '''
-    Gaussian PDF
-    CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
-    '''
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __gauss_fragmentation_body(n_fragment, mu, scale, frag_size, r_max, rand):
+        '''
+        Gaussian PDF
+        CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
+        '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = mu + sqrt_pi * sqrt_two * scale / 4 * np.log((1 + rand[i])/(1 - rand[i]))
             if frag_size[i] > r_max[i]:
                 n_fragment[i] = 1.0
             else:
                 n_fragment[i] = r_max[i] / frag_size[i]
-    
+
     def gauss_fragmentation(self, n_fragment, mu, scale, frag_size, r_max, rand):
-        self.__gauss_fragmentation_body(n_fragment.data, mu, scale, frag_size.data, r_max.data, 
+        self.__gauss_fragmentation_body(n_fragment.data, mu, scale, frag_size.data, r_max.data,
                                       rand.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __ll1982_fragmentation_body(n_fragment, probs, rand):
+    def __ll1982_fragmentation_body(n_fragment, probs, rand): # pylint: disable=unused-argument
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             probs[i] = 0.0
             n_fragment[i] = 1
-            
+
             # first consider filament breakup
-    
+
     def ll1982_fragmentation(self, n_fragment, probs, rand):
         self.__ll1982_fragmentation_body(n_fragment.data, probs.data, rand.data)
-        
+
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments

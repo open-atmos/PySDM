@@ -132,7 +132,7 @@ class Collision:
 
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
-        
+
         self.collision_rate = self.particulator.Storage.from_ndarray(
             np.zeros(self.particulator.mesh.n_cell, dtype=int))
         self.collision_rate_deficit = self.particulator.Storage.from_ndarray(
@@ -182,11 +182,11 @@ class Collision:
         # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
 
-        # (5) Perform the collisional-coalescence/breakup step: 
-        self.particulator.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn, 
+        # (5) Perform the collisional-coalescence/breakup step:
+        self.particulator.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn,
                                     Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment,
                                     coalescence_rate=self.coalescence_rate,
-                                    breakup_rate=self.breakup_rate, 
+                                    breakup_rate=self.breakup_rate,
                                     is_first_in_pair=self.is_first_in_pair)
 
         if self.adaptive:
@@ -211,7 +211,7 @@ class Collision:
         prob *= self.kernel_temp
 
         self.particulator.normalize(prob, self.norm_factor_temp)
-        
+
     # (3c) Compute n_fragment
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
         self.fragmentation(n_fragment, u01, is_first_in_pair)
@@ -234,7 +234,7 @@ class Collision:
                 warnings.warn("breakup adaptive time-step reached dt_min")
         else:
             prob /= self.__substeps
-            
+
         # src is ../backends/numba/impl/_algorithmic_methods.py, line 149
         self.particulator.backend.compute_gamma(
             prob,

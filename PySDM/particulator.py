@@ -120,7 +120,7 @@ class Particulator:
             cell_id=self.attributes['cell id']
         )
 
-    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment, 
+    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment,
                   coalescence_rate, breakup_rate, is_first_in_pair):
         self.backend.collision(
             multiplicity=self.attributes['n'],
@@ -144,7 +144,7 @@ class Particulator:
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors, 
+    def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors,
                   do_chemistry_flag):
         self.backend.oxidation(
             n_sd=self.n_sd,

@@ -1,5 +1,5 @@
 """
-Created at 05.21.2021
+Specifies constant breakup efficiency.
 """
 
 class ConstEb():
@@ -10,6 +10,6 @@ class ConstEb():
 
     def register(self, builder):
         self.particulator = builder.particulator
-    
+
     def __call__(self, output, is_first_in_pair):
         output.data[:] = self.Eb

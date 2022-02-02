@@ -10,6 +10,7 @@ class ConstEc():
 
     def register(self, builder):
         self.particulator = builder.particulator
-    
+
     def __call__(self, output, is_first_in_pair):
         output.data[:] = self.Ec
+        
