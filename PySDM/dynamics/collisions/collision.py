@@ -7,9 +7,9 @@ import numpy as np
 from PySDM.physics import si
 from PySDM.dynamics.impl.random_generator_optimizer import RandomGeneratorOptimizer
 from PySDM.dynamics.impl.random_generator_optimizer_nopair import RandomGeneratorOptimizerNoPair
-from PySDM.physics.coalescence_efficiencies import ConstEc
-from PySDM.physics.breakup_efficiencies import ConstEb
-from PySDM.physics.breakup_fragmentations import AlwaysN
+from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
+from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 
 DEFAULTS = namedtuple("_", ('dt_coal_range',))(
     dt_coal_range=(.1 * si.second, 100 * si.second)

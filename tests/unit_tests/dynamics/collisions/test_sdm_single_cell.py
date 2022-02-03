@@ -92,7 +92,6 @@ class TestSDMSingleCell:
         pytest.param(7),
     ])
     # pylint: disable=redefined-outer-name
-    # TODO: write similar test for breakup
     def test_multi_collision(backend_class, v_2, n_2, p):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, len(n_2))
