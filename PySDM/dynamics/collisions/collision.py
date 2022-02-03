@@ -37,7 +37,7 @@ class Collision:
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
-                 adaptive: bool = False,
+                 adaptive: bool = True,
                  dt_coal_range=DEFAULTS.dt_coal_range
                  ):
         assert substeps == 1 or adaptive is False
