@@ -138,7 +138,7 @@ class CollisionsMethods(BackendMethods):
                         tmp1 += gamma[i]**m
                         if (multiplicity[j] - tmp1*multiplicity[k]) < 0:
                             break
-                    tmp2 = n_fragment[i]**m
+                    tmp2 = n_fragment[i]**gamma[i]
 
                     multiplicity[j] = (tmp2 * multiplicity[k]) // 2
                     multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
