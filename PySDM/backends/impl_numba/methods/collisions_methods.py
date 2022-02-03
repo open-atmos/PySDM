@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for particle collisions
 """
+from audioop import mul
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -96,7 +97,9 @@ class CollisionsMethods(BackendMethods):
 
             dyn[i] = rand[i] - Ec[i]
             j, k = pair_indices(i, idx, is_first_in_pair)
+
             if dyn[i] < 0: # coalescence
+                coalescence_rate[cid] += gamma[i] * multiplicity[k]
                 new_n = multiplicity[j] - gamma[i] * multiplicity[k]
                 if new_n > 0:
                     multiplicity[j] = new_n
@@ -111,32 +114,52 @@ class CollisionsMethods(BackendMethods):
                 if multiplicity[k] == 0 or multiplicity[j] == 0:
                     healthy[0] = 0
 
-                coalescence_rate[cid] += gamma[i] * multiplicity[k]
             else: # breakup
-                new_n = multiplicity[j] - gamma[i] * multiplicity[k]
-                # perform rounding to keep multiplicity[k] as integer
-                n_fragment[i] = int(multiplicity[k] * n_fragment[i]) / multiplicity[k]
+                breakup_rate[cid] += gamma[i] * multiplicity[k]
+
+                tmp1 = 0
+                for m in range(gamma[i]):
+                    tmp1 += gamma[i]**m
+                tmp2 = n_fragment[i]**gamma[i]
+
+                new_n = multiplicity[j] - tmp1*multiplicity[k]
+
                 if new_n > 0:
                     multiplicity[j] = new_n
-                    multiplicity[k] = int(multiplicity[k] * n_fragment[i])
+                    multiplicity[k] = multiplicity[k]*tmp2
                     for a in range(0, len(attributes)):
-                        attributes[a, k] += gamma[i] * attributes[a, j]
-                        attributes[a, k] /= n_fragment[i]
+                        attributes[a, k] += tmp1 * attributes[a, j]
+                        attributes[a, k] /= tmp2
 
                 else:  # new_n == 0
-                    multiplicity[j] = (n_fragment[i] * multiplicity[k]) // 2
-                    multiplicity[k] = n_fragment[i] * multiplicity[k] - multiplicity[j]
+                    # find nearest true gamma instead
+                    tmp1 = 0
+                    for m in range(gamma[i]):
+                        tmp1 += gamma[i]**m
+                        if (multiplicity[j] - tmp1*multiplicity[k]) < 0:
+                            break
+                    tmp2 = n_fragment[i]**m
+
+                    multiplicity[j] = (tmp2 * multiplicity[k]) // 2
+                    multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
                     for a in range(0, len(attributes)):
-                        attributes[a, j] = (gamma[i] * attributes[a, j] +
-                                            attributes[a, k])/n_fragment[i]
-                        attributes[a, k] = attributes[a, j]
+                        attributes[a, k] += tmp1 * attributes[a, j]
+                        attributes[a, k] /= tmp2
+                        attributes[a, j] = attributes[a, k]
+
+                factor_j = multiplicity[j]/int(multiplicity[j])
+                factor_k = multiplicity[k]/int(multiplicity[k])
+                multiplicity[j] = int(multiplicity[j])
+                multiplicity[k] = int(multiplicity[k])
+                for a in range(0,len(attributes)):
+                    attributes[a,k] *= factor_k
+                    attributes[a,j] *= factor_j 
+
                 if multiplicity[k] == 0 or multiplicity[j] == 0:
                     healthy[0] = 0
 
-                breakup_rate[cid] += gamma[i] * multiplicity[k]
-
-    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb,
-                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
+    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb, 
+                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, 
                   is_first_in_pair):
         self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,
                             gamma.data, rand.data, dyn.data, Ec.data, Eb.data,
