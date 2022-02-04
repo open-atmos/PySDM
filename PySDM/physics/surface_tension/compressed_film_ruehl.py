@@ -3,17 +3,6 @@ surface tension coefficient model featuring surface-partitioning
  as in [Ruehl et al. (2016)](https://doi.org/10.1126/science.aad4889)
 """
 import numpy as np
-import numba
-from PySDM.backends.impl_numba.conf import JIT_FLAGS as jit_flags
-from PySDM.backends.impl_numba.toms748 import toms748_solve
-
-@numba.njit(**{**jit_flags, 'parallel': False})
-def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
-    return Cb_iso*(1-f_surf)/RUEHL_C0 - np.exp(c * (RUEHL_A0**2 - (A_iso/f_surf)**2))
-
-@numba.njit(**{**jit_flags, 'parallel': False})
-def within_tolerance(error_estimate, value, rtol):
-        return error_estimate < rtol * np.abs(value)
 
 class CompressedFilmRuehl:
     """
@@ -49,17 +38,18 @@ class CompressedFilmRuehl:
 
         # solve implicitly for fraction of organic at surface
         c = (const.RUEHL_m_sigma * const.N_A) / (2 * const.R_str * T)
+
         args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
         # use numba root solver
         rtol = 1e-6
         max_iters = 1e2
-        bracket = [1e-20, 1]
+        bracket = (1e-20, 1)
         f_surf, iters = toms748_solve(
-            minfun, args, *bracket, minfun(bracket[0]), minfun(bracket[1]),
-            rtol=rtol, max_iter=max_iters, within_tolerance=within_tolerance
+            minfun, args, *bracket, minfun(bracket[0], *args), minfun(bracket[1], *args),
+            rtol, max_iters, within_tolerance
         )
         assert iters != max_iters
-
+        
         # calculate surface tension
         sgm = const.sgm_w - (const.RUEHL_A0 - A_iso/f_surf)*const.RUEHL_m_sigma
         sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
