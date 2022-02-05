@@ -127,24 +127,11 @@ def _formula(func, constants, dimensional_analysis, **kw):
     loc = {}
     for arg_name in ('_', 'const'):
         source = source.replace(f'def {func.__name__}({arg_name},', f'def {func.__name__}(')
-    
 
-    #############
-    from PySDM.backends.impl_numba.conf import JIT_FLAGS as jit_flags
-    from PySDM.backends.impl_numba.toms748 import toms748_solve
-
-    @numba.njit(**{**jit_flags, 'parallel': False})
-    def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
-        return Cb_iso*(1-f_surf)/RUEHL_C0 - np.exp(c * (RUEHL_A0**2 - (A_iso/f_surf)**2))
-
-    @numba.njit(**{**jit_flags, 'parallel': False})
-    def within_tolerance(error_estimate, value, rtol):
-            return error_estimate < rtol * np.abs(value)
-    ###############
-    
+    extras = func.__extras if hasattr(func, '__extras') else {}
     exec(  # pylint:disable=exec-used
         source,
-        {'const': constants, 'np': np, 'toms748_solve': toms748_solve, 'minfun': minfun, 'within_tolerance': within_tolerance},
+        {'const': constants, 'np': np, **extras},
         loc
     )
     return numba.njit(
