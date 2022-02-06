@@ -5,16 +5,17 @@ import numpy as np
 from PySDM_examples.Yang_et_al_2018 import Simulation, Settings
 from PySDM.physics.constants import si
 from PySDM.backends.impl_numba.test_helpers import bdf
-from PySDM.backends import GPU
+from PySDM.backends import CPU, GPU
 
-from ...backends_fixture import backend_class
-assert hasattr(backend_class, '_pytestfixturefunction')
+#  TODO #527
+# from ...backends_fixture import backend_class
+# assert hasattr(backend_class, '_pytestfixturefunction')
 
 
 @pytest.mark.parametrize("scheme", ('default', 'BDF'))
 @pytest.mark.parametrize("adaptive", (True, False))
 # pylint: disable=redefined-outer-name
-def test_just_do_it(backend_class, scheme, adaptive):
+def test_just_do_it(scheme, adaptive, backend_class=CPU):
     # Arrange
     if scheme == 'BDF' and (not adaptive or backend_class is GPU):
         return
