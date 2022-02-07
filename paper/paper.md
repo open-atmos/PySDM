@@ -60,14 +60,14 @@ bibliography: paper.bib
 
 `PySDM` is an open-source Python package for simulating the dynamics of particles undergoing condensational and collisional growth,
   interacting with a fluid flow and subject to chemical composition changes. 
-It is intended to serve as a building block for process-level as well as computational-fluid-dynamics simulation systems involving representation
+It is intended to serve as a building block for process-level as well as computational-fluid dynamics simulation systems involving representation
   of a continuous phase (air) and a dispersed phase (aerosol), with `PySDM` being responsible for representation of the dispersed phase. 
-As of the major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on 
+For major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on 
   modelling the dynamics of particles immersed in moist air using the particle-based 
   approach to represent 
   the evolution of the size spectrum of aerosol/cloud/rain particles. 
 The particle-based approach contrasts the more commonly used bulk and bin methods
-  in which atmospheric particles are segregated into multiple categories (aerosol, cloud, rain) 
+  in which atmospheric particles are segregated into multiple categories (aerosol, cloud and rain) 
   and their evolution is governed by deterministic dynamics solved on the same Eulerian grid as 
   the dynamics of the continuous phase. 
 Particle-based methods employ discrete computational (super) particles for modelling the dispersed phase.
@@ -80,29 +80,29 @@ Such approach is particularly well suited for using probabilistic representation
 The `PySDM` package core is a Pythonic high-performance implementation of the Super-Droplet Method (SDM) Monte-Carlo algorithm for representing collisional growth [@Shima_et_al_2009], hence the name. 
 The SDM is a probabilistic alternative to the mean-field approach embodied by the Smoluchowski equation, for a comparative outline of 
   both approaches see @Bartman_and_Arabas_2021.
-In atmospheric aerosol-cloud interactions, particle collisional growth is responsible for
+In atmospheric aerosol-cloud interactions, particle collisional growth is responsible for the
   formation of rain drops through collisions of smaller cloud droplets (warm-rain process)
   as well as for aerosol washout. 
 
 Besides collisional growth, `PySDM` includes representation of condensation/evaporation of
-  water vapour on/from the particles.
+  water vapour to/from the particles.
 Furthermore, representation of dissolution and, if applicable, dissociation 
-  of trace gases (sulfur dioxide, ozone, hydrogen peroxide, carbon dioxide, nitric acid and ammonia)
+  of trace gases (sulfur dioxide, ozone, hydrogen peroxide, carbon dioxide, nitric acid, and ammonia)
   is included to model the subsequent aqueous-phase oxidation of the dissolved sulfur dioxide.
 Representation of the chemical processes follows the particle-based formulation of @Jaruga_and_Pawlowska_2018.
 
 The usage examples are built on top of four different `environment` classes included in `PySDM` v1
-  and implementing common simple atmospheric cloud modelling frameworks: box, adiabatic
-  parcel, single-column and 2D prescribed flow kinematic models.
+  which implement common simple atmospheric cloud modelling frameworks: box, adiabatic
+  parcel, single-column, and 2D prescribed flow kinematic models.
 
 In addition, the package ships with tutorial code depicting how `PySDM` can be used from `Julia` and `Matlab` using
   the `PyCall.jl` and the Matlab-bundled Python interface, respectively.
 Two exporter classes are available as of time of writing enabling storage of particle attributes and
-  gridded products in the VTK format, and storage of gridded products in netCDF format.
+  gridded products in the VTK format and storage of gridded products in netCDF format.
 
 # Dependencies and supported platforms 
 
-PySDM essential dependencies are: `NumPy`, `SciPy`, `Numba`, `Pint` and `ChemPy` which are all free and open-source software available via the PyPI platform.
+PySDM essential dependencies are: `NumPy`, `SciPy`, `Numba`, `Pint`, and `ChemPy` which are all free and open-source software available via the PyPI platform.
 `PySDM` releases are published at the PyPI Python package index allowing 
   installation using the `pip` package manager (i.e., `pip install PySDM`).
 
@@ -112,8 +112,8 @@ The optional GPU backend relies on proprietary vendor-specific CUDA technology, 
 The usage examples for `Python` were developed embracing the `Jupyter` interactive platform allowing control of the simulations via web browser.
 All Python examples are ready for use with the `mybinder.org` and the `Google Colab` platforms.
 
-Continuous integration infrastructure used in the development of PySDM assures the targeted full usability on Linux, macOS and Windows environments. 
-Compatibility with Python versions 3.7 through 3.9 is maintained as of time of writing.
+Continuous integration infrastructure used in the development of PySDM assures the targeted full usability on Linux, macOS, and Windows environments. 
+Compatibility with Python versions 3.7 through 3.9 is maintained as of the time of writing.
 Test coverage for PySDM is reported using the `codecov.io` platform.
 Coverage analysis of the backend code requires execution with JIT-compilation disabled for the CPU backend 
   (e.g., using the `NUMBA_DISABLE_JIT=1` environment variable setting).
@@ -131,8 +131,8 @@ In order to depict PySDM API with a practical example, the following listings pr
   @Shima_et_al_2009 paper in which the SDM algorithm was introduced. 
 
 It is a coalescence-only set-up in which the initial particle size spectrum is exponential and is deterministically sampled to match the 
-  condition of each super-droplet having equal initial multiplicity, with the multiplicity denoting the number of real particles
-  represented by a single computational particle referred to as a super-droplet:
+  condition of each super particle having equal initial multiplicity, with the multiplicity denoting the number of real particles
+  represented by a single computational particle:
 
 ```python
 from PySDM.physics import si
@@ -181,7 +181,7 @@ particulator = builder.build(attributes, products)
 The `backend` argument may be set to an instance of either `CPU` or `GPU` what translates to choosing the multi-threaded `Numba`-based backend or the `ThrustRTC-based` GPU-resident computation mode, respectively. 
 The employed `Box` environment corresponds to a zero-dimensional framework (particle positions are neglected).
 The SDM Monte-Carlo coalescence algorithm is added as the only dynamic in the system (other dynamics available as of time of writing
-  represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics and Eulerian advection). 
+  represent condensational growth, particle displacement, aqueous chemistry, ambient thermodynamics, and Eulerian advection). 
 Finally, the `build()` method is used to obtain an instance of the `Particulator` class which can then be used to control time-stepping and access simulation state
   through the products registered with the builder.
 A minimal simulation example is depicted below with a code snippet and a resultant plot (\autoref{fig:readme_fig_1}):
@@ -227,33 +227,33 @@ All examples feature a `settings.py` file with simulation parameters, a `simulat
 
 ### Box environment examples
 
-The `Box` environment is the simplest one available in `PySDM` and the `PySDM-examples` package ships with two examples based on it.
-The first, is an extension of the code presented in the snippets in the preceding section
+The `Box` environment is the simplest one available in `PySDM`, and the `PySDM-examples` package ships with two examples based on it.
+The first is an extension of the code presented in the snippets in the preceding section
   and reproduces Fig. 2 from the seminal paper of @Shima_et_al_2009.
 Coalescence is the only process considered, and the probabilities of collisions of particles
   are evaluated using the Golovin additive kernel, which allows to compare the results with
   analytical solution of the Smoluchowski equation (included in the resultant plots).
 
-The second example based on the `Box` environment, also featuring collision-only setup 
+The second example based on the `Box` environment, also featuring collision-only setup, 
   reproduces several figures from the work of @Berry_1966 involving more sophisticated 
-  collision kernels representing such phenomena as the geometric sweep-out and the influence of electric field on the collision probability.
+  collision kernels representing such phenomena as the geometric sweep-out and the influence of electric field on the probability of collisions.
 
 ### Adiabatic parcel examples
 
 The `Parcel` environment shares the zero-dimensionality of `Box` (i.e., no particle physical coordinates considered), yet
   provides a thermodynamic evolution of the ambient air mimicking adiabatic displacement of an air parcel in 
   hydrostatically stratified atmosphere.
-Adiabatic cooling during the ascent results in reaching supersaturation what triggers activation of
+Adiabatic cooling during the ascent results in supersaturation which triggers activation of
   aerosol particles (condensation nuclei) into cloud droplets through condensation.
 All examples based on the `Parcel` environment utilise the `Condensation` and `AmbientThermodynamics` dynamics.
 
 The simplest example uses a monodisperse particle spectrum represented with a single super-droplet
   and reproduces simulations described in @Arabas_and_Shima_2017 where an ascent-descent scenario is employed to
-  depict hysteretic behaviour of the activation/deactivation phenomena.
+  depict hysteresis behaviour of the activation/deactivation phenomena.
 
 A polydisperse lognormal spectrum represented with multiple super-droplets is used in the example
   based on the work of @Yang_et_al_2018.
-Presented simulations involve repeated ascent-descent cycles and depict the evolution of partitioning between
+Simulations presented involve repeated ascent-descent cycles and depict the evolution of partitioning between
   activated and unactivated particles.
 Similarly, polydisperse lognormal spectra are used in the example based on @Lowe_et_al_2019, where additionally
   each lognormal mode has a different hygroscopicity.
@@ -271,24 +271,24 @@ Coupling of `PySDM` with fluid-flow simulation is depicted with both 1D and 2D p
   both dependent on the `PyMPDATA` package [@Bartman_et_al_2021] implementing the MPDATA advection 
   algorithm. For a review on MPDATA, see e.g., @Smolarkiewicz_2006.
 
-Usage of the `kinematic_1d` environment is depicted in an example based on the work of @Shipway_and_Hill_2012,
-  while the `kinematic_2d` environment is showcased with a Jupyter notebook featuring an interactive user interface 
-  and allowing studying aerosol-cloud interactions in drizzling stratocumulus setup based on the works of 
+Usage of the `kinematic_1d` environment is depicted in an example based on the work of @Shipway_and_Hill_2012.
+The `kinematic_2d` environment is showcased with an interactive user interface which allows study of
+  aerosol-cloud interactions in a drizzling stratocumulus setup based on the works of 
   @Morrison_and_Grabowski_2007 and @Arabas_et_al_2015.
 
 \autoref{fig:virga} presents a snapshot from the 2D simulation performed with a setup described in detail 
   in @Arabas_et_al_2015.
 Each plot depicts a 1.5 km by 1.5 km vertical slab of an idealised atmosphere in which a prescribed single-eddy non-divergent flow
   is forced (updraft in the left-hand part of the domain, downdraft in the right-hand part). 
-The left plot shows the distribution of aerosol particles in the air. 
-The upper part of the domain is covered with a stratocumulus-like cloud which formed on the aerosol particles
+The left-hand plot shows the distribution of aerosol particles in the air. 
+The upper part of the domain is covered with a stratocumulus-like cloud formed on aerosol particles
   above the flat cloud base at the level where relative humidity goes above 100%.
 Within the cloud, the aerosol concentration is thus reduced. 
-The middle plot depicts the sizes of particles. 
+The middle plot depicts the wet radius of particles. 
 Particles larger than 1 micrometre in diameter are considered as cloud droplets, particles larger than 
   50 micrometres in diameter are considered as drizzle (unlike in bin or bulk models, such categorisation is employed for analysis only and not 
   within the particle-based model formulation).
-Concentration of drizzle particles forming through collisions is depicted in the right panel.
+Concentration of drizzle particles forming through collisions is depicted in the right-hand panel.
 A rain shaft forms in the right part of the domain where the downward flow direction amplifies particle sedimentation.
 Precipitating drizzle drops collide with aerosol particles washing out the sub-cloud aerosol.
 Most of the drizzle drops evaporate before reaching the bottom of the domain depicting the virga phenomenon and the resultant aerosol resuspension.
@@ -308,7 +308,7 @@ The SDM algorithm implementations are part of the following open-source packages
    - `superdroplet` in Python (`Cython` and `Numba`), C++, Fortran and Julia    
       (\url{https://github.com/darothen/superdroplet});
 
-List of links directing to SDM-related files within the above projects' repositories
+A list of links directing to SDM-related files within the above projects' repositories
   is included in the `PySDM` README file.
 
 Python packages for solving the dynamics of aerosol particles with discrete-particle (moving-sectional) representation of the size spectrum include (both depend on the `Assimulo` package for solving ODEs):
@@ -319,8 +319,7 @@ Python packages for solving the dynamics of aerosol particles with discrete-part
 # Summary
 
 The key goal of the reported endeavour was to equip the cloud modelling community with 
-  a solution enabling rapid development and paper-review-level reproducibility of simulations
-  (i.e., technically feasible without contacting the authors and possible to be set up within minutes)
+  a solution enabling rapid development and independent reproducibility of simulations
   while being free from the two-language barrier commonly separating prototype and high-performance research code.
 The key advantages of PySDM stem from the characteristics of the employed Python
   language which enables high performance computational
