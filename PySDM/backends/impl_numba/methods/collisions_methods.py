@@ -8,6 +8,7 @@ from PySDM.physics.constants import sqrt_pi, sqrt_two
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_numba.atomic_operations import atomic_add
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -89,17 +90,20 @@ class CollisionsMethods(BackendMethods):
             # TODO: open issue on GH explaining double role of gamma and what's in pair-indices
             if gamma[i] == 0:
                 continue
-            cid = cell_id[i]
-            dyn = rand[i] - Ec[i] - Eb[i]
 
-            if dyn > 0: # bouncing
+            if rand[i] - Ec[i] - Eb[i] > 0: # bouncing
                 continue
 
             dyn = rand[i] - Ec[i]
             j, k = pair_indices(i, idx, is_first_in_pair)
+            cid = cell_id[i]
 
             if dyn < 0: # coalescence
-                coalescence_rate[cid] += gamma[i] * multiplicity[k]
+                atomic_add(
+                    coalescence_rate,
+                    cid,
+                    gamma[i] * multiplicity[k]
+                )
                 new_n = multiplicity[j] - gamma[i] * multiplicity[k]
                 if new_n > 0:
                     multiplicity[j] = new_n
@@ -115,10 +119,14 @@ class CollisionsMethods(BackendMethods):
                     healthy[0] = 0
 
             else: # breakup
-                breakup_rate[cid] += gamma[i] * multiplicity[k]
+                atomic_add(
+                    breakup_rate,
+                    cid,
+                    gamma[i] * multiplicity[k]
+                )
 
                 tmp1 = 0
-                for m in range(gamma[i]):
+                for m in range(int(gamma[i])):
                     tmp1 += gamma[i]**m
                 tmp2 = n_fragment[i]**gamma[i]
 
@@ -134,7 +142,7 @@ class CollisionsMethods(BackendMethods):
                 else:  # new_n == 0
                     # find nearest true gamma instead
                     tmp1 = 0
-                    for m in range(gamma[i]):
+                    for m in range(int(gamma[i])):
                         tmp1 += gamma[i]**m
                         if (multiplicity[j] - tmp1*multiplicity[k]) < 0:
                             break
@@ -252,8 +260,16 @@ class CollisionsMethods(BackendMethods):
             g = min(int(gamma[i]), prop)
             cid = cell_id[j]
             # compute the number of collisions
-            collision_rate[cid] += g * multiplicity[k]
-            collision_rate_deficit[cid] += (int(gamma[i]) - g) * multiplicity[k]
+            atomic_add(
+                    collision_rate,
+                    cid,
+                    g * multiplicity[k]
+                )
+            atomic_add(
+                    collision_rate_deficit,
+                    cid,
+                    (int(gamma[i]) - g) * multiplicity[k]
+                )
             gamma[i] = g
 
     # pylint: disable=too-many-arguments
