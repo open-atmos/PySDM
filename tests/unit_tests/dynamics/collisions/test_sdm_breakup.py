@@ -18,7 +18,7 @@ class TestSDMBreakup:
         1*si.s,
         10*si.s,
     ])
-    def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class = CPU):
+    def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class = CPU): # TODO move to smoke tests?
         # Arrange
         attributes = {"n": np.asarray([1, 1]), "volume": np.asarray([100*si.um**3, 100*si.um**3])}
         breakup = Breakup(ConstantK(1 * si.cm**3 / si.s), AlwaysN(4), adaptive=False)
@@ -66,8 +66,8 @@ class TestSDMBreakup:
         is_first_in_pair = make_PairIndicator(backend_class)(n_sd)
 
         # Act
-        particulator.collision(gamma, rand, pairwise_zeros, pairwise_zeros, pairwise_zeros, n_fragment,
-                            general_zeros, general_zeros, is_first_in_pair)
+        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = pairwise_zeros,
+                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = general_zeros, is_first_in_pair = is_first_in_pair)
 
         # Assert
         assert (particulator.attributes['n'].to_ndarray() == n_init).all()

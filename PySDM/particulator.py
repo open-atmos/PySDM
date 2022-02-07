@@ -120,7 +120,7 @@ class Particulator:
             cell_id=self.attributes['cell id']
         )
 
-    def collision(self, gamma, rand, dyn, Ec, Eb, n_fragment,
+    def collision(self, gamma, rand, Ec, Eb, n_fragment,
                   coalescence_rate, breakup_rate, is_first_in_pair):
         self.backend.collision(
             multiplicity=self.attributes['n'],
@@ -128,7 +128,6 @@ class Particulator:
             attributes=self.attributes.get_extensive_attribute_storage(),
             gamma=gamma,
             rand=rand,
-            dyn=dyn,
             Ec=Ec,
             Eb=Eb,
             n_fragment=n_fragment,

@@ -69,7 +69,6 @@ class Collision:
         self.n_fragment = None
         self.Ec_temp = None
         self.Eb_temp = None
-        self.dyn = None
         self.neg_ones = None
         self.norm_factor_temp = None
         self.prob = None
@@ -108,7 +107,6 @@ class Collision:
         self.n_fragment = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
         self.Ec_temp = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
         self.Eb_temp = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
-        self.dyn = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
         neg_ones_tmp = np.tile([-1], self.particulator.n_sd // 2)
         self.neg_ones = self.particulator.PairwiseStorage.from_ndarray(neg_ones_tmp)
         self.norm_factor_temp = self.particulator.Storage.empty(**empty_args_cellwise)
@@ -183,7 +181,7 @@ class Collision:
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
 
         # (5) Perform the collisional-coalescence/breakup step:
-        self.particulator.collision(gamma=self.prob, rand=proc_rand, dyn=self.dyn,
+        self.particulator.collision(gamma=self.prob, rand=proc_rand,
                                     Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment,
                                     coalescence_rate=self.coalescence_rate,
                                     breakup_rate=self.breakup_rate,

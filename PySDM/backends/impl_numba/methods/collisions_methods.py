@@ -82,7 +82,7 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def __collision_body(multiplicity, idx, length, attributes, gamma, rand, dyn,
+    def __collision_body(multiplicity, idx, length, attributes, gamma, rand,
                        Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
                        breakup_rate, is_first_in_pair):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
@@ -90,15 +90,15 @@ class CollisionsMethods(BackendMethods):
             if gamma[i] == 0:
                 continue
             cid = cell_id[i]
-            dyn[i] = rand[i] - Ec[i] - Eb[i]
+            dyn = rand[i] - Ec[i] - Eb[i]
 
-            if dyn[i] > 0: # bouncing
+            if dyn > 0: # bouncing
                 continue
 
-            dyn[i] = rand[i] - Ec[i]
+            dyn = rand[i] - Ec[i]
             j, k = pair_indices(i, idx, is_first_in_pair)
 
-            if dyn[i] < 0: # coalescence
+            if dyn < 0: # coalescence
                 coalescence_rate[cid] += gamma[i] * multiplicity[k]
                 new_n = multiplicity[j] - gamma[i] * multiplicity[k]
                 if new_n > 0:
@@ -158,11 +158,11 @@ class CollisionsMethods(BackendMethods):
                 if multiplicity[k] == 0 or multiplicity[j] == 0:
                     healthy[0] = 0
 
-    def collision(self, multiplicity, idx, attributes, gamma, rand, dyn, Ec, Eb, 
+    def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb, 
                   n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, 
                   is_first_in_pair):
         self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,
-                            gamma.data, rand.data, dyn.data, Ec.data, Eb.data,
+                            gamma.data, rand.data, Ec.data, Eb.data,
                             n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
                             breakup_rate.data, is_first_in_pair.indicator.data)
 
