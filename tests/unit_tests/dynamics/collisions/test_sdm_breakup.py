@@ -80,9 +80,8 @@ class TestSDMBreakup:
         {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1], "is_first_in_pair": [True, False]},
         {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2], "is_first_in_pair": [True, False, False]},
         {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2, 1], "is_first_in_pair": [True, False, True, False]},
-
         ])
-    def test_single_collision_breakup(params, backend_class = CPU):
+    def test_breakup_counters(params, backend_class = CPU):
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -95,7 +94,6 @@ class TestSDMBreakup:
 
         n_pairs = n_sd // 2 
         pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0] * n_pairs))
-        dropwise_zeros = particulator.Storage.from_ndarray(np.array([0.0, 0.0] * n_pairs))
         general_zeros = particulator.Storage.from_ndarray(np.array([0.0] * n_sd))
 
         gamma = particulator.PairwiseStorage.from_ndarray(np.array([params["gamma"]] * n_pairs))
@@ -113,4 +111,43 @@ class TestSDMBreakup:
 
         # Assert
         cell_id = 0
-        assert (breakup_rate.to_ndarray()[cell_id] == np.sum(params["gamma"] * np.where(np.roll(is_first_in_pair.indicator, shift = 1), np.asarray(n_init), 0.0)))
+        assert breakup_rate.to_ndarray()[cell_id] == np.sum(params["gamma"] * np.where(np.roll(is_first_in_pair.indicator, shift = 1), np.asarray(n_init), 0.0))
+
+    @staticmethod
+    @pytest.mark.parametrize("params", [
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [1, 1], "is_first_in_pair": [True, False]},
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1], "is_first_in_pair": [True, False]},
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2], "is_first_in_pair": [True, False, False]},
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2, 1], "is_first_in_pair": [True, False, True, False]},
+        ])
+    def test_single_collision_breakup(params, backend_class = CPU):
+        # Arrange
+        n_init = params["n_init"]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        particulator = builder.build(attributes = {
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100*si.um**3] * n_sd)
+            }, products = ())
+
+        n_pairs = n_sd // 2 
+        pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0] * n_pairs))
+        general_zeros = particulator.Storage.from_ndarray(np.array([0.0] * n_sd))
+
+        gamma = particulator.PairwiseStorage.from_ndarray(np.array([params["gamma"]] * n_pairs))
+        rand = particulator.PairwiseStorage.from_ndarray(np.array([params["rand"]] * n_pairs))
+        Eb = particulator.PairwiseStorage.from_ndarray(np.array([params["Eb"]] * n_pairs))
+        breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        n_fragment = particulator.PairwiseStorage.from_ndarray(np.array([4] * n_pairs))
+        is_first_in_pair = particulator.PairIndicator(n_sd)
+        is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
+            np.asarray(params["is_first_in_pair"]))
+
+        # Act
+        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
+                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
+
+        # Assert
+        cell_id = 0
+        assert breakup_rate.to_ndarray()[cell_id] == np.sum(params["gamma"] * np.where(np.roll(is_first_in_pair.indicator, shift = 1), np.asarray(n_init), 0.0))
