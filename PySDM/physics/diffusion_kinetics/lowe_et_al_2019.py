@@ -14,7 +14,7 @@ class LoweEtAl2019:
         return D / np.sqrt(2 * const.Rv * T)
 
     @staticmethod
-    def lambdaK(const, T, p):
+    def lambdaK(const, T, p):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
@@ -22,5 +22,5 @@ class LoweEtAl2019:
         return D / (1 + 2 * np.sqrt(const.PI) * lmbd / r / const.MAC)
 
     @staticmethod
-    def K(const, K, r, lmbd):
+    def K(const, K, r, lmbd):  # pylint: disable=unused-argument
         return K
