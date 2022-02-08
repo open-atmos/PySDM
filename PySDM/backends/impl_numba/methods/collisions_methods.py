@@ -127,7 +127,7 @@ class CollisionsMethods(BackendMethods):
 
                 tmp1 = 0
                 for m in range(int(gamma[i])):
-                    tmp1 += gamma[i]**m
+                    tmp1 += n_fragment[i]**m
                 tmp2 = n_fragment[i]**gamma[i]
 
                 new_n = multiplicity[j] - tmp1*multiplicity[k]
@@ -143,7 +143,7 @@ class CollisionsMethods(BackendMethods):
                     # find nearest true gamma instead
                     tmp1 = 0
                     for m in range(int(gamma[i])):
-                        tmp1 += gamma[i]**m
+                        tmp1 += n_fragment[i]**m
                         if (multiplicity[j] - tmp1*multiplicity[k]) < 0:
                             break
                     tmp2 = n_fragment[i]**gamma[i]
