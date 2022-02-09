@@ -87,7 +87,6 @@ class CollisionsMethods(BackendMethods):
                        Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
                        breakup_rate, is_first_in_pair):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            # TODO: open issue on GH explaining double role of gamma and what's in pair-indices
             if gamma[i] == 0:
                 continue
 
@@ -138,23 +137,51 @@ class CollisionsMethods(BackendMethods):
                     for a in range(0, len(attributes)):
                         attributes[a, k] += tmp1 * attributes[a, j]
                         attributes[a, k] /= tmp2
-
-                else:  # new_n == 0
-                    # find nearest true gamma instead
-                    tmp1 = 0
-                    for m in range(int(gamma[i])):
-                        tmp1 += n_fragment[i]**m
-                        if (multiplicity[j] - tmp1*multiplicity[k]) < 0:
-                            break
-                    tmp2 = n_fragment[i]**gamma[i]
-
+                elif new_n == 0:
                     multiplicity[j] = (tmp2 * multiplicity[k]) // 2
                     multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
                     for a in range(0, len(attributes)):
                         attributes[a, k] += tmp1 * attributes[a, j]
                         attributes[a, k] /= tmp2
                         attributes[a, j] = attributes[a, k]
+                else:  # new_n < 0
+                    # find nearest feasible gamma, repeat until we hit true gamma
+                    gamma_tmp = 0
+                    gamma_deficit = gamma[i]
+                    while (gamma_deficit > 0):
+                        # rearrange SD's if necessary
+                        if multiplicity[k] > multiplicity[j]:
+                            jtmp = j
+                            j = k
+                            k = jtmp
 
+                        tmp1 = 0
+                        for m in range(int(gamma_deficit)):
+                            tmp1 += n_fragment[i]**m
+                            new_n = multiplicity[j] - tmp1*multiplicity[k]
+                            gamma_tmp = m+1
+                            if new_n < 0:
+                                gamma_tmp = m
+                                tmp1 -= n_fragment[i]**m
+                                break
+                        gamma_deficit -= gamma_tmp
+                        tmp2 = n_fragment[i]**gamma_tmp
+                        new_n = multiplicity[j] - tmp1*multiplicity[k]
+                        if new_n > 0:
+                            multiplicity[j] = new_n
+                            multiplicity[k] = multiplicity[k]*tmp2
+                            for a in range(0, len(attributes)):
+                                attributes[a, k] += tmp1 * attributes[a, j]
+                                attributes[a, k] /= tmp2
+                        else: # new_n = 0
+                            multiplicity[j] = (tmp2 * multiplicity[k]) // 2
+                            multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
+                            for a in range(0, len(attributes)):
+                                attributes[a, k] += tmp1 * attributes[a, j]
+                                attributes[a, k] /= tmp2
+                                attributes[a, j] = attributes[a, k]
+
+                # perform rounding to take us back to integer multiplicities
                 factor_j = multiplicity[j]/int(multiplicity[j])
                 factor_k = multiplicity[k]/int(multiplicity[k])
                 multiplicity[j] = int(multiplicity[j])
