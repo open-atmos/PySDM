@@ -6,11 +6,11 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 
 
-def test_saturation_vapour_pressures(plot=False):
+def test_saturation_vapour_pressures(plot=True):
     # Arrange
     formulae = {
         k: Formulae(saturation_vapour_pressure=k)
-        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus')
+        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus', 'Lowe1977')
     }
     temperature = np.linspace(-.2, .4)
 

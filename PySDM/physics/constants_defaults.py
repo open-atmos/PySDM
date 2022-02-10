@@ -63,6 +63,14 @@ FWC_I6 = 0.307839583e-09 * si.hPa / si.K**6
 FWC_I7 = 0.105785160e-11 * si.hPa / si.K**7
 FWC_I8 = 0.161444444e-14 * si.hPa / si.K**8
 
+L77_A0 = 6.108 * si.hPa
+L77_A1 = 4.437e-1 * si.hPa / si.K
+L77_A2 = 1.429e-2 * si.hPa / si.K**2
+L77_A3 = 2.650e-4 * si.hPa / si.K**3
+L77_A4 = 3.031e-6 * si.hPa / si.K**4
+L77_A5 = 2.034e-8 * si.hPa / si.K**5
+L77_A6 = 6.137e-11 * si.hPa / si.K**6
+
 rho_w = 1 * si.kilograms / si.litres
 rho_i = 916.8 * si.kg / si.metres**3
 pH_w = 7
