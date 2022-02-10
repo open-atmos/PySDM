@@ -6,7 +6,7 @@ from PySDM import Formulae
 from PySDM.physics import constants_defaults as const
 
 
-def test_saturation_vapour_pressures(plot=True):
+def test_saturation_vapour_pressures(plot=False):
     # Arrange
     formulae = {
         k: Formulae(saturation_vapour_pressure=k)
