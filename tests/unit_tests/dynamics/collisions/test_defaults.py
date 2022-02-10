@@ -1,5 +1,6 @@
 import inspect
-from PySDM.dynamics.collisions import Collision
+import pytest
+from PySDM.dynamics.collisions import Collision, Breakup, Coalescence
 
 def get_default_args(func):
     signature = inspect.signature(func)
@@ -11,5 +12,6 @@ def get_default_args(func):
 
 class Test_defaults:
     @staticmethod
-    def test_collision_adaptive_default():
-        assert get_default_args(Collision.__init__)['adaptive'] == True
+    @pytest.mark.parametrize("dynamic_class", (Collision, Breakup, Coalescence))
+    def test_collision_adaptive_default(dynamic_class):
+        assert get_default_args(dynamic_class.__init__)['adaptive'] == True

@@ -7,7 +7,7 @@ import numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
 
-
+# TODO #761
 class CoalescenceTimestepMean(Product):
 
     def __init__(self, unit='s', name=None):
@@ -19,7 +19,7 @@ class CoalescenceTimestepMean(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.coalescence = self.particulator.dynamics['Coalescence']
+        self.coalescence = self.particulator.dynamics['Collision']
         self.range = self.coalescence.dt_coal_range
 
     @staticmethod

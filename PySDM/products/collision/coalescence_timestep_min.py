@@ -4,7 +4,7 @@ Minimal coalescence timestep used when adaptive timestepping is enabled in the
 """
 from PySDM.products.impl.product import Product
 
-
+# TODO #761
 class CoalescenceTimestepMin(Product):
     def __init__(self, unit='s', name=None):
         super().__init__(unit=unit, name=name)
@@ -13,7 +13,7 @@ class CoalescenceTimestepMin(Product):
 
     def register(self, builder):
         super().register(builder)
-        self.coalescence = self.particulator.dynamics['Coalescence']
+        self.coalescence = self.particulator.dynamics['Collision']
         self.range = self.coalescence.dt_coal_range
 
     def _impl(self, **kwargs):
