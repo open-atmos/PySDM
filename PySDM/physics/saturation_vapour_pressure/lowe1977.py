@@ -21,5 +21,5 @@ class Lowe1977:
         )))))))
 
     @staticmethod
-    def ice_Celsius(const, T):
+    def ice_Celsius(_, T):
         return np.nan * T
