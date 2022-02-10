@@ -123,7 +123,7 @@ class CollisionsMethods(BackendMethods):
                     cid,
                     gamma[i] * multiplicity[k]
                 )
-
+                assert n_fragment[i]**gamma[i] < np.iinfo(multiplicity.dtype).max
                 tmp1 = 0
                 for m in range(int(gamma[i])):
                     tmp1 += n_fragment[i]**m
