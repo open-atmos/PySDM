@@ -118,6 +118,8 @@ class TestSDMBreakup:
     @pytest.mark.parametrize("params", [
         {"gamma": [1.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [2, 2], "v_expected": [0.5, 0.5], 
         "is_first_in_pair": [True, False], "n_fragment": [4]},
+        {"gamma": [2.0], "n_init": [20, 4], "v_init": [1, 2], "n_expected": [4, 36], "v_expected": [1, 2/3], 
+        "is_first_in_pair": [True, False], "n_fragment": [3]},
         {"gamma": [2.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [4, 4], "v_expected": [0.25, 0.25], 
         "is_first_in_pair": [True, False], "n_fragment": [4]},
         {"gamma": [2.0], "n_init": [3,1], "v_init": [1, 1], "n_expected": [8, 2], "v_expected": [0.375, 0.5], 
