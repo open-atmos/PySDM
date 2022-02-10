@@ -1,7 +1,6 @@
 """
-temperature-dependent latent heat of vaporization used in Lowe et al. 2019 
+temperature-dependent latent heat of vaporization used in Lowe et al. 2019
 """
-
 
 class Lowe2019:
     def __init__(self, _):
