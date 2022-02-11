@@ -10,7 +10,7 @@ def test_saturation_vapour_pressures(plot=False):
     # Arrange
     formulae = {
         k: Formulae(saturation_vapour_pressure=k)
-        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus', 'Lowe1977')
+        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus', 'Lowe1977',)
     }
     temperature = np.linspace(-.2, .4)
 
@@ -20,7 +20,8 @@ def test_saturation_vapour_pressures(plot=False):
     for key, val in formulae.items():
         for name, func in inspect.getmembers(val.saturation_vapour_pressure):
             if name[:2] not in ('__', 'a_'):
-                pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
+                if not(key == "AugustRocheMagnus" and name=="ice_Celsius"):
+                    pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
     pyplot.grid()
     pyplot.legend()
     pyplot.xlabel('T [C]')
@@ -37,6 +38,21 @@ def test_saturation_vapour_pressures(plot=False):
             .saturation_vapour_pressure.pvs_Celsius(temperature),
         rtol=1e-2
     )
+    np.testing.assert_allclose(
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        Formulae(saturation_vapour_pressure='Lowe1977')
+            .saturation_vapour_pressure.pvs_Celsius(temperature),
+        rtol=1e-2
+    )
+    np.testing.assert_allclose(
+        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
+            .saturation_vapour_pressure.ice_Celsius(temperature),
+        Formulae(saturation_vapour_pressure='Lowe1977')
+            .saturation_vapour_pressure.ice_Celsius(temperature),
+        rtol=2e-2
+    )
+
     temperature = np.linspace(-20, 0.3, 100)
     np.testing.assert_array_less(
         Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
