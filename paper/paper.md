@@ -1,6 +1,6 @@
 ---
-title: 'PySDM v1: particle-based cloud modelling package for&nbsp;warm-rain microphysics and aqueous chemistry'
-date: 31 March 2021
+title: 'PySDM v2'
+date: 10 February 2022
 tags:
   - Python
   - physics-simulation 
@@ -13,6 +13,7 @@ tags:
   - nvrtc 
   - pint 
   - atmospheric-physics
+  - atmospheric-chemistry
 authors:
   - name: Emily&nbsp;de Jong
     affiliation: "1"
