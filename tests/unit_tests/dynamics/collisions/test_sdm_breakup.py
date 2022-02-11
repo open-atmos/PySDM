@@ -1,5 +1,4 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import os
 import pytest
 import numpy as np
 from PySDM.backends import CPU
@@ -10,7 +9,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM import Builder
 from PySDM.physics import si
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-os.environ["NUMBA_DISABLE_JIT"] = "1"
+
 
 class TestSDMBreakup:
     @staticmethod
