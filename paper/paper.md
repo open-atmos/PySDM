@@ -13,7 +13,6 @@ tags:
   - nvrtc 
   - pint 
   - atmospheric-physics
-  - atmospheric-chemistry
 authors:
   - name: Emily&nbsp;de Jong
     affiliation: "1"
