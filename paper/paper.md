@@ -36,16 +36,14 @@ authors:
     orcid: 0000-0003-2361-0082
     affiliation: "3,4"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
    index: 2
- - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
-   index: 3
- - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland
-   index: 4
  - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
-   index: 5
+   index: 3
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   index: 4
 bibliography: paper.bib
 
 ---
