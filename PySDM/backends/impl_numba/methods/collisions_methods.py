@@ -83,7 +83,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def __collision_body(multiplicity, idx, length, attributes, gamma, rand,
                          Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
-                         breakup_rate, is_first_in_pair, success):
+                         breakup_rate, is_first_in_pair, success, max_multiplicity):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable,too-many-nested-blocks
             if gamma[i] == 0:
                 continue
@@ -121,7 +121,7 @@ class CollisionsMethods(BackendMethods):
                     cid,
                     gamma[i] * multiplicity[k]
                 )
-                if n_fragment[i]**gamma[i] > np.iinfo(multiplicity.dtype).max:
+                if n_fragment[i]**gamma[i] > max_multiplicity:
                     success[0] = False
                 tmp1 = 0
                 for m in range(int(gamma[i])):
@@ -193,11 +193,13 @@ class CollisionsMethods(BackendMethods):
     def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
                   n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
                   is_first_in_pair):
+        max_multiplicity = np.iinfo(multiplicity.data.dtype).max
         success = np.ones(1, dtype=bool)
         self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,
                             gamma.data, rand.data, Ec.data, Eb.data,
                             n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
-                            breakup_rate.data, is_first_in_pair.indicator.data, success)
+                            breakup_rate.data, is_first_in_pair.indicator.data, success,
+                            max_multiplicity)
         assert success
 
     @staticmethod
