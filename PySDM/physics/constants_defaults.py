@@ -73,7 +73,7 @@ L77W_A6 = 6.136820929e-11 * si.hPa / si.K**6
 
 L77I_A0 = 6.109177956 * si.hPa
 L77I_A1 = 5.03469897e-1 * si.hPa / si.K
-L77I_A2 = 1.886013408-2 * si.hPa / si.K**2
+L77I_A2 = 1.886013408e-2 * si.hPa / si.K**2
 L77I_A3 = 4.176223716e-4 * si.hPa / si.K**3
 L77I_A4 = 5.824720280e-6 * si.hPa / si.K**4
 L77I_A5 = 4.838803174e-8 * si.hPa / si.K**5
