@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
 import pytest
 from PySDM.dynamics.collisions import Collision, Breakup, Coalescence
@@ -14,4 +15,4 @@ class Test_defaults:
     @staticmethod
     @pytest.mark.parametrize("dynamic_class", (Collision, Breakup, Coalescence))
     def test_collision_adaptive_default(dynamic_class):
-        assert get_default_args(dynamic_class.__init__)['adaptive'] == True
+        assert get_default_args(dynamic_class.__init__)['adaptive'] is True

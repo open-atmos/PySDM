@@ -1,8 +1,9 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
+from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022.settings import Settings
 from PySDM_examples.deJong_Mackay_2022.simulation import make_core
 from PySDM.physics import si
-from matplotlib import pyplot
 
 def test_collision(plot=False):
     settings = Settings()
@@ -16,7 +17,7 @@ def test_collision(plot=False):
     for step in settings.output_steps:
         particulator.run(step - particulator.n_steps)
         if plot:
-            pyplot.step(x=settings.radius_bins_edges[:-1] / si.micrometres, 
+            pyplot.step(x=settings.radius_bins_edges[:-1] / si.micrometres,
                         y=particulator.products['dv/dlnr'].get() * settings.rho,
                         where='post', label="t = {step*settings.dt}s")
     if plot:
@@ -27,5 +28,3 @@ def test_collision(plot=False):
 
     # TODO: add asserts here to check whether stuff is correct
     assert True
-
-    

@@ -1,7 +1,6 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from audioop import mul
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -40,8 +39,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def __adaptive_sdm_gamma_body(gamma, idx, length, multiplicity, cell_id, dt_left, dt,
-                                dt_range, is_first_in_pair,
-                                stats_n_substep, stats_dt_min):
+                                  dt_range, is_first_in_pair, stats_n_substep, stats_dt_min):
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
@@ -84,9 +82,9 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def __collision_body(multiplicity, idx, length, attributes, gamma, rand,
-                       Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
-                       breakup_rate, is_first_in_pair, success):
-        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
+                         Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
+                         breakup_rate, is_first_in_pair, success):
+        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable,too-many-nested-blocks
             if gamma[i] == 0:
                 continue
 
@@ -149,12 +147,10 @@ class CollisionsMethods(BackendMethods):
                     # find nearest feasible gamma, repeat until we hit true gamma
                     gamma_tmp = 0
                     gamma_deficit = gamma[i]
-                    while (gamma_deficit > 0):
+                    while gamma_deficit > 0:
                         # rearrange SD's if necessary
                         if multiplicity[k] > multiplicity[j]:
-                            jtmp = j
-                            j = k
-                            k = jtmp
+                            j, k = k, j
 
                         tmp1 = 0
                         for m in range(int(gamma_deficit)):
@@ -189,13 +185,13 @@ class CollisionsMethods(BackendMethods):
                 multiplicity[k] = int(multiplicity[k])
                 for a in range(0,len(attributes)):
                     attributes[a,k] *= factor_k
-                    attributes[a,j] *= factor_j 
+                    attributes[a,j] *= factor_j
 
                 if multiplicity[k] == 0 or multiplicity[j] == 0:
                     healthy[0] = 0
 
-    def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb, 
-                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, 
+    def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
+                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
                   is_first_in_pair):
         success = np.ones(1, dtype=bool)
         self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,

@@ -1,9 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
-from pickletools import pyset
-os.environ["NUMBA_DISABLE_JIT"] = "1"
-import numpy as np
 import pytest
+import numpy as np
 from PySDM.backends import CPU
 from PySDM.dynamics import Breakup
 from PySDM.dynamics.collisions.kernels import ConstantK
@@ -12,8 +10,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM import Builder
 from PySDM.physics import si
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl_common.index import make_Index
+os.environ["NUMBA_DISABLE_JIT"] = "1"
 
 class TestSDMBreakup:
     @staticmethod
@@ -21,7 +18,7 @@ class TestSDMBreakup:
         1*si.s,
         10*si.s,
     ])
-    def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class = CPU): # TODO move to smoke tests?
+    def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class = CPU):
         # Arrange
         attributes = {"n": np.asarray([1, 1]), "volume": np.asarray([100*si.um**3, 100*si.um**3])}
         breakup = Breakup(ConstantK(1 * si.cm**3 / si.s), AlwaysN(4), adaptive=False)
@@ -60,7 +57,6 @@ class TestSDMBreakup:
             }, products = ())
 
         pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0]))
-        dropwise_zeros = particulator.Storage.from_ndarray(np.array([0.0, 0.0]))
         general_zeros = particulator.Storage.from_ndarray(np.array([0.0]))
 
         gamma = particulator.PairwiseStorage.from_ndarray(np.array([params["gamma"]]))
@@ -70,7 +66,8 @@ class TestSDMBreakup:
 
         # Act
         particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = pairwise_zeros,
-                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = general_zeros, is_first_in_pair = is_first_in_pair)
+                n_fragment = n_fragment, coalescence_rate = general_zeros,
+                breakup_rate = general_zeros, is_first_in_pair = is_first_in_pair)
 
         # Assert
         assert (particulator.attributes['n'].to_ndarray() == n_init).all()
@@ -79,8 +76,10 @@ class TestSDMBreakup:
     @pytest.mark.parametrize("params", [
         {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [1, 1], "is_first_in_pair": [True, False]},
         {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1], "is_first_in_pair": [True, False]},
-        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2], "is_first_in_pair": [True, False, False]},
-        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2, 1], "is_first_in_pair": [True, False, True, False]},
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2],
+            "is_first_in_pair": [True, False, False]},
+        {"gamma": 1.0, "rand": 1.0, "Eb": 1.0, "n_init": [2, 1, 2, 1],
+            "is_first_in_pair": [True, False, True, False]},
         ])
     def test_breakup_counters(params, backend_class = CPU):
         # Arrange
@@ -93,7 +92,7 @@ class TestSDMBreakup:
                 "volume": np.asarray([100*si.um**3] * n_sd)
             }, products = ())
 
-        n_pairs = n_sd // 2 
+        n_pairs = n_sd // 2
         pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0] * n_pairs))
         general_zeros = particulator.Storage.from_ndarray(np.array([0.0] * n_sd))
 
@@ -108,22 +107,24 @@ class TestSDMBreakup:
 
         # Act
         particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
+                n_fragment = n_fragment, coalescence_rate = general_zeros,
+                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
 
         # Assert
         cell_id = 0
-        assert breakup_rate.to_ndarray()[cell_id] == np.sum(params["gamma"] * get_smaller_of_pairs(is_first_in_pair, n_init))
+        assert (breakup_rate.to_ndarray()[cell_id] == np.sum(params["gamma"] *
+            get_smaller_of_pairs(is_first_in_pair, n_init)))
 
     @staticmethod
     @pytest.mark.parametrize("params", [
-        {"gamma": [1.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [2, 2], "v_expected": [0.5, 0.5], 
-        "is_first_in_pair": [True, False], "n_fragment": [4]},
-        {"gamma": [2.0], "n_init": [20, 4], "v_init": [1, 2], "n_expected": [4, 36], "v_expected": [1, 2/3], 
-        "is_first_in_pair": [True, False], "n_fragment": [3]},
-        {"gamma": [2.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [4, 4], "v_expected": [0.25, 0.25], 
-        "is_first_in_pair": [True, False], "n_fragment": [4]},
-        {"gamma": [2.0], "n_init": [3,1], "v_init": [1, 1], "n_expected": [8, 2], "v_expected": [0.375, 0.5], 
-        "is_first_in_pair": [True, False], "n_fragment": [4]},
+        {"gamma": [1.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [2, 2],
+        "v_expected": [0.5, 0.5], "is_first_in_pair": [True, False], "n_fragment": [4]},
+        {"gamma": [2.0], "n_init": [20, 4], "v_init": [1, 2], "n_expected": [4, 36],
+        "v_expected": [1, 2/3], "is_first_in_pair": [True, False], "n_fragment": [3]},
+        {"gamma": [2.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [4, 4], 
+        "v_expected": [0.25, 0.25], "is_first_in_pair": [True, False], "n_fragment": [4]},
+        {"gamma": [2.0], "n_init": [3,1], "v_init": [1, 1], "n_expected": [8, 2],
+        "v_expected": [0.375, 0.5], "is_first_in_pair": [True, False], "n_fragment": [4]},
     ])
     @pytest.mark.parametrize("flag", ('n', 'v', 'conserve'))
     def test_attribute_update_single_breakup(params, flag, backend_class = CPU):
@@ -154,25 +155,28 @@ class TestSDMBreakup:
 
         # Act
         particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = breakup_rate,
-                is_first_in_pair = is_first_in_pair)
+                n_fragment = n_fragment, coalescence_rate = general_zeros,
+                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
 
         # Assert
         {
             'n': lambda: 
-                np.testing.assert_array_equal(particulator.attributes['n'].to_ndarray(), np.array(params["n_expected"])),
+                np.testing.assert_array_equal(particulator.attributes['n'].to_ndarray(),
+                np.array(params["n_expected"])),
             'v': lambda:
-                np.testing.assert_array_equal(particulator.attributes['volume'].to_ndarray(), np.array(params["v_expected"])),
+                np.testing.assert_array_equal(particulator.attributes['volume'].to_ndarray(),
+                np.array(params["v_expected"])),
             'conserve':
-                lambda: np.testing.assert_equal(np.sum(particulator.attributes['n'].to_ndarray() * 
-                    particulator.attributes['volume'].to_ndarray()), np.sum(np.array(params["n_init"]) * 
-                    np.array(params["v_init"])))
+                lambda: np.testing.assert_equal(np.sum(particulator.attributes['n'].to_ndarray() *
+                    particulator.attributes['volume'].to_ndarray()),
+                    np.sum(np.array(params["n_init"]) * np.array(params["v_init"])))
         }[flag]()
 
     @pytest.mark.xfail(strict=True)
     def test_multiplicity_overflow(backend_class = CPU):
         # Arrange
-        params = {"gamma": [100.0], "n_init": [1, 1], "v_init": [1, 1], "is_first_in_pair": [True, False], "n_fragment": [4]}
+        params = {"gamma": [100.0], "n_init": [1, 1], "v_init": [1, 1],
+            "is_first_in_pair": [True, False], "n_fragment": [4]}
         n_init = params["n_init"]
         n_sd = len(n_init)
         builder = Builder(n_sd, backend_class())
@@ -199,8 +203,8 @@ class TestSDMBreakup:
 
         # Act
         particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros, breakup_rate = breakup_rate,
-                is_first_in_pair = is_first_in_pair)
+                n_fragment = n_fragment, coalescence_rate = general_zeros,
+                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
 
         # Assert
         # expected to fail: xfail
