@@ -8,7 +8,7 @@ from functools import lru_cache
 import numpy as np
 import numba
 import scipy.integrate
-from PySDM.physics.constants_defaults import rho_w, K0, T0, PI_4_3
+from PySDM.physics.constants_defaults import rho_w, T0, PI_4_3
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
