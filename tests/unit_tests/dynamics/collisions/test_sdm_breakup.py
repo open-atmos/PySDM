@@ -121,7 +121,7 @@ class TestSDMBreakup:
         "v_expected": [0.5, 0.5], "is_first_in_pair": [True, False], "n_fragment": [4]},
         {"gamma": [2.0], "n_init": [20, 4], "v_init": [1, 2], "n_expected": [4, 36],
         "v_expected": [1, 2/3], "is_first_in_pair": [True, False], "n_fragment": [3]},
-        {"gamma": [2.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [4, 4], 
+        {"gamma": [2.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [4, 4],
         "v_expected": [0.25, 0.25], "is_first_in_pair": [True, False], "n_fragment": [4]},
         {"gamma": [2.0], "n_init": [3,1], "v_init": [1, 1], "n_expected": [8, 2],
         "v_expected": [0.375, 0.5], "is_first_in_pair": [True, False], "n_fragment": [4]},
@@ -160,7 +160,7 @@ class TestSDMBreakup:
 
         # Assert
         {
-            'n': lambda: 
+            'n': lambda:
                 np.testing.assert_array_equal(particulator.attributes['n'].to_ndarray(),
                 np.array(params["n_expected"])),
             'v': lambda:
@@ -172,14 +172,15 @@ class TestSDMBreakup:
                     np.sum(np.array(params["n_init"]) * np.array(params["v_init"])))
         }[flag]()
 
+    @staticmethod
     @pytest.mark.xfail(strict=True)
-    def test_multiplicity_overflow(backend_class = CPU):
+    def test_multiplicity_overflow(backend = CPU()):
         # Arrange
         params = {"gamma": [100.0], "n_init": [1, 1], "v_init": [1, 1],
             "is_first_in_pair": [True, False], "n_fragment": [4]}
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend)
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(attributes = {
                 "n": np.asarray(n_init),
