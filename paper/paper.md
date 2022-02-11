@@ -1,3 +1,4 @@
+---
 title: 'PySDM v2: ...'
 date: 10 February 2022
 tags:
@@ -19,10 +20,8 @@ authors:
     orcid: 0000-0002-5310-4554
   - name: Kacper&nbsp;Derlatka
     affiliation: "4"
-    orcid: ...
   - name: Isabella&nbsp;Dula
     affiliation: "2"
-    orcid: ...
   - name: Anna&nbsp;Jaruga
     affiliation: "2"
     orcid: 0000-0003-3194-6440
@@ -33,7 +32,6 @@ authors:
     orcid: 0000-0002-1708-0997
     affiliation: "2"
   - name: Ryan&nbsp;Ward
-    orcid: ...
     affiliation: "2"
   - name: Sylwester&nbsp;Arabas
     orcid: 0000-0003-2361-0082
