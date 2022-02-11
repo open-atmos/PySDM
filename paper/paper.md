@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v2: ...'
+title: 'PySDM v2'
 date: 10 February 2022
 tags:
   - Python
@@ -48,6 +48,10 @@ affiliations:
 bibliography: paper.bib
 
 ---
+
+# Introduction 
+
+# Summary
 
 # Author contributions
 TODO
