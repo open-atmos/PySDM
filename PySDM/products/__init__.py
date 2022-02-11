@@ -4,7 +4,7 @@ Simulation output products such as:
 ...
 """
 from .aqueous_chemistry import *
-from .coalescence import *
+from .collision import *
 from .condensation import *
 from .displacement import *
 from .freezing import *

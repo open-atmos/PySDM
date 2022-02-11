@@ -1,5 +1,9 @@
 """
-collisions-related logic including the `PySDM.dynamics.collisions.coalescence.Coalescence`
- dynamic and coalescence ``PySDM.dynamics.collisions.kernels`
+collisions-related logic including the `PySDM.dynamics.collisions.collision.Collision`
+dynamic and coalescence.
+Includes collision kernels, ``PySDM.dynamics.collisions.kernels`,
+as well as coalescence efficiencies, `PySDM.dynamics.collisions.coalescence_efficiencies`,
+and breakup efficiencies `PySDM.dynamics.collisions.breakup_efficiencies`, and
+breakup fragmentations `PySDM.dynamics.collisions.breakup_fragmentations`
 """
-from PySDM.dynamics.collisions.coalescence import Coalescence
+from PySDM.dynamics.collisions.collision import Collision, Breakup, Coalescence
