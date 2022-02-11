@@ -1,6 +1,6 @@
 """
 polynomial fits from
-[Lowe et al. 1977](https://www.jstor.org/stable/26177598)
+[Lowe et al. 1977](https://doi.org/10.1175/1520-0450(1977)016<0100:AAPFTC>2.0.CO;2)
 """
 import numpy as np
 
@@ -11,15 +11,23 @@ class Lowe1977:
     @staticmethod
     def pvs_Celsius(const, T):
         return (
-                const.L77_A0 + T * (
-                const.L77_A1 + T * (
-                const.L77_A2 + T * (
-                const.L77_A3 + T * (
-                const.L77_A4 + T * (
-                const.L77_A5 + T * (
-                const.L77_A6
+                const.L77W_A0 + T * (
+                const.L77W_A1 + T * (
+                const.L77W_A2 + T * (
+                const.L77W_A3 + T * (
+                const.L77W_A4 + T * (
+                const.L77W_A5 + T * (
+                const.L77W_A6
         )))))))
 
     @staticmethod
-    def ice_Celsius(_, T):
-        return np.nan * T
+    def ice_Celsius(const, T):
+                return (
+                const.L77I_A0 + T * (
+                const.L77I_A1 + T * (
+                const.L77I_A2 + T * (
+                const.L77I_A3 + T * (
+                const.L77I_A4 + T * (
+                const.L77I_A5 + T * (
+                const.L77I_A6
+        )))))))
