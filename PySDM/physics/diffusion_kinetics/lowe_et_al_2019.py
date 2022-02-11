@@ -15,7 +15,7 @@ class LoweEtAl2019:
 
     @staticmethod
     def lambdaK(const, T, p):  # pylint: disable=unused-argument
-        return 4.2e-3 * (1.0456 + 0.017 * T)
+        return -1
 
     @staticmethod
     def D(const, D, r, lmbd):

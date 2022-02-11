@@ -1,6 +1,5 @@
 """
-based on "PROPERTIES OF AIR: A Manual for Use in Biophysical Ecology"
-(Fourth Edition - 2010, page 22)
+as in [Lowe et al. 2019](https://doi.org/10.1038/s41467-019-12982-0)
 """
 import numpy as np
 
@@ -15,4 +14,4 @@ class TracyWelchPorter:
 
     @staticmethod
     def K(const, T, p):  # pylint: disable=unused-argument
-        return const.K0
+        return 4.2e-3 * (1.0456 + 0.017 * T)

@@ -10,3 +10,7 @@ class Neglect:
     @staticmethod
     def D(const, T, p):  # pylint: disable=unused-argument
         return const.D0
+
+    @staticmethod
+    def K(const, T, p):  # pylint: disable=unused-argument
+        return const.K0
