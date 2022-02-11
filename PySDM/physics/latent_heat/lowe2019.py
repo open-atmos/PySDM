@@ -8,4 +8,4 @@ class Lowe2019:
 
     @staticmethod
     def lv(const, T):
-        return const.l_tri * (const.T_tri / T)^(0.167 + 3.65e-4 * T)
+        return const.l_tri * (const.T_tri / T)**(0.167 + 3.65e-4 * T)
