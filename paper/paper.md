@@ -14,44 +14,36 @@ tags:
   - pint 
   - atmospheric-physics
 authors:
-  - name: Piotr Bartman
-    orcid: 0000-0003-0265-6428
+  - name: Emily&nbsp;de Jong
     affiliation: "1"
-  - name: Oleksii&nbsp;Bulenok
-    orcid: 0000-0003-2272-8548
-    affiliation: "1"
-  - name: Kamil&nbsp;Górski
-    affiliation: "1"
+    orcid: 0000-0002-5310-4554
+  - name: Kacper&nbsp;Derlatka
+    affiliation: "4"
+  - name: Isabella&nbsp;Dula
+    affiliation: "2"
   - name: Anna&nbsp;Jaruga
     affiliation: "2"
     orcid: 0000-0003-3194-6440
-  - name: Grzegorz&nbsp;Łazarski
-    affiliation: "1,3"
-    orcid: 0000-0002-5595-371X
-  - name: Michael&nbsp;Olesik
-    orcid: 0000-0002-6319-9358
-    affiliation: "4"
-  - name: Bartosz&nbsp;Piasecki
-    affiliation: "1"
+  - name: John&nbsp;Ben&nbsp;Mackay
+    affiliation: "2"
+    orcid: 0000-0001-8677-3562
   - name: Clare&nbsp;E.&nbsp;Singer
     orcid: 0000-0002-1708-0997
     affiliation: "2"
-  - name: Aleksandra&nbsp;Talar
-    affiliation: "1"
+  - name: Ryan&nbsp;Ward
+    affiliation: "2"
   - name: Sylwester&nbsp;Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "5,1"
+    affiliation: "3,4"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
    index: 1
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
    index: 2
- - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
-   index: 3
- - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland
-   index: 4
  - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
-   index: 5
+   index: 3
+-  name: Jagiellonian University, Kraków,&nbsp;Poland
+   index: 4
 bibliography: paper.bib
 
 ---
