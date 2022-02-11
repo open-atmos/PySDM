@@ -1,5 +1,12 @@
 """
-Created at 09.30.21 by edejong
+General algorithm format:
+1. Determine whether collision occurs
+2. If collision occurs:
+    a. Determine whether coalescence, breakup, or bouncing occur
+        Ec = coalescence efficiency
+        Eb = collisional-breakup efficiency
+        1 - Ec - Eb = bounce back to original fragments (subset of breakup)
+    b. Perform the relevant dynamic
 """
 from collections import namedtuple
 import warnings
@@ -15,16 +22,6 @@ DEFAULTS = namedtuple("_", ('dt_coal_range',))(
     dt_coal_range=(.1 * si.second, 100 * si.second)
 )
 
-"""
-General algorithm format:
-1. Determine whether collision occurs
-2. If collision occurs:
-    a. Determine whether coalescence, breakup, or bouncing occur
-        Ec = coalescence efficiency
-        Eb = collisional-breakup efficiency
-        1 - Ec - Eb = bounce back to original fragments (subset of breakup)
-    b. Perform the relevant dynamic
-"""
 
 class Collision:
 
@@ -244,6 +241,7 @@ class Collision:
             is_first_in_pair
         )
 
+
 class Coalescence(Collision):
 
     def __init__(self,
@@ -270,6 +268,7 @@ class Coalescence(Collision):
                  adaptive=adaptive,
                  dt_coal_range=dt_coal_range
                 )
+
 
 class Breakup(Collision):
 

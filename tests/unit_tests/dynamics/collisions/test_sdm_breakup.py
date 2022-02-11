@@ -209,5 +209,6 @@ class TestSDMBreakup:
         # Assert
         # expected to fail: xfail
 
+
 def get_smaller_of_pairs(is_first_in_pair, n_init):
     return np.where(np.roll(is_first_in_pair.indicator, shift = 1), np.asarray(n_init), 0.0)
