@@ -1,6 +1,5 @@
-
 """
-Created at 10.7.2020 by edejong
+TODO #744
 """
 import numpy as np
 from PySDM.products.impl.moment_product import MomentProduct

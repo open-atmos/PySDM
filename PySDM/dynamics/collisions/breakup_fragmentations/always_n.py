@@ -1,6 +1,5 @@
 """
 Always produces N fragments in a given collisional breakup
-Created at 13.05.2021 by edejong
 """
 
 import numpy as np

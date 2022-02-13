@@ -1,9 +1,7 @@
-"""
-Created at 05.21.2021
-"""
+""" constant value """
 
-class ConstEc():
 
+class ConstEc:
     def __init__(self, Ec=1.0):
         self.Ec = Ec
         self.particulator = None

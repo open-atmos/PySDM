@@ -2,6 +2,7 @@
 Specifies constant breakup efficiency.
 """
 
+
 class ConstEb():
 
     def __init__(self, Eb=1.0):

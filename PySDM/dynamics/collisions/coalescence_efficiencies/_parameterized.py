@@ -1,11 +1,11 @@
 """
-Created 24.05.2021 by edejong
+TODO #744
 """
 
 from PySDM.physics import constants as const
 
 
-class Parameterized():
+class Parameterized:
 
     def __init__(self, params):
         self.particulator = None
