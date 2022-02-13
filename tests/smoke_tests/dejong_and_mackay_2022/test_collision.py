@@ -26,5 +26,5 @@ def test_collision(plot=False):
         pyplot.ylabel("dm/dlnr")
         pyplot.legend([0, 1, 2])
 
-    # TODO: add asserts here to check whether stuff is correct
+    # TODO #744: add asserts here to check whether stuff is correct
     assert True
