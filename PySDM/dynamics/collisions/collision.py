@@ -158,6 +158,7 @@ class Collision:
     def step(self):
         # (1) Make the superdroplet list and random numbers for collision, process, fragmentation
         pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
+        # TODO #744 - do proc and frag shuffling only in case breakup is enabled
         proc_rand = self.rnd_opt_proc.get_random_arrays()
         rand_frag = self.rnd_opt_frag.get_random_arrays()
 
@@ -169,9 +170,11 @@ class Collision:
 
         # (3b) Compute the coalescence and breakup efficiences
         self.coal_eff(self.Ec_temp, self.is_first_in_pair)
+        # TODO #744 ditto
         self.break_eff(self.Eb_temp, self.is_first_in_pair)
 
         # (3c) Compute the number of fragments
+        # TODO #744 ditto
         self.fragmentation(self.n_fragment, rand_frag, self.is_first_in_pair)
 
         # (4) Compute gamma...
