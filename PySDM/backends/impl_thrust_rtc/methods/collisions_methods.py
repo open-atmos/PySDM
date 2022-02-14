@@ -274,6 +274,12 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(self, cell_id, cell_idx, cell_start, idx):
         # TODO #330
+        #   was here before (but did not work):
+        #      trtc.Sort_By_Key(cell_id.data, idx.data)
+        #   was here before (but cause huge slowdown of otherwise correct code)
+        #      max_cell_id = max(cell_id.to_ndarray())
+        #      assert max_cell_id == 0
+        #   no handling of cell_idx in ___sort_by_cell_id_and_update_cell_start_body yet
         n_sd = cell_id.shape[0]
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
         if len(idx) > 1:
