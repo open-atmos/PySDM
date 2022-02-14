@@ -89,6 +89,9 @@ p_tri = 611.73 * si.pascal
 T_tri = 273.16 * si.kelvin
 l_tri = 2.5e6 * si.joule / si.kilogram
 
+l_l19_a = 0.167 * si.dimensionless
+l_l19_b = 3.65e-4 / si.kelvin
+
 # standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal

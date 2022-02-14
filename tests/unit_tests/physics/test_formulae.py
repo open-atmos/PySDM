@@ -1,15 +1,18 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.physics import constants_defaults
-from PySDM.formulae import Formulae
+import pytest
+
+from PySDM.physics import constants_defaults, saturation_vapour_pressure, latent_heat
+from PySDM.formulae import Formulae, _choices
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
 
 class TestFormulae:
     @staticmethod
-    def test_pvs():
+    @pytest.mark.parametrize('opt', _choices(saturation_vapour_pressure))
+    def test_pvs(opt):
         with DimensionalAnalysis():
             # Arrange
-            formulae = Formulae()
+            formulae = Formulae(saturation_vapour_pressure=opt)
             si = constants_defaults.si
             sut = formulae.saturation_vapour_pressure.pvs_Celsius
             T = 300 * si.kelvins
@@ -40,13 +43,14 @@ class TestFormulae:
             assert r_cr.to_base_units().units == si.metres
 
     @staticmethod
-    def test_lv():
+    @pytest.mark.parametrize('opt', _choices(latent_heat))
+    def test_lv(opt):
         with DimensionalAnalysis():
             # Arrange
             si = constants_defaults.si
             T = 300 * si.kelvins
 
-            formulae = Formulae()
+            formulae = Formulae(latent_heat=opt)
             sut = formulae.latent_heat.lv
 
             # Act
