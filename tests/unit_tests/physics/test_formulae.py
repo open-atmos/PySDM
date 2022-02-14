@@ -55,10 +55,10 @@ class TestFormulae:
             sut = formulae.latent_heat.lv
 
             # Act
-            latent_heat = sut(T)
+            lv = sut(T)
 
             # Assert
-            assert latent_heat.check('[energy]/[mass]')
+            assert lv.check('[energy]/[mass]')
 
     @staticmethod
     @pytest.mark.parametrize('opt', _choices(diffusion_thermics))
