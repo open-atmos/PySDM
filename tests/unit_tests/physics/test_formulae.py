@@ -1,7 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import pytest
 
-from PySDM.physics import constants_defaults, saturation_vapour_pressure, latent_heat
+from PySDM.physics import (constants_defaults, saturation_vapour_pressure,
+                           latent_heat, diffusion_thermics, diffusion_kinetics)
 from PySDM.formulae import Formulae, _choices
 from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 
@@ -58,6 +59,80 @@ class TestFormulae:
 
             # Assert
             assert latent_heat.check('[energy]/[mass]')
+
+    @staticmethod
+    @pytest.mark.parametrize('opt', _choices(diffusion_thermics))
+    def test_thermal_conductivity_temperature_dependence(opt):
+        with DimensionalAnalysis():
+            # Arrange
+            si = constants_defaults.si
+            T = 300 * si.kelvins
+            p = 1000 * si.hPa
+
+            formulae = Formulae(diffusion_thermics=opt)
+            sut = formulae.diffusion_thermics.K
+
+            # Act
+            thermal_conductivity = sut(T, p)
+
+            # Assert
+            assert thermal_conductivity.check('[power]/[length]/[temperature]')
+
+    @staticmethod
+    @pytest.mark.parametrize('opt', _choices(diffusion_kinetics))
+    def test_thermal_conductivity_radius_dependence(opt):
+        with DimensionalAnalysis():
+            # Arrange
+            si = constants_defaults.si
+            r = 1 * si.um
+            lmbd = .1 * si.um
+
+            formulae = Formulae(diffusion_kinetics=opt)
+            sut = formulae.diffusion_kinetics.K
+
+            # Act
+            thermal_conductivity = sut(constants_defaults.K0, r, lmbd)
+
+            # Assert
+            assert thermal_conductivity.check('[power]/[length]/[temperature]')
+
+    @staticmethod
+    @pytest.mark.parametrize('opt', _choices(diffusion_thermics))
+    def test_vapour_diffusivity_temperature_dependence(opt):
+        with DimensionalAnalysis():
+            # Arrange
+            si = constants_defaults.si
+            T = 300 * si.kelvins
+            p = 1000 * si.hPa
+
+            formulae = Formulae(diffusion_thermics=opt)
+            sut = formulae.diffusion_thermics.D
+
+            # Act
+            vpour_diffusivity = sut(T, p)
+
+            # Assert
+            assert vpour_diffusivity.check('[area]/[time]')
+
+    @staticmethod
+    @pytest.mark.parametrize('opt', _choices(diffusion_kinetics))
+    def test_vapour_diffusivity_radius_dependence(opt):
+        with DimensionalAnalysis():
+            # Arrange
+            si = constants_defaults.si
+            r = 1 * si.um
+            lmbd = .1 * si.um
+
+            formulae = Formulae(diffusion_kinetics=opt)
+            sut = formulae.diffusion_kinetics.D
+
+            # Act
+            vpour_diffusivity = sut(constants_defaults.D0, r, lmbd)
+
+            # Assert
+            assert vpour_diffusivity.check('[area]/[time]')
+
+
 
     @staticmethod
     def test___str__():

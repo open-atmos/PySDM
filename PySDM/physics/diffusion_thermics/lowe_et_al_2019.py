@@ -14,4 +14,4 @@ class LoweEtAl2019:
 
     @staticmethod
     def K(const, T, p):  # pylint: disable=unused-argument
-        return 4.2e-3 * (1.0456 + 0.017 * T)
+        return const.k_l19_a * (const.k_l19_b + const.k_l19_c * T)
