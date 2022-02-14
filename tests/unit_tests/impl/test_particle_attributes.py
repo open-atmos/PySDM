@@ -75,14 +75,14 @@ class TestParticleAttributes:
             [0, 0, 2, 6]
         )
     ])
-    @pytest.mark.parametrize('backend_class', (
+    @pytest.mark.parametrize('backend_cls', (
         CPU,
         pytest.param(GPU, marks=pytest.mark.xfail(strict=True))
     ))  # TODO #330
-    def test_sort_by_cell_id(backend_class, multiplicity, cells, idx, new_idx, cell_start):
+    def test_sort_by_cell_id(backend_cls, multiplicity, cells, idx, new_idx, cell_start):
         # Arrange
         n_sd = len(multiplicity)
-        particulator = DummyParticulator(backend_class, n_sd=n_sd)
+        particulator = DummyParticulator(backend_cls, n_sd=n_sd)
         n_cell = max(cells) + 1
         particulator.environment.mesh.n_cell = n_cell
         particulator.build(attributes={'n': np.ones(n_sd)})
