@@ -96,6 +96,9 @@ k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
 
+d_l19_a = .211e-4 * si.metre ** 2 / si.second
+d_l19_b = 1.94
+
 # standard pressure and temperature (ICAO)
 T_STP = (sci.zero_Celsius + 15) * si.kelvin
 p_STP = 101325 * si.pascal

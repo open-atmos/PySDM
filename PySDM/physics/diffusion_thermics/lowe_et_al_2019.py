@@ -10,7 +10,7 @@ class LoweEtAl2019:
 
     @staticmethod
     def D(const, T, p):
-        return const.D0 * np.power(T / const.T0, const.D_exp) * (const.p1000 / p)
+        return const.d_l19_a * (const.p_STP / p) * ((T / const.T0) ** const.d_l19_b)
 
     @staticmethod
     def K(const, T, p):  # pylint: disable=unused-argument
