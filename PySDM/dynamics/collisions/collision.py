@@ -162,7 +162,8 @@ class Collision:
         proc_rand = self.rnd_opt_proc.get_random_arrays()
         rand_frag = self.rnd_opt_frag.get_random_arrays()
 
-        self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(self.is_first_in_pair, pairs_rand)
+        self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
+            self.is_first_in_pair, pairs_rand)
 
         self.compute_probabilities_of_collision(self.prob, self.is_first_in_pair)
 
