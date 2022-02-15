@@ -10,7 +10,7 @@ from PySDM.physics.dimensional_analysis import DimensionalAnalysis
 class TestFormulae:
     @staticmethod
     @pytest.mark.parametrize('opt', _choices(saturation_vapour_pressure))
-    def test_pvs(opt):
+    def test_pvs_liq(opt):
         with DimensionalAnalysis():
             # Arrange
             formulae = Formulae(saturation_vapour_pressure=opt)
@@ -22,7 +22,23 @@ class TestFormulae:
             pvs = sut(T)
 
             # Assert
-            assert pvs.units == si.hectopascals
+            assert pvs.check('[pressure]')
+
+    @staticmethod
+    @pytest.mark.parametrize('opt', _choices(saturation_vapour_pressure))
+    def test_pvs_ice(opt):
+        with DimensionalAnalysis():
+            # Arrange
+            formulae = Formulae(saturation_vapour_pressure=opt)
+            si = constants_defaults.si
+            sut = formulae.saturation_vapour_pressure.ice_Celsius
+            T = 250 * si.kelvins
+
+            # Act
+            pvs = sut(T)
+
+            # Assert
+            assert pvs.check('[pressure]')
 
     @staticmethod
     def test_r_cr():

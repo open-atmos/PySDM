@@ -10,7 +10,7 @@ def test_saturation_vapour_pressures(plot=False):
     # Arrange
     formulae = {
         k: Formulae(saturation_vapour_pressure=k)
-        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus', 'Lowe1977',)
+        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus', 'Lowe1977', 'MurphyKoop2005')
     }
     temperature = np.linspace(-.2, .4)
 

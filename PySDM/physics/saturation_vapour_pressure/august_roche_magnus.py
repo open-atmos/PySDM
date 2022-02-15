@@ -15,5 +15,6 @@ class AugustRocheMagnus:
         return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
 
     @staticmethod
-    def ice_Celsius(_, T):
-        return np.nan * T
+    def ice_Celsius(const, T):
+        """ NaN with unit of pressure and correct dimension """
+        return np.nan * T / const.ARM_C3 * const.ARM_C1
