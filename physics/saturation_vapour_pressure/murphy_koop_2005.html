@@ -4,10 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.saturation_vapour_pressure.august_roche_magnus API documentation</title>
-<meta name="description" content="August-Roche-Magnus formula (see, e.g.,
-[Wikipedia](https://en.wikipedia.org/wiki/Clausius–Clapeyron_relation#August–Roche–Magnus_formula)
-and …" />
+<title>PySDM.physics.saturation_vapour_pressure.murphy_koop_2005 API documentation</title>
+<meta name="description" content="[Murphy and Koop 2005](https://doi.org/10.1256/qj.04.94)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -21,36 +19,49 @@ and …" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.saturation_vapour_pressure.august_roche_magnus</code></h1>
+<h1 class="title">Module <code>PySDM.physics.saturation_vapour_pressure.murphy_koop_2005</code></h1>
 </header>
 <section id="section-intro">
-<p>August-Roche-Magnus formula (see, e.g.,
-<a href="https://en.wikipedia.org/wiki/Clausius–Clapeyron_relation#August–Roche–Magnus_formula">Wikipedia</a>
-and references therein)</p>
+<p><a href="https://doi.org/10.1256/qj.04.94">Murphy and Koop 2005</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-August-Roche-Magnus formula (see, e.g.,
-[Wikipedia](https://en.wikipedia.org/wiki/Clausius–Clapeyron_relation#August–Roche–Magnus_formula)
-and references therein)
+[Murphy and Koop 2005](https://doi.org/10.1256/qj.04.94)
 &#34;&#34;&#34;
 import numpy as np
 
 
-class AugustRocheMagnus:
+class MurphyKoop2005:
     def __init__(self, _):
         pass
 
     @staticmethod
     def pvs_Celsius(const, T):
-        return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+        &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+        return const.MK05_LIQ_C1 * np.exp(
+            const.MK05_LIQ_C2
+            - const.MK05_LIQ_C3 / (T + const.T0)
+            - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
+            + const.MK05_LIQ_C6 * (T + const.T0)
+            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+                const.MK05_LIQ_C9
+                - const.MK05_LIQ_C10 / (T + const.T0)
+                - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+                + const.MK05_LIQ_C13 * (T + const.T0)
+            )
+        )
 
     @staticmethod
     def ice_Celsius(const, T):
-        &#34;&#34;&#34; NaN with unit of pressure and correct dimension &#34;&#34;&#34;
-        return np.nan * T / const.ARM_C3 * const.ARM_C1</code></pre>
+        &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+        return const.MK05_ICE_C1 * np.exp(
+            const.MK05_ICE_C2
+            - const.MK05_ICE_C3 / (T + const.T0)
+            + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+            - const.MK05_ICE_C6 * (T + const.T0)
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -62,8 +73,8 @@ class AugustRocheMagnus:
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus"><code class="flex name class">
-<span>class <span class="ident">AugustRocheMagnus</span></span>
+<dt id="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005"><code class="flex name class">
+<span>class <span class="ident">MurphyKoop2005</span></span>
 <span>(</span><span>_)</span>
 </code></dt>
 <dd>
@@ -72,48 +83,82 @@ class AugustRocheMagnus:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AugustRocheMagnus:
+<pre><code class="python">class MurphyKoop2005:
     def __init__(self, _):
         pass
 
     @staticmethod
     def pvs_Celsius(const, T):
-        return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))
+        &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+        return const.MK05_LIQ_C1 * np.exp(
+            const.MK05_LIQ_C2
+            - const.MK05_LIQ_C3 / (T + const.T0)
+            - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
+            + const.MK05_LIQ_C6 * (T + const.T0)
+            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+                const.MK05_LIQ_C9
+                - const.MK05_LIQ_C10 / (T + const.T0)
+                - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+                + const.MK05_LIQ_C13 * (T + const.T0)
+            )
+        )
 
     @staticmethod
     def ice_Celsius(const, T):
-        &#34;&#34;&#34; NaN with unit of pressure and correct dimension &#34;&#34;&#34;
-        return np.nan * T / const.ARM_C3 * const.ARM_C1</code></pre>
+        &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+        return const.MK05_ICE_C1 * np.exp(
+            const.MK05_ICE_C2
+            - const.MK05_ICE_C3 / (T + const.T0)
+            + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+            - const.MK05_ICE_C6 * (T + const.T0)
+        )</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
-<dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius"><code class="name flex">
+<dt id="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.ice_Celsius"><code class="name flex">
 <span>def <span class="ident">ice_Celsius</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>NaN with unit of pressure and correct dimension</p></div>
+<div class="desc"><p>valid for T &gt; 110 K, eq (7)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def ice_Celsius(const, T):
-    &#34;&#34;&#34; NaN with unit of pressure and correct dimension &#34;&#34;&#34;
-    return np.nan * T / const.ARM_C3 * const.ARM_C1</code></pre>
+    &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+    return const.MK05_ICE_C1 * np.exp(
+        const.MK05_ICE_C2
+        - const.MK05_ICE_C3 / (T + const.T0)
+        + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+        - const.MK05_ICE_C6 * (T + const.T0)
+    )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius"><code class="name flex">
+<dt id="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.pvs_Celsius"><code class="name flex">
 <span>def <span class="ident">pvs_Celsius</span></span>(<span>const, T)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>valid for 123 &lt; T &lt; 332 K, eq (10)</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
 def pvs_Celsius(const, T):
-    return const.ARM_C1 * np.exp((const.ARM_C2 * T) / (T + const.ARM_C3))</code></pre>
+    &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+    return const.MK05_LIQ_C1 * np.exp(
+        const.MK05_LIQ_C2
+        - const.MK05_LIQ_C3 / (T + const.T0)
+        - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
+        + const.MK05_LIQ_C6 * (T + const.T0)
+        + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+            const.MK05_LIQ_C9
+            - const.MK05_LIQ_C10 / (T + const.T0)
+            - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+            + const.MK05_LIQ_C13 * (T + const.T0)
+        )
+    )</code></pre>
 </details>
 </dd>
 </dl>
@@ -135,10 +180,10 @@ def pvs_Celsius(const, T):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus">AugustRocheMagnus</a></code></h4>
+<h4><code><a title="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005" href="#PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005">MurphyKoop2005</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.ice_Celsius">ice_Celsius</a></code></li>
-<li><code><a title="PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius" href="#PySDM.physics.saturation_vapour_pressure.august_roche_magnus.AugustRocheMagnus.pvs_Celsius">pvs_Celsius</a></code></li>
+<li><code><a title="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.ice_Celsius" href="#PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.ice_Celsius">ice_Celsius</a></code></li>
+<li><code><a title="PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.pvs_Celsius" href="#PySDM.physics.saturation_vapour_pressure.murphy_koop_2005.MurphyKoop2005.pvs_Celsius">pvs_Celsius</a></code></li>
 </ul>
 </li>
 </ul>
