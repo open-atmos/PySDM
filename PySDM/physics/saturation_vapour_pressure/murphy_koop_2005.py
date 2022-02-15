@@ -10,7 +10,7 @@ class MurphyKoop2005:
 
     @staticmethod
     def pvs_Celsius(const, T):
-        """ valid for 123 < T < 332 K """
+        """ valid for 123 < T < 332 K, eq (10) """
         return const.MK05_LIQ_C1 * np.exp(
             const.MK05_LIQ_C2
             - const.MK05_LIQ_C3 / (T + const.T0)
