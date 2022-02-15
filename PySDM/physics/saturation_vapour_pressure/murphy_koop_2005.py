@@ -26,7 +26,7 @@ class MurphyKoop2005:
 
     @staticmethod
     def ice_Celsius(const, T):
-        """ valid for T > 110 K """
+        """ valid for T > 110 K, eq (7) """
         return const.MK05_ICE_C1 * np.exp(
             const.MK05_ICE_C2
             - const.MK05_ICE_C3 / (T + const.T0)
