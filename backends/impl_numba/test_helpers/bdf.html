@@ -39,7 +39,7 @@ from functools import lru_cache
 import numpy as np
 import numba
 import scipy.integrate
-from PySDM.physics.constants_defaults import rho_w, K0, T0, PI_4_3
+from PySDM.physics.constants_defaults import rho_w, T0, PI_4_3
 from PySDM.backends import Numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
@@ -109,6 +109,7 @@ def _make_solve(formulae):
     phys_diff_kin_D = formulae.diffusion_kinetics.D
     phys_diff_kin_K = formulae.diffusion_kinetics.K
     phys_D = formulae.diffusion_thermics.D
+    phys_K = formulae.diffusion_thermics.K
 
     @numba.njit(**{**JIT_FLAGS, **{&#39;parallel&#39;: False}})
     def _ql(n, x, m_d_mean):
@@ -118,13 +119,14 @@ def _make_solve(formulae):
     def _impl(dy_dt, x, T, p, n, RH, kappa, f_org, dry_volume, thd,
               dot_thd, dot_qv, m_d_mean, rhod_mean, pvs, lv):
         DTp = phys_D(T, p)
+        KTp = phys_K(T, p)
         lambdaD = phys_lambdaD(DTp, T)
         lambdaK = phys_lambdaK(T, p)
         for i, x_i in enumerate(x):
             v = volume(x_i)
             r = phys_radius(v)
             Dr = phys_diff_kin_D(DTp, r, lambdaD)
-            Kr = phys_diff_kin_K(K0, r, lambdaK)
+            Kr = phys_diff_kin_K(KTp, r, lambdaK)
             sgm = sigma(T, v, dry_volume[i], f_org[i])
             dy_dt[idx_x + i] = dx_dt(
                 x_i,
