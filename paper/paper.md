@@ -164,7 +164,7 @@ from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 builder = Builder(n_sd=N_SD, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 
 radius_bins_edges = np.logspace(
     start=np.log10(10 * si.um),
