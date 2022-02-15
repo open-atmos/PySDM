@@ -3,7 +3,7 @@ import pytest
 import numpy as np
 from PySDM.backends import CPU
 from PySDM.dynamics import Breakup
-from PySDM.dynamics.collisions.kernels import ConstantK
+from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.environments import Box
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM import Builder

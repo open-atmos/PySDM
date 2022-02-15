@@ -1,4 +1,4 @@
-""" common parent class for gravitational kernels """
+""" common parent class for gravitational collision kernels """
 
 
 class Gravitational:

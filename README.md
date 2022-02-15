@@ -167,7 +167,7 @@ Instantiation of the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PyS
 Builder = pyimport("PySDM").Builder
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
-Golovin = pyimport("PySDM.dynamics.collisions.kernels").Golovin
+Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
 ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
@@ -175,7 +175,7 @@ radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32)
 
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
 ```
@@ -187,7 +187,7 @@ particulator = builder.build(attributes, products)
 Builder = py.importlib.import_module('PySDM').Builder;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
-Golovin = py.importlib.import_module('PySDM.dynamics.collisions.kernels').Golovin;
+Golovin = py.importlib.import_module('PySDM.dynamics.collisions.collision_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
@@ -195,7 +195,7 @@ radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
-builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
+builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
   'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
   'name', 'dv/dlnr' ...
@@ -211,7 +211,7 @@ import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.dynamics.collisions.kernels import Golovin
+from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
@@ -219,7 +219,7 @@ radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num
 
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```

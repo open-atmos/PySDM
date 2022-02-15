@@ -88,19 +88,17 @@ class CollisionsMethods(BackendMethods):
             if gamma[i] == 0:
                 continue
 
-            if rand[i] - Ec[i] - Eb[i] > 0: # bouncing
+            bouncing = rand[i] - Ec[i] - Eb[i] > 0
+            if bouncing:
                 continue
 
             dyn = rand[i] - Ec[i]
             j, k = pair_indices(i, idx, is_first_in_pair)
             cid = cell_id[i]
 
-            if dyn < 0: # coalescence
-                atomic_add(
-                    coalescence_rate,
-                    cid,
-                    gamma[i] * multiplicity[k]
-                )
+            coalescence_else_breakup = dyn < 0
+            if coalescence_else_breakup:
+                atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
                 new_n = multiplicity[j] - gamma[i] * multiplicity[k]
                 if new_n > 0:
                     multiplicity[j] = new_n
@@ -112,15 +110,8 @@ class CollisionsMethods(BackendMethods):
                     for a in range(0, len(attributes)):
                         attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
                         attributes[a, k] = attributes[a, j]
-                if multiplicity[k] == 0 or multiplicity[j] == 0:
-                    healthy[0] = 0
-
-            else: # breakup
-                atomic_add(
-                    breakup_rate,
-                    cid,
-                    gamma[i] * multiplicity[k]
-                )
+            else:
+                atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
                 if n_fragment[i]**gamma[i] > max_multiplicity:
                     success[0] = False
                 tmp1 = 0
@@ -148,14 +139,13 @@ class CollisionsMethods(BackendMethods):
                     gamma_tmp = 0
                     gamma_deficit = gamma[i]
                     while gamma_deficit > 0:
-                        # rearrange SD's if necessary
                         if multiplicity[k] > multiplicity[j]:
                             j, k = k, j
 
                         tmp1 = 0
                         for m in range(int(gamma_deficit)):
                             tmp1 += n_fragment[i]**m
-                            new_n = multiplicity[j] - tmp1*multiplicity[k]
+                            new_n = multiplicity[j] - tmp1 * multiplicity[k]
                             gamma_tmp = m+1
                             if new_n < 0:
                                 gamma_tmp = m
@@ -179,6 +169,8 @@ class CollisionsMethods(BackendMethods):
                                 attributes[a, j] = attributes[a, k]
 
                 # perform rounding to take us back to integer multiplicities
+                # TODO #744 logic needs correction - multiplicity[] is an int array,
+                #           earlier assignments already cause int casting
                 factor_j = multiplicity[j]/int(multiplicity[j])
                 factor_k = multiplicity[k]/int(multiplicity[k])
                 multiplicity[j] = int(multiplicity[j])
@@ -187,8 +179,8 @@ class CollisionsMethods(BackendMethods):
                     attributes[a,k] *= factor_k
                     attributes[a,j] *= factor_j
 
-                if multiplicity[k] == 0 or multiplicity[j] == 0:
-                    healthy[0] = 0
+            if multiplicity[k] == 0 or multiplicity[j] == 0:
+                healthy[0] = 0
 
     def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
                   n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
@@ -268,7 +260,6 @@ class CollisionsMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def __compute_gamma_body(gamma, rand, idx, length, multiplicity, cell_id,
                            collision_rate_deficit, collision_rate, is_first_in_pair):
-
         """
         return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
@@ -278,26 +269,16 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             gamma[i] = np.ceil(gamma[i] - rand[i])
 
-            # (4) No collision
-            if gamma[i] == 0:
+            no_collision = gamma[i] == 0
+            if no_collision:
                 continue
 
-            # (5) Successful collision
             j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
             g = min(int(gamma[i]), prop)
             cid = cell_id[j]
-            # compute the number of collisions
-            atomic_add(
-                    collision_rate,
-                    cid,
-                    g * multiplicity[k]
-                )
-            atomic_add(
-                    collision_rate_deficit,
-                    cid,
-                    (int(gamma[i]) - g) * multiplicity[k]
-                )
+            atomic_add(collision_rate, cid, g * multiplicity[k])
+            atomic_add(collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k])
             gamma[i] = g
 
     # pylint: disable=too-many-arguments

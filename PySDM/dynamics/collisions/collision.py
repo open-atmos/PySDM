@@ -19,35 +19,39 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 
 DEFAULTS = namedtuple("_", ('dt_coal_range',))(
-    dt_coal_range=(.1 * si.second, 100 * si.second)
+    dt_coal_range=(.1 * si.second, 100. * si.second)
 )
 
 
 class Collision:
-
     def __init__(self,
-                 kernel,    # collision kernel
-                 coal_eff,  # coalescence efficiency
-                 break_eff, # breakup efficiency
-                 fragmentation, # fragmentation function
+                 collision_kernel,
+                 coalescence_efficiency,
+                 breakup_efficiency,
+                 fragmentation_function,
                  seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
                  adaptive: bool = True,
-                 dt_coal_range=DEFAULTS.dt_coal_range
+                 dt_coal_range=DEFAULTS.dt_coal_range,
+                 enable_breakup = True,
+                 enable_coalescence = True
                  ):
         assert substeps == 1 or adaptive is False
 
         self.particulator = None
+
         self.enable = True
+        self.enable_breakup = enable_breakup
+        self.enable_coalescence = enable_coalescence
 
-        self.kernel = kernel
-        self.coal_eff = coal_eff
-        self.break_eff = break_eff
-        self.fragmentation = fragmentation
+        self.collision_kernel = collision_kernel
+        self.compute_coalescence_efficiency = coalescence_efficiency
+        self.compute_breakup_efficiency = breakup_efficiency
+        self.compute_number_of_fragments = fragmentation_function
+
         self.seed = seed
-
         self.rnd_opt_frag = None
         self.rnd_opt_coll = None
         self.rnd_opt_proc = None
@@ -62,7 +66,7 @@ class Collision:
         self.stats_dt_min = None
         self.dt_coal_range = tuple(dt_coal_range)
 
-        self.kernel_temp = None         # stores the output from calling self.kernel()
+        self.kernel_temp = None
         self.n_fragment = None
         self.Ec_temp = None
         self.Eb_temp = None
@@ -79,15 +83,12 @@ class Collision:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        # determine whether collision occurs
         self.rnd_opt_coll = RandomGeneratorOptimizer(optimized_random=self.optimized_random,
                                                      dt_min=self.dt_coal_range[0],
                                                      seed=self.seed)
-        # determine which process occurs
         self.rnd_opt_proc = RandomGeneratorOptimizerNoPair(optimized_random=self.optimized_random,
                                                            dt_min=self.dt_coal_range[0],
                                                            seed=self.seed)
-        # for generating number of fragments
         self.rnd_opt_frag = RandomGeneratorOptimizerNoPair(optimized_random=self.optimized_random,
                                                            dt_min=self.dt_coal_range[0],
                                                            seed=self.seed)
@@ -120,10 +121,10 @@ class Collision:
         self.rnd_opt_coll.register(builder)
         self.rnd_opt_proc.register(builder)
         self.rnd_opt_frag.register(builder)
-        self.kernel.register(builder)
-        self.coal_eff.register(builder)
-        self.break_eff.register(builder)
-        self.fragmentation.register(builder)
+        self.collision_kernel.register(builder)
+        self.compute_coalescence_efficiency.register(builder)
+        self.compute_breakup_efficiency.register(builder)
+        self.compute_number_of_fragments.register(builder)
 
         if self.croupier is None:
             self.croupier = self.particulator.backend.default_croupier
@@ -156,31 +157,24 @@ class Collision:
             self.rnd_opt_frag.reset()
 
     def step(self):
-        # (1) Make the superdroplet list and random numbers for collision, process, fragmentation
         pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
         # TODO #744 - do proc and frag shuffling only in case breakup is enabled
         proc_rand = self.rnd_opt_proc.get_random_arrays()
         rand_frag = self.rnd_opt_frag.get_random_arrays()
 
-        # (2) candidate-pair list
-        self.toss_pairs(self.is_first_in_pair, pairs_rand)
+        self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(self.is_first_in_pair, pairs_rand)
 
-        # (3a) Compute the probability of a collision
-        self.compute_probability(self.prob, self.is_first_in_pair)
+        self.compute_probabilities_of_collision(self.prob, self.is_first_in_pair)
 
-        # (3b) Compute the coalescence and breakup efficiences
-        self.coal_eff(self.Ec_temp, self.is_first_in_pair)
+        self.compute_coalescence_efficiency(self.Ec_temp, self.is_first_in_pair)
         # TODO #744 ditto
-        self.break_eff(self.Eb_temp, self.is_first_in_pair)
+        self.compute_breakup_efficiency(self.Eb_temp, self.is_first_in_pair)
 
-        # (3c) Compute the number of fragments
         # TODO #744 ditto
-        self.fragmentation(self.n_fragment, rand_frag, self.is_first_in_pair)
+        self.compute_number_of_fragments(self.n_fragment, rand_frag, self.is_first_in_pair)
 
-        # (4) Compute gamma...
         self.compute_gamma(self.prob, rand, self.is_first_in_pair)
 
-        # (5) Perform the collisional-coalescence/breakup step:
         self.particulator.collision(gamma=self.prob, rand=proc_rand,
                                     Ec=self.Ec_temp, Eb=self.Eb_temp, n_fragment=self.n_fragment,
                                     coalescence_rate=self.coalescence_rate,
@@ -191,8 +185,7 @@ class Collision:
             self.particulator.attributes.cut_working_length(self.particulator.adaptive_sdm_end(
                 self.dt_left))
 
-    # (2) candidate-pair list: put them in order by multiplicity
-    def toss_pairs(self, is_first_in_pair, u01):
+    def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(self, is_first_in_pair, u01):
         self.particulator.attributes.permutation(u01, self.croupier == 'local')
         is_first_in_pair.update(
             self.particulator.attributes.cell_start,
@@ -201,21 +194,22 @@ class Collision:
         )
         self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
-    # (3a) Compute probability of a collision
-    def compute_probability(self, prob, is_first_in_pair):
-        self.kernel(self.kernel_temp, is_first_in_pair)
-        # P_jk = max(xi_j, xi_k)*P_jk*E_c
+    def compute_probabilities_of_collision(self, prob, is_first_in_pair):
+        """ eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441) """
+        self.collision_kernel(self.kernel_temp, is_first_in_pair)
         prob.max(self.particulator.attributes['n'], is_first_in_pair)
         prob *= self.kernel_temp
 
         self.particulator.normalize(prob, self.norm_factor_temp)
 
-    # (3c) Compute n_fragment
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
-        self.fragmentation(n_fragment, u01, is_first_in_pair)
+        self.compute_number_of_fragments(n_fragment, u01, is_first_in_pair)
 
-    # (4) Compute gamma, i.e. whether the collision leads to breakup
     def compute_gamma(self, prob, rand, is_first_in_pair):
+        """ see sec. 5.1.3 point (3) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)
+            note that in PySDM gamma also serves the purpose of disabling collisions
+            for droplets without a pair (i.e. odd number of particles within a grid cell)
+        """
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
                 prob,
@@ -229,11 +223,10 @@ class Collision:
                 self.stats_dt_min
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
-                warnings.warn("breakup adaptive time-step reached dt_min")
+                warnings.warn("adaptive time-step reached dt_min")
         else:
             prob /= self.__substeps
 
-        # src is ../backends/numba/impl/_algorithmic_methods.py, line 149
         self.particulator.backend.compute_gamma(
             prob,
             rand,
@@ -246,10 +239,9 @@ class Collision:
 
 
 class Coalescence(Collision):
-
     def __init__(self,
-                 kernel,
-                 coal_eff=ConstEc(Ec=1),
+                 collision_kernel,
+                 coalescence_efficiency=ConstEc(Ec=1),
                  seed=None,
                  croupier=None,
                  optimized_random=False,
@@ -257,27 +249,27 @@ class Coalescence(Collision):
                  adaptive: bool = True,
                  dt_coal_range=DEFAULTS.dt_coal_range
                  ):
-        break_eff = ConstEb(Eb=0)
-        fragmentation = AlwaysN(n=1)
+        breakup_efficiency = ConstEb(Eb=0)
+        fragmentation_function = AlwaysN(n=1)
         super().__init__(
-                 kernel,    # collision kernel
-                 coal_eff,  # coalescence efficiency
-                 break_eff, # breakup efficiency
-                 fragmentation, # fragmentation function
+                 collision_kernel,
+                 coalescence_efficiency,
+                 breakup_efficiency,
+                 fragmentation_function,
                  seed=seed,
                  croupier=croupier,
                  optimized_random=optimized_random,
                  substeps=substeps,
                  adaptive=adaptive,
-                 dt_coal_range=dt_coal_range
+                 dt_coal_range=dt_coal_range,
+                 enable_breakup=False
                 )
 
 
 class Breakup(Collision):
-
     def __init__(self,
-                 kernel,
-                 fragmentation,
+                 collision_kernel,
+                 fragmentation_function,
                  seed=None,
                  croupier=None,
                  optimized_random=False,
@@ -285,17 +277,18 @@ class Breakup(Collision):
                  adaptive: bool = True,
                  dt_coal_range=DEFAULTS.dt_coal_range
                  ):
-        coal_eff = ConstEc(Ec = 0.0)
-        break_eff = ConstEb(Eb = 1.0)
+        coalescence_efficiency = ConstEc(Ec = 0.0)
+        breakup_efficiency = ConstEb(Eb = 1.0)
         super().__init__(
-                kernel,
-                coal_eff,
-                break_eff,
-                fragmentation,
+                collision_kernel,
+                coalescence_efficiency,
+                breakup_efficiency,
+                fragmentation_function,
                 seed=seed,
                 croupier=croupier,
                 optimized_random=optimized_random,
                 substeps=substeps,
                 adaptive=adaptive,
-                dt_coal_range=dt_coal_range
+                dt_coal_range=dt_coal_range,
+                enable_coalescence=False
     )

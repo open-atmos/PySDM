@@ -8,7 +8,7 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.dynamics.collisions.kernels import Golovin, Geometric, Electric, Hydrodynamic
+from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric, Electric, Hydrodynamic
 from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, '_pytestfixturefunction')
@@ -54,7 +54,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
 def test_coalescence_2_sd(backend_class):
     # Arrange
     s = Settings()
-    s.kernel = Golovin(b=1.5e12)
+    s.collision_kernel = Golovin(b=1.5e12)
     s.formulae.seed = 0
     steps = [0, 200]
     s.n_sd = 2
@@ -63,7 +63,7 @@ def test_coalescence_2_sd(backend_class):
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
-    builder.add_dynamic(Coalescence(s.kernel, adaptive=False))
+    builder.add_dynamic(Coalescence(s.collision_kernel, adaptive=False))
     particulator = builder.build(attributes)
 
     volumes = {}
