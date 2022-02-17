@@ -222,8 +222,10 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb, n_fragment,
-                  healthy, cell_id, coalescence_rate, breakup_rate, is_first_in_pair):
+    def collision_coalescence(
+        self, multiplicity, idx, attributes, gamma, healthy,
+        cell_id, coalescence_rate, is_first_in_pair
+    ):
         if len(idx) < 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])

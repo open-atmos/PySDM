@@ -64,9 +64,12 @@ class TestSDMBreakup:
         is_first_in_pair = make_PairIndicator(backend_class)(n_sd)
 
         # Act
-        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = pairwise_zeros,
-                n_fragment = n_fragment, coalescence_rate = general_zeros,
-                breakup_rate = general_zeros, is_first_in_pair = is_first_in_pair)
+        particulator.collision_coalescence_breakup(
+            enable_breakup=True,
+            gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=pairwise_zeros,
+            n_fragment=n_fragment, coalescence_rate=general_zeros,
+            breakup_rate=general_zeros, is_first_in_pair=is_first_in_pair
+        )
 
         # Assert
         assert (particulator.attributes['n'].to_ndarray() == n_init).all()
@@ -105,9 +108,12 @@ class TestSDMBreakup:
             np.asarray(params["is_first_in_pair"]))
 
         # Act
-        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros,
-                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
+        particulator.collision_coalescence_breakup(
+            enable_breakup=True,
+            gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
+            n_fragment=n_fragment, coalescence_rate=general_zeros,
+            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+        )
 
         # Assert
         cell_id = 0
@@ -153,9 +159,12 @@ class TestSDMBreakup:
             np.asarray(params["is_first_in_pair"]))
 
         # Act
-        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros,
-                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
+        particulator.collision_coalescence_breakup(
+            enable_breakup=True,
+            gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
+            n_fragment=n_fragment, coalescence_rate=general_zeros,
+            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+        )
 
         # Assert
         {
@@ -184,7 +193,7 @@ class TestSDMBreakup:
         particulator = builder.build(attributes = {
                 "n": np.asarray(n_init),
                 "volume": np.asarray(params["v_init"])
-            }, products = ())
+            }, products=())
 
         n_pairs = n_sd // 2
         rand = [1.0] * n_pairs
@@ -202,12 +211,12 @@ class TestSDMBreakup:
             np.asarray(params["is_first_in_pair"]))
 
         # Act
-        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
-                n_fragment = n_fragment, coalescence_rate = general_zeros,
-                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
-
-        # Assert
-        # expected to fail: xfail
+        particulator.collision_coalescence_breakup(
+            enable_breakup=True,
+            gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
+            n_fragment=n_fragment, coalescence_rate=general_zeros,
+            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+        )
 
 
 def get_smaller_of_pairs(is_first_in_pair, n_init):

@@ -120,23 +120,28 @@ class Particulator:
             cell_id=self.attributes['cell id']
         )
 
-    def collision(self, gamma, rand, Ec, Eb, n_fragment,
-                  coalescence_rate, breakup_rate, is_first_in_pair):
-        self.backend.collision(
-            multiplicity=self.attributes['n'],
-            idx=self.attributes._ParticleAttributes__idx,
-            attributes=self.attributes.get_extensive_attribute_storage(),
-            gamma=gamma,
-            rand=rand,
-            Ec=Ec,
-            Eb=Eb,
-            n_fragment=n_fragment,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            cell_id=self.attributes["cell id"],
-            coalescence_rate=coalescence_rate,
-            breakup_rate=breakup_rate,
-            is_first_in_pair=is_first_in_pair
-        )
+    def collision_coalescence_breakup(
+        self, enable_breakup,
+        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+    ):
+        idx = self.attributes._ParticleAttributes__idx
+        healthy = self.attributes._ParticleAttributes__healthy_memory
+        cell_id = self.attributes["cell id"]
+        multiplicity = self.attributes['n']
+        attributes = self.attributes.get_extensive_attribute_storage()
+        if enable_breakup:
+            self.backend.collision_coalescence_breakup(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
+                Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
+                coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+                is_first_in_pair=is_first_in_pair
+            )
+        else:
+            self.backend.collision_coalescence(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma,
+                healthy=healthy, cell_id=cell_id, coalescence_rate=coalescence_rate,
+                is_first_in_pair=is_first_in_pair
+            )
         self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)
         self.attributes.sanitize()
         self.attributes.mark_updated('n')
