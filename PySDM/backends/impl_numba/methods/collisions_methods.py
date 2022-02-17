@@ -22,6 +22,75 @@ def pair_indices(i, idx, is_first_in_pair):
     return j, k
 
 
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def flag_zero_multiplicity(j, k, multiplicity, healthy):
+    if multiplicity[k] == 0 or multiplicity[j] == 0:
+        healthy[0] = 0
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
+    atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
+    new_n = multiplicity[j] - gamma[i] * multiplicity[k]
+    if new_n > 0:
+        multiplicity[j] = new_n
+        for a in range(0, len(attributes)):
+            attributes[a, k] += gamma[i] * attributes[a, j]
+    else:  # new_n == 0
+        multiplicity[j] = multiplicity[k] // 2
+        multiplicity[k] = multiplicity[k] - multiplicity[j]
+        for a in range(0, len(attributes)):
+            attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
+            attributes[a, k] = attributes[a, j]
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity,
+             breakup_rate, success):
+    if n_fragment[i] ** gamma[i] > max_multiplicity:
+        success[0] = False
+        return
+    atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
+    gamma_tmp = 0
+    gamma_deficit = gamma[i]
+    while gamma_deficit > 0:
+        if multiplicity[k] > multiplicity[j]:
+            j, k = k, j
+        tmp1 = 0
+        for m in range(int(gamma_deficit)):
+            tmp1 += n_fragment[i] ** m
+            new_n = multiplicity[j] - tmp1 * multiplicity[k]
+            gamma_tmp = m + 1
+            if new_n < 0:
+                gamma_tmp = m
+                tmp1 -= n_fragment[i] ** m
+                break
+        gamma_deficit -= gamma_tmp
+        tmp2 = n_fragment[i] ** gamma_tmp
+        new_n = multiplicity[j] - tmp1 * multiplicity[k]
+        if new_n > 0:
+            nj = new_n
+            nk = multiplicity[k] * tmp2
+            for a in range(0, len(attributes)):
+                attributes[a, k] += tmp1 * attributes[a, j]
+                attributes[a, k] /= tmp2
+        else:  # new_n = 0
+            nj = tmp2 * multiplicity[k] / 2
+            nk = nj
+            for a in range(0, len(attributes)):
+                attributes[a, k] += tmp1 * attributes[a, j]
+                attributes[a, k] /= tmp2
+                attributes[a, j] = attributes[a, k]
+
+        multiplicity[j] = round(nj)
+        multiplicity[k] = round(nk)
+        factor_j = nj / multiplicity[j]
+        factor_k = nk / multiplicity[k]
+        for a in range(0, len(attributes)):
+            attributes[a, k] *= factor_k
+            attributes[a, j] *= factor_j
+
+
 class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
@@ -85,91 +154,56 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def __collision_body(multiplicity, idx, length, attributes, gamma, rand,
+    def __collision_coalescence_body(
+        multiplicity, idx, length, attributes, gamma, healthy, cell_id, coalescence_rate,
+        is_first_in_pair,
+    ):
+        for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable,too-many-nested-blocks
+            if gamma[i] == 0:
+                continue
+            j, k = pair_indices(i, idx, is_first_in_pair)
+            coalesce(i, j, k, cell_id[i], multiplicity, gamma, attributes, coalescence_rate)
+            flag_zero_multiplicity(j, k, multiplicity, healthy)
+
+    def collision_coalescence(
+        self, multiplicity, idx, attributes, gamma, healthy, cell_id, coalescence_rate,
+        is_first_in_pair
+    ):
+        self.__collision_coalescence_body(
+            multiplicity.data, idx.data, len(idx), attributes.data, gamma.data, healthy.data,
+            cell_id.data, coalescence_rate.data, is_first_in_pair.indicator.data
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def __collision_coalescence_breakup_body(multiplicity, idx, length, attributes, gamma, rand,
                          Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
                          breakup_rate, is_first_in_pair, success, max_multiplicity):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable,too-many-nested-blocks
             if gamma[i] == 0:
                 continue
-
             bouncing = rand[i] - Ec[i] - Eb[i] > 0
             if bouncing:
                 continue
-
-            dyn = rand[i] - Ec[i]
             j, k = pair_indices(i, idx, is_first_in_pair)
-            cid = cell_id[i]
 
-            coalescence_else_breakup = dyn < 0
-            if coalescence_else_breakup:
-                atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
-                new_n = multiplicity[j] - gamma[i] * multiplicity[k]
-                if new_n > 0:
-                    multiplicity[j] = new_n
-                    for a in range(0, len(attributes)):
-                        attributes[a, k] += gamma[i] * attributes[a, j]
-                else:  # new_n == 0
-                    multiplicity[j] = multiplicity[k] // 2
-                    multiplicity[k] = multiplicity[k] - multiplicity[j]
-                    for a in range(0, len(attributes)):
-                        attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
-                        attributes[a, k] = attributes[a, j]
+            if rand[i] - Ec[i] < 0:
+                coalesce(i, j, k, cell_id[i], multiplicity, gamma, attributes, coalescence_rate)
             else:
-                atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
-                if n_fragment[i]**gamma[i] > max_multiplicity:
-                    success[0] = False
-                gamma_tmp = 0
-                gamma_deficit = gamma[i]
-                while gamma_deficit > 0:
-                    if multiplicity[k] > multiplicity[j]:
-                        j, k = k, j
-                    tmp1 = 0
-                    for m in range(int(gamma_deficit)):
-                        tmp1 += n_fragment[i]**m
-                        new_n = multiplicity[j] - tmp1 * multiplicity[k]
-                        gamma_tmp = m+1
-                        if new_n < 0:
-                            gamma_tmp = m
-                            tmp1 -= n_fragment[i]**m
-                            break
-                    gamma_deficit -= gamma_tmp
-                    tmp2 = n_fragment[i]**gamma_tmp
-                    new_n = multiplicity[j] - tmp1*multiplicity[k]
-                    if new_n > 0:
-                        nj = new_n
-                        nk = multiplicity[k]*tmp2
-                        for a in range(0,len(attributes)):
-                            attributes[a,k] += tmp1 * attributes[a, j]
-                            attributes[a,k] /= tmp2
-                    else: # new_n = 0
-                        nj = tmp2 * multiplicity[k] / 2
-                        nk = nj
-                        for a in range(0, len(attributes)):
-                            attributes[a, k] += tmp1 * attributes[a, j]
-                            attributes[a, k] /= tmp2
-                            attributes[a, j] = attributes[a, k]
+                break_up(i, j, k, cell_id[i], multiplicity, gamma, attributes, n_fragment,
+                         max_multiplicity, breakup_rate, success)
+            flag_zero_multiplicity(j, k, multiplicity, healthy)
 
-                    factor_j = nj/round(nj)
-                    factor_k = nk/round(nk)
-                    multiplicity[j] = round(nj)
-                    multiplicity[k] = round(nk)
-                    for a in range(0,len(attributes)):
-                        attributes[a,k] *= factor_k
-                        attributes[a,j] *= factor_j
-
-            if multiplicity[k] == 0 or multiplicity[j] == 0:
-                healthy[0] = 0
-
-    def collision(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
+    def collision_coalescence_breakup(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
                   n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
                   is_first_in_pair):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max
         success = np.ones(1, dtype=bool)
-        self.__collision_body(multiplicity.data, idx.data, len(idx), attributes.data,
-                            gamma.data, rand.data, Ec.data, Eb.data,
-                            n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
-                            breakup_rate.data, is_first_in_pair.indicator.data, success,
-                            max_multiplicity)
+        self.__collision_coalescence_breakup_body(
+            multiplicity.data, idx.data, len(idx), attributes.data, gamma.data, rand.data,
+            Ec.data, Eb.data, n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
+            breakup_rate.data, is_first_in_pair.indicator.data, success, max_multiplicity
+        )
         assert success
 
     @staticmethod
