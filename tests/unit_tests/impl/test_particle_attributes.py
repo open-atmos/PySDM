@@ -52,11 +52,10 @@ class TestParticleAttributes:
         )
 
     @staticmethod
-    @pytest.mark.parametrize('multiplicity, cells, n_sd, idx, new_idx, cell_start', [
+    @pytest.mark.parametrize('multiplicity, cells, idx, new_idx, cell_start', [
         (
             [1, 1, 1],
             [2, 0, 1],
-            3,
             [2, 0, 1],
             [1, 2, 0],
             [0, 1, 2, 3]
@@ -64,7 +63,6 @@ class TestParticleAttributes:
         (
             [0, 1, 0, 1, 1],
             [3, 4, 0, 1, 2],
-            3,
             [4, 1, 3, 2, 0],
             [3, 4, 1],
             [0, 0, 1, 2, 2, 3]
@@ -72,19 +70,19 @@ class TestParticleAttributes:
         (
             [1, 2, 3, 4, 5, 6, 0],
             [2, 2, 2, 2, 1, 1, 1],
-            6,
             [0, 1, 2, 3, 4, 5, 6],
             [4, 5, 0, 1, 2, 3],
             [0, 0, 2, 6]
         )
     ])
-    # pylint: disable=redefined-outer-name
-    def test_sort_by_cell_id(backend_class, multiplicity, cells, n_sd, idx, new_idx, cell_start):
-        if backend_class is ThrustRTC:
-            return  # TODO #330
-
+    @pytest.mark.parametrize('backend_cls', (
+        CPU,
+        pytest.param(GPU, marks=pytest.mark.xfail(strict=True))
+    ))  # TODO #330
+    def test_sort_by_cell_id(backend_cls, multiplicity, cells, idx, new_idx, cell_start):
         # Arrange
-        particulator = DummyParticulator(backend_class, n_sd=n_sd)
+        n_sd = len(multiplicity)
+        particulator = DummyParticulator(backend_cls, n_sd=n_sd)
         n_cell = max(cells) + 1
         particulator.environment.mesh.n_cell = n_cell
         particulator.build(attributes={'n': np.ones(n_sd)})
@@ -99,7 +97,7 @@ class TestParticleAttributes:
             particulator.backend, [0] * (n_cell + 1))
         sut._ParticleAttributes__n_sd = particulator.n_sd
         sut.healthy = 0 not in multiplicity
-        sut._ParticleAttributes__cell_caretaker = backend_class.make_cell_caretaker(
+        sut._ParticleAttributes__cell_caretaker = particulator.backend.make_cell_caretaker(
             sut._ParticleAttributes__idx,
             sut._ParticleAttributes__cell_start
         )

@@ -5,7 +5,7 @@ from PySDM.backends import ThrustRTC
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
 from PySDM.impl.mesh import Mesh
-from PySDM.dynamics.collisions.coalescence import DEFAULTS
+from PySDM.dynamics.collisions.collision import DEFAULTS
 from ....backends_fixture import backend_class
 from .__parametrisation__ import get_dummy_particulator_and_coalescence
 
