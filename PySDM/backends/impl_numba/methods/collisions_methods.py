@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for particle collisions
 """
+from attr import attrib
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -122,18 +123,29 @@ class CollisionsMethods(BackendMethods):
                 new_n = multiplicity[j] - tmp1*multiplicity[k]
 
                 if new_n > 0:
-                    multiplicity[j] = new_n
-                    multiplicity[k] = multiplicity[k]*tmp2
+                    nj = new_n
+                    nk = multiplicity[k]*tmp2
+                    factor_j = nj/round(nj)
+                    factor_k = nk/round(nk)
+                    multiplicity[j] = round(nj)
+                    multiplicity[k] = round(nk)
+                    for a in range(0,len(attributes)):
+                        attributes[a,k] += tmp1 * attributes[a, j]
+                        attributes[a,k] /= tmp2
+                        attributes[a,k] *= factor_k
+                        attributes[a,j] *= factor_j
+
+                elif round(new_n) == 0:
+                    nj = tmp2 * multiplicity[k] / 2
+                    factor_j = nj/round(nj)
+                    multiplicity[j] = round(nj)
+                    multiplicity[k] = round(nj)
                     for a in range(0, len(attributes)):
                         attributes[a, k] += tmp1 * attributes[a, j]
                         attributes[a, k] /= tmp2
-                elif new_n == 0:
-                    multiplicity[j] = (tmp2 * multiplicity[k]) // 2
-                    multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
-                    for a in range(0, len(attributes)):
-                        attributes[a, k] += tmp1 * attributes[a, j]
-                        attributes[a, k] /= tmp2
+                        attributes[a, k] *= factor_j
                         attributes[a, j] = attributes[a, k]
+                
                 else:  # new_n < 0
                     # find nearest feasible gamma, repeat until we hit true gamma
                     gamma_tmp = 0
@@ -141,7 +153,6 @@ class CollisionsMethods(BackendMethods):
                     while gamma_deficit > 0:
                         if multiplicity[k] > multiplicity[j]:
                             j, k = k, j
-
                         tmp1 = 0
                         for m in range(int(gamma_deficit)):
                             tmp1 += n_fragment[i]**m
@@ -155,29 +166,40 @@ class CollisionsMethods(BackendMethods):
                         tmp2 = n_fragment[i]**gamma_tmp
                         new_n = multiplicity[j] - tmp1*multiplicity[k]
                         if new_n > 0:
-                            multiplicity[j] = new_n
-                            multiplicity[k] = multiplicity[k]*tmp2
-                            for a in range(0, len(attributes)):
-                                attributes[a, k] += tmp1 * attributes[a, j]
-                                attributes[a, k] /= tmp2
+                            nj = new_n
+                            nk = multiplicity[k]*tmp2
+                            for a in range(0,len(attributes)):
+                                attributes[a,k] += tmp1 * attributes[a, j]
+                                attributes[a,k] /= tmp2
                         else: # new_n = 0
-                            multiplicity[j] = (tmp2 * multiplicity[k]) // 2
-                            multiplicity[k] = tmp2 * multiplicity[k] - multiplicity[j]
+                            nj = tmp2 * multiplicity[k] / 2
+                            nk = nj
                             for a in range(0, len(attributes)):
                                 attributes[a, k] += tmp1 * attributes[a, j]
                                 attributes[a, k] /= tmp2
                                 attributes[a, j] = attributes[a, k]
+                        print(nj, attributes[0,j])
+                        print(nk, attributes[0,k])
+                        factor_j = nj/round(nj)
+                        factor_k = nk/round(nk)
+                        multiplicity[j] = round(nj)
+                        multiplicity[k] = round(nk)
+                        for a in range(0,len(attributes)):
+                            attributes[a,k] *= factor_k
+                            attributes[a,j] *= factor_j
+                        print(multiplicity[j], attributes[0,j])
+                        print(multiplicity[k], attributes[0,k])
 
                 # perform rounding to take us back to integer multiplicities
                 # TODO #744 logic needs correction - multiplicity[] is an int array,
                 #           earlier assignments already cause int casting
-                factor_j = multiplicity[j]/int(multiplicity[j])
-                factor_k = multiplicity[k]/int(multiplicity[k])
-                multiplicity[j] = int(multiplicity[j])
-                multiplicity[k] = int(multiplicity[k])
-                for a in range(0,len(attributes)):
-                    attributes[a,k] *= factor_k
-                    attributes[a,j] *= factor_j
+                # factor_j = multiplicity[j]/int(multiplicity[j])
+                # factor_k = multiplicity[k]/int(multiplicity[k])
+                # multiplicity[j] = int(multiplicity[j])
+                # multiplicity[k] = int(multiplicity[k])
+                # for a in range(0,len(attributes)):
+                #     attributes[a,k] *= factor_k
+                #     attributes[a,j] *= factor_j
 
             if multiplicity[k] == 0 or multiplicity[j] == 0:
                 healthy[0] = 0
