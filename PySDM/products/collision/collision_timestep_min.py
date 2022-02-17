@@ -4,7 +4,7 @@ Minimal collision timestep used when adaptive timestepping is enabled in the
 """
 from PySDM.products.impl.product import Product
 
-# TODO #761
+
 class CollisionTimestepMin(Product):
     def __init__(self, unit='s', name=None):
         super().__init__(unit=unit, name=name)

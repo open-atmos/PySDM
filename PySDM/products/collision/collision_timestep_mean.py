@@ -7,13 +7,13 @@ import numba
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
 
-# TODO #761
+
 class CollisionTimestepMean(Product):
 
     def __init__(self, unit='s', name=None):
         super().__init__(unit=unit, name=name)
         self.count = 0
-        self.coalescence = None
+        self.collision = None
         self.range = None
 
     def register(self, builder):
