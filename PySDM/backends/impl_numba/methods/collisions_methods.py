@@ -119,80 +119,44 @@ class CollisionsMethods(BackendMethods):
                 atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
                 if n_fragment[i]**gamma[i] > max_multiplicity:
                     success[0] = False
-                tmp1 = 0
-                for m in range(int(gamma[i])):
-                    tmp1 += n_fragment[i]**m
-                tmp2 = n_fragment[i]**gamma[i]
-
-                new_n = multiplicity[j] - tmp1*multiplicity[k]
-
-                if new_n > 0:
-                    nj = new_n
-                    nk = multiplicity[k]*tmp2
+                gamma_tmp = 0
+                gamma_deficit = gamma[i]
+                while gamma_deficit > 0:
+                    if multiplicity[k] > multiplicity[j]:
+                        j, k = k, j
+                    tmp1 = 0
+                    for m in range(int(gamma_deficit)):
+                        tmp1 += n_fragment[i]**m
+                        new_n = multiplicity[j] - tmp1 * multiplicity[k]
+                        gamma_tmp = m+1
+                        if new_n < 0:
+                            gamma_tmp = m
+                            tmp1 -= n_fragment[i]**m
+                            break
+                    gamma_deficit -= gamma_tmp
+                    tmp2 = n_fragment[i]**gamma_tmp
+                    new_n = multiplicity[j] - tmp1*multiplicity[k]
+                    if new_n > 0:
+                        nj = new_n
+                        nk = multiplicity[k]*tmp2
+                        for a in range(0,len(attributes)):
+                            attributes[a,k] += tmp1 * attributes[a, j]
+                            attributes[a,k] /= tmp2
+                    else: # new_n = 0
+                        nj = tmp2 * multiplicity[k] / 2
+                        nk = nj
+                        for a in range(0, len(attributes)):
+                            attributes[a, k] += tmp1 * attributes[a, j]
+                            attributes[a, k] /= tmp2
+                            attributes[a, j] = attributes[a, k]
+                    
                     factor_j = nj/round(nj)
                     factor_k = nk/round(nk)
                     multiplicity[j] = round(nj)
                     multiplicity[k] = round(nk)
                     for a in range(0,len(attributes)):
-                        attributes[a,k] += tmp1 * attributes[a, j]
-                        attributes[a,k] /= tmp2
                         attributes[a,k] *= factor_k
                         attributes[a,j] *= factor_j
-
-                elif round(new_n) == 0:
-                    nj = tmp2 * multiplicity[k] / 2
-                    factor_j = nj/round(nj)
-                    multiplicity[j] = round(nj)
-                    multiplicity[k] = round(nj)
-                    for a in range(0, len(attributes)):
-                        attributes[a, k] += tmp1 * attributes[a, j]
-                        attributes[a, k] /= tmp2
-                        attributes[a, k] *= factor_j
-                        attributes[a, j] = attributes[a, k]
-                
-                else:  # new_n < 0
-                    # find nearest feasible gamma, repeat until we hit true gamma
-                    gamma_tmp = 0
-                    gamma_deficit = gamma[i]
-                    while gamma_deficit > 0:
-                        if multiplicity[k] > multiplicity[j]:
-                            j, k = k, j
-                        tmp1 = 0
-                        for m in range(int(gamma_deficit)):
-                            tmp1 += n_fragment[i]**m
-                            new_n = multiplicity[j] - tmp1 * multiplicity[k]
-                            gamma_tmp = m+1
-                            if new_n < 0:
-                                gamma_tmp = m
-                                tmp1 -= n_fragment[i]**m
-                                break
-                        gamma_deficit -= gamma_tmp
-                        tmp2 = n_fragment[i]**gamma_tmp
-                        new_n = multiplicity[j] - tmp1*multiplicity[k]
-                        if new_n > 0:
-                            nj = new_n
-                            nk = multiplicity[k]*tmp2
-                            for a in range(0,len(attributes)):
-                                attributes[a,k] += tmp1 * attributes[a, j]
-                                attributes[a,k] /= tmp2
-                        else: # new_n = 0
-                            nj = tmp2 * multiplicity[k] / 2
-                            nk = nj
-                            for a in range(0, len(attributes)):
-                                attributes[a, k] += tmp1 * attributes[a, j]
-                                attributes[a, k] /= tmp2
-                                attributes[a, j] = attributes[a, k]
-                        print(nj, attributes[0,j])
-                        print(nk, attributes[0,k])
-                        factor_j = nj/round(nj)
-                        factor_k = nk/round(nk)
-                        multiplicity[j] = round(nj)
-                        multiplicity[k] = round(nk)
-                        for a in range(0,len(attributes)):
-                            attributes[a,k] *= factor_k
-                            attributes[a,j] *= factor_j
-                        print(multiplicity[j], attributes[0,j])
-                        print(multiplicity[k], attributes[0,k])
 
                 # perform rounding to take us back to integer multiplicities
                 # TODO #744 logic needs correction - multiplicity[] is an int array,
