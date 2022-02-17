@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.coalescence.collision_rates API documentation</title>
-<meta name="description" content="Rates of collision events and their deficit wrt expected values in case mutiplicity
-values preclude representation of resultant multiplicity in …" />
+<title>PySDM.dynamics.collisions.breakup_fragmentations API documentation</title>
+<meta name="description" content="TODO #744" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,86 +19,49 @@ values preclude representation of resultant multiplicity in …" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.coalescence.collision_rates</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.breakup_fragmentations</code></h1>
 </header>
 <section id="section-intro">
-<p>Rates of collision events and their deficit wrt expected values in case mutiplicity
-values preclude representation of resultant multiplicity in multiple collisions</p>
+<p>TODO #744</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Rates of collision events and their deficit wrt expected values in case mutiplicity
- values preclude representation of resultant multiplicity in multiple collisions
+TODO #744
 &#34;&#34;&#34;
-from PySDM.products.impl.rate_product import RateProduct
-
-
-class CollisionRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#39;s^-1&#39;):
-        super().__init__(name=name, unit=unit,
-                         counter=&#39;collision_rate_deficit&#39;, dynamic=&#39;Coalescence&#39;)
-
-
-class CollisionRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#39;s^-1&#39;):
-        super().__init__(name=name, unit=unit,
-                         counter=&#39;collision_rate&#39;, dynamic=&#39;Coalescence&#39;)</code></pre>
+from .always_n import AlwaysN
+from .slams import SLAMS
+from .exponential import ExponFrag
+from .gaussian import Gaussian</code></pre>
 </details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox"><code class="flex name class">
-<span>class <span class="ident">CollisionRateDeficitPerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
-</code></dt>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.always_n" href="always_n.html">PySDM.dynamics.collisions.breakup_fragmentations.always_n</a></code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class CollisionRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#39;s^-1&#39;):
-        super().__init__(name=name, unit=unit,
-                         counter=&#39;collision_rate_deficit&#39;, dynamic=&#39;Coalescence&#39;)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.rate_product.RateProduct" href="../impl/rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
+<div class="desc"><p>Always produces N fragments in a given collisional breakup</p></div>
 </dd>
-<dt id="PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox"><code class="flex name class">
-<span>class <span class="ident">CollisionRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
-</code></dt>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.exponential" href="exponential.html">PySDM.dynamics.collisions.breakup_fragmentations.exponential</a></code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class CollisionRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#39;s^-1&#39;):
-        super().__init__(name=name, unit=unit,
-                         counter=&#39;collision_rate&#39;, dynamic=&#39;Coalescence&#39;)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.rate_product.RateProduct" href="../impl/rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
+<div class="desc"><p>P(x) = exp(-x / lambda)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian" href="gaussian.html">PySDM.dynamics.collisions.breakup_fragmentations.gaussian</a></code></dt>
+<dd>
+<div class="desc"><p>P(x) = exp(-(x-mu)^2 / 2 sigma^2)</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.breakup_fragmentations.slams" href="slams.html">PySDM.dynamics.collisions.breakup_fragmentations.slams</a></code></dt>
+<dd>
+<div class="desc"><p>Based on 10.5194/gmd-9-1455-2016 for ocean particles</p></div>
 </dd>
 </dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -110,17 +72,15 @@ class CollisionRatePerGridbox(RateProduct):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.coalescence" href="index.html">PySDM.products.coalescence</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions" href="../index.html">PySDM.dynamics.collisions</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox" href="#PySDM.products.coalescence.collision_rates.CollisionRateDeficitPerGridbox">CollisionRateDeficitPerGridbox</a></code></h4>
-</li>
-<li>
-<h4><code><a title="PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox" href="#PySDM.products.coalescence.collision_rates.CollisionRatePerGridbox">CollisionRatePerGridbox</a></code></h4>
-</li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.always_n" href="always_n.html">PySDM.dynamics.collisions.breakup_fragmentations.always_n</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.exponential" href="exponential.html">PySDM.dynamics.collisions.breakup_fragmentations.exponential</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.gaussian" href="gaussian.html">PySDM.dynamics.collisions.breakup_fragmentations.gaussian</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.breakup_fragmentations.slams" href="slams.html">PySDM.dynamics.collisions.breakup_fragmentations.slams</a></code></li>
 </ul>
 </li>
 </ul>

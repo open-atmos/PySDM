@@ -121,6 +121,19 @@ class PairMethods(BackendMethods):
     @staticmethod
     def sum_pair(data_out, data_in, is_first_in_pair, idx):
         return PairMethods.sum_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
+        data_out[:] = 0
+        for i in numba.prange(length - 1): # pylint: disable=not-an-iterable
+            if is_first_in_pair[i]:
+                data_out[i//2] = (data_in[idx[i]] * data_in[idx[i + 1]])
+
+    @staticmethod
+    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+        return PairMethods.multiply_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))</code></pre>
 </details>
 </section>
@@ -227,6 +240,19 @@ class PairMethods(BackendMethods):
     @staticmethod
     def sum_pair(data_out, data_in, is_first_in_pair, idx):
         return PairMethods.sum_pair_body(
+            data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
+    def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
+        data_out[:] = 0
+        for i in numba.prange(length - 1): # pylint: disable=not-an-iterable
+            if is_first_in_pair[i]:
+                data_out[i//2] = (data_in[idx[i]] * data_in[idx[i + 1]])
+
+    @staticmethod
+    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+        return PairMethods.multiply_pair_body(
             data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -340,6 +366,39 @@ def max_pair_body(data_out, data_in, is_first_in_pair, idx, length):
     for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
         if is_first_in_pair[i]:
             data_out[i//2] = max(data_in[idx[i]], data_in[idx[i + 1]])</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair"><code class="name flex">
+<span>def <span class="ident">multiply_pair</span></span>(<span>data_out, data_in, is_first_in_pair, idx)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+    return PairMethods.multiply_pair_body(
+        data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx))</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body"><code class="name flex">
+<span>def <span class="ident">multiply_pair_body</span></span>(<span>data_out, data_in, is_first_in_pair, idx, length)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+@numba.njit(**conf.JIT_FLAGS)
+def multiply_pair_body(data_out, data_in, is_first_in_pair, idx, length):
+    data_out[:] = 0
+    for i in numba.prange(length - 1): # pylint: disable=not-an-iterable
+        if is_first_in_pair[i]:
+            data_out[i//2] = (data_in[idx[i]] * data_in[idx[i + 1]])</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair"><code class="name flex">
@@ -471,6 +530,8 @@ def sum_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body">find_pairs_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair">max_pair</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.max_pair_body">max_pair_body</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair">multiply_pair</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.multiply_pair_body">multiply_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair">sort_pair</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair_body" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_pair_body">sort_pair_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr" href="#PySDM.backends.impl_numba.methods.pair_methods.PairMethods.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>

@@ -40,6 +40,7 @@ import os
 import time
 
 import pint
+import numpy as np
 from scipy import constants as sci
 from .impl.fake_unit_registry import FakeUnitRegistry
 from .impl.flag import DIMENSIONAL_ANALYSIS
@@ -52,7 +53,8 @@ if not DIMENSIONAL_ANALYSIS:
 def convert_to(value, unit):
     value /= unit
 
-
+sqrt_two = np.sqrt(2)
+sqrt_pi = np.sqrt(sci.pi)
 PI = sci.pi
 PI_4_3 = PI * 4 / 3
 THREE = 3

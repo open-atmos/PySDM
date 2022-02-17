@@ -251,15 +251,18 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
+    def collision_coalescence(
+        self, multiplicity, idx, attributes, gamma, healthy,
+        cell_id, coalescence_rate, is_first_in_pair
+    ):
         if len(idx) &lt; 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         self.__coalescence_body.launch_n(len(idx) // 2,
-                                                      (multiplicity.data, idx.data, n_sd,
-                                                        attributes.data,
-                                                        n_attr, gamma.data, healthy.data))
+                                         (multiplicity.data, idx.data, n_sd,
+                                         attributes.data,
+                                         n_attr, gamma.data, healthy.data))
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -302,6 +305,12 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(self, cell_id, cell_idx, cell_start, idx):
         # TODO #330
+        #   was here before (but did not work):
+        #      trtc.Sort_By_Key(cell_id.data, idx.data)
+        #   was here before (but cause huge slowdown of otherwise correct code)
+        #      max_cell_id = max(cell_id.to_ndarray())
+        #      assert max_cell_id == 0
+        #   no handling of cell_idx in ___sort_by_cell_id_and_update_cell_start_body yet
         n_sd = cell_id.shape[0]
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
         if len(idx) &gt; 1:
@@ -545,15 +554,18 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def coalescence(self, multiplicity, idx, attributes, gamma, healthy, is_first_in_pair):
+    def collision_coalescence(
+        self, multiplicity, idx, attributes, gamma, healthy,
+        cell_id, coalescence_rate, is_first_in_pair
+    ):
         if len(idx) &lt; 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         self.__coalescence_body.launch_n(len(idx) // 2,
-                                                      (multiplicity.data, idx.data, n_sd,
-                                                        attributes.data,
-                                                        n_attr, gamma.data, healthy.data))
+                                         (multiplicity.data, idx.data, n_sd,
+                                         attributes.data,
+                                         n_attr, gamma.data, healthy.data))
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -596,6 +608,12 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def _sort_by_cell_id_and_update_cell_start(self, cell_id, cell_idx, cell_start, idx):
         # TODO #330
+        #   was here before (but did not work):
+        #      trtc.Sort_By_Key(cell_id.data, idx.data)
+        #   was here before (but cause huge slowdown of otherwise correct code)
+        #      max_cell_id = max(cell_id.to_ndarray())
+        #      assert max_cell_id == 0
+        #   no handling of cell_idx in ___sort_by_cell_id_and_update_cell_start_body yet
         n_sd = cell_id.shape[0]
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
         if len(idx) &gt; 1:
@@ -670,8 +688,8 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.coalescence"><code class="name flex">
-<span>def <span class="ident">coalescence</span></span>(<span>*args, **kwargs)</span>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.collision_coalescence"><code class="name flex">
+<span>def <span class="ident">collision_coalescence</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -779,7 +797,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma">adaptive_sdm_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id">cell_id</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.coalescence" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.coalescence">coalescence</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.collision_coalescence" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.collision_coalescence">collision_coalescence</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma">compute_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize">normalize</a></code></li>

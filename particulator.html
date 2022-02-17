@@ -149,24 +149,36 @@ class Particulator:
             cell_id=self.attributes[&#39;cell id&#39;]
         )
 
-    def coalescence(self, gamma, is_first_in_pair):
-        self.backend.coalescence(
-            multiplicity=self.attributes[&#39;n&#39;],
-            idx=self.attributes._ParticleAttributes__idx,
-            attributes=self.attributes.get_extensive_attribute_storage(),
-            gamma=gamma,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            is_first_in_pair=is_first_in_pair
-        )
+    def collision_coalescence_breakup(
+        self, enable_breakup,
+        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+    ):
+        idx = self.attributes._ParticleAttributes__idx
+        healthy = self.attributes._ParticleAttributes__healthy_memory
+        cell_id = self.attributes[&#34;cell id&#34;]
+        multiplicity = self.attributes[&#39;n&#39;]
+        attributes = self.attributes.get_extensive_attribute_storage()
+        if enable_breakup:
+            self.backend.collision_coalescence_breakup(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
+                Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
+                coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+                is_first_in_pair=is_first_in_pair
+            )
+        else:
+            self.backend.collision_coalescence(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma,
+                healthy=healthy, cell_id=cell_id, coalescence_rate=coalescence_rate,
+                is_first_in_pair=is_first_in_pair
+            )
         self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)
         self.attributes.sanitize()
         self.attributes.mark_updated(&#39;n&#39;)
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def oxidation(self,
-        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
-    ):
+    def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors,
+                  do_chemistry_flag):
         self.backend.oxidation(
             n_sd=self.n_sd,
             cell_ids=self.attributes[&#39;cell id&#39;],
@@ -445,24 +457,36 @@ class Particulator:
             cell_id=self.attributes[&#39;cell id&#39;]
         )
 
-    def coalescence(self, gamma, is_first_in_pair):
-        self.backend.coalescence(
-            multiplicity=self.attributes[&#39;n&#39;],
-            idx=self.attributes._ParticleAttributes__idx,
-            attributes=self.attributes.get_extensive_attribute_storage(),
-            gamma=gamma,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            is_first_in_pair=is_first_in_pair
-        )
+    def collision_coalescence_breakup(
+        self, enable_breakup,
+        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+    ):
+        idx = self.attributes._ParticleAttributes__idx
+        healthy = self.attributes._ParticleAttributes__healthy_memory
+        cell_id = self.attributes[&#34;cell id&#34;]
+        multiplicity = self.attributes[&#39;n&#39;]
+        attributes = self.attributes.get_extensive_attribute_storage()
+        if enable_breakup:
+            self.backend.collision_coalescence_breakup(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
+                Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
+                coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+                is_first_in_pair=is_first_in_pair
+            )
+        else:
+            self.backend.collision_coalescence(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma,
+                healthy=healthy, cell_id=cell_id, coalescence_rate=coalescence_rate,
+                is_first_in_pair=is_first_in_pair
+            )
         self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)
         self.attributes.sanitize()
         self.attributes.mark_updated(&#39;n&#39;)
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def oxidation(self,
-        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
-    ):
+    def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors,
+                  do_chemistry_flag):
         self.backend.oxidation(
             n_sd=self.n_sd,
             cell_ids=self.attributes[&#39;cell id&#39;],
@@ -729,8 +753,8 @@ def n_sd(self) -&gt; int:
     )</code></pre>
 </details>
 </dd>
-<dt id="PySDM.particulator.Particulator.coalescence"><code class="name flex">
-<span>def <span class="ident">coalescence</span></span>(<span>self, gamma, is_first_in_pair)</span>
+<dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -738,15 +762,28 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def coalescence(self, gamma, is_first_in_pair):
-    self.backend.coalescence(
-        multiplicity=self.attributes[&#39;n&#39;],
-        idx=self.attributes._ParticleAttributes__idx,
-        attributes=self.attributes.get_extensive_attribute_storage(),
-        gamma=gamma,
-        healthy=self.attributes._ParticleAttributes__healthy_memory,
-        is_first_in_pair=is_first_in_pair
-    )
+<pre><code class="python">def collision_coalescence_breakup(
+    self, enable_breakup,
+    gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+):
+    idx = self.attributes._ParticleAttributes__idx
+    healthy = self.attributes._ParticleAttributes__healthy_memory
+    cell_id = self.attributes[&#34;cell id&#34;]
+    multiplicity = self.attributes[&#39;n&#39;]
+    attributes = self.attributes.get_extensive_attribute_storage()
+    if enable_breakup:
+        self.backend.collision_coalescence_breakup(
+            multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
+            Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
+            coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+            is_first_in_pair=is_first_in_pair
+        )
+    else:
+        self.backend.collision_coalescence(
+            multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma,
+            healthy=healthy, cell_id=cell_id, coalescence_rate=coalescence_rate,
+            is_first_in_pair=is_first_in_pair
+        )
     self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)
     self.attributes.sanitize()
     self.attributes.mark_updated(&#39;n&#39;)
@@ -896,9 +933,8 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def oxidation(self,
-    kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
-):
+<pre><code class="python">def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors,
+              do_chemistry_flag):
     self.backend.oxidation(
         n_sd=self.n_sd,
         cell_ids=self.attributes[&#39;cell id&#39;],
@@ -1076,7 +1112,7 @@ def n_sd(self) -&gt; int:
 <li><code><a title="PySDM.particulator.Particulator.adaptive_sdm_end" href="#PySDM.particulator.Particulator.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.chem_recalculate_cell_data" href="#PySDM.particulator.Particulator.chem_recalculate_cell_data">chem_recalculate_cell_data</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.chem_recalculate_drop_data" href="#PySDM.particulator.Particulator.chem_recalculate_drop_data">chem_recalculate_drop_data</a></code></li>
-<li><code><a title="PySDM.particulator.Particulator.coalescence" href="#PySDM.particulator.Particulator.coalescence">coalescence</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.collision_coalescence_breakup" href="#PySDM.particulator.Particulator.collision_coalescence_breakup">collision_coalescence_breakup</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.condensation" href="#PySDM.particulator.Particulator.condensation">condensation</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dissolution" href="#PySDM.particulator.Particulator.dissolution">dissolution</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dt" href="#PySDM.particulator.Particulator.dt">dt</a></code></li>

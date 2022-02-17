@@ -6,7 +6,7 @@
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.dynamics API documentation</title>
 <meta name="description" content="Classes representing physicochemical processes:
-`PySDM.dynamics.collisions.coalescence.Coalescence`,
+`PySDM.dynamics.collisions.collision.Collision`,
 `PySDM.dynamics.condensation.Condensation`, ..." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -25,7 +25,7 @@
 </header>
 <section id="section-intro">
 <p>Classes representing physicochemical processes:
-<code><a title="PySDM.dynamics.collisions.coalescence.Coalescence" href="collisions/coalescence.html#PySDM.dynamics.collisions.coalescence.Coalescence">Coalescence</a></code>,
+<code><a title="PySDM.dynamics.collisions.collision.Collision" href="collisions/collision.html#PySDM.dynamics.collisions.collision.Collision">Collision</a></code>,
 <code><a title="PySDM.dynamics.condensation.Condensation" href="condensation.html#PySDM.dynamics.condensation.Condensation">Condensation</a></code>, &hellip;</p>
 <details class="source">
 <summary>
@@ -33,10 +33,10 @@
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 Classes representing physicochemical processes:
-`PySDM.dynamics.collisions.coalescence.Coalescence`,
+`PySDM.dynamics.collisions.collision.Collision`,
 `PySDM.dynamics.condensation.Condensation`, ...
 &#34;&#34;&#34;
-from PySDM.dynamics.collisions.coalescence import Coalescence
+from PySDM.dynamics.collisions import Coalescence, Breakup, Collision
 from PySDM.dynamics.condensation import Condensation
 from PySDM.dynamics.displacement import Displacement
 from PySDM.dynamics.eulerian_advection import EulerianAdvection
@@ -58,8 +58,9 @@ from PySDM.dynamics.freezing import Freezing</code></pre>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.collisions" href="collisions/index.html">PySDM.dynamics.collisions</a></code></dt>
 <dd>
-<div class="desc"><p>collisions-related logic including the <code><a title="PySDM.dynamics.collisions.coalescence.Coalescence" href="collisions/coalescence.html#PySDM.dynamics.collisions.coalescence.Coalescence">Coalescence</a></code>
-dynamic and coalescence <code>`<a title="PySDM.dynamics.collisions.kernels" href="collisions/kernels/index.html">PySDM.dynamics.collisions.kernels</a></code></p></div>
+<div class="desc"><p>collisions-related logic including the <code><a title="PySDM.dynamics.collisions.collision.Collision" href="collisions/collision.html#PySDM.dynamics.collisions.collision.Collision">Collision</a></code>
+dynamic and coalescence.
+Includes collision kernels, …</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.dynamics.condensation" href="condensation.html">PySDM.dynamics.condensation</a></code></dt>
 <dd>

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.kernels.impl.parameterized API documentation</title>
-<meta name="description" content="common parent class for kernels specified using Berry&#39;s parameterization" />
+<title>PySDM.dynamics.collisions.coalescence_efficiencies API documentation</title>
+<meta name="description" content="Coalescence efficiencies for the overall collision dynamic" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,94 +19,52 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.kernels.impl.parameterized</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.coalescence_efficiencies</code></h1>
 </header>
 <section id="section-intro">
-<p>common parent class for kernels specified using Berry's parameterization</p>
+<p>Coalescence efficiencies for the overall collision dynamic</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34; common parent class for kernels specified using Berry&#39;s parameterization &#34;&#34;&#34;
-
-
-from PySDM.physics import constants as const
-from .gravitational import Gravitational
-
-
-class Parameterized(Gravitational):
-
-    def __init__(self, params):
-        super().__init__()
-        self.params = params
-
-    def __call__(self, output, is_first_in_pair):
-        self.particulator.backend.linear_collection_efficiency(
-            self.params, output, self.particulator.attributes[&#39;radius&#39;],
-            is_first_in_pair, const.si.um)
-        output **= 2
-        output *= const.PI
-        self.pair_tmp.max(
-            self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
-        self.pair_tmp **= 2
-        output *= self.pair_tmp
-
-        self.pair_tmp.distance(
-            self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
-        output *= self.pair_tmp</code></pre>
+<pre><code class="python">&#34;&#34;&#34;
+Coalescence efficiencies for the overall collision dynamic
+&#34;&#34;&#34;
+from .constEc import ConstEc
+from .berry1967 import Berry1967
+from .schlottke2010 import Schlottke2010
+from .specified_eff import SpecifiedEff</code></pre>
 </details>
 </section>
 <section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
 <dl>
-<dt id="PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized"><code class="flex name class">
-<span>class <span class="ident">Parameterized</span></span>
-<span>(</span><span>params)</span>
-</code></dt>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.coalescence_efficiencies.berry1967" href="berry1967.html">PySDM.dynamics.collisions.coalescence_efficiencies.berry1967</a></code></dt>
 <dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Parameterized(Gravitational):
-
-    def __init__(self, params):
-        super().__init__()
-        self.params = params
-
-    def __call__(self, output, is_first_in_pair):
-        self.particulator.backend.linear_collection_efficiency(
-            self.params, output, self.particulator.attributes[&#39;radius&#39;],
-            is_first_in_pair, const.si.um)
-        output **= 2
-        output *= const.PI
-        self.pair_tmp.max(
-            self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
-        self.pair_tmp **= 2
-        output *= self.pair_tmp
-
-        self.pair_tmp.distance(
-            self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
-        output *= self.pair_tmp</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational" href="gravitational.html#PySDM.dynamics.collisions.kernels.impl.gravitational.Gravitational">Gravitational</a></li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="PySDM.dynamics.collisions.kernels.electric.Electric" href="../electric.html#PySDM.dynamics.collisions.kernels.electric.Electric">Electric</a></li>
-<li><a title="PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic" href="../hydrodynamic.html#PySDM.dynamics.collisions.kernels.hydrodynamic.Hydrodynamic">Hydrodynamic</a></li>
-</ul>
+<div class="desc"><p>E.X. Berry 1967
+Cloud Droplet Growth by Collection</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.coalescence_efficiencies.constEc" href="constEc.html">PySDM.dynamics.collisions.coalescence_efficiencies.constEc</a></code></dt>
+<dd>
+<div class="desc"><p>constant value</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.coalescence_efficiencies.schlottke2010" href="schlottke2010.html">PySDM.dynamics.collisions.coalescence_efficiencies.schlottke2010</a></code></dt>
+<dd>
+<div class="desc"><p>TODO #744</p></div>
+</dd>
+<dt><code class="name"><a title="PySDM.dynamics.collisions.coalescence_efficiencies.specified_eff" href="specified_eff.html">PySDM.dynamics.collisions.coalescence_efficiencies.specified_eff</a></code></dt>
+<dd>
+<div class="desc"><p>Taking the form of Berry 1967
+Cloud Droplet Growth by Collection
+but with user-specified collection efficiency constants</p></div>
 </dd>
 </dl>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
 </section>
 </article>
 <nav id="sidebar">
@@ -117,14 +75,15 @@ class Parameterized(Gravitational):
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.kernels.impl" href="index.html">PySDM.dynamics.collisions.kernels.impl</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions" href="../index.html">PySDM.dynamics.collisions</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-classes">Classes</a></h3>
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
 <ul>
-<li>
-<h4><code><a title="PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized" href="#PySDM.dynamics.collisions.kernels.impl.parameterized.Parameterized">Parameterized</a></code></h4>
-</li>
+<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.berry1967" href="berry1967.html">PySDM.dynamics.collisions.coalescence_efficiencies.berry1967</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.constEc" href="constEc.html">PySDM.dynamics.collisions.coalescence_efficiencies.constEc</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.schlottke2010" href="schlottke2010.html">PySDM.dynamics.collisions.coalescence_efficiencies.schlottke2010</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.coalescence_efficiencies.specified_eff" href="specified_eff.html">PySDM.dynamics.collisions.coalescence_efficiencies.specified_eff</a></code></li>
 </ul>
 </li>
 </ul>
