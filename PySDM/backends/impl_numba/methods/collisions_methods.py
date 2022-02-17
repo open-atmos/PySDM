@@ -13,6 +13,10 @@ from PySDM.backends.impl_numba.atomic_operations import atomic_add
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def pair_indices(i, idx, is_first_in_pair):
+    """ given permutation array `idx` and `is_first_in_pair` flag array,
+        returns indices `j` and `k` of droplets within pair `i`
+        such that `j` points to the droplet with higher (or equal) multiplicity
+    """
     offset = 1 - is_first_in_pair[2 * i]
     j = idx[2 * i + offset]
     k = idx[2 * i + 1 + offset]
