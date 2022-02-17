@@ -4,7 +4,7 @@ import pytest
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.impl.particle_attributes_factory import ParticlesFactory
+from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from ...backends_fixture import backend_class
 from ..dummy_particulator import DummyParticulator
 from ..dummy_environment import DummyEnvironment
@@ -153,7 +153,7 @@ class TestParticleAttributes:
 
         # Arrange
         particulator = DummyParticulator(CPU, n_sd=n_sd)
-        sut = ParticlesFactory.empty_particles(particulator, n_sd)
+        sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
             particulator.backend, [0] * idx_length)
@@ -180,7 +180,7 @@ class TestParticleAttributes:
 
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=n_sd)
-        sut = ParticlesFactory.empty_particles(particulator, n_sd)
+        sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
             particulator.backend, [0] * idx_length)
@@ -209,7 +209,7 @@ class TestParticleAttributes:
 
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=n_sd)
-        sut = ParticlesFactory.empty_particles(particulator, n_sd)
+        sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
             particulator.backend, [0] * idx_length)
