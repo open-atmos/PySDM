@@ -1,7 +1,6 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from attr import attrib
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -149,7 +148,7 @@ class CollisionsMethods(BackendMethods):
                             attributes[a, k] += tmp1 * attributes[a, j]
                             attributes[a, k] /= tmp2
                             attributes[a, j] = attributes[a, k]
-                    
+
                     factor_j = nj/round(nj)
                     factor_k = nk/round(nk)
                     multiplicity[j] = round(nj)
@@ -157,17 +156,6 @@ class CollisionsMethods(BackendMethods):
                     for a in range(0,len(attributes)):
                         attributes[a,k] *= factor_k
                         attributes[a,j] *= factor_j
-
-                # perform rounding to take us back to integer multiplicities
-                # TODO #744 logic needs correction - multiplicity[] is an int array,
-                #           earlier assignments already cause int casting
-                # factor_j = multiplicity[j]/int(multiplicity[j])
-                # factor_k = multiplicity[k]/int(multiplicity[k])
-                # multiplicity[j] = int(multiplicity[j])
-                # multiplicity[k] = int(multiplicity[k])
-                # for a in range(0,len(attributes)):
-                #     attributes[a,k] *= factor_k
-                #     attributes[a,j] *= factor_j
 
             if multiplicity[k] == 0 or multiplicity[j] == 0:
                 healthy[0] = 0

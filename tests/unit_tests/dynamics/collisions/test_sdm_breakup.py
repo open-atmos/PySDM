@@ -258,8 +258,8 @@ class TestSDMBreakup:
             'v': lambda:
                 np.testing.assert_array_almost_equal(particulator.attributes['volume'].to_ndarray(),
                 np.array(params["v_expected"]), decimal=6),
-            'conserve':
-                lambda: np.testing.assert_almost_equal(np.sum(particulator.attributes['n'].to_ndarray() *
+            'conserve': lambda:
+                np.testing.assert_almost_equal(np.sum(particulator.attributes['n'].to_ndarray() *
                     particulator.attributes['volume'].to_ndarray()),
                     np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
                     decimal=6)
