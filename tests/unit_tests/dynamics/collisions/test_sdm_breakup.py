@@ -218,6 +218,61 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
         )
 
+    @staticmethod
+    @pytest.mark.parametrize("params", [
+        {"gamma": [1.0], "n_init": [1, 1], "v_init": [1, 1], "n_expected": [1, 1],
+        "v_expected": [1, 1], "is_first_in_pair": [True, False], "n_fragment": [1.6]},
+        {"gamma": [2.0], "n_init": [20, 4], "v_init": [1, 2], "n_expected": [6, 25],
+        "v_expected": [1, 0.88], "is_first_in_pair": [True, False], "n_fragment": [2.5]},
+        {"gamma": [2.0], "n_init": [2, 1], "v_init": [1, 1], "n_expected": [3, 2],
+        "v_expected": [5/9, 2/3], "is_first_in_pair": [True, False], "n_fragment": [2.8]}
+    ])
+    @pytest.mark.parametrize("flag", ('n', 'v', 'conserve'))
+    def test_noninteger_fragments(params, flag, backend_class = CPU):
+        # Arrange
+        n_init = params["n_init"]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        particulator = builder.build(attributes = {
+                "n": np.asarray(n_init),
+                "volume": np.asarray(params["v_init"])
+            }, products = ())
+
+        n_pairs = n_sd // 2
+        rand = [1.0] * n_pairs
+        Eb = [1.0] * n_pairs
+        pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0] * n_pairs))
+        general_zeros = particulator.Storage.from_ndarray(np.array([0.0] * n_sd))
+
+        gamma = particulator.PairwiseStorage.from_ndarray(np.array(params["gamma"]))
+        rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
+        Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
+        breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        n_fragment = particulator.PairwiseStorage.from_ndarray(np.array(params["n_fragment"]))
+        is_first_in_pair = particulator.PairIndicator(n_sd)
+        is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
+            np.asarray(params["is_first_in_pair"]))
+
+        # Act
+        particulator.collision(gamma = gamma, rand = rand, Ec = pairwise_zeros, Eb = Eb,
+                n_fragment = n_fragment, coalescence_rate = general_zeros,
+                breakup_rate = breakup_rate, is_first_in_pair = is_first_in_pair)
+
+        # Assert
+        {
+            'n': lambda:
+                np.testing.assert_array_equal(particulator.attributes['n'].to_ndarray(),
+                np.array(params["n_expected"])),
+            'v': lambda:
+                np.testing.assert_array_almost_equal(particulator.attributes['volume'].to_ndarray(),
+                np.array(params["v_expected"]), decimal=6),
+            'conserve': lambda:
+                np.testing.assert_almost_equal(np.sum(particulator.attributes['n'].to_ndarray() *
+                    particulator.attributes['volume'].to_ndarray()),
+                    np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
+                    decimal=6)
+        }[flag]()
 
 def get_smaller_of_pairs(is_first_in_pair, n_init):
     return np.where(np.roll(is_first_in_pair.indicator, shift = 1), np.asarray(n_init), 0.0)
