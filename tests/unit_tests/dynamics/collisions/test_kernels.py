@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.formulae import Formulae
-from PySDM.dynamics.collisions.kernels import Golovin
 
 
 class TestGolovin:
