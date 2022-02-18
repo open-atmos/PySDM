@@ -6,7 +6,7 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 def make_arbitrary_moment_product(**kwargs):
     for arg in ('rank', 'name', 'unit', 'attr', 'attr_unit'):
-        assert arg in kwargs.keys()
+        assert arg in kwargs
 
     class ArbitraryMoment(MomentProduct):
         def __init__(self, name=None, unit=f"({kwargs['attr_unit']})**{kwargs['rank']}"):
