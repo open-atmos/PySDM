@@ -10,3 +10,4 @@ from .total_particle_specific_concentration import TotalParticleSpecificConcentr
 from .water_mixing_ratio import WaterMixingRatio
 from .radius_binned_number_averaged_terminal_velocity \
     import RadiusBinnedNumberAveragedTerminalVelocity
+from .arbitrary_moment import VolumeFirstMoment, RadiusSixthMoment, RadiusFirstMoment
