@@ -40,11 +40,12 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;, dry=False):
         super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
+        self.attr = (&#39;dry &#39; if dry else &#39;&#39;) + &#39;volume&#39;
 
     def register(self, builder):
         builder.request_attribute(&#39;volume&#39;)
@@ -58,7 +59,7 @@ class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, rank=1, filter_attr=&#39;volume&#39;)
+        self._recalculate_spectrum_moment(attr=self.attr, rank=1, filter_attr=self.attr)
 
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
@@ -81,7 +82,7 @@ class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
 <dl>
 <dt id="PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum.ParticleVolumeVersusRadiusLogarithmSpectrum"><code class="flex name class">
 <span>class <span class="ident">ParticleVolumeVersusRadiusLogarithmSpectrum</span></span>
-<span>(</span><span>radius_bins_edges, name=None, unit='dimensionless')</span>
+<span>(</span><span>radius_bins_edges, name=None, unit='dimensionless', dry=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -91,11 +92,12 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;, dry=False):
         super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
+        self.attr = (&#39;dry &#39; if dry else &#39;&#39;) + &#39;volume&#39;
 
     def register(self, builder):
         builder.request_attribute(&#39;volume&#39;)
@@ -109,7 +111,7 @@ inheritance.</p></div>
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, rank=1, filter_attr=&#39;volume&#39;)
+        self._recalculate_spectrum_moment(attr=self.attr, rank=1, filter_attr=self.attr)
 
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)
