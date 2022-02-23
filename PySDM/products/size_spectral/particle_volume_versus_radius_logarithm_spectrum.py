@@ -13,7 +13,7 @@ class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
-        self.attr = ('dry' if dry else '') + ' volume'
+        self.attr = ('dry ' if dry else '') + 'volume'
 
     def register(self, builder):
         builder.request_attribute('volume')
