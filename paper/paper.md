@@ -1,6 +1,5 @@
 ---
-title: 'PySDM v2: particle-based cloud microphysics in Python: collisional breakup, immersion freezing
-and adaptive time-stepping'
+title: 'PySDM v2: particle-based cloud microphysics in Python: collisional breakup, immersion freezing and adaptive time-stepping'
 date: 10 February 2022
 tags:
   - Python
