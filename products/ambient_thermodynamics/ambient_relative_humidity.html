@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.products.ambient_thermodynamics.ambient_relative_humidity API documentation</title>
-<meta name="description" content="ambient relative humidity" />
+<meta name="description" content="ambient relative humidity (wrt water or ice)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,20 +22,29 @@
 <h1 class="title">Module <code>PySDM.products.ambient_thermodynamics.ambient_relative_humidity</code></h1>
 </header>
 <section id="section-intro">
-<p>ambient relative humidity</p>
+<p>ambient relative humidity (wrt water or ice)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-ambient relative humidity
+ambient relative humidity (wrt water or ice)
 &#34;&#34;&#34;
 from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduct
 
 
 class AmbientRelativeHumidity(MoistEnvironmentProduct):
-    def __init__(self, name=None, unit=&#39;dimensionless&#39;, var=None):
-        super().__init__(name=name, unit=unit, var=var)</code></pre>
+    def __init__(self, name=None, unit=&#39;dimensionless&#39;, var=None, ice=False):
+        super().__init__(name=name, unit=unit, var=var)
+        self.ice = ice
+
+    def _impl(self, **kwargs):
+        super()._impl()
+        if self.ice:
+            RHw = self.buffer.copy()
+            self._download_to_buffer(self.environment[&#39;a_w_ice&#39;])
+            self.buffer[:] = RHw / self.buffer[:]
+        return self.buffer</code></pre>
 </details>
 </section>
 <section>
@@ -49,7 +58,7 @@ class AmbientRelativeHumidity(MoistEnvironmentProduct):
 <dl>
 <dt id="PySDM.products.ambient_thermodynamics.ambient_relative_humidity.AmbientRelativeHumidity"><code class="flex name class">
 <span>class <span class="ident">AmbientRelativeHumidity</span></span>
-<span>(</span><span>name=None, unit='dimensionless', var=None)</span>
+<span>(</span><span>name=None, unit='dimensionless', var=None, ice=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -58,8 +67,17 @@ class AmbientRelativeHumidity(MoistEnvironmentProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AmbientRelativeHumidity(MoistEnvironmentProduct):
-    def __init__(self, name=None, unit=&#39;dimensionless&#39;, var=None):
-        super().__init__(name=name, unit=unit, var=var)</code></pre>
+    def __init__(self, name=None, unit=&#39;dimensionless&#39;, var=None, ice=False):
+        super().__init__(name=name, unit=unit, var=var)
+        self.ice = ice
+
+    def _impl(self, **kwargs):
+        super()._impl()
+        if self.ice:
+            RHw = self.buffer.copy()
+            self._download_to_buffer(self.environment[&#39;a_w_ice&#39;])
+            self.buffer[:] = RHw / self.buffer[:]
+        return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

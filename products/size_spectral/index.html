@@ -31,7 +31,7 @@
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .particle_size_spectrum import ParticleSizeSpectrumPerMass, ParticleSizeSpectrumPerVolume
-from .particles_concentration import ParticleConcentration, ParticleSpecificConcentration
+from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
 from .particle_volume_versus_radius_logarithm_spectrum import \
     ParticleVolumeVersusRadiusLogarithmSpectrum
 from .total_particle_concentration import TotalParticleConcentration
@@ -58,6 +58,11 @@ optionally restricted to a given size range)</p></div>
 <dd>
 <div class="desc"><p>mean radius of particles within a grid cell (optionally restricted to a given size range)</p></div>
 </dd>
+<dt><code class="name"><a title="PySDM.products.size_spectral.particle_concentration" href="particle_concentration.html">PySDM.products.size_spectral.particle_concentration</a></code></dt>
+<dd>
+<div class="desc"><p>concentration of particles within a grid cell (either per-volume of per-mass-of-dry air,
+optionally restricted to a given size range)</p></div>
+</dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.particle_size_spectrum" href="particle_size_spectrum.html">PySDM.products.size_spectral.particle_size_spectrum</a></code></dt>
 <dd>
 <div class="desc"><p>wet radius-binned particle size spectra (per mass of dry air or per volume of air)</p></div>
@@ -66,11 +71,6 @@ optionally restricted to a given size range)</p></div>
 <dd>
 <div class="desc"><p>n_V^e(ln(r)) particle volume spectrum per volume of air (uses natural logarithm),
 i.e. volume of particles per volume of air having in the size range …</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.products.size_spectral.particles_concentration" href="particles_concentration.html">PySDM.products.size_spectral.particles_concentration</a></code></dt>
-<dd>
-<div class="desc"><p>concentration of particles within a grid cell (either per-volume of per-mass-of-dry air,
-optionally restricted to a given size range)</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity" href="radius_binned_number_averaged_terminal_velocity.html">PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity</a></code></dt>
 <dd>
@@ -114,9 +114,9 @@ optionally restricted to a given size range)</p></div>
 <li><code><a title="PySDM.products.size_spectral.arbitrary_moment" href="arbitrary_moment.html">PySDM.products.size_spectral.arbitrary_moment</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.effective_radius" href="effective_radius.html">PySDM.products.size_spectral.effective_radius</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.mean_radius" href="mean_radius.html">PySDM.products.size_spectral.mean_radius</a></code></li>
+<li><code><a title="PySDM.products.size_spectral.particle_concentration" href="particle_concentration.html">PySDM.products.size_spectral.particle_concentration</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.particle_size_spectrum" href="particle_size_spectrum.html">PySDM.products.size_spectral.particle_size_spectrum</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum" href="particle_volume_versus_radius_logarithm_spectrum.html">PySDM.products.size_spectral.particle_volume_versus_radius_logarithm_spectrum</a></code></li>
-<li><code><a title="PySDM.products.size_spectral.particles_concentration" href="particles_concentration.html">PySDM.products.size_spectral.particles_concentration</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity" href="radius_binned_number_averaged_terminal_velocity.html">PySDM.products.size_spectral.radius_binned_number_averaged_terminal_velocity</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.total_particle_concentration" href="total_particle_concentration.html">PySDM.products.size_spectral.total_particle_concentration</a></code></li>
 <li><code><a title="PySDM.products.size_spectral.total_particle_specific_concentration" href="total_particle_specific_concentration.html">PySDM.products.size_spectral.total_particle_specific_concentration</a></code></li>
