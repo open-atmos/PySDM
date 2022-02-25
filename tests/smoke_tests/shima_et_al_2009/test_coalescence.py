@@ -7,13 +7,14 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.environments import Box
-from PySDM.initialisation.spectra import Exponential
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.physics.constants import si
 from PySDM.formulae import Formulae
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra import Exponential
+from PySDM.physics.constants import si
 
 from ...backends_fixture import backend_class
-assert hasattr(backend_class, '_pytestfixturefunction')
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 def check(n_part, dv, n_sd, rho, state, step):
@@ -22,21 +23,21 @@ def check(n_part, dv, n_sd, rho, state, step):
 
     # multiplicities
     if step == 0:
-        np.testing.assert_approx_equal(np.amin(state['n']), np.amax(state['n']), 1)
-        np.testing.assert_approx_equal(state['n'][0], check_ksi, 1)
+        np.testing.assert_approx_equal(np.amin(state["n"]), np.amax(state["n"]), 1)
+        np.testing.assert_approx_equal(state["n"][0], check_ksi, 1)
 
     # liquid water content
-    LWC = rho * np.dot(state['n'], state['volume']) / dv
+    LWC = rho * np.dot(state["n"], state["volume"]) / dv
     np.testing.assert_approx_equal(LWC, check_lwc, 3)
 
 
-@pytest.mark.parametrize('croupier', ['local', 'global'])
-@pytest.mark.parametrize('adaptive', [True, False])
+@pytest.mark.parametrize("croupier", ["local", "global"])
+@pytest.mark.parametrize("adaptive", [True, False])
 # pylint: disable=redefined-outer-name
 def test_coalescence(backend_class, croupier, adaptive):
-    if backend_class == ThrustRTC and croupier == 'local':  # TODO #358
+    if backend_class == ThrustRTC and croupier == "local":  # TODO #358
         return
-    if backend_class == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
+    if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
         return
     # Arrange
     formulae = Formulae(seed=256)
@@ -54,7 +55,7 @@ def test_coalescence(backend_class, croupier, adaptive):
     builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = ConstantMultiplicity(spectrum).sample(n_sd)
+    attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(n_sd)
     builder.add_dynamic(Coalescence(kernel, croupier=croupier, adaptive=adaptive))
     particulator = builder.build(attributes)
 
@@ -64,7 +65,7 @@ def test_coalescence(backend_class, croupier, adaptive):
     for step in steps:
         particulator.run(step - particulator.n_steps)
         check(n_part, dv, n_sd, rho, particulator.attributes, step)
-        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
+        volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert
     x_max = 0

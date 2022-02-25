@@ -3,6 +3,7 @@ ThrustRTC import logic implementing the switch between the genuine ThrustRTC and
 default nice_thrust flags
 """
 from warnings import warn
+
 from PySDM.backends.impl_thrust_rtc.test_helpers.flag import fakeThrustRTC
 
 if not fakeThrustRTC:
@@ -18,11 +19,11 @@ if not fakeThrustRTC:
         warn(f"importing CURandRTC failed with {error}")
 else:
     # noinspection PyUnresolvedReferences
-    from .test_helpers.fake_thrust_rtc import FakeThrustRTC as trtc  # pylint: disable=unused-import
+    from .test_helpers.fake_thrust_rtc import (
+        FakeThrustRTC as trtc,  # pylint: disable=unused-import
+    )
+
     # noinspection PyUnresolvedReferences
     rndrtc = None
 
-NICE_THRUST_FLAGS = dict(
-    wait=False,
-    debug_print=False
-)
+NICE_THRUST_FLAGS = dict(wait=False, debug_print=False)

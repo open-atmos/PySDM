@@ -5,7 +5,7 @@ from PySDM.products.impl.product import Product
 
 
 class SuperDropletCountPerGridbox(Product):
-    def __init__(self, unit='dimensionless', name=None):
+    def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)
 
     def _impl(self, **kwargs):

@@ -3,9 +3,9 @@ random number generator class for Numba backend
 """
 import numpy as np
 
-
 #  TIP: can be called asynchronously
 #  TIP: sometimes only half array is needed
+
 
 class Random:  # pylint: disable=too-few-public-methods
     def __init__(self, size, seed):

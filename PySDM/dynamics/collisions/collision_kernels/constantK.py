@@ -4,7 +4,6 @@
 
 
 class ConstantK:
-
     def __init__(self, a):
         self.a = a
         self.particulator = None

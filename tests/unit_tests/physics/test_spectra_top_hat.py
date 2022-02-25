@@ -1,6 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from matplotlib import pylab
 import numpy as np
+from matplotlib import pylab
+
 from PySDM.initialisation import spectra
 
 
@@ -22,7 +23,7 @@ class TestSpectraTopHat:
             pylab.axhline(norm_factor)
             pylab.axvline(endpoints[0])
             pylab.axvline(endpoints[1])
-            pylab.plot(x, y, color='red')
+            pylab.plot(x, y, color="red")
             pylab.xlim(x[0], x[-1])
             pylab.grid()
             pylab.show()
@@ -34,7 +35,9 @@ class TestSpectraTopHat:
 
         hy, hx = np.histogram(np.diff(y) / np.diff(x))
         assert hx[0] == 0
-        np.testing.assert_approx_equal(hx[-1], norm_factor / (endpoints[1] - endpoints[0]))
+        np.testing.assert_approx_equal(
+            hx[-1], norm_factor / (endpoints[1] - endpoints[0])
+        )
         assert np.sum(hy[1:-1]) == 2
 
     @staticmethod
@@ -52,13 +55,12 @@ class TestSpectraTopHat:
             pylab.axvline(1)
             pylab.axhline(spectrum.endpoints[0])
             pylab.axhline(spectrum.endpoints[1])
-            pylab.plot(x, y, color='red')
+            pylab.plot(x, y, color="red")
             pylab.show()
 
         # assert
         assert y[0] == spectrum.endpoints[0]
         assert y[-1] == spectrum.endpoints[1]
         np.testing.assert_allclose(
-            np.diff(y) / np.diff(x),
-            spectrum.endpoints[1] - spectrum.endpoints[0]
+            np.diff(y) / np.diff(x), spectrum.endpoints[1] - spectrum.endpoints[0]
         )

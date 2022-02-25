@@ -1,41 +1,51 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import inspect
-from typing import Tuple
-from collections import namedtuple
 import sys
+from collections import namedtuple
+from typing import Tuple
+
 import numpy as np
 import pytest
+
 from PySDM import products
 from PySDM.backends import CPU
+from PySDM.products import (
+    AqueousMassSpectrum,
+    AqueousMoleFraction,
+    DynamicWallTime,
+    FlowVelocityComponent,
+    FreezableSpecificConcentration,
+    GaseousMoleFraction,
+    ParticleSizeSpectrumPerMass,
+    ParticleSizeSpectrumPerVolume,
+    ParticleVolumeVersusRadiusLogarithmSpectrum,
+    RadiusBinnedNumberAveragedTerminalVelocity,
+    TotalDryMassMixingRatio,
+)
 from PySDM.products.impl.product import Product
 from PySDM.products.impl.rate_product import RateProduct
-from PySDM.products import (AqueousMassSpectrum, AqueousMoleFraction, TotalDryMassMixingRatio,
-                            ParticleSizeSpectrumPerMass, GaseousMoleFraction,
-                            FreezableSpecificConcentration, DynamicWallTime,
-                            ParticleSizeSpectrumPerVolume,
-                            ParticleVolumeVersusRadiusLogarithmSpectrum,
-                            RadiusBinnedNumberAveragedTerminalVelocity,
-                            FlowVelocityComponent)
 
 _ARGUMENTS = {
-    AqueousMassSpectrum: {'key': 'S_VI', 'dry_radius_bins_edges': (0, np.inf)},
-    AqueousMoleFraction: {'key': 'S_VI'},
-    TotalDryMassMixingRatio: {'density': 1},
-    ParticleSizeSpectrumPerMass: {'radius_bins_edges': (0, np.inf)},
-    GaseousMoleFraction: {'key': 'O3'},
-    FreezableSpecificConcentration: {'temperature_bins_edges': (0, 300)},
-    DynamicWallTime: {'dynamic': 'Condensation'},
-    ParticleSizeSpectrumPerVolume: {'radius_bins_edges': (0, np.inf)},
-    ParticleVolumeVersusRadiusLogarithmSpectrum: {'radius_bins_edges': (0, np.inf)},
-    RadiusBinnedNumberAveragedTerminalVelocity: {'radius_bin_edges': (0, np.inf)},
-    FlowVelocityComponent: {'component': 0}
+    AqueousMassSpectrum: {"key": "S_VI", "dry_radius_bins_edges": (0, np.inf)},
+    AqueousMoleFraction: {"key": "S_VI"},
+    TotalDryMassMixingRatio: {"density": 1},
+    ParticleSizeSpectrumPerMass: {"radius_bins_edges": (0, np.inf)},
+    GaseousMoleFraction: {"key": "O3"},
+    FreezableSpecificConcentration: {"temperature_bins_edges": (0, 300)},
+    DynamicWallTime: {"dynamic": "Condensation"},
+    ParticleSizeSpectrumPerVolume: {"radius_bins_edges": (0, np.inf)},
+    ParticleVolumeVersusRadiusLogarithmSpectrum: {"radius_bins_edges": (0, np.inf)},
+    RadiusBinnedNumberAveragedTerminalVelocity: {"radius_bin_edges": (0, np.inf)},
+    FlowVelocityComponent: {"component": 0},
 }
 
 
-@pytest.fixture(params=(
-    pytest.param(p[1], id=p[0])
-    for p in inspect.getmembers(sys.modules[products.__name__], inspect.isclass)
-))
+@pytest.fixture(
+    params=(
+        pytest.param(p[1], id=p[0])
+        for p in inspect.getmembers(sys.modules[products.__name__], inspect.isclass)
+    )
+)
 def product(request):
     return request.param
 
@@ -50,7 +60,7 @@ class TestProducts:
     def test_unit_conversion():
         # arrange
         class SUT(Product):
-            def __init__(self, unit='m'):
+            def __init__(self, unit="m"):
                 super().__init__(unit=unit)
 
             def _impl(self, **kwargs):
@@ -73,13 +83,13 @@ class TestProducts:
         size = 1
 
         class SUT(RateProduct):
-            def __init__(self, unit='s^-1'):
-                super().__init__(unit=unit, name=None, counter='', dynamic=None)
+            def __init__(self, unit="s^-1"):
+                super().__init__(unit=unit, name=None, counter="", dynamic=None)
 
         backend = CPU()
         sut = SUT()
         sut.buffer = np.empty(size)
-        sut.particulator = namedtuple('_', ('dt',))(dt=dt)
+        sut.particulator = namedtuple("_", ("dt",))(dt=dt)
 
         def set_and_notify():
             sut.counter = backend.Storage.from_ndarray(np.full(size, count))
@@ -97,10 +107,9 @@ class TestProducts:
         np.testing.assert_allclose(value2, count / n_steps / dt)
 
     @staticmethod
-    @pytest.mark.parametrize('in_out_pair', (
-        ('CPUTime', 'CPU time'),
-        ('WallTime', 'wall time')
-    ))
+    @pytest.mark.parametrize(
+        "in_out_pair", (("CPUTime", "CPU time"), ("WallTime", "wall time"))
+    )
     def test_camel_case_to_words(in_out_pair: Tuple[str, str]):
         # arrange
         test_input, expected_output = in_out_pair

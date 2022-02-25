@@ -5,7 +5,6 @@ import numpy as np
 
 
 class Mesh:
-
     def __init__(self, grid, size):
         self.grid = grid
         self.size = size

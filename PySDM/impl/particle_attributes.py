@@ -3,19 +3,21 @@ logic for handling particle attributes within
  `PySDM.particulator.Particulator`
 """
 from typing import Dict
+
 import numpy as np
+
 from PySDM.attributes.impl.attribute import Attribute
 
 
 class ParticleAttributes:
-
     def __init__(
-            self, particulator,
-            idx,
-            extensive_attribute_storage,
-            extensive_keys: dict,
-            cell_start,
-            attributes: Dict[str, Attribute]
+        self,
+        particulator,
+        idx,
+        extensive_attribute_storage,
+        extensive_keys: dict,
+        cell_start,
+        attributes: Dict[str, Attribute],
     ):
         self.__valid_n_sd = particulator.n_sd
         self.healthy = True
@@ -41,9 +43,9 @@ class ParticleAttributes:
 
     @property
     def super_droplet_count(self):
-        """ returns the number of super-droplets in the system
-            (which might differ from the initial one due to precipitation
-            or removal during collision of multiplicity-of-one particles) """
+        """returns the number of super-droplets in the system
+        (which might differ from the initial one due to precipitation
+        or removal during collision of multiplicity-of-one particles)"""
         assert self.healthy
         return len(self.__idx)
 
@@ -53,7 +55,7 @@ class ParticleAttributes:
     def sanitize(self):
         if not self.healthy:
             self.__idx.length = self.__valid_n_sd
-            self.__idx.remove_zero_n_or_flagged(self['n'])
+            self.__idx.remove_zero_n_or_flagged(self["n"])
             self.__valid_n_sd = self.__idx.length
             self.healthy = True
             self.__healthy_memory[:] = 1
@@ -83,8 +85,8 @@ class ParticleAttributes:
         return key in self.__attributes
 
     def permutation(self, u01, local):
-        """ apply Fisher-Yates algorithm to all super-droplets (local=False) or
-            otherwise on a per-cell basis """
+        """apply Fisher-Yates algorithm to all super-droplets (local=False) or
+        otherwise on a per-cell basis"""
         if local:
             self.__idx.shuffle(u01, parts=self.cell_start)
         else:
@@ -92,7 +94,9 @@ class ParticleAttributes:
             self.__sorted = False
 
     def __sort_by_cell_id(self):
-        self.__cell_caretaker(self['cell id'], self.cell_idx, self.__cell_start, self.__idx)
+        self.__cell_caretaker(
+            self["cell id"], self.cell_idx, self.__cell_start, self.__idx
+        )
         self.__sorted = True
 
     def get_extensive_attribute_storage(self):

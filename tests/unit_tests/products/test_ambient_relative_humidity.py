@@ -1,16 +1,16 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+
+from PySDM import Builder, products
 from PySDM.backends import CPU, GPU
 from PySDM.environments import Parcel
-from PySDM import Builder, products
 from PySDM.physics import si
 
 
-@pytest.mark.parametrize("backend_class", (
-    CPU,
-    pytest.param(GPU, marks=pytest.mark.xfail(strict=True))
-))
+@pytest.mark.parametrize(
+    "backend_class", (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True)))
+)
 def test_ambient_relative_humidity(backend_class):
     # arrange
     n_sd = 1
@@ -22,17 +22,17 @@ def test_ambient_relative_humidity(backend_class):
         p0=1000 * si.hPa,
         q0=1 * si.g / si.kg,
         T0=260 * si.K,
-        w=np.nan
+        w=np.nan,
     )
     builder.set_environment(env)
-    attributes = {
-        'n': np.ones(n_sd),
-        'volume': np.ones(n_sd)
-    }
-    particulator = builder.build(attributes=attributes, products=(
-        products.AmbientRelativeHumidity(name='RHw', var='RH'),
-        products.AmbientRelativeHumidity(name='RHi', var='RH', ice=True),
-    ))
+    attributes = {"n": np.ones(n_sd), "volume": np.ones(n_sd)}
+    particulator = builder.build(
+        attributes=attributes,
+        products=(
+            products.AmbientRelativeHumidity(name="RHw", var="RH"),
+            products.AmbientRelativeHumidity(name="RHi", var="RH", ice=True),
+        ),
+    )
 
     # act
     values = {}
@@ -40,4 +40,4 @@ def test_ambient_relative_humidity(backend_class):
         values[name] = product.get()[0]
 
     # assert
-    assert values['RHw'] < values['RHi']
+    assert values["RHw"] < values["RHi"]
