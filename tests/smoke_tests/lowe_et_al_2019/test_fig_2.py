@@ -11,17 +11,18 @@ assert hasattr(constants, '_pytestfixturefunction')
 
 class TestFig2:
     @staticmethod
-    @pytest.mark.parametrize("aerosol, surface_tension, s_max, n_final", (
-        (aerosol.AerosolMarine(),  "Constant", .30, 140),
-        (aerosol.AerosolMarine(),  "CompressedFilmOvadnevaite", .27, 160),
-        (aerosol.AerosolBoreal(),  "Constant", .21, 395),
-        (aerosol.AerosolBoreal(),  "CompressedFilmOvadnevaite", .16, 495),
-        (aerosol.AerosolNascent(), "Constant", .42, 90),
-        (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .34, 150)
+    @pytest.mark.parametrize("aerosol, surface_tension, s_max, s_100m, n_100m", (
+        (aerosol.AerosolMarine(),  "Constant", .271, .081, 148),
+        (aerosol.AerosolMarine(),  "CompressedFilmOvadnevaite", .250, .075, 169),
+        (aerosol.AerosolBoreal(),  "Constant", .182, .055, 422),
+        (aerosol.AerosolBoreal(),  "CompressedFilmOvadnevaite", .137, .055, 525),
+        (aerosol.AerosolNascent(), "Constant", .407, .122, 68),
+        (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .314, .076, 166)
     ))
+    @pytest.mark.xfail(strict=True)  # TODO #604
     # pylint: disable=redefined-outer-name,unused-argument
     def test_peak_supersaturation_and_final_concentration(
-        constants, aerosol, surface_tension, s_max, n_final
+        constants, aerosol, surface_tension, s_max, s_100m, n_100m
     ):
         # arrange
         settings = Settings(
@@ -31,13 +32,19 @@ class TestFig2:
             aerosol=aerosol,
             spectral_sampling=spectral_sampling.ConstantMultiplicity
         )
-        settings.output_interval = settings.t_max
+        settings.output_interval = 10 * settings.dt
         simulation = Simulation(settings)
 
         # act
         output = simulation.run()
 
         # assert
-        assert len(output['S_max']) == 2
-        np.testing.assert_approx_equal(output['S_max'][-1], s_max, significant=2)
-        np.testing.assert_approx_equal(output['n_c_cm3'][-1], n_final, significant=2)
+        # assert len(output['S_max']) == 2
+        i_100m = 312
+        #print(output["z"][i_100m])
+        print(np.nanmax(output['S_max']), s_max)
+        print(output['S_max'][i_100m], s_100m)
+        print(output['n_c_cm3'][i_100m], n_100m)
+        np.testing.assert_approx_equal(np.nanmax(output['S_max']), s_max, significant=2)
+        np.testing.assert_approx_equal(output['S_max'][i_100m], s_100m, significant=2)
+        np.testing.assert_approx_equal(output['n_c_cm3'][i_100m], n_100m, significant=2)
