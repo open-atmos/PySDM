@@ -2,7 +2,6 @@
 import pytest
 import numpy as np
 from PySDM_examples.Pyrcel import Settings, Simulation
-
 from PySDM import Formulae
 from PySDM.initialisation.spectra import Lognormal
 from PySDM.physics import si
