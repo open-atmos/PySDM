@@ -37,7 +37,11 @@ class MomentsMethods(BackendMethods):
         if not skip_division_by_m0:
             for c_id in range(moment_0.shape[0]):
                 for k in range(ranks.shape[0]):
-                    moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
+                    moments[k, c_id] = (
+                        moments[k, c_id] / moment_0[c_id]
+                        if moment_0[c_id] != 0
+                        else 0
+                    )
 
     @staticmethod
     def moments(
