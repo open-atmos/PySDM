@@ -25,7 +25,8 @@ class TestFig2:
     ):
         # arrange
         settings = Settings(
-            dt=2 * si.s, n_sd_per_mode=32,
+            dz=2/.32 * si.m,
+            n_sd_per_mode=32,
             model={'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
             aerosol=aerosol,
             spectral_sampling=spectral_sampling.ConstantMultiplicity
