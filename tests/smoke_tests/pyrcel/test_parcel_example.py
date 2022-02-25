@@ -13,7 +13,7 @@ class TestParcelExample:
     @pytest.mark.parametrize("s_max, s_250m, T_250m", (
         (0.62,0.139,272.2),
     ))
-    @pytest.mark.xfail(strict=True)
+    @pytest.mark.xfail(strict=True)  # TODO #776
     # pylint: disable=redefined-outer-name,unused-argument
     def test_supersaturation_and_temperature_profile(s_max, s_250m, T_250m):
         # arrange
