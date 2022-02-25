@@ -19,6 +19,7 @@ class TestFig2:
         (aerosol.AerosolNascent(), "Constant", .407, .122, 68),
         (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .314, .076, 166)
     ))
+    @pytest.mark.xfail(strict=True)
     # pylint: disable=redefined-outer-name,unused-argument
     def test_peak_supersaturation_and_final_concentration(
         constants, aerosol, surface_tension, s_max, s_100m, n_100m
