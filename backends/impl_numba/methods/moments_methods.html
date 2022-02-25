@@ -41,7 +41,8 @@ class MomentsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
             moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+            skip_division_by_m0):
         moment_0[:] = 0
         moments[:, :] = 0
         for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -62,18 +63,25 @@ class MomentsMethods(BackendMethods):
                             * attr_data[i] ** ranks[k]
                         )
                     )
-        for c_id in range(moment_0.shape[0]):
-            for k in range(ranks.shape[0]):
-                moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
+        if not skip_division_by_m0:
+            for c_id in range(moment_0.shape[0]):
+                for k in range(ranks.shape[0]):
+                    moments[k, c_id] = (
+                        moments[k, c_id] / moment_0[c_id]
+                        if moment_0[c_id] != 0
+                        else 0
+                    )
 
     @staticmethod
     def moments(
             moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+            skip_division_by_m0):
         return MomentsMethods.moments_body(
             moment_0.data, moments.data, multiplicity.data, attr_data.data, cell_id.data,
             idx.data, length, ranks.data,
-            min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank
+            min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank,
+            skip_division_by_m0
         )
 
     @staticmethod
@@ -141,7 +149,8 @@ class MomentsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
             moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+            skip_division_by_m0):
         moment_0[:] = 0
         moments[:, :] = 0
         for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -162,18 +171,25 @@ class MomentsMethods(BackendMethods):
                             * attr_data[i] ** ranks[k]
                         )
                     )
-        for c_id in range(moment_0.shape[0]):
-            for k in range(ranks.shape[0]):
-                moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
+        if not skip_division_by_m0:
+            for c_id in range(moment_0.shape[0]):
+                for k in range(ranks.shape[0]):
+                    moments[k, c_id] = (
+                        moments[k, c_id] / moment_0[c_id]
+                        if moment_0[c_id] != 0
+                        else 0
+                    )
 
     @staticmethod
     def moments(
             moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+            ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+            skip_division_by_m0):
         return MomentsMethods.moments_body(
             moment_0.data, moments.data, multiplicity.data, attr_data.data, cell_id.data,
             idx.data, length, ranks.data,
-            min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank
+            min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank,
+            skip_division_by_m0
         )
 
     @staticmethod
@@ -228,7 +244,7 @@ class MomentsMethods(BackendMethods):
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.moments"><code class="name flex">
-<span>def <span class="ident">moments</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank)</span>
+<span>def <span class="ident">moments</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -239,16 +255,18 @@ class MomentsMethods(BackendMethods):
 <pre><code class="python">@staticmethod
 def moments(
         moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-        ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+        ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+        skip_division_by_m0):
     return MomentsMethods.moments_body(
         moment_0.data, moments.data, multiplicity.data, attr_data.data, cell_id.data,
         idx.data, length, ranks.data,
-        min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank
+        min_x, max_x, x_attr.data, weighting_attribute.data, weighting_rank,
+        skip_division_by_m0
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.moments_body"><code class="name flex">
-<span>def <span class="ident">moments_body</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank)</span>
+<span>def <span class="ident">moments_body</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -260,7 +278,8 @@ def moments(
 @numba.njit(**conf.JIT_FLAGS)
 def moments_body(
         moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-        ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+        ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank,
+        skip_division_by_m0):
     moment_0[:] = 0
     moments[:, :] = 0
     for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -281,9 +300,14 @@ def moments_body(
                         * attr_data[i] ** ranks[k]
                     )
                 )
-    for c_id in range(moment_0.shape[0]):
-        for k in range(ranks.shape[0]):
-            moments[k, c_id] = moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0</code></pre>
+    if not skip_division_by_m0:
+        for c_id in range(moment_0.shape[0]):
+            for k in range(ranks.shape[0]):
+                moments[k, c_id] = (
+                    moments[k, c_id] / moment_0[c_id]
+                    if moment_0[c_id] != 0
+                    else 0
+                )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.spectrum_moments"><code class="name flex">

@@ -263,7 +263,8 @@ class Particulator:
     def moments(self, moment_0, moments,
                 specs: dict,
                 attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
-                weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+                weighting_attribute=&#39;volume&#39;, weighting_rank=0,
+                skip_division_by_m0=False):
         if len(specs) == 0:
             raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
@@ -291,7 +292,8 @@ class Particulator:
             attr_range[0], attr_range[1],
             self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
-            weighting_rank=weighting_rank
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0
         )
 
     def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
@@ -571,7 +573,8 @@ class Particulator:
     def moments(self, moment_0, moments,
                 specs: dict,
                 attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
-                weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+                weighting_attribute=&#39;volume&#39;, weighting_rank=0,
+                skip_division_by_m0=False):
         if len(specs) == 0:
             raise ValueError(&#34;empty specs passed&#34;)
         attr_data, ranks = [], []
@@ -599,7 +602,8 @@ class Particulator:
             attr_range[0], attr_range[1],
             self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
-            weighting_rank=weighting_rank
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0
         )
 
     def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name=&#39;volume&#39;,
@@ -866,7 +870,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
-<span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0)</span>
+<span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -877,7 +881,8 @@ def n_sd(self) -&gt; int:
 <pre><code class="python">def moments(self, moment_0, moments,
             specs: dict,
             attr_name=&#39;volume&#39;, attr_range=(-np.inf, np.inf),
-            weighting_attribute=&#39;volume&#39;, weighting_rank=0):
+            weighting_attribute=&#39;volume&#39;, weighting_rank=0,
+            skip_division_by_m0=False):
     if len(specs) == 0:
         raise ValueError(&#34;empty specs passed&#34;)
     attr_data, ranks = [], []
@@ -905,7 +910,8 @@ def n_sd(self) -&gt; int:
         attr_range[0], attr_range[1],
         self.attributes[attr_name],
         weighting_attribute=self.attributes[weighting_attribute],
-        weighting_rank=weighting_rank
+        weighting_rank=weighting_rank,
+        skip_division_by_m0=skip_division_by_m0
     )</code></pre>
 </details>
 </dd>
