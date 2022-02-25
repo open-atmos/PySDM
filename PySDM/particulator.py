@@ -31,12 +31,12 @@ class Particulator:
 
         self.Index = make_Index(backend)  # pylint: disable=invalid-name
         self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
-        self.PairwiseStorage = make_PairwiseStorage(
+        self.PairwiseStorage = make_PairwiseStorage(  # pylint: disable=invalid-name
             backend
-        )  # pylint: disable=invalid-name
-        self.IndexedStorage = make_IndexedStorage(
+        )
+        self.IndexedStorage = make_IndexedStorage(  # pylint: disable=invalid-name
             backend
-        )  # pylint: disable=invalid-name
+        )
 
         self.timers = {}
         self.null = self.Storage.empty(0, dtype=float)

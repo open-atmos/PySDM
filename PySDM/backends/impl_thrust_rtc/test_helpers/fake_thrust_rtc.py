@@ -82,8 +82,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             exec(self.code, d)  # pylint: disable=exec-used
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = (
-                self.make()
-            )  # pylint: disable=not-callable
+                self.make()  # pylint: disable=not-callable
+            )
 
         def launch_n(self, size, args):
             if size == 0:
