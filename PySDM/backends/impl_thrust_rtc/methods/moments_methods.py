@@ -81,7 +81,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks,
-                min_x, max_x, x_attr, weighting_attribute, weighting_rank):
+                min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0):
         if weighting_rank != 0:
             raise NotImplementedError()
 
@@ -111,8 +111,9 @@ class MomentsMethods(ThrustRTCBackendMethods):
             n_cell
         ))
 
-        self.__moments_body_1.launch_n(
-            moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
+        if not skip_division_by_m0:
+            self.__moments_body_1.launch_n(
+                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
 
     # TODO #684
     # pylint: disable=unused-argument
