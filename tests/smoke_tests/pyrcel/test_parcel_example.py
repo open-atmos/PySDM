@@ -15,7 +15,7 @@ class TestParcelExample:
     ))
     @pytest.mark.parametrize("scipy_solver", (
         pytest.param(True),
-        pytest.param(False, marks=pytest.mark.xfail(strict=True))  # TODO #776
+        pytest.param(False)
     ))
     def test_supersaturation_and_temperature_profile(s_max, s_250m, T_250m, scipy_solver):
         # arrange
