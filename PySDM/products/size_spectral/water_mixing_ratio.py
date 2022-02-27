@@ -8,8 +8,8 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 class WaterMixingRatio(MomentProduct):
 
-    def __init__(self, radius_range=(0, np.inf), name=None, unit='dimensionless'):
-        self.radius_range = radius_range
+    def __init__(self, radius_range=None, name=None, unit='dimensionless'):
+        self.radius_range = radius_range or (0, np.inf)
         self.volume_range = None
         super().__init__(unit=unit, name=name)
 
