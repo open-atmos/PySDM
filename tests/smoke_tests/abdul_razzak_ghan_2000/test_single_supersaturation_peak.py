@@ -105,4 +105,3 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
 
     # assert
     assert signal.argrelextrema(np.asarray(output["RH"]), np.greater)[0].shape[0] == 1
-
