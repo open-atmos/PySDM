@@ -64,7 +64,7 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {'volume': tuple([] for _ in range(particulator.n_sd))}
 
-    for step in range(n_steps):
+    for _ in range(n_steps):
         particulator.run(steps=1)
         for product in particulator.products.values():
             value = product.get()

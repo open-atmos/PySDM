@@ -62,3 +62,4 @@ class TestParcelExample:
 
         # TODO #776
         # np.testing.assert_approx_equal(output['products']['RH'][-1]-100, s_250m, significant=2)
+        assert s_250m is not None
