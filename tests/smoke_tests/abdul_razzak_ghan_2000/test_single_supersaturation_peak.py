@@ -2,6 +2,7 @@
 import numpy as np
 import pytest
 from matplotlib import pyplot
+from scipy import signal
 from PySDM.physics import si
 from PySDM.initialisation import equilibrate_wet_radii
 from PySDM.initialisation.spectra import Lognormal
@@ -13,11 +14,17 @@ from PySDM import Builder, products as PySDM_products
 from PySDM.backends.impl_numba.test_helpers import bdf
 
 
-@pytest.mark.parametrize("rtol_thd", (1e-6, 1e-7, 1e-8, 1e-9))
-@pytest.mark.parametrize("rtol_x", (1e-6,))
+@pytest.mark.parametrize("rtol_thd", (
+        pytest.param(1e-6, marks=pytest.mark.xfail(strict=True)),
+        pytest.param(1e-7, marks=pytest.mark.xfail(strict=True)),
+        1e-8,
+        1e-9
+))
+@pytest.mark.parametrize("rtol_x", (1e-7,))
 @pytest.mark.parametrize("adaptive", (True,))
 @pytest.mark.parametrize("scheme", ('PySDM',))
 def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=False):
+    # arrange
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
         PySDM_products.PeakSupersaturation(name="S max"),
@@ -64,6 +71,7 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
     output = {product.name: [] for product in particulator.products.values()}
     output_attributes = {'volume': tuple([] for _ in range(particulator.n_sd))}
 
+    # act
     for _ in range(n_steps):
         particulator.run(steps=1)
         for product in particulator.products.values():
@@ -74,6 +82,7 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
             for drop_id in range(particulator.n_sd):
                 attr[drop_id].append(attr_data[drop_id])
 
+    # plot
     for drop_id, volume in enumerate(output_attributes['volume']):
         pyplot.semilogx(
             particulator.formulae.trivia.radius(volume=np.asarray(volume)) / si.um,
@@ -93,3 +102,7 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
     pyplot.title(f"rtol_thd={rtol_thd}; rtol_x={rtol_x}")
     if plot:
         pyplot.show()
+
+    # assert
+    assert signal.argrelextrema(np.asarray(output["RH"]), np.greater)[0].shape[0] == 1
+
