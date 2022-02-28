@@ -19,10 +19,13 @@ if not fakeThrustRTC:
         warn(f"importing CURandRTC failed with {error}")
 else:
     # noinspection PyUnresolvedReferences
-    from .test_helpers.fake_thrust_rtc import (
-        FakeThrustRTC as trtc,  # pylint: disable=unused-import
+    # fmt: off
+    # isort: off
+    from .test_helpers.fake_thrust_rtc import (  # pylint: disable=unused-import
+        FakeThrustRTC as trtc,
     )
-
+    # isort: on
+    # fmt: on
     # noinspection PyUnresolvedReferences
     rndrtc = None
 
