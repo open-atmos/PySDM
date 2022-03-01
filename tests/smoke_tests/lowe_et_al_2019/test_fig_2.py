@@ -25,8 +25,13 @@ class TestFig2:
         constants, aerosol, surface_tension, s_max, s_100m, n_100m
     ):
         # arrange
+        dt = 1 * si.s
+        w = .32 * si.m / si.s
+        z_max = 200 * si.m
+        n_steps = int(z_max / w / dt)
+        dz = z_max / n_steps
         settings = Settings(
-            dz=2/.32 * si.m,
+            dz=dz,
             n_sd_per_mode=32,
             model={'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
             aerosol=aerosol,
@@ -39,9 +44,8 @@ class TestFig2:
         output = simulation.run()
 
         # assert
-        # assert len(output['S_max']) == 2
-        i_100m = 312
-        #print(output["z"][i_100m])
+        i_100m = np.argmin(np.abs(np.asarray(output["z"]) - 100 * si.m))
+        print(i_100m, output['z'][i_100m])
         print(np.nanmax(output['S_max']), s_max)
         print(output['S_max'][i_100m], s_100m)
         print(output['n_c_cm3'][i_100m], n_100m)
