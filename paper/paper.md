@@ -86,6 +86,13 @@ This paper outlines subsequent developments in the "v2" releases of `PySDM`
 
 # Background and statement of need
 
+TODO: include information about the new processes (breakup and immersion freezing)
+  and conservation of superparticle number -- reference to Jacobson statement
+  on why NOT to use superparticles
+
+STORY: moving sectional/motivation --> importance of superparticle conservation -->
+  new processes
+
 Atmospheric cloud processes involve a complex interplay of dispersed-phase and 
   continuous-phase flows. 
 In the dispersed phase, microphysical particles range
@@ -151,32 +158,48 @@ This has been solved by devising super-particle-number-conserving
 The key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
   of extensions to SDM.
-To this end, we strive to maintain strict separation of concerns and extensive unit
-  test coverage in the project.
-## TODO: (edj) what does stricit separation of concerns mean?
+To this end, we strive to maintain strict modularity of the SDM building blocks, separation of
+  functionality and examples, and extensive unit test coverage in the project.
+The separation of physics information from backend engineering for GPU and CPU applications
+  is intended to enhance and accelerate continued scientific development of the SDM and examples.
+(EDJ: clean up this statement to better communicate; maybe use an example)
 We continue to expand and maintain a set of examples demonstrating project features 
   through reproduction of results from literature.
 
 # Summary of new features and examples in v2
 
-@Bartman_et_al_2022_JOSS
+## New PySDM Features: API in Brief
 
-@Bieli_et_al_2022
+Breakup `lines of code for add_dynamic` and description of necessary physics specifications
 
-@Jokulsdottir_and_Archer_2016
-## edj: I'm not sure we can actually replicate any of their figures
+Immersion freezing `lines of code for add_dynamic` and description of necessary physics specifications
 
-@Alpert_and_Knopf_2016
+Adaptive time-stepping `code for how to specify adaptivity` and mention external 
+  scipy solver for condensation
 
-@Shima_et_al_2020
+Reference that the above can be run in the same framework (specify environment, etc.) as in v1
 
-@Rothenberg_and_Wang_2017
+## Additional PySDM-examples
+Write 1 paragraph on each example, maybe some figures. Main goals:
+(1) Link back to the original JOSS paper
+(2) Give a clear overview of what user can expect from playing with existing examples,
+which are aimed at reproducing literature examples
 
-@Abdul_Razzak_and_Ghan_2000
+BREAKUP
+@Bieli_et_al_2022 - breakup
+@DeJong_et_al_2022 - breakup **maybe** (skip for now)
 
-@DeJong_et_al_2022
+IMMERSION FREEZING
+@Alpert_and_Knopf_2016 - immersion freezing with time-dependent model
+@Shima_et_al_2020 - immersion freezing with singular model
 
-@Ruehl_et_al_2016
+ACTIVATION
+@Rothenberg_and_Wang_2017 - pyrcel reproduction
+@Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
+@Ruehl_et_al_2016 - organics and influence on surface tension
+
+ADAPTIVITY (slayoo todo) -- **maybe** (skip for now)
+@Bartmann_TBD - adaptive vs. nonadaptive for condensation
 
 # Author contributions
 
