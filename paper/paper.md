@@ -53,91 +53,101 @@ bibliography: paper.bib
 ---
 
 # Introduction
+`PySDM` and the accompanying `PySDM-examples` packages are open-source modeling tools
+  for computational studies of atmospheric clouds, aerosols, and precipitation. The
+  project hinges on a particle-based modeling approach and Pythonic design and
+  implementation. 
+The eponymous `SDM` refers to the Super Droplet Method -- a 
+  Monte-Carlo algorithm introduced in @Shima_et_al_2009 to represent the coagulation
+  of droplets in modelling frameworks such as Large-Eddy Simulations (LES) of atmospheric
+  flows. 
+While the SDM has been applied to additional systems such as oceanic particles
+  as in @Jokulsdottir_and_Archer_2016, `PySDM` supports atmospheric particle 
+  processes relevant to cloud particles and precipitation of hydrometeors.
 
-`PySDM` and the accompanying `PySDM-examples` open-source packages serve as tools for
-  computational studies of atmospheric clouds and precipitation.
-Particle-based modelling approach and Pythonic design are the cruces of the project.
-
-The eponymous `SDM` stands for Super Droplet Method -- a Monte-Carlo algorithm
-  introduced in @Shima_et_al_2009 for representing coagulation of particles in 
-  modelling frameworks such as Large-Eddy Simulations (LES) of atmospheric
-  flows featuring formation of cloud particles 
-  and precipitation of hydrometeors.
-
-`PySDM` is implemented in Python with two alternative backends: multi-threaded
-  CPU backend implemented using the Numba Just-In-Time (JIT) compiler, and a 
-  GPU backend implemented using the `ThrustRTC` Python interface to the NVRTC 
-  runtime compilation library for CUDA.
-Entirety of `PySDM` code base can be run without employing Numba or GPU,
-  for instance for debugging or code-coverage analysis purposes.
+`PySDM` is implemented modularly in Python with two alternative parallel backends: 
+  a multi-threaded CPU implementation using the Numba Just-In-Time (JIT) compiler, 
+  and a GPU implementation using the `ThrustRTC` Python interface to the NVRTC 
+  runtime compilation library for CUDA. 
+The entire `PySDM` codebase can also be 
+  run without the Numba or GPU parallel backends (for debugging or code-coverage 
+  analysis, for instance).
  
 The initial "v1" releases of `PySDM` outlined in a preceding JOSS paper
   (@Bartman_et_al_2022_JOSS) featured representation of the following 
   processes: condensational growth/evaporation, collisional growth,
   aqueous sulphur chemistry, as well as coupling of particle transport
   and vapour/heat budget with grid-discretised fluid flow.
-This paper outlines following developments in the "v2" releases of `PySDM`
-  including two new processes -- collisional breakup and immersion freezing -- 
-  and a set of examples depicting the new functionalities
-  using simulation setups described in literature.
-Additionally, "v2" comes with enhanced support for adaptive timestepping.
+This paper outlines subsequent developments in the "v2" releases of `PySDM`
+  including two new processes (collisional breakup and immersion freezing), 
+  enhanced support for adaptive timestepping, and examples which illustrate the 
+  new functionalities using simulation frameworks described in the scientific 
+  literature.
 
 # Background and statement of need
 
-Processes occurring in atmospheric clouds pertain to the interplay of the dispersed-
-  and continuous-phases of atmospheric flows.
-The dispersed phase here refers to the aerosol particles ranging in size from
-  nanometers to micrometers, the cloud droplets forming on these aerosol particles,
-  the ice particles, and various types of hydrometeors.
-The continuous phase denotes moist air which exchanges heat, moisture and momentum 
-  with the particles.
+Atmospheric cloud processes involve a complex interplay of dispersed-phase and 
+  continuous-phase flows. 
+In the dispersed phase, microphysical particles range
+  range in size from nanometer-sized aerosols, to micron-scale cloud droplets and
+  ice particles that form on these aerosols, to millimeter and larger sized 
+  hydrometeors. 
+These particles interact with each other as well as with the 
+  continuous phase moist air environment through exchange of heat, moisture,
+  and momentum.
 
-One way of representing clouds in numerical fluid-dynamics simulations is to 
-  model liquid and ice water content as continuous fields in space, despite their
-  inherent particulate nature.
-This however hinders representation of the diverse 
-  physical and compositional characteristics of the particles which determine
+Traditional methods of representing clouds in numerical fluid-dynamics simulations
+  model liquid and ice water content as continuous fields in space, using a mean
+  field approximation for the particle populations.
+This reductionist representation comes at the cost of the diverse physical 
+  and compositional characteristics of the particles, which frequently determine
   the initial stages of formation of droplets and ice particles.
-Detailed information on the density and shape of particles is also essential
-  to model particle collisions and aerodynamic interactions.
-Thus, an apt modelling choice is to model the dispersed phase using 
-  a particle-based approach.
+Detailed information regarding the density and shape of particles is also essential
+  for modeling particle collisions and aerodynamic interactions.
+A particle-based approach has the benefit of retaining the diverse characteristics
+  of the diverse phase, making it an ideal choice to capture these physics.
 
-In process-level models lacking any spatial dimensions, the particle-based approach
-  is congruent with the so-called moving-sectional discretisation of the
-  particle attribute space.
-The attribute space spans such dimensions as droplet water content, soluble species mass and hygroscopicity, insoluble 
-  material surface, etc.
-The moving-sectional models can be traced back to the very beginnings of computational 
+In process-level models lacking any spatial dimensions (a "box" model), 
+  the particle-based approach is congruent with the so-called moving-sectional 
+  discretisation of the particle attribute space.
+The attribute space includes properties such as droplet size or water content, 
+  soluble species mass and aerosol hygroscopicity, insoluble material surface, etc.
+Moving-sectional models can be traced back to the very beginnings of computational 
   studies of cloud microphysics (@Howell_1949).
 Coupling particle-based/moving-sectional (Lagrangian) representation of the attribute space
-  with gridded (Eulerian) fluid-flow dynamics, as in the SDM, can be traced back to early
+  with gridded (Eulerian) fluid-flow dynamics with spatial dimensions, as in the SDM,
+  can be traced back to early
   systems for simulating dispersal of atmospheric pollutants (@Lange_1978).
 Such coupling implies inclusion of spatial location among 
   particle attributes.
 
-One of notable traits of the particle-based representation is its suitability 
-  for Monte-Carlo techniques in which each simulation represents
+A notable traits of the particle-based representation is its suitability 
+  for Monte-Carlo techniques, in which each simulation represents
   just one possible realisation of the system evolution.
-To this end, the attribute space can be randomly sampled at initialisation.
-One of the constituting assumptions here is that one computational
-  particle represents a (significant) multiplicity of modelled particles,
+This Monte-Carlo approach is ideal for representing processes such as particle
+  collisions and breakup, which are inherently stochastic at atmospherically
+  relevant scales.
+Upon initialisation, the attribute space can be randomly sampled to generate a
+  representative populuation of computational particles. 
+In the SDM, a core
+  assumption is that one computational particle represents a (significant) multiplicity 
+  of modelled particles in order to make the modeling of a physical system attainable,
   hence the term super-particle (e.g., @Zannetti_1983) or super-droplet.
 
-Despite numerous benefits of employing particle-based/moving-sectional representation
+Despite the numerous benefits of particle-based/moving-sectional representations
   (as opposed to continuous-field/fixed-bin approaches) for
-  modelling atmospheric aerosols, clouds and precipitation, this technique 
-  has long been considered inapplicable in three-dimensional atmospheric
+  modelling atmospheric aerosols, clouds and precipitation, these techniques
+  were long considered incomplete for three-dimensional atmospheric
   models (@Jacobson_2005, sect.~13.5).
-This was due to limitations in representation of processes such as nucleation,
-  and collisions which lead to
-  appearance in the system of particles of sizes not representable without
+Limitations include processes such as nucleation and collisions 
+  which lead to appearance in the system of particles of sizes not representable without
   dynamically enlarging the particle state vector.
 This has been solved by devising super-particle-number-conserving 
-  Monte-Carlo schemes such as SDM (@Shima_et_al_2009).
+  Monte-Carlo schemes such as SDM (@Shima_et_al_2009), as well as a new conservative
+  scheme for particle based breakup in the SDM (@DeJong_et_al_2022).
 
 `PySDM` features implementation of the original SDM scheme as formulated in 
-  @Shima_et_al_2009 as well as several extension to it outlined in subsequent section.
+  @Shima_et_al_2009 as well as several extensions, which are outlined in subsequent sections.
 The key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
   of extensions to SDM.
@@ -182,5 +192,6 @@ Part of the outlined developments was supported by the generosity of Eric and We
 Development of ice-phase microphysics representation has been supported through 
 grant no. DE-SC0021034 by the Atmospheric System Research Program and 
 Atmospheric Radiation Measurement Program sponsored by the U.S. Department of Energy (DOE).
+EDJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
 
 # References
