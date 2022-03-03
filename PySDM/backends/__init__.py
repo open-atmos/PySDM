@@ -51,7 +51,7 @@ else:
     import numpy as np
 
     from PySDM.backends.thrust_rtc import ThrustRTC  # pylint: disable=ungrouped-imports
-    from PySDM.backends.impl_common.random_common import RandomCommon
+    from PySDM.backends.impl_common.random_common import RandomCommon  # pylint: disable=ungrouped-imports
     ThrustRTC.ENABLE = False
 
     class Random(RandomCommon):  # pylint: disable=too-few-public-methods
