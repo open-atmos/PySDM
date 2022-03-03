@@ -1,5 +1,5 @@
 """
-Coalescence kernels including
+Collision kernels including
 [Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/golovin.html),
 [Geometric](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/geometric.html)
 and other...

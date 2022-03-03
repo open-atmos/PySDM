@@ -96,7 +96,6 @@ class TestProducts:
         np.testing.assert_allclose(value1, count / n_steps / dt)
         np.testing.assert_allclose(value2, count / n_steps / dt)
 
-
     @staticmethod
     @pytest.mark.parametrize('in_out_pair', (
         ('CPUTime', 'CPU time'),

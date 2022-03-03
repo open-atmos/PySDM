@@ -1,6 +1,5 @@
 """
 P(x) = exp(-x / lambda)
-Created at 13.05.2021 by edejong
 """
 
 

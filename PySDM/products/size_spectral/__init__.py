@@ -2,7 +2,7 @@
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
 from .particle_size_spectrum import ParticleSizeSpectrumPerMass, ParticleSizeSpectrumPerVolume
-from .particles_concentration import ParticleConcentration, ParticleSpecificConcentration
+from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
 from .particle_volume_versus_radius_logarithm_spectrum import \
     ParticleVolumeVersusRadiusLogarithmSpectrum
 from .total_particle_concentration import TotalParticleConcentration
@@ -10,3 +10,4 @@ from .total_particle_specific_concentration import TotalParticleSpecificConcentr
 from .water_mixing_ratio import WaterMixingRatio
 from .radius_binned_number_averaged_terminal_velocity \
     import RadiusBinnedNumberAveragedTerminalVelocity
+from .arbitrary_moment import VolumeFirstMoment, RadiusSixthMoment, RadiusFirstMoment

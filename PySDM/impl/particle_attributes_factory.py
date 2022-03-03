@@ -8,7 +8,7 @@ from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
-class ParticlesFactory:
+class ParticleAttributesFactory:
 
     @staticmethod
     def attributes(particulator, req_attr, attributes):

@@ -3,14 +3,16 @@ import inspect
 import numpy as np
 from matplotlib import pyplot
 from PySDM import Formulae
-from PySDM.physics import constants_defaults as const
+from PySDM.formulae import _choices
+from PySDM.physics import constants_defaults as const, saturation_vapour_pressure
 
 
 def test_saturation_vapour_pressures(plot=False):
     # Arrange
+    choices = _choices(saturation_vapour_pressure)
     formulae = {
         k: Formulae(saturation_vapour_pressure=k)
-        for k in ('FlatauWalkoCotton', 'AugustRocheMagnus')
+        for k in choices
     }
     temperature = np.linspace(-.2, .4)
 
@@ -20,7 +22,8 @@ def test_saturation_vapour_pressures(plot=False):
     for key, val in formulae.items():
         for name, func in inspect.getmembers(val.saturation_vapour_pressure):
             if name[:2] not in ('__', 'a_'):
-                pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
+                if not(key == "AugustRocheMagnus" and name=="ice_Celsius"):
+                    pyplot.plot(temperature, func(temperature), label=f"{key}::{name}")
     pyplot.grid()
     pyplot.legend()
     pyplot.xlabel('T [C]')
@@ -30,24 +33,29 @@ def test_saturation_vapour_pressures(plot=False):
 
     # Assert
     temperature = np.linspace(-20, 20, 100)
-    np.testing.assert_allclose(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(temperature),
-        Formulae(saturation_vapour_pressure='AugustRocheMagnus')
-            .saturation_vapour_pressure.pvs_Celsius(temperature),
-        rtol=1e-2
-    )
-    temperature = np.linspace(-20, 0.3, 100)
-    np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.ice_Celsius(temperature),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(temperature)
-    )
-    temperature = np.linspace(0.35, 20, 100)
-    np.testing.assert_array_less(
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.pvs_Celsius(temperature),
-        Formulae(saturation_vapour_pressure='FlatauWalkoCotton')
-            .saturation_vapour_pressure.ice_Celsius(temperature)
-    )
+    choices_keys = tuple(choices.keys())
+    for choice in choices_keys[1:]:
+        np.testing.assert_allclose(
+            Formulae(saturation_vapour_pressure=choices_keys[0])
+                .saturation_vapour_pressure.pvs_Celsius(temperature),
+            Formulae(saturation_vapour_pressure=choice)
+                .saturation_vapour_pressure.pvs_Celsius(temperature),
+            rtol=2e-2
+        )
+
+    for choice in choices_keys[1:]:
+        if choice != 'AugustRocheMagnus':
+            temperature = np.linspace(-20, 0, 100)
+            np.testing.assert_array_less(
+                Formulae(saturation_vapour_pressure=choices_keys[0])
+                    .saturation_vapour_pressure.ice_Celsius(temperature),
+                Formulae(saturation_vapour_pressure=choice)
+                    .saturation_vapour_pressure.pvs_Celsius(temperature)
+            )
+            temperature = np.linspace(1, 1, 100)
+            np.testing.assert_array_less(
+                Formulae(saturation_vapour_pressure=choices_keys[0])
+                    .saturation_vapour_pressure.pvs_Celsius(temperature),
+                Formulae(saturation_vapour_pressure=choice)
+                    .saturation_vapour_pressure.ice_Celsius(temperature)
+            )
