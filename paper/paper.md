@@ -153,6 +153,7 @@ The key motivation behind development of `PySDM` has been to offer the community
   of extensions to SDM.
 To this end, we strive to maintain strict separation of concerns and extensive unit
   test coverage in the project.
+## TODO: (edj) what does stricit separation of concerns mean?
 We continue to expand and maintain a set of examples demonstrating project features 
   through reproduction of results from literature.
 
@@ -163,6 +164,7 @@ We continue to expand and maintain a set of examples demonstrating project featu
 @Bieli_et_al_2022
 
 @Jokulsdottir_and_Archer_2016
+## edj: I'm not sure we can actually replicate any of their figures
 
 @Alpert_and_Knopf_2016
 
