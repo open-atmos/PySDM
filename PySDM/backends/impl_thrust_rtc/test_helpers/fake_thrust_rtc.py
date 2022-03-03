@@ -59,6 +59,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def DVInt64(number: int):  # pylint: disable=invalid-name
+        assert isinstance(number, int)
         return FakeThrustRTC.Number(number)
 
     @staticmethod
@@ -67,6 +68,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def DVBool(number: bool):  # pylint: disable=invalid-name
+        assert isinstance(number, bool)
         return FakeThrustRTC.Number(number)
 
     @staticmethod
