@@ -2,21 +2,22 @@
 P(m; x, y) = nu^2 * (x+y) exp(-m * nu)
 nu = 1/m* where m* is a scaling factor for fragment size dist.
 """
-
+from PySDM.physics import si
 
 class Feingold1988Frag:
 
-    def __init__(self, scale, fragtol=1e-3):
+    def __init__(self, scale, fragtol=1e-3, vmin=0.0):
         self.particulator = None
         self.scale = scale
         self.fragtol = fragtol
+        self.vmin = vmin
         self.max_size = None
         self.frag_size = None
         self.sum_of_volumes = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute('radius')
+        builder.request_attribute('volume')
         self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
                                                                 dtype=float)
         self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
@@ -28,5 +29,5 @@ class Feingold1988Frag:
         self.max_size.max(self.particulator.attributes['volume'],is_first_in_pair)
         self.sum_of_volumes.sum(self.particulator.attributes['volume'],is_first_in_pair)
         self.particulator.backend.feingold1988_fragmentation(output, self.scale, self.frag_size,
-            self.max_size, self.sum_of_volumes, u01, self.fragtol)
+            self.max_size, self.sum_of_volumes, u01, self.vmin, self.fragtol)
         

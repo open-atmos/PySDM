@@ -47,9 +47,9 @@ def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity,
              breakup_rate, success):
-    print('gamma = ', gamma[i])
+    #print('gamma = ', gamma[i])
     if n_fragment[i] ** gamma[i] > max_multiplicity:
-        print('issue with success: n_fragment = ', n_fragment[i], ' and gamma = ', gamma[i])
+        print('issue with success: n_fragment = ', n_fragment[i], ' and gamma = ', gamma[i], ', from multiplicities ', multiplicity[j], ', ', multiplicity[k])
         success[0] = False
         return
     atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
@@ -206,7 +206,8 @@ class CollisionsMethods(BackendMethods):
             Ec.data, Eb.data, n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
             breakup_rate.data, is_first_in_pair.indicator.data, success, max_multiplicity
         )
-        assert success
+        if not success:
+            raise Exception(f"Breakup step failed due to multiplicity exceeding maximum allowed")
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
@@ -225,39 +226,46 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(n_fragment, scale, frag_size, r_max, rand):
+    def __exp_fragmentation_body(n_fragment, scale, frag_size, v_max, x_plus_y, rand):
         '''
         Exponential PDF
         '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1-rand[i])
-            if frag_size[i] > r_max[i]:
+            if frag_size[i] > v_max[i]:
                 n_fragment[i] = 1
             else:
-                n_fragment[i] = r_max[i] / frag_size[i]
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
 
-    def exp_fragmentation(self, n_fragment, scale, frag_size, r_max, rand):
-        self.__exp_fragmentation_body(n_fragment.data, scale, frag_size.data, r_max.data, rand.data)
+    def exp_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand):
+        self.__exp_fragmentation_body(n_fragment.data, scale, frag_size.data, v_max.data, 
+            x_plus_y.data, rand.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __feingold1988_fragmentation_body(n_fragment, scale, frag_size, r_max, x_plus_y, rand, fragtol):
+    def __feingold1988_fragmentation_body(n_fragment, scale, frag_size, v_max, x_plus_y, rand, 
+        fragtol, vmin):
         '''
         Scaled exponential PDF
         '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             log_arg = 1-rand[i]*scale/x_plus_y[i]
+            print('sum of colliding masses = ',x_plus_y[i])
+            print('log arg = ',log_arg)
             if log_arg < fragtol:
                 log_arg = fragtol
             frag_size[i] = -scale * np.log(log_arg)
-            if frag_size[i] > r_max[i]:
+            print('fragment size = ', frag_size[i])
+            if frag_size[i] > v_max[i]:
                 n_fragment[i] = 1
             else:
-                n_fragment[i] = r_max[i] / frag_size[i]
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            print('number of fragments = ', n_fragment[i])
 
-    def feingold1988_fragmentation(self, n_fragment, scale, frag_size, r_max, x_plus_y, rand, fragtol):
-        self.__feingold1988_fragmentation_body(n_fragment.data, scale, frag_size.data, r_max.data, 
-                                               x_plus_y.data, rand.data, fragtol)
+    def feingold1988_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, 
+        fragtol, vmin):
+        self.__feingold1988_fragmentation_body(n_fragment.data, scale, frag_size.data, v_max.data, 
+                                               x_plus_y.data, rand.data, fragtol, vmin)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
