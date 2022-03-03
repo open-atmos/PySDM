@@ -68,7 +68,6 @@ class Collision:
                  coalescence_efficiency,
                  breakup_efficiency,
                  fragmentation_function,
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -88,7 +87,6 @@ class Collision:
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
 
-        self.seed = seed
         self.rnd_opt_frag = None
         self.rnd_opt_coll = None
         self.rnd_opt_proc = None
@@ -122,7 +120,7 @@ class Collision:
         rnd_args = {
             &#39;optimized_random&#39;: self.optimized_random,
             &#39;dt_min&#39;: self.dt_coal_range[0],
-            &#39;seed&#39;: self.seed
+            &#39;seed&#39;: builder.formulae.seed
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:
@@ -278,7 +276,6 @@ class Coalescence(Collision):
     def __init__(self,
                  collision_kernel,
                  coalescence_efficiency=ConstEc(Ec=1),
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -292,7 +289,6 @@ class Coalescence(Collision):
                  coalescence_efficiency,
                  breakup_efficiency,
                  fragmentation_function,
-                 seed=seed,
                  croupier=croupier,
                  optimized_random=optimized_random,
                  substeps=substeps,
@@ -306,7 +302,6 @@ class Breakup(Collision):
     def __init__(self,
                  collision_kernel,
                  fragmentation_function,
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -320,7 +315,6 @@ class Breakup(Collision):
                 coalescence_efficiency,
                 breakup_efficiency,
                 fragmentation_function,
-                seed=seed,
                 croupier=croupier,
                 optimized_random=optimized_random,
                 substeps=substeps,
@@ -340,7 +334,7 @@ class Breakup(Collision):
 <dl>
 <dt id="PySDM.dynamics.collisions.collision.Breakup"><code class="flex name class">
 <span>class <span class="ident">Breakup</span></span>
-<span>(</span><span>collision_kernel, fragmentation_function, seed=None, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
+<span>(</span><span>collision_kernel, fragmentation_function, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -352,7 +346,6 @@ class Breakup(Collision):
     def __init__(self,
                  collision_kernel,
                  fragmentation_function,
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -366,7 +359,6 @@ class Breakup(Collision):
                 coalescence_efficiency,
                 breakup_efficiency,
                 fragmentation_function,
-                seed=seed,
                 croupier=croupier,
                 optimized_random=optimized_random,
                 substeps=substeps,
@@ -390,7 +382,7 @@ class Breakup(Collision):
 </dd>
 <dt id="PySDM.dynamics.collisions.collision.Coalescence"><code class="flex name class">
 <span>class <span class="ident">Coalescence</span></span>
-<span>(</span><span>collision_kernel, coalescence_efficiency=&lt;PySDM.dynamics.collisions.coalescence_efficiencies.constEc.ConstEc object&gt;, seed=None, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
+<span>(</span><span>collision_kernel, coalescence_efficiency=&lt;PySDM.dynamics.collisions.coalescence_efficiencies.constEc.ConstEc object&gt;, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -402,7 +394,6 @@ class Breakup(Collision):
     def __init__(self,
                  collision_kernel,
                  coalescence_efficiency=ConstEc(Ec=1),
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -416,7 +407,6 @@ class Breakup(Collision):
                  coalescence_efficiency,
                  breakup_efficiency,
                  fragmentation_function,
-                 seed=seed,
                  croupier=croupier,
                  optimized_random=optimized_random,
                  substeps=substeps,
@@ -441,7 +431,7 @@ class Breakup(Collision):
 </dd>
 <dt id="PySDM.dynamics.collisions.collision.Collision"><code class="flex name class">
 <span>class <span class="ident">Collision</span></span>
-<span>(</span><span>collision_kernel, coalescence_efficiency, breakup_efficiency, fragmentation_function, seed=None, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0), enable_breakup: bool = True)</span>
+<span>(</span><span>collision_kernel, coalescence_efficiency, breakup_efficiency, fragmentation_function, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0), enable_breakup: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -455,7 +445,6 @@ class Breakup(Collision):
                  coalescence_efficiency,
                  breakup_efficiency,
                  fragmentation_function,
-                 seed=None,
                  croupier=None,
                  optimized_random=False,
                  substeps: int = 1,
@@ -475,7 +464,6 @@ class Breakup(Collision):
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
 
-        self.seed = seed
         self.rnd_opt_frag = None
         self.rnd_opt_coll = None
         self.rnd_opt_proc = None
@@ -509,7 +497,7 @@ class Breakup(Collision):
         rnd_args = {
             &#39;optimized_random&#39;: self.optimized_random,
             &#39;dt_min&#39;: self.dt_coal_range[0],
-            &#39;seed&#39;: self.seed
+            &#39;seed&#39;: builder.formulae.seed
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:
@@ -756,7 +744,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
     rnd_args = {
         &#39;optimized_random&#39;: self.optimized_random,
         &#39;dt_min&#39;: self.dt_coal_range[0],
-        &#39;seed&#39;: self.seed
+        &#39;seed&#39;: builder.formulae.seed
     }
     self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
     if self.enable_breakup:

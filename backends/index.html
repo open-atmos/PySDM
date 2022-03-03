@@ -82,11 +82,12 @@ else:
     import numpy as np
 
     from PySDM.backends.thrust_rtc import ThrustRTC  # pylint: disable=ungrouped-imports
+    from PySDM.backends.impl_common.random_common import RandomCommon  # pylint: disable=ungrouped-imports
     ThrustRTC.ENABLE = False
 
-    class Random:  # pylint: disable=too-few-public-methods
+    class Random(RandomCommon):  # pylint: disable=too-few-public-methods
         def __init__(self, size, seed):
-            self.size = size
+            super().__init__(size, seed)
             self.generator = np.random.default_rng(seed)
 
         def __call__(self, storage):
@@ -218,15 +219,19 @@ alias for ThrustRTC
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Random:  # pylint: disable=too-few-public-methods
+<pre><code class="python">class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     def __init__(self, size, seed):
-        self.size = size
+        super().__init__(size, seed)
         self.generator = np.random.default_rng(seed)
 
     def __call__(self, storage):
         # pylint: disable=unsupported-assignment-operation
         storage.data.ndarray[:] = self.generator.uniform(0, 1, storage.shape)</code></pre>
 </details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.backends.impl_common.random_common.RandomCommon" href="impl_common/random_common.html#PySDM.backends.impl_common.random_common.RandomCommon">RandomCommon</a></li>
+</ul>
 </dd>
 <dt id="PySDM.backends.ThrustRTC"><code class="flex name class">
 <span>class <span class="ident">GPU</span></span>
