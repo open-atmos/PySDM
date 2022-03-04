@@ -350,6 +350,7 @@ The paper was composed by SA and PB and is partially based on the content of the
 
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
 We thank Fei Yang (https://github.com/fynv/) for creating and supporting ThrustRTC.
-Development of PySDM has been carried out within the POWROTY/REINTEGRATION programme of the Foundation for Polish Science co-financed by the European Union under the European Regional Development Fund (POIR.04.04.00-00-5E1C/18).
+Development of PySDM has been initiated with support from the POWROTY/REINTEGRATION programme of the Foundation for Polish Science co-financed by the European Union under the European Regional Development Fund (POIR.04.04.00-00-5E1C/18).
+We gratefully acknowledge the generous support of Eric and Wendy Schmidt (by recommendation of Schmidt Futures), the Heising-Simons Foundation, and the National Science Foundation (grant AGS-1835860).
 
 # References
