@@ -11,13 +11,13 @@ class Bigg_1953:
 
     @staticmethod
     def pdf(const, T, A_insol):  # pylint: disable=unused-argument
-        A = np.log(1 - .5)
+        A = np.log(1 - 0.5)
         B = const.BIGG_DT_MEDIAN - const.T0
-        return - A * np.exp(A * np.exp(B + T) + B + T)
+        return -A * np.exp(A * np.exp(B + T) + B + T)
 
     @staticmethod
     def cdf(const, T, A_insol):  # pylint: disable=unused-argument
-        return np.exp(np.log(1 - .5) * np.exp(const.BIGG_DT_MEDIAN - (const.T0 - T)))
+        return np.exp(np.log(1 - 0.5) * np.exp(const.BIGG_DT_MEDIAN - (const.T0 - T)))
 
     @staticmethod
     def median(const):

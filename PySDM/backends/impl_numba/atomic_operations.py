@@ -9,7 +9,9 @@ from numba.extending import lower_builtin, type_callable
 from numba.np.arrayobj import basic_indexing, make_array, normalize_indices
 
 
-def _atomic_rmw(context, builder, operation, arrayty, val, ptr):  # pylint: disable=too-many-arguments
+def _atomic_rmw(
+    context, builder, operation, arrayty, val, ptr
+):  # pylint: disable=too-many-arguments
     assert arrayty.aligned  # We probably have to have aligned arrays.
     dataval = context.get_value_as_data(builder, arrayty.dtype, val)
     return builder.atomic_rmw(operation, ptr, dataval, "monotonic")
@@ -51,9 +53,16 @@ def _declare_atomic_array_op(iop, uop, fop):
             ary = make_array(aryty)(context, builder, ary)
 
             # First try basic indexing to see if a single array location is denoted.
-            index_types, indices = normalize_indices(context, builder, index_types, indices)
+            index_types, indices = normalize_indices(
+                context, builder, index_types, indices
+            )
             dataptr, shapes, _strides = basic_indexing(
-                context, builder, aryty, ary, index_types, indices,
+                context,
+                builder,
+                aryty,
+                ary,
+                index_types,
+                indices,
                 boundscheck=context.enable_boundscheck,
             )
             if shapes:

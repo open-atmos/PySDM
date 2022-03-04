@@ -18,7 +18,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
         def __init__(self, ndarray):
             self.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
+            self.range = lambda start, stop: FakeThrustRTC.DVRange(
+                self.ndarray[start:stop]
+            )
 
         def __setitem__(self, key, value):
             self.ndarray[key] = value
@@ -35,7 +37,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
             self.ndarray: np.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
-            self.range = lambda start, stop: FakeThrustRTC.DVRange(self.ndarray[start: stop])
+            self.range = lambda start, stop: FakeThrustRTC.DVRange(
+                self.ndarray[start:stop]
+            )
             self.to_host = lambda: np.copy(self.ndarray)
 
         def __setitem__(self, key, value):
@@ -47,11 +51,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             return self.ndarray[item]
 
         def name_elem_cls(self):
-            return {
-                'f': 'float',
-                'd': 'double',
-                'l': 'long'
-            }[np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_]
+            return {"f": "float", "d": "double", "l": "long"}[
+                np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_
+            ]
 
     class Number:
         def __init__(self, number):
@@ -81,13 +83,17 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             self.code = to_numba("__internal_python_method__", args, iter_var, body)
             exec(self.code, d)  # pylint: disable=exec-used
             self.make = types.MethodType(d["make"], self)
-            self.__internal_python_method__ = self.make()  # pylint: disable=not-callable
+            self.__internal_python_method__ = (
+                self.make()  # pylint: disable=not-callable
+            )
 
         def launch_n(self, size, args):
             if size == 0:
                 raise SystemError("An internal error happened :) (size==0).")
             try:
-                result = self.__internal_python_method__(size, *(arg.ndarray for arg in args))
+                result = self.__internal_python_method__(
+                    size, *(arg.ndarray for arg in args)
+                )
             except (NumbaError, IndexError) as error:
                 warnings.warn(f"NumbaError occurred while JIT-compiling: {self.code}")
                 raise error
@@ -119,19 +125,19 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     @staticmethod
     def device_vector(elem_cls, size):
         if not size > 0:
-            raise ValueError('size must be >0')
-        if elem_cls == 'double':
+            raise ValueError("size must be >0")
+        if elem_cls == "double":
             dtype = np.float64
-        elif elem_cls == 'float':
+        elif elem_cls == "float":
             dtype = np.float32
-        elif elem_cls == 'int64_t':
+        elif elem_cls == "int64_t":
             dtype = np.int64
-        elif elem_cls == 'uint64_t':
+        elif elem_cls == "uint64_t":
             dtype = np.uint64
-        elif elem_cls == 'bool':
+        elif elem_cls == "bool":
             dtype = np.bool_
         else:
-            raise NotImplementedError(f'Unsupported type {elem_cls}')
+            raise NotImplementedError(f"Unsupported type {elem_cls}")
         result = np.empty(size, dtype=dtype)
         return FakeThrustRTC.DVVector(result)
 

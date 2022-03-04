@@ -1,27 +1,35 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import struct
+
 import numpy as np
 import pytest
 from PySDM_examples.Berry_1967.settings import Settings
+
 from PySDM.backends import ThrustRTC
 from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
+from PySDM.dynamics.collisions.collision_kernels import (
+    Electric,
+    Geometric,
+    Golovin,
+    Hydrodynamic,
+)
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric, Electric, Hydrodynamic
+
 from ...backends_fixture import backend_class
 
-assert hasattr(backend_class, '_pytestfixturefunction')
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-@pytest.mark.parametrize('croupier', ('local', 'global'))
-@pytest.mark.parametrize('adaptive', (True, False))
-@pytest.mark.parametrize('kernel', (Geometric(), Electric(), Hydrodynamic()))
+@pytest.mark.parametrize("croupier", ("local", "global"))
+@pytest.mark.parametrize("adaptive", (True, False))
+@pytest.mark.parametrize("kernel", (Geometric(), Electric(), Hydrodynamic()))
 # pylint: disable=redefined-outer-name
 def test_coalescence(backend_class, kernel, croupier, adaptive):
-    if backend_class == ThrustRTC and croupier == 'local':  # TODO #358
+    if backend_class == ThrustRTC and croupier == "local":  # TODO #358
         return
-    if backend_class == ThrustRTC and adaptive and croupier == 'global':  # TODO #329
+    if backend_class == ThrustRTC and adaptive and croupier == "global":  # TODO #329
         return
     # Arrange
     s = Settings()
@@ -31,7 +39,9 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
     builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
+    attributes["volume"], attributes["n"] = ConstantMultiplicity(s.spectrum).sample(
+        s.n_sd
+    )
     builder.add_dynamic(Coalescence(kernel, croupier=croupier, adaptive=adaptive))
     particulator = builder.build(attributes)
 
@@ -40,7 +50,7 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
+        volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert
     x_max = 0
@@ -62,7 +72,9 @@ def test_coalescence_2_sd(backend_class):
     builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
-    attributes['volume'], attributes['n'] = ConstantMultiplicity(s.spectrum).sample(s.n_sd)
+    attributes["volume"], attributes["n"] = ConstantMultiplicity(s.spectrum).sample(
+        s.n_sd
+    )
     builder.add_dynamic(Coalescence(s.kernel, adaptive=False))
     particulator = builder.build(attributes)
 
@@ -71,7 +83,7 @@ def test_coalescence_2_sd(backend_class):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        volumes[particulator.n_steps] = particulator.attributes['volume'].to_ndarray()
+        volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert
     x_max = 0

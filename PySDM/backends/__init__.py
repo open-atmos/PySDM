@@ -3,15 +3,17 @@ Backend classes: CPU=`PySDM.backends.numba.Numba`
 and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 """
 import ctypes
-import warnings
 import sys
+import warnings
+
 from numba import cuda
+
 from .numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
 def _cuda_is_available():
-    lib_names = ('libcuda.so', 'libcuda.dylib', 'cuda.dll')
+    lib_names = ("libcuda.so", "libcuda.dylib", "cuda.dll")
     for libname in lib_names:
         try:
             cuda_lib = ctypes.CDLL(libname)
@@ -31,7 +33,7 @@ def _cuda_is_available():
             f"CUDA library found but cuInit() failed (error code: {result};"
             f" message: {error_str.value.decode()})"
         )
-        if 'google.colab' in sys.modules:
+        if "google.colab" in sys.modules:
             warnings.warn(
                 "to use GPU on Colab set hardware accelerator to 'GPU' before session start"
                 ' in the "Runtime :: Change runtime type :: Hardware accelerator" menu'

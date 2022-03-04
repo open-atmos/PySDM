@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM_examples.Shipway_and_Hill_2012 import Settings
 import numpy as np
+from PySDM_examples.Shipway_and_Hill_2012 import Settings
 
 
 class TestSettings:
@@ -19,9 +19,9 @@ class TestSettings:
     @staticmethod
     def test_qv():
         settings = Settings(n_sd_per_gridbox=1, rho_times_w_1=1)
-        assert settings.qv(0) == .015
-        assert settings.qv(740) == .0138
-        np.testing.assert_approx_equal(settings.qv(3260), .0024)
+        assert settings.qv(0) == 0.015
+        assert settings.qv(740) == 0.0138
+        np.testing.assert_approx_equal(settings.qv(3260), 0.0024)
 
     @staticmethod
     def test_rhod():

@@ -1,7 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 from matplotlib import pyplot
-from PySDM_examples.Shipway_and_Hill_2012 import Simulation, Settings
+from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
+
 from PySDM.physics import si
 
 
@@ -17,23 +18,25 @@ class TestInitialCondition:
 
         # Plot
         if plot:
-            for var in ('RH', 'T', 'qv', 'p'):
-                pyplot.plot(output[var][:, 0], output['z'], linestyle='--', marker='o')
-                pyplot.ylabel('Z [m]')
-                pyplot.xlabel(var + ' [' + simulation.particulator.products[var].unit + ']')
+            for var in ("RH", "T", "qv", "p"):
+                pyplot.plot(output[var][:, 0], output["z"], linestyle="--", marker="o")
+                pyplot.ylabel("Z [m]")
+                pyplot.xlabel(
+                    var + " [" + simulation.particulator.products[var].unit + "]"
+                )
                 pyplot.grid()
                 pyplot.show()
 
         # Assert
-        assert output['RH'].shape == (settings.nz, 1)
+        assert output["RH"].shape == (settings.nz, 1)
 
-        assert 35 < np.amin(output['RH']) < 40
-        assert 110 < np.amax(output['RH']) < 115
+        assert 35 < np.amin(output["RH"]) < 40
+        assert 110 < np.amax(output["RH"]) < 115
 
-        assert 700 * si.hPa < np.amin(output['p']) < 710 * si.hPa
-        assert (np.diff(output['p']) < 0).all()
-        assert 950 * si.hPa < np.amax(output['p']) < 1000 * si.hPa
+        assert 700 * si.hPa < np.amin(output["p"]) < 710 * si.hPa
+        assert (np.diff(output["p"]) < 0).all()
+        assert 950 * si.hPa < np.amax(output["p"]) < 1000 * si.hPa
 
-        assert 280 * si.K < np.amin(output['T']) < 285 * si.K
-        assert output['T'][0] > np.amin(output['T'])
-        assert 295 * si.K < np.amax(output['T']) < 300 * si.K
+        assert 280 * si.K < np.amin(output["T"]) < 285 * si.K
+        assert output["T"][0] > np.amin(output["T"])
+        assert 295 * si.K < np.amax(output["T"]) < 300 * si.K

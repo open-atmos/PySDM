@@ -1,12 +1,14 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import pytest
 import numpy as np
+import pytest
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
+
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
+
 from .constants import constants
 
-assert hasattr(constants, '_pytestfixturefunction')
+assert hasattr(constants, "_pytestfixturefunction")
 
 
 class TestFig2:
@@ -30,7 +32,7 @@ class TestFig2:
             n_sd_per_mode=32,
             model={'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
             aerosol=aerosol,
-            spectral_sampling=spectral_sampling.ConstantMultiplicity
+            spectral_sampling=spectral_sampling.ConstantMultiplicity,
         )
         settings.output_interval = 10 * settings.dt
         simulation = Simulation(settings)

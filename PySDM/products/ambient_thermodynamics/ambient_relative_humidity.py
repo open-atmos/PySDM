@@ -5,7 +5,7 @@ from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduc
 
 
 class AmbientRelativeHumidity(MoistEnvironmentProduct):
-    def __init__(self, name=None, unit='dimensionless', var=None, ice=False):
+    def __init__(self, name=None, unit="dimensionless", var=None, ice=False):
         super().__init__(name=name, unit=unit, var=var)
         self.ice = ice
 
@@ -13,6 +13,6 @@ class AmbientRelativeHumidity(MoistEnvironmentProduct):
         super()._impl()
         if self.ice:
             RHw = self.buffer.copy()
-            self._download_to_buffer(self.environment['a_w_ice'])
+            self._download_to_buffer(self.environment["a_w_ice"])
             self.buffer[:] = RHw / self.buffer[:]
         return self.buffer

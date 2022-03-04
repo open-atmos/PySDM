@@ -4,9 +4,9 @@ random number generator class for Numba backend
 import numpy as np
 from ..impl_common.random_common import RandomCommon
 
-
 #  TIP: can be called asynchronously
 #  TIP: sometimes only half array is needed
+
 
 class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     def __init__(self, size, seed):
