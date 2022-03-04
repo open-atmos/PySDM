@@ -2,13 +2,13 @@
 random number generator class for ThrustRTC backend (using CURandRTC)
 """
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from ..impl_common.random_common import RandomCommon
-from .conf import trtc, rndrtc
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
+from ..impl_common.random_common import RandomCommon
 from .conf import rndrtc, trtc
 
 #  TIP: sometimes only half array is needed
+
 
 class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     __urand_init_rng_state_body = trtc.For(
@@ -30,7 +30,7 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
     def __init__(self, size, seed):
         super().__init__(size, seed)
         rng = rndrtc.DVRNG()
-        self.generator = trtc.device_vector('RNGState', size)
+        self.generator = trtc.device_vector("RNGState", size)
         dseed = trtc.DVInt64(seed)
         Random.__urand_init_rng_state_body.launch_n(size, [rng, self.generator, dseed])
 
