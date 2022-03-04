@@ -6,7 +6,7 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 def make_arbitrary_moment_product(**kwargs):
     for arg in kwargs:
-        assert arg in ('rank', 'attr', 'attr_unit')
+        assert arg in ("rank", "attr", "attr_unit")
 
     class ArbitraryMoment(MomentProduct):
         def __init__(
@@ -18,9 +18,7 @@ def make_arbitrary_moment_product(**kwargs):
 
         def _impl(self, **kwargs):
             self._download_moment_to_buffer(
-                attr=self.attr,
-                rank=self.rank,
-                skip_division_by_m0=True
+                attr=self.attr, rank=self.rank, skip_division_by_m0=True
             )
             return self.buffer
 

@@ -6,7 +6,6 @@ import pytest
 from PySDM.dynamics.collisions import Breakup, Coalescence, Collision
 
 
-
 def get_default_args(func):
     signature = inspect.signature(func)
     return {

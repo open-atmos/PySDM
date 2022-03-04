@@ -41,10 +41,7 @@ class TestFig1:
 
         # act
         sigma = formulae.surface_tension.sigma.py_func(
-            np.nan,
-            V_WET,
-            V_DRY,
-            aer.aerosol_modes[0]['f_org']
+            np.nan, V_WET, V_DRY, aer.aerosol_modes[0]["f_org"]
         )
 
         # assert
@@ -160,22 +157,19 @@ class TestFig1:
         formulae = Formulae(
             surface_tension="CompressedFilmRuehl",
             constants={
-                'RUEHL_nu_org': aer.aerosol_modes[0]['nu_org'],
-                'RUEHL_A0': 115e-20 * si.m * si.m,
-                'RUEHL_C0': 6e-7,
-                'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
-                'RUEHL_sgm_min': 40.0 * si.mN / si.m
-            }
+                "RUEHL_nu_org": aer.aerosol_modes[0]["nu_org"],
+                "RUEHL_A0": 115e-20 * si.m * si.m,
+                "RUEHL_C0": 6e-7,
+                "RUEHL_m_sigma": 0.3e17 * si.J / si.m ** 2,
+                "RUEHL_sgm_min": 40.0 * si.mN / si.m,
+            },
         )
 
         # act
         sigma = np.zeros(len(V_WET))
         for i, vw in enumerate(V_WET):
             sigma[i] = formulae.surface_tension.sigma.py_func(
-                TEMPERATURE,
-                vw,
-                V_DRY,
-                aer.aerosol_modes[0]['f_org']
+                TEMPERATURE, vw, V_DRY, aer.aerosol_modes[0]["f_org"]
             )
 
         # assert
@@ -291,19 +285,16 @@ class TestFig1:
         formulae = Formulae(
             surface_tension="SzyszkowskiLangmuir",
             constants={
-                'RUEHL_nu_org': aer.aerosol_modes[0]['nu_org'],
-                'RUEHL_A0': 115e-20 * si.m * si.m,
-                'RUEHL_C0': 6e-7,
-                'RUEHL_sgm_min': 40.0 * si.mN / si.m
-            }
+                "RUEHL_nu_org": aer.aerosol_modes[0]["nu_org"],
+                "RUEHL_A0": 115e-20 * si.m * si.m,
+                "RUEHL_C0": 6e-7,
+                "RUEHL_sgm_min": 40.0 * si.mN / si.m,
+            },
         )
 
         # act
         sigma = formulae.surface_tension.sigma.py_func(
-            TEMPERATURE,
-            V_WET,
-            V_DRY,
-            aer.aerosol_modes[0]['f_org']
+            TEMPERATURE, V_WET, V_DRY, aer.aerosol_modes[0]["f_org"]
         )
 
         # assert

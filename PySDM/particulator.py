@@ -289,7 +289,7 @@ class Particulator:
         attr_range=(-np.inf, np.inf),
         weighting_attribute="volume",
         weighting_rank=0,
-        skip_division_by_m0=False
+        skip_division_by_m0=False,
     ):
         if len(specs) == 0:
             raise ValueError("empty specs passed")
@@ -320,7 +320,7 @@ class Particulator:
             self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
-            skip_division_by_m0=skip_division_by_m0
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     def spectrum_moments(

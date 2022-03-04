@@ -86,7 +86,7 @@ class Collision:
         rnd_args = {
             "optimized_random": self.optimized_random,
             "dt_min": self.dt_coal_range[0],
-            "seed": builder.formulae.seed
+            "seed": builder.formulae.seed,
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:
@@ -259,51 +259,53 @@ class Collision:
 
 
 class Coalescence(Collision):
-    def __init__(self,
-                 collision_kernel,
-                 coalescence_efficiency=ConstEc(Ec=1),
-                 croupier=None,
-                 optimized_random=False,
-                 substeps: int = 1,
-                 adaptive: bool = True,
-                 dt_coal_range=DEFAULTS.dt_coal_range
-                 ):
+    def __init__(
+        self,
+        collision_kernel,
+        coalescence_efficiency=ConstEc(Ec=1),
+        croupier=None,
+        optimized_random=False,
+        substeps: int = 1,
+        adaptive: bool = True,
+        dt_coal_range=DEFAULTS.dt_coal_range,
+    ):
         breakup_efficiency = ConstEb(Eb=0)
         fragmentation_function = AlwaysN(n=1)
         super().__init__(
-                 collision_kernel,
-                 coalescence_efficiency,
-                 breakup_efficiency,
-                 fragmentation_function,
-                 croupier=croupier,
-                 optimized_random=optimized_random,
-                 substeps=substeps,
-                 adaptive=adaptive,
-                 dt_coal_range=dt_coal_range,
-                 enable_breakup=False
-                )
+            collision_kernel,
+            coalescence_efficiency,
+            breakup_efficiency,
+            fragmentation_function,
+            croupier=croupier,
+            optimized_random=optimized_random,
+            substeps=substeps,
+            adaptive=adaptive,
+            dt_coal_range=dt_coal_range,
+            enable_breakup=False,
+        )
 
 
 class Breakup(Collision):
-    def __init__(self,
-                 collision_kernel,
-                 fragmentation_function,
-                 croupier=None,
-                 optimized_random=False,
-                 substeps: int = 1,
-                 adaptive: bool = True,
-                 dt_coal_range=DEFAULTS.dt_coal_range
-                 ):
-        coalescence_efficiency = ConstEc(Ec = 0.0)
-        breakup_efficiency = ConstEb(Eb = 1.0)
+    def __init__(
+        self,
+        collision_kernel,
+        fragmentation_function,
+        croupier=None,
+        optimized_random=False,
+        substeps: int = 1,
+        adaptive: bool = True,
+        dt_coal_range=DEFAULTS.dt_coal_range,
+    ):
+        coalescence_efficiency = ConstEc(Ec=0.0)
+        breakup_efficiency = ConstEb(Eb=1.0)
         super().__init__(
-                collision_kernel,
-                coalescence_efficiency,
-                breakup_efficiency,
-                fragmentation_function,
-                croupier=croupier,
-                optimized_random=optimized_random,
-                substeps=substeps,
-                adaptive=adaptive,
-                dt_coal_range=dt_coal_range
-    )
+            collision_kernel,
+            coalescence_efficiency,
+            breakup_efficiency,
+            fragmentation_function,
+            croupier=croupier,
+            optimized_random=optimized_random,
+            substeps=substeps,
+            adaptive=adaptive,
+            dt_coal_range=dt_coal_range,
+        )

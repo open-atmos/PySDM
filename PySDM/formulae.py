@@ -227,7 +227,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         if stripped.startswith("def "):
             continue
         if stripped.endswith(","):
-            stripped += ' '
+            stripped += " "
         source += stripped
     source = source.replace("np.power(", "np.pow(")
     source = source.replace("np.", "")

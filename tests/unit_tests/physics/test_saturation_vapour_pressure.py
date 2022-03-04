@@ -50,7 +50,7 @@ def test_saturation_vapour_pressure(plot=False):
             temperature = np.linspace(-20, 0, 100)
             np.testing.assert_array_less(
                 Formulae(
-                    saturation_vapour_pressure='FlatauWalkoCotton'
+                    saturation_vapour_pressure="FlatauWalkoCotton"
                 ).saturation_vapour_pressure.ice_Celsius(temperature),
                 Formulae(
                     saturation_vapour_pressure=choice
@@ -59,7 +59,7 @@ def test_saturation_vapour_pressure(plot=False):
             temperature = np.linspace(1, 1, 100)
             np.testing.assert_array_less(
                 Formulae(
-                    saturation_vapour_pressure='FlatauWalkoCotton'
+                    saturation_vapour_pressure="FlatauWalkoCotton"
                 ).saturation_vapour_pressure.pvs_Celsius(temperature),
                 Formulae(
                     saturation_vapour_pressure=choice
