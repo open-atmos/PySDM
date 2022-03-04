@@ -26,5 +26,5 @@ class ExponFrag:
         self.max_size.max(self.particulator.attributes['volume'],is_first_in_pair)
         self.sum_of_volumes.sum(self.particulator.attributes['volume'],is_first_in_pair)
         self.particulator.backend.exp_fragmentation(output, self.scale, self.frag_size,
-            self.max_size, u01)
+            self.max_size, self.sum_of_volumes, u01)
         

@@ -47,7 +47,6 @@ def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity,
              breakup_rate, success):
-    #print('gamma = ', gamma[i])
     if n_fragment[i] ** gamma[i] > max_multiplicity:
         print('issue with success: n_fragment = ', n_fragment[i], ' and gamma = ', gamma[i], ', from multiplicities ', multiplicity[j], ', ', multiplicity[k])
         success[0] = False
@@ -206,6 +205,7 @@ class CollisionsMethods(BackendMethods):
             Ec.data, Eb.data, n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
             breakup_rate.data, is_first_in_pair.indicator.data, success, max_multiplicity
         )
+        print(n_fragment.data)
         if not success:
             raise Exception(f"Breakup step failed due to multiplicity exceeding maximum allowed")
 
@@ -250,17 +250,15 @@ class CollisionsMethods(BackendMethods):
         '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             log_arg = 1-rand[i]*scale/x_plus_y[i]
-            print('sum of colliding masses = ',x_plus_y[i])
-            print('log arg = ',log_arg)
             if log_arg < fragtol:
                 log_arg = fragtol
             frag_size[i] = -scale * np.log(log_arg)
-            print('fragment size = ', frag_size[i])
             if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1
+            elif frag_size[i] < vmin:
                 n_fragment[i] = 1
             else:
                 n_fragment[i] = x_plus_y[i] / frag_size[i]
-            print('number of fragments = ', n_fragment[i])
 
     def feingold1988_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, 
         fragtol, vmin):

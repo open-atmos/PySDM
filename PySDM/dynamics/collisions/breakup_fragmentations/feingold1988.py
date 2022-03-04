@@ -11,6 +11,7 @@ class Feingold1988Frag:
         self.scale = scale
         self.fragtol = fragtol
         self.vmin = vmin
+        print(self.vmin)
         self.max_size = None
         self.frag_size = None
         self.sum_of_volumes = None
@@ -29,5 +30,5 @@ class Feingold1988Frag:
         self.max_size.max(self.particulator.attributes['volume'],is_first_in_pair)
         self.sum_of_volumes.sum(self.particulator.attributes['volume'],is_first_in_pair)
         self.particulator.backend.feingold1988_fragmentation(output, self.scale, self.frag_size,
-            self.max_size, self.sum_of_volumes, u01, self.vmin, self.fragtol)
+            self.max_size, self.sum_of_volumes, u01, self.fragtol, self.vmin)
         
