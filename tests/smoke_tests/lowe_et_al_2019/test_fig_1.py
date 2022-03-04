@@ -56,7 +56,6 @@ class TestFig1:
         # act
         sigma = formulae.surface_tension.sigma(
             np.nan, V_WET, V_DRY, aerosol.aerosol_modes[0]['f_org'])
-        )
 
         # assert
         cutoff_idx = (np.abs(R_WET - cutoff)).argmin()
