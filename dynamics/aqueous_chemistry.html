@@ -31,36 +31,46 @@
 Hoppel-gap resolving aqueous-phase chemistry (incl. SO2 oxidation)
 &#34;&#34;&#34;
 from collections import namedtuple
+
 import numpy as np
-from PySDM.dynamics.impl.chemistry_utils import DIFFUSION_CONST, AQUEOUS_COMPOUNDS, \
-    GASEOUS_COMPOUNDS, SpecificGravities, M
 
+from PySDM.dynamics.impl.chemistry_utils import (
+    AQUEOUS_COMPOUNDS,
+    DIFFUSION_CONST,
+    GASEOUS_COMPOUNDS,
+    M,
+    SpecificGravities,
+)
 
-DEFAULTS = namedtuple(&#34;_&#34;, (&#39;pH_min&#39;, &#39;pH_max&#39;, &#39;pH_rtol&#39;, &#39;ionic_strength_threshold&#39;))(
-    pH_min=-1.,
-    pH_max=14.,
-    pH_rtol=1e-6,
-    ionic_strength_threshold=0.02 * M
+DEFAULTS = namedtuple(&#34;_&#34;, (&#34;pH_min&#34;, &#34;pH_max&#34;, &#34;pH_rtol&#34;, &#34;ionic_strength_threshold&#34;))(
+    pH_min=-1.0, pH_max=14.0, pH_rtol=1e-6, ionic_strength_threshold=0.02 * M
 )
 
 
 class AqueousChemistry:
-    def __init__(self, environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass,
-                 ionic_strength_threshold=DEFAULTS.ionic_strength_threshold,
-                 pH_H_min=None,
-                 pH_H_max=None,
-                 pH_rtol=DEFAULTS.pH_rtol):
+    def __init__(
+        self,
+        environment_mole_fractions,
+        system_type,
+        n_substep,
+        dry_rho,
+        dry_molar_mass,
+        ionic_strength_threshold=DEFAULTS.ionic_strength_threshold,
+        pH_H_min=None,
+        pH_H_max=None,
+        pH_rtol=DEFAULTS.pH_rtol,
+    ):
         self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
         self.particulator = None
 
-        assert system_type in (&#39;open&#39;, &#39;closed&#39;)
+        assert system_type in (&#34;open&#34;, &#34;closed&#34;)
         self.system_type = system_type
         assert isinstance(n_substep, int) and n_substep &gt; 0
         self.n_substep = n_substep
         self.dry_rho = dry_rho
         self.dry_molar_mass = dry_molar_mass
-        self.ionic_strength_threshold=ionic_strength_threshold
+        self.ionic_strength_threshold = ionic_strength_threshold
         self.pH_H_max = pH_H_max
         self.pH_H_min = pH_H_min
         self.pH_rtol = pH_rtol
@@ -73,14 +83,18 @@ class AqueousChemistry:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.specific_gravities = SpecificGravities(self.particulator.formulae.constants)
+        self.specific_gravities = SpecificGravities(
+            self.particulator.formulae.constants
+        )
 
         for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
-                    self.environment_mole_fractions[compound], self.specific_gravities[compound])
+                    self.environment_mole_fractions[compound],
+                    self.specific_gravities[compound],
+                ),
             )
         self.environment_mole_fractions = None
 
@@ -94,24 +108,29 @@ class AqueousChemistry:
 
         for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=float)
+                self.particulator.mesh.n_cell, dtype=float
+            )
         for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
             self.equilibrium_consts[key] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=float)
+                self.particulator.mesh.n_cell, dtype=float
+            )
         for key in DIFFUSION_CONST:
             self.dissociation_factors[key] = self.particulator.Storage.empty(
-                self.particulator.n_sd, dtype=float)
-        self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
+                self.particulator.n_sd, dtype=float
+            )
+        self.do_chemistry_flag = self.particulator.Storage.empty(
+            self.particulator.n_sd, dtype=bool
+        )
 
     def __call__(self):
         self.particulator.chem_recalculate_cell_data(
             equilibrium_consts=self.equilibrium_consts,
-            kinetic_consts=self.kinetic_consts
+            kinetic_consts=self.kinetic_consts,
         )
         for _ in range(self.n_substep):
             self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
-                dissociation_factors=self.dissociation_factors
+                dissociation_factors=self.dissociation_factors,
             )
             self.particulator.dissolution(
                 gaseous_compounds=GASEOUS_COMPOUNDS,
@@ -119,18 +138,18 @@ class AqueousChemistry:
                 dissociation_factors=self.dissociation_factors,
                 environment_mixing_ratios=self.environment_mixing_ratios,
                 timestep=self.particulator.dt / self.n_substep,
-                do_chemistry_flag=self.do_chemistry_flag
+                do_chemistry_flag=self.do_chemistry_flag,
             )
             self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
-                dissociation_factors=self.dissociation_factors
+                dissociation_factors=self.dissociation_factors,
             )
             self.particulator.oxidation(
                 kinetic_consts=self.kinetic_consts,
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,
                 do_chemistry_flag=self.do_chemistry_flag,
-                timestep=self.particulator.dt / self.n_substep
+                timestep=self.particulator.dt / self.n_substep,
             )</code></pre>
 </details>
 </section>
@@ -154,22 +173,29 @@ class AqueousChemistry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AqueousChemistry:
-    def __init__(self, environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass,
-                 ionic_strength_threshold=DEFAULTS.ionic_strength_threshold,
-                 pH_H_min=None,
-                 pH_H_max=None,
-                 pH_rtol=DEFAULTS.pH_rtol):
+    def __init__(
+        self,
+        environment_mole_fractions,
+        system_type,
+        n_substep,
+        dry_rho,
+        dry_molar_mass,
+        ionic_strength_threshold=DEFAULTS.ionic_strength_threshold,
+        pH_H_min=None,
+        pH_H_max=None,
+        pH_rtol=DEFAULTS.pH_rtol,
+    ):
         self.environment_mole_fractions = environment_mole_fractions
         self.environment_mixing_ratios = {}
         self.particulator = None
 
-        assert system_type in (&#39;open&#39;, &#39;closed&#39;)
+        assert system_type in (&#34;open&#34;, &#34;closed&#34;)
         self.system_type = system_type
         assert isinstance(n_substep, int) and n_substep &gt; 0
         self.n_substep = n_substep
         self.dry_rho = dry_rho
         self.dry_molar_mass = dry_molar_mass
-        self.ionic_strength_threshold=ionic_strength_threshold
+        self.ionic_strength_threshold = ionic_strength_threshold
         self.pH_H_max = pH_H_max
         self.pH_H_min = pH_H_min
         self.pH_rtol = pH_rtol
@@ -182,14 +208,18 @@ class AqueousChemistry:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.specific_gravities = SpecificGravities(self.particulator.formulae.constants)
+        self.specific_gravities = SpecificGravities(
+            self.particulator.formulae.constants
+        )
 
         for key, compound in GASEOUS_COMPOUNDS.items():
             shape = (1,)
             self.environment_mixing_ratios[compound] = np.full(
                 shape,
                 self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
-                    self.environment_mole_fractions[compound], self.specific_gravities[compound])
+                    self.environment_mole_fractions[compound],
+                    self.specific_gravities[compound],
+                ),
             )
         self.environment_mole_fractions = None
 
@@ -203,24 +233,29 @@ class AqueousChemistry:
 
         for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
             self.kinetic_consts[key] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=float)
+                self.particulator.mesh.n_cell, dtype=float
+            )
         for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
             self.equilibrium_consts[key] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=float)
+                self.particulator.mesh.n_cell, dtype=float
+            )
         for key in DIFFUSION_CONST:
             self.dissociation_factors[key] = self.particulator.Storage.empty(
-                self.particulator.n_sd, dtype=float)
-        self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)
+                self.particulator.n_sd, dtype=float
+            )
+        self.do_chemistry_flag = self.particulator.Storage.empty(
+            self.particulator.n_sd, dtype=bool
+        )
 
     def __call__(self):
         self.particulator.chem_recalculate_cell_data(
             equilibrium_consts=self.equilibrium_consts,
-            kinetic_consts=self.kinetic_consts
+            kinetic_consts=self.kinetic_consts,
         )
         for _ in range(self.n_substep):
             self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
-                dissociation_factors=self.dissociation_factors
+                dissociation_factors=self.dissociation_factors,
             )
             self.particulator.dissolution(
                 gaseous_compounds=GASEOUS_COMPOUNDS,
@@ -228,18 +263,18 @@ class AqueousChemistry:
                 dissociation_factors=self.dissociation_factors,
                 environment_mixing_ratios=self.environment_mixing_ratios,
                 timestep=self.particulator.dt / self.n_substep,
-                do_chemistry_flag=self.do_chemistry_flag
+                do_chemistry_flag=self.do_chemistry_flag,
             )
             self.particulator.chem_recalculate_drop_data(
                 equilibrium_consts=self.equilibrium_consts,
-                dissociation_factors=self.dissociation_factors
+                dissociation_factors=self.dissociation_factors,
             )
             self.particulator.oxidation(
                 kinetic_consts=self.kinetic_consts,
                 equilibrium_consts=self.equilibrium_consts,
                 dissociation_factors=self.dissociation_factors,
                 do_chemistry_flag=self.do_chemistry_flag,
-                timestep=self.particulator.dt / self.n_substep
+                timestep=self.particulator.dt / self.n_substep,
             )</code></pre>
 </details>
 <h3>Methods</h3>
@@ -255,14 +290,18 @@ class AqueousChemistry:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    self.specific_gravities = SpecificGravities(self.particulator.formulae.constants)
+    self.specific_gravities = SpecificGravities(
+        self.particulator.formulae.constants
+    )
 
     for key, compound in GASEOUS_COMPOUNDS.items():
         shape = (1,)
         self.environment_mixing_ratios[compound] = np.full(
             shape,
             self.particulator.formulae.trivia.mole_fraction_2_mixing_ratio(
-                self.environment_mole_fractions[compound], self.specific_gravities[compound])
+                self.environment_mole_fractions[compound],
+                self.specific_gravities[compound],
+            ),
         )
     self.environment_mole_fractions = None
 
@@ -276,14 +315,19 @@ class AqueousChemistry:
 
     for key in self.particulator.backend.KINETIC_CONST.KINETIC_CONST:
         self.kinetic_consts[key] = self.particulator.Storage.empty(
-            self.particulator.mesh.n_cell, dtype=float)
+            self.particulator.mesh.n_cell, dtype=float
+        )
     for key in self.particulator.backend.EQUILIBRIUM_CONST.EQUILIBRIUM_CONST:
         self.equilibrium_consts[key] = self.particulator.Storage.empty(
-            self.particulator.mesh.n_cell, dtype=float)
+            self.particulator.mesh.n_cell, dtype=float
+        )
     for key in DIFFUSION_CONST:
         self.dissociation_factors[key] = self.particulator.Storage.empty(
-            self.particulator.n_sd, dtype=float)
-    self.do_chemistry_flag = self.particulator.Storage.empty(self.particulator.n_sd, dtype=bool)</code></pre>
+            self.particulator.n_sd, dtype=float
+        )
+    self.do_chemistry_flag = self.particulator.Storage.empty(
+        self.particulator.n_sd, dtype=bool
+    )</code></pre>
 </details>
 </dd>
 </dl>

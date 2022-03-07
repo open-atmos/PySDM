@@ -34,12 +34,13 @@ lognormal spectrum implemented using
  [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
 &#34;&#34;&#34;
 import math
+
 from scipy.stats import lognorm
+
 from PySDM.initialisation.impl.spectrum import Spectrum
 
 
 class Lognormal(Spectrum):
-
     def __init__(self, norm_factor: float, m_mode: float, s_geom: float):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
 
@@ -60,10 +61,12 @@ class Lognormal(Spectrum):
         return self.s_geom
 
     def __str__(self):
-        return f&#34;{self.__class__.__name__}:&#34;\
-               f&#34; (N={self.norm_factor:.3g},&#34;\
-               f&#34; m_mode={self.m_mode:.3g},&#34;\
-               f&#34; s_geom={self.s_geom:.3g})&#34;</code></pre>
+        return (
+            f&#34;{self.__class__.__name__}:&#34;
+            f&#34; (N={self.norm_factor:.3g},&#34;
+            f&#34; m_mode={self.m_mode:.3g},&#34;
+            f&#34; s_geom={self.s_geom:.3g})&#34;
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -86,7 +89,6 @@ class Lognormal(Spectrum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Lognormal(Spectrum):
-
     def __init__(self, norm_factor: float, m_mode: float, s_geom: float):
         super().__init__(lognorm, (math.log(s_geom), 0, m_mode), norm_factor)
 
@@ -107,10 +109,12 @@ class Lognormal(Spectrum):
         return self.s_geom
 
     def __str__(self):
-        return f&#34;{self.__class__.__name__}:&#34;\
-               f&#34; (N={self.norm_factor:.3g},&#34;\
-               f&#34; m_mode={self.m_mode:.3g},&#34;\
-               f&#34; s_geom={self.s_geom:.3g})&#34;</code></pre>
+        return (
+            f&#34;{self.__class__.__name__}:&#34;
+            f&#34; (N={self.norm_factor:.3g},&#34;
+            f&#34; m_mode={self.m_mode:.3g},&#34;
+            f&#34; s_geom={self.s_geom:.3g})&#34;
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

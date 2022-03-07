@@ -31,30 +31,35 @@
 freezing-temperature binned specific concentration of particles
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class FreezableSpecificConcentration(SpectrumMomentProduct):
-    def __init__(self, temperature_bins_edges, name=None, unit=&#39;kg^-1 K^-1&#39;):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;K&#39;)
+    def __init__(self, temperature_bins_edges, name=None, unit=&#34;kg^-1 K^-1&#34;):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;K&#34;)
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):
-        builder.request_attribute(&#39;freezing temperature&#39;)
+        builder.request_attribute(&#34;freezing temperature&#34;)
         particulator = builder.particulator
-        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(self.attr_bins_edges)
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
+            self.attr_bins_edges
+        )
         super().register(builder)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+        self._recalculate_spectrum_moment(
+            attr=&#34;volume&#34;, filter_attr=&#34;freezing temperature&#34;, rank=0
+        )
 
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])
@@ -84,26 +89,30 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FreezableSpecificConcentration(SpectrumMomentProduct):
-    def __init__(self, temperature_bins_edges, name=None, unit=&#39;kg^-1 K^-1&#39;):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;K&#39;)
+    def __init__(self, temperature_bins_edges, name=None, unit=&#34;kg^-1 K^-1&#34;):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;K&#34;)
         self.attr_bins_edges = temperature_bins_edges
 
     def register(self, builder):
-        builder.request_attribute(&#39;freezing temperature&#39;)
+        builder.request_attribute(&#34;freezing temperature&#34;)
         particulator = builder.particulator
-        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(self.attr_bins_edges)
+        self.attr_bins_edges = particulator.backend.Storage.from_ndarray(
+            self.attr_bins_edges
+        )
         super().register(builder)
         self.shape = (*particulator.mesh.grid, len(self.attr_bins_edges) - 1)
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr=&#39;volume&#39;, filter_attr=&#39;freezing temperature&#39;, rank=0)
+        self._recalculate_spectrum_moment(
+            attr=&#34;volume&#34;, filter_attr=&#34;freezing temperature&#34;, rank=0
+        )
 
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=0, bin_number=i)
             vals[:, i] = self.buffer.ravel()
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         rhod = self.buffer.ravel()
         for i in range(len(self.attr_bins_edges) - 1):
             dT = abs(self.attr_bins_edges[i + 1] - self.attr_bins_edges[i])

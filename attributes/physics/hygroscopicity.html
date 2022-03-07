@@ -42,15 +42,15 @@ from ..impl.extensive_attribute import ExtensiveAttribute
 
 class KappaTimesDryVolume(ExtensiveAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name=&#39;kappa times dry volume&#39;)
+        super().__init__(builder, name=&#34;kappa times dry volume&#34;)
 
 
 class Kappa(DerivedAttribute):
     def __init__(self, builder):
-        self.kappa_times_dry_volume = builder.get_attribute(&#39;kappa times dry volume&#39;)
-        self.dry_volume = builder.get_attribute(&#39;dry volume&#39;)
+        self.kappa_times_dry_volume = builder.get_attribute(&#34;kappa times dry volume&#34;)
+        self.dry_volume = builder.get_attribute(&#34;dry volume&#34;)
         deps = (self.kappa_times_dry_volume, self.dry_volume)
-        super().__init__(builder, name=&#39;kappa&#39;, dependencies=deps)
+        super().__init__(builder, name=&#34;kappa&#34;, dependencies=deps)
 
     def recalculate(self):
         self.data.ratio(self.kappa_times_dry_volume.get(), self.dry_volume.get())</code></pre>
@@ -77,10 +77,10 @@ class Kappa(DerivedAttribute):
 </summary>
 <pre><code class="python">class Kappa(DerivedAttribute):
     def __init__(self, builder):
-        self.kappa_times_dry_volume = builder.get_attribute(&#39;kappa times dry volume&#39;)
-        self.dry_volume = builder.get_attribute(&#39;dry volume&#39;)
+        self.kappa_times_dry_volume = builder.get_attribute(&#34;kappa times dry volume&#34;)
+        self.dry_volume = builder.get_attribute(&#34;dry volume&#34;)
         deps = (self.kappa_times_dry_volume, self.dry_volume)
-        super().__init__(builder, name=&#39;kappa&#39;, dependencies=deps)
+        super().__init__(builder, name=&#34;kappa&#34;, dependencies=deps)
 
     def recalculate(self):
         self.data.ratio(self.kappa_times_dry_volume.get(), self.dry_volume.get())</code></pre>
@@ -119,7 +119,7 @@ class Kappa(DerivedAttribute):
 </summary>
 <pre><code class="python">class KappaTimesDryVolume(ExtensiveAttribute):
     def __init__(self, builder):
-        super().__init__(builder, name=&#39;kappa times dry volume&#39;)</code></pre>
+        super().__init__(builder, name=&#34;kappa times dry volume&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

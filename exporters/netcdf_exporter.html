@@ -34,10 +34,11 @@
 &#34;&#34;&#34;
 import numpy as np
 from scipy.io.netcdf import netcdf_file
+
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
+DIM_SUFFIX = &#34;_bin_left_edges&#34;
 
-DIM_SUFFIX = &#39;_bin_left_edges&#39;
 
 class NetCDFExporter:
     def __init__(self, storage, settings, simulator, filename):
@@ -46,7 +47,7 @@ class NetCDFExporter:
         self.simulator = simulator
         self.vars = None
         self.filename = filename
-        self.XZ = (&#39;X&#39;, &#39;Z&#39;)
+        self.XZ = (&#34;X&#34;, &#34;Z&#34;)
 
     def _write_settings(self, ncdf):
         for setting in dir(self.settings):
@@ -61,8 +62,7 @@ class NetCDFExporter:
         for name, instance in self.simulator.products.items():
             if isinstance(instance, SpectrumMomentProduct):
                 ncdf.createDimension(
-                    f&#34;{name}{DIM_SUFFIX}&#34;,
-                    len(instance.attr_bins_edges) - 1
+                    f&#34;{name}{DIM_SUFFIX}&#34;, len(instance.attr_bins_edges) - 1
                 )
 
     def _create_variables(self, ncdf):
@@ -72,20 +72,23 @@ class NetCDFExporter:
 
         for index, label in enumerate(self.XZ):
             self.vars[label] = ncdf.createVariable(label, &#34;f&#34;, (label,))
-            self.vars[label][:] = ((self.settings.size[index] / self.settings.grid[index])
-                                   * (1 / 2 + np.arange(self.settings.grid[index])))
+            self.vars[label][:] = (
+                self.settings.size[index] / self.settings.grid[index]
+            ) * (1 / 2 + np.arange(self.settings.grid[index]))
             self.vars[label].units = &#34;metres&#34;
 
         for name, instance in self.simulator.products.items():
             if isinstance(instance, SpectrumMomentProduct):
                 label = f&#34;{name}{DIM_SUFFIX}&#34;
-                self.vars[label] = ncdf.createVariable(label, &#39;f&#39;, (label,))
+                self.vars[label] = ncdf.createVariable(label, &#34;f&#34;, (label,))
                 self.vars[label][:] = instance.attr_bins_edges.to_ndarray()[:-1]
                 self.vars[label].units = instance.attr_unit
 
         for name, instance in self.simulator.products.items():
             if name in self.vars:
-                raise AssertionError(f&#34;product ({name}) has same name as one of netCDF dimensions&#34;)
+                raise AssertionError(
+                    f&#34;product ({name}) has same name as one of netCDF dimensions&#34;
+                )
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
@@ -104,9 +107,13 @@ class NetCDFExporter:
         for var in self.simulator.products.keys():
             n_dimensions = len(self.simulator.products[var].shape)
             if n_dimensions == 3:
-                self.vars[var][i, :, :, :] = self.storage.load(var, self.settings.output_steps[i])
+                self.vars[var][i, :, :, :] = self.storage.load(
+                    var, self.settings.output_steps[i]
+                )
             elif n_dimensions == 2:
-                self.vars[var][i, :, :] = self.storage.load(var, self.settings.output_steps[i])
+                self.vars[var][i, :, :] = self.storage.load(
+                    var, self.settings.output_steps[i]
+                )
             elif n_dimensions == 0:
                 if i == 0:
                     self.vars[var][:] = self.storage.load(var)
@@ -118,7 +125,7 @@ class NetCDFExporter:
     def run(self, controller):
         with controller:
             controller.set_percent(0)
-            with netcdf_file(self.filename, mode=&#39;w&#39;) as ncdf:
+            with netcdf_file(self.filename, mode=&#34;w&#34;) as ncdf:
                 self._write_settings(ncdf)
                 self._create_dimensions(ncdf)
                 self._create_variables(ncdf)
@@ -126,7 +133,7 @@ class NetCDFExporter:
                     if controller.panic:
                         break
                     self._write_variables(i)
-                    controller.set_percent((i+1) / len(self.settings.output_steps))</code></pre>
+                    controller.set_percent((i + 1) / len(self.settings.output_steps))</code></pre>
 </details>
 </section>
 <section>
@@ -155,7 +162,7 @@ class NetCDFExporter:
         self.simulator = simulator
         self.vars = None
         self.filename = filename
-        self.XZ = (&#39;X&#39;, &#39;Z&#39;)
+        self.XZ = (&#34;X&#34;, &#34;Z&#34;)
 
     def _write_settings(self, ncdf):
         for setting in dir(self.settings):
@@ -170,8 +177,7 @@ class NetCDFExporter:
         for name, instance in self.simulator.products.items():
             if isinstance(instance, SpectrumMomentProduct):
                 ncdf.createDimension(
-                    f&#34;{name}{DIM_SUFFIX}&#34;,
-                    len(instance.attr_bins_edges) - 1
+                    f&#34;{name}{DIM_SUFFIX}&#34;, len(instance.attr_bins_edges) - 1
                 )
 
     def _create_variables(self, ncdf):
@@ -181,20 +187,23 @@ class NetCDFExporter:
 
         for index, label in enumerate(self.XZ):
             self.vars[label] = ncdf.createVariable(label, &#34;f&#34;, (label,))
-            self.vars[label][:] = ((self.settings.size[index] / self.settings.grid[index])
-                                   * (1 / 2 + np.arange(self.settings.grid[index])))
+            self.vars[label][:] = (
+                self.settings.size[index] / self.settings.grid[index]
+            ) * (1 / 2 + np.arange(self.settings.grid[index]))
             self.vars[label].units = &#34;metres&#34;
 
         for name, instance in self.simulator.products.items():
             if isinstance(instance, SpectrumMomentProduct):
                 label = f&#34;{name}{DIM_SUFFIX}&#34;
-                self.vars[label] = ncdf.createVariable(label, &#39;f&#39;, (label,))
+                self.vars[label] = ncdf.createVariable(label, &#34;f&#34;, (label,))
                 self.vars[label][:] = instance.attr_bins_edges.to_ndarray()[:-1]
                 self.vars[label].units = instance.attr_unit
 
         for name, instance in self.simulator.products.items():
             if name in self.vars:
-                raise AssertionError(f&#34;product ({name}) has same name as one of netCDF dimensions&#34;)
+                raise AssertionError(
+                    f&#34;product ({name}) has same name as one of netCDF dimensions&#34;
+                )
 
             n_dimensions = len(instance.shape)
             if n_dimensions == 3:
@@ -213,9 +222,13 @@ class NetCDFExporter:
         for var in self.simulator.products.keys():
             n_dimensions = len(self.simulator.products[var].shape)
             if n_dimensions == 3:
-                self.vars[var][i, :, :, :] = self.storage.load(var, self.settings.output_steps[i])
+                self.vars[var][i, :, :, :] = self.storage.load(
+                    var, self.settings.output_steps[i]
+                )
             elif n_dimensions == 2:
-                self.vars[var][i, :, :] = self.storage.load(var, self.settings.output_steps[i])
+                self.vars[var][i, :, :] = self.storage.load(
+                    var, self.settings.output_steps[i]
+                )
             elif n_dimensions == 0:
                 if i == 0:
                     self.vars[var][:] = self.storage.load(var)
@@ -227,7 +240,7 @@ class NetCDFExporter:
     def run(self, controller):
         with controller:
             controller.set_percent(0)
-            with netcdf_file(self.filename, mode=&#39;w&#39;) as ncdf:
+            with netcdf_file(self.filename, mode=&#34;w&#34;) as ncdf:
                 self._write_settings(ncdf)
                 self._create_dimensions(ncdf)
                 self._create_variables(ncdf)
@@ -235,7 +248,7 @@ class NetCDFExporter:
                     if controller.panic:
                         break
                     self._write_variables(i)
-                    controller.set_percent((i+1) / len(self.settings.output_steps))</code></pre>
+                    controller.set_percent((i + 1) / len(self.settings.output_steps))</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -251,7 +264,7 @@ class NetCDFExporter:
 <pre><code class="python">def run(self, controller):
     with controller:
         controller.set_percent(0)
-        with netcdf_file(self.filename, mode=&#39;w&#39;) as ncdf:
+        with netcdf_file(self.filename, mode=&#34;w&#34;) as ncdf:
             self._write_settings(ncdf)
             self._create_dimensions(ncdf)
             self._create_variables(ncdf)
@@ -259,7 +272,7 @@ class NetCDFExporter:
                 if controller.panic:
                     break
                 self._write_variables(i)
-                controller.set_percent((i+1) / len(self.settings.output_steps))</code></pre>
+                controller.set_percent((i + 1) / len(self.settings.output_steps))</code></pre>
 </details>
 </dd>
 </dl>

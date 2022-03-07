@@ -32,20 +32,23 @@ common code for storage classes
 &#34;&#34;&#34;
 
 
+from abc import abstractmethod
 from collections import namedtuple
 from typing import Type
-from abc import abstractmethod
 
 
-class StorageSignature(namedtuple(&#34;StorageSignature&#34;, (&#39;data&#39;, &#39;shape&#39;, &#39;dtype&#39;))):
-    &#34;&#34;&#34; groups items defining a storage &#34;&#34;&#34;
+class StorageSignature(namedtuple(&#34;StorageSignature&#34;, (&#34;data&#34;, &#34;shape&#34;, &#34;dtype&#34;))):
+    &#34;&#34;&#34;groups items defining a storage&#34;&#34;&#34;
+
     __slots__ = ()
 
 
 class StorageBase:
     def __init__(self, signature: StorageSignature):
         self.data = signature.data
-        self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        self.shape = (
+            (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        )
         self.dtype = signature.dtype
         self.backend = None
 
@@ -84,11 +87,11 @@ class StorageBase:
 
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):
-    if str(array.dtype).startswith(&#39;int&#39;):
+    if str(array.dtype).startswith(&#34;int&#34;):
         dtype = storage_class.INT
-    elif str(array.dtype).startswith(&#39;float&#39;):
+    elif str(array.dtype).startswith(&#34;float&#34;):
         dtype = storage_class.FLOAT
-    elif str(array.dtype).startswith(&#39;bool&#39;):
+    elif str(array.dtype).startswith(&#34;bool&#34;):
         dtype = storage_class.BOOL
     else:
         raise NotImplementedError()
@@ -132,11 +135,11 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):
-    if str(array.dtype).startswith(&#39;int&#39;):
+    if str(array.dtype).startswith(&#34;int&#34;):
         dtype = storage_class.INT
-    elif str(array.dtype).startswith(&#39;float&#39;):
+    elif str(array.dtype).startswith(&#34;float&#34;):
         dtype = storage_class.FLOAT
-    elif str(array.dtype).startswith(&#39;bool&#39;):
+    elif str(array.dtype).startswith(&#34;bool&#34;):
         dtype = storage_class.BOOL
     else:
         raise NotImplementedError()
@@ -164,7 +167,9 @@ def empty(shape, dtype, storage_class: Type[StorageBase]):
 <pre><code class="python">class StorageBase:
     def __init__(self, signature: StorageSignature):
         self.data = signature.data
-        self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        self.shape = (
+            (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        )
         self.dtype = signature.dtype
         self.backend = None
 
@@ -261,8 +266,9 @@ def urand(self, generator):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class StorageSignature(namedtuple(&#34;StorageSignature&#34;, (&#39;data&#39;, &#39;shape&#39;, &#39;dtype&#39;))):
-    &#34;&#34;&#34; groups items defining a storage &#34;&#34;&#34;
+<pre><code class="python">class StorageSignature(namedtuple(&#34;StorageSignature&#34;, (&#34;data&#34;, &#34;shape&#34;, &#34;dtype&#34;))):
+    &#34;&#34;&#34;groups items defining a storage&#34;&#34;&#34;
+
     __slots__ = ()</code></pre>
 </details>
 <h3>Ancestors</h3>

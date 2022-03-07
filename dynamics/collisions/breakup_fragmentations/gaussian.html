@@ -30,8 +30,9 @@
 <pre><code class="python">&#34;&#34;&#34;
 P(x) = exp(-(x-mu)^2 / 2 sigma^2)
 &#34;&#34;&#34;
-class Gaussian:
 
+
+class Gaussian:
     def __init__(self, mu, scale):
         self.particulator = None
         self.mu = mu
@@ -41,16 +42,19 @@ class Gaussian:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                dtype=float)
-        self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                 dtype=float)
+        builder.request_attribute(&#34;radius&#34;)
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.frag_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
 
     def __call__(self, output, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#39;radius&#39;],is_first_in_pair)
-        self.particulator.backend.gauss_fragmentation(output, self.mu, self.scale, self.frag_size,
-            self.max_size, u01)</code></pre>
+        self.max_size.max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.particulator.backend.gauss_fragmentation(
+            output, self.mu, self.scale, self.frag_size, self.max_size, u01
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -73,7 +77,6 @@ class Gaussian:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Gaussian:
-
     def __init__(self, mu, scale):
         self.particulator = None
         self.mu = mu
@@ -83,16 +86,19 @@ class Gaussian:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                dtype=float)
-        self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                 dtype=float)
+        builder.request_attribute(&#34;radius&#34;)
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.frag_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
 
     def __call__(self, output, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#39;radius&#39;],is_first_in_pair)
-        self.particulator.backend.gauss_fragmentation(output, self.mu, self.scale, self.frag_size,
-            self.max_size, u01)</code></pre>
+        self.max_size.max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.particulator.backend.gauss_fragmentation(
+            output, self.mu, self.scale, self.frag_size, self.max_size, u01
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -107,11 +113,13 @@ class Gaussian:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    builder.request_attribute(&#39;radius&#39;)
-    self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                            dtype=float)
-    self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                             dtype=float)</code></pre>
+    builder.request_attribute(&#34;radius&#34;)
+    self.max_size = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )
+    self.frag_size = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )</code></pre>
 </details>
 </dd>
 </dl>

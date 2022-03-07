@@ -32,16 +32,21 @@ GPU implementation of pairwise operations backend methods
 &#34;&#34;&#34;
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class PairMethods(ThrustRTCBackendMethods):
-    __distance_pair_body = trtc.For([&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __distance_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;data_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -49,18 +54,20 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__distance_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )
 
     __find_pairs_body = trtc.For(
-        [&#39;cell_start&#39;, &#39;perm_cell_id&#39;, &#39;is_first_in_pair&#39;, &#39;length&#39;],
+        [&#34;cell_start&#34;, &#34;perm_cell_id&#34;, &#34;is_first_in_pair&#34;, &#34;length&#34;],
         &#34;i&#34;,
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         is_first_in_pair[i] = (
             i &lt; length - 1 &amp;&amp; // note: just to set the last element within the same loop
             perm_cell_id[i] == perm_cell_id[i+1] &amp;&amp;
             (i - cell_start[perm_cell_id[i]]) % 2 == 0
         );
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -69,13 +76,19 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(
-            len(idx), [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length])
+            len(idx),
+            [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length],
+        )
 
-    __max_pair_body = trtc.For([&#39;data_out&#39;, &#39;perm_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __max_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -83,20 +96,25 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__max_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )
 
-    __sort_pair_body = trtc.For([&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __sort_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;data_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             if (data_in[i] &lt; data_in[i + 1]) {
                 data_out[i] = data_in[i + 1];
                 data_out[i + 1] = data_in[i];
-            } 
+            }
             else {
                 data_out[i] = data_in[i];
                 data_out[i + 1] = data_in[i + 1];
             }
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -105,9 +123,13 @@ class PairMethods(ThrustRTCBackendMethods):
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         if len(idx) &gt; 1:
             PairMethods.__sort_pair_body.launch_n(
-                len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data])
+                len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data]
+            )
 
-    __sort_within_pair_by_attr_body = trtc.For([&#34;idx&#34;, &#34;is_first_in_pair&#34;, &#34;attr&#34;], &#34;i&#34;, &#39;&#39;&#39;
+    __sort_within_pair_by_attr_body = trtc.For(
+        [&#34;idx&#34;, &#34;is_first_in_pair&#34;, &#34;attr&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             if (attr[idx[i]] &lt; attr[idx[i + 1]]) {
                 auto tmp = idx[i];
@@ -115,20 +137,26 @@ class PairMethods(ThrustRTCBackendMethods):
                 idx[i + 1] = tmp;
             }
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
         if len(idx) &lt; 2:
             return
         PairMethods.__sort_within_pair_by_attr_body.launch_n(
-            len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
+            len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data]
+        )
 
-    __sum_pair_body = trtc.For([&#39;data_out&#39;, &#39;perm_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __sum_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -136,7 +164,8 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])</code></pre>
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -158,11 +187,15 @@ class PairMethods(ThrustRTCBackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class PairMethods(ThrustRTCBackendMethods):
-    __distance_pair_body = trtc.For([&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __distance_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;data_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -170,18 +203,20 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__distance_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )
 
     __find_pairs_body = trtc.For(
-        [&#39;cell_start&#39;, &#39;perm_cell_id&#39;, &#39;is_first_in_pair&#39;, &#39;length&#39;],
+        [&#34;cell_start&#34;, &#34;perm_cell_id&#34;, &#34;is_first_in_pair&#34;, &#34;length&#34;],
         &#34;i&#34;,
-        &#39;&#39;&#39;
+        &#34;&#34;&#34;
         is_first_in_pair[i] = (
             i &lt; length - 1 &amp;&amp; // note: just to set the last element within the same loop
             perm_cell_id[i] == perm_cell_id[i+1] &amp;&amp;
             (i - cell_start[perm_cell_id[i]]) % 2 == 0
         );
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -190,13 +225,19 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(
-            len(idx), [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length])
+            len(idx),
+            [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length],
+        )
 
-    __max_pair_body = trtc.For([&#39;data_out&#39;, &#39;perm_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __max_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -204,20 +245,25 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__max_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )
 
-    __sort_pair_body = trtc.For([&#39;data_out&#39;, &#39;data_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __sort_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;data_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             if (data_in[i] &lt; data_in[i + 1]) {
                 data_out[i] = data_in[i + 1];
                 data_out[i + 1] = data_in[i];
-            } 
+            }
             else {
                 data_out[i] = data_in[i];
                 data_out[i + 1] = data_in[i + 1];
             }
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -226,9 +272,13 @@ class PairMethods(ThrustRTCBackendMethods):
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         if len(idx) &gt; 1:
             PairMethods.__sort_pair_body.launch_n(
-                len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data])
+                len(idx) - 1, [data_out.data, perm_in, is_first_in_pair.indicator.data]
+            )
 
-    __sort_within_pair_by_attr_body = trtc.For([&#34;idx&#34;, &#34;is_first_in_pair&#34;, &#34;attr&#34;], &#34;i&#34;, &#39;&#39;&#39;
+    __sort_within_pair_by_attr_body = trtc.For(
+        [&#34;idx&#34;, &#34;is_first_in_pair&#34;, &#34;attr&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             if (attr[idx[i]] &lt; attr[idx[i + 1]]) {
                 auto tmp = idx[i];
@@ -236,20 +286,26 @@ class PairMethods(ThrustRTCBackendMethods):
                 idx[i + 1] = tmp;
             }
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
         if len(idx) &lt; 2:
             return
         PairMethods.__sort_within_pair_by_attr_body.launch_n(
-            len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])
+            len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data]
+        )
 
-    __sum_pair_body = trtc.For([&#39;data_out&#39;, &#39;perm_in&#39;, &#39;is_first_in_pair&#39;], &#34;i&#34;, &#39;&#39;&#39;
+    __sum_pair_body = trtc.For(
+        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -257,7 +313,8 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data])</code></pre>
+            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -356,7 +413,8 @@ def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
     if len(idx) &lt; 2:
         return
     PairMethods.__sort_within_pair_by_attr_body.launch_n(
-        len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data])</code></pre>
+        len(idx) - 1, [idx.data, is_first_in_pair.indicator.data, attr.data]
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sum_pair"><code class="name flex">

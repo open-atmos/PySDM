@@ -33,19 +33,19 @@ groups of attributes used in either singular or time-dependent immmersion freezi
 from collections import namedtuple
 
 
-class SingularAttributes(namedtuple(&#34;SingularAttributes&#34;, (
-    &#39;freezing_temperature&#39;,
-    &#39;wet_volume&#39;
-))):
-    &#34;&#34;&#34; groups attributes required in singular regime &#34;&#34;&#34;
+class SingularAttributes(
+    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;wet_volume&#34;))
+):
+    &#34;&#34;&#34;groups attributes required in singular regime&#34;&#34;&#34;
+
     __slots__ = ()
 
 
-class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
-    &#39;immersed_surface_area&#39;,
-    &#39;wet_volume&#39;
-))):
-    &#34;&#34;&#34; groups attributes required in time-dependent regime &#34;&#34;&#34;
+class TimeDependentAttributes(
+    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;wet_volume&#34;))
+):
+    &#34;&#34;&#34;groups attributes required in time-dependent regime&#34;&#34;&#34;
+
     __slots__ = ()</code></pre>
 </details>
 </section>
@@ -68,11 +68,11 @@ class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SingularAttributes(namedtuple(&#34;SingularAttributes&#34;, (
-    &#39;freezing_temperature&#39;,
-    &#39;wet_volume&#39;
-))):
-    &#34;&#34;&#34; groups attributes required in singular regime &#34;&#34;&#34;
+<pre><code class="python">class SingularAttributes(
+    namedtuple(&#34;SingularAttributes&#34;, (&#34;freezing_temperature&#34;, &#34;wet_volume&#34;))
+):
+    &#34;&#34;&#34;groups attributes required in singular regime&#34;&#34;&#34;
+
     __slots__ = ()</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -90,11 +90,11 @@ class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class TimeDependentAttributes(namedtuple(&#34;TimeDependentAttributes&#34;, (
-    &#39;immersed_surface_area&#39;,
-    &#39;wet_volume&#39;
-))):
-    &#34;&#34;&#34; groups attributes required in time-dependent regime &#34;&#34;&#34;
+<pre><code class="python">class TimeDependentAttributes(
+    namedtuple(&#34;TimeDependentAttributes&#34;, (&#34;immersed_surface_area&#34;, &#34;wet_volume&#34;))
+):
+    &#34;&#34;&#34;groups attributes required in time-dependent regime&#34;&#34;&#34;
+
     __slots__ = ()</code></pre>
 </details>
 <h3>Ancestors</h3>

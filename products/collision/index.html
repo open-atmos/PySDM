@@ -27,14 +27,18 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#39;&#39;&#39;
+<pre><code class="python">&#34;&#34;&#34;
 Collision rate products for breakup, coalescence, and collisions
-&#39;&#39;&#39;
+&#34;&#34;&#34;
 
+from .collision_rates import (
+    BreakupRatePerGridbox,
+    CoalescenceRatePerGridbox,
+    CollisionRateDeficitPerGridbox,
+    CollisionRatePerGridbox,
+)
 from .collision_timestep_mean import CollisionTimestepMean
-from .collision_timestep_min import CollisionTimestepMin
-from .collision_rates import (BreakupRatePerGridbox, CoalescenceRatePerGridbox,
-    CollisionRatePerGridbox, CollisionRateDeficitPerGridbox)</code></pre>
+from .collision_timestep_min import CollisionTimestepMin</code></pre>
 </details>
 </section>
 <section>

@@ -37,14 +37,14 @@ from PySDM.products.impl.product import Product
 
 
 class CollisionTimestepMin(Product):
-    def __init__(self, unit=&#39;s&#39;, name=None):
+    def __init__(self, unit=&#34;s&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.collision = None
         self.range = None
 
     def register(self, builder):
         super().register(builder)
-        self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+        self.collision = self.particulator.dynamics[&#34;Collision&#34;]
         self.range = self.collision.dt_coal_range
 
     def _impl(self, **kwargs):
@@ -73,14 +73,14 @@ class CollisionTimestepMin(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CollisionTimestepMin(Product):
-    def __init__(self, unit=&#39;s&#39;, name=None):
+    def __init__(self, unit=&#34;s&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.collision = None
         self.range = None
 
     def register(self, builder):
         super().register(builder)
-        self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+        self.collision = self.particulator.dynamics[&#34;Collision&#34;]
         self.range = self.collision.dt_coal_range
 
     def _impl(self, **kwargs):
@@ -105,7 +105,7 @@ class CollisionTimestepMin(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+    self.collision = self.particulator.dynamics[&#34;Collision&#34;]
     self.range = self.collision.dt_coal_range</code></pre>
 </details>
 </dd>

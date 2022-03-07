@@ -41,27 +41,33 @@ class Lowe1977:
 
     @staticmethod
     def pvs_Celsius(const, T):
-        return (
-            const.L77W_A0 + T * (
-            const.L77W_A1 + T * (
-            const.L77W_A2 + T * (
-            const.L77W_A3 + T * (
-            const.L77W_A4 + T * (
-            const.L77W_A5 + T * (
-            const.L77W_A6
-        )))))))
+        return const.L77W_A0 + T * (
+            const.L77W_A1
+            + T
+            * (
+                const.L77W_A2
+                + T
+                * (
+                    const.L77W_A3
+                    + T * (const.L77W_A4 + T * (const.L77W_A5 + T * (const.L77W_A6)))
+                )
+            )
+        )
 
     @staticmethod
     def ice_Celsius(const, T):
-        return (
-            const.L77I_A0 + T * (
-            const.L77I_A1 + T * (
-            const.L77I_A2 + T * (
-            const.L77I_A3 + T * (
-            const.L77I_A4 + T * (
-            const.L77I_A5 + T * (
-            const.L77I_A6
-        )))))))</code></pre>
+        return const.L77I_A0 + T * (
+            const.L77I_A1
+            + T
+            * (
+                const.L77I_A2
+                + T
+                * (
+                    const.L77I_A3
+                    + T * (const.L77I_A4 + T * (const.L77I_A5 + T * (const.L77I_A6)))
+                )
+            )
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -89,27 +95,33 @@ class Lowe1977:
 
     @staticmethod
     def pvs_Celsius(const, T):
-        return (
-            const.L77W_A0 + T * (
-            const.L77W_A1 + T * (
-            const.L77W_A2 + T * (
-            const.L77W_A3 + T * (
-            const.L77W_A4 + T * (
-            const.L77W_A5 + T * (
-            const.L77W_A6
-        )))))))
+        return const.L77W_A0 + T * (
+            const.L77W_A1
+            + T
+            * (
+                const.L77W_A2
+                + T
+                * (
+                    const.L77W_A3
+                    + T * (const.L77W_A4 + T * (const.L77W_A5 + T * (const.L77W_A6)))
+                )
+            )
+        )
 
     @staticmethod
     def ice_Celsius(const, T):
-        return (
-            const.L77I_A0 + T * (
-            const.L77I_A1 + T * (
-            const.L77I_A2 + T * (
-            const.L77I_A3 + T * (
-            const.L77I_A4 + T * (
-            const.L77I_A5 + T * (
-            const.L77I_A6
-        )))))))</code></pre>
+        return const.L77I_A0 + T * (
+            const.L77I_A1
+            + T
+            * (
+                const.L77I_A2
+                + T
+                * (
+                    const.L77I_A3
+                    + T * (const.L77I_A4 + T * (const.L77I_A5 + T * (const.L77I_A6)))
+                )
+            )
+        )</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -124,15 +136,18 @@ class Lowe1977:
 </summary>
 <pre><code class="python">@staticmethod
 def ice_Celsius(const, T):
-    return (
-        const.L77I_A0 + T * (
-        const.L77I_A1 + T * (
-        const.L77I_A2 + T * (
-        const.L77I_A3 + T * (
-        const.L77I_A4 + T * (
-        const.L77I_A5 + T * (
-        const.L77I_A6
-    )))))))</code></pre>
+    return const.L77I_A0 + T * (
+        const.L77I_A1
+        + T
+        * (
+            const.L77I_A2
+            + T
+            * (
+                const.L77I_A3
+                + T * (const.L77I_A4 + T * (const.L77I_A5 + T * (const.L77I_A6)))
+            )
+        )
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.saturation_vapour_pressure.lowe1977.Lowe1977.pvs_Celsius"><code class="name flex">
@@ -146,15 +161,18 @@ def ice_Celsius(const, T):
 </summary>
 <pre><code class="python">@staticmethod
 def pvs_Celsius(const, T):
-    return (
-        const.L77W_A0 + T * (
-        const.L77W_A1 + T * (
-        const.L77W_A2 + T * (
-        const.L77W_A3 + T * (
-        const.L77W_A4 + T * (
-        const.L77W_A5 + T * (
-        const.L77W_A6
-    )))))))</code></pre>
+    return const.L77W_A0 + T * (
+        const.L77W_A1
+        + T
+        * (
+            const.L77W_A2
+            + T
+            * (
+                const.L77W_A3
+                + T * (const.L77W_A4 + T * (const.L77W_A5 + T * (const.L77W_A6)))
+            )
+        )
+    )</code></pre>
 </details>
 </dd>
 </dl>

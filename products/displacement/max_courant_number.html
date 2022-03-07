@@ -34,24 +34,31 @@ reports on the maximum Courant field value for each cell (maximum of
 absolute values of Courant number on all edges of a cell)
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.product import Product
 
 
 class MaxCourantNumber(Product):
-    def __init__(self, name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, name=None, unit=&#34;dimensionless&#34;):
         super().__init__(unit=unit, name=name)
         self.displacement = None
 
     def register(self, builder):
         super().register(builder)
-        self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]
+        self.displacement = self.particulator.dynamics[&#34;Displacement&#34;]
 
     def _impl(self, **kwargs):
         self.buffer[:] = 0
 
-        field = tuple(abs(component.to_ndarray()) for component in self.displacement.courant)
-        self.buffer[:] = np.maximum(self.buffer, np.maximum(field[0][:-1, :], field[0][1:, :]))
-        self.buffer[:] = np.maximum(self.buffer, np.maximum(field[1][:, :-1], field[1][:, 1:]))
+        field = tuple(
+            abs(component.to_ndarray()) for component in self.displacement.courant
+        )
+        self.buffer[:] = np.maximum(
+            self.buffer, np.maximum(field[0][:-1, :], field[0][1:, :])
+        )
+        self.buffer[:] = np.maximum(
+            self.buffer, np.maximum(field[1][:, :-1], field[1][:, 1:])
+        )
 
         return self.buffer</code></pre>
 </details>
@@ -76,20 +83,26 @@ class MaxCourantNumber(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class MaxCourantNumber(Product):
-    def __init__(self, name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, name=None, unit=&#34;dimensionless&#34;):
         super().__init__(unit=unit, name=name)
         self.displacement = None
 
     def register(self, builder):
         super().register(builder)
-        self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]
+        self.displacement = self.particulator.dynamics[&#34;Displacement&#34;]
 
     def _impl(self, **kwargs):
         self.buffer[:] = 0
 
-        field = tuple(abs(component.to_ndarray()) for component in self.displacement.courant)
-        self.buffer[:] = np.maximum(self.buffer, np.maximum(field[0][:-1, :], field[0][1:, :]))
-        self.buffer[:] = np.maximum(self.buffer, np.maximum(field[1][:, :-1], field[1][:, 1:]))
+        field = tuple(
+            abs(component.to_ndarray()) for component in self.displacement.courant
+        )
+        self.buffer[:] = np.maximum(
+            self.buffer, np.maximum(field[0][:-1, :], field[0][1:, :])
+        )
+        self.buffer[:] = np.maximum(
+            self.buffer, np.maximum(field[1][:, :-1], field[1][:, 1:])
+        )
 
         return self.buffer</code></pre>
 </details>
@@ -110,7 +123,7 @@ class MaxCourantNumber(Product):
 </summary>
 <pre><code class="python">def register(self, builder):
     super().register(builder)
-    self.displacement = self.particulator.dynamics[&#39;Displacement&#39;]</code></pre>
+    self.displacement = self.particulator.dynamics[&#34;Displacement&#34;]</code></pre>
 </details>
 </dd>
 </dl>

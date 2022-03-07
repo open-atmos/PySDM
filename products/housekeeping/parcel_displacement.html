@@ -35,7 +35,6 @@ from PySDM.products.impl.product import Product
 
 
 class ParcelDisplacement(Product):
-
     def __init__(self, unit=&#34;m&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.environment = None
@@ -46,7 +45,7 @@ class ParcelDisplacement(Product):
         self.environment = builder.particulator.environment
 
     def _impl(self, **kwargs):
-        self._download_to_buffer(self.environment[&#39;z&#39;])
+        self._download_to_buffer(self.environment[&#34;z&#34;])
         return self.buffer</code></pre>
 </details>
 </section>
@@ -70,7 +69,6 @@ class ParcelDisplacement(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ParcelDisplacement(Product):
-
     def __init__(self, unit=&#34;m&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.environment = None
@@ -81,7 +79,7 @@ class ParcelDisplacement(Product):
         self.environment = builder.particulator.environment
 
     def _impl(self, **kwargs):
-        self._download_to_buffer(self.environment[&#39;z&#39;])
+        self._download_to_buffer(self.environment[&#34;z&#34;])
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>

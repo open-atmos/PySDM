@@ -39,27 +39,28 @@ class MurphyKoop2005:
 
     @staticmethod
     def pvs_Celsius(const, T):
-        &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+        &#34;&#34;&#34;valid for 123 &lt; T &lt; 332 K, eq (10)&#34;&#34;&#34;
         return const.MK05_LIQ_C1 * np.exp(
             const.MK05_LIQ_C2
             - const.MK05_LIQ_C3 / (T + const.T0)
             - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
             + const.MK05_LIQ_C6 * (T + const.T0)
-            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8))
+            * (
                 const.MK05_LIQ_C9
                 - const.MK05_LIQ_C10 / (T + const.T0)
-                - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+                - const.MK05_LIQ_C11 * np.log((T + const.T0) / const.MK05_LIQ_C12)
                 + const.MK05_LIQ_C13 * (T + const.T0)
             )
         )
 
     @staticmethod
     def ice_Celsius(const, T):
-        &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+        &#34;&#34;&#34;valid for T &gt; 110 K, eq (7)&#34;&#34;&#34;
         return const.MK05_ICE_C1 * np.exp(
             const.MK05_ICE_C2
             - const.MK05_ICE_C3 / (T + const.T0)
-            + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+            + const.MK05_ICE_C4 * np.log((T + const.T0) / const.MK05_ICE_C5)
             - const.MK05_ICE_C6 * (T + const.T0)
         )</code></pre>
 </details>
@@ -89,27 +90,28 @@ class MurphyKoop2005:
 
     @staticmethod
     def pvs_Celsius(const, T):
-        &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+        &#34;&#34;&#34;valid for 123 &lt; T &lt; 332 K, eq (10)&#34;&#34;&#34;
         return const.MK05_LIQ_C1 * np.exp(
             const.MK05_LIQ_C2
             - const.MK05_LIQ_C3 / (T + const.T0)
             - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
             + const.MK05_LIQ_C6 * (T + const.T0)
-            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+            + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8))
+            * (
                 const.MK05_LIQ_C9
                 - const.MK05_LIQ_C10 / (T + const.T0)
-                - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+                - const.MK05_LIQ_C11 * np.log((T + const.T0) / const.MK05_LIQ_C12)
                 + const.MK05_LIQ_C13 * (T + const.T0)
             )
         )
 
     @staticmethod
     def ice_Celsius(const, T):
-        &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+        &#34;&#34;&#34;valid for T &gt; 110 K, eq (7)&#34;&#34;&#34;
         return const.MK05_ICE_C1 * np.exp(
             const.MK05_ICE_C2
             - const.MK05_ICE_C3 / (T + const.T0)
-            + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+            + const.MK05_ICE_C4 * np.log((T + const.T0) / const.MK05_ICE_C5)
             - const.MK05_ICE_C6 * (T + const.T0)
         )</code></pre>
 </details>
@@ -126,11 +128,11 @@ class MurphyKoop2005:
 </summary>
 <pre><code class="python">@staticmethod
 def ice_Celsius(const, T):
-    &#34;&#34;&#34; valid for T &gt; 110 K, eq (7) &#34;&#34;&#34;
+    &#34;&#34;&#34;valid for T &gt; 110 K, eq (7)&#34;&#34;&#34;
     return const.MK05_ICE_C1 * np.exp(
         const.MK05_ICE_C2
         - const.MK05_ICE_C3 / (T + const.T0)
-        + const.MK05_ICE_C4 * np.log((T + const.T0)/const.MK05_ICE_C5)
+        + const.MK05_ICE_C4 * np.log((T + const.T0) / const.MK05_ICE_C5)
         - const.MK05_ICE_C6 * (T + const.T0)
     )</code></pre>
 </details>
@@ -146,16 +148,17 @@ def ice_Celsius(const, T):
 </summary>
 <pre><code class="python">@staticmethod
 def pvs_Celsius(const, T):
-    &#34;&#34;&#34; valid for 123 &lt; T &lt; 332 K, eq (10) &#34;&#34;&#34;
+    &#34;&#34;&#34;valid for 123 &lt; T &lt; 332 K, eq (10)&#34;&#34;&#34;
     return const.MK05_LIQ_C1 * np.exp(
         const.MK05_LIQ_C2
         - const.MK05_LIQ_C3 / (T + const.T0)
         - const.MK05_LIQ_C4 * np.log((T + const.T0) / const.MK05_LIQ_C5)
         + const.MK05_LIQ_C6 * (T + const.T0)
-        + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8)) * (
+        + np.tanh(const.MK05_LIQ_C7 * (T + const.T0 - const.MK05_LIQ_C8))
+        * (
             const.MK05_LIQ_C9
             - const.MK05_LIQ_C10 / (T + const.T0)
-            - const.MK05_LIQ_C11 * np.log((T + const.T0)/const.MK05_LIQ_C12)
+            - const.MK05_LIQ_C11 * np.log((T + const.T0) / const.MK05_LIQ_C12)
             + const.MK05_LIQ_C13 * (T + const.T0)
         )
     )</code></pre>

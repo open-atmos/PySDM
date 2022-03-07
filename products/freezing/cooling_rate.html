@@ -34,15 +34,15 @@ from PySDM.products.impl import MomentProduct
 
 
 class CoolingRate(MomentProduct):
-    def __init__(self, unit=&#39;K/s&#39;, name=None):
+    def __init__(self, unit=&#34;K/s&#34;, name=None):
         super().__init__(unit=unit, name=name)
 
     def register(self, builder):
-        builder.request_attribute(&#39;cooling rate&#39;)
+        builder.request_attribute(&#34;cooling rate&#34;)
         super().register(builder)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#39;cooling rate&#39;, rank=1)
+        self._download_moment_to_buffer(attr=&#34;cooling rate&#34;, rank=1)
         return self.buffer</code></pre>
 </details>
 </section>
@@ -67,15 +67,15 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CoolingRate(MomentProduct):
-    def __init__(self, unit=&#39;K/s&#39;, name=None):
+    def __init__(self, unit=&#34;K/s&#34;, name=None):
         super().__init__(unit=unit, name=name)
 
     def register(self, builder):
-        builder.request_attribute(&#39;cooling rate&#39;)
+        builder.request_attribute(&#34;cooling rate&#34;)
         super().register(builder)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#39;cooling rate&#39;, rank=1)
+        self._download_moment_to_buffer(attr=&#34;cooling rate&#34;, rank=1)
         return self.buffer</code></pre>
 </details>
 <h3>Ancestors</h3>

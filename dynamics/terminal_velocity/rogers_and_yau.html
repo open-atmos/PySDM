@@ -34,9 +34,15 @@ from PySDM.physics import constants as const
 
 
 class RogersYau:
-    def __init__(self, particles,
-                 small_k=None, medium_k=None, large_k=None,
-                 small_r_limit=None, medium_r_limit=None):
+    def __init__(
+        self,
+        particles,
+        small_k=None,
+        medium_k=None,
+        large_k=None,
+        small_r_limit=None,
+        medium_r_limit=None,
+    ):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -47,9 +53,13 @@ class RogersYau:
 
     def __call__(self, output, radius):
         self.particles.backend.terminal_velocity(
-            output.data, radius.data,
-            self.small_k, self.medium_k, self.large_k,
-            self.small_r_limit, self.medium_r_limit
+            output.data,
+            radius.data,
+            self.small_k,
+            self.medium_k,
+            self.large_k,
+            self.small_r_limit,
+            self.medium_r_limit,
         )</code></pre>
 </details>
 </section>
@@ -73,9 +83,15 @@ class RogersYau:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RogersYau:
-    def __init__(self, particles,
-                 small_k=None, medium_k=None, large_k=None,
-                 small_r_limit=None, medium_r_limit=None):
+    def __init__(
+        self,
+        particles,
+        small_k=None,
+        medium_k=None,
+        large_k=None,
+        small_r_limit=None,
+        medium_r_limit=None,
+    ):
         si = const.si
         self.particles = particles
         self.small_k = small_k or 1.19e6 / si.cm / si.s
@@ -86,9 +102,13 @@ class RogersYau:
 
     def __call__(self, output, radius):
         self.particles.backend.terminal_velocity(
-            output.data, radius.data,
-            self.small_k, self.medium_k, self.large_k,
-            self.small_r_limit, self.medium_r_limit
+            output.data,
+            radius.data,
+            self.small_k,
+            self.medium_k,
+            self.large_k,
+            self.small_r_limit,
+            self.medium_r_limit,
         )</code></pre>
 </details>
 </dd>

@@ -30,22 +30,23 @@
 <pre><code class="python">&#34;&#34;&#34;
 basic geometric kernel
 &#34;&#34;&#34;
-from PySDM.physics import constants as const
 from PySDM.dynamics.collisions.collision_kernels.impl.gravitational import Gravitational
+from PySDM.physics import constants as const
 
 
 class Geometric(Gravitational):
-
-    def __init__(self, collection_efficiency=1, x=&#39;volume&#39;):
+    def __init__(self, collection_efficiency=1, x=&#34;volume&#34;):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        output.sum(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         output **= 2
         output *= const.PI * self.collection_efficiency
-        self.pair_tmp.distance(self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
+        self.pair_tmp.distance(
+            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+        )
         output *= self.pair_tmp</code></pre>
 </details>
 </section>
@@ -69,17 +70,18 @@ class Geometric(Gravitational):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Geometric(Gravitational):
-
-    def __init__(self, collection_efficiency=1, x=&#39;volume&#39;):
+    def __init__(self, collection_efficiency=1, x=&#34;volume&#34;):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
 
     def __call__(self, output, is_first_in_pair):
-        output.sum(self.particulator.attributes[&#39;radius&#39;], is_first_in_pair)
+        output.sum(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         output **= 2
         output *= const.PI * self.collection_efficiency
-        self.pair_tmp.distance(self.particulator.attributes[&#39;terminal velocity&#39;], is_first_in_pair)
+        self.pair_tmp.distance(
+            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+        )
         output *= self.pair_tmp</code></pre>
 </details>
 <h3>Ancestors</h3>

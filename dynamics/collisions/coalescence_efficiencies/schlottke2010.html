@@ -31,11 +31,11 @@
 TODO #744
 &#34;&#34;&#34;
 import numpy as np
+
 # TODO #744: TEST
 
 
 class Schlottke2010:
-
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None
@@ -45,32 +45,36 @@ class Schlottke2010:
     def register(self, builder):
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
-        builder.request_attribute(&#39;volume&#39;)
-        builder.request_attribute(&#39;terminal velocity&#39;)
-        for key in (&#39;Sc&#39;,&#39;tmp&#39;,&#39;tmp2&#39;,&#39;We&#39;):
+        builder.request_attribute(&#34;volume&#34;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
+        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float)
+                self.particulator.n_sd // 2, dtype=float
+            )
 
     def __call__(self, output, is_first_in_pair):
-        self.arrays[&#39;tmp&#39;].sum(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
-        self.arrays[&#39;tmp&#39;] /= (self.const.pi / 6)
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] /= self.const.pi / 6
 
-        self.arrays[&#39;tmp2&#39;].distance(self.particulator.attributes[&#39;terminal velocity&#39;],
-                                     is_first_in_pair)
-        self.arrays[&#39;tmp2&#39;] **= 2
-        self.arrays[&#39;We&#39;].multiply(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
-        self.arrays[&#39;We&#39;] /= self.arrays[&#39;tmp&#39;]
-        self.arrays[&#39;We&#39;] *= self.arrays[&#39;tmp2&#39;]
-        self.arrays[&#39;We&#39;] *= (self.const.pi / 12 * self.const.rho_w)
+        self.arrays[&#34;tmp2&#34;].distance(
+            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;tmp2&#34;] **= 2
+        self.arrays[&#34;We&#34;].multiply(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;We&#34;] /= self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
+        self.arrays[&#34;We&#34;] *= self.const.pi / 12 * self.const.rho_w
 
-        self.arrays[&#39;Sc&#39;][:] = self.arrays[&#39;tmp&#39;][:]
-        self.arrays[&#39;Sc&#39;] **= (2/3)
-        self.arrays[&#39;Sc&#39;] *= (self.const.pi * self.const.sgm_w)
+        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]
+        self.arrays[&#34;Sc&#34;] **= 2 / 3
+        self.arrays[&#34;Sc&#34;] *= self.const.pi * self.const.sgm_w
 
-        self.arrays[&#39;We&#39;] /= self.arrays[&#39;Sc&#39;]
-        self.arrays[&#39;We&#39;] *= -1.15
+        self.arrays[&#34;We&#34;] /= self.arrays[&#34;Sc&#34;]
+        self.arrays[&#34;We&#34;] *= -1.15
 
-        output[:] = np.exp(self.arrays[&#39;We&#39;])</code></pre>
+        output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>
 </details>
 </section>
 <section>
@@ -92,7 +96,6 @@ class Schlottke2010:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Schlottke2010:
-
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None
@@ -102,32 +105,36 @@ class Schlottke2010:
     def register(self, builder):
         self.particulator = builder.particulator
         self.const = self.particulator.formulae.constants
-        builder.request_attribute(&#39;volume&#39;)
-        builder.request_attribute(&#39;terminal velocity&#39;)
-        for key in (&#39;Sc&#39;,&#39;tmp&#39;,&#39;tmp2&#39;,&#39;We&#39;):
+        builder.request_attribute(&#34;volume&#34;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
+        for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
-                self.particulator.n_sd // 2, dtype=float)
+                self.particulator.n_sd // 2, dtype=float
+            )
 
     def __call__(self, output, is_first_in_pair):
-        self.arrays[&#39;tmp&#39;].sum(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
-        self.arrays[&#39;tmp&#39;] /= (self.const.pi / 6)
+        self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
+        self.arrays[&#34;tmp&#34;] /= self.const.pi / 6
 
-        self.arrays[&#39;tmp2&#39;].distance(self.particulator.attributes[&#39;terminal velocity&#39;],
-                                     is_first_in_pair)
-        self.arrays[&#39;tmp2&#39;] **= 2
-        self.arrays[&#39;We&#39;].multiply(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
-        self.arrays[&#39;We&#39;] /= self.arrays[&#39;tmp&#39;]
-        self.arrays[&#39;We&#39;] *= self.arrays[&#39;tmp2&#39;]
-        self.arrays[&#39;We&#39;] *= (self.const.pi / 12 * self.const.rho_w)
+        self.arrays[&#34;tmp2&#34;].distance(
+            self.particulator.attributes[&#34;terminal velocity&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;tmp2&#34;] **= 2
+        self.arrays[&#34;We&#34;].multiply(
+            self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
+        )
+        self.arrays[&#34;We&#34;] /= self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
+        self.arrays[&#34;We&#34;] *= self.const.pi / 12 * self.const.rho_w
 
-        self.arrays[&#39;Sc&#39;][:] = self.arrays[&#39;tmp&#39;][:]
-        self.arrays[&#39;Sc&#39;] **= (2/3)
-        self.arrays[&#39;Sc&#39;] *= (self.const.pi * self.const.sgm_w)
+        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]
+        self.arrays[&#34;Sc&#34;] **= 2 / 3
+        self.arrays[&#34;Sc&#34;] *= self.const.pi * self.const.sgm_w
 
-        self.arrays[&#39;We&#39;] /= self.arrays[&#39;Sc&#39;]
-        self.arrays[&#39;We&#39;] *= -1.15
+        self.arrays[&#34;We&#34;] /= self.arrays[&#34;Sc&#34;]
+        self.arrays[&#34;We&#34;] *= -1.15
 
-        output[:] = np.exp(self.arrays[&#39;We&#39;])</code></pre>
+        output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -143,11 +150,12 @@ class Schlottke2010:
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
     self.const = self.particulator.formulae.constants
-    builder.request_attribute(&#39;volume&#39;)
-    builder.request_attribute(&#39;terminal velocity&#39;)
-    for key in (&#39;Sc&#39;,&#39;tmp&#39;,&#39;tmp2&#39;,&#39;We&#39;):
+    builder.request_attribute(&#34;volume&#34;)
+    builder.request_attribute(&#34;terminal velocity&#34;)
+    for key in (&#34;Sc&#34;, &#34;tmp&#34;, &#34;tmp2&#34;, &#34;We&#34;):
         self.arrays[key] = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float)</code></pre>
+            self.particulator.n_sd // 2, dtype=float
+        )</code></pre>
 </details>
 </dd>
 </dl>

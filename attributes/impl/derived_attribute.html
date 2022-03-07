@@ -37,7 +37,6 @@ from .attribute import Attribute
 
 
 class DerivedAttribute(Attribute):
-
     def __init__(self, builder, name, dependencies):
         assert len(dependencies) &gt; 0
         super().__init__(builder, name)
@@ -46,7 +45,9 @@ class DerivedAttribute(Attribute):
     def update(self):
         for dependency in self.dependencies:
             dependency.update()
-        dependencies_timestamp = sum(dependency.timestamp for dependency in self.dependencies)
+        dependencies_timestamp = sum(
+            dependency.timestamp for dependency in self.dependencies
+        )
         if self.timestamp &lt; dependencies_timestamp:
             self.timestamp = dependencies_timestamp
             self.recalculate()
@@ -78,7 +79,6 @@ class DerivedAttribute(Attribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DerivedAttribute(Attribute):
-
     def __init__(self, builder, name, dependencies):
         assert len(dependencies) &gt; 0
         super().__init__(builder, name)
@@ -87,7 +87,9 @@ class DerivedAttribute(Attribute):
     def update(self):
         for dependency in self.dependencies:
             dependency.update()
-        dependencies_timestamp = sum(dependency.timestamp for dependency in self.dependencies)
+        dependencies_timestamp = sum(
+            dependency.timestamp for dependency in self.dependencies
+        )
         if self.timestamp &lt; dependencies_timestamp:
             self.timestamp = dependencies_timestamp
             self.recalculate()
@@ -157,7 +159,9 @@ class DerivedAttribute(Attribute):
 <pre><code class="python">def update(self):
     for dependency in self.dependencies:
         dependency.update()
-    dependencies_timestamp = sum(dependency.timestamp for dependency in self.dependencies)
+    dependencies_timestamp = sum(
+        dependency.timestamp for dependency in self.dependencies
+    )
     if self.timestamp &lt; dependencies_timestamp:
         self.timestamp = dependencies_timestamp
         self.recalculate()</code></pre>

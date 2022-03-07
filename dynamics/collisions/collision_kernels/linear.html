@@ -33,20 +33,19 @@ TODO #744
 
 
 class Linear:
-
     def __init__(self, a, b):
         self.a = a
         self.b = b
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
+        output.sum_pair(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         output *= self.b
         output += self.a
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;volume&#39;)</code></pre>
+        builder.request_attribute(&#34;volume&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -69,20 +68,19 @@ class Linear:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Linear:
-
     def __init__(self, a, b):
         self.a = a
         self.b = b
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output.sum_pair(self.particulator.attributes[&#39;volume&#39;], is_first_in_pair)
+        output.sum_pair(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
         output *= self.b
         output += self.a
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;volume&#39;)</code></pre>
+        builder.request_attribute(&#34;volume&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -97,7 +95,7 @@ class Linear:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    builder.request_attribute(&#39;volume&#39;)</code></pre>
+    builder.request_attribute(&#34;volume&#34;)</code></pre>
 </details>
 </dd>
 </dl>

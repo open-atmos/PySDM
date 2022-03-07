@@ -38,7 +38,7 @@ from .derived_attribute import DerivedAttribute
 
 class IntensiveAttribute(DerivedAttribute):
     def __init__(self, builder, name: str, base: str):
-        self.volume = builder.get_attribute(&#39;volume&#39;)
+        self.volume = builder.get_attribute(&#34;volume&#34;)
         self.base = builder.get_attribute(base)
         super().__init__(builder, name, dependencies=(self.volume, self.base))
 
@@ -68,7 +68,7 @@ class IntensiveAttribute(DerivedAttribute):
 </summary>
 <pre><code class="python">class IntensiveAttribute(DerivedAttribute):
     def __init__(self, builder, name: str, base: str):
-        self.volume = builder.get_attribute(&#39;volume&#39;)
+        self.volume = builder.get_attribute(&#34;volume&#34;)
         self.base = builder.get_attribute(base)
         super().__init__(builder, name, dependencies=(self.volume, self.base))
 

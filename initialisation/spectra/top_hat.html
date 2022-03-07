@@ -45,7 +45,9 @@ class TopHat:
         return self.norm_factor * cdf
 
     def percentiles(self, cdf_values):
-        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))</code></pre>
+        return (self._mx - self._mn) * (
+            np.asarray(cdf_values) + self._mn / (self._mx - self._mn)
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -79,7 +81,9 @@ class TopHat:
         return self.norm_factor * cdf
 
     def percentiles(self, cdf_values):
-        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))</code></pre>
+        return (self._mx - self._mn) * (
+            np.asarray(cdf_values) + self._mn / (self._mx - self._mn)
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -107,7 +111,9 @@ class TopHat:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def percentiles(self, cdf_values):
-    return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))</code></pre>
+    return (self._mx - self._mn) * (
+        np.asarray(cdf_values) + self._mn / (self._mx - self._mn)
+    )</code></pre>
 </details>
 </dd>
 </dl>

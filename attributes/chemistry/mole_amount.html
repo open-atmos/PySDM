@@ -40,7 +40,8 @@ class MoleAmountImpl(ExtensiveAttribute):
 
 def make_mole_amount_factory(compound):
     def _factory(builder):
-        return MoleAmountImpl(builder, name=&#39;moles_&#39;+compound)
+        return MoleAmountImpl(builder, name=&#34;moles_&#34; + compound)
+
     return _factory</code></pre>
 </details>
 </section>
@@ -62,7 +63,8 @@ def make_mole_amount_factory(compound):
 </summary>
 <pre><code class="python">def make_mole_amount_factory(compound):
     def _factory(builder):
-        return MoleAmountImpl(builder, name=&#39;moles_&#39;+compound)
+        return MoleAmountImpl(builder, name=&#34;moles_&#34; + compound)
+
     return _factory</code></pre>
 </details>
 </dd>

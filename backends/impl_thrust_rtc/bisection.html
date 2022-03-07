@@ -30,37 +30,37 @@
 <pre><code class="python">&#34;&#34;&#34;
 C code of basic bisection root-finding algorithm for use within ThrustRTC CUDA codes
 &#34;&#34;&#34;
-BISECTION = &#39;&#39;&#39;
+BISECTION = &#34;&#34;&#34;
     struct Bisect {
         static __device__ real_type bisect(
-            real_type (*f)(real_type , void*), 
+            real_type (*f)(real_type , void*),
             void* args,
-            real_type min, real_type max, 
+            real_type min, real_type max,
             real_type fmin, real_type fmax,
             real_type tol
         ) {
             assert(min &lt; max); // assumes in order
-    
+
             if (fmin == 0) {
                 return min;
             }
             if (fmax == 0) {
                 return max;
             }
-    
+
             // if bisection is ill-posed, return mid of the range
             if (fmin * fmax &gt;= 0) {
-                return (min + max) / 2; 
+                return (min + max) / 2;
             }
 
-            real_type mid = (min + max) / 2; 
+            real_type mid = (min + max) / 2;
             while (abs(max - min) &gt; tol * abs(mid)) {
                 if (mid == max || mid == min) {
                     break;
                 }
-    
+
                 real_type fmid = f(mid, args);
-    
+
                 if (fmid == 0) {
                     break;
                 }
@@ -68,16 +68,16 @@ BISECTION = &#39;&#39;&#39;
                     min = mid;
                     fmin = fmid;
                 }
-                else { 
-                    max = mid; 
+                else {
+                    max = mid;
                     fmax = fmid;
                 }
-                mid = (min + max) / 2; 
+                mid = (min + max) / 2;
             }
             return mid;
         }
     };
-&#39;&#39;&#39;</code></pre>
+&#34;&#34;&#34;</code></pre>
 </details>
 </section>
 <section>

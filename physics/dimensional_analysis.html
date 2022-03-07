@@ -34,13 +34,14 @@ A context manager (for use with the `with` statement)
 for use in unit tests which disables Numba and enables Pint
 &#34;&#34;&#34;
 from importlib import reload
+
 from PySDM import formulae
+
 from . import constants, constants_defaults
 from .impl import flag
 
 
 class DimensionalAnalysis:
-
     def __enter__(*_):  # pylint: disable=no-method-argument
         flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
@@ -73,7 +74,6 @@ class DimensionalAnalysis:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DimensionalAnalysis:
-
     def __enter__(*_):  # pylint: disable=no-method-argument
         flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)

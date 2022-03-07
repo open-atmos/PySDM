@@ -33,7 +33,6 @@ P(x) = exp(-x / lambda)
 
 
 class ExponFrag:
-
     def __init__(self, scale):
         self.particulator = None
         self.scale = scale
@@ -42,17 +41,19 @@ class ExponFrag:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                dtype=float)
-        self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                 dtype=float)
+        builder.request_attribute(&#34;radius&#34;)
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.frag_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
 
     def __call__(self, output, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#39;radius&#39;],is_first_in_pair)
-        self.particulator.backend.exp_fragmentation(output, self.scale, self.frag_size,
-            self.max_size, u01)
-        </code></pre>
+        self.max_size.max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.particulator.backend.exp_fragmentation(
+            output, self.scale, self.frag_size, self.max_size, u01
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -75,7 +76,6 @@ class ExponFrag:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ExponFrag:
-
     def __init__(self, scale):
         self.particulator = None
         self.scale = scale
@@ -84,16 +84,19 @@ class ExponFrag:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                dtype=float)
-        self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                                 dtype=float)
+        builder.request_attribute(&#34;radius&#34;)
+        self.max_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+        self.frag_size = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
 
     def __call__(self, output, u01, is_first_in_pair):
-        self.max_size.max(self.particulator.attributes[&#39;radius&#39;],is_first_in_pair)
-        self.particulator.backend.exp_fragmentation(output, self.scale, self.frag_size,
-            self.max_size, u01)</code></pre>
+        self.max_size.max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.particulator.backend.exp_fragmentation(
+            output, self.scale, self.frag_size, self.max_size, u01
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -108,11 +111,13 @@ class ExponFrag:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    builder.request_attribute(&#39;radius&#39;)
-    self.max_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                            dtype=float)
-    self.frag_size = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                             dtype=float)</code></pre>
+    builder.request_attribute(&#34;radius&#34;)
+    self.max_size = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )
+    self.frag_size = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )</code></pre>
 </details>
 </dd>
 </dl>

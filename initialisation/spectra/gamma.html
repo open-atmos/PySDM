@@ -34,16 +34,15 @@ gamma spectrum implemented using
  [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
 &#34;&#34;&#34;
 from scipy.stats import gamma
+
 from PySDM.initialisation.impl.spectrum import Spectrum
 
-class Gamma(Spectrum):
 
+class Gamma(Spectrum):
     def __init__(self, norm_factor, k, theta):
-        super().__init__(gamma, (
-            k,       # shape factor
-            0,       # loc
-            theta    # scale
-        ), norm_factor)</code></pre>
+        super().__init__(
+            gamma, (k, 0, theta), norm_factor  # shape factor  # loc  # scale
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -66,13 +65,10 @@ class Gamma(Spectrum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Gamma(Spectrum):
-
     def __init__(self, norm_factor, k, theta):
-        super().__init__(gamma, (
-            k,       # shape factor
-            0,       # loc
-            theta    # scale
-        ), norm_factor)</code></pre>
+        super().__init__(
+            gamma, (k, 0, theta), norm_factor  # shape factor  # loc  # scale
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

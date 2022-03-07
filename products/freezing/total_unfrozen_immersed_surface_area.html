@@ -31,18 +31,19 @@
 mean immersed surface area per particle for unfrozen particles
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.moment_product import MomentProduct
 
 
 class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
-    def __init__(self, unit=&#39;m^2&#39;, name=None):
+    def __init__(self, unit=&#34;m^2&#34;, name=None):
         super().__init__(unit=unit, name=name)
 
     def _impl(self, **kwargs):
         params = {
-            &#39;attr&#39;: &#39;immersed surface area&#39;,
-            &#39;filter_attr&#39;: &#39;volume&#39;,
-            &#39;filter_range&#39;: (0, np.inf)
+            &#34;attr&#34;: &#34;immersed surface area&#34;,
+            &#34;filter_attr&#34;: &#34;volume&#34;,
+            &#34;filter_range&#34;: (0, np.inf),
         }
         self._download_moment_to_buffer(**params, rank=1)
         result = np.copy(self.buffer)
@@ -73,14 +74,14 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TotalUnfrozenImmersedSurfaceArea(MomentProduct):
-    def __init__(self, unit=&#39;m^2&#39;, name=None):
+    def __init__(self, unit=&#34;m^2&#34;, name=None):
         super().__init__(unit=unit, name=name)
 
     def _impl(self, **kwargs):
         params = {
-            &#39;attr&#39;: &#39;immersed surface area&#39;,
-            &#39;filter_attr&#39;: &#39;volume&#39;,
-            &#39;filter_range&#39;: (0, np.inf)
+            &#34;attr&#34;: &#34;immersed surface area&#34;,
+            &#34;filter_attr&#34;: &#34;volume&#34;,
+            &#34;filter_range&#34;: (0, np.inf),
         }
         self._download_moment_to_buffer(**params, rank=1)
         result = np.copy(self.buffer)

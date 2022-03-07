@@ -34,11 +34,13 @@ warning reporting logic for use whithin Numba njitted code (printing to standard
  error using numba.objmode() allowing to capture the output from Python tests
 &#34;&#34;&#34;
 import sys
+
 import numba
+
 from PySDM.backends.impl_numba import conf
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 def warn(msg, file, context=None, return_value=None):
     with numba.objmode():
         print(msg, file=sys.stderr)
@@ -66,7 +68,7 @@ def warn(msg, file, context=None, return_value=None):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 def warn(msg, file, context=None, return_value=None):
     with numba.objmode():
         print(msg, file=sys.stderr)

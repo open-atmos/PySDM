@@ -30,15 +30,17 @@
 <pre><code class="python">&#34;&#34;&#34;
 logic around the `PySDM.products.impl.product.Product` - parent class for all products
 &#34;&#34;&#34;
+import inspect
+import re
 from abc import abstractmethod
 from typing import Optional
-import re
-import inspect
+
 import pint
+
 from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
-_CAMEL_CASE_PATTERN = re.compile(r&#39;[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])&#39;)
+_CAMEL_CASE_PATTERN = re.compile(r&#34;[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])&#34;)
 
 
 class Product:
@@ -67,13 +69,13 @@ class Product:
 
     @staticmethod
     def _parse_unit(unit: str):
-        if unit in (&#39;%&#39;, &#39;percent&#39;):
-            return .01 * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
+        if unit in (&#34;%&#34;, &#34;percent&#34;):
+            return 0.01 * _UNIT_REGISTRY.dimensionless
+        if unit in (&#34;PPB&#34;, &#34;ppb&#34;):
             return PPB * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
+        if unit in (&#34;PPM&#34;, &#34;ppm&#34;):
             return PPM * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
+        if unit in (&#34;PPT&#34;, &#34;ppt&#34;):
             return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
@@ -81,32 +83,40 @@ class Product:
     def _camel_case_to_words(string: str):
         words = _CAMEL_CASE_PATTERN.findall(string)
         words = (word if word.isupper() else word.lower() for word in words)
-        return &#39; &#39;.join(words)
+        return &#34; &#34;.join(words)
 
     def __check_unit(self):
         init = inspect.signature(self.__init__)
-        if &#39;unit&#39; not in init.parameters:
-            raise AssertionError(f&#34;method __init__ of class {type(self).__name__}&#34;
-                                 f&#34; is expected to have a unit parameter&#34;)
+        if &#34;unit&#34; not in init.parameters:
+            raise AssertionError(
+                f&#34;method __init__ of class {type(self).__name__}&#34;
+                f&#34; is expected to have a unit parameter&#34;
+            )
 
-        default_unit_arg = init.parameters[&#39;unit&#39;].default
+        default_unit_arg = init.parameters[&#34;unit&#34;].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == &#39;&#39;:
-            raise AssertionError(f&#34;unit parameter of {type(self).__name__}.__init__&#34;
-                                 f&#34; is expected to have a non-empty default value&#34;)
+        if default_unit_arg is None or str(default_unit_arg).strip() == &#34;&#34;:
+            raise AssertionError(
+                f&#34;unit parameter of {type(self).__name__}.__init__&#34;
+                f&#34; is expected to have a non-empty default value&#34;
+            )
 
         default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
-            raise AssertionError(f&#39;default value &#34;{default_unit_arg}&#34;&#39;
-                                 f&#39; of {type(self).__name__}.__init__() unit parameter&#39;
-                                 f&#39; is not a base SI unit&#39;)
+            raise AssertionError(
+                f&#39;default value &#34;{default_unit_arg}&#34;&#39;
+                f&#34; of {type(self).__name__}.__init__() unit parameter&#34;
+                f&#34; is not a base SI unit&#34;
+            )
 
         if self._unit.dimensionality != default_unit.dimensionality:
-            raise AssertionError(f&#39;provided unit ({self._unit}) has different dimensionality&#39;
-                                 f&#39; ({self._unit.dimensionality}) than the default one&#39;
-                                 f&#39; ({default_unit.dimensionality})&#39;
-                                 f&#39; for product {type(self).__name__}&#39;)
+            raise AssertionError(
+                f&#34;provided unit ({self._unit}) has different dimensionality&#34;
+                f&#34; ({self._unit.dimensionality}) than the default one&#34;
+                f&#34; ({default_unit.dimensionality})&#34;
+                f&#34; for product {type(self).__name__}&#34;
+            )
 
     @property
     def unit(self):
@@ -167,13 +177,13 @@ class Product:
 
     @staticmethod
     def _parse_unit(unit: str):
-        if unit in (&#39;%&#39;, &#39;percent&#39;):
-            return .01 * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPB&#39;, &#39;ppb&#39;):
+        if unit in (&#34;%&#34;, &#34;percent&#34;):
+            return 0.01 * _UNIT_REGISTRY.dimensionless
+        if unit in (&#34;PPB&#34;, &#34;ppb&#34;):
             return PPB * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPM&#39;, &#39;ppm&#39;):
+        if unit in (&#34;PPM&#34;, &#34;ppm&#34;):
             return PPM * _UNIT_REGISTRY.dimensionless
-        if unit in (&#39;PPT&#39;, &#39;ppt&#39;):
+        if unit in (&#34;PPT&#34;, &#34;ppt&#34;):
             return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
@@ -181,32 +191,40 @@ class Product:
     def _camel_case_to_words(string: str):
         words = _CAMEL_CASE_PATTERN.findall(string)
         words = (word if word.isupper() else word.lower() for word in words)
-        return &#39; &#39;.join(words)
+        return &#34; &#34;.join(words)
 
     def __check_unit(self):
         init = inspect.signature(self.__init__)
-        if &#39;unit&#39; not in init.parameters:
-            raise AssertionError(f&#34;method __init__ of class {type(self).__name__}&#34;
-                                 f&#34; is expected to have a unit parameter&#34;)
+        if &#34;unit&#34; not in init.parameters:
+            raise AssertionError(
+                f&#34;method __init__ of class {type(self).__name__}&#34;
+                f&#34; is expected to have a unit parameter&#34;
+            )
 
-        default_unit_arg = init.parameters[&#39;unit&#39;].default
+        default_unit_arg = init.parameters[&#34;unit&#34;].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == &#39;&#39;:
-            raise AssertionError(f&#34;unit parameter of {type(self).__name__}.__init__&#34;
-                                 f&#34; is expected to have a non-empty default value&#34;)
+        if default_unit_arg is None or str(default_unit_arg).strip() == &#34;&#34;:
+            raise AssertionError(
+                f&#34;unit parameter of {type(self).__name__}.__init__&#34;
+                f&#34; is expected to have a non-empty default value&#34;
+            )
 
         default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
-            raise AssertionError(f&#39;default value &#34;{default_unit_arg}&#34;&#39;
-                                 f&#39; of {type(self).__name__}.__init__() unit parameter&#39;
-                                 f&#39; is not a base SI unit&#39;)
+            raise AssertionError(
+                f&#39;default value &#34;{default_unit_arg}&#34;&#39;
+                f&#34; of {type(self).__name__}.__init__() unit parameter&#34;
+                f&#34; is not a base SI unit&#34;
+            )
 
         if self._unit.dimensionality != default_unit.dimensionality:
-            raise AssertionError(f&#39;provided unit ({self._unit}) has different dimensionality&#39;
-                                 f&#39; ({self._unit.dimensionality}) than the default one&#39;
-                                 f&#39; ({default_unit.dimensionality})&#39;
-                                 f&#39; for product {type(self).__name__}&#39;)
+            raise AssertionError(
+                f&#34;provided unit ({self._unit}) has different dimensionality&#34;
+                f&#34; ({self._unit.dimensionality}) than the default one&#34;
+                f&#34; ({default_unit.dimensionality})&#34;
+                f&#34; for product {type(self).__name__}&#34;
+            )
 
     @property
     def unit(self):

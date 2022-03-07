@@ -31,26 +31,31 @@
 Provides radius bin-resolved average terminal velocity (average is particle-number weighted)
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
-ATTR = &#39;terminal velocity&#39;
+ATTR = &#34;terminal velocity&#34;
 RANK = 1
 
+
 class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
-    def __init__(self, radius_bin_edges, name=None, unit=&#39;m/s&#39;):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+    def __init__(self, radius_bin_edges, name=None, unit=&#34;m/s&#34;):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.radius_bin_edges = radius_bin_edges
 
     def register(self, builder):
         builder.request_attribute(ATTR)
 
-        volume_bin_edges = builder.particulator.formulae.trivia.volume(self.radius_bin_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bin_edges)
+        volume_bin_edges = builder.particulator.formulae.trivia.volume(
+            self.radius_bin_edges
+        )
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+            volume_bin_edges
+        )
 
         super().register(builder)
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
-
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
@@ -88,20 +93,23 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RadiusBinnedNumberAveragedTerminalVelocity(SpectrumMomentProduct):
-    def __init__(self, radius_bin_edges, name=None, unit=&#39;m/s&#39;):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+    def __init__(self, radius_bin_edges, name=None, unit=&#34;m/s&#34;):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.radius_bin_edges = radius_bin_edges
 
     def register(self, builder):
         builder.request_attribute(ATTR)
 
-        volume_bin_edges = builder.particulator.formulae.trivia.volume(self.radius_bin_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bin_edges)
+        volume_bin_edges = builder.particulator.formulae.trivia.volume(
+            self.radius_bin_edges
+        )
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+            volume_bin_edges
+        )
 
         super().register(builder)
 
         self.shape = (*builder.particulator.mesh.grid, len(self.attr_bins_edges) - 1)
-
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])

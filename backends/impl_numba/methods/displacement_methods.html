@@ -31,14 +31,16 @@
 CPU implementation of backend methods for particle displacement (advection and sedimentation)
 &#34;&#34;&#34;
 import numba
+
 from PySDM.backends.impl_numba import conf
+
 from ...impl_common.backend_methods import BackendMethods
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 # pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
-        dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
 ):
     omega = position_in_cell[dim, droplet]
     displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
@@ -46,57 +48,72 @@ def calculate_displacement_body_common(
 
 class DisplacementMethods(BackendMethods):
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
     # pylint: disable=too-many-arguments
-    def calculate_displacement_body_1d(dim, scheme, displacement, courant,
-                                       cell_origin, position_in_cell):
+    def calculate_displacement_body_1d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell
+    ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                               displacement, courant, position_in_cell)
+            calculate_displacement_body_common(
+                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+            )
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
     # pylint: disable=too-many-arguments
-    def calculate_displacement_body_2d(dim, scheme, displacement, courant,
-                                       cell_origin, position_in_cell):
+    def calculate_displacement_body_2d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell
+    ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet],
-                  cell_origin[1, droplet])
-            _r = (cell_origin[0, droplet] + 1 * (dim == 0),
-                  cell_origin[1, droplet] + 1 * (dim == 1))
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                               displacement, courant, position_in_cell)
+            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _r = (
+                cell_origin[0, droplet] + 1 * (dim == 0),
+                cell_origin[1, droplet] + 1 * (dim == 1),
+            )
+            calculate_displacement_body_common(
+                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+            )
 
     # pylint: disable=too-many-arguments
-    def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(
+        self, dim, displacement, courant, cell_origin, position_in_cell
+    ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
             DisplacementMethods.calculate_displacement_body_1d(
-                dim, scheme, displacement.data, courant.data,
-                cell_origin.data, position_in_cell.data
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
-                dim, scheme, displacement.data, courant.data,
-                cell_origin.data, position_in_cell.data
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
             )
         else:
             raise NotImplementedError()
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
     # pylint: disable=too-many-arguments
     def flag_precipitated_body(
         cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
     ):
-        rainfall = 0.
+        rainfall = 0.0
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
@@ -111,8 +128,14 @@ class DisplacementMethods(BackendMethods):
         cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
     ) -&gt; float:
         return DisplacementMethods.flag_precipitated_body(
-            cell_origin.data, position_in_cell.data, volume.data,
-            multiplicity.data, idx.data, length, healthy.data)</code></pre>
+            cell_origin.data,
+            position_in_cell.data,
+            volume.data,
+            multiplicity.data,
+            idx.data,
+            length,
+            healthy.data,
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -131,10 +154,10 @@ class DisplacementMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+<pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 # pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
-        dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
 ):
     omega = position_in_cell[dim, droplet]
     displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])</code></pre>
@@ -156,57 +179,72 @@ def calculate_displacement_body_common(
 </summary>
 <pre><code class="python">class DisplacementMethods(BackendMethods):
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
     # pylint: disable=too-many-arguments
-    def calculate_displacement_body_1d(dim, scheme, displacement, courant,
-                                       cell_origin, position_in_cell):
+    def calculate_displacement_body_1d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell
+    ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                               displacement, courant, position_in_cell)
+            calculate_displacement_body_common(
+                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+            )
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
     # pylint: disable=too-many-arguments
-    def calculate_displacement_body_2d(dim, scheme, displacement, courant,
-                                       cell_origin, position_in_cell):
+    def calculate_displacement_body_2d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell
+    ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet],
-                  cell_origin[1, droplet])
-            _r = (cell_origin[0, droplet] + 1 * (dim == 0),
-                  cell_origin[1, droplet] + 1 * (dim == 1))
-            calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                               displacement, courant, position_in_cell)
+            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _r = (
+                cell_origin[0, droplet] + 1 * (dim == 0),
+                cell_origin[1, droplet] + 1 * (dim == 1),
+            )
+            calculate_displacement_body_common(
+                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+            )
 
     # pylint: disable=too-many-arguments
-    def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(
+        self, dim, displacement, courant, cell_origin, position_in_cell
+    ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
         if n_dims == 1:
             DisplacementMethods.calculate_displacement_body_1d(
-                dim, scheme, displacement.data, courant.data,
-                cell_origin.data, position_in_cell.data
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
-                dim, scheme, displacement.data, courant.data,
-                cell_origin.data, position_in_cell.data
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
             )
         else:
             raise NotImplementedError()
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
     # pylint: disable=too-many-arguments
     def flag_precipitated_body(
         cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
     ):
-        rainfall = 0.
+        rainfall = 0.0
         flag = len(idx)
         for i in range(length):
             if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
@@ -221,8 +259,14 @@ def calculate_displacement_body_common(
         cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
     ) -&gt; float:
         return DisplacementMethods.flag_precipitated_body(
-            cell_origin.data, position_in_cell.data, volume.data,
-            multiplicity.data, idx.data, length, healthy.data)</code></pre>
+            cell_origin.data,
+            position_in_cell.data,
+            volume.data,
+            multiplicity.data,
+            idx.data,
+            length,
+            healthy.data,
+        )</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -244,17 +288,19 @@ def calculate_displacement_body_common(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
 # pylint: disable=too-many-arguments
-def calculate_displacement_body_1d(dim, scheme, displacement, courant,
-                                   cell_origin, position_in_cell):
+def calculate_displacement_body_1d(
+    dim, scheme, displacement, courant, cell_origin, position_in_cell
+):
     length = displacement.shape[1]
     for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
         # Arakawa-C grid
         _l = cell_origin[0, droplet]
         _r = cell_origin[0, droplet] + 1
-        calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                           displacement, courant, position_in_cell)</code></pre>
+        calculate_displacement_body_common(
+            dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+        )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_2d"><code class="name flex">
@@ -267,19 +313,22 @@ def calculate_displacement_body_1d(dim, scheme, displacement, courant,
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False, &#39;cache&#39;: False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
 # pylint: disable=too-many-arguments
-def calculate_displacement_body_2d(dim, scheme, displacement, courant,
-                                   cell_origin, position_in_cell):
+def calculate_displacement_body_2d(
+    dim, scheme, displacement, courant, cell_origin, position_in_cell
+):
     length = displacement.shape[1]
     for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
         # Arakawa-C grid
-        _l = (cell_origin[0, droplet],
-              cell_origin[1, droplet])
-        _r = (cell_origin[0, droplet] + 1 * (dim == 0),
-              cell_origin[1, droplet] + 1 * (dim == 1))
-        calculate_displacement_body_common(dim, droplet, scheme, _l, _r,
-                                           displacement, courant, position_in_cell)</code></pre>
+        _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+        _r = (
+            cell_origin[0, droplet] + 1 * (dim == 0),
+            cell_origin[1, droplet] + 1 * (dim == 1),
+        )
+        calculate_displacement_body_common(
+            dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+        )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated"><code class="name flex">
@@ -297,8 +346,14 @@ def flag_precipitated(
     cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
 ) -&gt; float:
     return DisplacementMethods.flag_precipitated_body(
-        cell_origin.data, position_in_cell.data, volume.data,
-        multiplicity.data, idx.data, length, healthy.data)</code></pre>
+        cell_origin.data,
+        position_in_cell.data,
+        volume.data,
+        multiplicity.data,
+        idx.data,
+        length,
+        healthy.data,
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated_body"><code class="name flex">
@@ -311,12 +366,12 @@ def flag_precipitated(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-@numba.njit(**{**conf.JIT_FLAGS, **{&#39;parallel&#39;: False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 # pylint: disable=too-many-arguments
 def flag_precipitated_body(
     cell_origin, position_in_cell, volume, multiplicity, idx, length, healthy
 ):
-    rainfall = 0.
+    rainfall = 0.0
     flag = len(idx)
     for i in range(length):
         if cell_origin[-1, idx[i]] + position_in_cell[-1, idx[i]] &lt; 0:
@@ -338,18 +393,28 @@ def flag_precipitated_body(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calculate_displacement(self, dim, displacement, courant, cell_origin, position_in_cell):
+<pre><code class="python">def calculate_displacement(
+    self, dim, displacement, courant, cell_origin, position_in_cell
+):
     n_dims = len(courant.shape)
     scheme = self.formulae.particle_advection.displacement
     if n_dims == 1:
         DisplacementMethods.calculate_displacement_body_1d(
-            dim, scheme, displacement.data, courant.data,
-            cell_origin.data, position_in_cell.data
+            dim,
+            scheme,
+            displacement.data,
+            courant.data,
+            cell_origin.data,
+            position_in_cell.data,
         )
     elif n_dims == 2:
         DisplacementMethods.calculate_displacement_body_2d(
-            dim, scheme, displacement.data, courant.data,
-            cell_origin.data, position_in_cell.data
+            dim,
+            scheme,
+            displacement.data,
+            courant.data,
+            cell_origin.data,
+            position_in_cell.data,
         )
     else:
         raise NotImplementedError()</code></pre>

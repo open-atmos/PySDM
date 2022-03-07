@@ -33,7 +33,6 @@ wrapper class for triggering integration in the Eulerian advection solver
 
 
 class EulerianAdvection:
-
     def __init__(self, solvers):
         self.solvers = solvers
         self.particulator = None
@@ -42,10 +41,12 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.environment.get_predicted(&#39;qv&#39;).download(
-            self.particulator.environment.get_qv(), reshape=True)
-        self.particulator.environment.get_predicted(&#39;thd&#39;).download(
-            self.particulator.environment.get_thd(), reshape=True)
+        self.particulator.environment.get_predicted(&#34;qv&#34;).download(
+            self.particulator.environment.get_qv(), reshape=True
+        )
+        self.particulator.environment.get_predicted(&#34;thd&#34;).download(
+            self.particulator.environment.get_thd(), reshape=True
+        )
         self.solvers()</code></pre>
 </details>
 </section>
@@ -69,7 +70,6 @@ class EulerianAdvection:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EulerianAdvection:
-
     def __init__(self, solvers):
         self.solvers = solvers
         self.particulator = None
@@ -78,10 +78,12 @@ class EulerianAdvection:
         self.particulator = builder.particulator
 
     def __call__(self):
-        self.particulator.environment.get_predicted(&#39;qv&#39;).download(
-            self.particulator.environment.get_qv(), reshape=True)
-        self.particulator.environment.get_predicted(&#39;thd&#39;).download(
-            self.particulator.environment.get_thd(), reshape=True)
+        self.particulator.environment.get_predicted(&#34;qv&#34;).download(
+            self.particulator.environment.get_qv(), reshape=True
+        )
+        self.particulator.environment.get_predicted(&#34;thd&#34;).download(
+            self.particulator.environment.get_thd(), reshape=True
+        )
         self.solvers()</code></pre>
 </details>
 <h3>Methods</h3>

@@ -33,8 +33,9 @@ values obtained using <a href="https://pythonhosted.org/chempy/">chempy</a>'s <c
 aqueous chemistry helper utils including specific gravity constants with
  values obtained using [chempy](https://pythonhosted.org/chempy/)&#39;s `Substance`
 &#34;&#34;&#34;
-from chempy import Substance
 import numpy as np
+from chempy import Substance
+
 from PySDM.physics import si
 from PySDM.physics.constants import K_H2O, M
 
@@ -67,10 +68,10 @@ class HenryConsts:
         self.HENRY_CONST = {
             &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * const.H_u, 8700 * const.dT_u, T_0=T0),
             &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * const.H_u, 7300 * const.dT_u, T_0=T0),
-            &#34;NH3&#34;:  EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
-            &#34;SO2&#34;:  EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
-            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
-            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
+            &#34;NH3&#34;: EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
+            &#34;SO2&#34;: EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
+            &#34;CO2&#34;: EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
+            &#34;O3&#34;: EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
         }
 
 
@@ -81,9 +82,9 @@ class EquilibriumConsts:
         T0 = const.ROOM_TEMP
         self.EQUILIBRIUM_CONST = {  # Reaction Specific units, K
             &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * const.M, 8700 * const.dT_u, T_0=T0),
-            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
-            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
-            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
+            &#34;K_SO2&#34;: EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
+            &#34;K_NH3&#34;: EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
+            &#34;K_CO2&#34;: EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
             &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * const.M, 1500 * const.dT_u, T_0=T0),
             &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * const.M, -1760 * const.dT_u, T_0=T0),
             &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * const.M, 2720 * const.dT_u, T_0=T0),
@@ -91,21 +92,21 @@ class EquilibriumConsts:
 
 
 DIFFUSION_CONST = {
-    &#34;HNO3&#34;: 65.25e-6 * si.m**2 / si.s,
-    &#34;H2O2&#34;: 87.00e-6 * si.m**2 / si.s,
-    &#34;NH3&#34;:  19.78e-6 * si.m**2 / si.s,
-    &#34;SO2&#34;:  10.89e-6 * si.m**2 / si.s,
-    &#34;CO2&#34;:  13.81e-6 * si.m**2 / si.s,
-    &#34;O3&#34;:   14.44e-6 * si.m**2 / si.s,
+    &#34;HNO3&#34;: 65.25e-6 * si.m ** 2 / si.s,
+    &#34;H2O2&#34;: 87.00e-6 * si.m ** 2 / si.s,
+    &#34;NH3&#34;: 19.78e-6 * si.m ** 2 / si.s,
+    &#34;SO2&#34;: 10.89e-6 * si.m ** 2 / si.s,
+    &#34;CO2&#34;: 13.81e-6 * si.m ** 2 / si.s,
+    &#34;O3&#34;: 14.44e-6 * si.m ** 2 / si.s,
 }
 
 MASS_ACCOMMODATION_COEFFICIENTS = {
     &#34;HNO3&#34;: 0.05,
     &#34;H2O2&#34;: 0.018,
-    &#34;NH3&#34;:  0.05,
-    &#34;SO2&#34;:  0.035,
-    &#34;CO2&#34;:  0.05,
-    &#34;O3&#34;:   0.00053
+    &#34;NH3&#34;: 0.05,
+    &#34;SO2&#34;: 0.035,
+    &#34;CO2&#34;: 0.05,
+    &#34;O3&#34;: 0.00053,
 }
 
 AQUEOUS_COMPOUNDS = {
@@ -124,22 +125,18 @@ GASEOUS_COMPOUNDS = {
     &#34;N_mIII&#34;: &#34;NH3&#34;,
     &#34;S_IV&#34;: &#34;SO2&#34;,
     &#34;C_IV&#34;: &#34;CO2&#34;,
-    &#34;O3&#34;: &#34;O3&#34;
+    &#34;O3&#34;: &#34;O3&#34;,
 }
 
 DISSOCIATION_FACTORS = {
-    &#34;CO2&#34;: lambda H, eqc, cell_id:
-        1 + eqc[&#34;K_CO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HCO3&#34;].data[cell_id] / (H ** 2)),
-    &#34;SO2&#34;: lambda H, eqc, cell_id:
-        1 + eqc[&#34;K_SO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HSO3&#34;].data[cell_id] / (H ** 2)),
-    &#34;NH3&#34;: lambda H, eqc, cell_id:
-        1 + eqc[&#34;K_NH3&#34;].data[cell_id] / K_H2O * H,
-    &#34;HNO3&#34;: lambda H, eqc, cell_id:
-        1 + eqc[&#34;K_HNO3&#34;].data[cell_id] / H,
-    &#34;O3&#34;: lambda _, __, ___:
-        1,
-    &#34;H2O2&#34;: lambda _, __, ___:
-        1
+    &#34;CO2&#34;: lambda H, eqc, cell_id: 1
+    + eqc[&#34;K_CO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HCO3&#34;].data[cell_id] / (H ** 2)),
+    &#34;SO2&#34;: lambda H, eqc, cell_id: 1
+    + eqc[&#34;K_SO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HSO3&#34;].data[cell_id] / (H ** 2)),
+    &#34;NH3&#34;: lambda H, eqc, cell_id: 1 + eqc[&#34;K_NH3&#34;].data[cell_id] / K_H2O * H,
+    &#34;HNO3&#34;: lambda H, eqc, cell_id: 1 + eqc[&#34;K_HNO3&#34;].data[cell_id] / H,
+    &#34;O3&#34;: lambda _, __, ___: 1,
+    &#34;H2O2&#34;: lambda _, __, ___: 1,
 }
 
 
@@ -152,7 +149,9 @@ class KineticConsts:
             &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * const.dT_u, T_0=T0),
             &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * const.dT_u, T_0=T0),
             # Different unit due to a different pseudo-order of kinetics
-            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0),
+            &#34;k3&#34;: KinConst(
+                formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0
+            ),
         }
 
 
@@ -162,14 +161,21 @@ k4 = 13 / M
 class SpecificGravities:
     def __init__(self, constants):
         self._values = {
-            compound: Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+            compound: Substance.from_formula(compound).mass
+            * si.gram
+            / si.mole
+            / constants.Md
             for compound in GASEOUS_COMPOUNDS.values()
         }
 
         for compounds in AQUEOUS_COMPOUNDS.values():
             for compound in compounds:
-                self._values[compound] = \
-                    Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+                self._values[compound] = (
+                    Substance.from_formula(compound).mass
+                    * si.gram
+                    / si.mole
+                    / constants.Md
+                )
 
     def __getitem__(self, item):
         return self._values[item]</code></pre>
@@ -237,9 +243,9 @@ class SpecificGravities:
         T0 = const.ROOM_TEMP
         self.EQUILIBRIUM_CONST = {  # Reaction Specific units, K
             &#34;K_HNO3&#34;: EqConst(formulae, 15.4 * const.M, 8700 * const.dT_u, T_0=T0),
-            &#34;K_SO2&#34;:  EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
-            &#34;K_NH3&#34;:  EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
-            &#34;K_CO2&#34;:  EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
+            &#34;K_SO2&#34;: EqConst(formulae, 1.3e-2 * const.M, 1960 * const.dT_u, T_0=T0),
+            &#34;K_NH3&#34;: EqConst(formulae, 1.7e-5 * const.M, -450 * const.dT_u, T_0=T0),
+            &#34;K_CO2&#34;: EqConst(formulae, 4.3e-7 * const.M, -1000 * const.dT_u, T_0=T0),
             &#34;K_HSO3&#34;: EqConst(formulae, 6.6e-8 * const.M, 1500 * const.dT_u, T_0=T0),
             &#34;K_HCO3&#34;: EqConst(formulae, 4.68e-11 * const.M, -1760 * const.dT_u, T_0=T0),
             &#34;K_HSO4&#34;: EqConst(formulae, 1.2e-2 * const.M, 2720 * const.dT_u, T_0=T0),
@@ -263,10 +269,10 @@ class SpecificGravities:
         self.HENRY_CONST = {
             &#34;HNO3&#34;: EqConst(formulae, 2.1e5 * const.H_u, 8700 * const.dT_u, T_0=T0),
             &#34;H2O2&#34;: EqConst(formulae, 7.45e4 * const.H_u, 7300 * const.dT_u, T_0=T0),
-            &#34;NH3&#34;:  EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
-            &#34;SO2&#34;:  EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
-            &#34;CO2&#34;:  EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
-            &#34;O3&#34;:   EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
+            &#34;NH3&#34;: EqConst(formulae, 62 * const.H_u, 4110 * const.dT_u, T_0=T0),
+            &#34;SO2&#34;: EqConst(formulae, 1.23 * const.H_u, 3150 * const.dT_u, T_0=T0),
+            &#34;CO2&#34;: EqConst(formulae, 3.4e-2 * const.H_u, 2440 * const.dT_u, T_0=T0),
+            &#34;O3&#34;: EqConst(formulae, 1.13e-2 * const.H_u, 2540 * const.dT_u, T_0=T0),
         }</code></pre>
 </details>
 </dd>
@@ -325,7 +331,9 @@ class SpecificGravities:
             &#34;k1&#34;: KinConst(formulae, k=3.5e5 / si.s / M, dT=-5530 * const.dT_u, T_0=T0),
             &#34;k2&#34;: KinConst(formulae, k=1.5e9 / si.s / M, dT=-5280 * const.dT_u, T_0=T0),
             # Different unit due to a different pseudo-order of kinetics
-            &#34;k3&#34;: KinConst(formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0),
+            &#34;k3&#34;: KinConst(
+                formulae, k=7.45e7 / si.s / M / M, dT=-4430 * const.dT_u, T_0=T0
+            ),
         }</code></pre>
 </details>
 </dd>
@@ -342,14 +350,21 @@ class SpecificGravities:
 <pre><code class="python">class SpecificGravities:
     def __init__(self, constants):
         self._values = {
-            compound: Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+            compound: Substance.from_formula(compound).mass
+            * si.gram
+            / si.mole
+            / constants.Md
             for compound in GASEOUS_COMPOUNDS.values()
         }
 
         for compounds in AQUEOUS_COMPOUNDS.values():
             for compound in compounds:
-                self._values[compound] = \
-                    Substance.from_formula(compound).mass * si.gram / si.mole / constants.Md
+                self._values[compound] = (
+                    Substance.from_formula(compound).mass
+                    * si.gram
+                    / si.mole
+                    / constants.Md
+                )
 
     def __getitem__(self, item):
         return self._values[item]</code></pre>

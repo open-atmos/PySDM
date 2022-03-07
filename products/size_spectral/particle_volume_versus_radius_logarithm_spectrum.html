@@ -36,22 +36,27 @@ i.e. volume of particles per volume of air having in the size range ln(r) to
 ln(r) + dln(r)
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;, dry=False):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+    def __init__(self, radius_bins_edges, name=None, unit=&#34;dimensionless&#34;, dry=False):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
-        self.attr = (&#39;dry &#39; if dry else &#39;&#39;) + &#39;volume&#39;
+        self.attr = (&#34;dry &#34; if dry else &#34;&#34;) + &#34;volume&#34;
 
     def register(self, builder):
-        builder.request_attribute(&#39;volume&#39;)
+        builder.request_attribute(&#34;volume&#34;)
 
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bins_edges)
+        volume_bins_edges = builder.particulator.formulae.trivia.volume(
+            self.radius_bins_edges
+        )
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+            volume_bins_edges
+        )
 
         super().register(builder)
 
@@ -92,18 +97,22 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit=&#39;dimensionless&#39;, dry=False):
-        super().__init__(name=name, unit=unit, attr_unit=&#39;m&#39;)
+    def __init__(self, radius_bins_edges, name=None, unit=&#34;dimensionless&#34;, dry=False):
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
-        self.attr = (&#39;dry &#39; if dry else &#39;&#39;) + &#39;volume&#39;
+        self.attr = (&#34;dry &#34; if dry else &#34;&#34;) + &#34;volume&#34;
 
     def register(self, builder):
-        builder.request_attribute(&#39;volume&#39;)
+        builder.request_attribute(&#34;volume&#34;)
 
-        volume_bins_edges = builder.particulator.formulae.trivia.volume(self.radius_bins_edges)
-        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(volume_bins_edges)
+        volume_bins_edges = builder.particulator.formulae.trivia.volume(
+            self.radius_bins_edges
+        )
+        self.attr_bins_edges = builder.particulator.backend.Storage.from_ndarray(
+            volume_bins_edges
+        )
 
         super().register(builder)
 

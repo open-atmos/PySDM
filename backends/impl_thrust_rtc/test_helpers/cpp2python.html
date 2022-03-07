@@ -34,8 +34,8 @@ a simplistic C++ to Python translation utils for use in
  `PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`
 &#34;&#34;&#34;
 import re
-from ...impl_numba.conf import JIT_FLAGS
 
+from ...impl_numba.conf import JIT_FLAGS
 
 JIT_OPTS = &#34;error_model=&#39;numpy&#39;, fastmath=True&#34;
 
@@ -45,9 +45,9 @@ CPPYTHON = {
     &#34;float &#34;: &#34;&#34;,
     &#34;auto &#34;: &#34;&#34;,
     &#34;bool &#34;: &#34;&#34;,
-    &#39;[] = {&#39;: &#39; = (&#39;,
+    &#34;[] = {&#34;: &#34; = (&#34;,
     &#34; {&#34;: &#34;:&#34;,
-    &#39;}; // array&#39;: &#39;)&#39;,
+    &#34;}; // array&#34;: &#34;)&#34;,
     &#34;//&#34;: &#34;#&#34;,
     &#34;||&#34;: &#34;or&#34;,
     &#34;&amp;&amp;&#34;: &#34;and&#34;,
@@ -58,17 +58,17 @@ CPPYTHON = {
     &#34;(float)&#34;: &#34;np.float32&#34;,
     &#34;return;&#34;: &#34;continue&#34;,
     &#34;void*&#34;: &#34;&#34;,
-    &#39;::&#39;: &#39;_&#39;,
-    &#39;(*&#39;: &#39;&#39;,
-    &#39;)(, )&#39;: &#39;&#39;,
-    &#39;else if&#39;: &#39;elif&#39;,
-    &#39;printf&#39;: &#39;print&#39;
+    &#34;::&#34;: &#34;_&#34;,
+    &#34;(*&#34;: &#34;&#34;,
+    &#34;)(, )&#34;: &#34;&#34;,
+    &#34;else if&#34;: &#34;elif&#34;,
+    &#34;printf&#34;: &#34;print&#34;,
 }
 
 
 def extract_var(cpp, start_position, end_char):
     stop = cpp.find(end_char, start_position)
-    return cpp[start_position + 1: stop].strip()
+    return cpp[start_position + 1 : stop].strip()
 
 
 def for_to_python(cpp: str) -&gt; str:
@@ -104,7 +104,7 @@ def replace_fors(cpp) -&gt; str:
     start = cpp.find(&#34;for &#34;)
     while start &gt; -1:
         stop = cpp.find(&#34;:&#34;, start)
-        cpp_for = cpp[start:stop + 1]
+        cpp_for = cpp[start : stop + 1]
         python_for = for_to_python(cpp_for)
         cpp = cpp.replace(cpp_for, python_for.replace(&#34;for&#34;, &#34;__python_token__&#34;))
         start = cpp.find(&#34;for &#34;, start + len(python_for))
@@ -112,15 +112,19 @@ def replace_fors(cpp) -&gt; str:
 
 
 def atomic_min_to_python(cpp: str) -&gt; str:
-    cpp = cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;) \
-              .replace(&#34;double*&#34;, &#34;&#34;) \
-              .replace(&#34;float*&#34;, &#34;&#34;) \
-              .replace(&#34; &#34;, &#34;&#34;) \
-              .replace(&#34;()&#34;, &#34;&#34;) \
-              .replace(&#34;&amp;&#34;, &#34;&#34;)
+    cpp = (
+        cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;)
+        .replace(&#34;double*&#34;, &#34;&#34;)
+        .replace(&#34;float*&#34;, &#34;&#34;)
+        .replace(&#34; &#34;, &#34;&#34;)
+        .replace(&#34;()&#34;, &#34;&#34;)
+        .replace(&#34;&amp;&#34;, &#34;&#34;)
+    )
     cpp = re.sub(
         r&#34;atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);&#34;,
-        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;, cpp)
+        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;,
+        cpp,
+    )
     return cpp
 
 
@@ -129,7 +133,7 @@ def replace_atomic_mins(cpp: str) -&gt; (str, bool):
     parallel = start == -1
     while start &gt; -1:
         stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_min = cpp[start:stop + 1]
+        cpp_atomic_min = cpp[start : stop + 1]
         python_atomic_min = atomic_min_to_python(cpp_atomic_min)
         cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
         start = cpp.find(&#34;atomicMin&#34;, start + len(python_atomic_min))
@@ -137,16 +141,17 @@ def replace_atomic_mins(cpp: str) -&gt; (str, bool):
 
 
 def atomic_add_to_python(cpp: str) -&gt; str:
-    cpp = cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;) \
-              .replace(&#34;unsigned long long int*&#34;, &#34;&#34;) \
-              .replace(&#34;unsigned long long int&#34;, &#34;&#34;) \
-              .replace(&#34;double*&#34;, &#34;&#34;) \
-              .replace(&#34;float*&#34;, &#34;&#34;) \
-              .replace(&#34; &#34;, &#34;&#34;) \
-              .replace(&#34;()&#34;, &#34;&#34;) \
-              .replace(&#34;&amp;&#34;, &#34;&#34;) \
-              .replace(&#34;,&#34;, &#34;+=&#34;, 1) \
-              [1:-2]  # remove &#39;(&#39; and &#39;);&#39;
+    cpp = (
+        cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
+        .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
+        .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
+        .replace(&#34;double*&#34;, &#34;&#34;)
+        .replace(&#34;float*&#34;, &#34;&#34;)
+        .replace(&#34; &#34;, &#34;&#34;)
+        .replace(&#34;()&#34;, &#34;&#34;)
+        .replace(&#34;&amp;&#34;, &#34;&#34;)
+        .replace(&#34;,&#34;, &#34;+=&#34;, 1)[1:-2]
+    )  # remove &#39;(&#39; and &#39;);&#39;
     return cpp
 
 
@@ -155,7 +160,7 @@ def replace_atomic_adds(cpp: str) -&gt; (str, bool):
     parallel = start == -1
     while start &gt; -1:
         stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_add = cpp[start:stop + 1]
+        cpp_atomic_add = cpp[start : stop + 1]
         python_atomic_add = atomic_add_to_python(cpp_atomic_add)
         cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
         start = cpp.find(&#34;atomicAdd&#34;, start + len(python_atomic_add))
@@ -170,24 +175,24 @@ def extract_struct_defs(cpp: str) -&gt; (str, str):
     start = cpp.find(&#34;struct &#34;)
     while start &gt; -1:
         stop = cpp.find(stop_string, start)
-        struct = cpp[start:stop + len(stop_string)]
-        cpp = cpp.replace(struct, &#39;&#39;)
+        struct = cpp[start : stop + len(stop_string)]
+        cpp = cpp.replace(struct, &#34;&#34;)
         start = cpp.find(&#34;struct &#34;, start + 1)
-        structs.append(struct[struct.find(&#39;:&#39;)+1:-2])
-        names.append(re.match(r&#39;(struct )(.*)(:)&#39;, struct)[2])
+        structs.append(struct[struct.find(&#34;:&#34;) + 1 : -2])
+        names.append(re.match(r&#34;(struct )(.*)(:)&#34;, struct)[2])
 
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
-            &#39;static __device__ &#39;,
-            f&#39;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#39;
+            &#34;static __device__ &#34;,
+            f&#34;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#34;,
         )
 
-    return cpp, &#39;\n&#39;.join(structs)
+    return cpp, &#34;\n&#34;.join(structs)
 
 
 def to_numba(name, args, iter_var, body):
-    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#39;&#39;, body)
-    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#39;&#39;, body)
+    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#34;&#34;, body)
+    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#34;&#34;, body)
     body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
     for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
@@ -198,16 +203,16 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    result = f&#39;&#39;&#39;
+    result = f&#34;&#34;&#34;
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
-    
+
     @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
-    
+
     {structs}
     @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
@@ -215,7 +220,11 @@ def make(self):
             {body}
 
     return {name}
-&#39;&#39;&#39;.replace(&#39;};&#39;, &#39;)&#39;).replace(&#34;}&#34;, &#34;&#34;)
+&#34;&#34;&#34;.replace(
+        &#34;};&#34;, &#34;)&#34;
+    ).replace(
+        &#34;}&#34;, &#34;&#34;
+    )
 
     return result</code></pre>
 </details>
@@ -237,16 +246,17 @@ def make(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def atomic_add_to_python(cpp: str) -&gt; str:
-    cpp = cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;) \
-              .replace(&#34;unsigned long long int*&#34;, &#34;&#34;) \
-              .replace(&#34;unsigned long long int&#34;, &#34;&#34;) \
-              .replace(&#34;double*&#34;, &#34;&#34;) \
-              .replace(&#34;float*&#34;, &#34;&#34;) \
-              .replace(&#34; &#34;, &#34;&#34;) \
-              .replace(&#34;()&#34;, &#34;&#34;) \
-              .replace(&#34;&amp;&#34;, &#34;&#34;) \
-              .replace(&#34;,&#34;, &#34;+=&#34;, 1) \
-              [1:-2]  # remove &#39;(&#39; and &#39;);&#39;
+    cpp = (
+        cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
+        .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
+        .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
+        .replace(&#34;double*&#34;, &#34;&#34;)
+        .replace(&#34;float*&#34;, &#34;&#34;)
+        .replace(&#34; &#34;, &#34;&#34;)
+        .replace(&#34;()&#34;, &#34;&#34;)
+        .replace(&#34;&amp;&#34;, &#34;&#34;)
+        .replace(&#34;,&#34;, &#34;+=&#34;, 1)[1:-2]
+    )  # remove &#39;(&#39; and &#39;);&#39;
     return cpp</code></pre>
 </details>
 </dd>
@@ -260,15 +270,19 @@ def make(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def atomic_min_to_python(cpp: str) -&gt; str:
-    cpp = cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;) \
-              .replace(&#34;double*&#34;, &#34;&#34;) \
-              .replace(&#34;float*&#34;, &#34;&#34;) \
-              .replace(&#34; &#34;, &#34;&#34;) \
-              .replace(&#34;()&#34;, &#34;&#34;) \
-              .replace(&#34;&amp;&#34;, &#34;&#34;)
+    cpp = (
+        cpp.replace(&#34;unsigned int*&#34;, &#34;&#34;)
+        .replace(&#34;double*&#34;, &#34;&#34;)
+        .replace(&#34;float*&#34;, &#34;&#34;)
+        .replace(&#34; &#34;, &#34;&#34;)
+        .replace(&#34;()&#34;, &#34;&#34;)
+        .replace(&#34;&amp;&#34;, &#34;&#34;)
+    )
     cpp = re.sub(
         r&#34;atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);&#34;,
-        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;, cpp)
+        r&#34;np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);&#34;,
+        cpp,
+    )
     return cpp</code></pre>
 </details>
 </dd>
@@ -289,19 +303,19 @@ def make(self):
     start = cpp.find(&#34;struct &#34;)
     while start &gt; -1:
         stop = cpp.find(stop_string, start)
-        struct = cpp[start:stop + len(stop_string)]
-        cpp = cpp.replace(struct, &#39;&#39;)
+        struct = cpp[start : stop + len(stop_string)]
+        cpp = cpp.replace(struct, &#34;&#34;)
         start = cpp.find(&#34;struct &#34;, start + 1)
-        structs.append(struct[struct.find(&#39;:&#39;)+1:-2])
-        names.append(re.match(r&#39;(struct )(.*)(:)&#39;, struct)[2])
+        structs.append(struct[struct.find(&#34;:&#34;) + 1 : -2])
+        names.append(re.match(r&#34;(struct )(.*)(:)&#34;, struct)[2])
 
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
-            &#39;static __device__ &#39;,
-            f&#39;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#39;
+            &#34;static __device__ &#34;,
+            f&#34;\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_&#34;,
         )
 
-    return cpp, &#39;\n&#39;.join(structs)</code></pre>
+    return cpp, &#34;\n&#34;.join(structs)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.extract_var"><code class="name flex">
@@ -315,7 +329,7 @@ def make(self):
 </summary>
 <pre><code class="python">def extract_var(cpp, start_position, end_char):
     stop = cpp.find(end_char, start_position)
-    return cpp[start_position + 1: stop].strip()</code></pre>
+    return cpp[start_position + 1 : stop].strip()</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.test_helpers.cpp2python.for_to_python"><code class="name flex">
@@ -372,7 +386,7 @@ def make(self):
     parallel = start == -1
     while start &gt; -1:
         stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_add = cpp[start:stop + 1]
+        cpp_atomic_add = cpp[start : stop + 1]
         python_atomic_add = atomic_add_to_python(cpp_atomic_add)
         cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
         start = cpp.find(&#34;atomicAdd&#34;, start + len(python_atomic_add))
@@ -393,7 +407,7 @@ def make(self):
     parallel = start == -1
     while start &gt; -1:
         stop = cpp.find(&#34;;&#34;, start)
-        cpp_atomic_min = cpp[start:stop + 1]
+        cpp_atomic_min = cpp[start : stop + 1]
         python_atomic_min = atomic_min_to_python(cpp_atomic_min)
         cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
         start = cpp.find(&#34;atomicMin&#34;, start + len(python_atomic_min))
@@ -413,7 +427,7 @@ def make(self):
     start = cpp.find(&#34;for &#34;)
     while start &gt; -1:
         stop = cpp.find(&#34;:&#34;, start)
-        cpp_for = cpp[start:stop + 1]
+        cpp_for = cpp[start : stop + 1]
         python_for = for_to_python(cpp_for)
         cpp = cpp.replace(cpp_for, python_for.replace(&#34;for&#34;, &#34;__python_token__&#34;))
         start = cpp.find(&#34;for &#34;, start + len(python_for))
@@ -430,8 +444,8 @@ def make(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def to_numba(name, args, iter_var, body):
-    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#39;&#39;, body)
-    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#39;&#39;, body)
+    body = re.sub(r&#34;static_assert\([^;]*;&#34;, &#34;&#34;, body)
+    body = re.sub(r&#34;static_cast&lt;[^;]*&gt;&#34;, &#34;&#34;, body)
     body = body.replace(&#34;\n&#34;, &#34;\n    &#34;)
     for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
@@ -442,16 +456,16 @@ def make(self):
 
     body, structs = extract_struct_defs(body)
 
-    result = f&#39;&#39;&#39;
+    result = f&#34;&#34;&#34;
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
-    
+
     @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
-    
+
     {structs}
     @numba.njit(parallel={parallel and JIT_FLAGS[&#39;parallel&#39;]}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace(&#34;&#39;&#34;, &#34;&#34;).replace(&#39;&#34;&#39;, &#39;&#39;)[1:-1]}):
@@ -459,7 +473,11 @@ def make(self):
             {body}
 
     return {name}
-&#39;&#39;&#39;.replace(&#39;};&#39;, &#39;)&#39;).replace(&#34;}&#34;, &#34;&#34;)
+&#34;&#34;&#34;.replace(
+        &#34;};&#34;, &#34;)&#34;
+    ).replace(
+        &#34;}&#34;, &#34;&#34;
+    )
 
     return result</code></pre>
 </details>

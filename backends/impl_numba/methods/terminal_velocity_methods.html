@@ -31,8 +31,9 @@
 CPU implementation of backend methods for terminal velocities
 &#34;&#34;&#34;
 import numba
-from PySDM.backends.impl_numba import conf
+
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):
@@ -40,7 +41,7 @@ class TerminalVelocityMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def linear_collection_efficiency_body(
-            params, output, radii, is_first_in_pair, idx, length, unit
+        params, output, radii, is_first_in_pair, idx, length, unit
     ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         output[:] = 0
@@ -63,10 +64,18 @@ class TerminalVelocityMethods(BackendMethods):
                         output[i // 2] = A + B * p + D / p ** F + E / Gp
                         output[i // 2] = max(0, output[i // 2])
 
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+    def linear_collection_efficiency(
+        self, params, output, radii, is_first_in_pair, unit
+    ):
         return self.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data,
-            radii.idx.data, len(is_first_in_pair), unit)
+            params,
+            output.data,
+            radii.data,
+            is_first_in_pair.indicator.data,
+            radii.idx.data,
+            len(is_first_in_pair),
+            unit,
+        )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -80,9 +89,7 @@ class TerminalVelocityMethods(BackendMethods):
                 output[i] = b[r_id] + r_rest * c[r_id]
 
     def interpolation(self, output, radius, factor, b, c):
-        return self.interpolation_body(
-            output.data, radius.data, factor, b.data, c.data
-        )</code></pre>
+        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 </section>
 <section>
@@ -108,7 +115,7 @@ class TerminalVelocityMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def linear_collection_efficiency_body(
-            params, output, radii, is_first_in_pair, idx, length, unit
+        params, output, radii, is_first_in_pair, idx, length, unit
     ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         output[:] = 0
@@ -131,10 +138,18 @@ class TerminalVelocityMethods(BackendMethods):
                         output[i // 2] = A + B * p + D / p ** F + E / Gp
                         output[i // 2] = max(0, output[i // 2])
 
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+    def linear_collection_efficiency(
+        self, params, output, radii, is_first_in_pair, unit
+    ):
         return self.linear_collection_efficiency_body(
-            params, output.data, radii.data, is_first_in_pair.indicator.data,
-            radii.idx.data, len(is_first_in_pair), unit)
+            params,
+            output.data,
+            radii.data,
+            is_first_in_pair.indicator.data,
+            radii.idx.data,
+            len(is_first_in_pair),
+            unit,
+        )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
@@ -148,9 +163,7 @@ class TerminalVelocityMethods(BackendMethods):
                 output[i] = b[r_id] + r_rest * c[r_id]
 
     def interpolation(self, output, radius, factor, b, c):
-        return self.interpolation_body(
-            output.data, radius.data, factor, b.data, c.data
-        )</code></pre>
+        return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -196,7 +209,7 @@ def interpolation_body(output, radius, factor, b, c):
 @numba.njit(**conf.JIT_FLAGS)
 # pylint: disable=too-many-arguments,too-many-locals
 def linear_collection_efficiency_body(
-        params, output, radii, is_first_in_pair, idx, length, unit
+    params, output, radii, is_first_in_pair, idx, length, unit
 ):
     A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
     output[:] = 0
@@ -233,9 +246,7 @@ def linear_collection_efficiency_body(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def interpolation(self, output, radius, factor, b, c):
-    return self.interpolation_body(
-        output.data, radius.data, factor, b.data, c.data
-    )</code></pre>
+    return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency"><code class="name flex">
@@ -247,10 +258,18 @@ def linear_collection_efficiency_body(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+<pre><code class="python">def linear_collection_efficiency(
+    self, params, output, radii, is_first_in_pair, unit
+):
     return self.linear_collection_efficiency_body(
-        params, output.data, radii.data, is_first_in_pair.indicator.data,
-        radii.idx.data, len(is_first_in_pair), unit)</code></pre>
+        params,
+        output.data,
+        radii.data,
+        is_first_in_pair.indicator.data,
+        radii.idx.data,
+        len(is_first_in_pair),
+        unit,
+    )</code></pre>
 </details>
 </dd>
 </dl>

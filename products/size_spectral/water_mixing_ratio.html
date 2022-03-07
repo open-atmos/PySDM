@@ -34,12 +34,12 @@ liquid water mixing ratio (per mass of dry air) computed from particle sizes
  (optionally restricted to a given size range)
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.moment_product import MomentProduct
 
 
 class WaterMixingRatio(MomentProduct):
-
-    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#34;dimensionless&#34;):
         self.radius_range = radius_range
         self.volume_range = None
         super().__init__(unit=unit, name=name)
@@ -50,18 +50,20 @@ class WaterMixingRatio(MomentProduct):
         self.radius_range = None
 
     def _impl(self, **kwargs):  # TODO #217
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=0,
-                                        filter_range=self.volume_range, filter_attr=&#39;volume&#39;)
+        self._download_moment_to_buffer(
+            &#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+        )
         conc = self.buffer.copy()
 
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=1,
-                                        filter_range=self.volume_range, filter_attr=&#39;volume&#39;)
+        self._download_moment_to_buffer(
+            &#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+        )
         result = self.buffer.copy()
         result[:] *= self.formulae.constants.rho_w
         result[:] *= conc
         result[:] /= self.particulator.mesh.dv
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         result[:] /= self.buffer
         return result</code></pre>
 </details>
@@ -87,8 +89,7 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WaterMixingRatio(MomentProduct):
-
-    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#39;dimensionless&#39;):
+    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#34;dimensionless&#34;):
         self.radius_range = radius_range
         self.volume_range = None
         super().__init__(unit=unit, name=name)
@@ -99,18 +100,20 @@ inheritance.</p></div>
         self.radius_range = None
 
     def _impl(self, **kwargs):  # TODO #217
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=0,
-                                        filter_range=self.volume_range, filter_attr=&#39;volume&#39;)
+        self._download_moment_to_buffer(
+            &#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+        )
         conc = self.buffer.copy()
 
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=1,
-                                        filter_range=self.volume_range, filter_attr=&#39;volume&#39;)
+        self._download_moment_to_buffer(
+            &#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+        )
         result = self.buffer.copy()
         result[:] *= self.formulae.constants.rho_w
         result[:] *= conc
         result[:] /= self.particulator.mesh.dv
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         result[:] /= self.buffer
         return result</code></pre>
 </details>

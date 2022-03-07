@@ -31,17 +31,17 @@
 
 
 class Gravitational:
-
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        builder.request_attribute(&#39;terminal velocity&#39;)
+        builder.request_attribute(&#34;radius&#34;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
         self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float)</code></pre>
+            self.particulator.n_sd // 2, dtype=float
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -63,17 +63,17 @@ class Gravitational:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Gravitational:
-
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute(&#39;radius&#39;)
-        builder.request_attribute(&#39;terminal velocity&#39;)
+        builder.request_attribute(&#34;radius&#34;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
         self.pair_tmp = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float)</code></pre>
+            self.particulator.n_sd // 2, dtype=float
+        )</code></pre>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
@@ -93,10 +93,11 @@ class Gravitational:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    builder.request_attribute(&#39;radius&#39;)
-    builder.request_attribute(&#39;terminal velocity&#39;)
+    builder.request_attribute(&#34;radius&#34;)
+    builder.request_attribute(&#34;terminal velocity&#34;)
     self.pair_tmp = self.particulator.PairwiseStorage.empty(
-        self.particulator.n_sd // 2, dtype=float)</code></pre>
+        self.particulator.n_sd // 2, dtype=float
+    )</code></pre>
 </details>
 </dd>
 </dl>

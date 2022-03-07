@@ -36,14 +36,15 @@ logic around `PySDM.initialisation.impl.spectrum.Spectrum` - parent class for mo
 
 
 class Spectrum:
-
     def __init__(self, distribution, distribution_params, norm_factor):
         self.distribution_params = distribution_params  # (loc, scale)
         self.norm_factor = norm_factor
         self.distribution = distribution
 
     def size_distribution(self, arg):
-        result = self.norm_factor * self.distribution.pdf(arg, *self.distribution_params)
+        result = self.norm_factor * self.distribution.pdf(
+            arg, *self.distribution_params
+        )
         return result
 
     def pdf(self, arg):
@@ -57,7 +58,9 @@ class Spectrum:
         return result
 
     def cumulative(self, arg):
-        result = self.norm_factor * self.distribution.cdf(arg, *self.distribution_params)
+        result = self.norm_factor * self.distribution.cdf(
+            arg, *self.distribution_params
+        )
         return result
 
     def percentiles(self, cdf_values):
@@ -85,14 +88,15 @@ class Spectrum:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Spectrum:
-
     def __init__(self, distribution, distribution_params, norm_factor):
         self.distribution_params = distribution_params  # (loc, scale)
         self.norm_factor = norm_factor
         self.distribution = distribution
 
     def size_distribution(self, arg):
-        result = self.norm_factor * self.distribution.pdf(arg, *self.distribution_params)
+        result = self.norm_factor * self.distribution.pdf(
+            arg, *self.distribution_params
+        )
         return result
 
     def pdf(self, arg):
@@ -106,7 +110,9 @@ class Spectrum:
         return result
 
     def cumulative(self, arg):
-        result = self.norm_factor * self.distribution.cdf(arg, *self.distribution_params)
+        result = self.norm_factor * self.distribution.cdf(
+            arg, *self.distribution_params
+        )
         return result
 
     def percentiles(self, cdf_values):
@@ -145,7 +151,9 @@ class Spectrum:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cumulative(self, arg):
-    result = self.norm_factor * self.distribution.cdf(arg, *self.distribution_params)
+    result = self.norm_factor * self.distribution.cdf(
+        arg, *self.distribution_params
+    )
     return result</code></pre>
 </details>
 </dd>
@@ -186,7 +194,9 @@ class Spectrum:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def size_distribution(self, arg):
-    result = self.norm_factor * self.distribution.pdf(arg, *self.distribution_params)
+    result = self.norm_factor * self.distribution.pdf(
+        arg, *self.distribution_params
+    )
     return result</code></pre>
 </details>
 </dd>

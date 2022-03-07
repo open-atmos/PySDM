@@ -35,12 +35,13 @@ from PySDM.attributes.impl.intensive_attribute import IntensiveAttribute
 
 class ConcentrationImpl(IntensiveAttribute):
     def __init__(self, builder, *, what):
-        super().__init__(builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)
+        super().__init__(builder, name=&#34;conc_&#34; + what, base=&#34;moles_&#34; + what)
 
 
 def make_concentration_factory(what):
     def _factory(builder):
         return ConcentrationImpl(builder, what=what)
+
     return _factory</code></pre>
 </details>
 </section>
@@ -63,6 +64,7 @@ def make_concentration_factory(what):
 <pre><code class="python">def make_concentration_factory(what):
     def _factory(builder):
         return ConcentrationImpl(builder, what=what)
+
     return _factory</code></pre>
 </details>
 </dd>
@@ -83,7 +85,7 @@ def make_concentration_factory(what):
 </summary>
 <pre><code class="python">class ConcentrationImpl(IntensiveAttribute):
     def __init__(self, builder, *, what):
-        super().__init__(builder, name=&#34;conc_&#34;+what, base=&#34;moles_&#34;+what)</code></pre>
+        super().__init__(builder, name=&#34;conc_&#34; + what, base=&#34;moles_&#34; + what)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

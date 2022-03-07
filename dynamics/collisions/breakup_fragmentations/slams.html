@@ -30,8 +30,9 @@
 <pre><code class="python">&#34;&#34;&#34;
 Based on 10.5194/gmd-9-1455-2016 for ocean particles
 &#34;&#34;&#34;
-class SLAMS:
 
+
+class SLAMS:
     def __init__(self):
         self.particulator = None
         self.p_vec = None
@@ -41,8 +42,9 @@ class SLAMS:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.p_vec = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                            dtype=float)</code></pre>
+        self.p_vec = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -64,7 +66,6 @@ class SLAMS:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class SLAMS:
-
     def __init__(self):
         self.particulator = None
         self.p_vec = None
@@ -74,8 +75,9 @@ class SLAMS:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        self.p_vec = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                            dtype=float)</code></pre>
+        self.p_vec = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -90,8 +92,9 @@ class SLAMS:
 </summary>
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
-    self.p_vec = self.particulator.PairwiseStorage.empty(self.particulator.n_sd // 2,
-                                                        dtype=float)</code></pre>
+    self.p_vec = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )</code></pre>
 </details>
 </dd>
 </dl>

@@ -34,28 +34,30 @@ bespoke condensational growth solver
 with implicit-in-particle-size integration and adaptive timestepping
 &#34;&#34;&#34;
 from collections import namedtuple
+
 import numpy as np
+
 from ..physics import si
 
-DEFAULTS = namedtuple(&#34;_&#34;, (&#39;rtol_x&#39;, &#39;rtol_thd&#39;, &#39;cond_range&#39;, &#39;schedule&#39;))(
+DEFAULTS = namedtuple(&#34;_&#34;, (&#34;rtol_x&#34;, &#34;rtol_thd&#34;, &#34;cond_range&#34;, &#34;schedule&#34;))(
     rtol_x=1e-6,
     rtol_thd=1e-6,
     cond_range=(1e-4 * si.second, 1 * si.second),
-    schedule=&#39;dynamic&#39;
+    schedule=&#34;dynamic&#34;,
 )
 
 
 class Condensation:
-
-    def __init__(self,
-                 rtol_x=DEFAULTS.rtol_x,
-                 rtol_thd=DEFAULTS.rtol_thd,
-                 substeps: int = 1,
-                 adaptive: bool = True,
-                 dt_cond_range: tuple = DEFAULTS.cond_range,
-                 schedule: str = DEFAULTS.schedule,
-                 max_iters: int = 16
-                 ):
+    def __init__(
+        self,
+        rtol_x=DEFAULTS.rtol_x,
+        rtol_thd=DEFAULTS.rtol_thd,
+        substeps: int = 1,
+        adaptive: bool = True,
+        dt_cond_range: tuple = DEFAULTS.cond_range,
+        schedule: str = DEFAULTS.schedule,
+        max_iters: int = 16,
+    ):
 
         self.particulator = None
         self.enable = True
@@ -79,31 +81,41 @@ class Condensation:
         self.particulator = builder.particulator
 
         builder._set_condensation_parameters(
-            dt_range=self.dt_cond_range, adaptive=self.adaptive,
-            fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
-        builder.request_attribute(&#39;critical volume&#39;)
-        builder.request_attribute(&#39;kappa&#39;)
-        builder.request_attribute(&#39;dry volume organic fraction&#39;)
+            dt_range=self.dt_cond_range,
+            adaptive=self.adaptive,
+            fuse=32,
+            multiplier=2,
+            RH_rtol=1e-7,
+            max_iters=self.max_iters,
+        )
+        builder.request_attribute(&#34;critical volume&#34;)
+        builder.request_attribute(&#34;kappa&#34;)
+        builder.request_attribute(&#34;dry volume organic fraction&#34;)
 
-        for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
+        for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
             self.counters[counter] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=int)
-            if counter == &#39;n_substeps&#39;:
+                self.particulator.mesh.n_cell, dtype=int
+            )
+            if counter == &#34;n_substeps&#34;:
                 self.counters[counter][:] = self.__substeps if not self.adaptive else -1
             else:
                 self.counters[counter][:] = -1
 
-        self.rh_max = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        self.rh_max = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float
+        )
         self.rh_max[:] = np.nan
-        self.success = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=bool)
+        self.success = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=bool
+        )
         self.success[:] = False
         self.cell_order = np.arange(self.particulator.mesh.n_cell)
 
     def __call__(self):
         if self.enable:
-            if self.schedule == &#39;dynamic&#39;:
-                self.cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
-            elif self.schedule == &#39;static&#39;:
+            if self.schedule == &#34;dynamic&#34;:
+                self.cell_order = np.argsort(self.counters[&#34;n_substeps&#34;])
+            elif self.schedule == &#34;static&#34;:
                 pass
             else:
                 raise NotImplementedError()
@@ -114,7 +126,7 @@ class Condensation:
                 counters=self.counters,
                 RH_max=self.rh_max,
                 success=self.success,
-                cell_order=self.cell_order
+                cell_order=self.cell_order,
             )
             if not self.success.all():
                 raise RuntimeError(&#34;Condensation failed&#34;)
@@ -123,16 +135,16 @@ class Condensation:
             self.particulator.update_TpRH()
 
             if self.adaptive:
-                self.counters[&#39;n_substeps&#39;][:] = np.maximum(
-                    self.counters[&#39;n_substeps&#39;][:],
-                    int(self.particulator.dt / self.dt_cond_range[1])
+                self.counters[&#34;n_substeps&#34;][:] = np.maximum(
+                    self.counters[&#34;n_substeps&#34;][:],
+                    int(self.particulator.dt / self.dt_cond_range[1]),
                 )
                 if self.dt_cond_range[0] != 0:
-                    self.counters[&#39;n_substeps&#39;][:] = np.minimum(
-                        self.counters[&#39;n_substeps&#39;][:],
-                        int(self.particulator.dt / self.dt_cond_range[0])
+                    self.counters[&#34;n_substeps&#34;][:] = np.minimum(
+                        self.counters[&#34;n_substeps&#34;][:],
+                        int(self.particulator.dt / self.dt_cond_range[0]),
                     )
-            self.particulator.attributes.mark_updated(&#39;volume&#39;)</code></pre>
+            self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -155,16 +167,16 @@ class Condensation:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Condensation:
-
-    def __init__(self,
-                 rtol_x=DEFAULTS.rtol_x,
-                 rtol_thd=DEFAULTS.rtol_thd,
-                 substeps: int = 1,
-                 adaptive: bool = True,
-                 dt_cond_range: tuple = DEFAULTS.cond_range,
-                 schedule: str = DEFAULTS.schedule,
-                 max_iters: int = 16
-                 ):
+    def __init__(
+        self,
+        rtol_x=DEFAULTS.rtol_x,
+        rtol_thd=DEFAULTS.rtol_thd,
+        substeps: int = 1,
+        adaptive: bool = True,
+        dt_cond_range: tuple = DEFAULTS.cond_range,
+        schedule: str = DEFAULTS.schedule,
+        max_iters: int = 16,
+    ):
 
         self.particulator = None
         self.enable = True
@@ -188,31 +200,41 @@ class Condensation:
         self.particulator = builder.particulator
 
         builder._set_condensation_parameters(
-            dt_range=self.dt_cond_range, adaptive=self.adaptive,
-            fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
-        builder.request_attribute(&#39;critical volume&#39;)
-        builder.request_attribute(&#39;kappa&#39;)
-        builder.request_attribute(&#39;dry volume organic fraction&#39;)
+            dt_range=self.dt_cond_range,
+            adaptive=self.adaptive,
+            fuse=32,
+            multiplier=2,
+            RH_rtol=1e-7,
+            max_iters=self.max_iters,
+        )
+        builder.request_attribute(&#34;critical volume&#34;)
+        builder.request_attribute(&#34;kappa&#34;)
+        builder.request_attribute(&#34;dry volume organic fraction&#34;)
 
-        for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
+        for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
             self.counters[counter] = self.particulator.Storage.empty(
-                self.particulator.mesh.n_cell, dtype=int)
-            if counter == &#39;n_substeps&#39;:
+                self.particulator.mesh.n_cell, dtype=int
+            )
+            if counter == &#34;n_substeps&#34;:
                 self.counters[counter][:] = self.__substeps if not self.adaptive else -1
             else:
                 self.counters[counter][:] = -1
 
-        self.rh_max = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+        self.rh_max = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=float
+        )
         self.rh_max[:] = np.nan
-        self.success = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=bool)
+        self.success = self.particulator.Storage.empty(
+            self.particulator.mesh.n_cell, dtype=bool
+        )
         self.success[:] = False
         self.cell_order = np.arange(self.particulator.mesh.n_cell)
 
     def __call__(self):
         if self.enable:
-            if self.schedule == &#39;dynamic&#39;:
-                self.cell_order = np.argsort(self.counters[&#39;n_substeps&#39;])
-            elif self.schedule == &#39;static&#39;:
+            if self.schedule == &#34;dynamic&#34;:
+                self.cell_order = np.argsort(self.counters[&#34;n_substeps&#34;])
+            elif self.schedule == &#34;static&#34;:
                 pass
             else:
                 raise NotImplementedError()
@@ -223,7 +245,7 @@ class Condensation:
                 counters=self.counters,
                 RH_max=self.rh_max,
                 success=self.success,
-                cell_order=self.cell_order
+                cell_order=self.cell_order,
             )
             if not self.success.all():
                 raise RuntimeError(&#34;Condensation failed&#34;)
@@ -232,16 +254,16 @@ class Condensation:
             self.particulator.update_TpRH()
 
             if self.adaptive:
-                self.counters[&#39;n_substeps&#39;][:] = np.maximum(
-                    self.counters[&#39;n_substeps&#39;][:],
-                    int(self.particulator.dt / self.dt_cond_range[1])
+                self.counters[&#34;n_substeps&#34;][:] = np.maximum(
+                    self.counters[&#34;n_substeps&#34;][:],
+                    int(self.particulator.dt / self.dt_cond_range[1]),
                 )
                 if self.dt_cond_range[0] != 0:
-                    self.counters[&#39;n_substeps&#39;][:] = np.minimum(
-                        self.counters[&#39;n_substeps&#39;][:],
-                        int(self.particulator.dt / self.dt_cond_range[0])
+                    self.counters[&#34;n_substeps&#34;][:] = np.minimum(
+                        self.counters[&#34;n_substeps&#34;][:],
+                        int(self.particulator.dt / self.dt_cond_range[0]),
                     )
-            self.particulator.attributes.mark_updated(&#39;volume&#39;)</code></pre>
+            self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -258,23 +280,33 @@ class Condensation:
     self.particulator = builder.particulator
 
     builder._set_condensation_parameters(
-        dt_range=self.dt_cond_range, adaptive=self.adaptive,
-        fuse=32, multiplier=2, RH_rtol=1e-7, max_iters=self.max_iters)
-    builder.request_attribute(&#39;critical volume&#39;)
-    builder.request_attribute(&#39;kappa&#39;)
-    builder.request_attribute(&#39;dry volume organic fraction&#39;)
+        dt_range=self.dt_cond_range,
+        adaptive=self.adaptive,
+        fuse=32,
+        multiplier=2,
+        RH_rtol=1e-7,
+        max_iters=self.max_iters,
+    )
+    builder.request_attribute(&#34;critical volume&#34;)
+    builder.request_attribute(&#34;kappa&#34;)
+    builder.request_attribute(&#34;dry volume organic fraction&#34;)
 
-    for counter in (&#39;n_substeps&#39;, &#39;n_activating&#39;, &#39;n_deactivating&#39;, &#39;n_ripening&#39;):
+    for counter in (&#34;n_substeps&#34;, &#34;n_activating&#34;, &#34;n_deactivating&#34;, &#34;n_ripening&#34;):
         self.counters[counter] = self.particulator.Storage.empty(
-            self.particulator.mesh.n_cell, dtype=int)
-        if counter == &#39;n_substeps&#39;:
+            self.particulator.mesh.n_cell, dtype=int
+        )
+        if counter == &#34;n_substeps&#34;:
             self.counters[counter][:] = self.__substeps if not self.adaptive else -1
         else:
             self.counters[counter][:] = -1
 
-    self.rh_max = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=float)
+    self.rh_max = self.particulator.Storage.empty(
+        self.particulator.mesh.n_cell, dtype=float
+    )
     self.rh_max[:] = np.nan
-    self.success = self.particulator.Storage.empty(self.particulator.mesh.n_cell, dtype=bool)
+    self.success = self.particulator.Storage.empty(
+        self.particulator.mesh.n_cell, dtype=bool
+    )
     self.success[:] = False
     self.cell_order = np.arange(self.particulator.mesh.n_cell)</code></pre>
 </details>

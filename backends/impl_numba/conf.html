@@ -30,23 +30,24 @@
 <pre><code class="python">&#34;&#34;&#34;
 default settings for Numba just-in-time compilation
 &#34;&#34;&#34;
-import warnings
 import os
+import warnings
+
 import numba
 
 JIT_FLAGS = dict(
     parallel=True,
     fastmath=True,
-    error_model=&#39;numpy&#39;,
-    cache=False  # https://github.com/numba/numba/issues/2956
+    error_model=&#34;numpy&#34;,
+    cache=False,  # https://github.com/numba/numba/issues/2956
 )
 
 try:
     numba.parfors.parfor.ensure_parallel_support()
 except numba.core.errors.UnsupportedParforsError:
-    if &#39;CI&#39; not in os.environ:
+    if &#34;CI&#34; not in os.environ:
         warnings.warn(&#34;Numba version used does not support parallel for (32 bits?)&#34;)
-    JIT_FLAGS[&#39;parallel&#39;] = False</code></pre>
+    JIT_FLAGS[&#34;parallel&#34;] = False</code></pre>
 </details>
 </section>
 <section>

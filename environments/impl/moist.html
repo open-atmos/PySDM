@@ -31,15 +31,15 @@
 common logic for environments featuring moist-air thermodynamics
 &#34;&#34;&#34;
 from abc import abstractmethod
+
 import numpy as np
 
 
 class Moist:
-
     def __init__(self, dt, mesh, variables, mixed_phase=False):
-        variables += [&#39;qv&#39;, &#39;thd&#39;, &#39;T&#39;, &#39;p&#39;, &#39;RH&#39;]
+        variables += [&#34;qv&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
-            variables += [&#39;a_w_ice&#39;]
+            variables += [&#34;a_w_ice&#34;]
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
@@ -50,10 +50,7 @@ class Moist:
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
-        self._values = {
-            &#34;predicted&#34;: None,
-            &#34;current&#34;: self._allocate(self.variables)
-        }
+        self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
 
     def _allocate(self, variables):
@@ -63,30 +60,36 @@ class Moist:
         return result
 
     def __getitem__(self, index):
-        return self._values[&#39;current&#39;][index]
+        return self._values[&#34;current&#34;][index]
 
     def get_predicted(self, index):
-        if self._values[&#39;predicted&#39;] is None:
-            raise AssertionError(&#34;It seems the AmbientThermodynamics dynamic was not added&#34;
-                                 &#34; when building particulator&#34;)
-        return self._values[&#39;predicted&#39;][index]
+        if self._values[&#34;predicted&#34;] is None:
+            raise AssertionError(
+                &#34;It seems the AmbientThermodynamics dynamic was not added&#34;
+                &#34; when building particulator&#34;
+            )
+        return self._values[&#34;predicted&#34;][index]
 
     def sync(self):
         target = self._tmp
-        target[&#39;qv&#39;].ravel(self.get_qv())
-        target[&#39;thd&#39;].ravel(self.get_thd())
+        target[&#34;qv&#34;].ravel(self.get_qv())
+        target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
-            target[&#39;rhod&#39;], target[&#39;thd&#39;], target[&#39;qv&#39;],
-            target[&#39;T&#39;], target[&#39;p&#39;], target[&#39;RH&#39;]
+            target[&#34;rhod&#34;],
+            target[&#34;thd&#34;],
+            target[&#34;qv&#34;],
+            target[&#34;T&#34;],
+            target[&#34;p&#34;],
+            target[&#34;RH&#34;],
         )
-        if &#39;a_w_ice&#39; in self.variables:
+        if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
-                T=target[&#39;T&#39;],
-                p=target[&#39;p&#39;],
-                RH=target[&#39;RH&#39;],
-                qv=target[&#39;qv&#39;],
-                a_w_ice=target[&#39;a_w_ice&#39;]
+                T=target[&#34;T&#34;],
+                p=target[&#34;p&#34;],
+                RH=target[&#34;RH&#34;],
+                qv=target[&#34;qv&#34;],
+                a_w_ice=target[&#34;a_w_ice&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
@@ -127,11 +130,10 @@ class Moist:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Moist:
-
     def __init__(self, dt, mesh, variables, mixed_phase=False):
-        variables += [&#39;qv&#39;, &#39;thd&#39;, &#39;T&#39;, &#39;p&#39;, &#39;RH&#39;]
+        variables += [&#34;qv&#34;, &#34;thd&#34;, &#34;T&#34;, &#34;p&#34;, &#34;RH&#34;]
         if mixed_phase:
-            variables += [&#39;a_w_ice&#39;]
+            variables += [&#34;a_w_ice&#34;]
         self.particulator = None
         self.dt = dt
         self.mesh = mesh
@@ -142,10 +144,7 @@ class Moist:
     def register(self, builder):
         self.particulator = builder.particulator
         self.particulator.observers.append(self)
-        self._values = {
-            &#34;predicted&#34;: None,
-            &#34;current&#34;: self._allocate(self.variables)
-        }
+        self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
         self._tmp = self._allocate(self.variables)
 
     def _allocate(self, variables):
@@ -155,30 +154,36 @@ class Moist:
         return result
 
     def __getitem__(self, index):
-        return self._values[&#39;current&#39;][index]
+        return self._values[&#34;current&#34;][index]
 
     def get_predicted(self, index):
-        if self._values[&#39;predicted&#39;] is None:
-            raise AssertionError(&#34;It seems the AmbientThermodynamics dynamic was not added&#34;
-                                 &#34; when building particulator&#34;)
-        return self._values[&#39;predicted&#39;][index]
+        if self._values[&#34;predicted&#34;] is None:
+            raise AssertionError(
+                &#34;It seems the AmbientThermodynamics dynamic was not added&#34;
+                &#34; when building particulator&#34;
+            )
+        return self._values[&#34;predicted&#34;][index]
 
     def sync(self):
         target = self._tmp
-        target[&#39;qv&#39;].ravel(self.get_qv())
-        target[&#39;thd&#39;].ravel(self.get_thd())
+        target[&#34;qv&#34;].ravel(self.get_qv())
+        target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
-            target[&#39;rhod&#39;], target[&#39;thd&#39;], target[&#39;qv&#39;],
-            target[&#39;T&#39;], target[&#39;p&#39;], target[&#39;RH&#39;]
+            target[&#34;rhod&#34;],
+            target[&#34;thd&#34;],
+            target[&#34;qv&#34;],
+            target[&#34;T&#34;],
+            target[&#34;p&#34;],
+            target[&#34;RH&#34;],
         )
-        if &#39;a_w_ice&#39; in self.variables:
+        if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
-                T=target[&#39;T&#39;],
-                p=target[&#39;p&#39;],
-                RH=target[&#39;RH&#39;],
-                qv=target[&#39;qv&#39;],
-                a_w_ice=target[&#39;a_w_ice&#39;]
+                T=target[&#34;T&#34;],
+                p=target[&#34;p&#34;],
+                RH=target[&#34;RH&#34;],
+                qv=target[&#34;qv&#34;],
+                a_w_ice=target[&#34;a_w_ice&#34;],
             )
         self._values[&#34;predicted&#34;] = target
 
@@ -216,10 +221,12 @@ class Moist:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_predicted(self, index):
-    if self._values[&#39;predicted&#39;] is None:
-        raise AssertionError(&#34;It seems the AmbientThermodynamics dynamic was not added&#34;
-                             &#34; when building particulator&#34;)
-    return self._values[&#39;predicted&#39;][index]</code></pre>
+    if self._values[&#34;predicted&#34;] is None:
+        raise AssertionError(
+            &#34;It seems the AmbientThermodynamics dynamic was not added&#34;
+            &#34; when building particulator&#34;
+        )
+    return self._values[&#34;predicted&#34;][index]</code></pre>
 </details>
 </dd>
 <dt id="PySDM.environments.impl.moist.Moist.get_qv"><code class="name flex">
@@ -280,10 +287,7 @@ def get_thd(self) -&gt; np.ndarray:
 <pre><code class="python">def register(self, builder):
     self.particulator = builder.particulator
     self.particulator.observers.append(self)
-    self._values = {
-        &#34;predicted&#34;: None,
-        &#34;current&#34;: self._allocate(self.variables)
-    }
+    self._values = {&#34;predicted&#34;: None, &#34;current&#34;: self._allocate(self.variables)}
     self._tmp = self._allocate(self.variables)</code></pre>
 </details>
 </dd>
@@ -298,20 +302,24 @@ def get_thd(self) -&gt; np.ndarray:
 </summary>
 <pre><code class="python">def sync(self):
     target = self._tmp
-    target[&#39;qv&#39;].ravel(self.get_qv())
-    target[&#39;thd&#39;].ravel(self.get_thd())
+    target[&#34;qv&#34;].ravel(self.get_qv())
+    target[&#34;thd&#34;].ravel(self.get_thd())
 
     self.particulator.backend.temperature_pressure_RH(
-        target[&#39;rhod&#39;], target[&#39;thd&#39;], target[&#39;qv&#39;],
-        target[&#39;T&#39;], target[&#39;p&#39;], target[&#39;RH&#39;]
+        target[&#34;rhod&#34;],
+        target[&#34;thd&#34;],
+        target[&#34;qv&#34;],
+        target[&#34;T&#34;],
+        target[&#34;p&#34;],
+        target[&#34;RH&#34;],
     )
-    if &#39;a_w_ice&#39; in self.variables:
+    if &#34;a_w_ice&#34; in self.variables:
         self.particulator.backend.a_w_ice(
-            T=target[&#39;T&#39;],
-            p=target[&#39;p&#39;],
-            RH=target[&#39;RH&#39;],
-            qv=target[&#39;qv&#39;],
-            a_w_ice=target[&#39;a_w_ice&#39;]
+            T=target[&#34;T&#34;],
+            p=target[&#34;p&#34;],
+            RH=target[&#34;RH&#34;],
+            qv=target[&#34;qv&#34;],
+            a_w_ice=target[&#34;a_w_ice&#34;],
         )
     self._values[&#34;predicted&#34;] = target</code></pre>
 </details>

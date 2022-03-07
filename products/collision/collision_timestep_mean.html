@@ -33,15 +33,15 @@
 Average collision timestep length used when adaptive timestepping is enabled in the
  `PySDM.dynamics.collisions.collision.Collision` dynamic (fetching a value reset the counter)
 &#34;&#34;&#34;
-import numpy as np
 import numba
+import numpy as np
+
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
 
 
 class CollisionTimestepMean(Product):
-
-    def __init__(self, unit=&#39;s&#39;, name=None):
+    def __init__(self, unit=&#34;s&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.count = 0
         self.collision = None
@@ -50,7 +50,7 @@ class CollisionTimestepMean(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+        self.collision = self.particulator.dynamics[&#34;Collision&#34;]
         self.range = self.collision.dt_coal_range
 
     @staticmethod
@@ -89,8 +89,7 @@ class CollisionTimestepMean(Product):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CollisionTimestepMean(Product):
-
-    def __init__(self, unit=&#39;s&#39;, name=None):
+    def __init__(self, unit=&#34;s&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.count = 0
         self.collision = None
@@ -99,7 +98,7 @@ class CollisionTimestepMean(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+        self.collision = self.particulator.dynamics[&#34;Collision&#34;]
         self.range = self.collision.dt_coal_range
 
     @staticmethod
@@ -148,7 +147,7 @@ class CollisionTimestepMean(Product):
 <pre><code class="python">def register(self, builder):
     super().register(builder)
     self.particulator.observers.append(self)
-    self.collision = self.particulator.dynamics[&#39;Collision&#39;]
+    self.collision = self.particulator.dynamics[&#34;Collision&#34;]
     self.range = self.collision.dt_coal_range</code></pre>
 </details>
 </dd>

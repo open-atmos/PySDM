@@ -34,11 +34,11 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 class TotalParticleConcentration(MomentProduct):
-    def __init__(self, name=None, unit=&#39;m^-3&#39;):
+    def __init__(self, name=None, unit=&#34;m^-3&#34;):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=0)
+        self._download_moment_to_buffer(&#34;volume&#34;, rank=0)
         self.buffer[:] /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>
@@ -64,11 +64,11 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class TotalParticleConcentration(MomentProduct):
-    def __init__(self, name=None, unit=&#39;m^-3&#39;):
+    def __init__(self, name=None, unit=&#34;m^-3&#34;):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(&#39;volume&#39;, rank=0)
+        self._download_moment_to_buffer(&#34;volume&#34;, rank=0)
         self.buffer[:] /= self.particulator.mesh.dv
         return self.buffer</code></pre>
 </details>

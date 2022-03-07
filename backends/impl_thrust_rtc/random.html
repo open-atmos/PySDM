@@ -30,27 +30,36 @@
 <pre><code class="python">&#34;&#34;&#34;
 random number generator class for ThrustRTC backend (using CURandRTC)
 &#34;&#34;&#34;
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from ..impl_common.random_common import RandomCommon
-from .conf import trtc, rndrtc
+from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
+from ..impl_common.random_common import RandomCommon
+from .conf import rndrtc, trtc
 
 #  TIP: sometimes only half array is needed
 
-class Random(RandomCommon):  # pylint: disable=too-few-public-methods
-    __urand_init_rng_state_body = trtc.For([&#39;rng&#39;, &#39;states&#39;, &#39;seed&#39;], &#39;i&#39;, &#39;&#39;&#39;
-        rng.state_init(seed, i, 0, states[i]);
-        &#39;&#39;&#39;)
 
-    __urand_body = trtc.For([&#39;states&#39;, &#39;vec_rnd&#39;], &#39;i&#39;, &#39;&#39;&#39;
+class Random(RandomCommon):  # pylint: disable=too-few-public-methods
+    __urand_init_rng_state_body = trtc.For(
+        [&#34;rng&#34;, &#34;states&#34;, &#34;seed&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
+        rng.state_init(seed, i, 0, states[i]);
+        &#34;&#34;&#34;,
+    )
+
+    __urand_body = trtc.For(
+        [&#34;states&#34;, &#34;vec_rnd&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         vec_rnd[i] = states[i].rand01();
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     def __init__(self, size, seed):
         super().__init__(size, seed)
         rng = rndrtc.DVRNG()
-        self.generator = trtc.device_vector(&#39;RNGState&#39;, size)
+        self.generator = trtc.device_vector(&#34;RNGState&#34;, size)
         dseed = trtc.DVInt64(seed)
         Random.__urand_init_rng_state_body.launch_n(size, [rng, self.generator, dseed])
 
@@ -80,18 +89,26 @@ class Random(RandomCommon):  # pylint: disable=too-few-public-methods
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Random(RandomCommon):  # pylint: disable=too-few-public-methods
-    __urand_init_rng_state_body = trtc.For([&#39;rng&#39;, &#39;states&#39;, &#39;seed&#39;], &#39;i&#39;, &#39;&#39;&#39;
+    __urand_init_rng_state_body = trtc.For(
+        [&#34;rng&#34;, &#34;states&#34;, &#34;seed&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         rng.state_init(seed, i, 0, states[i]);
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
-    __urand_body = trtc.For([&#39;states&#39;, &#39;vec_rnd&#39;], &#39;i&#39;, &#39;&#39;&#39;
+    __urand_body = trtc.For(
+        [&#34;states&#34;, &#34;vec_rnd&#34;],
+        &#34;i&#34;,
+        &#34;&#34;&#34;
         vec_rnd[i] = states[i].rand01();
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+    )
 
     def __init__(self, size, seed):
         super().__init__(size, seed)
         rng = rndrtc.DVRNG()
-        self.generator = trtc.device_vector(&#39;RNGState&#39;, size)
+        self.generator = trtc.device_vector(&#34;RNGState&#34;, size)
         dseed = trtc.DVInt64(seed)
         Random.__urand_init_rng_state_body.launch_n(size, [rng, self.generator, dseed])
 

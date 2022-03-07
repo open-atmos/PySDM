@@ -35,19 +35,19 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 def make_arbitrary_moment_product(**kwargs):
     for arg in kwargs:
-        assert arg in (&#39;rank&#39;, &#39;attr&#39;, &#39;attr_unit&#39;)
+        assert arg in (&#34;rank&#34;, &#34;attr&#34;, &#34;attr_unit&#34;)
 
     class ArbitraryMoment(MomentProduct):
-        def __init__(self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;):
+        def __init__(
+            self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        ):
             super().__init__(name=name, unit=unit)
-            self.attr = kwargs[&#39;attr&#39;]
-            self.rank = kwargs[&#39;rank&#39;]
+            self.attr = kwargs[&#34;attr&#34;]
+            self.rank = kwargs[&#34;rank&#34;]
 
         def _impl(self, **kwargs):
             self._download_moment_to_buffer(
-                attr=self.attr,
-                rank=self.rank,
-                skip_division_by_m0=True
+                attr=self.attr, rank=self.rank, skip_division_by_m0=True
             )
             return self.buffer
 
@@ -55,16 +55,12 @@ def make_arbitrary_moment_product(**kwargs):
 
 
 VolumeFirstMoment = make_arbitrary_moment_product(
-    rank=1, attr=&#39;volume&#39;, attr_unit=&#39;m^3&#39;
+    rank=1, attr=&#34;volume&#34;, attr_unit=&#34;m^3&#34;
 )
 
-RadiusSixthMoment = make_arbitrary_moment_product(
-    rank=6, attr=&#39;radius&#39;, attr_unit=&#39;m&#39;
-)
+RadiusSixthMoment = make_arbitrary_moment_product(rank=6, attr=&#34;radius&#34;, attr_unit=&#34;m&#34;)
 
-RadiusFirstMoment = make_arbitrary_moment_product(
-    rank=1, attr=&#39;radius&#39;, attr_unit=&#39;m&#39;
-)</code></pre>
+RadiusFirstMoment = make_arbitrary_moment_product(rank=1, attr=&#34;radius&#34;, attr_unit=&#34;m&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -85,19 +81,19 @@ RadiusFirstMoment = make_arbitrary_moment_product(
 </summary>
 <pre><code class="python">def make_arbitrary_moment_product(**kwargs):
     for arg in kwargs:
-        assert arg in (&#39;rank&#39;, &#39;attr&#39;, &#39;attr_unit&#39;)
+        assert arg in (&#34;rank&#34;, &#34;attr&#34;, &#34;attr_unit&#34;)
 
     class ArbitraryMoment(MomentProduct):
-        def __init__(self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;):
+        def __init__(
+            self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+        ):
             super().__init__(name=name, unit=unit)
-            self.attr = kwargs[&#39;attr&#39;]
-            self.rank = kwargs[&#39;rank&#39;]
+            self.attr = kwargs[&#34;attr&#34;]
+            self.rank = kwargs[&#34;rank&#34;]
 
         def _impl(self, **kwargs):
             self._download_moment_to_buffer(
-                attr=self.attr,
-                rank=self.rank,
-                skip_division_by_m0=True
+                attr=self.attr, rank=self.rank, skip_division_by_m0=True
             )
             return self.buffer
 
@@ -121,16 +117,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
-    def __init__(self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;):
+    def __init__(
+        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+    ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#39;attr&#39;]
-        self.rank = kwargs[&#39;rank&#39;]
+        self.attr = kwargs[&#34;attr&#34;]
+        self.rank = kwargs[&#34;rank&#34;]
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            attr=self.attr,
-            rank=self.rank,
-            skip_division_by_m0=True
+            attr=self.attr, rank=self.rank, skip_division_by_m0=True
         )
         return self.buffer</code></pre>
 </details>
@@ -153,16 +149,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
-    def __init__(self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;):
+    def __init__(
+        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+    ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#39;attr&#39;]
-        self.rank = kwargs[&#39;rank&#39;]
+        self.attr = kwargs[&#34;attr&#34;]
+        self.rank = kwargs[&#34;rank&#34;]
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            attr=self.attr,
-            rank=self.rank,
-            skip_division_by_m0=True
+            attr=self.attr, rank=self.rank, skip_division_by_m0=True
         )
         return self.buffer</code></pre>
 </details>
@@ -185,16 +181,16 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ArbitraryMoment(MomentProduct):
-    def __init__(self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;):
+    def __init__(
+        self, name=None, unit=f&#34;({kwargs[&#39;attr_unit&#39;]})**{kwargs[&#39;rank&#39;]}&#34;
+    ):
         super().__init__(name=name, unit=unit)
-        self.attr = kwargs[&#39;attr&#39;]
-        self.rank = kwargs[&#39;rank&#39;]
+        self.attr = kwargs[&#34;attr&#34;]
+        self.rank = kwargs[&#34;rank&#34;]
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            attr=self.attr,
-            rank=self.rank,
-            skip_division_by_m0=True
+            attr=self.attr, rank=self.rank, skip_division_by_m0=True
         )
         return self.buffer</code></pre>
 </details>

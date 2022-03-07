@@ -32,6 +32,7 @@ for do-nothing attributes</p>
 <pre><code class="python">&#34;&#34;&#34; logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
 for do-nothing attributes &#34;&#34;&#34;
 import numpy as np
+
 from .attribute import Attribute
 
 
@@ -50,6 +51,7 @@ class DummyAttribute(Attribute):
 def make_dummy_attribute_factory(name):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
+
     return _factory</code></pre>
 </details>
 </section>
@@ -72,6 +74,7 @@ def make_dummy_attribute_factory(name):
 <pre><code class="python">def make_dummy_attribute_factory(name):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
+
     return _factory</code></pre>
 </details>
 </dd>

@@ -45,26 +45,31 @@ class Displacement:
         self.precipitation_in_last_step = 0
 
     def register(self, builder):
-        builder.request_attribute(&#39;terminal velocity&#39;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
         self.particulator = builder.particulator
         self.dimension = len(builder.particulator.environment.mesh.grid)
         self.grid = self.particulator.Storage.from_ndarray(
-            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64))
+            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64)
+        )
         if self.dimension == 1:
-            courant_field = (np.full(self.grid[0]+1, np.nan),)
+            courant_field = (np.full(self.grid[0] + 1, np.nan),)
         elif self.dimension == 2:
             courant_field = (
-                np.full((self.grid[0]+1, self.grid[1]), np.nan),
-                np.full((self.grid[0], self.grid[1]+1), np.nan),
+                np.full((self.grid[0] + 1, self.grid[1]), np.nan),
+                np.full((self.grid[0], self.grid[1] + 1), np.nan),
             )
         else:
             raise NotImplementedError()
-        self.courant = tuple(self.particulator.Storage.from_ndarray(
-            courant_field[i]) for i in range(self.dimension))
+        self.courant = tuple(
+            self.particulator.Storage.from_ndarray(courant_field[i])
+            for i in range(self.dimension)
+        )
         self.displacement = self.particulator.Storage.from_ndarray(
-            np.zeros((self.dimension, self.particulator.n_sd)))
+            np.zeros((self.dimension, self.particulator.n_sd))
+        )
         self.temp = self.particulator.Storage.from_ndarray(
-            np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64))
+            np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64)
+        )
 
     def upload_courant_field(self, courant_field):
         for i, component in enumerate(courant_field):
@@ -72,10 +77,12 @@ class Displacement:
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
-        cell_origin = self.particulator.attributes[&#39;cell origin&#39;]
-        position_in_cell = self.particulator.attributes[&#39;position in cell&#39;]
+        cell_origin = self.particulator.attributes[&#34;cell origin&#34;]
+        position_in_cell = self.particulator.attributes[&#34;position in cell&#34;]
 
-        self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
+        self.calculate_displacement(
+            self.displacement, self.courant, cell_origin, position_in_cell
+        )
         self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
             self.precipitation_in_last_step = self.particulator.remove_precipitated()
@@ -83,18 +90,21 @@ class Displacement:
         self.boundary_condition(cell_origin)
         self.particulator.recalculate_cell_id()
 
-        for key in (&#39;position in cell&#39;, &#39;cell origin&#39;, &#39;cell id&#39;):
+        for key in (&#34;position in cell&#34;, &#34;cell origin&#34;, &#34;cell id&#34;):
             self.particulator.attributes.mark_updated(key)
 
-    def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell
+    ):
         for dim in range(self.dimension):
             self.particulator.backend.calculate_displacement(
-                dim, displacement, courant[dim], cell_origin, position_in_cell)
+                dim, displacement, courant[dim], cell_origin, position_in_cell
+            )
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]
             dt_over_dz = self.particulator.dt / self.particulator.mesh.dz
             displacement_z *= 1 / dt_over_dz
-            displacement_z -= self.particulator.attributes[&#39;terminal velocity&#39;]
+            displacement_z -= self.particulator.attributes[&#34;terminal velocity&#34;]
             displacement_z *= dt_over_dz
 
     @staticmethod
@@ -142,26 +152,31 @@ class Displacement:
         self.precipitation_in_last_step = 0
 
     def register(self, builder):
-        builder.request_attribute(&#39;terminal velocity&#39;)
+        builder.request_attribute(&#34;terminal velocity&#34;)
         self.particulator = builder.particulator
         self.dimension = len(builder.particulator.environment.mesh.grid)
         self.grid = self.particulator.Storage.from_ndarray(
-            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64))
+            np.array(builder.particulator.environment.mesh.grid, dtype=np.int64)
+        )
         if self.dimension == 1:
-            courant_field = (np.full(self.grid[0]+1, np.nan),)
+            courant_field = (np.full(self.grid[0] + 1, np.nan),)
         elif self.dimension == 2:
             courant_field = (
-                np.full((self.grid[0]+1, self.grid[1]), np.nan),
-                np.full((self.grid[0], self.grid[1]+1), np.nan),
+                np.full((self.grid[0] + 1, self.grid[1]), np.nan),
+                np.full((self.grid[0], self.grid[1] + 1), np.nan),
             )
         else:
             raise NotImplementedError()
-        self.courant = tuple(self.particulator.Storage.from_ndarray(
-            courant_field[i]) for i in range(self.dimension))
+        self.courant = tuple(
+            self.particulator.Storage.from_ndarray(courant_field[i])
+            for i in range(self.dimension)
+        )
         self.displacement = self.particulator.Storage.from_ndarray(
-            np.zeros((self.dimension, self.particulator.n_sd)))
+            np.zeros((self.dimension, self.particulator.n_sd))
+        )
         self.temp = self.particulator.Storage.from_ndarray(
-            np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64))
+            np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64)
+        )
 
     def upload_courant_field(self, courant_field):
         for i, component in enumerate(courant_field):
@@ -169,10 +184,12 @@ class Displacement:
 
     def __call__(self):
         # TIP: not need all array only [idx[:sd_num]]
-        cell_origin = self.particulator.attributes[&#39;cell origin&#39;]
-        position_in_cell = self.particulator.attributes[&#39;position in cell&#39;]
+        cell_origin = self.particulator.attributes[&#34;cell origin&#34;]
+        position_in_cell = self.particulator.attributes[&#34;position in cell&#34;]
 
-        self.calculate_displacement(self.displacement, self.courant, cell_origin, position_in_cell)
+        self.calculate_displacement(
+            self.displacement, self.courant, cell_origin, position_in_cell
+        )
         self.update_position(position_in_cell, self.displacement)
         if self.enable_sedimentation:
             self.precipitation_in_last_step = self.particulator.remove_precipitated()
@@ -180,18 +197,21 @@ class Displacement:
         self.boundary_condition(cell_origin)
         self.particulator.recalculate_cell_id()
 
-        for key in (&#39;position in cell&#39;, &#39;cell origin&#39;, &#39;cell id&#39;):
+        for key in (&#34;position in cell&#34;, &#34;cell origin&#34;, &#34;cell id&#34;):
             self.particulator.attributes.mark_updated(key)
 
-    def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell
+    ):
         for dim in range(self.dimension):
             self.particulator.backend.calculate_displacement(
-                dim, displacement, courant[dim], cell_origin, position_in_cell)
+                dim, displacement, courant[dim], cell_origin, position_in_cell
+            )
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]
             dt_over_dz = self.particulator.dt / self.particulator.mesh.dz
             displacement_z *= 1 / dt_over_dz
-            displacement_z -= self.particulator.attributes[&#39;terminal velocity&#39;]
+            displacement_z -= self.particulator.attributes[&#34;terminal velocity&#34;]
             displacement_z *= dt_over_dz
 
     @staticmethod
@@ -248,15 +268,18 @@ def update_position(position_in_cell, displacement):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def calculate_displacement(self, displacement, courant, cell_origin, position_in_cell):
+<pre><code class="python">def calculate_displacement(
+    self, displacement, courant, cell_origin, position_in_cell
+):
     for dim in range(self.dimension):
         self.particulator.backend.calculate_displacement(
-            dim, displacement, courant[dim], cell_origin, position_in_cell)
+            dim, displacement, courant[dim], cell_origin, position_in_cell
+        )
     if self.enable_sedimentation:
         displacement_z = displacement[self.dimension - 1, :]
         dt_over_dz = self.particulator.dt / self.particulator.mesh.dz
         displacement_z *= 1 / dt_over_dz
-        displacement_z -= self.particulator.attributes[&#39;terminal velocity&#39;]
+        displacement_z -= self.particulator.attributes[&#34;terminal velocity&#34;]
         displacement_z *= dt_over_dz</code></pre>
 </details>
 </dd>
@@ -270,26 +293,31 @@ def update_position(position_in_cell, displacement):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def register(self, builder):
-    builder.request_attribute(&#39;terminal velocity&#39;)
+    builder.request_attribute(&#34;terminal velocity&#34;)
     self.particulator = builder.particulator
     self.dimension = len(builder.particulator.environment.mesh.grid)
     self.grid = self.particulator.Storage.from_ndarray(
-        np.array(builder.particulator.environment.mesh.grid, dtype=np.int64))
+        np.array(builder.particulator.environment.mesh.grid, dtype=np.int64)
+    )
     if self.dimension == 1:
-        courant_field = (np.full(self.grid[0]+1, np.nan),)
+        courant_field = (np.full(self.grid[0] + 1, np.nan),)
     elif self.dimension == 2:
         courant_field = (
-            np.full((self.grid[0]+1, self.grid[1]), np.nan),
-            np.full((self.grid[0], self.grid[1]+1), np.nan),
+            np.full((self.grid[0] + 1, self.grid[1]), np.nan),
+            np.full((self.grid[0], self.grid[1] + 1), np.nan),
         )
     else:
         raise NotImplementedError()
-    self.courant = tuple(self.particulator.Storage.from_ndarray(
-        courant_field[i]) for i in range(self.dimension))
+    self.courant = tuple(
+        self.particulator.Storage.from_ndarray(courant_field[i])
+        for i in range(self.dimension)
+    )
     self.displacement = self.particulator.Storage.from_ndarray(
-        np.zeros((self.dimension, self.particulator.n_sd)))
+        np.zeros((self.dimension, self.particulator.n_sd))
+    )
     self.temp = self.particulator.Storage.from_ndarray(
-        np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64))</code></pre>
+        np.zeros((self.dimension, self.particulator.n_sd), dtype=np.int64)
+    )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.dynamics.displacement.Displacement.update_cell_origin"><code class="name flex">

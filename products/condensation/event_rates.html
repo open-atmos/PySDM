@@ -34,11 +34,11 @@ rates of activation, deactivation and ripening events (take into account substep
  fetching a value resets the given counter)
 &#34;&#34;&#34;
 import numpy as np
+
 from PySDM.products.impl.product import Product
 
 
 class EventRate(Product):
-
     def __init__(self, what, name=None, unit=None):
         super().__init__(name=name, unit=unit)
         self.condensation = None
@@ -49,12 +49,12 @@ class EventRate(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
+        self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
         self.event_count = np.zeros_like(self.buffer)
 
     def notify(self):
         self.timestep_count += 1
-        self._download_to_buffer(self.condensation.counters[&#39;n_&#39; + self.what])
+        self._download_to_buffer(self.condensation.counters[&#34;n_&#34; + self.what])
         self.event_count[:] += self.buffer[:]
 
     def _impl(self, **kwargs):
@@ -62,9 +62,9 @@ class EventRate(Product):
             return self.event_count
 
         self.event_count[:] /= (
-                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
         )
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         self.event_count[:] /= self.buffer[:]
         self.buffer[:] = self.event_count[:]
         self.timestep_count = 0
@@ -73,18 +73,18 @@ class EventRate(Product):
 
 
 class RipeningRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;ripening&#39;, name=name, unit=unit)
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;ripening&#34;, name=name, unit=unit)
 
 
 class ActivatingRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;activating&#39;, name=name, unit=unit)
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;activating&#34;, name=name, unit=unit)
 
 
 class DeactivatingRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;deactivating&#39;, name=name, unit=unit)</code></pre>
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;deactivating&#34;, name=name, unit=unit)</code></pre>
 </details>
 </section>
 <section>
@@ -107,8 +107,8 @@ class DeactivatingRate(EventRate):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ActivatingRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;activating&#39;, name=name, unit=unit)</code></pre>
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;activating&#34;, name=name, unit=unit)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -127,8 +127,8 @@ class DeactivatingRate(EventRate):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DeactivatingRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;deactivating&#39;, name=name, unit=unit)</code></pre>
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;deactivating&#34;, name=name, unit=unit)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -147,7 +147,6 @@ class DeactivatingRate(EventRate):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EventRate(Product):
-
     def __init__(self, what, name=None, unit=None):
         super().__init__(name=name, unit=unit)
         self.condensation = None
@@ -158,12 +157,12 @@ class DeactivatingRate(EventRate):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
+        self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
         self.event_count = np.zeros_like(self.buffer)
 
     def notify(self):
         self.timestep_count += 1
-        self._download_to_buffer(self.condensation.counters[&#39;n_&#39; + self.what])
+        self._download_to_buffer(self.condensation.counters[&#34;n_&#34; + self.what])
         self.event_count[:] += self.buffer[:]
 
     def _impl(self, **kwargs):
@@ -171,9 +170,9 @@ class DeactivatingRate(EventRate):
             return self.event_count
 
         self.event_count[:] /= (
-                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
         )
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         self.event_count[:] /= self.buffer[:]
         self.buffer[:] = self.event_count[:]
         self.timestep_count = 0
@@ -203,7 +202,7 @@ class DeactivatingRate(EventRate):
 </summary>
 <pre><code class="python">def notify(self):
     self.timestep_count += 1
-    self._download_to_buffer(self.condensation.counters[&#39;n_&#39; + self.what])
+    self._download_to_buffer(self.condensation.counters[&#34;n_&#34; + self.what])
     self.event_count[:] += self.buffer[:]</code></pre>
 </details>
 </dd>
@@ -219,7 +218,7 @@ class DeactivatingRate(EventRate):
 <pre><code class="python">def register(self, builder):
     super().register(builder)
     self.particulator.observers.append(self)
-    self.condensation = self.particulator.dynamics[&#39;Condensation&#39;]
+    self.condensation = self.particulator.dynamics[&#34;Condensation&#34;]
     self.event_count = np.zeros_like(self.buffer)</code></pre>
 </details>
 </dd>
@@ -236,8 +235,8 @@ class DeactivatingRate(EventRate):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class RipeningRate(EventRate):
-    def __init__(self, name=None, unit=&#39;s^-1 kg^-1&#39;):
-        super().__init__(&#39;ripening&#39;, name=name, unit=unit)</code></pre>
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
+        super().__init__(&#34;ripening&#34;, name=name, unit=unit)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

@@ -31,17 +31,18 @@
 common parent class for all ThrustRTC backend methods classes
 &#34;&#34;&#34;
 from typing import Callable, Optional
+
 from ...impl_common.backend_methods import BackendMethods
 
 
 class ThrustRTCBackendMethods(BackendMethods):
     def __init__(self):
         super().__init__()
-        if not hasattr(self, &#39;_conv_function&#39;):
+        if not hasattr(self, &#34;_conv_function&#34;):
             self._conv_function: Optional[Callable] = None
-        if not hasattr(self, &#39;_real_type&#39;):
+        if not hasattr(self, &#34;_real_type&#34;):
             self._real_type = None
-        if not hasattr(self, &#39;_np_dtype&#39;):
+        if not hasattr(self, &#34;_np_dtype&#34;):
             self._np_dtype = None
 
     def _get_floating_point(self, number):
@@ -75,11 +76,11 @@ class ThrustRTCBackendMethods(BackendMethods):
 <pre><code class="python">class ThrustRTCBackendMethods(BackendMethods):
     def __init__(self):
         super().__init__()
-        if not hasattr(self, &#39;_conv_function&#39;):
+        if not hasattr(self, &#34;_conv_function&#34;):
             self._conv_function: Optional[Callable] = None
-        if not hasattr(self, &#39;_real_type&#39;):
+        if not hasattr(self, &#34;_real_type&#34;):
             self._real_type = None
-        if not hasattr(self, &#39;_np_dtype&#39;):
+        if not hasattr(self, &#34;_np_dtype&#34;):
             self._np_dtype = None
 
     def _get_floating_point(self, number):

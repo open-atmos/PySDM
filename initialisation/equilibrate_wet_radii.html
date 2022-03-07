@@ -32,19 +32,24 @@ Koehler-curve equilibrium in unsaturated conditions
 &#34;&#34;&#34;
 import numba
 import numpy as np
-from ..backends.impl_numba.toms748 import toms748_solve
+
 from ..backends.impl_numba.conf import JIT_FLAGS
+from ..backends.impl_numba.toms748 import toms748_solve
 from ..backends.impl_numba.warnings import warn
 
 default_rtol = 1e-5
 default_max_iters = 64
 
 
-def equilibrate_wet_radii(r_dry: np.ndarray, environment,
-                          kappa_times_dry_volume: np.ndarray,
-                          f_org: np.ndarray = None,
-                          cell_id: np.ndarray = None,
-                          rtol=default_rtol, max_iters=default_max_iters):
+def equilibrate_wet_radii(
+    r_dry: np.ndarray,
+    environment,
+    kappa_times_dry_volume: np.ndarray,
+    f_org: np.ndarray = None,
+    cell_id: np.ndarray = None,
+    rtol=default_rtol,
+    max_iters=default_max_iters,
+):
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
     if f_org is None:
@@ -63,16 +68,26 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
 
     kappa = kappa_times_dry_volume / phys_volume(radius=r_dry)
 
-    jit_flags = {**JIT_FLAGS, **{&#39;fastmath&#39;: formulae.fastmath, &#39;cache&#39;: False}}
+    jit_flags = {**JIT_FLAGS, **{&#34;fastmath&#34;: formulae.fastmath, &#34;cache&#34;: False}}
 
-    @numba.njit(**{**jit_flags, &#39;parallel&#39;: False})
+    @numba.njit(**{**jit_flags, &#34;parallel&#34;: False})
     def minfun(r, T, RH, kp, rd3, f_org):
-        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org)
+        sgm = sigma(
+            T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
+        )
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
-                        RH_range=(0, 1)):
+    def r_wet_init_impl(
+        r_dry: np.ndarray,
+        iters,
+        T,
+        RH,
+        cell_id: np.ndarray,
+        kappa,
+        rtol,
+        RH_range=(0, 1),
+    ):
         r_wet = np.empty_like(r_dry)
         for i in numba.prange(len(r_dry)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
@@ -82,16 +97,24 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
             b = r_cr(kappa[i], r_dry[i] ** 3, T[cid], const.sgm_w)
 
             if not a &lt; b:
-                warn(msg=&#34;dry radius larger than critical radius&#34;, file=__file__,
-                     context=(
-                         &#34;i&#34;, i,
-                         &#34;r_d&#34;, r_dry[i],
-                         &#34;T&#34;, T[cid],
-                         &#34;RH&#34;, RH[cid],
-                         &#34;f_org&#34;, f_org[i],
-                         &#34;kappa&#34;, kappa[i]
-                     )
-                 )
+                warn(
+                    msg=&#34;dry radius larger than critical radius&#34;,
+                    file=__file__,
+                    context=(
+                        &#34;i&#34;,
+                        i,
+                        &#34;r_d&#34;,
+                        r_dry[i],
+                        &#34;T&#34;,
+                        T[cid],
+                        &#34;RH&#34;,
+                        RH[cid],
+                        &#34;f_org&#34;,
+                        f_org[i],
+                        &#34;kappa&#34;,
+                        kappa[i],
+                    ),
+                )
                 iters[i] = -1
                 continue
 
@@ -100,8 +123,8 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
                 T[cid],
                 np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
                 kappa[i],
-                r_dry[i]**3,
-                f_org[i]
+                r_dry[i] ** 3,
+                f_org[i],
             )
 
             fa = minfun(a, *args)
@@ -112,20 +135,35 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
             fb = minfun(b, *args)
 
             r_wet[i], iters[i] = toms748_solve(
-                minfun, args, a, b, fa, fb,
-                rtol=rtol, max_iter=max_iters, within_tolerance=within_tolerance
+                minfun,
+                args,
+                a,
+                b,
+                fa,
+                fb,
+                rtol=rtol,
+                max_iter=max_iters,
+                within_tolerance=within_tolerance,
             )
             if iters[i] == -1:
-                warn(msg=&#34;failed to find wet radius for particle&#34;, file=__file__,
-                     context=(
-                         &#34;i&#34;, i,
-                         &#34;r_d&#34;, r_dry[i],
-                         &#34;T&#34;, T[cid],
-                         &#34;RH&#34;, RH[cid],
-                         &#34;f_org&#34;, f_org[i],
-                         &#34;kappa&#34;, kappa[i]
-                     )
-                 )
+                warn(
+                    msg=&#34;failed to find wet radius for particle&#34;,
+                    file=__file__,
+                    context=(
+                        &#34;i&#34;,
+                        i,
+                        &#34;r_d&#34;,
+                        r_dry[i],
+                        &#34;T&#34;,
+                        T[cid],
+                        &#34;RH&#34;,
+                        RH[cid],
+                        &#34;f_org&#34;,
+                        f_org[i],
+                        &#34;kappa&#34;,
+                        kappa[i],
+                    ),
+                )
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
@@ -150,11 +188,15 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def equilibrate_wet_radii(r_dry: np.ndarray, environment,
-                          kappa_times_dry_volume: np.ndarray,
-                          f_org: np.ndarray = None,
-                          cell_id: np.ndarray = None,
-                          rtol=default_rtol, max_iters=default_max_iters):
+<pre><code class="python">def equilibrate_wet_radii(
+    r_dry: np.ndarray,
+    environment,
+    kappa_times_dry_volume: np.ndarray,
+    f_org: np.ndarray = None,
+    cell_id: np.ndarray = None,
+    rtol=default_rtol,
+    max_iters=default_max_iters,
+):
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
     if f_org is None:
@@ -173,16 +215,26 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
 
     kappa = kappa_times_dry_volume / phys_volume(radius=r_dry)
 
-    jit_flags = {**JIT_FLAGS, **{&#39;fastmath&#39;: formulae.fastmath, &#39;cache&#39;: False}}
+    jit_flags = {**JIT_FLAGS, **{&#34;fastmath&#34;: formulae.fastmath, &#34;cache&#34;: False}}
 
-    @numba.njit(**{**jit_flags, &#39;parallel&#39;: False})
+    @numba.njit(**{**jit_flags, &#34;parallel&#34;: False})
     def minfun(r, T, RH, kp, rd3, f_org):
-        sgm = sigma(T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org)
+        sgm = sigma(
+            T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
+        )
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(r_dry: np.ndarray, iters, T, RH, cell_id: np.ndarray, kappa, rtol,
-                        RH_range=(0, 1)):
+    def r_wet_init_impl(
+        r_dry: np.ndarray,
+        iters,
+        T,
+        RH,
+        cell_id: np.ndarray,
+        kappa,
+        rtol,
+        RH_range=(0, 1),
+    ):
         r_wet = np.empty_like(r_dry)
         for i in numba.prange(len(r_dry)):  # pylint: disable=not-an-iterable
             cid = cell_id[i]
@@ -192,16 +244,24 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
             b = r_cr(kappa[i], r_dry[i] ** 3, T[cid], const.sgm_w)
 
             if not a &lt; b:
-                warn(msg=&#34;dry radius larger than critical radius&#34;, file=__file__,
-                     context=(
-                         &#34;i&#34;, i,
-                         &#34;r_d&#34;, r_dry[i],
-                         &#34;T&#34;, T[cid],
-                         &#34;RH&#34;, RH[cid],
-                         &#34;f_org&#34;, f_org[i],
-                         &#34;kappa&#34;, kappa[i]
-                     )
-                 )
+                warn(
+                    msg=&#34;dry radius larger than critical radius&#34;,
+                    file=__file__,
+                    context=(
+                        &#34;i&#34;,
+                        i,
+                        &#34;r_d&#34;,
+                        r_dry[i],
+                        &#34;T&#34;,
+                        T[cid],
+                        &#34;RH&#34;,
+                        RH[cid],
+                        &#34;f_org&#34;,
+                        f_org[i],
+                        &#34;kappa&#34;,
+                        kappa[i],
+                    ),
+                )
                 iters[i] = -1
                 continue
 
@@ -210,8 +270,8 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
                 T[cid],
                 np.maximum(RH_range[0], np.minimum(RH_range[1], RH[cid])),
                 kappa[i],
-                r_dry[i]**3,
-                f_org[i]
+                r_dry[i] ** 3,
+                f_org[i],
             )
 
             fa = minfun(a, *args)
@@ -222,20 +282,35 @@ def equilibrate_wet_radii(r_dry: np.ndarray, environment,
             fb = minfun(b, *args)
 
             r_wet[i], iters[i] = toms748_solve(
-                minfun, args, a, b, fa, fb,
-                rtol=rtol, max_iter=max_iters, within_tolerance=within_tolerance
+                minfun,
+                args,
+                a,
+                b,
+                fa,
+                fb,
+                rtol=rtol,
+                max_iter=max_iters,
+                within_tolerance=within_tolerance,
             )
             if iters[i] == -1:
-                warn(msg=&#34;failed to find wet radius for particle&#34;, file=__file__,
-                     context=(
-                         &#34;i&#34;, i,
-                         &#34;r_d&#34;, r_dry[i],
-                         &#34;T&#34;, T[cid],
-                         &#34;RH&#34;, RH[cid],
-                         &#34;f_org&#34;, f_org[i],
-                         &#34;kappa&#34;, kappa[i]
-                     )
-                 )
+                warn(
+                    msg=&#34;failed to find wet radius for particle&#34;,
+                    file=__file__,
+                    context=(
+                        &#34;i&#34;,
+                        i,
+                        &#34;r_d&#34;,
+                        r_dry[i],
+                        &#34;T&#34;,
+                        T[cid],
+                        &#34;RH&#34;,
+                        RH[cid],
+                        &#34;f_org&#34;,
+                        f_org[i],
+                        &#34;kappa&#34;,
+                        kappa[i],
+                    ),
+                )
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)

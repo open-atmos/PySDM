@@ -36,17 +36,17 @@ DUMMY_SPECIFIC_GRAVITY = 44
 
 
 class AqueousMoleFraction(MomentProduct):
-    def __init__(self, key, unit=&#39;dimensionless&#39;, name=None):
+    def __init__(self, key, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.aqueous_chemistry = None
         self.key = key
 
     def register(self, builder):
         super().register(builder)
-        self.aqueous_chemistry = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
+        self.aqueous_chemistry = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
 
     def _impl(self, **kwargs):
-        attr = &#39;moles_&#39; + self.key
+        attr = &#34;moles_&#34; + self.key
 
         self._download_moment_to_buffer(attr, rank=0)
         conc = self.buffer.copy()
@@ -56,12 +56,11 @@ class AqueousMoleFraction(MomentProduct):
         tmp[:] *= conc
         tmp[:] *= DUMMY_SPECIFIC_GRAVITY * self.formulae.constants.Md
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         tmp[:] /= self.particulator.mesh.dv
         tmp[:] /= self.buffer
         tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(
-            tmp[:],
-            specific_gravity=DUMMY_SPECIFIC_GRAVITY
+            tmp[:], specific_gravity=DUMMY_SPECIFIC_GRAVITY
         )
         return tmp</code></pre>
 </details>
@@ -87,17 +86,17 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class AqueousMoleFraction(MomentProduct):
-    def __init__(self, key, unit=&#39;dimensionless&#39;, name=None):
+    def __init__(self, key, unit=&#34;dimensionless&#34;, name=None):
         super().__init__(unit=unit, name=name)
         self.aqueous_chemistry = None
         self.key = key
 
     def register(self, builder):
         super().register(builder)
-        self.aqueous_chemistry = self.particulator.dynamics[&#39;AqueousChemistry&#39;]
+        self.aqueous_chemistry = self.particulator.dynamics[&#34;AqueousChemistry&#34;]
 
     def _impl(self, **kwargs):
-        attr = &#39;moles_&#39; + self.key
+        attr = &#34;moles_&#34; + self.key
 
         self._download_moment_to_buffer(attr, rank=0)
         conc = self.buffer.copy()
@@ -107,12 +106,11 @@ inheritance.</p></div>
         tmp[:] *= conc
         tmp[:] *= DUMMY_SPECIFIC_GRAVITY * self.formulae.constants.Md
 
-        self._download_to_buffer(self.particulator.environment[&#39;rhod&#39;])
+        self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
         tmp[:] /= self.particulator.mesh.dv
         tmp[:] /= self.buffer
         tmp[:] = self.formulae.trivia.mixing_ratio_2_mole_fraction(
-            tmp[:],
-            specific_gravity=DUMMY_SPECIFIC_GRAVITY
+            tmp[:], specific_gravity=DUMMY_SPECIFIC_GRAVITY
         )
         return tmp</code></pre>
 </details>

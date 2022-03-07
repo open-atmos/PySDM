@@ -32,6 +32,7 @@ GPU implementation of moment calculation backend methods
 &#34;&#34;&#34;
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
@@ -41,11 +42,22 @@ class MomentsMethods(ThrustRTCBackendMethods):
         super().__init__()
         self.__moments_body_0 = trtc.For(
             (
-                &#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-                &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;
-             ),
+                &#34;idx&#34;,
+                &#34;min_x&#34;,
+                &#34;attr_data&#34;,
+                &#34;x_attr&#34;,
+                &#34;max_x&#34;,
+                &#34;moment_0&#34;,
+                &#34;cell_id&#34;,
+                &#34;n&#34;,
+                &#34;n_ranks&#34;,
+                &#34;moments&#34;,
+                &#34;ranks&#34;,
+                &#34;n_sd&#34;,
+                &#34;n_cell&#34;,
+            ),
             &#34;fake_i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             auto i = idx[fake_i];
             if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(n[i]));
@@ -54,12 +66,15 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);
                }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__moments_body_1 = trtc.For(
-            (&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;),
+            (&#34;n_ranks&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;c_id&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             for (auto k = 0; k &lt; n_ranks; k+=1) {
                 if (moment_0[c_id] == 0) {
                     moments[n_cell * k  + c_id] = 0;
@@ -68,13 +83,26 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
                 }
             }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+        )
 
         self.__spectrum_moments_body_0 = trtc.For(
-            (&#39;idx&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-             &#39;x_bins&#39;, &#39;n_bins&#39;, &#39;moments&#39;, &#39;rank&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;),
+            (
+                &#34;idx&#34;,
+                &#34;attr_data&#34;,
+                &#34;x_attr&#34;,
+                &#34;moment_0&#34;,
+                &#34;cell_id&#34;,
+                &#34;n&#34;,
+                &#34;x_bins&#34;,
+                &#34;n_bins&#34;,
+                &#34;moments&#34;,
+                &#34;rank&#34;,
+                &#34;n_sd&#34;,
+                &#34;n_cell&#34;,
+            ),
             &#34;fake_i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             auto i = idx[fake_i];
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
@@ -84,12 +112,15 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     break;
                 }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__spectrum_moments_body_1 = trtc.For(
-            (&#39;n_bins&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;),
+            (&#34;n_bins&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (moment_0[n_cell * k + i] == 0) {
                     moments[n_cell * k  + i] = 0;
@@ -98,19 +129,35 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }
             }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+        )
 
     @staticmethod
     def ensure_floating_point(data):
         data_type = data.data.name_elem_cls()
-        if data_type not in (&#39;float&#39;, &#39;double&#39;):
+        if data_type not in (&#34;float&#34;, &#34;double&#34;):
             raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)
 
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks,
-                min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0):
+    def moments(
+        self,
+        moment_0,
+        moments,
+        multiplicity,
+        attr_data,
+        cell_id,
+        idx,
+        length,
+        ranks,
+        min_x,
+        max_x,
+        x_attr,
+        weighting_attribute,
+        weighting_rank,
+        skip_division_by_m0,
+    ):
         if weighting_rank != 0:
             raise NotImplementedError()
 
@@ -124,31 +171,48 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__moments_body_0.launch_n(length, (
-            idx.data,
-            self._get_floating_point(min_x),
-            attr_data.data,
-            x_attr.data,
-            self._get_floating_point(max_x),
-            moment_0.data,
-            cell_id.data,
-            multiplicity.data,
-            n_ranks,
-            moments.data,
-            ranks.data,
-            n_sd,
-            n_cell
-        ))
+        self.__moments_body_0.launch_n(
+            length,
+            (
+                idx.data,
+                self._get_floating_point(min_x),
+                attr_data.data,
+                x_attr.data,
+                self._get_floating_point(max_x),
+                moment_0.data,
+                cell_id.data,
+                multiplicity.data,
+                n_ranks,
+                moments.data,
+                ranks.data,
+                n_sd,
+                n_cell,
+            ),
+        )
 
         if not skip_division_by_m0:
             self.__moments_body_1.launch_n(
-                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
+                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
+            )
 
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def spectrum_moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+    def spectrum_moments(
+        self,
+        moment_0,
+        moments,
+        multiplicity,
+        attr_data,
+        cell_id,
+        idx,
+        length,
+        rank,
+        x_bins,
+        x_attr,
+        weighting_attribute,
+        weighting_rank,
+    ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         if weighting_rank != 0:
@@ -165,20 +229,23 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__spectrum_moments_body_0.launch_n(length, (
-            idx.data,
-            attr_data.data,
-            x_attr.data,
-            moment_0.data,
-            cell_id.data,
-            multiplicity.data,
-            x_bins.data,
-            n_bins,
-            moments.data,
-            d_rank,
-            n_sd,
-            n_cell
-        ))
+        self.__spectrum_moments_body_0.launch_n(
+            length,
+            (
+                idx.data,
+                attr_data.data,
+                x_attr.data,
+                moment_0.data,
+                cell_id.data,
+                multiplicity.data,
+                x_bins.data,
+                n_bins,
+                moments.data,
+                d_rank,
+                n_sd,
+                n_cell,
+            ),
+        )
 
         self.__spectrum_moments_body_1.launch_n(
             moment_0.shape[1], (n_bins, moments.data, moment_0.data, n_cell)
@@ -208,11 +275,22 @@ class MomentsMethods(ThrustRTCBackendMethods):
         super().__init__()
         self.__moments_body_0 = trtc.For(
             (
-                &#39;idx&#39;, &#39;min_x&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;max_x&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-                &#39;n_ranks&#39;, &#39;moments&#39;, &#39;ranks&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;
-             ),
+                &#34;idx&#34;,
+                &#34;min_x&#34;,
+                &#34;attr_data&#34;,
+                &#34;x_attr&#34;,
+                &#34;max_x&#34;,
+                &#34;moment_0&#34;,
+                &#34;cell_id&#34;,
+                &#34;n&#34;,
+                &#34;n_ranks&#34;,
+                &#34;moments&#34;,
+                &#34;ranks&#34;,
+                &#34;n_sd&#34;,
+                &#34;n_cell&#34;,
+            ),
             &#34;fake_i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             auto i = idx[fake_i];
             if (min_x &lt;= x_attr[i] &amp;&amp; x_attr[i] &lt; max_x) {
                 atomicAdd((real_type*)&amp;moment_0[cell_id[i]], (real_type)(n[i]));
@@ -221,12 +299,15 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     atomicAdd((real_type*) &amp;moments[n_cell * k + cell_id[i]], value);
                }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__moments_body_1 = trtc.For(
-            (&#39;n_ranks&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;),
+            (&#34;n_ranks&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;c_id&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             for (auto k = 0; k &lt; n_ranks; k+=1) {
                 if (moment_0[c_id] == 0) {
                     moments[n_cell * k  + c_id] = 0;
@@ -235,13 +316,26 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     moments[n_cell * k + c_id] = moments[n_cell * k + c_id] / moment_0[c_id];
                 }
             }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+        )
 
         self.__spectrum_moments_body_0 = trtc.For(
-            (&#39;idx&#39;, &#39;attr_data&#39;, &#39;x_attr&#39;, &#39;moment_0&#39;, &#39;cell_id&#39;, &#39;n&#39;,
-             &#39;x_bins&#39;, &#39;n_bins&#39;, &#39;moments&#39;, &#39;rank&#39;, &#39;n_sd&#39;, &#39;n_cell&#39;),
+            (
+                &#34;idx&#34;,
+                &#34;attr_data&#34;,
+                &#34;x_attr&#34;,
+                &#34;moment_0&#34;,
+                &#34;cell_id&#34;,
+                &#34;n&#34;,
+                &#34;x_bins&#34;,
+                &#34;n_bins&#34;,
+                &#34;moments&#34;,
+                &#34;rank&#34;,
+                &#34;n_sd&#34;,
+                &#34;n_cell&#34;,
+            ),
             &#34;fake_i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             auto i = idx[fake_i];
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (x_bins[k] &lt;= x_attr[i] and x_attr[i] &lt; x_bins[k + 1]) {
@@ -251,12 +345,15 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     break;
                 }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__spectrum_moments_body_1 = trtc.For(
-            (&#39;n_bins&#39;, &#39;moments&#39;, &#39;moment_0&#39;, &#39;n_cell&#39;),
+            (&#34;n_bins&#34;, &#34;moments&#34;, &#34;moment_0&#34;, &#34;n_cell&#34;),
             &#34;i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             for (auto k = 0; k &lt; n_bins; k+=1) {
                 if (moment_0[n_cell * k + i] == 0) {
                     moments[n_cell * k  + i] = 0;
@@ -265,19 +362,35 @@ class MomentsMethods(ThrustRTCBackendMethods):
                     moments[n_cell * k + i] = moments[n_cell * k + i] / moment_0[n_cell * k + i];
                 }
             }
-        &#39;&#39;&#39;)
+        &#34;&#34;&#34;,
+        )
 
     @staticmethod
     def ensure_floating_point(data):
         data_type = data.data.name_elem_cls()
-        if data_type not in (&#39;float&#39;, &#39;double&#39;):
+        if data_type not in (&#34;float&#34;, &#34;double&#34;):
             raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)
 
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks,
-                min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0):
+    def moments(
+        self,
+        moment_0,
+        moments,
+        multiplicity,
+        attr_data,
+        cell_id,
+        idx,
+        length,
+        ranks,
+        min_x,
+        max_x,
+        x_attr,
+        weighting_attribute,
+        weighting_rank,
+        skip_division_by_m0,
+    ):
         if weighting_rank != 0:
             raise NotImplementedError()
 
@@ -291,31 +404,48 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__moments_body_0.launch_n(length, (
-            idx.data,
-            self._get_floating_point(min_x),
-            attr_data.data,
-            x_attr.data,
-            self._get_floating_point(max_x),
-            moment_0.data,
-            cell_id.data,
-            multiplicity.data,
-            n_ranks,
-            moments.data,
-            ranks.data,
-            n_sd,
-            n_cell
-        ))
+        self.__moments_body_0.launch_n(
+            length,
+            (
+                idx.data,
+                self._get_floating_point(min_x),
+                attr_data.data,
+                x_attr.data,
+                self._get_floating_point(max_x),
+                moment_0.data,
+                cell_id.data,
+                multiplicity.data,
+                n_ranks,
+                moments.data,
+                ranks.data,
+                n_sd,
+                n_cell,
+            ),
+        )
 
         if not skip_division_by_m0:
             self.__moments_body_1.launch_n(
-                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell))
+                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
+            )
 
     # TODO #684
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def spectrum_moments(self, moment_0, moments, multiplicity, attr_data, cell_id, idx, length,
-            rank, x_bins, x_attr, weighting_attribute, weighting_rank):
+    def spectrum_moments(
+        self,
+        moment_0,
+        moments,
+        multiplicity,
+        attr_data,
+        cell_id,
+        idx,
+        length,
+        rank,
+        x_bins,
+        x_attr,
+        weighting_attribute,
+        weighting_rank,
+    ):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         if weighting_rank != 0:
@@ -332,20 +462,23 @@ class MomentsMethods(ThrustRTCBackendMethods):
         moments[:] = 0
         moment_0[:] = 0
 
-        self.__spectrum_moments_body_0.launch_n(length, (
-            idx.data,
-            attr_data.data,
-            x_attr.data,
-            moment_0.data,
-            cell_id.data,
-            multiplicity.data,
-            x_bins.data,
-            n_bins,
-            moments.data,
-            d_rank,
-            n_sd,
-            n_cell
-        ))
+        self.__spectrum_moments_body_0.launch_n(
+            length,
+            (
+                idx.data,
+                attr_data.data,
+                x_attr.data,
+                moment_0.data,
+                cell_id.data,
+                multiplicity.data,
+                x_bins.data,
+                n_bins,
+                moments.data,
+                d_rank,
+                n_sd,
+                n_cell,
+            ),
+        )
 
         self.__spectrum_moments_body_1.launch_n(
             moment_0.shape[1], (n_bins, moments.data, moment_0.data, n_cell)
@@ -374,7 +507,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
 <pre><code class="python">@staticmethod
 def ensure_floating_point(data):
     data_type = data.data.name_elem_cls()
-    if data_type not in (&#39;float&#39;, &#39;double&#39;):
+    if data_type not in (&#34;float&#34;, &#34;double&#34;):
         raise TypeError(f&#34;data type {data_type} not recognised as floating point&#34;)</code></pre>
 </details>
 </dd>

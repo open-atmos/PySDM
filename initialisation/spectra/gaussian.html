@@ -34,15 +34,13 @@ Gaussian/normal spectrum implemented using
  [SciPy.stats](https://docs.scipy.org/doc/scipy/reference/stats.html)
 &#34;&#34;&#34;
 from scipy.stats import norm
+
 from PySDM.initialisation.impl.spectrum import Spectrum
 
-class Gaussian(Spectrum):
 
+class Gaussian(Spectrum):
     def __init__(self, norm_factor, loc, scale):
-        super().__init__(norm, (
-            loc,     # mean
-            scale    # std dev
-        ), norm_factor)</code></pre>
+        super().__init__(norm, (loc, scale), norm_factor)  # mean  # std dev</code></pre>
 </details>
 </section>
 <section>
@@ -65,12 +63,8 @@ class Gaussian(Spectrum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Gaussian(Spectrum):
-
     def __init__(self, norm_factor, loc, scale):
-        super().__init__(norm, (
-            loc,     # mean
-            scale    # std dev
-        ), norm_factor)</code></pre>
+        super().__init__(norm, (loc, scale), norm_factor)  # mean  # std dev</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

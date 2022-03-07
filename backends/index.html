@@ -34,15 +34,17 @@ Backend classes: CPU=`PySDM.backends.numba.Numba`
 and GPU=`PySDM.backends.thrust_rtc.ThrustRTC`
 &#34;&#34;&#34;
 import ctypes
-import warnings
 import sys
+import warnings
+
 from numba import cuda
+
 from .numba import Numba
 
 
 # https://gist.github.com/f0k/63a664160d016a491b2cbea15913d549
 def _cuda_is_available():
-    lib_names = (&#39;libcuda.so&#39;, &#39;libcuda.dylib&#39;, &#39;cuda.dll&#39;)
+    lib_names = (&#34;libcuda.so&#34;, &#34;libcuda.dylib&#34;, &#34;cuda.dll&#34;)
     for libname in lib_names:
         try:
             cuda_lib = ctypes.CDLL(libname)
@@ -62,7 +64,7 @@ def _cuda_is_available():
             f&#34;CUDA library found but cuInit() failed (error code: {result};&#34;
             f&#34; message: {error_str.value.decode()})&#34;
         )
-        if &#39;google.colab&#39; in sys.modules:
+        if &#34;google.colab&#34; in sys.modules:
             warnings.warn(
                 &#34;to use GPU on Colab set hardware accelerator to &#39;GPU&#39; before session start&#34;
                 &#39; in the &#34;Runtime :: Change runtime type :: Hardware accelerator&#34; menu&#39;
@@ -81,8 +83,11 @@ else:
 
     import numpy as np
 
+    from PySDM.backends.impl_common.random_common import (  # pylint: disable=ungrouped-imports
+        RandomCommon,
+    )
     from PySDM.backends.thrust_rtc import ThrustRTC  # pylint: disable=ungrouped-imports
-    from PySDM.backends.impl_common.random_common import RandomCommon  # pylint: disable=ungrouped-imports
+
     ThrustRTC.ENABLE = False
 
     class Random(RandomCommon):  # pylint: disable=too-few-public-methods
@@ -159,12 +164,12 @@ alias for ThrustRTC
     MomentsMethods,
     FreezingMethods,
     DisplacementMethods,
-    TerminalVelocityMethods
+    TerminalVelocityMethods,
 ):
     Storage = ImportedStorage
     Random = ImportedRandom
 
-    default_croupier = &#39;local&#39;
+    default_croupier = &#34;local&#34;
 
     def __init__(self, formulae=None):
         self.formulae = formulae or Formulae()
@@ -251,14 +256,16 @@ alias for ThrustRTC
     CondensationMethods,
     MomentsMethods,
     DisplacementMethods,
-    TerminalVelocityMethods
+    TerminalVelocityMethods,
 ):
     ENABLE = True
     Random = ImportedRandom
 
-    default_croupier = &#39;global&#39;
+    default_croupier = &#34;global&#34;
 
-    def __init__(self, formulae=None, double_precision=False, debug=False, verbose=False):
+    def __init__(
+        self, formulae=None, double_precision=False, debug=False, verbose=False
+    ):
         self.formulae = formulae or Formulae()
 
         self._conv_function = trtc.DVDouble if double_precision else trtc.DVFloat
@@ -279,9 +286,8 @@ alias for ThrustRTC
         trtc.Set_Kernel_Debug(debug)
         trtc.Set_Verbose(verbose)
 
-        if not ThrustRTC.ENABLE \
-           and &#39;CI&#39; not in os.environ:
-            warnings.warn(&#39;CUDA is not available, using FakeThrustRTC!&#39;)</code></pre>
+        if not ThrustRTC.ENABLE and &#34;CI&#34; not in os.environ:
+            warnings.warn(&#34;CUDA is not available, using FakeThrustRTC!&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">

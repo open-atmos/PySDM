@@ -39,22 +39,49 @@ with the genuine Pint class used only within unit tests through the
 
 
 def _fake(si_unit):
-    return (1. * si_unit).to_base_units().magnitude
+    return (1.0 * si_unit).to_base_units().magnitude
 
 
 class FakeUnitRegistry:
-
     def __init__(self, si):
-        self.dimensionless = 1.
+        self.dimensionless = 1.0
         for prefix in (&#34;nano&#34;, &#34;micro&#34;, &#34;milli&#34;, &#34;centi&#34;, &#34;&#34;, &#34;hecto&#34;, &#34;kilo&#34;):
-            for unit in (&#34;metre&#34;, &#34;gram&#34;, &#34;hertz&#34;, &#34;mole&#34;, &#34;joule&#34;, &#34;kelvin&#34;,
-                         &#34;second&#34;, &#34;minute&#34;, &#34;pascal&#34;, &#34;litre&#34;, &#34;hour&#34;, &#34;newton&#34;):
+            for unit in (
+                &#34;metre&#34;,
+                &#34;gram&#34;,
+                &#34;hertz&#34;,
+                &#34;mole&#34;,
+                &#34;joule&#34;,
+                &#34;kelvin&#34;,
+                &#34;second&#34;,
+                &#34;minute&#34;,
+                &#34;pascal&#34;,
+                &#34;litre&#34;,
+                &#34;hour&#34;,
+                &#34;newton&#34;,
+            ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))
-                self.__setattr__(prefix + unit + &#34;s&#34;, _fake(si.__getattr__(prefix + unit + &#34;s&#34;)))
+                self.__setattr__(
+                    prefix + unit + &#34;s&#34;, _fake(si.__getattr__(prefix + unit + &#34;s&#34;))
+                )
 
         for prefix in (&#34;n&#34;, &#34;u&#34;, &#34;m&#34;, &#34;c&#34;, &#34;&#34;, &#34;h&#34;, &#34;k&#34;):
-            for unit in (&#34;m&#34;, &#34;g&#34;, &#34;Hz&#34;, &#34;mol&#34;, &#34;J&#34;, &#34;K&#34;,
-                         &#34;s&#34;, &#34;min&#34;, &#34;day&#34;, &#34;Pa&#34;, &#34;l&#34;, &#34;h&#34;, &#34;bar&#34;, &#34;N&#34;):
+            for unit in (
+                &#34;m&#34;,
+                &#34;g&#34;,
+                &#34;Hz&#34;,
+                &#34;mol&#34;,
+                &#34;J&#34;,
+                &#34;K&#34;,
+                &#34;s&#34;,
+                &#34;min&#34;,
+                &#34;day&#34;,
+                &#34;Pa&#34;,
+                &#34;l&#34;,
+                &#34;h&#34;,
+                &#34;bar&#34;,
+                &#34;N&#34;,
+            ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))</code></pre>
 </details>
 </section>
@@ -78,18 +105,45 @@ class FakeUnitRegistry:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class FakeUnitRegistry:
-
     def __init__(self, si):
-        self.dimensionless = 1.
+        self.dimensionless = 1.0
         for prefix in (&#34;nano&#34;, &#34;micro&#34;, &#34;milli&#34;, &#34;centi&#34;, &#34;&#34;, &#34;hecto&#34;, &#34;kilo&#34;):
-            for unit in (&#34;metre&#34;, &#34;gram&#34;, &#34;hertz&#34;, &#34;mole&#34;, &#34;joule&#34;, &#34;kelvin&#34;,
-                         &#34;second&#34;, &#34;minute&#34;, &#34;pascal&#34;, &#34;litre&#34;, &#34;hour&#34;, &#34;newton&#34;):
+            for unit in (
+                &#34;metre&#34;,
+                &#34;gram&#34;,
+                &#34;hertz&#34;,
+                &#34;mole&#34;,
+                &#34;joule&#34;,
+                &#34;kelvin&#34;,
+                &#34;second&#34;,
+                &#34;minute&#34;,
+                &#34;pascal&#34;,
+                &#34;litre&#34;,
+                &#34;hour&#34;,
+                &#34;newton&#34;,
+            ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))
-                self.__setattr__(prefix + unit + &#34;s&#34;, _fake(si.__getattr__(prefix + unit + &#34;s&#34;)))
+                self.__setattr__(
+                    prefix + unit + &#34;s&#34;, _fake(si.__getattr__(prefix + unit + &#34;s&#34;))
+                )
 
         for prefix in (&#34;n&#34;, &#34;u&#34;, &#34;m&#34;, &#34;c&#34;, &#34;&#34;, &#34;h&#34;, &#34;k&#34;):
-            for unit in (&#34;m&#34;, &#34;g&#34;, &#34;Hz&#34;, &#34;mol&#34;, &#34;J&#34;, &#34;K&#34;,
-                         &#34;s&#34;, &#34;min&#34;, &#34;day&#34;, &#34;Pa&#34;, &#34;l&#34;, &#34;h&#34;, &#34;bar&#34;, &#34;N&#34;):
+            for unit in (
+                &#34;m&#34;,
+                &#34;g&#34;,
+                &#34;Hz&#34;,
+                &#34;mol&#34;,
+                &#34;J&#34;,
+                &#34;K&#34;,
+                &#34;s&#34;,
+                &#34;min&#34;,
+                &#34;day&#34;,
+                &#34;Pa&#34;,
+                &#34;l&#34;,
+                &#34;h&#34;,
+                &#34;bar&#34;,
+                &#34;N&#34;,
+            ):
                 self.__setattr__(prefix + unit, _fake(si.__getattr__(prefix + unit)))</code></pre>
 </details>
 </dd>

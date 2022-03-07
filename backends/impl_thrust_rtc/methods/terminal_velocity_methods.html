@@ -32,6 +32,7 @@ GPU implementation of backend methods for terminal velocities
 &#34;&#34;&#34;
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
@@ -41,11 +42,27 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         super().__init__()
         self.__linear_collection_efficiency_body = trtc.For(
             (
-                &#39;A&#39;, &#39;B&#39;, &#39;D1&#39;, &#39;D2&#39;, &#39;E1&#39;, &#39;E2&#39;, &#39;F1&#39;, &#39;F2&#39;, &#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;, &#39;Mf&#39;, &#39;Mg&#39;,
-                &#39;output&#39;, &#39;radii&#39;, &#39;is_first_in_pair&#39;, &#39;idx&#39;, &#39;unit&#39;
+                &#34;A&#34;,
+                &#34;B&#34;,
+                &#34;D1&#34;,
+                &#34;D2&#34;,
+                &#34;E1&#34;,
+                &#34;E2&#34;,
+                &#34;F1&#34;,
+                &#34;F2&#34;,
+                &#34;G1&#34;,
+                &#34;G2&#34;,
+                &#34;G3&#34;,
+                &#34;Mf&#34;,
+                &#34;Mg&#34;,
+                &#34;output&#34;,
+                &#34;radii&#34;,
+                &#34;is_first_in_pair&#34;,
+                &#34;idx&#34;,
+                &#34;unit&#34;,
             ),
             &#34;i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             if (is_first_in_pair[i]) {
                 real_type r = 0;
                 real_type r_s = 0;
@@ -72,20 +89,25 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
                     }
                 }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         # TODO #599 r&lt;0
         self.__interpolation_body = trtc.For(
-            (&#39;output&#39;, &#39;radius&#39;, &#39;factor&#39;, &#39;a&#39;, &#39;b&#39;),
-            &#39;i&#39;,
-            &#39;&#39;&#39;
+            (&#34;output&#34;, &#34;radius&#34;, &#34;factor&#34;, &#34;a&#34;, &#34;b&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
             auto r_id = (int64_t)(factor * radius[i]);
             auto r_rest = (factor * radius[i] - r_id) / factor;
             output[i] = a[r_id] + r_rest * b[r_id];
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;,
         )
 
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+    def linear_collection_efficiency(
+        self, params, output, radii, is_first_in_pair, unit
+    ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
         dB = self._get_floating_point(B)
@@ -104,15 +126,33 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         trtc.Fill(output.data, trtc.DVDouble(0))
         self.__linear_collection_efficiency_body.launch_n(
             len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-             output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])
+            [
+                dA,
+                dB,
+                dD1,
+                dD2,
+                dE1,
+                dE2,
+                dF1,
+                dF2,
+                dG1,
+                dG2,
+                dG3,
+                dMf,
+                dMg,
+                output.data,
+                radii.data,
+                is_first_in_pair.indicator.data,
+                radii.idx.data,
+                dunit,
+            ],
+        )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def interpolation(self, output, radius, factor, b, c):
         factor_device = trtc.DVInt64(factor)
         self.__interpolation_body.launch_n(
-            len(radius),
-            (output.data, radius.data, factor_device, b.data, c.data)
+            len(radius), (output.data, radius.data, factor_device, b.data, c.data)
         )</code></pre>
 </details>
 </section>
@@ -139,11 +179,27 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         super().__init__()
         self.__linear_collection_efficiency_body = trtc.For(
             (
-                &#39;A&#39;, &#39;B&#39;, &#39;D1&#39;, &#39;D2&#39;, &#39;E1&#39;, &#39;E2&#39;, &#39;F1&#39;, &#39;F2&#39;, &#39;G1&#39;, &#39;G2&#39;, &#39;G3&#39;, &#39;Mf&#39;, &#39;Mg&#39;,
-                &#39;output&#39;, &#39;radii&#39;, &#39;is_first_in_pair&#39;, &#39;idx&#39;, &#39;unit&#39;
+                &#34;A&#34;,
+                &#34;B&#34;,
+                &#34;D1&#34;,
+                &#34;D2&#34;,
+                &#34;E1&#34;,
+                &#34;E2&#34;,
+                &#34;F1&#34;,
+                &#34;F2&#34;,
+                &#34;G1&#34;,
+                &#34;G2&#34;,
+                &#34;G3&#34;,
+                &#34;Mf&#34;,
+                &#34;Mg&#34;,
+                &#34;output&#34;,
+                &#34;radii&#34;,
+                &#34;is_first_in_pair&#34;,
+                &#34;idx&#34;,
+                &#34;unit&#34;,
             ),
             &#34;i&#34;,
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;
             if (is_first_in_pair[i]) {
                 real_type r = 0;
                 real_type r_s = 0;
@@ -170,20 +226,25 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
                     }
                 }
             }
-        &#39;&#39;&#39;.replace(&#34;real_type&#34;, self._get_c_type()))
+        &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         # TODO #599 r&lt;0
         self.__interpolation_body = trtc.For(
-            (&#39;output&#39;, &#39;radius&#39;, &#39;factor&#39;, &#39;a&#39;, &#39;b&#39;),
-            &#39;i&#39;,
-            &#39;&#39;&#39;
+            (&#34;output&#34;, &#34;radius&#34;, &#34;factor&#34;, &#34;a&#34;, &#34;b&#34;),
+            &#34;i&#34;,
+            &#34;&#34;&#34;
             auto r_id = (int64_t)(factor * radius[i]);
             auto r_rest = (factor * radius[i] - r_id) / factor;
             output[i] = a[r_id] + r_rest * b[r_id];
-            &#39;&#39;&#39;
+            &#34;&#34;&#34;,
         )
 
-    def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+    def linear_collection_efficiency(
+        self, params, output, radii, is_first_in_pair, unit
+    ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
         dB = self._get_floating_point(B)
@@ -202,15 +263,33 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         trtc.Fill(output.data, trtc.DVDouble(0))
         self.__linear_collection_efficiency_body.launch_n(
             len(is_first_in_pair) - 1,
-            [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-             output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])
+            [
+                dA,
+                dB,
+                dD1,
+                dD2,
+                dE1,
+                dE2,
+                dF1,
+                dF2,
+                dG1,
+                dG2,
+                dG3,
+                dMf,
+                dMg,
+                output.data,
+                radii.data,
+                is_first_in_pair.indicator.data,
+                radii.idx.data,
+                dunit,
+            ],
+        )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def interpolation(self, output, radius, factor, b, c):
         factor_device = trtc.DVInt64(factor)
         self.__interpolation_body.launch_n(
-            len(radius),
-            (output.data, radius.data, factor_device, b.data, c.data)
+            len(radius), (output.data, radius.data, factor_device, b.data, c.data)
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -251,7 +330,9 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def linear_collection_efficiency(self, params, output, radii, is_first_in_pair, unit):
+<pre><code class="python">def linear_collection_efficiency(
+    self, params, output, radii, is_first_in_pair, unit
+):
     A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
     dA = self._get_floating_point(A)
     dB = self._get_floating_point(B)
@@ -270,8 +351,27 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     trtc.Fill(output.data, trtc.DVDouble(0))
     self.__linear_collection_efficiency_body.launch_n(
         len(is_first_in_pair) - 1,
-        [dA, dB, dD1, dD2, dE1, dE2, dF1, dF2, dG1, dG2, dG3, dMf, dMg,
-         output.data, radii.data, is_first_in_pair.indicator.data, radii.idx.data, dunit])</code></pre>
+        [
+            dA,
+            dB,
+            dD1,
+            dD2,
+            dE1,
+            dE2,
+            dF1,
+            dF2,
+            dG1,
+            dG2,
+            dG3,
+            dMf,
+            dMg,
+            output.data,
+            radii.data,
+            is_first_in_pair.indicator.data,
+            radii.idx.data,
+            dunit,
+        ],
+    )</code></pre>
 </details>
 </dd>
 </dl>
