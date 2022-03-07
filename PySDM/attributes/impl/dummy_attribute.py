@@ -1,6 +1,7 @@
 """ logic around `PySDM.attributes.impl.dummy_attribute.DummyAttribute` - parent class
 for do-nothing attributes """
 import numpy as np
+
 from .attribute import Attribute
 
 
@@ -19,4 +20,5 @@ class DummyAttribute(Attribute):
 def make_dummy_attribute_factory(name):
     def _factory(builder):
         return DummyAttribute(builder, name=name)
+
     return _factory

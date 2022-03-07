@@ -6,14 +6,14 @@ from PySDM.products.impl.product import Product
 
 
 class CollisionTimestepMin(Product):
-    def __init__(self, unit='s', name=None):
+    def __init__(self, unit="s", name=None):
         super().__init__(unit=unit, name=name)
         self.collision = None
         self.range = None
 
     def register(self, builder):
         super().register(builder)
-        self.collision = self.particulator.dynamics['Collision']
+        self.collision = self.particulator.dynamics["Collision"]
         self.range = self.collision.dt_coal_range
 
     def _impl(self, **kwargs):

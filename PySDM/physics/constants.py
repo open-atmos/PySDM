@@ -6,9 +6,10 @@ purposes and mocked with `PySDM.physics.impl.fake_unit_registry.FakeUnitRegistry
 import os
 import time
 
-import pint
 import numpy as np
+import pint
 from scipy import constants as sci
+
 from .impl.fake_unit_registry import FakeUnitRegistry
 from .impl.flag import DIMENSIONAL_ANALYSIS
 
@@ -20,6 +21,7 @@ if not DIMENSIONAL_ANALYSIS:
 def convert_to(value, unit):
     value /= unit
 
+
 sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
 PI = sci.pi
@@ -29,7 +31,8 @@ ONE_THIRD = 1 / 3
 TWO_THIRDS = 2 / 3
 
 default_random_seed = (
-    44 if 'CI' in os.environ  # https://en.wikipedia.org/wiki/44_(number)
+    44
+    if "CI" in os.environ  # https://en.wikipedia.org/wiki/44_(number)
     else time.time_ns()
 )
 

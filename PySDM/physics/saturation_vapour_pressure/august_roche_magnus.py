@@ -16,5 +16,5 @@ class AugustRocheMagnus:
 
     @staticmethod
     def ice_Celsius(const, T):
-        """ NaN with unit of pressure and correct dimension """
+        """NaN with unit of pressure and correct dimension"""
         return np.nan * T / const.ARM_C3 * const.ARM_C1

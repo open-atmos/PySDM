@@ -9,6 +9,8 @@ class DummyStorage:
     def init(*_):  # pylint: disable=no-method-argument
         pass
 
-    def save(self, data: np.ndarray, step: int, name: str):  # pylint: disable=unused-argument
+    def save(
+        self, data: np.ndarray, step: int, name: str
+    ):  # pylint: disable=unused-argument
         if name == "qv_env":
             self.profiles.append({"qv_env": np.mean(data, axis=0)})

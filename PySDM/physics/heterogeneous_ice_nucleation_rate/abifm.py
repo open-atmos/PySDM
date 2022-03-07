@@ -12,4 +12,4 @@ class ABIFM:
 
     @staticmethod
     def j_het(const, a_w_ice):
-        return 10**(const.ABIFM_M * (1 - a_w_ice) + const.ABIFM_C) * const.ABIFM_UNIT
+        return 10 ** (const.ABIFM_M * (1 - a_w_ice) + const.ABIFM_C) * const.ABIFM_UNIT

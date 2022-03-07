@@ -13,9 +13,9 @@ class KappaKoehlerLeadingTerms:
     @staticmethod
     def RH_eq(const, r, T, kp, rd3, sgm):
         return (
-           1 +
-           (2 * sgm / const.Rv / T / const.rho_w) / r -
-           kp * rd3 / np.power(r, const.THREE)
+            1
+            + (2 * sgm / const.Rv / T / const.rho_w) / r
+            - kp * rd3 / np.power(r, const.THREE)
         )
 
     @staticmethod

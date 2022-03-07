@@ -2,13 +2,12 @@
 permutation-defining Index class (can be shared between multiple IndexedStorage instances)
 """
 import numpy as np
+
 from .storage_utils import StorageSignature
 
 
 def make_Index(backend):
-
     class Index(backend.Storage):
-
         def __init__(self, data, length):
             assert isinstance(length, int)
             super().__init__(StorageSignature(data, length, backend.Storage.INT))
@@ -40,12 +39,17 @@ def make_Index(backend):
 
         def shuffle(self, temporary, parts=None):
             if parts is None:
-                backend.shuffle_global(idx=self.data, length=self.length, u01=temporary.data)
+                backend.shuffle_global(
+                    idx=self.data, length=self.length, u01=temporary.data
+                )
             else:
-                backend.shuffle_local(idx=self.data, u01=temporary.data, cell_start=parts.data)
+                backend.shuffle_local(
+                    idx=self.data, u01=temporary.data, cell_start=parts.data
+                )
 
         def remove_zero_n_or_flagged(self, indexed_storage):
             self.length = backend.remove_zero_n_or_flagged(
-                indexed_storage.data, self.data, self.length)
+                indexed_storage.data, self.data, self.length
+            )
 
     return Index
