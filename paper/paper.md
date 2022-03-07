@@ -189,9 +189,33 @@ BREAKUP
 @Bieli_et_al_2022 - breakup
 @DeJong_et_al_2022 - breakup **maybe** (skip for now)
 
-IMMERSION FREEZING
-@Alpert_and_Knopf_2016 - immersion freezing with time-dependent model
-@Shima_et_al_2020 - immersion freezing with singular model
+### Immersion freezing 
+
+This release of PySDM introduces representation of immersion freezing, 
+  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
+  in supercooled water droplets.
+There are two alternative models implemented, in both cases the formulation
+  is probabilistic and based on Poissonian model of heterogeneous freezing.
+The two models embrace, so-called, singular and time-dependent approaches and
+  are based on the formulation presented in @Shima_et_al_2020 and
+  @Alpert_and_Knopf_2016, respectively.
+In the singular model, the relevant introduced particle attribute is the freezing temperature
+  which is randomly sampled at initialisation from an ice nucleation active sites (INAS) model;
+  subsequently freezing occurs in a deterministic way upon encountering ambient 
+  temperature that is lower than the particle's freezing temperature.
+In the time-dependent model, the relevant introduced particle attribute is the insoluble
+  material surface which is randomly sampled at initialisation; 
+  freezing is triggered by evaluating probability of freezing at instantaneous
+  ambient conditions and comparing it with a random number.
+For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
+  of @Knopf_and_Alpert_2013 is used.
+  
+For validation of the the newly introduced immersion freezing models, a set of
+  notebooks reproducing box-model simulations from @Alpert_and_Knopf_2016 was introduced
+  to the PySDM-examples package.
+A comparison of the time-dependent and singular models using the kinematic
+  prescribed-flow environment introduced in PySDM v1 has been developed
+  and is the focus of @Arabas_et_al_2022.
 
 ACTIVATION
 @Rothenberg_and_Wang_2017 - pyrcel reproduction
