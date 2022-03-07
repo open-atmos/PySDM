@@ -62,7 +62,7 @@ The eponymous `SDM` refers to the Super Droplet Method -- a
   of droplets in modelling frameworks such as Large-Eddy Simulations (LES) of atmospheric
   flows. 
 While the SDM has been applied to additional systems such as oceanic particles
-  as in @Jokulsdottir_and_Archer_2016, `PySDM` supports atmospheric particle 
+  as in @Jokulsdottir_and_Archer_2016, `PySDM` primarily supports atmospheric particle 
   processes relevant to cloud particles and precipitation of hydrometeors.
 
 `PySDM` is implemented modularly in Python with two alternative parallel backends: 
@@ -86,17 +86,10 @@ This paper outlines subsequent developments in the "v2" releases of `PySDM`
 
 # Background and statement of need
 
-TODO: include information about the new processes (breakup and immersion freezing)
-  and conservation of superparticle number -- reference to Jacobson statement
-  on why NOT to use superparticles
-
-STORY: moving sectional/motivation --> importance of superparticle conservation -->
-  new processes
-
-Atmospheric cloud processes involve a complex interplay of dispersed-phase and 
-  continuous-phase flows. 
-In the dispersed phase, microphysical particles range
-  range in size from nanometer-sized aerosols, to micron-scale cloud droplets and
+Atmospheric cloud processes involve a complex interplay of dispersed-phase particle
+  processes and continuous-phase environmental flows. 
+Microphysical particles range
+  in size from nanometer-sized aerosols, to micron-scale cloud droplets and
   ice particles that form on these aerosols, to millimeter and larger sized 
   hydrometeors. 
 These particles interact with each other as well as with the 
@@ -114,70 +107,87 @@ Detailed information regarding the density and shape of particles is also essent
 A particle-based approach has the benefit of retaining the diverse characteristics
   of the diverse phase, making it an ideal choice to capture these physics.
 
-In process-level models lacking any spatial dimensions (a "box" model), 
-  the particle-based approach is congruent with the so-called moving-sectional 
-  discretisation of the particle attribute space.
-The attribute space includes properties such as droplet size or water content, 
-  soluble species mass and aerosol hygroscopicity, insoluble material surface, etc.
-Moving-sectional models can be traced back to the very beginnings of computational 
-  studies of cloud microphysics (@Howell_1949).
-Coupling particle-based/moving-sectional (Lagrangian) representation of the attribute space
-  with gridded (Eulerian) fluid-flow dynamics with spatial dimensions, as in the SDM,
-  can be traced back to early
-  systems for simulating dispersal of atmospheric pollutants (@Lange_1978).
-Such coupling implies inclusion of spatial location among 
-  particle attributes.
-
-A notable traits of the particle-based representation is its suitability 
-  for Monte-Carlo techniques, in which each simulation represents
-  just one possible realisation of the system evolution.
-This Monte-Carlo approach is ideal for representing processes such as particle
-  collisions and breakup, which are inherently stochastic at atmospherically
-  relevant scales.
-Upon initialisation, the attribute space can be randomly sampled to generate a
-  representative populuation of computational particles. 
-In the SDM, a core
-  assumption is that one computational particle represents a (significant) multiplicity 
+The particle-based approach is congruent with the so-called moving-sectional 
+  discretisation of the particle attribute space, which includes properties such
+  as droplet size or water content, soluble species mass and aerosol hygroscopicity, 
+  insoluble material surface, etc.
+The approach is well-suited to Monte-Carlo techniques, which are themselves ideal for 
+  representing inherently stochastic processes such as particle collisions and breakup.
+In the SDM, a core assumption is that one computational particle represents a 
+   (significant) multiplicity 
   of modelled particles in order to make the modeling of a physical system attainable,
   hence the term super-particle (e.g., @Zannetti_1983) or super-droplet.
 
-Despite the numerous benefits of particle-based/moving-sectional representations
-  (as opposed to continuous-field/fixed-bin approaches) for
-  modelling atmospheric aerosols, clouds and precipitation, these techniques
-  were long considered incomplete for three-dimensional atmospheric
-  models (@Jacobson_2005, sect.~13.5).
-Limitations include processes such as nucleation and collisions 
-  which lead to appearance in the system of particles of sizes not representable without
+Equally important, the method's computational application hinges on the assumption that 
+  the number of superparticles is conserved throughout the simulation.
+The SDM was long considered incomplete for three-dimensional atmospheric
+  models (@Jacobson_2005, sect.~13.5), as certain processes such as nucleation and collisions 
+  lead to appearance in the system of particles of sizes not representable without
   dynamically enlarging the particle state vector.
-This has been solved by devising super-particle-number-conserving 
-  Monte-Carlo schemes such as SDM (@Shima_et_al_2009), as well as a new conservative
-  scheme for particle based breakup in the SDM (@DeJong_et_al_2022).
+This challenge was solved by devising super-particle-number-conserving 
+  Monte-Carlo schemes such as the SDM for collisions (@Shima_et_al_2009).
+Enhancements included in v2 of `PySDM` address additional tracer-conserving representations
+  of the droplet breakup process as described in (@deJong_et_al_2022), and the immersion
+  freezing process.
+In addition, we include enhanced support for adaptive time-stepping.
+We continue to expand and maintain a set of examples demonstrating project features 
+  through reproduction of results from literature.
 
-`PySDM` features implementation of the original SDM scheme as formulated in 
-  @Shima_et_al_2009 as well as several extensions, which are outlined in subsequent sections.
 The key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
   of extensions to SDM.
 To this end, we strive to maintain strict modularity of the SDM building blocks, separation of
   functionality and examples, and extensive unit test coverage in the project.
-The separation of physics information from backend engineering for GPU and CPU applications
-  is intended to enhance and accelerate continued scientific development of the SDM and examples.
-(EDJ: clean up this statement to better communicate; maybe use an example)
-We continue to expand and maintain a set of examples demonstrating project features 
-  through reproduction of results from literature.
+A user of the package might select from top-level physics options such as the simulation
+  environment, particle processes, and output attributes without requiring a detailed understanding
+  of the CPU and GPU underlying implementations at the superparticle level.
+The separation of physics information from backend engineering is intended to make the
+  software more approachable for both users and developers who wish to contribute to the
+  scientific progress of the SDM.
+
 
 # Summary of new features and examples in v2
 
 ## New PySDM Features: API in Brief
+`PySDM` v2 includes support for three major enhancements. For a detailed example of running
+  a SDM simulation, we refer to @Bartman_et_al_2022_JOSS. The following API examples
+  can be added or substituted into the v1 API description to run a zero-dimensional box
+  simulation using the new features.
 
-Breakup `lines of code for add_dynamic` and description of necessary physics specifications
+### Collisional Breakup
+The collisional breakup process represents the splitting of two colliding superdroplets
+  into multiple fragments. 
+It can be specified as an individual dynamic, as for coalescence in v1, or as a unified
+  `collision` dynamic, in which the probability of breakup versus coalescence is sampled.
 
-Immersion freezing `lines of code for add_dynamic` and description of necessary physics specifications
+```python
+from PySDM.dynamics.collisions import Collision
+from PySDM.dynamics.collisions.collision_kernels import Golovin
+from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
+from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
+from PySDM.dynamics.collisions.breakup_fragmentations import ExpFrag
+```
+The rate of superdroplet collisions are specified by a collision kernel as in v1, and the
+  breakup process requires two additional `dynamics` specifications: from `coalescence_efficiencies`
+  (probability of coalescence occuring), `breakup_efficiencies` (probability of breakup occuring
+  if not coalescence), and `breakup_fragmentations` (the number
+  of fragments formed in the case of a breakup event). 
+Specifying a breakup-only event requires only a collision kernel, fragmentation function, 
+  and optional breakup efficiency.
 
-Adaptive time-stepping `code for how to specify adaptivity` and mention external 
-  scipy solver for condensation
+```python
+builder.add_dynamic(Collision(kernel=Golovin(b=1.5e3 / si.s), coalescence_efficiency=ConstEc(Ec=0.9),
+                     breakup_efficiency=ConstEb(Eb=1.0), fragmentation_function=ExpFrag(scale=100*si.um**3)))
+```
 
-Reference that the above can be run in the same framework (specify environment, etc.) as in v1
+### Immersion Freezing
+`lines of code for add_dynamic` and description of necessary physics specifications
+
+### Adaptive time-stepping
+The condensation and collision backends both support an adaptive time-stepping feature,
+  which overwrites the user-specified environment time step. Adaptivity is specified as an additional
+  keyword to the given dynamic: `builder.add_dynamic(Dynamic(**kwargs, adaptive=True))` and has
+  a default value of `True`.
 
 ## Additional PySDM-examples
 Write 1 paragraph on each example, maybe some figures. Main goals:
