@@ -4,9 +4,11 @@ Single-column time-varying-updraft framework with moisture advection handled by
 """
 
 import numpy as np
+
 from PySDM.environments.impl.moist import Moist
-from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
+
 from ..impl import arakawa_c
+from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
 
 
 class Kinematic1D(Moist):
@@ -24,39 +26,44 @@ class Kinematic1D(Moist):
         self._tmp["rhod"] = rhod
 
     def get_qv(self) -> np.ndarray:
-        return self.particulator.dynamics['EulerianAdvection'].solvers.advectee.get()
+        return self.particulator.dynamics["EulerianAdvection"].solvers.advectee.get()
 
     def get_thd(self) -> np.ndarray:
         return self.thd0
 
-    def init_attributes(self, *,
-                        spatial_discretisation,
-                        spectral_discretisation,
-                        kappa
-                        ):
+    def init_attributes(
+        self, *, spatial_discretisation, spectral_discretisation, kappa
+    ):
         super().sync()
         self.notify()
 
         attributes = {}
-        with np.errstate(all='raise'):
-            positions = spatial_discretisation.sample(self.mesh.grid, self.particulator.n_sd)
-            attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
-                self.mesh.cellular_attributes(positions)
+        with np.errstate(all="raise"):
+            positions = spatial_discretisation.sample(
+                self.mesh.grid, self.particulator.n_sd
+            )
+            (
+                attributes["cell id"],
+                attributes["cell origin"],
+                attributes["position in cell"],
+            ) = self.mesh.cellular_attributes(positions)
 
             r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
-            attributes['dry volume'] = self.formulae.trivia.volume(radius=r_dry)
-            attributes['kappa times dry volume'] = attributes['dry volume'] * kappa
+            attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
+            attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             r_wet = equilibrate_wet_radii(
-                r_dry, self, cell_id=attributes['cell id'],
-                kappa_times_dry_volume=attributes['kappa times dry volume']
+                r_dry,
+                self,
+                cell_id=attributes["cell id"],
+                kappa_times_dry_volume=attributes["kappa times dry volume"],
             )
 
-            rhod = self['rhod'].to_ndarray()
-            cell_id = attributes['cell id']
+            rhod = self["rhod"].to_ndarray()
+            cell_id = attributes["cell id"]
             domain_volume = np.prod(np.array(self.mesh.size))
 
-        attributes['n'] = n_per_kg * rhod[cell_id] * domain_volume
-        attributes['volume'] = self.formulae.trivia.volume(radius=r_wet)
+        attributes["n"] = n_per_kg * rhod[cell_id] * domain_volume
+        attributes["volume"] = self.formulae.trivia.volume(radius=r_wet)
 
         return attributes
 

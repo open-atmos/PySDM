@@ -4,13 +4,13 @@ spectrum defined as a sum of an arbitrary set of
 """
 import numpy as np
 from scipy.interpolate import interp1d
+
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 
 default_interpolation_grid = tuple(np.linspace(*default_cdf_range, 999))
 
 
 class Sum:
-
     def __init__(self, spectra: tuple, interpolation_grid=None):
         interpolation_grid = interpolation_grid or default_interpolation_grid
         self.spectra = spectra
@@ -22,13 +22,13 @@ class Sum:
         self.inverse_cdf = interp1d(cdf, cdf_arg)
 
     def size_distribution(self, arg):
-        result = 0.
+        result = 0.0
         for spectrum in self.spectra:
             result += spectrum.size_distribution(arg)
         return result
 
     def cumulative(self, arg):
-        result = 0.
+        result = 0.0
         for spectrum in self.spectra:
             result += spectrum.cumulative(arg)
         return result

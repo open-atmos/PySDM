@@ -3,8 +3,8 @@ a simplistic C++ to Python translation utils for use in
  `PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc.FakeThrustRTC`
 """
 import re
-from ...impl_numba.conf import JIT_FLAGS
 
+from ...impl_numba.conf import JIT_FLAGS
 
 JIT_OPTS = "error_model='numpy', fastmath=True"
 
@@ -14,9 +14,9 @@ CPPYTHON = {
     "float ": "",
     "auto ": "",
     "bool ": "",
-    '[] = {': ' = (',
+    "[] = {": " = (",
     " {": ":",
-    '}; // array': ')',
+    "}; // array": ")",
     "//": "#",
     "||": "or",
     "&&": "and",
@@ -27,17 +27,17 @@ CPPYTHON = {
     "(float)": "np.float32",
     "return;": "continue",
     "void*": "",
-    '::': '_',
-    '(*': '',
-    ')(, )': '',
-    'else if': 'elif',
-    'printf': 'print'
+    "::": "_",
+    "(*": "",
+    ")(, )": "",
+    "else if": "elif",
+    "printf": "print",
 }
 
 
 def extract_var(cpp, start_position, end_char):
     stop = cpp.find(end_char, start_position)
-    return cpp[start_position + 1: stop].strip()
+    return cpp[start_position + 1 : stop].strip()
 
 
 def for_to_python(cpp: str) -> str:
@@ -73,7 +73,7 @@ def replace_fors(cpp) -> str:
     start = cpp.find("for ")
     while start > -1:
         stop = cpp.find(":", start)
-        cpp_for = cpp[start:stop + 1]
+        cpp_for = cpp[start : stop + 1]
         python_for = for_to_python(cpp_for)
         cpp = cpp.replace(cpp_for, python_for.replace("for", "__python_token__"))
         start = cpp.find("for ", start + len(python_for))
@@ -81,15 +81,19 @@ def replace_fors(cpp) -> str:
 
 
 def atomic_min_to_python(cpp: str) -> str:
-    cpp = cpp.replace("unsigned int*", "") \
-              .replace("double*", "") \
-              .replace("float*", "") \
-              .replace(" ", "") \
-              .replace("()", "") \
-              .replace("&", "")
+    cpp = (
+        cpp.replace("unsigned int*", "")
+        .replace("double*", "")
+        .replace("float*", "")
+        .replace(" ", "")
+        .replace("()", "")
+        .replace("&", "")
+    )
     cpp = re.sub(
         r"atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);",
-        r"np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);", cpp)
+        r"np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);",
+        cpp,
+    )
     return cpp
 
 
@@ -98,7 +102,7 @@ def replace_atomic_mins(cpp: str) -> (str, bool):
     parallel = start == -1
     while start > -1:
         stop = cpp.find(";", start)
-        cpp_atomic_min = cpp[start:stop + 1]
+        cpp_atomic_min = cpp[start : stop + 1]
         python_atomic_min = atomic_min_to_python(cpp_atomic_min)
         cpp = cpp.replace(cpp_atomic_min, python_atomic_min)
         start = cpp.find("atomicMin", start + len(python_atomic_min))
@@ -106,16 +110,17 @@ def replace_atomic_mins(cpp: str) -> (str, bool):
 
 
 def atomic_add_to_python(cpp: str) -> str:
-    cpp = cpp.replace("atomicAdd", "") \
-              .replace("unsigned long long int*", "") \
-              .replace("unsigned long long int", "") \
-              .replace("double*", "") \
-              .replace("float*", "") \
-              .replace(" ", "") \
-              .replace("()", "") \
-              .replace("&", "") \
-              .replace(",", "+=", 1) \
-              [1:-2]  # remove '(' and ');'
+    cpp = (
+        cpp.replace("atomicAdd", "")
+        .replace("unsigned long long int*", "")
+        .replace("unsigned long long int", "")
+        .replace("double*", "")
+        .replace("float*", "")
+        .replace(" ", "")
+        .replace("()", "")
+        .replace("&", "")
+        .replace(",", "+=", 1)[1:-2]
+    )  # remove '(' and ');'
     return cpp
 
 
@@ -124,7 +129,7 @@ def replace_atomic_adds(cpp: str) -> (str, bool):
     parallel = start == -1
     while start > -1:
         stop = cpp.find(";", start)
-        cpp_atomic_add = cpp[start:stop + 1]
+        cpp_atomic_add = cpp[start : stop + 1]
         python_atomic_add = atomic_add_to_python(cpp_atomic_add)
         cpp = cpp.replace(cpp_atomic_add, python_atomic_add)
         start = cpp.find("atomicAdd", start + len(python_atomic_add))
@@ -139,24 +144,24 @@ def extract_struct_defs(cpp: str) -> (str, str):
     start = cpp.find("struct ")
     while start > -1:
         stop = cpp.find(stop_string, start)
-        struct = cpp[start:stop + len(stop_string)]
-        cpp = cpp.replace(struct, '')
+        struct = cpp[start : stop + len(stop_string)]
+        cpp = cpp.replace(struct, "")
         start = cpp.find("struct ", start + 1)
-        structs.append(struct[struct.find(':')+1:-2])
-        names.append(re.match(r'(struct )(.*)(:)', struct)[2])
+        structs.append(struct[struct.find(":") + 1 : -2])
+        names.append(re.match(r"(struct )(.*)(:)", struct)[2])
 
     for i, struct in enumerate(structs):
         structs[i] = struct.replace(
-            'static __device__ ',
-            f'\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_'
+            "static __device__ ",
+            f"\n    @numba.njit(parallel=False, {JIT_OPTS})\n    def {names[i]}_",
         )
 
-    return cpp, '\n'.join(structs)
+    return cpp, "\n".join(structs)
 
 
 def to_numba(name, args, iter_var, body):
-    body = re.sub(r"static_assert\([^;]*;", '', body)
-    body = re.sub(r"static_cast<[^;]*>", '', body)
+    body = re.sub(r"static_assert\([^;]*;", "", body)
+    body = re.sub(r"static_cast<[^;]*>", "", body)
     body = body.replace("\n", "\n    ")
     for cpp, python in CPPYTHON.items():
         body = body.replace(cpp, python)
@@ -167,16 +172,16 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    result = f'''
+    result = f"""
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
     import numba
-    
+
     @numba.njit(parallel=False, {JIT_OPTS})
     def ldexp(a, b):
         return a * 2**b
-    
+
     {structs}
     @numba.njit(parallel={parallel and JIT_FLAGS['parallel']}, {JIT_OPTS})
     def {name}(__python_n__, {str(args).replace("'", "").replace('"', '')[1:-1]}):
@@ -184,6 +189,10 @@ def make(self):
             {body}
 
     return {name}
-'''.replace('};', ')').replace("}", "")
+""".replace(
+        "};", ")"
+    ).replace(
+        "}", ""
+    )
 
     return result

@@ -5,8 +5,7 @@ from PySDM.products.impl.product import Product
 
 
 class Time(Product):
-
-    def __init__(self, name=None, unit='s'):
+    def __init__(self, name=None, unit="s"):
         super().__init__(name=name, unit=unit)
         self.t = 0
 

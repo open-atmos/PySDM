@@ -3,8 +3,7 @@ Specifies constant breakup efficiency.
 """
 
 
-class ConstEb():
-
+class ConstEb:
     def __init__(self, Eb=1.0):
         self.Eb = Eb
         self.particulator = None

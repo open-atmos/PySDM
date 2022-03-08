@@ -13,5 +13,7 @@ def nice_thrust(*, wait=False, debug_print=False):
             if wait:
                 trtc.Wait()
             return result
+
         return wrapper
+
     return decorator

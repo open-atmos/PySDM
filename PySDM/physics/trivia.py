@@ -22,7 +22,7 @@ class Trivia:
 
     @staticmethod
     def sphere_surface(const, diameter):
-        return const.PI * diameter**2
+        return const.PI * diameter ** 2
 
     @staticmethod
     def explicit_euler(y, dt, dy_dt):

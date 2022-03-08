@@ -2,18 +2,18 @@
 effective radius of particles within a grid cell (ratio of third to second moments,
  optionally restricted to a given size range)
 """
-import numpy as np
 import numba
+import numpy as np
+
+from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.physics import constants as const
 from PySDM.products.impl.moment_product import MomentProduct
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 
 GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 
 
 class EffectiveRadius(MomentProduct):
-
-    def __init__(self, *, radius_range=(0, np.inf), unit='m', name=None):
+    def __init__(self, *, radius_range=(0, np.inf), unit="m", name=None):
         self.radius_range = radius_range
         super().__init__(name=name, unit=unit)
 
@@ -25,13 +25,21 @@ class EffectiveRadius(MomentProduct):
     def _impl(self, **kwargs):
         tmp = np.empty_like(self.buffer)
         self._download_moment_to_buffer(
-            'volume', rank=2/3,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
+            "volume",
+            rank=2 / 3,
+            filter_range=(
+                self.formulae.trivia.volume(self.radius_range[0]),
+                self.formulae.trivia.volume(self.radius_range[1]),
+            ),
+        )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
-            'volume', rank=1,
-            filter_range=(self.formulae.trivia.volume(self.radius_range[0]),
-                          self.formulae.trivia.volume(self.radius_range[1])))
+            "volume",
+            rank=1,
+            filter_range=(
+                self.formulae.trivia.volume(self.radius_range[0]),
+                self.formulae.trivia.volume(self.radius_range[1]),
+            ),
+        )
         EffectiveRadius.__get_impl(self.buffer, tmp)
         return self.buffer
