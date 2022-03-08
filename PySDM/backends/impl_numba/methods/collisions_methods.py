@@ -230,6 +230,7 @@ class CollisionsMethods(BackendMethods):
         '''
         Exponential PDF
         '''
+        # TODO: add vmin for exp frag
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1-rand[i])
             if frag_size[i] > v_max[i]:
@@ -249,14 +250,21 @@ class CollisionsMethods(BackendMethods):
         Scaled exponential PDF
         '''
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
+            # scale = 1/gamma from Feingold 1988
             log_arg = 1-rand[i]*scale/x_plus_y[i]
+            # Ensure that the argument to the logarithm is positive, else set it to the tolerance
             if log_arg < fragtol:
                 log_arg = fragtol
+            # compute the resulting fragment size based on CDF of Feingold 1988
             frag_size[i] = -scale * np.log(log_arg)
+            # if the resulting fragment is larger than the larger of the two incoming, that would be unphysical!
+            # instead, make coalescence occur
             if frag_size[i] > v_max[i]:
                 n_fragment[i] = 1
+            # if the resulting fragment is too small to be physical, instead make coalescence occur
             elif frag_size[i] < vmin:
                 n_fragment[i] = 1
+            # Huzzah, we made it--use the actual number of fragments
             else:
                 n_fragment[i] = x_plus_y[i] / frag_size[i]
 
