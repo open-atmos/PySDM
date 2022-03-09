@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.physics import si
 from PySDM_examples.Abdul_Razzak_Ghan_2000.run_ARG_parcel import run_parcel
+from PySDM.physics import si
 
 
 def test_just_do_it():
