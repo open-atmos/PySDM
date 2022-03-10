@@ -46,12 +46,7 @@ def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
 
 @numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
 def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity,
-             breakup_rate, success):
-    if n_fragment[i] ** gamma[i] > max_multiplicity:
-        print('issue with success: n_fragment = ', n_fragment[i], ' and gamma = ', gamma[i], ', from multiplicities ', multiplicity[j], ', ', multiplicity[k])
-        success[0] = False
-        return
-    atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
+             breakup_rate, breakup_rate_deficit):
     gamma_tmp = 0
     gamma_deficit = gamma[i]
     while gamma_deficit > 0:
@@ -69,7 +64,13 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
         gamma_deficit -= gamma_tmp
         tmp2 = n_fragment[i] ** gamma_tmp
         new_n = multiplicity[j] - tmp1 * multiplicity[k]
-        if new_n > 0:
+        # TODO #802 : breakup deficit, if overflow is encountered
+        if tmp2 * multiplicity[k] > max_multiplicity:
+            nj = multiplicity[j]
+            nk = multiplicity[k]
+            atomic_add(breakup_rate_deficit, cid, gamma_tmp * multiplicity[k])
+            gamma_tmp = 0
+        elif new_n > 0:
             nj = new_n
             nk = multiplicity[k] * tmp2
             for a in range(0, len(attributes)):
@@ -90,6 +91,8 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
         for a in range(0, len(attributes)):
             attributes[a, k] *= factor_k
             attributes[a, j] *= factor_j
+
+        atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
 
 
 class CollisionsMethods(BackendMethods):
@@ -179,7 +182,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     def __collision_coalescence_breakup_body(multiplicity, idx, length, attributes, gamma, rand,
                          Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate,
-                         breakup_rate, is_first_in_pair, success, max_multiplicity):
+                         breakup_rate, breakup_rate_deficit, is_first_in_pair, max_multiplicity):
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable,too-many-nested-blocks
             if gamma[i] == 0:
                 continue
@@ -192,22 +195,19 @@ class CollisionsMethods(BackendMethods):
                 coalesce(i, j, k, cell_id[i], multiplicity, gamma, attributes, coalescence_rate)
             else:
                 break_up(i, j, k, cell_id[i], multiplicity, gamma, attributes, n_fragment,
-                         max_multiplicity, breakup_rate, success)
+                         max_multiplicity, breakup_rate, breakup_rate_deficit)
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
     def collision_coalescence_breakup(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
-                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate,
+                  n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit,
                   is_first_in_pair):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max
-        success = np.ones(1, dtype=bool)
         self.__collision_coalescence_breakup_body(
             multiplicity.data, idx.data, len(idx), attributes.data, gamma.data, rand.data,
             Ec.data, Eb.data, n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
-            breakup_rate.data, is_first_in_pair.indicator.data, success, max_multiplicity
+            breakup_rate.data, breakup_rate_deficit.data, is_first_in_pair.indicator.data, max_multiplicity
         )
         print(n_fragment.data)
-        if not success:
-            raise Exception(f"Breakup step failed due to multiplicity exceeding maximum allowed")
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})

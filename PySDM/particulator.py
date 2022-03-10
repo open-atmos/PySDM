@@ -122,7 +122,7 @@ class Particulator:
 
     def collision_coalescence_breakup(
         self, enable_breakup,
-        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair
     ):
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
@@ -134,6 +134,7 @@ class Particulator:
                 multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
                 Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
                 coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+                breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair
             )
         else:
