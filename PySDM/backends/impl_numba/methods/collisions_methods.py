@@ -62,6 +62,7 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
                 tmp1 -= n_fragment[i] ** m
                 break
         gamma_deficit -= gamma_tmp
+        print(gamma_deficit, gamma_tmp)
         tmp2 = n_fragment[i] ** gamma_tmp
         new_n = multiplicity[j] - tmp1 * multiplicity[k]
         # TODO #802 : breakup deficit, if overflow is encountered
@@ -84,6 +85,7 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
                 attributes[a, k] /= tmp2
                 attributes[a, j] = attributes[a, k]
 
+        atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         multiplicity[j] = round(nj)
         multiplicity[k] = round(nk)
         factor_j = nj / multiplicity[j]
@@ -91,8 +93,6 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
         for a in range(0, len(attributes)):
             attributes[a, k] *= factor_k
             attributes[a, j] *= factor_j
-
-        atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
 
 
 class CollisionsMethods(BackendMethods):

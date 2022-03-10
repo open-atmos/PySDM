@@ -1,4 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from itertools import product
+from PySDM.products.collision.collision_rates import BreakupRateDeficitPerGridbox
 import pytest
 import numpy as np
 from PySDM.backends import CPU
@@ -68,7 +70,8 @@ class TestSDMBreakup:
             enable_breakup=True,
             gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=pairwise_zeros,
             n_fragment=n_fragment, coalescence_rate=general_zeros,
-            breakup_rate=general_zeros, is_first_in_pair=is_first_in_pair
+            breakup_rate=general_zeros, breakup_rate_deficit=general_zeros, 
+            is_first_in_pair=is_first_in_pair
         )
 
         # Assert
@@ -112,7 +115,8 @@ class TestSDMBreakup:
             enable_breakup=True,
             gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
             n_fragment=n_fragment, coalescence_rate=general_zeros,
-            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+            breakup_rate=breakup_rate, breakup_rate_deficit=general_zeros,
+            is_first_in_pair=is_first_in_pair
         )
 
         # Assert
@@ -153,6 +157,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array(params["n_fragment"]))
         is_first_in_pair = particulator.PairIndicator(n_sd)
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
@@ -163,7 +168,8 @@ class TestSDMBreakup:
             enable_breakup=True,
             gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
             n_fragment=n_fragment, coalescence_rate=general_zeros,
-            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+            breakup_rate=breakup_rate, breakup_rate_deficit=breakup_rate_deficit,
+            is_first_in_pair=is_first_in_pair
         )
 
         # Assert
@@ -181,11 +187,11 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.xfail(strict=True)
+    #@pytest.mark.xfail(strict=True)
     def test_multiplicity_overflow(backend = CPU()):
         # Arrange
         params = {"gamma": [100.0], "n_init": [1, 1], "v_init": [1, 1],
-            "is_first_in_pair": [True, False], "n_fragment": [4]}
+            "is_first_in_pair": [True, False], "n_fragment": [1e10]}
         n_init = params["n_init"]
         n_sd = len(n_init)
         builder = Builder(n_sd, backend)
@@ -205,6 +211,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array(params["n_fragment"]))
         is_first_in_pair = particulator.PairIndicator(n_sd)
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
@@ -215,8 +222,10 @@ class TestSDMBreakup:
             enable_breakup=True,
             gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
             n_fragment=n_fragment, coalescence_rate=general_zeros,
-            breakup_rate=breakup_rate, is_first_in_pair=is_first_in_pair
+            breakup_rate=breakup_rate, breakup_rate_deficit=breakup_rate_deficit,
+            is_first_in_pair=is_first_in_pair
         )
+        assert breakup_rate_deficit[0] > 0
 
     @staticmethod
     @pytest.mark.parametrize("params", [
@@ -249,6 +258,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array(params["n_fragment"]))
         is_first_in_pair = particulator.PairIndicator(n_sd)
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
@@ -258,6 +268,7 @@ class TestSDMBreakup:
         particulator.collision_coalescence_breakup(
             enable_breakup=True, gamma=gamma, rand=rand, Ec=pairwise_zeros, Eb=Eb,
             n_fragment=n_fragment, coalescence_rate=general_zeros, breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair
         )
 
