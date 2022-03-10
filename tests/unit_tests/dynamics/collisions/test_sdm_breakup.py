@@ -226,6 +226,10 @@ class TestSDMBreakup:
             is_first_in_pair=is_first_in_pair
         )
         assert breakup_rate_deficit[0] > 0
+        np.testing.assert_equal(np.sum(particulator.attributes['n'].to_ndarray() *
+                    particulator.attributes['volume'].to_ndarray()),
+                    np.sum(np.array(params["n_init"]) * np.array(params["v_init"])))
+
 
     @staticmethod
     @pytest.mark.parametrize("params", [
