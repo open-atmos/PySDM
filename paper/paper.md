@@ -105,22 +105,22 @@ This reductionist representation comes at the cost of the diverse physical
 Detailed information regarding the density and shape of particles is also essential
   for modeling particle collisions and aerodynamic interactions.
 A particle-based approach has the benefit of retaining the diverse characteristics
-  of the diverse phase, making it an ideal choice to capture these physics.
+  of the dispersed phase, making it an ideal choice to capture these physics.
 
 The particle-based approach is congruent with the so-called moving-sectional 
   discretisation of the particle attribute space, which includes properties such
   as droplet size or water content, soluble species mass and aerosol hygroscopicity, 
   insoluble material surface, etc.
 The approach is well-suited to Monte-Carlo techniques, which are themselves ideal for 
-  representing inherently stochastic processes such as particle collisions and breakup.
+  representing inherently stochastic processes such as particle nulcation, collisions and breakup.
 In the SDM, a core assumption is that one computational particle represents a 
    (significant) multiplicity 
   of modelled particles in order to make the modeling of a physical system attainable,
-  hence the term super-particle (e.g., @Zannetti_1983) or super-droplet.
+  hence the term super-particle (e.g., @Zannetti_1983) or super-droplet (@Shima_et_al_2009).
 
 Equally important, the method's computational application hinges on the assumption that 
   the number of superparticles is conserved throughout the simulation.
-The SDM was long considered incomplete for three-dimensional atmospheric
+The moving-sectional (or Lagrangian in attribute space) methods were long considered incomplete for three-dimensional atmospheric
   models (@Jacobson_2005, sect.~13.5), as certain processes such as nucleation and collisions 
   lead to appearance in the system of particles of sizes not representable without
   dynamically enlarging the particle state vector.
@@ -135,15 +135,15 @@ We continue to expand and maintain a set of examples demonstrating project featu
 
 The key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
-  of extensions to SDM.
-To this end, we strive to maintain strict modularity of the SDM building blocks, separation of
+  of extensions to particle-based microphysics models.
+To this end, we strive to maintain strict modularity of the PySDM building blocks, separation of
   functionality and examples, and extensive unit test coverage in the project.
 A user of the package might select from top-level physics options such as the simulation
   environment, particle processes, and output attributes without requiring a detailed understanding
   of the CPU and GPU underlying implementations at the superparticle level.
 The separation of physics information from backend engineering is intended to make the
   software more approachable for both users and developers who wish to contribute to the
-  scientific progress of the SDM.
+  scientific progress of particle-based methods for simulating atmospheric clouds.
 
 
 # Summary of new features and examples in v2
