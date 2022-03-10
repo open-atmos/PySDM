@@ -227,13 +227,33 @@ A comparison of the time-dependent and singular models using the kinematic
   prescribed-flow environment introduced in PySDM v1 has been developed
   and is the focus of @Arabas_et_al_2022.
 
-ACTIVATION
+### ACTIVATION
 @Rothenberg_and_Wang_2017 - pyrcel reproduction
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 @Ruehl_et_al_2016 - organics and influence on surface tension
 
-ADAPTIVITY (slayoo todo) -- **maybe** (skip for now)
-@Bartmann_TBD - adaptive vs. nonadaptive for condensation
+### Adaptive timestepping (maybe)
+
+Already in PySDM v1, adaptive time-stepping was gradualy introduced for two 
+  of the represented microphysical processes: collisional and diffusional growth.
+In both cases, the adaptivity controls bespoke developments.
+
+Noteworthy, due to different ... GPU vs. CPU
+
+For diffusional growth (condensation and evaporation of water), ..
+- semi-implicit solution
+- adaptivity control (theta)
+- aim: improve performance
+- the two tolerances 
+- load balancing (sorting cells by ...)
+- validation against SciPy solver which is available for CPU ...
+
+For collisional growth (coalescence and breakup) ...
+- adaptivity control (gamma, multiplicities)
+- aim: reduce error
+- load balancing
+- GPU vs. CPU
+- validation against analytic
 
 # Author contributions
 
