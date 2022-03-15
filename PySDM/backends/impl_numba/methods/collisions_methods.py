@@ -54,18 +54,23 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
             j, k = k, j
         tmp1 = 0
         for m in range(int(gamma_deficit)):
-            tmp1 += n_fragment[i] ** m
-            new_n = multiplicity[j] - tmp1 * multiplicity[k]
-            gamma_tmp = m + 1
-            if new_n < 0:
-                gamma_tmp = m
-                tmp1 -= n_fragment[i] ** m
-                break
+            if tmp1 + n_fragment[i] ** m > max_multiplicity:
+                # overflow issue: add to the deficit and return
+                print('overflow encountered')
+                atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+                return
+            else:
+                tmp1 += n_fragment[i] ** m
+                new_n = multiplicity[j] - tmp1 * multiplicity[k]
+                gamma_tmp = m + 1
+                if new_n < 0:
+                    gamma_tmp = m
+                    tmp1 -= n_fragment[i] ** m
+                    break
         gamma_deficit -= gamma_tmp
-        print(gamma_deficit, gamma_tmp)
         tmp2 = n_fragment[i] ** gamma_tmp
-        new_n = multiplicity[j] - tmp1 * multiplicity[k]
-        # TODO #802 : breakup deficit, if overflow is encountered
+        new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
+
         if tmp2 * multiplicity[k] > max_multiplicity:
             nj = multiplicity[j]
             nk = multiplicity[k]
