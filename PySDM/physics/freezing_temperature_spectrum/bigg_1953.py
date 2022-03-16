@@ -1,27 +1,24 @@
+"""
+freezing temperature spectrum based on [Bigg 1953](https://doi.org/10.1088/0370-1301/66/8/309)
+ formulae (i.e. immersed surface independent)
+"""
 import numpy as np
-from PySDM.physics import constants as const
-
-P_median = .5
-DT_median = np.nan
-
-# TODO #599: there are two Bigg 1953 papers
-# TODO #599: relate DT to drop volume to A_insol? (the second paper!)
 
 
 class Bigg_1953:
-    def __init__(self):
-        assert np.isfinite(DT_median)
+    def __init__(self, const):
+        assert np.isfinite(const.BIGG_DT_MEDIAN)
 
     @staticmethod
-    def pdf(T, A_insol):
-        A = np.log(1 - P_median)
-        B = DT_median - const.T0
-        return - A * np.exp(A * np.exp(B + T) + B + T)
+    def pdf(const, T, A_insol):  # pylint: disable=unused-argument
+        A = np.log(1 - 0.5)
+        B = const.BIGG_DT_MEDIAN - const.T0
+        return -A * np.exp(A * np.exp(B + T) + B + T)
 
     @staticmethod
-    def cdf(T, A_insol):
-        return np.exp(np.log(1 - P_median) * np.exp(DT_median - (const.T0 - T)))
+    def cdf(const, T, A_insol):  # pylint: disable=unused-argument
+        return np.exp(np.log(1 - 0.5) * np.exp(const.BIGG_DT_MEDIAN - (const.T0 - T)))
 
     @staticmethod
-    def median():
-        return const.T0 - DT_median
+    def median(const):
+        return const.T0 - const.BIGG_DT_median

@@ -1,12 +1,13 @@
+"""
+constant rate formulation (for tests)
+"""
 import numpy as np
 
-J_het = np.nan
 
 class Constant:
-    @staticmethod
-    def _check():
-        assert np.isfinite(J_het)
+    def __init__(self, const):
+        assert np.isfinite(const.J_HET)
 
     @staticmethod
-    def J_het(a_w_ice):
-        return J_het
+    def j_het(const, a_w_ice):  # pylint: disable=unused-argument
+        return const.J_HET

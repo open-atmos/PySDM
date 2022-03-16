@@ -1,5 +1,9 @@
-class Attribute:
+"""
+logic around `PySDM.attributes.impl.attribute.Attribute` - the parent class for all attributes
+"""
 
+
+class Attribute:
     def __init__(self, builder, name, dtype=float, size=0):
         self.particulator = builder.particulator
         self.timestamp: int = 0
@@ -11,9 +15,13 @@ class Attribute:
 
     def allocate(self, idx):
         if self.size >= 1:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.size, self.particulator.n_sd), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx, (self.size, self.particulator.n_sd), dtype=self.dtype
+            )
         else:
-            self.data = self.particulator.IndexedStorage.empty(idx, (self.particulator.n_sd,), dtype=self.dtype)
+            self.data = self.particulator.IndexedStorage.empty(
+                idx, (self.particulator.n_sd,), dtype=self.dtype
+            )
 
     def set_data(self, data):
         self.data = data

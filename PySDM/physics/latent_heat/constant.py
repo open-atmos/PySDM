@@ -1,7 +1,12 @@
-from PySDM.physics import constants as const
+"""
+temperature-independent latent heat of vaporization
+"""
 
 
 class Constant:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lv(T):
+    def lv(const, T):  # pylint: disable=unused-argument
         return const.l_tri

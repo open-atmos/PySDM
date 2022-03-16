@@ -1,12 +1,14 @@
+# pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+
 from PySDM.backends import CPU, GPU
 
 
-@pytest.mark.parametrize("backend", (
-    pytest.param(GPU, marks=pytest.mark.xfail(strict=True)),
-    CPU
-))
+@pytest.mark.parametrize(
+    "backend", (pytest.param(GPU, marks=pytest.mark.xfail(strict=True)), CPU)
+)
+# pylint: disable=redefined-outer-name
 def test_setitem(backend):
     # arrange
     arr = backend.Storage.from_ndarray(np.zeros(3))

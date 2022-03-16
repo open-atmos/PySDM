@@ -27,13 +27,18 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: |
-          pip --use-deprecated=legacy-resolver install -e .
+          pip install -e .
 
+      # sanity check if we do not depend on something from test-time-requirements.txt
       - run: |
           python -We -c "import PySDM"
 
       - run: |
-          pip --use-deprecated=legacy-resolver install -r test-time-requirements.txt
+          pip install -r test-time-requirements.txt
+
+      # ensure previous pip did not overwrite the package
+      - run: |
+          pip install -e .
 
       # https://github.com/numba/numba/issues/6350#issuecomment-728174860
       - if: matrix.platform == 'ubuntu-latest'

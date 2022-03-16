@@ -1,9 +1,13 @@
 """
 Simulation output products such as:
-`PySDM.products.state.particles_size_spectrum.ParticlesSizeSpectrum`,
+`PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum`,
 ...
 """
-from .environments import *
-from .dynamics import *
-from .state import *
-from .stats import *
+from .ambient_thermodynamics import *
+from .aqueous_chemistry import *
+from .collision import *
+from .condensation import *
+from .displacement import *
+from .freezing import *
+from .housekeeping import *
+from .size_spectral import *

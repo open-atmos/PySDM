@@ -1,17 +1,15 @@
+"""
+ABIFM heterogeneous freezing rate parameterization
+ ([Knopf & Alpert 2013](https://doi.org/10.1039/C3FD00035D))
+"""
 import numpy as np
-from PySDM.physics import si
-
-m = np.inf
-c = np.inf
-unit = 1 / si.cm**2 / si.s
 
 
 class ABIFM:
-    @staticmethod
-    def _check():
-        assert np.isfinite(m)
-        assert np.isfinite(c)
+    def __init__(self, const):
+        assert np.isfinite(const.ABIFM_M)
+        assert np.isfinite(const.ABIFM_C)
 
     @staticmethod
-    def J_het(a_w_ice):
-        return 10**(m * (1 - a_w_ice) + c) * unit
+    def j_het(const, a_w_ice):
+        return 10 ** (const.ABIFM_M * (1 - a_w_ice) + const.ABIFM_C) * const.ABIFM_UNIT

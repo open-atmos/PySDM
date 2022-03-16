@@ -26,4 +26,5 @@ jobs:
         pip install -r test-time-requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint --exit-zero --disable=fixme $(git ls-files '*.py')
+        # TODO #682
+        pylint --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-arguments,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,too-many-branches,C0330,C0326 $(git ls-files '*.py')

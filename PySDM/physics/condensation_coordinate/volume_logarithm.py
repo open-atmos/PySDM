@@ -1,16 +1,26 @@
-from numpy import log, exp, power
-from PySDM.physics import constants as const
+"""
+logarithm of particle volume as coordinate (ensures non-negative values)
+"""
+import numpy as np
 
 
 class VolumeLogarithm:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def dx_dt(x, r_dr_dt):
-        return exp(-const.two_thirds*x) * r_dr_dt * 3 * power(const.pi_4_3, const.two_thirds)
+    def dx_dt(const, x, r_dr_dt):
+        return (
+            np.exp(-const.TWO_THIRDS * x)
+            * r_dr_dt
+            * 3
+            * np.power(const.PI_4_3, const.TWO_THIRDS)
+        )
 
     @staticmethod
     def volume(x):
-        return exp(x)
+        return np.exp(x)
 
     @staticmethod
     def x(volume):
-        return log(volume)
+        return np.log(volume)

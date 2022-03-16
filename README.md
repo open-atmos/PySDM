@@ -9,7 +9,8 @@
 [![Jupyter](https://img.shields.io/static/v1?label=Jupyter&logo=Jupyter&color=f37626&message=%E2%9C%93)](https://jupyter.org/)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/atmos-cloud-sim-uj/PySDM/graphs/commit-activity)
 [![OpenHub](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM/widgets/project_thin_badge?format=gif)](https://www.openhub.net/p/atmos-cloud-sim-uj-PySDM)
-[![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)    
+[![status](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9/status.svg)](https://joss.theoj.org/papers/62cad07440b941f73f57d187df1aa6e9)
+[![DOI](https://zenodo.org/badge/199064632.svg)](https://zenodo.org/badge/latestdoi/199064632)    
 [![EU Funding](https://img.shields.io/static/v1?label=EU%20Funding%20by&color=103069&message=FNP&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAC4AAAAeCAYAAABTwyyaAAAEzklEQVRYw9WYS2yUVRiGn3P5ZzozpZ3aUsrNgoKlKBINmkhpCCwwxIAhsDCpBBIWhmCMMYTEhSJ4i9EgBnSBEm81MRrFBhNXEuUSMCopiRWLQqEGLNgr085M5//POS46NNYFzHQ6qGc1i5nzP/P973m/9ztCrf7A8T9csiibCocUbvTzfxLcAcaM3cY3imXz25lT3Y34G7gQYAKV3+bFAHcATlBTPogJNADG92iY28FHW97kyPbnuW/W7xgzAhukQ9xe04PJeOT0HkQRwK0TlEeGWb/kOO9v3kdD3a8YK9GhDMfa6mg9fxunOm/lWPtcpDI4K7n/jnN8+uQbrFrUSiwU/DtSEUB/MsKKBT+zYslJqiYNgVE4JwhHkzy86wlWvrKVWDSZ/YFjZlU39yw4y/rGoyQGowWB67zl4QQue+jssMdXrQvZ/00jyeHwqCgDKwnsiJjSvkYAxsG5K9WsenYbJdqAtAjhCIxCSZt/4fK1w5A2WCvxrUAKCHwNVoA2aGmvq11jJQQapEXrgMBKqmJJugejKGWLIxXrBPFoigfv/omd675gRkU/xgqUDlAhH3UDaAAlLSqUQekAYyVTyhLs3tDMsvntlIYzOFcEcOcEGd9jx9oDbGs6QO0t/Tijxi9S4bhzxiWaVh5m94Zm0n7oui4ybo0raUlcncQnxx+g+WgDF/vLoYDmoqSl/dJUnt7XRCoTZjij0Z6Pc2LiNS4EBBkNvoeOJXN+yPWWSZeANOhwJq/98nKVwNdoL8B5AROxBKBL0gjh8DMhdCh3eJnrA0yqhLpplwmyup6IajvAOIGfKGVx3VmCRGnOMpe5QAdG0bT8CAeeep0d6z6nqjSJnQiZWEllLMWrmz6k+fE9rGk8MVqYgsGv5ZH2i1Opr+9kajzB5d74hKQ+KS3d/WVMLhtgdu1lriRiOR/4nDVunaR24x7qp3UV5Cb/fJvC83nv26W81LIK58SYNFmwq4hsGx/5BwKlzYRma2NUthgOJSew4i7ru9nJYCQF5tApb2yvjiDQKJV/IfJKh0o6qssSLKv/jcAoRKHQQzE2Lj2OMV5OkWFc4MZIpsev8uXWXRx6ZicbGk8QZLxxgwe+x/rlR3h3816+f2E7lbEU+ZDn3vKVpePCdFovzCISHqbl5EIoQOteKMPB1rto65zNyfOz+KOrGl06lHPQyi/WOohH0/T0l1MZH6A3GUEKl7Pmr2la6wBrBWWRDP2DUcqjKVKBGom9RZmABAykwnglafpSJSPQvsfiOR0EQ7ExVmazA8cY6N4K1iw6RdAXRwi4mgrheT5Dvs4LeuS81a15Ll/3dQisFVSVpnj7sf1sX/sZvhAc+6UOrQyBVUQ8gx/orFmDsZqtaw/y1qZ9zKjp5vDpenyjcNe+cLNmTiUdf/bEOddVQ0VpgsOn54ET+EYxvWKALSu+5tGG76it7MNaiZKGQ23zCIcMfUMxBnrjN3fmHHvCAlp+vJcXWx6itqoXpAEnUNLx8iMfo5Xh1i17R3PJYCpC2cZ3qK3sQ8WGEDDuXlAQuFKGHzpmopXhTNfk0bmxs7uC1w6uJul79AxFkMIiBJy5UoUWjrZLU5DCFdTARDHuDqVw+OkSwI0MCEW4gtNF2BPrBCo8fKNbtILWX9aUDqFqHnn7AAAAAElFTkSuQmCC)](https://www.fnp.org.pl/en/)
 [![PL Funding](https://img.shields.io/static/v1?label=PL%20Funding%20by&color=d21132&message=NCN&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAANCAYAAACpUE5eAAAABmJLR0QA/wD/AP+gvaeTAAAAKUlEQVQ4jWP8////fwYqAiZqGjZqIHUAy4dJS6lqIOMdEZvRZDPcDQQAb3cIaY1Sbi4AAAAASUVORK5CYII=)](https://www.ncn.gov.pl/?language=en)
 [![US Funding](https://img.shields.io/static/v1?label=US%20DOE%20Funding%20by&color=267c32&message=ASR&logoWidth=25&logo=image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAQCAMAAAA25D/gAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAASFBMVEVOTXyyIjRDQnNZWINZWITtzdFUU4BVVIFVVYHWiZM9PG/KZnNXVoJaWYT67/FKSXhgX4hgX4lcW4VbWoX03uHQeIN2VXj///9pZChlAAAAAWJLR0QXC9aYjwAAAAd0SU1FB+EICRMGJV+KCCQAAABdSURBVBjThdBJDoAgEETRkkkZBBX0/kd11QTTpH1/STqpAAwWBkobSlkGbt0o5xmEfqxDZJB2Q6XMoBwnVSbTylWp0hi42rmbwTOYPDfR5Kc+07IIUQQvghX9THsBHcES8/SiF0kAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMDgtMDlUMTk6MDY6MzcrMDA6MDCX1tBgAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTA4LTA5VDE5OjA2OjM3KzAwOjAw5oto3AAAAABJRU5ErkJggg==)](https://asr.science.energy.gov/)
@@ -115,8 +116,8 @@ Pkg.add("PlotlyJS")
 
 using PyCall
 si = pyimport("PySDM.physics").si
-ConstantMultiplicity = pyimport("PySDM.initialisation.spectral_sampling").ConstantMultiplicity
-Exponential = pyimport("PySDM.physics.spectra").Exponential
+ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
+Exponential = pyimport("PySDM.initialisation.spectra").Exponential
 
 n_sd = 2^15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
@@ -129,8 +130,8 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.spectral_sampling').ConstantMultiplicity;
-Exponential = py.importlib.import_module('PySDM.physics.spectra').Exponential;
+ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.sampling.spectral_sampling').ConstantMultiplicity;
+Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
 
 n_sd = 2^15;
 initial_spectrum = Exponential(pyargs(...
@@ -146,8 +147,8 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 
 ```Python
 from PySDM.physics import si
-from PySDM.initialisation.spectral_sampling import ConstantMultiplicity
-from PySDM.physics.spectra import Exponential
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra.exponential import Exponential
 
 n_sd = 2 ** 15
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
@@ -167,16 +168,16 @@ Instantiation of the [``Particulator``](https://atmos-cloud-sim-uj.github.io/PyS
 Builder = pyimport("PySDM").Builder
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
-Golovin = pyimport("PySDM.physics.coalescence_kernels").Golovin
+Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
 CPU = pyimport("PySDM.backends").CPU
-ParticlesVolumeSpectrum = pyimport("PySDM.products.state").ParticlesVolumeSpectrum
+ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
 builder = Builder(n_sd=n_sd, backend=CPU())
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges)] 
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -187,16 +188,19 @@ particulator = builder.build(attributes, products)
 Builder = py.importlib.import_module('PySDM').Builder;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
-Golovin = py.importlib.import_module('PySDM.physics.coalescence_kernels').Golovin;
+Golovin = py.importlib.import_module('PySDM.dynamics.collisions.collision_kernels').Golovin;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
-ParticlesVolumeSpectrum = py.importlib.import_module('PySDM.products.state').ParticlesVolumeSpectrum;
+ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
 builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
-builder.add_dynamic(Coalescence(pyargs('kernel', Golovin(1.5e3 / si.s))));
-products = py.list({ ParticlesVolumeSpectrum(py.numpy.array(radius_bins_edges)) });
+builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
+products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
+  'radius_bins_edges', py.numpy.array(radius_bins_edges), ...
+  'name', 'dv/dlnr' ...
+)) });
 particulator = builder.build(attributes, products);
 ```
 </details>
@@ -208,16 +212,16 @@ import numpy as np
 from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
-from PySDM.physics.coalescence_kernels import Golovin
+from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.backends import CPU
-from PySDM.products.state import ParticlesVolumeSpectrum
+from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
 builder = Builder(n_sd=n_sd, backend=CPU())
-builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m**3))
-builder.add_dynamic(Coalescence(kernel=Golovin(b=1.5e3 / si.s)))
-products = [ParticlesVolumeSpectrum(radius_bins_edges)]
+builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
+builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
+products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
 particulator = builder.build(attributes, products)
 ```
 </details>
@@ -244,7 +248,7 @@ In the listing below, its usage is interleaved with plotting logic
 <summary>Julia (click to expand)</summary>
 
 ```Julia
-rho_w = pyimport("PySDM.physics.constants").rho_w
+rho_w = pyimport("PySDM.physics.constants_defaults").rho_w
 using Plots; plotlyjs()
 
 for step = 0:1200:3600
@@ -266,10 +270,10 @@ savefig("plot.svg")
 <summary>Matlab (click to expand)</summary>
 
 ```Matlab
-rho_w = py.importlib.import_module('PySDM.physics.constants').rho_w;
+rho_w = py.importlib.import_module('PySDM.physics.constants_defaults').rho_w;
 
 for step = 0:1200:3600
-    particulator.run(int32(step - particulator.n_steps))
+    particulator.run(int32(step - particulator.n_steps));
     x = radius_bins_edges / si.um;
     y = particulator.products{"dv/dlnr"}.get() * rho_w / si.g;
     stairs(...
@@ -290,7 +294,7 @@ legend()
 <summary>Python (click to expand)</summary>
 
 ```Python
-from PySDM.physics.constants import rho_w
+from PySDM.physics.constants_defaults import rho_w
 from matplotlib import pyplot
 
 for step in [0, 1200, 2400, 3600]:
@@ -315,19 +319,19 @@ The resultant plot (generated with the Python code) looks as follows:
 
 In the following example, a condensation-only setup is used with the adiabatic 
 [`Parcel`](https://atmos-cloud-sim-uj.github.io/PySDM/environments/parcel.html) environment.
-An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/physics/spectra.html#PySDM.physics.spectra.Lognormal)
+An initial [`Lognormal`](https://atmos-cloud-sim-uj.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Lognormal)
 spectrum of dry aerosol particles is first initialised to equilibrium wet size for the given
 initial humidity. 
 Subsequent particle growth due to [`Condensation`](https://atmos-cloud-sim-uj.github.io/PySDM/dynamics/condensation.html) of water vapour (coupled with the release of latent heat)
 causes a subset of particles to activate into cloud droplets.
 Results of the simulation are plotted against vertical 
-[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/environments/parcel_displacement.html)
+[`ParcelDisplacement`](https://atmos-cloud-sim-uj.github.io/PySDM/products/housekeeping/parcel_displacement.html)
 and depict the evolution of 
-[`Supersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/dynamics/condensation/peak_supersaturation.html), 
-[`CloudDropletEffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/cloud_droplet_effective_radius.html), 
-[`CloudDropletConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/particles_concentration.html#PySDM.products.state.particles_concentration.CloudDropletConcentration) 
+[`PeakSupersaturation`](https://atmos-cloud-sim-uj.github.io/PySDM/products/condensation/peak_supersaturation.html), 
+[`EffectiveRadius`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/effective_radius.html), 
+[`ParticleConcentration`](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/particle_concentration.html#PySDM.products.particles_concentration.ParticleConcentration) 
 and the 
-[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/state/water_mixing_ratio.html).
+[`WaterMixingRatio `](https://atmos-cloud-sim-uj.github.io/PySDM/products/size_spectral/water_mixing_ratio.html).
 
 <details>
 <summary>Julia (click to expand)</summary>
@@ -336,15 +340,16 @@ and the
 using PyCall
 using Plots; plotlyjs()
 si = pyimport("PySDM.physics").si
-spectral_sampling = pyimport("PySDM.initialisation").spectral_sampling
-multiplicities = pyimport("PySDM.initialisation").multiplicities
-spectra = pyimport("PySDM.physics").spectra
-r_wet_init = pyimport("PySDM.initialisation").r_wet_init
+spectral_sampling = pyimport("PySDM.initialisation.sampling").spectral_sampling
+discretise_multiplicities = pyimport("PySDM.initialisation").discretise_multiplicities
+Lognormal = pyimport("PySDM.initialisation.spectra").Lognormal
+equilibrate_wet_radii = pyimport("PySDM.initialisation").equilibrate_wet_radii
 CPU = pyimport("PySDM.backends").CPU
 AmbientThermodynamics = pyimport("PySDM.dynamics").AmbientThermodynamics
 Condensation = pyimport("PySDM.dynamics").Condensation
 Parcel = pyimport("PySDM.environments").Parcel
 Builder = pyimport("PySDM").Builder
+Formulae = pyimport("PySDM").Formulae
 products = pyimport("PySDM.products")
 
 env = Parcel(
@@ -355,35 +360,35 @@ env = Parcel(
     T0=300 * si.K,
     w= 2.5 * si.m / si.s
 )
-spectrum=spectra.Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
+spectrum = Lognormal(norm_factor=1e4/si.mg, m_mode=50*si.nm, s_geom=1.4)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU(), n_sd=n_sd)
+formulae = Formulae()
+builder = Builder(backend=CPU(formulae), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-v_dry = builder.formulae.trivia.volume(radius=r_dry)
-r_wet = r_wet_init(r_dry, env, kappa * v_dry)
-
+v_dry = formulae.trivia.volume(radius=r_dry)
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
 
 attributes = Dict()
-attributes["n"] = multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air)
+attributes["n"] = discretise_multiplicities(specific_concentration * env.mass_of_dry_air)
 attributes["dry volume"] = v_dry
 attributes["kappa times dry volume"] = kappa * v_dry
-attributes["volume"] = builder.formulae.trivia.volume(radius=r_wet) 
+attributes["volume"] = formulae.trivia.volume(radius=r_wet) 
 
 particulator = builder.build(attributes, products=[
-    products.PeakSupersaturation(),
-    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-    products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range),
-    products.ParcelDisplacement()
+    products.PeakSupersaturation(name="S_max", unit="%"),
+    products.EffectiveRadius(name="r_eff", unit="um", radius_range=cloud_range),
+    products.ParticleConcentration(name="n_c_cm3", unit="cm^-3", radius_range=cloud_range),
+    products.WaterMixingRatio(name="ql", unit="g/kg", radius_range=cloud_range),
+    products.ParcelDisplacement(name="z")
 ])
     
 cell_id=1
@@ -417,15 +422,16 @@ savefig("parcel.svg")
 
 ```Matlab
 si = py.importlib.import_module('PySDM.physics').si;
-spectral_sampling = py.importlib.import_module('PySDM.initialisation').spectral_sampling;
-multiplicities = py.importlib.import_module('PySDM.initialisation').multiplicities;
-spectra = py.importlib.import_module('PySDM.physics').spectra;
-r_wet_init = py.importlib.import_module('PySDM.initialisation').r_wet_init;
+spectral_sampling = py.importlib.import_module('PySDM.initialisation.sampling').spectral_sampling;
+discretise_multiplicities = py.importlib.import_module('PySDM.initialisation').discretise_multiplicities;
+Lognormal = py.importlib.import_module('PySDM.initialisation.spectra').Lognormal;
+equilibrate_wet_radii = py.importlib.import_module('PySDM.initialisation').equilibrate_wet_radii;
 CPU = py.importlib.import_module('PySDM.backends').CPU;
 AmbientThermodynamics = py.importlib.import_module('PySDM.dynamics').AmbientThermodynamics;
 Condensation = py.importlib.import_module('PySDM.dynamics').Condensation;
 Parcel = py.importlib.import_module('PySDM.environments').Parcel;
 Builder = py.importlib.import_module('PySDM').Builder;
+Formulae = py.importlib.import_module('PySDM').Formulae;
 products = py.importlib.import_module('PySDM.products');
 
 env = Parcel(pyargs( ...
@@ -436,37 +442,38 @@ env = Parcel(pyargs( ...
     'T0', 300 * si.K, ...
     'w', 2.5 * si.m / si.s ...
 ));
-spectrum = spectra.Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
+spectrum = Lognormal(pyargs('norm_factor', 1e4/si.mg, 'm_mode', 50 * si.nm, 's_geom', 1.4));
 kappa = .5;
 cloud_range = py.tuple({.5 * si.um, 25 * si.um});
 output_interval = 4;
 output_points = 40;
 n_sd = 256;
 
-builder = Builder(pyargs('backend', CPU(), 'n_sd', int32(n_sd)));
+formulae = Formulae();
+builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
 builder.set_environment(env);
-builder.add_dynamic(AmbientThermodynamics())
-builder.add_dynamic(Condensation())
+builder.add_dynamic(AmbientThermodynamics());
+builder.add_dynamic(Condensation());
 
 tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
 r_dry = tmp{1};
-v_dry = builder.formulae.trivia.volume(r_dry);
+v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
-r_wet = r_wet_init(r_dry, env, kappa * v_dry);
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry);
 
 attributes = py.dict(pyargs( ...
-    'n', multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air), ...
+    'n', discretise_multiplicities(specific_concentration * env.mass_of_dry_air), ...
     'dry volume', v_dry, ...
     'kappa times dry volume', kappa * v_dry, ... 
-    'volume', builder.formulae.trivia.volume(r_wet) ...
+    'volume', formulae.trivia.volume(pyargs('radius', r_wet)) ...
 ));
 
 particulator = builder.build(attributes, py.list({ ...
-    products.PeakSupersaturation(), ...
-    products.CloudDropletEffectiveRadius(pyargs('radius_range', cloud_range)), ...
-    products.CloudDropletConcentration(pyargs('radius_range', cloud_range)), ...
-    products.WaterMixingRatio(pyargs('radius_range', cloud_range)) ...
-    products.ParcelDisplacement() ...
+    products.PeakSupersaturation(pyargs('name', 'S_max', 'unit', '%')), ...
+    products.EffectiveRadius(pyargs('name', 'r_eff', 'unit', 'um', 'radius_range', cloud_range)), ...
+    products.ParticleConcentration(pyargs('name', 'n_c_cm3', 'unit', 'cm^-3', 'radius_range', cloud_range)), ...
+    products.WaterMixingRatio(pyargs('name', 'ql', 'unit', 'g/kg', 'radius_range', cloud_range)) ...
+    products.ParcelDisplacement(pyargs('name', 'z')) ...
 }));
 
 cell_id = int32(0);
@@ -507,76 +514,78 @@ for pykey = py.list(keys(particulator.products))
     end
     i=i+1;
 end
-saveas(gcf, "parcel.png")
+saveas(gcf, "parcel.png");
 ```
 </details>
 <details open>
 <summary>Python (click to expand)</summary>
 
 ```Python
-import numpy as np
 from matplotlib import pyplot
-from PySDM.physics import si, spectra
-from PySDM.initialisation import spectral_sampling, multiplicities, r_wet_init
+from PySDM.physics import si
+from PySDM.initialisation import discretise_multiplicities, equilibrate_wet_radii
+from PySDM.initialisation.spectra import Lognormal
+from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.backends import CPU
 from PySDM.dynamics import AmbientThermodynamics, Condensation
 from PySDM.environments import Parcel
-from PySDM import Builder, products
+from PySDM import Builder, Formulae, products
 
 env = Parcel(
-    dt=.25 * si.s,
-    mass_of_dry_air=1e3 * si.kg,
-    p0=1122 * si.hPa,
-    q0=20 * si.g / si.kg,
-    T0=300 * si.K,
-    w=2.5 * si.m / si.s
+  dt=.25 * si.s,
+  mass_of_dry_air=1e3 * si.kg,
+  p0=1122 * si.hPa,
+  q0=20 * si.g / si.kg,
+  T0=300 * si.K,
+  w=2.5 * si.m / si.s
 )
-spectrum = spectra.Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
+spectrum = Lognormal(norm_factor=1e4 / si.mg, m_mode=50 * si.nm, s_geom=1.5)
 kappa = .5 * si.dimensionless
 cloud_range = (.5 * si.um, 25 * si.um)
 output_interval = 4
 output_points = 40
 n_sd = 256
 
-builder = Builder(backend=CPU(), n_sd=n_sd)
+formulae = Formulae()
+builder = Builder(backend=CPU(formulae), n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
 r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
-v_dry = builder.formulae.trivia.volume(radius=r_dry)
-r_wet = r_wet_init(r_dry, env, kappa * v_dry)
+v_dry = formulae.trivia.volume(radius=r_dry)
+r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
 
 attributes = {
-    'n': multiplicities.discretise_n(specific_concentration * env.mass_of_dry_air),
-    'dry volume': v_dry,
-    'kappa times dry volume': kappa * v_dry,
-    'volume': builder.formulae.trivia.volume(radius=r_wet)
+  'n': discretise_multiplicities(specific_concentration * env.mass_of_dry_air),
+  'dry volume': v_dry,
+  'kappa times dry volume': kappa * v_dry,
+  'volume': formulae.trivia.volume(radius=r_wet)
 }
 
 particulator = builder.build(attributes, products=[
-    products.PeakSupersaturation(),
-    products.CloudDropletEffectiveRadius(radius_range=cloud_range),
-    products.CloudDropletConcentration(radius_range=cloud_range),
-    products.WaterMixingRatio(radius_range=cloud_range),
-    products.ParcelDisplacement()
+  products.PeakSupersaturation(name='S_max', unit='%'),
+  products.EffectiveRadius(name='r_eff', unit='um', radius_range=cloud_range),
+  products.ParticleConcentration(name='n_c_cm3', unit='cm^-3', radius_range=cloud_range),
+  products.WaterMixingRatio(name='ql', unit='g/kg', radius_range=cloud_range),
+  products.ParcelDisplacement(name='z')
 ])
 
 cell_id = 0
 output = {product.name: [product.get()[cell_id]] for product in particulator.products.values()}
 
 for step in range(output_points):
-    particulator.run(steps=output_interval)
-    for product in particulator.products.values():
-        output[product.name].append(product.get()[cell_id])
+  particulator.run(steps=output_interval)
+  for product in particulator.products.values():
+    output[product.name].append(product.get()[cell_id])
 
 fig, axs = pyplot.subplots(1, len(particulator.products) - 1, sharey="all")
 for i, (key, product) in enumerate(particulator.products.items()):
-    if key != 'z':
-        axs[i].plot(output[key], output['z'], marker='.')
-        axs[i].set_title(product.name)
-        axs[i].set_xlabel(product.unit)
-        axs[i].grid()
+  if key != 'z':
+    axs[i].plot(output[key], output['z'], marker='.')
+    axs[i].set_title(product.name)
+    axs[i].set_xlabel(product.unit)
+    axs[i].grid()
 axs[0].set_ylabel(particulator.products['z'].unit)
 pyplot.savefig('parcel.svg')
 ```

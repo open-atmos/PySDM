@@ -1,10 +1,6 @@
 """
-Initialisation logic incl.
-`PySDM.initialisation.spectral_sampling`,
-`PySDM.initialisation.spatial_sampling`,
-`PySDM.initialisation.spectra`
+initialisation logic, particle size spectra, sampling methods and
+wet radii equilibration
 """
-from .r_wet_init import r_wet_init
-from . import spectral_sampling
-from . import spatial_sampling
-from . import multiplicities
+from .discretise_multiplicities import discretise_multiplicities
+from .equilibrate_wet_radii import equilibrate_wet_radii

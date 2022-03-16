@@ -1,10 +1,13 @@
-from .multiplicities import Multiplicities
-from .volume import Volume
-from .dry_volume import DryVolume
-from .radius import Radius
-from .dry_radius import DryRadius
-from .terminal_velocity import TerminalVelocity
-from .temperature import Temperature
-from .heat import Heat
-from .critical_volume import CriticalVolume
+"""
+attributes carrying information on particle physical properties
+"""
 from .critical_supersaturation import CriticalSupersaturation
+from .critical_volume import CriticalVolume
+from .dry_radius import DryRadius
+from .dry_volume import DryVolume
+from .heat import Heat
+from .multiplicities import Multiplicities
+from .radius import Radius
+from .temperature import Temperature
+from .terminal_velocity import TerminalVelocity
+from .volume import Volume

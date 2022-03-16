@@ -1,13 +1,12 @@
 """
 Classes representing physicochemical processes:
-`PySDM.dynamics.coalescence.Coalescence`,
+`PySDM.dynamics.collisions.collision.Collision`,
 `PySDM.dynamics.condensation.Condensation`, ...
 """
-from .coalescence import Coalescence
-from .condensation import Condensation
-from .displacement import Displacement
-from .eulerian_advection import EulerianAdvection
-from .ambient_thermodynamics import AmbientThermodynamics
-from .aqueous_chemistry import AqueousChemistry
-from .breakup import Breakup
-from .freezing import Freezing
+from PySDM.dynamics.ambient_thermodynamics import AmbientThermodynamics
+from PySDM.dynamics.aqueous_chemistry import AqueousChemistry
+from PySDM.dynamics.collisions import Breakup, Coalescence, Collision
+from PySDM.dynamics.condensation import Condensation
+from PySDM.dynamics.displacement import Displacement
+from PySDM.dynamics.eulerian_advection import EulerianAdvection
+from PySDM.dynamics.freezing import Freezing

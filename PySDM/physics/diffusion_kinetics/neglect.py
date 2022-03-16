@@ -1,12 +1,24 @@
+"""
+no transition-regime corrections formulation
+"""
+
+
 class Neglect:
+    def __init__(self, _):
+        pass
+
     @staticmethod
-    def lambdaD(D, T):
+    def lambdaD(_, D, T):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def lambdaK(T, p):
+    def lambdaK(_, T, p):  # pylint: disable=unused-argument
         return -1
 
     @staticmethod
-    def DK(DK, r, lmbd):
-        return DK
+    def D(_, D, r, lmbd):  # pylint: disable=unused-argument
+        return D
+
+    @staticmethod
+    def K(_, K, r, lmbd):  # pylint: disable=unused-argument
+        return K
