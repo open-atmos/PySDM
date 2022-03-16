@@ -1,6 +1,7 @@
 """
 CPU implementation of backend methods for particle collisions
 """
+from cmath import exp
 import numba
 import numpy as np
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -49,16 +50,16 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
              breakup_rate, breakup_rate_deficit):
     gamma_tmp = 0
     gamma_deficit = gamma[i]
+    overflow_flag = False
     while gamma_deficit > 0:
         if multiplicity[k] > multiplicity[j]:
             j, k = k, j
         tmp1 = 0
         for m in range(int(gamma_deficit)):
             if tmp1 + n_fragment[i] ** m > max_multiplicity:
-                # overflow issue: add to the deficit and return
-                print('overflow encountered')
                 atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-                return
+                overflow_flag = True
+                break
             else:
                 tmp1 += n_fragment[i] ** m
                 new_n = multiplicity[j] - tmp1 * multiplicity[k]
@@ -68,14 +69,16 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
                     tmp1 -= n_fragment[i] ** m
                     break
         gamma_deficit -= gamma_tmp
+        if n_fragment[i] ** gamma_tmp > max_multiplicity:
+            break
         tmp2 = n_fragment[i] ** gamma_tmp
         new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
 
         if tmp2 * multiplicity[k] > max_multiplicity:
             nj = multiplicity[j]
             nk = multiplicity[k]
-            atomic_add(breakup_rate_deficit, cid, gamma_tmp * multiplicity[k])
-            gamma_tmp = 0
+            gitatomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+            overflow_flag = True
         elif new_n > 0:
             nj = new_n
             nk = multiplicity[k] * tmp2
@@ -89,6 +92,10 @@ def break_up(i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_mult
                 attributes[a, k] += tmp1 * attributes[a, j]
                 attributes[a, k] /= tmp2
                 attributes[a, j] = attributes[a, k]
+
+        if overflow_flag:
+            print('line 96')
+            break
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         multiplicity[j] = round(nj)
@@ -206,13 +213,12 @@ class CollisionsMethods(BackendMethods):
     def collision_coalescence_breakup(self, multiplicity, idx, attributes, gamma, rand, Ec, Eb,
                   n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit,
                   is_first_in_pair):
-        max_multiplicity = np.iinfo(multiplicity.data.dtype).max
+        max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity.data, idx.data, len(idx), attributes.data, gamma.data, rand.data,
             Ec.data, Eb.data, n_fragment.data, healthy.data, cell_id.data, coalescence_rate.data,
             breakup_rate.data, breakup_rate_deficit.data, is_first_in_pair.indicator.data, max_multiplicity
         )
-        print(n_fragment.data)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
@@ -231,26 +237,33 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(n_fragment, scale, frag_size, v_max, x_plus_y, rand):
+    def __exp_fragmentation_body(n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax):
         '''
         Exponential PDF
         '''
         # TODO: add vmin for exp frag
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            frag_size[i] = -scale * np.log(1-rand[i])
+            #exp_scaling = x_plus_y[i] / (scale - (scale + x_plus_y[i])*np.exp(-x_plus_y[i]/scale))
+            #print(exp_scaling)
+            exp_scaling = 1.0
+            frag_size[i] = -scale * np.log(1-rand[i]/exp_scaling)
             if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1
+            elif frag_size[i] < vmin:
                 n_fragment[i] = 1
             else:
                 n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
 
-    def exp_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand):
+    def exp_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax):
         self.__exp_fragmentation_body(n_fragment.data, scale, frag_size.data, v_max.data, 
-            x_plus_y.data, rand.data)
+            x_plus_y.data, rand.data, vmin, nfmax)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __feingold1988_fragmentation_body(n_fragment, scale, frag_size, v_max, x_plus_y, rand, 
-        fragtol, vmin):
+        fragtol, vmin, nfmax):
         '''
         Scaled exponential PDF
         '''
@@ -272,11 +285,13 @@ class CollisionsMethods(BackendMethods):
             # Huzzah, we made it--use the actual number of fragments
             else:
                 n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
 
     def feingold1988_fragmentation(self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, 
-        fragtol, vmin):
+        fragtol, vmin, nfmax):
         self.__feingold1988_fragmentation_body(n_fragment.data, scale, frag_size.data, v_max.data, 
-                                               x_plus_y.data, rand.data, fragtol, vmin)
+                                               x_plus_y.data, rand.data, fragtol, vmin, nfmax)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
