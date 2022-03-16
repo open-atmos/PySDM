@@ -1,8 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM_examples.Yang_et_al_2018 import Simulation, Settings
 import matplotlib.pyplot as plt
-from scipy import signal
 import numpy as np
+from PySDM_examples.Yang_et_al_2018 import Settings, Simulation
+from scipy import signal
 
 
 def test_displacement(plot=False):

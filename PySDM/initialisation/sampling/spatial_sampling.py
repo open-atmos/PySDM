@@ -8,7 +8,6 @@ import numpy as np
 
 
 class Pseudorandom:
-
     @staticmethod
     def sample(grid, n_sd):
         dimension = len(grid)

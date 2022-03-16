@@ -1,13 +1,13 @@
 """
 CPU- and wall-time counters (fetching a value resets the counter)
 """
-from abc import abstractmethod
 import time
+from abc import abstractmethod
+
 from PySDM.products.impl.product import Product
 
 
 class _Timer(Product):
-
     def __init__(self, name, unit):
         super().__init__(name=name, unit=unit)
         self._time = -1
@@ -33,7 +33,7 @@ class _Timer(Product):
 
 
 class CPUTime(_Timer):
-    def __init__(self, name='CPU Time', unit='s'):
+    def __init__(self, name="CPU Time", unit="s"):
         super().__init__(unit=unit, name=name)
 
     @staticmethod
@@ -42,7 +42,7 @@ class CPUTime(_Timer):
 
 
 class WallTime(_Timer):
-    def __init__(self, name=None, unit='s'):
+    def __init__(self, name=None, unit="s"):
         super().__init__(unit=unit, name=name)
 
     @staticmethod

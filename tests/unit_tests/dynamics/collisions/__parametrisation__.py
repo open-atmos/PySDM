@@ -2,8 +2,9 @@
 import numpy as np
 import pytest
 
-from PySDM.dynamics.collisions.collision import Coalescence, DEFAULTS
+from PySDM.dynamics.collisions.collision import DEFAULTS, Coalescence
 from PySDM.environments import Box
+
 from ....unit_tests.dummy_particulator import DummyParticulator
 
 
@@ -35,55 +36,50 @@ def backend_fill(array, value, odd_zeros=False):
 
 
 def insert_zeros(array):
-    result = np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order='F')
+    result = (
+        np.concatenate((array, np.zeros_like(array))).reshape(2, -1).flatten(order="F")
+    )
     return result
 
 
-def get_dummy_particulator_and_coalescence(backend, n_length,
-                                           optimized_random=False, environment=None, substeps=1):
+def get_dummy_particulator_and_coalescence(
+    backend, n_length, optimized_random=False, environment=None, substeps=1
+):
     particulator = DummyParticulator(backend, n_sd=n_length)
     particulator.environment = environment or Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
     coalescence = Coalescence(
         StubKernel(particulator.backend),
         optimized_random=optimized_random,
         substeps=substeps,
-        adaptive=False
+        adaptive=False,
     )
     coalescence.register(particulator)
     return particulator, coalescence
 
 
-__x__ = {'ones_2': pytest.param(np.array([1., 1.])),
-         'random_2': pytest.param(np.array([4., 2.]))
-         }
+__x__ = {
+    "ones_2": pytest.param(np.array([1.0, 1.0])),
+    "random_2": pytest.param(np.array([4.0, 2.0])),
+}
 
 
-@pytest.fixture(params=[
-    __x__['ones_2'],
-    __x__['random_2']
-])
+@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]])
 def v_2(request):
     return request.param
 
 
-@pytest.fixture(params=[
-    __x__['ones_2'],
-    __x__['random_2']
-])
+@pytest.fixture(params=[__x__["ones_2"], __x__["random_2"]])
 def T_2(request):
     return request.param
 
 
-__n__ = {'1_1': pytest.param(np.array([1, 1])),
-         '5_1': pytest.param(np.array([5, 1])),
-         '5_3': pytest.param(np.array([5, 3]))
-         }
+__n__ = {
+    "1_1": pytest.param(np.array([1, 1])),
+    "5_1": pytest.param(np.array([5, 1])),
+    "5_3": pytest.param(np.array([5, 3])),
+}
 
 
-@pytest.fixture(params=[
-    __n__['1_1'],
-    __n__['5_1'],
-    __n__['5_3']
-])
+@pytest.fixture(params=[__n__["1_1"], __n__["5_1"], __n__["5_3"]])
 def n_2(request):
     return request.param

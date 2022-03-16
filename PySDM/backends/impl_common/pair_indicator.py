@@ -4,9 +4,7 @@ storage abstraction layer facilitating pairwise operations (for use with Pairwis
 
 
 def make_PairIndicator(backend):
-
     class PairIndicator:
-
         def __init__(self, length):
             self.indicator = backend.Storage.empty(length, dtype=bool)
             self.length = length

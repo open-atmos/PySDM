@@ -16,4 +16,6 @@ class TopHat:
         return self.norm_factor * cdf
 
     def percentiles(self, cdf_values):
-        return (self._mx - self._mn) * (np.asarray(cdf_values) + self._mn / (self._mx - self._mn))
+        return (self._mx - self._mn) * (
+            np.asarray(cdf_values) + self._mn / (self._mx - self._mn)
+        )

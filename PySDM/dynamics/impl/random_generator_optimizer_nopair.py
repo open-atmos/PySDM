@@ -6,7 +6,6 @@ import math
 
 
 class RandomGeneratorOptimizerNoPair:
-
     def __init__(self, optimized_random, dt_min, seed):
         self.particulator = None
         self.optimized_random = optimized_random
@@ -18,8 +17,14 @@ class RandomGeneratorOptimizerNoPair:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        shift = math.ceil(self.particulator.dt / self.dt_min) if self.optimized_random else 0
-        self.rand = self.particulator.Storage.empty(self.particulator.n_sd // 2, dtype=float)
+        shift = (
+            math.ceil(self.particulator.dt / self.dt_min)
+            if self.optimized_random
+            else 0
+        )
+        self.rand = self.particulator.Storage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
         self.rnd = self.particulator.Random(self.particulator.n_sd + shift, self.seed)
 
     def reset(self):

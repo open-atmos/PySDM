@@ -2,16 +2,18 @@
 GPU implementation of backend methods for water condensation/evaporation
 """
 from typing import Dict, Optional
+
+from PySDM.backends.impl_common.storage_utils import StorageBase
+from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
-from PySDM.backends.impl_thrust_rtc.bisection import BISECTION
-from PySDM.backends.impl_common.storage_utils import StorageBase
+
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class CondensationMethods(ThrustRTCBackendMethods):
-    keys = ('T', 'p', 'pv', 'lv', 'pvs', 'RH', 'DTp', 'lambdaK', 'lambdaD')
+    keys = ("T", "p", "pv", "lv", "pvs", "RH", "DTp", "lambdaK", "lambdaD")
 
     def __init__(self):
         super().__init__()
@@ -28,12 +30,28 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.vars: Optional[Dict[str, StorageBase]] = None
         const = self.formulae.constants
 
-        self.__calculate_m_l = trtc.For(("ml", "v", "n", "cell_id"), "i", f'''
-            atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w}); 
-        '''.replace("real_type", self._get_c_type()))
+        self.__calculate_m_l = trtc.For(
+            ("ml", "v", "n", "cell_id"),
+            "i",
+            f"""
+            atomicAdd((real_type*) &ml[cell_id[i]], n[i] * v[i] * {const.rho_w});
+        """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
         args_vars = (
-            'x_old', 'dt', 'kappa', 'f_org', 'rd3', '_T', '_RH', '_lv', '_pvs', 'Dr', 'Kr'
+            "x_old",
+            "dt",
+            "kappa",
+            "f_org",
+            "rd3",
+            "_T",
+            "_RH",
+            "_lv",
+            "_pvs",
+            "Dr",
+            "Kr",
         )
 
         def args(arg):
@@ -41,11 +59,19 @@ class CondensationMethods(ThrustRTCBackendMethods):
 
         self.__update_volume = trtc.For(
             (
-                "v", "vdry", *CondensationMethods.keys, "_kappa", "_f_org",
-                "dt", "RH_rtol", "rtol_x", "max_iters", "cell_id"
-             ),
+                "v",
+                "vdry",
+                *CondensationMethods.keys,
+                "_kappa",
+                "_f_org",
+                "dt",
+                "RH_rtol",
+                "rtol_x",
+                "max_iters",
+                "cell_id",
+            ),
             "i",
-            f'''
+            f"""
             struct Minfun {{
                 static __device__ real_type value(real_type x_new, void* args_p) {{
                     auto args = static_cast<real_type*>(args_p);
@@ -174,27 +200,48 @@ class CondensationMethods(ThrustRTCBackendMethods):
                 }}
             }}
             v[i] = {phys.condensation_coordinate.volume.c_inline(x="x_new")};
-        '''.replace("real_type", self._get_c_type()))
+        """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
         self.__pre_for = trtc.For(
             (
-                "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "pthd", "thd",
-                "pqv", "qv", "prhod", "rhod", "dt", "RH_max"
+                "dthd_dt_pred",
+                "dqv_dt_pred",
+                "rhod_mean",
+                "pthd",
+                "thd",
+                "pqv",
+                "qv",
+                "prhod",
+                "rhod",
+                "dt",
+                "RH_max",
             ),
             "i",
-            '''
+            """
             dthd_dt_pred[i] = (pthd[i] - thd[i]) / dt;
             dqv_dt_pred[i] = (pqv[i] - qv[i]) / dt;
             rhod_mean[i] = (prhod[i] + rhod[i]) / 2;
             RH_max[i] = 0;
-        ''')
+        """,
+        )
 
         self.__pre = trtc.For(
             (
-                *CondensationMethods.keys, "dthd_dt_pred", "dqv_dt_pred", "rhod_mean",
-                "thd", "qv", "rhod", "dt", "RH_max"
+                *CondensationMethods.keys,
+                "dthd_dt_pred",
+                "dqv_dt_pred",
+                "rhod_mean",
+                "thd",
+                "qv",
+                "rhod",
+                "dt",
+                "RH_max",
             ),
-            "i", f'''
+            "i",
+            f"""
             thd[i] += dt * dthd_dt_pred[i] / 2;
             qv[i] += dt * dqv_dt_pred[i] / 2;
 
@@ -216,14 +263,28 @@ class CondensationMethods(ThrustRTCBackendMethods):
                 T='T[i]', p='p[i]')};
             lambdaD[i] = {phys.diffusion_kinetics.lambdaD.c_inline(
                 D='DTp[i]', T='T[i]')};
-        '''.replace("real_type", self._get_c_type()))
+        """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
         self.__post = trtc.For(
             (
-                "dthd_dt_pred", "dqv_dt_pred", "rhod_mean", "thd", "qv", "rhod", "dt",
-                "ml_new", "ml_old", "dv_mean", "T", "lv"
+                "dthd_dt_pred",
+                "dqv_dt_pred",
+                "rhod_mean",
+                "thd",
+                "qv",
+                "rhod",
+                "dt",
+                "ml_new",
+                "ml_old",
+                "dv_mean",
+                "T",
+                "lv",
             ),
-            "i", f'''
+            "i",
+            f"""
             auto dml_dt = (ml_new[i] - ml_old[i]) / dt;
             auto dqv_dt_corr = - dml_dt / (rhod_mean[i] * dv_mean);
             auto dthd_dt_corr = {phys.state_variable_triplet.dthd_dt.c_inline(
@@ -232,7 +293,10 @@ class CondensationMethods(ThrustRTCBackendMethods):
             thd[i] += dt * (dthd_dt_pred[i] / 2 + dthd_dt_corr);
             qv[i] += dt * (dqv_dt_pred[i] / 2 + dqv_dt_corr);
             ml_old[i] = ml_new[i];
-        '''.replace("real_type", self._get_c_type()))
+        """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
 
     def calculate_m_l(self, ml, v, n, cell_id):
         ml[:] = 0
@@ -241,18 +305,40 @@ class CondensationMethods(ThrustRTCBackendMethods):
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
-        self, *,
+        self,
+        *,
         solver,
-        n_cell, cell_start_arg,
-        v, v_cr, n, vdry, idx, rhod, thd, qv, dv, prhod, pthd, pqv, kappa, f_org,
-        rtol_x, rtol_thd, timestep, counters, cell_order, RH_max, success, cell_id
+        n_cell,
+        cell_start_arg,
+        v,
+        v_cr,
+        n,
+        vdry,
+        idx,
+        rhod,
+        thd,
+        qv,
+        dv,
+        prhod,
+        pthd,
+        pqv,
+        kappa,
+        f_org,
+        rtol_x,
+        rtol_thd,
+        timestep,
+        counters,
+        cell_order,
+        RH_max,
+        success,
+        cell_id,
     ):
         assert solver is None
 
         if self.adaptive:
-            counters['n_substeps'][:] = 1  # TODO #527
+            counters["n_substeps"][:] = 1  # TODO #527
 
-        n_substeps = counters['n_substeps'][0]
+        n_substeps = counters["n_substeps"][0]
         dv_mean = dv
 
         success[:] = True  # TODO #588
@@ -261,9 +347,18 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.__pre_for.launch_n(
             n_cell,
             (
-                self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data, pthd.data,
-                thd.data, pqv.data, qv.data, prhod.data, rhod.data, dvfloat(timestep), RH_max.data
-            )
+                self.dthd_dt_pred.data,
+                self.dqv_dt_pred.data,
+                self.rhod_mean.data,
+                pthd.data,
+                thd.data,
+                pqv.data,
+                qv.data,
+                prhod.data,
+                rhod.data,
+                dvfloat(timestep),
+                RH_max.data,
+            ),
         )
 
         timestep /= n_substeps
@@ -273,31 +368,64 @@ class CondensationMethods(ThrustRTCBackendMethods):
             self.__pre.launch_n(
                 n_cell,
                 (
-                    *self.vars.values(),  self.dthd_dt_pred.data, self.dqv_dt_pred.data,
-                    self.rhod_mean.data, pthd.data, pqv.data, rhod.data, dvfloat(timestep),
-                    RH_max.data
-                )
+                    *self.vars.values(),
+                    self.dthd_dt_pred.data,
+                    self.dqv_dt_pred.data,
+                    self.rhod_mean.data,
+                    pthd.data,
+                    pqv.data,
+                    rhod.data,
+                    dvfloat(timestep),
+                    RH_max.data,
+                ),
             )
             self.__update_volume.launch_n(
                 len(n),
                 (
-                    v.data, vdry.data, *self.vars.values(),
-                    kappa.data, f_org.data, dvfloat(timestep),
-                    dvfloat(self.RH_rtol), dvfloat(rtol_x), dvfloat(self.max_iters), cell_id.data)
+                    v.data,
+                    vdry.data,
+                    *self.vars.values(),
+                    kappa.data,
+                    f_org.data,
+                    dvfloat(timestep),
+                    dvfloat(self.RH_rtol),
+                    dvfloat(rtol_x),
+                    dvfloat(self.max_iters),
+                    cell_id.data,
+                ),
             )
             self.calculate_m_l(self.ml_new, v, n, cell_id)
             self.__post.launch_n(
                 n_cell,
                 (
-                    self.dthd_dt_pred.data, self.dqv_dt_pred.data, self.rhod_mean.data,
-                    pthd.data, pqv.data, rhod.data, dvfloat(timestep), self.ml_new.data,
-                    self.ml_old.data, dvfloat(dv_mean), self.vars['T'], self.vars['lv']
-                )
+                    self.dthd_dt_pred.data,
+                    self.dqv_dt_pred.data,
+                    self.rhod_mean.data,
+                    pthd.data,
+                    pqv.data,
+                    rhod.data,
+                    dvfloat(timestep),
+                    self.ml_new.data,
+                    self.ml_old.data,
+                    dvfloat(dv_mean),
+                    self.vars["T"],
+                    self.vars["lv"],
+                ),
             )
 
     # pylint disable=unused-argument
-    def make_condensation_solver(self, timestep, n_cell, *, dt_range, adaptive, fuse,
-                                 multiplier, RH_rtol, max_iters):
+    def make_condensation_solver(
+        self,
+        timestep,
+        n_cell,
+        *,
+        dt_range,
+        adaptive,
+        fuse,
+        multiplier,
+        RH_rtol,
+        max_iters,
+    ):
         self.adaptive = adaptive
         self.RH_rtol = RH_rtol
         self.max_iters = max_iters
@@ -307,5 +435,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         self.dthd_dt_pred = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
         self.dqv_dt_pred = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
         self.rhod_mean = self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype())
-        self.vars = {key: self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype()).data
-                     for key in CondensationMethods.keys}
+        self.vars = {
+            key: self.Storage.empty(shape=n_cell, dtype=self._get_np_dtype()).data
+            for key in CondensationMethods.keys
+        }

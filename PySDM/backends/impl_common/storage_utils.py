@@ -3,20 +3,23 @@ common code for storage classes
 """
 
 
+from abc import abstractmethod
 from collections import namedtuple
 from typing import Type
-from abc import abstractmethod
 
 
-class StorageSignature(namedtuple("StorageSignature", ('data', 'shape', 'dtype'))):
-    """ groups items defining a storage """
+class StorageSignature(namedtuple("StorageSignature", ("data", "shape", "dtype"))):
+    """groups items defining a storage"""
+
     __slots__ = ()
 
 
 class StorageBase:
     def __init__(self, signature: StorageSignature):
         self.data = signature.data
-        self.shape = (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        self.shape = (
+            (signature.shape,) if isinstance(signature.shape, int) else signature.shape
+        )
         self.dtype = signature.dtype
         self.backend = None
 
@@ -55,11 +58,11 @@ class StorageBase:
 
 
 def get_data_from_ndarray(array, storage_class: Type[StorageBase], copy_fun):
-    if str(array.dtype).startswith('int'):
+    if str(array.dtype).startswith("int"):
         dtype = storage_class.INT
-    elif str(array.dtype).startswith('float'):
+    elif str(array.dtype).startswith("float"):
         dtype = storage_class.FLOAT
-    elif str(array.dtype).startswith('bool'):
+    elif str(array.dtype).startswith("bool"):
         dtype = storage_class.BOOL
     else:
         raise NotImplementedError()

@@ -2,8 +2,8 @@
 pH calculated by finding equilibrium hydrogen ion concentration
 """
 from PySDM.attributes.impl.intensive_attribute import DerivedAttribute
-from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.backends.impl_numba.methods.chemistry_methods import _conc
+from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 
 
 class Acidity(DerivedAttribute):
@@ -11,17 +11,17 @@ class Acidity(DerivedAttribute):
         self.conc = {}
         for key, val in AQUEOUS_COMPOUNDS.items():
             if len(val) > 1:
-                self.conc[key] = builder.get_attribute('conc_' + key)
-        super().__init__(builder, name='pH', dependencies=self.conc.values())
+                self.conc[key] = builder.get_attribute("conc_" + key)
+        super().__init__(builder, name="pH", dependencies=self.conc.values())
         self.environment = builder.particulator.environment
-        self.cell_id = builder.get_attribute('cell id')
+        self.cell_id = builder.get_attribute("cell id")
 
     def allocate(self, idx):
         super().allocate(idx)
         self.data[:] = self.formulae.constants.pH_w
 
     def recalculate(self):
-        dynamic = self.particulator.dynamics['AqueousChemistry']
+        dynamic = self.particulator.dynamics["AqueousChemistry"]
 
         self.particulator.backend.equilibrate_H(
             dynamic.equilibrium_consts,
@@ -38,5 +38,5 @@ class Acidity(DerivedAttribute):
             H_min=dynamic.pH_H_min,
             H_max=dynamic.pH_H_max,
             ionic_strength_threshold=dynamic.ionic_strength_threshold,
-            rtol=dynamic.pH_rtol
+            rtol=dynamic.pH_rtol,
         )

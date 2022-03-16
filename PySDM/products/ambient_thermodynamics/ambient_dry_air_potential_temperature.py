@@ -5,5 +5,5 @@ from PySDM.products.impl.moist_environment_product import MoistEnvironmentProduc
 
 
 class AmbientDryAirPotentialTemperature(MoistEnvironmentProduct):
-    def __init__(self, unit='K', name=None, var=None):
+    def __init__(self, unit="K", name=None, var=None):
         super().__init__(unit=unit, name=name, var=var)
