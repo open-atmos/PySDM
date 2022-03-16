@@ -6,8 +6,16 @@ import numpy as np
 from chempy import Substance
 from scipy import constants as sci
 
-from .constants import PI_4_3  # pylint: disable=unused-import
-from .constants import ONE_THIRD, PI, T0, THREE, TWO_THIRDS, M, si
+from .constants import (  # pylint: disable=unused-import
+    ONE_THIRD,
+    PI,
+    PI_4_3,
+    T0,
+    THREE,
+    TWO_THIRDS,
+    M,
+    si,
+)
 
 Md = (
     0.78 * Substance.from_formula("N2").mass * si.gram / si.mole

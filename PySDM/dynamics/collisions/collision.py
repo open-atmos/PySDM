@@ -34,7 +34,6 @@ class Collision:
         coalescence_efficiency,
         breakup_efficiency,
         fragmentation_function,
-        seed=None,
         croupier=None,
         optimized_random=False,
         substeps: int = 1,
@@ -54,7 +53,6 @@ class Collision:
         self.compute_breakup_efficiency = breakup_efficiency
         self.compute_number_of_fragments = fragmentation_function
 
-        self.seed = seed
         self.rnd_opt_frag = None
         self.rnd_opt_coll = None
         self.rnd_opt_proc = None
@@ -89,7 +87,7 @@ class Collision:
         rnd_args = {
             "optimized_random": self.optimized_random,
             "dt_min": self.dt_coal_range[0],
-            "seed": self.seed,
+            "seed": builder.formulae.seed,
         }
         self.rnd_opt_coll = RandomGeneratorOptimizer(**rnd_args)
         if self.enable_breakup:

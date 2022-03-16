@@ -38,6 +38,7 @@ def test_moments_range(backend_class, min_x, max_x, value, expected):
         "x_attr": arr(value),
         "weighting_attribute": arr(0),
         "weighting_rank": 0,
+        "skip_division_by_m0": False,
     }
 
     # Act

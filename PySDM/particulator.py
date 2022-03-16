@@ -31,12 +31,12 @@ class Particulator:
 
         self.Index = make_Index(backend)  # pylint: disable=invalid-name
         self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
-        self.PairwiseStorage = make_PairwiseStorage(
+        self.PairwiseStorage = make_PairwiseStorage(  # pylint: disable=invalid-name
             backend
-        )  # pylint: disable=invalid-name
-        self.IndexedStorage = make_IndexedStorage(
+        )
+        self.IndexedStorage = make_IndexedStorage(  # pylint: disable=invalid-name
             backend
-        )  # pylint: disable=invalid-name
+        )
 
         self.timers = {}
         self.null = self.Storage.empty(0, dtype=float)
@@ -291,6 +291,7 @@ class Particulator:
         attr_range=(-np.inf, np.inf),
         weighting_attribute="volume",
         weighting_rank=0,
+        skip_division_by_m0=False,
     ):
         if len(specs) == 0:
             raise ValueError("empty specs passed")
@@ -321,6 +322,7 @@ class Particulator:
             self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     def spectrum_moments(

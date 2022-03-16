@@ -61,6 +61,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def DVInt64(number: int):  # pylint: disable=invalid-name
+        assert isinstance(number, int)
         return FakeThrustRTC.Number(number)
 
     @staticmethod
@@ -69,6 +70,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     @staticmethod
     def DVBool(number: bool):  # pylint: disable=invalid-name
+        assert isinstance(number, bool)
         return FakeThrustRTC.Number(number)
 
     @staticmethod
@@ -82,8 +84,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             exec(self.code, d)  # pylint: disable=exec-used
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = (
-                self.make()
-            )  # pylint: disable=not-callable
+                self.make()  # pylint: disable=not-callable
+            )
 
         def launch_n(self, size, args):
             if size == 0:

@@ -127,6 +127,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
     ):
         if weighting_rank != 0:
             raise NotImplementedError()
@@ -160,9 +161,10 @@ class MomentsMethods(ThrustRTCBackendMethods):
             ),
         )
 
-        self.__moments_body_1.launch_n(
-            moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
-        )
+        if not skip_division_by_m0:
+            self.__moments_body_1.launch_n(
+                moment_0.shape[0], (n_ranks, moments.data, moment_0.data, n_cell)
+            )
 
     # TODO #684
     # pylint: disable=unused-argument

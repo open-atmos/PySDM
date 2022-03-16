@@ -2,17 +2,13 @@
 from .arbitrary_moment import RadiusFirstMoment, RadiusSixthMoment, VolumeFirstMoment
 from .effective_radius import EffectiveRadius
 from .mean_radius import MeanRadius
-from .number_size_spectrum import NumberSizeSpectrum
+from .particle_concentration import ParticleConcentration, ParticleSpecificConcentration
 from .particle_size_spectrum import (
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
 )
 from .particle_volume_versus_radius_logarithm_spectrum import (
     ParticleVolumeVersusRadiusLogarithmSpectrum,
-)
-from .particles_concentration import (
-    ParticleConcentration,
-    ParticleSpecificConcentration,
 )
 from .radius_binned_number_averaged_terminal_velocity import (
     RadiusBinnedNumberAveragedTerminalVelocity,

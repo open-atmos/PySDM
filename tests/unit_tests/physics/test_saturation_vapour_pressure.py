@@ -10,7 +10,7 @@ from PySDM.physics import constants_defaults as const
 from PySDM.physics import saturation_vapour_pressure
 
 
-def test_saturation_vapour_pressures(plot=False):
+def test_saturation_vapour_pressure(plot=False):
     # Arrange
     choices = _choices(saturation_vapour_pressure)
     formulae = {k: Formulae(saturation_vapour_pressure=k) for k in choices}
@@ -50,7 +50,7 @@ def test_saturation_vapour_pressures(plot=False):
             temperature = np.linspace(-20, 0, 100)
             np.testing.assert_array_less(
                 Formulae(
-                    saturation_vapour_pressure=choices_keys[0]
+                    saturation_vapour_pressure="FlatauWalkoCotton"
                 ).saturation_vapour_pressure.ice_Celsius(temperature),
                 Formulae(
                     saturation_vapour_pressure=choice
@@ -59,7 +59,7 @@ def test_saturation_vapour_pressures(plot=False):
             temperature = np.linspace(1, 1, 100)
             np.testing.assert_array_less(
                 Formulae(
-                    saturation_vapour_pressure=choices_keys[0]
+                    saturation_vapour_pressure="FlatauWalkoCotton"
                 ).saturation_vapour_pressure.pvs_Celsius(temperature),
                 Formulae(
                     saturation_vapour_pressure=choice

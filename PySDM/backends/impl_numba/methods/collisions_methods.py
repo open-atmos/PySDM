@@ -222,9 +222,9 @@ class CollisionsMethods(BackendMethods):
         coalescence_rate,
         is_first_in_pair,
     ):
-        for i in numba.prange(
+        for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
             length // 2
-        ):  # pylint: disable=not-an-iterable,too-many-nested-blocks
+        ):
             if gamma[i] == 0:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -546,9 +546,9 @@ class CollisionsMethods(BackendMethods):
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty(
                         (
-                            numba.config.NUMBA_NUM_THREADS,
+                            numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
                             len(cell_start),
-                        ),  # pylint: disable=no-member
+                        ),
                         dtype=int,
                     )
 

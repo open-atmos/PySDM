@@ -29,6 +29,7 @@ class MomentProduct(Product, ABC):
         filter_range=(-np.inf, np.inf),
         weighting_attribute="volume",
         weighting_rank=0,
+        skip_division_by_m0=False,
     ):
         self.particulator.moments(
             self.moment_0,
@@ -38,6 +39,7 @@ class MomentProduct(Product, ABC):
             attr_range=filter_range,
             weighting_attribute=weighting_attribute,
             weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
         if rank == 0:  # TODO #217
             self._download_to_buffer(self.moment_0)

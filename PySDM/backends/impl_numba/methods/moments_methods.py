@@ -25,6 +25,7 @@ class MomentsMethods(BackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
     ):
         moment_0[:] = 0
         moments[:, :] = 0
@@ -46,11 +47,12 @@ class MomentsMethods(BackendMethods):
                             * attr_data[i] ** ranks[k]
                         ),
                     )
-        for c_id in range(moment_0.shape[0]):
-            for k in range(ranks.shape[0]):
-                moments[k, c_id] = (
-                    moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
-                )
+        if not skip_division_by_m0:
+            for c_id in range(moment_0.shape[0]):
+                for k in range(ranks.shape[0]):
+                    moments[k, c_id] = (
+                        moments[k, c_id] / moment_0[c_id] if moment_0[c_id] != 0 else 0
+                    )
 
     @staticmethod
     def moments(
@@ -67,6 +69,7 @@ class MomentsMethods(BackendMethods):
         x_attr,
         weighting_attribute,
         weighting_rank,
+        skip_division_by_m0,
     ):
         return MomentsMethods.moments_body(
             moment_0.data,
@@ -82,6 +85,7 @@ class MomentsMethods(BackendMethods):
             x_attr.data,
             weighting_attribute.data,
             weighting_rank,
+            skip_division_by_m0,
         )
 
     @staticmethod
