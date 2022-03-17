@@ -105,22 +105,22 @@ This reductionist representation comes at the cost of the diverse physical
 Detailed information regarding the density and shape of particles is also essential
   for modeling particle collisions and aerodynamic interactions.
 A particle-based approach has the benefit of retaining the diverse characteristics
-  of the diverse phase, making it an ideal choice to capture these physics.
+  of the dispersed phase, making it an ideal choice to capture these physics.
 
 The particle-based approach is congruent with the so-called moving-sectional 
   discretisation of the particle attribute space, which includes properties such
   as droplet size or water content, soluble species mass and aerosol hygroscopicity, 
   insoluble material surface, etc.
 The approach is well-suited to Monte-Carlo techniques, which are themselves ideal for 
-  representing inherently stochastic processes such as particle collisions and breakup.
+  representing inherently stochastic processes such as particle nulcation, collisions and breakup.
 In the SDM, a core assumption is that one computational particle represents a 
    (significant) multiplicity 
   of modelled particles in order to make the modeling of a physical system attainable,
-  hence the term super-particle (e.g., @Zannetti_1983) or super-droplet.
+  hence the term super-particle (e.g., @Zannetti_1983) or super-droplet (@Shima_et_al_2009).
 
 Equally important, the method's computational application hinges on the assumption that 
   the number of superparticles is conserved throughout the simulation.
-The SDM was long considered incomplete for three-dimensional atmospheric
+The moving-sectional (or Lagrangian in attribute space) methods were long considered incomplete for three-dimensional atmospheric
   models (@Jacobson_2005, sect.~13.5), as certain processes such as nucleation and collisions 
   lead to appearance in the system of particles of sizes not representable without
   dynamically enlarging the particle state vector.
@@ -135,15 +135,15 @@ We continue to expand and maintain a set of examples demonstrating project featu
 
 The key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
-  of extensions to SDM.
-To this end, we strive to maintain strict modularity of the SDM building blocks, separation of
+  of extensions to particle-based microphysics models.
+To this end, we strive to maintain strict modularity of the PySDM building blocks, separation of
   functionality and examples, and extensive unit test coverage in the project.
 A user of the package might select from top-level physics options such as the simulation
   environment, particle processes, and output attributes without requiring a detailed understanding
   of the CPU and GPU underlying implementations at the superparticle level.
 The separation of physics information from backend engineering is intended to make the
   software more approachable for both users and developers who wish to contribute to the
-  scientific progress of the SDM.
+  scientific progress of particle-based methods for simulating atmospheric clouds.
 
 
 # Summary of new features and examples in v2
@@ -199,17 +199,61 @@ BREAKUP
 @Bieli_et_al_2022 - breakup
 @DeJong_et_al_2022 - breakup **maybe** (skip for now)
 
-IMMERSION FREEZING
-@Alpert_and_Knopf_2016 - immersion freezing with time-dependent model
-@Shima_et_al_2020 - immersion freezing with singular model
+### Immersion freezing 
 
-ACTIVATION
+This release of PySDM introduces representation of immersion freezing, 
+  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
+  in supercooled water droplets.
+There are two alternative models implemented, in both cases the formulation
+  is probabilistic and based on Poissonian model of heterogeneous freezing.
+The two models embrace, so-called, singular and time-dependent approaches and
+  are based on the formulation presented in @Shima_et_al_2020 and
+  @Alpert_and_Knopf_2016, respectively.
+In the singular model, the relevant introduced particle attribute is the freezing temperature
+  which is randomly sampled at initialisation from an ice nucleation active sites (INAS) model;
+  subsequently freezing occurs in a deterministic way upon encountering ambient 
+  temperature that is lower than the particle's freezing temperature.
+In the time-dependent model, the relevant introduced particle attribute is the insoluble
+  material surface which is randomly sampled at initialisation; 
+  freezing is triggered by evaluating probability of freezing at instantaneous
+  ambient conditions and comparing it with a random number.
+For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
+  of @Knopf_and_Alpert_2013 is used.
+  
+For validation of the the newly introduced immersion freezing models, a set of
+  notebooks reproducing box-model simulations from @Alpert_and_Knopf_2016 was introduced
+  to the PySDM-examples package.
+A comparison of the time-dependent and singular models using the kinematic
+  prescribed-flow environment introduced in PySDM v1 has been developed
+  and is the focus of @Arabas_et_al_2022.
+
+### ACTIVATION
 @Rothenberg_and_Wang_2017 - pyrcel reproduction
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 @Ruehl_et_al_2016 - organics and influence on surface tension
 
-ADAPTIVITY (slayoo todo) -- **maybe** (skip for now)
-@Bartmann_TBD - adaptive vs. nonadaptive for condensation
+### Adaptive timestepping (maybe)
+
+Already in PySDM v1, adaptive time-stepping was gradualy introduced for two 
+  of the represented microphysical processes: collisional and diffusional growth.
+In both cases, the adaptivity controls bespoke developments.
+
+Noteworthy, due to different ... GPU vs. CPU
+
+For diffusional growth (condensation and evaporation of water), ..
+- semi-implicit solution
+- adaptivity control (theta)
+- aim: improve performance
+- the two tolerances 
+- load balancing (sorting cells by ...)
+- validation against SciPy solver which is available for CPU ...
+
+For collisional growth (coalescence and breakup) ...
+- adaptivity control (gamma, multiplicities)
+- aim: reduce error
+- load balancing
+- GPU vs. CPU
+- validation against analytic
 
 # Author contributions
 
