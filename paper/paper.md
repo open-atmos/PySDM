@@ -105,14 +105,9 @@ This reductionist representation comes at the cost of the diverse physical
 Detailed information regarding the density and shape of particles is also essential
   for modeling particle collisions and aerodynamic interactions.
 A particle-based approach has the benefit of retaining the diverse characteristics
-  of the dispersed phase, making it an ideal choice to capture these physics.
-
-The particle-based approach is congruent with the so-called moving-sectional 
-  discretisation of the particle attribute space, which includes properties such
-  as droplet size or water content, soluble species mass and aerosol hygroscopicity, 
-  insoluble material surface, etc.
-The approach is well-suited to Monte-Carlo techniques, which are themselves ideal for 
-  representing inherently stochastic processes such as particle nulcation, collisions and breakup.
+  of the diverse phase, making it an ideal choice to capture these physics.
+Moreover, the approach is well-suited to Monte-Carlo techniques, which are themselves ideal for 
+  representing inherently stochastic processes such as particle collisions and breakup.
 In the SDM, a core assumption is that one computational particle represents a 
    (significant) multiplicity 
   of modelled particles in order to make the modeling of a physical system attainable,
@@ -159,7 +154,7 @@ The collisional breakup process represents the splitting of two colliding superd
   into multiple fragments. 
 It can be specified as an individual dynamic, as for coalescence in v1, or as a unified
   `collision` dynamic, in which the probability of breakup versus coalescence is sampled.
-
+The additional necessary information can be imported via:
 ```python
 from PySDM.dynamics.collisions import Collision
 from PySDM.dynamics.collisions.collision_kernels import Golovin
