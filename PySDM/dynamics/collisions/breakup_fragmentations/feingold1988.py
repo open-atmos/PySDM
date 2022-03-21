@@ -2,7 +2,6 @@
 P(m; x, y) = nu^2 * (x+y) exp(-m * nu)
 nu = 1/m* where m* is a scaling factor for fragment size dist.
 """
-from PySDM.physics import si
 
 
 class Feingold1988Frag:
