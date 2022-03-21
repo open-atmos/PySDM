@@ -1,6 +1,4 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from itertools import product
-
 import numpy as np
 import pytest
 
@@ -12,7 +10,6 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.environments import Box
 from PySDM.physics import si
-from PySDM.products.collision.collision_rates import BreakupRateDeficitPerGridbox
 
 
 class TestSDMBreakup:
