@@ -1,8 +1,6 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from cmath import exp
-
 import numba
 import numpy as np
 
@@ -73,14 +71,13 @@ def break_up(
                 atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
                 overflow_flag = True
                 break
-            else:
-                tmp1 += n_fragment[i] ** m
-                new_n = multiplicity[j] - tmp1 * multiplicity[k]
-                gamma_tmp = m + 1
-                if new_n < 0:
-                    gamma_tmp = m
-                    tmp1 -= n_fragment[i] ** m
-                    break
+            tmp1 += n_fragment[i] ** m
+            new_n = multiplicity[j] - tmp1 * multiplicity[k]
+            gamma_tmp = m + 1
+            if new_n < 0:
+                gamma_tmp = m
+                tmp1 -= n_fragment[i] ** m
+                break
         gamma_deficit -= gamma_tmp
         if n_fragment[i] ** gamma_tmp > max_multiplicity:
             break
@@ -276,9 +273,8 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         max_multiplicity,
     ):
-        for i in numba.prange(
-            length // 2
-        ):  # pylint: disable=not-an-iterable,too-many-nested-blocks
+        # pylint: disable=not-an-iterable,too-many-nested-blocks
+        for i in numba.prange(length // 2):
             if gamma[i] == 0:
                 continue
             bouncing = rand[i] - Ec[i] - Eb[i] > 0
@@ -373,7 +369,7 @@ class CollisionsMethods(BackendMethods):
         """
         Exponential PDF
         """
-        # TODO: add vmin for exp frag
+        # TODO #796: add vmin for exp frag
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1 - rand[i])
             if frag_size[i] > v_max[i]:
@@ -408,9 +404,7 @@ class CollisionsMethods(BackendMethods):
         Scaled exponential PDF
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            log_arg = 1 - rand[i] * scale / x_plus_y[i]
-            if log_arg < fragtol:
-                log_arg = fragtol
+            log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol)
             frag_size[i] = -scale * np.log(log_arg)
             if frag_size[i] > v_max[i]:
                 n_fragment[i] = 1
