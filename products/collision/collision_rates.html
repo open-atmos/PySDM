@@ -24,14 +24,16 @@ values preclude representation of resultant multiplicity in …" />
 </header>
 <section id="section-intro">
 <p>Rates of collision events and their deficit wrt expected values in case mutiplicity
-values preclude representation of resultant multiplicity in multiple collisions</p>
+values preclude representation of resultant multiplicity in multiple collisions,
+or due to unrepresentable breakups from integer overflow</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 Rates of collision events and their deficit wrt expected values in case mutiplicity
- values preclude representation of resultant multiplicity in multiple collisions
+ values preclude representation of resultant multiplicity in multiple collisions,
+ or due to unrepresentable breakups from integer overflow
 &#34;&#34;&#34;
 from PySDM.products.impl.rate_product import RateProduct
 
@@ -61,6 +63,13 @@ class BreakupRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit=&#34;s^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Breakup&#34;
+        )
+
+
+class BreakupRateDeficitPerGridbox(RateProduct):
+    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+        super().__init__(
+            name=name, unit=unit, counter=&#34;breakup_rate_deficit&#34;, dynamic=&#34;Breakup&#34;
         )</code></pre>
 </details>
 </section>
@@ -73,6 +82,28 @@ class BreakupRatePerGridbox(RateProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox"><code class="flex name class">
+<span>class <span class="ident">BreakupRateDeficitPerGridbox</span></span>
+<span>(</span><span>name=None, unit='s^-1')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BreakupRateDeficitPerGridbox(RateProduct):
+    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+        super().__init__(
+            name=name, unit=unit, counter=&#34;breakup_rate_deficit&#34;, dynamic=&#34;Breakup&#34;
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.impl.rate_product.RateProduct" href="../impl/rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+</ul>
+</dd>
 <dt id="PySDM.products.collision.collision_rates.BreakupRatePerGridbox"><code class="flex name class">
 <span>class <span class="ident">BreakupRatePerGridbox</span></span>
 <span>(</span><span>name=None, unit='s^-1')</span>
@@ -177,6 +208,9 @@ class BreakupRatePerGridbox(RateProduct):
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox" href="#PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox">BreakupRateDeficitPerGridbox</a></code></h4>
+</li>
 <li>
 <h4><code><a title="PySDM.products.collision.collision_rates.BreakupRatePerGridbox" href="#PySDM.products.collision.collision_rates.BreakupRatePerGridbox">BreakupRatePerGridbox</a></code></h4>
 </li>

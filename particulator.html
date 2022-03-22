@@ -169,6 +169,7 @@ class Particulator:
         n_fragment,
         coalescence_rate,
         breakup_rate,
+        breakup_rate_deficit,
         is_first_in_pair,
     ):
         idx = self.attributes._ParticleAttributes__idx
@@ -190,6 +191,7 @@ class Particulator:
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
+                breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
             )
         else:
@@ -547,6 +549,7 @@ class Particulator:
         n_fragment,
         coalescence_rate,
         breakup_rate,
+        breakup_rate_deficit,
         is_first_in_pair,
     ):
         idx = self.attributes._ParticleAttributes__idx
@@ -568,6 +571,7 @@ class Particulator:
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
+                breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
             )
         else:
@@ -894,7 +898,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -912,6 +916,7 @@ def n_sd(self) -&gt; int:
     n_fragment,
     coalescence_rate,
     breakup_rate,
+    breakup_rate_deficit,
     is_first_in_pair,
 ):
     idx = self.attributes._ParticleAttributes__idx
@@ -933,6 +938,7 @@ def n_sd(self) -&gt; int:
             cell_id=cell_id,
             coalescence_rate=coalescence_rate,
             breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
         )
     else:
