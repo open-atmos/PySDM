@@ -140,6 +140,7 @@ class Particulator:
         n_fragment,
         coalescence_rate,
         breakup_rate,
+        breakup_rate_deficit,
         is_first_in_pair,
     ):
         idx = self.attributes._ParticleAttributes__idx
@@ -161,6 +162,7 @@ class Particulator:
                 cell_id=cell_id,
                 coalescence_rate=coalescence_rate,
                 breakup_rate=breakup_rate,
+                breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
             )
         else:
