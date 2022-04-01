@@ -29,10 +29,10 @@ class TerminalVelocityMethods(BackendMethods):
                     G = (G1 / r) ** Mg + G2 + G3 * r
                     Gp = (1 - p) ** G
                     if Gp != 0:
-                        D = D1 / r ** D2
-                        E = E1 / r ** E2
+                        D = D1 / r**D2
+                        E = E1 / r**E2
                         F = (F1 / r) ** Mf + F2
-                        output[i // 2] = A + B * p + D / p ** F + E / Gp
+                        output[i // 2] = A + B * p + D / p**F + E / Gp
                         output[i // 2] = max(0, output[i // 2])
 
     def linear_collection_efficiency(

@@ -113,7 +113,7 @@ class TestFig1:
             R_WET,
             TEMPERATURE,
             aerosol.aerosol_modes[0]["kappa"][label],
-            R_DRY ** 3,
+            R_DRY**3,
             sigma,
         )
 

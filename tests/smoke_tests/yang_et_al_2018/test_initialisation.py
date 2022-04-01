@@ -29,7 +29,7 @@ def test_dry_spectrum_y(plot=False):
     dr = dry_radii[1:] - dry_radii[0:-1]
     env = simulation.particulator.environment
     dn_dr = nd[0:-1] / env.mass_of_dry_air * env["rhod"] / dr
-    dn_dr /= 1 / si.centimetre ** 3
+    dn_dr /= 1 / si.centimetre**3
 
     if plot:
         plt.figure(figsize=(5, 5))

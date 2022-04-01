@@ -7,7 +7,7 @@ from PySDM import Formulae
 from PySDM.physics import constants as const
 from PySDM.physics import si
 
-A = 1 * si.um ** 2
+A = 1 * si.um**2
 
 
 @pytest.mark.parametrize("model", ("Niemand_et_al_2012", "Bigg_1953"))

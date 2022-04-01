@@ -17,9 +17,9 @@ def test_ak16_fig_1(multiplicity, plot=False):
 
     # dummy multipliers (multiplied and then divided by)
     dv = (
-        1 * si.cm ** 3
+        1 * si.cm**3
     )  # will become used if coalescence or other processes are turned on
-    droplet_volume = 1 * si.um ** 3  # ditto
+    droplet_volume = 1 * si.um**3  # ditto
 
     cases = Table1(volume=dv)
 
@@ -36,7 +36,7 @@ def test_ak16_fig_1(multiplicity, plot=False):
             n_sd = int(n_sd)
 
             data, _ = simulation(
-                constants={"J_HET": 1e3 / si.cm ** 2 / si.s},
+                constants={"J_HET": 1e3 / si.cm**2 / si.s},
                 seed=i,
                 n_sd=n_sd,
                 time_step=dt,

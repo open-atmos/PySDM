@@ -52,8 +52,8 @@ class TestTable3:
         )
 
         expected = {k: 0 for k in AQUEOUS_COMPOUNDS}
-        expected["S_VI"] = mass_conc_SO4mm * si.ug / si.m ** 3
-        expected["N_mIII"] = mass_conc_NH4p * si.ug / si.m ** 3
+        expected["S_VI"] = mass_conc_SO4mm * si.ug / si.m**3
+        expected["N_mIII"] = mass_conc_NH4p * si.ug / si.m**3
 
         for key in expected:
             mole_fraction = np.asarray(output[f"aq_{key}_ppb"])
@@ -89,7 +89,7 @@ class TestTable3:
             settings.formulae.state_variable_triplet.rho_of_rhod_qv(
                 rhod=output["rhod"][-1], qv=output["qv"][-1] * si.g / si.kg
             ),
-            1.15 * si.kg / si.m ** 3,
+            1.15 * si.kg / si.m**3,
             rtol=0.005,
         )
         assert output["ql"][-2] < 0.00055
