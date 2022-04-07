@@ -21,10 +21,10 @@ class TestParcelExample:
             n_sd_per_mode=(5, 5),
             aerosol_modes_by_kappa={
                 0.54: Lognormal(
-                    norm_factor=850 / si.cm ** 3, m_mode=15 * si.nm, s_geom=1.6
+                    norm_factor=850 / si.cm**3, m_mode=15 * si.nm, s_geom=1.6
                 ),
                 1.2: Lognormal(
-                    norm_factor=10 / si.cm ** 3, m_mode=850 * si.nm, s_geom=1.2
+                    norm_factor=10 / si.cm**3, m_mode=850 * si.nm, s_geom=1.2
                 ),
             },
             vertical_velocity=1.0 * si.m / si.s,

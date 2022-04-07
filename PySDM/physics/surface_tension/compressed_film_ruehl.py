@@ -13,7 +13,7 @@ from PySDM.physics.trivia import Trivia
 @numba.njit(**{**jit_flags, "parallel": False})
 def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
     return Cb_iso * (1 - f_surf) / RUEHL_C0 - np.exp(
-        c * (RUEHL_A0 ** 2 - (A_iso / f_surf) ** 2)
+        c * (RUEHL_A0**2 - (A_iso / f_surf) ** 2)
     )
 
 
@@ -53,7 +53,7 @@ class CompressedFilmRuehl:
 
         # A is the area one molecule of organic occupies at the droplet surface
         # A_iso = A*f_surf (m^2)
-        A_iso = (4 * const.PI * r_wet ** 2) / (
+        A_iso = (4 * const.PI * r_wet**2) / (
             f_org * v_dry * const.N_A / const.RUEHL_nu_org
         )
 
