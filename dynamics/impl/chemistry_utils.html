@@ -92,12 +92,12 @@ class EquilibriumConsts:
 
 
 DIFFUSION_CONST = {
-    &#34;HNO3&#34;: 65.25e-6 * si.m ** 2 / si.s,
-    &#34;H2O2&#34;: 87.00e-6 * si.m ** 2 / si.s,
-    &#34;NH3&#34;: 19.78e-6 * si.m ** 2 / si.s,
-    &#34;SO2&#34;: 10.89e-6 * si.m ** 2 / si.s,
-    &#34;CO2&#34;: 13.81e-6 * si.m ** 2 / si.s,
-    &#34;O3&#34;: 14.44e-6 * si.m ** 2 / si.s,
+    &#34;HNO3&#34;: 65.25e-6 * si.m**2 / si.s,
+    &#34;H2O2&#34;: 87.00e-6 * si.m**2 / si.s,
+    &#34;NH3&#34;: 19.78e-6 * si.m**2 / si.s,
+    &#34;SO2&#34;: 10.89e-6 * si.m**2 / si.s,
+    &#34;CO2&#34;: 13.81e-6 * si.m**2 / si.s,
+    &#34;O3&#34;: 14.44e-6 * si.m**2 / si.s,
 }
 
 MASS_ACCOMMODATION_COEFFICIENTS = {
@@ -130,9 +130,9 @@ GASEOUS_COMPOUNDS = {
 
 DISSOCIATION_FACTORS = {
     &#34;CO2&#34;: lambda H, eqc, cell_id: 1
-    + eqc[&#34;K_CO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HCO3&#34;].data[cell_id] / (H ** 2)),
+    + eqc[&#34;K_CO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HCO3&#34;].data[cell_id] / (H**2)),
     &#34;SO2&#34;: lambda H, eqc, cell_id: 1
-    + eqc[&#34;K_SO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HSO3&#34;].data[cell_id] / (H ** 2)),
+    + eqc[&#34;K_SO2&#34;].data[cell_id] * (1 / H + eqc[&#34;K_HSO3&#34;].data[cell_id] / (H**2)),
     &#34;NH3&#34;: lambda H, eqc, cell_id: 1 + eqc[&#34;K_NH3&#34;].data[cell_id] / K_H2O * H,
     &#34;HNO3&#34;: lambda H, eqc, cell_id: 1 + eqc[&#34;K_HNO3&#34;].data[cell_id] / H,
     &#34;O3&#34;: lambda _, __, ___: 1,
