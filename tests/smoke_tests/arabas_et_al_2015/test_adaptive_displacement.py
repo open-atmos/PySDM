@@ -5,6 +5,7 @@ from matplotlib import pyplot
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
 from PySDM_examples.Szumowski_et_al_1998 import Simulation
 
+from PySDM import Formulae
 from PySDM.backends import CPU
 from PySDM.physics import si
 from PySDM.products import SuperDropletCountPerGridbox
@@ -16,21 +17,21 @@ from .dummy_storage import DummyStorage
     "rtol",
     (
         pytest.param(None, marks=pytest.mark.xfail(strict=True)),
+        pytest.param(1e-0, marks=pytest.mark.xfail(strict=True)),
         pytest.param(1e-1, marks=pytest.mark.xfail(strict=True)),
-        pytest.param(5e-2, marks=pytest.mark.xfail(strict=True)),
         pytest.param(1e-2),
     ),
 )
 # pylint: disable=redefined-outer-name
 def test_adaptive_displacement(rtol, plot=False):
     # Arrange
-    settings = Settings()
+    settings = Settings(formulae=Formulae(seed=666))
     settings.dt = 5 * si.s
-    settings.grid = (20, 20)
-    settings.n_sd_per_gridbox = 16
-    settings.rhod_w_max = 4 * si.m / si.s * si.kg / si.m**3
+    settings.grid = (10, 10)
+    settings.n_sd_per_gridbox = 10
+    settings.rhod_w_max = 10 * si.m / si.s * si.kg / si.m**3
 
-    settings.simulation_time = 2000 * si.s
+    settings.simulation_time = 1000 * si.s
     settings.spin_up_time = settings.simulation_time
     settings.output_interval = settings.simulation_time
     if rtol is not None:
@@ -66,7 +67,8 @@ def test_adaptive_displacement(rtol, plot=False):
         pyplot.show()
 
     # Assert
+    if rtol is not None:
+        assert 1 < simulation.particulator.dynamics["Displacement"]._n_substeps < 50
     assert np.count_nonzero(sd_count) == np.product(settings.grid)
     assert np.std(sd_count) < settings.n_sd_per_gridbox / 2.5
     assert np.max(sd_count) < 2.5 * settings.n_sd_per_gridbox
-    assert 1 < simulation.particulator.dynamics["Displacement"]._n_substeps < 10
