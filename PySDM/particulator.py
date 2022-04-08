@@ -370,3 +370,16 @@ class Particulator:
         )
         self.attributes.sanitize()
         return res
+
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        for dim in range(len(self.environment.mesh.grid)):
+            self.backend.calculate_displacement(
+                dim,
+                displacement,
+                courant[dim],
+                cell_origin,
+                position_in_cell,
+                n_substeps,
+            )
