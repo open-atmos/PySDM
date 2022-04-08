@@ -11,10 +11,12 @@ from ...impl_common.backend_methods import BackendMethods
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 # pylint: disable=too-many-arguments
 def calculate_displacement_body_common(
-    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+    dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, n_substeps
 ):
     omega = position_in_cell[dim, droplet]
-    displacement[dim, droplet] = scheme(omega, courant[_l], courant[_r])
+    displacement[dim, droplet] = scheme(
+        omega, courant[_l] / n_substeps, courant[_r] / n_substeps
+    )
 
 
 class DisplacementMethods(BackendMethods):
@@ -22,7 +24,7 @@ class DisplacementMethods(BackendMethods):
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
     # pylint: disable=too-many-arguments
     def calculate_displacement_body_1d(
-        dim, scheme, displacement, courant, cell_origin, position_in_cell
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -30,14 +32,22 @@ class DisplacementMethods(BackendMethods):
             _l = cell_origin[0, droplet]
             _r = cell_origin[0, droplet] + 1
             calculate_displacement_body_common(
-                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+                dim,
+                droplet,
+                scheme,
+                _l,
+                _r,
+                displacement,
+                courant,
+                position_in_cell,
+                n_substeps,
             )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
     # pylint: disable=too-many-arguments
     def calculate_displacement_body_2d(
-        dim, scheme, displacement, courant, cell_origin, position_in_cell
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -48,12 +58,20 @@ class DisplacementMethods(BackendMethods):
                 cell_origin[1, droplet] + 1 * (dim == 1),
             )
             calculate_displacement_body_common(
-                dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell
+                dim,
+                droplet,
+                scheme,
+                _l,
+                _r,
+                displacement,
+                courant,
+                position_in_cell,
+                n_substeps,
             )
 
     # pylint: disable=too-many-arguments
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell
+        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
@@ -65,6 +83,7 @@ class DisplacementMethods(BackendMethods):
                 courant.data,
                 cell_origin.data,
                 position_in_cell.data,
+                n_substeps,
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
@@ -74,6 +93,7 @@ class DisplacementMethods(BackendMethods):
                 courant.data,
                 cell_origin.data,
                 position_in_cell.data,
+                n_substeps,
             )
         else:
             raise NotImplementedError()
