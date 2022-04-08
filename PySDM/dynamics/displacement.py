@@ -77,7 +77,10 @@ class Displacement:
                     )
                     max_abs_delta_courant /= self._n_substeps
                     error_estimate = max(
-                        error_estimate, 1 / (1 / max_abs_delta_courant - 1)
+                        error_estimate,
+                        0
+                        if max_abs_delta_courant == 0
+                        else 1 / (1 / max_abs_delta_courant - 1),
                     )
 
     def __call__(self):
