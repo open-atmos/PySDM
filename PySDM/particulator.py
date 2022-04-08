@@ -11,7 +11,7 @@ from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
-class Particulator:
+class Particulator:  # pylint: disable=too-many-public-methods
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
