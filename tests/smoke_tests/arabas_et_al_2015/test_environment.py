@@ -24,7 +24,7 @@ def test_environment():
         np.testing.assert_array_equal(rhod[column, :], rhod[0, :])
 
     # Assert - decreasing with altitude
-    rhod_below = 2 * si.kilograms / si.metre ** 3
+    rhod_below = 2 * si.kilograms / si.metre**3
     for level in range(settings.grid[1]):
         rhod_above = rhod[0, level]
         assert rhod_above < rhod_below

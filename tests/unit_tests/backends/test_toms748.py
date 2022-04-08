@@ -16,7 +16,7 @@ from PySDM.formulae import Formulae
 
 @numba.njit()
 def f1(x):
-    return x ** 2 - 2 * x - 1
+    return x**2 - 2 * x - 1
 
 
 @numba.njit()

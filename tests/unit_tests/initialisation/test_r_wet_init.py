@@ -46,13 +46,13 @@ def test_r_wet_init(r_dry, plot=False):
         f_org,
     )
     RH_eq = Env.particulator.formulae.hygroscopicity.RH_eq(
-        r_wet, T, kappa, r_dry ** 3, sigma
+        r_wet, T, kappa, r_dry**3, sigma
     )
     pyplot.plot(r_wet / si.nm, (RH_eq - 1) * 100, label="RH_eq")
     pyplot.axhline((RH - 1) * 100, color="orange", label="RH")
     pyplot.axvline(r_dry / si.nm, label="a", color="red")
     pyplot.axvline(
-        Env.particulator.formulae.hygroscopicity.r_cr(kappa, r_dry ** 3, T, const.sgm_w)
+        Env.particulator.formulae.hygroscopicity.r_cr(kappa, r_dry**3, T, const.sgm_w)
         / si.nm,
         color="green",
         label="b",

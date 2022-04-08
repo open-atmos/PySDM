@@ -25,14 +25,14 @@ class TestSDMBreakup:
         # Arrange
         attributes = {
             "n": np.asarray([1, 1]),
-            "volume": np.asarray([100 * si.um ** 3, 100 * si.um ** 3]),
+            "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
         }
-        breakup = Breakup(ConstantK(1 * si.cm ** 3 / si.s), AlwaysN(4), adaptive=False)
+        breakup = Breakup(ConstantK(1 * si.cm**3 / si.s), AlwaysN(4), adaptive=False)
         nsteps = 10
 
         n_sd = len(attributes["n"])
         builder = Builder(n_sd, backend_class())
-        builder.set_environment(Box(dv=1 * si.cm ** 3, dt=dt))
+        builder.set_environment(Box(dv=1 * si.cm**3, dt=dt))
         builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
 
@@ -72,7 +72,7 @@ class TestSDMBreakup:
         particulator = builder.build(
             attributes={
                 "n": np.asarray(n_init),
-                "volume": np.asarray([100 * si.um ** 3, 100 * si.um ** 3]),
+                "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
             },
             products=(),
         )
@@ -145,7 +145,7 @@ class TestSDMBreakup:
         particulator = builder.build(
             attributes={
                 "n": np.asarray(n_init),
-                "volume": np.asarray([100 * si.um ** 3] * n_sd),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(),
         )

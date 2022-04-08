@@ -54,7 +54,7 @@ DF = DISSOCIATION_FACTORS["SO2"](H, eqc, 0)
 O3_react_consts = (
     k0.data[0]
     + k1.data[0] * K_SO2.data[0] / H
-    + k2.data[0] * K_SO2.data[0] * K_HSO3.data[0] / H ** 2
+    + k2.data[0] * K_SO2.data[0] * K_HSO3.data[0] / H**2
 )
 H2O2_react_consts = k3.data[0] * K_SO2.data[0] / (1.0 + k4 * H)
 

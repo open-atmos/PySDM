@@ -73,14 +73,14 @@ def test_initialisation(backend_class, plot=False):
             color = str(0.75 * (level / (n_levels - 1)))
             pyplot.step(
                 r_bins[:-1] * si.metres / si.micrometres,
-                histogram_dry[:, level] / si.metre ** 3 * si.centimetre ** 3,
+                histogram_dry[:, level] / si.metre**3 * si.centimetre**3,
                 where="post",
                 color=color,
                 label="level " + str(level),
             )
             pyplot.step(
                 r_bins[:-1] * si.metres / si.micrometres,
-                histogram_wet[:, level] / si.metre ** 3 * si.centimetre ** 3,
+                histogram_wet[:, level] / si.metre**3 * si.centimetre**3,
                 where="post",
                 color=color,
                 linestyle="--",
