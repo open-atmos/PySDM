@@ -30,9 +30,9 @@ def test_accomodation_coefficients(constants):
     Kn = lmbd / r
     xx_D = 4 / 3 / constants["MAC"]
     np.testing.assert_almost_equal(
-        D_dk, D * (1 + Kn) / (1 + (xx_D + 0.377) * Kn + xx_D * Kn ** 2)
+        D_dk, D * (1 + Kn) / (1 + (xx_D + 0.377) * Kn + xx_D * Kn**2)
     )
     xx_K = 4 / 3 / constants["HAC"]
     np.testing.assert_almost_equal(
-        K_dk, K * (1 + Kn) / (1 + (xx_K + 0.377) * Kn + xx_K * Kn ** 2)
+        K_dk, K * (1 + Kn) / (1 + (xx_K + 0.377) * Kn + xx_K * Kn**2)
     )

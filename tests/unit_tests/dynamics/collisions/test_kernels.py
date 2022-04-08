@@ -16,7 +16,7 @@ class TestGolovin:
         formulae = Formulae()
         b = 1.5e3
         x_0 = formulae.trivia.volume(radius=30.531e-6)
-        N_0 = 2 ** 23
+        N_0 = 2**23
         sut = Golovin(b)
 
         # Act

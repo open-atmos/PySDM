@@ -59,12 +59,12 @@ class TestMaths:
 
         assert abs(discr_mean - true_mean) / true_mean < 0.01e-1
 
-        true_mrsq = true_var + true_mean ** 2
+        true_mrsq = true_var + true_mean**2
         assert abs(discr_mean_radius_squared - true_mrsq) / true_mrsq < 0.05e-1
 
         assert discr_zero_T == discr_zero
         assert discr_mean_T == 300.0
-        np.testing.assert_approx_equal(discr_mean_T_squared, 300.0 ** 2, significant=6)
+        np.testing.assert_approx_equal(discr_mean_T_squared, 300.0**2, significant=6)
 
     @staticmethod
     # pylint: disable=redefined-outer-name

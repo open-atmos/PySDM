@@ -18,7 +18,7 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 def check(n_part, dv, n_sd, rho, state, step):
-    check_lwc = 1e-3 * si.kilogram / si.metre ** 3
+    check_lwc = 1e-3 * si.kilogram / si.metre**3
     check_ksi = n_part * dv / n_sd
 
     # multiplicities
@@ -41,14 +41,14 @@ def test_coalescence(backend_class, croupier, adaptive):
         return
     # Arrange
     formulae = Formulae(seed=256)
-    n_sd = 2 ** 14
+    n_sd = 2**14
     steps = [0, 100, 200]
     X0 = formulae.trivia.volume(radius=30.531e-6)
-    n_part = 2 ** 23 / si.metre ** 3
-    dv = 1e6 * si.metres ** 3
+    n_part = 2**23 / si.metre**3
+    dv = 1e6 * si.metres**3
     dt = 1 * si.seconds
     norm_factor = n_part * dv
-    rho = 1000 * si.kilogram / si.metre ** 3
+    rho = 1000 * si.kilogram / si.metre**3
 
     kernel = Golovin(b=1.5e3)  # [s-1]
     spectrum = Exponential(norm_factor=norm_factor, scale=X0)
