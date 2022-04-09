@@ -18,7 +18,7 @@ class DisplacementSettings:
         self.sedimentation = False
         self.dt = None
 
-    def get_displacement(self, backend, scheme):
+    def get_displacement(self, backend, scheme, adaptive=True):
         formulae = Formulae(particle_advection=scheme)
         particulator = DummyParticulator(backend, n_sd=len(self.n), formulae=formulae)
         particulator.environment = DummyEnvironment(
@@ -36,7 +36,7 @@ class DisplacementSettings:
             "position in cell": position_in_cell,
         }
         particulator.build(attributes)
-        sut = Displacement(enable_sedimentation=self.sedimentation)
+        sut = Displacement(enable_sedimentation=self.sedimentation, adaptive=adaptive)
         sut.register(particulator)
         sut.upload_courant_field(self.courant_field_data)
 

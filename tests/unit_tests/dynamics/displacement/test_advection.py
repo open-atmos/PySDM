@@ -57,7 +57,7 @@ class TestExplicitEulerWithInterpolation:
         )
         settings.positions = [[weight], [0]]
         sut, particulator = settings.get_displacement(
-            backend_class, scheme="ExplicitInSpace"
+            backend_class, scheme="ExplicitInSpace", adaptive=False
         )
 
         # Act
@@ -88,7 +88,7 @@ class TestExplicitEulerWithInterpolation:
         )
         settings.positions = [[0], [weight]]
         sut, particulator = settings.get_displacement(
-            backend_class, scheme="ExplicitInSpace"
+            backend_class, scheme="ExplicitInSpace", adaptive=False
         )
 
         # Act

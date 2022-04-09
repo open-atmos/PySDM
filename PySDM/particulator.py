@@ -11,7 +11,7 @@ from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
-class Particulator:
+class Particulator:  # pylint: disable=too-many-public-methods
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
@@ -370,3 +370,16 @@ class Particulator:
         )
         self.attributes.sanitize()
         return res
+
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        for dim in range(len(self.environment.mesh.grid)):
+            self.backend.calculate_displacement(
+                dim,
+                displacement,
+                courant[dim],
+                cell_origin,
+                position_in_cell,
+                n_substeps,
+            )
