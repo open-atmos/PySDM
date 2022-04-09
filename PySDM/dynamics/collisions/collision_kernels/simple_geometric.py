@@ -1,7 +1,6 @@
 """
 basic geometric kernel
 """
-from PySDM.physics import constants as const
 
 
 class SimpleGeometric:
