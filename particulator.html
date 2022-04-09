@@ -40,7 +40,7 @@ from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 from PySDM.impl.particle_attributes import ParticleAttributes
 
 
-class Particulator:
+class Particulator:  # pylint: disable=too-many-public-methods
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
@@ -398,7 +398,20 @@ class Particulator:
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
-        return res</code></pre>
+        return res
+
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        for dim in range(len(self.environment.mesh.grid)):
+            self.backend.calculate_displacement(
+                dim,
+                displacement,
+                courant[dim],
+                cell_origin,
+                position_in_cell,
+                n_substeps,
+            )</code></pre>
 </details>
 </section>
 <section>
@@ -420,7 +433,7 @@ class Particulator:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Particulator:
+<pre><code class="python">class Particulator:  # pylint: disable=too-many-public-methods
     def __init__(self, n_sd, backend: BackendMethods):
         assert isinstance(backend, BackendMethods)
         self.__n_sd = n_sd
@@ -778,7 +791,20 @@ class Particulator:
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
-        return res</code></pre>
+        return res
+
+    def calculate_displacement(
+        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        for dim in range(len(self.environment.mesh.grid)):
+            self.backend.calculate_displacement(
+                dim,
+                displacement,
+                courant[dim],
+                cell_origin,
+                position_in_cell,
+                n_substeps,
+            )</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -860,6 +886,29 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def adaptive_sdm_end(self, dt_left):
     return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.particulator.Particulator.calculate_displacement"><code class="name flex">
+<span>def <span class="ident">calculate_displacement</span></span>(<span>self, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate_displacement(
+    self, displacement, courant, cell_origin, position_in_cell, n_substeps
+):
+    for dim in range(len(self.environment.mesh.grid)):
+        self.backend.calculate_displacement(
+            dim,
+            displacement,
+            courant[dim],
+            cell_origin,
+            position_in_cell,
+            n_substeps,
+        )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.chem_recalculate_cell_data"><code class="name flex">
@@ -1324,6 +1373,7 @@ def n_sd(self) -&gt; int:
 <li><code><a title="PySDM.particulator.Particulator.Random" href="#PySDM.particulator.Particulator.Random">Random</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.Storage" href="#PySDM.particulator.Particulator.Storage">Storage</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.adaptive_sdm_end" href="#PySDM.particulator.Particulator.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.calculate_displacement" href="#PySDM.particulator.Particulator.calculate_displacement">calculate_displacement</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.chem_recalculate_cell_data" href="#PySDM.particulator.Particulator.chem_recalculate_cell_data">chem_recalculate_cell_data</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.chem_recalculate_drop_data" href="#PySDM.particulator.Particulator.chem_recalculate_drop_data">chem_recalculate_drop_data</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.collision_coalescence_breakup" href="#PySDM.particulator.Particulator.collision_coalescence_breakup">collision_coalescence_breakup</a></code></li>
