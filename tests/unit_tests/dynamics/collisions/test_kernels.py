@@ -2,16 +2,19 @@
 import numpy as np
 import pytest
 
-from PySDM.dynamics.collisions.collision_kernels import Golovin
+from PySDM import Builder
+from PySDM.backends import CPU
+from PySDM.dynamics.collisions.collision_kernels import Geometric, Golovin
+from PySDM.environments import Box
 from PySDM.formulae import Formulae
 
 
-class TestGolovin:
+class TestKernels:
     @staticmethod
     @pytest.mark.parametrize(
         "x", [pytest.param(5e-10), pytest.param(np.full(10, 5e-10))]
     )
-    def test_analytic_solution_underflow(x):
+    def test_golovin_analytic_solution_underflow(x):
         # Arrange
         formulae = Formulae()
         b = 1.5e3
@@ -24,3 +27,28 @@ class TestGolovin:
 
         # Assert
         assert np.all(np.isfinite(value))
+
+    @staticmethod
+    @pytest.mark.parametrize("collection_efficiency", (0.1, 1))
+    @pytest.mark.parametrize("x", ("volume", "radius"))
+    def test_geometric(collection_efficiency, x):
+        # arrange
+        volume = np.asarray([44.0, 666.0])
+
+        builder = Builder(backend=CPU(), n_sd=volume.size)
+        sut = Geometric(collection_efficiency=collection_efficiency, x=x)
+        sut.register(builder)
+        builder.request_attribute(x)
+        builder.set_environment(Box(dv=None, dt=None))
+        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+
+        _PairwiseStorage = builder.particulator.PairwiseStorage
+        _Indicator = builder.particulator.PairIndicator
+        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
+        is_first_in_pair = _Indicator(length=volume.size)
+
+        # act
+        sut(output, is_first_in_pair=is_first_in_pair)
+
+        # assert
+        np.testing.assert_allclose(output.to_ndarray(), [np.nan, np.nan])
