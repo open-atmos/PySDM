@@ -1,8 +1,10 @@
 """
-two-dimensional sampling for singular immersion freezing (freezing temperature and
- immersed surface area pdf) WORK IN PROGRESS TODO #599
+two-dimensional sampling for singular immersion freezing: constant-multiplicity
+ sampling in the freezing temperature vs. immersed surface area phase space
+ realised using [vinecopulib](https://vinecopulib.github.io/pyvinecopulib/)
 """
 import numpy as np
+import pyvinecopulib as pv
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const
 
@@ -31,8 +33,6 @@ class SpectroGlacialSampling:
     def sample(self, n_sd):
         copula = False
         if copula:
-            import pyvinecopulib as pv  # pylint: disable=import-outside-toplevel
-
             simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
                 1 - simulated[:, DIM_TEMP],
