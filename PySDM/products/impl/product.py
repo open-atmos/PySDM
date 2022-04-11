@@ -5,7 +5,6 @@ from abc import abstractmethod
 from typing import Optional
 import re
 import inspect
-import numpy as np
 import pint
 from PySDM.physics.constants import PPB, PPM, PPT
 
@@ -30,7 +29,9 @@ class Product:
         self.particulator = builder.particulator
         self.formulae = self.particulator.formulae
         self.shape = self.particulator.mesh.grid
-        self.buffer = np.empty(self.particulator.mesh.grid)
+
+    def set_buffer(self, buffer):
+        self.buffer = buffer
 
     def _download_to_buffer(self, storage):
         storage.download(self.buffer.ravel())

@@ -5,7 +5,7 @@ import inspect
 import numpy as np
 from PySDM.particulator import Particulator
 from PySDM.initialisation.discretise_multiplicities import discretise_multiplicities  # TODO #324
-from PySDM.impl.particle_attributes_factory import ParticlesFactory
+from PySDM.impl.particle_attributes_factory import ParticleAttributesFactory
 from PySDM.impl.wall_timer import WallTimer
 from PySDM.attributes.impl.mapper import get_class as attr_class
 from PySDM.attributes.physics.multiplicities import Multiplicities
@@ -38,11 +38,14 @@ class Builder:
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        self.particulator.dynamics[dynamic.__class__.__name__] = dynamic
+        key = inspect.getmro(type(dynamic))[-2].__name__
+        assert key not in self.particulator.dynamics
+        self.particulator.dynamics[key] = dynamic
 
-    def register_product(self, product):
+    def register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise Exception(f'product name "{product.name}" already registered')
+        product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product
 
@@ -62,8 +65,9 @@ class Builder:
         for dynamic in self.particulator.dynamics.values():
             dynamic.register(self)
 
+        single_buffer_for_all_products = np.empty(self.particulator.mesh.grid)
         for product in products:
-            self.register_product(product)
+            self.register_product(product, single_buffer_for_all_products)
 
         for attribute in attributes:
             self.request_attribute(attribute)
@@ -77,7 +81,7 @@ class Builder:
         attributes['n'] = int_caster(attributes['n'])
         if self.particulator.mesh.dimension == 0:
             attributes['cell id'] = np.zeros_like(attributes['n'], dtype=np.int64)
-        self.particulator.attributes = ParticlesFactory.attributes(
+        self.particulator.attributes = ParticleAttributesFactory.attributes(
             self.particulator,
             self.req_attr,
             attributes

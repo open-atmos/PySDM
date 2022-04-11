@@ -1,3 +1,0 @@
-"""
-particle terminal velocity formulae
-"""

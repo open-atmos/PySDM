@@ -8,11 +8,12 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
-    def __init__(self, radius_bins_edges, name=None, unit='dimensionless'):
+    def __init__(self, radius_bins_edges, name=None, unit='dimensionless', dry=False):
         super().__init__(name=name, unit=unit, attr_unit='m')
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
+        self.attr = ('dry ' if dry else '') + 'volume'
 
     def register(self, builder):
         builder.request_attribute('volume')
@@ -26,7 +27,7 @@ class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
 
     def _impl(self, **kwargs):
         vals = np.empty([self.particulator.mesh.n_cell, len(self.attr_bins_edges) - 1])
-        self._recalculate_spectrum_moment(attr='volume', rank=1, filter_attr='volume')
+        self._recalculate_spectrum_moment(attr=self.attr, rank=1, filter_attr=self.attr)
 
         for i in range(vals.shape[1]):
             self._download_spectrum_moment_to_buffer(rank=1, bin_number=i)

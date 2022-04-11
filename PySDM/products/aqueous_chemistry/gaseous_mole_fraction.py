@@ -2,7 +2,7 @@
 mole fractions of gaseous compounds relevant for aqueous chemistry
 """
 from PySDM.products.impl.product import Product
-from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
+from PySDM.dynamics.impl.chemistry_utils import GASEOUS_COMPOUNDS
 
 
 class GaseousMoleFraction(Product):

@@ -1,7 +1,7 @@
 """
 particle (wet) volume, key attribute for coalescence
-in simmulation involving mixed-phase clouds, positive values correspond to
-liquid water and nagative values to ice
+in simulation involving mixed-phase clouds, positive values correspond to
+liquid water and negative values to ice
 """
 from PySDM.attributes.impl.extensive_attribute import ExtensiveAttribute
 

@@ -120,24 +120,36 @@ class Particulator:
             cell_id=self.attributes['cell id']
         )
 
-    def coalescence(self, gamma, is_first_in_pair):
-        self.backend.coalescence(
-            multiplicity=self.attributes['n'],
-            idx=self.attributes._ParticleAttributes__idx,
-            attributes=self.attributes.get_extensive_attribute_storage(),
-            gamma=gamma,
-            healthy=self.attributes._ParticleAttributes__healthy_memory,
-            is_first_in_pair=is_first_in_pair
-        )
+    def collision_coalescence_breakup(
+        self, enable_breakup,
+        gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, is_first_in_pair
+    ):
+        idx = self.attributes._ParticleAttributes__idx
+        healthy = self.attributes._ParticleAttributes__healthy_memory
+        cell_id = self.attributes["cell id"]
+        multiplicity = self.attributes['n']
+        attributes = self.attributes.get_extensive_attribute_storage()
+        if enable_breakup:
+            self.backend.collision_coalescence_breakup(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma, rand=rand,
+                Ec=Ec, Eb=Eb, n_fragment=n_fragment, healthy=healthy, cell_id=cell_id,
+                coalescence_rate=coalescence_rate, breakup_rate=breakup_rate,
+                is_first_in_pair=is_first_in_pair
+            )
+        else:
+            self.backend.collision_coalescence(
+                multiplicity=multiplicity, idx=idx, attributes=attributes, gamma=gamma,
+                healthy=healthy, cell_id=cell_id, coalescence_rate=coalescence_rate,
+                is_first_in_pair=is_first_in_pair
+            )
         self.attributes.healthy = bool(self.attributes._ParticleAttributes__healthy_memory)
         self.attributes.sanitize()
         self.attributes.mark_updated('n')
         for key in self.attributes.get_extensive_attribute_keys():
             self.attributes.mark_updated(key)
 
-    def oxidation(self,
-        kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag
-    ):
+    def oxidation(self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors,
+                  do_chemistry_flag):
         self.backend.oxidation(
             n_sd=self.n_sd,
             cell_ids=self.attributes['cell id'],
@@ -222,7 +234,8 @@ class Particulator:
     def moments(self, moment_0, moments,
                 specs: dict,
                 attr_name='volume', attr_range=(-np.inf, np.inf),
-                weighting_attribute='volume', weighting_rank=0):
+                weighting_attribute='volume', weighting_rank=0,
+                skip_division_by_m0=False):
         if len(specs) == 0:
             raise ValueError("empty specs passed")
         attr_data, ranks = [], []
@@ -250,7 +263,8 @@ class Particulator:
             attr_range[0], attr_range[1],
             self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
-            weighting_rank=weighting_rank
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0
         )
 
     def spectrum_moments(self, moment_0, moments, attr, rank, attr_bins, attr_name='volume',

@@ -8,7 +8,7 @@ from PySDM.builder import Builder
 from PySDM.dynamics import Coalescence
 from PySDM.environments import Box
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM.physics.coalescence_kernels import Golovin, Geometric, Electric, Hydrodynamic
+from PySDM.dynamics.collisions.collision_kernels import Golovin, Geometric, Electric, Hydrodynamic
 from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, '_pytestfixturefunction')

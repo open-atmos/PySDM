@@ -3,7 +3,7 @@ from matplotlib import pyplot
 import numpy as np
 import pytest
 from PySDM_examples.Kreidenweis_et_al_2003 import Settings, Simulation
-from PySDM.physics.aqueous_chemistry.support import GASEOUS_COMPOUNDS
+from PySDM.dynamics.impl.chemistry_utils import GASEOUS_COMPOUNDS
 from PySDM.physics import si
 
 

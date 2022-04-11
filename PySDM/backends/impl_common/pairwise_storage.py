@@ -27,4 +27,7 @@ def make_PairwiseStorage(backend):
         def sum(self, other, is_first_in_pair):
             backend.sum_pair(self, other, is_first_in_pair, other.idx)
 
+        def multiply(self, other, is_first_in_pair):
+            backend.multiply_pair(self, other, is_first_in_pair, other.idx)
+
     return PairwiseStorage

@@ -127,9 +127,11 @@ def _formula(func, constants, dimensional_analysis, **kw):
     loc = {}
     for arg_name in ('_', 'const'):
         source = source.replace(f'def {func.__name__}({arg_name},', f'def {func.__name__}(')
+
+    extras = func.__extras if hasattr(func, '__extras') else {}
     exec(  # pylint:disable=exec-used
         source,
-        {'const': constants, 'np': np},
+        {'const': constants, 'np': np, **extras},
         loc
     )
     return numba.njit(

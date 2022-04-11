@@ -5,7 +5,7 @@ from PySDM import Formulae
 from PySDM.backends.impl_numba.methods.chemistry_methods import ChemistryMethods
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.physics import si
-from PySDM.physics.aqueous_chemistry.support import KineticConsts, EquilibriumConsts, \
+from PySDM.dynamics.impl.chemistry_utils import KineticConsts, EquilibriumConsts, \
     DISSOCIATION_FACTORS, k4
 from PySDM.physics.constants import PI_4_3
 from PySDM.physics.constants_defaults import T_STP
