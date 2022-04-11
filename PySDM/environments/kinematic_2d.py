@@ -35,9 +35,6 @@ class Kinematic2D(Moist):
     def dv(self):
         return self.mesh.dv
 
-    def init_attributes(
-        self, *, spatial_discretisation, kappa, dry_radius_spectrum, rtol=default_rtol
-    ):
     def init_attributes(self, *,
                         spatial_discretisation,
                         kappa,
