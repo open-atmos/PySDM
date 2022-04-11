@@ -6,7 +6,6 @@ from .storage_utils import StorageSignature
 
 def make_IndexedStorage(backend):
     class IndexedStorage(backend.Storage):
-
         def __init__(self, idx, signature):
             super().__init__(signature)
             assert idx is not None
@@ -23,8 +22,9 @@ def make_IndexedStorage(backend):
 
         @staticmethod
         def indexed(idx, storage):
-            return IndexedStorage(idx,
-                                  StorageSignature(storage.data, storage.shape, storage.dtype))
+            return IndexedStorage(
+                idx, StorageSignature(storage.data, storage.shape, storage.dtype)
+            )
 
         @staticmethod
         def empty(idx, shape, dtype):
@@ -45,10 +45,10 @@ def make_IndexedStorage(backend):
                 return result
             if dim == 1:
                 idx = self.idx.to_ndarray()
-                return result[idx[:len(self)]]
+                return result[idx[: len(self)]]
             if dim == 2:
                 idx = self.idx.to_ndarray()
-                return result[:, idx[:len(self)]]
+                return result[:, idx[: len(self)]]
             raise NotImplementedError()
 
     return IndexedStorage

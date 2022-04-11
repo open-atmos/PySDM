@@ -1,22 +1,22 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from numpy.testing import assert_approx_equal
 import pytest
-from PySDM.initialisation.spectra import Exponential, Lognormal, Sum
+from numpy.testing import assert_approx_equal
+
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
+from PySDM.initialisation.spectra import Exponential, Lognormal, Sum
 
 
 class TestLognormal:
-
     @staticmethod
     def test_size_distribution_n_part():
         # Arrange
         s = 1.5
         n_part = 256
-        sut = Lognormal(n_part, .5e-5, s)
+        sut = Lognormal(n_part, 0.5e-5, s)
 
         # Act
-        m, dm = np.linspace(.1e-6, 100e-6, 100, retstep=True)
+        m, dm = np.linspace(0.1e-6, 100e-6, 100, retstep=True)
         sd = sut.size_distribution(m)
 
         # Assert
@@ -30,23 +30,23 @@ class TestLognormal:
         sut = Lognormal(1, r_mode, s)
 
         # Act
-        m, _ = np.linspace(.01e-6, 100e-6, 10000, retstep=True)
+        m, _ = np.linspace(0.01e-6, 100e-6, 10000, retstep=True)
         sd = sut.size_distribution(m)
 
         # Assert
-        assert_approx_equal(
-            m[sd == np.amax(sd)],
-            r_mode,
-            2
-        )
+        assert_approx_equal(m[sd == np.amax(sd)], r_mode, 2)
 
 
 class TestExponential:
-
     @staticmethod
-    @pytest.mark.parametrize("scale", [
-        pytest.param(0.5), pytest.param(1), pytest.param(1.5),
-    ])
+    @pytest.mark.parametrize(
+        "scale",
+        [
+            pytest.param(0.5),
+            pytest.param(1),
+            pytest.param(1.5),
+        ],
+    )
     def test_size_distribution_n_part(scale):
         # Arrange
         scale = 1
@@ -97,11 +97,14 @@ class TestSum:
         np.testing.assert_array_equal(sut_c, exp_c)
 
     @staticmethod
-    @pytest.mark.parametrize("distributions", [
-        pytest.param((exponential,), id="single exponential"),
-        pytest.param((lognormal,), id="single lognormal"),
-        pytest.param((exponential, exponential), id="2 exponentials")
-    ])
+    @pytest.mark.parametrize(
+        "distributions",
+        [
+            pytest.param((exponential,), id="single exponential"),
+            pytest.param((lognormal,), id="single lognormal"),
+            pytest.param((exponential, exponential), id="2 exponentials"),
+        ],
+    )
     def test_percentiles(distributions):
         # Arrange
         sut = Sum(distributions)

@@ -3,8 +3,9 @@ CPU implementation of backend methods wrapping basic physics formulae
 """
 import numba
 from numba import prange
-from PySDM.backends.impl_numba import conf
+
 from PySDM.backends.impl_common.backend_methods import BackendMethods
+from PySDM.backends.impl_numba import conf
 
 
 class PhysicsMethods(BackendMethods):
@@ -21,32 +22,37 @@ class PhysicsMethods(BackendMethods):
         phys_r_cr = self.formulae.hygroscopicity.r_cr
         const = self.formulae.constants
 
-        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def explicit_euler_body(y, dt, dy_dt):
             y[:] = explicit_euler(y, dt, dy_dt)
+
         self.explicit_euler_body = explicit_euler_body
 
-        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def critical_volume(v_cr, kappa, f_org, v_dry, v_wet, T, cell):
             for i in prange(len(v_cr)):  # pylint: disable=not-an-iterable
                 sigma = phys_sigma(T[cell[i]], v_wet[i], v_dry[i], f_org[i])
-                v_cr[i] = phys_volume(phys_r_cr(
-                    kp=kappa[i],
-                    rd3=v_dry[i] / const.PI_4_3,
-                    T=T[cell[i]],
-                    sgm=sigma
-                ))
+                v_cr[i] = phys_volume(
+                    phys_r_cr(
+                        kp=kappa[i],
+                        rd3=v_dry[i] / const.PI_4_3,
+                        T=T[cell[i]],
+                        sgm=sigma,
+                    )
+                )
+
         self.critical_volume_body = critical_volume
 
-        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def temperature_pressure_RH_body(rhod, thd, qv, T, p, RH):
             for i in prange(T.shape[0]):  # pylint: disable=not-an-iterable
                 T[i] = phys_T(rhod[i], thd[i])
                 p[i] = phys_p(rhod[i], T[i], qv[i])
                 RH[i] = phys_pv(p[i], qv[i]) / pvs_C(T[i] - const.T0)
+
         self.temperature_pressure_RH_body = temperature_pressure_RH_body
 
-        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def terminal_velocity_body(values, radius, k1, k2, k3, r1, r2):
             for i in prange(len(values)):  # pylint: disable=not-an-iterable
                 if radius[i] < r1:
@@ -55,19 +61,23 @@ class PhysicsMethods(BackendMethods):
                     values[i] = k2 * radius[i]
                 else:
                     values[i] = k3 * radius[i] ** (1 / 2)
+
         self.terminal_velocity_body = terminal_velocity_body
 
-        @numba.njit(**{**conf.JIT_FLAGS, 'fastmath': self.formulae.fastmath})
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
         def a_w_ice_body(T_in, p_in, RH_in, qv_in, a_w_ice_out):
             for i in prange(T_in.shape[0]):  # pylint: disable=not-an-iterable
                 pvi = pvi_C(T_in[i] - const.T0)
                 pv = phys_pv(p_in[i], qv_in[i])
                 pvs = pv / RH_in[i]
                 a_w_ice_out[i] = pvi / pvs
+
         self.a_w_ice_body = a_w_ice_body
 
     def temperature_pressure_RH(self, rhod, thd, qv, T, p, RH):
-        self.temperature_pressure_RH_body(rhod.data, thd.data, qv.data, T.data, p.data, RH.data)
+        self.temperature_pressure_RH_body(
+            rhod.data, thd.data, qv.data, T.data, p.data, RH.data
+        )
 
     def terminal_velocity(self, values, radius, k1, k2, k3, r1, r2):
         self.terminal_velocity_body(values, radius, k1, k2, k3, r1, r2)

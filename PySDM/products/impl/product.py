@@ -1,15 +1,17 @@
 """
 logic around the `PySDM.products.impl.product.Product` - parent class for all products
 """
+import inspect
+import re
 from abc import abstractmethod
 from typing import Optional
-import re
-import inspect
+
 import pint
+
 from PySDM.physics.constants import PPB, PPM, PPT
 
 _UNIT_REGISTRY = pint.UnitRegistry()
-_CAMEL_CASE_PATTERN = re.compile(r'[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])')
+_CAMEL_CASE_PATTERN = re.compile(r"[A-Z]?[a-z]+|[A-Z]+(?![^A-Z])")
 
 
 class Product:
@@ -38,13 +40,13 @@ class Product:
 
     @staticmethod
     def _parse_unit(unit: str):
-        if unit in ('%', 'percent'):
-            return .01 * _UNIT_REGISTRY.dimensionless
-        if unit in ('PPB', 'ppb'):
+        if unit in ("%", "percent"):
+            return 0.01 * _UNIT_REGISTRY.dimensionless
+        if unit in ("PPB", "ppb"):
             return PPB * _UNIT_REGISTRY.dimensionless
-        if unit in ('PPM', 'ppm'):
+        if unit in ("PPM", "ppm"):
             return PPM * _UNIT_REGISTRY.dimensionless
-        if unit in ('PPT', 'ppt'):
+        if unit in ("PPT", "ppt"):
             return PPT * _UNIT_REGISTRY.dimensionless
         return _UNIT_REGISTRY.parse_expression(unit)
 
@@ -52,32 +54,40 @@ class Product:
     def _camel_case_to_words(string: str):
         words = _CAMEL_CASE_PATTERN.findall(string)
         words = (word if word.isupper() else word.lower() for word in words)
-        return ' '.join(words)
+        return " ".join(words)
 
     def __check_unit(self):
         init = inspect.signature(self.__init__)
-        if 'unit' not in init.parameters:
-            raise AssertionError(f"method __init__ of class {type(self).__name__}"
-                                 f" is expected to have a unit parameter")
+        if "unit" not in init.parameters:
+            raise AssertionError(
+                f"method __init__ of class {type(self).__name__}"
+                f" is expected to have a unit parameter"
+            )
 
-        default_unit_arg = init.parameters['unit'].default
+        default_unit_arg = init.parameters["unit"].default
 
-        if default_unit_arg is None or str(default_unit_arg).strip() == '':
-            raise AssertionError(f"unit parameter of {type(self).__name__}.__init__"
-                                 f" is expected to have a non-empty default value")
+        if default_unit_arg is None or str(default_unit_arg).strip() == "":
+            raise AssertionError(
+                f"unit parameter of {type(self).__name__}.__init__"
+                f" is expected to have a non-empty default value"
+            )
 
         default_unit = self._parse_unit(default_unit_arg)
 
         if default_unit.to_base_units().magnitude != 1:
-            raise AssertionError(f'default value "{default_unit_arg}"'
-                                 f' of {type(self).__name__}.__init__() unit parameter'
-                                 f' is not a base SI unit')
+            raise AssertionError(
+                f'default value "{default_unit_arg}"'
+                f" of {type(self).__name__}.__init__() unit parameter"
+                f" is not a base SI unit"
+            )
 
         if self._unit.dimensionality != default_unit.dimensionality:
-            raise AssertionError(f'provided unit ({self._unit}) has different dimensionality'
-                                 f' ({self._unit.dimensionality}) than the default one'
-                                 f' ({default_unit.dimensionality})'
-                                 f' for product {type(self).__name__}')
+            raise AssertionError(
+                f"provided unit ({self._unit}) has different dimensionality"
+                f" ({self._unit.dimensionality}) than the default one"
+                f" ({default_unit.dimensionality})"
+                f" for product {type(self).__name__}"
+            )
 
     @property
     def unit(self):

@@ -3,16 +3,26 @@ default values for constants which can be altered by providing alternative
 values in a constants dictionary passed to Formulae __init__ method
 """
 import numpy as np
-from scipy import constants as sci
 from chempy import Substance
-from .constants import si, M, PI_4_3, ONE_THIRD, THREE, T0, TWO_THIRDS, PI  # pylint: disable=unused-import
+from scipy import constants as sci
+
+from .constants import (  # pylint: disable=unused-import
+    ONE_THIRD,
+    PI,
+    PI_4_3,
+    T0,
+    THREE,
+    TWO_THIRDS,
+    M,
+    si,
+)
 
 Md = (
-        0.78 * Substance.from_formula('N2').mass * si.gram / si.mole +
-        0.21 * Substance.from_formula('O2').mass * si.gram / si.mole +
-        0.01 * Substance.from_formula('Ar').mass * si.gram / si.mole
+    0.78 * Substance.from_formula("N2").mass * si.gram / si.mole
+    + 0.21 * Substance.from_formula("O2").mass * si.gram / si.mole
+    + 0.01 * Substance.from_formula("Ar").mass * si.gram / si.mole
 )
-Mv = Substance.from_formula('H2O').mass * si.gram / si.mole
+Mv = Substance.from_formula("H2O").mass * si.gram / si.mole
 
 R_str = sci.R * si.joule / si.kelvin / si.mole
 N_A = sci.N_A / si.mole
@@ -21,19 +31,19 @@ eps = Mv / Md
 Rd = R_str / Md
 Rv = R_str / Mv
 
-D0 = 2.26e-5 * si.metre ** 2 / si.second
+D0 = 2.26e-5 * si.metre**2 / si.second
 D_exp = 1.81
 
 K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
 
 # mass and heat accommodation coefficients
-MAC = 1.
-HAC = 1.
+MAC = 1.0
+HAC = 1.0
 
 p1000 = 1000 * si.hectopascals
 c_pd = 1005 * si.joule / si.kilogram / si.kelvin
 c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second ** 2
+g_std = sci.g * si.metre / si.second**2
 
 c_pw = 4218 * si.joule / si.kilogram / si.kelvin
 
@@ -51,7 +61,7 @@ FWC_C4 = 0.299291081e-05 * si.hPa / si.K**4
 FWC_C5 = 0.203154182e-07 * si.hPa / si.K**5
 FWC_C6 = 0.702620698e-10 * si.hPa / si.K**6
 FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
-FWC_C8 = -.321582393e-15 * si.hPa / si.K**8
+FWC_C8 = -0.321582393e-15 * si.hPa / si.K**8
 
 FWC_I0 = 6.098689930e000 * si.hPa
 FWC_I1 = 0.499320233e000 * si.hPa / si.K
@@ -82,7 +92,7 @@ L77I_A6 = 1.838826904e-10 * si.hPa / si.K**6
 rho_w = 1 * si.kilograms / si.litres
 rho_i = 916.8 * si.kg / si.metres**3
 pH_w = 7
-sgm_w = 0.072 * si.joule / si.metre ** 2
+sgm_w = 0.072 * si.joule / si.metre**2
 nu_w = Mv / rho_w
 
 p_tri = 611.73 * si.pascal
@@ -96,7 +106,7 @@ k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
 k_l19_b = 1.0456 * si.dimensionless
 k_l19_c = 0.017 / si.kelvin
 
-d_l19_a = .211e-4 * si.metre ** 2 / si.second
+d_l19_a = 0.211e-4 * si.metre**2 / si.second
 d_l19_b = 1.94
 
 MK05_ICE_C1 = 1 * si.Pa

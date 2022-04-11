@@ -1,31 +1,39 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from matplotlib import pyplot
 import pytest
-from PySDM_examples.Szumowski_et_al_1998 import Simulation
+from matplotlib import pyplot
 from PySDM_examples.Arabas_et_al_2015 import Settings, SpinUp
-from PySDM.physics import si
+from PySDM_examples.Szumowski_et_al_1998 import Simulation
+
 from PySDM.formulae import Formulae
-from .dummy_storage import DummyStorage
+from PySDM.physics import si
+
 from ...backends_fixture import backend_class
-assert hasattr(backend_class, '_pytestfixturefunction')
+from .dummy_storage import DummyStorage
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-@pytest.mark.parametrize("fastmath", (
+@pytest.mark.parametrize(
+    "fastmath",
+    (
         pytest.param(False, id="fastmath: False"),
-        pytest.param(True, id="fastmath: True")
-))
+        pytest.param(True, id="fastmath: True"),
+    ),
+)
 # pylint: disable=redefined-outer-name
 def test_spin_up(backend_class, fastmath, plot=False):
     # Arrange
     settings = Settings(Formulae(fastmath=fastmath))
-    settings.dt = .5 * si.second
+    settings.dt = 0.5 * si.second
     settings.grid = (3, 25)
     settings.simulation_time = 20 * settings.dt
     settings.output_interval = 1 * settings.dt
 
     storage = DummyStorage()
-    simulation = Simulation(settings, storage, SpinUp=SpinUp, backend_class=backend_class)
+    simulation = Simulation(
+        settings, storage, SpinUp=SpinUp, backend_class=backend_class
+    )
     simulation.reinit()
 
     # Act

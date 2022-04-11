@@ -11,9 +11,11 @@ class KappaKoehler:
 
     @staticmethod
     def RH_eq(const, r, T, kp, rd3, sgm):
-        return np.exp(
-            (2 * sgm / const.Rv / T / const.rho_w) / r
-        ) * (r**3 - rd3) / (r**3 - rd3 * (1-kp))
+        return (
+            np.exp((2 * sgm / const.Rv / T / const.rho_w) / r)
+            * (r**3 - rd3)
+            / (r**3 - rd3 * (1 - kp))
+        )
 
     @staticmethod
     def r_cr(const, kp, rd3, T, sgm):

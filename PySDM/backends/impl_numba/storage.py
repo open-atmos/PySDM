@@ -2,10 +2,14 @@
 CPU Numpy-based implementation of Storage class
 """
 import numpy as np
-from PySDM.backends.impl_numba import storage_impl as impl
+
 from PySDM.backends.impl_common.storage_utils import (
-    get_data_from_ndarray, StorageSignature, StorageBase, empty
+    StorageBase,
+    StorageSignature,
+    empty,
+    get_data_from_ndarray,
 )
+from PySDM.backends.impl_numba import storage_impl as impl
 
 
 class Storage(StorageBase):
@@ -30,7 +34,9 @@ class Storage(StorageBase):
                 result_data = self.data[item]
                 result_shape = (stop - start, self.shape[1])
             else:
-                raise NotImplementedError("Only 2 or less dimensions array is supported.")
+                raise NotImplementedError(
+                    "Only 2 or less dimensions array is supported."
+                )
             if stop > self.data.shape[0]:
                 raise IndexError(
                     f"requested a slice ({start}:{stop}) of Storage"
@@ -38,13 +44,15 @@ class Storage(StorageBase):
                 )
             result = Storage(StorageSignature(result_data, result_shape, self.dtype))
         elif isinstance(item, tuple) and dim == 2 and isinstance(item[1], slice):
-            result = Storage(StorageSignature(self.data[item[0]], (*self.shape[1:],), self.dtype))
+            result = Storage(
+                StorageSignature(self.data[item[0]], (*self.shape[1:],), self.dtype)
+            )
         else:
             result = self.data[item]
         return result
 
     def __setitem__(self, key, value):
-        if hasattr(value, 'data'):
+        if hasattr(value, "data"):
             self.data[key] = value.data
         else:
             self.data[key] = value
@@ -62,14 +70,14 @@ class Storage(StorageBase):
         return self
 
     def __imul__(self, other):
-        if hasattr(other, 'data'):
+        if hasattr(other, "data"):
             impl.multiply(self.data, other.data)
         else:
             impl.multiply(self.data, other)
         return self
 
     def __itruediv__(self, other):
-        if hasattr(other, 'data'):
+        if hasattr(other, "data"):
             self.data[:] /= other.data[:]
         else:
             self.data[:] /= other
@@ -99,12 +107,12 @@ class Storage(StorageBase):
             data = self.data.reshape(target.shape)
         else:
             data = self.data
-        np.copyto(target, data, casting='safe')
+        np.copyto(target, data, casting="safe")
 
     @staticmethod
     def _get_empty_data(shape, dtype):
         if dtype in (float, Storage.FLOAT):
-            data = np.full(shape, -1., dtype=Storage.FLOAT)
+            data = np.full(shape, -1.0, dtype=Storage.FLOAT)
             dtype = Storage.FLOAT
         elif dtype in (int, Storage.INT):
             data = np.full(shape, -1, dtype=Storage.INT)
@@ -126,7 +134,7 @@ class Storage(StorageBase):
         return get_data_from_ndarray(
             array=array,
             storage_class=Storage,
-            copy_fun=lambda array_astype: array_astype.copy()
+            copy_fun=lambda array_astype: array_astype.copy(),
         )
 
     def amin(self):
@@ -148,7 +156,7 @@ class Storage(StorageBase):
         return self
 
     def product(self, multiplicand, multiplier):
-        if hasattr(multiplier, 'data'):
+        if hasattr(multiplier, "data"):
             impl.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
         else:
             impl.multiply_out_of_place(self.data, multiplicand.data, multiplier)
@@ -175,4 +183,4 @@ class Storage(StorageBase):
         return self.data.copy()
 
     def upload(self, data):
-        np.copyto(self.data, data, casting='safe')
+        np.copyto(self.data, data, casting="safe")

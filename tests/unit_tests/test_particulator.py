@@ -1,12 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from .dummy_particulator import DummyParticulator
 from ..backends_fixture import backend_class
+from .dummy_particulator import DummyParticulator
 
-assert hasattr(backend_class, '_pytestfixturefunction')
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestParticulator:
-
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_observer(backend_class):

@@ -15,7 +15,9 @@ N_DIMS = 2
 
 
 class SpectroGlacialSampling:
-    def __init__(self, *,
+    def __init__(
+        self,
+        *,
         freezing_temperature_spectrum,
         insoluble_surface_spectrum,
         seed=const.default_random_seed
@@ -23,10 +25,11 @@ class SpectroGlacialSampling:
         self.insoluble_surface_spectrum = insoluble_surface_spectrum
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
 
-        self.insoluble_surface_range = insoluble_surface_spectrum.percentiles(default_cdf_range)
+        self.insoluble_surface_range = insoluble_surface_spectrum.percentiles(
+            default_cdf_range
+        )
         self.temperature_range = freezing_temperature_spectrum.invcdf(
-            np.asarray(default_cdf_range),
-            insoluble_surface_spectrum.median
+            np.asarray(default_cdf_range), insoluble_surface_spectrum.median
         )
         self.seed = seed
 
@@ -35,8 +38,7 @@ class SpectroGlacialSampling:
         if copula:
             simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
-                1 - simulated[:, DIM_TEMP],
-                self.insoluble_surface_spectrum.median
+                1 - simulated[:, DIM_TEMP], self.insoluble_surface_spectrum.median
             )
             simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
                 simulated[:, DIM_SURF]
@@ -47,12 +49,11 @@ class SpectroGlacialSampling:
                 np.random.random(n_sd)
             )
             simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
-                np.random.random(n_sd),
-                simulated[:, DIM_SURF]
+                np.random.random(n_sd), simulated[:, DIM_SURF]
             )
 
         return (
             simulated[:, DIM_TEMP],
             simulated[:, DIM_SURF],
-            np.full((n_sd,), self.insoluble_surface_spectrum.norm_factor/n_sd)
+            np.full((n_sd,), self.insoluble_surface_spectrum.norm_factor / n_sd),
         )

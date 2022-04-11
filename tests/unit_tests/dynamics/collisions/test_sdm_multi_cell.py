@@ -1,19 +1,20 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+
 from PySDM.backends import ThrustRTC
-from PySDM.environments import Box
-from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
-from PySDM.impl.mesh import Mesh
 from PySDM.dynamics.collisions.collision import DEFAULTS
+from PySDM.environments import Box
+from PySDM.impl.mesh import Mesh
+from PySDM.initialisation.sampling.spatial_sampling import Pseudorandom
+
 from ....backends_fixture import backend_class
 from .__parametrisation__ import get_dummy_particulator_and_coalescence
 
-assert hasattr(backend_class, '_pytestfixturefunction')
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestSDMMultiCell:
-
     @staticmethod
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])
@@ -30,9 +31,10 @@ class TestSDMMultiCell:
         grid = (25, 25)
         env.mesh = Mesh(grid, size=grid)
         particulator, sut = get_dummy_particulator_and_coalescence(
-            backend_class, len(n), environment=env)
+            backend_class, len(n), environment=env
+        )
         cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
-        attributes = {'n': n, 'volume': v, 'cell id': cell_id}
+        attributes = {"n": n, "volume": v, "cell id": cell_id}
         particulator.build(attributes)
         sut.actual_length = particulator.attributes._ParticleAttributes__idx.length
         sut.adaptive = adaptive
@@ -42,6 +44,5 @@ class TestSDMMultiCell:
 
         # Assert
         np.testing.assert_array_equal(
-            cell_id,
-            particulator.attributes['cell id'].to_ndarray(raw=True)
+            cell_id, particulator.attributes["cell id"].to_ndarray(raw=True)
         )

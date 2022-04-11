@@ -1,32 +1,32 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
+
+from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling, spectro_glacial_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
-from PySDM import Formulae
 
-
-m_mode = .5e-5
+m_mode = 0.5e-5
 n_part = 256 * 16
 s_geom = 1.5
 spectrum = Lognormal(n_part, m_mode, s_geom)
-m_range = (.1e-6, 100e-6)
+m_range = (0.1e-6, 100e-6)
 formulae = Formulae(
-    freezing_temperature_spectrum='Niemand_et_al_2012',
-    constants={
-        'NIEMAND_A': -0.517,
-        'NIEMAND_B': 8.934
-    }
+    freezing_temperature_spectrum="Niemand_et_al_2012",
+    constants={"NIEMAND_A": -0.517, "NIEMAND_B": 8.934},
 )
 
 
-@pytest.mark.parametrize("discretisation", [
-    pytest.param(spectral_sampling.Linear(spectrum, m_range)),
-    pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
-    pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
-    pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
-    # TODO #599
-])
+@pytest.mark.parametrize(
+    "discretisation",
+    [
+        pytest.param(spectral_sampling.Linear(spectrum, m_range)),
+        pytest.param(spectral_sampling.Logarithmic(spectrum, m_range)),
+        pytest.param(spectral_sampling.ConstantMultiplicity(spectrum, m_range)),
+        pytest.param(spectral_sampling.UniformRandom(spectrum, m_range)),
+        # TODO #599
+    ],
+)
 def test_spectral_discretisation(discretisation):
     # Arrange
     n_sd = 100000

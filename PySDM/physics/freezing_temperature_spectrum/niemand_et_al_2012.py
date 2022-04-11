@@ -7,7 +7,7 @@ import numpy as np
 
 class Niemand_et_al_2012:
     def __str__(self):
-        return 'Niemand et al. 2012'
+        return "Niemand et al. 2012"
 
     def __init__(self, const):
         assert np.isfinite(const.NIEMAND_A)
@@ -25,8 +25,10 @@ class Niemand_et_al_2012:
     @staticmethod
     def cdf(const, T, A_insol):
         ns_T = np.exp(const.NIEMAND_A * (T - const.T0) + const.NIEMAND_B)
-        return 1 - np.exp(-A_insol * ns_T) - np.exp(
-            -A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B)
+        return (
+            1
+            - np.exp(-A_insol * ns_T)
+            - np.exp(-A_insol * np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
         )
 
     @staticmethod
@@ -34,8 +36,10 @@ class Niemand_et_al_2012:
         tmp = np.log(
             (
                 np.log(1 - cdf)
-                +
-                np.exp(-A_insol*np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B))
-            ) / -A_insol
+                + np.exp(
+                    -A_insol * np.exp(-const.NIEMAND_A * const.T0 + const.NIEMAND_B)
+                )
+            )
+            / -A_insol
         )
         return const.T0 + (tmp - const.NIEMAND_B) / const.NIEMAND_A

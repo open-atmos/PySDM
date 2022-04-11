@@ -3,6 +3,7 @@ common code for products computing **binned** statistical moments
  (e.g., dry radius spectrum in each grid cell)
 """
 from abc import ABC
+
 from PySDM.products.impl.product import Product
 
 
@@ -17,20 +18,30 @@ class SpectrumMomentProduct(ABC, Product):
     def register(self, builder):
         super().register(builder)
         self.moment_0 = self.particulator.Storage.empty(
-            (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float)
+            (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float
+        )
         self.moments = self.particulator.Storage.empty(
-            (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float)
+            (len(self.attr_bins_edges) - 1, self.particulator.mesh.n_cell), dtype=float
+        )
         _ = self._parse_unit(self.attr_unit)
 
     def _recalculate_spectrum_moment(
-        self, attr,
-        rank, filter_attr='volume',
-        weighting_attribute='volume', weighting_rank=0
+        self,
+        attr,
+        rank,
+        filter_attr="volume",
+        weighting_attribute="volume",
+        weighting_rank=0,
     ):
         self.particulator.spectrum_moments(
-            self.moment_0, self.moments, attr, rank, self.attr_bins_edges,
+            self.moment_0,
+            self.moments,
+            attr,
+            rank,
+            self.attr_bins_edges,
             attr_name=filter_attr,
-            weighting_attribute=weighting_attribute, weighting_rank=weighting_rank
+            weighting_attribute=weighting_attribute,
+            weighting_rank=weighting_rank,
         )
 
     def _download_spectrum_moment_to_buffer(self, rank, bin_number):
