@@ -10,3 +10,4 @@ from .geometric import Geometric
 from .golovin import Golovin
 from .hydrodynamic import Hydrodynamic
 from .linear import Linear
+from .simple_geometric import SimpleGeometric
