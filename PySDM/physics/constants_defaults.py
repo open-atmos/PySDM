@@ -7,11 +7,13 @@ from chempy import Substance
 from scipy import constants as sci
 
 from .constants import (  # pylint: disable=unused-import
+    FOUR,
     ONE_THIRD,
     PI,
     PI_4_3,
     T0,
     THREE,
+    TWO,
     TWO_THIRDS,
     M,
     si,
