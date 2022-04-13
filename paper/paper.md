@@ -149,6 +149,9 @@ The separation of physics information from backend engineering is intended to ma
   can be added or substituted into the v1 API description to run a zero-dimensional box
   simulation using the new features.
 
+### Initialisation framework for aerosol composition
+CLARE
+
 ### Collisional Breakup
 The collisional breakup process represents the splitting of two colliding superdroplets
   into multiple fragments. 
@@ -223,7 +226,7 @@ A comparison of the time-dependent and singular models using the kinematic
   and is the focus of @Arabas_et_al_2022.
 
 ### ACTIVATION
-@Rothenberg_and_Wang_2017 - pyrcel reproduction
+@Rothenberg_and_Wang_2017 - pyrcel reproduction CLARE
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 @Ruehl_et_al_2016 - organics and influence on surface tension
 
