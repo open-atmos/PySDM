@@ -6,7 +6,7 @@ from PySDM.physics import constants as const
 
 
 class Geometric(Gravitational):
-    def __init__(self, collection_efficiency=1, x="volume"):
+    def __init__(self, collection_efficiency=1.0, x="volume"):
         super().__init__()
         self.collection_efficiency = collection_efficiency
         self.x = x
@@ -18,4 +18,7 @@ class Geometric(Gravitational):
         self.pair_tmp.distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
+        print(self.particulator.attributes["terminal velocity"].data)
+        print(output.data)
+        print(self.pair_tmp.data)
         output *= self.pair_tmp

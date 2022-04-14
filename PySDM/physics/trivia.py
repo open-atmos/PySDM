@@ -17,6 +17,10 @@ class Trivia:
         return np.power(volume / const.PI_4_3, const.ONE_THIRD)
 
     @staticmethod
+    def area(const, radius):
+        return const.PI * const.FOUR * np.power(radius, const.TWO)
+
+    @staticmethod
     def volume(const, radius):
         return const.PI_4_3 * np.power(radius, const.THREE)
 
