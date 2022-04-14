@@ -11,7 +11,7 @@ class AlwaysN:  # pylint: disable=too-many-instance-attributes
         self.nfmax = nfmax
 
     def __call__(self, nf, frag_size, u01, is_first_in_pair):
-        nf[:] = self.N
+        nf.fill(self.N)
         frag_size.sum(self.particulator.attributes["volume"], is_first_in_pair)
         frag_size /= self.N
 
