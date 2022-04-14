@@ -4,10 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.dynamics.collisions.collision_kernels API documentation</title>
-<meta name="description" content="Collision kernels including
-[Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/golovin.html),
-…" />
+<title>PySDM.dynamics.collisions.collision_kernels.simple_geometric API documentation</title>
+<meta name="description" content="basic geometric kernel" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -21,76 +19,106 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.dynamics.collisions.collision_kernels</code></h1>
+<h1 class="title">Module <code>PySDM.dynamics.collisions.collision_kernels.simple_geometric</code></h1>
 </header>
 <section id="section-intro">
-<p>Collision kernels including
-<a href="https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/golovin.html">Golovin</a>,
-<a href="https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/geometric.html">Geometric</a>
-and other&hellip;</p>
+<p>basic geometric kernel</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Collision kernels including
-[Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/golovin.html),
-[Geometric](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/geometric.html)
-and other...
+basic geometric kernel
 &#34;&#34;&#34;
-from .constantK import ConstantK
-from .electric import Electric
-from .geometric import Geometric
-from .golovin import Golovin
-from .hydrodynamic import Hydrodynamic
-from .linear import Linear
-from .simple_geometric import SimpleGeometric</code></pre>
+
+
+class SimpleGeometric:
+    def __init__(self, C):
+        self.particulator = None
+        self.pair_tmp = None
+        self.C = C
+
+    def register(self, builder):
+        self.particulator = builder.particulator
+        builder.request_attribute(&#34;radius&#34;)
+        builder.request_attribute(&#34;area&#34;)
+        self.pair_tmp = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+
+    def __call__(self, output, is_first_in_pair):
+        output[:] = self.C
+        self.pair_tmp.sum(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.pair_tmp **= 2
+        output *= self.pair_tmp
+        self.pair_tmp.distance(self.particulator.attributes[&#34;area&#34;], is_first_in_pair)
+        output *= self.pair_tmp</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.constantK" href="constantK.html">PySDM.dynamics.collisions.collision_kernels.constantK</a></code></dt>
+<dt id="PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric"><code class="flex name class">
+<span>class <span class="ident">SimpleGeometric</span></span>
+<span>(</span><span>C)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>TODO #744</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.electric" href="electric.html">PySDM.dynamics.collisions.collision_kernels.electric</a></code></dt>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SimpleGeometric:
+    def __init__(self, C):
+        self.particulator = None
+        self.pair_tmp = None
+        self.C = C
+
+    def register(self, builder):
+        self.particulator = builder.particulator
+        builder.request_attribute(&#34;radius&#34;)
+        builder.request_attribute(&#34;area&#34;)
+        self.pair_tmp = self.particulator.PairwiseStorage.empty(
+            self.particulator.n_sd // 2, dtype=float
+        )
+
+    def __call__(self, output, is_first_in_pair):
+        output[:] = self.C
+        self.pair_tmp.sum(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
+        self.pair_tmp **= 2
+        output *= self.pair_tmp
+        self.pair_tmp.distance(self.particulator.attributes[&#34;area&#34;], is_first_in_pair)
+        output *= self.pair_tmp</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric.register"><code class="name flex">
+<span>def <span class="ident">register</span></span>(<span>self, builder)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>kernel modelling influence of electric field of 3000V/cm
-as in <a href="https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2">Berry 1967</a></p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.geometric" href="geometric.html">PySDM.dynamics.collisions.collision_kernels.geometric</a></code></dt>
-<dd>
-<div class="desc"><p>basic geometric kernel</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.golovin" href="golovin.html">PySDM.dynamics.collisions.collision_kernels.golovin</a></code></dt>
-<dd>
-<div class="desc"><p>Golovin kernel with analytic solution (see <a href="http://mi.mathnet.ru/dan27630">Golovin 1963</a>)</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.hydrodynamic" href="hydrodynamic.html">PySDM.dynamics.collisions.collision_kernels.hydrodynamic</a></code></dt>
-<dd>
-<div class="desc"><p>hydrodynamic kernel using
-<a href="https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;2">Berry 1967</a> parameterization</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.impl" href="impl/index.html">PySDM.dynamics.collisions.collision_kernels.impl</a></code></dt>
-<dd>
-<div class="desc"><p>common code for implementing collision kernels</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.linear" href="linear.html">PySDM.dynamics.collisions.collision_kernels.linear</a></code></dt>
-<dd>
-<div class="desc"><p>TODO #744</p></div>
-</dd>
-<dt><code class="name"><a title="PySDM.dynamics.collisions.collision_kernels.simple_geometric" href="simple_geometric.html">PySDM.dynamics.collisions.collision_kernels.simple_geometric</a></code></dt>
-<dd>
-<div class="desc"><p>basic geometric kernel</p></div>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def register(self, builder):
+    self.particulator = builder.particulator
+    builder.request_attribute(&#34;radius&#34;)
+    builder.request_attribute(&#34;area&#34;)
+    self.pair_tmp = self.particulator.PairwiseStorage.empty(
+        self.particulator.n_sd // 2, dtype=float
+    )</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -101,19 +129,17 @@ as in <a href="https://doi.org/10.1175/1520-0469(1967)024%3C0688:CDGBC%3E2.0.CO;
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions" href="../index.html">PySDM.dynamics.collisions</a></code></li>
+<li><code><a title="PySDM.dynamics.collisions.collision_kernels" href="index.html">PySDM.dynamics.collisions.collision_kernels</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.constantK" href="constantK.html">PySDM.dynamics.collisions.collision_kernels.constantK</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.electric" href="electric.html">PySDM.dynamics.collisions.collision_kernels.electric</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.geometric" href="geometric.html">PySDM.dynamics.collisions.collision_kernels.geometric</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.golovin" href="golovin.html">PySDM.dynamics.collisions.collision_kernels.golovin</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.hydrodynamic" href="hydrodynamic.html">PySDM.dynamics.collisions.collision_kernels.hydrodynamic</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.impl" href="impl/index.html">PySDM.dynamics.collisions.collision_kernels.impl</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.linear" href="linear.html">PySDM.dynamics.collisions.collision_kernels.linear</a></code></li>
-<li><code><a title="PySDM.dynamics.collisions.collision_kernels.simple_geometric" href="simple_geometric.html">PySDM.dynamics.collisions.collision_kernels.simple_geometric</a></code></li>
+<li>
+<h4><code><a title="PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric" href="#PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric">SimpleGeometric</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric.register" href="#PySDM.dynamics.collisions.collision_kernels.simple_geometric.SimpleGeometric.register">register</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

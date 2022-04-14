@@ -42,6 +42,7 @@ from PySDM.attributes.ice import CoolingRate, FreezingTemperature, ImmersedSurfa
 from PySDM.attributes.impl.dummy_attribute import make_dummy_attribute_factory
 from PySDM.attributes.numerics import CellID, CellOrigin, PositionInCell
 from PySDM.attributes.physics import (
+    Area,
     CriticalVolume,
     DryRadius,
     Heat,
@@ -89,6 +90,7 @@ attributes = {
     &#34;kappa times dry volume&#34;: lambda _: KappaTimesDryVolume,
     &#34;kappa&#34;: lambda _: Kappa,
     &#34;radius&#34;: lambda _: Radius,
+    &#34;area&#34;: lambda _: Area,
     &#34;dry radius&#34;: lambda _: DryRadius,
     &#34;terminal velocity&#34;: lambda _: TerminalVelocity,
     &#34;cell id&#34;: lambda _: CellID,
