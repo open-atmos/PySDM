@@ -33,38 +33,6 @@ class TestKernels:
         assert np.all(np.isfinite(value))
 
     @staticmethod
-    @pytest.mark.parametrize("collection_efficiency", (0.1, 1))
-    @pytest.mark.parametrize("x", ("volume", "radius"))
-    def test_geometric(collection_efficiency, x):
-        # arrange
-        volume = np.asarray([44.0 * 1e-6, 666.0 * 1e-6])
-
-        builder = Builder(backend=CPU(), n_sd=volume.size)
-        sut = Geometric(collection_efficiency=collection_efficiency, x=x)
-        sut.register(builder)
-        builder.request_attribute(x)
-        builder.request_attribute("terminal velocity")
-        builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
-
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
-        is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator[:] = builder.particulator.Storage.from_ndarray(
-            np.asarray([True, False])
-        )
-
-        # act
-        sut(output, is_first_in_pair=is_first_in_pair)
-
-        # assert
-        np.testing.assert_array_less(
-            [0.0],
-            output.to_ndarray()[0],
-        )
-
-    @staticmethod
     @pytest.mark.parametrize("C", (0.0, 1.0))
     def test_simple_geometric(C):
         # arrange
