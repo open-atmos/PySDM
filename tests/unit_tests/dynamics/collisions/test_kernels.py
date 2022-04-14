@@ -5,7 +5,6 @@ import pytest
 from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.dynamics.collisions.collision_kernels import (
-    Geometric,
     Golovin,
     SimpleGeometric,
 )
