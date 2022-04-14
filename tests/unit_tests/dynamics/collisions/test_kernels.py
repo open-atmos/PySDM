@@ -37,12 +37,13 @@ class TestKernels:
     @pytest.mark.parametrize("x", ("volume", "radius"))
     def test_geometric(collection_efficiency, x):
         # arrange
-        volume = np.asarray([44.0, 666.0])
+        volume = np.asarray([44.0 * 1e-6, 666.0 * 1e-6])
 
         builder = Builder(backend=CPU(), n_sd=volume.size)
         sut = Geometric(collection_efficiency=collection_efficiency, x=x)
         sut.register(builder)
         builder.request_attribute(x)
+        builder.request_attribute("terminal velocity")
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
@@ -50,14 +51,17 @@ class TestKernels:
         _Indicator = builder.particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator[:] = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
 
         # act
         sut(output, is_first_in_pair=is_first_in_pair)
 
         # assert
         np.testing.assert_array_less(
-            [0.0, 0.0],
-            output.to_ndarray(),
+            [0.0],
+            output.to_ndarray()[0],
         )
 
     @staticmethod

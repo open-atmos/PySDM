@@ -12,12 +12,13 @@ class Geometric(Gravitational):
         self.x = x
 
     def __call__(self, output, is_first_in_pair):
-        output[:] = self.collection_efficiency
-        self.pair_tmp.sum(self.particulator.attributes["radius"], is_first_in_pair)
-        output *= self.pair_tmp
+        output.sum(self.particulator.attributes["radius"], is_first_in_pair)
         output **= 2
-        output *= const.PI
+        output *= const.PI * self.collection_efficiency
         self.pair_tmp.distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
+        print(self.particulator.attributes["terminal velocity"].data)
+        print(output.data)
+        print(self.pair_tmp.data)
         output *= self.pair_tmp
