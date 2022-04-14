@@ -149,12 +149,9 @@ The separation of physics information from backend engineering is intended to ma
   can be added or substituted into the v1 API description to run a zero-dimensional box
   simulation using the new features.
 
-### Initialisation framework for aerosol composition
-CLARE
-
 ### Collisional Breakup
 The collisional breakup process represents the splitting of two colliding superdroplets
-  into multiple fragments. 
+  into multiple fragments.
 It can be specified as an individual dynamic, as for coalescence in v1, or as a unified
   `collision` dynamic, in which the probability of breakup versus coalescence is sampled.
 The additional necessary information can be imported via:
@@ -180,12 +177,41 @@ builder.add_dynamic(Collision(kernel=Golovin(b=1.5e3 / si.s), coalescence_effici
 
 ### Immersion Freezing
 `lines of code for add_dynamic` and description of necessary physics specifications
+SYLWESTER
+
+### Initialisation framework for aerosol composition
+CLARE--will this be included in the next JOSS paper? How close is it?
+Internal versus external mixture
+Also include a brief note of why we use kappa * dry volume for coagulation logic
 
 ### Adaptive time-stepping
-The condensation and collision backends both support an adaptive time-stepping feature,
+SYLWESTER
+The condensation, collision, and displacement backends all support an adaptive time-stepping feature,
   which overwrites the user-specified environment time step. Adaptivity is specified as an additional
   keyword to the given dynamic: `builder.add_dynamic(Dynamic(**kwargs, adaptive=True))` and has
-  a default value of `True`.
+  a default value of `True`. [Add reference to technical note on adaptivity]
+
+Already in PySDM v1, adaptive time-stepping was gradualy introduced for two 
+  of the represented microphysical processes: collisional and diffusional growth.
+In both cases, the adaptivity controls bespoke developments.
+
+Noteworthy, due to different ... GPU vs. CPU
+
+For diffusional growth (condensation and evaporation of water), ..
+- semi-implicit solution
+- adaptivity control (theta)
+- aim: improve performance
+- the two tolerances 
+- load balancing (sorting cells by ...)
+- validation against SciPy solver which is available for CPU ...
+
+For collisional growth (coalescence and breakup) ...
+- adaptivity control (gamma, multiplicities)
+- aim: reduce error
+- load balancing
+- GPU vs. CPU
+- validation against analytic
+
 
 ## Additional PySDM-examples
 Write 1 paragraph on each example, maybe some figures. Main goals:
@@ -193,12 +219,15 @@ Write 1 paragraph on each example, maybe some figures. Main goals:
 (2) Give a clear overview of what user can expect from playing with existing examples,
 which are aimed at reproducing literature examples
 
-BREAKUP
-@Bieli_et_al_2022 - breakup
-@DeJong_et_al_2022 - breakup **maybe** (skip for now)
+### Collisional Breakup
+EMILY
+@Bieli_et_al_2022
+@DeJong_et_al_2022 - need to fix the PR
+- consider including the box model figure
+- prototype how we include a figure
 
 ### Immersion freezing 
-
+SYLWESTER (revisit)
 This release of PySDM introduces representation of immersion freezing, 
   i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
   in supercooled water droplets.
@@ -226,32 +255,14 @@ A comparison of the time-dependent and singular models using the kinematic
   and is the focus of @Arabas_et_al_2022.
 
 ### ACTIVATION
+CLARE - discuss in brief each example, what example it reproduces, and what physics that involves
 @Rothenberg_and_Wang_2017 - pyrcel reproduction CLARE
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 @Ruehl_et_al_2016 - organics and influence on surface tension
 
-### Adaptive timestepping (maybe)
-
-Already in PySDM v1, adaptive time-stepping was gradualy introduced for two 
-  of the represented microphysical processes: collisional and diffusional growth.
-In both cases, the adaptivity controls bespoke developments.
-
-Noteworthy, due to different ... GPU vs. CPU
-
-For diffusional growth (condensation and evaporation of water), ..
-- semi-implicit solution
-- adaptivity control (theta)
-- aim: improve performance
-- the two tolerances 
-- load balancing (sorting cells by ...)
-- validation against SciPy solver which is available for CPU ...
-
-For collisional growth (coalescence and breakup) ...
-- adaptivity control (gamma, multiplicities)
-- aim: reduce error
-- load balancing
-- GPU vs. CPU
-- validation against analytic
+### Adaptivity
+SYLWESTER
+Mention example from Bartmann technical note, and potentially include figure from displacement adaptivity
 
 # Author contributions
 
