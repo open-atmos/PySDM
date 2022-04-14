@@ -1,12 +1,12 @@
 ---
-title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and time-step adaptivity for condensation and collisions'
+title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and adaptive time-stepping
 date: 10 February 2022
 tags:
   - Python
   - physics-simulation 
   - monte-carlo-simulation 
   - gpu-computing 
-  - atmospheric-modeling 
+  - atmospheric-modelling 
   - particle-system 
   - numba 
   - thrust 
@@ -176,8 +176,11 @@ builder.add_dynamic(Collision(kernel=Golovin(b=1.5e3 / si.s), coalescence_effici
 ```
 
 ### Immersion Freezing
-`lines of code for add_dynamic` and description of necessary physics specifications
-SYLWESTER
+```python
+bulder.add_dynamic(Freezing(singular=False))
+```
+TODO (Sylwester): attribute initialisation: freezing temperature for singular, immersed surface for time-dep
+TODO (Sylwester): explain how to pass INAS or ABIFM constants
 
 ### Initialisation framework for aerosol composition
 CLARE--will this be included in the next JOSS paper? How close is it?
@@ -185,34 +188,23 @@ Internal versus external mixture
 Also include a brief note of why we use kappa * dry volume for coagulation logic
 
 ### Adaptive time-stepping
-SYLWESTER
-The condensation, collision, and displacement backends all support an adaptive time-stepping feature,
-  which overwrites the user-specified environment time step. Adaptivity is specified as an additional
-  keyword to the given dynamic: `builder.add_dynamic(Dynamic(**kwargs, adaptive=True))` and has
-  a default value of `True`. [Add reference to technical note on adaptivity]
-
-Already in PySDM v1, adaptive time-stepping was gradualy introduced for two 
-  of the represented microphysical processes: collisional and diffusional growth.
-In both cases, the adaptivity controls bespoke developments.
-
-Noteworthy, due to different ... GPU vs. CPU
-
-For diffusional growth (condensation and evaporation of water), ..
-- semi-implicit solution
-- adaptivity control (theta)
-- aim: improve performance
-- the two tolerances 
-- load balancing (sorting cells by ...)
-- validation against SciPy solver which is available for CPU ...
-
-For collisional growth (coalescence and breakup) ...
-- adaptivity control (gamma, multiplicities)
-- aim: reduce error
-- load balancing
-- GPU vs. CPU
-- validation against analytic
-
-
+The condensation, collision, and displacement dynamics all support an adaptive time-stepping feature,
+  which involves substepping within the user-specified environment time step.
+Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
+  keyword to the given dynamic, e.g. `builder.add_dynamic(Dynamic(**kwargs, adaptive=False))`.
+The adaptive time-step controls are described in @Bartman_et_al_2022_adaptive and  
+  are bespoke developments introduced in PySDM (partly already in version 1).
+In the case of multi-dimensional environments, the adaptive time-stepping is aimed
+  at adjusting the time-steps separately in each grid box (e.g., based
+  on ambient supersaturation for condensation).
+For CPU backend and the condensation dynamic, the adaptivity scheme features a load-balancing 
+  logic ensuring that 
+  in multi-threaded operation, grid cells with comparable substep count are handled
+  simultaneously avoiding idle threads.
+The dynamic load-balancing across threads can be switched off by setting the `schedule` 
+  keyword parameter to a value of `"static"` when instantiating the `Condensation` dynamic
+  (the default value is `"dynamic"`).
+ 
 ## Additional PySDM-examples
 Write 1 paragraph on each example, maybe some figures. Main goals:
 (1) Link back to the original JOSS paper
@@ -227,7 +219,6 @@ EMILY
 - prototype how we include a figure
 
 ### Immersion freezing 
-SYLWESTER (revisit)
 This release of PySDM introduces representation of immersion freezing, 
   i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
   in supercooled water droplets.
@@ -261,8 +252,7 @@ CLARE - discuss in brief each example, what example it reproduces, and what phys
 @Ruehl_et_al_2016 - organics and influence on surface tension
 
 ### Adaptivity
-SYLWESTER
-Mention example from Bartmann technical note, and potentially include figure from displacement adaptivity
+TODO (Sylwester): @Bartman_et_al_2022_adaptive
 
 # Author contributions
 
@@ -283,3 +273,4 @@ Atmospheric Radiation Measurement Program sponsored by the U.S. Department of En
 EDJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
 
 # References
+
