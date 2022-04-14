@@ -6,7 +6,7 @@ tags:
   - physics-simulation 
   - monte-carlo-simulation 
   - gpu-computing 
-  - atmospheric-modelling 
+  - atmospheric-modeling 
   - particle-system 
   - numba 
   - thrust 

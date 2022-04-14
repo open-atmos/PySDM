@@ -57,19 +57,20 @@ def break_up(
     n_fragment,
     max_multiplicity,
     breakup_rate,
-    success,
+    breakup_rate_deficit,
 ):
-    if n_fragment[i] ** gamma[i] > max_multiplicity:
-        success[0] = False
-        return
-    atomic_add(breakup_rate, cid, gamma[i] * multiplicity[k])
     gamma_tmp = 0
     gamma_deficit = gamma[i]
+    overflow_flag = False
     while gamma_deficit > 0:
         if multiplicity[k] > multiplicity[j]:
             j, k = k, j
         tmp1 = 0
         for m in range(int(gamma_deficit)):
+            if tmp1 + n_fragment[i] ** m > max_multiplicity:
+                atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+                overflow_flag = True
+                break
             tmp1 += n_fragment[i] ** m
             new_n = multiplicity[j] - tmp1 * multiplicity[k]
             gamma_tmp = m + 1
@@ -78,9 +79,17 @@ def break_up(
                 tmp1 -= n_fragment[i] ** m
                 break
         gamma_deficit -= gamma_tmp
+        if n_fragment[i] ** gamma_tmp > max_multiplicity:
+            break
         tmp2 = n_fragment[i] ** gamma_tmp
-        new_n = multiplicity[j] - tmp1 * multiplicity[k]
-        if new_n > 0:
+        new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
+
+        if tmp2 * multiplicity[k] > max_multiplicity:
+            nj = multiplicity[j]
+            nk = multiplicity[k]
+            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+            overflow_flag = True
+        elif new_n > 0:
             nj = new_n
             nk = multiplicity[k] * tmp2
             for a in range(0, len(attributes)):
@@ -94,6 +103,11 @@ def break_up(
                 attributes[a, k] /= tmp2
                 attributes[a, j] = attributes[a, k]
 
+        if overflow_flag:
+            print("line 96")
+            break
+
+        atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         multiplicity[j] = round(nj)
         multiplicity[k] = round(nk)
         factor_j = nj / multiplicity[j]
@@ -255,13 +269,12 @@ class CollisionsMethods(BackendMethods):
         cell_id,
         coalescence_rate,
         breakup_rate,
+        breakup_rate_deficit,
         is_first_in_pair,
-        success,
         max_multiplicity,
     ):
-        for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
-            length // 2
-        ):
+        # pylint: disable=not-an-iterable,too-many-nested-blocks
+        for i in numba.prange(length // 2):
             if gamma[i] == 0:
                 continue
             bouncing = rand[i] - Ec[i] - Eb[i] > 0
@@ -292,7 +305,7 @@ class CollisionsMethods(BackendMethods):
                     n_fragment,
                     max_multiplicity,
                     breakup_rate,
-                    success,
+                    breakup_rate_deficit,
                 )
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -310,10 +323,10 @@ class CollisionsMethods(BackendMethods):
         cell_id,
         coalescence_rate,
         breakup_rate,
+        breakup_rate_deficit,
         is_first_in_pair,
     ):
-        max_multiplicity = np.iinfo(multiplicity.data.dtype).max
-        success = np.ones(1, dtype=bool)
+        max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity.data,
             idx.data,
@@ -328,11 +341,10 @@ class CollisionsMethods(BackendMethods):
             cell_id.data,
             coalescence_rate.data,
             breakup_rate.data,
+            breakup_rate_deficit.data,
             is_first_in_pair.indicator.data,
-            success,
             max_multiplicity,
         )
-        assert success
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
@@ -351,20 +363,71 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(n_fragment, scale, frag_size, r_max, rand):
+    def __exp_fragmentation_body(
+        n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
         """
         Exponential PDF
         """
+        # TODO #796: add vmin for exp frag
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1 - rand[i])
-            if frag_size[i] > r_max[i]:
+            if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1
+            elif frag_size[i] < vmin:
                 n_fragment[i] = 1
             else:
-                n_fragment[i] = r_max[i] / frag_size[i]
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
 
-    def exp_fragmentation(self, n_fragment, scale, frag_size, r_max, rand):
+    def exp_fragmentation(
+        self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
         self.__exp_fragmentation_body(
-            n_fragment.data, scale, frag_size.data, r_max.data, rand.data
+            n_fragment.data,
+            scale,
+            frag_size.data,
+            v_max.data,
+            x_plus_y.data,
+            rand.data,
+            vmin,
+            nfmax,
+        )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS})
+    def __feingold1988_fragmentation_body(
+        n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
+    ):
+        """
+        Scaled exponential PDF
+        """
+        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
+            log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol)
+            frag_size[i] = -scale * np.log(log_arg)
+            if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1
+            elif frag_size[i] < vmin:
+                n_fragment[i] = 1
+            else:
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
+
+    def feingold1988_fragmentation(
+        self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
+    ):
+        self.__feingold1988_fragmentation_body(
+            n_fragment.data,
+            scale,
+            frag_size.data,
+            v_max.data,
+            x_plus_y.data,
+            rand.data,
+            fragtol,
+            vmin,
+            nfmax,
         )
 
     @staticmethod

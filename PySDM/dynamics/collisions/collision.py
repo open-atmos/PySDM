@@ -80,6 +80,7 @@ class Collision:
         self.collision_rate_deficit = None
         self.coalescence_rate = None
         self.breakup_rate = None
+        self.breakup_rate_deficit = None
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -145,6 +146,9 @@ class Collision:
             self.compute_breakup_efficiency.register(builder)
             self.compute_number_of_fragments.register(builder)
             self.breakup_rate = self.particulator.Storage.from_ndarray(*counter_args)
+            self.breakup_rate_deficit = self.particulator.Storage.from_ndarray(
+                *counter_args
+            )
 
     def __call__(self):
         if self.enable:
@@ -195,6 +199,7 @@ class Collision:
             n_fragment=self.n_fragment,
             coalescence_rate=self.coalescence_rate,
             breakup_rate=self.breakup_rate,
+            breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
         )
 

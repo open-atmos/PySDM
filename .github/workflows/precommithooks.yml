@@ -17,6 +17,8 @@ jobs:
       - name: Linting
         run: |
           pip install pre-commit
+          pre-commit clean
+          pre-commit autoupdate
           pre-commit run --all-files
 #       - name: If needed, commit changes to the pull request
 #         if: failure()

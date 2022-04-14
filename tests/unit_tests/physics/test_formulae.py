@@ -59,7 +59,7 @@ class TestFormulae:
             sgm = constants_defaults.sgm_w
 
             # Act
-            r_cr = sut(kp, rd ** 3, T, sgm)
+            r_cr = sut(kp, rd**3, T, sgm)
 
             # Assert
             assert r_cr.to_base_units().units == si.metres

@@ -612,7 +612,17 @@ the license of the contributed code must be compatible with GPL v3.
 Developing the code, we follow [The Way of Python](https://www.python.org/dev/peps/pep-0020/) and 
 the [KISS principle](https://en.wikipedia.org/wiki/KISS_principle).
 The codebase has greatly benefited from [PyCharm code inspections](https://www.jetbrains.com/help/pycharm/code-inspection.html)
-and [Pylint](https://pylint.org) code analysis (which constitutes one of the CI workflows).
+and [Pylint](https://pylint.org), [Black](https://black.readthedocs.io/en/stable/) and [isort](https://pycqa.github.io/isort/)
+code analysis (which are all part of the CI workflows).
+
+We also use [pre-commit hooks](https://pre-commit.com). 
+In our case, the hooks modify files and re-format them.
+The pre-commit hooks can be run locally, and then the resultant changes need to be staged before committing.
+To set up the hooks locally, install pre-commit via `pip install pre-commit` and
+set up the git hooks via `pre-commit install` (this needs to be done every time you clone the project).
+To run all pre-commit hooks, run `pre-commit run --all-files`.
+The `pre-commit-config.yaml` file can be modified in case new hooks are to be added ot
+  existing ones need to be altered.  
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of
 PySDM are best to be reported on the [GitHub issue tracker](https://github.com/atmos-cloud-sim-uj/PySDM/issues/new).

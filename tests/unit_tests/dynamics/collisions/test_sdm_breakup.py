@@ -25,14 +25,14 @@ class TestSDMBreakup:
         # Arrange
         attributes = {
             "n": np.asarray([1, 1]),
-            "volume": np.asarray([100 * si.um ** 3, 100 * si.um ** 3]),
+            "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
         }
-        breakup = Breakup(ConstantK(1 * si.cm ** 3 / si.s), AlwaysN(4), adaptive=False)
+        breakup = Breakup(ConstantK(1 * si.cm**3 / si.s), AlwaysN(4), adaptive=False)
         nsteps = 10
 
         n_sd = len(attributes["n"])
         builder = Builder(n_sd, backend_class())
-        builder.set_environment(Box(dv=1 * si.cm ** 3, dt=dt))
+        builder.set_environment(Box(dv=1 * si.cm**3, dt=dt))
         builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
 
@@ -72,7 +72,7 @@ class TestSDMBreakup:
         particulator = builder.build(
             attributes={
                 "n": np.asarray(n_init),
-                "volume": np.asarray([100 * si.um ** 3, 100 * si.um ** 3]),
+                "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
             },
             products=(),
         )
@@ -95,6 +95,7 @@ class TestSDMBreakup:
             n_fragment=n_fragment,
             coalescence_rate=general_zeros,
             breakup_rate=general_zeros,
+            breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
         )
 
@@ -144,7 +145,7 @@ class TestSDMBreakup:
         particulator = builder.build(
             attributes={
                 "n": np.asarray(n_init),
-                "volume": np.asarray([100 * si.um ** 3] * n_sd),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
             },
             products=(),
         )
@@ -181,6 +182,7 @@ class TestSDMBreakup:
             n_fragment=n_fragment,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
+            breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
         )
 
@@ -259,6 +261,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(
             np.array(params["n_fragment"])
         )
@@ -277,6 +280,7 @@ class TestSDMBreakup:
             n_fragment=n_fragment,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
         )
 
@@ -300,7 +304,7 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.xfail(strict=True)
+    # @pytest.mark.xfail(strict=True)
     def test_multiplicity_overflow(backend=CPU()):
         # Arrange
         params = {
@@ -308,7 +312,7 @@ class TestSDMBreakup:
             "n_init": [1, 1],
             "v_init": [1, 1],
             "is_first_in_pair": [True, False],
-            "n_fragment": [4],
+            "n_fragment": [1e10],
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -334,6 +338,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(
             np.array(params["n_fragment"])
         )
@@ -352,7 +357,16 @@ class TestSDMBreakup:
             n_fragment=n_fragment,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+        )
+        assert breakup_rate_deficit[0] > 0
+        np.testing.assert_equal(
+            np.sum(
+                particulator.attributes["n"].to_ndarray()
+                * particulator.attributes["volume"].to_ndarray()
+            ),
+            np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
         )
 
     @staticmethod
@@ -415,6 +429,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
         Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
         breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(
             np.array(params["n_fragment"])
         )
@@ -433,6 +448,7 @@ class TestSDMBreakup:
             n_fragment=n_fragment,
             coalescence_rate=general_zeros,
             breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
         )
 

@@ -135,7 +135,7 @@ class ChemistryMethods(BackendMethods):
             r_w = radius(volume=droplet_volume[i])
             v_avg = np.sqrt(8 * const.R_str * env_T / (np.pi * Mc))
             dt_over_scale = timestep / (
-                4 * r_w / (3 * v_avg * alpha) + r_w ** 2 / (3 * diffusion_const)
+                4 * r_w / (3 * v_avg * alpha) + r_w**2 / (3 * diffusion_const)
             )
             A_old = mole_amounts[i] / droplet_volume[i]
             H_eff = henrysConstant * dissociation_factor[i]
@@ -238,7 +238,7 @@ class ChemistryMethods(BackendMethods):
                 (
                     k0[cid]
                     + (k1[cid] * K_SO2[cid] / H)
-                    + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H ** 2)
+                    + (k2[cid] * K_SO2[cid] * K_HSO3[cid] / H**2)
                 )
                 * (moles_O3[i] / droplet_volume[i])
                 * SO2aq
