@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and adaptive time-stepping
+title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and adaptive time-stepping'
 date: 10 February 2022
 tags:
   - Python
@@ -183,7 +183,7 @@ TODO (Sylwester): attribute initialisation: freezing temperature for singular, i
 TODO (Sylwester): explain how to pass INAS or ABIFM constants
 
 ### Initialisation framework for aerosol composition
-CLARE--will this be included in the next JOSS paper? How close is it?
+TODO (Clare)--will this be included in the next JOSS paper? How close is it?
 Internal versus external mixture
 Also include a brief note of why we use kappa * dry volume for coagulation logic
 
@@ -206,17 +206,33 @@ The dynamic load-balancing across threads can be switched off by setting the `sc
   (the default value is `"dynamic"`).
  
 ## Additional PySDM-examples
-Write 1 paragraph on each example, maybe some figures. Main goals:
+This release of `PySDM` is complemented by an additional suite of test cases in `PySDM-examples`
+  which make use of the augmented functionality to reproduce results in the microphysics literature.
+
+Write 1 paragraph on each example group, maybe some figures. Main goals:
 (1) Link back to the original JOSS paper
 (2) Give a clear overview of what user can expect from playing with existing examples,
 which are aimed at reproducing literature examples
 
 ### Collisional Breakup
-EMILY
-@Bieli_et_al_2022
-@DeJong_et_al_2022 - need to fix the PR
-- consider including the box model figure
-- prototype how we include a figure
+`PySDM` was recently used as a calibration tool to generate data for learning microphysics rate
+  parameters in @Bieli_et_al_2022 (in review). 
+Particles in a box environment undergo coalescence and breakup with a fixed coalescence 
+  efficiency, and the moments of the distribution are used as training data. 
+In addition, two figures from a forthcoming publication @DeJong_et_al_2022 that describes the
+  physics and algorithm for superdroplet breakup are included. 
+The first example (reproduced in \autoref{fig:readme_fig_1}), demonstrates the impact of including
+  the breakup process on the particle size distribution, versus a coalescence-only case. 
+The second similarly demonstrates the impact of the breakup process in a one-dimensional setup 
+  based on the example of @Shipway_and_Hill_2012.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{deJong_fig1}
+    \caption{Sample plot generated with the code snippets included in the paper.}
+    \label{fig:dJ_fig_1}
+\end{figure}
+
 
 ### Immersion freezing 
 This release of PySDM introduces representation of immersion freezing, 
@@ -246,7 +262,7 @@ A comparison of the time-dependent and singular models using the kinematic
   and is the focus of @Arabas_et_al_2022.
 
 ### ACTIVATION
-CLARE - discuss in brief each example, what example it reproduces, and what physics that involves
+TODO (Clare) - discuss in brief each example, what example it reproduces, and what physics that involves
 @Rothenberg_and_Wang_2017 - pyrcel reproduction CLARE
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 @Ruehl_et_al_2016 - organics and influence on surface tension
