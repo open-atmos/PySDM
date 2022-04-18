@@ -8,6 +8,7 @@ from PySDM.backends.impl_common.backend_methods import BackendMethods
 from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 from PySDM.backends.impl_numba.storage import Storage
+from PySDM.backends.impl_numba.warnings import warn
 from PySDM.physics.constants import sqrt_pi, sqrt_two
 
 
@@ -104,7 +105,7 @@ def break_up(
                 attributes[a, j] = attributes[a, k]
 
         if overflow_flag:
-            print("line 96")
+            warn("overflow", __file__)
             break
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
