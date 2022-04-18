@@ -40,4 +40,5 @@ class ExponFrag:
             self.sum_of_volumes,
             u01,
             self.vmin,
+            self.nfmax,
         )
