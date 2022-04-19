@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 from matplotlib import pyplot
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 
@@ -8,9 +9,21 @@ from PySDM.physics import si
 
 class TestInitialCondition:
     @staticmethod
-    def test_initial_condition(plot=False):
+    @pytest.mark.parametrize(
+        "params",
+        (
+            {},
+            {"p0": 1002 * si.hPa, "particle_reservoir_depth": 0 * si.m},
+            {"p0": 1014 * si.hPa, "particle_reservoir_depth": 100 * si.m},
+            {"p0": 1027 * si.hPa, "particle_reservoir_depth": 200 * si.m},
+            {"p0": 1040 * si.hPa, "particle_reservoir_depth": 300 * si.m},
+        ),
+    )
+    def test_initial_condition(params, plot=False):
         # Arrange
-        settings = Settings(n_sd_per_gridbox=100, rho_times_w_1=1 * si.m / si.s)
+        settings = Settings(
+            n_sd_per_gridbox=100, rho_times_w_1=2 * si.m / si.s, **params
+        )
         simulation = Simulation(settings)
 
         # Act
@@ -19,7 +32,10 @@ class TestInitialCondition:
         # Plot
         if plot:
             for var in ("RH", "T", "qv", "p"):
-                pyplot.plot(output[var][:, 0], output["z"], linestyle="--", marker="o")
+                pyplot.plot(output[var][:], output["z"], linestyle="--", marker="o")
+                if var == "qv":
+                    for value in (0.015, 0.0138, 0.0024):
+                        pyplot.axvline(value)
                 pyplot.ylabel("Z [m]")
                 pyplot.xlabel(
                     var + " [" + simulation.particulator.products[var].unit + "]"
@@ -28,14 +44,18 @@ class TestInitialCondition:
                 pyplot.show()
 
         # Assert
-        assert output["RH"].shape == (settings.nz, 1)
+        for key in ("p", "T", "RH"):
+            output[key] = output[key][
+                int(settings.particle_reservoir_depth / settings.dz) :, 0
+            ]
+        assert output["RH"].shape == (int(settings.z_max // settings.dz),)
 
-        assert 35 < np.amin(output["RH"]) < 40
-        assert 110 < np.amax(output["RH"]) < 115
+        assert 30 < np.amin(output["RH"]) < 46
+        assert 99 < np.amax(output["RH"]) < 100
 
-        assert 700 * si.hPa < np.amin(output["p"]) < 710 * si.hPa
+        assert 725 * si.hPa < np.amin(output["p"]) < 735 * si.hPa
         assert (np.diff(output["p"]) < 0).all()
-        assert 950 * si.hPa < np.amax(output["p"]) < 1000 * si.hPa
+        assert 1000 * si.hPa < np.amax(output["p"]) < 1005 * si.hPa
 
         assert 280 * si.K < np.amin(output["T"]) < 285 * si.K
         assert output["T"][0] > np.amin(output["T"])
