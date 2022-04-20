@@ -28,7 +28,7 @@ authors:
   - name: Grzegorz&nbsp;Łazarski
     affiliation: "1,3"
     orcid: 0000-0002-5595-371X
-  - name: Michael&nbsp;A.~Olesik
+  - name: Michael&nbsp;A.&nbsp;Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "4"
   - name: Bartosz&nbsp;Piasecki
