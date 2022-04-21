@@ -43,10 +43,10 @@ from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
 
 
 class Kinematic1D(Moist):
-    def __init__(self, dt, mesh, thd_of_z, rhod_of_z):
+    def __init__(self, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
-        self.thd0 = thd_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
-        self.rhod = rhod_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.formulae = None
 
     def register(self, builder):
@@ -114,7 +114,7 @@ class Kinematic1D(Moist):
 <dl>
 <dt id="PySDM.environments.kinematic_1d.Kinematic1D"><code class="flex name class">
 <span>class <span class="ident">Kinematic1D</span></span>
-<span>(</span><span>dt, mesh, thd_of_z, rhod_of_z)</span>
+<span>(</span><span>dt, mesh, thd_of_z, rhod_of_z, z0=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -123,10 +123,10 @@ class Kinematic1D(Moist):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Kinematic1D(Moist):
-    def __init__(self, dt, mesh, thd_of_z, rhod_of_z):
+    def __init__(self, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
-        self.thd0 = thd_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
-        self.rhod = rhod_of_z(mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
+        self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.formulae = None
 
     def register(self, builder):
