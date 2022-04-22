@@ -4,6 +4,7 @@ surface tension coefficient model featuring surface-partitioning
 """
 import numpy as np
 
+
 class CompressedFilmOvadnevaite:
     """
     Compressed film model of surface-partitioning of organics from Ovadnevaite et al. (2017)
@@ -14,6 +15,7 @@ class CompressedFilmOvadnevaite:
     partitions to the surface of the droplet and that the surface tension is a weighted
     average of the surface tension of water and the organic material.
     """
+
     def __init__(self, const):
         assert np.isfinite(const.sgm_org)
         assert np.isfinite(const.delta_min)
@@ -33,5 +35,5 @@ class CompressedFilmOvadnevaite:
         c_beta = np.minimum(v_beta / v_delta, 1)
 
         # calculate sigma
-        sgm = (1-c_beta) * const.sgm_w + c_beta * const.sgm_org
+        sgm = (1 - c_beta) * const.sgm_w + c_beta * const.sgm_org
         return sgm

@@ -6,4 +6,4 @@ as well as coalescence efficiencies, `PySDM.dynamics.collisions.coalescence_effi
 and breakup efficiencies `PySDM.dynamics.collisions.breakup_efficiencies`, and
 breakup fragmentations `PySDM.dynamics.collisions.breakup_fragmentations`
 """
-from PySDM.dynamics.collisions.collision import Collision, Breakup, Coalescence
+from PySDM.dynamics.collisions.collision import Breakup, Coalescence, Collision

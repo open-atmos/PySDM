@@ -2,15 +2,15 @@
 Average collision timestep length used when adaptive timestepping is enabled in the
  `PySDM.dynamics.collisions.collision.Collision` dynamic (fetching a value reset the counter)
 """
-import numpy as np
 import numba
+import numpy as np
+
 from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
 
 
 class CollisionTimestepMean(Product):
-
-    def __init__(self, unit='s', name=None):
+    def __init__(self, unit="s", name=None):
         super().__init__(unit=unit, name=name)
         self.count = 0
         self.collision = None
@@ -19,7 +19,7 @@ class CollisionTimestepMean(Product):
     def register(self, builder):
         super().register(builder)
         self.particulator.observers.append(self)
-        self.collision = self.particulator.dynamics['Collision']
+        self.collision = self.particulator.dynamics["Collision"]
         self.range = self.collision.dt_coal_range
 
     @staticmethod

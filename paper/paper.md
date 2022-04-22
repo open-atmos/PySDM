@@ -1,12 +1,12 @@
 ---
-title: 'PySDM v1: particle-based cloud modelling package for&nbsp;warm-rain microphysics and aqueous chemistry'
+title: 'PySDM v1: particle-based cloud modeling package for&nbsp;warm-rain microphysics and aqueous chemistry'
 date: 31 March 2021
 tags:
   - Python
   - physics-simulation 
   - monte-carlo-simulation 
   - gpu-computing 
-  - atmospheric-modelling 
+  - atmospheric-modeling 
   - particle-system 
   - numba 
   - thrust 
@@ -28,7 +28,7 @@ authors:
   - name: Grzegorz&nbsp;Łazarski
     affiliation: "1,3"
     orcid: 0000-0002-5595-371X
-  - name: Michael&nbsp;Olesik
+  - name: Michael&nbsp;A.&nbsp;Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "4"
   - name: Bartosz&nbsp;Piasecki
@@ -63,14 +63,14 @@ bibliography: paper.bib
 It is intended to serve as a building block for process-level as well as computational-fluid dynamics simulation systems involving representation
   of a continuous phase (air) and a dispersed phase (aerosol), with `PySDM` being responsible for representation of the dispersed phase. 
 For major version 1 (v1), the development has been focused on atmospheric cloud physics applications, in particular on 
-  modelling the dynamics of particles immersed in moist air using the particle-based 
+  modeling the dynamics of particles immersed in moist air using the particle-based 
   approach to represent 
   the evolution of the size spectrum of aerosol/cloud/rain particles. 
 The particle-based approach contrasts the more commonly used bulk and bin methods
   in which atmospheric particles are segregated into multiple categories (aerosol, cloud and rain) 
   and their evolution is governed by deterministic dynamics solved on the same Eulerian grid as 
   the dynamics of the continuous phase. 
-Particle-based methods employ discrete computational (super) particles for modelling the dispersed phase.
+Particle-based methods employ discrete computational (super) particles for modeling the dispersed phase.
 Each super particle is associated with a set of continuously-valued attributes evolving in Lagrangian manner. 
 Such approach is particularly well suited for using probabilistic representation of 
   particle collisional growth (coagulation) and for representing processes dependent 
@@ -92,7 +92,7 @@ Furthermore, representation of dissolution and, if applicable, dissociation
 Representation of the chemical processes follows the particle-based formulation of @Jaruga_and_Pawlowska_2018.
 
 The usage examples are built on top of four different `environment` classes included in `PySDM` v1
-  which implement common simple atmospheric cloud modelling frameworks: box, adiabatic
+  which implement common simple atmospheric cloud modeling frameworks: box, adiabatic
   parcel, single-column, and 2D prescribed flow kinematic models.
 
 In addition, the package ships with tutorial code depicting how `PySDM` can be used from `Julia` and `Matlab` using
@@ -149,7 +149,7 @@ attributes['volume'], attributes['n'] = sampling.sample(N_SD)
 
 In the above snippet, the `si` is an instance of the `FakeUnitRegistry` class.
 The exponential distribution of particle volumes is sampled at $2^{17}$ points 
-  in order to initialise two key attributes of the super-droplets, namely their volume and multiplicity. 
+  in order to initialize two key attributes of the super-droplets, namely their volume and multiplicity. 
 Subsequently, a `Builder` object is created to orchestrate dependency injection while instantiating
   the `Particulator` class of `PySDM`:
 
@@ -204,12 +204,7 @@ pyplot.legend()
 pyplot.show()
 ```
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\textwidth]{readme}
-    \caption{Sample plot generated with the code snippets included in the paper.}
-    \label{fig:readme_fig_1}
-\end{figure}
+![Sample plot generated with the code snippets included in the paper.](readme.pdf){#fig:readme_fig_1 width="60%"}
 
 # Usage examples
 
@@ -245,7 +240,7 @@ The `Parcel` environment shares the zero-dimensionality of `Box` (i.e., no parti
   hydrostatically stratified atmosphere.
 Adiabatic cooling during the ascent results in supersaturation which triggers activation of
   aerosol particles (condensation nuclei) into cloud droplets through condensation.
-All examples based on the `Parcel` environment utilise the `Condensation` and `AmbientThermodynamics` dynamics.
+All examples based on the `Parcel` environment utilize the `Condensation` and `AmbientThermodynamics` dynamics.
 
 The simplest example uses a monodisperse particle spectrum represented with a single super-droplet
   and reproduces simulations described in @Arabas_and_Shima_2017 where an ascent-descent scenario is employed to
@@ -278,7 +273,7 @@ The `kinematic_2d` environment is showcased with an interactive user interface w
 
 \autoref{fig:virga} presents a snapshot from the 2D simulation performed with a setup described in detail 
   in @Arabas_et_al_2015.
-Each plot depicts a 1.5 km by 1.5 km vertical slab of an idealised atmosphere in which a prescribed single-eddy non-divergent flow
+Each plot depicts a 1.5 km by 1.5 km vertical slab of an idealized atmosphere in which a prescribed single-eddy non-divergent flow
   is forced (updraft in the left-hand part of the domain, downdraft in the right-hand part). 
 The left-hand plot shows the distribution of aerosol particles in the air. 
 The upper part of the domain is covered with a stratocumulus-like cloud formed on aerosol particles
@@ -318,12 +313,12 @@ Python packages for solving the dynamics of aerosol particles with discrete-part
    
 # Summary
 
-The key goal of the reported endeavour was to equip the cloud modelling community with 
+The key goal of the reported endeavour was to equip the cloud modeling community with 
   a solution enabling rapid development and independent reproducibility of simulations
   while being free from the two-language barrier commonly separating prototype and high-performance research code.
 The key advantages of PySDM stem from the characteristics of the employed Python
   language which enables high performance computational
-  modelling without trading off such features as:
+  modeling without trading off such features as:
 \begin{description}
     \item[succinct syntax]{ -- the snippets presented in the paper are arguably close to pseudo-code;}
     \item[portability]{depicted in PySDM with continuous integration Linux, macOS and Windows};
@@ -332,7 +327,7 @@ The key advantages of PySDM stem from the characteristics of the employed Python
     \item[availability of tools for modern hardware]{depicted in PySDM with the GPU backend}.
 \end{description}
 
-PySDM together with a set of developed usage examples constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modelling methods.
+PySDM together with a set of developed usage examples constitutes a tool for research on cloud microphysical processes, and for testing and development of novel modeling methods.
 PySDM is released under the GNU GPL v3 license.
 
 # Author contributions
@@ -350,6 +345,7 @@ The paper was composed by SA and PB and is partially based on the content of the
 
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
 We thank Fei Yang (https://github.com/fynv/) for creating and supporting ThrustRTC.
-Development of PySDM has been carried out within the POWROTY/REINTEGRATION programme of the Foundation for Polish Science co-financed by the European Union under the European Regional Development Fund (POIR.04.04.00-00-5E1C/18).
+Development of PySDM has been initiated with support from the POWROTY/REINTEGRATION programme of the Foundation for Polish Science co-financed by the European Union under the European Regional Development Fund (POIR.04.04.00-00-5E1C/18).
+We gratefully acknowledge the generous support of Eric and Wendy Schmidt (by recommendation of Schmidt Futures), the Heising-Simons Foundation, and the National Science Foundation (grant AGS-1835860).
 
 # References

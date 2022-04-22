@@ -1,9 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
+
 import numba
 import numpy as np
 import pytest
 from scipy.optimize.zeros import toms748
+
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.formulae import Formulae
 
@@ -14,7 +16,7 @@ from PySDM.formulae import Formulae
 
 @numba.njit()
 def f1(x):
-    return x ** 2 - 2 * x - 1
+    return x**2 - 2 * x - 1
 
 
 @numba.njit()
@@ -24,17 +26,23 @@ def f2(x):
 
 @pytest.mark.parametrize("fun", (f1, f2))
 def test_toms748(fun):
-    sut = toms748_solve if 'NUMBA_DISABLE_JIT' in os.environ else toms748_solve.py_func
+    sut = toms748_solve if "NUMBA_DISABLE_JIT" in os.environ else toms748_solve.py_func
 
-    a = -.5
-    b = .5
+    a = -0.5
+    b = 0.5
     rtol = 1e-6
     wt = Formulae().trivia.within_tolerance
     actual, _ = sut(
-        fun, (),
-        ax=a, bx=b,
-        fax=fun(a), fbx=fun(b),
-        max_iter=10, rtol=rtol, within_tolerance=wt)
+        fun,
+        (),
+        ax=a,
+        bx=b,
+        fax=fun(a),
+        fbx=fun(b),
+        max_iter=10,
+        rtol=rtol,
+        within_tolerance=wt,
+    )
     expected = toms748(fun, a, b)
 
     np.testing.assert_almost_equal(actual, expected)

@@ -2,12 +2,15 @@
 storage internals for the ThrustRTC backend
 """
 import numpy as np
+
 from PySDM.backends.impl_common.storage_utils import (
-    get_data_from_ndarray, StorageSignature, StorageBase, empty
+    StorageBase,
+    StorageSignature,
+    empty,
+    get_data_from_ndarray,
 )
-from PySDM.backends.impl_thrust_rtc.conf import trtc
+from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 
 
 def make_storage_class(BACKEND):
@@ -16,7 +19,7 @@ def make_storage_class(BACKEND):
         def thrust(obj):
             if isinstance(obj, tuple):
                 result = tuple(Impl.thrust(o) for o in obj)
-            elif hasattr(obj, 'data'):
+            elif hasattr(obj, "data"):
                 result = obj.data
             elif isinstance(obj, float):
                 result = BACKEND._get_floating_point(obj)
@@ -33,7 +36,7 @@ def make_storage_class(BACKEND):
                 Impl.thrust(addend),
                 Impl.thrust(output),
                 Impl.thrust(output),
-                trtc.Plus()
+                trtc.Plus(),
             )
 
         @staticmethod
@@ -41,20 +44,26 @@ def make_storage_class(BACKEND):
         def amin(data):
             return trtc.Reduce(data, Impl.thrust(np.inf), trtc.Minimum())
 
-        __row_modulo_body = trtc.For(('output', 'divisor', 'length'), "i", '''
+        __row_modulo_body = trtc.For(
+            ("output", "divisor", "length"),
+            "i",
+            """
                 auto d = (int64_t)(i / length);
                 output[i] %= divisor[d];
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def row_modulo(output, divisor):
             Impl.__row_modulo_body.launch_n(
-                output.shape[0],
-                Impl.thrust((output, divisor, output.shape[1]))
+                output.shape[0], Impl.thrust((output, divisor, output.shape[1]))
             )
 
-        __floor_body = trtc.For(('arr',), "i", '''
+        __floor_body = trtc.For(
+            ("arr",),
+            "i",
+            """
                 if (arr[i] >= 0) {
                     arr[i] = (int64_t)(arr[i]);
                 }
@@ -65,14 +74,18 @@ def make_storage_class(BACKEND):
                         arr[i] -= 1;
                     }
                 }
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def floor(output):
             Impl.__floor_body.launch_n(output.shape[0], Impl.thrust((output,)))
 
-        __floor_out_of_place_body = trtc.For(('output', 'input_data'), "i", '''
+        __floor_out_of_place_body = trtc.For(
+            ("output", "input_data"),
+            "i",
+            """
                 if (input_data[i] >= 0) {
                     output[i] = (int64_t)(input_data[i]);
                 }
@@ -82,115 +95,135 @@ def make_storage_class(BACKEND):
                         output[i] -= 1;
                     }
                 }
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def floor_out_of_place(output, input_data):
             Impl.__floor_out_of_place_body.launch_n(
-                output.shape[0],
-                Impl.thrust((output, input_data))
+                output.shape[0], Impl.thrust((output, input_data))
             )
 
-        __multiply_elementwise_body = trtc.For(('output', 'multiplier'), "i", '''
+        __multiply_elementwise_body = trtc.For(
+            ("output", "multiplier"),
+            "i",
+            """
                 output[i] *= multiplier[i];
-            ''')
+            """,
+        )
 
-        __multiply_body = trtc.For(['output', 'multiplier'], "i", '''
+        __multiply_body = trtc.For(
+            ["output", "multiplier"],
+            "i",
+            """
                 output[i] *= multiplier;
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def multiply(output, multiplier):
-            if hasattr(multiplier, 'data'):
+            if hasattr(multiplier, "data"):
                 loop = Impl.__multiply_elementwise_body
             else:
                 loop = Impl.__multiply_body
             loop.launch_n(output.shape[0], Impl.thrust((output, multiplier)))
 
-        __truediv_elementwise_body = trtc.For(('output', 'multiplier'), "i", '''
+        __truediv_elementwise_body = trtc.For(
+            ("output", "multiplier"),
+            "i",
+            """
                 output[i] /= multiplier[i];
-            ''')
+            """,
+        )
 
-        __truediv_body = trtc.For(['output', 'multiplier'], "i", '''
+        __truediv_body = trtc.For(
+            ["output", "multiplier"],
+            "i",
+            """
                 output[i] /= multiplier;
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def truediv(output, multiplier):
-            if hasattr(multiplier, 'data'):
+            if hasattr(multiplier, "data"):
                 loop = Impl.__truediv_elementwise_body
             else:
                 loop = Impl.__truediv_body
             loop.launch_n(output.shape[0], Impl.thrust((output, multiplier)))
 
         __multiply_out_of_place_elementwise_body = trtc.For(
-            ('output', 'multiplicand', 'multiplier'),
+            ("output", "multiplicand", "multiplier"),
             "i",
-            '''
+            """
                 output[i] = multiplicand[i] * multiplier[i];
-            ''')
+            """,
+        )
 
         __multiply_out_of_place_body = trtc.For(
-            ('output', 'multiplicand', 'multiplier'),
+            ("output", "multiplicand", "multiplier"),
             "i",
-            '''
+            """
                 output[i] = multiplicand[i] * multiplier;
-            ''')
+            """,
+        )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def multiply_out_of_place(output, multiplicand, multiplier):
-            if hasattr(multiplier, 'data'):
+            if hasattr(multiplier, "data"):
                 loop = Impl.__multiply_out_of_place_elementwise_body
             elif isinstance(multiplier, float):
                 loop = Impl.__multiply_out_of_place_body
             else:
                 raise NotImplementedError()
-            loop.launch_n(output.shape[0], Impl.thrust((output, multiplicand, multiplier)))
+            loop.launch_n(
+                output.shape[0], Impl.thrust((output, multiplicand, multiplier))
+            )
 
         __divide_out_of_place_elementwise_body = trtc.For(
-            ('output', 'dividend', 'divisor'),
+            ("output", "dividend", "divisor"),
             "i",
-            '''
+            """
                 output[i] = dividend[i] / divisor[i];
-            '''
+            """,
         )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def divide_out_of_place(output, dividend, divisor):
-            if hasattr(divisor, 'data'):
+            if hasattr(divisor, "data"):
                 loop = Impl.__divide_out_of_place_elementwise_body
             else:
                 raise NotImplementedError()
             loop.launch_n(output.shape[0], Impl.thrust((output, dividend, divisor)))
 
         __sum_out_of_place_elementwise_body = trtc.For(
-            ('output', 'a', 'b'),
+            ("output", "a", "b"),
             "i",
-            '''
+            """
                 output[i] = a[i] + b[i];
-            '''
+            """,
         )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def sum_out_of_place(output, a, b):
-            if hasattr(a, 'data'):
+            if hasattr(a, "data"):
                 loop = Impl.__sum_out_of_place_elementwise_body
             else:
                 raise NotImplementedError()
             loop.launch_n(output.shape[0], Impl.thrust((output, a, b)))
 
         __power_body = trtc.For(
-            ('output', 'exponent'),
+            ("output", "exponent"),
             "i",
-            '''
+            """
                 output[i] = pow(output[i], exponent);
-            '''
+            """,
         )
 
         @staticmethod
@@ -198,20 +231,24 @@ def make_storage_class(BACKEND):
         def power(output, exponent: int):
             if exponent == 1:
                 return
-            Impl.__power_body.launch_n(output.shape[0], Impl.thrust((output, float(exponent))))
+            Impl.__power_body.launch_n(
+                output.shape[0], Impl.thrust((output, float(exponent)))
+            )
 
         __subtract_body = trtc.For(
-            ('output', 'subtrahend'),
-            'i',
-            '''
+            ("output", "subtrahend"),
+            "i",
+            """
                 output[i] -= subtrahend[i];
-            '''
+            """,
         )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def subtract(output, subtrahend):
-            Impl.__subtract_body.launch_n(output.shape[0], Impl.thrust((output, subtrahend)))
+            Impl.__subtract_body.launch_n(
+                output.shape[0], Impl.thrust((output, subtrahend))
+            )
 
     class Storage(StorageBase):
         FLOAT = BACKEND._get_np_dtype()
@@ -227,38 +264,49 @@ def make_storage_class(BACKEND):
                     result_data = self.data.range(start, stop)
                     result_shape = (stop - start,)
                 elif dim == 2:
-                    result_data = self.data.range(self.shape[1] * start, self.shape[1] * stop)
+                    result_data = self.data.range(
+                        self.shape[1] * start, self.shape[1] * stop
+                    )
                     result_shape = (stop - start, self.shape[1])
                 else:
-                    raise NotImplementedError("Only 2 or less dimensions array is supported.")
-                result = Storage(StorageSignature(result_data, result_shape, self.dtype))
+                    raise NotImplementedError(
+                        "Only 2 or less dimensions array is supported."
+                    )
+                result = Storage(
+                    StorageSignature(result_data, result_shape, self.dtype)
+                )
             elif (
-                dim == 2 and
-                isinstance(item, tuple) and
-                isinstance(item[0], int) and
-                isinstance(item[1], slice)
+                dim == 2
+                and isinstance(item, tuple)
+                and isinstance(item[0], int)
+                and isinstance(item[1], slice)
             ):
                 assert item[1].start is None or item[1].start == 0
                 assert item[1].stop is None or item[1].stop == self.shape[1]
                 assert item[1].step is None or item[1].step == 1
                 result_data = self.data.range(
-                    self.shape[1] * item[0],
-                    self.shape[1] * (item[0] + 1)
+                    self.shape[1] * item[0], self.shape[1] * (item[0] + 1)
                 )
-                result = Storage(StorageSignature(result_data, (*self.shape[1:],), self.dtype))
+                result = Storage(
+                    StorageSignature(result_data, (*self.shape[1:],), self.dtype)
+                )
             else:
                 result = self.to_ndarray()[item]
             return result
 
         def __setitem__(self, key, value):
             if not (
-                isinstance(key, slice) and
-                key.start is None and
-                key.stop is None and
-                key.step is None
+                isinstance(key, slice)
+                and key.start is None
+                and key.stop is None
+                and key.step is None
             ):
                 raise NotImplementedError()
-            if hasattr(value, 'data') and hasattr(value, 'shape') and len(value.shape) != 0:
+            if (
+                hasattr(value, "data")
+                and hasattr(value, "shape")
+                and len(value.shape) != 0
+            ):
                 if isinstance(value, np.ndarray):
                     vector = trtc.device_vector_from_numpy(value)
                     trtc.Copy(vector, self.data)
@@ -310,9 +358,9 @@ def make_storage_class(BACKEND):
                 if self.dtype is self.FLOAT:
                     elem_cls = BACKEND._get_c_type()
                 elif self.dtype is self.INT:
-                    elem_cls = 'int64_t'
+                    elem_cls = "int64_t"
                 elif self.dtype is self.BOOL:
-                    elem_cls = 'bool'
+                    elem_cls = "bool"
                 else:
                     raise NotImplementedError()
 
@@ -340,10 +388,10 @@ def make_storage_class(BACKEND):
                 elem_cls = BACKEND._get_c_type()
                 dtype = Storage.FLOAT
             elif dtype in (int, Storage.INT):
-                elem_cls = 'int64_t'
+                elem_cls = "int64_t"
                 dtype = Storage.INT
             elif dtype in (bool, Storage.BOOL):
-                elem_cls = 'bool'
+                elem_cls = "bool"
                 dtype = Storage.BOOL
             else:
                 raise NotImplementedError
@@ -364,7 +412,9 @@ def make_storage_class(BACKEND):
             return get_data_from_ndarray(
                 array=array,
                 storage_class=Storage,
-                copy_fun=lambda array_astype: trtc.device_vector_from_numpy(array_astype.ravel())
+                copy_fun=lambda array_astype: trtc.device_vector_from_numpy(
+                    array_astype.ravel()
+                ),
             )
 
         @staticmethod
@@ -408,6 +458,7 @@ def make_storage_class(BACKEND):
         def upload(self, data):
             trtc.Copy(
                 trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
-                self.data
+                self.data,
             )
+
     return Storage

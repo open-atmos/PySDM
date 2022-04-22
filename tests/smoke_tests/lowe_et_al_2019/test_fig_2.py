@@ -1,24 +1,29 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import pytest
 import numpy as np
+import pytest
 from PySDM_examples.Lowe_et_al_2019 import Settings, Simulation, aerosol
+
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM.physics import si
+
 from .constants import constants
 
-assert hasattr(constants, '_pytestfixturefunction')
+assert hasattr(constants, "_pytestfixturefunction")
 
 
 class TestFig2:
     @staticmethod
-    @pytest.mark.parametrize("aerosol, surface_tension, s_max, s_100m, n_100m", (
-        (aerosol.AerosolMarine(),  "Constant", .271, .081, 148),
-        (aerosol.AerosolMarine(),  "CompressedFilmOvadnevaite", .250, .075, 169),
-        (aerosol.AerosolBoreal(),  "Constant", .182, .055, 422),
-        (aerosol.AerosolBoreal(),  "CompressedFilmOvadnevaite", .137, .055, 525),
-        (aerosol.AerosolNascent(), "Constant", .407, .122, 68),
-        (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", .314, .076, 166)
-    ))
+    @pytest.mark.parametrize(
+        "aerosol, surface_tension, s_max, s_100m, n_100m",
+        (
+            (aerosol.AerosolMarine(), "Constant", 0.271, 0.081, 148),
+            (aerosol.AerosolMarine(), "CompressedFilmOvadnevaite", 0.250, 0.075, 169),
+            (aerosol.AerosolBoreal(), "Constant", 0.182, 0.055, 422),
+            (aerosol.AerosolBoreal(), "CompressedFilmOvadnevaite", 0.137, 0.055, 525),
+            (aerosol.AerosolNascent(), "Constant", 0.407, 0.122, 68),
+            (aerosol.AerosolNascent(), "CompressedFilmOvadnevaite", 0.314, 0.076, 166),
+        ),
+    )
     @pytest.mark.xfail(strict=True)  # TODO #604
     # pylint: disable=redefined-outer-name,unused-argument
     def test_peak_supersaturation_and_final_concentration(
@@ -33,9 +38,11 @@ class TestFig2:
         settings = Settings(
             dz=dz,
             n_sd_per_mode=32,
-            model={'CompressedFilmOvadnevaite': 'film', 'Constant': 'bulk'}[surface_tension],
+            model={"CompressedFilmOvadnevaite": "film", "Constant": "bulk"}[
+                surface_tension
+            ],
             aerosol=aerosol,
-            spectral_sampling=spectral_sampling.ConstantMultiplicity
+            spectral_sampling=spectral_sampling.ConstantMultiplicity,
         )
         settings.output_interval = 10 * settings.dt
         simulation = Simulation(settings)

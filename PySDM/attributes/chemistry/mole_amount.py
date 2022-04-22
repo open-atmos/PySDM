@@ -11,5 +11,6 @@ class MoleAmountImpl(ExtensiveAttribute):
 
 def make_mole_amount_factory(compound):
     def _factory(builder):
-        return MoleAmountImpl(builder, name='moles_'+compound)
+        return MoleAmountImpl(builder, name="moles_" + compound)
+
     return _factory

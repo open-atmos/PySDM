@@ -1,12 +1,13 @@
 """
 Numba njit-ted basic arithmetics routines for CPU backend
 """
-import numpy as np
 import numba
+import numpy as np
+
 from PySDM.backends.impl_numba import conf
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def add(output, addend):
     output += addend
 
@@ -33,7 +34,7 @@ def floor_out_of_place(output, input_data):
     output[:] = np.floor(input_data)
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def multiply(output, multiplier):
     output *= multiplier
 
@@ -59,7 +60,7 @@ def power(output, exponent):
     output[:] = np.sign(output) * np.power(np.abs(output), exponent)
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{'parallel': False}})
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def subtract(output, subtrahend):
     output[:] -= subtrahend[:]
 

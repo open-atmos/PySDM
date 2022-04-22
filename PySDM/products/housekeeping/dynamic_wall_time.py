@@ -5,7 +5,7 @@ from PySDM.products.impl.product import Product
 
 
 class DynamicWallTime(Product):
-    def __init__(self, dynamic, name=None, unit='s'):
+    def __init__(self, dynamic, name=None, unit="s"):
         super().__init__(name=name, unit=unit)
         self.value = 0
         self.dynamic = dynamic

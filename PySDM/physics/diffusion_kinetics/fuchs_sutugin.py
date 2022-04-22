@@ -15,16 +15,28 @@ class FuchsSutugin:
 
     @staticmethod
     def lambdaK(const, T, p):
-        return (4. / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
+        return (4.0 / 5) * const.K0 * T / p / np.sqrt(2 * const.Rd * T)
 
     @staticmethod
     def D(const, D, r, lmbd):
-        return D * (1 + lmbd/r) / (
-                1 + (4./3/const.MAC + 0.377) * lmbd/r + (4./3/const.MAC) * lmbd/r * lmbd/r
+        return (
+            D
+            * (1 + lmbd / r)
+            / (
+                1
+                + (4.0 / 3 / const.MAC + 0.377) * lmbd / r
+                + (4.0 / 3 / const.MAC) * lmbd / r * lmbd / r
+            )
         )
 
     @staticmethod
     def K(const, K, r, lmbd):
-        return K * (1 + lmbd/r) / (
-                1 + (4./3/const.HAC + 0.377) * lmbd/r + (4./3/const.HAC) * lmbd/r * lmbd/r
+        return (
+            K
+            * (1 + lmbd / r)
+            / (
+                1
+                + (4.0 / 3 / const.HAC + 0.377) * lmbd / r
+                + (4.0 / 3 / const.HAC) * lmbd / r * lmbd / r
+            )
         )
