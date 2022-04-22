@@ -261,11 +261,108 @@ A comparison of the time-dependent and singular models using the kinematic
   prescribed-flow environment introduced in PySDM v1 has been developed
   and is the focus of @Arabas_et_al_2022.
 
-### ACTIVATION
+### Initialisation of multi-component internally mixed aerosols 
 TODO (Clare) - discuss in brief each example, what example it reproduces, and what physics that involves
-@Rothenberg_and_Wang_2017 - pyrcel reproduction CLARE
+
+Code snippet to create an aerosol class:
+```python
+from PySDM_examples.utils import BasicAerosol
+
+class AerosolARG(BasicAerosol):
+    def __init__(
+        self,
+        M2_sol: float = 0,
+        M2_N: float = 100 / si.cm**3,
+        M2_rad: float = 50 * si.nm,
+    ):
+        super().__init__(
+            compounds=("(NH4)2SO4", "insoluble"),
+            ionic_dissociation_phi={"(NH4)2SO4": 3, "insoluble": 0},
+            molar_masses={
+                "(NH4)2SO4": 132.14 * si.g / si.mole,
+                "insoluble": 44 * si.g / si.mole,
+            },
+            densities={
+                "(NH4)2SO4": 1.77 * si.g / si.cm**3,
+                "insoluble": 1.77 * si.g / si.cm**3,
+            },
+            is_soluble={"(NH4)2SO4": True, "insoluble": False},
+        )
+        self.modes = (
+            {
+                "kappa": self.kappa({"(NH4)2SO4": 1.0, "insoluble": 0.0}),
+                "spectrum": spectra.Lognormal(
+                    norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
+                ),
+            },
+            {
+                "kappa": self.kappa({"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}),
+                "spectrum": spectra.Lognormal(
+                    norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
+                ),
+            },
+        )
+```
+
+Code snippet to use the aerosol class. First create an instance of the aerosol, use it to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. All else follows procedures for examples without aerosol defined by .
+```python
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
+
+aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
+n_sd = n_sd_per_mode * len(aerosol.modes)
+
+builder = Builder(backend=CPU(), n_sd=n_sd)
+...
+```
+
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
+![ARG2000.](ARG_fig1.pdf){#fig:ARG2000 width="60%"}
+
+### Surface-partitioning of organics to modify surface tension of droplets
+
+Code demonstrating how to create `formulae` objects using the different surface tension models.
+```python
+A = AerosolBetaCaryophylleneDark()
+formulae_bulk = Formulae(surface_tension='Constant')
+formulae_ovad = Formulae(
+    surface_tension='CompressedFilmOvadnevaite',
+    constants={
+        'sgm_org': 35 * si.mN / si.m,
+        'delta_min': 1.75 * si.nm
+    }
+)
+formulae_ruehl = Formulae(
+    surface_tension='CompressedFilmRuehl',
+    constants={
+        'RUEHL_nu_org': A.modes[0]['nu_org'],
+        'RUEHL_A0': 115e-20 * si.m * si.m,
+        'RUEHL_C0': 6e-7,
+        'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
+        'RUEHL_sgm_min': 35 * si.mN / si.m
+    }
+)
+formulae_sl = Formulae(
+    surface_tension='SzyszkowskiLangmuir',
+    constants={
+        'RUEHL_nu_org': A.modes[0]['nu_org'],
+        'RUEHL_A0': 115e-20 * si.m * si.m,
+        'RUEHL_C0': 6e-7,
+        'RUEHL_sgm_min': 35 * si.mN / si.m
+    }
+)
+```
+
+(Psuedo-)Code used to make Köhler curve figure.
+```python
+model = formulae.surface_tension.__name__
+sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, A.modes[0]['f_org'])
+RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, A.modes[0]['kappa'][model], rd3, sigma)
+plot(r_wet, (RH_eq - 1)*100)
+```
+
 @Ruehl_et_al_2016 - organics and influence on surface tension
+![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](fig_kohler.png){#fig:kohler width="60%"}
+
 
 ### Adaptivity
 TODO (Sylwester): @Bartman_et_al_2022_adaptive
@@ -276,7 +373,7 @@ EDJ led the formulation and implementation of the collisional breakup scheme wit
 PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
 KD contributed to setting up continuous integration workflows for the GPU backend.
 ID, CES and AJ contributed to the CCN activation examples.
-CES and RW contributed the representation of organics in surface-tension models and the relevant examples.
+CES contributed the aerosol initialisation framework and representation of organics in surface-tension models and the relevant examples.
 The immersion freezing representation code was developed by SA who also carried out the maintenance of the project.
 
 # Acknowledgements
