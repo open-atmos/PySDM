@@ -33,9 +33,7 @@ class TestFig2:
         settings = Settings(
             dz=2 / 0.32 * si.m,
             n_sd_per_mode=32,
-            model={"CompressedFilmOvadnevaite": "film", "Constant": "bulk"}[
-                surface_tension
-            ],
+            model=surface_tension,
             aerosol=aerosol,
             spectral_sampling=spectral_sampling.ConstantMultiplicity,
         )
