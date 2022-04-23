@@ -4,4 +4,3 @@ wet radii equilibration
 """
 from .discretise_multiplicities import discretise_multiplicities
 from .equilibrate_wet_radii import equilibrate_wet_radii
-from .basic_aerosol import BasicAerosol
