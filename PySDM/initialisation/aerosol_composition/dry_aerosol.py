@@ -7,7 +7,7 @@ A DryAerosolMixture must specify the:
     - solubility (Dict of [str, bool])
     - phi, ionic dissociation constant (Dict of [str, int])
 
-DryAerosolMixture class also contains functions for computing 
+DryAerosolMixture class also contains functions for computing
 the following properties from `mass_fractions` dictionary:
     - volume fractions
     - soluble volume fraction
