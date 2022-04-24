@@ -6,9 +6,9 @@ defaults:
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
   schedule:
     - cron: '0 13 * * 4'
 
@@ -28,7 +28,7 @@ jobs:
       - run: python -We readme.py
       
       - name: artefacts
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/main'
         uses: eine/tip@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
