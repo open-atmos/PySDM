@@ -34,7 +34,7 @@ authors:
   - name: Clare&nbsp;E.&nbsp;Singer
     orcid: 0000-0002-1708-0997
     affiliation: "3"
-  - name: Ryan&nbsp;Ward
+  - name: Ryan&nbsp;X.&nbsp;Ward
     affiliation: "3"
   - name: Sylwester&nbsp;Arabas
     orcid: 0000-0003-2361-0082
@@ -261,14 +261,23 @@ A comparison of the time-dependent and singular models using the kinematic
   prescribed-flow environment introduced in PySDM v1 has been developed
   and is the focus of @Arabas_et_al_2022.
 
-### Initialisation of multi-component internally mixed aerosols 
+### Initialisation of multi-component internally or externally mixed aerosols 
 TODO (Clare) - discuss in brief each example, what example it reproduces, and what physics that involves
 
-Code snippet to create an aerosol class:
-```python
-from PySDM_examples.utils import BasicAerosol
+The new initialisation framework allows flexible specification of multi-modal, multi-component
+aerosol with arbitrary composition.
+The `DryAerosolMixture` class takes a list of compounds and dictionaries specifying their molar masses,
+densities, solubilities, and ionic dissociation numbers.
+The must then specify the aerosol `modes` which are comprised of a `kappa` hygroscopicity value
+and a `spectrum`.
+The `kappa` is calculated by `PySDM` from the aerosol properties specified above in association with 
+some specified `mass_fractions` dictionary.
+A code snippet showing the creation of the aerosol for the `ARG2000` example is shown below.
 
-class AerosolARG(BasicAerosol):
+```python
+from PySDM.initialisation.aerosol_composition.dry_aerosol import DryAerosolMixture
+
+class AerosolARG(DryAerosolMixture):
     def __init__(
         self,
         M2_sol: float = 0,
@@ -277,7 +286,6 @@ class AerosolARG(BasicAerosol):
     ):
         super().__init__(
             compounds=("(NH4)2SO4", "insoluble"),
-            ionic_dissociation_phi={"(NH4)2SO4": 3, "insoluble": 0},
             molar_masses={
                 "(NH4)2SO4": 132.14 * si.g / si.mole,
                 "insoluble": 44 * si.g / si.mole,
@@ -287,16 +295,19 @@ class AerosolARG(BasicAerosol):
                 "insoluble": 1.77 * si.g / si.cm**3,
             },
             is_soluble={"(NH4)2SO4": True, "insoluble": False},
+            ionic_dissociation_phi={"(NH4)2SO4": 3, "insoluble": 0},
         )
+        mass_fractions_mode1 = {"(NH4)2SO4": 1.0, "insoluble": 0.0}
+        mass_fractions_mode2 = {"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
         self.modes = (
             {
-                "kappa": self.kappa({"(NH4)2SO4": 1.0, "insoluble": 0.0}),
+                "kappa": self.kappa(mass_fractions_mode1),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                "kappa": self.kappa({"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}),
+                "kappa": self.kappa(mass_fractions_mode2),
                 "spectrum": spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -304,7 +315,8 @@ class AerosolARG(BasicAerosol):
         )
 ```
 
-Code snippet to use the aerosol class. First create an instance of the aerosol, use it to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. All else follows procedures for examples without aerosol defined by .
+Code snippet to use the aerosol class. First create an instance of the aerosol, use it to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute. This `kappa times dry volume` is used because it is an extensive attribute of the superdroplets; or that the hygroscopicity of a particle is the volume-weighted average of the hygroscopicity of its individual components. Finally, before the simulation is run, the wet radii must be equilibrated based on the `kappa times dry volume`. 
+
 ```python
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
 
@@ -312,8 +324,27 @@ aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
 n_sd = n_sd_per_mode * len(aerosol.modes)
 
 builder = Builder(backend=CPU(), n_sd=n_sd)
-...
+
+... (add dynamics) ...
+
+for i, mode in enumerate(aerosol.modes):
+    kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
+
+    ... (add other atributes) ...
+
+    attributes["kappa times dry volume"] = np.append(
+        attributes["kappa times dry volume"], v_dry * kappa
+    )
+r_wet = equilibrate_wet_radii(
+    r_dry=builder.formulae.trivia.radius(volume=attributes["dry volume"]),
+    environment=env,
+    kappa_times_dry_volume=attributes["kappa times dry volume"],
+)
+
+... (run simulation) ...
 ```
+
+Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) and the `Constant` surface tension model is used there.
 
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 ![ARG2000.](ARG_fig1.pdf){#fig:ARG2000 width="60%"}
@@ -323,7 +354,9 @@ builder = Builder(backend=CPU(), n_sd=n_sd)
 Code demonstrating how to create `formulae` objects using the different surface tension models.
 ```python
 A = AerosolBetaCaryophylleneDark()
-formulae_bulk = Formulae(surface_tension='Constant')
+formulae_bulk = Formulae(
+    surface_tension='Constant'
+)
 formulae_ovad = Formulae(
     surface_tension='CompressedFilmOvadnevaite',
     constants={
@@ -372,8 +405,9 @@ TODO (Sylwester): @Bartman_et_al_2022_adaptive
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
 PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
 KD contributed to setting up continuous integration workflows for the GPU backend.
-ID, CES and AJ contributed to the CCN activation examples.
-CES contributed the aerosol initialisation framework and representation of organics in surface-tension models and the relevant examples.
+CES contributed the aerosol initialisation framework.
+ID, CES, and AJ contributed to the CCN activation examples.
+CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples with contributions from RXW.
 The immersion freezing representation code was developed by SA who also carried out the maintenance of the project.
 
 # Acknowledgements
