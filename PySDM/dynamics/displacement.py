@@ -17,6 +17,7 @@ class Displacement:
     def __init__(
         self,
         enable_sedimentation=False,
+        precipitation_counting_level_index: int = 0,
         adaptive=DEFAULTS.adaptive,
         rtol=DEFAULTS.rtol,
     ):
@@ -28,6 +29,7 @@ class Displacement:
         self.displacement = None
         self.temp = None
         self.precipitation_in_last_step = 0
+        self.precipitation_counting_level_index = precipitation_counting_level_index
 
         self.adaptive = adaptive
         self.rtol = rtol
@@ -96,8 +98,11 @@ class Displacement:
             self.update_position(position_in_cell, self.displacement)
             if self.enable_sedimentation:
                 self.precipitation_in_last_step += (
-                    self.particulator.remove_precipitated()
+                    self.particulator.remove_precipitated(
+                        self.displacement, self.precipitation_counting_level_index
+                    )
                 )
+            self.particulator.flag_out_of_column()
             self.update_cell_origin(cell_origin, position_in_cell)
             self.boundary_condition(cell_origin)
             self.particulator.recalculate_cell_id()
