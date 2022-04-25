@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v1: particle-based cloud modeling package for&nbsp;warm-rain microphysics and aqueous chemistry'
+title: 'PySDM v1: particle-based cloud modeling package for warm-rain microphysics and aqueous chemistry'
 date: 31 March 2021
 tags:
   - Python
@@ -17,36 +17,36 @@ authors:
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "1"
-  - name: Oleksii&nbsp;Bulenok
+  - name: Oleksii Bulenok
     orcid: 0000-0003-2272-8548
     affiliation: "1"
-  - name: Kamil&nbsp;Górski
+  - name: Kamil Górski
     affiliation: "1"
-  - name: Anna&nbsp;Jaruga
+  - name: Anna Jaruga
     affiliation: "2"
     orcid: 0000-0003-3194-6440
-  - name: Grzegorz&nbsp;Łazarski
+  - name: Grzegorz Łazarski
     affiliation: "1,3"
     orcid: 0000-0002-5595-371X
-  - name: Michael&nbsp;A.&nbsp;Olesik
+  - name: Michael A. Olesik
     orcid: 0000-0002-6319-9358
     affiliation: "4"
-  - name: Bartosz&nbsp;Piasecki
+  - name: Bartosz Piasecki
     affiliation: "1"
-  - name: Clare&nbsp;E.&nbsp;Singer
+  - name: Clare E. Singer
     orcid: 0000-0002-1708-0997
     affiliation: "2"
-  - name: Aleksandra&nbsp;Talar
+  - name: Aleksandra Talar
     affiliation: "1"
-  - name: Sylwester&nbsp;Arabas
+  - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
     affiliation: "5,1"
 affiliations:
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 2
- - name: Faculty&nbsp;of&nbsp;Chemistry, Jagiellonian University, Kraków, Poland 
+ - name: Faculty of Chemistry, Jagiellonian University, Kraków, Poland 
    index: 3
  - name: Faculty of Physics, Astronomy and Applied Computer Science, Jagiellonian University, Kraków, Poland
    index: 4
