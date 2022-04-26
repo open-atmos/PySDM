@@ -92,7 +92,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def flag_precipitated(
+    def flag_precipitated(  # pylint: disable=unused-argument
         self,
         cell_origin,
         position_in_cell,
@@ -127,7 +127,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         return rainfall.to_host()[0]
 
     @staticmethod
-    def flag_out_of_column(
+    def flag_out_of_column(  # pylint: disable=unused-argument
         cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
     ):
         pass
