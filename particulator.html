@@ -384,7 +384,9 @@ class Particulator:  # pylint: disable=too-many-public-methods
     def adaptive_sdm_end(self, dt_left):
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
-    def remove_precipitated(self) -&gt; float:
+    def remove_precipitated(
+        self, displacement, precipitation_counting_level_index
+    ) -&gt; float:
         res = self.backend.flag_precipitated(
             self.attributes[&#34;cell origin&#34;],
             self.attributes[&#34;position in cell&#34;],
@@ -393,12 +395,28 @@ class Particulator:  # pylint: disable=too-many-public-methods
             self.attributes._ParticleAttributes__idx,
             self.attributes.super_droplet_count,
             self.attributes._ParticleAttributes__healthy_memory,
+            precipitation_counting_level_index=precipitation_counting_level_index,
+            displacement=displacement,
         )
         self.attributes.healthy = bool(
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
         return res
+
+    def flag_out_of_column(self):
+        self.backend.flag_out_of_column(
+            self.attributes[&#34;cell origin&#34;],
+            self.attributes[&#34;position in cell&#34;],
+            self.attributes._ParticleAttributes__idx,
+            self.attributes.super_droplet_count,
+            self.attributes._ParticleAttributes__healthy_memory,
+            domain_top_level_index=self.mesh.grid[-1],
+        )
+        self.attributes.healthy = bool(
+            self.attributes._ParticleAttributes__healthy_memory
+        )
+        self.attributes.sanitize()
 
     def calculate_displacement(
         self, displacement, courant, cell_origin, position_in_cell, n_substeps
@@ -777,7 +795,9 @@ class Particulator:  # pylint: disable=too-many-public-methods
     def adaptive_sdm_end(self, dt_left):
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
-    def remove_precipitated(self) -&gt; float:
+    def remove_precipitated(
+        self, displacement, precipitation_counting_level_index
+    ) -&gt; float:
         res = self.backend.flag_precipitated(
             self.attributes[&#34;cell origin&#34;],
             self.attributes[&#34;position in cell&#34;],
@@ -786,12 +806,28 @@ class Particulator:  # pylint: disable=too-many-public-methods
             self.attributes._ParticleAttributes__idx,
             self.attributes.super_droplet_count,
             self.attributes._ParticleAttributes__healthy_memory,
+            precipitation_counting_level_index=precipitation_counting_level_index,
+            displacement=displacement,
         )
         self.attributes.healthy = bool(
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
         return res
+
+    def flag_out_of_column(self):
+        self.backend.flag_out_of_column(
+            self.attributes[&#34;cell origin&#34;],
+            self.attributes[&#34;position in cell&#34;],
+            self.attributes._ParticleAttributes__idx,
+            self.attributes.super_droplet_count,
+            self.attributes._ParticleAttributes__healthy_memory,
+            domain_top_level_index=self.mesh.grid[-1],
+        )
+        self.attributes.healthy = bool(
+            self.attributes._ParticleAttributes__healthy_memory
+        )
+        self.attributes.sanitize()
 
     def calculate_displacement(
         self, displacement, courant, cell_origin, position_in_cell, n_substeps
@@ -1093,6 +1129,30 @@ def n_sd(self) -&gt; int:
         self.attributes.mark_updated(f&#34;moles_{key}&#34;)</code></pre>
 </details>
 </dd>
+<dt id="PySDM.particulator.Particulator.flag_out_of_column"><code class="name flex">
+<span>def <span class="ident">flag_out_of_column</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def flag_out_of_column(self):
+    self.backend.flag_out_of_column(
+        self.attributes[&#34;cell origin&#34;],
+        self.attributes[&#34;position in cell&#34;],
+        self.attributes._ParticleAttributes__idx,
+        self.attributes.super_droplet_count,
+        self.attributes._ParticleAttributes__healthy_memory,
+        domain_top_level_index=self.mesh.grid[-1],
+    )
+    self.attributes.healthy = bool(
+        self.attributes._ParticleAttributes__healthy_memory
+    )
+    self.attributes.sanitize()</code></pre>
+</details>
+</dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
 <span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
@@ -1230,7 +1290,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.remove_precipitated"><code class="name flex">
-<span>def <span class="ident">remove_precipitated</span></span>(<span>self) ‑> float</span>
+<span>def <span class="ident">remove_precipitated</span></span>(<span>self, displacement, precipitation_counting_level_index) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1238,7 +1298,9 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def remove_precipitated(self) -&gt; float:
+<pre><code class="python">def remove_precipitated(
+    self, displacement, precipitation_counting_level_index
+) -&gt; float:
     res = self.backend.flag_precipitated(
         self.attributes[&#34;cell origin&#34;],
         self.attributes[&#34;position in cell&#34;],
@@ -1247,6 +1309,8 @@ def n_sd(self) -&gt; int:
         self.attributes._ParticleAttributes__idx,
         self.attributes.super_droplet_count,
         self.attributes._ParticleAttributes__healthy_memory,
+        precipitation_counting_level_index=precipitation_counting_level_index,
+        displacement=displacement,
     )
     self.attributes.healthy = bool(
         self.attributes._ParticleAttributes__healthy_memory
@@ -1380,6 +1444,7 @@ def n_sd(self) -&gt; int:
 <li><code><a title="PySDM.particulator.Particulator.condensation" href="#PySDM.particulator.Particulator.condensation">condensation</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dissolution" href="#PySDM.particulator.Particulator.dissolution">dissolution</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.dt" href="#PySDM.particulator.Particulator.dt">dt</a></code></li>
+<li><code><a title="PySDM.particulator.Particulator.flag_out_of_column" href="#PySDM.particulator.Particulator.flag_out_of_column">flag_out_of_column</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.mesh" href="#PySDM.particulator.Particulator.mesh">mesh</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.moments" href="#PySDM.particulator.Particulator.moments">moments</a></code></li>
 <li><code><a title="PySDM.particulator.Particulator.n_sd" href="#PySDM.particulator.Particulator.n_sd">n_sd</a></code></li>

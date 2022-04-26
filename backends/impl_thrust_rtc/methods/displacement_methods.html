@@ -121,9 +121,20 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def flag_precipitated(
-        self, cell_origin, position_in_cell, volume, n, idx, length, healthy
+    def flag_precipitated(  # pylint: disable=unused-argument
+        self,
+        cell_origin,
+        position_in_cell,
+        volume,
+        n,
+        idx,
+        length,
+        healthy,
+        precipitation_counting_level_index,
+        displacement,
     ):
+        if precipitation_counting_level_index != 0:
+            raise NotImplementedError()
         n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
         rainfall = trtc.device_vector(self._get_c_type(), 1)
@@ -142,7 +153,13 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 rainfall,
             ],
         )
-        return rainfall.to_host()[0]</code></pre>
+        return rainfall.to_host()[0]
+
+    @staticmethod
+    def flag_out_of_column(  # pylint: disable=unused-argument
+        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+    ):
+        pass</code></pre>
 </details>
 </section>
 <section>
@@ -247,9 +264,20 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def flag_precipitated(
-        self, cell_origin, position_in_cell, volume, n, idx, length, healthy
+    def flag_precipitated(  # pylint: disable=unused-argument
+        self,
+        cell_origin,
+        position_in_cell,
+        volume,
+        n,
+        idx,
+        length,
+        healthy,
+        precipitation_counting_level_index,
+        displacement,
     ):
+        if precipitation_counting_level_index != 0:
+            raise NotImplementedError()
         n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
         rainfall = trtc.device_vector(self._get_c_type(), 1)
@@ -268,7 +296,13 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 rainfall,
             ],
         )
-        return rainfall.to_host()[0]</code></pre>
+        return rainfall.to_host()[0]
+
+    @staticmethod
+    def flag_out_of_column(  # pylint: disable=unused-argument
+        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+    ):
+        pass</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -279,6 +313,25 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 <ul class="hlist">
 <li><a title="PySDM.backends.thrust_rtc.ThrustRTC" href="../../thrust_rtc.html#PySDM.backends.thrust_rtc.ThrustRTC">ThrustRTC</a></li>
 </ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_out_of_column"><code class="name flex">
+<span>def <span class="ident">flag_out_of_column</span></span>(<span>cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def flag_out_of_column(  # pylint: disable=unused-argument
+    cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+):
+    pass</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.calculate_displacement"><code class="name flex">
@@ -339,6 +392,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 <h4><code><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods" href="#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods">DisplacementMethods</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.calculate_displacement" href="#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.calculate_displacement">calculate_displacement</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_out_of_column" href="#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_out_of_column">flag_out_of_column</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_precipitated" href="#PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_precipitated">flag_precipitated</a></code></li>
 </ul>
 </li>
