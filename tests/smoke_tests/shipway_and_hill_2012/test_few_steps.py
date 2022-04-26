@@ -15,14 +15,14 @@ from PySDM.physics import si
         {"p0": 1040 * si.hPa, "particle_reservoir_depth": 300 * si.m},
     ),
 )
-def test_few_steps_no_precip(params, plot=True):
+def test_few_steps_no_precip(params, plot=False):
     # Arrange
-    n_sd_per_gridbox = 50
+    n_sd_per_gridbox = 15
     smooth_window = 5
     settings = Settings(
         n_sd_per_gridbox=n_sd_per_gridbox,
         dt=30 * si.s,
-        dz=25 * si.m,
+        dz=60 * si.m,
         precip=False,
         **params,
         rho_times_w_1=0.5 * si.m / si.s * si.kg / si.m**3,
