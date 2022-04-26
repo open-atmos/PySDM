@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 from matplotlib import pyplot
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 from scipy.ndimage.filters import uniform_filter1d
@@ -7,8 +8,14 @@ from scipy.ndimage.filters import uniform_filter1d
 from PySDM.physics import si
 
 
-# pylint: disable=redefined-outer-name
-def test_few_steps_no_precip(plot=False):
+@pytest.mark.parametrize(
+    "params",
+    (
+        pytest.param({}, marks=(pytest.mark.xfail(strict=True))),
+        {"p0": 1040 * si.hPa, "particle_reservoir_depth": 300 * si.m},
+    ),
+)
+def test_few_steps_no_precip(params, plot=True):
     # Arrange
     n_sd_per_gridbox = 50
     smooth_window = 5
@@ -17,8 +24,7 @@ def test_few_steps_no_precip(plot=False):
         dt=30 * si.s,
         dz=25 * si.m,
         precip=False,
-        p0=1040 * si.hPa,
-        particle_reservoir_depth=300 * si.m,
+        **params,
         rho_times_w_1=0.5 * si.m / si.s * si.kg / si.m**3,
     )
     simulation = Simulation(settings)
