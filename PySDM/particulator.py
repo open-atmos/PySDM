@@ -355,7 +355,9 @@ class Particulator:  # pylint: disable=too-many-public-methods
     def adaptive_sdm_end(self, dt_left):
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
-    def remove_precipitated(self) -> float:
+    def remove_precipitated(
+        self, displacement, precipitation_counting_level_index
+    ) -> float:
         res = self.backend.flag_precipitated(
             self.attributes["cell origin"],
             self.attributes["position in cell"],
@@ -364,12 +366,28 @@ class Particulator:  # pylint: disable=too-many-public-methods
             self.attributes._ParticleAttributes__idx,
             self.attributes.super_droplet_count,
             self.attributes._ParticleAttributes__healthy_memory,
+            precipitation_counting_level_index=precipitation_counting_level_index,
+            displacement=displacement,
         )
         self.attributes.healthy = bool(
             self.attributes._ParticleAttributes__healthy_memory
         )
         self.attributes.sanitize()
         return res
+
+    def flag_out_of_column(self):
+        self.backend.flag_out_of_column(
+            self.attributes["cell origin"],
+            self.attributes["position in cell"],
+            self.attributes._ParticleAttributes__idx,
+            self.attributes.super_droplet_count,
+            self.attributes._ParticleAttributes__healthy_memory,
+            domain_top_level_index=self.mesh.grid[-1],
+        )
+        self.attributes.healthy = bool(
+            self.attributes._ParticleAttributes__healthy_memory
+        )
+        self.attributes.sanitize()
 
     def calculate_displacement(
         self, displacement, courant, cell_origin, position_in_cell, n_substeps
