@@ -11,9 +11,8 @@ from PySDM.physics.trivia import Trivia
 
 
 @numba.njit(**{**jit_flags, "parallel": False})
-def minfun(
-    f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c
-):  # pylint: disable=too-many-arguments
+# pylint: disable=too-many-arguments
+def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
     return Cb_iso * (1 - f_surf) / RUEHL_C0 - np.exp(
         c * (RUEHL_A0**2 - (A_iso / f_surf) ** 2)
     )

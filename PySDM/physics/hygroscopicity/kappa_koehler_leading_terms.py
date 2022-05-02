@@ -11,7 +11,8 @@ class KappaKoehlerLeadingTerms:
         pass
 
     @staticmethod
-    def RH_eq(const, r, T, kp, rd3, sgm):  # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
+    def RH_eq(const, r, T, kp, rd3, sgm):
         return (
             1
             + (2 * sgm / const.Rv / T / const.rho_w) / r

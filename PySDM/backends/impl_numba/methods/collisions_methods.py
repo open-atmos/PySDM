@@ -236,6 +236,7 @@ class CollisionsMethods(BackendMethods):
 
     def collision_coalescence(
         self,
+        *,
         multiplicity,
         idx,
         attributes,
@@ -260,6 +261,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def __collision_coalescence_breakup_body(
+        *,
         multiplicity,
         idx,
         length,
@@ -315,6 +317,7 @@ class CollisionsMethods(BackendMethods):
 
     def collision_coalescence_breakup(
         self,
+        *,
         multiplicity,
         idx,
         attributes,
@@ -332,22 +335,22 @@ class CollisionsMethods(BackendMethods):
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
-            multiplicity.data,
-            idx.data,
-            len(idx),
-            attributes.data,
-            gamma.data,
-            rand.data,
-            Ec.data,
-            Eb.data,
-            n_fragment.data,
-            healthy.data,
-            cell_id.data,
-            coalescence_rate.data,
-            breakup_rate.data,
-            breakup_rate_deficit.data,
-            is_first_in_pair.indicator.data,
-            max_multiplicity,
+            multiplicity=multiplicity.data,
+            idx=idx.data,
+            length=len(idx),
+            attributes=attributes.data,
+            gamma=gamma.data,
+            rand=rand.data,
+            Ec=Ec.data,
+            Eb=Eb.data,
+            n_fragment=n_fragment.data,
+            healthy=healthy.data,
+            cell_id=cell_id.data,
+            coalescence_rate=coalescence_rate.data,
+            breakup_rate=breakup_rate.data,
+            breakup_rate_deficit=breakup_rate_deficit.data,
+            is_first_in_pair=is_first_in_pair.indicator.data,
+            max_multiplicity=max_multiplicity,
         )
 
     @staticmethod
@@ -368,7 +371,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __exp_fragmentation_body(
-        n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
         """
         Exponential PDF
@@ -386,23 +389,23 @@ class CollisionsMethods(BackendMethods):
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
     def exp_fragmentation(
-        self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
         self.__exp_fragmentation_body(
-            n_fragment.data,
-            scale,
-            frag_size.data,
-            v_max.data,
-            x_plus_y.data,
-            rand.data,
-            vmin,
-            nfmax,
+            n_fragment=n_fragment.data,
+            scale=scale,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            rand=rand.data,
+            vmin=vmin,
+            nfmax=nfmax,
         )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __feingold1988_fragmentation_body(
-        n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
+        *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
     ):
         """
         Scaled exponential PDF
@@ -420,23 +423,33 @@ class CollisionsMethods(BackendMethods):
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
     def feingold1988_fragmentation(
-        self, n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
+        self,
+        *,
+        n_fragment,
+        scale,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        fragtol,
+        vmin,
+        nfmax,
     ):
         self.__feingold1988_fragmentation_body(
-            n_fragment.data,
-            scale,
-            frag_size.data,
-            v_max.data,
-            x_plus_y.data,
-            rand.data,
-            fragtol,
-            vmin,
-            nfmax,
+            n_fragment=n_fragment.data,
+            scale=scale,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            rand=rand.data,
+            fragtol=fragtol,
+            vmin=vmin,
+            nfmax=nfmax,
         )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __gauss_fragmentation_body(n_fragment, mu, scale, frag_size, r_max, rand):
+    def __gauss_fragmentation_body(*, n_fragment, mu, scale, frag_size, r_max, rand):
         """
         Gaussian PDF
         CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
@@ -450,9 +463,14 @@ class CollisionsMethods(BackendMethods):
             else:
                 n_fragment[i] = r_max[i] / frag_size[i]
 
-    def gauss_fragmentation(self, n_fragment, mu, scale, frag_size, r_max, rand):
+    def gauss_fragmentation(self, *, n_fragment, mu, scale, frag_size, r_max, rand):
         self.__gauss_fragmentation_body(
-            n_fragment.data, mu, scale, frag_size.data, r_max.data, rand.data
+            n_fragment=n_fragment.data,
+            mu=mu,
+            scale=scale,
+            frag_size=frag_size.data,
+            r_max=r_max.data,
+            rand=rand.data,
         )
 
     @staticmethod

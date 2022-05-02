@@ -27,7 +27,8 @@ class RhodThdQv:
         return p * qv / (qv + const.eps)
 
     @staticmethod
-    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):  # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments
+    def dthd_dt(const, rhod, thd, T, dqv_dt, lv):
         return -lv * dqv_dt / const.c_pd / T * thd * rhod
 
     @staticmethod
