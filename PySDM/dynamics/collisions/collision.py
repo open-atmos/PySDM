@@ -238,15 +238,15 @@ class Collision:
         """
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
-                prob,
-                self.particulator.attributes["n"],
-                self.particulator.attributes["cell id"],
-                self.dt_left,
-                self.particulator.dt,
-                self.dt_coal_range,
-                is_first_in_pair,
-                self.stats_n_substep,
-                self.stats_dt_min,
+                gamma=prob,
+                n=self.particulator.attributes["n"],
+                cell_id=self.particulator.attributes["cell id"],
+                dt_left=self.dt_left,
+                dt=self.particulator.dt,
+                dt_range=self.dt_coal_range,
+                is_first_in_pair=is_first_in_pair,
+                stats_n_substep=self.stats_n_substep,
+                stats_dt_min=self.stats_dt_min,
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")
