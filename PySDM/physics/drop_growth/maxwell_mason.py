@@ -7,8 +7,8 @@ class MaxwellMason:
     def __init__(self, _):
         pass
 
-    @staticmethod
     # pylint: disable=too-many-arguments
+    @staticmethod
     def r_dr_dt(const, RH_eq, T, RH, lv, pvs, D, K):
         return (RH - RH_eq) / (
             const.rho_w * const.Rv * T / D / pvs
