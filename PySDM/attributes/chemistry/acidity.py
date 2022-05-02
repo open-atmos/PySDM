@@ -24,17 +24,17 @@ class Acidity(DerivedAttribute):
         dynamic = self.particulator.dynamics["AqueousChemistry"]
 
         self.particulator.backend.equilibrate_H(
-            dynamic.equilibrium_consts,
-            self.cell_id.get(),
-            _conc(
+            equilibrium_consts=dynamic.equilibrium_consts,
+            cell_id=self.cell_id.get(),
+            conc=_conc(
                 N_mIII=self.conc["N_mIII"].get(),
                 N_V=self.conc["N_V"].get(),
                 C_IV=self.conc["C_IV"].get(),
                 S_IV=self.conc["S_IV"].get(),
                 S_VI=self.conc["S_VI"].get(),
             ),
-            dynamic.do_chemistry_flag,
-            self.data,
+            do_chemistry_flag=dynamic.do_chemistry_flag,
+            pH=self.data,
             H_min=dynamic.pH_H_min,
             H_max=dynamic.pH_H_max,
             ionic_strength_threshold=dynamic.ionic_strength_threshold,
