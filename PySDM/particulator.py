@@ -80,13 +80,13 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob,
-            self.attributes["cell id"],
-            self.attributes.cell_idx,
-            self.attributes.cell_start,
-            norm_factor,
-            self.dt,
-            self.mesh.dv,
+            prob=prob,
+            cell_id=self.attributes["cell id"],
+            cell_idx=self.attributes.cell_idx,
+            cell_start=self.attributes.cell_start,
+            norm_factor=norm_factor,
+            timestep=self.dt,
+            dv=self.mesh.dv,
         )
 
     def update_TpRH(self):
@@ -101,7 +101,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
             self.environment.get_predicted("RH"),
         )
 
-    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -132,6 +132,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def collision_coalescence_breakup(
         self,
+        *,
         enable_breakup,
         gamma,
         rand,
@@ -186,6 +187,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def oxidation(
         self,
+        *,
         kinetic_consts,
         timestep,
         equilibrium_consts,
@@ -218,6 +220,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def dissolution(
         self,
+        *,
         gaseous_compounds,
         system_type,
         dissociation_factors,
@@ -250,14 +253,14 @@ class Particulator:  # pylint: disable=too-many-public-methods
         for key in gaseous_compounds.keys():
             self.attributes.mark_updated(f"moles_{key}")
 
-    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+    def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
         self.backend.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
             temperature=self.environment.get_predicted("T"),
         )
 
-    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+    def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
         self.backend.chem_recalculate_drop_data(
             dissociation_factors=dissociation_factors,
             equilibrium_consts=equilibrium_consts,
@@ -284,6 +287,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def moments(
         self,
+        *,
         moment_0,
         moments,
         specs: dict,
@@ -309,17 +313,17 @@ class Particulator:  # pylint: disable=too-many-public-methods
         ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
         self.backend.moments(
-            moment_0,
-            moments,
-            self.attributes["n"],
-            attr_data,
-            self.attributes["cell id"],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            ranks,
-            attr_range[0],
-            attr_range[1],
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes["n"],
+            attr_data=attr_data,
+            cell_id=self.attributes["cell id"],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            ranks=ranks,
+            min_x=attr_range[0],
+            max_x=attr_range[1],
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
             skip_division_by_m0=skip_division_by_m0,
@@ -327,6 +331,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def spectrum_moments(
         self,
+        *,
         moment_0,
         moments,
         attr,
@@ -338,16 +343,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
-            moment_0,
-            moments,
-            self.attributes["n"],
-            attr_data,
-            self.attributes["cell id"],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            rank,
-            attr_bins,
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes["n"],
+            attr_data=attr_data,
+            cell_id=self.attributes["cell id"],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            rank=rank,
+            x_bins=attr_bins,
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
         )
@@ -356,16 +361,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
     def remove_precipitated(
-        self, displacement, precipitation_counting_level_index
+        self, *, displacement, precipitation_counting_level_index
     ) -> float:
         res = self.backend.flag_precipitated(
-            self.attributes["cell origin"],
-            self.attributes["position in cell"],
-            self.attributes["volume"],
-            self.attributes["n"],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes["cell origin"],
+            position_in_cell=self.attributes["position in cell"],
+            volume=self.attributes["volume"],
+            n=self.attributes["n"],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             precipitation_counting_level_index=precipitation_counting_level_index,
             displacement=displacement,
         )
@@ -377,11 +382,11 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def flag_out_of_column(self):
         self.backend.flag_out_of_column(
-            self.attributes["cell origin"],
-            self.attributes["position in cell"],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes["cell origin"],
+            position_in_cell=self.attributes["position in cell"],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             domain_top_level_index=self.mesh.grid[-1],
         )
         self.attributes.healthy = bool(
@@ -390,14 +395,14 @@ class Particulator:  # pylint: disable=too-many-public-methods
         self.attributes.sanitize()
 
     def calculate_displacement(
-        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         for dim in range(len(self.environment.mesh.grid)):
             self.backend.calculate_displacement(
-                dim,
-                displacement,
-                courant[dim],
-                cell_origin,
-                position_in_cell,
-                n_substeps,
+                dim=dim,
+                displacement=displacement,
+                courant=courant[dim],
+                cell_origin=cell_origin,
+                position_in_cell=position_in_cell,
+                n_substeps=n_substeps,
             )

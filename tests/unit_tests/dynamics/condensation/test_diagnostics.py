@@ -12,7 +12,7 @@ from PySDM.impl.mesh import Mesh
 
 
 class _TestEnv:
-    def __init__(self, dt, dv, rhod, thd, qv, T, p, RH):
+    def __init__(self, *, dt, dv, rhod, thd, qv, T, p, RH):
         self.mesh = Mesh.mesh_0d()
         self.full = None
         self.particulator = None
@@ -36,6 +36,7 @@ class _TestEnv:
 class _TestParticulator:
     def __init__(
         self,
+        *,
         backend,
         n_sd=-1,
         max_iters=-1,
@@ -90,7 +91,7 @@ class TestDiagnostics:
     def test_burnout_long(capsys, backend=CPU):
         # arrange
         particulator = _TestParticulator(
-            backend,
+            backend=backend,
             dt=1,
             T=1,
             qv=1,

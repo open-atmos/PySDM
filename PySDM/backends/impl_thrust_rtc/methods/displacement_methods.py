@@ -72,7 +72,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
@@ -94,6 +94,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(  # pylint: disable=unused-argument
         self,
+        *,
         cell_origin,
         position_in_cell,
         volume,
@@ -128,6 +129,6 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     def flag_out_of_column(  # pylint: disable=unused-argument
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        *, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
     ):
         pass

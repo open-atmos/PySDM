@@ -79,7 +79,7 @@ class TestParticleAttributes:
         "backend_cls", (CPU, pytest.param(GPU, marks=pytest.mark.xfail(strict=True)))
     )  # TODO #330
     def test_sort_by_cell_id(
-        backend_cls, multiplicity, cells, idx, new_idx, cell_start
+        *, backend_cls, multiplicity, cells, idx, new_idx, cell_start
     ):
         # Arrange
         n_sd = len(multiplicity)

@@ -9,6 +9,6 @@ class MeanRadius(MomentProduct):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer("volume", rank=1 / 3)
+        self._download_moment_to_buffer(attr="volume", rank=1 / 3)
         self.buffer[:] /= self.formulae.constants.PI_4_3 ** (1 / 3)
         return self.buffer

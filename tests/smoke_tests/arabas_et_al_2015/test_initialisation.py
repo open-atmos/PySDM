@@ -44,8 +44,8 @@ def test_initialisation(backend_class, plot=False):
     moments = particulator.backend.Storage.empty((n_moments, n_cell), dtype=float)
     for i in range(len(v_bins) - 1):
         particulator.moments(
-            moment_0,
-            moments,
+            moment_0=moment_0,
+            moments=moments,
             specs={"n": (0,)},
             attr_name="dry volume",
             attr_range=(v_bins[i], v_bins[i + 1]),
@@ -56,8 +56,8 @@ def test_initialisation(backend_class, plot=False):
         )
 
         particulator.moments(
-            moment_0,
-            moments,
+            moment_0=moment_0,
+            moments=moments,
             specs={"n": (0,)},
             attr_name="volume",
             attr_range=(v_bins[i], v_bins[i + 1]),

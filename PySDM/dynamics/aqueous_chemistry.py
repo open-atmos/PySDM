@@ -21,6 +21,7 @@ DEFAULTS = namedtuple("_", ("pH_min", "pH_max", "pH_rtol", "ionic_strength_thres
 class AqueousChemistry:
     def __init__(
         self,
+        *,
         environment_mole_fractions,
         system_type,
         n_substep,

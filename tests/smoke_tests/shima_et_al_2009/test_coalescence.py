@@ -17,17 +17,19 @@ from ...backends_fixture import backend_class
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-def check(n_part, dv, n_sd, rho, state, step):
+def check(*, n_part, dv, n_sd, rho, attributes, step):
     check_lwc = 1e-3 * si.kilogram / si.metre**3
     check_ksi = n_part * dv / n_sd
 
     # multiplicities
     if step == 0:
-        np.testing.assert_approx_equal(np.amin(state["n"]), np.amax(state["n"]), 1)
-        np.testing.assert_approx_equal(state["n"][0], check_ksi, 1)
+        np.testing.assert_approx_equal(
+            np.amin(attributes["n"]), np.amax(attributes["n"]), 1
+        )
+        np.testing.assert_approx_equal(attributes["n"][0], check_ksi, 1)
 
     # liquid water content
-    LWC = rho * np.dot(state["n"], state["volume"]) / dv
+    LWC = rho * np.dot(attributes["n"], attributes["volume"]) / dv
     np.testing.assert_approx_equal(LWC, check_lwc, 3)
 
 
@@ -56,7 +58,9 @@ def test_coalescence(backend_class, croupier, adaptive):
     builder.set_environment(Box(dt=dt, dv=dv))
     attributes = {}
     attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(n_sd)
-    builder.add_dynamic(Coalescence(kernel, croupier=croupier, adaptive=adaptive))
+    builder.add_dynamic(
+        Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
+    )
     particulator = builder.build(attributes)
 
     volumes = {}
@@ -64,7 +68,14 @@ def test_coalescence(backend_class, croupier, adaptive):
     # Act
     for step in steps:
         particulator.run(step - particulator.n_steps)
-        check(n_part, dv, n_sd, rho, particulator.attributes, step)
+        check(
+            n_part=n_part,
+            dv=dv,
+            n_sd=n_sd,
+            rho=rho,
+            attributes=particulator.attributes,
+            step=step,
+        )
         volumes[particulator.n_steps] = particulator.attributes["volume"].to_ndarray()
 
     # Assert

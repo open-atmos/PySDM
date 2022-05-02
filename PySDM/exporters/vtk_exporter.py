@@ -26,6 +26,7 @@ class VTKExporter:
 
     def __init__(
         self,
+        *,
         path=".",
         attributes_filename="sd_attributes",
         products_filename="sd_products",

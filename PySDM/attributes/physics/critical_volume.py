@@ -18,7 +18,7 @@ class CriticalVolume(DerivedAttribute):
 
     def recalculate(self):
         self.particulator.backend.critical_volume(
-            self.data,
+            v_cr=self.data,
             kappa=self.kappa.get(),
             f_org=self.f_org.get(),
             v_dry=self.v_dry.get(),

@@ -27,6 +27,7 @@ class SpectrumMomentProduct(ABC, Product):
 
     def _recalculate_spectrum_moment(
         self,
+        *,
         attr,
         rank,
         filter_attr="volume",

@@ -47,12 +47,12 @@ class Moist:
         target["thd"].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
-            target["rhod"],
-            target["thd"],
-            target["qv"],
-            target["T"],
-            target["p"],
-            target["RH"],
+            rhod=target["rhod"],
+            thd=target["thd"],
+            qv=target["qv"],
+            T=target["T"],
+            p=target["p"],
+            RH=target["RH"],
         )
         if "a_w_ice" in self.variables:
             self.particulator.backend.a_w_ice(

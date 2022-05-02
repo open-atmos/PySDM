@@ -20,12 +20,12 @@ class WaterMixingRatio(MomentProduct):
 
     def _impl(self, **kwargs):  # TODO #217
         self._download_moment_to_buffer(
-            "volume", rank=0, filter_range=self.volume_range, filter_attr="volume"
+            attr="volume", rank=0, filter_range=self.volume_range, filter_attr="volume"
         )
         conc = self.buffer.copy()
 
         self._download_moment_to_buffer(
-            "volume", rank=1, filter_range=self.volume_range, filter_attr="volume"
+            attr="volume", rank=1, filter_range=self.volume_range, filter_attr="volume"
         )
         result = self.buffer.copy()
         result[:] *= self.formulae.constants.rho_w

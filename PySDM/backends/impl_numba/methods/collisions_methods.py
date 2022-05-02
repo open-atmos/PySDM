@@ -31,7 +31,9 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
+def coalesce(  # pylint: disable=too-many-arguments
+    i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate
+):
     atomic_add(coalescence_rate, cid, gamma[i] * multiplicity[k])
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
@@ -47,7 +49,7 @@ def coalesce(i, j, k, cid, multiplicity, gamma, attributes, coalescence_rate):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(
+def break_up(  # pylint: disable=too-many-arguments
     i,
     j,
     k,
@@ -172,9 +174,9 @@ class CollisionsMethods(BackendMethods):
             if dt_todo[cid] > 0:
                 stats_n_substep[cid] += 1
 
-    # pylint: disable=too-many-arguments
     def adaptive_sdm_gamma(
         self,
+        *,
         gamma,
         n,
         cell_id,
@@ -503,9 +505,9 @@ class CollisionsMethods(BackendMethods):
             )
             gamma[i] = g
 
-    # pylint: disable=too-many-arguments
     def compute_gamma(
         self,
+        *,
         gamma,
         rand,
         multiplicity,

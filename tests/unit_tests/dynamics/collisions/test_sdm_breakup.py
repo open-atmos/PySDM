@@ -27,7 +27,11 @@ class TestSDMBreakup:
             "n": np.asarray([1, 1]),
             "volume": np.asarray([100 * si.um**3, 100 * si.um**3]),
         }
-        breakup = Breakup(ConstantK(1 * si.cm**3 / si.s), AlwaysN(4), adaptive=False)
+        breakup = Breakup(
+            collision_kernel=ConstantK(1 * si.cm**3 / si.s),
+            fragmentation_function=AlwaysN(4),
+            adaptive=False,
+        )
         nsteps = 10
 
         n_sd = len(attributes["n"])

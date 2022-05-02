@@ -7,6 +7,7 @@ from PySDM.impl.mesh import Mesh
 class DummyEnvironment:
     def __init__(
         self,
+        *,
         timestep=None,
         grid=None,
         size=None,
