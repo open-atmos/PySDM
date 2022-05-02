@@ -59,7 +59,7 @@ def break_up(
     max_multiplicity,
     breakup_rate,
     breakup_rate_deficit,
-):
+):  # pylint: disable=too-many-branches
     gamma_tmp = 0
     gamma_deficit = gamma[i]
     overflow_flag = False
