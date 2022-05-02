@@ -98,7 +98,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         cell_origin,
         position_in_cell,
         volume,
-        n,
+        multiplicity,
         idx,
         length,
         healthy,
@@ -121,7 +121,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 cell_origin.data,
                 position_in_cell.data,
                 volume.data,
-                n.data,
+                multiplicity.data,
                 rainfall,
             ],
         )
