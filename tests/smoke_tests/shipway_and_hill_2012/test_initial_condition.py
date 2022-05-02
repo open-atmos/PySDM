@@ -15,10 +15,9 @@ class TestInitialCondition:
             0 * si.m,
             100 * si.m,
             200 * si.m,
-            # TODO #818
-            # 300 * si.m,
-            # 400 * si.m,
-            # 500 * si.m,
+            300 * si.m,
+            400 * si.m,
+            500 * si.m,
             1000 * si.m,
         ),
     )
