@@ -399,7 +399,7 @@ class CondensationMethods(BackendMethods):
             DTp,
             KTp,
             rtol_x,
-        ):
+        ):  # pylint: disable=too-many-branches
             result = 0
             n_activating = 0
             n_deactivating = 0
