@@ -92,13 +92,13 @@ class Particulator:  # pylint: disable=too-many-public-methods
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
             # input
-            self.environment.get_predicted("rhod"),
-            self.environment.get_predicted("thd"),
-            self.environment.get_predicted("qv"),
+            rhod=self.environment.get_predicted("rhod"),
+            thd=self.environment.get_predicted("thd"),
+            qv=self.environment.get_predicted("qv"),
             # output
-            self.environment.get_predicted("T"),
-            self.environment.get_predicted("p"),
-            self.environment.get_predicted("RH"),
+            T=self.environment.get_predicted("T"),
+            p=self.environment.get_predicted("p"),
+            RH=self.environment.get_predicted("RH"),
         )
 
     def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):

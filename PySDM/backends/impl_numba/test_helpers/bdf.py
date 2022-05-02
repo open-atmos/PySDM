@@ -25,7 +25,7 @@ def patch_particulator(particulator):
 
 
 def _bdf_condensation(
-    *, particulator, rtol_x, rtol_thd, counters, RH_max, success, cell_order
+    particulator, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order
 ):
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
@@ -89,8 +89,7 @@ def _make_solve(formulae):
         return np.sum(n * volume(x)) * rho_w / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-    def _impl(
-        *,
+    def _impl(  # pylint: disable=too-many-arguments
         dy_dt,
         x,
         T,
@@ -149,22 +148,22 @@ def _make_solve(formulae):
 
         dy_dt = np.empty_like(y)
         _impl(
-            dy_dt=dy_dt,
-            x=x,
-            T=T,
-            p=p,
-            n=n,
-            RH=RH,
-            kappa=kappa,
-            f_org=f_org,
-            dry_volume=dry_volume,
-            thd=thd,
-            dot_thd=dthd_dt,
-            dot_qv=dqv_dt,
-            m_d_mean=m_d_mean,
-            rhod_mean=rhod_mean,
-            pvs=pvs,
-            lv=lv(T),
+            dy_dt,
+            x,
+            T,
+            p,
+            n,
+            RH,
+            kappa,
+            f_org,
+            dry_volume,
+            thd,
+            dthd_dt,
+            dqv_dt,
+            m_d_mean,
+            rhod_mean,
+            pvs,
+            lv(T),
         )
         return dy_dt
 
