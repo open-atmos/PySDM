@@ -212,6 +212,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def __collision_coalescence_body(
+        *,
         multiplicity,
         idx,
         length,
@@ -245,15 +246,15 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
     ):
         self.__collision_coalescence_body(
-            multiplicity.data,
-            idx.data,
-            len(idx),
-            attributes.data,
-            gamma.data,
-            healthy.data,
-            cell_id.data,
-            coalescence_rate.data,
-            is_first_in_pair.indicator.data,
+            multiplicity=multiplicity.data,
+            idx=idx.data,
+            length=len(idx),
+            attributes=attributes.data,
+            gamma=gamma.data,
+            healthy=healthy.data,
+            cell_id=cell_id.data,
+            coalescence_rate=coalescence_rate.data,
+            is_first_in_pair=is_first_in_pair.indicator.data,
         )
 
     @staticmethod
