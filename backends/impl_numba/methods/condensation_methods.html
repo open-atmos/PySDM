@@ -428,7 +428,7 @@ class CondensationMethods(BackendMethods):
             DTp,
             KTp,
             rtol_x,
-        ):
+        ):  # pylint: disable=too-many-branches
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -1135,7 +1135,7 @@ class CondensationMethods(BackendMethods):
             DTp,
             KTp,
             rtol_x,
-        ):
+        ):  # pylint: disable=too-many-branches
             result = 0
             n_activating = 0
             n_deactivating = 0
@@ -1642,7 +1642,7 @@ def make_calculate_ml_new(
         DTp,
         KTp,
         rtol_x,
-    ):
+    ):  # pylint: disable=too-many-branches
         result = 0
         n_activating = 0
         n_deactivating = 0
