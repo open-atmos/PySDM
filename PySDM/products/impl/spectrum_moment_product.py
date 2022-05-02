@@ -35,11 +35,11 @@ class SpectrumMomentProduct(ABC, Product):
         weighting_rank=0,
     ):
         self.particulator.spectrum_moments(
-            self.moment_0,
-            self.moments,
-            attr,
-            rank,
-            self.attr_bins_edges,
+            moment_0=self.moment_0,
+            moments=self.moments,
+            attr=attr,
+            rank=rank,
+            attr_bins=self.attr_bins_edges,
             attr_name=filter_attr,
             weighting_attribute=weighting_attribute,
             weighting_rank=weighting_rank,
