@@ -17,7 +17,7 @@ from PySDM.physics import si
 )
 def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
     # Arrange
-    n_sd_per_gridbox = 15
+    n_sd_per_gridbox = 128
     smooth_window = 5
     settings = Settings(
         n_sd_per_gridbox=n_sd_per_gridbox,
