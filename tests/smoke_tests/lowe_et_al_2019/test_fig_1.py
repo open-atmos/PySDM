@@ -96,7 +96,7 @@ class TestFig1:
     )
     # pylint: disable=redefined-outer-name,unused-argument
     def test_koehler_maxima(
-        constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
+        *, constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
     ):
         # arrange
         formulae = Formulae(

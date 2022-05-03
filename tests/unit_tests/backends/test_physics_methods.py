@@ -24,7 +24,7 @@ class TestPhysicsMethods:
         RH = backend.Storage.from_ndarray(np.zeros_like(qv))
 
         # Act
-        sut(rhod, thd, qv, T, p, RH)
+        sut(rhod=rhod, thd=thd, qv=qv, T=T, p=p, RH=RH)
 
         # Assert
         assert 282 * si.K < T.amin() < 283 * si.K

@@ -59,7 +59,7 @@ class ChemistryMethods(BackendMethods):
         dv,
         system_type,
         droplet_volume,
-        multiplicity
+        multiplicity,
     ):
         for thread_id in numba.prange(n_threads):  # pylint: disable=not-an-iterable
             for i in range(thread_id, n_cell, n_threads):
@@ -108,6 +108,7 @@ class ChemistryMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
     def dissolution_body(
+        *,
         super_droplet_ids,
         mole_amounts,
         env_mixing_ratio,
@@ -156,6 +157,7 @@ class ChemistryMethods(BackendMethods):
 
     def oxidation(
         self,
+        *,
         n_sd,
         cell_ids,
         do_chemistry_flag,
@@ -176,31 +178,32 @@ class ChemistryMethods(BackendMethods):
         moles_S_VI,
     ):
         ChemistryMethods.oxidation_body(
-            n_sd,
-            cell_ids.data,
-            do_chemistry_flag.data,
-            self.formulae.trivia.explicit_euler,
-            self.formulae.trivia.pH2H,
-            k0.data,
-            k1.data,
-            k2.data,
-            k3.data,
-            K_SO2.data,
-            K_HSO3.data,
-            timestep,
-            droplet_volume.data,
-            pH.data,
-            dissociation_factor_SO2.data,
+            n_sd=n_sd,
+            cell_ids=cell_ids.data,
+            do_chemistry_flag=do_chemistry_flag.data,
+            explicit_euler=self.formulae.trivia.explicit_euler,
+            pH2H=self.formulae.trivia.pH2H,
+            k0=k0.data,
+            k1=k1.data,
+            k2=k2.data,
+            k3=k3.data,
+            K_SO2=K_SO2.data,
+            K_HSO3=K_HSO3.data,
+            timestep=timestep,
+            droplet_volume=droplet_volume.data,
+            pH=pH.data,
+            dissociation_factor_SO2=dissociation_factor_SO2.data,
             # output
-            moles_O3.data,
-            moles_H2O2.data,
-            moles_S_IV.data,
-            moles_S_VI.data,
+            moles_O3=moles_O3.data,
+            moles_H2O2=moles_H2O2.data,
+            moles_S_IV=moles_S_IV.data,
+            moles_S_VI=moles_S_VI.data,
         )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def oxidation_body(
+        *,
         n_sd,
         cell_ids,
         do_chemistry_flag,
@@ -303,6 +306,7 @@ class ChemistryMethods(BackendMethods):
 
     def equilibrate_H(
         self,
+        *,
         equilibrium_consts,
         cell_id,
         conc,
@@ -346,7 +350,7 @@ class ChemistryMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    def equilibrate_H_body(
+    def equilibrate_H_body(  # pylint: disable=too-many-arguments
         within_tolerance,
         pH2H,
         H2pH,

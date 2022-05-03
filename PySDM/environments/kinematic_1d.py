@@ -12,7 +12,7 @@ from ..initialisation.equilibrate_wet_radii import equilibrate_wet_radii
 
 
 class Kinematic1D(Moist):
-    def __init__(self, dt, mesh, thd_of_z, rhod_of_z, z0=0):
+    def __init__(self, *, dt, mesh, thd_of_z, rhod_of_z, z0=0):
         super().__init__(dt, mesh, [])
         self.thd0 = thd_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
         self.rhod = rhod_of_z(z0 + mesh.dz * arakawa_c.z_scalar_coord(mesh.grid))
@@ -52,8 +52,8 @@ class Kinematic1D(Moist):
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             r_wet = equilibrate_wet_radii(
-                r_dry,
-                self,
+                r_dry=r_dry,
+                environment=self,
                 cell_id=attributes["cell id"],
                 kappa_times_dry_volume=attributes["kappa times dry volume"],
             )

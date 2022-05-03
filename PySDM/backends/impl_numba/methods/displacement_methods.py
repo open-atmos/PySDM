@@ -69,9 +69,8 @@ class DisplacementMethods(BackendMethods):
                 n_substeps,
             )
 
-    # pylint: disable=too-many-arguments
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement

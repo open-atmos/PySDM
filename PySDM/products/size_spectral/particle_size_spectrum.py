@@ -9,7 +9,9 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
-    def __init__(self, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False):
+    def __init__(
+        self, *, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False
+    ):
         self.volume_attr = "dry volume" if dry else "volume"
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
@@ -56,12 +58,20 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
 class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit="kg^-1 m^-1"):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=True, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=True,
+            name=name,
+            unit=unit,
         )
 
 
 class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit="m^-3 m^-1"):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=False, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=False,
+            name=name,
+            unit=unit,
         )

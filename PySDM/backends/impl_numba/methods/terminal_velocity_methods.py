@@ -36,7 +36,7 @@ class TerminalVelocityMethods(BackendMethods):
                         output[i // 2] = max(0, output[i // 2])
 
     def linear_collection_efficiency(
-        self, params, output, radii, is_first_in_pair, unit
+        self, *, params, output, radii, is_first_in_pair, unit
     ):
         return self.linear_collection_efficiency_body(
             params,
@@ -59,5 +59,5 @@ class TerminalVelocityMethods(BackendMethods):
                 r_rest = ((factor * radius[i]) % 1) / factor
                 output[i] = b[r_id] + r_rest * c[r_id]
 
-    def interpolation(self, output, radius, factor, b, c):
+    def interpolation(self, *, output, radius, factor, b, c):
         return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)

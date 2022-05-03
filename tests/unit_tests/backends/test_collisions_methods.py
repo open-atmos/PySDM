@@ -125,6 +125,7 @@ class TestAlgorithmicMethods:
     )
     # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_gamma(
+        *,
         backend_class,
         gamma,
         idx,
@@ -152,15 +153,15 @@ class TestAlgorithmicMethods:
 
         # Act
         backend_class().adaptive_sdm_gamma(
-            _gamma,
-            _n,
-            _cell_id,
-            _dt_left,
-            dt,
-            dt_range,
-            _is_first_in_pair,
-            _n_substep,
-            _dt_min,
+            gamma=_gamma,
+            n=_n,
+            cell_id=_cell_id,
+            dt_left=_dt_left,
+            dt=dt,
+            dt_range=dt_range,
+            is_first_in_pair=_is_first_in_pair,
+            stats_n_substep=_n_substep,
+            stats_dt_min=_dt_min,
         )
 
         # Assert

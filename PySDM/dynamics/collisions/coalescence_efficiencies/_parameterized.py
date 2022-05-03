@@ -16,10 +16,10 @@ class Parameterized:
 
     def __call__(self, output, is_first_in_pair):
         self.particulator.backend.linear_collection_efficiency(
-            self.params,
-            output,
-            self.particulator.attributes["radius"],
-            is_first_in_pair,
-            const.si.um,
+            params=self.params,
+            output=output,
+            radii=self.particulator.attributes["radius"],
+            is_first_in_pair=is_first_in_pair,
+            unit=const.si.um,
         )
         output **= 2

@@ -10,6 +10,7 @@ from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.physics.trivia import Trivia
 
 
+# pylint: disable=too-many-arguments
 @numba.njit(**{**jit_flags, "parallel": False})
 def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
     return Cb_iso * (1 - f_surf) / RUEHL_C0 - np.exp(

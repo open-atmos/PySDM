@@ -36,22 +36,28 @@ class TestMaths:
         moments = particulator.backend.Storage.empty((1, 1), dtype=float)
 
         # Act
-        particulator.moments(moment_0, moments, specs={"volume": (0,)})
+        particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (0,)})
         discr_zero = moments[0, slice(0, 1)].to_ndarray()
 
-        particulator.moments(moment_0, moments, specs={"volume": (1,)})
+        particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (1,)})
         discr_mean = moments[0, slice(0, 1)].to_ndarray()
 
-        particulator.moments(moment_0, moments, specs={"volume": (2,)})
+        particulator.moments(moment_0=moment_0, moments=moments, specs={"volume": (2,)})
         discr_mean_radius_squared = moments[0, slice(0, 1)].to_ndarray()
 
-        particulator.moments(moment_0, moments, specs={"temperature": (0,)})
+        particulator.moments(
+            moment_0=moment_0, moments=moments, specs={"temperature": (0,)}
+        )
         discr_zero_T = moments[0, slice(0, 1)].to_ndarray()
 
-        particulator.moments(moment_0, moments, specs={"temperature": (1,)})
+        particulator.moments(
+            moment_0=moment_0, moments=moments, specs={"temperature": (1,)}
+        )
         discr_mean_T = moments[0, slice(0, 1)].to_ndarray()
 
-        particulator.moments(moment_0, moments, specs={"temperature": (2,)})
+        particulator.moments(
+            moment_0=moment_0, moments=moments, specs={"temperature": (2,)}
+        )
         discr_mean_T_squared = moments[0, slice(0, 1)].to_ndarray()
 
         # Assert
@@ -98,8 +104,8 @@ class TestMaths:
 
         # Act
         particulator.spectrum_moments(
-            spectrum_moment_0,
-            spectrum_moments,
+            moment_0=spectrum_moment_0,
+            moments=spectrum_moments,
             attr="volume",
             rank=1,
             attr_bins=v_bins_edges,
@@ -109,8 +115,8 @@ class TestMaths:
         expected = np.empty((len(v_bins) - 1, 1), dtype=float)
         for i in range(len(v_bins) - 1):
             particulator.moments(
-                moment_0,
-                moments,
+                moment_0=moment_0,
+                moments=moments,
                 specs={"volume": (1,)},
                 attr_range=(v_bins[i], v_bins[i + 1]),
             )

@@ -17,7 +17,7 @@ from ..impl import arakawa_c
 
 
 class Kinematic2D(Moist):
-    def __init__(self, dt, grid, size, rhod_of, mixed_phase=False):
+    def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
         super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None

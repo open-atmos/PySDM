@@ -77,7 +77,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     def linear_collection_efficiency(
-        self, params, output, radii, is_first_in_pair, unit
+        self, *, params, output, radii, is_first_in_pair, unit
     ):
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
@@ -120,7 +120,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def interpolation(self, output, radius, factor, b, c):
+    def interpolation(self, *, output, radius, factor, b, c):
         factor_device = trtc.DVInt64(factor)
         self.__interpolation_body.launch_n(
             len(radius), (output.data, radius.data, factor_device, b.data, c.data)
