@@ -12,6 +12,7 @@ from PySDM.attributes.impl.attribute import Attribute
 class ParticleAttributes:
     def __init__(
         self,
+        *,
         particulator,
         idx,
         extensive_attribute_storage,

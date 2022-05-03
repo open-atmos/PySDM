@@ -14,6 +14,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
 class Parcel(Moist):
     def __init__(
         self,
+        *,
         dt,
         mass_of_dry_air: float,
         p0: float,
@@ -73,7 +74,7 @@ class Parcel(Moist):
         n_in_dv: [float, np.ndarray],
         kappa: float,
         r_dry: [float, np.ndarray],
-        rtol=default_rtol
+        rtol=default_rtol,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])

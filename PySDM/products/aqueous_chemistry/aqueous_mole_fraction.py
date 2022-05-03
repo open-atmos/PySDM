@@ -19,10 +19,10 @@ class AqueousMoleFraction(MomentProduct):
     def _impl(self, **kwargs):
         attr = "moles_" + self.key
 
-        self._download_moment_to_buffer(attr, rank=0)
+        self._download_moment_to_buffer(attr=attr, rank=0)
         conc = self.buffer.copy()
 
-        self._download_moment_to_buffer(attr, rank=1)
+        self._download_moment_to_buffer(attr=attr, rank=1)
         tmp = self.buffer.copy()
         tmp[:] *= conc
         tmp[:] *= DUMMY_SPECIFIC_GRAVITY * self.formulae.constants.Md

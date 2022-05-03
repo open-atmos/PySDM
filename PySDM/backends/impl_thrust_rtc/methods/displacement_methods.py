@@ -72,7 +72,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
@@ -92,9 +92,21 @@ class DisplacementMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def flag_precipitated(
-        self, cell_origin, position_in_cell, volume, n, idx, length, healthy
+    def flag_precipitated(  # pylint: disable=unused-argument
+        self,
+        *,
+        cell_origin,
+        position_in_cell,
+        volume,
+        multiplicity,
+        idx,
+        length,
+        healthy,
+        precipitation_counting_level_index,
+        displacement,
     ):
+        if precipitation_counting_level_index != 0:
+            raise NotImplementedError()
         n_sd = trtc.DVInt64(cell_origin.shape[1])
         n_dims = trtc.DVInt64(len(cell_origin.shape))
         rainfall = trtc.device_vector(self._get_c_type(), 1)
@@ -109,8 +121,14 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 cell_origin.data,
                 position_in_cell.data,
                 volume.data,
-                n.data,
+                multiplicity.data,
                 rainfall,
             ],
         )
         return rainfall.to_host()[0]
+
+    @staticmethod
+    def flag_out_of_column(  # pylint: disable=unused-argument
+        *, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+    ):
+        pass

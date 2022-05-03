@@ -196,6 +196,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_gamma(
         self,
+        *,
         gamma,
         n,
         cell_id,
@@ -259,6 +260,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def collision_coalescence(
         self,
+        *,
         multiplicity,
         idx,
         attributes,
@@ -289,6 +291,7 @@ class CollisionsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(
         self,
+        *,
         gamma,
         rand,
         multiplicity,
@@ -318,9 +321,11 @@ class CollisionsMethods(ThrustRTCBackendMethods):
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def normalize(self, prob, cell_id, cell_idx, cell_start, norm_factor, dt, dv):
+    def normalize(
+        self, *, prob, cell_id, cell_idx, cell_start, norm_factor, timestep, dv
+    ):
         n_cell = cell_start.shape[0] - 1
-        device_dt_div_dv = self._get_floating_point(dt / dv)
+        device_dt_div_dv = self._get_floating_point(timestep / dv)
         self.__normalize_body_0.launch_n(
             n_cell, (cell_start.data, norm_factor.data, device_dt_div_dv)
         )

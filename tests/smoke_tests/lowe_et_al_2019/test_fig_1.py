@@ -96,12 +96,9 @@ class TestFig1:
     )
     # pylint: disable=redefined-outer-name,unused-argument
     def test_koehler_maxima(
-        constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
+        *, constants, aerosol, surface_tension, maximum_x, maximum_y, bimodal
     ):
         # arrange
-        label = {"CompressedFilmOvadnevaite": "film", "Constant": "bulk"}[
-            surface_tension
-        ]
         formulae = Formulae(
             surface_tension=surface_tension,
             constants={"sgm_org": 40 * si.mN / si.m, "delta_min": 0.1 * si.nm},
@@ -112,7 +109,7 @@ class TestFig1:
         RH_eq = formulae.hygroscopicity.RH_eq(
             R_WET,
             TEMPERATURE,
-            aerosol.aerosol_modes[0]["kappa"][label],
+            aerosol.aerosol_modes[0]["kappa"][surface_tension],
             R_DRY**3,
             sigma,
         )

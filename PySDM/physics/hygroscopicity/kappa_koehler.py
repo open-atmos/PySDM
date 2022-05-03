@@ -9,6 +9,7 @@ class KappaKoehler:
     def __init__(self, _):
         pass
 
+    # pylint: disable=too-many-arguments
     @staticmethod
     def RH_eq(const, r, T, kp, rd3, sgm):
         return (

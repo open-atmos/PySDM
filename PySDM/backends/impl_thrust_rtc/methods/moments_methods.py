@@ -114,6 +114,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(
         self,
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -171,6 +172,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def spectrum_moments(
         self,
+        *,
         moment_0,
         moments,
         multiplicity,

@@ -12,10 +12,10 @@ class TotalDryMassMixingRatio(MomentProduct):
         self.density = density
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer("dry volume", rank=1)
+        self._download_moment_to_buffer(attr="dry volume", rank=1)
         self.buffer[:] *= self.density
         result = np.copy(self.buffer)
-        self._download_moment_to_buffer("dry volume", rank=0)
+        self._download_moment_to_buffer(attr="dry volume", rank=0)
         result[:] *= self.buffer
         self._download_to_buffer(self.particulator.environment["rhod"])
         result[:] /= self.particulator.mesh.dv

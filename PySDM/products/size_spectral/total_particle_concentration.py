@@ -9,6 +9,6 @@ class TotalParticleConcentration(MomentProduct):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer("volume", rank=0)
+        self._download_moment_to_buffer(attr="volume", rank=0)
         self.buffer[:] /= self.particulator.mesh.dv
         return self.buffer
