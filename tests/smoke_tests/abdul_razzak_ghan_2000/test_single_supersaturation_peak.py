@@ -61,7 +61,9 @@ def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=Fa
 
     r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
-    r_wet = equilibrate_wet_radii(r_dry, env, kappa * v_dry)
+    r_wet = equilibrate_wet_radii(
+        r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
+    )
     specific_concentration = concentration / builder.formulae.constants.rho_STP
     attributes = {
         "n": specific_concentration * env.mass_of_dry_air,
