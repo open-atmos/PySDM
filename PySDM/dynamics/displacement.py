@@ -97,10 +97,9 @@ class Displacement:
             )
             self.update_position(position_in_cell, self.displacement)
             if self.enable_sedimentation:
-                self.precipitation_in_last_step += (
-                    self.particulator.remove_precipitated(
-                        self.displacement, self.precipitation_counting_level_index
-                    )
+                self.precipitation_in_last_step += self.particulator.remove_precipitated(
+                    displacement=self.displacement,
+                    precipitation_counting_level_index=self.precipitation_counting_level_index,
                 )
             self.particulator.flag_out_of_column()
             self.update_cell_origin(cell_origin, position_in_cell)
@@ -114,7 +113,11 @@ class Displacement:
         self, displacement, courant, cell_origin, position_in_cell
     ):
         self.particulator.calculate_displacement(
-            displacement, courant, cell_origin, position_in_cell, self._n_substeps
+            displacement=displacement,
+            courant=courant,
+            cell_origin=cell_origin,
+            position_in_cell=position_in_cell,
+            n_substeps=self._n_substeps,
         )
         if self.enable_sedimentation:
             displacement_z = displacement[self.dimension - 1, :]

@@ -27,7 +27,7 @@ def test_approximation(backend_class, plot=False):
     )
 
     u_term_ry = particulator.backend.Storage.empty((len(u),), float)
-    RogersYau(particulator)(u_term_ry, r)
+    RogersYau(particulator=particulator)(u_term_ry, r)
 
     u_term_inter = particulator.backend.Storage.from_ndarray(u_term_ry.to_ndarray())
     Interpolation(particulator)(u_term_inter, r)

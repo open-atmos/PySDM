@@ -120,7 +120,7 @@ class Interpolation:
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(
-            output, radius, self.factor, self.a, self.b
+            output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 
 

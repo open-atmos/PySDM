@@ -12,6 +12,7 @@ class MomentsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -56,6 +57,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -72,25 +74,26 @@ class MomentsMethods(BackendMethods):
         skip_division_by_m0,
     ):
         return MomentsMethods.moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            ranks.data,
-            min_x,
-            max_x,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
-            skip_division_by_m0,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            ranks=ranks.data,
+            min_x=min_x,
+            max_x=max_x,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def spectrum_moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -135,6 +138,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def spectrum_moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -151,16 +155,16 @@ class MomentsMethods(BackendMethods):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         return MomentsMethods.spectrum_moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            rank,
-            x_bins.data,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            rank=rank,
+            x_bins=x_bins.data,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
         )

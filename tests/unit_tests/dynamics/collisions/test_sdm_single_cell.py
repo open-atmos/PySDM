@@ -241,9 +241,9 @@ class TestSDMSingleCell:
                 )
 
                 backend.compute_gamma(
-                    prob_arr,
-                    rand_arr,
-                    mult,
+                    gamma=prob_arr,
+                    rand=rand_arr,
+                    multiplicity=mult,
                     cell_id=cell_id,
                     is_first_in_pair=indicator,
                     collision_rate=_,

@@ -10,6 +10,7 @@ from ._parameterized import Parameterized
 class SpecifiedEff(Parameterized):
     def __init__(
         self,
+        *,
         A=1,
         B=1,
         D1=-27,

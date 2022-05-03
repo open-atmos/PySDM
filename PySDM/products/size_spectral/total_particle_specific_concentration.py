@@ -9,7 +9,7 @@ class TotalParticleSpecificConcentration(MomentProduct):
         super().__init__(name=name, unit=unit)
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer("volume", rank=0)
+        self._download_moment_to_buffer(attr="volume", rank=0)
         result = self.buffer.copy()  # TODO #217
         self._download_to_buffer(self.particulator.environment["rhod"])
         result[:] /= self.particulator.mesh.dv

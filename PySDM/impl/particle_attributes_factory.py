@@ -104,13 +104,13 @@ class ParticleAttributesFactory:
         cell_start = np.empty(particulator.mesh.n_cell + 1, dtype=int)
 
         return ParticleAttributes(
-            particulator,
-            idx,
-            extensive_attribute_storage,
-            extensive_keys,
+            particulator=particulator,
+            idx=idx,
+            extensive_attribute_storage=extensive_attribute_storage,
+            extensive_keys=extensive_keys,
             # maximum_attributes, maximum_keys, # TODO #594
-            cell_start,
-            req_attr,
+            cell_start=cell_start,
+            attributes=req_attr,
         )
 
     @staticmethod

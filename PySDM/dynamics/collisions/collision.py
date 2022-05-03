@@ -30,6 +30,7 @@ DEFAULTS = namedtuple("_", ("dt_coal_range",))(
 class Collision:
     def __init__(
         self,
+        *,
         collision_kernel,
         coalescence_efficiency,
         breakup_efficiency,
@@ -237,15 +238,15 @@ class Collision:
         """
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
-                prob,
-                self.particulator.attributes["n"],
-                self.particulator.attributes["cell id"],
-                self.dt_left,
-                self.particulator.dt,
-                self.dt_coal_range,
-                is_first_in_pair,
-                self.stats_n_substep,
-                self.stats_dt_min,
+                gamma=prob,
+                n=self.particulator.attributes["n"],
+                cell_id=self.particulator.attributes["cell id"],
+                dt_left=self.dt_left,
+                dt=self.particulator.dt,
+                dt_range=self.dt_coal_range,
+                is_first_in_pair=is_first_in_pair,
+                stats_n_substep=self.stats_n_substep,
+                stats_dt_min=self.stats_dt_min,
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")
@@ -253,19 +254,20 @@ class Collision:
             prob /= self.__substeps
 
         self.particulator.backend.compute_gamma(
-            prob,
-            rand,
-            self.particulator.attributes["n"],
-            self.particulator.attributes["cell id"],
-            self.collision_rate_deficit,
-            self.collision_rate,
-            is_first_in_pair,
+            gamma=prob,
+            rand=rand,
+            multiplicity=self.particulator.attributes["n"],
+            cell_id=self.particulator.attributes["cell id"],
+            collision_rate_deficit=self.collision_rate_deficit,
+            collision_rate=self.collision_rate,
+            is_first_in_pair=is_first_in_pair,
         )
 
 
 class Coalescence(Collision):
     def __init__(
         self,
+        *,
         collision_kernel,
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
@@ -277,10 +279,10 @@ class Coalescence(Collision):
         breakup_efficiency = ConstEb(Eb=0)
         fragmentation_function = AlwaysN(n=1)
         super().__init__(
-            collision_kernel,
-            coalescence_efficiency,
-            breakup_efficiency,
-            fragmentation_function,
+            collision_kernel=collision_kernel,
+            coalescence_efficiency=coalescence_efficiency,
+            breakup_efficiency=breakup_efficiency,
+            fragmentation_function=fragmentation_function,
             croupier=croupier,
             optimized_random=optimized_random,
             substeps=substeps,
@@ -293,6 +295,7 @@ class Coalescence(Collision):
 class Breakup(Collision):
     def __init__(
         self,
+        *,
         collision_kernel,
         fragmentation_function,
         croupier=None,
@@ -304,10 +307,10 @@ class Breakup(Collision):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
         super().__init__(
-            collision_kernel,
-            coalescence_efficiency,
-            breakup_efficiency,
-            fragmentation_function,
+            collision_kernel=collision_kernel,
+            coalescence_efficiency=coalescence_efficiency,
+            breakup_efficiency=breakup_efficiency,
+            fragmentation_function=fragmentation_function,
             croupier=croupier,
             optimized_random=optimized_random,
             substeps=substeps,

@@ -13,6 +13,7 @@ default_max_iters = 64
 
 
 def equilibrate_wet_radii(
+    *,
     r_dry: np.ndarray,
     environment,
     kappa_times_dry_volume: np.ndarray,
@@ -42,14 +43,14 @@ def equilibrate_wet_radii(
     jit_flags = {**JIT_FLAGS, **{"fastmath": formulae.fastmath, "cache": False}}
 
     @numba.njit(**{**jit_flags, "parallel": False})
-    def minfun(r, T, RH, kp, rd3, f_org):
+    def minfun(r, T, RH, kp, rd3, f_org):  # pylint: disable=too-many-arguments
         sgm = sigma(
             T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
         )
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(
+    def r_wet_init_impl(  # pylint: disable=too-many-arguments
         r_dry: np.ndarray,
         iters,
         T,
@@ -138,6 +139,8 @@ def equilibrate_wet_radii(
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
-    r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
+    r_wet = r_wet_init_impl(
+        r_dry=r_dry, iters=iters, T=T, RH=RH, cell_id=cell_id, kappa=kappa, rtol=rtol
+    )
     assert (iters != max_iters).all() and (iters != -1).all()
     return r_wet

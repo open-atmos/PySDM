@@ -34,13 +34,13 @@ class Feingold1988Frag:
             self.particulator.attributes["volume"], is_first_in_pair
         )
         self.particulator.backend.feingold1988_fragmentation(
-            output,
-            self.scale,
-            self.frag_size,
-            self.max_size,
-            self.sum_of_volumes,
-            u01,
-            self.fragtol,
-            self.vmin,
-            self.nfmax,
+            n_fragment=output,
+            scale=self.scale,
+            frag_size=self.frag_size,
+            v_max=self.max_size,
+            x_plus_y=self.sum_of_volumes,
+            rand=u01,
+            fragtol=self.fragtol,
+            vmin=self.vmin,
+            nfmax=self.nfmax,
         )
