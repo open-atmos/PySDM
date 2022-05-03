@@ -48,7 +48,7 @@ from ..impl import arakawa_c
 
 
 class Kinematic2D(Moist):
-    def __init__(self, dt, grid, size, rhod_of, mixed_phase=False):
+    def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
         super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None
@@ -134,7 +134,7 @@ class Kinematic2D(Moist):
 <dl>
 <dt id="PySDM.environments.kinematic_2d.Kinematic2D"><code class="flex name class">
 <span>class <span class="ident">Kinematic2D</span></span>
-<span>(</span><span>dt, grid, size, rhod_of, mixed_phase=False)</span>
+<span>(</span><span>*, dt, grid, size, rhod_of, mixed_phase=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -143,7 +143,7 @@ class Kinematic2D(Moist):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Kinematic2D(Moist):
-    def __init__(self, dt, grid, size, rhod_of, mixed_phase=False):
+    def __init__(self, *, dt, grid, size, rhod_of, mixed_phase=False):
         super().__init__(dt, Mesh(grid, size), [], mixed_phase=mixed_phase)
         self.rhod_of = rhod_of
         self.formulae = None

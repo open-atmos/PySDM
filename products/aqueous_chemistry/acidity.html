@@ -67,7 +67,7 @@ class Acidity(MomentProduct):
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            self.attr,
+            attr=self.attr,
             rank=1,
             filter_range=(
                 self.formulae.trivia.volume(self.radius_range[0]),
@@ -135,7 +135,7 @@ inheritance.</p></div>
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            self.attr,
+            attr=self.attr,
             rank=1,
             filter_range=(
                 self.formulae.trivia.volume(self.radius_range[0]),

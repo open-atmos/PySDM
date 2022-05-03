@@ -65,7 +65,7 @@ class TerminalVelocityMethods(BackendMethods):
                         output[i // 2] = max(0, output[i // 2])
 
     def linear_collection_efficiency(
-        self, params, output, radii, is_first_in_pair, unit
+        self, *, params, output, radii, is_first_in_pair, unit
     ):
         return self.linear_collection_efficiency_body(
             params,
@@ -88,7 +88,7 @@ class TerminalVelocityMethods(BackendMethods):
                 r_rest = ((factor * radius[i]) % 1) / factor
                 output[i] = b[r_id] + r_rest * c[r_id]
 
-    def interpolation(self, output, radius, factor, b, c):
+    def interpolation(self, *, output, radius, factor, b, c):
         return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 </section>
@@ -139,7 +139,7 @@ class TerminalVelocityMethods(BackendMethods):
                         output[i // 2] = max(0, output[i // 2])
 
     def linear_collection_efficiency(
-        self, params, output, radii, is_first_in_pair, unit
+        self, *, params, output, radii, is_first_in_pair, unit
     ):
         return self.linear_collection_efficiency_body(
             params,
@@ -162,7 +162,7 @@ class TerminalVelocityMethods(BackendMethods):
                 r_rest = ((factor * radius[i]) % 1) / factor
                 output[i] = b[r_id] + r_rest * c[r_id]
 
-    def interpolation(self, output, radius, factor, b, c):
+    def interpolation(self, *, output, radius, factor, b, c):
         return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -237,7 +237,7 @@ def linear_collection_efficiency_body(
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.interpolation"><code class="name flex">
-<span>def <span class="ident">interpolation</span></span>(<span>self, output, radius, factor, b, c)</span>
+<span>def <span class="ident">interpolation</span></span>(<span>self, *, output, radius, factor, b, c)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -245,12 +245,12 @@ def linear_collection_efficiency_body(
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def interpolation(self, output, radius, factor, b, c):
+<pre><code class="python">def interpolation(self, *, output, radius, factor, b, c):
     return self.interpolation_body(output.data, radius.data, factor, b.data, c.data)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.terminal_velocity_methods.TerminalVelocityMethods.linear_collection_efficiency"><code class="name flex">
-<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, params, output, radii, is_first_in_pair, unit)</span>
+<span>def <span class="ident">linear_collection_efficiency</span></span>(<span>self, *, params, output, radii, is_first_in_pair, unit)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -259,7 +259,7 @@ def linear_collection_efficiency_body(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def linear_collection_efficiency(
-    self, params, output, radii, is_first_in_pair, unit
+    self, *, params, output, radii, is_first_in_pair, unit
 ):
     return self.linear_collection_efficiency_body(
         params,

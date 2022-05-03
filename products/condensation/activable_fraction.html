@@ -47,13 +47,13 @@ class ActivableFraction(MomentProduct):
     def _impl(self, **kwargs):
         s_max = kwargs[&#34;S_max&#34;]
         self._download_moment_to_buffer(
-            &#34;volume&#34;,
+            attr=&#34;volume&#34;,
             rank=0,
             filter_range=(0, 1 + s_max / 100),
             filter_attr=&#34;critical supersaturation&#34;,
         )
         frac = self.buffer.copy()
-        self._download_moment_to_buffer(&#34;volume&#34;, rank=0)
+        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
         frac /= self.buffer
         return frac</code></pre>
 </details>
@@ -89,13 +89,13 @@ inheritance.</p></div>
     def _impl(self, **kwargs):
         s_max = kwargs[&#34;S_max&#34;]
         self._download_moment_to_buffer(
-            &#34;volume&#34;,
+            attr=&#34;volume&#34;,
             rank=0,
             filter_range=(0, 1 + s_max / 100),
             filter_attr=&#34;critical supersaturation&#34;,
         )
         frac = self.buffer.copy()
-        self._download_moment_to_buffer(&#34;volume&#34;, rank=0)
+        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
         frac /= self.buffer
         return frac</code></pre>
 </details>

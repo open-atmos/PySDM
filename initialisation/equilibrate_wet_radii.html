@@ -42,6 +42,7 @@ default_max_iters = 64
 
 
 def equilibrate_wet_radii(
+    *,
     r_dry: np.ndarray,
     environment,
     kappa_times_dry_volume: np.ndarray,
@@ -71,14 +72,14 @@ def equilibrate_wet_radii(
     jit_flags = {**JIT_FLAGS, **{&#34;fastmath&#34;: formulae.fastmath, &#34;cache&#34;: False}}
 
     @numba.njit(**{**jit_flags, &#34;parallel&#34;: False})
-    def minfun(r, T, RH, kp, rd3, f_org):
+    def minfun(r, T, RH, kp, rd3, f_org):  # pylint: disable=too-many-arguments
         sgm = sigma(
             T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
         )
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(
+    def r_wet_init_impl(  # pylint: disable=too-many-arguments
         r_dry: np.ndarray,
         iters,
         T,
@@ -167,7 +168,9 @@ def equilibrate_wet_radii(
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
-    r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
+    r_wet = r_wet_init_impl(
+        r_dry=r_dry, iters=iters, T=T, RH=RH, cell_id=cell_id, kappa=kappa, rtol=rtol
+    )
     assert (iters != max_iters).all() and (iters != -1).all()
     return r_wet</code></pre>
 </details>
@@ -180,7 +183,7 @@ def equilibrate_wet_radii(
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.initialisation.equilibrate_wet_radii.equilibrate_wet_radii"><code class="name flex">
-<span>def <span class="ident">equilibrate_wet_radii</span></span>(<span>r_dry: numpy.ndarray, environment, kappa_times_dry_volume: numpy.ndarray, f_org: numpy.ndarray = None, cell_id: numpy.ndarray = None, rtol=1e-05, max_iters=64)</span>
+<span>def <span class="ident">equilibrate_wet_radii</span></span>(<span>*, r_dry: numpy.ndarray, environment, kappa_times_dry_volume: numpy.ndarray, f_org: numpy.ndarray = None, cell_id: numpy.ndarray = None, rtol=1e-05, max_iters=64)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -189,6 +192,7 @@ def equilibrate_wet_radii(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def equilibrate_wet_radii(
+    *,
     r_dry: np.ndarray,
     environment,
     kappa_times_dry_volume: np.ndarray,
@@ -218,14 +222,14 @@ def equilibrate_wet_radii(
     jit_flags = {**JIT_FLAGS, **{&#34;fastmath&#34;: formulae.fastmath, &#34;cache&#34;: False}}
 
     @numba.njit(**{**jit_flags, &#34;parallel&#34;: False})
-    def minfun(r, T, RH, kp, rd3, f_org):
+    def minfun(r, T, RH, kp, rd3, f_org):  # pylint: disable=too-many-arguments
         sgm = sigma(
             T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
         )
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(
+    def r_wet_init_impl(  # pylint: disable=too-many-arguments
         r_dry: np.ndarray,
         iters,
         T,
@@ -314,7 +318,9 @@ def equilibrate_wet_radii(
         return r_wet
 
     iters = np.empty_like(r_dry, dtype=int)
-    r_wet = r_wet_init_impl(r_dry, iters, T, RH, cell_id, kappa, rtol)
+    r_wet = r_wet_init_impl(
+        r_dry=r_dry, iters=iters, T=T, RH=RH, cell_id=cell_id, kappa=kappa, rtol=rtol
+    )
     assert (iters != max_iters).all() and (iters != -1).all()
     return r_wet</code></pre>
 </details>

@@ -76,12 +76,12 @@ class Moist:
         target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
-            target[&#34;rhod&#34;],
-            target[&#34;thd&#34;],
-            target[&#34;qv&#34;],
-            target[&#34;T&#34;],
-            target[&#34;p&#34;],
-            target[&#34;RH&#34;],
+            rhod=target[&#34;rhod&#34;],
+            thd=target[&#34;thd&#34;],
+            qv=target[&#34;qv&#34;],
+            T=target[&#34;T&#34;],
+            p=target[&#34;p&#34;],
+            RH=target[&#34;RH&#34;],
         )
         if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
@@ -170,12 +170,12 @@ class Moist:
         target[&#34;thd&#34;].ravel(self.get_thd())
 
         self.particulator.backend.temperature_pressure_RH(
-            target[&#34;rhod&#34;],
-            target[&#34;thd&#34;],
-            target[&#34;qv&#34;],
-            target[&#34;T&#34;],
-            target[&#34;p&#34;],
-            target[&#34;RH&#34;],
+            rhod=target[&#34;rhod&#34;],
+            thd=target[&#34;thd&#34;],
+            qv=target[&#34;qv&#34;],
+            T=target[&#34;T&#34;],
+            p=target[&#34;p&#34;],
+            RH=target[&#34;RH&#34;],
         )
         if &#34;a_w_ice&#34; in self.variables:
             self.particulator.backend.a_w_ice(
@@ -306,12 +306,12 @@ def get_thd(self) -&gt; np.ndarray:
     target[&#34;thd&#34;].ravel(self.get_thd())
 
     self.particulator.backend.temperature_pressure_RH(
-        target[&#34;rhod&#34;],
-        target[&#34;thd&#34;],
-        target[&#34;qv&#34;],
-        target[&#34;T&#34;],
-        target[&#34;p&#34;],
-        target[&#34;RH&#34;],
+        rhod=target[&#34;rhod&#34;],
+        thd=target[&#34;thd&#34;],
+        qv=target[&#34;qv&#34;],
+        T=target[&#34;T&#34;],
+        p=target[&#34;p&#34;],
+        RH=target[&#34;RH&#34;],
     )
     if &#34;a_w_ice&#34; in self.variables:
         self.particulator.backend.a_w_ice(

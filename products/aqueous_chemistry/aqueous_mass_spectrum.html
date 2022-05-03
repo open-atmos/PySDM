@@ -43,7 +43,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(
-        self, key, dry_radius_bins_edges, specific=False, name=None, unit=&#34;kg/m^3&#34;
+        self, *, key, dry_radius_bins_edges, specific=False, name=None, unit=&#34;kg/m^3&#34;
     ):
         super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.key = key
@@ -110,7 +110,7 @@ class SpecificAqueousMassSpectrum(AqueousMassSpectrum):
 <dl>
 <dt id="PySDM.products.aqueous_chemistry.aqueous_mass_spectrum.AqueousMassSpectrum"><code class="flex name class">
 <span>class <span class="ident">AqueousMassSpectrum</span></span>
-<span>(</span><span>key, dry_radius_bins_edges, specific=False, name=None, unit='kg/m^3')</span>
+<span>(</span><span>*, key, dry_radius_bins_edges, specific=False, name=None, unit='kg/m^3')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -121,7 +121,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(
-        self, key, dry_radius_bins_edges, specific=False, name=None, unit=&#34;kg/m^3&#34;
+        self, *, key, dry_radius_bins_edges, specific=False, name=None, unit=&#34;kg/m^3&#34;
     ):
         super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
         self.key = key

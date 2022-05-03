@@ -38,7 +38,9 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 
 class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
-    def __init__(self, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False):
+    def __init__(
+        self, *, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False
+    ):
         self.volume_attr = &#34;dry volume&#34; if dry else &#34;volume&#34;
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
@@ -85,14 +87,22 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
 class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;kg^-1 m^-1&#34;):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=True, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=True,
+            name=name,
+            unit=unit,
         )
 
 
 class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;m^-3 m^-1&#34;):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=False, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=False,
+            name=name,
+            unit=unit,
         )</code></pre>
 </details>
 </section>
@@ -107,7 +117,7 @@ class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
 <dl>
 <dt id="PySDM.products.size_spectral.particle_size_spectrum.ParticleSizeSpectrum"><code class="flex name class">
 <span>class <span class="ident">ParticleSizeSpectrum</span></span>
-<span>(</span><span>radius_bins_edges, name, unit, dry=False, normalise_by_dv=False)</span>
+<span>(</span><span>*, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -117,7 +127,9 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
-    def __init__(self, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False):
+    def __init__(
+        self, *, radius_bins_edges, name, unit, dry=False, normalise_by_dv=False
+    ):
         self.volume_attr = &#34;dry volume&#34; if dry else &#34;volume&#34;
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
@@ -194,7 +206,11 @@ inheritance.</p></div>
 <pre><code class="python">class ParticleSizeSpectrumPerMass(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;kg^-1 m^-1&#34;):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=True, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=True,
+            name=name,
+            unit=unit,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -227,7 +243,11 @@ inheritance.</p></div>
 <pre><code class="python">class ParticleSizeSpectrumPerVolume(ParticleSizeSpectrum):
     def __init__(self, radius_bins_edges, dry=False, name=None, unit=&#34;m^-3 m^-1&#34;):
         super().__init__(
-            radius_bins_edges, dry=dry, normalise_by_dv=False, name=name, unit=unit
+            radius_bins_edges=radius_bins_edges,
+            dry=dry,
+            normalise_by_dv=False,
+            name=name,
+            unit=unit,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>

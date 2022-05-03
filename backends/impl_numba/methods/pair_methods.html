@@ -58,7 +58,9 @@ class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+    def find_pairs_body(
+        *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
+    ):
         for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i + 1]]
@@ -69,12 +71,12 @@ class PairMethods(BackendMethods):
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return PairMethods.find_pairs_body(
-            cell_start.data,
-            is_first_in_pair.indicator.data,
-            cell_id.data,
-            cell_idx.data,
-            idx.data,
-            len(idx),
+            cell_start=cell_start.data,
+            is_first_in_pair=is_first_in_pair.indicator.data,
+            cell_id=cell_id.data,
+            cell_idx=cell_idx.data,
+            idx=idx.data,
+            length=len(idx),
         )
 
     @staticmethod
@@ -206,7 +208,9 @@ class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+    def find_pairs_body(
+        *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
+    ):
         for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
             is_first_in_pair[i] = (
                 cell_id[idx[i]] == cell_id[idx[i + 1]]
@@ -217,12 +221,12 @@ class PairMethods(BackendMethods):
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
         return PairMethods.find_pairs_body(
-            cell_start.data,
-            is_first_in_pair.indicator.data,
-            cell_id.data,
-            cell_idx.data,
-            idx.data,
-            len(idx),
+            cell_start=cell_start.data,
+            is_first_in_pair=is_first_in_pair.indicator.data,
+            cell_id=cell_id.data,
+            cell_idx=cell_idx.data,
+            idx=idx.data,
+            length=len(idx),
         )
 
     @staticmethod
@@ -374,17 +378,17 @@ def distance_pair_body(data_out, data_in, is_first_in_pair, idx, length):
 <pre><code class="python">@staticmethod
 def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
     return PairMethods.find_pairs_body(
-        cell_start.data,
-        is_first_in_pair.indicator.data,
-        cell_id.data,
-        cell_idx.data,
-        idx.data,
-        len(idx),
+        cell_start=cell_start.data,
+        is_first_in_pair=is_first_in_pair.indicator.data,
+        cell_id=cell_id.data,
+        cell_idx=cell_idx.data,
+        idx=idx.data,
+        length=len(idx),
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.pair_methods.PairMethods.find_pairs_body"><code class="name flex">
-<span>def <span class="ident">find_pairs_body</span></span>(<span>cell_start, is_first_in_pair, cell_id, cell_idx, idx, length)</span>
+<span>def <span class="ident">find_pairs_body</span></span>(<span>*, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -394,7 +398,9 @@ def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
 </summary>
 <pre><code class="python">@staticmethod
 @numba.njit(**conf.JIT_FLAGS)
-def find_pairs_body(cell_start, is_first_in_pair, cell_id, cell_idx, idx, length):
+def find_pairs_body(
+    *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
+):
     for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
         is_first_in_pair[i] = (
             cell_id[idx[i]] == cell_id[idx[i + 1]]

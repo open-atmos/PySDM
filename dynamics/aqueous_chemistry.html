@@ -50,6 +50,7 @@ DEFAULTS = namedtuple(&#34;_&#34;, (&#34;pH_min&#34;, &#34;pH_max&#34;, &#34;pH_
 class AqueousChemistry:
     def __init__(
         self,
+        *,
         environment_mole_fractions,
         system_type,
         n_substep,
@@ -164,7 +165,7 @@ class AqueousChemistry:
 <dl>
 <dt id="PySDM.dynamics.aqueous_chemistry.AqueousChemistry"><code class="flex name class">
 <span>class <span class="ident">AqueousChemistry</span></span>
-<span>(</span><span>environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass, ionic_strength_threshold=19.999999999999996, pH_H_min=None, pH_H_max=None, pH_rtol=1e-06)</span>
+<span>(</span><span>*, environment_mole_fractions, system_type, n_substep, dry_rho, dry_molar_mass, ionic_strength_threshold=19.999999999999996, pH_H_min=None, pH_H_max=None, pH_rtol=1e-06)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -175,6 +176,7 @@ class AqueousChemistry:
 <pre><code class="python">class AqueousChemistry:
     def __init__(
         self,
+        *,
         environment_mole_fractions,
         system_type,
         n_substep,

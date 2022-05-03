@@ -41,6 +41,7 @@ class MomentsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -85,6 +86,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -101,25 +103,26 @@ class MomentsMethods(BackendMethods):
         skip_division_by_m0,
     ):
         return MomentsMethods.moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            ranks.data,
-            min_x,
-            max_x,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
-            skip_division_by_m0,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            ranks=ranks.data,
+            min_x=min_x,
+            max_x=max_x,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def spectrum_moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -164,6 +167,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def spectrum_moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -180,18 +184,18 @@ class MomentsMethods(BackendMethods):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         return MomentsMethods.spectrum_moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            rank,
-            x_bins.data,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            rank=rank,
+            x_bins=x_bins.data,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
         )</code></pre>
 </details>
 </section>
@@ -217,6 +221,7 @@ class MomentsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -261,6 +266,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -277,25 +283,26 @@ class MomentsMethods(BackendMethods):
         skip_division_by_m0,
     ):
         return MomentsMethods.moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            ranks.data,
-            min_x,
-            max_x,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
-            skip_division_by_m0,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            ranks=ranks.data,
+            min_x=min_x,
+            max_x=max_x,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
+            skip_division_by_m0=skip_division_by_m0,
         )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     def spectrum_moments_body(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -340,6 +347,7 @@ class MomentsMethods(BackendMethods):
 
     @staticmethod
     def spectrum_moments(
+        *,
         moment_0,
         moments,
         multiplicity,
@@ -356,18 +364,18 @@ class MomentsMethods(BackendMethods):
         assert moments.shape[0] == x_bins.shape[0] - 1
         assert moment_0.shape == moments.shape
         return MomentsMethods.spectrum_moments_body(
-            moment_0.data,
-            moments.data,
-            multiplicity.data,
-            attr_data.data,
-            cell_id.data,
-            idx.data,
-            length,
-            rank,
-            x_bins.data,
-            x_attr.data,
-            weighting_attribute.data,
-            weighting_rank,
+            moment_0=moment_0.data,
+            moments=moments.data,
+            multiplicity=multiplicity.data,
+            attr_data=attr_data.data,
+            cell_id=cell_id.data,
+            idx=idx.data,
+            length=length,
+            rank=rank,
+            x_bins=x_bins.data,
+            x_attr=x_attr.data,
+            weighting_attribute=weighting_attribute.data,
+            weighting_rank=weighting_rank,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -381,7 +389,7 @@ class MomentsMethods(BackendMethods):
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.moments"><code class="name flex">
-<span>def <span class="ident">moments</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
+<span>def <span class="ident">moments</span></span>(<span>*, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -391,6 +399,7 @@ class MomentsMethods(BackendMethods):
 </summary>
 <pre><code class="python">@staticmethod
 def moments(
+    *,
     moment_0,
     moments,
     multiplicity,
@@ -407,25 +416,25 @@ def moments(
     skip_division_by_m0,
 ):
     return MomentsMethods.moments_body(
-        moment_0.data,
-        moments.data,
-        multiplicity.data,
-        attr_data.data,
-        cell_id.data,
-        idx.data,
-        length,
-        ranks.data,
-        min_x,
-        max_x,
-        x_attr.data,
-        weighting_attribute.data,
-        weighting_rank,
-        skip_division_by_m0,
+        moment_0=moment_0.data,
+        moments=moments.data,
+        multiplicity=multiplicity.data,
+        attr_data=attr_data.data,
+        cell_id=cell_id.data,
+        idx=idx.data,
+        length=length,
+        ranks=ranks.data,
+        min_x=min_x,
+        max_x=max_x,
+        x_attr=x_attr.data,
+        weighting_attribute=weighting_attribute.data,
+        weighting_rank=weighting_rank,
+        skip_division_by_m0=skip_division_by_m0,
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.moments_body"><code class="name flex">
-<span>def <span class="ident">moments_body</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
+<span>def <span class="ident">moments_body</span></span>(<span>*, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, ranks, min_x, max_x, x_attr, weighting_attribute, weighting_rank, skip_division_by_m0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -436,6 +445,7 @@ def moments(
 <pre><code class="python">@staticmethod
 @numba.njit(**conf.JIT_FLAGS)
 def moments_body(
+    *,
     moment_0,
     moments,
     multiplicity,
@@ -480,7 +490,7 @@ def moments_body(
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.spectrum_moments"><code class="name flex">
-<span>def <span class="ident">spectrum_moments</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
+<span>def <span class="ident">spectrum_moments</span></span>(<span>*, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -490,6 +500,7 @@ def moments_body(
 </summary>
 <pre><code class="python">@staticmethod
 def spectrum_moments(
+    *,
     moment_0,
     moments,
     multiplicity,
@@ -506,23 +517,23 @@ def spectrum_moments(
     assert moments.shape[0] == x_bins.shape[0] - 1
     assert moment_0.shape == moments.shape
     return MomentsMethods.spectrum_moments_body(
-        moment_0.data,
-        moments.data,
-        multiplicity.data,
-        attr_data.data,
-        cell_id.data,
-        idx.data,
-        length,
-        rank,
-        x_bins.data,
-        x_attr.data,
-        weighting_attribute.data,
-        weighting_rank,
+        moment_0=moment_0.data,
+        moments=moments.data,
+        multiplicity=multiplicity.data,
+        attr_data=attr_data.data,
+        cell_id=cell_id.data,
+        idx=idx.data,
+        length=length,
+        rank=rank,
+        x_bins=x_bins.data,
+        x_attr=x_attr.data,
+        weighting_attribute=weighting_attribute.data,
+        weighting_rank=weighting_rank,
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.moments_methods.MomentsMethods.spectrum_moments_body"><code class="name flex">
-<span>def <span class="ident">spectrum_moments_body</span></span>(<span>moment_0, moments, multiplicity, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
+<span>def <span class="ident">spectrum_moments_body</span></span>(<span>*, moment_0, moments, multiplicity, attr_data, cell_id, idx, length, rank, x_bins, x_attr, weighting_attribute, weighting_rank)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -533,6 +544,7 @@ def spectrum_moments(
 <pre><code class="python">@staticmethod
 @numba.njit(**conf.JIT_FLAGS)
 def spectrum_moments_body(
+    *,
     moment_0,
     moments,
     multiplicity,

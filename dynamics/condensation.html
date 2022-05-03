@@ -50,6 +50,7 @@ DEFAULTS = namedtuple(&#34;_&#34;, (&#34;rtol_x&#34;, &#34;rtol_thd&#34;, &#34;c
 class Condensation:
     def __init__(
         self,
+        *,
         rtol_x=DEFAULTS.rtol_x,
         rtol_thd=DEFAULTS.rtol_thd,
         substeps: int = 1,
@@ -158,7 +159,7 @@ class Condensation:
 <dl>
 <dt id="PySDM.dynamics.condensation.Condensation"><code class="flex name class">
 <span>class <span class="ident">Condensation</span></span>
-<span>(</span><span>rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16)</span>
+<span>(</span><span>*, rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -169,6 +170,7 @@ class Condensation:
 <pre><code class="python">class Condensation:
     def __init__(
         self,
+        *,
         rtol_x=DEFAULTS.rtol_x,
         rtol_thd=DEFAULTS.rtol_thd,
         substeps: int = 1,

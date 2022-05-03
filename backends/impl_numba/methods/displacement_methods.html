@@ -98,9 +98,8 @@ class DisplacementMethods(BackendMethods):
                 n_substeps,
             )
 
-    # pylint: disable=too-many-arguments
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
@@ -308,9 +307,8 @@ def calculate_displacement_body_common(
                 n_substeps,
             )
 
-    # pylint: disable=too-many-arguments
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         n_dims = len(courant.shape)
         scheme = self.formulae.particle_advection.displacement
@@ -638,7 +636,7 @@ def flag_precipitated_body(
 <h3>Methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement"><code class="name flex">
-<span>def <span class="ident">calculate_displacement</span></span>(<span>self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
+<span>def <span class="ident">calculate_displacement</span></span>(<span>self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -647,7 +645,7 @@ def flag_precipitated_body(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calculate_displacement(
-    self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+    self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
 ):
     n_dims = len(courant.shape)
     scheme = self.formulae.particle_advection.displacement

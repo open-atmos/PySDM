@@ -101,7 +101,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
@@ -123,10 +123,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(  # pylint: disable=unused-argument
         self,
+        *,
         cell_origin,
         position_in_cell,
         volume,
-        n,
+        multiplicity,
         idx,
         length,
         healthy,
@@ -149,7 +150,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 cell_origin.data,
                 position_in_cell.data,
                 volume.data,
-                n.data,
+                multiplicity.data,
                 rainfall,
             ],
         )
@@ -157,7 +158,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     def flag_out_of_column(  # pylint: disable=unused-argument
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        *, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
     ):
         pass</code></pre>
 </details>
@@ -244,7 +245,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def calculate_displacement(
-        self, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
@@ -266,10 +267,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     @nice_thrust(**NICE_THRUST_FLAGS)
     def flag_precipitated(  # pylint: disable=unused-argument
         self,
+        *,
         cell_origin,
         position_in_cell,
         volume,
-        n,
+        multiplicity,
         idx,
         length,
         healthy,
@@ -292,7 +294,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 cell_origin.data,
                 position_in_cell.data,
                 volume.data,
-                n.data,
+                multiplicity.data,
                 rainfall,
             ],
         )
@@ -300,7 +302,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 
     @staticmethod
     def flag_out_of_column(  # pylint: disable=unused-argument
-        cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+        *, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
     ):
         pass</code></pre>
 </details>
@@ -316,7 +318,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.displacement_methods.DisplacementMethods.flag_out_of_column"><code class="name flex">
-<span>def <span class="ident">flag_out_of_column</span></span>(<span>cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index)</span>
+<span>def <span class="ident">flag_out_of_column</span></span>(<span>*, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -326,7 +328,7 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 </summary>
 <pre><code class="python">@staticmethod
 def flag_out_of_column(  # pylint: disable=unused-argument
-    cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
+    *, cell_origin, position_in_cell, idx, length, healthy, domain_top_level_index
 ):
     pass</code></pre>
 </details>

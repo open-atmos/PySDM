@@ -55,6 +55,7 @@ class VTKExporter:
 
     def __init__(
         self,
+        *,
         path=&#34;.&#34;,
         attributes_filename=&#34;sd_attributes&#34;,
         products_filename=&#34;sd_products&#34;,
@@ -205,7 +206,7 @@ class VTKExporter:
 <dl>
 <dt id="PySDM.exporters.vtk_exporter.VTKExporter"><code class="flex name class">
 <span>class <span class="ident">VTKExporter</span></span>
-<span>(</span><span>path='.', attributes_filename='sd_attributes', products_filename='sd_products', file_num_len=10, verbose=False)</span>
+<span>(</span><span>*, path='.', attributes_filename='sd_attributes', products_filename='sd_products', file_num_len=10, verbose=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Example of use:</p>
@@ -235,6 +236,7 @@ exporter.export_products(simulation.particulator)
 
     def __init__(
         self,
+        *,
         path=&#34;.&#34;,
         attributes_filename=&#34;sd_attributes&#34;,
         products_filename=&#34;sd_products&#34;,

@@ -43,6 +43,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
 class Parcel(Moist):
     def __init__(
         self,
+        *,
         dt,
         mass_of_dry_air: float,
         p0: float,
@@ -102,7 +103,7 @@ class Parcel(Moist):
         n_in_dv: [float, np.ndarray],
         kappa: float,
         r_dry: [float, np.ndarray],
-        rtol=default_rtol
+        rtol=default_rtol,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
@@ -175,7 +176,7 @@ class Parcel(Moist):
 <dl>
 <dt id="PySDM.environments.parcel.Parcel"><code class="flex name class">
 <span>class <span class="ident">Parcel</span></span>
-<span>(</span><span>dt, mass_of_dry_air: float, p0: float, q0: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, mixed_phase=False)</span>
+<span>(</span><span>*, dt, mass_of_dry_air: float, p0: float, q0: float, T0: float, w: [<class 'float'>, <built-in function callable>], z0: float = 0, mixed_phase=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -186,6 +187,7 @@ class Parcel(Moist):
 <pre><code class="python">class Parcel(Moist):
     def __init__(
         self,
+        *,
         dt,
         mass_of_dry_air: float,
         p0: float,
@@ -245,7 +247,7 @@ class Parcel(Moist):
         n_in_dv: [float, np.ndarray],
         kappa: float,
         r_dry: [float, np.ndarray],
-        rtol=default_rtol
+        rtol=default_rtol,
     ):
         if not isinstance(n_in_dv, np.ndarray):
             r_dry = np.array([r_dry])
@@ -407,7 +409,7 @@ def dv(self):
     n_in_dv: [float, np.ndarray],
     kappa: float,
     r_dry: [float, np.ndarray],
-    rtol=default_rtol
+    rtol=default_rtol,
 ):
     if not isinstance(n_in_dv, np.ndarray):
         r_dry = np.array([r_dry])

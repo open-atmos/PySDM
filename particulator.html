@@ -109,28 +109,28 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes.cell_idx,
-            self.attributes.cell_start,
-            norm_factor,
-            self.dt,
-            self.mesh.dv,
+            prob=prob,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            cell_idx=self.attributes.cell_idx,
+            cell_start=self.attributes.cell_start,
+            norm_factor=norm_factor,
+            timestep=self.dt,
+            dv=self.mesh.dv,
         )
 
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
             # input
-            self.environment.get_predicted(&#34;rhod&#34;),
-            self.environment.get_predicted(&#34;thd&#34;),
-            self.environment.get_predicted(&#34;qv&#34;),
+            rhod=self.environment.get_predicted(&#34;rhod&#34;),
+            thd=self.environment.get_predicted(&#34;thd&#34;),
+            qv=self.environment.get_predicted(&#34;qv&#34;),
             # output
-            self.environment.get_predicted(&#34;T&#34;),
-            self.environment.get_predicted(&#34;p&#34;),
-            self.environment.get_predicted(&#34;RH&#34;),
+            T=self.environment.get_predicted(&#34;T&#34;),
+            p=self.environment.get_predicted(&#34;p&#34;),
+            RH=self.environment.get_predicted(&#34;RH&#34;),
         )
 
-    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -161,6 +161,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def collision_coalescence_breakup(
         self,
+        *,
         enable_breakup,
         gamma,
         rand,
@@ -215,6 +216,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def oxidation(
         self,
+        *,
         kinetic_consts,
         timestep,
         equilibrium_consts,
@@ -247,6 +249,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def dissolution(
         self,
+        *,
         gaseous_compounds,
         system_type,
         dissociation_factors,
@@ -279,14 +282,14 @@ class Particulator:  # pylint: disable=too-many-public-methods
         for key in gaseous_compounds.keys():
             self.attributes.mark_updated(f&#34;moles_{key}&#34;)
 
-    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+    def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
         self.backend.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
             temperature=self.environment.get_predicted(&#34;T&#34;),
         )
 
-    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+    def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
         self.backend.chem_recalculate_drop_data(
             dissociation_factors=dissociation_factors,
             equilibrium_consts=equilibrium_consts,
@@ -313,6 +316,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def moments(
         self,
+        *,
         moment_0,
         moments,
         specs: dict,
@@ -338,17 +342,17 @@ class Particulator:  # pylint: disable=too-many-public-methods
         ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
         self.backend.moments(
-            moment_0,
-            moments,
-            self.attributes[&#34;n&#34;],
-            attr_data,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            ranks,
-            attr_range[0],
-            attr_range[1],
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes[&#34;n&#34;],
+            attr_data=attr_data,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            ranks=ranks,
+            min_x=attr_range[0],
+            max_x=attr_range[1],
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
             skip_division_by_m0=skip_division_by_m0,
@@ -356,6 +360,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def spectrum_moments(
         self,
+        *,
         moment_0,
         moments,
         attr,
@@ -367,16 +372,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
-            moment_0,
-            moments,
-            self.attributes[&#34;n&#34;],
-            attr_data,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            rank,
-            attr_bins,
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes[&#34;n&#34;],
+            attr_data=attr_data,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            rank=rank,
+            x_bins=attr_bins,
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
         )
@@ -385,16 +390,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
     def remove_precipitated(
-        self, displacement, precipitation_counting_level_index
+        self, *, displacement, precipitation_counting_level_index
     ) -&gt; float:
         res = self.backend.flag_precipitated(
-            self.attributes[&#34;cell origin&#34;],
-            self.attributes[&#34;position in cell&#34;],
-            self.attributes[&#34;volume&#34;],
-            self.attributes[&#34;n&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes[&#34;cell origin&#34;],
+            position_in_cell=self.attributes[&#34;position in cell&#34;],
+            volume=self.attributes[&#34;volume&#34;],
+            multiplicity=self.attributes[&#34;n&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             precipitation_counting_level_index=precipitation_counting_level_index,
             displacement=displacement,
         )
@@ -406,11 +411,11 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def flag_out_of_column(self):
         self.backend.flag_out_of_column(
-            self.attributes[&#34;cell origin&#34;],
-            self.attributes[&#34;position in cell&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes[&#34;cell origin&#34;],
+            position_in_cell=self.attributes[&#34;position in cell&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             domain_top_level_index=self.mesh.grid[-1],
         )
         self.attributes.healthy = bool(
@@ -419,16 +424,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
         self.attributes.sanitize()
 
     def calculate_displacement(
-        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         for dim in range(len(self.environment.mesh.grid)):
             self.backend.calculate_displacement(
-                dim,
-                displacement,
-                courant[dim],
-                cell_origin,
-                position_in_cell,
-                n_substeps,
+                dim=dim,
+                displacement=displacement,
+                courant=courant[dim],
+                cell_origin=cell_origin,
+                position_in_cell=position_in_cell,
+                n_substeps=n_substeps,
             )</code></pre>
 </details>
 </section>
@@ -520,28 +525,28 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(
-            prob,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes.cell_idx,
-            self.attributes.cell_start,
-            norm_factor,
-            self.dt,
-            self.mesh.dv,
+            prob=prob,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            cell_idx=self.attributes.cell_idx,
+            cell_start=self.attributes.cell_start,
+            norm_factor=norm_factor,
+            timestep=self.dt,
+            dv=self.mesh.dv,
         )
 
     def update_TpRH(self):
         self.backend.temperature_pressure_RH(
             # input
-            self.environment.get_predicted(&#34;rhod&#34;),
-            self.environment.get_predicted(&#34;thd&#34;),
-            self.environment.get_predicted(&#34;qv&#34;),
+            rhod=self.environment.get_predicted(&#34;rhod&#34;),
+            thd=self.environment.get_predicted(&#34;thd&#34;),
+            qv=self.environment.get_predicted(&#34;qv&#34;),
             # output
-            self.environment.get_predicted(&#34;T&#34;),
-            self.environment.get_predicted(&#34;p&#34;),
-            self.environment.get_predicted(&#34;RH&#34;),
+            T=self.environment.get_predicted(&#34;T&#34;),
+            p=self.environment.get_predicted(&#34;p&#34;),
+            RH=self.environment.get_predicted(&#34;RH&#34;),
         )
 
-    def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
         self.backend.condensation(
             solver=self.condensation_solver,
             n_cell=self.mesh.n_cell,
@@ -572,6 +577,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def collision_coalescence_breakup(
         self,
+        *,
         enable_breakup,
         gamma,
         rand,
@@ -626,6 +632,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def oxidation(
         self,
+        *,
         kinetic_consts,
         timestep,
         equilibrium_consts,
@@ -658,6 +665,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def dissolution(
         self,
+        *,
         gaseous_compounds,
         system_type,
         dissociation_factors,
@@ -690,14 +698,14 @@ class Particulator:  # pylint: disable=too-many-public-methods
         for key in gaseous_compounds.keys():
             self.attributes.mark_updated(f&#34;moles_{key}&#34;)
 
-    def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+    def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
         self.backend.chem_recalculate_cell_data(
             equilibrium_consts=equilibrium_consts,
             kinetic_consts=kinetic_consts,
             temperature=self.environment.get_predicted(&#34;T&#34;),
         )
 
-    def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+    def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
         self.backend.chem_recalculate_drop_data(
             dissociation_factors=dissociation_factors,
             equilibrium_consts=equilibrium_consts,
@@ -724,6 +732,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def moments(
         self,
+        *,
         moment_0,
         moments,
         specs: dict,
@@ -749,17 +758,17 @@ class Particulator:  # pylint: disable=too-many-public-methods
         ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
         self.backend.moments(
-            moment_0,
-            moments,
-            self.attributes[&#34;n&#34;],
-            attr_data,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            ranks,
-            attr_range[0],
-            attr_range[1],
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes[&#34;n&#34;],
+            attr_data=attr_data,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            ranks=ranks,
+            min_x=attr_range[0],
+            max_x=attr_range[1],
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
             skip_division_by_m0=skip_division_by_m0,
@@ -767,6 +776,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def spectrum_moments(
         self,
+        *,
         moment_0,
         moments,
         attr,
@@ -778,16 +788,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
     ):
         attr_data = self.attributes[attr]
         self.backend.spectrum_moments(
-            moment_0,
-            moments,
-            self.attributes[&#34;n&#34;],
-            attr_data,
-            self.attributes[&#34;cell id&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            rank,
-            attr_bins,
-            self.attributes[attr_name],
+            moment_0=moment_0,
+            moments=moments,
+            multiplicity=self.attributes[&#34;n&#34;],
+            attr_data=attr_data,
+            cell_id=self.attributes[&#34;cell id&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            rank=rank,
+            x_bins=attr_bins,
+            x_attr=self.attributes[attr_name],
             weighting_attribute=self.attributes[weighting_attribute],
             weighting_rank=weighting_rank,
         )
@@ -796,16 +806,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
         return self.backend.adaptive_sdm_end(dt_left, self.attributes.cell_start)
 
     def remove_precipitated(
-        self, displacement, precipitation_counting_level_index
+        self, *, displacement, precipitation_counting_level_index
     ) -&gt; float:
         res = self.backend.flag_precipitated(
-            self.attributes[&#34;cell origin&#34;],
-            self.attributes[&#34;position in cell&#34;],
-            self.attributes[&#34;volume&#34;],
-            self.attributes[&#34;n&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes[&#34;cell origin&#34;],
+            position_in_cell=self.attributes[&#34;position in cell&#34;],
+            volume=self.attributes[&#34;volume&#34;],
+            multiplicity=self.attributes[&#34;n&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             precipitation_counting_level_index=precipitation_counting_level_index,
             displacement=displacement,
         )
@@ -817,11 +827,11 @@ class Particulator:  # pylint: disable=too-many-public-methods
 
     def flag_out_of_column(self):
         self.backend.flag_out_of_column(
-            self.attributes[&#34;cell origin&#34;],
-            self.attributes[&#34;position in cell&#34;],
-            self.attributes._ParticleAttributes__idx,
-            self.attributes.super_droplet_count,
-            self.attributes._ParticleAttributes__healthy_memory,
+            cell_origin=self.attributes[&#34;cell origin&#34;],
+            position_in_cell=self.attributes[&#34;position in cell&#34;],
+            idx=self.attributes._ParticleAttributes__idx,
+            length=self.attributes.super_droplet_count,
+            healthy=self.attributes._ParticleAttributes__healthy_memory,
             domain_top_level_index=self.mesh.grid[-1],
         )
         self.attributes.healthy = bool(
@@ -830,16 +840,16 @@ class Particulator:  # pylint: disable=too-many-public-methods
         self.attributes.sanitize()
 
     def calculate_displacement(
-        self, displacement, courant, cell_origin, position_in_cell, n_substeps
+        self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
         for dim in range(len(self.environment.mesh.grid)):
             self.backend.calculate_displacement(
-                dim,
-                displacement,
-                courant[dim],
-                cell_origin,
-                position_in_cell,
-                n_substeps,
+                dim=dim,
+                displacement=displacement,
+                courant=courant[dim],
+                cell_origin=cell_origin,
+                position_in_cell=position_in_cell,
+                n_substeps=n_substeps,
             )</code></pre>
 </details>
 <h3>Instance variables</h3>
@@ -925,7 +935,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.calculate_displacement"><code class="name flex">
-<span>def <span class="ident">calculate_displacement</span></span>(<span>self, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
+<span>def <span class="ident">calculate_displacement</span></span>(<span>self, *, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -934,21 +944,21 @@ def n_sd(self) -&gt; int:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def calculate_displacement(
-    self, displacement, courant, cell_origin, position_in_cell, n_substeps
+    self, *, displacement, courant, cell_origin, position_in_cell, n_substeps
 ):
     for dim in range(len(self.environment.mesh.grid)):
         self.backend.calculate_displacement(
-            dim,
-            displacement,
-            courant[dim],
-            cell_origin,
-            position_in_cell,
-            n_substeps,
+            dim=dim,
+            displacement=displacement,
+            courant=courant[dim],
+            cell_origin=cell_origin,
+            position_in_cell=position_in_cell,
+            n_substeps=n_substeps,
         )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.chem_recalculate_cell_data"><code class="name flex">
-<span>def <span class="ident">chem_recalculate_cell_data</span></span>(<span>self, equilibrium_consts, kinetic_consts)</span>
+<span>def <span class="ident">chem_recalculate_cell_data</span></span>(<span>self, *, equilibrium_consts, kinetic_consts)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -956,7 +966,7 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def chem_recalculate_cell_data(self, equilibrium_consts, kinetic_consts):
+<pre><code class="python">def chem_recalculate_cell_data(self, *, equilibrium_consts, kinetic_consts):
     self.backend.chem_recalculate_cell_data(
         equilibrium_consts=equilibrium_consts,
         kinetic_consts=kinetic_consts,
@@ -965,7 +975,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.chem_recalculate_drop_data"><code class="name flex">
-<span>def <span class="ident">chem_recalculate_drop_data</span></span>(<span>self, dissociation_factors, equilibrium_consts)</span>
+<span>def <span class="ident">chem_recalculate_drop_data</span></span>(<span>self, *, dissociation_factors, equilibrium_consts)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -973,7 +983,7 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def chem_recalculate_drop_data(self, dissociation_factors, equilibrium_consts):
+<pre><code class="python">def chem_recalculate_drop_data(self, *, dissociation_factors, equilibrium_consts):
     self.backend.chem_recalculate_drop_data(
         dissociation_factors=dissociation_factors,
         equilibrium_consts=equilibrium_consts,
@@ -983,7 +993,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -993,6 +1003,7 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def collision_coalescence_breakup(
     self,
+    *,
     enable_breakup,
     gamma,
     rand,
@@ -1047,7 +1058,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.condensation"><code class="name flex">
-<span>def <span class="ident">condensation</span></span>(<span>self, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
+<span>def <span class="ident">condensation</span></span>(<span>self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1055,7 +1066,7 @@ def n_sd(self) -&gt; int:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def condensation(self, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+<pre><code class="python">def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
     self.backend.condensation(
         solver=self.condensation_solver,
         n_cell=self.mesh.n_cell,
@@ -1086,7 +1097,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.dissolution"><code class="name flex">
-<span>def <span class="ident">dissolution</span></span>(<span>self, gaseous_compounds, system_type, dissociation_factors, timestep, environment_mixing_ratios, do_chemistry_flag)</span>
+<span>def <span class="ident">dissolution</span></span>(<span>self, *, gaseous_compounds, system_type, dissociation_factors, timestep, environment_mixing_ratios, do_chemistry_flag)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1096,6 +1107,7 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def dissolution(
     self,
+    *,
     gaseous_compounds,
     system_type,
     dissociation_factors,
@@ -1140,11 +1152,11 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def flag_out_of_column(self):
     self.backend.flag_out_of_column(
-        self.attributes[&#34;cell origin&#34;],
-        self.attributes[&#34;position in cell&#34;],
-        self.attributes._ParticleAttributes__idx,
-        self.attributes.super_droplet_count,
-        self.attributes._ParticleAttributes__healthy_memory,
+        cell_origin=self.attributes[&#34;cell origin&#34;],
+        position_in_cell=self.attributes[&#34;position in cell&#34;],
+        idx=self.attributes._ParticleAttributes__idx,
+        length=self.attributes.super_droplet_count,
+        healthy=self.attributes._ParticleAttributes__healthy_memory,
         domain_top_level_index=self.mesh.grid[-1],
     )
     self.attributes.healthy = bool(
@@ -1154,7 +1166,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.moments"><code class="name flex">
-<span>def <span class="ident">moments</span></span>(<span>self, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
+<span>def <span class="ident">moments</span></span>(<span>self, *, moment_0, moments, specs: dict, attr_name='volume', attr_range=(-inf, inf), weighting_attribute='volume', weighting_rank=0, skip_division_by_m0=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1164,6 +1176,7 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def moments(
     self,
+    *,
     moment_0,
     moments,
     specs: dict,
@@ -1189,17 +1202,17 @@ def n_sd(self) -&gt; int:
     ranks = self.backend.Storage.from_ndarray(np.array(ranks, dtype=float))
 
     self.backend.moments(
-        moment_0,
-        moments,
-        self.attributes[&#34;n&#34;],
-        attr_data,
-        self.attributes[&#34;cell id&#34;],
-        self.attributes._ParticleAttributes__idx,
-        self.attributes.super_droplet_count,
-        ranks,
-        attr_range[0],
-        attr_range[1],
-        self.attributes[attr_name],
+        moment_0=moment_0,
+        moments=moments,
+        multiplicity=self.attributes[&#34;n&#34;],
+        attr_data=attr_data,
+        cell_id=self.attributes[&#34;cell id&#34;],
+        idx=self.attributes._ParticleAttributes__idx,
+        length=self.attributes.super_droplet_count,
+        ranks=ranks,
+        min_x=attr_range[0],
+        max_x=attr_range[1],
+        x_attr=self.attributes[attr_name],
         weighting_attribute=self.attributes[weighting_attribute],
         weighting_rank=weighting_rank,
         skip_division_by_m0=skip_division_by_m0,
@@ -1217,18 +1230,18 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def normalize(self, prob, norm_factor):
     self.backend.normalize(
-        prob,
-        self.attributes[&#34;cell id&#34;],
-        self.attributes.cell_idx,
-        self.attributes.cell_start,
-        norm_factor,
-        self.dt,
-        self.mesh.dv,
+        prob=prob,
+        cell_id=self.attributes[&#34;cell id&#34;],
+        cell_idx=self.attributes.cell_idx,
+        cell_start=self.attributes.cell_start,
+        norm_factor=norm_factor,
+        timestep=self.dt,
+        dv=self.mesh.dv,
     )</code></pre>
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.oxidation"><code class="name flex">
-<span>def <span class="ident">oxidation</span></span>(<span>self, kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag)</span>
+<span>def <span class="ident">oxidation</span></span>(<span>self, *, kinetic_consts, timestep, equilibrium_consts, dissociation_factors, do_chemistry_flag)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1238,6 +1251,7 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def oxidation(
     self,
+    *,
     kinetic_consts,
     timestep,
     equilibrium_consts,
@@ -1290,7 +1304,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.remove_precipitated"><code class="name flex">
-<span>def <span class="ident">remove_precipitated</span></span>(<span>self, displacement, precipitation_counting_level_index) ‑> float</span>
+<span>def <span class="ident">remove_precipitated</span></span>(<span>self, *, displacement, precipitation_counting_level_index) ‑> float</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1299,16 +1313,16 @@ def n_sd(self) -&gt; int:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def remove_precipitated(
-    self, displacement, precipitation_counting_level_index
+    self, *, displacement, precipitation_counting_level_index
 ) -&gt; float:
     res = self.backend.flag_precipitated(
-        self.attributes[&#34;cell origin&#34;],
-        self.attributes[&#34;position in cell&#34;],
-        self.attributes[&#34;volume&#34;],
-        self.attributes[&#34;n&#34;],
-        self.attributes._ParticleAttributes__idx,
-        self.attributes.super_droplet_count,
-        self.attributes._ParticleAttributes__healthy_memory,
+        cell_origin=self.attributes[&#34;cell origin&#34;],
+        position_in_cell=self.attributes[&#34;position in cell&#34;],
+        volume=self.attributes[&#34;volume&#34;],
+        multiplicity=self.attributes[&#34;n&#34;],
+        idx=self.attributes._ParticleAttributes__idx,
+        length=self.attributes.super_droplet_count,
+        healthy=self.attributes._ParticleAttributes__healthy_memory,
         precipitation_counting_level_index=precipitation_counting_level_index,
         displacement=displacement,
     )
@@ -1355,7 +1369,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.spectrum_moments"><code class="name flex">
-<span>def <span class="ident">spectrum_moments</span></span>(<span>self, moment_0, moments, attr, rank, attr_bins, attr_name='volume', weighting_attribute='volume', weighting_rank=0)</span>
+<span>def <span class="ident">spectrum_moments</span></span>(<span>self, *, moment_0, moments, attr, rank, attr_bins, attr_name='volume', weighting_attribute='volume', weighting_rank=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1365,6 +1379,7 @@ def n_sd(self) -&gt; int:
 </summary>
 <pre><code class="python">def spectrum_moments(
     self,
+    *,
     moment_0,
     moments,
     attr,
@@ -1376,16 +1391,16 @@ def n_sd(self) -&gt; int:
 ):
     attr_data = self.attributes[attr]
     self.backend.spectrum_moments(
-        moment_0,
-        moments,
-        self.attributes[&#34;n&#34;],
-        attr_data,
-        self.attributes[&#34;cell id&#34;],
-        self.attributes._ParticleAttributes__idx,
-        self.attributes.super_droplet_count,
-        rank,
-        attr_bins,
-        self.attributes[attr_name],
+        moment_0=moment_0,
+        moments=moments,
+        multiplicity=self.attributes[&#34;n&#34;],
+        attr_data=attr_data,
+        cell_id=self.attributes[&#34;cell id&#34;],
+        idx=self.attributes._ParticleAttributes__idx,
+        length=self.attributes.super_droplet_count,
+        rank=rank,
+        x_bins=attr_bins,
+        x_attr=self.attributes[attr_name],
         weighting_attribute=self.attributes[weighting_attribute],
         weighting_rank=weighting_rank,
     )</code></pre>
@@ -1403,13 +1418,13 @@ def n_sd(self) -&gt; int:
 <pre><code class="python">def update_TpRH(self):
     self.backend.temperature_pressure_RH(
         # input
-        self.environment.get_predicted(&#34;rhod&#34;),
-        self.environment.get_predicted(&#34;thd&#34;),
-        self.environment.get_predicted(&#34;qv&#34;),
+        rhod=self.environment.get_predicted(&#34;rhod&#34;),
+        thd=self.environment.get_predicted(&#34;thd&#34;),
+        qv=self.environment.get_predicted(&#34;qv&#34;),
         # output
-        self.environment.get_predicted(&#34;T&#34;),
-        self.environment.get_predicted(&#34;p&#34;),
-        self.environment.get_predicted(&#34;RH&#34;),
+        T=self.environment.get_predicted(&#34;T&#34;),
+        p=self.environment.get_predicted(&#34;p&#34;),
+        RH=self.environment.get_predicted(&#34;RH&#34;),
     )</code></pre>
 </details>
 </dd>

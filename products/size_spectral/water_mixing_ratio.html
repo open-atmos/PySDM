@@ -51,12 +51,12 @@ class WaterMixingRatio(MomentProduct):
 
     def _impl(self, **kwargs):  # TODO #217
         self._download_moment_to_buffer(
-            &#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+            attr=&#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
         )
         conc = self.buffer.copy()
 
         self._download_moment_to_buffer(
-            &#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+            attr=&#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
         )
         result = self.buffer.copy()
         result[:] *= self.formulae.constants.rho_w
@@ -101,12 +101,12 @@ inheritance.</p></div>
 
     def _impl(self, **kwargs):  # TODO #217
         self._download_moment_to_buffer(
-            &#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+            attr=&#34;volume&#34;, rank=0, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
         )
         conc = self.buffer.copy()
 
         self._download_moment_to_buffer(
-            &#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
+            attr=&#34;volume&#34;, rank=1, filter_range=self.volume_range, filter_attr=&#34;volume&#34;
         )
         result = self.buffer.copy()
         result[:] *= self.formulae.constants.rho_w

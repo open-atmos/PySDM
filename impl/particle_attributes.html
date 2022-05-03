@@ -43,6 +43,7 @@ from PySDM.attributes.impl.attribute import Attribute
 class ParticleAttributes:
     def __init__(
         self,
+        *,
         particulator,
         idx,
         extensive_attribute_storage,
@@ -151,7 +152,7 @@ class ParticleAttributes:
 <dl>
 <dt id="PySDM.impl.particle_attributes.ParticleAttributes"><code class="flex name class">
 <span>class <span class="ident">ParticleAttributes</span></span>
-<span>(</span><span>particulator, idx, extensive_attribute_storage, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
+<span>(</span><span>*, particulator, idx, extensive_attribute_storage, extensive_keys: dict, cell_start, attributes: Dict[str, <a title="PySDM.attributes.impl.attribute.Attribute" href="../attributes/impl/attribute.html#PySDM.attributes.impl.attribute.Attribute">Attribute</a>])</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -162,6 +163,7 @@ class ParticleAttributes:
 <pre><code class="python">class ParticleAttributes:
     def __init__(
         self,
+        *,
         particulator,
         idx,
         extensive_attribute_storage,

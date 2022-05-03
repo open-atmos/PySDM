@@ -152,7 +152,7 @@ class Interpolation:
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(
-            output, radius, self.factor, self.a, self.b
+            output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )
 
 
@@ -361,7 +361,7 @@ class TpDependent:
 
     def __call__(self, output, radius):
         self.particulator.backend.interpolation(
-            output, radius, self.factor, self.a, self.b
+            output=output, radius=radius, factor=self.factor, b=self.a, c=self.b
         )</code></pre>
 </details>
 <h3>Instance variables</h3>
