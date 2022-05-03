@@ -48,6 +48,6 @@ def test_aerosol_init(mass_fractions):
     kappas = {"(NH4)2SO4": 0.72, "insoluble": 0.0}
     np.testing.assert_approx_equal(
         kappa["Constant"],
-        sum(kappas[k] * volume_fractions[k] for k in kappas.keys()),
+        sum(v * volume_fractions[k] for (k,v) in kappas.items()),
         significant=2,
     )
