@@ -8,7 +8,7 @@ compounds and the following properties for each compound:
 - solubility (True/False)
 - number of ions per molecule (phi)
 
-`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class also 
+`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class also
 contains functions for computing properties like `kappa` from a `mass_fractions` dictionary.
 """
 
