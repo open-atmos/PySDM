@@ -48,7 +48,7 @@ def get_dummy_particulator_and_coalescence(
     particulator = DummyParticulator(backend, n_sd=n_length)
     particulator.environment = environment or Box(dv=1, dt=DEFAULTS.dt_coal_range[1])
     coalescence = Coalescence(
-        StubKernel(particulator.backend),
+        collision_kernel=StubKernel(particulator.backend),
         optimized_random=optimized_random,
         substeps=substeps,
         adaptive=False,

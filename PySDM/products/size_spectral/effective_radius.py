@@ -25,7 +25,7 @@ class EffectiveRadius(MomentProduct):
     def _impl(self, **kwargs):
         tmp = np.empty_like(self.buffer)
         self._download_moment_to_buffer(
-            "volume",
+            attr="volume",
             rank=2 / 3,
             filter_range=(
                 self.formulae.trivia.volume(self.radius_range[0]),
@@ -34,7 +34,7 @@ class EffectiveRadius(MomentProduct):
         )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
-            "volume",
+            attr="volume",
             rank=1,
             filter_range=(
                 self.formulae.trivia.volume(self.radius_range[0]),

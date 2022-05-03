@@ -27,7 +27,7 @@ class TestFig2:
     @pytest.mark.xfail(strict=True)  # TODO #604
     # pylint: disable=redefined-outer-name,unused-argument
     def test_peak_supersaturation_and_final_concentration(
-        constants, aerosol, surface_tension, s_max, s_100m, n_100m
+        *, constants, aerosol, surface_tension, s_max, s_100m, n_100m
     ):
         # arrange
         settings = Settings(

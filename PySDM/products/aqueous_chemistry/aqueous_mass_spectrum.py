@@ -12,7 +12,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 class AqueousMassSpectrum(SpectrumMomentProduct):
     def __init__(
-        self, key, dry_radius_bins_edges, specific=False, name=None, unit="kg/m^3"
+        self, *, key, dry_radius_bins_edges, specific=False, name=None, unit="kg/m^3"
     ):
         super().__init__(name=name, unit=unit, attr_unit="m")
         self.key = key

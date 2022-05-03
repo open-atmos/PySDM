@@ -12,10 +12,14 @@ class IceWaterContent(MomentProduct):
         self.specific = __specific
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer("volume", rank=1, filter_range=(-np.inf, 0))
+        self._download_moment_to_buffer(
+            attr="volume", rank=1, filter_range=(-np.inf, 0)
+        )
         result = self.buffer.copy()
 
-        self._download_moment_to_buffer("volume", rank=0, filter_range=(-np.inf, 0))
+        self._download_moment_to_buffer(
+            attr="volume", rank=0, filter_range=(-np.inf, 0)
+        )
         conc = self.buffer
 
         result[:] *= -self.formulae.constants.rho_i * conc / self.particulator.mesh.dv

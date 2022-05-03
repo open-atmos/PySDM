@@ -17,7 +17,7 @@ class ParticleConcentration(MomentProduct):
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
-            "volume",
+            attr="volume",
             rank=0,
             filter_range=(
                 self.formulae.trivia.volume(self.radius_range[0]),

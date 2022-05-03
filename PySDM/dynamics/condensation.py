@@ -19,6 +19,7 @@ DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
 class Condensation:
     def __init__(
         self,
+        *,
         rtol_x=DEFAULTS.rtol_x,
         rtol_thd=DEFAULTS.rtol_thd,
         substeps: int = 1,

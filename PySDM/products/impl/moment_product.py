@@ -23,6 +23,7 @@ class MomentProduct(Product, ABC):
 
     def _download_moment_to_buffer(
         self,
+        *,
         attr,
         rank,
         filter_attr="volume",
@@ -32,9 +33,9 @@ class MomentProduct(Product, ABC):
         skip_division_by_m0=False,
     ):
         self.particulator.moments(
-            self.moment_0,
-            self.moments,
-            {attr: (rank,)},
+            moment_0=self.moment_0,
+            moments=self.moments,
+            specs={attr: (rank,)},
             attr_name=filter_attr,
             attr_range=filter_range,
             weighting_attribute=weighting_attribute,
