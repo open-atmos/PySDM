@@ -39,8 +39,8 @@ from PySDM.products.impl.moment_product import MomentProduct
 
 
 class WaterMixingRatio(MomentProduct):
-    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#34;dimensionless&#34;):
-        self.radius_range = radius_range
+    def __init__(self, radius_range=None, name=None, unit=&#34;dimensionless&#34;):
+        self.radius_range = radius_range or (0, np.inf)
         self.volume_range = None
         super().__init__(unit=unit, name=name)
 
@@ -79,7 +79,7 @@ class WaterMixingRatio(MomentProduct):
 <dl>
 <dt id="PySDM.products.size_spectral.water_mixing_ratio.WaterMixingRatio"><code class="flex name class">
 <span>class <span class="ident">WaterMixingRatio</span></span>
-<span>(</span><span>radius_range=(0, inf), name=None, unit='dimensionless')</span>
+<span>(</span><span>radius_range=None, name=None, unit='dimensionless')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -89,8 +89,8 @@ inheritance.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class WaterMixingRatio(MomentProduct):
-    def __init__(self, radius_range=(0, np.inf), name=None, unit=&#34;dimensionless&#34;):
-        self.radius_range = radius_range
+    def __init__(self, radius_range=None, name=None, unit=&#34;dimensionless&#34;):
+        self.radius_range = radius_range or (0, np.inf)
         self.volume_range = None
         super().__init__(unit=unit, name=name)
 
