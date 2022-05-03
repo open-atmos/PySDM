@@ -263,9 +263,7 @@ A comparison of the time-dependent and singular models using the kinematic
   and is the focus of @Arabas_et_al_2022.
 
 ### Initialisation of multi-component internally or externally mixed aerosols 
-TODO (Clare) - discuss in brief each example, what example it reproduces, and what physics that involves
-
-The new initialisation framework allows flexible specification of multi-modal, multi-component
+The new aerosol initialisation framework allows flexible specification of multi-modal, multi-component
 aerosol with arbitrary composition.
 The `DryAerosolMixture` class takes a list of compounds and dictionaries specifying their molar masses,
 densities, solubilities, and ionic dissociation numbers.
@@ -276,7 +274,7 @@ some specified `mass_fractions` dictionary.
 A code snippet showing the creation of the aerosol for the `ARG2000` example is shown below.
 
 ```python
-from PySDM.initialisation.aerosol_composition.dry_aerosol import DryAerosolMixture
+from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 
 class AerosolARG(DryAerosolMixture):
     def __init__(
@@ -351,6 +349,7 @@ Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadn
 ![ARG2000.](ARG_fig1.pdf){#fig:ARG2000 width="60%"}
 
 ### Surface-partitioning of organics to modify surface tension of droplets
+In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in PySDM. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovad @Ruehl_et_al_2016, and Szyszkowski-Langmuir.
 
 Code demonstrating how to create `formulae` objects using the different surface tension models.
 ```python
@@ -386,16 +385,14 @@ formulae_sl = Formulae(
 )
 ```
 
-(Psuedo-)Code used to make Köhler curve figure.
+Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species.
 ```python
 model = formulae.surface_tension.__name__
 sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, A.modes[0]['f_org'])
 RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, A.modes[0]['kappa'][model], rd3, sigma)
 plot(r_wet, (RH_eq - 1)*100)
 ```
-
-@Ruehl_et_al_2016 - organics and influence on surface tension
-![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](fig_kohler.png){#fig:kohler width="60%"}
+![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](surf_fig_kohler.pdf){#fig:kohler width="60%"}
 
 
 ### Adaptivity
