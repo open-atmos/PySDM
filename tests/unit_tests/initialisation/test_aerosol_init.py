@@ -18,7 +18,7 @@ from PySDM.physics import si
         pytest.param({"(NH4)2SO4": 0.0, "insoluble": 1.0}),
     ],
 )
-def test_aerosol_init(mass_fractions):
+def test_volume_weighted_kappa_with_insoluble_compound(mass_fractions):
     # Arrange
     compounds = ("(NH4)2SO4", "insoluble")
     molar_masses = {
@@ -41,13 +41,14 @@ def test_aerosol_init(mass_fractions):
     )
 
     # Act
-    kappa = aer.kappa(mass_fractions)
+    kappa_expected = aer.kappa(mass_fractions)["Constant"]
     volume_fractions = aer.volume_fractions(mass_fractions)
 
     # Assert
-    kappas = {"(NH4)2SO4": 0.72, "insoluble": 0.0}
+    compound_kappas = {"(NH4)2SO4": 0.72, "insoluble": 0.0}
+    kappa_actual = sum(v * volume_fractions[k] for (k, v) in compound_kappas.items())
     np.testing.assert_approx_equal(
-        kappa["Constant"],
-        sum(v * volume_fractions[k] for (k, v) in kappas.items()),
+        kappa_expected,
+        kappa_actual,
         significant=2,
     )
