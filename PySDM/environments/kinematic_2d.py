@@ -35,25 +35,28 @@ class Kinematic2D(Moist):
     def dv(self):
         return self.mesh.dv
 
-    def init_attributes(self, *,
-                        spatial_discretisation,
-                        kappa,
-                        dry_radius_spectrum,
-                        rtol=default_rtol,
-                        n_sd=None
-                        ):
+    def init_attributes(
+        self,
+        *,
+        spatial_discretisation,
+        kappa,
+        dry_radius_spectrum,
+        rtol=default_rtol,
+        n_sd=None
+    ):
         super().sync()
         self.notify()
         n_sd = n_sd or self.particulator.n_sd
         attributes = {}
-        with np.errstate(all='raise'):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-            attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
-                self.mesh.cellular_attributes(positions)
         with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(
-                self.mesh.grid, n_sd
-            )
+            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            (
+                attributes["cell id"],
+                attributes["cell origin"],
+                attributes["position in cell"],
+            ) = self.mesh.cellular_attributes(positions)
+        with np.errstate(all="raise"):
+            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
             (
                 attributes["cell id"],
                 attributes["cell origin"],

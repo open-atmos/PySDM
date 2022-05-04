@@ -5,6 +5,7 @@ two-dimensional sampling for singular immersion freezing: constant-multiplicity
 """
 import numpy as np
 import pyvinecopulib as pv
+
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const
 
