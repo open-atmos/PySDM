@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.initialisation.aerosol_composition.dry_aerosol API documentation</title>
-<meta name="description" content="DryAerosolMixture class defines structure of arbitrary composition aerosol specification.
-A DryAerosolMixture must specify the:
-- compounds (Tuple …" />
+<meta name="description" content="`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class defines structure
+of arbitrary composition aerosol specification.
+A …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -24,40 +24,32 @@ A DryAerosolMixture must specify the:
 <h1 class="title">Module <code>PySDM.initialisation.aerosol_composition.dry_aerosol</code></h1>
 </header>
 <section id="section-intro">
-<p>DryAerosolMixture class defines structure of arbitrary composition aerosol specification.
-A DryAerosolMixture must specify the:
-- compounds (Tuple of strings)
-- densities (Dict of [str, float])
-- molar masses (Dict of [str, float]])
-- solubility (Dict of [str, bool])
-- phi, ionic dissociation constant (Dict of [str, int])</p>
-<p>DryAerosolMixture class also contains functions for computing
-the following properties from <code>mass_fractions</code> dictionary:
-- volume fractions
-- soluble volume fraction
-- volume fractions of just soluble or just insoluble species
-- hygroscopicity (kappa) under various assumptions of solubility
-- molar volume of organics, <code>nu_org</code></p>
+<p><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></code> class defines structure
+of arbitrary composition aerosol specification.
+A <code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></code> must specify a list of
+compounds and the following properties for each compound:
+- density
+- molar mass
+- solubility (True/False)
+- number of ions per molecule (phi)</p>
+<p><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></code> class also
+contains functions for computing properties like <code>kappa</code> from a <code>mass_fractions</code> dictionary.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-DryAerosolMixture class defines structure of arbitrary composition aerosol specification.
-A DryAerosolMixture must specify the:
-    - compounds (Tuple of strings)
-    - densities (Dict of [str, float])
-    - molar masses (Dict of [str, float]])
-    - solubility (Dict of [str, bool])
-    - phi, ionic dissociation constant (Dict of [str, int])
+`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class defines structure
+of arbitrary composition aerosol specification.
+A `PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` must specify a list of
+compounds and the following properties for each compound:
+- density
+- molar mass
+- solubility (True/False)
+- number of ions per molecule (phi)
 
-DryAerosolMixture class also contains functions for computing
-the following properties from `mass_fractions` dictionary:
-    - volume fractions
-    - soluble volume fraction
-    - volume fractions of just soluble or just insoluble species
-    - hygroscopicity (kappa) under various assumptions of solubility
-    - molar volume of organics, `nu_org`
+`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class also
+contains functions for computing properties like `kappa` from a `mass_fractions` dictionary.
 &#34;&#34;&#34;
 
 from typing import Dict, Tuple
