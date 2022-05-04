@@ -1,19 +1,15 @@
 """
-DryAerosolMixture class defines structure of arbitrary composition aerosol specification.
-A DryAerosolMixture must specify the:
-    - compounds (Tuple of strings)
-    - densities (Dict of [str, float])
-    - molar masses (Dict of [str, float]])
-    - solubility (Dict of [str, bool])
-    - phi, ionic dissociation constant (Dict of [str, int])
+`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class defines structure
+of arbitrary composition aerosol specification.
+A `PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` must specify a list of
+compounds and the following properties for each compound:
+- density
+- molar mass
+- solubility (True/False)
+- number of ions per molecule (phi)
 
-DryAerosolMixture class also contains functions for computing
-the following properties from `mass_fractions` dictionary:
-    - volume fractions
-    - soluble volume fraction
-    - volume fractions of just soluble or just insoluble species
-    - hygroscopicity (kappa) under various assumptions of solubility
-    - molar volume of organics, `nu_org`
+`PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture` class also
+contains functions for computing properties like `kappa` from a `mass_fractions` dictionary.
 """
 
 from typing import Dict, Tuple
