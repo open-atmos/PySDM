@@ -35,16 +35,24 @@ class Kinematic2D(Moist):
     def dv(self):
         return self.mesh.dv
 
-    def init_attributes(
-        self, *, spatial_discretisation, kappa, dry_radius_spectrum, rtol=default_rtol
-    ):
+    def init_attributes(self, *,
+                        spatial_discretisation,
+                        kappa,
+                        dry_radius_spectrum,
+                        rtol=default_rtol,
+                        n_sd=None
+                        ):
         super().sync()
         self.notify()
-
+        n_sd = n_sd or self.particulator.n_sd
         attributes = {}
+        with np.errstate(all='raise'):
+            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            attributes['cell id'], attributes['cell origin'], attributes['position in cell'] = \
+                self.mesh.cellular_attributes(positions)
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                self.mesh.grid, self.particulator.n_sd
+                self.mesh.grid, n_sd
             )
             (
                 attributes["cell id"],
@@ -54,7 +62,7 @@ class Kinematic2D(Moist):
 
             r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
                 spectrum=dry_radius_spectrum
-            ).sample(n_sd=self.particulator.n_sd)
+            ).sample(n_sd)
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
