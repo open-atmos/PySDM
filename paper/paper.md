@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and adaptive time-stepping'
+title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
 date: 5 May 2022
 tags:
   - Python
@@ -188,11 +188,11 @@ The new aerosol initialisation framework allows flexible specification of multi-
 aerosol with arbitrary composition.
 The `DryAerosolMixture` class takes a list of compounds and dictionaries specifying their molar masses,
 densities, solubilities, and ionic dissociation numbers.
-The must then specify the aerosol `modes` which are comprised of a `kappa` hygroscopicity value
-and a `spectrum`.
+The user must then specify the aerosol `modes` which are comprised of a `kappa` hygroscopicity value
+and a dry aerosol size `spectrum`.
 The `kappa` is calculated by `PySDM` from the aerosol properties specified above in association with 
 some specified `mass_fractions` dictionary.
-A code snippet showing the creation of the aerosol for the `ARG2000` example is shown below.
+A code snippet showing the creation of the aerosol for the @Abdul_Razzak_and_Ghan_2000 example is shown below.
 
 ```python
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
@@ -235,7 +235,7 @@ class AerosolARG(DryAerosolMixture):
         )
 ```
 
-Code snippet to use the aerosol class. First create an instance of the aerosol, use it to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute. This `kappa times dry volume` is used because it is an extensive attribute of the superdroplets; or that the hygroscopicity of a particle is the volume-weighted average of the hygroscopicity of its individual components. Finally, before the simulation is run, the wet radii must be equilibrated based on the `kappa times dry volume`. 
+Below is a code snippet demonstrating how to create an aerosol object with defined physiochemical properties and use it to initialize a simulation. The `aerosol` is used to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute. This `kappa times dry volume` is used because it is an extensive attribute of the superdroplets: the hygroscopicity of a particle is the volume-weighted average of the hygroscopicity of its individual components. Finally, before the simulation is run, the wet radii must be equilibrated based on the `kappa times dry volume`. 
 
 ```python
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
@@ -264,7 +264,7 @@ r_wet = equilibrate_wet_radii(
 ... (run simulation) ...
 ```
 
-Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) and the `Constant` surface tension model is used there.
+Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
 
 @Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
 ![ARG2000.](ARG_fig1.pdf){#fig:ARG2000 width="60%"}
@@ -343,11 +343,8 @@ A comparison of the time-dependent and singular models using the kinematic
   and is the focus of @Arabas_et_al_2022.
 
 ### Surface-partitioning of organics to modify surface tension of droplets
-In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in PySDM. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovad @Ruehl_et_al_2016, and Szyszkowski-Langmuir.
-
-Code demonstrating how to create `formulae` objects using the different surface tension models.
+In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in PySDM. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
 ```python
-A = AerosolBetaCaryophylleneDark()
 formulae_bulk = Formulae(
     surface_tension='Constant'
 )
@@ -361,7 +358,7 @@ formulae_ovad = Formulae(
 formulae_ruehl = Formulae(
     surface_tension='CompressedFilmRuehl',
     constants={
-        'RUEHL_nu_org': A.modes[0]['nu_org'],
+        'RUEHL_nu_org': some_aerosol.modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
@@ -371,7 +368,7 @@ formulae_ruehl = Formulae(
 formulae_sl = Formulae(
     surface_tension='SzyszkowskiLangmuir',
     constants={
-        'RUEHL_nu_org': A.modes[0]['nu_org'],
+        'RUEHL_nu_org': some_aerosol.modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_sgm_min': 35 * si.mN / si.m
@@ -379,11 +376,11 @@ formulae_sl = Formulae(
 )
 ```
 
-Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species.
+Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species. 
 ```python
 model = formulae.surface_tension.__name__
-sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, A.modes[0]['f_org'])
-RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, A.modes[0]['kappa'][model], rd3, sigma)
+sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, some_aerosol.modes[0]['f_org'])
+RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, some_aerosol.modes[0]['kappa'][model], r_dry**3, sigma)
 plot(r_wet, (RH_eq - 1)*100)
 ```
 ![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](surf_fig_kohler.pdf){#fig:kohler width="60%"}
@@ -396,10 +393,10 @@ TODO (Sylwester): @Bartman_et_al_2022_adaptive
 
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
 PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
-KD contributed to setting up continuous integration workflows for the GPU backend.
+KD contributed to setting up continuous integration workflows for the GPU backend. TODO (Sylwester): are we still including this in the paper?
 CES contributed the aerosol initialisation framework.
 ID, CES, and AJ contributed to the CCN activation examples.
-CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples with contributions from RXW.
+CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
 The immersion freezing representation code was developed by SA who also carried out the maintenance of the project.
 
 # Acknowledgements
