@@ -1,6 +1,6 @@
 ---
 title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing and adaptive time-stepping'
-date: 3 May 2022
+date: 5 May 2022
 tags:
   - Python
   - physics-simulation 
@@ -15,37 +15,37 @@ tags:
   - atmospheric-physics
   - atmospheric-chemistry
 authors:
-  - name: Emily&nbsp;de Jong
+  - name: Emily de Jong
     affiliation: "1"
     orcid: 0000-0002-5310-4554
-  - name: Piotr&nbsp;Bartman
+  - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "2"
-  - name: Kacper&nbsp;Derlatka
+  - name: Kacper Derlatka
     affiliation: "2"
-  - name: Isabella&nbsp;Dula
+  - name: Isabella Dula
     affiliation: "3"
-  - name: Anna&nbsp;Jaruga
+  - name: Anna Jaruga
     affiliation: "3"
     orcid: 0000-0003-3194-6440
-  - name: John&nbsp;Ben&nbsp;Mackay
+  - name: John Ben Mackay
     affiliation: "3"
     orcid: 0000-0001-8677-3562
-  - name: Clare&nbsp;E.&nbsp;Singer
+  - name: Clare E. Singer
     orcid: 0000-0002-1708-0997
     affiliation: "3"
-  - name: Ryan&nbsp;X.&nbsp;Ward
+  - name: Ryan X. Ward
     affiliation: "3"
     orcid: 0000-0003-2317-3310
-  - name: Sylwester&nbsp;Arabas
+  - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
     affiliation: "4,2"
 affiliations:
- - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
+ - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 1
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków,&nbsp;Poland
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 2
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena,&nbsp;CA,&nbsp;USA
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 3
  - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 4
