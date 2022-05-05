@@ -316,7 +316,7 @@ The second similarly demonstrates the impact of the breakup process in a one-dim
 \end{figure}
 
 ### Immersion freezing 
-This release of PySDM introduces representation of immersion freezing, 
+This release of `PySDM` introduces representation of immersion freezing, 
   i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
   in supercooled water droplets.
 There are two alternative models implemented, in both cases the formulation
@@ -337,13 +337,13 @@ For the time-dependent model, the water Activity Based Immersion Freezing Model 
   
 For validation of the the newly introduced immersion freezing models, a set of
   notebooks reproducing box-model simulations from @Alpert_and_Knopf_2016 was introduced
-  to the PySDM-examples package.
+  to the `PySDM-examples` package.
 A comparison of the time-dependent and singular models using the kinematic
-  prescribed-flow environment introduced in PySDM v1 has been developed
+  prescribed-flow environment introduced in `PySDM` v1 has been developed
   and is the focus of @Arabas_et_al_2022.
 
 ### Surface-partitioning of organics to modify surface tension of droplets
-In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in PySDM. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
+In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in `PySDM`. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
 ```python
 formulae_bulk = Formulae(
     surface_tension='Constant'
