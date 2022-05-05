@@ -28,7 +28,7 @@ authors:
   - name: Anna Jaruga
     affiliation: "3"
     orcid: 0000-0003-3194-6440
-  - name: John Ben Mackay
+  - name: J. Ben Mackay
     affiliation: "3"
     orcid: 0000-0001-8677-3562
   - name: Clare E. Singer
@@ -195,8 +195,9 @@ some specified `mass_fractions` dictionary.
 A code snippet showing the creation of the aerosol for the @Abdul_Razzak_and_Ghan_2000 example is shown below.
 
 ```python
+from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
-
+from PySDM.physics import si
 class AerosolARG(DryAerosolMixture):
     def __init__(
         self,
@@ -239,19 +240,13 @@ Below is a code snippet demonstrating how to create an aerosol object with defin
 
 ```python
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
-
 aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
 n_sd = n_sd_per_mode * len(aerosol.modes)
-
 builder = Builder(backend=CPU(), n_sd=n_sd)
-
-... (add dynamics) ...
-
+## add dynamics
 for i, mode in enumerate(aerosol.modes):
     kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
-
-    ... (add other atributes) ...
-
+    ## add other atributes
     attributes["kappa times dry volume"] = np.append(
         attributes["kappa times dry volume"], v_dry * kappa
     )
@@ -260,8 +255,7 @@ r_wet = equilibrate_wet_radii(
     environment=env,
     kappa_times_dry_volume=attributes["kappa times dry volume"],
 )
-
-... (run simulation) ...
+## run box or parcel simulation
 ```
 
 Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
@@ -345,9 +339,11 @@ A comparison of the time-dependent and singular models using the kinematic
 ### Surface-partitioning of organics to modify surface tension of droplets
 In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in `PySDM`. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
 ```python
-formulae_bulk = Formulae(
-    surface_tension='Constant'
-)
+from PySDM import Formulae
+from PySDM.physics import si
+from PySDM_examples.Singer_Ward.aerosol import AerosolBetaCaryophylleneDark
+aerosol = AerosolBetaCaryophylleneDark()
+formulae_bulk = Formulae(surface_tension='Constant')
 formulae_ovad = Formulae(
     surface_tension='CompressedFilmOvadnevaite',
     constants={
@@ -358,7 +354,7 @@ formulae_ovad = Formulae(
 formulae_ruehl = Formulae(
     surface_tension='CompressedFilmRuehl',
     constants={
-        'RUEHL_nu_org': some_aerosol.modes[0]['nu_org'],
+        'RUEHL_nu_org': aerosol.aerosol_modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
@@ -368,7 +364,7 @@ formulae_ruehl = Formulae(
 formulae_sl = Formulae(
     surface_tension='SzyszkowskiLangmuir',
     constants={
-        'RUEHL_nu_org': some_aerosol.modes[0]['nu_org'],
+        'RUEHL_nu_org': aerosol.aerosol_modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_sgm_min': 35 * si.mN / si.m
@@ -378,10 +374,24 @@ formulae_sl = Formulae(
 
 Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species. 
 ```python
-model = formulae.surface_tension.__name__
-sigma = formulae.surface_tension.sigma(T, v_wet, v_dry, some_aerosol.modes[0]['f_org'])
-RH_eq = formulae.hygroscopicity.RH_eq(r_wet, T, some_aerosol.modes[0]['kappa'][model], r_dry**3, sigma)
-plot(r_wet, (RH_eq - 1)*100)
+import numpy as np
+for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
+    r_wet = np.logspace(np.log(50 * si.nm), np.log(2000 * si.nm), base=np.e, num=100)
+    sigma = np.ones(len(r_wet))
+    for j,vw in enumerate(formulae_ovad.trivia.volume(r_wet)):
+        sigma[j] = formulae.surface_tension.sigma(
+            300 * si.K,
+            vw,
+            formulae_ovad.trivia.volume(50 * si.nm),
+            aerosol.aerosol_modes[0]['f_org']
+        )
+    RH_eq = formulae.hygroscopicity.RH_eq(
+        r_wet,
+        300 * si.K,
+        aerosol.aerosol_modes[0]['kappa'][formulae.surface_tension.__name__],
+        (50 * si.nm)**3,
+        sigma
+    )
 ```
 ![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](surf_fig_kohler.pdf){#fig:kohler width="60%"}
 
