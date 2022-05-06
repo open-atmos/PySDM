@@ -403,7 +403,7 @@ for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
         sigma
     )
 ```
-![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](surf_fig_kohler.pdf){#fig:kohler width="60%"}
+![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="60%"}
 
 
 ### Adaptivity
