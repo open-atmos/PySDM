@@ -174,7 +174,6 @@ Specifying a breakup-only event requires only a collision kernel, fragmentation 
 ```python
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics import Collision 
 from PySDM.environments import Box
 from PySDM.physics import si
 
@@ -253,7 +252,6 @@ Below is a code snippet demonstrating how to create an aerosol object with defin
 ```python
 import numpy as np
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
 
 aerosol = AerosolARG(M2_sol=0.5, M2_N=1000 / si.cm**3, M2_rad=50 * si.nm)
 n_sd_per_mode = 20
