@@ -352,7 +352,6 @@ A comparison of the time-dependent and singular models using the kinematic
 In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in `PySDM`. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
 ```python
 from PySDM import Formulae
-from PySDM.physics import si
 from PySDM_examples.Singer_Ward.aerosol import AerosolBetaCaryophylleneDark
 aerosol = AerosolBetaCaryophylleneDark()
 formulae_bulk = Formulae(surface_tension='Constant')
@@ -386,7 +385,6 @@ formulae_sl = Formulae(
 
 Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species. 
 ```python
-import numpy as np
 for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
     r_wet = np.logspace(np.log(50 * si.nm), np.log(2000 * si.nm), base=np.e, num=100)
     sigma = np.ones(len(r_wet))
