@@ -192,8 +192,8 @@ builder.add_dynamic(Collision(
 from PySDM.dynamics import Freezing
 builder.add_dynamic(Freezing(singular=False))
 ```
-TODO (Sylwester): attribute initialisation: freezing temperature for singular, immersed surface for time-dep
-TODO (Sylwester): explain how to pass INAS or ABIFM constants
+TODO #835 (Sylwester): attribute initialisation: freezing temperature for singular, immersed surface for time-dep
+TODO #835 (Sylwester): explain how to pass INAS or ABIFM constants
 
 ### Initialisation of multi-component internally or externally mixed aerosols 
 The new aerosol initialisation framework allows flexible specification of multi-modal, multi-component
@@ -407,13 +407,13 @@ for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
 
 
 ### Adaptivity
-TODO (Sylwester): @Bartman_et_al_2022_adaptive
+TODO #835 (Sylwester): @Bartman_et_al_2022_adaptive
 
 # Author contributions
 
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
 PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
-KD contributed to setting up continuous integration workflows for the GPU backend. TODO (Sylwester): are we still including this in the paper?
+KD contributed to setting up continuous integration workflows for the GPU backend. TODO #835 (Sylwester): are we still including this in the paper?
 CES contributed the aerosol initialisation framework.
 ID, CES, and AJ contributed to the CCN activation examples.
 CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
