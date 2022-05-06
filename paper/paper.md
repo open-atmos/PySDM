@@ -161,7 +161,7 @@ from PySDM.dynamics.collisions import Collision
 from PySDM.dynamics.collisions.collision_kernels import Golovin
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
-from PySDM.dynamics.collisions.breakup_fragmentations import ExpFrag
+from PySDM.dynamics.collisions.breakup_fragmentations import ExponFrag
 ```
 The rate of superdroplet collisions are specified by a collision kernel as in v1, and the
   breakup process requires two additional `dynamics` specifications: from `coalescence_efficiencies`
@@ -172,13 +172,26 @@ Specifying a breakup-only event requires only a collision kernel, fragmentation 
   and optional breakup efficiency.
 
 ```python
-builder.add_dynamic(Collision(kernel=Golovin(b=1.5e3 / si.s), coalescence_efficiency=ConstEc(Ec=0.9),
-                     breakup_efficiency=ConstEb(Eb=1.0), fragmentation_function=ExpFrag(scale=100*si.um**3)))
+from PySDM import Builder
+from PySDM.backends import CPU
+from PySDM.dynamics import Collision 
+from PySDM.environments import Box
+from PySDM.physics import si
+
+builder = Builder(backend=CPU(), n_sd=100)
+builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+builder.add_dynamic(Collision(
+  collision_kernel=Golovin(b=1.5e3 / si.s),
+  coalescence_efficiency=ConstEc(Ec=0.9),
+  breakup_efficiency=ConstEb(Eb=1.0),
+  fragmentation_function=ExponFrag(scale=100*si.um**3)
+  ))
 ```
 
 ### Immersion Freezing
 ```python
-bulder.add_dynamic(Freezing(singular=False))
+from PySDM.dynamics import Freezing
+builder.add_dynamic(Freezing(singular=False))
 ```
 TODO (Sylwester): attribute initialisation: freezing temperature for singular, immersed surface for time-dep
 TODO (Sylwester): explain how to pass INAS or ABIFM constants
@@ -197,7 +210,6 @@ A code snippet showing the creation of the aerosol for the @Abdul_Razzak_and_Gha
 ```python
 from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
-from PySDM.physics import si
 class AerosolARG(DryAerosolMixture):
     def __init__(
         self,
@@ -220,7 +232,7 @@ class AerosolARG(DryAerosolMixture):
         )
         mass_fractions_mode1 = {"(NH4)2SO4": 1.0, "insoluble": 0.0}
         mass_fractions_mode2 = {"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
-        self.modes = (
+        self.aerosol_modes = (
             {
                 "kappa": self.kappa(mass_fractions_mode1),
                 "spectrum": spectra.Lognormal(
@@ -239,22 +251,24 @@ class AerosolARG(DryAerosolMixture):
 Below is a code snippet demonstrating how to create an aerosol object with defined physiochemical properties and use it to initialize a simulation. The `aerosol` is used to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute. This `kappa times dry volume` is used because it is an extensive attribute of the superdroplets: the hygroscopicity of a particle is the volume-weighted average of the hygroscopicity of its individual components. Finally, before the simulation is run, the wet radii must be equilibrated based on the `kappa times dry volume`. 
 
 ```python
+import numpy as np
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
-aerosol = AerosolARG(M2_sol=sol2, M2_N=N2, M2_rad=rad2)
-n_sd = n_sd_per_mode * len(aerosol.modes)
-builder = Builder(backend=CPU(), n_sd=n_sd)
+
+aerosol = AerosolARG(M2_sol=0.5, M2_N=1000 / si.cm**3, M2_rad=50 * si.nm)
+n_sd_per_mode = 20
+builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.aerosol_modes))
 ## add dynamics
-for i, mode in enumerate(aerosol.modes):
+attributes = {k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "n")}
+for i, mode in enumerate(aerosol.aerosol_modes):
     kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
+    v_dry = builder.formulae.trivia.volume(radius=r_dry)
     ## add other atributes
     attributes["kappa times dry volume"] = np.append(
         attributes["kappa times dry volume"], v_dry * kappa
     )
-r_wet = equilibrate_wet_radii(
-    r_dry=builder.formulae.trivia.radius(volume=attributes["dry volume"]),
-    environment=env,
-    kappa_times_dry_volume=attributes["kappa times dry volume"],
-)
+## equilibrate wet radii
 ## run box or parcel simulation
 ```
 
