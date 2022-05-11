@@ -81,6 +81,7 @@ The initial "v1" releases of `PySDM` outlined in a preceding JOSS paper
   and vapour/heat budget with grid-discretised fluid flow.
 This paper outlines subsequent developments in the "v2" releases of `PySDM`
   including two new processes (collisional breakup and immersion freezing), 
+  initialisation framework for aerosol chemical properties,
   enhanced support for adaptive timestepping, and examples which illustrate the 
   new functionalities using simulation frameworks described in the scientific 
   literature.
@@ -123,9 +124,10 @@ The moving-sectional (or Lagrangian in attribute space) methods were long consid
 This challenge was solved by devising super-particle-number-conserving 
   Monte-Carlo schemes such as the SDM for collisions (@Shima_et_al_2009).
 Enhancements included in v2 of `PySDM` address additional tracer-conserving representations
-  of the droplet breakup process as described in (@deJong_et_al_2022), and the immersion
+  of the droplet breakup process (as detailed in a forthcoming publication from @DeJong_et_al_2022) and the immersion
   freezing process.
-In addition, we include enhanced support for adaptive time-stepping.
+In addition, we include enhanced support for adaptive time-stepping, as well as a new framework to initialize
+  aerosol modes with different chemical or hygroscopic properties.
 We continue to expand and maintain a set of examples demonstrating project features 
   through reproduction of results from literature.
 
@@ -188,10 +190,31 @@ builder.add_dynamic(Collision(
 ```
 
 ### Immersion Freezing
+This release of `PySDM` introduces representation of immersion freezing, 
+  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
+  in supercooled water droplets.
+There are two alternative models implemented; in both cases the formulation
+  is probabilistic and based on Poissonian model of heterogeneous freezing.
+The two models embrace, so-called, singular and time-dependent approaches and
+  are based on the formulation presented in @Shima_et_al_2020 and
+  @Alpert_and_Knopf_2016, respectively.
+In the singular model, the relevant introduced particle attribute is the freezing temperature
+  which is randomly sampled at initialisation from an ice nucleation active sites (INAS) model;
+  subsequently freezing occurs in a deterministic way upon encountering ambient 
+  temperature that is lower than the particle's freezing temperature.
+In the time-dependent model, the relevant introduced particle attribute is the insoluble
+  material surface which is randomly sampled at initialisation; 
+  freezing is triggered by evaluating probability of freezing at instantaneous
+  ambient conditions and comparing it with a random number.
+For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
+  of @Knopf_and_Alpert_2013 is used.
+The dynamic is introduced by specifying whether a singular model is used, and additional particle
+  attributes must be initialised accordingly.
 ```python
 from PySDM.dynamics import Freezing
 builder.add_dynamic(Freezing(singular=False))
 ```
+
 TODO #835 (Sylwester): attribute initialisation: freezing temperature for singular, immersed surface for time-dep
 TODO #835 (Sylwester): explain how to pass INAS or ABIFM constants
 
@@ -271,9 +294,12 @@ for i, mode in enumerate(aerosol.aerosol_modes):
 ```
 
 Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
-
-@Abdul_Razzak_and_Ghan_2000 - activation compared to parameterization
-![ARG2000.](ARG_fig1.pdf){#fig:ARG2000 width="60%"}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{ARG_fig1.pdf}
+    \caption{Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.}
+    \label{fig:ARG}
+\end{figure}
 
 ### Adaptive time-stepping
 The condensation, collision, and displacement dynamics all support an adaptive time-stepping feature,
@@ -297,50 +323,27 @@ The dynamic load-balancing across threads can be switched off by setting the `sc
 This release of `PySDM` is complemented by an additional suite of test cases in `PySDM-examples`
   which make use of the augmented functionality to reproduce results in the microphysics literature.
 
-Write 1 paragraph on each example group, maybe some figures. Main goals:
-(1) Link back to the original JOSS paper
-(2) Give a clear overview of what user can expect from playing with existing examples,
-which are aimed at reproducing literature examples
-
 ### Collisional Breakup
 `PySDM` was recently used as a calibration tool to generate data for learning microphysics rate
   parameters in @Bieli_et_al_2022 (in review). 
 Particles in a box environment undergo coalescence and breakup with a fixed coalescence 
   efficiency, and the moments of the distribution are used as training data. 
-In addition, two figures from a forthcoming publication @DeJong_et_al_2022 that describes the
+In addition, two figures from a forthcoming publication (@DeJong_et_al_2022) that describes the
   physics and algorithm for superdroplet breakup are included. 
-The first example (reproduced in \autoref{fig:readme_fig_1}), demonstrates the impact of including
+The first example (reproduced in \autoref{fig:dJ_fig_1}), demonstrates the impact of including
   the breakup process on the particle size distribution, versus a coalescence-only case. 
 The second similarly demonstrates the impact of the breakup process in a one-dimensional setup 
-  based on the example of @Shipway_and_Hill_2012.
+  based on the kinematic framework of @Shipway_and_Hill_2012.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{deJong_fig1}
-    \caption{Sample plot generated with the code snippets included in the paper.}
+    \caption{Particle size distribution using collisions, with and without breakup process,
+      as is the focus of @DeJong_et_al_2022}
     \label{fig:dJ_fig_1}
 \end{figure}
 
 ### Immersion freezing 
-This release of `PySDM` introduces representation of immersion freezing, 
-  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
-  in supercooled water droplets.
-There are two alternative models implemented, in both cases the formulation
-  is probabilistic and based on Poissonian model of heterogeneous freezing.
-The two models embrace, so-called, singular and time-dependent approaches and
-  are based on the formulation presented in @Shima_et_al_2020 and
-  @Alpert_and_Knopf_2016, respectively.
-In the singular model, the relevant introduced particle attribute is the freezing temperature
-  which is randomly sampled at initialisation from an ice nucleation active sites (INAS) model;
-  subsequently freezing occurs in a deterministic way upon encountering ambient 
-  temperature that is lower than the particle's freezing temperature.
-In the time-dependent model, the relevant introduced particle attribute is the insoluble
-  material surface which is randomly sampled at initialisation; 
-  freezing is triggered by evaluating probability of freezing at instantaneous
-  ambient conditions and comparing it with a random number.
-For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
-  of @Knopf_and_Alpert_2013 is used.
-  
 For validation of the the newly introduced immersion freezing models, a set of
   notebooks reproducing box-model simulations from @Alpert_and_Knopf_2016 was introduced
   to the `PySDM-examples` package.
