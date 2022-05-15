@@ -1,5 +1,5 @@
 ---
-title: 'PySDM v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
+title: 'PySDM and PySDM-examples v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
 date: 5 May 2022
 tags:
   - Python
@@ -294,12 +294,8 @@ for i, mode in enumerate(aerosol.aerosol_modes):
 ```
 
 Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\textwidth]{ARG_fig1.pdf}
-    \caption{Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.}
-    \label{fig:ARG}
-\end{figure}
+
+![Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="60%"}
 
 ### Adaptive time-stepping
 The condensation, collision, and displacement dynamics all support an adaptive time-stepping feature,
@@ -335,13 +331,7 @@ The first example (reproduced in \autoref{fig:dJ_fig_1}), demonstrates the impac
 The second similarly demonstrates the impact of the breakup process in a one-dimensional setup 
   based on the kinematic framework of @Shipway_and_Hill_2012.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.6\textwidth]{deJong_fig1}
-    \caption{Particle size distribution using collisions, with and without breakup process,
-      as is the focus of @DeJong_et_al_2022}
-    \label{fig:dJ_fig_1}
-\end{figure}
+![Particle size distribution using collisions, with and without breakup process, as is the focus of @DeJong_et_al_2022](deJong_fig1.pdf){#fig:dJ_fig_1}
 
 ### Immersion freezing 
 For validation of the the newly introduced immersion freezing models, a set of
