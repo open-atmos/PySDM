@@ -69,7 +69,7 @@ class DryAerosolMixture:
         is_soluble: Dict[str, bool],
         ionic_dissociation_phi: Dict[str, int]
     ):
-        self._aerosol_modes = None
+        self._modes = None
         self.compounds = compounds
         self.densities = densities
         self.molar_masses = molar_masses
@@ -77,12 +77,12 @@ class DryAerosolMixture:
         self.ionic_dissociation_phi = ionic_dissociation_phi
 
     @property
-    def aerosol_modes(self):
-        return self._aerosol_modes
+    def modes(self):
+        return self._modes
 
-    @aerosol_modes.setter
-    def aerosol_modes(self, value: Tuple[Dict]):
-        self._aerosol_modes = value
+    @modes.setter
+    def modes(self, value: Tuple[Dict]):
+        self._modes = value
 
     # convert mass fractions to volume fractions
     def volume_fractions(self, mass_fractions: dict):
@@ -186,7 +186,7 @@ class DryAerosolMixture:
         is_soluble: Dict[str, bool],
         ionic_dissociation_phi: Dict[str, int]
     ):
-        self._aerosol_modes = None
+        self._modes = None
         self.compounds = compounds
         self.densities = densities
         self.molar_masses = molar_masses
@@ -194,12 +194,12 @@ class DryAerosolMixture:
         self.ionic_dissociation_phi = ionic_dissociation_phi
 
     @property
-    def aerosol_modes(self):
-        return self._aerosol_modes
+    def modes(self):
+        return self._modes
 
-    @aerosol_modes.setter
-    def aerosol_modes(self, value: Tuple[Dict]):
-        self._aerosol_modes = value
+    @modes.setter
+    def modes(self, value: Tuple[Dict]):
+        self._modes = value
 
     # convert mass fractions to volume fractions
     def volume_fractions(self, mass_fractions: dict):
@@ -275,7 +275,7 @@ class DryAerosolMixture:
 </details>
 <h3>Instance variables</h3>
 <dl>
-<dt id="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.aerosol_modes"><code class="name">var <span class="ident">aerosol_modes</span></code></dt>
+<dt id="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.modes"><code class="name">var <span class="ident">modes</span></code></dt>
 <dd>
 <div class="desc"></div>
 <details class="source">
@@ -283,8 +283,8 @@ class DryAerosolMixture:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def aerosol_modes(self):
-    return self._aerosol_modes</code></pre>
+def modes(self):
+    return self._modes</code></pre>
 </details>
 </dd>
 </dl>
@@ -428,9 +428,9 @@ def aerosol_modes(self):
 <li>
 <h4><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture">DryAerosolMixture</a></code></h4>
 <ul class="">
-<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.aerosol_modes" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.aerosol_modes">aerosol_modes</a></code></li>
 <li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.f_soluble_volume">f_soluble_volume</a></code></li>
 <li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.kappa">kappa</a></code></li>
+<li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.modes" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.modes">modes</a></code></li>
 <li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.nu_org">nu_org</a></code></li>
 <li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volfrac_just_soluble">volfrac_just_soluble</a></code></li>
 <li><code><a title="PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions" href="#PySDM.initialisation.aerosol_composition.dry_aerosol.DryAerosolMixture.volume_fractions">volume_fractions</a></code></li>
