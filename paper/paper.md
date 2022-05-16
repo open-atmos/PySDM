@@ -195,14 +195,17 @@ class SimpleAerosol(DryAerosolMixture):
     def __init__(self):
         super().__init__(
             compounds=("(NH4)2SO4", "NaCl"),
-            molar_masses={"(NH4)2SO4": 132.14 * si.g / si.mole, "NaCl": 58.44 * si.g / si.mole},
-            densities={"(NH4)2SO4": 1.77 * si.g / si.cm**3, "NaCl": 2.16 * si.g / si.cm**3},
+            molar_masses={"(NH4)2SO4": 132.14 * si.g / si.mole,
+              "NaCl": 58.44 * si.g / si.mole},
+            densities={"(NH4)2SO4": 1.77 * si.g / si.cm**3,
+              "NaCl": 2.16 * si.g / si.cm**3},
             is_soluble={"(NH4)2SO4": True, "NaCl": True},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
         self.modes = (
             {
-                "kappa": self.kappa(mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
+                "kappa": self.kappa(
+                  mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3,
                     m_mode=50.0 * si.nm, s_geom=2.0
