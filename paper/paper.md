@@ -100,7 +100,7 @@ Third, inclusion within `PySDM-examples` of simulation scripts/notebooks pertain
   anonymously and without technical or legal obstacles--in many cases just with a 
   single-click on a link to a cloud-computing platform such as Google Colab.
 Last but not least, we encourage developers of new examples
-  to include set of so-called ``smoke tests'' in `PySDM`,
+  to include set of so-called "smoke tests" in `PySDM`,
   which assert results against reference data to ensure that published results remain 
   reproducible despite ongoing developments.
 
@@ -110,7 +110,7 @@ Last but not least, we encourage developers of new examples
 
 For an example of running basic zero-dimensional
   simulations with `PySDM`, we refer to the project README.md file and the
-  precedig @Bartman_et_al_2022_JOSS JOSS paper.
+  preceeding @Bartman_et_al_2022_JOSS JOSS paper.
 The following code snippets demonstrating new elements of `PySDM` API 
   can be added or substituted into the v1 API description to run 
   simulation using the new features.
@@ -160,7 +160,7 @@ In @DeJong_et_al_2022, the physics and algorithm for superdroplet breakup are de
 
 ![Particle size distribution using collisions, with and without breakup process, as is the focus of @DeJong_et_al_2022](deJong_fig1.pdf){#fig:dJ_fig_1 width="100%"}
 
-### Immersion Freezing
+## Immersion Freezing
 This release of `PySDM` introduces representation of immersion freezing, 
   i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
   in supercooled water droplets.
@@ -189,50 +189,35 @@ The `DryAerosolMixture` class takes a list of compounds and dictionaries specify
 The user must then specify the aerosol `modes` which are comprised of a `kappa` hygroscopicity value, 
   calculated from the molecular components and their associated `mass_fractions`,
   and a dry aerosol size `spectrum`.
-For example, the aerosol for the @Abdul_Razzak_and_Ghan_2000 example,
-  reproduced in `PySDM-examples`, can be specified as follows:
+For example, a single-mode aerosol class (`SimpleAerosol`) can be defined as follows.
 
 ```python
 from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
-class AerosolARG(DryAerosolMixture):
-    def __init__(
-        self,
-        M2_sol: float = 0,
-        M2_N: float = 100 / si.cm**3,
-        M2_rad: float = 50 * si.nm,
-    ):
+class SimpleAerosol(DryAerosolMixture):
+    def __init__(self,):
         super().__init__(
-            compounds=("(NH4)2SO4", "insoluble"),
+            compounds=("(NH4)2SO4", "NaCl"),
             molar_masses={
                 "(NH4)2SO4": 132.14 * si.g / si.mole,
-                "insoluble": 44 * si.g / si.mole,
+                "NaCl": 58.44 * si.g / si.mole,
             },
             densities={
                 "(NH4)2SO4": 1.77 * si.g / si.cm**3,
-                "insoluble": 1.77 * si.g / si.cm**3,
+                "NaCl": 2.16 * si.g / si.cm**3,
             },
-            is_soluble={"(NH4)2SO4": True, "insoluble": False},
-            ionic_dissociation_phi={"(NH4)2SO4": 3, "insoluble": 0},
+            is_soluble={"(NH4)2SO4": True, "NaCl": True},
+            ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
         self.modes = (
             {
                 "kappa": self.kappa(mass_fractions={
-                    "(NH4)2SO4": 1.0,
-                    "insoluble": 0.0
+                    "(NH4)2SO4": 0.7,
+                    "NaCl": 0.3
                 }),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3,
                     m_mode=50.0 * si.nm, s_geom=2.0
-                ),
-            },
-            {
-                "kappa": self.kappa(mass_fractions={
-                    "(NH4)2SO4": M2_sol,
-                    "insoluble": (1 - M2_sol)
-                }),
-                "spectrum": spectra.Lognormal(
-                    norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
             },
         )
@@ -240,46 +225,33 @@ class AerosolARG(DryAerosolMixture):
 
 The `aerosol` object is then used in initialisation to calculate the total number of superdroplets 
   given a prescribed number per mode and then create the builder object.
-The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute.
+The aerosol modes are iterated through to extract the hygroscopicity `kappa` and define the `kappa times dry volume` attribute.
 The choice of `kappa times dry volume` as particle extensive attribute ensures that, upon coalescence,
-  the hygroscopicity parameter kappa of a resultant super-particle is the volume-weighted average of the hygroscopicity 
+  the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
-Finally, before a simulation is run, the wet radii must be equilibrated with ambient water vapour saturation 
-  based on the `kappa times dry volume`.
-Below is a code demonstrating how to initialize an aerosol population using the `AerosolARG` class
-  defined above, as employed in the corresponding `PySDM-examples` module for @Abdul_Razzak_and_Ghan_2000.
+Below is a code demonstrating how to initialize an aerosol population using the `AerosolARG` class, as employed in the corresponding `PySDM-examples` module for @Abdul_Razzak_and_Ghan_2000.
 
 ```python
 import numpy as np
 from PySDM.initialisation.sampling import spectral_sampling
+from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
 
-aerosol = AerosolARG(M2_sol=0.5, M2_N=1000 / si.cm**3, M2_rad=50 * si.nm)
+aerosol = AerosolARG()
 n_sd_per_mode = 20
 builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.modes))
-attributes = {
-    k: np.empty(0)
-    for k in ("dry volume", "kappa times dry volume", "n")
-}
 for i, mode in enumerate(aerosol.modes):
     kappa = mode["kappa"]["CompressedFilmOvadnevaite"]
     sampler = spectral_sampling.ConstantMultiplicity(mode["spectrum"])
-    r_dry, concentration = sampler.sample(n_sd_per_mode)
-    v_dry = builder.formulae.trivia.volume(radius=r_dry)
-    attributes["kappa times dry volume"] = np.append(
-        attributes["kappa times dry volume"], v_dry * kappa
-    )
+    # initialise "kappa times dry volume" attribute and equilibrate wet radii
 ```
-![Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="100%"}
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="100%"}
 
-### Surface-partitioning of organics to modify surface tension of droplets
-
-The new release of `PySDM` additionally includes a new suite of examples demonstrating three additional thermodynamic 
-  frameworks for the surface-partitioning of organic species, based on a forthcoming publication
-  (@Singer_Ward_2022).
-The three additional thermodynamic frameworks have been implemented following 
+## Surface-partitioning of organics to modify surface tension of droplets
+`PySDM` v2 additionally includes a new example demonstrating three new models for calculating how surface-partitioning of organic species changes surface tension.
+The three thermodynamic frameworks have been implemented following 
   @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and using the Szyszkowski-Langmuir equation.
 Surface tension is as a function of the dry aerosol composition and the wet radius, and each
-  framework takes a set of thermodynamic parameters, as demonstrated below.
+  framework takes a set of parameters, as demonstrated below.
 The `aerosol` object is an instance of a class inheriting from the `DryAerosolMixture` base class.
 
 ```python
@@ -318,13 +290,11 @@ models = {
 }
 ```
 
-In @Singer_Ward_2022, whose results are included in `PySDM-examples`, these different models of surface-partitioning
-  are compared to demonstrate the effect of variable surface tension on the activation of aerosol with some organic fraction.
+These different models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example.
 
-![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
+![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
-### Adaptive time-stepping
-
+## Adaptive time-stepping
 In `PySDM` v2, the condensation, collision, and displacement dynamics 
   all support adaptive time-stepping logic,
   which involves substepping within the user-specified time step used for coupling
@@ -338,7 +308,7 @@ In the case of collisions, the time-step adaptivity is aimed at eliminating erro
 In the case of condensation, the time-step adaptivity is aimed at reducing computational
   load by coupling the time-step length choice with ambient supersaturation leading
   to using longer time-steps in cloud-free regions and shorter time-steps in regions
-  where drople [de]activation or rain evaporation occurs.
+  where droplet [de]activation or rain evaporation occurs.
 In the case of displacement, the time-step adaptivity is aimed at obeying a given tolerance
   in integration of the super-particle trajectories, and the error measure is constructed
   by comparing implicit- and explicit-Euler solutions.
