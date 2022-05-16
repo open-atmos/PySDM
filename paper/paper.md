@@ -64,7 +64,7 @@ The eponymous `SDM` refers to the Super Droplet Method -- a
   flows. 
 While the SDM has been applied to additional systems such as oceanic particles
   as in @Jokulsdottir_and_Archer_2016, `PySDM` primarily supports atmospheric particle 
-  processes relevant to cloud particles and precipitation of hydrometeors.
+  processes relevant to cloud particles and precipitation.
 
 `PySDM` is implemented modularly in Python with two alternative parallel backends: 
   a multi-threaded CPU implementation using the Numba Just-In-Time (JIT) compiler, 
@@ -326,7 +326,7 @@ Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadn
   to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension
   of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
 
-![Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="60%"}
+![Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ### Adaptive time-stepping
 
@@ -379,8 +379,8 @@ The second similarly demonstrates the impact of the breakup process in a one-dim
 For validation of the the newly introduced immersion freezing models, a set of
   notebooks reproducing box-model simulations from @Alpert_and_Knopf_2016 was introduced
   to the `PySDM-examples` package.
-A comparison of the time-dependent and singular models using the kinematic
-  prescribed-flow environment introduced in `PySDM` v1 has been developed
+It uses the kinematic prescribed-flow environment introduced in `PySDM` v1.
+A comparison of the time-dependent and singular models using this setup has been developed
   and is the focus of @Arabas_et_al_2022.
 
 ### Surface-partitioning of organics to modify surface tension of droplets
