@@ -274,18 +274,20 @@ class AerosolARG(DryAerosolMixture):
         )
         self.modes = (
             {
-                "kappa": self.kappa(
-                    mass_fractions={"(NH4)2SO4": 1.0, "insoluble": 0.0}
-                ),
+                "kappa": self.kappa(mass_fractions={
+                    "(NH4)2SO4": 1.0,
+                    "insoluble": 0.0
+                }),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3,
                     m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                "kappa": self.kappa(
-                    mass_fractions={"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
-                ),
+                "kappa": self.kappa(mass_fractions={
+                    "(NH4)2SO4": M2_sol,
+                    "insoluble": (1 - M2_sol)
+                }),
                 "spectrum": spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -294,7 +296,7 @@ class AerosolARG(DryAerosolMixture):
 ```
 
 Below is a code snippet demonstrating how to create an aerosol object with defined physiochemical 
-  properties and use it to initialize a simulation.
+  properties and use it to initialize super-particle attributes.
 The `aerosol` is used to calculate the total number of superdroplets given a prescribed number per
   mode and then create the builder object.
 The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute.
@@ -306,23 +308,23 @@ Finally, before a simulation is run, the wet radii must be equilibrated with amb
 
 ```python
 import numpy as np
-from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.sampling import spectral_sampling
 
 aerosol = AerosolARG(M2_sol=0.5, M2_N=1000 / si.cm**3, M2_rad=50 * si.nm)
 n_sd_per_mode = 20
 builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.modes))
-## add dynamics
-attributes = {k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "n")}
+attributes = {
+    k: np.empty(0)
+    for k in ("dry volume", "kappa times dry volume", "n")
+}
 for i, mode in enumerate(aerosol.modes):
-    kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
+    kappa = mode["kappa"]["CompressedFilmOvadnevaite"]
+    sampler = spectral_sampling.ConstantMultiplicity(mode["spectrum"])
+    r_dry, concentration = sampler.sample(n_sd_per_mode)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
-    ## add other atributes
     attributes["kappa times dry volume"] = np.append(
         attributes["kappa times dry volume"], v_dry * kappa
     )
-## equilibrate wet radii
-## run box or parcel simulation
 ```
 
 Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` 
