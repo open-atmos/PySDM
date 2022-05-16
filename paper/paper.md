@@ -67,20 +67,20 @@ The key motivation behind development of `PySDM` has been to offer the community
   scientific progress of particle-based methods for simulating atmospheric clouds.
 To this end, we strive to maintain strict modularity of the PySDM building blocks, separation of
   functionality and examples, and extensive unit test coverage in the project.
-A user of the package might select from top-level physics options such as the simulation
-  environment, particle processes, and output attributes without requiring a detailed understanding
-  of the CPU and GPU underlying implementations at the superparticle level.
+A user of the package can select top-level options such as the simulation
+  environment, particle processes, and output attributes without a detailed understanding
+  of the CPU and GPU implementations at the superparticle level.
 
 `PySDM` v1 featured representation of the following 
   processes: condensational growth/evaporation, collisional growth,
   aqueous sulphur chemistry, as well as coupling of particle transport
   and vapour/heat budget with grid-discretised fluid flow.
-Recent efforts and expanded collaboration with the scientific user base of `PySDM` have culminated
-  in a second release, which includes a variety of new processes for both warm and ice-phase particles,
+Recent efforts have culminated
+  in a second release, which includes a variety of new processes for both liquid and ice-phase particles,
   performance enhancements such as adaptive time-stepping, as well as a broadened suite of 
   examples which demonstrate, test, and motivate the use of the SDM for cloud modeling research.
 This paper outlines these subsequent developments in the "v2" releases of `PySDM`
-  including two new processes (collisional breakup and immersion freezing), 
+  including three new processes (collisional breakup, immersion freezing, and surface-partitioning of organic aerosol components), 
   initialisation framework for aerosol size and composition,
   enhanced support for adaptive timestepping, and examples which illustrate the 
   new functionalities using simulation frameworks described in the scientific 
@@ -90,19 +90,16 @@ In v2 of the companion `PySDM-examples` package, we continue to expand and maint
   a set of examples demonstrating project features 
   through reproduction of results from literature.
 The examples package has a fourfold role in the project.
-First, it serves to guide the users and the developers through the package features.
+First, it serves to guide users and developers through the package features.
 Second, `PySDM-examples` has been used as educational material, offering
   interactive Jupyter notebooks suitable for hands-on demonstrations of basic cloud-physics
-  simulations without exposing students to the technicalities of scientific coding.
-Third, inclusion within `PySDM-examples` of simulation scripts/notebooks pertaining to
-  newly submitted research papers is intended to streamline assessment of the
-  results by reviewers. Running simulations described in a paper can be done independently, 
-  anonymously and without technical or legal obstacles--in many cases just with a 
-  single-click on a link to a cloud-computing platform such as Google Colab.
-Last but not least, we encourage developers of new examples
-  to include set of so-called "smoke tests" in `PySDM`,
+  simulations.
+Third, inclusion of simulation scripts/notebooks pertaining to
+  new research papers is intended to streamline assessment of the
+  results by reviewers. Running simulations described in a paper can be done independently on a cloud-computing platform such as Google Colab.
+Finally, we require new examples include a set of "smoke tests" in `PySDM`,
   which assert results against reference data to ensure that published results remain 
-  reproducible despite ongoing developments.
+  reproducible with future developments.
 
 
 
@@ -147,7 +144,7 @@ builder.add_dynamic(Collision(
   coalescence_efficiency=ConstEc(Ec=0.9),
   breakup_efficiency=ConstEb(Eb=1.0),
   fragmentation_function=ExponFrag(scale=100*si.um**3)
-  ))
+))
 ```
 
 In `PySDM-examples`, we reproduce results from two forthcoming publications.
@@ -195,26 +192,17 @@ For example, a single-mode aerosol class (`SimpleAerosol`) can be defined as fol
 from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 class SimpleAerosol(DryAerosolMixture):
-    def __init__(self,):
+    def __init__(self):
         super().__init__(
             compounds=("(NH4)2SO4", "NaCl"),
-            molar_masses={
-                "(NH4)2SO4": 132.14 * si.g / si.mole,
-                "NaCl": 58.44 * si.g / si.mole,
-            },
-            densities={
-                "(NH4)2SO4": 1.77 * si.g / si.cm**3,
-                "NaCl": 2.16 * si.g / si.cm**3,
-            },
+            molar_masses={"(NH4)2SO4": 132.14 * si.g / si.mole, "NaCl": 58.44 * si.g / si.mole},
+            densities={"(NH4)2SO4": 1.77 * si.g / si.cm**3, "NaCl": 2.16 * si.g / si.cm**3},
             is_soluble={"(NH4)2SO4": True, "NaCl": True},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
         self.modes = (
             {
-                "kappa": self.kappa(mass_fractions={
-                    "(NH4)2SO4": 0.7,
-                    "NaCl": 0.3
-                }),
+                "kappa": self.kappa(mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
                 "spectrum": spectra.Lognormal(
                     norm_factor=100.0 / si.cm**3,
                     m_mode=50.0 * si.nm, s_geom=2.0
@@ -226,13 +214,12 @@ class SimpleAerosol(DryAerosolMixture):
 The `aerosol` object is then used in initialisation to calculate the total number of superdroplets 
   given a prescribed number per mode and then create the builder object.
 The aerosol modes are iterated through to extract the hygroscopicity `kappa` and define the `kappa times dry volume` attribute.
-The choice of `kappa times dry volume` as particle extensive attribute ensures that, upon coalescence,
+The choice of `kappa times dry volume` as an extensive attribute ensures that, upon coalescence,
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
 Below is a code demonstrating how to initialize an aerosol population using the `AerosolARG` class, as employed in the corresponding `PySDM-examples` module for @Abdul_Razzak_and_Ghan_2000.
 
 ```python
-import numpy as np
 from PySDM.initialisation.sampling import spectral_sampling
 from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
 
@@ -247,50 +234,22 @@ for i, mode in enumerate(aerosol.modes):
 ![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
-`PySDM` v2 additionally includes a new example demonstrating three new models for calculating how surface-partitioning of organic species changes surface tension.
-The three thermodynamic frameworks have been implemented following 
-  @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and using the Szyszkowski-Langmuir equation.
-Surface tension is as a function of the dry aerosol composition and the wet radius, and each
-  framework takes a set of parameters, as demonstrated below.
-The `aerosol` object is an instance of a class inheriting from the `DryAerosolMixture` base class.
+`PySDM` v2 includes a new example demonstrating three new models for droplet surface tension.
+The four surface tension options included in `PySDM`, which define the droplet surface tension as a function of dry aerosol composition and wet radius, are `'Constant'`, `'CompressedFilmOvadnevaite'` (@Ovadnevaite_et_al_2017), `'CompressedFilmRuehl'` (@Ruehl_et_al_2016), and `'SzyszkowskiLangmuir'` following the Szyszkowski-Langmuir equation.
+Parameters for the three surface-partitioning models must be specified as shown in the example below.
 
 ```python
 from PySDM import Formulae
-from PySDM_examples.Singer_Ward.aerosol import AerosolBetaCaryophylleneDark
-aerosol = AerosolBetaCaryophylleneDark()
-
-models = {
-    Formulae(surface_tension='Constant'),
-    Formulae(
-        surface_tension='CompressedFilmOvadnevaite',
-        constants={
-            'sgm_org': 35 * si.mN / si.m,
-            'delta_min': 1.75 * si.nm
-        }
-    ),
-    Formulae(
-        surface_tension='CompressedFilmRuehl',
-        constants={
-            'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
-            'RUEHL_A0': 115e-20 * si.m * si.m,
-            'RUEHL_C0': 6e-7,
-            'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
-            'RUEHL_sgm_min': 35 * si.mN / si.m
-        }
-    ),
-    Formulae(
-        surface_tension='SzyszkowskiLangmuir',
-        constants={
-            'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
-            'RUEHL_A0': 115e-20 * si.m * si.m,
-            'RUEHL_C0': 6e-7,
-            'RUEHL_sgm_min': 35 * si.mN / si.m
-        }
-    )
-}
+f = Formulae(
+    surface_tension='CompressedFilmOvadnevaite',
+    constants={
+        'sgm_org': 35 * si.mN / si.m,
+        'delta_min': 1.75 * si.nm
+    }
+)
 ```
 
-These different models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example.
+The four models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example.
 
 ![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
