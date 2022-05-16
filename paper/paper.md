@@ -389,60 +389,78 @@ A comparison of the time-dependent and singular models using this setup has been
   and is the focus of @Arabas_et_al_2022.
 
 ### Surface-partitioning of organics to modify surface tension of droplets
-In addition to the standard case of an assumed constant surface tension of water, three thermodynamic frameworks describing the surface-partitioning of organic species have been included in `PySDM`. These models describe the surface tension of a droplet as a function of the dry aerosol composition and the wet radius. An example of how to specify the surface tension formulation is shown below. The three additional thermodynamic frameworks have been implemented following @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and Szyszkowski-Langmuir. The `some_aerosol` object is an instance of an arbitrary aerosol from the `DryAerosolMixture` super-class.
+
+In addition to the standard case of an assumed constant surface tension of water, three thermodynamic 
+  frameworks describing the surface-partitioning of organic species have been included in `PySDM`.
+These models describe the surface tension of a droplet as a function of the dry aerosol composition 
+  and the wet radius.
+An example of how to specify the surface tension formulation is shown below. 
+The three additional thermodynamic frameworks have been implemented following 
+  @Ovadnevaite_et_al_2017, @Ruehl_et_al_2016, and using the Szyszkowski-Langmuir equation. 
+The `aerosol` object is an instance of a class inheriting from the `DryAerosolMixture` base class.
+
 ```python
 from PySDM import Formulae
 from PySDM_examples.Singer_Ward.aerosol import AerosolBetaCaryophylleneDark
 aerosol = AerosolBetaCaryophylleneDark()
-formulae_bulk = Formulae(surface_tension='Constant')
-formulae_ovad = Formulae(
-    surface_tension='CompressedFilmOvadnevaite',
-    constants={
-        'sgm_org': 35 * si.mN / si.m,
-        'delta_min': 1.75 * si.nm
-    }
-)
-formulae_ruehl = Formulae(
-    surface_tension='CompressedFilmRuehl',
-    constants={
-        'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
-        'RUEHL_A0': 115e-20 * si.m * si.m,
-        'RUEHL_C0': 6e-7,
-        'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
-        'RUEHL_sgm_min': 35 * si.mN / si.m
-    }
-)
-formulae_sl = Formulae(
-    surface_tension='SzyszkowskiLangmuir',
-    constants={
-        'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
-        'RUEHL_A0': 115e-20 * si.m * si.m,
-        'RUEHL_C0': 6e-7,
-        'RUEHL_sgm_min': 35 * si.mN / si.m
-    }
-)
+
+models = {
+    Formulae(surface_tension='Constant'),
+    Formulae(
+        surface_tension='CompressedFilmOvadnevaite',
+        constants={
+            'sgm_org': 35 * si.mN / si.m,
+            'delta_min': 1.75 * si.nm
+        }
+    ),
+    Formulae(
+        surface_tension='CompressedFilmRuehl',
+        constants={
+            'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
+            'RUEHL_A0': 115e-20 * si.m * si.m,
+            'RUEHL_C0': 6e-7,
+            'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
+            'RUEHL_sgm_min': 35 * si.mN / si.m
+        }
+    ),
+    Formulae(
+        surface_tension='SzyszkowskiLangmuir',
+        constants={
+            'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
+            'RUEHL_A0': 115e-20 * si.m * si.m,
+            'RUEHL_C0': 6e-7,
+            'RUEHL_sgm_min': 35 * si.mN / si.m
+        }
+    )
+}
 ```
 
-Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species. 
+Using these different models for the surface-partitioning, we can demonstrate the effect variable surface 
+  tension has on the activation of aerosol with some organic fraction.
+The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes
+  in a Köhler curve with local minima features.
+Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle,
+  just under different assumptions of surface-partitioning by the insoluble organic species. 
+
 ```python
-for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
+for model in models:
     r_wet = np.logspace(
         np.log(50 * si.nm),
         np.log(2000 * si.nm),
         base=np.e, num=100
     )
     sigma = np.ones(len(r_wet))
-    for j,vw in enumerate(formulae_ovad.trivia.volume(r_wet)):
-        sigma[j] = formulae.surface_tension.sigma(
+    for j,vw in enumerate(model.trivia.volume(r_wet)):
+        sigma[j] = model.surface_tension.sigma(
             300 * si.K,
             vw,
-            formulae_ovad.trivia.volume(50 * si.nm),
+            model.trivia.volume(50 * si.nm),
             aerosol.modes[0]['f_org']
         )
-    RH_eq = formulae.hygroscopicity.RH_eq(
+    RH_eq = model.hygroscopicity.RH_eq(
         r_wet,
         300 * si.K,
-        aerosol.modes[0]['kappa'][formulae.surface_tension.__name__],
+        aerosol.modes[0]['kappa'][model.surface_tension.__name__],
         (50 * si.nm)**3,
         sigma
     )
