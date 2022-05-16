@@ -1,5 +1,5 @@
 ---
-title: 'New features in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
+title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol composition initialisation, and adaptive time-stepping'
 date: 5 May 2022
 tags:
   - Python
@@ -272,17 +272,20 @@ class AerosolARG(DryAerosolMixture):
             is_soluble={"(NH4)2SO4": True, "insoluble": False},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "insoluble": 0},
         )
-        mass_fractions_mode1 = {"(NH4)2SO4": 1.0, "insoluble": 0.0}
-        mass_fractions_mode2 = {"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
-        self.aerosol_modes = (
+        self.modes = (
             {
-                "kappa": self.kappa(mass_fractions_mode1),
+                "kappa": self.kappa(
+                    mass_fractions={"(NH4)2SO4": 1.0, "insoluble": 0.0}
+                ),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0
+                    norm_factor=100.0 / si.cm**3,
+                    m_mode=50.0 * si.nm, s_geom=2.0
                 ),
             },
             {
-                "kappa": self.kappa(mass_fractions_mode2),
+                "kappa": self.kappa(
+                    mass_fractions={"(NH4)2SO4": M2_sol, "insoluble": (1 - M2_sol)}
+                ),
                 "spectrum": spectra.Lognormal(
                     norm_factor=M2_N, m_mode=M2_rad, s_geom=2.0
                 ),
@@ -307,10 +310,10 @@ from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 aerosol = AerosolARG(M2_sol=0.5, M2_N=1000 / si.cm**3, M2_rad=50 * si.nm)
 n_sd_per_mode = 20
-builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.aerosol_modes))
+builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.modes))
 ## add dynamics
 attributes = {k: np.empty(0) for k in ("dry volume", "kappa times dry volume", "n")}
-for i, mode in enumerate(aerosol.aerosol_modes):
+for i, mode in enumerate(aerosol.modes):
     kappa, spectrum = mode["kappa"]["CompressedFilmOvadnevaite"], mode["spectrum"]
     r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd_per_mode)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
@@ -373,7 +376,7 @@ The first example (reproduced in \autoref{fig:dJ_fig_1}), demonstrates the impac
 The second similarly demonstrates the impact of the breakup process in a one-dimensional setup 
   based on the kinematic framework of @Shipway_and_Hill_2012.
 
-![Particle size distribution using collisions, with and without breakup process, as is the focus of @DeJong_et_al_2022](deJong_fig1.pdf){#fig:dJ_fig_1}
+![Particle size distribution using collisions, with and without breakup process, as is the focus of @DeJong_et_al_2022](deJong_fig1.pdf){#fig:dJ_fig_1 width="100%"}
 
 ### Immersion freezing 
 For validation of the the newly introduced immersion freezing models, a set of
@@ -400,7 +403,7 @@ formulae_ovad = Formulae(
 formulae_ruehl = Formulae(
     surface_tension='CompressedFilmRuehl',
     constants={
-        'RUEHL_nu_org': aerosol.aerosol_modes[0]['nu_org'],
+        'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_m_sigma': 0.3e17 * si.J / si.m**2,
@@ -410,7 +413,7 @@ formulae_ruehl = Formulae(
 formulae_sl = Formulae(
     surface_tension='SzyszkowskiLangmuir',
     constants={
-        'RUEHL_nu_org': aerosol.aerosol_modes[0]['nu_org'],
+        'RUEHL_nu_org': aerosol.modes[0]['nu_org'],
         'RUEHL_A0': 115e-20 * si.m * si.m,
         'RUEHL_C0': 6e-7,
         'RUEHL_sgm_min': 35 * si.mN / si.m
@@ -421,24 +424,28 @@ formulae_sl = Formulae(
 Using these different models for the surface-partitioning, we can demonstrate the effect variable surface tension has on the activation of aerosol with some organic fraction. The presence of the orgnaics both modifies the surface tension and the hygroscopicity, resulting sometimes in a Köhler curve with local minima features. Below is (psuedo-)code used to generate four Köhler curves for the same partially organic aerosol particle, just under different assumptions of surface-partitioning by the insoluble organic species. 
 ```python
 for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
-    r_wet = np.logspace(np.log(50 * si.nm), np.log(2000 * si.nm), base=np.e, num=100)
+    r_wet = np.logspace(
+        np.log(50 * si.nm),
+        np.log(2000 * si.nm),
+        base=np.e, num=100
+    )
     sigma = np.ones(len(r_wet))
     for j,vw in enumerate(formulae_ovad.trivia.volume(r_wet)):
         sigma[j] = formulae.surface_tension.sigma(
             300 * si.K,
             vw,
             formulae_ovad.trivia.volume(50 * si.nm),
-            aerosol.aerosol_modes[0]['f_org']
+            aerosol.modes[0]['f_org']
         )
     RH_eq = formulae.hygroscopicity.RH_eq(
         r_wet,
         300 * si.K,
-        aerosol.aerosol_modes[0]['kappa'][formulae.surface_tension.__name__],
+        aerosol.modes[0]['kappa'][formulae.surface_tension.__name__],
         (50 * si.nm)**3,
         sigma
     )
 ```
-![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="60%"}
+![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
 # Author contributions
 

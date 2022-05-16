@@ -29,7 +29,7 @@ class DryAerosolMixture:
         is_soluble: Dict[str, bool],
         ionic_dissociation_phi: Dict[str, int]
     ):
-        self._aerosol_modes = None
+        self._modes = None
         self.compounds = compounds
         self.densities = densities
         self.molar_masses = molar_masses
@@ -37,12 +37,12 @@ class DryAerosolMixture:
         self.ionic_dissociation_phi = ionic_dissociation_phi
 
     @property
-    def aerosol_modes(self):
-        return self._aerosol_modes
+    def modes(self):
+        return self._modes
 
-    @aerosol_modes.setter
-    def aerosol_modes(self, value: Tuple[Dict]):
-        self._aerosol_modes = value
+    @modes.setter
+    def modes(self, value: Tuple[Dict]):
+        self._modes = value
 
     # convert mass fractions to volume fractions
     def volume_fractions(self, mass_fractions: dict):
