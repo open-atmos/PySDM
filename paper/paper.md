@@ -1,5 +1,5 @@
 ---
-title: 'PySDM and PySDM-examples v2: particle-based cloud microphysics in Python -- collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
+title: 'New features in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, aerosol initialisation, and adaptive time-stepping'
 date: 5 May 2022
 tags:
   - Python
@@ -81,7 +81,7 @@ The initial "v1" releases of `PySDM` outlined in a preceding JOSS paper
   and vapour/heat budget with grid-discretised fluid flow.
 This paper outlines subsequent developments in the "v2" releases of `PySDM`
   including two new processes (collisional breakup and immersion freezing), 
-  initialisation framework for aerosol chemical properties,
+  initialisation framework for aerosol size and composition,
   enhanced support for adaptive timestepping, and examples which illustrate the 
   new functionalities using simulation frameworks described in the scientific 
   literature.
@@ -95,11 +95,11 @@ Microphysical particles range
   ice particles that form on these aerosols, to millimeter and larger sized 
   hydrometeors. 
 These particles interact with each other as well as with the 
-  continuous phase moist air environment through exchange of heat, moisture,
+  continuous-phase moist-air environment through exchange of heat, moisture,
   and momentum.
 
 Traditional methods of representing clouds in numerical fluid-dynamics simulations
-  model liquid and ice water content as continuous fields in space, using a mean
+  model liquid and ice water content using spatially gridded fields, using a mean
   field approximation for the particle populations.
 This reductionist representation comes at the cost of the diverse physical 
   and compositional characteristics of the particles, which frequently determine
@@ -127,11 +127,27 @@ Enhancements included in v2 of `PySDM` address additional tracer-conserving repr
   of the droplet breakup process (as detailed in a forthcoming publication from @DeJong_et_al_2022) and the immersion
   freezing process.
 In addition, we include enhanced support for adaptive time-stepping, as well as a new framework to initialize
-  aerosol modes with different chemical or hygroscopic properties.
-We continue to expand and maintain a set of examples demonstrating project features 
-  through reproduction of results from literature.
+  aerosol modes with different composition/hygroscopicity parameters.
 
-The key motivation behind development of `PySDM` has been to offer the community a set of
+We continue to expand and maintain in the `PySDM-examples` package a set of examples demonstrating project features 
+  through reproduction of results from literature.
+The examples package has a fourfold role in the project.
+First, it serves to guide the users and the developers through the package features.
+Second, `PySDM-examples` has been used as a teaching material offering multiple
+  interactive Jupyter notebooks suitable for hands-on demonstrations of basic cloud-physics
+  processes and simulation approaches, avoiding exposing students to the technicalities
+  of compilation and simulation environment setup and access.
+Third, inclusion within `PySDM-examples` of simulation scripts/notebooks pertaining to
+  newly submitted research papers can potentially streamline assessment of the
+  results by reviewers -- running simulations described in a paper can be done in the 
+  same way as for other examples: independently, anonymously and without technical or legal obstacles,
+  in many cases just with a single-click on a link to a cloud-computing platform such as Google Colab.
+Last but not least, throughout code reviews of new examples, we encourage developers
+  to accompany each new example with a set of so-called ``smoke tests'' within the `PySDM`
+  project which assert mathes agains reference data ensuring that published results remain 
+  reproducible despite ongoing developments.
+
+Overall, the key motivation behind development of `PySDM` has been to offer the community a set of
   readily reusable building blocks for development and community dissemination 
   of extensions to particle-based microphysics models.
 To this end, we strive to maintain strict modularity of the PySDM building blocks, separation of
@@ -143,13 +159,17 @@ The separation of physics information from backend engineering is intended to ma
   software more approachable for both users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
 
-
 # Summary of new features and examples in v2
 
 ## New PySDM Features: API in Brief
-`PySDM` v2 includes support for three major enhancements. For a detailed example of running
-  a SDM simulation, we refer to @Bartman_et_al_2022_JOSS. The following API examples
-  can be added or substituted into the v1 API description to run a zero-dimensional box
+`PySDM` v2 includes support for four major enhancements outlined below: representation
+  of collisional breakup, representation of immersion freezing, aerosol composition
+  initialisation helpers and enhanced adaptive time-stepping logic.
+For an example of running basic zero-dimensional
+  simulations with `PySDM`, we refer to the project README.md file and the
+  precedig @Bartman_et_al_2022_JOSS JOSS paper.
+The following code snippets demonstrating new elements of `PySDM` API 
+  can be added or substituted into the v1 API description to run 
   simulation using the new features.
 
 ### Collisional Breakup
@@ -157,7 +177,7 @@ The collisional breakup process represents the splitting of two colliding superd
   into multiple fragments.
 It can be specified as an individual dynamic, as for coalescence in v1, or as a unified
   `collision` dynamic, in which the probability of breakup versus coalescence is sampled.
-The additional necessary information can be imported via:
+The additional `PySDM` components used in the example below can be imported via:
 ```python
 from PySDM.dynamics.collisions import Collision
 from PySDM.dynamics.collisions.collision_kernels import Golovin
@@ -166,7 +186,7 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ExponFrag
 ```
 The rate of superdroplet collisions are specified by a collision kernel as in v1, and the
-  breakup process requires two additional `dynamics` specifications: from `coalescence_efficiencies`
+  breakup process requires two additional `dynamics` specifications: `coalescence_efficiencies`
   (probability of coalescence occuring), `breakup_efficiencies` (probability of breakup occuring
   if not coalescence), and `breakup_fragmentations` (the number
   of fragments formed in the case of a breakup event). 
@@ -220,13 +240,13 @@ TODO #835 (Sylwester): explain how to pass INAS or ABIFM constants
 
 ### Initialisation of multi-component internally or externally mixed aerosols 
 The new aerosol initialisation framework allows flexible specification of multi-modal, multi-component
-aerosol with arbitrary composition.
+  aerosol with arbitrary composition.
 The `DryAerosolMixture` class takes a list of compounds and dictionaries specifying their molar masses,
-densities, solubilities, and ionic dissociation numbers.
+  densities, solubilities, and ionic dissociation numbers.
 The user must then specify the aerosol `modes` which are comprised of a `kappa` hygroscopicity value
-and a dry aerosol size `spectrum`.
+  and a dry aerosol size `spectrum`.
 The `kappa` is calculated by `PySDM` from the aerosol properties specified above in association with 
-some specified `mass_fractions` dictionary.
+  some specified `mass_fractions` dictionary.
 A code snippet showing the creation of the aerosol for the @Abdul_Razzak_and_Ghan_2000 example is shown below.
 
 ```python
@@ -270,7 +290,16 @@ class AerosolARG(DryAerosolMixture):
         )
 ```
 
-Below is a code snippet demonstrating how to create an aerosol object with defined physiochemical properties and use it to initialize a simulation. The `aerosol` is used to calculate the total number of superdroplets given a prescribed number per mode and then create the builder object. The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute. This `kappa times dry volume` is used because it is an extensive attribute of the superdroplets: the hygroscopicity of a particle is the volume-weighted average of the hygroscopicity of its individual components. Finally, before the simulation is run, the wet radii must be equilibrated based on the `kappa times dry volume`. 
+Below is a code snippet demonstrating how to create an aerosol object with defined physiochemical 
+  properties and use it to initialize a simulation.
+The `aerosol` is used to calculate the total number of superdroplets given a prescribed number per
+  mode and then create the builder object.
+The aerosol modes are iterated through to extract `kappa` and define the `kappa times dry volume` attribute.
+The choice of `kappa times dry volume` as particle extensive attribute ensures that, upon coalescence,
+  the hygroscopicity parameter kappa of a resultant super-particle is the volume-weighted average of the hygroscopicity 
+  of the coalescing super-particles.
+Finally, before a simulation is run, the wet radii must be equilibrated with ambient water vapour saturation 
+  based on the `kappa times dry volume`. 
 
 ```python
 import numpy as np
@@ -293,17 +322,32 @@ for i, mode in enumerate(aerosol.aerosol_modes):
 ## run box or parcel simulation
 ```
 
-Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
+Note: For the Abdul-Razzak and Ghan 2000 example we use the `CompressedFilmOvadnevaite` version of calculated `kappa` 
+  to indicate that only the soluble components of the aerosol contribute to the hygroscopicity, but the surface tension
+  of the droplets is assumed still to be constant (that of pure water) using the `Constant` surface tension model.
 
 ![Activated aerosol fraction using various surface tension models, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="60%"}
 
 ### Adaptive time-stepping
-The condensation, collision, and displacement dynamics all support an adaptive time-stepping feature,
-  which involves substepping within the user-specified environment time step.
+
+With the current release of `PySDM`, the condensation, collision, and displacement dynamics 
+  all support adaptive time-stepping logic,
+  which involves substepping within the user-specified time step used for coupling
+  with the environment framework (e.g., `Parcel` or higher-dimensional flow-coupled framework).
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
-  keyword to the given dynamic, e.g. `builder.add_dynamic(Dynamic(**kwargs, adaptive=False))`.
-The adaptive time-step controls are described in @Bartman_et_al_2022_adaptive and  
-  are bespoke developments introduced in PySDM (partly already in version 1).
+  keyword to the given dynamic, i.e. `builder.add_dynamic(Dynamic(**kwargs, adaptive=False))`.
+The adaptive time-step controls are described in a forthcomming @Bartman_et_al_2022_adaptive 
+  publication and are bespoke developments introduced in PySDM (partly already in version 1).
+In the case of collisions, the time-step adaptivity is aimed at eliminating errors
+  associated with multiple coalescence events within a timestep.
+In the case of condensation, the time-step adaptivity is aimed at reducing computational
+  load by coupling the time-step length choice with ambient supersaturation leading
+  to using longer time-steps in cloud-free regions and shorter time-steps in regions
+  where drople [de]activation or rain evaporation occurs.
+In the case of displacement, the time-step adaptivity is aimed at obeying a given tolerance
+  in integration of the super-particle trajectories, and the error measure is constructed
+  by comparing implicit- and explicit-Euler solutions.
+
 In the case of multi-dimensional environments, the adaptive time-stepping is aimed
   at adjusting the time-steps separately in each grid box (e.g., based
   on ambient supersaturation for condensation).
@@ -314,10 +358,8 @@ For CPU backend and the condensation dynamic, the adaptivity scheme features a l
 The dynamic load-balancing across threads can be switched off by setting the `schedule` 
   keyword parameter to a value of `"static"` when instantiating the `Condensation` dynamic
   (the default value is `"dynamic"`).
- 
+
 ## Additional PySDM-examples
-This release of `PySDM` is complemented by an additional suite of test cases in `PySDM-examples`
-  which make use of the augmented functionality to reproduce results in the microphysics literature.
 
 ### Collisional Breakup
 `PySDM` was recently used as a calibration tool to generate data for learning microphysics rate
@@ -398,15 +440,11 @@ for formulae in (formulae_bulk, formulae_ovad, formulae_ruehl, formulae_sl):
 ```
 ![Köhler curves for aerosol under 4 assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="60%"}
 
-
-### Adaptivity
-TODO #835 (Sylwester): @Bartman_et_al_2022_adaptive
-
 # Author contributions
 
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
 PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
-KD contributed to setting up continuous integration workflows for the GPU backend. TODO #835 (Sylwester): are we still including this in the paper?
+KD contributed to setting up continuous integration workflows for the GPU backend. 
 CES contributed the aerosol initialisation framework.
 ID, CES, and AJ contributed to the CCN activation examples.
 CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
