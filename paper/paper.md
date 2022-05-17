@@ -290,9 +290,9 @@ The dynamic load-balancing across threads can be switched off by setting the `sc
 # Author contributions
 
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
-PB led the formulation and implementation of the adaptive time-stepping schemes for diffusional and collisional growth.
+PB led the formulation and implementation of the adaptive time-stepping.
 KD contributed to setting up continuous integration workflows for the GPU backend. 
-CES contributed the aerosol initialisation framework.
+CES contributed the aerosol initialisation framework and the .
 ID, CES, and AJ contributed to the CCN activation examples.
 CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
 The immersion freezing representation code was developed by SA who also carried out the maintenance of the project.
