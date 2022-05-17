@@ -20,7 +20,7 @@ authors:
     orcid: 0000-0002-5310-4554
   - name: Sajjad Azimi
     affiliation: "3"
-    orcid: TODO
+    orcid: 0000-0002-6329-7775
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "2"
