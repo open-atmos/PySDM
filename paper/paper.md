@@ -1,6 +1,6 @@
 ---
 title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol composition initialisation, and adaptive time-stepping'
-date: 16 May 2022
+date: 17 May 2022
 tags:
   - Python
   - physics-simulation 
@@ -18,6 +18,9 @@ authors:
   - name: Emily de Jong
     affiliation: "1"
     orcid: 0000-0002-5310-4554
+  - name: Sajjad Azimi
+    affiliation: "3"
+    orcid: TODO
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "2"
@@ -82,9 +85,7 @@ Recent efforts have culminated
 This paper outlines these subsequent developments in the "v2" releases of `PySDM`
   including three new processes (collisional breakup, immersion freezing, and surface-partitioning of organic aerosol components), 
   initialisation framework for aerosol size and composition,
-  enhanced support for adaptive timestepping, and examples which illustrate the 
-  new functionalities using simulation frameworks described in the scientific 
-  literature.
+  enhanced support for adaptive timestepping, and additional illustrative examples.
 
 In v2 of the companion `PySDM-examples` package, we continue to expand and maintain 
   a set of examples demonstrating project features 
@@ -153,9 +154,7 @@ In @Bieli_et_al_2022 (in review), `PySDM` results from collisional coalescence a
   for learning microphysics rate parameters.
 In @DeJong_et_al_2022, the physics and algorithm for superdroplet breakup are described,
   and results demonstrating the impact of breakup on cloud properties in a box and 1D
-  environment (based on @Shipway_and_Hill_2012) are reproduced, as in \autoref{fig:dJ_fig_1}).
-
-![Particle size distribution using collisions, with and without breakup process, as is the focus of @DeJong_et_al_2022](deJong_fig1.pdf){#fig:dJ_fig_1 width="100%"}
+  environment (based on @Shipway_and_Hill_2012) are reproduced.
 
 ## Immersion Freezing
 This release of `PySDM` introduces representation of immersion freezing, 
@@ -219,14 +218,17 @@ The `aerosol` object can be used during initialisation to calculate the total nu
 The choice of `kappa times dry volume` as an extensive attribute ensures that, upon coalescence,
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
-This new aerosol initialisation framework is used in the new example that reproduces results from       @Abdul_Razzak_and_Ghan_2000, as shown in \autoref{fig:ARG}).
+This new aerosol initialisation framework is used in the new example that reproduces results from 
+  @Abdul_Razzak_and_Ghan_2000, comparing these SDM results against the original bin implementation and a new 
+  cloud microphysics method, as shown in \autoref{fig:ARG}).
 
 ![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as implemented in their paper (solid line) and as implemented in a new Julia model (CloudMicrophysics.jl, dashed line), as well as the results from a bin scheme employed in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 `PySDM` v2 includes a new example demonstrating three new models for droplet surface tension.
 The four surface tension options included in `PySDM`, which define the droplet surface tension as a function of dry aerosol composition and wet radius, are `'Constant'`, `'CompressedFilmOvadnevaite'` (@Ovadnevaite_et_al_2017), `'CompressedFilmRuehl'` (@Ruehl_et_al_2016), and `'SzyszkowskiLangmuir'` following the Szyszkowski-Langmuir equation.
-Parameters for the three surface-partitioning models must be specified as shown in the example below.
+Parameters for the three surface-partitioning models must be specified as shown in the example below, and a full comparison
+  of surface-partitioning options can be found in the `Singer_Ward` example.
 ```python
 from PySDM import Formulae
 f = Formulae(
@@ -237,9 +239,6 @@ f = Formulae(
     }
 )
 ```
-The four models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example, shown in \autoref{fig:kohler}.
-
-![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species. All three thermodynamic frameworks that include surface partitioning of organics result in higher maximum supersaturations than an assumption of constant surface tension.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
 ## Adaptive time-stepping
 In `PySDM` v2, the condensation, collision, and displacement dynamics 
@@ -249,24 +248,13 @@ In `PySDM` v2, the condensation, collision, and displacement dynamics
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
   keyword to the given dynamic, i.e. `builder.add_dynamic(Dynamic(**kwargs, adaptive=False))`.
 The adaptive time-step controls are described in a forthcomming @Bartman_et_al_2022_adaptive 
-  publication and are bespoke developments introduced in PySDM (partly already in version 1).
-In the case of collisions, the time-step adaptivity is aimed at eliminating errors
-  associated with multiple coalescence events within a timestep.
-In the case of condensation, the time-step adaptivity is aimed at reducing computational
-  load by coupling the time-step length choice with ambient supersaturation leading
-  to using longer time-steps in cloud-free regions and shorter time-steps in regions
-  where droplet [de]activation or rain evaporation occurs.
-In the case of displacement, the time-step adaptivity is aimed at obeying a given tolerance
-  in integration of the super-particle trajectories, and the error measure is constructed
-  by comparing implicit- and explicit-Euler solutions.
-
-In multi-dimensional environments, adaptive time-stepping is aimed
-  at adjusting the time-steps separately in each grid box (e.g., based
-  on ambient supersaturation for condensation).
-For CPU backend and the condensation dynamic, the adaptivity scheme features a load-balancing 
-  logic which ensures that 
-  in multi-threaded operation, grid cells with comparable substep count are handled
-  simultaneously avoiding idle threads.
+  publication and are bespoke developments introduced partialy in `PySDM` v1.
+The time-step adaptivity aims both to reduce computational errors where the specified time step is
+  longer than the timescale of the dynamic, as well as to reduce computational load by dynamically
+  changing the time-step. 
+This adaptive time-stepping applies separately in each grid box of a multidimensional environment,
+  and includes a load-balancing logic for the CPU backend and condensation example to simultaneously
+  handle grid cells with comparable substep count.
 The dynamic load-balancing across threads can be switched off by setting the `schedule` 
   keyword parameter to a value of `"static"` when instantiating the `Condensation` dynamic
   (the default value is `"dynamic"`).
@@ -280,6 +268,7 @@ KD contributed to setting up continuous integration workflows for the GPU backen
 CES contributed the aerosol initialisation framework.
 ID, CES, and AJ contributed to the CCN activation examples.
 CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
+SA contributed to extensions and enhancement of the one-dimensional kinematic framework environment.
 The immersion freezing representation code was developed by SA who also carried out the maintenance of the project.
 
 # Acknowledgements
