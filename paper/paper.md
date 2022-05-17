@@ -220,6 +220,7 @@ The choice of `kappa times dry volume` as an extensive attribute ensures that, u
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
 This new aerosol initialisation framework is used in the new example that reproduces results from       @Abdul_Razzak_and_Ghan_2000, as shown in \autoref{fig:ARG}).
+
 ![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as implemented in their paper (solid line) and as implemented in a new Julia model (CloudMicrophysics.jl, dashed line), as well as the results from a bin scheme employed in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
@@ -237,6 +238,7 @@ f = Formulae(
 )
 ```
 The four models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example, shown in \autoref{fig:kohler}.
+
 ![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species. All three thermodynamic frameworks that include surface partitioning of organics result in higher maximum supersaturations than an assumption of constant surface tension.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
 ## Adaptive time-stepping
