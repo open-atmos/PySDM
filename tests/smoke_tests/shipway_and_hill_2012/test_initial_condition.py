@@ -18,20 +18,21 @@ class TestInitialCondition:
             300 * si.m,
             400 * si.m,
             500 * si.m,
-            1000 * si.m,
+            600 * si.m,
         ),
     )
     def test_initial_condition(particle_reservoir_depth, plot=False):
         # Arrange
         settings = Settings(
             n_sd_per_gridbox=100,
-            rho_times_w_1=2 * si.m / si.s,
-            particle_reservoir_depth=particle_reservoir_depth,
+            rho_times_w_1=2 * si.m / si.s * si.kg / si.m**3,
         )
+        settings.particle_reservoir_depth = particle_reservoir_depth
+        settings.t_max = 0 * settings.dt
         simulation = Simulation(settings)
 
         # Act
-        output = simulation.run(nt=0)
+        output = simulation.run().products
 
         # Plot
         if plot:
