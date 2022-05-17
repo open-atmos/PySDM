@@ -55,8 +55,8 @@ affiliations:
 bibliography: paper.bib
 
 ---
+# Summary
 
-# Background and Statement of Need
 `PySDM` and the accompanying `PySDM-examples` packages are open-source modeling tools
   for computational studies of atmospheric clouds, aerosols, and precipitation. The
   project hinges on a particle-based modeling approach and Pythonic design and
@@ -65,6 +65,13 @@ The eponymous `SDM` refers to the Super Droplet Method -- a
   Monte-Carlo algorithm introduced in @Shima_et_al_2009 to represent the coagulation
   of droplets in modelling frameworks such as Large-Eddy Simulations (LES) of atmospheric
   flows. 
+Recent efforts have culminated
+  in a second release, which includes a variety of new processes for both liquid and ice-phase particles,
+  performance enhancements such as adaptive time-stepping, as well as a broadened suite of 
+  examples which demonstrate, test, and motivate the use of the SDM for cloud modeling research.
+
+
+# Background and Statement of Need
 The key motivation behind development of `PySDM` has been to offer the community an approachable
   readily reusable software for users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
@@ -78,10 +85,6 @@ A user of the package can select top-level options such as the simulation
   processes: condensational growth/evaporation, collisional growth,
   aqueous sulphur chemistry, as well as coupling of particle transport
   and vapour/heat budget with grid-discretised fluid flow.
-Recent efforts have culminated
-  in a second release, which includes a variety of new processes for both liquid and ice-phase particles,
-  performance enhancements such as adaptive time-stepping, as well as a broadened suite of 
-  examples which demonstrate, test, and motivate the use of the SDM for cloud modeling research.
 This paper outlines these subsequent developments in the "v2" releases of `PySDM`
   including three new processes (collisional breakup, immersion freezing, and surface-partitioning of organic aerosol components), 
   initialisation framework for aerosol size and composition,
