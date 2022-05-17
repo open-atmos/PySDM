@@ -187,7 +187,6 @@ The user must then specify the aerosol `modes` which are comprised of a `kappa` 
   calculated from the molecular components and their associated `mass_fractions`,
   and a dry aerosol size `spectrum`.
 For example, a single-mode aerosol class (`SimpleAerosol`) can be defined as follows.
-
 ```python
 from PySDM.initialisation import spectra
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
@@ -213,34 +212,20 @@ class SimpleAerosol(DryAerosolMixture):
             },
         )
 ```
-
-The `aerosol` object is then used in initialisation to calculate the total number of superdroplets 
-  given a prescribed number per mode and then create the builder object.
-The aerosol modes are iterated through to extract the hygroscopicity `kappa` and define the `kappa times dry volume` attribute.
+The `aerosol` object can be used during initialisation to calculate the total number of 
+  superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
+  `spectrum` property, and initialise the `kappa times dry volume` attribute using the `aerosol` 
+  hygroscopicity property `kappa`.
 The choice of `kappa times dry volume` as an extensive attribute ensures that, upon coalescence,
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
-Below is a code demonstrating how to initialize an aerosol population using the `AerosolARG` class, as employed in the corresponding `PySDM-examples` module for @Abdul_Razzak_and_Ghan_2000.
-
-```python
-from PySDM.initialisation.sampling import spectral_sampling
-from PySDM_examples.Abdul_Razzak_Ghan_2000.aerosol import AerosolARG
-
-aerosol = AerosolARG()
-n_sd_per_mode = 20
-builder = Builder(backend=CPU(), n_sd=n_sd_per_mode * len(aerosol.modes))
-for i, mode in enumerate(aerosol.modes):
-    kappa = mode["kappa"]["CompressedFilmOvadnevaite"]
-    sampler = spectral_sampling.ConstantMultiplicity(mode["spectrum"])
-    # initialise "kappa times dry volume" attribute and equilibrate wet radii
-```
-![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000.](ARG_fig1.pdf){#fig:ARG width="100%"}
+This new aerosol initialisation framework is used in the new example that reproduces results from       @Abdul_Razzak_and_Ghan_2000, as shown in \autoref{fig:ARG}).
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as implemented in their paper (solid line) and as implemented in a new Julia model (CloudMicrophysics.jl, dashed line), as well as the results from a bin scheme employed in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 `PySDM` v2 includes a new example demonstrating three new models for droplet surface tension.
 The four surface tension options included in `PySDM`, which define the droplet surface tension as a function of dry aerosol composition and wet radius, are `'Constant'`, `'CompressedFilmOvadnevaite'` (@Ovadnevaite_et_al_2017), `'CompressedFilmRuehl'` (@Ruehl_et_al_2016), and `'SzyszkowskiLangmuir'` following the Szyszkowski-Langmuir equation.
 Parameters for the three surface-partitioning models must be specified as shown in the example below.
-
 ```python
 from PySDM import Formulae
 f = Formulae(
@@ -251,10 +236,8 @@ f = Formulae(
     }
 )
 ```
-
-The four models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example.
-
-![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
+The four models of surface-partitioning are compared to demonstrate the effect of variable surface tension on the activation of organic aerosol in the new example, shown in \autoref{fig:kohler}.
+![Köhler curves for aerosol under four assumptions of thermodynamic surface-partitioning of organic species. All three thermodynamic frameworks that include surface partitioning of organics result in higher maximum supersaturations than an assumption of constant surface tension.](Singer_fig1_kohler.pdf){#fig:kohler width="100%"}
 
 ## Adaptive time-stepping
 In `PySDM` v2, the condensation, collision, and displacement dynamics 
