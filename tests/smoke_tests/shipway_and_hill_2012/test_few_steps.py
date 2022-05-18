@@ -12,7 +12,7 @@ from PySDM.physics import si
     "particle_reservoir_depth",
     (
         pytest.param(0 * si.m, marks=pytest.mark.xfail(strict=True)),
-        600 * si.m,
+        660 * si.m,
     ),
 )
 def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
