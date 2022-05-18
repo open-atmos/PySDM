@@ -12,7 +12,7 @@ from PySDM.physics import si
     "particle_reservoir_depth",
     (
         pytest.param(0 * si.m, marks=pytest.mark.xfail(strict=True)),
-        900 * si.m,
+        660 * si.m,
     ),
 )
 def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
@@ -24,13 +24,14 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
         dt=30 * si.s,
         dz=60 * si.m,
         precip=False,
-        particle_reservoir_depth=particle_reservoir_depth,
         rho_times_w_1=2 * si.m / si.s * si.kg / si.m**3,
     )
+    settings.particle_reservoir_depth = particle_reservoir_depth
+    settings.t_max = 50 * settings.dt
     simulation = Simulation(settings)
 
     # Act
-    output = simulation.run(nt=50)
+    output = simulation.run().products
 
     # Plot
     def mean_profile_over_last_steps(var, smooth=True):
