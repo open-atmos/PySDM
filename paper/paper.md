@@ -260,12 +260,7 @@ In `PySDM` "v2", the `Condensation`, `Collision`, and `Displacement` "dynamics"
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
   keyword to the given dynamic.
 This adaptive time-stepping applies separately in each grid box of a multidimensional environment,
-  and includes a load-balancing logic for the CPU backend to simultaneously
-  handle grid cells with comparable substep count.
-The dynamic load-balancing across threads can be switched off by setting the `schedule` 
-  keyword parameter to a value of `"static"` when instantiating the `Condensation` dynamic
-  (the default value is `"dynamic"`).
-
+  and includes a load-balancing logic.
 In the case of collisions, the time-step adaptivity is aimed at eliminating errors
   associated with multiple coalescence events within a timestep.
 In the case of condensation, the time-step adaptivity is aimed at reducing computational
