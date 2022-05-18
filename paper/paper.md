@@ -53,10 +53,10 @@ bibliography: paper.bib
 
 `PySDM` and the accompanying `PySDM-examples` packages are open-source modeling tools
   for computational studies of atmospheric clouds, aerosols, and precipitation.
-The project hinges on a particle-based modeling approach and Pythonic code design.
+The project hinges on the particle-based microphysics modeling approach and Pythonic code design.
 The eponymous `SDM` refers to the Super Droplet Method -- a 
   Monte-Carlo algorithm introduced in @Shima_et_al_2009 to represent the coagulation
-  of droplets in modeling frameworks such as Large-Eddy Simulations (LES) of atmospheric
+  of particles in modeling frameworks such as Large-Eddy Simulations (LES) of atmospheric
   flows. 
 Recent efforts have culminated
   in the "v2" release line, which includes representation of a variety of new processes 
