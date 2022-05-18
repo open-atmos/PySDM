@@ -3,7 +3,7 @@ name: Build JOSS paper draft
 on:
   push:
     branches:
-    - JOSS
+    - main
 
 jobs:
   paper:
