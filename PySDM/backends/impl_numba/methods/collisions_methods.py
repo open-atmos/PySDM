@@ -376,7 +376,6 @@ class CollisionsMethods(BackendMethods):
         """
         Exponential PDF
         """
-        # TODO #796: add vmin for exp frag
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1 - rand[i])
             if frag_size[i] > v_max[i]:
@@ -449,28 +448,39 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __gauss_fragmentation_body(*, n_fragment, mu, scale, frag_size, r_max, rand):
+    def __gauss_fragmentation_body(
+        *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
         """
         Gaussian PDF
         CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            frag_size[i] = mu + sqrt_pi * sqrt_two * scale / 4 * np.log(
+            frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
                 (1 + rand[i]) / (1 - rand[i])
             )
-            if frag_size[i] > r_max[i]:
+            if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1.0
+            elif frag_size[i] < vmin:
                 n_fragment[i] = 1.0
             else:
-                n_fragment[i] = r_max[i] / frag_size[i]
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
 
-    def gauss_fragmentation(self, *, n_fragment, mu, scale, frag_size, r_max, rand):
+    def gauss_fragmentation(
+        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
         self.__gauss_fragmentation_body(
             n_fragment=n_fragment.data,
             mu=mu,
-            scale=scale,
+            sigma=sigma,
             frag_size=frag_size.data,
-            r_max=r_max.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
             rand=rand.data,
+            vmin=vmin,
+            nfmax=nfmax,
         )
 
     @staticmethod
