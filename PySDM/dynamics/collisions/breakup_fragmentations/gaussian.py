@@ -24,5 +24,10 @@ class Gaussian:
     def __call__(self, output, u01, is_first_in_pair):
         self.max_size.max(self.particulator.attributes["radius"], is_first_in_pair)
         self.particulator.backend.gauss_fragmentation(
-            output, self.mu, self.scale, self.frag_size, self.max_size, u01
+            n_fragment=output,
+            mu=self.mu,
+            scale=self.scale,
+            frag_size=self.frag_size,
+            r_max=self.max_size,
+            rand=u01,
         )
