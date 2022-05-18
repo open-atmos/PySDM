@@ -1,5 +1,5 @@
 ---
-title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol composition initialization, and adaptive time-stepping'
+title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol initialization, and adaptive time-stepping'
 date: 17 May 2022
 tags:
   - Python
@@ -9,7 +9,7 @@ tags:
   - particle-system 
   - atmospheric-physics
 authors:
-  - name: Emily de Jong
+  - name: Emily K. de Jong
     affiliation: "1"
     orcid: 0000-0002-5310-4554
   - name: Clare E. Singer
@@ -81,39 +81,39 @@ A user of the package can select top-level options such as the simulation
   aqueous sulfur chemistry, as well as coupling of particle transport
   and vapor/heat budget with grid-discretized fluid flow.
 This paper outlines subsequent developments in the "v2" releases of `PySDM`
-  including representation of three new processes (collisional breakup, immersion freezing, and surface-partitioning of organic aerosol components), 
+  including representation of three new processes (collisional breakup, immersion freezing, 
+  and surface-partitioning of organic aerosol components), 
   initialization framework for aerosol size and composition,
   enhanced support for adaptive time-stepping, and additional illustrative examples.
 
 In the companion `PySDM-examples` package, we continue to expand and maintain 
   a set of examples demonstrating project features through automated reproduction of results from literature.
-The examples package has a fourfold role in the project.
-First, it serves to guide users and developers through the package features.
+The examples package serves multiple roles in the project.
+First, it guides users and developers through the package features.
 Second, `PySDM-examples` has been used as educational material, offering
   interactive Jupyter notebooks suitable for hands-on demonstrations of basic cloud-physics
   simulations.
 Third, inclusion of simulation scripts/notebooks pertaining to
-  new research papers is intended to streamline assessment of the
+  new research papers can streamline assessment of the
   results by reviewers.
 Running simulations described in a paper can be done independently on a cloud-computing platform 
   such as Google Colab or mybinder.org.
 Finally, we require new examples introduced into `PySDM-examples` to be accompanied by 
-  a set of "smoke tests" added in `PySDM`,
+  a set of "smoke tests" in `PySDM`,
   which assert results against reference data to ensure that published results remain 
-  reproducible with future developments in `PySDM`.
+  reproducible with future developments of `PySDM`.
 
 
 # Summary of new features and examples in v2
 
 For an example of running basic zero-dimensional
-  simulations with `PySDM`, we refer to the project `README.md` file and the
-  preceding @Bartman_et_al_2022_JOSS JOSS paper.
+  simulations with `PySDM`, we refer to the project `README.md` file and @Bartman_et_al_2022_JOSS.
 The key building blocks of the `PySDM` API and class hierarchy are: "attributes", "backends", "dynamics",
   "environments", "products" and physics "formulae".
-The following code snippets demonstrating new elements of `PySDM` API 
+The following code snippets demonstrate new elements of `PySDM` API which
   can be added or substituted into the "v1" API description to run 
-  simulation using the new features.
-Execution of code snippets from both the present "v2" and the "v1" papers
+  simulations using the new features.
+Execution of code snippets from both the present "v2" and the previous "v1" papers
   is included in the `PySDM` continuous integration workflow.
 
 ## Collisional Breakup
@@ -153,9 +153,9 @@ builder.add_dynamic(Collision(
 ```
 
 In `PySDM-examples`, we introduced a set of notebooks reproducing figures from two forthcoming publications.
-In @Bieli_et_al_2022 (in review), `PySDM` results from collisional coalescence and breakup 
-  were used as a calibration tool for learning microphysics rate parameters.
-In @DeJong_et_al_2022, the physics and algorithm for superdroplet breakup are described,
+In @Bieli_et_al_2022, `PySDM` results from collisional coalescence and breakup 
+  were used as a calibration tool for learning microphysical rate parameters.
+In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are described,
   and the impact of breakup on cloud properties is demonstrated with box and single-column
   simulations (the latter based on @Shipway_and_Hill_2012).
 
@@ -182,13 +182,13 @@ For validation of the the newly introduced immersion freezing models, a set of
 A comparison of the time-dependent and singular models using 
   a two-dimensional kinematic prescribed-flow framework was the focus of @Arabas_et_al_2022.
 
-## Initialization of multi-component internally or externally mixed aerosols 
+## Initialization of multi-component internally or externally mixed aerosol
 
 The new aerosol initialization framework introduced in `PySDM` "v2" allows flexible specification 
   of multi-modal, multi-component aerosol.
 The `DryAerosolMixture` class takes a tuple of compounds and dictionaries specifying their molar masses,
   densities, solubilities, and ionic dissociation numbers.
-The user then specifies the aerosol `modes` which are comprised of a `kappa` hygroscopicity value, 
+The user specifies the aerosol `modes` which are comprised of a `kappa` hygroscopicity value, 
   calculated from the molecular components and their associated `mass_fractions`,
   and a dry aerosol size `spectrum`.
 For example, a single-mode aerosol class (`SimpleAerosol`) can be defined as follows.
@@ -211,22 +211,22 @@ class SimpleAerosol(DryAerosolMixture):
                 "kappa": self.kappa(
                   mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
                 "spectrum": spectra.Lognormal(
-                    norm_factor=100.0 / si.cm**3,
-                    m_mode=50.0 * si.nm, s_geom=2.0
+                    norm_factor=100 / si.cm**3,
+                    m_mode=50 * si.nm, s_geom=2
                 ),
             },
         )
 ```
-An instance of such `SimpleAerosol` class can then be used during initialization to calculate the total number of 
+An aerosol object (instance of `DryAerosolMixture` subclass) is used during initialization to calculate the total number of 
   superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
-  `spectrum` property, and initialize the `kappa times dry volume` attribute using the `aerosol` 
+  `spectrum` property, and initialize the `kappa times dry volume` attribute using the 
   hygroscopicity property `kappa`.
 The choice of `kappa times dry volume` as an extensive attribute ensures that, upon coalescence,
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
 The new aerosol initialization framework is used in several examples in `PySDM-examples` including a new 
-  example that reproduces results from 
-  @Abdul_Razzak_and_Ghan_2000, comparing `PySDM` simulations against data retrieved from plot from the
+  example that reproduces results from @Abdul_Razzak_and_Ghan_2000, comparing `PySDM` 
+  simulations against data retrieved from plot from the
   publication as shown in \autoref{fig:ARG}).
 
 ![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
@@ -238,8 +238,8 @@ The four surface tension options included in `PySDM`, which define the droplet s
   a function of dry aerosol composition and wet radius, are: `'Constant'`, 
   `'CompressedFilmOvadnevaite'` (@Ovadnevaite_et_al_2017), `'CompressedFilmRuehl'` (@Ruehl_et_al_2016), 
   and `'SzyszkowskiLangmuir'` following the Szyszkowski-Langmuir equation.
-Parameters for the three surface-partitioning models must be specified as shown in the example below, and a full comparison
-  of surface-partitioning options can be found in the `Singer_Ward` example.
+Parameters for the three surface-partitioning models must be specified as shown below.
+A full comparison of the four surface tension models can be found in the `Singer_Ward` example.
 ```python
 from PySDM import Formulae
 f = Formulae(
@@ -278,15 +278,15 @@ In the case of displacement, the time-step adaptivity is aimed at obeying a give
 
 # Author contributions
 
-EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
-CES contributed the aerosol initialization framework.
-CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
+EdJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
+CES added the aerosol initialization framework.
+CES contributed the new surface tension models and relevant examples, in consultation with RXW.
 SAz contributed to extensions and enhancement of the one-dimensional kinematic framework environment.
 PB led the formulation and worked with SAr on implementation of the adaptive time-stepping schemes.
 KD contributed to setting up continuous integration workflows for the GPU backend. 
 ID, CES, and AJ contributed to the aerosol activation examples.
 The immersion freezing representation code was developed by SAr.
-Maintenance of the project have been carried out by SAr, CS and EDJ.
+Maintenance of the project have been carried out by SAr, CS, and EdJ.
 
 # Acknowledgments
 
@@ -295,7 +295,7 @@ Part of the outlined developments was supported by the generosity of Eric and We
 Development of ice-phase microphysics representation has been supported through 
   grant no. DE-SC0021034 by the Atmospheric System Research Program and 
   Atmospheric Radiation Measurement Program sponsored by the U.S. Department of Energy (DOE).
-EDJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
+EdJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
 
 # References
 
