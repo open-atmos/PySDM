@@ -14,35 +14,35 @@ authors:
     orcid: 0000-0002-5310-4554
   - name: Clare E. Singer
     orcid: 0000-0002-1708-0997
-    affiliation: "3"
+    affiliation: "2"
   - name: Sajjad Azimi
-    affiliation: "3"
+    affiliation: "2"
     orcid: 0000-0002-6329-7775
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
-    affiliation: "2"
+    affiliation: "3"
   - name: Kacper Derlatka
-    affiliation: "2"
+    affiliation: "3"
   - name: Isabella Dula
-    affiliation: "3"
+    affiliation: "2"
   - name: Anna Jaruga
-    affiliation: "3"
+    affiliation: "2"
     orcid: 0000-0003-3194-6440
   - name: J. Ben Mackay
-    affiliation: "3"
+    affiliation: "2"
     orcid: 0000-0001-8677-3562
   - name: Ryan X. Ward
-    affiliation: "3"
+    affiliation: "2"
     orcid: 0000-0003-2317-3310
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "4,2"
+    affiliation: "4,3"
 affiliations:
  - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 1
- - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
-   index: 2
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
+   index: 2
+ - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 3
  - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 4
