@@ -1,6 +1,6 @@
 ---
 title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol initialization, and adaptive time-stepping'
-date: 17 May 2022
+date: 18 May 2022
 tags:
   - Python
   - physics-simulation 
@@ -78,7 +78,7 @@ A user of the package can select top-level options such as the simulation
 
 `PySDM` "v1" featured representation of the following 
   processes: condensational growth/evaporation, collisional growth,
-  aqueous sulfur chemistry, as well as coupling of particle transport
+  aqueous sulfur chemistry, and coupling of particle transport
   and vapor/heat budget with grid-discretized fluid flow.
 This paper outlines subsequent developments in the "v2" releases of `PySDM`
   including representation of three new processes (collisional breakup, immersion freezing, 
@@ -131,7 +131,7 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import ExponFrag
 ```
 The rate of superdroplet collisions are specified by a collision kernel, and the
-  breakup process requires two additional specifications: `coalescence_efficiencies`
+  breakup process requires three additional specifications: `coalescence_efficiencies`
   (probability of coalescence occurring), `breakup_efficiencies` (probability of breakup occurring
   if not coalescence), and `breakup_fragmentations` (the number
   of fragments formed in the case of a breakup event). 
@@ -226,10 +226,10 @@ The choice of `kappa times dry volume` as an extensive attribute ensures that, u
   of the coalescing super-particles.
 The new aerosol initialization framework is used in several examples in `PySDM-examples` including a new 
   example that reproduces results from @Abdul_Razzak_and_Ghan_2000, comparing `PySDM` 
-  simulations against data retrieved from plot from the
+  simulations against data retrieved from the
   publication as shown in \autoref{fig:ARG}).
 
-![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit). For comparison, we include the parameterization developed in @Abdul_Razzak_and_Ghan_2000 as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 
