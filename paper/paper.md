@@ -1,19 +1,13 @@
 ---
-title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol composition initialisation, and adaptive time-stepping'
+title: 'New developments in PySDM and PySDM-examples v2: collisional breakup, immersion freezing, dry aerosol composition initialization, and adaptive time-stepping'
 date: 17 May 2022
 tags:
   - Python
   - physics-simulation 
   - monte-carlo-simulation 
-  - gpu-computing 
-  - atmospheric-modelling 
+  - atmospheric-modeling 
   - particle-system 
-  - numba 
-  - thrust 
-  - nvrtc 
-  - pint 
   - atmospheric-physics
-  - atmospheric-chemistry
 authors:
   - name: Emily de Jong
     affiliation: "1"
@@ -50,7 +44,7 @@ affiliations:
    index: 2
  - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 3
- - name: University of Illinois at Urbana-Champaign, Urbana, IL, USA
+ - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
    index: 4
 bibliography: paper.bib
 
@@ -62,7 +56,7 @@ bibliography: paper.bib
 The project hinges on a particle-based modeling approach and Pythonic code design.
 The eponymous `SDM` refers to the Super Droplet Method -- a 
   Monte-Carlo algorithm introduced in @Shima_et_al_2009 to represent the coagulation
-  of droplets in modelling frameworks such as Large-Eddy Simulations (LES) of atmospheric
+  of droplets in modeling frameworks such as Large-Eddy Simulations (LES) of atmospheric
   flows. 
 Recent efforts have culminated
   in the "v2" release line, which includes representation of a variety of new processes 
@@ -76,20 +70,20 @@ Recent efforts have culminated
 The key motivation behind development of `PySDM` has been to offer the community an approachable
   readily reusable software for users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
-To this end, we strive to maintain strict modularity of the PySDM building blocks, separation of
+To this end, we strive to maintain modularity of the `PySDM` building blocks, separation of
   functionality and examples, and extensive unit test coverage in the project.
 A user of the package can select top-level options such as the simulation
   environment, particle processes, and output attributes without a detailed grasp
   of the CPU and GPU backend code.
 
-`PySDM` v1 featured representation of the following 
+`PySDM` "v1" featured representation of the following 
   processes: condensational growth/evaporation, collisional growth,
-  aqueous sulphur chemistry, as well as coupling of particle transport
-  and vapour/heat budget with grid-discretised fluid flow.
+  aqueous sulfur chemistry, as well as coupling of particle transport
+  and vapor/heat budget with grid-discretized fluid flow.
 This paper outlines subsequent developments in the "v2" releases of `PySDM`
   including representation of three new processes (collisional breakup, immersion freezing, and surface-partitioning of organic aerosol components), 
-  initialisation framework for aerosol size and composition,
-  enhanced support for adaptive timestepping, and additional illustrative examples.
+  initialization framework for aerosol size and composition,
+  enhanced support for adaptive time-stepping, and additional illustrative examples.
 
 In the companion `PySDM-examples` package, we continue to expand and maintain 
   a set of examples demonstrating project features through automated reproduction of results from literature.
@@ -112,13 +106,15 @@ Finally, we require new examples introduced into `PySDM-examples` to be accompan
 # Summary of new features and examples in v2
 
 For an example of running basic zero-dimensional
-  simulations with `PySDM`, we refer to the project README.md file and the
-  preceeding @Bartman_et_al_2022_JOSS JOSS paper.
-The key building blocks of the `PySDM` API are: "attributes", "backends", "dynamics",
+  simulations with `PySDM`, we refer to the project `README.md` file and the
+  preceding @Bartman_et_al_2022_JOSS JOSS paper.
+The key building blocks of the `PySDM` API and class hierarchy are: "attributes", "backends", "dynamics",
   "environments", "products" and physics "formulae".
 The following code snippets demonstrating new elements of `PySDM` API 
   can be added or substituted into the "v1" API description to run 
   simulation using the new features.
+Execution of code snippets from both the present "v2" and the "v1" papers
+  is included in the `PySDM` continuous integration workflow.
 
 ## Collisional Breakup
 
@@ -136,7 +132,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import ExponFrag
 ```
 The rate of superdroplet collisions are specified by a collision kernel, and the
   breakup process requires two additional specifications: `coalescence_efficiencies`
-  (probability of coalescence occuring), `breakup_efficiencies` (probability of breakup occuring
+  (probability of coalescence occurring), `breakup_efficiencies` (probability of breakup occurring
   if not coalescence), and `breakup_fragmentations` (the number
   of fragments formed in the case of a breakup event). 
 
@@ -174,7 +170,7 @@ For the time-dependent model, the water Activity Based Immersion Freezing Model 
   of @Knopf_and_Alpert_2013 is used.
 The `Freezing` "dynamic" is introduced by specifying whether a singular model is used, 
   and additional particle attributes (either freezing temperature or immersed surface area)
-  must be initialised accordingly.
+  must be initialized accordingly.
 ```python
 from PySDM.dynamics import Freezing
 builder.add_dynamic(Freezing(singular=False))
@@ -186,9 +182,9 @@ For validation of the the newly introduced immersion freezing models, a set of
 A comparison of the time-dependent and singular models using 
   a two-dimensional kinematic prescribed-flow framework was the focus of @Arabas_et_al_2022.
 
-## Initialisation of multi-component internally or externally mixed aerosols 
+## Initialization of multi-component internally or externally mixed aerosols 
 
-The new aerosol initialisation framework introduced in `PySDM` "v2" allows flexible specification 
+The new aerosol initialization framework introduced in `PySDM` "v2" allows flexible specification 
   of multi-modal, multi-component aerosol.
 The `DryAerosolMixture` class takes a tuple of compounds and dictionaries specifying their molar masses,
   densities, solubilities, and ionic dissociation numbers.
@@ -221,19 +217,19 @@ class SimpleAerosol(DryAerosolMixture):
             },
         )
 ```
-An instance of such `SimpleAerosol` class can then be used during initialisation to calculate the total number of 
+An instance of such `SimpleAerosol` class can then be used during initialization to calculate the total number of 
   superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
-  `spectrum` property, and initialise the `kappa times dry volume` attribute using the `aerosol` 
+  `spectrum` property, and initialize the `kappa times dry volume` attribute using the `aerosol` 
   hygroscopicity property `kappa`.
 The choice of `kappa times dry volume` as an extensive attribute ensures that, upon coalescence,
   the hygroscopicity of a resultant super-particle is the volume-weighted average of the hygroscopicity 
   of the coalescing super-particles.
-The new aerosol initialisation framework is used in several examples in `PySDM-examples` including a new 
+The new aerosol initialization framework is used in several examples in `PySDM-examples` including a new 
   example that reproduces results from 
   @Abdul_Razzak_and_Ghan_2000, comparing `PySDM` simulations against data retrieved from plot from the
   publication as shown in \autoref{fig:ARG}).
 
-![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as formulated in their paper (solid line) and as implemented in a new Julia model (CloudMicrophysics.jl, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit) compared against the parameterization developed in @Abdul_Razzak_and_Ghan_2000, as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 
@@ -259,7 +255,7 @@ f = Formulae(
 
 In `PySDM` "v2", the `Condensation`, `Collision`, and `Displacement` "dynamics"
   all support adaptive time-stepping logic,
-  which involves substepping within the user-specified time step used for coupling
+  which involves sub-stepping within the user-specified time step used for coupling
   with the "environment".
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
   keyword to the given dynamic.
@@ -283,16 +279,16 @@ In the case of displacement, the time-step adaptivity is aimed at obeying a give
 # Author contributions
 
 EDJ led the formulation and implementation of the collisional breakup scheme with contributions from JBM.
-CES contributed the aerosol initialisation framework.
+CES contributed the aerosol initialization framework.
 CES contributed the representation of surface-partitioning by organic aerosol and the relevant examples in consultation with RXW.
 SAz contributed to extensions and enhancement of the one-dimensional kinematic framework environment.
 PB led the formulation and worked with SAr on implementation of the adaptive time-stepping schemes.
 KD contributed to setting up continuous integration workflows for the GPU backend. 
-ID, CES, and AJ contributed to the CCN activation examples.
+ID, CES, and AJ contributed to the aerosol activation examples.
 The immersion freezing representation code was developed by SAr.
 Maintenance of the project have been carried out by SAr, CS and EDJ.
 
-# Acknowledgements
+# Acknowledgments
 
 We thank Shin-ichiro Shima (University of Hyogo, Japan) for his continuous help and support in implementing SDM.
 Part of the outlined developments was supported by the generosity of Eric and Wendy Schmidt (by recommendation of Schmidt Futures).
