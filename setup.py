@@ -22,7 +22,7 @@ setup(
     install_requires=[
         "ThrustRTC==0.3.19",
         "CURandRTC" + ("==0.1.6" if "CI" in os.environ else ">=0.1.2"),
-        "numba" + ("==0.55.1" if "CI" in os.environ else ">=0.51.2"),
+        "numba" + ("==0.55.2" if "CI" in os.environ else ">=0.51.2"),
         "numpy" + ("==1.21" if "CI" in os.environ else ""),
         "Pint" + ("==0.17" if "CI" in os.environ else ""),
         "chempy" + ("==0.7.10" if "CI" in os.environ else ""),
