@@ -58,6 +58,7 @@ class Condensation:
         dt_cond_range: tuple = DEFAULTS.cond_range,
         schedule: str = DEFAULTS.schedule,
         max_iters: int = 16,
+        update_thd: bool = True,
     ):
 
         self.particulator = None
@@ -77,6 +78,8 @@ class Condensation:
         self.max_iters = max_iters
 
         self.cell_order = None
+
+        self.update_thd = update_thd
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -131,6 +134,10 @@ class Condensation:
             )
             if not self.success.all():
                 raise RuntimeError(&#34;Condensation failed&#34;)
+            if not self.update_thd:
+                self.particulator.environment.get_predicted(&#34;thd&#34;).ravel(
+                    self.particulator.environment.get_thd()
+                )
             # note: this makes order of dynamics matter
             #       (e.g., condensation after chemistry or before)
             self.particulator.update_TpRH()
@@ -159,7 +166,7 @@ class Condensation:
 <dl>
 <dt id="PySDM.dynamics.condensation.Condensation"><code class="flex name class">
 <span>class <span class="ident">Condensation</span></span>
-<span>(</span><span>*, rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16)</span>
+<span>(</span><span>*, rtol_x=1e-06, rtol_thd=1e-06, substeps: int = 1, adaptive: bool = True, dt_cond_range: tuple = (0.0001, 1.0), schedule: str = 'dynamic', max_iters: int = 16, update_thd: bool = True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -178,6 +185,7 @@ class Condensation:
         dt_cond_range: tuple = DEFAULTS.cond_range,
         schedule: str = DEFAULTS.schedule,
         max_iters: int = 16,
+        update_thd: bool = True,
     ):
 
         self.particulator = None
@@ -197,6 +205,8 @@ class Condensation:
         self.max_iters = max_iters
 
         self.cell_order = None
+
+        self.update_thd = update_thd
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -251,6 +261,10 @@ class Condensation:
             )
             if not self.success.all():
                 raise RuntimeError(&#34;Condensation failed&#34;)
+            if not self.update_thd:
+                self.particulator.environment.get_predicted(&#34;thd&#34;).ravel(
+                    self.particulator.environment.get_thd()
+                )
             # note: this makes order of dynamics matter
             #       (e.g., condensation after chemistry or before)
             self.particulator.update_TpRH()
