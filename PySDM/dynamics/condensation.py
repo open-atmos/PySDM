@@ -27,7 +27,7 @@ class Condensation:
         dt_cond_range: tuple = DEFAULTS.cond_range,
         schedule: str = DEFAULTS.schedule,
         max_iters: int = 16,
-        fixed_thd: bool = False,
+        update_thd: bool = True,
     ):
 
         self.particulator = None
@@ -48,7 +48,7 @@ class Condensation:
 
         self.cell_order = None
 
-        self.fixed_thd = fixed_thd
+        self.update_thd = update_thd
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -103,7 +103,7 @@ class Condensation:
             )
             if not self.success.all():
                 raise RuntimeError("Condensation failed")
-            if self.fixed_thd:
+            if not self.update_thd:
                 self.particulator.environment.get_predicted("thd").ravel(
                     self.particulator.environment.get_thd()
                 )
