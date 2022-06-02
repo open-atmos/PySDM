@@ -1,3 +1,4 @@
+# pylint: disable = redefined-outer-name
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 import numpy as np
