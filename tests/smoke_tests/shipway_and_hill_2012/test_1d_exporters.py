@@ -1,8 +1,10 @@
 # pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring,redefined-outer-name
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+import os
+from tempfile import TemporaryDirectory
 
 import numpy as np
 import pytest
+from atmos_cloud_sim_uj_utils import TemporaryFile
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 
 from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d, readVTK_1d
@@ -43,16 +45,17 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
     )
 
     # Act
-    with NamedTemporaryFile() as file:
-        netcdf_exporter = NetCDFExporter_1d(
-            data,
-            settings,
-            simulation,
-            filename=file.name,
-            exclude_particle_reservoir=exclude_particle_reservoir,
-        )
-        netcdf_exporter.run()
-        data_from_file = readNetCDF_1d(file.name)
+    file = TemporaryFile(".nc")
+    netcdf_exporter = NetCDFExporter_1d(
+        data,
+        settings,
+        simulation,
+        filename=file.absolute_path,
+        exclude_particle_reservoir=exclude_particle_reservoir,
+    )
+    netcdf_exporter.run()
+    data_from_file = readNetCDF_1d(file.absolute_path)
+    os.remove(file.absolute_path)
 
     # Assert
     assert data_from_file.products["time"].shape == data["t"].shape
