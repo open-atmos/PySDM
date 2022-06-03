@@ -10,11 +10,9 @@ from scipy.io.netcdf import netcdf_file
 
 
 class NetCDFExporter_1d:
-    # pylint: disable = too-many-arguments
-    def __init__(
+    def __init__(  # pylint: disable = too-many-arguments
         self, data, settings, simulator, filename, exclude_particle_reservoir=True
     ):
-        # pylint: enable = too-many-arguments
         self.data = data
         self.settings = settings
         self.simulator = simulator
