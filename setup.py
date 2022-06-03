@@ -28,7 +28,6 @@ setup(
         "chempy" + ("==0.7.10" if "CI" in os.environ else ""),
         "scipy" + ("==1.6.3" if "CI" in os.environ else ""),
         "pyevtk" + ("==1.2.0" if "CI" in os.environ else ""),
-        "vtk",
     ],
     author="https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors",
     author_email="sylwester.arabas@uj.edu.pl",
