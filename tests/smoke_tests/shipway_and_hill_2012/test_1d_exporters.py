@@ -1,5 +1,4 @@
 # pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring,redefined-outer-name
-import os
 from tempfile import TemporaryDirectory
 
 import numpy as np
@@ -55,7 +54,6 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
     )
     netcdf_exporter.run()
     data_from_file = readNetCDF_1d(file.absolute_path)
-    os.remove(file.absolute_path)
 
     # Assert
     assert data_from_file.products["time"].shape == data["t"].shape
