@@ -4,15 +4,12 @@ import pytest
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-from PySDM.dynamics import Breakup
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
     ExponFrag,
     Gaussian,
 )
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
 from PySDM.environments import Box
 from PySDM.physics import si
 
