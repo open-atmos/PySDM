@@ -1,3 +1,7 @@
+"""
+vtk exporter of particle attributes for 1d simulations
+"""
+
 import os
 
 import numpy as np

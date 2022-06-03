@@ -1,4 +1,4 @@
-# pylint: disable = redefined-outer-name
+# pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring,redefined-outer-name
 from tempfile import NamedTemporaryFile, TemporaryDirectory
 
 import numpy as np
@@ -38,22 +38,21 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
     data = simulation_1d[0].products
     settings = simulation_1d[1]
     simulation = simulation_1d[2]
-    file = NamedTemporaryFile()
-    # file = TemporaryFile('.nc')
-    netcdf_exporter = NetCDFExporter_1d(
-        data,
-        settings,
-        simulation,
-        filename=file.name,
-        exclude_particle_reservoir=exclude_particle_reservoir,
-    )
     nz_export = (
         int(settings.z_max / settings.dz) if exclude_particle_reservoir else settings.nz
     )
 
     # Act
-    netcdf_exporter.run()
-    data_from_file = readNetCDF_1d(file.name)
+    with NamedTemporaryFile() as file:
+        netcdf_exporter = NetCDFExporter_1d(
+            data,
+            settings,
+            simulation,
+            filename=file.name,
+            exclude_particle_reservoir=exclude_particle_reservoir,
+        )
+        netcdf_exporter.run()
+        data_from_file = readNetCDF_1d(file.name)
 
     # Assert
     assert data_from_file.products["time"].shape == data["t"].shape
@@ -101,24 +100,23 @@ def test_vtk_exporter_1d(simulation_1d, exclude_particle_reservoir):
         )
         number_of_exported_particles.append(exported_particles_indexes[t][0].size)
 
-    tmpdir = TemporaryDirectory()
-    tmpdir_name = tmpdir.name + "/"
-    vtk_exporter = VTKExporter_1d(
-        data,
-        settings,
-        path=tmpdir_name,
-        exclude_particle_reservoir=exclude_particle_reservoir,
-    )
-
     # Act
-    vtk_exporter.run()
-    data_from_file = {}
-    for t in settings.save_spec_and_attr_times:
-        leading_zeros_in_filename = [
-            "0" for i in range(len(str(settings.t_max)) - len(str(t)))
-        ]
-        filename = "time" + "".join(leading_zeros_in_filename) + str(t) + ".vtu"
-        data_from_file[t] = readVTK_1d(tmpdir_name + filename)
+    with TemporaryDirectory() as tmpdir_:
+        tmpdir = tmpdir_ + "/"
+        vtk_exporter = VTKExporter_1d(
+            data,
+            settings,
+            path=tmpdir,
+            exclude_particle_reservoir=exclude_particle_reservoir,
+        )
+        vtk_exporter.run()
+        data_from_file = {}
+        for t in settings.save_spec_and_attr_times:
+            leading_zeros_in_filename = [
+                "0" for i in range(len(str(settings.t_max)) - len(str(t)))
+            ]
+            filename = "time" + "".join(leading_zeros_in_filename) + str(t) + ".vtu"
+            data_from_file[t] = readVTK_1d(tmpdir + filename)
 
     # Assert
     for i, t in enumerate(settings.save_spec_and_attr_times):

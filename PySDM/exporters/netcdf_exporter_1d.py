@@ -1,3 +1,7 @@
+"""
+netcdf exporter of scalar products for 1d simulations
+"""
+
 from collections import namedtuple
 from copy import deepcopy
 
@@ -6,9 +10,11 @@ from scipy.io.netcdf import netcdf_file
 
 
 class NetCDFExporter_1d:
+    # pylint: disable = too-many-arguments
     def __init__(
         self, data, settings, simulator, filename, exclude_particle_reservoir=True
     ):
+        # pylint: enable = too-many-arguments
         self.data = data
         self.settings = settings
         self.simulator = simulator
