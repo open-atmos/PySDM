@@ -8,11 +8,11 @@ import pytest
 from atmos_cloud_sim_uj_utils import TemporaryFile
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 
-if platform.architecture()[0] != "32bit":
-    from PySDM_examples.utils import readVTK_1d
-
 from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d
 from PySDM.physics import si
+
+if platform.architecture()[0] != "32bit":
+    from PySDM_examples.utils import readVTK_1d
 
 
 @pytest.fixture
