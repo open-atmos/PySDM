@@ -84,7 +84,7 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
 
 
 @pytest.mark.skipif(
-    platform.architecture()[0] == "32bit", reason="not available vtk module"
+    platform.architecture()[0] == "32bit", reason="Not available vtk module!"
 )
 @pytest.mark.parametrize(
     "exclude_particle_reservoir",
