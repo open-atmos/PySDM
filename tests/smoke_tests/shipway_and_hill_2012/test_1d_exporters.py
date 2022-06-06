@@ -1,11 +1,13 @@
 # pylint: disable = missing-module-docstring,missing-class-docstring,missing-function-docstring,redefined-outer-name
 import os
+import platform
 from tempfile import TemporaryDirectory
 
 import numpy as np
 import pytest
 from atmos_cloud_sim_uj_utils import TemporaryFile
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
+from PySDM_examples.utils import readVTK_1d
 
 from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d
 from PySDM.physics import si
@@ -81,6 +83,9 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
     assert data_from_file.settings["r_bins_edges"].size == settings.number_of_bins + 1
 
 
+@pytest.mark.skipif(
+    platform.architecture()[0] == "32bit", reason="not available vtk module"
+)
 @pytest.mark.parametrize(
     "exclude_particle_reservoir",
     (
@@ -92,6 +97,15 @@ def test_vtk_exporter_1d(simulation_1d, exclude_particle_reservoir):
     # Arrange
     data = simulation_1d[0].attributes
     settings = simulation_1d[1]
+    z0 = 0.0 if exclude_particle_reservoir else -settings.particle_reservoir_depth
+    exported_particles_indexes = {}
+    number_of_exported_particles = []
+    for i, t in enumerate(settings.save_spec_and_attr_times):
+        exported_particles_indexes[t] = np.where(
+            data["cell origin"][i][0]
+            >= int((z0 + settings.particle_reservoir_depth) / settings.dz)
+        )
+        number_of_exported_particles.append(exported_particles_indexes[t][0].size)
 
     # Act
     with TemporaryDirectory() as tmpdir_:
@@ -104,11 +118,27 @@ def test_vtk_exporter_1d(simulation_1d, exclude_particle_reservoir):
         )
         vtk_exporter.run()
         written_files_list = os.listdir(tmpdir)
+        data_from_file = {}
+        for t in settings.save_spec_and_attr_times:
+            leading_zeros_in_filename = [
+                "0" for i in range(len(str(settings.t_max)) - len(str(t)))
+            ]
+            filename = "time" + "".join(leading_zeros_in_filename) + str(t) + ".vtu"
+            data_from_file[t] = readVTK_1d(tmpdir + filename)
 
     # Assert
-    for t in settings.save_spec_and_attr_times:
+    for i, t in enumerate(settings.save_spec_and_attr_times):
         filename_leading_zeros = "".join(
             ["0" for i in range(len(str(settings.t_max)) - len(str(t)))]
         )
         filename = "time" + filename_leading_zeros + str(t) + ".vtu"
         assert filename in written_files_list
+        assert z0 <= np.amin(data_from_file[t]["z"])
+        assert np.amax(data_from_file[t]["z"]) <= settings.z_max
+        assert data_from_file[t]["z"].size == number_of_exported_particles[i]
+        data_from_file[t].pop("z")
+        assert data.keys() == data_from_file[t].keys()
+        assert (
+            data["radius"][i][exported_particles_indexes[t]].mean()
+            == data_from_file[t]["radius"].mean()
+        )
