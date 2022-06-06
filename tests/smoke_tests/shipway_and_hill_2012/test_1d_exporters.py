@@ -12,7 +12,7 @@ from PySDM.exporters import NetCDFExporter_1d, VTKExporter_1d, readNetCDF_1d
 from PySDM.physics import si
 
 if platform.architecture()[0] != "32bit":
-    from PySDM_examples.utils import readVTK_1d
+    from PySDM_examples.utils import readVTK_1d  # pylint: disable = ungrouped-imports
 
 
 @pytest.fixture
