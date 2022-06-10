@@ -28,6 +28,7 @@ class TestFragmentations:
     def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
         # arrange
         volume = np.asarray([44.0, 666.0])
+        fragments = np.asarray([-1.0])
         builder = Builder(volume.size, backend_class())
         sut = fragmentation_fn
         sut.register(builder)
@@ -36,12 +37,12 @@ class TestFragmentations:
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
+        output = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(volume))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
         sut(output, u01, is_first_in_pair)
 
         # Assert
-        np.testing.assert_array_less([0.99, 0.99], output.to_ndarray())
+        np.testing.assert_array_less([0.99], output.to_ndarray())
