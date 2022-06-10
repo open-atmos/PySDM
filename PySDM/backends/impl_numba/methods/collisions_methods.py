@@ -355,6 +355,19 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
+    def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
+        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
+            n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if frag_size[i] > v_max[i]:
+                n_fragment[i] = 1
+            elif frag_size[i] < vmin:
+                n_fragment[i] = 1
+
+            if nfmax is not None:
+                n_fragment[i] = min(n_fragment[i], nfmax)
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS})
     def __slams_fragmentation_body(n_fragment, probs, rand):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             probs[i] = 0.0
@@ -370,34 +383,26 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(
-        *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
-    ):
+    def __exp_fragmentation_body(*, scale, frag_size, rand):
         """
         Exponential PDF
         """
-        # TODO #796: add vmin for exp frag
-        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
+        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(1 - rand[i])
-            if frag_size[i] > v_max[i]:
-                n_fragment[i] = 1
-            elif frag_size[i] < vmin:
-                n_fragment[i] = 1
-            else:
-                n_fragment[i] = x_plus_y[i] / frag_size[i]
-            if nfmax is not None:
-                n_fragment[i] = min(n_fragment[i], nfmax)
 
     def exp_fragmentation(
         self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
         self.__exp_fragmentation_body(
-            n_fragment=n_fragment.data,
             scale=scale,
+            frag_size=frag_size.data,
+            rand=rand.data,
+        )
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
             frag_size=frag_size.data,
             v_max=v_max.data,
             x_plus_y=x_plus_y.data,
-            rand=rand.data,
             vmin=vmin,
             nfmax=nfmax,
         )
@@ -405,7 +410,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __feingold1988_fragmentation_body(
-        *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, fragtol, vmin, nfmax
+        *, n_fragment, scale, frag_size, x_plus_y, rand, fragtol
     ):
         """
         Scaled exponential PDF
@@ -413,14 +418,6 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol)
             frag_size[i] = -scale * np.log(log_arg)
-            if frag_size[i] > v_max[i]:
-                n_fragment[i] = 1
-            elif frag_size[i] < vmin:
-                n_fragment[i] = 1
-            else:
-                n_fragment[i] = x_plus_y[i] / frag_size[i]
-            if nfmax is not None:
-                n_fragment[i] = min(n_fragment[i], nfmax)
 
     def feingold1988_fragmentation(
         self,
@@ -439,38 +436,49 @@ class CollisionsMethods(BackendMethods):
             n_fragment=n_fragment.data,
             scale=scale,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             rand=rand.data,
             fragtol=fragtol,
+        )
+
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
         )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __gauss_fragmentation_body(*, n_fragment, mu, scale, frag_size, r_max, rand):
+    def __gauss_fragmentation_body(*, n_fragment, mu, sigma, frag_size, rand):
         """
         Gaussian PDF
         CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            frag_size[i] = mu + sqrt_pi * sqrt_two * scale / 4 * np.log(
+            frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
                 (1 + rand[i]) / (1 - rand[i])
             )
-            if frag_size[i] > r_max[i]:
-                n_fragment[i] = 1.0
-            else:
-                n_fragment[i] = r_max[i] / frag_size[i]
 
-    def gauss_fragmentation(self, *, n_fragment, mu, scale, frag_size, r_max, rand):
+    def gauss_fragmentation(
+        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
         self.__gauss_fragmentation_body(
             n_fragment=n_fragment.data,
             mu=mu,
-            scale=scale,
+            sigma=sigma,
             frag_size=frag_size.data,
-            r_max=r_max.data,
             rand=rand.data,
+        )
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            vmin=vmin,
+            nfmax=nfmax,
         )
 
     @staticmethod
