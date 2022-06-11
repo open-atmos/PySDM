@@ -1,5 +1,5 @@
 """
-P(x) = exp(-x / lambda)
+P(x) = exp(-x / lambda); specified in volume units
 """
 # TODO #796: introduce common code with Feingold fragmentation, including possible limiter
 
@@ -16,7 +16,6 @@ class ExponFrag:
 
     def register(self, builder):
         self.particulator = builder.particulator
-        builder.request_attribute("radius")
         self.max_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
