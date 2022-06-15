@@ -27,4 +27,4 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         # TODO #682
-        pylint --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,C0330,C0326 $(git ls-files '*.py')
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,C0330,C0326 $(git ls-files '*.py')
