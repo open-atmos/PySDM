@@ -27,6 +27,7 @@ class Condensation:
         dt_cond_range: tuple = DEFAULTS.cond_range,
         schedule: str = DEFAULTS.schedule,
         max_iters: int = 16,
+        update_thd: bool = True,
     ):
 
         self.particulator = None
@@ -46,6 +47,8 @@ class Condensation:
         self.max_iters = max_iters
 
         self.cell_order = None
+
+        self.update_thd = update_thd
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -100,6 +103,10 @@ class Condensation:
             )
             if not self.success.all():
                 raise RuntimeError("Condensation failed")
+            if not self.update_thd:
+                self.particulator.environment.get_predicted("thd").ravel(
+                    self.particulator.environment.get_thd()
+                )
             # note: this makes order of dynamics matter
             #       (e.g., condensation after chemistry or before)
             self.particulator.update_TpRH()
