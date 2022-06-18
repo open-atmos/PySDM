@@ -17,10 +17,7 @@ setup(
     description="Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry"
     " cloud microphysics package with box, parcel & 1D/2D prescribed-flow"
     " examples in Python, Julia and Matlab",
-    use_scm_version={
-        "local_scheme": lambda _: "", 
-        "version_scheme": "post-release"
-    },
+    use_scm_version={"local_scheme": lambda _: "", "version_scheme": "post-release"},
     setup_requires=["setuptools_scm"],
     install_requires=[
         "ThrustRTC==0.3.19",
