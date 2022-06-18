@@ -71,7 +71,7 @@ jobs:
 
       - run: |
           python -m build 2>&1 | tee build.log
-          exit `fgrep -i warning build.log | wc -l`
+          exit `fgrep -i warning build.log | grep -v impl_numba/warnings.py | wc -l`
 
       - run: twine check --strict dist/*
 
