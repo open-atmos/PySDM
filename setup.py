@@ -51,4 +51,9 @@ setup(
     " atmospheric-modelling, particle-system, numba, thrust,"
     " nvrtc, pint, atmospheric-physics",
     packages=find_packages(include=["PySDM", "PySDM.*"]),
+    project_urls={
+        "Tracker": "https://github.com/atmos-cloud-sim-uj/PySDM/issues",
+        "Documentation": "https://atmos-cloud-sim-uj.github.io/PySDM",
+        "Source": "https://github.com/atmos-cloud-sim-uj/PySDM",
+    },
 )
