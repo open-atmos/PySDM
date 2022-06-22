@@ -101,6 +101,7 @@ class TestSDMBreakup:
             breakup_rate=general_zeros,
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
         )
 
         # Assert
@@ -188,6 +189,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
         )
 
         # Assert
@@ -286,6 +288,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
         )
 
         # Assert
@@ -363,6 +366,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
         )
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
@@ -454,6 +458,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
         )
 
         # Assert

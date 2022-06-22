@@ -41,6 +41,7 @@ class Collision:
         adaptive: bool = True,
         dt_coal_range=DEFAULTS.dt_coal_range,
         enable_breakup: bool = True,
+        warn_overflows: bool = True,
     ):
         assert substeps == 1 or adaptive is False
 
@@ -48,6 +49,7 @@ class Collision:
 
         self.enable = True
         self.enable_breakup = enable_breakup
+        self.warn_overflows = warn_overflows
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -202,6 +204,7 @@ class Collision:
             breakup_rate=self.breakup_rate,
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
+            warn_overflows=self.warn_overflows,
         )
 
         if self.adaptive:
