@@ -107,8 +107,9 @@ def break_up(  # pylint: disable=too-many-arguments
                 attributes[a, k] /= tmp2
                 attributes[a, j] = attributes[a, k]
 
-        if overflow_flag and warn_overflows:
-            warn("overflow", __file__)
+        if overflow_flag:
+            if warn_overflows:
+                warn("overflow", __file__)
             break
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
