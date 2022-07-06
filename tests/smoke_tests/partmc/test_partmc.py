@@ -8,6 +8,5 @@ if sys.platform == "linux":
     import PyPartMC
 
 
-@pytest.mark.skipif(sys.platform != "linux", reason="binary package availability")
 def test_partmc():
     print(PyPartMC.__version__)
