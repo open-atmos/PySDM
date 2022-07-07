@@ -8,4 +8,4 @@ PySDM-examples @ git+https://github.com/atmos-cloud-sim-uj/PySDM-examples@4b1fed
 PyMPDATA @ git+https://github.com/atmos-cloud-sim-uj/PyMPDATA@e7b73a7#egg=PyMPDATA
 
 # see https://peps.python.org/pep-0508/
-PyPartMC==0.0.9; platform_machine==x86_64
+PyPartMC==0.0.9; platform_machine=="x86_64"
