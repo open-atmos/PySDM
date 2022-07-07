@@ -1,12 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from itertools import product
-
 import numpy as np
 import pytest
 
 import PySDM.physics.constants as const
-from PySDM import Builder, particulator
-from PySDM.attributes.impl import attribute
+from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
