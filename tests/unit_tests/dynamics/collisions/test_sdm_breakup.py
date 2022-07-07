@@ -1,15 +1,26 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from itertools import product
+
 import numpy as np
 import pytest
 
-from PySDM import Builder
+import PySDM.physics.constants as const
+from PySDM import Builder, particulator
+from PySDM.attributes.impl import attribute
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
-from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
-from PySDM.dynamics.collisions.collision_kernels import ConstantK
+from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
+from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, ExponFrag
+from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
+from PySDM.dynamics.collisions.collision import Collision
+from PySDM.dynamics.collisions.collision_kernels import ConstantK, Geometric
 from PySDM.environments import Box
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
+from PySDM.initialisation.spectra import Exponential
 from PySDM.physics import si
+from PySDM.physics.trivia import Trivia
+from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 
 class TestSDMBreakup:
@@ -481,6 +492,55 @@ class TestSDMBreakup:
                 decimal=6,
             ),
         }[flag]()
+
+    @staticmethod
+    # @pytest.mark.xfail(strict=True)
+    def test_nonnegative_even_if_overflow(backend=CPU()):
+        n_sd = 2**5
+        builder = Builder(n_sd=n_sd, backend=backend)
+
+        dv = 1 * si.m**3
+        dt = 1 * si.s
+        env = Box(dv=dv, dt=dt)
+        builder.set_environment(env)
+        env["rhod"] = 1.0
+
+        norm_factor = 100 / si.cm**3 * si.m**3
+        X0 = Trivia.volume(const, radius=30.531 * si.micrometres)
+        spectrum = Exponential(norm_factor=norm_factor, scale=X0)
+        attributes = {}
+        attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(
+            n_sd
+        )
+
+        mu = Trivia.volume(const, radius=100 * si.um)
+        fragmentation = ExponFrag(scale=mu)
+        kernel = Geometric()
+        coal_eff = ConstEc(Ec=0.01)
+        break_eff = ConstEb(Eb=1.0)
+        breakup = Collision(
+            collision_kernel=kernel,
+            breakup_efficiency=break_eff,
+            coalescence_efficiency=coal_eff,
+            fragmentation_function=fragmentation,
+            warn_overflows=False,
+        )
+        builder.add_dynamic(breakup)
+
+        radius_bins_edges = np.logspace(
+            np.log10(0.01 * si.um), np.log10(5000 * si.um), num=64, endpoint=True
+        )
+        products = (
+            ParticleVolumeVersusRadiusLogarithmSpectrum(
+                radius_bins_edges=radius_bins_edges, name="dv/dlnr"
+            ),
+        )
+        particulator = builder.build(attributes, products)
+
+        t_end = 100
+        particulator.run(t_end - particulator.n_steps)
+
+        assert (particulator.attributes["n"].to_ndarray() > 0).all()
 
 
 def get_smaller_of_pairs(is_first_in_pair, n_init):
