@@ -3,10 +3,10 @@
 import platform
 import pytest
 
-if platform.machine().endswith('64'):
+if platform.architecture()[0] == '64bit':
     import PyPartMC
 
 
-@pytest.mark.skipif(not platform.machine().endswith('64'), reason="binary package availability")
+@pytest.mark.skipif(platform.architecture()[0] != '64bit', reason="binary package availability")
 def test_partmc():
     print(PyPartMC.__version__)
