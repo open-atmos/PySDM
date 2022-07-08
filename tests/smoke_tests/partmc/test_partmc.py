@@ -1,13 +1,12 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 
-import sys
-
+import platform
 import pytest
 
-if sys.platform == "linux":
+if platform.architecture()[0] == '64bit':
     import PyPartMC
 
 
-@pytest.mark.skipif(sys.platform != "linux", reason="binary package availability")
+@pytest.mark.skipif(platform.architecture()[0] != '64bit', reason="binary package availability")
 def test_partmc():
     print(PyPartMC.__version__)
