@@ -320,6 +320,7 @@ class CondensationMethods(
         rhod,
         thd,
         qv,
+        RH,
         dv,
         prhod,
         pthd,
