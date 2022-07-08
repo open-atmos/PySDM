@@ -25,7 +25,7 @@ def patch_particulator(particulator):
 
 
 def _bdf_condensation(
-    particulator, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order
+    particulator, *, rtol_x, rtol_RH, counters, RH_max, success, cell_order
 ):
     func = Numba._condensation
     if not numba.config.DISABLE_JIT:  # pylint: disable=no-member
@@ -50,7 +50,7 @@ def _bdf_condensation(
         kappa=particulator.attributes["kappa"].data,
         f_org=particulator.attributes["dry volume organic fraction"].data,
         rtol_x=rtol_x,
-        rtol_thd=rtol_thd,
+        rtol_RH=rtol_RH,
         timestep=particulator.dt,
         counter_n_substeps=counters["n_substeps"],
         counter_n_activating=counters["n_activating"],
