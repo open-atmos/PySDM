@@ -8,12 +8,7 @@ import numpy as np
 
 from ..physics import si
 
-DEFAULTS = namedtuple("_", (
-    "rtol_x",
-    "rtol_RH",
-    "cond_range",
-    "schedule"
-))(
+DEFAULTS = namedtuple("_", ("rtol_x", "rtol_RH", "cond_range", "schedule"))(
     rtol_x=1e-6,
     rtol_RH=1e-4,
     cond_range=(1e-4 * si.second, 1 * si.second),
