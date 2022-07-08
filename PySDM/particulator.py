@@ -101,7 +101,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             RH=self.environment.get_predicted("RH"),
         )
 
-    def condensation(self, *, rtol_x, rtol_thd, counters, RH_max, success, cell_order):
+    def condensation(self, *, rtol_x, rtol_RH, counters, RH_max, success, cell_order):
         """Updates droplet volumes by simulating condensation driven by prior changes
           in environment thermodynamic state, updates the environment state.
         In the case of parcel environment, condensation is driven solely by changes in
@@ -121,6 +121,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             rhod=self.environment["rhod"],
             thd=self.environment["thd"],
             qv=self.environment["qv"],
+            RH=self.environment["RH"],
             dv=self.environment.dv,
             prhod=self.environment.get_predicted("rhod"),
             pthd=self.environment.get_predicted("thd"),
@@ -128,7 +129,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             kappa=self.attributes["kappa"],
             f_org=self.attributes["dry volume organic fraction"],
             rtol_x=rtol_x,
-            rtol_thd=rtol_thd,
+            rtol_RH=rtol_RH,
             v_cr=self.attributes["critical volume"],
             timestep=self.dt,
             counters=counters,
