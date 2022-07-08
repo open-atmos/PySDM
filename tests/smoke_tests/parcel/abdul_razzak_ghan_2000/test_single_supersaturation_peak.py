@@ -27,7 +27,12 @@ from PySDM.physics import si
 )
 @pytest.mark.parametrize("rtol_x", (1e-7,))
 @pytest.mark.parametrize("scheme", ("PySDM",))
-def test_single_supersaturation_peak(scheme, rtol_x, rtol_RH, plot=False):
+def test_single_supersaturation_peak(
+        scheme,
+        rtol_x,
+        rtol_RH,
+        plot=False
+):
     # arrange
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
@@ -53,7 +58,13 @@ def test_single_supersaturation_peak(scheme, rtol_x, rtol_RH, plot=False):
     builder = Builder(backend=CPU(), n_sd=n_sd)
     builder.set_environment(env)
     builder.add_dynamic(AmbientThermodynamics())
-    builder.add_dynamic(Condensation(adaptive=True, rtol_x=rtol_x, rtol_RH=rtol_RH))
+    builder.add_dynamic(
+        Condensation(
+            adaptive=True,
+            rtol_x=rtol_x,
+            rtol_RH=rtol_RH
+        )
+    )
 
     r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
