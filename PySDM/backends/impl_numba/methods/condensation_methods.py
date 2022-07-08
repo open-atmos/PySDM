@@ -29,6 +29,7 @@ class CondensationMethods(BackendMethods):
         rhod,
         thd,
         qv,
+        RH,
         dv,
         prhod,
         pthd,
@@ -36,7 +37,7 @@ class CondensationMethods(BackendMethods):
         kappa,
         f_org,
         rtol_x,
-        rtol_thd,
+        rtol_RH,
         timestep,
         counters,
         cell_order,
@@ -58,6 +59,7 @@ class CondensationMethods(BackendMethods):
             rhod=rhod.data,
             thd=thd.data,
             qv=qv.data,
+            RH=RH.data,
             dv_mean=dv,
             prhod=prhod.data,
             pthd=pthd.data,
@@ -65,7 +67,7 @@ class CondensationMethods(BackendMethods):
             kappa=kappa.data,
             f_org=f_org.data,
             rtol_x=rtol_x,
-            rtol_thd=rtol_thd,
+            rtol_RH=rtol_RH,
             timestep=timestep,
             counter_n_substeps=counters["n_substeps"].data,
             counter_n_activating=counters["n_activating"].data,
@@ -92,6 +94,7 @@ class CondensationMethods(BackendMethods):
         rhod,
         thd,
         qv,
+        RH,
         dv_mean,
         prhod,
         pthd,
@@ -99,7 +102,7 @@ class CondensationMethods(BackendMethods):
         kappa,
         f_org,
         rtol_x,
-        rtol_thd,
+        rtol_RH,
         timestep,
         counter_n_substeps,
         counter_n_activating,
@@ -143,12 +146,13 @@ class CondensationMethods(BackendMethods):
                     f_org,
                     thd[cell_id],
                     qv[cell_id],
+                    RH[cell_id],
                     dthd_dt,
                     dqv_dt,
                     md,
                     rhod_mean,
                     rtol_x,
-                    rtol_thd,
+                    rtol_RH,
                     timestep,
                     counter_n_substeps[cell_id],
                 )
@@ -175,7 +179,7 @@ class CondensationMethods(BackendMethods):
         n_substeps_min = math.ceil(timestep / dt_range[1])
 
         @numba.njit(**jit_flags)
-        def adapt_substeps(args, n_substeps, thd, rtol_thd):
+        def adapt_substeps(args, n_substeps, thd, RH, rtol_RH):
             n_substeps = np.maximum(n_substeps_min, n_substeps // multiplier)
             success = False
             for burnout in range(fuse + 1):
@@ -189,24 +193,26 @@ class CondensationMethods(BackendMethods):
                         ),
                         return_value=(0, False),
                     )
-                thd_new_long, success = step_fake(args, timestep, n_substeps)
+                thd_new_long, RH_new_long, success = step_fake(args, timestep, n_substeps)
                 if success:
                     break
                 n_substeps *= multiplier
             for burnout in range(fuse + 1):
                 if burnout == fuse:
                     return warn("burnout (short)", __file__, return_value=(0, False))
-                thd_new_short, success = step_fake(
+                thd_new_short, RH_new_short, success = step_fake(
                     args, timestep, n_substeps * multiplier
                 )
                 if not success:
                     return warn("short failed", __file__, return_value=(0, False))
-                dthd_long = thd_new_long - thd
-                dthd_short = thd_new_short - thd
-                error_estimate = np.abs(dthd_long - multiplier * dthd_short)
-                thd_new_long = thd_new_short
-                if within_tolerance(error_estimate, thd, rtol_thd):
+
+                dRH_long = RH_new_long - RH
+                dRH_short = RH_new_short - RH
+                error_estimate = np.abs(dRH_long - multiplier * dRH_short)
+                RH_new_long = RH_new_short
+                if within_tolerance(error_estimate, RH, rtol_RH):
                     break
+
                 n_substeps *= multiplier
                 if n_substeps > n_substeps_max:
                     break
@@ -219,8 +225,8 @@ class CondensationMethods(BackendMethods):
         @numba.njit(**jit_flags)
         def step_fake(args, dt, n_substeps):
             dt /= n_substeps
-            _, thd_new, _, _, _, _, success = step_impl(*args, dt, 1, True)
-            return thd_new, success
+            _, thd_new, RH_new, _, _, _, _, success = step_impl(*args, dt, 1, True)
+            return thd_new, RH_new, success
 
         return step_fake
 
@@ -328,6 +334,7 @@ class CondensationMethods(BackendMethods):
             return (
                 qv,
                 thd,
+                RH,
                 count_activating,
                 count_deactivating,
                 count_ripening,
@@ -412,7 +419,7 @@ class CondensationMethods(BackendMethods):
             lambdaK = phys_lambdaK(T, p)
             lambdaD = phys_lambdaD(DTp, T)
             for drop in cell_idx:
-                if v[drop] < 0:
+                if v[drop] < 0:  # TODO: use _unfrozen from freezing_methods.py
                     continue
                 x_old = x(v[drop])
                 r_old = radius(v[drop])
@@ -659,12 +666,13 @@ class CondensationMethods(BackendMethods):
             f_org,
             thd,
             qv,
+            RH,
             dthd_dt,
             dqv_dt,
             m_d,
             rhod_mean,
             rtol_x,
-            rtol_thd,
+            rtol_RH,
             timestep,
             n_substeps,
         ):
@@ -686,11 +694,12 @@ class CondensationMethods(BackendMethods):
             )
             success = True
             if adaptive:
-                n_substeps, success = adapt_substeps(args, n_substeps, thd, rtol_thd)
+                n_substeps, success = adapt_substeps(args, n_substeps, thd, RH, rtol_RH)
             if success:
                 (
                     qv,
                     thd,
+                    _,
                     n_activating,
                     n_deactivating,
                     n_ripening,
