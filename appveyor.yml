@@ -18,15 +18,12 @@ install:
       if ($env:platform -Match "x86") 
       {
         $env:PYTHON="C:\Python38\python"
+        Set-Content -Path "test-time-requirements.txt" -Value (get-content -Path "test-time-requirements.txt" | Select-String -Pattern 'PyPartMC' -NotMatch)
       }
       elseif ($env:platform -Match "x64") 
       {
         $env:PYTHON="C:\Python38-x64\python"
       }
-
-  - ps: |
-      iex "$env:PYTHON -c 'import platform; print(platform.machine())'"
-      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
 
   - ps: |
       iex "$env:PYTHON -m pip install pytest pip==21.3.1"
