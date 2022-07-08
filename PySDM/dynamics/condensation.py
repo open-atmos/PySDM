@@ -8,9 +8,14 @@ import numpy as np
 
 from ..physics import si
 
-DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
+DEFAULTS = namedtuple("_", (
+    "rtol_x",
+    "rtol_RH",
+    "cond_range",
+    "schedule"
+))(
     rtol_x=1e-6,
-    rtol_thd=1e-6,
+    rtol_RH=1e-4,
     cond_range=(1e-4 * si.second, 1 * si.second),
     schedule="dynamic",
 )
@@ -21,7 +26,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         self,
         *,
         rtol_x=DEFAULTS.rtol_x,
-        rtol_thd=DEFAULTS.rtol_thd,
+        rtol_RH=DEFAULTS.rtol_RH,
         substeps: int = 1,
         adaptive: bool = True,
         dt_cond_range: tuple = DEFAULTS.cond_range,
@@ -33,7 +38,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         self.enable = True
 
         self.rtol_x = rtol_x
-        self.rtol_thd = rtol_thd
+        self.rtol_RH = rtol_RH
 
         self.rh_max = None
         self.success = None
@@ -57,7 +62,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
             adaptive=self.adaptive,
             fuse=32,
             multiplier=2,
-            RH_rtol=1e-7,
+            RH_rtol=1e-7,  # TODO: use rtol_RH?
             max_iters=self.max_iters,
         )
         builder.request_attribute("critical volume")
@@ -94,7 +99,7 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
 
             self.particulator.condensation(
                 rtol_x=self.rtol_x,
-                rtol_thd=self.rtol_thd,
+                rtol_RH=self.rtol_RH,
                 counters=self.counters,
                 RH_max=self.rh_max,
                 success=self.success,

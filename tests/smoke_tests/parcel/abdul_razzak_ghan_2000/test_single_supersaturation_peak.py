@@ -17,20 +17,22 @@ from PySDM.physics import si
 
 
 @pytest.mark.parametrize(
-    "rtol_thd",
+    "rtol_RH",
     (
-        pytest.param(1e-6, marks=pytest.mark.xfail(strict=True)),
-        pytest.param(1e-7, marks=pytest.mark.xfail(strict=True)),
-        1e-8,
-        1e-9,
+        pytest.param(1e-2, marks=pytest.mark.xfail(strict=True)),
+        pytest.param(1e-3, marks=pytest.mark.xfail(strict=True)),
+        1e-4,
+        1e-5,
     ),
 )
 @pytest.mark.parametrize("rtol_x", (1e-7,))
-@pytest.mark.parametrize("adaptive", (True,))
 @pytest.mark.parametrize("scheme", ("PySDM",))
 def test_single_supersaturation_peak(
-    adaptive, scheme, rtol_x, rtol_thd, plot=False
-):  # pylint: disable=too-many-locals
+        scheme,
+        rtol_x,
+        rtol_RH,
+        plot=False
+):
     # arrange
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),
@@ -38,15 +40,18 @@ def test_single_supersaturation_peak(
         PySDM_products.AmbientRelativeHumidity(name="RH"),
         PySDM_products.ParcelDisplacement(name="z"),
     )
+    dt = 2 * si.s
+    w = 0.5 * si.m / si.s
     env = Parcel(
-        dt=2 * si.s,
+        dt=dt,
         mass_of_dry_air=1e3 * si.kg,
         p0=1000 * si.hPa,
         q0=22.76 * si.g / si.kg,
-        w=0.5 * si.m / si.s,
+        w=w,
         T0=300 * si.K,
     )
-    n_steps = 70
+    z_max = 70 * si.m
+    n_steps = int(z_max / (w * dt))
     n_sd = 2
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
@@ -55,9 +60,9 @@ def test_single_supersaturation_peak(
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(
         Condensation(
-            adaptive=adaptive,
+            adaptive=True,
             rtol_x=rtol_x,
-            rtol_thd=rtol_thd,
+            rtol_RH=rtol_RH
         )
     )
 
@@ -110,9 +115,12 @@ def test_single_supersaturation_peak(
     twin.set_xlim(-0.001, 0.0015)
     pyplot.legend(loc="lower right")
     pyplot.grid()
-    pyplot.title(f"rtol_thd={rtol_thd}; rtol_x={rtol_x}")
+    pyplot.title(f"rtol_RH={rtol_RH}; rtol_x={rtol_x}")
     if plot:
         pyplot.show()
 
     # assert
-    assert signal.argrelextrema(np.asarray(output["RH"]), np.greater)[0].shape[0] == 1
+    n_max = signal.argrelextrema(np.asarray(output["RH"]), np.greater)[0].shape[0]
+    n_min = signal.argrelextrema(np.asarray(output["RH"]), np.less)[0].shape[0]
+    assert n_max == 1 and n_min == 0
+

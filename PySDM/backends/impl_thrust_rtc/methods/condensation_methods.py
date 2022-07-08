@@ -327,7 +327,7 @@ class CondensationMethods(
         kappa,
         f_org,
         rtol_x,
-        rtol_thd,
+        rtol_RH,
         timestep,
         counters,
         cell_order,
