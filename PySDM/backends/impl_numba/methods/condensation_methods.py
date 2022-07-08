@@ -194,14 +194,14 @@ class CondensationMethods(BackendMethods):
                         ),
                         return_value=(0, False),
                     )
-                thd_new_long, RH_new_long, success = step_fake(args, timestep, n_substeps)
+                _, RH_new_long, success = step_fake(args, timestep, n_substeps)
                 if success:
                     break
                 n_substeps *= multiplier
             for burnout in range(fuse + 1):
                 if burnout == fuse:
                     return warn("burnout (short)", __file__, return_value=(0, False))
-                thd_new_short, RH_new_short, success = step_fake(
+                _, RH_new_short, success = step_fake(
                     args, timestep, n_substeps * multiplier
                 )
                 if not success:
