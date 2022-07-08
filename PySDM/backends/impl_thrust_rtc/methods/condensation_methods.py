@@ -318,6 +318,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         rhod,
         thd,
         qv,
+        RH,
         dv,
         prhod,
         pthd,
