@@ -42,6 +42,7 @@ def _condensation(
         rhod=particulator.environment["rhod"].data,
         thd=particulator.environment["thd"].data,
         qv=particulator.environment["qv"].data,
+        RH=particulator.environment["RH"].data,
         dv_mean=particulator.environment.dv,
         prhod=particulator.environment.get_predicted("rhod").data,
         pthd=particulator.environment.get_predicted("thd").data,
@@ -176,14 +177,15 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-local
         f_org,
         thd,
         qv,
+        __,
         dthd_dt,
         dqv_dt,
         m_d_mean,
         rhod_mean,
-        __,
         ___,
-        dt,
         ____,
+        dt,
+        _____,
     ):
         n_sd_in_cell = len(cell_idx)
         y0 = np.empty(n_sd_in_cell + idx_x)
