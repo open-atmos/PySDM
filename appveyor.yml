@@ -25,6 +25,10 @@ install:
       }
 
   - ps: |
+      iex "$env:PYTHON -c 'import platform; print(platform.machine())'"
+      if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+  - ps: |
       iex "$env:PYTHON -m pip install pytest pip==21.3.1"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
   
