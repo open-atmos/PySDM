@@ -20,11 +20,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint==2.13.9  # TODO #854
+        pip install pylint
         python setup.py egg_info
         pip install -r *.egg-info/requires.txt
         pip install -r test-time-requirements.txt
     - name: Analysing the code with pylint
       run: |
         # TODO #682
-        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,C0330,C0326 $(git ls-files '*.py')
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,unnecessary-lambda-assignment $(git ls-files '*.py')
