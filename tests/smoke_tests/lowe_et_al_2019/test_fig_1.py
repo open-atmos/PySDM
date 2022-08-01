@@ -55,7 +55,7 @@ class TestFig1:
 
         # act
         sigma = formulae.surface_tension.sigma(
-            np.nan, V_WET, V_DRY, aerosol.aerosol_modes[0]["f_org"]
+            np.nan, V_WET, V_DRY, aerosol.modes[0]["f_org"]
         )
 
         # assert
@@ -104,12 +104,12 @@ class TestFig1:
             constants={"sgm_org": 40 * si.mN / si.m, "delta_min": 0.1 * si.nm},
         )
         sigma = formulae.surface_tension.sigma(
-            np.nan, V_WET, V_DRY, aerosol.aerosol_modes[0]["f_org"]
+            np.nan, V_WET, V_DRY, aerosol.modes[0]["f_org"]
         )
         RH_eq = formulae.hygroscopicity.RH_eq(
             R_WET,
             TEMPERATURE,
-            aerosol.aerosol_modes[0]["kappa"][surface_tension],
+            aerosol.modes[0]["kappa"][surface_tension],
             R_DRY**3,
             sigma,
         )
