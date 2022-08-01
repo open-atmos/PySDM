@@ -61,6 +61,7 @@ def break_up(  # pylint: disable=too-many-arguments
     max_multiplicity,
     breakup_rate,
     breakup_rate_deficit,
+    warn_overflows,
 ):  # pylint: disable=too-many-branches
     gamma_tmp = 0
     gamma_deficit = gamma[i]
@@ -107,7 +108,8 @@ def break_up(  # pylint: disable=too-many-arguments
                 attributes[a, j] = attributes[a, k]
 
         if overflow_flag:
-            warn("overflow", __file__)
+            if warn_overflows:
+                warn("overflow", __file__)
             break
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
@@ -278,6 +280,7 @@ class CollisionsMethods(BackendMethods):
         breakup_rate_deficit,
         is_first_in_pair,
         max_multiplicity,
+        warn_overflows,
     ):
         # pylint: disable=not-an-iterable,too-many-nested-blocks
         for i in numba.prange(length // 2):
@@ -312,6 +315,7 @@ class CollisionsMethods(BackendMethods):
                     max_multiplicity,
                     breakup_rate,
                     breakup_rate_deficit,
+                    warn_overflows,
                 )
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -332,6 +336,7 @@ class CollisionsMethods(BackendMethods):
         breakup_rate,
         breakup_rate_deficit,
         is_first_in_pair,
+        warn_overflows,
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
@@ -351,6 +356,7 @@ class CollisionsMethods(BackendMethods):
             breakup_rate_deficit=breakup_rate_deficit.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
             max_multiplicity=max_multiplicity,
+            warn_overflows=warn_overflows,
         )
 
     @staticmethod
