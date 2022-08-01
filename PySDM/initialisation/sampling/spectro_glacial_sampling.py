@@ -1,15 +1,12 @@
 """
 two-dimensional sampling for singular immersion freezing: constant-multiplicity
- sampling in the freezing temperature vs. immersed surface area phase space
- realised using [vinecopulib](https://vinecopulib.github.io/pyvinecopulib/)
+ sampling in the freezing-temperature vs. immersed-surface-area phase space
 """
 import numpy as np
-import pyvinecopulib as pv
 
 from PySDM.initialisation.sampling.spectral_sampling import default_cdf_range
 from PySDM.physics import constants as const
 
-# DIM_SIZE = 0
 DIM_TEMP = 0
 DIM_SURF = 1
 N_DIMS = 2
@@ -35,23 +32,13 @@ class SpectroGlacialSampling:
         self.seed = seed
 
     def sample(self, n_sd):
-        copula = False
-        if copula:
-            simulated = pv.Bicop().simulate(n=n_sd, seeds=[self.seed])
-            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
-                1 - simulated[:, DIM_TEMP], self.insoluble_surface_spectrum.median
-            )
-            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
-                simulated[:, DIM_SURF]
-            )
-        else:
-            simulated = np.empty((n_sd, N_DIMS))
-            simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
-                np.random.random(n_sd)
-            )
-            simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
-                np.random.random(n_sd), simulated[:, DIM_SURF]
-            )
+        simulated = np.empty((n_sd, N_DIMS))
+        simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
+            np.random.random(n_sd)
+        )
+        simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
+            np.random.random(n_sd), simulated[:, DIM_SURF]
+        )
 
         return (
             simulated[:, DIM_TEMP],
