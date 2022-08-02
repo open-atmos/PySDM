@@ -365,7 +365,7 @@ class ChemistryMethods(BackendMethods):
         ionic_strength_threshold,
         rtol,
     ):
-        for i, _ in enumerate(pH):
+        for i, pH_i in enumerate(pH):
             cid = cell_id[i]
             args = (
                 _conc(
@@ -385,7 +385,7 @@ class ChemistryMethods(BackendMethods):
                     HNO3=K.HNO3[cid],
                 ),
             )
-            a = pH2H(pH[i])
+            a = pH2H(pH_i)
             fa = acidity_minfun(a, *args)
             if abs(fa) < _REALY_CLOSE_THRESHOLD:
                 continue
