@@ -1,8 +1,6 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from audioop import mul
-
 import numba
 import numpy as np
 
@@ -103,7 +101,7 @@ def break_up(  # pylint: disable=too-many-arguments
                     break
             # gamma_deficit -= gamma_tmp
             if n_fragment[i] ** gamma_tmp > max_multiplicity:
-                # TODO: should there be other actions in here to count toward breakup deficit?
+                # TODO #871: should there be other actions in here to count toward breakup deficit?
                 break
             tmp2 = n_fragment[i] ** gamma_tmp
             new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
