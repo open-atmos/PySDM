@@ -319,7 +319,6 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    # @pytest.mark.xfail(strict=True)
     def test_multiplicity_overflow(backend=CPU()):
         # Arrange
         params = {
@@ -386,7 +385,6 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    # @pytest.mark.xfail(strict=True)
     def test_same_multiplicity_overflow_no_substeps(backend=CPU()):
         # Arrange
         params = {
