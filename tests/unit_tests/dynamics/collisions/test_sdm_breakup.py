@@ -324,10 +324,77 @@ class TestSDMBreakup:
         # Arrange
         params = {
             "gamma": [100.0],
-            "n_init": [1, 1],
+            "n_init": [1, 3],
             "v_init": [1, 1],
             "is_first_in_pair": [True, False],
             "n_fragment": [1e10],
+        }
+        n_init = params["n_init"]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend)
+        builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray(params["v_init"]),
+            },
+            products=(),
+        )
+
+        n_pairs = n_sd // 2
+        rand = [1.0] * n_pairs
+        Eb = [1.0] * n_pairs
+        pairwise_zeros = particulator.PairwiseStorage.from_ndarray(
+            np.array([0.0] * n_pairs)
+        )
+        general_zeros = particulator.Storage.from_ndarray(np.array([0.0] * n_sd))
+
+        gamma = particulator.PairwiseStorage.from_ndarray(np.array(params["gamma"]))
+        rand = particulator.PairwiseStorage.from_ndarray(np.array(rand))
+        Eb = particulator.PairwiseStorage.from_ndarray(np.array(Eb))
+        breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate_deficit = particulator.Storage.from_ndarray(np.array([0.0]))
+        n_fragment = particulator.PairwiseStorage.from_ndarray(
+            np.array(params["n_fragment"])
+        )
+        is_first_in_pair = particulator.PairIndicator(n_sd)
+        is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
+            np.asarray(params["is_first_in_pair"])
+        )
+
+        # Act
+        particulator.collision_coalescence_breakup(
+            enable_breakup=True,
+            gamma=gamma,
+            rand=rand,
+            Ec=pairwise_zeros,
+            Eb=Eb,
+            n_fragment=n_fragment,
+            coalescence_rate=general_zeros,
+            breakup_rate=breakup_rate,
+            breakup_rate_deficit=breakup_rate_deficit,
+            is_first_in_pair=is_first_in_pair,
+            warn_overflows=True,
+        )
+        assert breakup_rate_deficit[0] > 0
+        np.testing.assert_equal(
+            np.sum(
+                particulator.attributes["n"].to_ndarray()
+                * particulator.attributes["volume"].to_ndarray()
+            ),
+            np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
+        )
+
+    @staticmethod
+    # @pytest.mark.xfail(strict=True)
+    def test_same_multiplicity_overflow_no_substeps(backend=CPU()):
+        # Arrange
+        params = {
+            "gamma": [46.0],
+            "n_init": [1, 1],
+            "v_init": [1, 1],
+            "is_first_in_pair": [True, False],
+            "n_fragment": [4],
         }
         n_init = params["n_init"]
         n_sd = len(n_init)
