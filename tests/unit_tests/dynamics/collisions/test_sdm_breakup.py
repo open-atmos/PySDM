@@ -491,7 +491,7 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    # @pytest.mark.xfail(strict=True)
+    @pytest.mark.xfail()  # TODO #871
     def test_nonnegative_even_if_overflow(backend=CPU()):
         n_sd = 2**5
         builder = Builder(n_sd=n_sd, backend=backend)
