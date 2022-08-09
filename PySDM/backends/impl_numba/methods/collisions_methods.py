@@ -373,6 +373,18 @@ class CollisionsMethods(BackendMethods):
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
+    def fragmentation_limiters(
+        self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y
+    ):
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            vmin=vmin,
+            nfmax=nfmax,
+            x_plus_y=x_plus_y.data,
+        )
+
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __slams_fragmentation_body(n_fragment, probs, rand):
