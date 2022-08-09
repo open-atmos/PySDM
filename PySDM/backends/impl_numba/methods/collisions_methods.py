@@ -67,46 +67,64 @@ def break_up(  # pylint: disable=too-many-arguments
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
-        if multiplicity[k] > multiplicity[j]:
-            j, k = k, j
-        tmp1 = 0
-        for m in range(int(gamma_deficit)):
-            if tmp1 + n_fragment[i] ** m > max_multiplicity:
+        if multiplicity[k] == multiplicity[j]:
+            gamma_tmp = gamma_deficit
+            tmp2 = (n_fragment[i] / 2) ** gamma_tmp
+            new_n = multiplicity[k] * tmp2
+            if new_n > max_multiplicity:
                 atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
                 overflow_flag = True
                 break
-            tmp1 += n_fragment[i] ** m
-            new_n = multiplicity[j] - tmp1 * multiplicity[k]
-            gamma_tmp = m + 1
-            if new_n < 0:
-                gamma_tmp = m
-                tmp1 -= n_fragment[i] ** m
-                break
-        gamma_deficit -= gamma_tmp
-        if n_fragment[i] ** gamma_tmp > max_multiplicity:
-            break
-        tmp2 = n_fragment[i] ** gamma_tmp
-        new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
-
-        if tmp2 * multiplicity[k] > max_multiplicity:
-            nj = multiplicity[j]
-            nk = multiplicity[k]
-            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-            overflow_flag = True
-        elif new_n > 0:
-            nj = new_n
-            nk = multiplicity[k] * tmp2
             for a in range(0, len(attributes)):
-                attributes[a, k] += tmp1 * attributes[a, j]
-                attributes[a, k] /= tmp2
-        else:  # new_n = 0
-            nj = tmp2 * multiplicity[k] / 2
-            nk = nj
-            for a in range(0, len(attributes)):
-                attributes[a, k] += tmp1 * attributes[a, j]
-                attributes[a, k] /= tmp2
+                attributes[a, k] += attributes[a, j]
+                attributes[a, k] /= 2 * tmp2
                 attributes[a, j] = attributes[a, k]
+            nj = new_n
+            nk = new_n
+        else:
+            if multiplicity[k] > multiplicity[j]:
+                j, k = k, j
+            tmp1 = 0
+            for m in range(int(gamma_deficit)):
+                if tmp1 + n_fragment[i] ** m > max_multiplicity:
+                    atomic_add(
+                        breakup_rate_deficit, cid, gamma_deficit * multiplicity[k]
+                    )
+                    overflow_flag = True
+                    break
+                tmp1 += n_fragment[i] ** m
+                new_n = multiplicity[j] - tmp1 * multiplicity[k]
+                gamma_tmp = m + 1
+                if new_n < 0:
+                    gamma_tmp = m
+                    tmp1 -= n_fragment[i] ** m
+                    break
+            # gamma_deficit -= gamma_tmp
+            if n_fragment[i] ** gamma_tmp > max_multiplicity:
+                # TODO #871: should there be other actions in here to count toward breakup deficit?
+                break
+            tmp2 = n_fragment[i] ** gamma_tmp
+            new_n = round(multiplicity[j] - tmp1 * multiplicity[k])
 
+            if tmp2 * multiplicity[k] > max_multiplicity:
+                nj = multiplicity[j]
+                nk = multiplicity[k]
+                atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+                overflow_flag = True
+            elif new_n > 0:
+                nj = new_n
+                nk = multiplicity[k] * tmp2
+                for a in range(0, len(attributes)):
+                    attributes[a, k] += tmp1 * attributes[a, j]
+                    attributes[a, k] /= tmp2
+            else:  # new_n = 0
+                nj = tmp2 * multiplicity[k] / 2
+                nk = nj
+                for a in range(0, len(attributes)):
+                    attributes[a, k] += tmp1 * attributes[a, j]
+                    attributes[a, k] /= tmp2
+                    attributes[a, j] = attributes[a, k]
+        gamma_deficit -= gamma_tmp
         if overflow_flag:
             if warn_overflows:
                 warn("overflow", __file__)
