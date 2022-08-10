@@ -78,7 +78,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up(  # pylint: disable=too-many-arguments
+def break_up(  # pylint: disable=too-many-arguments,unused-argument
     i,
     j,
     k,
@@ -91,6 +91,7 @@ def break_up(  # pylint: disable=too-many-arguments
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
+    volume,
 ):  # pylint: disable=too-many-branches
     gamma_tmp = 0
     gamma_deficit = gamma[i]
@@ -328,6 +329,7 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         max_multiplicity,
         warn_overflows,
+        volume,
     ):
         # pylint: disable=not-an-iterable,too-many-nested-blocks
         for i in numba.prange(length // 2):
@@ -363,6 +365,7 @@ class CollisionsMethods(BackendMethods):
                     breakup_rate,
                     breakup_rate_deficit,
                     warn_overflows,
+                    volume,
                 )
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -384,6 +387,7 @@ class CollisionsMethods(BackendMethods):
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
+        volume,
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
@@ -404,6 +408,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair=is_first_in_pair.indicator.data,
             max_multiplicity=max_multiplicity,
             warn_overflows=warn_overflows,
+            volume=volume.data,
         )
 
     @staticmethod
@@ -768,7 +773,7 @@ class CollisionsMethods(BackendMethods):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.break_up"><code class="name flex">
-<span>def <span class="ident">break_up</span></span>(<span>i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity, breakup_rate, breakup_rate_deficit, warn_overflows)</span>
+<span>def <span class="ident">break_up</span></span>(<span>i, j, k, cid, multiplicity, gamma, attributes, n_fragment, max_multiplicity, breakup_rate, breakup_rate_deficit, warn_overflows, volume)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -777,7 +782,7 @@ class CollisionsMethods(BackendMethods):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def break_up(  # pylint: disable=too-many-arguments
+def break_up(  # pylint: disable=too-many-arguments,unused-argument
     i,
     j,
     k,
@@ -790,6 +795,7 @@ def break_up(  # pylint: disable=too-many-arguments
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
+    volume,
 ):  # pylint: disable=too-many-branches
     gamma_tmp = 0
     gamma_deficit = gamma[i]
@@ -1106,6 +1112,7 @@ def pair_indices(i, idx, is_first_in_pair):
         is_first_in_pair,
         max_multiplicity,
         warn_overflows,
+        volume,
     ):
         # pylint: disable=not-an-iterable,too-many-nested-blocks
         for i in numba.prange(length // 2):
@@ -1141,6 +1148,7 @@ def pair_indices(i, idx, is_first_in_pair):
                     breakup_rate,
                     breakup_rate_deficit,
                     warn_overflows,
+                    volume,
                 )
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -1162,6 +1170,7 @@ def pair_indices(i, idx, is_first_in_pair):
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
+        volume,
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
@@ -1182,6 +1191,7 @@ def pair_indices(i, idx, is_first_in_pair):
             is_first_in_pair=is_first_in_pair.indicator.data,
             max_multiplicity=max_multiplicity,
             warn_overflows=warn_overflows,
+            volume=volume.data,
         )
 
     @staticmethod
@@ -1729,7 +1739,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, rand, Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, rand, Ec, Eb, n_fragment, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, volume)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1755,6 +1765,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     breakup_rate_deficit,
     is_first_in_pair,
     warn_overflows,
+    volume,
 ):
     max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
     self.__collision_coalescence_breakup_body(
@@ -1775,6 +1786,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
         is_first_in_pair=is_first_in_pair.indicator.data,
         max_multiplicity=max_multiplicity,
         warn_overflows=warn_overflows,
+        volume=volume.data,
     )</code></pre>
 </details>
 </dd>

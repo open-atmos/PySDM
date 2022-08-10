@@ -196,6 +196,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
+                volume=self.attributes[&#34;volume&#34;],
             )
         else:
             self.backend.collision_coalescence(
@@ -614,6 +615,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
+                volume=self.attributes[&#34;volume&#34;],
             )
         else:
             self.backend.collision_coalescence(
@@ -1042,6 +1044,7 @@ def n_sd(self) -&gt; int:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=warn_overflows,
+            volume=self.attributes[&#34;volume&#34;],
         )
     else:
         self.backend.collision_coalescence(
