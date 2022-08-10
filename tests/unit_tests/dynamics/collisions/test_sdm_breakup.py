@@ -96,6 +96,7 @@ class TestSDMBreakup:
         rand = particulator.PairwiseStorage.from_ndarray(np.array([params["rand"]]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array([4]))
         is_first_in_pair = make_PairIndicator(backend_class)(n_sd)
+        min_volume = 1 * si.nm**3
 
         # Act
         particulator.collision_coalescence_breakup(
@@ -109,6 +110,7 @@ class TestSDMBreakup:
             breakup_rate=general_zeros,
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
+            min_volume=min_volume,
             warn_overflows=True,
         )
 
@@ -184,6 +186,7 @@ class TestSDMBreakup:
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
             np.asarray(params["is_first_in_pair"])
         )
+        min_volume = 1 * si.nm**3
 
         # Act
         particulator.collision_coalescence_breakup(
@@ -197,6 +200,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
+            min_volume=min_volume,
             warn_overflows=True,
         )
 
@@ -216,6 +220,7 @@ class TestSDMBreakup:
                 "v_init": [1, 1],
                 "n_expected": [2, 2],
                 "v_expected": [0.5, 0.5],
+                "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [4],
             },
@@ -225,6 +230,7 @@ class TestSDMBreakup:
                 "v_init": [1, 2],
                 "n_expected": [4, 36],
                 "v_expected": [1, 2 / 3],
+                "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [3],
             },
@@ -232,8 +238,9 @@ class TestSDMBreakup:
                 "gamma": [2.0],
                 "n_init": [1, 1],
                 "v_init": [1, 1],
-                "n_expected": [4, 4],
-                "v_expected": [0.25, 0.25],
+                "n_expected": [2, 2],
+                "v_expected": [0.5, 0.5],
+                "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [4],
             },
@@ -241,14 +248,15 @@ class TestSDMBreakup:
                 "gamma": [2.0],
                 "n_init": [3, 1],
                 "v_init": [1, 1],
-                "n_expected": [8, 2],
-                "v_expected": [0.375, 0.5],
+                "n_expected": [2, 4],
+                "v_expected": [1.0, 0.5],
+                "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [4],
             },
         ],
     )
-    @pytest.mark.parametrize("flag", ("n", "v", "conserve"))
+    @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
     def test_attribute_update_single_breakup(params, flag, backend_class=CPU):
         # Arrange
         n_init = params["n_init"]
@@ -296,6 +304,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            min_volume=1 * si.nm**3,
             warn_overflows=True,
         )
 
@@ -315,6 +324,9 @@ class TestSDMBreakup:
                     * particulator.attributes["volume"].to_ndarray()
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
+            ),
+            "deficit": lambda: np.testing.assert_equal(
+                breakup_rate_deficit.to_ndarray(), np.array(params["expected_deficit"])
             ),
         }[flag]()
 
@@ -374,6 +386,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            min_volume=1 * si.nm**3,
             warn_overflows=True,
         )
         assert breakup_rate_deficit[0] > 0
@@ -395,8 +408,19 @@ class TestSDMBreakup:
                 "v_init": [1, 1],
                 "n_expected": [1, 1],
                 "v_expected": [1, 1],
+                "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [1.6],
+            },
+            {
+                "gamma": [1.0],
+                "n_init": [1, 1],
+                "v_init": [1, 1],
+                "n_expected": [1, 1],
+                "v_expected": [1, 1],
+                "expected_deficit": [0.0],
+                "is_first_in_pair": [True, False],
+                "n_fragment": [2.6],
             },
             {
                 "gamma": [2.0],
@@ -404,6 +428,7 @@ class TestSDMBreakup:
                 "v_init": [1, 2],
                 "n_expected": [6, 25],
                 "v_expected": [1, 0.88],
+                "expected_deficit": [0.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [2.5],
             },
@@ -411,14 +436,15 @@ class TestSDMBreakup:
                 "gamma": [2.0],
                 "n_init": [2, 1],
                 "v_init": [1, 1],
-                "n_expected": [3, 2],
-                "v_expected": [5 / 9, 2 / 3],
+                "n_expected": [1, 3],
+                "v_expected": [1, 2 / 3],
+                "expected_deficit": [1.0],
                 "is_first_in_pair": [True, False],
                 "n_fragment": [2.8],
             },
         ],
     )
-    @pytest.mark.parametrize("flag", ("n", "v", "conserve"))
+    @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
     def test_noninteger_fragments(params, flag, backend_class=CPU):
         # Arrange
         n_init = params["n_init"]
@@ -466,6 +492,7 @@ class TestSDMBreakup:
             breakup_rate=breakup_rate,
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
+            min_volume=1 * si.nm**3,
             warn_overflows=True,
         )
 
@@ -487,6 +514,9 @@ class TestSDMBreakup:
                 ),
                 np.sum(np.array(params["n_init"]) * np.array(params["v_init"])),
                 decimal=6,
+            ),
+            "deficit": lambda: np.testing.assert_equal(
+                breakup_rate_deficit.to_ndarray(), np.array(params["expected_deficit"])
             ),
         }[flag]()
 
