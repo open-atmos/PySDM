@@ -36,7 +36,7 @@ jobs:
           python -We -c "import PySDM"
 
       - run: |
-          pip install -r test-time-requirements.txt
+          SYSTEM_VERSION_COMPAT=0 pip install -r test-time-requirements.txt
 
       # ensure previous pip did not overwrite the package
       - run: |
