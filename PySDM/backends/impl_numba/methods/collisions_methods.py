@@ -49,7 +49,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(  # pylint: disable=too-many-arguments
+def break_up(  # pylint: disable=too-many-arguments,unused-argument
     i,
     j,
     k,
