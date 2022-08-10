@@ -18,7 +18,7 @@ jobs:
   build:
     strategy:
       matrix:
-        platform: [ubuntu-latest, macos-latest, windows-latest]
+        platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: [3.7, 3.8, 3.9]
     runs-on: ${{ matrix.platform }}
     steps:
@@ -36,7 +36,7 @@ jobs:
           python -We -c "import PySDM"
 
       - run: |
-          pip install -r test-time-requirements.txt
+          SYSTEM_VERSION_COMPAT=0 pip install -r test-time-requirements.txt
 
       # ensure previous pip did not overwrite the package
       - run: |
