@@ -1,9 +1,6 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from audioop import mul
-from xml.sax.xmlreader import AttributesImpl
-
 import numba
 import numpy as np
 
@@ -68,7 +65,7 @@ def break_up(  # pylint: disable=too-many-arguments
     warn_overflows,
     volume,
 ):  # pylint: disable=too-many-branches
-    # TODO: update the arguments for the calling function
+    # TODO #874: update the arguments for the calling function
 
     # 1. find the max gamma that can be supported in 1 time step, add to rate,
     #    and add remainder to the deficit (limits: max_xi, max_volume, min_volume)
@@ -92,7 +89,7 @@ def break_up(  # pylint: disable=too-many-arguments
             overflow_flag = True
             break
         # check for new_n > 0, max volume, min volume
-        elif new_n < 0 or new_v > max(volume[j], volume[k]) or new_v < min_volume:
+        if new_n < 0 or new_v > max(volume[j], volume[k]) or new_v < min_volume:
             atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
             break
 
@@ -131,7 +128,7 @@ def break_up(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up_old(  # pylint: disable=too-many-arguments
+def break_up_old(  # pylint: disable=too-many-arguments,unused-argument
     i,
     j,
     k,
