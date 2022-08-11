@@ -79,7 +79,6 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
         divisor_jk_test = divisor_jk * n_fragment[i]
         new_n = multiplicity[j] - transfer_jk_test * multiplicity[k]
         new_v = (volume[k] + transfer_jk_test * volume[j]) / divisor_jk_test
-        print("m, new_n, new_v = ", m, new_n, new_v)
         # check for overflow of multiplicity
         if (
             transfer_jk_test > max_multiplicity
