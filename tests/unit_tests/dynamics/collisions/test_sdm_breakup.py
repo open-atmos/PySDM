@@ -522,7 +522,7 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
-            min_volume=0
+            min_volume=0,
         )
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
