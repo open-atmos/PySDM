@@ -24,6 +24,7 @@ class AlwaysN:
         self.vmax.max(self.particulator.attributes["volume"], is_first_in_pair)
         self.frag_size.sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.frag_size /= self.N
+        # TODO #874
         # self.particulator.backend.fragmentation_limiters(
         #     n_fragment=self.N_vec,
         #     frag_size=self.frag_size,
