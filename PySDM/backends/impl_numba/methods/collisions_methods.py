@@ -468,7 +468,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
-    # TODO: remove all but the nfmax limiter and move others to dynamic
+    # TODO #874: remove all but the nfmax limiter and move others to dynamic
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             n_fragment[i] = x_plus_y[i] / frag_size[i]
