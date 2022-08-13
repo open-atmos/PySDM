@@ -23,7 +23,7 @@ class CollisionRatePerGridbox(RateProduct):
 class CoalescenceOnlyRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1"):
         super().__init__(
-            name=name, unit=unit, counter="coalescence_rate", dynamic="Coalescence"
+            name=name, unit=unit, counter="coalescence_rate", dynamic="Collision"
         )
 
 
@@ -51,5 +51,5 @@ class BreakupRatePerGridbox(RateProduct):
 class BreakupRateDeficitPerGridbox(RateProduct):
     def __init__(self, name=None, unit="s^-1"):
         super().__init__(
-            name=name, unit=unit, counter="breakup_rate_deficit", dynamic="Breakup"
+            name=name, unit=unit, counter="breakup_rate_deficit", dynamic="Collision"
         )

@@ -43,6 +43,7 @@ class Collision:
         enable_breakup: bool = True,
         min_volume=0.0,
         warn_overflows: bool = True,
+        handle_all_breakups: bool = False,
     ):
         assert substeps == 1 or adaptive is False
 
@@ -51,6 +52,7 @@ class Collision:
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.handle_all_breakups = handle_all_breakups
         self.min_volume = min_volume
 
         self.collision_kernel = collision_kernel
@@ -208,6 +210,7 @@ class Collision:
             is_first_in_pair=self.is_first_in_pair,
             min_volume=self.min_volume,
             warn_overflows=self.warn_overflows,
+            handle_all_breakups=self.handle_all_breakups,
         )
 
         if self.adaptive:

@@ -127,7 +127,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up_old(  # pylint: disable=too-many-arguments,unused-argument
+def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
     i,
     j,
     k,
@@ -137,6 +137,7 @@ def break_up_old(  # pylint: disable=too-many-arguments,unused-argument
     attributes,
     n_fragment,
     max_multiplicity,
+    min_volume,
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
@@ -380,6 +381,7 @@ class CollisionsMethods(BackendMethods):
         min_volume,
         warn_overflows,
         volume,
+        handle_all_breakups,
     ):
         # pylint: disable=not-an-iterable,too-many-nested-blocks
         for i in numba.prange(length // 2):
@@ -400,6 +402,23 @@ class CollisionsMethods(BackendMethods):
                     gamma,
                     attributes,
                     coalescence_rate,
+                )
+            elif handle_all_breakups:
+                break_up_while(
+                    i,
+                    j,
+                    k,
+                    cell_id[i],
+                    multiplicity,
+                    gamma,
+                    attributes,
+                    n_fragment,
+                    max_multiplicity,
+                    min_volume,
+                    breakup_rate,
+                    breakup_rate_deficit,
+                    warn_overflows,
+                    volume,
                 )
             else:
                 break_up(
@@ -440,6 +459,7 @@ class CollisionsMethods(BackendMethods):
         min_volume,
         warn_overflows,
         volume,
+        handle_all_breakups,
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
@@ -462,6 +482,7 @@ class CollisionsMethods(BackendMethods):
             min_volume=min_volume,
             warn_overflows=warn_overflows,
             volume=volume.data,
+            handle_all_breakups=handle_all_breakups,
         )
 
     @staticmethod
