@@ -167,6 +167,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
                 breakup_rate_deficit=breakup_rate_deficit,
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
+                volume=self.attributes["volume"],
             )
         else:
             self.backend.collision_coalescence(
