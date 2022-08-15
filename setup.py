@@ -26,7 +26,7 @@ setup(
         "numpy" + ("==1.21" if "CI" in os.environ else ""),
         "Pint" + ("==0.17" if "CI" in os.environ else ""),
         "chempy" + ("==0.7.10" if "CI" in os.environ else ""),
-        "scipy" + ("==1.9.0" if "CI" in os.environ else ""),
+        "scipy" + ("==1.8.1" if "CI" in os.environ else ""),
         "pyevtk" + ("==1.2.0" if "CI" in os.environ else ""),
     ],
     author="https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors",
