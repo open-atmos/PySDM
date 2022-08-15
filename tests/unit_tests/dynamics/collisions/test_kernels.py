@@ -4,14 +4,7 @@ import pytest
 
 from PySDM import Builder
 from PySDM.backends import CPU
-<<<<<<< HEAD
 from PySDM.dynamics.collisions.collision_kernels import Golovin, SimpleGeometric
-=======
-from PySDM.dynamics.collisions.collision_kernels import (
-    Golovin,
-    SimpleGeometric,
-)
->>>>>>> f0f79d85 (removing unused import)
 from PySDM.environments import Box
 from PySDM.formulae import Formulae
 
