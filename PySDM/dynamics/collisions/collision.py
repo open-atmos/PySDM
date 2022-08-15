@@ -271,6 +271,7 @@ class Collision:
             collision_rate=self.collision_rate,
             is_first_in_pair=is_first_in_pair,
         )
+        print(prob.data)
 
 
 class Coalescence(Collision):

@@ -677,6 +677,7 @@ class CollisionsMethods(BackendMethods):
                 collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k]
             )
             gamma[i] = g
+            print(gamma)
 
     def compute_gamma(
         self,
