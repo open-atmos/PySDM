@@ -26,7 +26,7 @@ DEFAULTS = namedtuple("_", ("dt_coal_range", "min_volume", "adaptive", "substeps
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     min_volume=0.0,
     adaptive=True,
-    substeps=1
+    substeps=1,
 )
 
 
