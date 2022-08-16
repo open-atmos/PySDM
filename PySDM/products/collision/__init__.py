@@ -3,8 +3,10 @@ Collision rate products for breakup, coalescence, and collisions
 """
 
 from .collision_rates import (
+    BreakupOnlyRatePerGridbox,
     BreakupRateDeficitPerGridbox,
     BreakupRatePerGridbox,
+    CoalescenceOnlyRatePerGridbox,
     CoalescenceRatePerGridbox,
     CollisionRateDeficitPerGridbox,
     CollisionRatePerGridbox,

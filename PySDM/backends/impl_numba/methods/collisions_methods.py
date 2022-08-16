@@ -59,6 +59,86 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
     attributes,
     n_fragment,
     max_multiplicity,
+    min_volume,
+    breakup_rate,
+    breakup_rate_deficit,
+    warn_overflows,
+    volume,
+):  # pylint: disable=too-many-branches
+    # TODO #874: update the arguments for the calling function
+
+    # 1. find the max gamma that can be supported in 1 time step, add to rate,
+    #    and add remainder to the deficit (limits: max_multiplicity, min_volume,
+    #    volume doesn't exceed initial particle volumes)
+    overflow_flag = False
+    transfer_jk = 0
+    divisor_jk = 1
+    gamma_tmp = 0
+    gamma_deficit = gamma[i]
+    for m in range(int(gamma[i])):
+        transfer_jk_test = transfer_jk + divisor_jk
+        divisor_jk_test = divisor_jk * n_fragment[i]
+        new_n = multiplicity[j] - transfer_jk_test * multiplicity[k]
+        new_v = (volume[k] + transfer_jk_test * volume[j]) / divisor_jk_test
+        # check for overflow of multiplicity
+        if (
+            transfer_jk_test > max_multiplicity
+            or multiplicity[k] * divisor_jk_test > max_multiplicity
+        ):
+            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+            overflow_flag = True
+            break
+        # check for new_n > 0, max volume, min volume
+        if new_n < 0 or new_v > max(volume[j], volume[k]) or new_v < min_volume:
+            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+            break
+
+        # all tests passed
+        transfer_jk = transfer_jk_test
+        divisor_jk = divisor_jk_test
+        gamma_tmp = m + 1
+        gamma_deficit = gamma[i] - gamma_tmp
+    # 2. Compute the new multiplicities and particle sizes, with rounding
+    new_n = round(multiplicity[j] - transfer_jk * multiplicity[k])
+    for a in range(0, len(attributes)):
+        attributes[a, k] += transfer_jk * attributes[a, j]
+        attributes[a, k] /= divisor_jk
+    if new_n > 0:
+        nj = new_n
+        nk = multiplicity[k] * divisor_jk
+    else:
+        nj = divisor_jk * multiplicity[k] / 2
+        nk = nj
+        for a in range(0, len(attributes)):
+            attributes[a, j] = attributes[a, k]
+    # add up the product
+    atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
+    # perform rounding as necessary
+    multiplicity[j] = round(nj)
+    multiplicity[k] = round(nk)
+    factor_j = nj / multiplicity[j]
+    factor_k = nk / multiplicity[k]
+    for a in range(0, len(attributes)):
+        attributes[a, k] *= factor_k
+        attributes[a, j] *= factor_j
+
+    if overflow_flag:
+        if warn_overflows:
+            warn("overflow", __file__)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    j,
+    k,
+    cid,
+    multiplicity,
+    gamma,
+    attributes,
+    n_fragment,
+    max_multiplicity,
+    min_volume,
     breakup_rate,
     breakup_rate_deficit,
     warn_overflows,
@@ -299,8 +379,10 @@ class CollisionsMethods(BackendMethods):
         breakup_rate_deficit,
         is_first_in_pair,
         max_multiplicity,
+        min_volume,
         warn_overflows,
         volume,
+        handle_all_breakups,
     ):
         # pylint: disable=not-an-iterable,too-many-nested-blocks
         for i in numba.prange(length // 2):
@@ -322,6 +404,23 @@ class CollisionsMethods(BackendMethods):
                     attributes,
                     coalescence_rate,
                 )
+            elif handle_all_breakups:
+                break_up_while(
+                    i,
+                    j,
+                    k,
+                    cell_id[i],
+                    multiplicity,
+                    gamma,
+                    attributes,
+                    n_fragment,
+                    max_multiplicity,
+                    min_volume,
+                    breakup_rate,
+                    breakup_rate_deficit,
+                    warn_overflows,
+                    volume,
+                )
             else:
                 break_up(
                     i,
@@ -333,6 +432,7 @@ class CollisionsMethods(BackendMethods):
                     attributes,
                     n_fragment,
                     max_multiplicity,
+                    min_volume,
                     breakup_rate,
                     breakup_rate_deficit,
                     warn_overflows,
@@ -357,8 +457,10 @@ class CollisionsMethods(BackendMethods):
         breakup_rate,
         breakup_rate_deficit,
         is_first_in_pair,
+        min_volume,
         warn_overflows,
         volume,
+        handle_all_breakups,
     ):
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
@@ -378,13 +480,16 @@ class CollisionsMethods(BackendMethods):
             breakup_rate_deficit=breakup_rate_deficit.data,
             is_first_in_pair=is_first_in_pair.indicator.data,
             max_multiplicity=max_multiplicity,
+            min_volume=min_volume,
             warn_overflows=warn_overflows,
             volume=volume.data,
+            handle_all_breakups=handle_all_breakups,
         )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
+    # TODO #874: remove all but the nfmax limiter and move others to dynamic
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             n_fragment[i] = x_plus_y[i] / frag_size[i]
@@ -395,6 +500,18 @@ class CollisionsMethods(BackendMethods):
 
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
+
+    def fragmentation_limiters(
+        self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y
+    ):
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            vmin=vmin,
+            nfmax=nfmax,
+            x_plus_y=x_plus_y.data,
+        )
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
