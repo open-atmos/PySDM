@@ -98,25 +98,8 @@ def equilibrate_wet_radii(
             b = r_cr(kappa[i], r_dry[i] ** 3, T[cid], const.sgm_w)
 
             if not a &lt; b:
-                warn(
-                    msg=&#34;dry radius larger than critical radius&#34;,
-                    file=__file__,
-                    context=(
-                        &#34;i&#34;,
-                        i,
-                        &#34;r_d&#34;,
-                        r_dry[i],
-                        &#34;T&#34;,
-                        T[cid],
-                        &#34;RH&#34;,
-                        RH[cid],
-                        &#34;f_org&#34;,
-                        f_org[i],
-                        &#34;kappa&#34;,
-                        kappa[i],
-                    ),
-                )
-                iters[i] = -1
+                r_wet[i] = r_dry[i]
+                iters[i] = 0
                 continue
 
             # minimisation
@@ -248,25 +231,8 @@ def equilibrate_wet_radii(
             b = r_cr(kappa[i], r_dry[i] ** 3, T[cid], const.sgm_w)
 
             if not a &lt; b:
-                warn(
-                    msg=&#34;dry radius larger than critical radius&#34;,
-                    file=__file__,
-                    context=(
-                        &#34;i&#34;,
-                        i,
-                        &#34;r_d&#34;,
-                        r_dry[i],
-                        &#34;T&#34;,
-                        T[cid],
-                        &#34;RH&#34;,
-                        RH[cid],
-                        &#34;f_org&#34;,
-                        f_org[i],
-                        &#34;kappa&#34;,
-                        kappa[i],
-                    ),
-                )
-                iters[i] = -1
+                r_wet[i] = r_dry[i]
+                iters[i] = 0
                 continue
 
             # minimisation
