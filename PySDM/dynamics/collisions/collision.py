@@ -22,8 +22,11 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
-DEFAULTS = namedtuple("_", ("dt_coal_range",))(
-    dt_coal_range=(0.1 * si.second, 100.0 * si.second)
+DEFAULTS = namedtuple("_", ("dt_coal_range", "min_volume", "adaptive", "substeps"))(
+    dt_coal_range=(0.1 * si.second, 100.0 * si.second),
+    min_volume=0.0,
+    adaptive=True,
+    substeps=1,
 )
 
 
@@ -37,11 +40,13 @@ class Collision:
         fragmentation_function,
         croupier=None,
         optimized_random=False,
-        substeps: int = 1,
-        adaptive: bool = True,
+        substeps: int = DEFAULTS.substeps,
+        adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
         enable_breakup: bool = True,
+        min_volume=DEFAULTS.min_volume,
         warn_overflows: bool = True,
+        handle_all_breakups: bool = False,
     ):
         assert substeps == 1 or adaptive is False
 
@@ -50,6 +55,8 @@ class Collision:
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.handle_all_breakups = handle_all_breakups
+        self.min_volume = min_volume
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -204,7 +211,9 @@ class Collision:
             breakup_rate=self.breakup_rate,
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
+            min_volume=self.min_volume,
             warn_overflows=self.warn_overflows,
+            handle_all_breakups=self.handle_all_breakups,
         )
 
         if self.adaptive:
@@ -275,8 +284,8 @@ class Coalescence(Collision):
         coalescence_efficiency=ConstEc(Ec=1),
         croupier=None,
         optimized_random=False,
-        substeps: int = 1,
-        adaptive: bool = True,
+        substeps: int = DEFAULTS.substeps,
+        adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
     ):
         breakup_efficiency = ConstEb(Eb=0)
@@ -303,9 +312,10 @@ class Breakup(Collision):
         fragmentation_function,
         croupier=None,
         optimized_random=False,
-        substeps: int = 1,
-        adaptive: bool = True,
+        substeps: int = DEFAULTS.substeps,
+        adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        min_volume=DEFAULTS.min_volume,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -319,4 +329,5 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            min_volume=min_volume,
         )
