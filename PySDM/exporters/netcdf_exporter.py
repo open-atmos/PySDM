@@ -2,7 +2,7 @@
  [SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
 """
 import numpy as np
-from scipy.io.netcdf import netcdf_file
+from scipy.io import netcdf_file
 
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
