@@ -11,9 +11,9 @@ class IceNucleiConcentration(MomentProduct):
         super().__init__(unit=unit, name=name)
         self.specific = __specific
         self.__nonzero_filter_range = (
-            np.finfo(float).tiny,
+            np.finfo(float).tiny,  # pylint: disable=no-member
             np.inf,
-        )  # pylint: disable=no-member
+        )
         self.__filter_attr = None
 
     def register(self, builder):
