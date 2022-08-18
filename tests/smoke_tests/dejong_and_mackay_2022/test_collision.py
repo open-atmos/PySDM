@@ -13,13 +13,14 @@ from PySDM.physics import si
 
 def test_collision(plot=False):
     settings = Settings0D()
+    t_steps = [0, 100, 200]
     if "CI" in os.environ:
         settings.n_sd = 10
     else:
         settings.n_sd = 100
 
-    (x1, y1) = run_box_NObreakup(settings)
-    (x2, y2, rates) = run_box_breakup(settings)
+    (x1, y1) = run_box_NObreakup(settings, t_steps)
+    (x2, y2, __) = run_box_breakup(settings, t_steps)
 
     for step in settings.output_steps:
         if plot:
