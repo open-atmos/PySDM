@@ -234,7 +234,6 @@ class Collision:
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
         prob.max(self.particulator.attributes["n"], is_first_in_pair)
         prob *= self.kernel_temp
-
         self.particulator.normalize(prob, self.norm_factor_temp)
 
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
@@ -271,7 +270,6 @@ class Collision:
             collision_rate=self.collision_rate,
             is_first_in_pair=is_first_in_pair,
         )
-        print(prob.data)
 
 
 class Coalescence(Collision):

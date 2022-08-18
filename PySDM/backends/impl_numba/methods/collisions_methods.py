@@ -676,8 +676,14 @@ class CollisionsMethods(BackendMethods):
             atomic_add(
                 collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k]
             )
+            print(
+                gamma[i],
+                g,
+                multiplicity[k],
+                collision_rate[cid],
+                collision_rate_deficit[cid],
+            )
             gamma[i] = g
-            print(gamma)
 
     def compute_gamma(
         self,
