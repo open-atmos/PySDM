@@ -25,136 +25,82 @@ from PySDM.products import (
 
 
 class TestCollisionProducts:
-    # @staticmethod
-    # @pytest.mark.parametrize(
-    #     "params",
-    #     [
-    #         { # coalescence only
-    #             "enable_breakup": False,
-    #             "cr": 4.0,
-    #             "crd": 6.0,
-    #             "cor": 4.0,
-    #         },
-    #         { # breakup and coalescence
-    #             "enable_breakup": True,
-    #             "enable_coalescence": True,
-    #             "Ec": 1.0,
-    #             "Eb": 1.0,
-    #             "nf": np.pi,
-    #             "cr": 4.0,
-    #             "crd": 6.0,
-    #             "cor": 4.0,
-    #             "br": 0.0,
-    #             "brd": 0.0,
-    #         },
-    #         { # breakup and coalescence
-    #             "enable_breakup": True,
-    #             "enable_coalescence": True,
-    #             "Ec": 0.0,
-    #             "Eb": 1.0,
-    #             "nf": 2.0,
-    #             "cr": 4.0,
-    #             "crd": 6.0,
-    #             "cor": 0.0,
-    #             "br": 2.0,
-    #             "brd": 2.0,
-    #         },
-    #         { # breakup only
-    #             "enable_breakup": True,
-    #             "enable_coalescence": False,
-    #             "nf": 2.0,
-    #             "cr": 4.0,
-    #             "crd": 6.0,
-    #             "br": 2.0,
-    #             "brd": 2.0,
-    #         },
-    #     ],
-    # )
-    # def test_individual_dynamics_rates_nonadaptive(params, backend_class=CPU):
-    #     # Arrange
-    #     n_init = [5, 2]
-    #     n_sd = len(n_init)
-    #     builder = Builder(n_sd, backend_class())
-    #     builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+    @staticmethod
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {  # coalescence only
+                "enable_breakup": False,
+                "cr": 4.0,
+                "crd": 6.0,
+                "cor": 4.0,
+            },
+            {  # breakup and coalescence
+                "enable_breakup": True,
+                "enable_coalescence": True,
+                "Ec": 1.0,
+                "Eb": 1.0,
+                "nf": np.pi,
+                "cr": 4.0,
+                "crd": 6.0,
+                "cor": 4.0,
+                "br": 0.0,
+                "brd": 0.0,
+            },
+            {  # breakup and coalescence
+                "enable_breakup": True,
+                "enable_coalescence": True,
+                "Ec": 0.0,
+                "Eb": 1.0,
+                "nf": 2.0,
+                "cr": 4.0,
+                "crd": 6.0,
+                "cor": 0.0,
+                "br": 2.0,
+                "brd": 2.0,
+            },
+            {  # breakup only
+                "enable_breakup": True,
+                "enable_coalescence": False,
+                "nf": 2.0,
+                "cr": 4.0,
+                "crd": 6.0,
+                "br": 2.0,
+                "brd": 2.0,
+            },
+        ],
+    )
+    def test_individual_dynamics_rates_nonadaptive(params, backend_class=CPU):
+        # Arrange
+        n_init = [5, 2]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-    #     dynamic, productss = _get_dynamics_and_products(params, adaptive=False)
-    #     builder.add_dynamic(dynamic)
+        dynamic, productss = _get_dynamics_and_products(params, adaptive=False)
+        builder.add_dynamic(dynamic)
 
-    #     particulator = builder.build(
-    #         attributes={
-    #             "n": np.asarray(n_init),
-    #             "volume": np.asarray([100 * si.um**3] * n_sd),
-    #         },
-    #         products=productss,
-    #     )
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
+            },
+            products=productss,
+        )
 
-    #     # Act
-    #     particulator.run(1)
+        # Act
+        particulator.run(1)
 
-    #     # Assert
-    #     assert particulator.products["cr"].get()[0] == params["cr"]
-    #     assert particulator.products["crd"].get()[0] == params["crd"]
-    #     if params["enable_breakup"]:
-    #         assert particulator.products["br"].get()[0] == params["br"]
-    #         assert particulator.products["brd"].get()[0] == params["brd"]
-    #         if params["enable_coalescence"]:
-    #             assert particulator.products["cor"].get()[0] == params["cor"]
-    #     else:
-    #         assert particulator.products["cor"].get()[0] == params["cor"]
-
-    # @staticmethod
-    # @pytest.mark.parametrize(
-    #     "params",
-    #     [
-    #         { # coalescence only
-    #             "enable_breakup": False,
-    #         },
-    #         { # breakup and coalescence
-    #             "enable_breakup": True,
-    #             "enable_coalescence": True,
-    #             "Ec": 1.0,
-    #             "Eb": 1.0,
-    #             "nf": np.pi,
-    #         },
-    #         { # breakup only
-    #             "enable_breakup": True,
-    #             "enable_coalescence": False,
-    #             "nf": np.pi,
-    #         },
-    #     ],
-    # )
-    # @pytest.mark.parametrize(
-    #     "n_init",
-    #     [
-    #         [5, 2],
-    #         [1, 2, 3, 4],
-    #         [3, 7] * 10
-    #     ],
-    # )
-    # def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
-    #     # Arrange
-    #     print(n_init)
-    #     n_sd = len(n_init)
-    #     builder = Builder(n_sd, backend_class())
-    #     builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
-
-    #     dynamic, products = _get_dynamics_and_products(params, adaptive=True)
-    #     builder.add_dynamic(dynamic)
-
-    #     particulator = builder.build(
-    #         attributes={
-    #             "n": np.asarray(n_init),
-    #             "volume": np.asarray([100 * si.um**3] * n_sd),
-    #         },
-    #         products=(CollisionRateDeficitPerGridbox(name="crd"),)
-    #     )
-
-    #     # Act
-    #     particulator.run(1)
-
-    #     # Assert
-    #     print(particulator.products["crd"].get()[0])
-    #     np.testing.assert_equal(particulator.products["crd"].get()[0], np.asarray([0.0] * (n_sd // 2)))
+        # Assert
+        assert particulator.products["cr"].get()[0] == params["cr"]
+        assert particulator.products["crd"].get()[0] == params["crd"]
+        if params["enable_breakup"]:
+            assert particulator.products["br"].get()[0] == params["br"]
+            assert particulator.products["brd"].get()[0] == params["brd"]
+            if params["enable_coalescence"]:
+                assert particulator.products["cor"].get()[0] == params["cor"]
+        else:
+            assert particulator.products["cor"].get()[0] == params["cor"]
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -170,21 +116,185 @@ class TestCollisionProducts:
                 "Eb": 1.0,
                 "nf": np.pi,
             },
-            {  # breakup and coalescence
+            {  # breakup only
                 "enable_breakup": True,
                 "enable_coalescence": False,
                 "nf": np.pi,
             },
         ],
     )
-    def test_breakup_deficits_when_adaptive(params, backend=CPU):
-        True
+    @pytest.mark.parametrize(
+        "n_init",
+        [[5, 2], [1, 2, 3, 4], [3, 7] * 10],
+    )
+    def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
+        # Arrange
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-    # def test_no_breakup_deficits_when_while_loop
+        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        builder.add_dynamic(dynamic)
 
-    # def test_deficit_rates()
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
+            },
+            products=(CollisionRateDeficitPerGridbox(name="crd"),),
+        )
 
-    # def test_rate_sums()
+        # Act
+        particulator.run(1)
+
+        # Assert
+        np.testing.assert_equal(
+            particulator.products["crd"].get()[0], np.asarray([0.0] * (n_sd // 2))
+        )
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {  # breakup and coalescence
+                "enable_breakup": True,
+                "enable_coalescence": True,
+                "Ec": 0.1,
+                "Eb": 1.0,
+                "nf": np.pi,
+            },
+            {  # breakup only
+                "enable_breakup": True,
+                "enable_coalescence": False,
+                "nf": np.pi,
+            },
+        ],
+    )
+    def test_breakup_deficits_when_adaptive(params, backend_class=CPU):
+        # Arrange
+        n_init = [7, 353]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+
+        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        builder.add_dynamic(dynamic)
+
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
+            },
+            products=(
+                CollisionRateDeficitPerGridbox(name="crd"),
+                BreakupRateDeficitPerGridbox(name="brd"),
+            ),
+        )
+
+        # Act
+        particulator.run(1)
+
+        # Assert
+        assert (
+            particulator.products["brd"].get()[0] > np.asarray([0.0] * (n_sd // 2))
+        ).all()
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {  # breakup and coalescence
+                "enable_breakup": True,
+                "enable_coalescence": True,
+                "Ec": 0.1,
+                "Eb": 1.0,
+                "nf": np.pi,
+            },
+            {  # breakup only
+                "enable_breakup": True,
+                "enable_coalescence": False,
+                "nf": np.pi,
+            },
+        ],
+    )
+    def test_no_breakup_deficits_when_while_loop(params, backend_class=CPU):
+        # Arrange
+        n_init = [7, 353]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+
+        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        dynamic.handle_all_breakups = True
+        builder.add_dynamic(dynamic)
+
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
+            },
+            products=(
+                BreakupRatePerGridbox(name="br"),
+                BreakupRateDeficitPerGridbox(name="brd"),
+            ),
+        )
+
+        # Act
+        particulator.run(1)
+
+        # Assert
+        assert (
+            particulator.products["br"].get()[0] > np.asarray([0.0] * (n_sd // 2))
+        ).all()
+        assert (
+            particulator.products["brd"].get()[0] == np.asarray([0.0] * (n_sd // 2))
+        ).all()
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "params",
+        [
+            {  # coalescence only
+                "enable_breakup": False,
+            },
+            {  # breakup and coalescence
+                "enable_breakup": True,
+                "enable_coalescence": True,
+                "Ec": 0.1,
+                "Eb": 1.0,
+                "nf": np.pi,
+            },
+            {  # breakup only
+                "enable_breakup": True,
+                "enable_coalescence": False,
+                "nf": np.pi,
+            },
+        ],
+    )
+    def test_rate_sums(params, backend_class=CPU):
+        # Arrange
+        n_init = [7, 353]
+        n_sd = len(n_init)
+        builder = Builder(n_sd, backend_class())
+        builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+
+        dynamic, products = _get_dynamics_and_products(params, adaptive=False)
+        builder.add_dynamic(dynamic)
+
+        particulator = builder.build(
+            attributes={
+                "n": np.asarray(n_init),
+                "volume": np.asarray([100 * si.um**3] * n_sd),
+            },
+            products=products,
+        )
+
+        # Act
+        particulator.run(1)
+        rhs_sum = _get_product_component_sums(params, particulator.products)
+
+        # Assert
+        assert (particulator.products["cr"].get()[0] == rhs_sum).all()
 
 
 def _get_dynamics_and_products(params, adaptive):
@@ -229,3 +339,14 @@ def _get_dynamics_and_products(params, adaptive):
             CoalescenceRatePerGridbox(name="cor"),
         )
     return (dynamic, products)
+
+
+def _get_product_component_sums(params, products):
+    if params["enable_breakup"]:
+        product_sum = products["br"].get()[0] + products["brd"].get()[0]
+        if params["enable_coalescence"]:
+            product_sum += products["cor"].get()[0]
+    else:
+        product_sum = products["cor"].get()[0]
+
+    return product_sum
