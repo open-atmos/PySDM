@@ -68,7 +68,8 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
     # TODO #874: update the arguments for the calling function
 
     # 1. find the max gamma that can be supported in 1 time step, add to rate,
-    #    and add remainder to the deficit (limits: max_xi, max_volume, min_volume)
+    #    and add remainder to the deficit (limits: max_multiplicity, min_volume,
+    #    volume doesn't exceed initial particle volumes)
     overflow_flag = False
     transfer_jk = 0
     divisor_jk = 1

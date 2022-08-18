@@ -398,7 +398,6 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    # @pytest.mark.xfail(strict=True)
     def test_vmin_limiter(backend=CPU()):
         # Arrange
         params = {

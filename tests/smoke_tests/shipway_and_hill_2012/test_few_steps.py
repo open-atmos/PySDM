@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 from matplotlib import pyplot
 from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
-from scipy.ndimage.filters import uniform_filter1d
+from scipy.ndimage import uniform_filter1d
 
 from PySDM.physics import si
 
