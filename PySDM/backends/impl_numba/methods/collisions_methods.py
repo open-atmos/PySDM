@@ -310,55 +310,6 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def __collision_coalescence_body(
-        *,
-        multiplicity,
-        idx,
-        length,
-        attributes,
-        gamma,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        is_first_in_pair,
-    ):
-        for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
-            length // 2
-        ):
-            if gamma[i] == 0:
-                continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
-            coalesce(
-                i, j, k, cell_id[i], multiplicity, gamma, attributes, coalescence_rate
-            )
-            flag_zero_multiplicity(j, k, multiplicity, healthy)
-
-    def collision_coalescence(
-        self,
-        *,
-        multiplicity,
-        idx,
-        attributes,
-        gamma,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        is_first_in_pair,
-    ):
-        self.__collision_coalescence_body(
-            multiplicity=multiplicity.data,
-            idx=idx.data,
-            length=len(idx),
-            attributes=attributes.data,
-            gamma=gamma.data,
-            healthy=healthy.data,
-            cell_id=cell_id.data,
-            coalescence_rate=coalescence_rate.data,
-            is_first_in_pair=is_first_in_pair.indicator.data,
-        )
-
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
     def __collision_coalescence_breakup_body(
         *,
         multiplicity,
@@ -396,7 +347,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
@@ -407,7 +358,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
@@ -424,7 +375,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
