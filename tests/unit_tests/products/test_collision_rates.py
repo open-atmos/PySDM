@@ -1,8 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 from ast import Break
+from itertools import product
+from math import prod
 
 import numpy as np
 import pytest
+from PySDM_examples.deJong_Mackay_2022 import Settings1D, Simulation1D
 
 import PySDM.physics.constants as const
 from PySDM import Builder
@@ -271,7 +274,7 @@ class TestCollisionProducts:
             },
         ],
     )
-    def test_rate_sums(params, backend_class=CPU):
+    def test_rate_sums_single_cell(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
@@ -295,6 +298,37 @@ class TestCollisionProducts:
 
         # Assert
         assert (particulator.products["cr"].get()[0] == rhs_sum).all()
+
+    @staticmethod
+    @pytest.mark.parametrize("breakup", (True, False))
+    def test_rate_sums_multicell_deJongMackay(breakup, backend_class=CPU):
+        # Arrange
+        n_sd_per_gridbox = 64
+        dt = 20 * si.s
+        dz = 100 * si.m
+        output = {}
+        rho_times_w = 3 * si.m / si.s
+        key = f"rhow={rho_times_w}_b={breakup}"
+
+        # Act
+        output[key] = (
+            Simulation1D(
+                Settings1D(
+                    n_sd_per_gridbox=n_sd_per_gridbox,
+                    rho_times_w_1=rho_times_w,
+                    dt=dt,
+                    dz=dz,
+                    precip=True,
+                    breakup=breakup,
+                )
+            )
+            .run()
+            .products
+        )
+        product_sum = _get_product_rate_diffs_multicell(output[key], breakup)
+
+        # Assert
+        np.testing.assert_array_almost_equal(product_sum, 0.0)
 
 
 def _get_dynamics_and_products(params, adaptive):
@@ -348,5 +382,16 @@ def _get_product_component_sums(params, products):
             product_sum += products["cor"].get()[0]
     else:
         product_sum = products["cor"].get()[0]
+
+    return product_sum
+
+
+def _get_product_rate_diffs_multicell(output, breakup):
+    product_sum = output["coalescence_rate"]
+    if breakup:
+        product_sum += output["breakup_rate"]
+        product_sum += output["breakup_deficit"]
+
+    product_sum -= output["collision_rate"]
 
     return product_sum
