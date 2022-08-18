@@ -1,16 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from ast import Break
-from itertools import product
-from math import prod
-
 import numpy as np
 import pytest
 from PySDM_examples.deJong_Mackay_2022 import Settings1D, Simulation1D
 
-import PySDM.physics.constants as const
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup, Coalescence, Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
@@ -80,7 +74,7 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, productss = _get_dynamics_and_products(params, adaptive=False)
+        dynamic, products = _get_dynamics_and_products(params, adaptive=False)
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
@@ -88,7 +82,7 @@ class TestCollisionProducts:
                 "n": np.asarray(n_init),
                 "volume": np.asarray([100 * si.um**3] * n_sd),
             },
-            products=productss,
+            products=products,
         )
 
         # Act
@@ -136,7 +130,7 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
@@ -180,7 +174,7 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
@@ -227,7 +221,7 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, products = _get_dynamics_and_products(params, adaptive=True)
+        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
         dynamic.handle_all_breakups = True
         builder.add_dynamic(dynamic)
 
@@ -301,7 +295,7 @@ class TestCollisionProducts:
 
     @staticmethod
     @pytest.mark.parametrize("breakup", (True, False))
-    def test_rate_sums_multicell_deJongMackay(breakup, backend_class=CPU):
+    def test_rate_sums_multicell_deJongMackay(breakup):
         # Arrange
         n_sd_per_gridbox = 64
         dt = 20 * si.s
