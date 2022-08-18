@@ -2,29 +2,38 @@
 import os
 
 from matplotlib import pyplot
-from PySDM_examples.deJong_Mackay_2022.settings import Settings
-from PySDM_examples.deJong_Mackay_2022.simulation import make_core
+from PySDM_examples.deJong_Mackay_2022 import (
+    Settings0D,
+    run_box_breakup,
+    run_box_NObreakup,
+)
 
 from PySDM.physics import si
 
 
 def test_collision(plot=False):
-    settings = Settings()
+    settings = Settings0D()
     if "CI" in os.environ:
         settings.n_sd = 10
     else:
         settings.n_sd = 100
 
-    particulator = make_core(settings)
+    (x1, y1) = run_box_NObreakup(settings)
+    (x2, y2, rates) = run_box_breakup(settings)
 
     for step in settings.output_steps:
-        particulator.run(step - particulator.n_steps)
         if plot:
             pyplot.step(
-                x=settings.radius_bins_edges[:-1] / si.micrometres,
-                y=particulator.products["dv/dlnr"].get() * settings.rho,
+                x=x1,
+                y=y1,
                 where="post",
-                label="t = {step*settings.dt}s",
+                label="NO breakup, t = {step*settings.dt}s",
+            )
+            pyplot.step(
+                x=x2,
+                y=y2,
+                where="post",
+                label="WITH breakup, t = {step*settings.dt}s",
             )
     if plot:
         pyplot.xscale("log")
