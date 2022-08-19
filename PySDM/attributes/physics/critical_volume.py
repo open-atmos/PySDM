@@ -26,3 +26,18 @@ class CriticalVolume(DerivedAttribute):
             T=self.environment["T"],
             cell=self.cell_id.get(),
         )
+
+
+class WetToCriticalVolumeRatio(DerivedAttribute):
+    def __init__(self, builder):
+        self.critical_volume = builder.get_attribute("critical volume")
+        self.volume = builder.get_attribute("volume")
+        super().__init__(
+            builder,
+            name="wet to critical volume ratio",
+            dependencies=(self.critical_volume, self.volume),
+        )
+
+    def recalculate(self):
+        self.data.idx = self.volume.data.idx
+        self.data.ratio(self.volume.get(), self.critical_volume.get())
