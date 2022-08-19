@@ -8,8 +8,6 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
-from PySDM.physics import si
-
 
 def test_collision(plot=False):
     settings = Settings0D()
@@ -28,13 +26,13 @@ def test_collision(plot=False):
                 x=x1,
                 y=y1,
                 where="post",
-                label="NO breakup, t = {step*settings.dt}s",
+                label=f"NO breakup, t = {step*settings.dt}s",
             )
             pyplot.step(
                 x=x2,
                 y=y2,
                 where="post",
-                label="WITH breakup, t = {step*settings.dt}s",
+                label=f"WITH breakup, t = {step*settings.dt}s",
             )
     if plot:
         pyplot.xscale("log")
