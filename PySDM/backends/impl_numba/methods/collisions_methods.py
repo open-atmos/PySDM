@@ -9,7 +9,9 @@ from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_numba.warnings import warn
-from PySDM.physics.constants import sqrt_pi, sqrt_two
+from PySDM.physics.constants import PI, PI_4_3, si, sqrt_pi, sqrt_two
+
+CM = si.cm
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -218,6 +220,110 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
         for a in range(0, len(attributes)):
             attributes[a, k] *= factor_k
             attributes[a, j] *= factor_j
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    CW,
+    gam,
+):  # pylint: disable=too-many-branches`
+    Nr = [0.0, 0.0, 0.0, 1.0, 1.0]
+    if gam[i] * CW[i] >= 7.0:
+        Nr[0] = 0.088 * (gam[i] * CW[i] - 7.0)
+    if CW[i] >= 21.0:
+        Nr[1] = 0.22 * (CW[i] - 21.0)
+        if CW[i] <= 46.0:
+            Nr[2] = 0.04 * (46.0 - CW[i])
+    else:
+        Nr[2] = 1.0
+
+    Nr[4] += Nr[0] + Nr[1] + Nr[2]
+
+    return Nr
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_p1(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    CW,
+    frag_size,
+    rand,
+):
+    E_D1 = 0.04 * CM
+    delD1 = 0.125 * CW[i] ** (1 / 2)
+    var_1 = delD1**2 / 12
+    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
+    mu1 = np.log(E_D1) - sigma1**2 / 2
+    X = rand[(i + 1) % len(CW)]
+
+    frag_size[i] = np.exp(
+        mu1
+        - sigma1 / sqrt_two / sqrt_pi / np.log(2) * np.log((1 / 2 + X) / (3 / 2 - X))
+    )
+    frag_size[i] = PI / 6 * frag_size[i] ** 3
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_p2(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    CW,
+    frag_size,
+    rand,
+):
+    mu2 = 0.095 * CM
+    delD2 = 0.22 * (CW[i] - 21.0)
+    sigma2 = delD2**2 / 12
+    X = rand[(i + 1) % len(CW)]
+
+    frag_size[i] = mu2 - sigma2 / sqrt_two / sqrt_pi / np.log(2) * np.log(
+        (1 / 2 + X) / (3 / 2 - X)
+    )
+    frag_size[i] = PI / 6 * frag_size[i] ** 3
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    CW,
+    ds,
+    frag_size,
+    rand,
+):
+    mu3 = 0.9 * ds[i]
+    delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
+    sigma3 = delD3**2 / 12
+    X = rand[(i + 1) % len(CW)]
+
+    frag_size[i] = mu3 - sigma3 / sqrt_two / sqrt_pi / np.log(2) * np.log(
+        (1 / 2 + X) / (3 / 2 - X)
+    )
+    frag_size[i] = PI / 6 * frag_size[i] ** 3
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def straub_p4(  # pylint: disable=too-many-arguments,unused-argument
+    i, CW, ds, v_max, frag_size, Nr
+):
+    E_D1 = 0.04 * CM
+    delD1 = 0.125 * CW[i] ** (1 / 2)
+    var_1 = delD1**2 / 12
+    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
+    mu1 = np.log(E_D1) - sigma1**2 / 2
+    mu2 = 0.095 * CM
+    delD2 = 0.22 * (CW[i] - 21.0)
+    sigma2 = delD2**2 / 12
+    mu3 = 0.9 * ds[i]
+    delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
+    sigma3 = delD3**2 / 12
+    dl = 2 * (v_max[i] / PI_4_3) ** (1 / 3)
+
+    M31 = Nr[0] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
+    M32 = Nr[1] * (mu2**3 + 3 * mu2 * sigma2**2)
+    M33 = Nr[2] * (mu3**3 + 3 * mu3 * sigma3**2)
+
+    M34 = v_max[i] / PI_4_3 * 8 + ds[i] ** 3 - M31 - M32 - M33
+    frag_size[i] = PI / 6 * M34
 
 
 class CollisionsMethods(BackendMethods):
@@ -604,8 +710,11 @@ class CollisionsMethods(BackendMethods):
         CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
-                (1 + rand[i]) / (1 - rand[i])
+            # frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
+            #     (1 + rand[i]) / (1 - rand[i])
+            # )
+            frag_size[i] = mu - sigma / sqrt_two / sqrt_pi / np.log(2) * np.log(
+                (1 / 2 + rand[i]) / (3 / 2 - rand[i])
             )
 
     def gauss_fragmentation(
@@ -628,18 +737,43 @@ class CollisionsMethods(BackendMethods):
         )
 
     @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    def __ll1982_fragmentation_body(
-        n_fragment, probs, rand
-    ):  # pylint: disable=unused-argument
-        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            probs[i] = 0.0
-            n_fragment[i] = 1
+    @numba.njit(**(conf.JIT_FLAGS))
+    def __straub_fragmentation_body(*, n_fragment, CW, gam, ds, v_max, frag_size, rand):
+        # TODO EMily
+        for i in numba.prange(len(n_fragment)):
+            # 1. determine which mode of fragmentation it is, using rand[i]
+            # 2. determine the fragment size, using rand[i+1]
+            Nr = straub_Nr(i, CW, gam)
+            # Nr_norm = Nr / Nr_tot
+            if rand[i] < Nr[0] / Nr[4]:
+                straub_p1(i, CW, frag_size, rand)
+            elif rand[i] < Nr[1] / Nr[4]:
+                straub_p2(i, CW, frag_size, rand)
+            elif rand[i] < Nr[2] / Nr[4]:
+                straub_p3(i, CW, ds, frag_size, rand)
+            else:
+                straub_p4(i, CW, ds, v_max, frag_size, Nr)
 
-            # first consider filament breakup
-
-    def ll1982_fragmentation(self, n_fragment, probs, rand):
-        self.__ll1982_fragmentation_body(n_fragment.data, probs.data, rand.data)
+    def straub_fragmentation(
+        self, *, n_fragment, CW, gam, ds, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
+        self.__straub_fragmentation_body(
+            n_fragment=n_fragment.data,
+            CW=CW.data,
+            gam=gam.data,
+            ds=ds.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            rand=rand.data,
+        )
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            vmin=vmin,
+            nfmax=nfmax,
+        )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
