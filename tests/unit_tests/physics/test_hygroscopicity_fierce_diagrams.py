@@ -7,15 +7,15 @@ from matplotlib import pyplot
 from PySDM import Formulae
 from PySDM.physics import constants_defaults, si
 
-npoints = 20
+npoints = 32
 
-clim_ss = (0, 0.25)
+clim_ss = (0, 0.85)
 nlev_ss = 11
-clim_er = (-10, -3)
-nlev_er = 8
+clim_er = (-9, -1)
+nlev_er = 9
 
-kappas = np.linspace(0.1, 1.5, npoints)
-dry_radii = np.logspace(np.log10(0.05 * si.um), np.log10(0.25 * si.um), npoints)
+kappas = np.logspace(np.log10(0.008), np.log10(2), npoints)
+dry_radii = np.logspace(np.log10(0.05 * si.um), np.log10(0.1 * si.um), npoints)
 T = 300 * si.K
 sgm = constants_defaults.sgm_w
 
@@ -61,6 +61,7 @@ def test_hygroscopicity_fierce_diagrams(plot=False):
     for ax in axs:
         ax.set_ylabel("kappa")
         ax.set_xscale("log")
+        ax.set_yscale("log")
         ax.set_xlabel("dry radius [nm]")
     pyplot.subplots_adjust(hspace=0.25)
 
@@ -68,4 +69,4 @@ def test_hygroscopicity_fierce_diagrams(plot=False):
         fig.show()
 
     # assert
-    assert np.amax(log10_rel_diff) < -4
+    assert np.amax(log10_rel_diff) < -1.5
