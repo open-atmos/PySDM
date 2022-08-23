@@ -46,7 +46,10 @@ class SzyszkowskiLangmuir:
             + 1
         )
         c = -1
-        f_surf = (-b + np.sqrt(b**2 - 4 * a * c)) / (2 * a)
+        if f_org > 0:
+            f_surf = (-b + np.sqrt(b**2 - 4 * a * c)) / (2 * a)
+        else:
+            f_surf = 0
 
         # calculate surface tension
         sgm = const.sgm_w - ((const.R_str * T) / (const.RUEHL_A0 * const.N_A)) * np.log(
