@@ -21,7 +21,7 @@ def compute(key, settings):
 
 
 def test_zero_forg(plot=True):
-    nRes = 4
+    nRes = 3
     updraft_list = np.geomspace(0.1, 10, nRes)
 
     subplot_list = ["a", "b", "c", "d"]
@@ -45,7 +45,7 @@ def test_zero_forg(plot=True):
                     subplot + f"_w{w:.2f}_" + model,
                     Settings(
                         dz=1 * si.m,
-                        n_sd_per_mode=50,
+                        n_sd_per_mode=20,
                         model=model,
                         aerosol={
                             "a": AerosolMarine(Forg=0, Acc_N2=Acc["a"]),
