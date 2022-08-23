@@ -1,10 +1,8 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import matplotlib.pyplot as plt
 import numpy as np
-from numpy.testing.utils import assert_array_compare
 
 from PySDM import Formulae
-from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
 
@@ -52,7 +50,7 @@ def test_surface_tension(plot=False):
         plt.plot(R_WET / si.um, sgm[i, :], ls[i], label=st)
 
     if plot:
-        plt.title("Forg = {:.2f}".format(F_ORG))
+        plt.title(f"Forg = {F_ORG}")
         plt.xlabel("wet radius (um)")
         plt.xscale("log")
         plt.ylabel("surface tension [N/m]")
@@ -87,7 +85,7 @@ def test_surface_tension(plot=False):
         plt.plot(R_WET / si.um, sgm[i, :], ls[i], label=st)
 
     if plot:
-        plt.title("Forg = {:.2f}".format(F_ORG))
+        plt.title(f"Forg = {F_ORG}")
         plt.xlabel("wet radius (um)")
         plt.xscale("log")
         plt.ylabel("surface tension [N/m]")
