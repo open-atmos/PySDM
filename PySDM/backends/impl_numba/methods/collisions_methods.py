@@ -225,22 +225,25 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     i,
+    Nr1,
+    Nr2,
+    Nr3,
+    Nr4,
+    Nrt,
     CW,
     gam,
 ):  # pylint: disable=too-many-branches`
-    Nr = [0.0, 0.0, 0.0, 1.0, 1.0]
+    # Nr = [0.0, 0.0, 0.0, 1.0, 1.0]
     if gam[i] * CW[i] >= 7.0:
-        Nr[0] = 0.088 * (gam[i] * CW[i] - 7.0)
+        Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0)
     if CW[i] >= 21.0:
-        Nr[1] = 0.22 * (CW[i] - 21.0)
+        Nr2[i] = 0.22 * (CW[i] - 21.0)
         if CW[i] <= 46.0:
-            Nr[2] = 0.04 * (46.0 - CW[i])
+            Nr3[i] = 0.04 * (46.0 - CW[i])
     else:
-        Nr[2] = 1.0
-
-    Nr[4] += Nr[0] + Nr[1] + Nr[2]
-
-    return Nr
+        Nr3[i] = 1.0
+    Nr4[i] = 1.0
+    Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -303,7 +306,7 @@ def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def straub_p4(  # pylint: disable=too-many-arguments,unused-argument
-    i, CW, ds, v_max, frag_size, Nr
+    i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3
 ):
     E_D1 = 0.04 * CM
     delD1 = 0.125 * CW[i] ** (1 / 2)
@@ -318,9 +321,9 @@ def straub_p4(  # pylint: disable=too-many-arguments,unused-argument
     sigma3 = delD3**2 / 12
     dl = 2 * (v_max[i] / PI_4_3) ** (1 / 3)
 
-    M31 = Nr[0] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
-    M32 = Nr[1] * (mu2**3 + 3 * mu2 * sigma2**2)
-    M33 = Nr[2] * (mu3**3 + 3 * mu3 * sigma3**2)
+    M31 = Nr1[i] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
+    M32 = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
+    M33 = Nr3[i] * (mu3**3 + 3 * mu3 * sigma3**2)
 
     M34 = v_max[i] / PI_4_3 * 8 + ds[i] ** 3 - M31 - M32 - M33
     frag_size[i] = PI / 6 * M34
@@ -600,8 +603,10 @@ class CollisionsMethods(BackendMethods):
             n_fragment[i] = x_plus_y[i] / frag_size[i]
             if frag_size[i] > v_max[i]:
                 n_fragment[i] = 1
+                frag_size[i] = x_plus_y[i]
             elif frag_size[i] < vmin:
                 n_fragment[i] = 1
+                frag_size[i] = x_plus_y[i]
 
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
@@ -707,7 +712,8 @@ class CollisionsMethods(BackendMethods):
     def __gauss_fragmentation_body(*, n_fragment, mu, sigma, frag_size, rand):
         """
         Gaussian PDF
-        CDF = erf(x); approximate as erf(x) ~ tanh(ax) with a = 2/sqrt(pi) as in Vedder 1987
+        CDF = 1/2(1 + erf(x/sqrt(2)));
+        approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             # frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
@@ -738,24 +744,42 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**(conf.JIT_FLAGS))
-    def __straub_fragmentation_body(*, n_fragment, CW, gam, ds, v_max, frag_size, rand):
+    def __straub_fragmentation_body(
+        *, n_fragment, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+    ):
         # TODO EMily
         for i in numba.prange(len(n_fragment)):
             # 1. determine which mode of fragmentation it is, using rand[i]
             # 2. determine the fragment size, using rand[i+1]
-            Nr = straub_Nr(i, CW, gam)
+            straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
             # Nr_norm = Nr / Nr_tot
-            if rand[i] < Nr[0] / Nr[4]:
+            if rand[i] < Nr1[i] / Nrt[i]:
                 straub_p1(i, CW, frag_size, rand)
-            elif rand[i] < Nr[1] / Nr[4]:
+            elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
                 straub_p2(i, CW, frag_size, rand)
-            elif rand[i] < Nr[2] / Nr[4]:
+            elif rand[i] < (Nr3[2] + Nr2[i] + Nr1[i]) / Nrt[4]:
                 straub_p3(i, CW, ds, frag_size, rand)
             else:
-                straub_p4(i, CW, ds, v_max, frag_size, Nr)
+                straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
 
     def straub_fragmentation(
-        self, *, n_fragment, CW, gam, ds, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        self,
+        *,
+        n_fragment,
+        CW,
+        gam,
+        ds,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        Nr1,
+        Nr2,
+        Nr3,
+        Nr4,
+        Nrt,
     ):
         self.__straub_fragmentation_body(
             n_fragment=n_fragment.data,
@@ -765,6 +789,11 @@ class CollisionsMethods(BackendMethods):
             frag_size=frag_size.data,
             v_max=v_max.data,
             rand=rand.data,
+            Nr1=Nr1.data,
+            Nr2=Nr2.data,
+            Nr3=Nr3.data,
+            Nr4=Nr4.data,
+            Nrt=Nrt.data,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,

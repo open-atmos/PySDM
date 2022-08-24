@@ -1,6 +1,9 @@
 """
 See Straub et al 2010
 """
+from asyncio.format_helpers import _format_args_and_kwargs
+from xml.dom.expatbuilder import FragmentBuilder
+
 from PySDM.physics.constants import si
 
 
@@ -10,6 +13,7 @@ class Straub2010Nf:
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
+        self.straub_tmp = {}
         self.max_size = None
         self.frag_size = None
         self.sum_of_volumes = None
@@ -31,6 +35,10 @@ class Straub2010Nf:
         builder.request_attribute("terminal velocity")
         for key in ("Sc", "tmp", "tmp2", "CKE", "We", "gam", "CW", "ds"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
+                self.particulator.n_sd // 2, dtype=float
+            )
+        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
+            self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
@@ -72,6 +80,9 @@ class Straub2010Nf:
         self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["gam"] /= self.arrays["tmp"]
 
+        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
+            self.straub_tmp[key] *= 0.0
+
         self.particulator.backend.straub_fragmentation(
             n_fragment=output,
             CW=self.arrays["CW"],
@@ -83,4 +94,9 @@ class Straub2010Nf:
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
+            Nr1=self.straub_tmp["Nr1"],
+            Nr2=self.straub_tmp["Nr2"],
+            Nr3=self.straub_tmp["Nr3"],
+            Nr4=self.straub_tmp["Nr4"],
+            Nrt=self.straub_tmp["Nrt"],
         )
