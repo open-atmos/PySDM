@@ -20,7 +20,7 @@ jobs:
         pip install -e .
         pip install -r test-time-requirements.txt
         pip install pytest-cov
-        pytest tests/unit_tests --cov-report=xml --cov=PySDM
+        pytest -We tests/unit_tests --cov-report=xml --cov=PySDM
     - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: codecov/codecov-action@v2
       with:
