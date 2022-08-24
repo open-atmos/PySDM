@@ -9,7 +9,9 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     AlwaysN,
     ExponFrag,
     Gaussian,
+    Straub2010Nf,
 )
+from PySDM.dynamics.collisions.breakup_fragmentations.straub2010 import Straub2010Nf
 from PySDM.environments import Box
 from PySDM.physics import si
 
@@ -23,6 +25,7 @@ class TestFragmentations:
             ExponFrag(scale=1e6 * si.um**3),
             Gaussian(mu=1e6 * si.um**3, sigma=2e6 * si.um**3),
             SLAMS(),
+            Straub2010Nf(),
         ],
     )
     def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
