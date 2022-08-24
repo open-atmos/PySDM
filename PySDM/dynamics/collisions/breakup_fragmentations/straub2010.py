@@ -71,7 +71,6 @@ class Straub2010Nf:
         self.arrays["gam"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["gam"] /= self.arrays["tmp"]
-        # print(self.arrays["CW"].data, self.arrays["gam"].data)
 
         self.particulator.backend.straub_fragmentation(
             n_fragment=output,
