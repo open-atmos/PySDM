@@ -48,37 +48,42 @@ class CompressedFilmRuehl:
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 
-        # C_bulk is the concentration of the organic in the bulk phase
-        # Cb_iso = C_bulk / (1-f_surf)
-        Cb_iso = (f_org * v_dry / const.RUEHL_nu_org) / (v_wet / const.nu_w)
+        if f_org > 0:
+            # C_bulk is the concentration of the organic in the bulk phase
+            # Cb_iso = C_bulk / (1-f_surf)
+            Cb_iso = (f_org * v_dry / const.RUEHL_nu_org) / (v_wet / const.nu_w)
 
-        # A is the area one molecule of organic occupies at the droplet surface
-        # A_iso = A*f_surf (m^2)
-        A_iso = (4 * const.PI * r_wet**2) / (
-            f_org * v_dry * const.N_A / const.RUEHL_nu_org
-        )
+            # A is the area one molecule of organic occupies at the droplet surface
+            # A_iso = A*f_surf (m^2)
+            A_iso = (4 * const.PI * r_wet**2) / (
+                f_org * v_dry * const.N_A / const.RUEHL_nu_org
+            )
 
-        # solve implicitly for fraction of organic at surface
-        c = (const.RUEHL_m_sigma * const.N_A) / (2 * const.R_str * T)
+            # solve implicitly for fraction of organic at surface
+            c = (const.RUEHL_m_sigma * const.N_A) / (2 * const.R_str * T)
 
-        args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
-        rtol = 1e-6
-        max_iters = 1e2
-        bracket = (1e-20, 1)
-        f_surf, iters = toms748_solve(
-            minfun,
-            args,
-            *bracket,
-            minfun(bracket[0], *args),
-            minfun(bracket[1], *args),
-            rtol,
-            max_iters,
-            within_tolerance
-        )
-        assert iters != max_iters
+            args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
+            rtol = 1e-6
+            max_iters = 1e2
+            bracket = (1e-20, 1)
+            f_surf, iters = toms748_solve(
+                minfun,
+                args,
+                *bracket,
+                minfun(bracket[0], *args),
+                minfun(bracket[1], *args),
+                rtol,
+                max_iters,
+                within_tolerance
+            )
+            assert iters != max_iters
 
-        # calculate surface tension
-        sgm = const.sgm_w - (const.RUEHL_A0 - A_iso / f_surf) * const.RUEHL_m_sigma
+            # calculate surface tension
+            sgm = const.sgm_w - (const.RUEHL_A0 - A_iso / f_surf) * const.RUEHL_m_sigma
+        else:
+            sgm = const.sgm_w
+
+        # surface tension bounded between sgm_min and sgm_w
         sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
         return sgm
 
