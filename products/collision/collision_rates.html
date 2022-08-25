@@ -52,24 +52,10 @@ class CollisionRatePerGridbox(RateProduct):
         )
 
 
-class CoalescenceOnlyRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
-        super().__init__(
-            name=name, unit=unit, counter=&#34;coalescence_rate&#34;, dynamic=&#34;Collision&#34;
-        )
-
-
 class CoalescenceRatePerGridbox(RateProduct):
     def __init__(self, name=None, unit=&#34;s^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;coalescence_rate&#34;, dynamic=&#34;Collision&#34;
-        )
-
-
-class BreakupOnlyRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
-        super().__init__(
-            name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Breakup&#34;
         )
 
 
@@ -96,28 +82,6 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.collision.collision_rates.BreakupOnlyRatePerGridbox"><code class="flex name class">
-<span>class <span class="ident">BreakupOnlyRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class BreakupOnlyRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
-        super().__init__(
-            name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Breakup&#34;
-        )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.rate_product.RateProduct" href="../impl/rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
-</dd>
 <dt id="PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox"><code class="flex name class">
 <span>class <span class="ident">BreakupRateDeficitPerGridbox</span></span>
 <span>(</span><span>name=None, unit='s^-1')</span>
@@ -154,28 +118,6 @@ class BreakupRateDeficitPerGridbox(RateProduct):
     def __init__(self, name=None, unit=&#34;s^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Collision&#34;
-        )</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li><a title="PySDM.products.impl.rate_product.RateProduct" href="../impl/rate_product.html#PySDM.products.impl.rate_product.RateProduct">RateProduct</a></li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
-</ul>
-</dd>
-<dt id="PySDM.products.collision.collision_rates.CoalescenceOnlyRatePerGridbox"><code class="flex name class">
-<span>class <span class="ident">CoalescenceOnlyRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class CoalescenceOnlyRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
-        super().__init__(
-            name=name, unit=unit, counter=&#34;coalescence_rate&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -267,16 +209,10 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.collision.collision_rates.BreakupOnlyRatePerGridbox" href="#PySDM.products.collision.collision_rates.BreakupOnlyRatePerGridbox">BreakupOnlyRatePerGridbox</a></code></h4>
-</li>
-<li>
 <h4><code><a title="PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox" href="#PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox">BreakupRateDeficitPerGridbox</a></code></h4>
 </li>
 <li>
 <h4><code><a title="PySDM.products.collision.collision_rates.BreakupRatePerGridbox" href="#PySDM.products.collision.collision_rates.BreakupRatePerGridbox">BreakupRatePerGridbox</a></code></h4>
-</li>
-<li>
-<h4><code><a title="PySDM.products.collision.collision_rates.CoalescenceOnlyRatePerGridbox" href="#PySDM.products.collision.collision_rates.CoalescenceOnlyRatePerGridbox">CoalescenceOnlyRatePerGridbox</a></code></h4>
 </li>
 <li>
 <h4><code><a title="PySDM.products.collision.collision_rates.CoalescenceRatePerGridbox" href="#PySDM.products.collision.collision_rates.CoalescenceRatePerGridbox">CoalescenceRatePerGridbox</a></code></h4>
