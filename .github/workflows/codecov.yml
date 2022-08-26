@@ -15,7 +15,7 @@ jobs:
         pip install -e .
         pip install -r test-time-requirements.txt
         pip install pytest-cov
-        pytest tests/unit_tests --cov-report=xml --cov=PySDM
+        pytest -We tests/unit_tests --cov-report=xml --cov=PySDM
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
