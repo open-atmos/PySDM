@@ -1,5 +1,10 @@
 name: codecov
-on: [push]
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -16,7 +21,7 @@ jobs:
         pip install -r test-time-requirements.txt
         pip install pytest-cov
         pytest tests/unit_tests --cov-report=xml --cov=PySDM
-    - name: Upload coverage to Codecov
+    - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: codecov/codecov-action@v2
       with:
         fail_ci_if_error: true
