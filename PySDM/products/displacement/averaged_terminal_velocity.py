@@ -12,7 +12,6 @@ class AveragedTerminalVelocity(MomentProduct):
     ):
         self.attr = "terminal velocity"
 
-        # TODO make weighting attribute choice common with PH
         if weighting == "number":
             self.weighting_rank = 0
         elif weighting == "volume":
