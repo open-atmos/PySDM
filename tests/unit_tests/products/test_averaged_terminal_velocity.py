@@ -2,7 +2,6 @@
 import numpy as np
 
 from PySDM import Builder
-from PySDM.attributes.physics.volume import Volume
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
