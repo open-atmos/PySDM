@@ -22,6 +22,8 @@ class CompressedFilmOvadnevaite:
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=unused-argument
+        assert 0 <= f_org <= 1
+
         # convert wet volume to wet radius
         r_wet = ((3 * v_wet) / (4 * np.pi)) ** (1 / 3)
 
