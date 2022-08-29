@@ -13,8 +13,8 @@ from PySDM.physics.trivia import Trivia
 # pylint: disable=too-many-arguments
 @numba.njit(**{**jit_flags, "parallel": False})
 def minfun(f_surf, Cb_iso, RUEHL_C0, RUEHL_A0, A_iso, c):
-    lhs = np.log(Cb_iso * (1 - f_surf) / RUEHL_C0)
-    rhs = c * (RUEHL_A0**2 - (A_iso / f_surf) ** 2)
+    lhs = Cb_iso * (1 - f_surf) / RUEHL_C0
+    rhs = np.exp(c * (RUEHL_A0**2 - (A_iso / f_surf) ** 2))
     return lhs - rhs
 
 
@@ -52,6 +52,8 @@ class CompressedFilmRuehl:
 
         if f_org == 0:
             sgm = const.sgm_w
+        elif f_org == 1:
+            sgm = const.RUEHL_sgm_min
         else:
             # C_bulk is the concentration of the organic in the bulk phase
             # Cb_iso = C_bulk / (1-f_surf)
@@ -69,7 +71,7 @@ class CompressedFilmRuehl:
             args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
             rtol = 1e-6
             max_iters = 1e2
-            bracket = (rtol, 1 - rtol)
+            bracket = (rtol, 1)
             f_surf, iters = toms748_solve(
                 minfun,
                 args,
