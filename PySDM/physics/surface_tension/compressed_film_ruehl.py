@@ -65,7 +65,7 @@ class CompressedFilmRuehl:
             args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
             rtol = 1e-6
             max_iters = 1e2
-            bracket = (1e-20, 1)
+            bracket = (1e-6, 1)
             f_surf, iters = toms748_solve(
                 minfun,
                 args,
