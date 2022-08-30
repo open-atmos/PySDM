@@ -45,8 +45,6 @@ class CompressedFilmRuehl:
 
     @staticmethod
     def sigma(const, T, v_wet, v_dry, f_org):
-        assert 0 <= f_org <= 1
-
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 
