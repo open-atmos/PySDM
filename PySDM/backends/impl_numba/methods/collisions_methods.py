@@ -1,6 +1,8 @@
 """
 CPU implementation of backend methods for particle collisions
 """
+from audioop import mul
+
 import numba
 import numpy as np
 
@@ -60,6 +62,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
     gamma,
     attributes,
     n_fragment,
+    fragment_size,
     max_multiplicity,
     min_volume,
     breakup_rate,
@@ -73,41 +76,39 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
     #    and add remainder to the deficit (limits: max_multiplicity, min_volume,
     #    volume doesn't exceed initial particle volumes)
     overflow_flag = False
-    transfer_jk = 0
-    divisor_jk = 1
+    take_from_j_test = 1 - n_fragment[i]
+    new_mult_k_test = 0
     gamma_tmp = 0
     gamma_deficit = gamma[i]
     for m in range(int(gamma[i])):
-        transfer_jk_test = transfer_jk + divisor_jk
-        divisor_jk_test = divisor_jk * n_fragment[i]
-        new_n = multiplicity[j] - transfer_jk_test * multiplicity[k]
-        new_v = (volume[k] + transfer_jk_test * volume[j]) / divisor_jk_test
+        new_mult_k_test = (
+            new_mult_k_test * (volume[j] / fragment_size[i]) + n_fragment[i]
+        )
+        take_from_j_test = take_from_j_test + new_mult_k_test
+
         # check for overflow of multiplicity
-        if (
-            transfer_jk_test > max_multiplicity
-            or multiplicity[k] * divisor_jk_test > max_multiplicity
-        ):
+        if new_mult_k_test > max_multiplicity:
             overflow_flag = True
             break
         # check for new_n > 0, max volume, min volume
-        if new_n < 0 or new_v > max(volume[j], volume[k]) or new_v < min_volume:
+        if take_from_j_test > multiplicity[j]:
             break
 
         # all tests passed
-        transfer_jk = transfer_jk_test
-        divisor_jk = divisor_jk_test
+        take_from_j = take_from_j_test
+        new_mult_k = new_mult_k
         gamma_tmp = m + 1
         gamma_deficit = gamma[i] - gamma_tmp
     # 2. Compute the new multiplicities and particle sizes, with rounding
-    new_n = round(multiplicity[j] - transfer_jk * multiplicity[k])
     for a in range(0, len(attributes)):
-        attributes[a, k] += transfer_jk * attributes[a, j]
-        attributes[a, k] /= divisor_jk
-    if new_n > 0:
-        nj = new_n
-        nk = multiplicity[k] * divisor_jk
+        attributes[a, k] *= multiplicity[k]
+        attributes[a, k] += take_from_j * attributes[a, j]
+        attributes[a, k] /= new_mult_k
+    if multiplicity[j] > take_from_j:
+        nj = multiplicity[j] - take_from_j
+        nk = new_mult_k
     else:
-        nj = divisor_jk * multiplicity[k] / 2
+        nj = new_mult_k / 2
         nk = nj
         for a in range(0, len(attributes)):
             attributes[a, j] = attributes[a, k]
@@ -598,17 +599,12 @@ class CollisionsMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     # TODO #874: remove all but the nfmax limiter and move others to dynamic
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
-        for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
+        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
+            frag_size[i] = max(frag_size[i], vmin)
+            frag_size[i] = min(frag_size[i], v_max[i])
+            if x_plus_y[i] / frag_size[i] > nfmax and nfmax is not None:
+                frag_size[i] = x_plus_y[i] / nfmax
             n_fragment[i] = x_plus_y[i] / frag_size[i]
-            if frag_size[i] > v_max[i]:
-                n_fragment[i] = 1
-                frag_size[i] = x_plus_y[i]
-            elif frag_size[i] < vmin:
-                n_fragment[i] = 1
-                frag_size[i] = x_plus_y[i]
-
-            if nfmax is not None:
-                n_fragment[i] = min(n_fragment[i], nfmax)
 
     def fragmentation_limiters(
         self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y
@@ -622,6 +618,7 @@ class CollisionsMethods(BackendMethods):
             x_plus_y=x_plus_y.data,
         )
 
+    # TODO: reframe SLAMS fragmentation in particle size
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __slams_fragmentation_body(n_fragment, probs, rand):
