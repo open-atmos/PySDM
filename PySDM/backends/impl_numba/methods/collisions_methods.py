@@ -257,7 +257,7 @@ def straub_p1(  # pylint: disable=too-many-arguments,unused-argument
     var_1 = delD1**2 / 12
     sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
     mu1 = np.log(E_D1) - sigma1**2 / 2
-    X = rand[(i + 1) % len(CW)]
+    X = rand[i]
 
     frag_size[i] = np.exp(
         mu1
@@ -276,7 +276,7 @@ def straub_p2(  # pylint: disable=too-many-arguments,unused-argument
     mu2 = 0.095 * CM
     delD2 = 0.22 * (CW[i] - 21.0)
     sigma2 = delD2**2 / 12
-    X = rand[(i + 1) % len(CW)]
+    X = rand[i]
 
     frag_size[i] = mu2 - sigma2 / sqrt_two / sqrt_pi / np.log(2) * np.log(
         (1 / 2 + X) / (3 / 2 - X)
@@ -295,7 +295,7 @@ def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
     mu3 = 0.9 * ds[i]
     delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
     sigma3 = delD3**2 / 12
-    X = rand[(i + 1) % len(CW)]
+    X = rand[i]
 
     frag_size[i] = mu3 - sigma3 / sqrt_two / sqrt_pi / np.log(2) * np.log(
         (1 / 2 + X) / (3 / 2 - X)
@@ -747,10 +747,13 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(len(n_fragment)):
             straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
             if rand[i] < Nr1[i] / Nrt[i]:
+                rand[i] = rand[i] * Nrt[i] / Nr1[i]
                 straub_p1(i, CW, frag_size, rand)
             elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
+                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
                 straub_p2(i, CW, frag_size, rand)
             elif rand[i] < (Nr3[2] + Nr2[i] + Nr1[i]) / Nrt[4]:
+                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])
                 straub_p3(i, CW, ds, frag_size, rand)
             else:
                 straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
