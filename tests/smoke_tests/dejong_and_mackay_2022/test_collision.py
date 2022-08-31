@@ -17,7 +17,7 @@ def test_collision(plot=False):
     else:
         settings.n_sd = 100
 
-    (x1, y1) = run_box_NObreakup(settings, t_steps)
+    (x1, y1, __) = run_box_NObreakup(settings, t_steps)
     (x2, y2, __) = run_box_breakup(settings, t_steps)
 
     for step in settings.output_steps:

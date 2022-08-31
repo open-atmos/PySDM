@@ -625,7 +625,7 @@ The pre-commit hooks can be run locally, and then the resultant changes need to 
 To set up the hooks locally, install pre-commit via `pip install pre-commit` and
 set up the git hooks via `pre-commit install` (this needs to be done every time you clone the project).
 To run all pre-commit hooks, run `pre-commit run --all-files`.
-The `pre-commit-config.yaml` file can be modified in case new hooks are to be added ot
+The `.pre-commit-config.yaml` file can be modified in case new hooks are to be added or
   existing ones need to be altered.  
 
 Issues regarding any incorrect, unintuitive or undocumented bahaviour of

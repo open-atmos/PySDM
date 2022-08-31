@@ -130,7 +130,9 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
+        dynamic, _ = _get_dynamics_and_products(
+            params, adaptive=True, a=1e4 * si.cm**3 / si.s
+        )
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
@@ -325,8 +327,8 @@ class TestCollisionProducts:
         np.testing.assert_array_almost_equal(product_sum, 0.0)
 
 
-def _get_dynamics_and_products(params, adaptive):
-    kernel = ConstantK(a=1e6 * si.cm**3 / si.s)
+def _get_dynamics_and_products(params, adaptive, a=1e6 * si.cm**3 / si.s):
+    kernel = ConstantK(a=a)
     if params["enable_breakup"]:
         if params["enable_coalescence"]:
             dynamic = Collision(
