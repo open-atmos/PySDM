@@ -12,18 +12,17 @@ class AlwaysN:
         self.N_vec = None
         self.zeros = None
         self.x_plus_y = None
-        self.frag_size = None
         self.vmax = None
         self.vmin = vmin
         self.nfmax = nfmax
 
-    def __call__(self, output, u01, is_first_in_pair):
-        output *= self.zeros
-        output += self.N_vec
+    def __call__(self, nf, frag_size, u01, is_first_in_pair):
+        nf *= self.zeros
+        nf += self.N_vec
         self.x_plus_y.sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.vmax.max(self.particulator.attributes["volume"], is_first_in_pair)
-        self.frag_size.sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.frag_size /= self.N
+        frag_size.sum(self.particulator.attributes["volume"], is_first_in_pair)
+        frag_size /= self.N
 
     def register(self, builder):
         self.particulator = builder.particulator
@@ -32,9 +31,6 @@ class AlwaysN:
         zeros_tmp = np.tile([0], self.particulator.n_sd // 2)
         self.N_vec = self.particulator.PairwiseStorage.from_ndarray(N_vec_tmp)
         self.zeros = self.particulator.PairwiseStorage.from_ndarray(zeros_tmp)
-        self.frag_size = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
         self.x_plus_y = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
