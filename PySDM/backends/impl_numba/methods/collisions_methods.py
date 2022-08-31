@@ -233,7 +233,6 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     CW,
     gam,
 ):  # pylint: disable=too-many-branches`
-    # Nr = [0.0, 0.0, 0.0, 1.0, 1.0]
     if gam[i] * CW[i] >= 7.0:
         Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0)
     if CW[i] >= 21.0:
@@ -496,7 +495,7 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(length // 2):
             if gamma[i] == 0:
                 continue
-            bouncing = rand[i] - Ec[i] - Eb[i] > 0
+            bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (1 - Eb[i])) > 0
             if bouncing:
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
@@ -716,9 +715,6 @@ class CollisionsMethods(BackendMethods):
         approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
         """
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            # frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * np.log(
-            #     (1 + rand[i]) / (1 - rand[i])
-            # )
             frag_size[i] = mu - sigma / sqrt_two / sqrt_pi / np.log(2) * np.log(
                 (1 / 2 + rand[i]) / (3 / 2 - rand[i])
             )
@@ -749,10 +745,7 @@ class CollisionsMethods(BackendMethods):
     ):
         # TODO EMily
         for i in numba.prange(len(n_fragment)):
-            # 1. determine which mode of fragmentation it is, using rand[i]
-            # 2. determine the fragment size, using rand[i+1]
             straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-            # Nr_norm = Nr / Nr_tot
             if rand[i] < Nr1[i] / Nrt[i]:
                 straub_p1(i, CW, frag_size, rand)
             elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
