@@ -1,9 +1,6 @@
 """
 See Straub et al 2010
 """
-from asyncio.format_helpers import _format_args_and_kwargs
-from xml.dom.expatbuilder import FragmentBuilder
-
 from PySDM.physics.constants import si
 
 
@@ -17,6 +14,7 @@ class Straub2010Nf:
         self.max_size = None
         self.frag_size = None
         self.sum_of_volumes = None
+        self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator

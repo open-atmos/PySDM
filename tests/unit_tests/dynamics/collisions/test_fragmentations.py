@@ -11,7 +11,6 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     Gaussian,
     Straub2010Nf,
 )
-from PySDM.dynamics.collisions.breakup_fragmentations.straub2010 import Straub2010Nf
 from PySDM.environments import Box
 from PySDM.physics import si
 
