@@ -1,9 +1,7 @@
 """
 CPU implementation of backend methods for particle collisions
 """
-from audioop import mul
-from xml.dom.expatbuilder import FragmentBuilder
-
+# pylint: disable=too-many-lines
 import numba
 import numpy as np
 
@@ -326,7 +324,6 @@ def straub_p4(  # pylint: disable=too-many-arguments,unused-argument
     mu3 = 0.9 * ds[i]
     delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
     sigma3 = delD3**2 / 12
-    dl = 2 * (v_max[i] / PI_4_3) ** (1 / 3)
 
     M31 = Nr1[i] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
     M32 = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
@@ -661,12 +658,12 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(*, scale, frag_size, rand):
+    def __exp_fragmentation_body(*, scale, frag_size, rand, tol=1e-5):
         """
         Exponential PDF
         """
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            frag_size[i] = -scale * np.log(1 - rand[i])
+            frag_size[i] = -scale * np.log(np.max(1 - rand[i], tol))
 
     def exp_fragmentation(
         self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
@@ -763,7 +760,7 @@ class CollisionsMethods(BackendMethods):
         *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
     ):
         # TODO EMily
-        for i in numba.prange(len(frag_size)):
+        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
             if rand[i] < Nr1[i] / Nrt[i]:
                 rand[i] = rand[i] * Nrt[i] / Nr1[i]
