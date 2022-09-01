@@ -1,6 +1,4 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from xml.dom.expatbuilder import FragmentBuilder
-
 import numpy as np
 import pytest
 
@@ -407,7 +405,6 @@ class TestSDMBreakup:
             min_volume=1 * si.nm**3,
             warn_overflows=True,
         )
-        print
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
             np.sum(

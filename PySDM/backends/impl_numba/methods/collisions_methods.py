@@ -112,10 +112,9 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
         if round(nj) == 0:
             atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
             return
-        else:
-            nk = nj
-            for a in range(0, len(attributes)):
-                attributes[a, j] = attributes[a, k]
+        nk = nj
+        for a in range(0, len(attributes)):
+            attributes[a, j] = attributes[a, k]
     # add up the product
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
@@ -570,7 +569,6 @@ class CollisionsMethods(BackendMethods):
         breakup_rate,
         breakup_rate_deficit,
         is_first_in_pair,
-        min_volume,
         warn_overflows,
         volume,
         handle_all_breakups,
@@ -658,6 +656,7 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
+    # pylint: disable=too-many-arguments
     def __exp_fragmentation_body(*, scale, frag_size, rand, tol=1e-5):
         """
         Exponential PDF
@@ -684,6 +683,7 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
+    # pylint: disable=too-many-arguments
     def __feingold1988_fragmentation_body(*, scale, frag_size, x_plus_y, rand, fragtol):
         """
         Scaled exponential PDF
@@ -723,6 +723,7 @@ class CollisionsMethods(BackendMethods):
         )
 
     @staticmethod
+    # pylint: disable=too-many-arguments
     @numba.njit(**{**conf.JIT_FLAGS})
     def __gauss_fragmentation_body(*, mu, sigma, frag_size, rand):
         """
@@ -755,6 +756,7 @@ class CollisionsMethods(BackendMethods):
         )
 
     @staticmethod
+    # pylint: disable=too-many-arguments
     @numba.njit(**(conf.JIT_FLAGS))
     def __straub_fragmentation_body(
         *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt

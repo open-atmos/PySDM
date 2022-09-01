@@ -3,9 +3,6 @@ Based on 10.5194/gmd-9-1455-2016 for ocean particles
 """
 
 
-from urllib.parse import MAX_CACHE_SIZE
-
-
 class SLAMS:
     def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
