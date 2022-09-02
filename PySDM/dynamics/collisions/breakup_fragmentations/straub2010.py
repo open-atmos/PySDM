@@ -12,16 +12,12 @@ class Straub2010Nf:
         self.arrays = {}
         self.straub_tmp = {}
         self.max_size = None
-        self.frag_size = None
         self.sum_of_volumes = None
         self.const = None
 
     def register(self, builder):
         self.particulator = builder.particulator
         self.max_size = self.particulator.PairwiseStorage.empty(
-            self.particulator.n_sd // 2, dtype=float
-        )
-        self.frag_size = self.particulator.PairwiseStorage.empty(
             self.particulator.n_sd // 2, dtype=float
         )
         self.sum_of_volumes = self.particulator.PairwiseStorage.empty(
@@ -40,7 +36,7 @@ class Straub2010Nf:
                 self.particulator.n_sd // 2, dtype=float
             )
 
-    def __call__(self, output, u01, is_first_in_pair):
+    def __call__(self, nf, frag_size, u01, is_first_in_pair):
         self.max_size.max(self.particulator.attributes["volume"], is_first_in_pair)
         self.sum_of_volumes.sum(
             self.particulator.attributes["volume"], is_first_in_pair
@@ -82,11 +78,11 @@ class Straub2010Nf:
             self.straub_tmp[key] *= 0.0
 
         self.particulator.backend.straub_fragmentation(
-            n_fragment=output,
+            n_fragment=nf,
             CW=self.arrays["CW"],
             gam=self.arrays["gam"],
             ds=self.arrays["ds"],
-            frag_size=self.frag_size,
+            frag_size=frag_size,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,

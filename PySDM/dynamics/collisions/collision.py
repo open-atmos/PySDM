@@ -22,9 +22,8 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
-DEFAULTS = namedtuple("_", ("dt_coal_range", "min_volume", "adaptive", "substeps"))(
+DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
-    min_volume=0.0,
     adaptive=True,
     substeps=1,
 )
@@ -44,7 +43,6 @@ class Collision:
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
         enable_breakup: bool = True,
-        min_volume=DEFAULTS.min_volume,
         warn_overflows: bool = True,
         handle_all_breakups: bool = False,
     ):
@@ -56,7 +54,6 @@ class Collision:
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
         self.handle_all_breakups = handle_all_breakups
-        self.min_volume = min_volume
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -79,6 +76,7 @@ class Collision:
 
         self.kernel_temp = None
         self.n_fragment = None
+        self.fragment_size = None
         self.Ec_temp = None
         self.Eb_temp = None
         self.norm_factor_temp = None
@@ -144,6 +142,9 @@ class Collision:
             self.n_fragment = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
+            self.fragment_size = self.particulator.PairwiseStorage.empty(
+                **empty_args_pairwise
+            )
             self.Ec_temp = self.particulator.PairwiseStorage.empty(
                 **empty_args_pairwise
             )
@@ -193,7 +194,7 @@ class Collision:
             self.compute_coalescence_efficiency(self.Ec_temp, self.is_first_in_pair)
             self.compute_breakup_efficiency(self.Eb_temp, self.is_first_in_pair)
             self.compute_number_of_fragments(
-                self.n_fragment, rand_frag, self.is_first_in_pair
+                self.n_fragment, self.fragment_size, rand_frag, self.is_first_in_pair
             )
         else:
             proc_rand = None
@@ -207,11 +208,11 @@ class Collision:
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
             n_fragment=self.n_fragment,
+            fragment_size=self.fragment_size,
             coalescence_rate=self.coalescence_rate,
             breakup_rate=self.breakup_rate,
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
-            min_volume=self.min_volume,
             warn_overflows=self.warn_overflows,
             handle_all_breakups=self.handle_all_breakups,
         )
@@ -314,7 +315,6 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
-        min_volume=DEFAULTS.min_volume,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -328,5 +328,4 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
-            min_volume=min_volume,
         )

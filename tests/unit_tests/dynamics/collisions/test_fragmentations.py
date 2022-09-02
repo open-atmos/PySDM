@@ -39,12 +39,16 @@ class TestFragmentations:
 
         _PairwiseStorage = builder.particulator.PairwiseStorage
         _Indicator = builder.particulator.PairIndicator
-        output = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
-        sut(output, u01, is_first_in_pair)
+        sut(nf, frag_size, u01, is_first_in_pair)
+
+        print(nf.data, frag_size.data)
 
         # Assert
-        np.testing.assert_array_less([0.99], output.to_ndarray())
+        np.testing.assert_array_less([0.99], nf.to_ndarray())
+        np.testing.assert_array_less([0.0], frag_size.to_ndarray())
