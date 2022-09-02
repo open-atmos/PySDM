@@ -28,9 +28,9 @@ class EffectiveRadius(MomentProduct):
     def __get_impl(buffer, tmp):
         buffer[:] = np.where(
             tmp[:] > 0,
-            buffer[:] * GEOM_FACTOR / (
-                tmp[:] + (tmp[:] == 0)  # (+ x==0) to avoid div-by-zero warnings
-            ),
+            buffer[:]
+            * GEOM_FACTOR
+            / (tmp[:] + (tmp[:] == 0)  # (+ x==0) to avoid div-by-zero warnings),
             np.nan
         )
 
