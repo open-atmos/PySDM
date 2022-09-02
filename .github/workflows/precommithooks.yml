@@ -7,9 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-#         with:
-#           token: ${{ secrets.PYSDM_PRECOMMITHOOK_SECRET }}
-#           ref: ${{ github.head_ref }}
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
         with:
@@ -20,6 +17,4 @@ jobs:
           pre-commit clean
           pre-commit autoupdate
           pre-commit run --all-files
-#       - name: If needed, commit changes to the pull request
-#         if: failure()
-#         uses: stefanzweifel/git-auto-commit-action@v4
+          git diff
