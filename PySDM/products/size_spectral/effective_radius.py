@@ -13,12 +13,15 @@ GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 
 
 class EffectiveRadius(MomentProduct):
-    def __init__(self, *, radius_range=(0, np.inf), unit="m", name=None):
+    def __init__(self, *, radius_range=None, unit="m", name=None):
         super().__init__(name=name, unit=unit)
-        self.volume_range = (
-            self.formulae.trivia.volume(radius_range[0]),
-            self.formulae.trivia.volume(radius_range[1]),
-        )
+        self.volume_range = None
+        self.radius_range = radius_range or (0, np.inf)
+
+    def register(self, builder):
+        super().register(builder)
+        self.volume_range = self.formulae.trivia.volume(np.asarray(self.radius_range))
+        self.radius_range = None
 
     @staticmethod
     @numba.njit(**JIT_FLAGS)
