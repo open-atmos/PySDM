@@ -31,7 +31,7 @@ class EffectiveRadius(MomentProduct):
             buffer[:]
             * GEOM_FACTOR
             / (tmp[:] + (tmp[:] == 0)),  # (+ x==0) to avoid div-by-zero warnings
-            np.nan
+            np.nan,
         )
 
     def _impl(self, **kwargs):
