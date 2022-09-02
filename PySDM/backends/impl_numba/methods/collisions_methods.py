@@ -599,12 +599,10 @@ class CollisionsMethods(BackendMethods):
     # TODO #874: remove all but the nfmax limiter and move others to dynamic
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
-            n_fragment[i] = x_plus_y[i] / frag_size[i]
-            if frag_size[i] > v_max[i]:
-                n_fragment[i] = 1
-            elif frag_size[i] < vmin:
-                n_fragment[i] = 1
+            frag_size[i] = min(frag_size[i], v_max[i])
+            frag_size[i] = max(frag_size[i], vmin)
 
+            n_fragment[i] = x_plus_y[i] / frag_size[i]
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
