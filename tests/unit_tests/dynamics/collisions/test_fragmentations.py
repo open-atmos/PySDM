@@ -29,7 +29,7 @@ class TestFragmentations:
     )
     def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
         # arrange
-        volume = np.asarray([44.0, 666.0])
+        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
         builder = Builder(volume.size, backend_class())
         sut = fragmentation_fn

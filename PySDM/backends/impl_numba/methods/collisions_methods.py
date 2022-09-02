@@ -637,20 +637,31 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def __exp_fragmentation_body(*, scale, frag_size, rand, tol=1e-5):
+    def __exp_fragmentation_body(*, scale, frag_size, rand, tol):
         """
         Exponential PDF
         """
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            frag_size[i] = -scale * np.log(np.max(1 - rand[i], tol))
+            frag_size[i] = -scale * np.log(max(1 - rand[i], tol))
 
     def exp_fragmentation(
-        self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        self,
+        *,
+        n_fragment,
+        scale,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        tol=1e-5,
     ):
         self.__exp_fragmentation_body(
             scale=scale,
             frag_size=frag_size.data,
             rand=rand.data,
+            tol=tol,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
@@ -741,7 +752,6 @@ class CollisionsMethods(BackendMethods):
     def __straub_fragmentation_body(
         *, n_fragment, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
     ):
-        # TODO EMily
         for i in numba.prange(len(n_fragment)):  # pylint: disable=not-an-iterable
             straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
             if rand[i] < Nr1[i] / Nrt[i]:
@@ -750,7 +760,7 @@ class CollisionsMethods(BackendMethods):
             elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
                 rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
                 straub_p2(i, CW, frag_size, rand)
-            elif rand[i] < (Nr3[2] + Nr2[i] + Nr1[i]) / Nrt[4]:
+            elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
                 rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])
                 straub_p3(i, CW, ds, frag_size, rand)
             else:
