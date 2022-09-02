@@ -14,32 +14,35 @@ GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 
 class EffectiveRadius(MomentProduct):
     def __init__(self, *, radius_range=(0, np.inf), unit="m", name=None):
-        self.radius_range = radius_range
         super().__init__(name=name, unit=unit)
+        self.volume_range = (
+            self.formulae.trivia.volume(radius_range[0]),
+            self.formulae.trivia.volume(radius_range[1]),
+        )
 
     @staticmethod
     @numba.njit(**JIT_FLAGS)
     def __get_impl(buffer, tmp):
-        buffer[:] = np.where(tmp[:] > 0, buffer[:] * GEOM_FACTOR / tmp[:], np.nan)
+        buffer[:] = np.where(
+            tmp[:] > 0,
+            buffer[:] * GEOM_FACTOR / (
+                tmp[:] + (tmp[:] == 0)  # (+ x==0) to avoid div-by-zero warnings
+            ),
+            np.nan
+        )
 
     def _impl(self, **kwargs):
         tmp = np.empty_like(self.buffer)
         self._download_moment_to_buffer(
             attr="volume",
             rank=2 / 3,
-            filter_range=(
-                self.formulae.trivia.volume(self.radius_range[0]),
-                self.formulae.trivia.volume(self.radius_range[1]),
-            ),
+            filter_range=self.volume_range,
         )
         tmp[:] = self.buffer[:]
         self._download_moment_to_buffer(
             attr="volume",
             rank=1,
-            filter_range=(
-                self.formulae.trivia.volume(self.radius_range[0]),
-                self.formulae.trivia.volume(self.radius_range[1]),
-            ),
+            filter_range=self.volume_range,
         )
         EffectiveRadius.__get_impl(self.buffer, tmp)
         return self.buffer
