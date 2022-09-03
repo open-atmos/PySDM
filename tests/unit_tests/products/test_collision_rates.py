@@ -223,7 +223,9 @@ class TestCollisionProducts:
         builder = Builder(n_sd, backend_class())
         builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
 
-        dynamic, _ = _get_dynamics_and_products(params, adaptive=True)
+        dynamic, _ = _get_dynamics_and_products(
+            params, adaptive=True, a=1e4 * si.cm**3 / si.s
+        )
         dynamic.handle_all_breakups = True
         builder.add_dynamic(dynamic)
 
@@ -240,14 +242,12 @@ class TestCollisionProducts:
 
         # Act
         particulator.run(1)
+        br = particulator.products["br"].get()[0]
+        brd = particulator.products["brd"].get()[0]
 
         # Assert
-        assert (
-            particulator.products["br"].get()[0] > np.asarray([0.0] * (n_sd // 2))
-        ).all()
-        assert (
-            particulator.products["brd"].get()[0] == np.asarray([0.0] * (n_sd // 2))
-        ).all()
+        assert (br > np.asarray([0.0] * (n_sd // 2))).all()
+        assert (brd == np.asarray([0.0] * (n_sd // 2))).all()
 
     @staticmethod
     @pytest.mark.parametrize(
