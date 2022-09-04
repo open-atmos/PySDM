@@ -299,8 +299,8 @@ class TestCollisionProducts:
     @pytest.mark.parametrize("breakup", (True, False))
     def test_rate_sums_multicell_deJongMackay(breakup):
         # Arrange
-        n_sd_per_gridbox = 64
-        dt = 20 * si.s
+        n_sd_per_gridbox = 256
+        dt = 10 * si.s
         dz = 100 * si.m
         output = {}
         rho_times_w = 3 * si.m / si.s
