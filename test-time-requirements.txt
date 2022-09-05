@@ -7,4 +7,4 @@ pytest
 PySDM-examples @ git+https://github.com/atmos-cloud-sim-uj/PySDM-examples@ce28970#egg=PySDM-examples
 PyMPDATA @ git+https://github.com/atmos-cloud-sim-uj/PyMPDATA@e7b73a7#egg=PyMPDATA
 
-PyPartMC==0.0.15
+PyPartMC==0.0.17
