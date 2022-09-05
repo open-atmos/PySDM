@@ -124,7 +124,7 @@ def _plot_fit(fit_x, fit_y, low, hgh, total_time):
     pylab.legend()
     pylab.yscale("log")
     pylab.ylim(fit_y[-1], fit_y[0])
-    pylab.xlim(0, total_time)
+    pylab.xlim(None, total_time)
     pylab.xlabel("time")
     pylab.ylabel("unfrozen fraction")
     pylab.grid()

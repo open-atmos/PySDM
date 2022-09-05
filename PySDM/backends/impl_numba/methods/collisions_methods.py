@@ -85,12 +85,10 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
             transfer_jk_test > max_multiplicity
             or multiplicity[k] * divisor_jk_test > max_multiplicity
         ):
-            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
             overflow_flag = True
             break
         # check for new_n > 0, max volume, min volume
         if new_n < 0 or new_v > max(volume[j], volume[k]) or new_v < min_volume:
-            atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
             break
 
         # all tests passed
@@ -113,6 +111,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
             attributes[a, j] = attributes[a, k]
     # add up the product
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
+    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
     # perform rounding as necessary
     multiplicity[j] = round(nj)
     multiplicity[k] = round(nk)
@@ -331,7 +330,7 @@ class CollisionsMethods(BackendMethods):
                 continue
             j, k = pair_indices(i, idx, is_first_in_pair)
             coalesce(
-                i, j, k, cell_id[i], multiplicity, gamma, attributes, coalescence_rate
+                i, j, k, cell_id[j], multiplicity, gamma, attributes, coalescence_rate
             )
             flag_zero_multiplicity(j, k, multiplicity, healthy)
 
@@ -398,7 +397,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
@@ -409,7 +408,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
@@ -426,7 +425,7 @@ class CollisionsMethods(BackendMethods):
                     i,
                     j,
                     k,
-                    cell_id[i],
+                    cell_id[j],
                     multiplicity,
                     gamma,
                     attributes,
