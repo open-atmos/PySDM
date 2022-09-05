@@ -75,7 +75,7 @@ def pypartmc(dry_diam, temp, rel_humid, kpa):
 )
 @pytest.mark.parametrize("kappa", (0.1, 1))
 @pytest.mark.parametrize("temperature", (300 * si.K,))
-@pytest.mark.parametrize("relative_humidity", (0.5, 0.75, 1.0))
+@pytest.mark.parametrize("relative_humidity", (0.5, 0.75, 0.99))
 def test_dry_wet_equilibration(kappa, temperature, relative_humidity, plot=False):
     # arrange
     models = {"PySDM": pysdm, "PyPartMC": pypartmc}
