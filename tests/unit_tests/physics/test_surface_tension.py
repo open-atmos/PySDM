@@ -84,8 +84,6 @@ def calc_sigma(st_type, TEMPERATURE, V_WET, V_DRY, F_ORG):
                     "RUEHL_nu_org": 1e2 * si.cm**3 / si.mole,
                 },
             )
-
-            for j, vw in enumerate(V_WET):
-                sgm[i, j] = f.surface_tension.sigma(TEMPERATURE, vw, V_DRY, F_ORG)
+            sgm[i, :] = f.surface_tension.sigma(TEMPERATURE, V_WET, V_DRY, F_ORG)
 
     return sgm
