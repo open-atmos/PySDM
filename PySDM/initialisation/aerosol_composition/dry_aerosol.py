@@ -14,6 +14,8 @@ contains functions for computing properties like `kappa` from a `mass_fractions`
 
 from typing import Dict, Tuple
 
+import numpy as np
+
 from PySDM import formulae
 from PySDM.physics import surface_tension
 from PySDM.physics.constants_defaults import Mv, rho_w
@@ -64,11 +66,10 @@ class DryAerosolMixture:
         else:
             _masked = {k: (not self.is_soluble[k]) * volfrac[k] for k in self.compounds}
 
-        _denom = sum(list(_masked.values()))
-        if _denom == 0.0:
-            x = {k: 0.0 for k in self.compounds}
-        else:
-            x = {k: _masked[k] / _denom for k in self.compounds}
+        _denom = np.array(sum(list(_masked.values())))
+        _denom[_denom == 0.0] += 1.0
+
+        x = {k: _masked[k] / _denom for k in self.compounds}
         return x
 
     # calculate hygroscopicities with different assumptions about solubility
