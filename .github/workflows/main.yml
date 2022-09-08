@@ -97,7 +97,7 @@ jobs:
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-locals,too-many-instance-attributes,too-few-public-methods,protected-access,too-many-statements,duplicate-code,unnecessary-lambda-assignment $(git ls-files '*.py')
 
   build:
-    needs: [pylint, pdoc, codecov]
+    needs: [pylint, pdoc, codecov, precommit]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
