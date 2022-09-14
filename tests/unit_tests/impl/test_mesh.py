@@ -71,7 +71,7 @@ class TestMesh:
         assert position_in_cell.shape == (mesh.dimension, n_sd)
 
         assert 0 <= min(cell_id) <= max(cell_id) < mesh.n_cell
-        assert cell_id.dtype == int
+        assert cell_id.dtype == np.int64
 
         for dim in range(mesh.dimension):
             assert (
