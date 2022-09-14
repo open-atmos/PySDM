@@ -80,7 +80,7 @@ class TestMesh:
                 <= max(cell_origin[dim, :])
                 < mesh.grid[dim]
             )
-        assert cell_origin.dtype == int
+        assert cell_origin.dtype == np.int64
 
         for dim in range(mesh.dimension):
             assert (
