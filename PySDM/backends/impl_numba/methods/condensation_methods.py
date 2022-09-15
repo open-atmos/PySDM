@@ -350,7 +350,7 @@ class CondensationMethods(BackendMethods):
         return calculate_ml_old
 
     @staticmethod
-    def make_calculate_ml_new(
+    def make_calculate_ml_new(  # pylint: disable=too-many-statements
         *,
         jit_flags,
         dx_dt,
@@ -385,7 +385,7 @@ class CondensationMethods(BackendMethods):
             return x_old - x_new + timestep * dx_dt(x_new, r_dr_dt)
 
         @numba.njit(**jit_flags)
-        def calculate_ml_new(  # pylint: disable=too-many-arguments
+        def calculate_ml_new(  # pylint: disable=too-many-arguments,too-many-statements
             timestep,
             fake,
             T,

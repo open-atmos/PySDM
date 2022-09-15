@@ -127,7 +127,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
+def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-many-statements
     i,
     j,
     k,

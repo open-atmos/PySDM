@@ -63,7 +63,7 @@ def _bdf_condensation(
 
 
 @lru_cache()
-def _make_solve(formulae):
+def _make_solve(formulae):  # pylint: disable=too-many-statements
     x = formulae.condensation_coordinate.x
     volume = formulae.condensation_coordinate.volume
     dx_dt = formulae.condensation_coordinate.dx_dt
