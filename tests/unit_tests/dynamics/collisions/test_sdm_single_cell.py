@@ -219,7 +219,9 @@ class TestSDMSingleCell:
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
 
-        expected = lambda p, r: p // 1 + (r < p - p // 1)
+        def expected(p, r):
+            return p // 1 + (r < p - p // 1)
+
         n_sd = 2
         for p in prob:
             for r in rand:
