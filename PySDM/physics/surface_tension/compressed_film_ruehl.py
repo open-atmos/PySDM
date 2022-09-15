@@ -44,7 +44,7 @@ class CompressedFilmRuehl:
         assert np.isfinite(const.RUEHL_sgm_min)
 
     @staticmethod
-    def sigma(const, T, v_wet, v_dry, f_org):
+    def sigma(const, T, v_wet, v_dry, f_org):  # pylint: disable=too-many-locals
         # wet radius (m)
         r_wet = ((3 * v_wet) / (4 * const.PI)) ** (1 / 3)
 

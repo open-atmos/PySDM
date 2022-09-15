@@ -136,6 +136,7 @@ class TpDependent:
 
     @staticmethod
     def make(only_small=False):
+        # pylint: disable=too-many-locals
         # TODO #348 T, p dependence
         # TODO #348 move constants to physics.constants
 

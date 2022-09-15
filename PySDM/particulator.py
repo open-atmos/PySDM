@@ -147,6 +147,7 @@ class Particulator:  # pylint: disable=too-many-public-methods
         warn_overflows,
         handle_all_breakups=False,
     ):
+        # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
         healthy = self.attributes._ParticleAttributes__healthy_memory
         cell_id = self.attributes["cell id"]

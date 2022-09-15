@@ -28,7 +28,9 @@ from PySDM.physics import si
 @pytest.mark.parametrize("rtol_x", (1e-7,))
 @pytest.mark.parametrize("adaptive", (True,))
 @pytest.mark.parametrize("scheme", ("PySDM",))
-def test_single_supersaturation_peak(adaptive, scheme, rtol_x, rtol_thd, plot=False):
+def test_single_supersaturation_peak(
+    adaptive, scheme, rtol_x, rtol_thd, plot=False
+):  # pylint: disable=too-many-locals
     # arrange
     products = (
         PySDM_products.WaterMixingRatio(unit="g/kg", name="ql"),

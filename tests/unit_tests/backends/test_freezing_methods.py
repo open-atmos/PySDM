@@ -22,6 +22,7 @@ class TestFreezingMethods:
         pass
 
     @staticmethod
+    # pylint: disable=too-many-locals
     def test_freeze_time_dependent(plot=False):
         # Arrange
         cases = (

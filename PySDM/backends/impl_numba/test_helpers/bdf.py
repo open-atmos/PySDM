@@ -63,7 +63,7 @@ def _bdf_condensation(
 
 
 @lru_cache()
-def _make_solve(formulae):  # pylint: disable=too-many-statements
+def _make_solve(formulae):  # pylint: disable=too-many-statements,too-many-locals
     x = formulae.condensation_coordinate.x
     volume = formulae.condensation_coordinate.volume
     dx_dt = formulae.condensation_coordinate.dx_dt
@@ -89,7 +89,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements
         return np.sum(n * volume(x)) * rho_w / m_d_mean
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-    def _impl(  # pylint: disable=too-many-arguments
+    def _impl(  # pylint: disable=too-many-arguments,too-many-locals
         dy_dt,
         x,
         T,
@@ -133,7 +133,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements
         dy_dt[idx_thd] = dot_thd + phys_dthd_dt(rhod_mean, thd, T, dqv_dt, lv)
 
     @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
-    def _odesys(  # pylint: disable=too-many-arguments
+    def _odesys(  # pylint: disable=too-many-arguments,too-many-locals
         t, y, kappa, f_org, dry_volume, n, dthd_dt, dqv_dt, m_d_mean, rhod_mean, qt
     ):
         thd = y[idx_thd]
@@ -167,7 +167,7 @@ def _make_solve(formulae):  # pylint: disable=too-many-statements
         )
         return dy_dt
 
-    def solve(  # pylint: disable=too-many-arguments
+    def solve(  # pylint: disable=too-many-arguments,too-many-locals
         v,
         _,
         n,

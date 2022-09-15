@@ -18,6 +18,10 @@ from PySDM.physics import si
 if platform.architecture()[0] == "64bit":
     import PyPartMC
 
+linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
+x_unit = si.um
+y_unit = 1 / si.cm**3
+
 
 def pysdm(dry_diam, temp, rel_humid, kpa):
     r_dry = dry_diam / 2
@@ -99,10 +103,6 @@ def test_dry_wet_equilibration(kappa, temperature, relative_humidity, plot=False
         )
 
     # plot
-    linestyles = {"PyPartMC": "dashed", "PySDM": "dotted"}
-    x_unit = si.um
-    y_unit = 1 / si.cm**3
-
     pyplot.plot(
         dry_diameters / x_unit, dn_dlndiam_sum / y_unit, label="(dry)", linewidth=3
     )

@@ -123,7 +123,7 @@ class TestAlgorithmicMethods:
             ),
         ),
     )
-    # pylint: disable=redefined-outer-name
+    # pylint: disable=redefined-outer-name,too-many-locals
     def test_adaptive_sdm_gamma(
         *,
         backend_class,
