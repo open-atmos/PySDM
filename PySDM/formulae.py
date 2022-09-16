@@ -18,7 +18,7 @@ from PySDM.backends.impl_numba import conf
 
 
 class Formulae:
-    def __init__(
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,

@@ -34,7 +34,7 @@ class _TestEnv:
 
 
 class _TestParticulator:
-    def __init__(
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         backend,

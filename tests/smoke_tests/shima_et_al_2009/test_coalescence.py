@@ -35,7 +35,7 @@ def check(*, n_part, dv, n_sd, rho, attributes, step):
 
 @pytest.mark.parametrize("croupier", ["local", "global"])
 @pytest.mark.parametrize("adaptive", [True, False])
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name,too-many-locals
 def test_coalescence(backend_class, croupier, adaptive):
     if backend_class == ThrustRTC and croupier == "local":  # TODO #358
         return

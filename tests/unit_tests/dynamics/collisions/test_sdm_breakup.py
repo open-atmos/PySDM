@@ -151,7 +151,9 @@ class TestSDMBreakup:
             },
         ],
     )
-    def test_breakup_counters(params, backend_class=CPU):
+    def test_breakup_counters(
+        params, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -257,7 +259,9 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    def test_attribute_update_single_breakup(params, flag, backend_class=CPU):
+    def test_attribute_update_single_breakup(
+        params, flag, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -331,7 +335,7 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    def test_multiplicity_overflow(backend=CPU()):
+    def test_multiplicity_overflow(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
         params = {
             "gamma": [100.0],
@@ -398,7 +402,7 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    def test_vmin_limiter(backend=CPU()):
+    def test_vmin_limiter(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
         params = {
             "gamma": [1.0],
@@ -466,7 +470,9 @@ class TestSDMBreakup:
         )
 
     @staticmethod
-    def test_same_multiplicity_overflow_no_substeps(backend=CPU()):
+    def test_same_multiplicity_overflow_no_substeps(
+        backend=CPU(),
+    ):  # pylint: disable=too-many-locals
         # Arrange
         params = {
             "gamma": [46.0],
@@ -579,7 +585,9 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    def test_noninteger_fragments(params, flag, backend_class=CPU):
+    def test_noninteger_fragments(
+        params, flag, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -681,7 +689,9 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    def test_vmax_constraint(params, flag, backend_class=CPU):
+    def test_vmax_constraint(
+        params, flag, backend_class=CPU
+    ):  # pylint: disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
@@ -758,7 +768,9 @@ class TestSDMBreakup:
 
     @staticmethod
     @pytest.mark.xfail()  # TODO #871
-    def test_nonnegative_even_if_overflow(backend=CPU()):
+    def test_nonnegative_even_if_overflow(
+        backend=CPU(),
+    ):  # pylint: disable=too-many-locals
         n_sd = 2**5
         builder = Builder(n_sd=n_sd, backend=backend)
 
@@ -832,7 +844,9 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
-    def test_while_loop_multi_breakup(params, flag, backend_class=CPU):
+    def test_while_loop_multi_breakup(
+        params, flag, backend_class=CPU
+    ):  # pylint:disable=too-many-locals
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
