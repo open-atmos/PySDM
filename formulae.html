@@ -47,7 +47,7 @@ from PySDM.backends.impl_numba import conf
 
 
 class Formulae:
-    def __init__(
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,
@@ -319,7 +319,7 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Formulae:
-    def __init__(
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         constants: Optional[dict] = None,

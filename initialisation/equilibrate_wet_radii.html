@@ -51,6 +51,7 @@ def equilibrate_wet_radii(
     rtol=default_rtol,
     max_iters=default_max_iters,
 ):
+    # pylint: disable=too-many-locals
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
     if f_org is None:
@@ -79,7 +80,7 @@ def equilibrate_wet_radii(
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(  # pylint: disable=too-many-arguments
+    def r_wet_init_impl(  # pylint: disable=too-many-arguments,too-many-locals
         r_dry: np.ndarray,
         iters,
         T,
@@ -184,6 +185,7 @@ def equilibrate_wet_radii(
     rtol=default_rtol,
     max_iters=default_max_iters,
 ):
+    # pylint: disable=too-many-locals
     if cell_id is None:
         cell_id = np.zeros_like(r_dry, dtype=int)
     if f_org is None:
@@ -212,7 +214,7 @@ def equilibrate_wet_radii(
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
-    def r_wet_init_impl(  # pylint: disable=too-many-arguments
+    def r_wet_init_impl(  # pylint: disable=too-many-arguments,too-many-locals
         r_dry: np.ndarray,
         iters,
         T,

@@ -331,7 +331,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
         self,
@@ -778,7 +778,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
         self,
