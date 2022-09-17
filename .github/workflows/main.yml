@@ -94,7 +94,7 @@ jobs:
     - name: Analysing the code with pylint
       run: |
         # TODO #682
-        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-instance-attributes,too-few-public-methods,protected-access,duplicate-code $(git ls-files '*.py')
+        pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,too-many-instance-attributes,protected-access,duplicate-code $(git ls-files '*.py')
 
   build:
     needs: [pylint, pdoc, codecov, precommit]

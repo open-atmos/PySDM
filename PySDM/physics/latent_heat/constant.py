@@ -3,7 +3,7 @@ temperature-independent latent heat of vaporization
 """
 
 
-class Constant:
+class Constant:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 

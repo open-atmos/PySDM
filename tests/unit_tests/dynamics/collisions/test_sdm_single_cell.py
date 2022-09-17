@@ -281,7 +281,9 @@ class TestSDMSingleCell:
         attributes = {"n": n, "volume": v}
         particles.build(attributes)
 
-        class CountingRandom(backend_class.Random):
+        class CountingRandom(
+            backend_class.Random
+        ):  # pylint: disable=too-few-public-methods
             calls = 0
 
             def __call__(self, storage):

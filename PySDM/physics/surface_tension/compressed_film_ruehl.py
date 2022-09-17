@@ -23,7 +23,7 @@ within_tolerance = numba.njit(
 )
 
 
-class CompressedFilmRuehl:
+class CompressedFilmRuehl:  # pylint: disable=too-few-public-methods
     """
     Compressed film model of surface-partitioning of organics from Ruehl et al. (2016).
     Described in supplementary materials equations (13) and (15).

@@ -10,7 +10,7 @@ from ..dummy_particulator import DummyParticulator
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-class TestEulerianAdvection:
+class TestEulerianAdvection:  # pylint: disable=too-few-public-methods
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_update(backend_class):

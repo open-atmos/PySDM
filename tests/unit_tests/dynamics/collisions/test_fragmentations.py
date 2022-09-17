@@ -14,7 +14,7 @@ from PySDM.environments import Box
 from PySDM.physics import si
 
 
-class TestFragmentations:
+class TestFragmentations:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "fragmentation_fn",
