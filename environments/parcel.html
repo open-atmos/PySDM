@@ -40,7 +40,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
 )
 
 
-class Parcel(Moist):
+class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -184,7 +184,7 @@ class Parcel(Moist):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Parcel(Moist):
+<pre><code class="python">class Parcel(Moist):  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

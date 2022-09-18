@@ -47,7 +47,7 @@ DEFAULTS = namedtuple(&#34;_&#34;, (&#34;rtol_x&#34;, &#34;rtol_thd&#34;, &#34;c
 )
 
 
-class Condensation:
+class Condensation:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -174,7 +174,7 @@ class Condensation:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Condensation:
+<pre><code class="python">class Condensation:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

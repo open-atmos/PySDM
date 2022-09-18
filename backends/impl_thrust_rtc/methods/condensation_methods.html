@@ -41,7 +41,9 @@ from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
-class CondensationMethods(ThrustRTCBackendMethods):
+class CondensationMethods(
+    ThrustRTCBackendMethods
+):  # pylint: disable=too-many-instance-attributes
     keys = (&#34;T&#34;, &#34;p&#34;, &#34;pv&#34;, &#34;lv&#34;, &#34;pvs&#34;, &#34;RH&#34;, &#34;DTp&#34;, &#34;lambdaK&#34;, &#34;lambdaD&#34;)
 
     def __init__(self):
@@ -488,7 +490,9 @@ class CondensationMethods(ThrustRTCBackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class CondensationMethods(ThrustRTCBackendMethods):
+<pre><code class="python">class CondensationMethods(
+    ThrustRTCBackendMethods
+):  # pylint: disable=too-many-instance-attributes
     keys = (&#34;T&#34;, &#34;p&#34;, &#34;pv&#34;, &#34;lv&#34;, &#34;pvs&#34;, &#34;RH&#34;, &#34;DTp&#34;, &#34;lambdaK&#34;, &#34;lambdaD&#34;)
 
     def __init__(self):

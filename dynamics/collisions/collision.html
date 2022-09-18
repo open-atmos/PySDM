@@ -69,7 +69,7 @@ DEFAULTS = namedtuple(&#34;_&#34;, (&#34;dt_coal_range&#34;, &#34;min_volume&#34
 )
 
 
-class Collision:
+class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -493,7 +493,7 @@ class Breakup(Collision):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Collision:
+<pre><code class="python">class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

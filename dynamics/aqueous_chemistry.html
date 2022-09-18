@@ -47,7 +47,7 @@ DEFAULTS = namedtuple(&#34;_&#34;, (&#34;pH_min&#34;, &#34;pH_max&#34;, &#34;pH_
 )
 
 
-class AqueousChemistry:
+class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
@@ -173,7 +173,7 @@ class AqueousChemistry:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class AqueousChemistry:
+<pre><code class="python">class AqueousChemistry:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,
