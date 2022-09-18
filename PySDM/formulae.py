@@ -17,7 +17,7 @@ from PySDM import physics
 from PySDM.backends.impl_numba import conf
 
 
-class Formulae:  # pylint: disable=too-few-public-methods
+class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(  # pylint: disable=too-many-locals
         self,
         *,
