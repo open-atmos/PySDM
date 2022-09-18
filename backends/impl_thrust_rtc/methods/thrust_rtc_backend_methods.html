@@ -35,7 +35,7 @@ from typing import Callable, Optional
 from ...impl_common.backend_methods import BackendMethods
 
 
-class ThrustRTCBackendMethods(BackendMethods):
+class ThrustRTCBackendMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def __init__(self):
         super().__init__()
         if not hasattr(self, &#34;_conv_function&#34;):
@@ -73,7 +73,7 @@ class ThrustRTCBackendMethods(BackendMethods):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ThrustRTCBackendMethods(BackendMethods):
+<pre><code class="python">class ThrustRTCBackendMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def __init__(self):
         super().__init__()
         if not hasattr(self, &#34;_conv_function&#34;):

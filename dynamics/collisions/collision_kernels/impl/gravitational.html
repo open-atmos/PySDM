@@ -30,7 +30,7 @@
 <pre><code class="python">&#34;&#34;&#34; common parent class for gravitational collision kernels &#34;&#34;&#34;
 
 
-class Gravitational:
+class Gravitational:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None
@@ -62,7 +62,7 @@ class Gravitational:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Gravitational:
+<pre><code class="python">class Gravitational:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None

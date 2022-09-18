@@ -32,7 +32,7 @@ common base class for random number generation abstraction layer
 &#34;&#34;&#34;
 
 
-class RandomCommon:
+class RandomCommon:  # pylint: disable=too-few-public-methods
     def __init__(self, size: int, seed: int):
         assert isinstance(size, int)
         assert isinstance(seed, int)
@@ -58,7 +58,7 @@ class RandomCommon:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class RandomCommon:
+<pre><code class="python">class RandomCommon:  # pylint: disable=too-few-public-methods
     def __init__(self, size: int, seed: int):
         assert isinstance(size, int)
         assert isinstance(seed, int)

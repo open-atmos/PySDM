@@ -43,7 +43,7 @@ from PySDM.physics import constants as const
 default_cdf_range = (0.00001, 0.99999)
 
 
-class SpectralSampling:
+class SpectralSampling:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
@@ -85,13 +85,13 @@ class SpectralSampling:
         return x, y_float
 
 
-class Linear(SpectralSampling):
+class Linear(SpectralSampling):  # pylint: disable=too-few-public-methods
     def sample(self, n_sd):
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
 
 
-class Logarithmic(SpectralSampling):
+class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
@@ -107,7 +107,7 @@ class Logarithmic(SpectralSampling):
         return self._sample(grid, self.spectrum)
 
 
-class ConstantMultiplicity(SpectralSampling):
+class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
@@ -127,7 +127,7 @@ class ConstantMultiplicity(SpectralSampling):
         return self._sample(percentiles, self.spectrum)
 
 
-class UniformRandom(SpectralSampling):
+class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
         super().__init__(spectrum, size_range)
         self.rng = np.random.default_rng(seed)
@@ -157,7 +157,7 @@ class UniformRandom(SpectralSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ConstantMultiplicity(SpectralSampling):
+<pre><code class="python">class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
@@ -213,7 +213,7 @@ class UniformRandom(SpectralSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Linear(SpectralSampling):
+<pre><code class="python">class Linear(SpectralSampling):  # pylint: disable=too-few-public-methods
     def sample(self, n_sd):
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)</code></pre>
@@ -250,7 +250,7 @@ class UniformRandom(SpectralSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Logarithmic(SpectralSampling):
+<pre><code class="python">class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
@@ -297,7 +297,7 @@ class UniformRandom(SpectralSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class SpectralSampling:
+<pre><code class="python">class SpectralSampling:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         spectrum,
@@ -356,7 +356,7 @@ class UniformRandom(SpectralSampling):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class UniformRandom(SpectralSampling):
+<pre><code class="python">class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
         super().__init__(spectrum, size_range)
         self.rng = np.random.default_rng(seed)

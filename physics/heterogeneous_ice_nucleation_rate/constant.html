@@ -33,7 +33,7 @@ constant rate formulation (for tests)
 import numpy as np
 
 
-class Constant:
+class Constant:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.J_HET)
 
@@ -61,7 +61,7 @@ class Constant:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Constant:
+<pre><code class="python">class Constant:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.J_HET)
 

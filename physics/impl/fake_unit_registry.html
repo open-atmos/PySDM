@@ -42,7 +42,7 @@ def _fake(si_unit):
     return (1.0 * si_unit).to_base_units().magnitude
 
 
-class FakeUnitRegistry:
+class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
     def __init__(self, si):
         self.dimensionless = 1.0
         for prefix in (&#34;nano&#34;, &#34;micro&#34;, &#34;milli&#34;, &#34;centi&#34;, &#34;&#34;, &#34;hecto&#34;, &#34;kilo&#34;):
@@ -104,7 +104,7 @@ class FakeUnitRegistry:
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class FakeUnitRegistry:
+<pre><code class="python">class FakeUnitRegistry:  # pylint: disable=too-few-public-methods
     def __init__(self, si):
         self.dimensionless = 1.0
         for prefix in (&#34;nano&#34;, &#34;micro&#34;, &#34;milli&#34;, &#34;centi&#34;, &#34;&#34;, &#34;hecto&#34;, &#34;kilo&#34;):
