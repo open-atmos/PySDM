@@ -22,7 +22,7 @@ class TestFragmentations:
         [
             AlwaysN(n=2),
             ExponFrag(scale=1e6 * si.um**3),
-            Gaussian(mu=1e6 * si.um**3, sigma=2e6 * si.um**3),
+            Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             SLAMS(),
             Straub2010Nf(),
         ],

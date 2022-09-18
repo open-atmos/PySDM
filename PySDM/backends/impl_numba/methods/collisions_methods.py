@@ -603,7 +603,10 @@ class CollisionsMethods(BackendMethods):
             frag_size[i] = min(frag_size[i], v_max[i])
             frag_size[i] = max(frag_size[i], vmin)
 
-            n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if frag_size[i] > 0:
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            else:
+                n_fragment[i] = 1.0
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
