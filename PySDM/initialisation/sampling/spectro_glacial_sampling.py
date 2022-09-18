@@ -12,7 +12,7 @@ DIM_SURF = 1
 N_DIMS = 2
 
 
-class SpectroGlacialSampling:
+class SpectroGlacialSampling:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         *,

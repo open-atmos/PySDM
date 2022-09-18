@@ -11,7 +11,7 @@ from PySDM.backends.impl_numba import conf
 from PySDM.physics import constants as const
 
 
-class Interpolation:
+class Interpolation:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator, small_r_limit=None):
         self.particulator = particulator
 
