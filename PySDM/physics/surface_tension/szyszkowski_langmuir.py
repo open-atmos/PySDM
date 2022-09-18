@@ -5,7 +5,7 @@ surface tension coefficient model featuring surface-partitioning
 import numpy as np
 
 
-class SzyszkowskiLangmuir:
+class SzyszkowskiLangmuir:  # pylint: disable=too-few-public-methods
     """
     Szyszkowski-Langmuir surface-partitioning of organics described in Ruehl et al. (2016).
     Described in supplementary materials equations (12) and (14).

@@ -10,7 +10,7 @@ n_runs_per_case = 3
 
 
 @pytest.mark.parametrize("multiplicity", (1, 2, 10))
-def test_ak16_fig_1(multiplicity, plot=False):
+def test_ak16_fig_1(multiplicity, plot=False):  # pylint: disable=too-many-locals
     # Arrange
     dt = 1 * si.s
     total_time = 6 * si.min

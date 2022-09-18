@@ -9,7 +9,7 @@ import numpy as np
 from scipy.io import netcdf_file
 
 
-class NetCDFExporter_1d:
+class NetCDFExporter_1d:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
     def __init__(  # pylint: disable = too-many-arguments
         self, data, settings, simulator, filename, exclude_particle_reservoir=True
     ):

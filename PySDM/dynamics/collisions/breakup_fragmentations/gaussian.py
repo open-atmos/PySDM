@@ -3,7 +3,7 @@ P(x) = exp(-(x-mu)^2 / 2 sigma^2); mu and sigma are volumes
 """
 
 
-class Gaussian:
+class Gaussian:  # pylint: disable=too-many-instance-attributes
     def __init__(self, mu, sigma, vmin=0.0, nfmax=None):
         self.particulator = None
         self.mu = mu

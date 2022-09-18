@@ -19,13 +19,13 @@ def test_r_wet_init(r_dry, plot=False):
     f_org = 0.607
     kappa = 0.356
 
-    class Particulator:
+    class Particulator:  # pylint: disable=too-few-public-methods
         formulae = Formulae(
             surface_tension="CompressedFilmOvadnevaite",
             constants={"sgm_org": 40 * si.mN / si.m, "delta_min": 0.1 * si.nm},
         )
 
-    class Env:
+    class Env:  # pylint: disable=too-few-public-methods
         particulator = Particulator()
         thermo = {
             "T": CPU.Storage.from_ndarray(np.full(1, T)),

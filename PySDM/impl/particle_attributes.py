@@ -9,7 +9,7 @@ import numpy as np
 from PySDM.attributes.impl.attribute import Attribute
 
 
-class ParticleAttributes:
+class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

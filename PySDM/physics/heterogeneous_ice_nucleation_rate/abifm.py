@@ -5,7 +5,7 @@ ABIFM heterogeneous freezing rate parameterization
 import numpy as np
 
 
-class ABIFM:
+class ABIFM:  # pylint: disable=too-few-public-methods
     def __init__(self, const):
         assert np.isfinite(const.ABIFM_M)
         assert np.isfinite(const.ABIFM_C)

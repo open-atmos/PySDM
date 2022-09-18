@@ -11,7 +11,7 @@ from PySDM.backends.impl_numba import conf
 from PySDM.physics import constants as const
 
 
-class Interpolation:
+class Interpolation:  # pylint: disable=too-few-public-methods
     def __init__(self, particulator, small_r_limit=None):
         self.particulator = particulator
 
@@ -136,6 +136,7 @@ class TpDependent:
 
     @staticmethod
     def make(only_small=False):
+        # pylint: disable=too-many-locals
         # TODO #348 T, p dependence
         # TODO #348 move constants to physics.constants
 

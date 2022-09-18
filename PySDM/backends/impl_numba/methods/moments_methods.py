@@ -28,6 +28,7 @@ class MomentsMethods(BackendMethods):
         weighting_rank,
         skip_division_by_m0,
     ):
+        # pylint: disable=too-many-locals
         moment_0[:] = 0
         moments[:, :] = 0
         for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable
@@ -107,6 +108,7 @@ class MomentsMethods(BackendMethods):
         weighting_attribute,
         weighting_rank,
     ):
+        # pylint: disable=too-many-locals
         moment_0[:, :] = 0
         moments[:, :] = 0
         for idx_i in numba.prange(length):  # pylint: disable=not-an-iterable

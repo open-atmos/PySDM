@@ -4,7 +4,7 @@ nu = 1/m* where m* is a scaling factor for fragment size dist.
 """
 
 
-class Feingold1988Frag:
+class Feingold1988Frag:  # pylint: disable=too-many-instance-attributes
     def __init__(self, scale, fragtol=1e-3, vmin=0.0, nfmax=None):
         self.particulator = None
         self.scale = scale

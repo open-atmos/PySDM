@@ -8,7 +8,7 @@ from ...backends_fixture import backend_class
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-class TestPhysicsMethods:
+class TestPhysicsMethods:  # pylint: disable=too-few-public-methods
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_temperature_pressure_RH(backend_class):

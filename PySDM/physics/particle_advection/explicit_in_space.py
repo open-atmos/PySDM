@@ -3,7 +3,7 @@ basic explicit-in-space Euler scheme
 """
 
 
-class ExplicitInSpace:
+class ExplicitInSpace:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 

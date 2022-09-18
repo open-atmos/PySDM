@@ -110,7 +110,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
             raise TypeError(f"data type {data_type} not recognised as floating point")
 
     # TODO #684
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def moments(
         self,
@@ -168,7 +168,7 @@ class MomentsMethods(ThrustRTCBackendMethods):
             )
 
     # TODO #684
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def spectrum_moments(
         self,

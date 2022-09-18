@@ -9,7 +9,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 DIM_SUFFIX = "_bin_left_edges"
 
 
-class NetCDFExporter:
+class NetCDFExporter:  # pylint: disable=too-few-public-methods
     def __init__(self, storage, settings, simulator, filename):
         self.storage = storage
         self.settings = settings

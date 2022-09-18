@@ -5,11 +5,11 @@ from .dummy_particulator import DummyParticulator
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-class TestParticulator:
+class TestParticulator:  # pylint: disable=too-few-public-methods
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_observer(backend_class):
-        class Observer:
+        class Observer:  # pylint: disable=too-few-public-methods
             def __init__(self, particulator):
                 self.steps = 0
                 self.particulator = particulator

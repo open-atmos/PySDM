@@ -93,7 +93,9 @@ def test_netcdf_exporter_1d(simulation_1d, exclude_particle_reservoir):
         True,
     ),
 )
-def test_vtk_exporter_1d(simulation_1d, exclude_particle_reservoir):
+def test_vtk_exporter_1d(
+    simulation_1d, exclude_particle_reservoir
+):  # pylint: disable=too-many-locals
     # Arrange
     data = simulation_1d[0].attributes
     settings = simulation_1d[1]
