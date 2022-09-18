@@ -16,7 +16,7 @@ DEFAULTS = namedtuple("_", ("rtol_x", "rtol_thd", "cond_range", "schedule"))(
 )
 
 
-class Condensation:
+class Condensation:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

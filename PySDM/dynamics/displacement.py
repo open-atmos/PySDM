@@ -13,7 +13,7 @@ import numpy as np
 DEFAULTS = namedtuple("_", ("rtol", "adaptive"))(rtol=1e-2, adaptive=True)
 
 
-class Displacement:
+class Displacement:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         enable_sedimentation=False,
