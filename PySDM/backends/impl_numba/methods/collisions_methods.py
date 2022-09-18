@@ -52,7 +52,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(  # pylint: disable=too-many-arguments,unused-argument
+def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
     i,
     j,
     k,
@@ -130,7 +130,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
+def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-many-statements,too-many-locals
     i,
     j,
     k,
@@ -150,6 +150,7 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
+        print(gamma_deficit, gamma_tmp)
         if multiplicity[k] == multiplicity[j]:
             gamma_tmp = gamma_deficit
             tmp2 = (n_fragment[i] / 2) ** gamma_tmp
@@ -491,7 +492,7 @@ class CollisionsMethods(BackendMethods):
         volume,
         handle_all_breakups,
     ):
-        # pylint: disable=not-an-iterable,too-many-nested-blocks
+        # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
         for i in numba.prange(length // 2):
             if gamma[i] == 0:
                 continue
@@ -569,6 +570,7 @@ class CollisionsMethods(BackendMethods):
         volume,
         handle_all_breakups,
     ):
+        # pylint: disable=too-many-locals
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity=multiplicity.data,
@@ -602,7 +604,10 @@ class CollisionsMethods(BackendMethods):
             frag_size[i] = min(frag_size[i], v_max[i])
             frag_size[i] = max(frag_size[i], vmin)
 
-            n_fragment[i] = x_plus_y[i] / frag_size[i]
+            if frag_size[i] > 0:
+                n_fragment[i] = x_plus_y[i] / frag_size[i]
+            else:
+                n_fragment[i] = 1.0
             if nfmax is not None:
                 n_fragment[i] = min(n_fragment[i], nfmax)
 
@@ -808,7 +813,7 @@ class CollisionsMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-locals
     def __compute_gamma_body(
         gamma,
         rand,

@@ -18,7 +18,7 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Copyright](https://img.shields.io/static/v1?label=Copyright&color=249fe2&message=Jagiellonian%20University&)](https://en.uj.edu.pl/)
 
-[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/tests+pypi/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
+[![Github Actions Build Status](https://github.com/atmos-cloud-sim-uj/PySDM/workflows/main/badge.svg?branch=main)](https://github.com/atmos-cloud-sim-uj/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/atmos-cloud-sim-uj/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
 [![Coverage Status](https://codecov.io/gh/atmos-cloud-sim-uj/PySDM/branch/main/graph/badge.svg)](https://codecov.io/github/atmos-cloud-sim-uj/PySDM?branch=main)    
 [![GitHub issues](https://img.shields.io/github/issues-pr/atmos-cloud-sim-uj/PySDM.svg?logo=github&logoColor=white)](https://github.com/atmos-cloud-sim-uj/PySDM/pulls?q=)

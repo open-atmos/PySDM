@@ -7,7 +7,7 @@ from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 from PySDM.physics import si
 
 
-class TestInitialCondition:
+class TestInitialCondition:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "particle_reservoir_depth",

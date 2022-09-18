@@ -7,7 +7,7 @@ but with user-specified collection efficiency constants
 from ._parameterized import Parameterized
 
 
-class SpecifiedEff(Parameterized):
+class SpecifiedEff(Parameterized):  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         *,

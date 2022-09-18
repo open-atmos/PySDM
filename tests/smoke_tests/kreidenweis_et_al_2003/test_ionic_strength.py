@@ -17,6 +17,7 @@ from PySDM.physics.constants import K_H2O
 @pytest.mark.parametrize("nt", (0, 1, 2, 3))
 @pytest.mark.parametrize("n_sd", (10, 20))
 def test_calc_ionic_strength(nt, n_sd):
+    # pylint: disable=too-many-locals
     formulae = Formulae()
     const = formulae.constants
     EQUILIBRIUM_CONST = EquilibriumConsts(formulae).EQUILIBRIUM_CONST

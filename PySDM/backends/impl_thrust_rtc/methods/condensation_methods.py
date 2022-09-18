@@ -12,7 +12,9 @@ from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
-class CondensationMethods(ThrustRTCBackendMethods):
+class CondensationMethods(
+    ThrustRTCBackendMethods
+):  # pylint: disable=too-many-instance-attributes
     keys = ("T", "p", "pv", "lv", "pvs", "RH", "DTp", "lambdaK", "lambdaD")
 
     def __init__(self):
@@ -302,7 +304,7 @@ class CondensationMethods(ThrustRTCBackendMethods):
         ml[:] = 0
         self.__calculate_m_l.launch_n(len(n), (ml.data, v.data, n.data, cell_id.data))
 
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,too-many-locals
     @nice_thrust(**NICE_THRUST_FLAGS)
     def condensation(
         self,

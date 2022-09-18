@@ -6,7 +6,7 @@ from typing import Callable, Optional
 from ...impl_common.backend_methods import BackendMethods
 
 
-class ThrustRTCBackendMethods(BackendMethods):
+class ThrustRTCBackendMethods(BackendMethods):  # pylint: disable=too-few-public-methods
     def __init__(self):
         super().__init__()
         if not hasattr(self, "_conv_function"):

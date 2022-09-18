@@ -17,6 +17,7 @@ from PySDM.impl.particle_attributes import ParticleAttributes
 class ParticleAttributesFactory:
     @staticmethod
     def attributes(particulator, req_attr, attributes):
+        # pylint: disable=too-many-locals
         idx = particulator.Index.identity_index(particulator.n_sd)
 
         extensive_attr = []

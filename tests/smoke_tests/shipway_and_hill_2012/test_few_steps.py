@@ -100,9 +100,9 @@ def test_fixed_thd():
     output = simulation.run().products
 
     # Assert
-    mean_profile_over_last_steps = lambda var: np.mean(
-        output[var][output["z"] >= 0, -10:], axis=1
-    )
+    def mean_profile_over_last_steps(var):
+        return np.mean(output[var][output["z"] >= 0, -10:], axis=1)
+
     sd_prof = mean_profile_over_last_steps("super droplet count per gridbox")
     assert 0.5 * n_sd_per_gridbox < min(sd_prof) < 1.5 * n_sd_per_gridbox
     assert 0.5 * n_sd_per_gridbox < max(sd_prof) < 1.5 * n_sd_per_gridbox
