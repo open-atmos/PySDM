@@ -306,7 +306,7 @@ def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p4(  # pylint: disable=too-many-arguments,unused-argument
+def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
     i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3
 ):
     E_D1 = 0.04 * CM
@@ -770,6 +770,7 @@ class CollisionsMethods(BackendMethods):
                 straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
 
     def straub_fragmentation(
+        # pylint: disable=too-many-arguments,too-many-locals
         self,
         *,
         n_fragment,

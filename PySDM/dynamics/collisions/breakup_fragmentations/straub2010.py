@@ -5,6 +5,7 @@ from PySDM.physics.constants import si
 
 
 class Straub2010Nf:
+    # pylint: disable=too-many-instance-attributes
     def __init__(self, vmin=0.0, nfmax=None):
         self.particulator = None
         self.vmin = vmin
