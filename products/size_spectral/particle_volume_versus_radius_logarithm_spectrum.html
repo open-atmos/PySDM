@@ -42,7 +42,7 @@ from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit=&#34;dimensionless&#34;, dry=False):
-        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m^3&#34;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
@@ -98,7 +98,7 @@ inheritance.</p></div>
 </summary>
 <pre><code class="python">class ParticleVolumeVersusRadiusLogarithmSpectrum(SpectrumMomentProduct):
     def __init__(self, radius_bins_edges, name=None, unit=&#34;dimensionless&#34;, dry=False):
-        super().__init__(name=name, unit=unit, attr_unit=&#34;m&#34;)
+        super().__init__(name=name, unit=unit, attr_unit=&#34;m^3&#34;)
         self.radius_bins_edges = radius_bins_edges
         self.moment_0 = None
         self.moments = None
