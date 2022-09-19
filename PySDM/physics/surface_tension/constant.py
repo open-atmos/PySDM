@@ -3,7 +3,7 @@ constant surface tension coefficient
 """
 
 
-class Constant:
+class Constant:  # pylint: disable=too-few-public-methods
     """
     Assumes aerosol is dissolved in the bulk of the droplet, and the
     droplet surface is composed of pure water with constant surface

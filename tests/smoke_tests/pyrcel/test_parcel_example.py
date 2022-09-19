@@ -13,7 +13,7 @@ from PySDM.products import (
 )
 
 
-class TestParcelExample:
+class TestParcelExample:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("s_max, s_250m, T_250m", ((0.62, 0.139, 272.2),))
     @pytest.mark.parametrize("scipy_solver", (pytest.param(True), pytest.param(False)))

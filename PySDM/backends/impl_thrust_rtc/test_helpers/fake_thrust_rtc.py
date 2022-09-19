@@ -55,7 +55,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
                 np.ctypeslib.as_ctypes_type(self.ndarray.dtype)._type_
             ]
 
-    class Number:
+    class Number:  # pylint: disable=too-few-public-methods
         def __init__(self, number):
             self.ndarray = number
 
@@ -77,7 +77,7 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     def DVFloat(number: float):  # pylint: disable=invalid-name
         return FakeThrustRTC.Number(number)
 
-    class For:
+    class For:  # pylint: disable=too-few-public-methods
         def __init__(self, args, iter_var, body):
             d = {}
             self.code = to_numba("__internal_python_method__", args, iter_var, body)

@@ -22,6 +22,7 @@ class TestFreezingMethods:
         pass
 
     @staticmethod
+    # pylint: disable=too-many-locals
     def test_freeze_time_dependent(plot=False):
         # Arrange
         cases = (
@@ -46,8 +47,11 @@ class TestFreezingMethods:
         )
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
-        hgh = lambda t: np.exp(-0.8 * rate * (t - total_time / 10))
-        low = lambda t: np.exp(-1.2 * rate * (t + total_time / 10))
+        def hgh(t):
+            return np.exp(-0.8 * rate * (t - total_time / 10))
+
+        def low(t):
+            return np.exp(-1.2 * rate * (t + total_time / 10))
 
         # Act
         output = {}

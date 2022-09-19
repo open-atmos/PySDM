@@ -7,7 +7,7 @@ from .displacement_settings import DisplacementSettings
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-class ConstantTerminalVelocity:
+class ConstantTerminalVelocity:  # pylint: disable=too-few-public-methods
     def __init__(self, backend, particles):
         self.values = backend.Storage.from_ndarray(np.full(particles.n_sd, 1000))
 
@@ -15,7 +15,7 @@ class ConstantTerminalVelocity:
         return self.values
 
 
-class TestSedimentation:
+class TestSedimentation:  # pylint: disable=too-few-public-methods
     @staticmethod
     # pylint: disable=redefined-outer-name
     def test_boundary_condition(backend_class):

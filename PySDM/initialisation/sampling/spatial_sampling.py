@@ -7,7 +7,7 @@ import numpy as np
 #  http://www.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
 
 
-class Pseudorandom:
+class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
     def sample(grid, n_sd):
         dimension = len(grid)
