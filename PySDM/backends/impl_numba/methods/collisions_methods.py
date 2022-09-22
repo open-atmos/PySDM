@@ -150,7 +150,6 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
-        print(gamma_deficit, gamma_tmp)
         if multiplicity[k] == multiplicity[j]:
             gamma_tmp = gamma_deficit
             tmp2 = (n_fragment[i] / 2) ** gamma_tmp
