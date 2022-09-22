@@ -50,6 +50,9 @@ def make_PairwiseStorage(backend):
         def max(self, other, is_first_in_pair):
             backend.max_pair(self, other, is_first_in_pair, other.idx)
 
+        def min(self, other, is_first_in_pair):
+            backend.min_pair(self, other, is_first_in_pair, other.idx)
+
         def sort(self, other, is_first_in_pair):
             backend.sort_pair(self, other, is_first_in_pair, other.idx)
 
@@ -95,6 +98,9 @@ def make_PairwiseStorage(backend):
 
         def max(self, other, is_first_in_pair):
             backend.max_pair(self, other, is_first_in_pair, other.idx)
+
+        def min(self, other, is_first_in_pair):
+            backend.min_pair(self, other, is_first_in_pair, other.idx)
 
         def sort(self, other, is_first_in_pair):
             backend.sort_pair(self, other, is_first_in_pair, other.idx)
