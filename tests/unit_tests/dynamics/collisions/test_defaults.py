@@ -15,7 +15,7 @@ def get_default_args(func):
     }
 
 
-class TestDefaults:
+class TestDefaults:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("dynamic_class", (Collision, Breakup, Coalescence))
     def test_collision_adaptive_default(dynamic_class):

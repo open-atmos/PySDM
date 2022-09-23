@@ -14,7 +14,7 @@ from .__parametrisation__ import get_dummy_particulator_and_coalescence
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-class TestSDMMultiCell:
+class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize("n_sd", [2, 3, 8000])
     @pytest.mark.parametrize("adaptive", [False, True])

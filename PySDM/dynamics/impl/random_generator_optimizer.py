@@ -4,7 +4,7 @@ clever reuser of random numbers for use in adaptive coalescence
 import math
 
 
-class RandomGeneratorOptimizer:
+class RandomGeneratorOptimizer:  # pylint: disable=too-many-instance-attributes
     def __init__(self, optimized_random, dt_min, seed):
         self.particulator = None
         self.optimized_random = optimized_random

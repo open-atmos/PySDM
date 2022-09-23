@@ -7,7 +7,7 @@ from PySDM_examples.Shipway_and_Hill_2012 import Settings, Simulation
 from PySDM.physics import si
 
 
-class TestInitialCondition:
+class TestInitialCondition:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "particle_reservoir_depth",
@@ -59,10 +59,10 @@ class TestInitialCondition:
         assert 28 < np.amin(output["RH"]) < 32
         assert 96 < np.amax(output["RH"]) < 98
 
-        assert 725 * si.hPa < np.amin(output["p"]) < 735 * si.hPa
+        assert 740 * si.hPa < np.amin(output["p"]) < 750 * si.hPa
         assert (np.diff(output["p"]) < 0).all()
         assert 1000 * si.hPa < np.amax(output["p"]) < 1010 * si.hPa
 
-        assert 280 * si.K < np.amin(output["T"]) < 285 * si.K
+        assert 285 * si.K < np.amin(output["T"]) < 290 * si.K
         assert output["T"][0] > np.amin(output["T"])
         assert 295 * si.K < np.amax(output["T"]) < 300 * si.K

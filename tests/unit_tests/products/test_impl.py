@@ -15,6 +15,8 @@ from PySDM.products import (
     DynamicWallTime,
     FlowVelocityComponent,
     FreezableSpecificConcentration,
+    FrozenParticleConcentration,
+    FrozenParticleSpecificConcentration,
     GaseousMoleFraction,
     ParticleSizeSpectrumPerMass,
     ParticleSizeSpectrumPerVolume,
@@ -37,6 +39,11 @@ _ARGUMENTS = {
     ParticleVolumeVersusRadiusLogarithmSpectrum: {"radius_bins_edges": (0, np.inf)},
     RadiusBinnedNumberAveragedTerminalVelocity: {"radius_bin_edges": (0, np.inf)},
     FlowVelocityComponent: {"component": 0},
+    FrozenParticleConcentration: {"count_unactivated": True, "count_activated": True},
+    FrozenParticleSpecificConcentration: {
+        "count_unactivated": True,
+        "count_activated": True,
+    },
 }
 
 

@@ -40,7 +40,7 @@ class ChemistryMethods(BackendMethods):
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
         self.specific_gravities = SpecificGravities(self.formulae.constants)
 
-    def dissolution(
+    def dissolution(  # pylint:disable=too-many-locals
         self,
         *,
         n_cell,
@@ -107,7 +107,7 @@ class ChemistryMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-    def dissolution_body(
+    def dissolution_body(  # pylint: disable=too-many-locals
         *,
         super_droplet_ids,
         mole_amounts,
@@ -155,7 +155,7 @@ class ChemistryMethods(BackendMethods):
         if system_type == "closed":
             env_mixing_ratio -= delta_mr
 
-    def oxidation(
+    def oxidation(  # pylint: disable=too-many-locals
         self,
         *,
         n_sd,
@@ -202,7 +202,7 @@ class ChemistryMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
-    def oxidation_body(
+    def oxidation_body(  # pylint: disable=too-many-locals
         *,
         n_sd,
         cell_ids,
@@ -350,7 +350,7 @@ class ChemistryMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False, "cache": False}})
-    def equilibrate_H_body(  # pylint: disable=too-many-arguments
+    def equilibrate_H_body(  # pylint: disable=too-many-arguments,too-many-locals
         within_tolerance,
         pH2H,
         H2pH,
@@ -365,7 +365,7 @@ class ChemistryMethods(BackendMethods):
         ionic_strength_threshold,
         rtol,
     ):
-        for i, _ in enumerate(pH):
+        for i, pH_i in enumerate(pH):
             cid = cell_id[i]
             args = (
                 _conc(
@@ -385,7 +385,7 @@ class ChemistryMethods(BackendMethods):
                     HNO3=K.HNO3[cid],
                 ),
             )
-            a = pH2H(pH[i])
+            a = pH2H(pH_i)
             fa = acidity_minfun(a, *args)
             if abs(fa) < _REALY_CLOSE_THRESHOLD:
                 continue

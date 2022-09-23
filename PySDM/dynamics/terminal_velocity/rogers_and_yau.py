@@ -4,7 +4,7 @@ Rogers & Yau, equations: (8.5), (8.6), (8.8)
 from PySDM.physics import constants as const
 
 
-class RogersYau:
+class RogersYau:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         *,

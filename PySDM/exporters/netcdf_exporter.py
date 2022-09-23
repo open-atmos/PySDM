@@ -2,14 +2,14 @@
  [SciPy.io.netcdf_file](https://docs.scipy.org/doc/scipy/reference/tutorial/io.html#netcdf)
 """
 import numpy as np
-from scipy.io.netcdf import netcdf_file
+from scipy.io import netcdf_file
 
 from PySDM.products.impl.spectrum_moment_product import SpectrumMomentProduct
 
 DIM_SUFFIX = "_bin_left_edges"
 
 
-class NetCDFExporter:
+class NetCDFExporter:  # pylint: disable=too-few-public-methods
     def __init__(self, storage, settings, simulator, filename):
         self.storage = storage
         self.settings = settings

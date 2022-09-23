@@ -79,6 +79,7 @@ class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def linear_collection_efficiency(
         self, *, params, output, radii, is_first_in_pair, unit
     ):
+        # pylint: disable=too-many-locals
         A, B, D1, D2, E1, E2, F1, F2, G1, G2, G3, Mf, Mg = params
         dA = self._get_floating_point(A)
         dB = self._get_floating_point(B)

@@ -70,6 +70,24 @@ class PairMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
+    def min_pair_body(data_out, data_in, is_first_in_pair, idx, length):
+        data_out[:] = 0
+        for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
+            if is_first_in_pair[i]:
+                data_out[i // 2] = min(data_in[idx[i]], data_in[idx[i + 1]])
+
+    @staticmethod
+    def min_pair(data_out, data_in, is_first_in_pair, idx):
+        return PairMethods.min_pair_body(
+            data_out.data,
+            data_in.data,
+            is_first_in_pair.indicator.data,
+            idx.data,
+            len(idx),
+        )
+
+    @staticmethod
+    @numba.njit(**conf.JIT_FLAGS)
     def sort_pair_body(data_out, data_in, is_first_in_pair, idx, length):
         data_out[:] = 0
         for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
