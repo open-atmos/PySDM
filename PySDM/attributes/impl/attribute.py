@@ -16,7 +16,9 @@ class Attribute:
     def allocate(self, idx):
         if self.n_vector_components >= 1:
             self.data = self.particulator.IndexedStorage.empty(
-                idx, (self.n_vector_components, self.particulator.n_sd), dtype=self.dtype
+                idx,
+                (self.n_vector_components, self.particulator.n_sd),
+                dtype=self.dtype,
             )
         else:
             self.data = self.particulator.IndexedStorage.empty(

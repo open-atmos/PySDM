@@ -10,41 +10,30 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 class TestExplicitEulerWithInterpolation:
     @staticmethod
-    @pytest.mark.parametrize("positions, courant_field", (
-        # 1D
+    @pytest.mark.parametrize(
+        "positions, courant_field",
         (
-            [
-                [0.5]
-            ],
+            # 1D
+            ([[0.5]], (np.array([0.1, 0.2]),)),
+            # 2D
             (
-                np.array([0.1, 0.2]),
-            )
+                [[0.5], [0.5]],
+                (
+                    np.array([0.1, 0.2]).reshape((2, 1)),
+                    np.array([0.3, 0.4]).reshape((1, 2)),
+                ),
+            ),
+            # 3D
+            (
+                [[0.5], [0.5], [0.5]],
+                (
+                    np.array([0.1, 0.2]).reshape((2, 1, 1)),
+                    np.array([0.3, 0.4]).reshape((1, 2, 1)),
+                    np.array([0.5, 0.6]).reshape((1, 1, 2)),
+                ),
+            ),
         ),
-        # 2D
-        (
-            [
-                [0.5],
-                [0.5]
-            ],
-            (
-                np.array([0.1, 0.2]).reshape((2, 1)),
-                np.array([0.3, 0.4]).reshape((1, 2))
-            )
-        ),
-        # 3D
-        (
-            [
-                [0.5],
-                [0.5],
-                [0.5]
-            ],
-            (
-                np.array([0.1, 0.2]).reshape((2, 1, 1)),
-                np.array([0.3, 0.4]).reshape((1, 2, 1)),
-                np.array([0.5, 0.6]).reshape((1, 1, 2))
-            )
-        )
-    ))
+    )
     # pylint: disable=redefined-outer-name
     def test_single_cell(backend_class, positions, courant_field: tuple):
         # Arrange
@@ -52,7 +41,7 @@ class TestExplicitEulerWithInterpolation:
             courant_field_data=courant_field,
             positions=positions,
             grid=tuple([1] * len(courant_field)),
-            n_sd=len(positions[0])
+            n_sd=len(positions[0]),
         )
         sut, _ = settings.get_displacement(backend_class, scheme="ImplicitInSpace")
 

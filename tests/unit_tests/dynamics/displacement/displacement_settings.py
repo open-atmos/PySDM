@@ -13,7 +13,10 @@ class DisplacementSettings:
         self.n = np.ones(n_sd, dtype=np.int64)
         self.volume = np.ones(n_sd, dtype=np.float64)
         self.grid = grid or (1, 1)
-        self.courant_field_data = courant_field_data or (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        self.courant_field_data = courant_field_data or (
+            np.array([[0, 0]]).T,
+            np.array([[0, 0]]),
+        )
         self.positions = positions or [[0], [0]]
         self.sedimentation = False
         self.dt = None

@@ -7,7 +7,9 @@ from .attribute import Attribute
 
 class BaseAttribute(Attribute):
     def __init__(self, builder, name, dtype=float, n_vector_components=0):
-        super().__init__(builder, name=name, dtype=dtype, n_vector_components=n_vector_components)
+        super().__init__(
+            builder, name=name, dtype=dtype, n_vector_components=n_vector_components
+        )
 
     def init(self, data):
         self.data.upload(data)
