@@ -4,19 +4,19 @@ logic around `PySDM.attributes.impl.attribute.Attribute` - the parent class for 
 
 
 class Attribute:
-    def __init__(self, builder, name, dtype=float, size=0):
+    def __init__(self, builder, name, dtype=float, n_vector_components=0):
         self.particulator = builder.particulator
         self.timestamp: int = 0
         self.data = None
         self.dtype = dtype
-        self.size = size
+        self.n_vector_components = n_vector_components
         self.name = name
         self.formulae = self.particulator.formulae
 
     def allocate(self, idx):
-        if self.size >= 1:
+        if self.n_vector_components >= 1:
             self.data = self.particulator.IndexedStorage.empty(
-                idx, (self.size, self.particulator.n_sd), dtype=self.dtype
+                idx, (self.n_vector_components, self.particulator.n_sd), dtype=self.dtype
             )
         else:
             self.data = self.particulator.IndexedStorage.empty(
