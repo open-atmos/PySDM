@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 from PySDM import Builder
-from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
@@ -12,6 +11,10 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
 )
 from PySDM.environments import Box
 from PySDM.physics import si
+
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestFragmentations:  # pylint: disable=too-few-public-methods
@@ -25,7 +28,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             SLAMS(),
         ],
     )
-    def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
+    def test_fragmentation_fn_call(fragmentation_fn, backend_class):
         # arrange
         volume = np.asarray([44.0, 666.0])
         fragments = np.asarray([-1.0])
