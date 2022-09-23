@@ -49,6 +49,12 @@ class Displacement:
                 np.full((self.grid[0] + 1, self.grid[1]), np.nan),
                 np.full((self.grid[0], self.grid[1] + 1), np.nan),
             )
+        elif self.dimension == 3:
+            courant_field = (
+                np.full((self.grid[0] + 1, self.grid[1], self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1] + 1, self.grid[2]), np.nan),
+                np.full((self.grid[0], self.grid[1], self.grid[2] + 1), np.nan),
+            )
         else:
             raise NotImplementedError()
         self.courant = tuple(

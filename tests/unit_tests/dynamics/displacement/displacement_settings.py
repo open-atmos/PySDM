@@ -9,12 +9,12 @@ from ...dummy_particulator import DummyParticulator
 
 
 class DisplacementSettings:
-    def __init__(self):
-        self.n = np.ones(1, dtype=np.int64)
-        self.volume = np.ones(1, dtype=np.float64)
-        self.grid = (1, 1)
-        self.courant_field_data = (np.array([[0, 0]]).T, np.array([[0, 0]]))
-        self.positions = [[0], [0]]
+    def __init__(self, n_sd=1, grid=None, positions=None, courant_field_data=None):
+        self.n = np.ones(n_sd, dtype=np.int64)
+        self.volume = np.ones(n_sd, dtype=np.float64)
+        self.grid = grid or (1, 1)
+        self.courant_field_data = courant_field_data or (np.array([[0, 0]]).T, np.array([[0, 0]]))
+        self.positions = positions or [[0], [0]]
         self.sedimentation = False
         self.dt = None
 
