@@ -8,7 +8,7 @@ import numpy as np
 from pyevtk.hl import pointsToVTK
 
 
-class VTKExporter_1d:
+class VTKExporter_1d:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         data,

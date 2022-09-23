@@ -11,7 +11,7 @@ from .constants import constants
 assert hasattr(constants, "_pytestfixturefunction")
 
 
-class TestFig2:
+class TestFig2:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "aerosol, surface_tension, s_max, s_100m, n_100m",

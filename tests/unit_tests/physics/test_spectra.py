@@ -37,7 +37,7 @@ class TestLognormal:
         assert_approx_equal(m[sd == np.amax(sd)], r_mode, 2)
 
 
-class TestExponential:
+class TestExponential:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "scale",

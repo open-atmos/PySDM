@@ -18,6 +18,7 @@ install:
       if ($env:platform -Match "x86") 
       {
         $env:PYTHON="C:\Python38\python"
+        Set-Content -Path "test-time-requirements.txt" -Value (get-content -Path "test-time-requirements.txt" | Select-String -Pattern 'PyPartMC' -NotMatch)
       }
       elseif ($env:platform -Match "x64") 
       {
@@ -39,5 +40,8 @@ install:
 
 test_script:
   - ps: |
-      iex "$env:PYTHON -m pytest -We -p no:unraisableexception"
+      iex "$env:PYTHON -m pytest -We -p no:unraisableexception tests/unit_tests"
       if ($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode)  }
+
+#on_finish:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))

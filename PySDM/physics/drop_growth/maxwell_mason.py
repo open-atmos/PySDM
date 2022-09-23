@@ -3,7 +3,7 @@ single-equation approximation of the vapour and heat diffusion problem
 """
 
 
-class MaxwellMason:
+class MaxwellMason:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 

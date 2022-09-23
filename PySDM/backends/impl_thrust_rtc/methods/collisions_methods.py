@@ -8,7 +8,9 @@ from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
-class CollisionsMethods(ThrustRTCBackendMethods):
+class CollisionsMethods(
+    ThrustRTCBackendMethods
+):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
         super().__init__()
 
