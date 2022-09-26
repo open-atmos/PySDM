@@ -68,11 +68,6 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     warn_overflows,
     volume,
 ):  # pylint: disable=too-many-branches
-    # TODO #874: update the arguments for the calling function
-
-    # 1. find the max gamma that can be supported in 1 time step, add to rate,
-    #    and add remainder to the deficit (limits: max_multiplicity, min_volume,
-    #    volume doesn't exceed initial particle volumes)
     overflow_flag = False
     take_from_j_test = multiplicity[k]
     new_mult_k_test = 0
