@@ -97,7 +97,6 @@ class TestSDMBreakup:
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array([4]))
         fragment_size = particulator.PairwiseStorage.from_ndarray(np.array([-1]))
         is_first_in_pair = make_PairIndicator(backend_class)(n_sd)
-        min_volume = 1 * si.nm**3
 
         # Act
         particulator.collision_coalescence_breakup(

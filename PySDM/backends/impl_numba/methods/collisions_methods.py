@@ -621,7 +621,6 @@ class CollisionsMethods(BackendMethods):
             x_plus_y=x_plus_y.data,
         )
 
-    # TODO: reframe SLAMS fragmentation in particle size
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     def __slams_fragmentation_body(n_fragment, frag_size, x_plus_y, probs, rand):
