@@ -219,7 +219,9 @@ class TestSDMSingleCell:
         prob = np.linspace(0, 3, n, endpoint=True)
         rand = np.linspace(0, 1, n, endpoint=False)
 
-        expected = lambda p, r: p // 1 + (r < p - p // 1)
+        def expected(p, r):
+            return p // 1 + (r < p - p // 1)
+
         n_sd = 2
         for p in prob:
             for r in rand:
@@ -279,7 +281,9 @@ class TestSDMSingleCell:
         attributes = {"n": n, "volume": v}
         particles.build(attributes)
 
-        class CountingRandom(backend_class.Random):
+        class CountingRandom(
+            backend_class.Random
+        ):  # pylint: disable=too-few-public-methods
             calls = 0
 
             def __call__(self, storage):

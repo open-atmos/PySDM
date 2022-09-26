@@ -33,8 +33,8 @@ class _TestEnv:
         return self.full(item)
 
 
-class _TestParticulator:
-    def __init__(
+class _TestParticulator:  # pylint: disable=too-few-public-methods
+    def __init__(  # pylint: disable=too-many-locals
         self,
         *,
         backend,
@@ -86,7 +86,7 @@ def _try(particulator, capsys):
 FN = fnmatch.translate("*condensation_methods.py")[:-2]
 
 
-class TestDiagnostics:
+class TestDiagnostics:  # pylint: disable=too-few-public-methods
     @staticmethod
     def test_burnout_long(capsys, backend=CPU):
         # arrange

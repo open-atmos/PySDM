@@ -13,7 +13,7 @@ from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 
 
-def make_storage_class(BACKEND):
+def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
     class Impl:
         @staticmethod
         def thrust(obj):

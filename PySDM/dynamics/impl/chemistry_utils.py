@@ -9,7 +9,7 @@ from PySDM.physics import si
 from PySDM.physics.constants import K_H2O, M
 
 
-class EqConst:
+class EqConst:  # pylint: disable=too-few-public-methods
     def __init__(self, formulae, constant_at_T0, dT, T_0):
         self.formulae = formulae
         self.K = constant_at_T0
@@ -20,7 +20,7 @@ class EqConst:
         return self.formulae.trivia.vant_hoff(self.K, self.dH, T, T_0=self.T0)
 
 
-class KinConst:
+class KinConst:  # pylint: disable=too-few-public-methods
     def __init__(self, formulae, k, dT, T_0):
         self.formulae = formulae
         self.Ea = formulae.trivia.tdep2enthalpy(dT)
@@ -30,7 +30,7 @@ class KinConst:
         return self.formulae.trivia.arrhenius(self.A, self.Ea, T)
 
 
-class HenryConsts:
+class HenryConsts:  # pylint: disable=too-few-public-methods
     def __init__(self, formulae):
         const = formulae.constants
         T0 = const.ROOM_TEMP
@@ -45,7 +45,7 @@ class HenryConsts:
 
 
 # Table 4 in Kreidenweis et al. 2003
-class EquilibriumConsts:
+class EquilibriumConsts:  # pylint: disable=too-few-public-methods
     def __init__(self, formulae):
         const = formulae.constants
         T0 = const.ROOM_TEMP
@@ -109,7 +109,7 @@ DISSOCIATION_FACTORS = {
 }
 
 
-class KineticConsts:
+class KineticConsts:  # pylint: disable=too-few-public-methods
     def __init__(self, formulae):
         const = formulae.constants
         T0 = const.ROOM_TEMP
@@ -127,7 +127,7 @@ class KineticConsts:
 k4 = 13 / M
 
 
-class SpecificGravities:
+class SpecificGravities:  # pylint: disable=too-few-public-methods
     def __init__(self, constants):
         self._values = {
             compound: Substance.from_formula(compound).mass

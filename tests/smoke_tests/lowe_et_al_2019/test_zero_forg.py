@@ -8,7 +8,7 @@ from PySDM.initialisation.sampling import spectral_sampling as spec_sampling
 from PySDM.physics import si
 
 
-def test_zero_forg(plot=False):
+def test_zero_forg(plot=False):  # pylint: disable=too-many-locals
     nRes = 3
     updraft_list = np.geomspace(0.1, 10, nRes)
 

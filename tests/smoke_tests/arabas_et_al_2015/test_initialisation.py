@@ -11,7 +11,7 @@ from ...backends_fixture import backend_class
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-# pylint: disable=redefined-outer-name
+# pylint: disable=redefined-outer-name,too-many-locals
 def test_initialisation(backend_class, plot=False):
     settings = Settings()
     settings.simulation_time = -1 * settings.dt

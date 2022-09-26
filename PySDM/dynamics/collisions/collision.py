@@ -29,7 +29,7 @@ DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
 )
 
 
-class Collision:
+class Collision:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

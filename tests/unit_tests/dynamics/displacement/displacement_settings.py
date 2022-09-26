@@ -8,7 +8,7 @@ from ...dummy_environment import DummyEnvironment
 from ...dummy_particulator import DummyParticulator
 
 
-class DisplacementSettings:
+class DisplacementSettings:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.n = np.ones(1, dtype=np.int64)
         self.volume = np.ones(1, dtype=np.float64)

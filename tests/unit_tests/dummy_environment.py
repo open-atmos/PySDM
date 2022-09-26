@@ -4,7 +4,7 @@ import numpy as np
 from PySDM.impl.mesh import Mesh
 
 
-class DummyEnvironment:
+class DummyEnvironment:  # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
         *,

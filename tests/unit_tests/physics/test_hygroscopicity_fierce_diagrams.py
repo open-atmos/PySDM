@@ -19,10 +19,17 @@ dry_radii = np.logspace(np.log10(0.05 * si.um), np.log10(0.1 * si.um), npoints)
 T = 300 * si.K
 sgm = constants_defaults.sgm_w
 
+variants = ("KappaKoehler", "KappaKoehlerLeadingTerms")
+
+
+def contour(ax, x, y, z, *, levels, label, clim):
+    mpbl = ax.contourf(x, y, z, levels=levels)
+    pyplot.colorbar(mpbl, ax=ax).set_label(label)
+    mpbl.set_clim(*clim)
+
 
 def test_hygroscopicity_fierce_diagrams(plot=False):
     # arrange
-    variants = ("KappaKoehler", "KappaKoehlerLeadingTerms")
     formulae = {}
     for variant in variants:
         formulae[variant] = Formulae(hygroscopicity=variant)
@@ -42,21 +49,32 @@ def test_hygroscopicity_fierce_diagrams(plot=False):
     # plot
     fig, axs = pyplot.subplots(3, 1, figsize=(5, 15))
     x, y = dry_radii / si.nm, kappas
+
     for i, variant in enumerate(variants):
-        mpbl = axs[i].contourf(
-            x, y, (S_crit[variant] - 1) * 100, levels=np.linspace(*clim_ss, nlev_ss)
+        contour(
+            axs[i],
+            x,
+            y,
+            (S_crit[variant] - 1) * 100,
+            levels=np.linspace(*clim_ss, nlev_ss),
+            label="critical supersaturation [%]",
+            clim=clim_ss,
         )
-        pyplot.colorbar(mpbl, ax=axs[i]).set_label("critical supersaturation [%]")
-        mpbl.set_clim(*clim_ss)
         axs[i].set_title(variant)
 
     axs[2].set_title("log_10(|S_2 - S_1| / S_1)")
     log10_rel_diff = np.log10(
         np.abs(S_crit[variants[1]] - S_crit[variants[0]]) / S_crit[variants[0]]
     )
-    mpbl = axs[2].contourf(x, y, log10_rel_diff, levels=np.linspace(*clim_er, nlev_er))
-    pyplot.colorbar(mpbl, ax=axs[2]).set_label("log10(relative difference)")
-    mpbl.set_clim(*clim_er)
+    contour(
+        axs[2],
+        x,
+        y,
+        log10_rel_diff,
+        levels=np.linspace(*clim_er, nlev_er),
+        label="log10(relative difference)",
+        clim=clim_er,
+    )
 
     for ax in axs:
         ax.set_ylabel("kappa")

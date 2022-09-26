@@ -1,7 +1,7 @@
 """ common parent class for gravitational collision kernels """
 
 
-class Gravitational:
+class Gravitational:  # pylint: disable=too-few-public-methods
     def __init__(self):
         self.particulator = None
         self.pair_tmp = None

@@ -3,7 +3,7 @@ temperature-dependent latent heat of vaporization used in Lowe et al. 2019
 """
 
 
-class Lowe2019:
+class Lowe2019:  # pylint: disable=too-few-public-methods
     def __init__(self, _):
         pass
 
