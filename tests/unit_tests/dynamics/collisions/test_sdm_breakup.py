@@ -189,7 +189,6 @@ class TestSDMBreakup:
         is_first_in_pair.indicator[:] = particulator.Storage.from_ndarray(
             np.asarray(params["is_first_in_pair"])
         )
-        min_volume = 1 * si.nm**3
 
         # Act
         particulator.collision_coalescence_breakup(

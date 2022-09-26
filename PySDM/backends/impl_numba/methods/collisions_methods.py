@@ -199,10 +199,9 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
             if round(nj) == 0:
                 atomic_add(breakup_rate_deficit, cid, gamma_tmp * multiplicity[k])
                 return
-            else:
-                nk = nj
-                for a in range(0, len(attributes)):
-                    attributes[a, j] = attributes[a, k]
+            nk = nj
+            for a in range(0, len(attributes)):
+                attributes[a, j] = attributes[a, k]
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         # perform rounding as necessary
@@ -636,7 +635,7 @@ class CollisionsMethods(BackendMethods):
 
     def slams_fragmentation(
         self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax
-    ):
+    ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body(
             n_fragment.data, frag_size.data, x_plus_y.data, probs.data, rand.data
         )
