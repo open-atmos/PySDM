@@ -11,7 +11,9 @@ def test_c_inline():
         )
 
     # act
-    c_code = formulae._c_inline(fun, constants={'pi': 3.14}, xxx=0)  # pylint: disable=protected-access
+    c_code = formulae._c_inline(
+        fun, constants={"pi": 3.14}, xxx=0
+    )  # pylint: disable=protected-access
 
     # assert
     assert ", )" not in c_code
