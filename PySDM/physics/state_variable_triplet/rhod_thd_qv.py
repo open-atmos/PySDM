@@ -14,7 +14,7 @@ class RhodThdQv:
     def T(const, rhod, thd):
         return thd * np.power(
             rhod * thd / const.p1000 * const.Rd,
-            const.Rd_over_c_pd / (1 - const.Rd_over_c_pd),
+            const.Rd_over_c_pd / (1 - const.Rd_over_c_pd)
         )
 
     # A15 in libcloudph++ 1.0 paper
