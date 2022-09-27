@@ -2,8 +2,6 @@
 Always produces N fragments in a given collisional breakup
 """
 
-import numpy as np
-
 
 class AlwaysN:  # pylint: disable=too-many-instance-attributes
     def __init__(self, n, vmin=0.0, nfmax=None):
