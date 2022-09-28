@@ -47,6 +47,7 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["tmp"].fill_zeros(1e-21)
         self.arrays["Sc"][:] = self.arrays["tmp"][:]
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
@@ -73,6 +74,7 @@ class Straub2010Nf:
 
         self.arrays["gam"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
+        self.arrays["tmp"].fill_zeros(1e-21)
         self.arrays["gam"] /= self.arrays["tmp"]
 
         for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):

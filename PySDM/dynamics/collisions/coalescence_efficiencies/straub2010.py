@@ -25,6 +25,7 @@ class Straub2010Ec:
 
     def __call__(self, output, is_first_in_pair):
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["tmp"].fill_zeros(1e-21)
         self.arrays["Sc"][:] = self.arrays["tmp"][:]
         self.arrays["tmp"] *= 2
 

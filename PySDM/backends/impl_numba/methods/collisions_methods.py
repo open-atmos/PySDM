@@ -185,7 +185,6 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
                 take_from_j = take_from_j_test
                 new_mult_k = new_mult_k_test
                 gamma_tmp = m + 1
-            print(gamma_tmp)
         # Compute the new multiplicities and particle sizes, with rounding
         for a in range(0, len(attributes)):
             attributes[a, k] *= multiplicity[k]
@@ -595,7 +594,6 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
-    # TODO #874: remove all but the nfmax limiter and move others to dynamic
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             frag_size[i] = max(frag_size[i], vmin)
@@ -740,7 +738,6 @@ class CollisionsMethods(BackendMethods):
             frag_size[i] = mu - sigma / sqrt_two / sqrt_pi / np.log(2) * np.log(
                 (1 / 2 + rand[i]) / (3 / 2 - rand[i])
             )
-            print(frag_size[i])
 
     def gauss_fragmentation(
         self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax

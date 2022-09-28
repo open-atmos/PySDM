@@ -143,6 +143,9 @@ class Storage(StorageBase):
     def all(self):
         return self.data.all()
 
+    def fill_zeros(self, fill_value):
+        return impl.fill_zeros(self.data, fill_val=fill_value)
+
     @staticmethod
     def from_ndarray(array):
         result = Storage(Storage._get_data_from_ndarray(array))
