@@ -9,6 +9,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     AlwaysN,
     ExponFrag,
     Gaussian,
+    Straub2010Nf,
 )
 from PySDM.environments import Box
 from PySDM.physics import si
@@ -21,13 +22,14 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         [
             AlwaysN(n=2),
             ExponFrag(scale=1e6 * si.um**3),
-            Gaussian(mu=1e6 * si.um**3, sigma=2e6 * si.um**3),
+            Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             SLAMS(),
+            Straub2010Nf(),
         ],
     )
     def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
         # arrange
-        volume = np.asarray([44.0, 666.0])
+        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
         builder = Builder(volume.size, backend_class())
         sut = fragmentation_fn

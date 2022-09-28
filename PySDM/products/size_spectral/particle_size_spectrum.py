@@ -15,7 +15,7 @@ class ParticleSizeSpectrum(SpectrumMomentProduct, ABC):
         self.volume_attr = "dry volume" if dry else "volume"
         self.radius_bins_edges = radius_bins_edges
         self.normalise_by_dv = normalise_by_dv
-        super().__init__(name=name, unit=unit, attr_unit="m")
+        super().__init__(name=name, unit=unit, attr_unit="m^3")
 
     def register(self, builder):
         builder.request_attribute(self.volume_attr)
