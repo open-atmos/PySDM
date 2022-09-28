@@ -231,6 +231,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
         source += stripped
     source = source.replace("np.power(", "np.pow(")
     source = source.replace("np.", "")
+    source = source.replace(", )", ")")
     source = re.sub("^return ", "", source)
     for arg in inspect.signature(fun).parameters:
         if arg not in ("_", "const"):
