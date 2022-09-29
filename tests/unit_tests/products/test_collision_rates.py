@@ -1,4 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+import os
+
+os.environ["NUMBA_DISABLE_JIT"] = "1"
 import numpy as np
 import pytest
 from PySDM_examples.deJong_Mackay_2022 import Settings1D, Simulation1D
@@ -294,37 +297,6 @@ class TestCollisionProducts:
 
         # Assert
         assert (particulator.products["cr"].get()[0] == rhs_sum).all()
-
-    @staticmethod
-    @pytest.mark.parametrize("breakup", (True, False))
-    def test_rate_sums_multicell_deJongMackay(breakup):
-        # Arrange
-        n_sd_per_gridbox = 256
-        dt = 10 * si.s
-        dz = 100 * si.m
-        output = {}
-        rho_times_w = 3 * si.m / si.s
-        key = f"rhow={rho_times_w}_b={breakup}"
-
-        # Act
-        output[key] = (
-            Simulation1D(
-                Settings1D(
-                    n_sd_per_gridbox=n_sd_per_gridbox,
-                    rho_times_w_1=rho_times_w,
-                    dt=dt,
-                    dz=dz,
-                    precip=True,
-                    breakup=breakup,
-                )
-            )
-            .run()
-            .products
-        )
-        product_sum = _get_product_rate_diffs_multicell(output[key], breakup)
-
-        # Assert
-        np.testing.assert_array_almost_equal(product_sum, 0.0)
 
 
 def _get_dynamics_and_products(params, adaptive, a=1e6 * si.cm**3 / si.s):
