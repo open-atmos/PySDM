@@ -1,10 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import os
-
-os.environ["NUMBA_DISABLE_JIT"] = "1"
 import numpy as np
 import pytest
-from PySDM_examples.deJong_Mackay_2022 import Settings1D, Simulation1D
 
 from PySDM import Builder
 from PySDM.backends import CPU
