@@ -143,9 +143,6 @@ class Storage(StorageBase):
     def all(self):
         return self.data.all()
 
-    def fill_zeros(self, fill_value):
-        return impl.fill_zeros(self.data, fill_val=fill_value)
-
     @staticmethod
     def from_ndarray(array):
         result = Storage(Storage._get_data_from_ndarray(array))
@@ -167,6 +164,10 @@ class Storage(StorageBase):
 
     def ratio(self, dividend, divisor):
         impl.divide_out_of_place(self.data, dividend.data, divisor.data)
+        return self
+
+    def divide_if_not_zero(self, divisor):
+        impl.divide_if_not_zero(self.data, divisor.data)
         return self
 
     def sum(self, arg_a, arg_b):

@@ -47,7 +47,6 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["tmp"].fill_zeros(1e-21)
         self.arrays["Sc"][:] = self.arrays["tmp"][:]
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
@@ -61,12 +60,12 @@ class Straub2010Nf:
         self.arrays["CKE"].multiply(
             self.particulator.attributes["volume"], is_first_in_pair
         )
-        self.arrays["CKE"] /= self.arrays["tmp"]
+        self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]
         self.arrays["CKE"] *= self.const.rho_w
 
         self.arrays["We"][:] = self.arrays["CKE"][:]
-        self.arrays["We"] /= self.arrays["Sc"]
+        self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
 
         self.arrays["CW"][:] = self.arrays["We"][:]
         self.arrays["CW"] *= self.arrays["CKE"]
@@ -74,8 +73,7 @@ class Straub2010Nf:
 
         self.arrays["gam"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
-        self.arrays["tmp"].fill_zeros(1e-21)
-        self.arrays["gam"] /= self.arrays["tmp"]
+        self.arrays["gam"].divide_if_not_zero(self.arrays["tmp"])
 
         for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
             self.straub_tmp[key] *= 0.0

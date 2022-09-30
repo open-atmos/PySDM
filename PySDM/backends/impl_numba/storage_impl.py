@@ -25,10 +25,10 @@ def row_modulo(output, divisor):
 
 
 @numba.njit(**conf.JIT_FLAGS)
-def fill_zeros(output, fill_val):
+def divide_if_not_zero(output, divisor):
     for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
-        if output[i] == 0.0:
-            output[i] = fill_val
+        if divisor[i] != 0.0:
+            output[i] /= divisor[i]
 
 
 @numba.njit(**conf.JIT_FLAGS)

@@ -25,7 +25,6 @@ class Straub2010Ec:
 
     def __call__(self, output, is_first_in_pair):
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["tmp"].fill_zeros(1e-21)
         self.arrays["Sc"][:] = self.arrays["tmp"][:]
         self.arrays["tmp"] *= 2
 
@@ -36,7 +35,7 @@ class Straub2010Ec:
         self.arrays["We"].multiply(
             self.particulator.attributes["volume"], is_first_in_pair
         )
-        self.arrays["We"] /= self.arrays["tmp"]
+        self.arrays["We"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["We"] *= self.arrays["tmp2"]
         self.arrays["We"] *= self.const.rho_w
 
@@ -45,7 +44,7 @@ class Straub2010Ec:
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
 
-        self.arrays["We"] /= self.arrays["Sc"]
+        self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
         self.arrays["We"] *= -1.15
 
         output[:] = np.exp(self.arrays["We"])
