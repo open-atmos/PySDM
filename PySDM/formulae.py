@@ -163,9 +163,12 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
 
 
 def _formula(func, constants, dimensional_analysis, **kw):
+    parameters_keys = tuple(inspect.signature(func).parameters.keys())
+    special_params = ("_", "const")
+
     if dimensional_analysis:
-        first_param = tuple(inspect.signature(func).parameters.keys())[0]
-        if first_param in ("_", "const"):
+        first_param = parameters_keys[0]
+        if first_param in special_params:
             return partial(func, constants)
         return func
 
@@ -173,7 +176,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
     for line in inspect.getsourcelines(func)[0]:
         source += f"{line}\n"
     loc = {}
-    for arg_name in ("_", "const"):
+    for arg_name in special_params:
         source = source.replace(
             f"def {func.__name__}({arg_name},", f"def {func.__name__}("
         )
@@ -182,6 +185,25 @@ def _formula(func, constants, dimensional_analysis, **kw):
     exec(  # pylint:disable=exec-used
         source, {"const": constants, "np": np, **extras}, loc
     )
+
+    n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
+    function = getattr(loc["_"], func.__name__)
+    if hasattr(func, "__vectorize"):
+        vectorizer = (
+            np.vectorize
+            if numba.config.DISABLE_JIT  # pylint: disable=no-member
+            else numba.vectorize(
+                "float64(" + ",".join(["float64"] * n_params) + ")",
+                target="cpu",
+                nopython=True,
+                **{
+                    k: v
+                    for k, v in conf.JIT_FLAGS.items()
+                    if k not in ("parallel", "error_model")
+                },
+            )
+        )
+        return vectorizer(function)
     return numba.njit(
         getattr(loc["_"], func.__name__),
         **{
