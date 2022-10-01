@@ -64,7 +64,7 @@ class Straub2010Ec:
         self.arrays[&#34;We&#34;].multiply(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
-        self.arrays[&#34;We&#34;] /= self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
         self.arrays[&#34;We&#34;] *= self.const.rho_w
 
@@ -73,7 +73,7 @@ class Straub2010Ec:
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
 
-        self.arrays[&#34;We&#34;] /= self.arrays[&#34;Sc&#34;]
+        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
         self.arrays[&#34;We&#34;] *= -1.15
 
         output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>
@@ -126,7 +126,7 @@ class Straub2010Ec:
         self.arrays[&#34;We&#34;].multiply(
             self.particulator.attributes[&#34;volume&#34;], is_first_in_pair
         )
-        self.arrays[&#34;We&#34;] /= self.arrays[&#34;tmp&#34;]
+        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;We&#34;] *= self.arrays[&#34;tmp2&#34;]
         self.arrays[&#34;We&#34;] *= self.const.rho_w
 
@@ -135,7 +135,7 @@ class Straub2010Ec:
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
 
-        self.arrays[&#34;We&#34;] /= self.arrays[&#34;Sc&#34;]
+        self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
         self.arrays[&#34;We&#34;] *= -1.15
 
         output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>

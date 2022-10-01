@@ -54,6 +54,13 @@ def row_modulo(output, divisor):
 
 
 @numba.njit(**conf.JIT_FLAGS)
+def divide_if_not_zero(output, divisor):
+    for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
+        if divisor[i] != 0.0:
+            output[i] /= divisor[i]
+
+
+@numba.njit(**conf.JIT_FLAGS)
 def floor(output):
     output[:] = np.floor(output)
 
@@ -132,6 +139,22 @@ def add(output, addend):
 <pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
 def amin(data):
     return np.amin(data)</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.storage_impl.divide_if_not_zero"><code class="name flex">
+<span>def <span class="ident">divide_if_not_zero</span></span>(<span>output, divisor)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@numba.njit(**conf.JIT_FLAGS)
+def divide_if_not_zero(output, divisor):
+    for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
+        if divisor[i] != 0.0:
+            output[i] /= divisor[i]</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.storage_impl.divide_out_of_place"><code class="name flex">
@@ -296,6 +319,7 @@ def sum_out_of_place(output, a, b):
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.add" href="#PySDM.backends.impl_numba.storage_impl.add">add</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.amin" href="#PySDM.backends.impl_numba.storage_impl.amin">amin</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.storage_impl.divide_if_not_zero" href="#PySDM.backends.impl_numba.storage_impl.divide_if_not_zero">divide_if_not_zero</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.divide_out_of_place" href="#PySDM.backends.impl_numba.storage_impl.divide_out_of_place">divide_out_of_place</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.floor" href="#PySDM.backends.impl_numba.storage_impl.floor">floor</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.floor_out_of_place" href="#PySDM.backends.impl_numba.storage_impl.floor_out_of_place">floor_out_of_place</a></code></li>
