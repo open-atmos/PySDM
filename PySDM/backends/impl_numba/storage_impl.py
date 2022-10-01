@@ -25,6 +25,13 @@ def row_modulo(output, divisor):
 
 
 @numba.njit(**conf.JIT_FLAGS)
+def divide_if_not_zero(output, divisor):
+    for i in numba.prange(output.shape[0]):  # pylint: disable=not-an-iterable
+        if divisor[i] != 0.0:
+            output[i] /= divisor[i]
+
+
+@numba.njit(**conf.JIT_FLAGS)
 def floor(output):
     output[:] = np.floor(output)
 
