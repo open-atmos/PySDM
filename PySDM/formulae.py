@@ -4,6 +4,7 @@ Logic for enabling common CPU/GPU physics formulae code
 import inspect
 import numbers
 import re
+import warnings
 from collections import namedtuple
 from functools import lru_cache, partial
 from types import SimpleNamespace
@@ -12,6 +13,7 @@ from typing import Optional
 import numba
 import numpy as np
 import pint
+from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
 from PySDM.backends.impl_numba import conf
@@ -203,7 +205,9 @@ def _formula(func, constants, dimensional_analysis, **kw):
                 },
             )
         )
-        return vectorizer(function)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", category=NumbaExperimentalFeatureWarning)
+            return vectorizer(function)
     return numba.njit(
         getattr(loc["_"], func.__name__),
         **{

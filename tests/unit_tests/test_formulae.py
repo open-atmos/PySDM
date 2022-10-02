@@ -1,9 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import warnings
-
 import numpy as np
 import pytest
-from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import formulae
 from PySDM.physics import si
@@ -54,9 +51,7 @@ class TestFormulae:
     @pytest.mark.parametrize("f_org", (0.5, np.array([1.0, 0.5])))
     def test_trickier_formula_vectorised(formulae_init_args, T, v_wet, v_dry, f_org):
         # arrange
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=NumbaExperimentalFeatureWarning)
-            sut = formulae.Formulae(**formulae_init_args).surface_tension.sigma
+        sut = formulae.Formulae(**formulae_init_args).surface_tension.sigma
 
         # act
         sut(T, v_wet, v_dry, f_org)
