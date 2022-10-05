@@ -7,8 +7,9 @@ from typing import Tuple
 import numpy as np
 import pytest
 
-from PySDM import products
+from PySDM import Builder, products
 from PySDM.backends import CPU
+from PySDM.environments import Box
 from PySDM.products import (
     AqueousMassSpectrum,
     AqueousMoleFraction,
@@ -126,3 +127,14 @@ class TestProducts:
 
         # assert
         assert actual_output == expected_output
+
+    @staticmethod
+    def test_register_can_be_called_twice_on_r_eff():
+        # arrange
+        sut = products.EffectiveRadius()
+        builder = Builder(backend=CPU(), n_sd=0)
+        builder.set_environment(Box(dt=0, dv=0))
+        sut.register(builder)
+
+        # act
+        sut.register(builder)
