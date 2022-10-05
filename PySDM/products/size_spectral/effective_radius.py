@@ -21,7 +21,6 @@ class EffectiveRadius(MomentProduct):
     def register(self, builder):
         super().register(builder)
         self.volume_range = self.formulae.trivia.volume(np.asarray(self.radius_range))
-        self.radius_range = None
 
     @staticmethod
     @numba.njit(**JIT_FLAGS)
