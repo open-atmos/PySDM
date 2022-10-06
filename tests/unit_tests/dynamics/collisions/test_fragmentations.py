@@ -28,7 +28,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             SLAMS(),
         ],
     )
-    def test_fragmentation_fn_call(fragmentation_fn, backend_class):
+    def test_fragmentation_fn_call(fragmentation_fn, backend_class):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([44.0, 666.0])
         fragments = np.asarray([-1.0])
