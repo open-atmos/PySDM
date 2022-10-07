@@ -48,8 +48,8 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 auto _l_2 = cell_origin[i + 2 * n_sd];
                 auto _r_2 = cell_origin[i + 2 * n_sd] + 1 * (dim == 2);
 
-                _l += _l_1 * courant_shape_0 + _l_2 * courant_shape_0 * courant_shape_1
-                _r += _r_1 * courant_shape_0 + _r_2 * courant_shape_0 * courant_shape_1
+                _l += _l_1 * courant_shape_0 + _l_2 * courant_shape_0 * courant_shape_1;
+                _r += _r_1 * courant_shape_0 + _r_2 * courant_shape_0 * courant_shape_1;
             }}
 
             auto omega = position_in_cell[i + n_sd * dim];
