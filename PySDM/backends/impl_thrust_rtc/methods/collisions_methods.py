@@ -187,6 +187,14 @@ class CollisionsMethods(
             """,
         )
 
+        self.__exp_fragmentation_body = trtc.For(
+            args=("scale", "frag_size", "rand"),
+            iter_var="i",
+            body="""
+            frag_size[i] = -scale * log(1 - rand[i])
+            """,
+        )
+
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_end(self, dt_left, cell_start):
         i = trtc.Find(dt_left.data, self._get_floating_point(0))
@@ -366,3 +374,21 @@ class CollisionsMethods(
                 len(idx) - 1, (cell_id.data, cell_start.data, idx.data)
             )
         return idx
+
+    def exp_fragmentation(
+        self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
+        self.__exp_fragmentation_body.launch_n(
+            len(frag_size),
+            (trtc.DVDouble(scale), frag_size.data, rand.data),
+        )
+
+        # self.__fragmentation_limiters.launch_n(
+        #     len(n_fragment),
+        #     (n_fragment.data,
+        #     frag_size.data,
+        #     v_max.data,
+        #     x_plus_y.data,
+        #     vmin,
+        #     nfmax,)
+        # )
