@@ -40,12 +40,14 @@ class TestExplicitEulerWithInterpolation:
                     [0.65827668],
                     [0.86931224],
                     [0.76379446],
-                ]
+                ],
             ),
         ),
     )
     # pylint: disable=redefined-outer-name
-    def test_single_cell(backend_class, positions, expected_positions, courant_field: tuple):
+    def test_single_cell(
+        backend_class, positions, expected_positions, courant_field: tuple
+    ):
         # Arrange
         settings = DisplacementSettings(
             courant_field_data=courant_field,
@@ -53,7 +55,9 @@ class TestExplicitEulerWithInterpolation:
             grid=tuple([1] * len(courant_field)),
             n_sd=len(positions[0]),
         )
-        sut, particulator = settings.get_displacement(backend_class, scheme="ImplicitInSpace")
+        sut, particulator = settings.get_displacement(
+            backend_class, scheme="ImplicitInSpace"
+        )
 
         # Act
         sut()
@@ -61,7 +65,7 @@ class TestExplicitEulerWithInterpolation:
         # Assert
         np.testing.assert_array_almost_equal(
             np.asarray(expected_positions),
-            particulator.attributes['position in cell'].to_ndarray()
+            particulator.attributes["position in cell"].to_ndarray(),
         )
 
     @staticmethod
