@@ -12,25 +12,46 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     def __init__(self):
         super().__init__()
         self.__calculate_displacement_body = trtc.For(
-            (
+            args=(
                 "dim",
                 "n_sd",
                 "displacement",
                 "courant",
-                "courant_length",
+                "courant_shape_0",
+                "courant_shape_1",
                 "cell_origin",
                 "position_in_cell",
                 "n_substeps",
             ),
-            "i",
-            f"""
+            iter_var="i",
+            body=f"""
             // Arakawa-C grid
-            auto _l_0 = cell_origin[i + 0];
-            auto _l_1 = cell_origin[i + n_sd];
-            auto _l = _l_0 + _l_1 * courant_length;
-            auto _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
-            auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
-            auto _r = _r_0 + _r_1 * courant_length;
+            
+            // 1D, 2D & 3D
+            auto _l = cell_origin[i];
+            auto _r = cell_origin[i] + 1 * (dim == 0);
+
+            // 2D
+            if (dim == 1) {{
+                auto _l_1 = cell_origin[i + n_sd];
+                auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
+
+                _l += _l_1 * courant_shape_0;
+                _r += _r_1 * courant_shape_0;
+            }}
+            
+            // 3D
+            if (dim == 2) {{
+                auto _l_1 = cell_origin[i + n_sd];
+                auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
+
+                auto _l_2 = cell_origin[i + 2 * n_sd];
+                auto _r_2 = cell_origin[i + 2 * n_sd] + 1 * (dim == 2);
+                
+                _l += _l_1 * courant_shape_0 + _l_2 * courant_shape_0 * courant_shape_1
+                _r += _r_1 * courant_shape_0 + _r_2 * courant_shape_0 * courant_shape_1
+            }}
+            
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r] / n_substeps;
             auto c_l = courant[_l] / n_substeps;
@@ -76,15 +97,17 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     ):
         dim = trtc.DVInt64(dim)
         n_sd = trtc.DVInt64(position_in_cell.shape[1])
-        courant_length = trtc.DVInt64(courant.shape[0])
+        courant_shape_0 = trtc.DVInt64(courant.shape[0])
+        courant_shape_1 = trtc.DVInt64(courant.shape[1] if len(courant.shape) > 2 else -1)
         self.__calculate_displacement_body.launch_n(
-            displacement.shape[1],
-            (
+            size=displacement.shape[1],
+            args=(
                 dim,
                 n_sd,
                 displacement.data,
                 courant.data,
-                courant_length,
+                courant_shape_0,
+                courant_shape_1,
                 cell_origin.data,
                 position_in_cell.data,
                 trtc.DVInt64(n_substeps),
