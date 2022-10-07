@@ -58,5 +58,8 @@ class SzyszkowskiLangmuir:  # pylint: disable=too-few-public-methods
             ) * np.log(1 + Cb_iso * (1 - f_surf) / const.RUEHL_C0)
 
         # surface tension bounded between sgm_min and sgm_w
-        sgm = np.minimum(np.maximum(sgm, const.RUEHL_sgm_min), const.sgm_w)
+        sgm = min(max(sgm, const.RUEHL_sgm_min), const.sgm_w)
         return sgm
+
+
+SzyszkowskiLangmuir.sigma.__vectorize = True
