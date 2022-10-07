@@ -52,7 +52,10 @@ class DisplacementMethods(BackendMethods):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _l = (
+                cell_origin[0, droplet],
+                cell_origin[1, droplet],
+            )
             _r = (
                 cell_origin[0, droplet] + 1 * (dim == 0),
                 cell_origin[1, droplet] + 1 * (dim == 1),
@@ -75,8 +78,8 @@ class DisplacementMethods(BackendMethods):
     def calculate_displacement_body_3d(
         dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
-        length = displacement.shape[1]
-        for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
+        n_sd = displacement.shape[1]
+        for droplet in numba.prange(n_sd):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
             _l = (
                 cell_origin[0, droplet],
