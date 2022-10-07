@@ -3,6 +3,8 @@ spatial mesh representation (incl. memory strides)
 """
 import numpy as np
 
+ZERO_DIM_MESH = (-1,)
+
 
 class Mesh:
     def __init__(self, grid, size):
@@ -18,7 +20,7 @@ class Mesh:
 
     @property
     def dimension(self):
-        return 0 if self.grid == (1,) else len(self.grid)
+        return 0 if self.grid == ZERO_DIM_MESH else len(self.grid)
 
     @property
     def dim(self):
@@ -26,7 +28,7 @@ class Mesh:
 
     @staticmethod
     def mesh_0d(dv=None):
-        mesh = Mesh((1,), ())
+        mesh = Mesh(ZERO_DIM_MESH, ())
         mesh.dv = dv
         return mesh
 
@@ -38,7 +40,7 @@ class Mesh:
         returns the stride vector for a given grid (for use in `cell_id` arithmetics where
         the stride vector indicates the distances of cell ids adjacent in a given dimension)
         """
-        domain = np.empty(tuple(grid))
+        domain = np.empty(tuple(grid) if grid != ZERO_DIM_MESH else (1,))
         strides = np.array(domain.strides) // domain.itemsize
         if len(grid) == 1:
             strides = strides.reshape((1, 1))
