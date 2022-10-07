@@ -3,7 +3,7 @@ spatial mesh representation (incl. memory strides)
 """
 import numpy as np
 
-ZERO_DIM_MESH = (-1,)
+ZERO_DIM_MESH = (1,)
 
 
 class Mesh:
