@@ -3,16 +3,15 @@ spatial mesh representation (incl. memory strides)
 """
 import numpy as np
 
-ZERO_DIM_MESH = (1,)
-
 
 class Mesh:
-    def __init__(self, grid, size):
+    def __init__(self, grid, size, n_cell=None, dv=None, n_dims=None, strides=None):
         self.grid = grid
         self.size = size
-        self.strides = Mesh.__strides(grid)
-        self.n_cell = int(np.prod(grid))
-        self.dv = np.prod((np.array(size) / np.array(grid)))
+        self.strides = strides or Mesh.__strides(grid)
+        self.n_cell = n_cell or int(np.prod(grid))
+        self.dv = dv or np.prod((np.array(size) / np.array(grid)))
+        self.n_dims = len(grid) if n_dims is None else n_dims
 
     @property
     def dz(self):
@@ -20,17 +19,17 @@ class Mesh:
 
     @property
     def dimension(self):
-        return 0 if self.grid == ZERO_DIM_MESH else len(self.grid)
+        return self.n_dims
 
     @property
     def dim(self):
-        return self.dimension
+        return self.n_dims
 
     @staticmethod
     def mesh_0d(dv=None):
-        mesh = Mesh(ZERO_DIM_MESH, ())
-        mesh.dv = dv
-        return mesh
+        return Mesh(
+            grid=(1,), size=tuple(), n_cell=1, dv=dv or np.nan, n_dims=0, strides=(-1,)
+        )
 
     @staticmethod
     def __strides(grid):
@@ -40,7 +39,7 @@ class Mesh:
         returns the stride vector for a given grid (for use in `cell_id` arithmetics where
         the stride vector indicates the distances of cell ids adjacent in a given dimension)
         """
-        domain = np.empty(tuple(grid) if grid != ZERO_DIM_MESH else (1,))
+        domain = np.empty(tuple(grid))
         strides = np.array(domain.strides) // domain.itemsize
         if len(grid) == 1:
             strides = strides.reshape((1, 1))
@@ -66,11 +65,11 @@ class Mesh:
            - `position_in_cell`: n-component vector of floats
              (each within the range of 0...1)
         """
-        n = positions.shape[1]
+        n_sd = positions.shape[1]
         cell_origin = positions.astype(dtype=np.int64)
         position_in_cell = positions - np.floor(positions)
 
-        cell_id = np.empty(n, dtype=np.int64)
+        cell_id = np.empty(n_sd, dtype=np.int64)
         cell_id[:] = np.dot(self.strides, cell_origin)
 
         return cell_id, cell_origin, position_in_cell
