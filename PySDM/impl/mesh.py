@@ -5,6 +5,7 @@ import numpy as np
 
 
 class Mesh:
+    # pylint: disable=too-many-arguments
     def __init__(self, grid, size, n_cell=None, dv=None, n_dims=None, strides=None):
         self.grid = grid
         self.size = size
