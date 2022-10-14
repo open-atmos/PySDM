@@ -78,9 +78,11 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
         return FakeThrustRTC.Number(number)
 
     class For:  # pylint: disable=too-few-public-methods
-        def __init__(self, args, iter_var, body):
+        def __init__(self, param_names, name_iter, body):
             d = {}
-            self.code = to_numba("__internal_python_method__", args, iter_var, body)
+            self.code = to_numba(
+                "__internal_python_method__", param_names, name_iter, body
+            )
             exec(self.code, d)  # pylint: disable=exec-used
             self.make = types.MethodType(d["make"], self)
             self.__internal_python_method__ = (

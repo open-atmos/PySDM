@@ -191,15 +191,15 @@ class CollisionsMethods(
         )
 
         self.__exp_fragmentation_body = trtc.For(
-            args=("scale", "frag_size", "rand"),
-            iter_var="i",
+            param_names=("scale", "frag_size", "rand"),
+            name_iter="i",
             body="""
             frag_size[i] = -scale * log(1 - rand[i]);
             """,
         )
 
         self.__fragmentation_limiters_body = trtc.For(
-            args=(
+            param_names=(
                 "n_fragment",
                 "frag_size",
                 "v_max",
@@ -208,7 +208,7 @@ class CollisionsMethods(
                 "nfmax_is_not_none",
                 "nfmax",
             ),
-            iter_var="i",
+            name_iter="i",
             body="""
             n_fragment[i] = x_plus_y[i] / frag_size[i];
             if (frag_size[i] > v_max[i]) {
@@ -225,16 +225,16 @@ class CollisionsMethods(
         )
 
         self.__gauss_fragmentation_body = trtc.For(
-            args=("mu", "sigma", "frag_size", "rand", "sqrt_pi", "sqrt_two"),
-            iter_var="i",
+            param_names=("mu", "sigma", "frag_size", "rand", "sqrt_pi", "sqrt_two"),
+            name_iter="i",
             body="""
             frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * log((1 + rand[i]) / (1 - rand[i]));
             """,
         )
 
         self.__slams_fragmentation_body = trtc.For(
-            args=("n_fragment", "probs", "rand"),
-            iter_var="i",
+            param_names=("n_fragment", "probs", "rand"),
+            name_iter="i",
             body="""
             probs[i] = 0.0;
             n_fragment[i] = 1;

@@ -120,8 +120,8 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __sum_pair_body = trtc.For(
-        args=("data_out", "perm_in", "is_first_in_pair"),
-        iter_var="i",
+        param_names=("data_out", "perm_in", "is_first_in_pair"),
+        name_iter="i",
         body="""
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
