@@ -28,7 +28,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             SLAMS(),
         ],
     )
-    def test_fragmentation_fn_call(fragmentation_fn, backend_class):  # pylint: disable=redefined-outer-name
+    def test_fragmentation_fn_call(
+        fragmentation_fn, backend_class
+    ):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([44.0, 666.0])
         fragments = np.asarray([-1.0])
@@ -42,6 +44,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         _Indicator = builder.particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act

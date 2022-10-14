@@ -1,8 +1,11 @@
 """
 GPU implementation of backend methods for particle collisions
 """
+import numpy as np
+
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+from PySDM.physics.constants import sqrt_pi, sqrt_two
 
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
@@ -191,7 +194,58 @@ class CollisionsMethods(
             args=("scale", "frag_size", "rand"),
             iter_var="i",
             body="""
-            frag_size[i] = -scale * log(1 - rand[i])
+            frag_size[i] = -scale * log(1 - rand[i]);
+            """,
+        )
+
+        self.__fragmentation_limiters_body = trtc.For(
+            args=(
+                "n_fragment",
+                "frag_size",
+                "v_max",
+                "x_plus_y",
+                "vmin",
+                "nfmax_is_not_none",
+                "nfmax",
+            ),
+            iter_var="i",
+            body="""
+            n_fragment[i] = x_plus_y[i] / frag_size[i];
+            if (frag_size[i] > v_max[i]) {
+                n_fragment[i] = 1;
+            }
+            else if (frag_size[i] < vmin) {
+                n_fragment[i] = 1;
+            }
+
+            if (nfmax_is_not_none) {
+                n_fragment[i] = min(n_fragment[i], nfmax) / 0;
+            }
+            """,
+        )
+
+        self.__gauss_fragmentation_body = trtc.For(
+            args=("mu", "sigma", "frag_size", "rand", "sqrt_pi", "sqrt_two"),
+            iter_var="i",
+            body="""
+            frag_size[i] = mu + sqrt_pi * sqrt_two * sigma / 4 * log((1 + rand[i]) / (1 - rand[i]));
+            """,
+        )
+
+        self.__slams_fragmentation_body = trtc.For(
+            args=("n_fragment", "probs", "rand"),
+            iter_var="i",
+            body="""
+            probs[i] = 0.0;
+            n_fragment[i] = 1;
+
+            for (auto n = 0; j < 22; j += 1) {
+                probs[i] += 0.91 * pow((n + 2), (-1.56));
+                if (rand[i] < probs[i]) {
+                    n_fragment[i] = n + 2;
+                    break;
+                }
+            }
             """,
         )
 
@@ -379,16 +433,53 @@ class CollisionsMethods(
         self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
         self.__exp_fragmentation_body.launch_n(
-            len(frag_size),
-            (trtc.DVDouble(scale), frag_size.data, rand.data),
+            size=len(frag_size),
+            args=(trtc.DVDouble(scale), frag_size.data, rand.data),
         )
 
-        # self.__fragmentation_limiters.launch_n(
-        #     len(n_fragment),
-        #     (n_fragment.data,
-        #     frag_size.data,
-        #     v_max.data,
-        #     x_plus_y.data,
-        #     vmin,
-        #     nfmax,)
-        # )
+        self.__fragmentation_limiters_body.launch_n(
+            size=len(n_fragment),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                trtc.DVDouble(vmin),
+                trtc.DVBool(nfmax is not None),
+                trtc.DVDouble(nfmax if nfmax else -1),
+            ),
+        )
+
+    def gauss_fragmentation(
+        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
+        print(sqrt_pi, sqrt_two)
+        self.__gauss_fragmentation_body.launch_n(
+            size=len(n_fragment),
+            args=(
+                trtc.DVDouble(mu),
+                trtc.DVDouble(sigma),
+                frag_size.data,
+                rand.data,
+                trtc.DVDouble(sqrt_pi),
+                trtc.DVDouble(sqrt_two),
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            size=len(n_fragment),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                trtc.DVDouble(vmin),
+                trtc.DVBool(nfmax is not None),
+                trtc.DVDouble(nfmax if nfmax else -1),
+            ),
+        )
+
+    def slams_fragmentation(self, n_fragment, probs, rand):
+        self.__slams_fragmentation_body.launch_n(
+            size=(len(n_fragment)), args=(n_fragment.data, probs.data, rand.data)
+        )

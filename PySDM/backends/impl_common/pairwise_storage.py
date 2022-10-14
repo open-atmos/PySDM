@@ -25,6 +25,9 @@ def make_PairwiseStorage(backend):
             backend.sort_pair(self, other, is_first_in_pair, other.idx)
 
         def sum(self, other, is_first_in_pair):
+            """
+            Sums values from `other` for each pair (e.g., drop radius for coalescence kernels).
+            """
             backend.sum_pair(self, other, is_first_in_pair, other.idx)
 
         def multiply(self, other, is_first_in_pair):
