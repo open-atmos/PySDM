@@ -37,7 +37,7 @@ class TestBuilder:
         particulator = builder.build(
             products=(),
             attributes={
-                k: np.asarray([0])
+                k: np.asarray([1])
                 for k in ("n", "volume", "dry volume", "kappa times dry volume")
             },
         )
