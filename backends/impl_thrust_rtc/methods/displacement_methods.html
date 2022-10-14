@@ -40,26 +40,41 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 class DisplacementMethods(ThrustRTCBackendMethods):
     def __init__(self):
         super().__init__()
-        self.__calculate_displacement_body = trtc.For(
-            (
-                &#34;dim&#34;,
-                &#34;n_sd&#34;,
-                &#34;displacement&#34;,
-                &#34;courant&#34;,
-                &#34;courant_length&#34;,
-                &#34;cell_origin&#34;,
-                &#34;position_in_cell&#34;,
-                &#34;n_substeps&#34;,
-            ),
-            &#34;i&#34;,
-            f&#34;&#34;&#34;
+        self.__calculate_displacement_body = {
+            n_dims: trtc.For(
+                param_names=(
+                    &#34;dim&#34;,
+                    &#34;n_sd&#34;,
+                    &#34;displacement&#34;,
+                    &#34;courant&#34;,
+                    &#34;courant_shape_0&#34;,
+                    &#34;courant_shape_1&#34;,
+                    &#34;cell_origin&#34;,
+                    &#34;position_in_cell&#34;,
+                    &#34;n_substeps&#34;,
+                ),
+                name_iter=&#34;i&#34;,
+                body=f&#34;&#34;&#34;
             // Arakawa-C grid
-            auto _l_0 = cell_origin[i + 0];
-            auto _l_1 = cell_origin[i + n_sd];
-            auto _l = _l_0 + _l_1 * courant_length;
-            auto _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
-            auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
-            auto _r = _r_0 + _r_1 * courant_length;
+            auto _l = cell_origin[i];
+            auto _r = cell_origin[i] + 1 * (dim == 0);
+
+            if ({n_dims} &gt; 1) {{
+                auto _l_1 = cell_origin[i + n_sd];
+                auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
+
+                _l += _l_1 * courant_shape_0;
+                _r += _r_1 * courant_shape_0;
+            }}
+
+            if ({n_dims} &gt; 2) {{
+                auto _l_2 = cell_origin[i + 2 * n_sd];
+                auto _r_2 = cell_origin[i + 2 * n_sd] + 1 * (dim == 2);
+
+                _l += _l_2 * courant_shape_0 * courant_shape_1;
+                _r += _r_2 * courant_shape_0 * courant_shape_1;
+            }}
+
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r] / n_substeps;
             auto c_l = courant[_l] / n_substeps;
@@ -69,9 +84,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 )
             };
             &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
+                    &#34;real_type&#34;, self._get_c_type()
+                ),
+            )
+            for n_dims in (1, 2, 3)
+        }
 
         self.__flag_precipitated_body = trtc.For(
             (
@@ -103,17 +120,17 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     def calculate_displacement(
         self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
-        dim = trtc.DVInt64(dim)
-        n_sd = trtc.DVInt64(position_in_cell.shape[1])
-        courant_length = trtc.DVInt64(courant.shape[0])
-        self.__calculate_displacement_body.launch_n(
-            displacement.shape[1],
-            (
-                dim,
-                n_sd,
+        n_dim = len(courant.shape)
+        n_sd = position_in_cell.shape[1]
+        self.__calculate_displacement_body[n_dim].launch_n(
+            n=n_sd,
+            args=(
+                trtc.DVInt64(dim),
+                trtc.DVInt64(n_sd),
                 displacement.data,
                 courant.data,
-                courant_length,
+                trtc.DVInt64(courant.shape[0]),
+                trtc.DVInt64(courant.shape[1] if n_dim &gt; 2 else -1),
                 cell_origin.data,
                 position_in_cell.data,
                 trtc.DVInt64(n_substeps),
@@ -184,26 +201,41 @@ class DisplacementMethods(ThrustRTCBackendMethods):
 <pre><code class="python">class DisplacementMethods(ThrustRTCBackendMethods):
     def __init__(self):
         super().__init__()
-        self.__calculate_displacement_body = trtc.For(
-            (
-                &#34;dim&#34;,
-                &#34;n_sd&#34;,
-                &#34;displacement&#34;,
-                &#34;courant&#34;,
-                &#34;courant_length&#34;,
-                &#34;cell_origin&#34;,
-                &#34;position_in_cell&#34;,
-                &#34;n_substeps&#34;,
-            ),
-            &#34;i&#34;,
-            f&#34;&#34;&#34;
+        self.__calculate_displacement_body = {
+            n_dims: trtc.For(
+                param_names=(
+                    &#34;dim&#34;,
+                    &#34;n_sd&#34;,
+                    &#34;displacement&#34;,
+                    &#34;courant&#34;,
+                    &#34;courant_shape_0&#34;,
+                    &#34;courant_shape_1&#34;,
+                    &#34;cell_origin&#34;,
+                    &#34;position_in_cell&#34;,
+                    &#34;n_substeps&#34;,
+                ),
+                name_iter=&#34;i&#34;,
+                body=f&#34;&#34;&#34;
             // Arakawa-C grid
-            auto _l_0 = cell_origin[i + 0];
-            auto _l_1 = cell_origin[i + n_sd];
-            auto _l = _l_0 + _l_1 * courant_length;
-            auto _r_0 = cell_origin[i + 0] + 1 * (dim == 0);
-            auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
-            auto _r = _r_0 + _r_1 * courant_length;
+            auto _l = cell_origin[i];
+            auto _r = cell_origin[i] + 1 * (dim == 0);
+
+            if ({n_dims} &gt; 1) {{
+                auto _l_1 = cell_origin[i + n_sd];
+                auto _r_1 = cell_origin[i + n_sd] + 1 * (dim == 1);
+
+                _l += _l_1 * courant_shape_0;
+                _r += _r_1 * courant_shape_0;
+            }}
+
+            if ({n_dims} &gt; 2) {{
+                auto _l_2 = cell_origin[i + 2 * n_sd];
+                auto _r_2 = cell_origin[i + 2 * n_sd] + 1 * (dim == 2);
+
+                _l += _l_2 * courant_shape_0 * courant_shape_1;
+                _r += _r_2 * courant_shape_0 * courant_shape_1;
+            }}
+
             auto omega = position_in_cell[i + n_sd * dim];
             auto c_r = courant[_r] / n_substeps;
             auto c_l = courant[_l] / n_substeps;
@@ -213,9 +245,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 )
             };
             &#34;&#34;&#34;.replace(
-                &#34;real_type&#34;, self._get_c_type()
-            ),
-        )
+                    &#34;real_type&#34;, self._get_c_type()
+                ),
+            )
+            for n_dims in (1, 2, 3)
+        }
 
         self.__flag_precipitated_body = trtc.For(
             (
@@ -247,17 +281,17 @@ class DisplacementMethods(ThrustRTCBackendMethods):
     def calculate_displacement(
         self, *, dim, displacement, courant, cell_origin, position_in_cell, n_substeps
     ):
-        dim = trtc.DVInt64(dim)
-        n_sd = trtc.DVInt64(position_in_cell.shape[1])
-        courant_length = trtc.DVInt64(courant.shape[0])
-        self.__calculate_displacement_body.launch_n(
-            displacement.shape[1],
-            (
-                dim,
-                n_sd,
+        n_dim = len(courant.shape)
+        n_sd = position_in_cell.shape[1]
+        self.__calculate_displacement_body[n_dim].launch_n(
+            n=n_sd,
+            args=(
+                trtc.DVInt64(dim),
+                trtc.DVInt64(n_sd),
                 displacement.data,
                 courant.data,
-                courant_length,
+                trtc.DVInt64(courant.shape[0]),
+                trtc.DVInt64(courant.shape[1] if n_dim &gt; 2 else -1),
                 cell_origin.data,
                 position_in_cell.data,
                 trtc.DVInt64(n_substeps),

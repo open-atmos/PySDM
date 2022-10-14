@@ -81,10 +81,44 @@ class DisplacementMethods(BackendMethods):
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _l = (
+                cell_origin[0, droplet],
+                cell_origin[1, droplet],
+            )
             _r = (
                 cell_origin[0, droplet] + 1 * (dim == 0),
                 cell_origin[1, droplet] + 1 * (dim == 1),
+            )
+            calculate_displacement_body_common(
+                dim,
+                droplet,
+                scheme,
+                _l,
+                _r,
+                displacement,
+                courant,
+                position_in_cell,
+                n_substeps,
+            )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
+    # pylint: disable=too-many-arguments
+    def calculate_displacement_body_3d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        n_sd = displacement.shape[1]
+        for droplet in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+            # Arakawa-C grid
+            _l = (
+                cell_origin[0, droplet],
+                cell_origin[1, droplet],
+                cell_origin[2, droplet],
+            )
+            _r = (
+                cell_origin[0, droplet] + 1 * (dim == 0),
+                cell_origin[1, droplet] + 1 * (dim == 1),
+                cell_origin[2, droplet] + 1 * (dim == 2),
             )
             calculate_displacement_body_common(
                 dim,
@@ -115,6 +149,16 @@ class DisplacementMethods(BackendMethods):
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
+                n_substeps,
+            )
+        elif n_dims == 3:
+            DisplacementMethods.calculate_displacement_body_3d(
                 dim,
                 scheme,
                 displacement.data,
@@ -290,10 +334,44 @@ def calculate_displacement_body_common(
         length = displacement.shape[1]
         for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
             # Arakawa-C grid
-            _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+            _l = (
+                cell_origin[0, droplet],
+                cell_origin[1, droplet],
+            )
             _r = (
                 cell_origin[0, droplet] + 1 * (dim == 0),
                 cell_origin[1, droplet] + 1 * (dim == 1),
+            )
+            calculate_displacement_body_common(
+                dim,
+                droplet,
+                scheme,
+                _l,
+                _r,
+                displacement,
+                courant,
+                position_in_cell,
+                n_substeps,
+            )
+
+    @staticmethod
+    @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
+    # pylint: disable=too-many-arguments
+    def calculate_displacement_body_3d(
+        dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+    ):
+        n_sd = displacement.shape[1]
+        for droplet in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+            # Arakawa-C grid
+            _l = (
+                cell_origin[0, droplet],
+                cell_origin[1, droplet],
+                cell_origin[2, droplet],
+            )
+            _r = (
+                cell_origin[0, droplet] + 1 * (dim == 0),
+                cell_origin[1, droplet] + 1 * (dim == 1),
+                cell_origin[2, droplet] + 1 * (dim == 2),
             )
             calculate_displacement_body_common(
                 dim,
@@ -324,6 +402,16 @@ def calculate_displacement_body_common(
             )
         elif n_dims == 2:
             DisplacementMethods.calculate_displacement_body_2d(
+                dim,
+                scheme,
+                displacement.data,
+                courant.data,
+                cell_origin.data,
+                position_in_cell.data,
+                n_substeps,
+            )
+        elif n_dims == 3:
+            DisplacementMethods.calculate_displacement_body_3d(
                 dim,
                 scheme,
                 displacement.data,
@@ -485,10 +573,54 @@ def calculate_displacement_body_2d(
     length = displacement.shape[1]
     for droplet in numba.prange(length):  # pylint: disable=not-an-iterable
         # Arakawa-C grid
-        _l = (cell_origin[0, droplet], cell_origin[1, droplet])
+        _l = (
+            cell_origin[0, droplet],
+            cell_origin[1, droplet],
+        )
         _r = (
             cell_origin[0, droplet] + 1 * (dim == 0),
             cell_origin[1, droplet] + 1 * (dim == 1),
+        )
+        calculate_displacement_body_common(
+            dim,
+            droplet,
+            scheme,
+            _l,
+            _r,
+            displacement,
+            courant,
+            position_in_cell,
+            n_substeps,
+        )</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_3d"><code class="name flex">
+<span>def <span class="ident">calculate_displacement_body_3d</span></span>(<span>dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False, &#34;cache&#34;: False}})
+# pylint: disable=too-many-arguments
+def calculate_displacement_body_3d(
+    dim, scheme, displacement, courant, cell_origin, position_in_cell, n_substeps
+):
+    n_sd = displacement.shape[1]
+    for droplet in numba.prange(n_sd):  # pylint: disable=not-an-iterable
+        # Arakawa-C grid
+        _l = (
+            cell_origin[0, droplet],
+            cell_origin[1, droplet],
+            cell_origin[2, droplet],
+        )
+        _r = (
+            cell_origin[0, droplet] + 1 * (dim == 0),
+            cell_origin[1, droplet] + 1 * (dim == 1),
+            cell_origin[2, droplet] + 1 * (dim == 2),
         )
         calculate_displacement_body_common(
             dim,
@@ -669,6 +801,16 @@ def flag_precipitated_body(
             position_in_cell.data,
             n_substeps,
         )
+    elif n_dims == 3:
+        DisplacementMethods.calculate_displacement_body_3d(
+            dim,
+            scheme,
+            displacement.data,
+            courant.data,
+            cell_origin.data,
+            position_in_cell.data,
+            n_substeps,
+        )
     else:
         raise NotImplementedError()</code></pre>
 </details>
@@ -702,6 +844,7 @@ def flag_precipitated_body(
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement">calculate_displacement</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_1d" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_1d">calculate_displacement_body_1d</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_2d" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_2d">calculate_displacement_body_2d</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_3d" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.calculate_displacement_body_3d">calculate_displacement_body_3d</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column">flag_out_of_column</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column_body" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_out_of_column_body">flag_out_of_column_body</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated" href="#PySDM.backends.impl_numba.methods.displacement_methods.DisplacementMethods.flag_precipitated">flag_precipitated</a></code></li>

@@ -33,6 +33,7 @@ default nice_thrust flags</p>
 ThrustRTC import logic implementing the switch between the genuine ThrustRTC and FakeThrustRTC;
 default nice_thrust flags
 &#34;&#34;&#34;
+import os
 from warnings import warn
 
 from PySDM.backends.impl_thrust_rtc.test_helpers.flag import fakeThrustRTC
@@ -41,6 +42,9 @@ if not fakeThrustRTC:
     try:
         # noinspection PyUnresolvedReferences
         import ThrustRTC as trtc  # pylint: disable=unused-import
+
+        if &#34;NVRTC_PATH&#34; in os.environ:
+            trtc.set_libnvrtc_path(os.environ[&#34;NVRTC_PATH&#34;])
     except OSError as error:
         warn(f&#34;importing ThrustRTC failed with {error}&#34;)
     try:

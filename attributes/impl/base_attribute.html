@@ -37,8 +37,10 @@ from .attribute import Attribute
 
 
 class BaseAttribute(Attribute):
-    def __init__(self, builder, name, dtype=float, size=0):
-        super().__init__(builder, name=name, dtype=dtype, size=size)
+    def __init__(self, builder, name, dtype=float, n_vector_components=0):
+        super().__init__(
+            builder, name=name, dtype=dtype, n_vector_components=n_vector_components
+        )
 
     def init(self, data):
         self.data.upload(data)
@@ -56,7 +58,7 @@ class BaseAttribute(Attribute):
 <dl>
 <dt id="PySDM.attributes.impl.base_attribute.BaseAttribute"><code class="flex name class">
 <span>class <span class="ident">BaseAttribute</span></span>
-<span>(</span><span>builder, name, dtype=builtins.float, size=0)</span>
+<span>(</span><span>builder, name, dtype=builtins.float, n_vector_components=0)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -65,8 +67,10 @@ class BaseAttribute(Attribute):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BaseAttribute(Attribute):
-    def __init__(self, builder, name, dtype=float, size=0):
-        super().__init__(builder, name=name, dtype=dtype, size=size)
+    def __init__(self, builder, name, dtype=float, n_vector_components=0):
+        super().__init__(
+            builder, name=name, dtype=dtype, n_vector_components=n_vector_components
+        )
 
     def init(self, data):
         self.data.upload(data)

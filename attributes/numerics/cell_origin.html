@@ -36,7 +36,10 @@ from PySDM.attributes.impl.cell_attribute import CellAttribute
 class CellOrigin(CellAttribute):
     def __init__(self, builder):
         super().__init__(
-            builder, name=&#34;cell origin&#34;, dtype=int, size=builder.particulator.mesh.dim
+            builder,
+            name=&#34;cell origin&#34;,
+            dtype=int,
+            n_vector_components=builder.particulator.mesh.dim,
         )</code></pre>
 </details>
 </section>
@@ -62,7 +65,10 @@ class CellOrigin(CellAttribute):
 <pre><code class="python">class CellOrigin(CellAttribute):
     def __init__(self, builder):
         super().__init__(
-            builder, name=&#34;cell origin&#34;, dtype=int, size=builder.particulator.mesh.dim
+            builder,
+            name=&#34;cell origin&#34;,
+            dtype=int,
+            n_vector_components=builder.particulator.mesh.dim,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
