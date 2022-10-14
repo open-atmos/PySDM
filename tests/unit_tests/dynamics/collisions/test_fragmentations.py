@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder
+from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
