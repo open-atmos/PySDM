@@ -42,13 +42,13 @@ from .impl import flag
 
 
 class DimensionalAnalysis:
-    def __enter__(*_):  # pylint: disable=no-method-argument
+    def __enter__(*_):  # pylint: disable=no-method-argument,no-self-argument
         flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
         reload(constants_defaults)
         reload(formulae)
 
-    def __exit__(*_):  # pylint: disable=no-method-argument
+    def __exit__(*_):  # pylint: disable=no-method-argument,no-self-argument
         flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
         reload(constants_defaults)
@@ -74,13 +74,13 @@ class DimensionalAnalysis:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class DimensionalAnalysis:
-    def __enter__(*_):  # pylint: disable=no-method-argument
+    def __enter__(*_):  # pylint: disable=no-method-argument,no-self-argument
         flag.DIMENSIONAL_ANALYSIS = True
         reload(constants)
         reload(constants_defaults)
         reload(formulae)
 
-    def __exit__(*_):  # pylint: disable=no-method-argument
+    def __exit__(*_):  # pylint: disable=no-method-argument,no-self-argument
         flag.DIMENSIONAL_ANALYSIS = False
         reload(constants)
         reload(constants_defaults)
