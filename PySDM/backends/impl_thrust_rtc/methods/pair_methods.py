@@ -135,6 +135,6 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            size=len(idx),
+            n=len(idx),
             args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
         )

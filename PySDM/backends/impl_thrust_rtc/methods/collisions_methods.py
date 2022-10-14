@@ -1,8 +1,6 @@
 """
 GPU implementation of backend methods for particle collisions
 """
-import numpy as np
-
 from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
 from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from PySDM.physics.constants import sqrt_pi, sqrt_two
@@ -433,12 +431,12 @@ class CollisionsMethods(
         self, *, n_fragment, scale, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
         self.__exp_fragmentation_body.launch_n(
-            size=len(frag_size),
+            n=len(frag_size),
             args=(trtc.DVDouble(scale), frag_size.data, rand.data),
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            size=len(n_fragment),
+            n=len(n_fragment),
             args=(
                 n_fragment.data,
                 frag_size.data,
@@ -455,7 +453,7 @@ class CollisionsMethods(
     ):
         print(sqrt_pi, sqrt_two)
         self.__gauss_fragmentation_body.launch_n(
-            size=len(n_fragment),
+            n=len(n_fragment),
             args=(
                 trtc.DVDouble(mu),
                 trtc.DVDouble(sigma),
@@ -467,7 +465,7 @@ class CollisionsMethods(
         )
 
         self.__fragmentation_limiters_body.launch_n(
-            size=len(n_fragment),
+            n=len(n_fragment),
             args=(
                 n_fragment.data,
                 frag_size.data,
@@ -479,7 +477,16 @@ class CollisionsMethods(
             ),
         )
 
-    def slams_fragmentation(self, n_fragment, probs, rand):
+    def slams_fragmentation(
+        self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax
+    ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body.launch_n(
-            size=(len(n_fragment)), args=(n_fragment.data, probs.data, rand.data)
+            n=(len(n_fragment)),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                x_plus_y.data,
+                probs.data,
+                rand.data,
+            ),
         )
