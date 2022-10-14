@@ -45,6 +45,12 @@ class Builder:
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
+    def remove_dynamic(self, dynamic):
+        assert self.particulator.environment is not None
+        key = inspect.getmro(type(dynamic))[-2].__name__
+        assert key in self.particulator.dynamics
+        self.particulator.dynamics.pop(key)
+
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
             raise Exception(f'product name "{product.name}" already registered')
