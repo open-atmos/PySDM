@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 
 from ....backends_fixture import backend_class
 from .displacement_settings import DisplacementSettings
@@ -9,18 +10,63 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 class TestExplicitEulerWithInterpolation:
     @staticmethod
+    @pytest.mark.parametrize(
+        "positions, courant_field, expected_positions",
+        (
+            # 1D
+            (
+                [[0.5]],
+                (np.array([0.1, 0.2]),),
+                [[0.65827668]],
+            ),
+            # 2D
+            (
+                [[0.5], [0.5]],
+                (
+                    np.array([0.1, 0.2]).reshape((2, 1)),
+                    np.array([0.3, 0.4]).reshape((1, 2)),
+                ),
+                [[0.65827668], [0.86931224]],
+            ),
+            # 3D
+            (
+                [[0.5], [0.5], [0.5]],
+                (
+                    np.array([0.1, 0.2]).reshape((2, 1, 1)),
+                    np.array([0.3, 0.4]).reshape((1, 2, 1)),
+                    np.array([0.2, 0.3]).reshape((1, 1, 2)),
+                ),
+                [
+                    [0.65827668],
+                    [0.86931224],
+                    [0.76379446],
+                ],
+            ),
+        ),
+    )
     # pylint: disable=redefined-outer-name
-    def test_single_cell(backend_class):
+    def test_single_cell(
+        backend_class, positions, expected_positions, courant_field: tuple
+    ):
         # Arrange
-        settings = DisplacementSettings()
-        settings.courant_field_data = (np.array([[0.1, 0.2]]).T, np.array([[0.3, 0.4]]))
-        settings.positions = [[0.5], [0.5]]
-        sut, _ = settings.get_displacement(backend_class, scheme="ImplicitInSpace")
+        settings = DisplacementSettings(
+            courant_field_data=courant_field,
+            positions=positions,
+            grid=tuple([1] * len(courant_field)),
+            n_sd=len(positions[0]),
+        )
+        sut, particulator = settings.get_displacement(
+            backend_class, scheme="ImplicitInSpace"
+        )
 
         # Act
         sut()
 
         # Assert
+        np.testing.assert_array_almost_equal(
+            np.asarray(expected_positions),
+            particulator.attributes["position in cell"].to_ndarray(),
+        )
 
     @staticmethod
     # pylint: disable=redefined-outer-name

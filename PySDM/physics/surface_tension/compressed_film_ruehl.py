@@ -69,7 +69,7 @@ class CompressedFilmRuehl:  # pylint: disable=too-few-public-methods
             args = (Cb_iso, const.RUEHL_C0, const.RUEHL_A0, A_iso, c)
             rtol = 1e-6
             max_iters = 1e2
-            bracket = (rtol, 1)
+            bracket = bracket = (1e-16, 1)
             f_surf, iters = toms748_solve(
                 minfun,
                 args,
@@ -95,3 +95,4 @@ CompressedFilmRuehl.sigma.__extras = {
     "minfun": minfun,
     "within_tolerance": within_tolerance,
 }
+CompressedFilmRuehl.sigma.__vectorize = True

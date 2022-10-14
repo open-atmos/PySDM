@@ -6,7 +6,7 @@ class DummyStorage:
     def __init__(self):
         self.profiles = []
 
-    def init(*_):  # pylint: disable=no-method-argument
+    def init(*_):  # pylint: disable=no-method-argument,no-self-argument
         pass
 
     def save(
