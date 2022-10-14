@@ -29,15 +29,30 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 raise ValueError(f"Cannot upload {obj} to device.")
             return result
 
+        __add_elementwise_body = trtc.For(
+            ("output", "addend"),
+            "i",
+            """
+                output[i] += addend[i];
+            """,
+        )
+
+        __add_body = trtc.For(
+            ["output", "addend"],
+            "i",
+            """
+                output[i] += addend;
+            """,
+        )
+
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
         def add(output, addend):
-            trtc.Transform_Binary(
-                Impl.thrust(addend),
-                Impl.thrust(output),
-                Impl.thrust(output),
-                trtc.Plus(),
-            )
+            if hasattr(addend, "data"):
+                loop = Impl.__add_elementwise_body
+            else:
+                loop = Impl.__add_body
+            loop.launch_n(output.shape[0], Impl.thrust((output, addend)))
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
@@ -131,29 +146,29 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             loop.launch_n(output.shape[0], Impl.thrust((output, multiplier)))
 
         __truediv_elementwise_body = trtc.For(
-            ("output", "multiplier"),
+            ("output", "divisor"),
             "i",
             """
-                output[i] /= multiplier[i];
+                output[i] /= divisor[i];
             """,
         )
 
         __truediv_body = trtc.For(
-            ["output", "multiplier"],
+            ["output", "divisor"],
             "i",
             """
-                output[i] /= multiplier;
+                output[i] /= divisor;
             """,
         )
 
         @staticmethod
         @nice_thrust(**NICE_THRUST_FLAGS)
-        def truediv(output, multiplier):
-            if hasattr(multiplier, "data"):
+        def truediv(output, divisor):
+            if hasattr(divisor, "data"):
                 loop = Impl.__truediv_elementwise_body
             else:
                 loop = Impl.__truediv_body
-            loop.launch_n(output.shape[0], Impl.thrust((output, multiplier)))
+            loop.launch_n(output.shape[0], Impl.thrust((output, divisor)))
 
         __multiply_out_of_place_elementwise_body = trtc.For(
             ("output", "multiplicand", "multiplier"),
