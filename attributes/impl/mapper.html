@@ -65,67 +65,61 @@ from PySDM.dynamics.impl.chemistry_utils import AQUEOUS_COMPOUNDS
 from PySDM.physics.surface_tension import Constant
 
 attributes = {
-    &#34;n&#34;: lambda _: Multiplicities,
-    &#34;volume&#34;: lambda _: Volume,
-    &#34;dry volume organic&#34;: lambda dynamics: (
+    &#34;n&#34;: lambda _, __: Multiplicities,
+    &#34;volume&#34;: lambda _, __: Volume,
+    &#34;dry volume organic&#34;: lambda dynamics, formulae: (
         make_dummy_attribute_factory(&#34;dry volume organic&#34;)
         if &#34;Condensation&#34; in dynamics
-        and (
-            dynamics[&#34;Condensation&#34;].particulator.formulae.surface_tension.__name__
-            == Constant.__name__
-        )
+        and formulae.surface_tension.__name__ == Constant.__name__
         else DryVolumeOrganic
     ),
-    &#34;dry volume&#34;: lambda dynamics: DryVolumeDynamic
+    &#34;dry volume&#34;: lambda dynamics, formulae: DryVolumeDynamic
     if &#34;AqueousChemistry&#34; in dynamics
     else DryVolume,
-    &#34;dry volume organic fraction&#34;: lambda dynamics: (
+    &#34;dry volume organic fraction&#34;: lambda dynamics, formulae: (
         make_dummy_attribute_factory(&#34;dry volume organic fraction&#34;)
         if &#34;Condensation&#34; in dynamics
-        and (
-            dynamics[&#34;Condensation&#34;].particulator.formulae.surface_tension.__name__
-            == Constant.__name__
-        )
+        and formulae.surface_tension.__name__ == Constant.__name__
         else OrganicFraction
     ),
-    &#34;kappa times dry volume&#34;: lambda _: KappaTimesDryVolume,
-    &#34;kappa&#34;: lambda _: Kappa,
-    &#34;radius&#34;: lambda _: Radius,
-    &#34;area&#34;: lambda _: Area,
-    &#34;dry radius&#34;: lambda _: DryRadius,
-    &#34;terminal velocity&#34;: lambda _: TerminalVelocity,
-    &#34;cell id&#34;: lambda _: CellID,
-    &#34;cell origin&#34;: lambda _: CellOrigin,
-    &#34;cooling rate&#34;: lambda _: CoolingRate,
-    &#34;position in cell&#34;: lambda _: PositionInCell,
-    &#34;temperature&#34;: lambda _: Temperature,
-    &#34;heat&#34;: lambda _: Heat,
-    &#34;critical volume&#34;: lambda _: CriticalVolume,
+    &#34;kappa times dry volume&#34;: lambda _, __: KappaTimesDryVolume,
+    &#34;kappa&#34;: lambda _, __: Kappa,
+    &#34;radius&#34;: lambda _, __: Radius,
+    &#34;area&#34;: lambda _, __: Area,
+    &#34;dry radius&#34;: lambda _, __: DryRadius,
+    &#34;terminal velocity&#34;: lambda _, __: TerminalVelocity,
+    &#34;cell id&#34;: lambda _, __: CellID,
+    &#34;cell origin&#34;: lambda _, __: CellOrigin,
+    &#34;cooling rate&#34;: lambda _, __: CoolingRate,
+    &#34;position in cell&#34;: lambda _, __: PositionInCell,
+    &#34;temperature&#34;: lambda _, __: Temperature,
+    &#34;heat&#34;: lambda _, __: Heat,
+    &#34;critical volume&#34;: lambda _, __: CriticalVolume,
     **{
         &#34;moles_&#34;
-        + compound: partial(lambda _, c: make_mole_amount_factory(c), c=compound)
+        + compound: partial(lambda _, __, c: make_mole_amount_factory(c), c=compound)
         for compound in AQUEOUS_COMPOUNDS
     },
     **{
         &#34;conc_&#34;
-        + compound: partial(lambda _, c: make_concentration_factory(c), c=compound)
+        + compound: partial(lambda _, __, c: make_concentration_factory(c), c=compound)
         for compound in AQUEOUS_COMPOUNDS
     },
-    &#34;pH&#34;: lambda _: Acidity,
-    &#34;conc_H&#34;: lambda _: HydrogenIonConcentration,
-    &#34;freezing temperature&#34;: lambda _: FreezingTemperature,
-    &#34;immersed surface area&#34;: lambda _: ImmersedSurfaceArea,
-    &#34;critical supersaturation&#34;: lambda _: CriticalSupersaturation,
-    &#34;wet to critical volume ratio&#34;: lambda _: WetToCriticalVolumeRatio,
+    &#34;pH&#34;: lambda _, __: Acidity,
+    &#34;conc_H&#34;: lambda _, __: HydrogenIonConcentration,
+    &#34;freezing temperature&#34;: lambda _, __: FreezingTemperature,
+    &#34;immersed surface area&#34;: lambda _, __: ImmersedSurfaceArea,
+    &#34;critical supersaturation&#34;: lambda _, __: CriticalSupersaturation,
+    &#34;wet to critical volume ratio&#34;: lambda _, __: WetToCriticalVolumeRatio,
 }
 
 
-def get_class(name, dynamics):
+def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
             f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;
         )
-    return attributes[name](dynamics)</code></pre>
+    return attributes[name](dynamics, formulae)</code></pre>
 </details>
 </section>
 <section>
@@ -136,7 +130,7 @@ def get_class(name, dynamics):
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="PySDM.attributes.impl.mapper.get_class"><code class="name flex">
-<span>def <span class="ident">get_class</span></span>(<span>name, dynamics)</span>
+<span>def <span class="ident">get_class</span></span>(<span>name, dynamics, formulae)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -144,12 +138,12 @@ def get_class(name, dynamics):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_class(name, dynamics):
+<pre><code class="python">def get_class(name, dynamics, formulae):
     if name not in attributes:
         raise ValueError(
             f&#34;Unknown attribute name: {name}; valid names: {&#39;, &#39;.join(attributes)}&#34;
         )
-    return attributes[name](dynamics)</code></pre>
+    return attributes[name](dynamics, formulae)</code></pre>
 </details>
 </dd>
 </dl>
