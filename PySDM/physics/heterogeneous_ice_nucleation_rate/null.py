@@ -4,10 +4,10 @@ do-nothing null formulation (needed as other formulations require parameters
 """
 
 
-class Null:  # pylint: disable=too-few-public-methods
+class Null:  # pylint: disable=too-few-public-methods,unused-argument
     def __init__(self, _):
         pass
 
     @staticmethod
     def j_het(const, a_w_ice):
-        pass
+        return const.NaN
