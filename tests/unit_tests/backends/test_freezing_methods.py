@@ -82,10 +82,10 @@ class TestFreezingMethods:
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         def hgh(t):
-            return np.exp(-0.75 * rate * (t - total_time / 2))
+            return np.exp(-0.75 * rate * (t - total_time / 4))
 
         def low(t):
-            return np.exp(-1.25 * rate * (t + total_time / 2))
+            return np.exp(-1.25 * rate * (t + total_time / 4))
 
         # Act
         output = {}
