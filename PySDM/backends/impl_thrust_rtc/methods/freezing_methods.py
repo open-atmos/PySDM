@@ -11,7 +11,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class FreezingMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         const = self.formulae.constants
 
         self.freeze_time_dependent_body = trtc.For(

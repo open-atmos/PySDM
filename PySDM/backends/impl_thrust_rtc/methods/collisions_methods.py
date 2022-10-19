@@ -12,7 +12,7 @@ class CollisionsMethods(
     ThrustRTCBackendMethods
 ):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             ("dt_todo", "dt_left", "dt_max"),

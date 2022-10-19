@@ -34,7 +34,7 @@ _conc = namedtuple("_conc", ("N_mIII", "N_V", "C_IV", "S_IV", "S_VI"))
 
 class ChemistryMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)

@@ -15,7 +15,7 @@ from ...impl_numba import conf
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         const = self.formulae.constants
         unfrozen = self.formulae.trivia.unfrozen
 
