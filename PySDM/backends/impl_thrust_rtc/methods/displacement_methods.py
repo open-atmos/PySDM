@@ -10,7 +10,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class DisplacementMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         self.__calculate_displacement_body = {
             n_dims: trtc.For(
                 param_names=(

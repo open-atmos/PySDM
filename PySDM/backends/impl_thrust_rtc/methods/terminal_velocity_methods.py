@@ -10,7 +10,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class TerminalVelocityMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         self.__linear_collection_efficiency_body = trtc.For(
             (
                 "A",
