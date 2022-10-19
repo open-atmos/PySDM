@@ -35,13 +35,13 @@ do-nothing null formulation (needed as other formulations require parameters
 &#34;&#34;&#34;
 
 
-class Null:  # pylint: disable=too-few-public-methods
+class Null:  # pylint: disable=too-few-public-methods,unused-argument
     def __init__(self, _):
         pass
 
     @staticmethod
     def j_het(const, a_w_ice):
-        pass</code></pre>
+        return const.NaN</code></pre>
 </details>
 </section>
 <section>
@@ -63,13 +63,13 @@ class Null:  # pylint: disable=too-few-public-methods
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class Null:  # pylint: disable=too-few-public-methods
+<pre><code class="python">class Null:  # pylint: disable=too-few-public-methods,unused-argument
     def __init__(self, _):
         pass
 
     @staticmethod
     def j_het(const, a_w_ice):
-        pass</code></pre>
+        return const.NaN</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -84,7 +84,7 @@ class Null:  # pylint: disable=too-few-public-methods
 </summary>
 <pre><code class="python">@staticmethod
 def j_het(const, a_w_ice):
-    pass</code></pre>
+    return const.NaN</code></pre>
 </details>
 </dd>
 </dl>

@@ -71,11 +71,10 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         heterogeneous_ice_nucleation_rate: str = &#34;Null&#34;,
     ):
         constants_defaults = {
-            k: getattr(physics.constants_defaults, k)
-            for k in dir(physics.constants_defaults)
-            if isinstance(
-                getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity)
-            )
+            k: getattr(defaults, k)
+            for defaults in (physics.constants, physics.constants_defaults)
+            for k in dir(defaults)
+            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
             **{**constants_defaults, **(constants or {})}
@@ -368,11 +367,10 @@ def _magick(value, module, fastmath, constants, dimensional_analysis):
         heterogeneous_ice_nucleation_rate: str = &#34;Null&#34;,
     ):
         constants_defaults = {
-            k: getattr(physics.constants_defaults, k)
-            for k in dir(physics.constants_defaults)
-            if isinstance(
-                getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity)
-            )
+            k: getattr(defaults, k)
+            for defaults in (physics.constants, physics.constants_defaults)
+            for k in dir(defaults)
+            if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
         }
         constants = namedtuple(&#34;Constants&#34;, tuple(constants_defaults.keys()))(
             **{**constants_defaults, **(constants or {})}

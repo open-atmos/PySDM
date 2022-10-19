@@ -47,7 +47,7 @@ class CondensationMethods(
     keys = (&#34;T&#34;, &#34;p&#34;, &#34;pv&#34;, &#34;lv&#34;, &#34;pvs&#34;, &#34;RH&#34;, &#34;DTp&#34;, &#34;lambdaK&#34;, &#34;lambdaD&#34;)
 
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None
@@ -496,7 +496,7 @@ class CondensationMethods(
     keys = (&#34;T&#34;, &#34;p&#34;, &#34;pv&#34;, &#34;lv&#34;, &#34;pvs&#34;, &#34;RH&#34;, &#34;DTp&#34;, &#34;lambdaK&#34;, &#34;lambdaD&#34;)
 
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         phys = self.formulae
         self.RH_rtol = None
         self.adaptive = None

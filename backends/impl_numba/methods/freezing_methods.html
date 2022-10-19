@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.backends.impl_numba.methods.freezing_methods API documentation</title>
-<meta name="description" content="CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)" />
+<meta name="description" content="CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +22,13 @@
 <h1 class="title">Module <code>PySDM.backends.impl_numba.methods.freezing_methods</code></h1>
 </header>
 <section id="section-intro">
-<p>CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)</p>
+<p>CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)
+CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 &#34;&#34;&#34;
 import numba
 import numpy as np
@@ -44,14 +44,9 @@ from ...impl_numba import conf
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         const = self.formulae.constants
-
-        @numba.njit(
-            **{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: False}
-        )
-        def _unfrozen(volume, i):
-            return volume[i] &gt; 0
+        unfrozen = self.formulae.trivia.unfrozen
 
         @numba.njit(
             **{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: False}
@@ -68,10 +63,10 @@ class FreezingMethods(BackendMethods):
                 if attributes.freezing_temperature[i] == 0:
                     continue
                 if (
-                    _unfrozen(attributes.wet_volume, i)
-                    and relative_humidity[cell[i]] &gt; 1
-                    and temperature[cell[i]]  # TODO #599 as in Shima, but is it needed?
-                    &lt;= attributes.freezing_temperature[i]
+                    unfrozen(attributes.wet_volume[i])
+                    and relative_humidity[cell[i]]
+                    &gt; 1  # TODO #599 as in Shima, but is it needed?
+                    and temperature[cell[i]] &lt;= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
 
@@ -85,7 +80,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
-                if _unfrozen(attributes.wet_volume, i):
+                if unfrozen(attributes.wet_volume[i]):
                     rate = j_het(a_w_ice[cell[i]])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(
@@ -140,14 +135,9 @@ class FreezingMethods(BackendMethods):
 </summary>
 <pre><code class="python">class FreezingMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         const = self.formulae.constants
-
-        @numba.njit(
-            **{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: False}
-        )
-        def _unfrozen(volume, i):
-            return volume[i] &gt; 0
+        unfrozen = self.formulae.trivia.unfrozen
 
         @numba.njit(
             **{**conf.JIT_FLAGS, &#34;fastmath&#34;: self.formulae.fastmath, &#34;parallel&#34;: False}
@@ -164,10 +154,10 @@ class FreezingMethods(BackendMethods):
                 if attributes.freezing_temperature[i] == 0:
                     continue
                 if (
-                    _unfrozen(attributes.wet_volume, i)
-                    and relative_humidity[cell[i]] &gt; 1
-                    and temperature[cell[i]]  # TODO #599 as in Shima, but is it needed?
-                    &lt;= attributes.freezing_temperature[i]
+                    unfrozen(attributes.wet_volume[i])
+                    and relative_humidity[cell[i]]
+                    &gt; 1  # TODO #599 as in Shima, but is it needed?
+                    and temperature[cell[i]] &lt;= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
 
@@ -181,7 +171,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
-                if _unfrozen(attributes.wet_volume, i):
+                if unfrozen(attributes.wet_volume[i]):
                     rate = j_het(a_w_ice[cell[i]])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(

@@ -39,7 +39,7 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class PhysicsMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         phys = self.formulae
 
         self._temperature_pressure_RH_body = trtc.For(
@@ -168,7 +168,7 @@ class PhysicsMethods(ThrustRTCBackendMethods):
 </summary>
 <pre><code class="python">class PhysicsMethods(ThrustRTCBackendMethods):
     def __init__(self):
-        super().__init__()
+        ThrustRTCBackendMethods.__init__(self)
         phys = self.formulae
 
         self._temperature_pressure_RH_body = trtc.For(

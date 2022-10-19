@@ -63,7 +63,7 @@ _conc = namedtuple(&#34;_conc&#34;, (&#34;N_mIII&#34;, &#34;N_V&#34;, &#34;C_IV&
 
 class ChemistryMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
@@ -593,7 +593,7 @@ def calc_ionic_strength(H, conc, K):
 </summary>
 <pre><code class="python">class ChemistryMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         self.HENRY_CONST = HenryConsts(self.formulae)
         self.KINETIC_CONST = KineticConsts(self.formulae)
         self.EQUILIBRIUM_CONST = EquilibriumConsts(self.formulae)
