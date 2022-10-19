@@ -59,13 +59,14 @@ class TestFreezingMethods:
     # pylint: disable=too-many-locals,redefined-outer-name
     def test_freeze_time_dependent(backend_class, plot=False):
         # Arrange
+        seed = 44
         cases = (
-            {"dt": 5e4, "N": 1},
-            {"dt": 1e5, "N": 1},
-            {"dt": 5e4, "N": 8},
-            {"dt": 1e5, "N": 8},
-            {"dt": 5e4, "N": 16},
-            {"dt": 1e5, "N": 16},
+            {"dt": 5e5, "N": 1},
+            {"dt": 1e6, "N": 1},
+            {"dt": 5e5, "N": 8},
+            {"dt": 1e6, "N": 8},
+            {"dt": 5e5, "N": 16},
+            {"dt": 1e6, "N": 16},
         )
         rate = 1e-9
         immersed_surface_area = 1
@@ -101,6 +102,7 @@ class TestFreezingMethods:
             formulae = Formulae(
                 heterogeneous_ice_nucleation_rate="Constant",
                 constants={"J_HET": rate / immersed_surface_area},
+                seed=seed,
             )
             builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
             env = Box(dt=case["dt"], dv=d_v)
