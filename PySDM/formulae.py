@@ -41,13 +41,15 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
     ):
-        constants_defaults = {
-            k: getattr(physics.constants_defaults, k)
-            for k in dir(physics.constants_defaults)
-            if isinstance(
-                getattr(physics.constants_defaults, k), (numbers.Number, pint.Quantity)
+        constants_defaults = {}
+        for defaults in (physics.constants, physics.constants_defaults):
+            constants_defaults.update(
+                {
+                    k: getattr(defaults, k)
+                    for k in dir(defaults)
+                    if isinstance(getattr(defaults, k), (numbers.Number, pint.Quantity))
+                }
             )
-        }
         constants = namedtuple("Constants", tuple(constants_defaults.keys()))(
             **{**constants_defaults, **(constants or {})}
         )
