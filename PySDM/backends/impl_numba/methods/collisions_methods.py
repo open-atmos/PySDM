@@ -653,7 +653,6 @@ class CollisionsMethods(BackendMethods):
         """
         Exponential PDF
         """
-        # TODO: loop frag_size or n_fragment
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             frag_size[i] = -scale * np.log(max(1 - rand[i], tol))
 
