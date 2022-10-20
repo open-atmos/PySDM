@@ -56,6 +56,6 @@ class TestBuilder:
         builder.remove_dynamic(Condensation())
 
         # assert
-        particulator = builder.build(
+        _ = builder.build(
             products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
         )
