@@ -265,6 +265,23 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 output.shape[0], Impl.thrust((output, subtrahend))
             )
 
+        __divide_if_not_zero_body = trtc.For(
+            param_names=("output", "divisor"),
+            name_iter="i",
+            body="""
+            if (divisor[i] != 0.0) {
+                output[i] /= divisor[i];
+            }
+            """,
+        )
+
+        @staticmethod
+        @nice_thrust(**NICE_THRUST_FLAGS)
+        def divide_if_not_zero(output, divisor):
+            Impl.__divide_if_not_zero_body.launch_n(
+                n=(output.shape[0]), args=(Impl.thrust((output, divisor)))
+            )
+
     class Storage(StorageBase):
         FLOAT = BACKEND._get_np_dtype()
         INT = np.int64
@@ -475,5 +492,9 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
                 trtc.device_vector_from_numpy(data.astype(self.dtype).ravel()),
                 self.data,
             )
+
+        def divide_if_not_zero(self, divisor):
+            Impl.divide_if_not_zero(self, divisor)
+            return self
 
     return Storage
