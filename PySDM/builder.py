@@ -49,6 +49,7 @@ class Builder:
         assert self.particulator.environment is not None
         key = get_key(dynamic)
         assert key in self.particulator.dynamics
+        assert dynamic is self.particulator.dynamics[key]
         self.particulator.dynamics.pop(key)
 
     def register_product(self, product, buffer):
