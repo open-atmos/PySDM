@@ -45,17 +45,18 @@ class TestBuilder:
         _ = particulator.attributes["critical supersaturation"].to_ndarray()
 
     @staticmethod
-    def test_remove_attribute():
+    def test_remove_dynamic():
         # arrange
         env = Box(dt=-1, dv=np.nan)
         builder = Builder(backend=CPU(), n_sd=1)
         builder.set_environment(env)
-        builder.add_dynamic(Condensation())
+        dynamic = Condensation()
+        builder.add_dynamic(dynamic)
 
         # act
-        builder.remove_dynamic(Condensation())
+        builder.remove_dynamic(dynamic)
 
         # assert
-        particulator = builder.build(
+        'Condensation' not in builder.build(
             products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
-        )
+        ).dynamics.keys()
