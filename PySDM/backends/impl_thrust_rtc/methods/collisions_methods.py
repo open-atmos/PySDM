@@ -189,7 +189,7 @@ class CollisionsMethods(
         )
 
         self.__exp_fragmentation_body = trtc.For(
-            param_names=("scale", "frag_size", "rand, tol"),
+            param_names=("scale", "frag_size", "rand", "tol"),
             name_iter="i",
             body="""
             frag_size[i] = -scale * log(max(1 - rand[i], tol));
@@ -228,7 +228,7 @@ class CollisionsMethods(
             param_names=("mu", "sigma", "frag_size", "rand"),
             name_iter="i",
             body=f"""
-            frag_size[i] = mu - sigma / {const.sqrt_two} / {const.sqrt_pi} / log(2) * log(
+            frag_size[i] = mu - sigma / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
                 (0.5 + rand[i]) / (1.5 - rand[i])
             );
             """,
@@ -256,7 +256,7 @@ class CollisionsMethods(
             param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
             name_iter="i",
             body="""
-            log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol);
+            auto log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol);
             frag_size[i] = -scale * log(log_arg);
             """,
         )
@@ -290,7 +290,7 @@ class CollisionsMethods(
 
                 frag_size[i] = exp(
                     mu1
-                    - sigma1 / {const.sqrt_two} / {const.sqrt_pi} / log(2) * log((0.5 + X) / (1.5 - X))
+                    - sigma1 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log((0.5 + X) / (1.5 - X))
                 );
                 frag_size[i] = {const.PI} / 6. * pow(frag_size[i], 3);
         """
@@ -302,7 +302,7 @@ class CollisionsMethods(
                 auto sigma2 = pow(delD2, 2) / 12.;
                 auto X = rand[i];
 
-                frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2) * log(
+                frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
                     (0.5 + X) / (1.5 - X)
                 );
                 frag_size[i] = {const.PI} / 6. * pow(frag_size[i], 3);
@@ -315,7 +315,7 @@ class CollisionsMethods(
                 auto sigma3 = pow(delD3, 2) / 12.;
                 auto X = rand[i];
 
-                frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2) * log(
+                frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
                     (0.5 + X) / (1.5 - X)
                 );
                 frag_size[i] = {const.PI} / 6. * pow(frag_size[i], 3);
