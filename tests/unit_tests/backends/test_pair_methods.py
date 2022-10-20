@@ -20,7 +20,9 @@ assert hasattr(backend_class, "_pytestfixturefunction")
             ],
             [True, True],
             [0, 1],
-            marks=pytest.mark.xfail(strict=numba.config.DISABLE_JIT),
+            marks=pytest.mark.xfail(
+                strict=numba.config.DISABLE_JIT
+            ),  # pylint: disable=no-member
         ),
         pytest.param(
             [44.0, 666.0],
