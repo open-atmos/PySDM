@@ -59,7 +59,7 @@ class Builder:
     def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(
-                attribute, self.particulator.dynamics
+                attribute, self.particulator.dynamics, self.formulae
             )(self)
         if variant is not None:
             assert variant == self.req_attr[attribute]

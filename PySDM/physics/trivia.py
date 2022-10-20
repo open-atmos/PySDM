@@ -71,3 +71,7 @@ class Trivia:
     @staticmethod
     def th_std(const, p, T):
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
+
+    @staticmethod
+    def unfrozen(_, volume):
+        return volume > 0

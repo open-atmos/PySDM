@@ -1,30 +1,65 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
-from matplotlib import pylab
+from matplotlib import pyplot
 
 from PySDM import Builder, Formulae
-from PySDM.backends import CPU
 from PySDM.dynamics import Freezing
 from PySDM.environments import Box
 from PySDM.physics import constants_defaults as const
+from PySDM.physics import si
 from PySDM.products import IceWaterContent
 
-from ...backends_fixture import backend_class  # TODO #599
+from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestFreezingMethods:
     # TODO #599
-    @staticmethod
-    # pylint: disable=redefined-outer-name
-    def test_freeze_singular(backend_class):
+    def test_subsaturated_freezing(self):
         pass
 
     @staticmethod
-    # pylint: disable=too-many-locals
-    def test_freeze_time_dependent(plot=False):
+    # pylint: disable=redefined-outer-name
+    def test_freeze_singular(backend_class):
+        # arrange
+        n_sd = 44
+        dt = 1 * si.s
+        dv = 1 * si.m**3
+        T_fz = 250 * si.K
+        vol = 1 * si.um**3
+        multiplicity = 1e10
+        steps = 1
+
+        formulae = Formulae()
+        builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
+        env = Box(dt=dt, dv=dv)
+        builder.set_environment(env)
+        builder.add_dynamic(Freezing(singular=True))
+        attributes = {
+            "n": np.full(n_sd, multiplicity),
+            "freezing temperature": np.full(n_sd, T_fz),
+            "volume": np.full(n_sd, vol),
+        }
+        products = (IceWaterContent(name="qi"),)
+        particulator = builder.build(attributes=attributes, products=products)
+        env["T"] = T_fz
+        env["RH"] = 1.000001
+
+        # act
+        particulator.run(steps=steps)
+
+        # assert
+        np.testing.assert_almost_equal(
+            np.asarray(particulator.products["qi"].get()),
+            [n_sd * multiplicity * vol * const.rho_w / dv],
+        )
+
+    @staticmethod
+    # pylint: disable=too-many-locals,redefined-outer-name
+    def test_freeze_time_dependent(backend_class, plot=False):
         # Arrange
+        seed = 44
         cases = (
             {"dt": 5e5, "N": 1},
             {"dt": 1e6, "N": 1},
@@ -38,7 +73,7 @@ class TestFreezingMethods:
 
         number_of_real_droplets = 1024
         total_time = (
-            2e9  # effectively interpretted here as seconds, i.e. cycle = 1 * si.s
+            0.25e9  # effectively interpreted here as seconds, i.e. cycle = 1 * si.s
         )
 
         # dummy (but must-be-set) values
@@ -48,10 +83,10 @@ class TestFreezingMethods:
         d_v = 666  # products use conc., dividing there, multiplying here, value does not matter
 
         def hgh(t):
-            return np.exp(-0.8 * rate * (t - total_time / 10))
+            return np.exp(-0.75 * rate * (t - total_time / 4))
 
         def low(t):
-            return np.exp(-1.2 * rate * (t + total_time / 10))
+            return np.exp(-1.25 * rate * (t + total_time / 4))
 
         # Act
         output = {}
@@ -67,8 +102,9 @@ class TestFreezingMethods:
             formulae = Formulae(
                 heterogeneous_ice_nucleation_rate="Constant",
                 constants={"J_HET": rate / immersed_surface_area},
+                seed=seed,
             )
-            builder = Builder(n_sd=n_sd, backend=CPU(formulae=formulae))
+            builder = Builder(n_sd=n_sd, backend=backend_class(formulae=formulae))
             env = Box(dt=case["dt"], dv=d_v)
             builder.set_environment(env)
             builder.add_dynamic(Freezing(singular=False))
@@ -97,7 +133,7 @@ class TestFreezingMethods:
         fit_y = np.exp(-rate * fit_x)
 
         for out in output.values():
-            pylab.step(
+            pyplot.step(
                 out["dt"] * np.arange(len(out["unfrozen_fraction"])),
                 out["unfrozen_fraction"],
                 label=f"dt={out['dt']:.2g} / N={out['N']}",
@@ -107,7 +143,7 @@ class TestFreezingMethods:
 
         _plot_fit(fit_x, fit_y, low, hgh, total_time)
         if plot:
-            pylab.show()
+            pyplot.show()
 
         # Assert
         for out in output.values():
@@ -118,17 +154,19 @@ class TestFreezingMethods:
 
 
 def _plot_fit(fit_x, fit_y, low, hgh, total_time):
-    pylab.plot(fit_x, fit_y, color="black", linestyle="--", label="theory", linewidth=5)
-    pylab.plot(
+    pyplot.plot(
+        fit_x, fit_y, color="black", linestyle="--", label="theory", linewidth=5
+    )
+    pyplot.plot(
         fit_x, hgh(fit_x), color="black", linestyle=":", label="assert upper bound"
     )
-    pylab.plot(
+    pyplot.plot(
         fit_x, low(fit_x), color="black", linestyle=":", label="assert lower bound"
     )
-    pylab.legend()
-    pylab.yscale("log")
-    pylab.ylim(fit_y[-1], fit_y[0])
-    pylab.xlim(None, total_time)
-    pylab.xlabel("time")
-    pylab.ylabel("unfrozen fraction")
-    pylab.grid()
+    pyplot.legend()
+    pyplot.yscale("log")
+    pyplot.ylim(fit_y[-1], fit_y[0])
+    pyplot.xlim(None, total_time)
+    pyplot.xlabel("time")
+    pyplot.ylabel("unfrozen fraction")
+    pyplot.grid()
