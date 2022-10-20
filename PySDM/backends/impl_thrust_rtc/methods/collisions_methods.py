@@ -241,7 +241,7 @@ class CollisionsMethods(
             probs[i] = 0.0;
             n_fragment[i] = 1;
 
-            for (auto n = 0; j < 22; j += 1) {
+            for (auto n = 0; n < 22; n += 1) {
                 probs[i] += 0.91 * pow((n + 2), (-1.56));
                 if (rand[i] < probs[i]) {
                     n_fragment[i] = n + 2;
