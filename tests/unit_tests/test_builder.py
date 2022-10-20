@@ -57,6 +57,9 @@ class TestBuilder:
         builder.remove_dynamic(dynamic)
 
         # assert
-        assert "Condensation" not in builder.build(
-            products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
-        ).dynamics
+        assert (
+            "Condensation"
+            not in builder.build(
+                products=(), attributes={k: np.asarray([0]) for k in ("n", "volume")}
+            ).dynamics
+        )
