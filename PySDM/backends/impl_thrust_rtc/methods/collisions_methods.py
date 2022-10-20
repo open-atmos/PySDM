@@ -575,7 +575,12 @@ class CollisionsMethods(
     ):
         self.__exp_fragmentation_body.launch_n(
             n=len(frag_size),
-            args=(trtc.DVDouble(scale), frag_size.data, rand.data, trtc.DVDouble(tol)),
+            args=(
+                self._get_floating_point(scale),
+                frag_size.data,
+                rand.data,
+                self._get_floating_point(tol),
+            ),
         )
 
         self.__fragmentation_limiters_body.launch_n(
@@ -585,8 +590,8 @@ class CollisionsMethods(
                 frag_size.data,
                 v_max.data,
                 x_plus_y.data,
-                trtc.DVDouble(vmin),
-                trtc.DVDouble(nfmax if nfmax else -1),
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
@@ -597,8 +602,8 @@ class CollisionsMethods(
         self.__gauss_fragmentation_body.launch_n(
             n=len(frag_size),
             args=(
-                trtc.DVDouble(mu),
-                trtc.DVDouble(sigma),
+                self._get_floating_point(mu),
+                self._get_floating_point(sigma),
                 frag_size.data,
                 rand.data,
             ),
@@ -611,8 +616,8 @@ class CollisionsMethods(
                 frag_size.data,
                 v_max.data,
                 x_plus_y.data,
-                trtc.DVDouble(vmin),
-                trtc.DVDouble(nfmax if nfmax else -1),
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
@@ -638,8 +643,8 @@ class CollisionsMethods(
                 frag_size.data,
                 v_max.data,
                 x_plus_y.data,
-                trtc.DVDouble(vmin),
-                trtc.DVDouble(nfmax if nfmax else -1),
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
@@ -660,11 +665,11 @@ class CollisionsMethods(
         self.__feingold1988_fragmentation_body.launch_n(
             n=len(frag_size),
             args=(
-                trtc.DVDouble(scale),
+                self._get_floating_point(scale),
                 frag_size.data,
                 x_plus_y.data,
                 rand.data,
-                trtc.DVDouble(fragtol),
+                self._get_floating_point(fragtol),
             ),
         )
 
@@ -675,8 +680,8 @@ class CollisionsMethods(
                 frag_size.data,
                 v_max.data,
                 x_plus_y.data,
-                trtc.DVDouble(vmin),
-                trtc.DVDouble(nfmax if nfmax else -1),
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
@@ -725,8 +730,8 @@ class CollisionsMethods(
                 frag_size.data,
                 v_max.data,
                 x_plus_y.data,
-                trtc.DVDouble(vmin),
-                trtc.DVDouble(nfmax if nfmax else -1),
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
                 trtc.DVBool(nfmax is not None),
             ),
         )
