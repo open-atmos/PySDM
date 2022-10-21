@@ -3,7 +3,7 @@ import numpy as np
 
 from PySDM import Builder
 from PySDM.backends import CPU
-from PySDM.dynamics import Condensation
+from PySDM.dynamics import Condensation, Displacement
 from PySDM.environments import Box
 
 
@@ -45,16 +45,15 @@ class TestBuilder:
         _ = particulator.attributes["critical supersaturation"].to_ndarray()
 
     @staticmethod
-    def test_remove_dynamic():
+    def test_replace_dynamic():
         # arrange
         env = Box(dt=-1, dv=np.nan)
         builder = Builder(backend=CPU(), n_sd=1)
         builder.set_environment(env)
-        dynamic = Condensation()
-        builder.add_dynamic(dynamic)
+        builder.add_dynamic(Displacement(adaptive=False))
 
         # act
-        builder.remove_dynamic(dynamic)
+        builder.replace_dynamic(Displacement(adaptive=True))
 
         # assert
         assert (
