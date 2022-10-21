@@ -72,9 +72,15 @@ class Builder:
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = inspect.getmro(type(dynamic))[-2].__name__
+        key = get_key(dynamic)
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
+
+    def replace_dynamic(self, dynamic):
+        key = get_key(dynamic)
+        assert key in self.particulator.dynamics
+        self.particulator.dynamics.pop(key)
+        self.add_dynamic(dynamic)
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
@@ -131,7 +137,11 @@ class Builder:
         for key in self.particulator.dynamics:
             self.particulator.timers[key] = WallTimer()
 
-        return self.particulator</code></pre>
+        return self.particulator
+
+
+def get_key(dynamic):
+    return inspect.getmro(type(dynamic))[-2].__name__</code></pre>
 </details>
 </section>
 <section>
@@ -139,6 +149,22 @@ class Builder:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="PySDM.builder.get_key"><code class="name flex">
+<span>def <span class="ident">get_key</span></span>(<span>dynamic)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_key(dynamic):
+    return inspect.getmro(type(dynamic))[-2].__name__</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -177,9 +203,15 @@ class Builder:
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = inspect.getmro(type(dynamic))[-2].__name__
+        key = get_key(dynamic)
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
+
+    def replace_dynamic(self, dynamic):
+        key = get_key(dynamic)
+        assert key in self.particulator.dynamics
+        self.particulator.dynamics.pop(key)
+        self.add_dynamic(dynamic)
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
@@ -251,7 +283,7 @@ class Builder:
 </summary>
 <pre><code class="python">def add_dynamic(self, dynamic):
     assert self.particulator.environment is not None
-    key = inspect.getmro(type(dynamic))[-2].__name__
+    key = get_key(dynamic)
     assert key not in self.particulator.dynamics
     self.particulator.dynamics[key] = dynamic</code></pre>
 </details>
@@ -335,6 +367,22 @@ class Builder:
     self.particulator.products[product.name] = product</code></pre>
 </details>
 </dd>
+<dt id="PySDM.builder.Builder.replace_dynamic"><code class="name flex">
+<span>def <span class="ident">replace_dynamic</span></span>(<span>self, dynamic)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def replace_dynamic(self, dynamic):
+    key = get_key(dynamic)
+    assert key in self.particulator.dynamics
+    self.particulator.dynamics.pop(key)
+    self.add_dynamic(dynamic)</code></pre>
+</details>
+</dd>
 <dt id="PySDM.builder.Builder.request_attribute"><code class="name flex">
 <span>def <span class="ident">request_attribute</span></span>(<span>self, attribute, variant=None)</span>
 </code></dt>
@@ -385,6 +433,11 @@ class Builder:
 <li><code><a title="PySDM" href="index.html">PySDM</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="PySDM.builder.get_key" href="#PySDM.builder.get_key">get_key</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
@@ -394,6 +447,7 @@ class Builder:
 <li><code><a title="PySDM.builder.Builder.build" href="#PySDM.builder.Builder.build">build</a></code></li>
 <li><code><a title="PySDM.builder.Builder.get_attribute" href="#PySDM.builder.Builder.get_attribute">get_attribute</a></code></li>
 <li><code><a title="PySDM.builder.Builder.register_product" href="#PySDM.builder.Builder.register_product">register_product</a></code></li>
+<li><code><a title="PySDM.builder.Builder.replace_dynamic" href="#PySDM.builder.Builder.replace_dynamic">replace_dynamic</a></code></li>
 <li><code><a title="PySDM.builder.Builder.request_attribute" href="#PySDM.builder.Builder.request_attribute">request_attribute</a></code></li>
 <li><code><a title="PySDM.builder.Builder.set_environment" href="#PySDM.builder.Builder.set_environment">set_environment</a></code></li>
 </ul>
