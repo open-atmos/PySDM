@@ -48,9 +48,9 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
         "qv",
         "p",
         "qc",
-        "ripening rate",
-        "activating rate",
-        "deactivating rate",
+        "ripening",
+        "activating",
+        "deactivating",
         "super droplet count per gridbox",
         "na",
         "nc",
@@ -77,9 +77,9 @@ def test_few_steps_no_precip(particle_reservoir_depth, plot=False):
     assert 0.01 < max(mean_profile_over_last_steps("peak supersaturation")) < 0.1
     assert min(mean_profile_over_last_steps("qc")) < 1e-10
     assert 0.1 < max(mean_profile_over_last_steps("qc")) < 0.15
-    assert max(mean_profile_over_last_steps("activating rate")) == 0
-    assert max(mean_profile_over_last_steps("ripening rate")) > 0
-    assert max(mean_profile_over_last_steps("deactivating rate")) > 0
+    assert max(mean_profile_over_last_steps("activating")) == 0
+    assert max(mean_profile_over_last_steps("ripening")) > 0
+    assert max(mean_profile_over_last_steps("deactivating")) > 0
 
 
 def test_fixed_thd():
@@ -110,6 +110,6 @@ def test_fixed_thd():
     assert 0.01 < max(mean_profile_over_last_steps("peak supersaturation")) < 0.1
     assert min(mean_profile_over_last_steps("qc")) < 1e-10
     assert 0.5 < max(mean_profile_over_last_steps("qc")) < 0.75
-    assert max(mean_profile_over_last_steps("activating rate")) == 0
+    assert max(mean_profile_over_last_steps("activating")) == 0
 
     assert sum(np.amin(output["thd"], axis=1)) == sum(np.amax(output["thd"], axis=1))
