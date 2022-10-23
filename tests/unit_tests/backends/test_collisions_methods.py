@@ -4,36 +4,43 @@ import os
 import numpy as np
 import pytest
 
+from PySDM.backends import CPU
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-from PySDM.backends.impl_numba.methods.collisions_methods import pair_indices
+from PySDM.backends.impl_numba.methods.collisions_methods import (
+    pair_indices,
+    straub_p3,
+    straub_p4,
+)
 
 from ...backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
-@pytest.mark.parametrize(
-    "i, idx, is_first_in_pair, expected",
-    [
-        (0, (0, 1), (True, False), (0, 1)),
-        (0, (1, 0), (True, False), (1, 0)),
-        (0, (0, 1, 2), (False, True), (1, 2)),
-    ],
-)
-def test_pair_indices(i, idx, is_first_in_pair, expected):
-    # Arrange
-    sut = pair_indices if "NUMBA_DISABLE_JIT" in os.environ else pair_indices.py_func
+class TestCollisionMethods:
+    @staticmethod
+    @pytest.mark.parametrize(
+        "i, idx, is_first_in_pair, expected",
+        [
+            (0, (0, 1), (True, False), (0, 1)),
+            (0, (1, 0), (True, False), (1, 0)),
+            (0, (0, 1, 2), (False, True), (1, 2)),
+        ],
+    )
+    def test_pair_indices(i, idx, is_first_in_pair, expected):
+        # Arrange
+        sut = (
+            pair_indices if "NUMBA_DISABLE_JIT" in os.environ else pair_indices.py_func
+        )
 
-    # Act
-    actual = sut(i, idx, is_first_in_pair)
+        # Act
+        actual = sut(i, idx, is_first_in_pair)
 
-    # Assert
-    assert expected == actual
+        # Assert
+        assert expected == actual
 
-
-class TestAlgorithmicMethods:
     @staticmethod
     @pytest.mark.parametrize(
         "dt_left, cell_start, expected",
@@ -152,7 +159,7 @@ class TestAlgorithmicMethods:
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend_class().adaptive_sdm_gamma(
+        backend.adaptive_sdm_gamma(
             gamma=_gamma,
             n=_n,
             cell_id=_cell_id,
@@ -178,3 +185,47 @@ class TestAlgorithmicMethods:
                 )
         np.testing.assert_array_almost_equal(_gamma.to_ndarray(), expected_gamma)
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
+
+    @staticmethod
+    def test_straub_p3(backend_class=CPU):  # pylint: disable=redefined-outer-name
+        # arrange
+        backend = backend_class()
+        i = 0
+        cw_data = backend.Storage.from_ndarray(np.asarray([0.666])).data
+        ds_data = backend.Storage.from_ndarray(np.asarray([0.0])).data
+        frag_size = backend.Storage.from_ndarray(np.asarray([0.0]))
+        rand_data = backend.Storage.from_ndarray(np.asarray([0])).data
+
+        # act
+        straub_p3(i=i, CW=cw_data, ds=ds_data, frag_size=frag_size.data, rand=rand_data)
+
+        # assert
+        np.testing.assert_almost_equal(frag_size, [1.3858e-15])
+
+    @staticmethod
+    def test_straub_p4(backend_class=CPU):  # pylint: disable=redefined-outer-name
+        # arrange
+        backend = backend_class()
+        i = 0
+        cw_data = backend.Storage.from_ndarray(np.asarray([0.666])).data
+        ds_data = backend.Storage.from_ndarray(np.asarray([0.0])).data
+        frag_size = backend.Storage.from_ndarray(np.asarray([0.0]))
+        v_max_data = backend.Storage.from_ndarray(np.asarray([0])).data
+        nr1_data = backend.Storage.from_ndarray(np.asarray([1])).data
+        nr2_data = backend.Storage.from_ndarray(np.asarray([0])).data
+        nr3_data = backend.Storage.from_ndarray(np.asarray([0])).data
+
+        # act
+        straub_p4(
+            i=i,
+            CW=cw_data,
+            ds=ds_data,
+            v_max=v_max_data,
+            frag_size=frag_size.data,
+            Nr1=nr1_data,
+            Nr2=nr2_data,
+            Nr3=nr3_data,
+        )
+
+        # assert
+        np.testing.assert_almost_equal(frag_size, [-5.3382393])
