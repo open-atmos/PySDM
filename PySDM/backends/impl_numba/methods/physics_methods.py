@@ -10,7 +10,7 @@ from PySDM.backends.impl_numba import conf
 
 class PhysicsMethods(BackendMethods):
     def __init__(self):  # pylint: disable=too-many-locals
-        super().__init__()
+        BackendMethods.__init__(self)
         pvs_C = self.formulae.saturation_vapour_pressure.pvs_Celsius
         pvi_C = self.formulae.saturation_vapour_pressure.ice_Celsius
         phys_T = self.formulae.state_variable_triplet.T
