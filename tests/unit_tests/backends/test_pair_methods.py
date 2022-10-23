@@ -76,6 +76,7 @@ def test_sum_pair_body_out_of_bounds(
         ),
     ),
 )
+# pylint: disable=redefined-outer-name
 def test_sum_pair(_data_in, _data_out, _idx, backend_class):
     # Arrange
     backend = backend_class()
