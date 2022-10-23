@@ -1,13 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-import numba
 import numpy as np
 import pytest
 
+from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-
-from ...backends_fixture import backend_class
-
-assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 @pytest.mark.parametrize(
@@ -20,9 +16,7 @@ assert hasattr(backend_class, "_pytestfixturefunction")
             ],
             [True, True],
             [0, 1],
-            marks=pytest.mark.xfail(
-                strict=numba.config.DISABLE_JIT  # pylint: disable=no-member
-            ),
+            marks=pytest.mark.xfail(strict=True),
         ),
         pytest.param(
             [44.0, 666.0],
@@ -35,8 +29,8 @@ assert hasattr(backend_class, "_pytestfixturefunction")
     ),
 )
 # pylint: disable=redefined-outer-name
-def test_sum_pair_out_of_bounds(
-    backend_class, _data_in, _data_out, _is_first_in_pair, _idx
+def test_sum_pair_body_out_of_bounds(
+    _data_in, _data_out, _is_first_in_pair, _idx, backend_class=CPU
 ):
     # Arrange
     backend = backend_class()
@@ -52,6 +46,8 @@ def test_sum_pair_out_of_bounds(
     idx = backend.Storage.from_ndarray(np.asarray(_idx))
 
     # Act
-    backend.sum_pair(data_out, data_in, is_first_in_pair, idx)
+    backend.sum_pair_body.py_func(
+        data_out.data, data_in.data, is_first_in_pair.indicator.data, idx.data, len(idx)
+    )
 
     # Assert
