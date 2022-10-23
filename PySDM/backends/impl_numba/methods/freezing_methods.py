@@ -35,8 +35,7 @@ class FreezingMethods(BackendMethods):
                     continue
                 if (
                     unfrozen(attributes.wet_volume[i])
-                    and relative_humidity[cell[i]]
-                    > 1  # TODO #599 as in Shima, but is it needed?
+                    and relative_humidity[cell[i]] > 1
                     and temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
@@ -46,19 +45,32 @@ class FreezingMethods(BackendMethods):
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def freeze_time_dependent_body(rand, attributes, timestep, cell, a_w_ice):
+        def freeze_time_dependent_body(
+            rand,
+            attributes,
+            timestep,
+            cell,
+            a_w_ice,
+            temperature,
+            relative_humidity,
+            record_freezing_temprature,
+            freezing_temperature,
+        ):
             n_sd = len(attributes.wet_volume)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
                 if unfrozen(attributes.wet_volume[i]):
-                    rate = j_het(a_w_ice[cell[i]])
+                    cell_id = cell[i]
+                    rate = j_het(a_w_ice[cell_id])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
-                    prob = 1 - np.exp(
+                    prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
                         -rate * attributes.immersed_surface_area[i] * timestep
                     )
-                    if rand[i] < prob:
+                    if rand[i] < prob and relative_humidity[cell_id] > 1:
                         _freeze(attributes.wet_volume, i)
+                        if record_freezing_temprature:
+                            freezing_temperature[i] = temperature[cell_id]
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
@@ -73,7 +85,19 @@ class FreezingMethods(BackendMethods):
             cell.data,
         )
 
-    def freeze_time_dependent(self, *, rand, attributes, timestep, cell, a_w_ice):
+    def freeze_time_dependent(
+        self,
+        *,
+        rand,
+        attributes,
+        timestep,
+        cell,
+        a_w_ice,
+        temperature,
+        relative_humidity,
+        record_freezing_temperature,
+        freezing_temperature
+    ):
         self.freeze_time_dependent_body(
             rand.data,
             TimeDependentAttributes(
@@ -83,4 +107,10 @@ class FreezingMethods(BackendMethods):
             timestep,
             cell.data,
             a_w_ice.data,
+            temperature.data if record_freezing_temperature else None,
+            relative_humidity.data,
+            record_freezing_temprature=record_freezing_temperature,
+            freezing_temperature=freezing_temperature.data
+            if record_freezing_temperature
+            else None,
         )

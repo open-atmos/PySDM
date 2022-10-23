@@ -16,7 +16,11 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 class TestFreezingMethods:
     # TODO #599
-    def test_subsaturated_freezing(self):
+    def test_record_freezing_temperature_on_time_dependent_freeze(self):
+        pass
+
+    # TODO #599
+    def test_no_subsaturated_freezing(self):
         pass
 
     @staticmethod
@@ -115,7 +119,7 @@ class TestFreezingMethods:
             }
             products = (IceWaterContent(name="qi"),)
             particulator = builder.build(attributes=attributes, products=products)
-
+            env["RH"] = 1.0001
             env["a_w_ice"] = np.nan
 
             cell_id = 0
