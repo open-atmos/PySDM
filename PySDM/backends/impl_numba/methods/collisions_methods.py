@@ -291,7 +291,7 @@ def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
     rand,
 ):
     mu3 = 0.9 * ds[i]
-    delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
+    delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
     sigma3 = delD3**2 / 12
     X = rand[i]
 
@@ -314,7 +314,7 @@ def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-lo
     delD2 = 0.007 * (CW[i] - 21.0)
     sigma2 = delD2**2 / 12
     mu3 = 0.9 * ds[i]
-    delD3 = 0.01 * (0.76 * CW[i] ** 1 / 2 + 1.0)
+    delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
     sigma3 = delD3**2 / 12
 
     M31 = Nr1[i] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
