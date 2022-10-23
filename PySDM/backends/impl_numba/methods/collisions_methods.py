@@ -251,7 +251,7 @@ def straub_p1(  # pylint: disable=too-many-arguments,unused-argument
     rand,
 ):
     E_D1 = 0.04 * CM
-    delD1 = 0.125 * CW[i] ** (1 / 2)
+    delD1 = 0.0125 * CW[i] ** (1 / 2)
     var_1 = delD1**2 / 12
     sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
     mu1 = np.log(E_D1) - sigma1**2 / 2
@@ -272,7 +272,7 @@ def straub_p2(  # pylint: disable=too-many-arguments,unused-argument
     rand,
 ):
     mu2 = 0.095 * CM
-    delD2 = 0.22 * (CW[i] - 21.0)
+    delD2 = 0.007 * (CW[i] - 21.0)
     sigma2 = delD2**2 / 12
     X = rand[i]
 
@@ -306,12 +306,12 @@ def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-lo
     i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3
 ):
     E_D1 = 0.04 * CM
-    delD1 = 0.125 * CW[i] ** (1 / 2)
+    delD1 = 0.0125 * CW[i] ** (1 / 2)
     var_1 = delD1**2 / 12
     sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
     mu1 = np.log(E_D1) - sigma1**2 / 2
     mu2 = 0.095 * CM
-    delD2 = 0.22 * (CW[i] - 21.0)
+    delD2 = 0.007 * (CW[i] - 21.0)
     sigma2 = delD2**2 / 12
     mu3 = 0.9 * ds[i]
     delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
