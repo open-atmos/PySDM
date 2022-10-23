@@ -10,6 +10,8 @@ from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.backends.impl_numba.methods.collisions_methods import (
     pair_indices,
+    straub_p1,
+    straub_p2,
     straub_p3,
     straub_p4,
 )
@@ -187,6 +189,36 @@ class TestCollisionMethods:
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
 
     @staticmethod
+    def test_straub_p1(backend_class=CPU):  # pylint: disable=redefined-outer-name
+        # arrange
+        backend = backend_class()
+        i = 0
+        cw_data = backend.Storage.from_ndarray(np.asarray([0.666])).data
+        frag_size = backend.Storage.from_ndarray(np.asarray([0.0]))
+        rand_data = backend.Storage.from_ndarray(np.asarray([0])).data
+
+        # act
+        straub_p1(i=i, CW=cw_data, frag_size=frag_size.data, rand=rand_data)
+
+        # assert
+        np.testing.assert_approx_equal(frag_size.to_ndarray(), 3.6490627e-12)
+
+    @staticmethod
+    def test_straub_p2(backend_class=CPU):  # pylint: disable=redefined-outer-name
+        # arrange
+        backend = backend_class()
+        i = 0
+        cw_data = backend.Storage.from_ndarray(np.asarray([0.666])).data
+        frag_size = backend.Storage.from_ndarray(np.asarray([0.0]))
+        rand_data = backend.Storage.from_ndarray(np.asarray([0])).data
+
+        # act
+        straub_p2(i=i, CW=cw_data, frag_size=frag_size.data, rand=rand_data)
+
+        # assert
+        np.testing.assert_approx_equal(frag_size.to_ndarray(), 4.3000510e-09)
+
+    @staticmethod
     def test_straub_p3(backend_class=CPU):  # pylint: disable=redefined-outer-name
         # arrange
         backend = backend_class()
@@ -200,7 +232,7 @@ class TestCollisionMethods:
         straub_p3(i=i, CW=cw_data, ds=ds_data, frag_size=frag_size.data, rand=rand_data)
 
         # assert
-        np.testing.assert_almost_equal(frag_size, [1.3858e-15])
+        np.testing.assert_approx_equal(frag_size.to_ndarray(), 1.3857897e-15)
 
     @staticmethod
     def test_straub_p4(backend_class=CPU):  # pylint: disable=redefined-outer-name
@@ -212,7 +244,7 @@ class TestCollisionMethods:
         frag_size = backend.Storage.from_ndarray(np.asarray([0.0]))
         v_max_data = backend.Storage.from_ndarray(np.asarray([0])).data
         nr1_data = backend.Storage.from_ndarray(np.asarray([1])).data
-        nr2_data = backend.Storage.from_ndarray(np.asarray([0])).data
+        nr2_data = backend.Storage.from_ndarray(np.asarray([2])).data
         nr3_data = backend.Storage.from_ndarray(np.asarray([0])).data
 
         # act
@@ -228,4 +260,4 @@ class TestCollisionMethods:
         )
 
         # assert
-        np.testing.assert_almost_equal(frag_size, [-5.3382393])
+        np.testing.assert_approx_equal(frag_size.to_ndarray(), -5.6454883153e-06)
