@@ -282,8 +282,8 @@ class CollisionsMethods(
         self.__straub_p1 = f"""
 
                 auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.125 * pow(CW[i], 0.5);
-                auto var_1 = pow(delD1, 2. / 12.);
+                auto delD1 = 0.0125 * pow(CW[i], 0.5);
+                auto var_1 = pow(delD1, 2.) / 12.;
                 auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2) + 1));
                 auto mu1 = log(E_D1) - pow(sigma1, 2) / 2.;
                 auto X = rand[i];
@@ -298,7 +298,7 @@ class CollisionsMethods(
         self.__straub_p2 = f"""
 
                 auto mu2 = 0.095 * CM;
-                auto delD2 = 0.22 * (CW[i] - 21.0);
+                auto delD2 = 0.007 * (CW[i] - 21.0);
                 auto sigma2 = pow(delD2, 2) / 12.;
                 auto X = rand[i];
 
@@ -324,12 +324,12 @@ class CollisionsMethods(
         self.__straub_p4 = f"""
 
                 auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.125 * pow(CW[i], 0.5);
+                auto delD1 = 0.0125 * pow(CW[i], 0.5);
                 auto var_1 = pow(delD1, 2) / 12.;
                 auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2) + 1));
                 auto mu1 = log(E_D1) - pow(sigma1, 2) / 2.;
                 auto mu2 = 0.095 * CM;
-                auto delD2 = 0.22 * (CW[i] - 21.0);
+                auto delD2 = 0.007 * (CW[i] - 21.0);
                 auto sigma2 = pow(delD2, 2) / 12.;
                 auto mu3 = 0.9 * ds[i];
                 auto delD3 = 0.01 * (0.76 * pow(CW[i], 0.5) + 1.0);
