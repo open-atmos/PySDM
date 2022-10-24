@@ -50,7 +50,7 @@ def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
     # Plot
     r_wet = np.logspace(np.log(0.9 * r_dry), np.log(10 * si.nm), base=np.e, num=100)
     sigma = Env.particulator.formulae.surface_tension.sigma(
-        np.nan,
+        T,
         Env.particulator.formulae.trivia.volume(r_wet),
         Env.particulator.formulae.trivia.volume(r_dry),
         f_org,
