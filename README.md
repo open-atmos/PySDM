@@ -50,7 +50,7 @@ The [`ThrustRTC`](https://atmos-cloud-sim-uj.github.io/PySDM/backends/thrustRTC/
   parallelisation model. 
 Using the ``GPU`` backend requires nVidia hardware and [CUDA driver](https://developer.nvidia.com/cuda-downloads).
 
-For an overview paper on PySDM v1 (and the preferred item to cite if using PySDM), see [Bartman et al. 2021 arXiv e-print](https://arxiv.org/abs/2103.17238) (submitted to JOSS).
+For an overview paper on PySDM v1 (and the preferred item to cite if using PySDM), see [Bartman et al. 2022](https://doi.org/10.21105/joss.03219) (J. Open Source Software).
 For a list of talks and other materials on PySDM, see the [project wiki](https://github.com/atmos-cloud-sim-uj/PySDM/wiki).
 
 A [pdoc-generated](https://pdoc3.github.io/pdoc) documentation of PySDM public API is maintained at: [https://atmos-cloud-sim-uj.github.io/PySDM](https://atmos-cloud-sim-uj.github.io/PySDM) 
