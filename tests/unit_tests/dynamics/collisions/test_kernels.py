@@ -44,7 +44,9 @@ class TestKernels:
         _Indicator = builder.particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
         is_first_in_pair = _Indicator(length=volume.size)
-
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         # act
         sut(output, is_first_in_pair=is_first_in_pair)
 
@@ -69,6 +71,9 @@ class TestKernels:
         _Indicator = builder.particulator.PairIndicator
         output = _PairwiseStorage.from_ndarray(np.zeros_like(volume))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
 
         # act
         sut(output, is_first_in_pair=is_first_in_pair)
