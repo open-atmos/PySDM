@@ -146,7 +146,7 @@ alias for ThrustRTC
 <dl>
 <dt id="PySDM.backends.Numba"><code class="flex name class">
 <span>class <span class="ident">CPU</span></span>
-<span>(</span><span>formulae=None)</span>
+<span>(</span><span>formulae=None, double_precision=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -171,7 +171,9 @@ alias for ThrustRTC
 
     default_croupier = &#34;local&#34;
 
-    def __init__(self, formulae=None):
+    def __init__(self, formulae=None, double_precision=True):
+        if not double_precision:
+            raise NotImplementedError()
         self.formulae = formulae or Formulae()
         CollisionsMethods.__init__(self)
         PairMethods.__init__(self)

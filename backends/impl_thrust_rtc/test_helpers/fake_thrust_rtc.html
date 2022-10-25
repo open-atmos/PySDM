@@ -111,6 +111,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     class For:  # pylint: disable=too-few-public-methods
         def __init__(self, param_names, name_iter, body):
+            for name in param_names:
+                assert &#34;,&#34; not in name
             d = {}
             self.code = to_numba(
                 &#34;__internal_python_method__&#34;, param_names, name_iter, body
@@ -342,6 +344,8 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
 
     class For:  # pylint: disable=too-few-public-methods
         def __init__(self, param_names, name_iter, body):
+            for name in param_names:
+                assert &#34;,&#34; not in name
             d = {}
             self.code = to_numba(
                 &#34;__internal_python_method__&#34;, param_names, name_iter, body

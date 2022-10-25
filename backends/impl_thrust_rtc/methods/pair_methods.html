@@ -149,9 +149,9 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __sum_pair_body = trtc.For(
-        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
+        param_names=(&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
@@ -164,7 +164,66 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+            n=len(idx),
+            args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
+        )
+
+    __min_pair_body = trtc.For(
+        param_names=(
+            &#34;data_out&#34;,
+            &#34;data_in&#34;,
+            &#34;is_first_in_pair&#34;,
+            &#34;idx&#34;,
+        ),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);
+        }
+        &#34;&#34;&#34;,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def min_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__min_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
+        )
+
+    __multiply_pair_body = trtc.For(
+        param_names=(
+            &#34;data_out&#34;,
+            &#34;data_in&#34;,
+            &#34;is_first_in_pair&#34;,
+            &#34;idx&#34;,
+        ),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];
+        }
+        &#34;&#34;&#34;,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__multiply_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
         )</code></pre>
 </details>
 </section>
@@ -298,9 +357,9 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __sum_pair_body = trtc.For(
-        [&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
+        param_names=(&#34;data_out&#34;, &#34;perm_in&#34;, &#34;is_first_in_pair&#34;),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
@@ -313,7 +372,66 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+            n=len(idx),
+            args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
+        )
+
+    __min_pair_body = trtc.For(
+        param_names=(
+            &#34;data_out&#34;,
+            &#34;data_in&#34;,
+            &#34;is_first_in_pair&#34;,
+            &#34;idx&#34;,
+        ),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);
+        }
+        &#34;&#34;&#34;,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def min_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__min_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
+        )
+
+    __multiply_pair_body = trtc.For(
+        param_names=(
+            &#34;data_out&#34;,
+            &#34;data_in&#34;,
+            &#34;is_first_in_pair&#34;,
+            &#34;idx&#34;,
+        ),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];
+        }
+        &#34;&#34;&#34;,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__multiply_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -365,6 +483,42 @@ class PairMethods(ThrustRTCBackendMethods):
 </dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.max_pair"><code class="name flex">
 <span>def <span class="ident">max_pair</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.min_pair"><code class="name flex">
+<span>def <span class="ident">min_pair</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.multiply_pair"><code class="name flex">
+<span>def <span class="ident">multiply_pair</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -459,6 +613,8 @@ def sort_within_pair_by_attr(idx, is_first_in_pair, attr):
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.distance_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.distance_pair">distance_pair</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.find_pairs" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.find_pairs">find_pairs</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.max_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.max_pair">max_pair</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.min_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.min_pair">min_pair</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.multiply_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.multiply_pair">multiply_pair</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sort_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sort_pair">sort_pair</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sort_within_pair_by_attr" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sort_within_pair_by_attr">sort_within_pair_by_attr</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sum_pair" href="#PySDM.backends.impl_thrust_rtc.methods.pair_methods.PairMethods.sum_pair">sum_pair</a></code></li>

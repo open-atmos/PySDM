@@ -65,7 +65,9 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = &#34;local&#34;
 
-    def __init__(self, formulae=None):
+    def __init__(self, formulae=None, double_precision=True):
+        if not double_precision:
+            raise NotImplementedError()
         self.formulae = formulae or Formulae()
         CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
@@ -90,7 +92,7 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 <dl>
 <dt id="PySDM.backends.numba.Numba"><code class="flex name class">
 <span>class <span class="ident">Numba</span></span>
-<span>(</span><span>formulae=None)</span>
+<span>(</span><span>formulae=None, double_precision=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -115,7 +117,9 @@ class Numba(  # pylint: disable=too-many-ancestors,duplicate-code
 
     default_croupier = &#34;local&#34;
 
-    def __init__(self, formulae=None):
+    def __init__(self, formulae=None, double_precision=True):
+        if not double_precision:
+            raise NotImplementedError()
         self.formulae = formulae or Formulae()
         CollisionsMethods.__init__(self)
         PairMethods.__init__(self)
