@@ -278,20 +278,6 @@ class CollisionsMethods(
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
-        self.__straub_p2 = f"""
-                    auto mu2 = 0.095 * CM;
-                    auto delD2 = 0.007 * (CW[i] - 21.0);
-                    auto sigma2 = pow(delD2, 2.) / 12.;
-                    auto X = rand[i];
-
-                    frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                        (0.5 + X) / (1.5 - X)
-                    );
-                    frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
         self.__straub_p3 = f"""
                     auto mu3 = 0.9 * ds[i];
                     auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
@@ -357,8 +343,10 @@ class CollisionsMethods(
                     )};
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i]);
-                    {self.__straub_p2}
+                    frag_size[i] = {self.formulae.fragmentation_function.p2.c_inline(
+                        CW="CW[i]",
+                        rand="(rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])"
+                    )};
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
                     rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]);

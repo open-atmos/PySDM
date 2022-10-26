@@ -32,3 +32,19 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
             )
             ** 3
         )
+
+    @staticmethod
+    def p2(const, CW, rand):
+        return (
+            const.PI
+            / 6
+            * (
+                const.STRAUB_MU2
+                - ((0.007 * (CW - 21.0)) ** 2 / 12)
+                / const.sqrt_two
+                / const.sqrt_pi
+                / np.log(2)
+                * np.log((0.5 + rand) / (1.5 - rand))
+            )
+            ** 3
+        )
