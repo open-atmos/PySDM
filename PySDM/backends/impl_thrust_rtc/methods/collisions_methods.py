@@ -262,131 +262,115 @@ class CollisionsMethods(
         )
 
         self.__straub_Nr_body = """
-
-            if (gam[i] * CW[i] >= 7.0) {
-                Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
-            }
-            if (CW[i] >= 21.0) {
-                Nr2[i] = 0.22 * (CW[i] - 21.0);
-                if (CW[i] <= 46.0) {
-                    Nr3[i] = 0.04 * (46.0 - CW[i]);
+                if (gam[i] * CW[i] >= 7.0) {
+                    Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
                 }
-            }
-            else {
-                Nr3[i] = 1.0;
-            }
-            Nr4[i] = 1.0;
-            Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
+                if (CW[i] >= 21.0) {
+                    Nr2[i] = 0.22 * (CW[i] - 21.0);
+                    if (CW[i] <= 46.0) {
+                        Nr3[i] = 0.04 * (46.0 - CW[i]);
+                    }
+                }
+                else {
+                    Nr3[i] = 1.0;
+                }
+                Nr4[i] = 1.0;
+                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
-        self.__straub_p1 = f"""
-
-                auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
-                auto var_1 = pow(delD1, 2.) / 12.;
-                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
-                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
-                auto X = rand[i];
-
-                frag_size[i] = exp(
-                    mu1
-                    - sigma1 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log((0.5 + X) / (1.5 - X))
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
         self.__straub_p2 = f"""
+                    auto mu2 = 0.095 * CM;
+                    auto delD2 = 0.007 * (CW[i] - 21.0);
+                    auto sigma2 = pow(delD2, 2.) / 12.;
+                    auto X = rand[i];
 
-                auto mu2 = 0.095 * CM;
-                auto delD2 = 0.007 * (CW[i] - 21.0);
-                auto sigma2 = pow(delD2, 2.) / 12.;
-                auto X = rand[i];
-
-                frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                    (0.5 + X) / (1.5 - X)
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
+                    frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
+                        (0.5 + X) / (1.5 - X)
+                    );
+                    frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
         """.replace(
             "real_type", self._get_c_type()
         )
 
         self.__straub_p3 = f"""
+                    auto mu3 = 0.9 * ds[i];
+                    auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
+                    auto sigma3 = pow(delD3, 2.) / 12.;
+                    auto X = rand[i];
 
-                auto mu3 = 0.9 * ds[i];
-                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
-                auto sigma3 = pow(delD3, 2.) / 12.;
-                auto X = rand[i];
-
-                frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                    (0.5 + X) / (1.5 - X)
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
+                    frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
+                        (0.5 + X) / (1.5 - X)
+                    );
+                    frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
         """.replace(
             "real_type", self._get_c_type()
         )
 
         self.__straub_p4 = f"""
+                    auto E_D1 = 0.04 * CM;
+                    auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
+                    auto var_1 = pow(delD1, 2.) / 12.;
+                    auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
+                    auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
+                    auto mu2 = 0.095 * CM;
+                    auto delD2 = 0.007 * (CW[i] - 21.0);
+                    auto sigma2 = pow(delD2, 2.) / 12.;
+                    auto mu3 = 0.9 * ds[i];
+                    auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
+                    auto sigma3 = pow(delD3, 2.) / 12.;
 
-                auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
-                auto var_1 = pow(delD1, 2.) / 12.;
-                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
-                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
-                auto mu2 = 0.095 * CM;
-                auto delD2 = 0.007 * (CW[i] - 21.0);
-                auto sigma2 = pow(delD2, 2.) / 12.;
-                auto mu3 = 0.9 * ds[i];
-                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
-                auto sigma3 = pow(delD3, 2.) / 12.;
+                    auto M31 = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.) / 2.);
+                    auto M32 = Nr2[i] * (pow(mu2, 3.) + 3 * mu2 * pow(sigma2, 2.));
+                    auto M33 = Nr3[i] * (pow(mu3, 3.) + 3 * mu3 * pow(sigma3, 2.));
 
-                auto M31 = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.) / 2.);
-                auto M32 = Nr2[i] * (pow(mu2, 3.) + 3 * mu2 * pow(sigma2, 2.));
-                auto M33 = Nr3[i] * (pow(mu3, 3.) + 3 * mu3 * pow(sigma3, 2.));
-
-                auto M34 = v_max[i] / {const.PI_4_3} * 8 + pow(ds[i], (real_type) (3.)) - M31 - M32 - M33;
-                frag_size[i] = {const.PI} / 6. * M34;
+                    auto M34 = v_max[i] / {const.PI_4_3} * 8 + pow(ds[i], (real_type) (3.)) - M31 - M32 - M33;
+                    frag_size[i] = {const.PI} / 6. * M34;
         """.replace(
             "real_type", self._get_c_type()
         )
 
-        self.__straub_fragmentation_body = trtc.For(
-            param_names=(
-                "CW",
-                "gam",
-                "ds",
-                "frag_size",
-                "v_max",
-                "rand",
-                "Nr1",
-                "Nr2",
-                "Nr3",
-                "Nr4",
-                "Nrt",
-            ),
-            name_iter="i",
-            body=f"""
-            auto CM = .01;
-            {self.__straub_Nr_body}
+        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
+            self.__straub_fragmentation_body = trtc.For(
+                param_names=(
+                    "CW",
+                    "gam",
+                    "ds",
+                    "frag_size",
+                    "v_max",
+                    "rand",
+                    "Nr1",
+                    "Nr2",
+                    "Nr3",
+                    "Nr4",
+                    "Nrt",
+                ),
+                name_iter="i",
+                body=f"""
+                auto CM = .01;
+                {self.__straub_Nr_body}
 
-            if (rand[i] < Nr1[i] / Nrt[i]) {{
-                rand[i] = rand[i] * Nrt[i] / Nr1[i];
-                {self.__straub_p1}
-            }}
-            else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i]);
-                {self.__straub_p2}
-            }}
-            else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]);
-                {self.__straub_p3}
-            }}
-            else {{
-                {self.__straub_p4}
-            }}
-            """,
-        )
+                if (rand[i] < Nr1[i] / Nrt[i]) {{
+                    auto sigma1 = {self.formulae.fragmentation_function.sigma1.c_inline(CW="CW[i]")};
+                    frag_size[i] = {self.formulae.fragmentation_function.p1.c_inline(
+                        sigma1="sigma1",
+                        rand="rand[i] * Nrt[i] / Nr1[i]"
+                    )};
+                }}
+                else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i]);
+                    {self.__straub_p2}
+                }}
+                else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]);
+                    {self.__straub_p3}
+                }}
+                else {{
+                    {self.__straub_p4}
+                }}
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_end(self, dt_left, cell_start):

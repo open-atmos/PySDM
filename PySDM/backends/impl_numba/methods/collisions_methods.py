@@ -244,27 +244,6 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p1(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    CW,
-    frag_size,
-    rand,
-):
-    E_D1 = 0.04 * CM
-    delD1 = 0.0125 * CW[i] ** (1 / 2)
-    var_1 = delD1**2 / 12
-    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
-    mu1 = np.log(E_D1) - sigma1**2 / 2
-    X = rand[i]
-
-    frag_size[i] = np.exp(
-        mu1
-        - sigma1 / sqrt_two / sqrt_pi / np.log(2) * np.log((1 / 2 + X) / (3 / 2 - X))
-    )
-    frag_size[i] = PI / 6 * frag_size[i] ** 3
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def straub_p2(  # pylint: disable=too-many-arguments,unused-argument
     i,
     CW,
@@ -326,6 +305,36 @@ def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-lo
 
 
 class CollisionsMethods(BackendMethods):
+    def __init__(self):
+        BackendMethods.__init__(self)
+
+        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
+            straub_p1 = self.formulae.fragmentation_function.p1
+            straub_sigma1 = self.formulae.fragmentation_function.sigma1
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __straub_fragmentation_body(
+                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
+                    if rand[i] < Nr1[i] / Nrt[i]:
+                        frag_size[i] = straub_p1(
+                            rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
+                        )
+                    elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
+                        rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
+                        straub_p2(i, CW, frag_size, rand)
+                    elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
+                        rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])
+                        straub_p3(i, CW, ds, frag_size, rand)
+                    else:
+                        straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
+
+            self.__straub_fragmentation_body = __straub_fragmentation_body
+
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
     def __adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -756,26 +765,6 @@ class CollisionsMethods(BackendMethods):
             vmin=vmin,
             nfmax=nfmax,
         )
-
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    @numba.njit(**(conf.JIT_FLAGS))
-    def __straub_fragmentation_body(
-        *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
-    ):
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-            if rand[i] < Nr1[i] / Nrt[i]:
-                rand[i] = rand[i] * Nrt[i] / Nr1[i]
-                straub_p1(i, CW, frag_size, rand)
-            elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
-                straub_p2(i, CW, frag_size, rand)
-            elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])
-                straub_p3(i, CW, ds, frag_size, rand)
-            else:
-                straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
 
     def straub_fragmentation(
         # pylint: disable=too-many-arguments,too-many-locals

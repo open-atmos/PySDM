@@ -160,3 +160,5 @@ ABIFM_C = np.inf
 ABIFM_UNIT = 1 / si.cm**2 / si.s
 
 J_HET = np.nan
+
+STRAUB_E_D1 = 0.04 * si.cm
