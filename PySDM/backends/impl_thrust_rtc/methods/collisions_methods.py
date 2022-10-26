@@ -278,29 +278,6 @@ class CollisionsMethods(
                 Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
-        self.__straub_p4 = f"""
-                    auto E_D1 = 0.04 * CM;
-                    auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
-                    auto var_1 = pow(delD1, 2.) / 12.;
-                    auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
-                    auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
-                    auto mu2 = 0.095 * CM;
-                    auto delD2 = 0.007 * (CW[i] - 21.0);
-                    auto sigma2 = pow(delD2, 2.) / 12.;
-                    auto mu3 = 0.9 * ds[i];
-                    auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
-                    auto sigma3 = pow(delD3, 2.) / 12.;
-
-                    auto M31 = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.) / 2.);
-                    auto M32 = Nr2[i] * (pow(mu2, 3.) + 3 * mu2 * pow(sigma2, 2.));
-                    auto M33 = Nr3[i] * (pow(mu3, 3.) + 3 * mu3 * pow(sigma3, 2.));
-
-                    auto M34 = v_max[i] / {const.PI_4_3} * 8 + pow(ds[i], (real_type) (3.)) - M31 - M32 - M33;
-                    frag_size[i] = {const.PI} / 6. * M34;
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
             self.__straub_fragmentation_body = trtc.For(
                 param_names=(
@@ -318,7 +295,6 @@ class CollisionsMethods(
                 ),
                 name_iter="i",
                 body=f"""
-                auto CM = .01;
                 {self.__straub_Nr_body}
 
                 if (rand[i] < Nr1[i] / Nrt[i]) {{
@@ -342,7 +318,14 @@ class CollisionsMethods(
                     )};
                 }}
                 else {{
-                    {self.__straub_p4}
+                    frag_size[i] = {self.formulae.fragmentation_function.p4.c_inline(
+                        CW="CW[i]",
+                        ds="ds[i]",
+                        v_max="v_max[i]",
+                        Nr1="Nr1[i]",
+                        Nr2="Nr2[i]",
+                        Nr3="Nr3[i]"
+                    )};
                 }}
                 """.replace(
                     "real_type", self._get_c_type()

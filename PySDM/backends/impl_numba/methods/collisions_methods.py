@@ -10,9 +10,7 @@ from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_numba.warnings import warn
-from PySDM.physics.constants import PI, PI_4_3, si, sqrt_pi, sqrt_two
-
-CM = si.cm
+from PySDM.physics.constants import sqrt_pi, sqrt_two
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -243,30 +241,6 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
-    i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3
-):
-    E_D1 = 0.04 * CM
-    delD1 = 0.0125 * CW[i] ** (1 / 2)
-    var_1 = delD1**2 / 12
-    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
-    mu1 = np.log(E_D1) - sigma1**2 / 2
-    mu2 = 0.095 * CM
-    delD2 = 0.007 * (CW[i] - 21.0)
-    sigma2 = delD2**2 / 12
-    mu3 = 0.9 * ds[i]
-    delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
-    sigma3 = delD3**2 / 12
-
-    M31 = Nr1[i] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
-    M32 = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
-    M33 = Nr3[i] * (mu3**3 + 3 * mu3 * sigma3**2)
-
-    M34 = v_max[i] / PI_4_3 * 8 + ds[i] ** 3 - M31 - M32 - M33
-    frag_size[i] = PI / 6 * M34
-
-
 class CollisionsMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
@@ -275,6 +249,7 @@ class CollisionsMethods(BackendMethods):
             straub_p1 = self.formulae.fragmentation_function.p1
             straub_p2 = self.formulae.fragmentation_function.p2
             straub_p3 = self.formulae.fragmentation_function.p3
+            straub_p4 = self.formulae.fragmentation_function.p4
             straub_sigma1 = self.formulae.fragmentation_function.sigma1
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
@@ -300,7 +275,9 @@ class CollisionsMethods(BackendMethods):
                             (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]),
                         )
                     else:
-                        straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
+                        frag_size[i] = straub_p4(
+                            CW[i], ds[i], v_max[i], Nr1[i], Nr2[i], Nr3[i]
+                        )
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
 
