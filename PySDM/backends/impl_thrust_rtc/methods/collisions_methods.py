@@ -256,14 +256,21 @@ class CollisionsMethods(
             """,
         )
 
-        self.__feingold1988_fragmentation_body = trtc.For(
-            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
-            name_iter="i",
-            body="""
-            auto log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol);
-            frag_size[i] = -scale * log(log_arg);
-            """,
-        )
+        if self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
+            self.__feingold1988_fragmentation_body = trtc.For(
+                param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+                name_iter="i",
+                body=f"""
+                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+                    scale="scale",
+                    rand="rand[i]",
+                    x_plus_y="x_plus_y[i]",
+                    fragtol="fragtol"
+                )};
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
         self.__straub_Nr_body = """
                 if (gam[i] * CW[i] >= 7.0) {

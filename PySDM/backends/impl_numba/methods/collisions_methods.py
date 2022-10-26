@@ -292,6 +292,22 @@ class CollisionsMethods(BackendMethods):
                     frag_size[i] = gaussian_frag_size(mu, sigma, rand[i])
 
             self.__gauss_fragmentation_body = __gauss_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
+            feingold1988_frag_size = self.formulae.fragmentation_function.frag_size
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            # pylint: disable=too-many-arguments
+            def __feingold1988_fragmentation_body(
+                *, scale, frag_size, x_plus_y, rand, fragtol
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    frag_size[i] = feingold1988_frag_size(
+                        scale, rand[i], x_plus_y[i], fragtol
+                    )
+
+            self.__feingold1988_fragmentation_body = __feingold1988_fragmentation_body
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -650,17 +666,6 @@ class CollisionsMethods(BackendMethods):
             vmin=vmin,
             nfmax=nfmax,
         )
-
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    # pylint: disable=too-many-arguments
-    def __feingold1988_fragmentation_body(*, scale, frag_size, x_plus_y, rand, fragtol):
-        """
-        Scaled exponential PDF
-        """
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol)
-            frag_size[i] = -scale * np.log(log_arg)
 
     def feingold1988_fragmentation(
         self,
