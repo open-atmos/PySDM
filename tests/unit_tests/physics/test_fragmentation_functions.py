@@ -27,3 +27,14 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # assert
         np.testing.assert_approx_equal(frag_size, 4.3000510e-09)
+
+    @staticmethod
+    def test_straub_p3():
+        # arrange
+        formulae = Formulae(fragmentation_function="Straub2010Nf")
+
+        # act
+        frag_size = formulae.fragmentation_function.p3(CW=0.666, ds=0, rand=0)
+
+        # assert
+        np.testing.assert_approx_equal(frag_size, 1.3857897e-15)
