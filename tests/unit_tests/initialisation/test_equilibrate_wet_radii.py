@@ -10,19 +10,29 @@ from PySDM.physics import constants_defaults as const
 from PySDM.physics import si
 
 
-@pytest.mark.parametrize("r_dry", [pytest.param(2.4e-09), pytest.param(2.5e-09)])
+@pytest.mark.parametrize("r_dry", (pytest.param(2.4e-09), pytest.param(2.5e-09)))
+@pytest.mark.parametrize(
+    "surface_tension", ("Constant", "CompressedFilmOvadnevaite", "SzyszkowskiLangmuir")
+)
 # pylint: disable=unused-argument,redefined-outer-name
-def test_r_wet_init(r_dry, plot=False):
+def test_equilibrate_wet_radii(r_dry, surface_tension, plot=False):
     # Arrange
-    T = 280
+    T = 280.0
     RH = 0.9
     f_org = 0.607
     kappa = 0.356
 
     class Particulator:  # pylint: disable=too-few-public-methods
         formulae = Formulae(
-            surface_tension="CompressedFilmOvadnevaite",
-            constants={"sgm_org": 40 * si.mN / si.m, "delta_min": 0.1 * si.nm},
+            surface_tension=surface_tension,
+            constants={
+                "sgm_org": 40 * si.mN / si.m,
+                "delta_min": 0.1 * si.nm,
+                "RUEHL_nu_org": 7.47e-05,
+                "RUEHL_A0": 2.5e-19 * si.m**2,
+                "RUEHL_C0": 1e-5,
+                "RUEHL_sgm_min": 40 * si.mN / si.m,
+            },
         )
 
     class Env:  # pylint: disable=too-few-public-methods
@@ -40,7 +50,7 @@ def test_r_wet_init(r_dry, plot=False):
     # Plot
     r_wet = np.logspace(np.log(0.9 * r_dry), np.log(10 * si.nm), base=np.e, num=100)
     sigma = Env.particulator.formulae.surface_tension.sigma(
-        np.nan,
+        T,
         Env.particulator.formulae.trivia.volume(r_wet),
         Env.particulator.formulae.trivia.volume(r_dry),
         f_org,

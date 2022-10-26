@@ -13,6 +13,7 @@ class CollisionsMethods(
 ):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
+        const = self.formulae.constants
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             ("dt_todo", "dt_left", "dt_max"),
@@ -184,6 +185,206 @@ class CollisionsMethods(
             for (auto j = 0; j < n_dims; j += 1) {
                 cell_id[i] += cell_origin[size * j + i] * strides[j];
             }
+            """,
+        )
+
+        self.__exp_fragmentation_body = trtc.For(
+            param_names=("scale", "frag_size", "rand", "tol"),
+            name_iter="i",
+            body="""
+            frag_size[i] = -scale * log(max(1 - rand[i], tol));
+            """,
+        )
+
+        self.__fragmentation_limiters_body = trtc.For(
+            param_names=(
+                "n_fragment",
+                "frag_size",
+                "v_max",
+                "x_plus_y",
+                "vmin",
+                "nfmax",
+                "nfmax_is_not_none",
+            ),
+            name_iter="i",
+            body="""
+            frag_size[i] = min(frag_size[i], v_max[i]);
+            frag_size[i] = max(frag_size[i], vmin);
+
+            if (nfmax_is_not_none) {
+                if (x_plus_y[i] / frag_size[i] > nfmax) {
+                    frag_size[i] = x_plus_y[i] / nfmax;
+                }
+            }
+            if (frag_size[i] == 0.0) {
+                frag_size[i] = x_plus_y[i];
+                n_fragment[i] = 1.0;
+            }
+            n_fragment[i] = x_plus_y[i] / frag_size[i];
+            """,
+        )
+
+        self.__gauss_fragmentation_body = trtc.For(
+            param_names=("mu", "sigma", "frag_size", "rand"),
+            name_iter="i",
+            body=f"""
+            frag_size[i] = mu - sigma / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
+                (0.5 + rand[i]) / (1.5 - rand[i])
+            );
+            """,
+        )
+
+        self.__slams_fragmentation_body = trtc.For(
+            param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
+            name_iter="i",
+            body="""
+            probs[i] = 0.0;
+            n_fragment[i] = 1;
+
+            for (auto n = 0; n < 22; n += 1) {
+                probs[i] += 0.91 * pow((n + 2), (-1.56));
+                if (rand[i] < probs[i]) {
+                    n_fragment[i] = n + 2;
+                    break;
+                }
+            }
+            frag_size[i] = x_plus_y[i] / n_fragment[i];
+            """,
+        )
+
+        self.__feingold1988_fragmentation_body = trtc.For(
+            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+            name_iter="i",
+            body="""
+            auto log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol);
+            frag_size[i] = -scale * log(log_arg);
+            """,
+        )
+
+        self.__straub_Nr_body = """
+
+            if (gam[i] * CW[i] >= 7.0) {
+                Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
+            }
+            if (CW[i] >= 21.0) {
+                Nr2[i] = 0.22 * (CW[i] - 21.0);
+                if (CW[i] <= 46.0) {
+                    Nr3[i] = 0.04 * (46.0 - CW[i]);
+                }
+            }
+            else {
+                Nr3[i] = 1.0;
+            }
+            Nr4[i] = 1.0;
+            Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
+        """
+
+        self.__straub_p1 = f"""
+
+                auto E_D1 = 0.04 * CM;
+                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
+                auto var_1 = pow(delD1, 2.) / 12.;
+                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
+                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
+                auto X = rand[i];
+
+                frag_size[i] = exp(
+                    mu1
+                    - sigma1 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log((0.5 + X) / (1.5 - X))
+                );
+                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
+        """.replace(
+            "real_type", self._get_c_type()
+        )
+
+        self.__straub_p2 = f"""
+
+                auto mu2 = 0.095 * CM;
+                auto delD2 = 0.007 * (CW[i] - 21.0);
+                auto sigma2 = pow(delD2, 2.) / 12.;
+                auto X = rand[i];
+
+                frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
+                    (0.5 + X) / (1.5 - X)
+                );
+                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
+        """.replace(
+            "real_type", self._get_c_type()
+        )
+
+        self.__straub_p3 = f"""
+
+                auto mu3 = 0.9 * ds[i];
+                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
+                auto sigma3 = pow(delD3, 2.) / 12.;
+                auto X = rand[i];
+
+                frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
+                    (0.5 + X) / (1.5 - X)
+                );
+                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
+        """.replace(
+            "real_type", self._get_c_type()
+        )
+
+        self.__straub_p4 = f"""
+
+                auto E_D1 = 0.04 * CM;
+                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
+                auto var_1 = pow(delD1, 2.) / 12.;
+                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
+                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
+                auto mu2 = 0.095 * CM;
+                auto delD2 = 0.007 * (CW[i] - 21.0);
+                auto sigma2 = pow(delD2, 2.) / 12.;
+                auto mu3 = 0.9 * ds[i];
+                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
+                auto sigma3 = pow(delD3, 2.) / 12.;
+
+                auto M31 = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.) / 2.);
+                auto M32 = Nr2[i] * (pow(mu2, 3.) + 3 * mu2 * pow(sigma2, 2.));
+                auto M33 = Nr3[i] * (pow(mu3, 3.) + 3 * mu3 * pow(sigma3, 2.));
+
+                auto M34 = v_max[i] / {const.PI_4_3} * 8 + pow(ds[i], (real_type) (3.)) - M31 - M32 - M33;
+                frag_size[i] = {const.PI} / 6. * M34;
+        """.replace(
+            "real_type", self._get_c_type()
+        )
+
+        self.__straub_fragmentation_body = trtc.For(
+            param_names=(
+                "CW",
+                "gam",
+                "ds",
+                "frag_size",
+                "v_max",
+                "rand",
+                "Nr1",
+                "Nr2",
+                "Nr3",
+                "Nr4",
+                "Nrt",
+            ),
+            name_iter="i",
+            body=f"""
+            auto CM = .01;
+            {self.__straub_Nr_body}
+
+            if (rand[i] < Nr1[i] / Nrt[i]) {{
+                rand[i] = rand[i] * Nrt[i] / Nr1[i];
+                {self.__straub_p1}
+            }}
+            else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i]);
+                {self.__straub_p2}
+            }}
+            else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]);
+                {self.__straub_p3}
+            }}
+            else {{
+                {self.__straub_p4}
+            }}
             """,
         )
 
@@ -366,3 +567,179 @@ class CollisionsMethods(
                 len(idx) - 1, (cell_id.data, cell_start.data, idx.data)
             )
         return idx
+
+    def exp_fragmentation(
+        self,
+        *,
+        n_fragment,
+        scale,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        tol=1e-5,
+    ):
+        self.__exp_fragmentation_body.launch_n(
+            n=len(frag_size),
+            args=(
+                self._get_floating_point(scale),
+                frag_size.data,
+                rand.data,
+                self._get_floating_point(tol),
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            n=len(frag_size),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
+                trtc.DVBool(nfmax is not None),
+            ),
+        )
+
+    def gauss_fragmentation(
+        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+    ):
+        self.__gauss_fragmentation_body.launch_n(
+            n=len(frag_size),
+            args=(
+                self._get_floating_point(mu),
+                self._get_floating_point(sigma),
+                frag_size.data,
+                rand.data,
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            n=len(frag_size),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
+                trtc.DVBool(nfmax is not None),
+            ),
+        )
+
+    def slams_fragmentation(
+        self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax
+    ):  # pylint: disable=too-many-arguments
+        self.__slams_fragmentation_body.launch_n(
+            n=(len(n_fragment)),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                x_plus_y.data,
+                probs.data,
+                rand.data,
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            n=len(frag_size),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
+                trtc.DVBool(nfmax is not None),
+            ),
+        )
+
+    def feingold1988_fragmentation(
+        self,
+        *,
+        n_fragment,
+        scale,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        fragtol,
+        vmin,
+        nfmax,
+    ):
+        self.__feingold1988_fragmentation_body.launch_n(
+            n=len(frag_size),
+            args=(
+                self._get_floating_point(scale),
+                frag_size.data,
+                x_plus_y.data,
+                rand.data,
+                self._get_floating_point(fragtol),
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            n=len(frag_size),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
+                trtc.DVBool(nfmax is not None),
+            ),
+        )
+
+    def straub_fragmentation(
+        # pylint: disable=too-many-arguments,too-many-locals
+        self,
+        *,
+        n_fragment,
+        CW,
+        gam,
+        ds,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        Nr1,
+        Nr2,
+        Nr3,
+        Nr4,
+        Nrt,
+    ):
+        self.__straub_fragmentation_body.launch_n(
+            n=len(frag_size),
+            args=(
+                CW.data,
+                gam.data,
+                ds.data,
+                frag_size.data,
+                v_max.data,
+                rand.data,
+                Nr1.data,
+                Nr2.data,
+                Nr3.data,
+                Nr4.data,
+                Nrt.data,
+            ),
+        )
+
+        self.__fragmentation_limiters_body.launch_n(
+            n=len(frag_size),
+            args=(
+                n_fragment.data,
+                frag_size.data,
+                v_max.data,
+                x_plus_y.data,
+                self._get_floating_point(vmin),
+                self._get_floating_point(nfmax if nfmax else -1),
+                trtc.DVBool(nfmax is not None),
+            ),
+        )

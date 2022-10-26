@@ -45,9 +45,7 @@ def equilibrate_wet_radii(
 
     @numba.njit(**{**jit_flags, "parallel": False})
     def minfun(r, T, RH, kp, rd3, f_org):  # pylint: disable=too-many-arguments
-        sgm = sigma(
-            T, v_wet=phys_volume(radius=r), v_dry=const.PI_4_3 * rd3, f_org=f_org
-        )
+        sgm = sigma(T, phys_volume(radius=r), const.PI_4_3 * rd3, f_org)
         return RH - RH_eq(r, T, kp, rd3, sgm)
 
     @numba.njit(**jit_flags)
