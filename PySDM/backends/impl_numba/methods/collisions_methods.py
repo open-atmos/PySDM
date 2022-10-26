@@ -10,7 +10,6 @@ from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_numba.warnings import warn
-from PySDM.physics.constants import sqrt_pi, sqrt_two
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -280,6 +279,19 @@ class CollisionsMethods(BackendMethods):
                         )
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "Gaussian":
+            gaussian_frag_size = self.formulae.fragmentation_function.frag_size
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __gauss_fragmentation_body(
+                *, mu, sigma, frag_size, rand
+            ):  # pylint: disable=too-many-arguments
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    frag_size[i] = gaussian_frag_size(mu, sigma, rand[i])
+
+            self.__gauss_fragmentation_body = __gauss_fragmentation_body
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -679,20 +691,6 @@ class CollisionsMethods(BackendMethods):
             vmin=vmin,
             nfmax=nfmax,
         )
-
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    @numba.njit(**{**conf.JIT_FLAGS})
-    def __gauss_fragmentation_body(*, mu, sigma, frag_size, rand):
-        """
-        Gaussian PDF
-        CDF = 1/2(1 + erf(x/sqrt(2)));
-        approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
-        """
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            frag_size[i] = mu - sigma / sqrt_two / sqrt_pi / np.log(2) * np.log(
-                (1 / 2 + rand[i]) / (3 / 2 - rand[i])
-            )
 
     def gauss_fragmentation(
         self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax

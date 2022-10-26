@@ -13,7 +13,6 @@ class CollisionsMethods(
 ):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
-        const = self.formulae.constants
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             ("dt_todo", "dt_left", "dt_max"),
@@ -224,15 +223,20 @@ class CollisionsMethods(
             """,
         )
 
-        self.__gauss_fragmentation_body = trtc.For(
-            param_names=("mu", "sigma", "frag_size", "rand"),
-            name_iter="i",
-            body=f"""
-            frag_size[i] = mu - sigma / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                (0.5 + rand[i]) / (1.5 - rand[i])
-            );
-            """,
-        )
+        if self.formulae.fragmentation_function.__name__ == "Gaussian":
+            self.__gauss_fragmentation_body = trtc.For(
+                param_names=("mu", "sigma", "frag_size", "rand"),
+                name_iter="i",
+                body=f"""
+                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+                    mu="mu",
+                    sigma="sigma",
+                    rand="rand[i]"
+                )};
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
         self.__slams_fragmentation_body = trtc.For(
             param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
