@@ -91,10 +91,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.breakup_rate_deficit = None
 
     def register(self, builder):
-        assert (
-            builder.formulae.fragmentation_function.__name__
-            == self.compute_number_of_fragments.__class__.__name__
-        )
         self.particulator = builder.particulator
         rnd_args = {
             "optimized_random": self.optimized_random,
