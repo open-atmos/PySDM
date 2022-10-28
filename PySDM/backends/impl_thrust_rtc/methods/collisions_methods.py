@@ -7,6 +7,21 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+COMMONS = """
+struct Commons {
+  static __device__ void flag_zero_multiplicity(
+    int64_t j,
+    int64_t k,
+    VectorView<int64_t> multiplicity,
+    VectorView<int64_t> healthy
+  ) {
+    if (multiplicity[k] == 0 || multiplicity[j] == 0) {
+        healthy[0] = 0;
+    }
+  }
+};
+"""
+
 
 class CollisionsMethods(
     ThrustRTCBackendMethods
@@ -83,35 +98,46 @@ class CollisionsMethods(
             """,
         )
 
-        self.__coalescence_body = trtc.For(
-            ("n", "idx", "n_sd", "attributes", "n_attr", "gamma", "healthy"),
-            "i",
-            """
-            if (gamma[i] == 0) {
+        self.__collision_coalescence_body = trtc.For(
+            param_names=(
+                "n",
+                "idx",
+                "n_sd",
+                "attributes",
+                "n_attr",
+                "gamma",
+                "healthy",
+            ),
+            name_iter="i",
+            body=f"""
+            {COMMONS}
+            if (gamma[i] == 0) {{
                 return;
-            }
+            }}
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
+            atomicAdd(coalescence_rate[cid], gamma[i] * n[k]); // TODO:
             auto new_n = n[j] - gamma[i] * n[k];
-            if (new_n > 0) {
+            if (new_n > 0) {{
                 n[j] = new_n;
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + k] += gamma[i] * attributes[attr + j];
-                }
-            }
-            else {  // new_n == 0
+                }}
+            }}
+            else {{  // new_n == 0
                 n[j] = (int64_t)(n[k] / 2);
                 n[k] = n[k] - n[j];
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
                     attributes[attr + k] = attributes[attr + j];
-                }
-            }
-            if (n[k] == 0 || n[j] == 0) {
-                healthy[0] = 0;
-            }
-            """,
+                }}
+            }}
+
+            Commons::flag_zero_multiplicity(j, k, n, healthy);
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
         )
 
         self.__compute_gamma_body = trtc.For(
