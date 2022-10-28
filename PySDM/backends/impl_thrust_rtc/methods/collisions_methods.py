@@ -117,7 +117,6 @@ class CollisionsMethods(
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
-            atomicAdd(coalescence_rate[cid], gamma[i] * n[k]); // TODO:
             auto new_n = n[j] - gamma[i] * n[k];
             if (new_n > 0) {{
                 n[j] = new_n;
