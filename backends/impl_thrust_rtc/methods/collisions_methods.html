@@ -36,6 +36,21 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+COMMONS = &#34;&#34;&#34;
+struct Commons {
+  static __device__ void flag_zero_multiplicity(
+    int64_t j,
+    int64_t k,
+    VectorView&lt;int64_t&gt; multiplicity,
+    VectorView&lt;int64_t&gt; healthy
+  ) {
+    if (multiplicity[k] == 0 || multiplicity[j] == 0) {
+        healthy[0] = 0;
+    }
+  }
+};
+&#34;&#34;&#34;
+
 
 class CollisionsMethods(
     ThrustRTCBackendMethods
@@ -112,35 +127,45 @@ class CollisionsMethods(
             &#34;&#34;&#34;,
         )
 
-        self.__coalescence_body = trtc.For(
-            (&#34;n&#34;, &#34;idx&#34;, &#34;n_sd&#34;, &#34;attributes&#34;, &#34;n_attr&#34;, &#34;gamma&#34;, &#34;healthy&#34;),
-            &#34;i&#34;,
-            &#34;&#34;&#34;
-            if (gamma[i] == 0) {
+        self.__collision_coalescence_body = trtc.For(
+            param_names=(
+                &#34;n&#34;,
+                &#34;idx&#34;,
+                &#34;n_sd&#34;,
+                &#34;attributes&#34;,
+                &#34;n_attr&#34;,
+                &#34;gamma&#34;,
+                &#34;healthy&#34;,
+            ),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            {COMMONS}
+            if (gamma[i] == 0) {{
                 return;
-            }
+            }}
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
             auto new_n = n[j] - gamma[i] * n[k];
-            if (new_n &gt; 0) {
+            if (new_n &gt; 0) {{
                 n[j] = new_n;
-                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + k] += gamma[i] * attributes[attr + j];
-                }
-            }
-            else {  // new_n == 0
+                }}
+            }}
+            else {{  // new_n == 0
                 n[j] = (int64_t)(n[k] / 2);
                 n[k] = n[k] - n[j];
-                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
                     attributes[attr + k] = attributes[attr + j];
-                }
-            }
-            if (n[k] == 0 || n[j] == 0) {
-                healthy[0] = 0;
-            }
-            &#34;&#34;&#34;,
+                }}
+            }}
+
+            Commons::flag_zero_multiplicity(j, k, n, healthy);
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
         self.__compute_gamma_body = trtc.For(
@@ -506,7 +531,7 @@ class CollisionsMethods(
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
-        self.__coalescence_body.launch_n(
+        self.__collision_coalescence_body.launch_n(
             len(idx) // 2,
             (
                 multiplicity.data,
@@ -867,35 +892,45 @@ class CollisionsMethods(
             &#34;&#34;&#34;,
         )
 
-        self.__coalescence_body = trtc.For(
-            (&#34;n&#34;, &#34;idx&#34;, &#34;n_sd&#34;, &#34;attributes&#34;, &#34;n_attr&#34;, &#34;gamma&#34;, &#34;healthy&#34;),
-            &#34;i&#34;,
-            &#34;&#34;&#34;
-            if (gamma[i] == 0) {
+        self.__collision_coalescence_body = trtc.For(
+            param_names=(
+                &#34;n&#34;,
+                &#34;idx&#34;,
+                &#34;n_sd&#34;,
+                &#34;attributes&#34;,
+                &#34;n_attr&#34;,
+                &#34;gamma&#34;,
+                &#34;healthy&#34;,
+            ),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            {COMMONS}
+            if (gamma[i] == 0) {{
                 return;
-            }
+            }}
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
             auto new_n = n[j] - gamma[i] * n[k];
-            if (new_n &gt; 0) {
+            if (new_n &gt; 0) {{
                 n[j] = new_n;
-                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + k] += gamma[i] * attributes[attr + j];
-                }
-            }
-            else {  // new_n == 0
+                }}
+            }}
+            else {{  // new_n == 0
                 n[j] = (int64_t)(n[k] / 2);
                 n[k] = n[k] - n[j];
-                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {
+                for (auto attr = 0; attr &lt; n_attr * n_sd; attr+=n_sd) {{
                     attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
                     attributes[attr + k] = attributes[attr + j];
-                }
-            }
-            if (n[k] == 0 || n[j] == 0) {
-                healthy[0] = 0;
-            }
-            &#34;&#34;&#34;,
+                }}
+            }}
+
+            Commons::flag_zero_multiplicity(j, k, n, healthy);
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
         self.__compute_gamma_body = trtc.For(
@@ -1261,7 +1296,7 @@ class CollisionsMethods(
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
-        self.__coalescence_body.launch_n(
+        self.__collision_coalescence_body.launch_n(
             len(idx) // 2,
             (
                 multiplicity.data,
