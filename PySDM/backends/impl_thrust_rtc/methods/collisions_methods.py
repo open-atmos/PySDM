@@ -503,7 +503,7 @@ class CollisionsMethods(
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
-        self.__coalescence_body.launch_n(
+        self.__collision_coalescence_body.launch_n(
             len(idx) // 2,
             (
                 multiplicity.data,
