@@ -33,7 +33,6 @@ struct Commons {
     int64_t n_sd
   ) {
     auto cid = cell_id[j];
-    auto ith_coalescence_rate = gamma[i] * multiplicity[k];
     atomicAdd((unsigned long long int*)&coalescence_rate[cid], (unsigned long long int)(gamma[i] * multiplicity[k]));
     auto new_n = multiplicity[j] - gamma[i] * multiplicity[k];
     if (new_n > 0) {
