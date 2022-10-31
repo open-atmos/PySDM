@@ -1,10 +1,11 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import os
 
+import numpy as np
 from atmos_cloud_sim_uj_utils import show_plot
 from matplotlib import pyplot
-from PySDM_examples.Bieli_2022.settings import Settings
-from PySDM_examples.Bieli_2022.simulation import make_core
+from PySDM_examples.Bieli_et_al_2022.settings import Settings
+from PySDM_examples.Bieli_et_al_2022.simulation import make_core
 
 from PySDM.physics import si
 
@@ -40,10 +41,11 @@ def test_moments(plot=False):
             ax[0].plot(t, moments[0, :])
             ax[1].plot(t, moments[1, :])
             ax[2].plot(t, moments[2, :])
-        # assert statements on number density, mass density, reflectivity
-        assert moments[0, -1] < moments[0, 0]
-        assert moments[1, -1] == moments[1, 0]
-        assert moments[2, -2] > moments[2, 0]
+
+        # assert on mass conservation
+        tol = 1e-10
+        assert moments[1, -1] <= moments[1, 0] * (1 + tol)
+        assert moments[1, -1] >= moments[1, 0] * (1 - tol)
 
     if plot:
         ax[0].set_xlabel("time (s)")
