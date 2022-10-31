@@ -42,6 +42,8 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
     ):
+        # initialisation of the fields below is just to silence pylint and to enable code hints
+        # in PyCharm and alike, all these fields are later overwritten within this ctor
         self.condensation_coordinate = condensation_coordinate
         self.saturation_vapour_pressure = saturation_vapour_pressure
         self.hygroscopicity = hygroscopicity
@@ -57,7 +59,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.freezing_temperature_spectrum = freezing_temperature_spectrum
         self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
         self.fragmentation_function = fragmentation_function
-        nones = tuple(i for i in dir(self) if not i.startswith("__"))
+        components = tuple(i for i in dir(self) if not i.startswith("__"))
 
         constants_defaults = {
             k: getattr(defaults, k)
@@ -77,13 +79,14 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             "Trivia", physics.trivia, fastmath, constants, dimensional_analysis
         )
 
-        for phys in nones:
+        # each `component` corresponds to one subdirectory of PySDM/physics
+        for component in components:
             setattr(
                 self,
-                phys,
+                component,
                 _magick(
-                    value=getattr(self, phys),
-                    module=getattr(physics, phys),
+                    value=getattr(self, component),
+                    module=getattr(physics, component),
                     fastmath=fastmath,
                     constants=constants,
                     dimensional_analysis=dimensional_analysis,
