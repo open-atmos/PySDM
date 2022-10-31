@@ -15,7 +15,7 @@ from PySDM.environments import Box
 from PySDM.physics import si
 
 
-class TestFragmentations:  # pylint: disable=too-few-public-methods
+class TestEfficiencies:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "efficiency",
@@ -27,7 +27,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             ConstEb(Eb=0.3),
         ],
     )
-    def test_fragmentation_fn_call(efficiency, backend_class=CPU):
+    def test_efficiency_fn_call(efficiency, backend_class=CPU):
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         builder = Builder(volume.size, backend_class())
@@ -40,6 +40,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         _Indicator = builder.particulator.PairIndicator
         eff = _PairwiseStorage.from_ndarray(np.asarray([-1.0]))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
 
         # act
         sut(eff, is_first_in_pair)

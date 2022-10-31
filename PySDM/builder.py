@@ -41,15 +41,15 @@ class Builder:
 
     def add_dynamic(self, dynamic):
         assert self.particulator.environment is not None
-        key = inspect.getmro(type(dynamic))[-2].__name__
+        key = get_key(dynamic)
         assert key not in self.particulator.dynamics
         self.particulator.dynamics[key] = dynamic
 
-    def remove_dynamic(self, dynamic):
-        assert self.particulator.environment is not None
-        key = inspect.getmro(type(dynamic))[-2].__name__
+    def replace_dynamic(self, dynamic):
+        key = get_key(dynamic)
         assert key in self.particulator.dynamics
         self.particulator.dynamics.pop(key)
+        self.add_dynamic(dynamic)
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
@@ -65,7 +65,7 @@ class Builder:
     def request_attribute(self, attribute, variant=None):
         if attribute not in self.req_attr:
             self.req_attr[attribute] = attr_class(
-                attribute, self.particulator.dynamics
+                attribute, self.particulator.dynamics, self.formulae
             )(self)
         if variant is not None:
             assert variant == self.req_attr[attribute]
@@ -107,3 +107,7 @@ class Builder:
             self.particulator.timers[key] = WallTimer()
 
         return self.particulator
+
+
+def get_key(dynamic):
+    return inspect.getmro(type(dynamic))[-2].__name__

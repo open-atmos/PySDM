@@ -15,6 +15,7 @@ from PySDM.backends.impl_thrust_rtc.methods.condensation_methods import (
 from PySDM.backends.impl_thrust_rtc.methods.displacement_methods import (
     DisplacementMethods,
 )
+from PySDM.backends.impl_thrust_rtc.methods.freezing_methods import FreezingMethods
 from PySDM.backends.impl_thrust_rtc.methods.index_methods import IndexMethods
 from PySDM.backends.impl_thrust_rtc.methods.moments_methods import MomentsMethods
 from PySDM.backends.impl_thrust_rtc.methods.pair_methods import PairMethods
@@ -36,6 +37,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
     MomentsMethods,
     DisplacementMethods,
     TerminalVelocityMethods,
+    FreezingMethods,
 ):
     ENABLE = True
     Random = ImportedRandom
@@ -61,6 +63,7 @@ class ThrustRTC(  # pylint: disable=duplicate-code,too-many-ancestors
         MomentsMethods.__init__(self)
         DisplacementMethods.__init__(self)
         TerminalVelocityMethods.__init__(self)
+        FreezingMethods.__init__(self)
 
         trtc.Set_Kernel_Debug(debug)
         trtc.Set_Verbose(verbose)

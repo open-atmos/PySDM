@@ -1,5 +1,5 @@
 """
-CPU implementation of backend methods for freezing (singular and time-dependent mmersion freezing)
+CPU implementation of backend methods for freezing (singular and time-dependent immersion freezing)
 """
 import numba
 import numpy as np
@@ -15,14 +15,9 @@ from ...impl_numba import conf
 
 class FreezingMethods(BackendMethods):
     def __init__(self):
-        super().__init__()
+        BackendMethods.__init__(self)
         const = self.formulae.constants
-
-        @numba.njit(
-            **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
-        )
-        def _unfrozen(volume, i):
-            return volume[i] > 0
+        unfrozen = self.formulae.trivia.unfrozen
 
         @numba.njit(
             **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
@@ -39,10 +34,10 @@ class FreezingMethods(BackendMethods):
                 if attributes.freezing_temperature[i] == 0:
                     continue
                 if (
-                    _unfrozen(attributes.wet_volume, i)
-                    and relative_humidity[cell[i]] > 1
-                    and temperature[cell[i]]  # TODO #599 as in Shima, but is it needed?
-                    <= attributes.freezing_temperature[i]
+                    unfrozen(attributes.wet_volume[i])
+                    and relative_humidity[cell[i]]
+                    > 1  # TODO #599 as in Shima, but is it needed?
+                    and temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
 
@@ -56,7 +51,7 @@ class FreezingMethods(BackendMethods):
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
-                if _unfrozen(attributes.wet_volume, i):
+                if unfrozen(attributes.wet_volume[i]):
                     rate = j_het(a_w_ice[cell[i]])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(
