@@ -30,6 +30,7 @@ CPPYTHON = {
     "return;": "continue",
     "void*": "",
     "VectorView<int64_t> ": "",
+    "VectorView<float> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",

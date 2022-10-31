@@ -19,6 +19,38 @@ struct Commons {
         healthy[0] = 0;
     }
   }
+
+  static __device__ void coalesce(
+    int64_t i,
+    int64_t j,
+    int64_t k,
+    VectorView<int64_t> cell_id,
+    VectorView<int64_t> multiplicity,
+    VectorView<real_type> gamma,
+    VectorView<real_type> attributes,
+    VectorView<int64_t> coalescence_rate,
+    int64_t n_attr,
+    int64_t n_sd
+  ) {
+    auto cid = cell_id[j];
+    auto ith_coalescence_rate = gamma[i] * multiplicity[k];
+    atomicAdd((unsigned long long int*)&coalescence_rate[cid], (unsigned long long int)(gamma[i] * multiplicity[k]));
+    auto new_n = multiplicity[j] - gamma[i] * multiplicity[k];
+    if (new_n > 0) {
+        multiplicity[j] = new_n;
+        for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+            attributes[attr + k] += gamma[i] * attributes[attr + j];
+        }
+    }
+    else {  // new_n == 0
+        multiplicity[j] = (int64_t)(multiplicity[k] / 2);
+        multiplicity[k] = multiplicity[k] - multiplicity[j];
+        for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+            attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
+            attributes[attr + k] = attributes[attr + j];
+        }
+    }
+  }
 };
 """
 
@@ -100,13 +132,15 @@ class CollisionsMethods(
 
         self.__collision_coalescence_body = trtc.For(
             param_names=(
-                "n",
+                "multiplicity",
                 "idx",
                 "n_sd",
                 "attributes",
                 "n_attr",
                 "gamma",
                 "healthy",
+                "cell_id",
+                "coalescence_rate",
             ),
             name_iter="i",
             body=f"""
@@ -117,23 +151,9 @@ class CollisionsMethods(
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
-            auto new_n = n[j] - gamma[i] * n[k];
-            if (new_n > 0) {{
-                n[j] = new_n;
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
-                    attributes[attr + k] += gamma[i] * attributes[attr + j];
-                }}
-            }}
-            else {{  // new_n == 0
-                n[j] = (int64_t)(n[k] / 2);
-                n[k] = n[k] - n[j];
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
-                    attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
-                    attributes[attr + k] = attributes[attr + j];
-                }}
-            }}
+            Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
-            Commons::flag_zero_multiplicity(j, k, n, healthy);
+            Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -144,7 +164,7 @@ class CollisionsMethods(
                 "gamma",
                 "rand",
                 "idx",
-                "n",
+                "multiplicity",
                 "cell_id",
                 "collision_rate_deficit",
                 "collision_rate",
@@ -160,12 +180,19 @@ class CollisionsMethods(
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
-            auto prop = (int64_t)(n[j] / n[k]);
-            if (prop > gamma[i]) {
-                prop = gamma[i];
-            }
+            auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
+            auto g = min((int64_t)(gamma[i]), prop);
 
-            gamma[i] = prop;
+            atomicAdd(
+                (unsigned long long int*)&collision_rate[cell_id[j]],
+                (unsigned long long int)(g * multiplicity[k])
+            );
+            atomicAdd(
+                (unsigned long long int*)&collision_rate_deficit[cell_id[j]],
+                (unsigned long long int)(((int64_t)(gamma[i]) - g) * multiplicity[k])
+            );
+
+            gamma[i] = g;
             """,
         )
 
@@ -512,6 +539,8 @@ class CollisionsMethods(
                 n_attr,
                 gamma.data,
                 healthy.data,
+                cell_id.data,
+                coalescence_rate.data,
             ),
         )
 
