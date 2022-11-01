@@ -18,7 +18,7 @@ def test_moments(plot=False):
         settings.n_sd = 100
 
     if plot:
-        fig, ax = pyplot.subplots(nrows=1, ncols=3, figsize=(8, 3))
+        __, ax = pyplot.subplots(nrows=1, ncols=3, figsize=(8, 3))
 
     for i in range(3):
         coal_eff = settings.coal_effs[i]
