@@ -1,5 +1,5 @@
 """
-immersion freezing using either singular or time-deoendant formulation
+immersion freezing using either singular or time-dependent formulation
 """
 from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
@@ -72,16 +72,18 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],
                 a_w_ice=self.particulator.environment["a_w_ice"],
-                temperature=self.particulator.environment["T"]
-                if self.record_freezing_temperature
-                else None,
+                temperature=(
+                    self.particulator.environment["T"]
+                    if self.record_freezing_temperature
+                    else None
+                ),
                 relative_humidity=self.particulator.environment["RH"],
                 record_freezing_temperature=self.record_freezing_temperature,
-                freezing_temperature=self.particulator.attributes[
-                    "freezing temperature"
-                ]
-                if self.record_freezing_temperature
-                else None,
+                freezing_temperature=(
+                    self.particulator.attributes["freezing temperature"]
+                    if self.record_freezing_temperature
+                    else None
+                ),
             )
 
         self.particulator.attributes.mark_updated("volume")

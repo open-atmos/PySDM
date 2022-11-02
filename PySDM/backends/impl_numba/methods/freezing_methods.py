@@ -17,7 +17,7 @@ class FreezingMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
         const = self.formulae.constants
-        unfrozen = self.formulae.trivia.unfrozen
+        unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
 
         @numba.njit(
             **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
@@ -34,8 +34,9 @@ class FreezingMethods(BackendMethods):
                 if attributes.freezing_temperature[i] == 0:
                     continue
                 if (
-                    unfrozen(attributes.wet_volume[i])
-                    and relative_humidity[cell[i]] > 1
+                    unfrozen_and_saturated(
+                        attributes.wet_volume[i], relative_humidity[cell[i]]
+                    )
                     and temperature[cell[i]] <= attributes.freezing_temperature[i]
                 ):
                     _freeze(attributes.wet_volume, i)
@@ -45,7 +46,7 @@ class FreezingMethods(BackendMethods):
         j_het = self.formulae.heterogeneous_ice_nucleation_rate.j_het
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def freeze_time_dependent_body(
+        def freeze_time_dependent_body(  # pylint: disable=unused-argument,too-many-arguments
             rand,
             attributes,
             timestep,
@@ -53,24 +54,26 @@ class FreezingMethods(BackendMethods):
             a_w_ice,
             temperature,
             relative_humidity,
-            record_freezing_temprature,
+            record_freezing_temperature,
             freezing_temperature,
         ):
             n_sd = len(attributes.wet_volume)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
-                if unfrozen(attributes.wet_volume[i]):
-                    cell_id = cell[i]
+                cell_id = cell[i]
+                if unfrozen_and_saturated(
+                    attributes.wet_volume[i], relative_humidity[cell_id]
+                ):
                     rate = j_het(a_w_ice[cell_id])
                     # TODO #594: this assumes constant T throughout timestep, can we do better?
                     prob = 1 - np.exp(  # TODO #599: common code for Poissonian prob
                         -rate * attributes.immersed_surface_area[i] * timestep
                     )
-                    if rand[i] < prob and relative_humidity[cell_id] > 1:
+                    if rand[i] < prob:
                         _freeze(attributes.wet_volume, i)
-                        if record_freezing_temprature:
-                            freezing_temperature[i] = temperature[cell_id]
+                        # if record_freezing_temperature:
+                        #     freezing_temperature[i] = temperature[cell_id]
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
@@ -109,7 +112,7 @@ class FreezingMethods(BackendMethods):
             a_w_ice.data,
             temperature.data if record_freezing_temperature else None,
             relative_humidity.data,
-            record_freezing_temprature=record_freezing_temperature,
+            record_freezing_temperature=record_freezing_temperature,
             freezing_temperature=freezing_temperature.data
             if record_freezing_temperature
             else None,
