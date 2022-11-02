@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 from PySDM import Builder
-from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
@@ -14,6 +13,10 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
 )
 from PySDM.environments import Box
 from PySDM.physics import si
+
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestFragmentations:  # pylint: disable=too-few-public-methods
@@ -29,7 +32,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Straub2010Nf(),
         ],
     )
-    def test_fragmentation_fn_call(fragmentation_fn, backend_class=CPU):
+    def test_fragmentation_fn_call(
+        fragmentation_fn, backend_class
+    ):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -45,6 +50,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
@@ -66,11 +74,13 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_vmin(fragmentation_fn, backend_class=CPU):
+    def test_fragmentation_limiters_vmin(
+        fragmentation_fn, backend_class
+    ):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend_class())
+        builder = Builder(volume.size, backend_class(double_precision=True))
         sut = fragmentation_fn
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
@@ -81,6 +91,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
@@ -102,7 +115,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=0.01), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_vmax(fragmentation_fn, backend_class=CPU):
+    def test_fragmentation_limiters_vmax(
+        fragmentation_fn, backend_class
+    ):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -118,6 +133,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
@@ -139,7 +157,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
-    def test_fragmentation_limiters_nfmax(fragmentation_fn, backend_class=CPU):
+    def test_fragmentation_limiters_nfmax(
+        fragmentation_fn, backend_class
+    ):  # pylint: disable=redefined-outer-name
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
@@ -155,6 +175,9 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
         is_first_in_pair = _Indicator(length=volume.size)
+        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+            np.asarray([True, False])
+        )
         u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
         # act
