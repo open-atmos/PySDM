@@ -117,7 +117,9 @@ class TestPairMethods:
         cell_id = backend.Storage.from_ndarray(np.asarray([0, 0, 0, 0]))
         cell_idx = backend.Storage.from_ndarray(np.asarray([0, 1, 2, 3]))
         is_first_in_pair = make_PairIndicator(backend)(n_sd)
-        is_first_in_pair.indicator = backend.Storage.from_ndarray(np.asarray([True] * n_sd))
+        is_first_in_pair.indicator = backend.Storage.from_ndarray(
+            np.asarray([True] * n_sd)
+        )
         idx = make_Index(backend).identity_index(n_sd)
 
         # act
