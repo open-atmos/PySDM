@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.dynamics.freezing API documentation</title>
-<meta name="description" content="immersion freezing using either singular or time-deoendant formulation" />
+<meta name="description" content="immersion freezing using either singular or time-dependent formulation" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,13 +22,13 @@
 <h1 class="title">Module <code>PySDM.dynamics.freezing</code></h1>
 </header>
 <section id="section-intro">
-<p>immersion freezing using either singular or time-deoendant formulation</p>
+<p>immersion freezing using either singular or time-dependent formulation</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-immersion freezing using either singular or time-deoendant formulation
+immersion freezing using either singular or time-dependent formulation
 &#34;&#34;&#34;
 from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
@@ -38,8 +38,10 @@ from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 
 
 class Freezing:
-    def __init__(self, *, singular=True):
+    def __init__(self, *, singular=True, record_freezing_temperature=False):
+        assert not (record_freezing_temperature and singular)
         self.singular = singular
+        self.record_freezing_temperature = record_freezing_temperature
         self.enable = True
         self.rand = None
         self.rng = None
@@ -49,9 +51,10 @@ class Freezing:
         self.particulator = builder.particulator
 
         builder.request_attribute(&#34;volume&#34;)
-        if self.singular:
+        if self.singular or self.record_freezing_temperature:
             builder.request_attribute(&#34;freezing temperature&#34;)
-        else:
+
+        if not self.singular:
             assert not isinstance(
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
@@ -98,9 +101,23 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
                 a_w_ice=self.particulator.environment[&#34;a_w_ice&#34;],
+                temperature=(
+                    self.particulator.environment[&#34;T&#34;]
+                    if self.record_freezing_temperature
+                    else None
+                ),
+                relative_humidity=self.particulator.environment[&#34;RH&#34;],
+                record_freezing_temperature=self.record_freezing_temperature,
+                freezing_temperature=(
+                    self.particulator.attributes[&#34;freezing temperature&#34;]
+                    if self.record_freezing_temperature
+                    else None
+                ),
             )
 
-        self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
+        self.particulator.attributes.mark_updated(&#34;volume&#34;)
+        if self.record_freezing_temperature:
+            self.particulator.attributes.mark_updated(&#34;freezing temperature&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -114,7 +131,7 @@ class Freezing:
 <dl>
 <dt id="PySDM.dynamics.freezing.Freezing"><code class="flex name class">
 <span>class <span class="ident">Freezing</span></span>
-<span>(</span><span>*, singular=True)</span>
+<span>(</span><span>*, singular=True, record_freezing_temperature=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -123,8 +140,10 @@ class Freezing:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True):
+    def __init__(self, *, singular=True, record_freezing_temperature=False):
+        assert not (record_freezing_temperature and singular)
         self.singular = singular
+        self.record_freezing_temperature = record_freezing_temperature
         self.enable = True
         self.rand = None
         self.rng = None
@@ -134,9 +153,10 @@ class Freezing:
         self.particulator = builder.particulator
 
         builder.request_attribute(&#34;volume&#34;)
-        if self.singular:
+        if self.singular or self.record_freezing_temperature:
             builder.request_attribute(&#34;freezing temperature&#34;)
-        else:
+
+        if not self.singular:
             assert not isinstance(
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
@@ -183,9 +203,23 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
                 a_w_ice=self.particulator.environment[&#34;a_w_ice&#34;],
+                temperature=(
+                    self.particulator.environment[&#34;T&#34;]
+                    if self.record_freezing_temperature
+                    else None
+                ),
+                relative_humidity=self.particulator.environment[&#34;RH&#34;],
+                record_freezing_temperature=self.record_freezing_temperature,
+                freezing_temperature=(
+                    self.particulator.attributes[&#34;freezing temperature&#34;]
+                    if self.record_freezing_temperature
+                    else None
+                ),
             )
 
-        self.particulator.attributes.mark_updated(&#34;volume&#34;)</code></pre>
+        self.particulator.attributes.mark_updated(&#34;volume&#34;)
+        if self.record_freezing_temperature:
+            self.particulator.attributes.mark_updated(&#34;freezing temperature&#34;)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -202,9 +236,10 @@ class Freezing:
     self.particulator = builder.particulator
 
     builder.request_attribute(&#34;volume&#34;)
-    if self.singular:
+    if self.singular or self.record_freezing_temperature:
         builder.request_attribute(&#34;freezing temperature&#34;)
-    else:
+
+    if not self.singular:
         assert not isinstance(
             builder.formulae.heterogeneous_ice_nucleation_rate, Null
         )

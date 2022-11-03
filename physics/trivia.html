@@ -102,8 +102,8 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen(_, volume):
-        return volume &gt; 0</code></pre>
+    def unfrozen_and_saturated(_, volume, relative_humidity):
+        return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
 </details>
 </section>
 <section>
@@ -194,8 +194,8 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen(_, volume):
-        return volume &gt; 0</code></pre>
+    def unfrozen_and_saturated(_, volume, relative_humidity):
+        return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -367,8 +367,8 @@ def th_std(const, p, T):
     return T * np.power(const.p1000 / p, const.Rd_over_c_pd)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.physics.trivia.Trivia.unfrozen"><code class="name flex">
-<span>def <span class="ident">unfrozen</span></span>(<span>_, volume)</span>
+<dt id="PySDM.physics.trivia.Trivia.unfrozen_and_saturated"><code class="name flex">
+<span>def <span class="ident">unfrozen_and_saturated</span></span>(<span>_, volume, relative_humidity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -377,8 +377,8 @@ def th_std(const, p, T):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def unfrozen(_, volume):
-    return volume &gt; 0</code></pre>
+def unfrozen_and_saturated(_, volume, relative_humidity):
+    return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.vant_hoff"><code class="name flex">
@@ -470,7 +470,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.sphere_surface" href="#PySDM.physics.trivia.Trivia.sphere_surface">sphere_surface</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.tdep2enthalpy" href="#PySDM.physics.trivia.Trivia.tdep2enthalpy">tdep2enthalpy</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.th_std" href="#PySDM.physics.trivia.Trivia.th_std">th_std</a></code></li>
-<li><code><a title="PySDM.physics.trivia.Trivia.unfrozen" href="#PySDM.physics.trivia.Trivia.unfrozen">unfrozen</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.unfrozen_and_saturated" href="#PySDM.physics.trivia.Trivia.unfrozen_and_saturated">unfrozen_and_saturated</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.vant_hoff" href="#PySDM.physics.trivia.Trivia.vant_hoff">vant_hoff</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.volume" href="#PySDM.physics.trivia.Trivia.volume">volume</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.volume_of_density_mass" href="#PySDM.physics.trivia.Trivia.volume_of_density_mass">volume_of_density_mass</a></code></li>
