@@ -111,14 +111,13 @@ class TestPairMethods:
     def test_find_pairs(backend_class, length):  # pylint: disable=redefined-outer-name
         # arrange
         backend = backend_class()
-        arr = lambda data: backend.Storage.from_ndarray(np.asarray(data))
-
         n_sd = 4
-        cell_start = arr([0, 0, 0, 0])
-        cell_id = arr([0, 0, 0, 0])
-        cell_idx = arr([0, 1, 2, 3])
+
+        cell_start = backend.Storage.from_ndarray(np.asarray([0, 0, 0, 0]))
+        cell_id = backend.Storage.from_ndarray(np.asarray([0, 0, 0, 0]))
+        cell_idx = backend.Storage.from_ndarray(np.asarray([0, 1, 2, 3]))
         is_first_in_pair = make_PairIndicator(backend)(n_sd)
-        is_first_in_pair.indicator = arr([True] * n_sd)
+        is_first_in_pair.indicator = backend.Storage.from_ndarray(np.asarray([True] * n_sd))
         idx = make_Index(backend).identity_index(n_sd)
 
         # act
