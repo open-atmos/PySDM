@@ -1,5 +1,5 @@
 """
-immersion freezing using either singular or time-deoendant formulation
+immersion freezing using either singular or time-dependent formulation
 """
 from PySDM.backends.impl_common.freezing_attributes import (
     SingularAttributes,
@@ -9,8 +9,10 @@ from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 
 
 class Freezing:
-    def __init__(self, *, singular=True):
+    def __init__(self, *, singular=True, record_freezing_temperature=False):
+        assert not (record_freezing_temperature and singular)
         self.singular = singular
+        self.record_freezing_temperature = record_freezing_temperature
         self.enable = True
         self.rand = None
         self.rng = None
@@ -20,9 +22,10 @@ class Freezing:
         self.particulator = builder.particulator
 
         builder.request_attribute("volume")
-        if self.singular:
+        if self.singular or self.record_freezing_temperature:
             builder.request_attribute("freezing temperature")
-        else:
+
+        if not self.singular:
             assert not isinstance(
                 builder.formulae.heterogeneous_ice_nucleation_rate, Null
             )
@@ -69,6 +72,20 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes["cell id"],
                 a_w_ice=self.particulator.environment["a_w_ice"],
+                temperature=(
+                    self.particulator.environment["T"]
+                    if self.record_freezing_temperature
+                    else None
+                ),
+                relative_humidity=self.particulator.environment["RH"],
+                record_freezing_temperature=self.record_freezing_temperature,
+                freezing_temperature=(
+                    self.particulator.attributes["freezing temperature"]
+                    if self.record_freezing_temperature
+                    else None
+                ),
             )
 
         self.particulator.attributes.mark_updated("volume")
+        if self.record_freezing_temperature:
+            self.particulator.attributes.mark_updated("freezing temperature")
