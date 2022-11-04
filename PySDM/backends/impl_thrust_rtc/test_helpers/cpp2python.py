@@ -10,6 +10,8 @@ JIT_OPTS = "error_model='numpy', fastmath=True"
 
 CPPYTHON = {
     "int ": "",
+    "void ": "",
+    "int64_t ": "",
     "double ": "",
     "float ": "",
     "auto ": "",
@@ -27,6 +29,7 @@ CPPYTHON = {
     "(float)": "np.float32",
     "return;": "continue",
     "void*": "",
+    "VectorView<int64_t> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",

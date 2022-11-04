@@ -120,9 +120,9 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __sum_pair_body = trtc.For(
-        ["data_out", "perm_in", "is_first_in_pair"],
-        "i",
-        """
+        param_names=("data_out", "perm_in", "is_first_in_pair"),
+        name_iter="i",
+        body="""
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = perm_in[i] + perm_in[i + 1];
         }
@@ -135,5 +135,64 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_in = trtc.DVPermutation(data_in.data, idx.data)
         trtc.Fill(data_out.data, trtc.DVDouble(0))
         PairMethods.__sum_pair_body.launch_n(
-            len(idx), [data_out.data, perm_in, is_first_in_pair.indicator.data]
+            n=len(idx),
+            args=(data_out.data, perm_in, is_first_in_pair.indicator.data),
+        )
+
+    __min_pair_body = trtc.For(
+        param_names=(
+            "data_out",
+            "data_in",
+            "is_first_in_pair",
+            "idx",
+        ),
+        name_iter="i",
+        body="""
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = min(data_in[idx[i]], data_in[idx[i + 1]]);
+        }
+        """,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def min_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__min_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
+        )
+
+    __multiply_pair_body = trtc.For(
+        param_names=(
+            "data_out",
+            "data_in",
+            "is_first_in_pair",
+            "idx",
+        ),
+        name_iter="i",
+        body="""
+        if (is_first_in_pair[i]) {
+            data_out[(int64_t)(i/2)] = data_in[idx[i]] * data_in[idx[i + 1]];
+        }
+        """,
+    )
+
+    @staticmethod
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def multiply_pair(data_out, data_in, is_first_in_pair, idx):
+        trtc.Fill(data_out.data, trtc.DVDouble(0))
+        PairMethods.__multiply_pair_body.launch_n(
+            n=len(idx),
+            args=(
+                data_out.data,
+                data_in.data,
+                is_first_in_pair.indicator.data,
+                idx.data,
+            ),
         )
