@@ -108,7 +108,7 @@ class TestPairMethods:
 
     @staticmethod
     @pytest.mark.parametrize("length", (1, 2, 3, 4))
-    def test_find_pairs(backend_class, length):  # pylint: disable=redefined-outer-name
+    def test_find_pairs_length(backend_class, length):  # pylint: disable=redefined-outer-name
         # arrange
         backend = backend_class()
         n_sd = 4
