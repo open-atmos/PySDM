@@ -143,8 +143,8 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
     # perform rounding as necessary
-    multiplicity[j] = round(nj)
-    multiplicity[k] = round(nk)
+    multiplicity[j] = max(round(nj), 1)
+    multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
     factor_k = nk / multiplicity[k]
     for a in range(0, len(attributes)):
@@ -233,8 +233,8 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         # perform rounding as necessary
-        multiplicity[j] = round(nj)
-        multiplicity[k] = round(nk)
+        multiplicity[j] = max(round(nj), 1)
+        multiplicity[k] = max(round(nk), 1)
         factor_j = nj / multiplicity[j]
         factor_k = nk / multiplicity[k]
         for a in range(0, len(attributes)):
@@ -1138,8 +1138,8 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
     # perform rounding as necessary
-    multiplicity[j] = round(nj)
-    multiplicity[k] = round(nk)
+    multiplicity[j] = max(round(nj), 1)
+    multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
     factor_k = nk / multiplicity[k]
     for a in range(0, len(attributes)):
@@ -1237,8 +1237,8 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
         # perform rounding as necessary
-        multiplicity[j] = round(nj)
-        multiplicity[k] = round(nk)
+        multiplicity[j] = max(round(nj), 1)
+        multiplicity[k] = max(round(nk), 1)
         factor_j = nj / multiplicity[j]
         factor_k = nk / multiplicity[k]
         for a in range(0, len(attributes)):
