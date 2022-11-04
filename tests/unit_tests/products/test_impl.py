@@ -100,7 +100,9 @@ class TestProducts:
         sut = SUT()
         sut.buffer = np.empty(size)
         sut.particulator = namedtuple("_", ("dt", "mesh", "environment"))(
-            dt=dt, mesh=namedtuple("Mesh", ("dv",))(dv=dv), environment={"rhod": rhod}
+            dt=dt,
+            mesh=namedtuple("Mesh", ("dv",))(dv=dv),
+            environment={"rhod": backend.Storage.from_ndarray(np.asarray([rhod]))},
         )
 
         def set_and_notify():
