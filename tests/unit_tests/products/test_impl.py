@@ -88,6 +88,7 @@ class TestProducts:
         n_steps = 10
         dt = 44
         dv = 123
+        rhod = 1.11
         count = 666
         size = 1
 
@@ -98,8 +99,8 @@ class TestProducts:
         backend = CPU()
         sut = SUT()
         sut.buffer = np.empty(size)
-        sut.particulator = namedtuple("_", ("dt", "mesh"))(
-            dt=dt, mesh=namedtuple("Mesh", ("dv",))(dv=dv)
+        sut.particulator = namedtuple("_", ("dt", "mesh", "environment"))(
+            dt=dt, mesh=namedtuple("Mesh", ("dv",))(dv=dv), environment={"rhod": rhod}
         )
 
         def set_and_notify():
@@ -114,8 +115,8 @@ class TestProducts:
         value2 = sut.get()
 
         # assert
-        np.testing.assert_allclose(value1, count / n_steps / dt / dv)
-        np.testing.assert_allclose(value2, count / n_steps / dt / dv)
+        np.testing.assert_allclose(value1, count / n_steps / dt / dv / rhod)
+        np.testing.assert_allclose(value2, count / n_steps / dt / dv / rhod)
 
     @staticmethod
     @pytest.mark.parametrize(
