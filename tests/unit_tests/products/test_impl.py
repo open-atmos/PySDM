@@ -87,6 +87,7 @@ class TestProducts:
         # arrange
         n_steps = 10
         dt = 44
+        dv = 123
         count = 666
         size = 1
 
@@ -97,7 +98,9 @@ class TestProducts:
         backend = CPU()
         sut = SUT()
         sut.buffer = np.empty(size)
-        sut.particulator = namedtuple("_", ("dt",))(dt=dt)
+        sut.particulator = namedtuple("_", ("dt", "mesh"))(
+            dt=dt, mesh=namedtuple("Mesh", ("dv",))(dv=dv)
+        )
 
         def set_and_notify():
             sut.counter = backend.Storage.from_ndarray(np.full(size, count))
@@ -111,8 +114,8 @@ class TestProducts:
         value2 = sut.get()
 
         # assert
-        np.testing.assert_allclose(value1, count / n_steps / dt)
-        np.testing.assert_allclose(value2, count / n_steps / dt)
+        np.testing.assert_allclose(value1, count / n_steps / dt / dv)
+        np.testing.assert_allclose(value2, count / n_steps / dt / dv)
 
     @staticmethod
     @pytest.mark.parametrize(
