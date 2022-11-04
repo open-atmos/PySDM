@@ -9,79 +9,89 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
 from PySDM.physics.constants import si
 
+R_MIN = 0.1 * si.um
+V_MIN = 4 / 3 * np.pi * R_MIN**3
+EC_VALS = [1.0, 0.95, 0.9, 0.8]
+BINS = 32
+N_SD = 2**10
 
-def test_fig_3(plot=True):
-    # TODO #744
-    # pylint: disable=protected-access
 
+def test_fig_3_reduced_resolution(plot=False):
     # arrange
     settings = Settings0D()
-
-    rmin = 0.1 * si.um
-    vmin = 4 / 3 * np.pi * rmin**3
-    settings.fragmentation = AlwaysN(n=8, vmin=vmin)
-
-    settings.n_sd = 2**13
+    settings.fragmentation = AlwaysN(n=8, vmin=V_MIN)
+    settings.n_sd = N_SD
     settings.radius_bins_edges = np.logspace(
-        np.log10(1.0 * si.um), np.log10(10000 * si.um), num=128, endpoint=True
+        np.log10(10 * si.um), np.log10(10000 * si.um), num=BINS, endpoint=True
     )
-
     settings.warn_overflows = False
-    settings._steps = [0, 100, 200]
-    cmap = matplotlib.cm.get_cmap("viridis")
+    settings._steps = [200]  # pylint: disable=protected-access
+    data_x = {}
+    data_y = {}
 
-    ec_vals = [1.0, 0.95, 0.9, 0.8]
+    # act
+    lbl = "initial"
+    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0])
 
-    # act / plot
-    (data_x, data_y, _) = run_box_breakup(settings, [0])
-    _, axs = pyplot.subplots(ncols=2, sharey=True, figsize=(10, 4), dpi=200)
-    axs[0].step(
-        data_x, data_y[0] * settings.rho, color="k", linestyle="--", label="initial"
-    )
-    axs[1].step(
-        data_x, data_y[0] * settings.rho, color="k", linestyle="--", label="initial"
-    )
-    for (i, ec_value) in enumerate(ec_vals):
+    for (i, ec_value) in enumerate(EC_VALS):
         settings.coal_eff = ConstEc(Ec=ec_value)
-        (data_x, data_y, _) = run_box_breakup(settings)
-        for (j, _) in enumerate(settings._steps):
-            if j == 0:
-                continue
-            lbl = "Ec = " + str(ec_value)
-            if ec_value == 1.0:
-                lbl = "Ec = 1.0"
-            axs[j - 1].step(
-                data_x,
-                data_y[j] * settings.rho,
-                color=cmap(i / len(ec_vals)),
-                label=lbl
-                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-                else "",
-            )
+        lbl = "Ec = " + str(ec_value)
+        if ec_value == 1.0:
+            lbl = "Ec = 1.0"
+        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings)
 
+    lbl = "Straub 2010"
     settings.coal_eff = Straub2010Ec()
-    (data_x, data_y, _) = run_box_breakup(settings)
-    for (j, _) in enumerate(settings._steps):
-        if j == 0:
-            continue
-        lbl = "Straub 2010"
-        axs[j - 1].step(
-            data_x,
-            data_y[j] * settings.rho,
-            color="m",
+    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings)
+
+    # plot
+    lbl = "initial"
+    pyplot.step(
+        data_x[lbl], data_y[lbl][0] * settings.rho, color="k", linestyle="--", label=lbl
+    )
+    for (i, ec_value) in enumerate(EC_VALS):
+        lbl = "Ec = " + str(ec_value)
+        if ec_value == 1.0:
+            lbl = "Ec = 1.0"
+        pyplot.step(
+            data_x[lbl],
+            data_y[lbl][0] * settings.rho,
+            color=matplotlib.cm.get_cmap("viridis")(i / len(EC_VALS)),
             label=lbl if lbl not in pyplot.gca().get_legend_handles_labels()[1] else "",
         )
 
-    axs[0].set_xscale("log")
-    axs[1].set_xscale("log")
-    axs[0].set_xlabel("particle radius (um)")
-    axs[1].set_xlabel("particle radius (um)")
-    axs[0].set_ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
-    axs[0].legend()
-    axs[0].set_title("t = 100sec")
-    axs[1].set_title("t = 200sec")
+    lbl = "Straub 2010"
+    pyplot.step(
+        data_x[lbl],
+        data_y[lbl][0] * settings.rho,
+        color="m",
+        label=lbl if lbl not in pyplot.gca().get_legend_handles_labels()[1] else "",
+    )
+
+    pyplot.xscale("log")
+    pyplot.xlabel("particle radius (um)")
+    pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
+    pyplot.legend()
     if plot:
         pyplot.show()
 
     # assert
-    # TODO #744
+    for datum_x in data_x.values():
+        np.testing.assert_array_equal(data_x["initial"], datum_x)
+
+    peaks_expected = {
+        "initial": (30, 0.017),
+        "Ec = 1.0": (1600, 0.015),
+        "Ec = 0.95": (800, 0.01),
+        "Ec = 0.9": (200, 0.01),
+        "Ec = 0.8": (20, 0.0125),
+        "Straub 2010": (200, 0.0125),
+    }
+
+    for lbl, x_y in peaks_expected.items():
+        print(lbl)
+        peak = np.argmax(data_y[lbl][0])
+        np.testing.assert_approx_equal(data_x[lbl][peak], x_y[0], significant=1)
+        np.testing.assert_approx_equal(
+            data_y[lbl][0][peak] * settings.rho, x_y[1], significant=1
+        )
