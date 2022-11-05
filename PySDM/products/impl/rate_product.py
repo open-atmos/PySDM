@@ -22,8 +22,13 @@ class RateProduct(Product):
 
     def _impl(self, **kwargs):
         self._download_to_buffer(self.counter)
+        result = self.buffer.copy()
         if self.timestep_count != 0:
-            self.buffer[:] /= self.timestep_count * self.particulator.dt
+            result[:] /= (
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            )
             self.timestep_count = 0
+            self._download_to_buffer(self.particulator.environment["rhod"])
+            result[:] /= self.buffer
         self.counter[:] = 0
-        return self.buffer
+        return result
