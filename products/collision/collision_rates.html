@@ -39,35 +39,35 @@ from PySDM.products.impl.rate_product import RateProduct
 
 
 class CollisionRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;collision_rate_deficit&#34;, dynamic=&#34;Collision&#34;
         )
 
 
 class CollisionRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;collision_rate&#34;, dynamic=&#34;Collision&#34;
         )
 
 
 class CoalescenceRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;coalescence_rate&#34;, dynamic=&#34;Collision&#34;
         )
 
 
 class BreakupRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Collision&#34;
         )
 
 
 class BreakupRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate_deficit&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
@@ -84,7 +84,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <dl>
 <dt id="PySDM.products.collision.collision_rates.BreakupRateDeficitPerGridbox"><code class="flex name class">
 <span>class <span class="ident">BreakupRateDeficitPerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
+<span>(</span><span>name=None, unit='s^-1 kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -93,7 +93,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BreakupRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate_deficit&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
@@ -106,7 +106,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 </dd>
 <dt id="PySDM.products.collision.collision_rates.BreakupRatePerGridbox"><code class="flex name class">
 <span>class <span class="ident">BreakupRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
+<span>(</span><span>name=None, unit='s^-1 kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -115,7 +115,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BreakupRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;breakup_rate&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
@@ -128,7 +128,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 </dd>
 <dt id="PySDM.products.collision.collision_rates.CoalescenceRatePerGridbox"><code class="flex name class">
 <span>class <span class="ident">CoalescenceRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
+<span>(</span><span>name=None, unit='s^-1 kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -137,7 +137,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CoalescenceRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;coalescence_rate&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
@@ -150,7 +150,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 </dd>
 <dt id="PySDM.products.collision.collision_rates.CollisionRateDeficitPerGridbox"><code class="flex name class">
 <span>class <span class="ident">CollisionRateDeficitPerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
+<span>(</span><span>name=None, unit='s^-1 kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -159,7 +159,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CollisionRateDeficitPerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;collision_rate_deficit&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>
@@ -172,7 +172,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 </dd>
 <dt id="PySDM.products.collision.collision_rates.CollisionRatePerGridbox"><code class="flex name class">
 <span>class <span class="ident">CollisionRatePerGridbox</span></span>
-<span>(</span><span>name=None, unit='s^-1')</span>
+<span>(</span><span>name=None, unit='s^-1 kg^-1')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -181,7 +181,7 @@ class BreakupRateDeficitPerGridbox(RateProduct):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class CollisionRatePerGridbox(RateProduct):
-    def __init__(self, name=None, unit=&#34;s^-1&#34;):
+    def __init__(self, name=None, unit=&#34;s^-1 kg^-1&#34;):
         super().__init__(
             name=name, unit=unit, counter=&#34;collision_rate&#34;, dynamic=&#34;Collision&#34;
         )</code></pre>

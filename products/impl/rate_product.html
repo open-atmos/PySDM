@@ -51,11 +51,16 @@ class RateProduct(Product):
 
     def _impl(self, **kwargs):
         self._download_to_buffer(self.counter)
+        result = self.buffer.copy()
         if self.timestep_count != 0:
-            self.buffer[:] /= self.timestep_count * self.particulator.dt
+            result[:] /= (
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            )
             self.timestep_count = 0
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+            result[:] /= self.buffer
         self.counter[:] = 0
-        return self.buffer</code></pre>
+        return result</code></pre>
 </details>
 </section>
 <section>
@@ -95,11 +100,16 @@ class RateProduct(Product):
 
     def _impl(self, **kwargs):
         self._download_to_buffer(self.counter)
+        result = self.buffer.copy()
         if self.timestep_count != 0:
-            self.buffer[:] /= self.timestep_count * self.particulator.dt
+            result[:] /= (
+                self.timestep_count * self.particulator.dt * self.particulator.mesh.dv
+            )
             self.timestep_count = 0
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+            result[:] /= self.buffer
         self.counter[:] = 0
-        return self.buffer</code></pre>
+        return result</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
