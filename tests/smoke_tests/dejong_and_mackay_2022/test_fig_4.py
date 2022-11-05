@@ -11,19 +11,22 @@ from PySDM.physics.constants import si
 CMAP = matplotlib.cm.get_cmap("viridis")
 N_SD = 2**12
 DT = 1 * si.s
-BINS_EDGES = np.logspace(
-    np.log10(5e0 * si.um), np.log10(5e3 * si.um), num=64, endpoint=True
-)
+
+
+def bins_edges(num):
+    return np.logspace(
+        np.log10(5e0 * si.um), np.log10(5e3 * si.um), num=num, endpoint=True
+    )
 
 
 class TestFig4:
     @staticmethod
     def test_fig_4a(plot=False):
         # arrange
-        settings = Settings0D()
+        settings = Settings0D(seed=44)
         settings.coal_eff = ConstEc(Ec=0.95)
         settings.n_sd = N_SD
-        settings.radius_bins_edges = BINS_EDGES
+        settings.radius_bins_edges = bins_edges(32)
         settings.warn_overflows = False
         settings.dt = DT
         nf_vals = [1, 4, 16, 64]
@@ -90,7 +93,7 @@ class TestFig4:
         settings.dt = DT
         settings.n_sd = N_SD
         settings.warn_overflows = False
-        settings.radius_bins_edges = BINS_EDGES
+        settings.radius_bins_edges = bins_edges(64)
         x_0 = settings.X0
         mu_vals = [4 * x_0, x_0, x_0 / 4]
         settings.coal_eff = ConstEc(Ec=0.99)
