@@ -94,22 +94,28 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
         new_mult_k = new_mult_k_test
         gamma_tmp = m + 1
         gamma_deficit = gamma[i] - gamma_tmp
-    # 2. Compute the new multiplicities and particle sizes, with rounding
+
+    # 2.
     for a in range(0, len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
+
     if multiplicity[j] > take_from_j:
         nj = multiplicity[j] - take_from_j
         nk = new_mult_k
     else:
         nj = new_mult_k / 2
-        if round(nj) == 0:
-            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-            return
         nk = nj
+
+    if multiplicity[j] <= take_from_j and round(nj) == 0:
+        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
+        return
+
+    if multiplicity[j] <= take_from_j:
         for a in range(0, len(attributes)):
             attributes[a, j] = attributes[a, k]
+
     # add up the product
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
@@ -185,20 +191,24 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
                 take_from_j = take_from_j_test
                 new_mult_k = new_mult_k_test
                 gamma_tmp = m + 1
-        # Compute the new multiplicities and particle sizes, with rounding
+        # 2.
         for a in range(0, len(attributes)):
             attributes[a, k] *= multiplicity[k]
             attributes[a, k] += take_from_j * attributes[a, j]
             attributes[a, k] /= new_mult_k
+
         if multiplicity[j] > take_from_j:
             nj = multiplicity[j] - take_from_j
             nk = new_mult_k
         else:
             nj = new_mult_k / 2
-            if round(nj) == 0:
-                atomic_add(breakup_rate_deficit, cid, gamma_tmp * multiplicity[k])
-                return
             nk = nj
+
+        if multiplicity[j] <= take_from_j and round(nj) == 0:
+            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
+            return
+
+        if multiplicity[j] <= take_from_j:
             for a in range(0, len(attributes)):
                 attributes[a, j] = attributes[a, k]
 
