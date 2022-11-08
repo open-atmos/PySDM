@@ -620,7 +620,6 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.xfail()  # TODO #871
     def test_nonnegative_even_if_overflow(
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
