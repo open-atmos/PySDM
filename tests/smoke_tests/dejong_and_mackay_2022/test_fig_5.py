@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
 
+from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.physics import si
@@ -11,7 +12,8 @@ from PySDM.physics import si
 
 def test_fig_5(plot=False):
     # arrange
-    settings = Settings0D(seed=44)
+    formulae = Formulae(seed=44, fragmentation_function="Straub2010Nf")
+    settings = Settings0D(formulae)
     steps = [0, 30, 60, 180, 540]
     settings._steps = steps  # pylint: disable=protected-access
     settings.n_sd = 2**11

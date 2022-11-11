@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
 
+from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN, Gaussian
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
 from PySDM.physics.constants import si
@@ -23,7 +24,8 @@ class TestFig4:
     @staticmethod
     def test_fig_4a(plot=False):
         # arrange
-        settings = Settings0D(seed=44)
+        formulae = Formulae(seed=44)
+        settings = Settings0D(formulae)
         settings.coal_eff = ConstEc(Ec=0.95)
         settings.n_sd = N_SD
         settings.radius_bins_edges = bins_edges(32)
@@ -89,7 +91,8 @@ class TestFig4:
     @staticmethod
     def test_fig_4b(plot=False):
         # arrange
-        settings = Settings0D()
+        formulae = Formulae(fragmentation_function="Gaussian")
+        settings = Settings0D(formulae)
         settings.dt = DT
         settings.n_sd = N_SD
         settings.warn_overflows = False

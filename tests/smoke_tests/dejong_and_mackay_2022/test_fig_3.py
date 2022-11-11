@@ -5,6 +5,7 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
 
+from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
 from PySDM.physics.constants import si
@@ -16,9 +17,10 @@ BINS = 32
 N_SD = 2**10
 
 
-def test_fig_3_reduced_resolution(plot=False):
+def test_fig_3_reduced_resolution(plot=True):
     # arrange
-    settings = Settings0D()
+    formulae = Formulae(seed=44)
+    settings = Settings0D(formulae)
     settings.fragmentation = AlwaysN(n=8, vmin=V_MIN)
     settings.n_sd = N_SD
     settings.radius_bins_edges = np.logspace(
