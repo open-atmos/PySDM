@@ -41,6 +41,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
         fragmentation_function: str = "AlwaysN",
+        handle_all_breakups: bool = False,
     ):
         # initialisation of the fields below is just to silence pylint and to enable code hints
         # in PyCharm and alike, all these fields are later overwritten within this ctor
@@ -73,6 +74,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self.constants = constants
         self.seed = seed
         self.fastmath = fastmath
+        self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
         self.trivia = _magick(

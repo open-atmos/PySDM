@@ -706,7 +706,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
@@ -754,7 +754,6 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
-            handle_all_breakups=True,
         )
 
         # Assert

@@ -251,6 +251,72 @@ class CollisionsMethods(BackendMethods):
     def __init__(self):
         BackendMethods.__init__(self)
 
+        _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
+
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def __collision_coalescence_breakup_body(
+            *,
+            multiplicity,
+            idx,
+            length,
+            attributes,
+            gamma,
+            rand,
+            Ec,
+            Eb,
+            n_fragment,
+            fragment_size,
+            healthy,
+            cell_id,
+            coalescence_rate,
+            breakup_rate,
+            breakup_rate_deficit,
+            is_first_in_pair,
+            max_multiplicity,
+            warn_overflows,
+            volume,
+        ):
+            # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
+            for i in numba.prange(length // 2):
+                if gamma[i] == 0:
+                    continue
+                bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) > 0
+                if bouncing:
+                    continue
+                j, k = pair_indices(i, idx, is_first_in_pair)
+
+                if rand[i] - Ec[i] < 0:
+                    coalesce(
+                        i,
+                        j,
+                        k,
+                        cell_id[j],
+                        multiplicity,
+                        gamma,
+                        attributes,
+                        coalescence_rate,
+                    )
+                else:
+                    _break_up(
+                        i,
+                        j,
+                        k,
+                        cell_id[j],
+                        multiplicity,
+                        gamma,
+                        attributes,
+                        n_fragment,
+                        fragment_size,
+                        max_multiplicity,
+                        breakup_rate,
+                        breakup_rate_deficit,
+                        warn_overflows,
+                        volume,
+                    )
+                flag_zero_multiplicity(j, k, multiplicity, healthy)
+
+        self.__collision_coalescence_breakup_body = __collision_coalescence_breakup_body
+
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
             straub_p1 = self.formulae.fragmentation_function.p1
             straub_p2 = self.formulae.fragmentation_function.p2
@@ -453,87 +519,6 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair=is_first_in_pair.indicator.data,
         )
 
-    @staticmethod
-    @numba.njit(**conf.JIT_FLAGS)
-    def __collision_coalescence_breakup_body(
-        *,
-        multiplicity,
-        idx,
-        length,
-        attributes,
-        gamma,
-        rand,
-        Ec,
-        Eb,
-        n_fragment,
-        fragment_size,
-        healthy,
-        cell_id,
-        coalescence_rate,
-        breakup_rate,
-        breakup_rate_deficit,
-        is_first_in_pair,
-        max_multiplicity,
-        warn_overflows,
-        volume,
-        handle_all_breakups,
-    ):
-        # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
-        for i in numba.prange(length // 2):
-            if gamma[i] == 0:
-                continue
-            bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) > 0
-            if bouncing:
-                continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
-
-            if rand[i] - Ec[i] < 0:
-                coalesce(
-                    i,
-                    j,
-                    k,
-                    cell_id[j],
-                    multiplicity,
-                    gamma,
-                    attributes,
-                    coalescence_rate,
-                )
-            elif handle_all_breakups:
-                break_up_while(
-                    i,
-                    j,
-                    k,
-                    cell_id[j],
-                    multiplicity,
-                    gamma,
-                    attributes,
-                    n_fragment,
-                    fragment_size,
-                    max_multiplicity,
-                    breakup_rate,
-                    breakup_rate_deficit,
-                    warn_overflows,
-                    volume,
-                )
-            else:
-                break_up(
-                    i,
-                    j,
-                    k,
-                    cell_id[j],
-                    multiplicity,
-                    gamma,
-                    attributes,
-                    n_fragment,
-                    fragment_size,
-                    max_multiplicity,
-                    breakup_rate,
-                    breakup_rate_deficit,
-                    warn_overflows,
-                    volume,
-                )
-            flag_zero_multiplicity(j, k, multiplicity, healthy)
-
     def collision_coalescence_breakup(
         self,
         *,
@@ -554,7 +539,6 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         warn_overflows,
         volume,
-        handle_all_breakups,
     ):
         # pylint: disable=too-many-locals
         max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
@@ -578,7 +562,6 @@ class CollisionsMethods(BackendMethods):
             max_multiplicity=max_multiplicity,
             warn_overflows=warn_overflows,
             volume=volume.data,
-            handle_all_breakups=handle_all_breakups,
         )
 
     @staticmethod
