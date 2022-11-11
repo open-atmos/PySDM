@@ -10,9 +10,6 @@ from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
 from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_numba.warnings import warn
-from PySDM.physics.constants import PI, PI_4_3, si, sqrt_pi, sqrt_two
-
-CM = si.cm
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -250,89 +247,75 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
 
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p1(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    CW,
-    frag_size,
-    rand,
-):
-    E_D1 = 0.04 * CM
-    delD1 = 0.0125 * CW[i] ** (1 / 2)
-    var_1 = delD1**2 / 12
-    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
-    mu1 = np.log(E_D1) - sigma1**2 / 2
-    X = rand[i]
-
-    frag_size[i] = np.exp(
-        mu1
-        - sigma1 / sqrt_two / sqrt_pi / np.log(2) * np.log((1 / 2 + X) / (3 / 2 - X))
-    )
-    frag_size[i] = PI / 6 * frag_size[i] ** 3
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p2(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    CW,
-    frag_size,
-    rand,
-):
-    mu2 = 0.095 * CM
-    delD2 = 0.007 * (CW[i] - 21.0)
-    sigma2 = delD2**2 / 12
-    X = rand[i]
-
-    frag_size[i] = mu2 - sigma2 / sqrt_two / sqrt_pi / np.log(2) * np.log(
-        (1 / 2 + X) / (3 / 2 - X)
-    )
-    frag_size[i] = PI / 6 * frag_size[i] ** 3
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p3(  # pylint: disable=too-many-arguments,unused-argument
-    i,
-    CW,
-    ds,
-    frag_size,
-    rand,
-):
-    mu3 = 0.9 * ds[i]
-    delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
-    sigma3 = delD3**2 / 12
-    X = rand[i]
-
-    frag_size[i] = mu3 - sigma3 / sqrt_two / sqrt_pi / np.log(2) * np.log(
-        (1 / 2 + X) / (3 / 2 - X)
-    )
-    frag_size[i] = PI / 6 * frag_size[i] ** 3
-
-
-@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def straub_p4(  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
-    i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3
-):
-    E_D1 = 0.04 * CM
-    delD1 = 0.0125 * CW[i] ** (1 / 2)
-    var_1 = delD1**2 / 12
-    sigma1 = np.sqrt(np.log(var_1 / E_D1**2 + 1))
-    mu1 = np.log(E_D1) - sigma1**2 / 2
-    mu2 = 0.095 * CM
-    delD2 = 0.007 * (CW[i] - 21.0)
-    sigma2 = delD2**2 / 12
-    mu3 = 0.9 * ds[i]
-    delD3 = 0.01 * (0.76 * CW[i] ** (1 / 2) + 1.0)
-    sigma3 = delD3**2 / 12
-
-    M31 = Nr1[i] * np.exp(3 * mu1 + 9 * sigma1**2 / 2)
-    M32 = Nr2[i] * (mu2**3 + 3 * mu2 * sigma2**2)
-    M33 = Nr3[i] * (mu3**3 + 3 * mu3 * sigma3**2)
-
-    M34 = v_max[i] / PI_4_3 * 8 + ds[i] ** 3 - M31 - M32 - M33
-    frag_size[i] = PI / 6 * M34
-
-
 class CollisionsMethods(BackendMethods):
+    def __init__(self):
+        BackendMethods.__init__(self)
+
+        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
+            straub_p1 = self.formulae.fragmentation_function.p1
+            straub_p2 = self.formulae.fragmentation_function.p2
+            straub_p3 = self.formulae.fragmentation_function.p3
+            straub_p4 = self.formulae.fragmentation_function.p4
+            straub_sigma1 = self.formulae.fragmentation_function.sigma1
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __straub_fragmentation_body(
+                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
+                    if rand[i] < Nr1[i] / Nrt[i]:
+                        frag_size[i] = straub_p1(
+                            rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
+                        )
+                    elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
+                        frag_size[i] = straub_p2(
+                            CW[i], (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
+                        )
+                    elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
+                        frag_size[i] = straub_p3(
+                            CW[i],
+                            ds[i],
+                            (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]),
+                        )
+                    else:
+                        frag_size[i] = straub_p4(
+                            CW[i], ds[i], v_max[i], Nr1[i], Nr2[i], Nr3[i]
+                        )
+
+            self.__straub_fragmentation_body = __straub_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "Gaussian":
+            gaussian_frag_size = self.formulae.fragmentation_function.frag_size
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __gauss_fragmentation_body(
+                *, mu, sigma, frag_size, rand
+            ):  # pylint: disable=too-many-arguments
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    frag_size[i] = gaussian_frag_size(mu, sigma, rand[i])
+
+            self.__gauss_fragmentation_body = __gauss_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
+            feingold1988_frag_size = self.formulae.fragmentation_function.frag_size
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            # pylint: disable=too-many-arguments
+            def __feingold1988_fragmentation_body(
+                *, scale, frag_size, x_plus_y, rand, fragtol
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    frag_size[i] = feingold1988_frag_size(
+                        scale, rand[i], x_plus_y[i], fragtol
+                    )
+
+            self.__feingold1988_fragmentation_body = __feingold1988_fragmentation_body
+
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
     def __adaptive_sdm_end_body(dt_left, n_cell, cell_start):
@@ -691,17 +674,6 @@ class CollisionsMethods(BackendMethods):
             nfmax=nfmax,
         )
 
-    @staticmethod
-    @numba.njit(**{**conf.JIT_FLAGS})
-    # pylint: disable=too-many-arguments
-    def __feingold1988_fragmentation_body(*, scale, frag_size, x_plus_y, rand, fragtol):
-        """
-        Scaled exponential PDF
-        """
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol)
-            frag_size[i] = -scale * np.log(log_arg)
-
     def feingold1988_fragmentation(
         self,
         *,
@@ -732,20 +704,6 @@ class CollisionsMethods(BackendMethods):
             nfmax=nfmax,
         )
 
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    @numba.njit(**{**conf.JIT_FLAGS})
-    def __gauss_fragmentation_body(*, mu, sigma, frag_size, rand):
-        """
-        Gaussian PDF
-        CDF = 1/2(1 + erf(x/sqrt(2)));
-        approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
-        """
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            frag_size[i] = mu - sigma / sqrt_two / sqrt_pi / np.log(2) * np.log(
-                (1 / 2 + rand[i]) / (3 / 2 - rand[i])
-            )
-
     def gauss_fragmentation(
         self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
     ):
@@ -763,26 +721,6 @@ class CollisionsMethods(BackendMethods):
             vmin=vmin,
             nfmax=nfmax,
         )
-
-    @staticmethod
-    # pylint: disable=too-many-arguments
-    @numba.njit(**(conf.JIT_FLAGS))
-    def __straub_fragmentation_body(
-        *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
-    ):
-        for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
-            straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-            if rand[i] < Nr1[i] / Nrt[i]:
-                rand[i] = rand[i] * Nrt[i] / Nr1[i]
-                straub_p1(i, CW, frag_size, rand)
-            elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
-                straub_p2(i, CW, frag_size, rand)
-            elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])
-                straub_p3(i, CW, ds, frag_size, rand)
-            else:
-                straub_p4(i, CW, ds, v_max, frag_size, Nr1, Nr2, Nr3)
 
     def straub_fragmentation(
         # pylint: disable=too-many-arguments,too-many-locals
