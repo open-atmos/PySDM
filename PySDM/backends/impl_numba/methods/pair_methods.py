@@ -37,7 +37,7 @@ class PairMethods(BackendMethods):
                 cell_id[idx[i]] == cell_id[idx[i + 1]]
                 and (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
             )
-        is_first_in_pair[-1] = False
+        is_first_in_pair[length - 1] = False
 
     @staticmethod
     def find_pairs(cell_start, is_first_in_pair, cell_id, cell_idx, idx):
