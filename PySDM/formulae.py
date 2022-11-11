@@ -217,6 +217,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
+    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
     formulae = {"__name__": obj.__class__.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
@@ -274,6 +275,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
+    """selects a given physics logic and instantiates it passing the constants catalogue"""
     for name, cls in choices.items():
         if name == value:
             return cls(constants)
@@ -288,6 +290,9 @@ def _choices(module):
 
 @lru_cache()
 def _magick(value, module, fastmath, constants, dimensional_analysis):
+    """
+    boosts (`PySDM.formulae.Formulae._boost`) the selected physics logic
+    """
     return _boost(
         _pick(value, _choices(module), constants),
         fastmath,
