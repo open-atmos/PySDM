@@ -76,11 +76,10 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     gamma_tmp = 0
     gamma_deficit = gamma[i]
     for m in range(int(gamma[i])):
-        take_from_j_test = new_mult_k_test + take_from_j_test
-        new_mult_k_test = (
-            new_mult_k_test * (volume[j] / fragment_size[i])
-            + n_fragment[i] * multiplicity[k]
-        )
+        take_from_j_test += new_mult_k_test
+        new_mult_k_test *= volume[j] / fragment_size[i]
+        new_mult_k_test += n_fragment[i] * multiplicity[k]
+
         # check for overflow of multiplicity
         if new_mult_k_test > max_multiplicity:
             overflow_flag = True
@@ -89,13 +88,11 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
         if take_from_j_test > multiplicity[j]:
             break
 
-        # all tests passed
         take_from_j = take_from_j_test
         new_mult_k = new_mult_k_test
         gamma_tmp = m + 1
         gamma_deficit = gamma[i] - gamma_tmp
 
-    # 2.
     for a in range(0, len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
@@ -119,6 +116,7 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     # add up the product
     atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+
     # perform rounding as necessary
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
@@ -172,13 +170,12 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
             take_from_j = 0
             new_mult_k_test = 0
             new_mult_k = multiplicity[k]
+            nfi = (volume[j] + volume[k]) / fragment_size[i]
             for m in range(int(gamma_deficit)):
-                take_from_j_test = new_mult_k_test + take_from_j_test
-                nfi = (volume[j] + volume[k]) / fragment_size[i]
-                new_mult_k_test = (
-                    new_mult_k_test * (volume[j] / fragment_size[i])
-                    + nfi * multiplicity[k]
-                )
+                take_from_j_test += new_mult_k_test
+                new_mult_k_test *= volume[j] / fragment_size[i]
+                new_mult_k_test += nfi * multiplicity[k]
+
                 # check for overflow of multiplicity
                 if new_mult_k_test > max_multiplicity:
                     overflow_flag = True
@@ -187,11 +184,10 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
                 if take_from_j_test > multiplicity[j]:
                     break
 
-                # all tests passed
                 take_from_j = take_from_j_test
                 new_mult_k = new_mult_k_test
                 gamma_tmp = m + 1
-        # 2.
+
         for a in range(0, len(attributes)):
             attributes[a, k] *= multiplicity[k]
             attributes[a, k] += take_from_j * attributes[a, j]
@@ -213,6 +209,7 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
                 attributes[a, j] = attributes[a, k]
 
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
+
         # perform rounding as necessary
         multiplicity[j] = max(round(nj), 1)
         multiplicity[k] = max(round(nk), 1)
