@@ -24,22 +24,25 @@ class TestFig4:
     @staticmethod
     def test_fig_4a(plot=False):
         # arrange
-        formulae = Formulae(seed=44)
-        settings = Settings0D(formulae)
-        settings.coal_eff = ConstEc(Ec=0.95)
-        settings.n_sd = N_SD
-        settings.radius_bins_edges = bins_edges(32)
-        settings.warn_overflows = False
-        settings.dt = DT
+        settings0 = Settings0D(seed=44)
+        settings0.n_sd = N_SD
+        settings0.radius_bins_edges = bins_edges(32)
+
         nf_vals = [1, 4, 16, 64]
         data_x = {}
         data_y = {}
 
         # act
         lbl = "initial"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0])
+        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0])
         for (i, nf_val) in enumerate(nf_vals):
-            settings.fragmentation = AlwaysN(n=nf_val)
+            settings = Settings0D(fragmentation=AlwaysN(n=nf_val), seed=44)
+            settings.n_sd = settings0.n_sd
+            settings.radius_bins_edges = settings0.radius_bins_edges
+            settings.coal_eff = ConstEc(Ec=0.95)
+            settings.warn_overflows = False
+            settings.dt = DT
+
             lbl = "n_f = " + str(nf_val)
             (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [120])
 
@@ -91,25 +94,26 @@ class TestFig4:
     @staticmethod
     def test_fig_4b(plot=False):
         # arrange
-        formulae = Formulae(fragmentation_function="Gaussian")
-        settings = Settings0D(formulae)
-        settings.dt = DT
-        settings.n_sd = N_SD
-        settings.warn_overflows = False
-        settings.radius_bins_edges = bins_edges(64)
-        x_0 = settings.X0
+        settings0 = Settings0D()
+        settings0.n_sd = N_SD
+        settings0.radius_bins_edges = bins_edges(64)
+        x_0 = Settings0D.X0
         mu_vals = [4 * x_0, x_0, x_0 / 4]
-        settings.coal_eff = ConstEc(Ec=0.99)
         data_x = {}
         data_y = {}
 
         # act
         lbl = "initial"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0])
+        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0])
         for (i, mu_val) in enumerate(mu_vals):
-            settings.fragmentation = Gaussian(
-                mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None
+            settings = Settings0D(
+                fragmentation=Gaussian(mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None)
             )
+            settings.dt = DT
+            settings.n_sd = settings0.n_sd
+            settings.warn_overflows = False
+            settings.radius_bins_edges = settings0.radius_bins_edges
+            settings.coal_eff = ConstEc(Ec=0.99)
             lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
             (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [120])
 
