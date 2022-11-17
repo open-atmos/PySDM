@@ -49,38 +49,25 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
-    i,
-    j,
-    k,
-    cid,
-    multiplicity,
-    gamma,
-    attributes,
-    n_fragment,
-    fragment_size,
-    max_multiplicity,
-    breakup_rate,
-    breakup_rate_deficit,
-    warn_overflows,
-    volume,
-):  # pylint: disable=too-many-branches
+def breakup_fun0(
+    rng, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
+):  # pylint: disable=too-many-arguments
     overflow_flag = False
+    gamma_tmp = 0
     take_from_j_test = multiplicity[k]
+    take_from_j = 0
     new_mult_k_test = 0
     new_mult_k = multiplicity[k]
-    take_from_j = 0
-    gamma_tmp = 0
-    gamma_deficit = gamma[i]
-    for m in range(int(gamma[i])):
+    for m in range(rng):
         take_from_j_test += new_mult_k_test
-        new_mult_k_test *= volume[j] / fragment_size[i]
-        new_mult_k_test += n_fragment[i] * multiplicity[k]
+        new_mult_k_test *= volume[j] / fragment_size_i
+        new_mult_k_test += nfi * multiplicity[k]
 
         # check for overflow of multiplicity
         if new_mult_k_test > max_multiplicity:
             overflow_flag = True
             break
+
         # check for new_n > 0
         if take_from_j_test > multiplicity[j]:
             break
@@ -88,8 +75,13 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
         take_from_j = take_from_j_test
         new_mult_k = new_mult_k_test
         gamma_tmp = m + 1
-        gamma_deficit = gamma[i] - gamma_tmp
+    return take_from_j, new_mult_k, gamma_tmp, overflow_flag
 
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def breakup_fun1(
+    j, k, attributes, multiplicity, take_from_j, new_mult_k
+):  # pylint: disable=too-many-arguments
     for a in range(0, len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
@@ -101,20 +93,17 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
     else:
         nj = new_mult_k / 2
         nk = nj
+    return nj, nk
 
-    if multiplicity[j] <= take_from_j and round(nj) == 0:
-        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-        return
 
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def breakup_fun2(
+    j, k, nj, nk, attributes, multiplicity, take_from_j
+):  # pylint: disable=too-many-arguments
     if multiplicity[j] <= take_from_j:
         for a in range(0, len(attributes)):
             attributes[a, j] = attributes[a, k]
 
-    # add up the product
-    atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
-    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
-
-    # perform rounding as necessary
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -123,13 +112,9 @@ def break_up(  # pylint: disable=too-many-arguments,unused-argument,too-many-loc
         attributes[a, k] *= factor_k
         attributes[a, j] *= factor_j
 
-    if overflow_flag:
-        if warn_overflows:
-            warn("overflow", __file__)
-
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-many-statements,too-many-locals
+def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     i,
     j,
     k,
@@ -144,14 +129,58 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
     breakup_rate_deficit,
     warn_overflows,
     volume,
-):  # pylint: disable=too-many-branches
-    gamma_tmp = 0
+):
+    take_from_j, new_mult_k, gamma_tmp, overflow_flag = breakup_fun0(
+        gamma[i],
+        j,
+        k,
+        multiplicity,
+        volume,
+        n_fragment[i],
+        fragment_size[i],
+        max_multiplicity,
+    )
+    gamma_deficit = gamma[i] - gamma_tmp
+
+    nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
+
+    if multiplicity[j] <= take_from_j and round(nj) == 0:
+        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
+        return
+
+    atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
+    atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
+
+    breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
+
+    if overflow_flag and warn_overflows:
+        warn("overflow", __file__)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def break_up_while(
+    i,
+    j,
+    k,
+    cid,
+    multiplicity,
+    gamma,
+    attributes,
+    n_fragment,
+    fragment_size,
+    max_multiplicity,
+    breakup_rate,
+    breakup_rate_deficit,
+    warn_overflows,
+    volume,
+):  # pylint: disable=too-many-arguments,unused-argument,too-many-locals
     gamma_deficit = gamma[i]
     overflow_flag = False
     while gamma_deficit > 0:
         if multiplicity[k] == multiplicity[j]:
             take_from_j = multiplicity[j]
             new_mult_k = (volume[j] + volume[k]) / fragment_size[i] * multiplicity[k]
+
             # check for overflow
             if new_mult_k > max_multiplicity:
                 atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
@@ -160,68 +189,33 @@ def break_up_while(  # pylint: disable=too-many-arguments,unused-argument,too-ma
             gamma_tmp = gamma_deficit
 
         else:
-            # reorder droplets if necessary
             if multiplicity[k] > multiplicity[j]:
                 j, k = k, j
-            take_from_j_test = multiplicity[k]
-            take_from_j = 0
-            new_mult_k_test = 0
-            new_mult_k = multiplicity[k]
-            nfi = (volume[j] + volume[k]) / fragment_size[i]
-            for m in range(int(gamma_deficit)):
-                take_from_j_test += new_mult_k_test
-                new_mult_k_test *= volume[j] / fragment_size[i]
-                new_mult_k_test += nfi * multiplicity[k]
+            take_from_j, new_mult_k, gamma_tmp, overflow_flag = breakup_fun0(
+                gamma_deficit,
+                j,
+                k,
+                multiplicity,
+                volume,
+                (volume[j] + volume[k]) / fragment_size[i],
+                fragment_size[i],
+                max_multiplicity,
+            )
 
-                # check for overflow of multiplicity
-                if new_mult_k_test > max_multiplicity:
-                    overflow_flag = True
-                    break
-                # check for new_n > 0
-                if take_from_j_test > multiplicity[j]:
-                    break
-
-                take_from_j = take_from_j_test
-                new_mult_k = new_mult_k_test
-                gamma_tmp = m + 1
-
-        for a in range(0, len(attributes)):
-            attributes[a, k] *= multiplicity[k]
-            attributes[a, k] += take_from_j * attributes[a, j]
-            attributes[a, k] /= new_mult_k
-
-        if multiplicity[j] > take_from_j:
-            nj = multiplicity[j] - take_from_j
-            nk = new_mult_k
-        else:
-            nj = new_mult_k / 2
-            nk = nj
+        nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
 
         if multiplicity[j] <= take_from_j and round(nj) == 0:
             atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
             return
 
-        if multiplicity[j] <= take_from_j:
-            for a in range(0, len(attributes)):
-                attributes[a, j] = attributes[a, k]
-
         atomic_add(breakup_rate, cid, gamma_tmp * multiplicity[k])
-
-        # perform rounding as necessary
-        multiplicity[j] = max(round(nj), 1)
-        multiplicity[k] = max(round(nk), 1)
-        factor_j = nj / multiplicity[j]
-        factor_k = nk / multiplicity[k]
-        for a in range(0, len(attributes)):
-            attributes[a, k] *= factor_k
-            attributes[a, j] *= factor_j
         gamma_deficit -= gamma_tmp
+        breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
-    if overflow_flag:
-        if warn_overflows:
-            warn("overflow", __file__)
+    if overflow_flag and warn_overflows:
+        warn("overflow", __file__)
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
