@@ -1,17 +1,17 @@
 """
 permutation-defining Index class (can be shared between multiple IndexedStorage instances)
 """
-from typing import Type, TypeVar, cast
+from typing import Type, TypeVar
 
 import numpy as np
 
 from PySDM.storages.common.backend import IndexBackend
-from PySDM.storages.common.storage import Index, IndexStorage, Storage, StorageSignature
+from PySDM.storages.common.storage import Index, Storage, StorageSignature
 
 BackendType = TypeVar("BackendType", bound=IndexBackend)
 
 
-def index(backend: BackendType, storage_cls: Type[Storage]) -> Type[IndexStorage]:
+def index(backend: BackendType, storage_cls: Type[Storage]):
     assert issubclass(storage_cls, Storage)
 
     class _Index(storage_cls, Index):
@@ -35,7 +35,7 @@ def index(backend: BackendType, storage_cls: Type[Storage]) -> Type[IndexStorage
             raise TypeError("'Index' class cannot be instantiated as empty.")
 
         @classmethod
-        def from_ndarray(cls, array):
+        def from_ndarray(cls, array) -> "_Index":
             data, array.shape, _ = cls._get_data_from_ndarray(array)
             return cls(data, array.shape[0])
 
@@ -57,4 +57,4 @@ def index(backend: BackendType, storage_cls: Type[Storage]) -> Type[IndexStorage
                 indexed_storage.data, self.data, self.length
             )
 
-    return cast(type(Index), _Index)
+    return _Index

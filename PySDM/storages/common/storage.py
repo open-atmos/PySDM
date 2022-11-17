@@ -182,10 +182,6 @@ class Index(Sized):
         raise NotImplementedError()
 
 
-class IndexStorage(Storage, Index):
-    ...
-
-
 class Indexed(abc.ABC):
     @classmethod
     @abc.abstractmethod
