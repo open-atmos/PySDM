@@ -24,7 +24,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self,
         *,
         constants: Optional[dict] = None,
-        seed: int = physics.constants.default_random_seed,
+        seed: int = None,
         fastmath: bool = True,
         condensation_coordinate: str = "VolumeLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
@@ -72,7 +72,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             **{**constants_defaults, **(constants or {})}
         )
         self.constants = constants
-        self.seed = seed
+        self.seed = seed or physics.constants.default_random_seed
         self.fastmath = fastmath
         self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
