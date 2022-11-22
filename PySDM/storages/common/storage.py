@@ -178,7 +178,7 @@ class Index(Sized):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def remove_zero_n_or_flagged(self, indexed_storage: "IndexedStorage") -> None:
+    def remove_zero_n_or_flagged(self, indexed_storage: "Storage") -> None:
         raise NotImplementedError()
 
 
@@ -199,10 +199,6 @@ class Indexed(abc.ABC):
     @abc.abstractmethod
     def indexed_from_ndarray(cls, idx: "Index", array: np.ndarray) -> "Indexed":
         raise NotImplementedError()
-
-
-class IndexedStorage(Storage, Indexed):
-    ...
 
 
 class Pairwise(abc.ABC):
@@ -229,7 +225,3 @@ class Pairwise(abc.ABC):
     @abc.abstractmethod
     def multiply(self, other, is_first_in_pair) -> None:
         raise NotImplementedError()
-
-
-class PairwiseStorage(Storage, Pairwise):
-    ...

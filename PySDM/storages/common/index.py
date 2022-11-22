@@ -17,8 +17,8 @@ def index(backend: BackendType, storage_cls: Type[Storage]):
     class _Index(storage_cls, Index):
         def __init__(self, data: np.ndarray, length: int):
             assert isinstance(length, int)
-            super().__init__(StorageSignature(data, length, storage_cls.INT))
             self.length = storage_cls.INT(length)
+            super().__init__(StorageSignature(data, length, storage_cls.INT))
 
         def __len__(self):
             return self.length
@@ -35,11 +35,11 @@ def index(backend: BackendType, storage_cls: Type[Storage]):
             raise TypeError("'Index' class cannot be instantiated as empty.")
 
         @classmethod
-        def from_ndarray(cls, array) -> "_Index":
+        def from_ndarray(cls, array: np.ndarray) -> "_Index":
             data, array.shape, _ = cls._get_data_from_ndarray(array)
             return cls(data, array.shape[0])
 
-        def sort_by_key(self, keys):
+        def sort_by_key(self, keys: Storage) -> None:
             backend.sort_by_key(self, keys)
 
         def shuffle(self, temporary, parts=None):

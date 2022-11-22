@@ -1,19 +1,14 @@
 """
 attribute storage class featuring particle permutation logic
 """
-from typing import Type, cast
+from typing import Type
 
 import numpy as np
 
-from PySDM.storages.common.storage import (
-    Indexed,
-    IndexedStorage,
-    Storage,
-    StorageSignature,
-)
+from PySDM.storages.common.storage import Indexed, Storage, StorageSignature
 
 
-def indexed(storage_cls: Type[Storage]) -> Type[IndexedStorage]:
+def indexed(storage_cls: Type[Storage]):
     assert issubclass(storage_cls, Storage)
 
     class _IndexedStorage(storage_cls, Indexed):
@@ -40,14 +35,12 @@ def indexed(storage_cls: Type[Storage]) -> Type[IndexedStorage]:
         @classmethod
         def indexed_and_empty(cls, idx, shape, dtype):
             storage = cls.empty(shape, dtype)
-            result = cls.indexed(idx, storage)
-            return result
+            return cls.indexed(idx, storage)
 
         @classmethod
         def indexed_from_ndarray(cls, idx, array):
             storage = cls.from_ndarray(array)
-            result = cls.indexed(idx, storage)
-            return result
+            return cls.indexed(idx, storage)
 
         def to_ndarray(self, *, raw=False) -> np.ndarray:
             result = super().to_ndarray()
@@ -62,4 +55,4 @@ def indexed(storage_cls: Type[Storage]) -> Type[IndexedStorage]:
                 return result[:, idx[: len(self)]]
             raise NotImplementedError()
 
-    return cast(type(IndexedStorage), _IndexedStorage)
+    return _IndexedStorage

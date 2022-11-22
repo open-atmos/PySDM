@@ -40,7 +40,8 @@ def test_reset_index():
     # Arrange
     backend = IndexBackend()
     index_cls = index(backend, Storage)
-    random_array = np.random.randint(0, 9, 9)
+    random_array = np.arange(0, 9)
+    np.random.shuffle(random_array)
     idx = index_cls.from_ndarray(random_array)
 
     # Act
@@ -66,6 +67,16 @@ def test_from_ndarray():
     assert idx.dtype == index_cls.INT
     assert idx.length == 3
     assert isinstance(idx.length, idx.INT)
+
+
+def test_sort_by_key():
+    backend = IndexBackend()
+    index_cls = index(backend, Storage)
+    random_array = np.arange(0, 9)
+    np.random.shuffle(random_array)
+    idx = index_cls.from_ndarray(np.random.randint(0, 9, 9))
+    idx.sort_by_key(index_cls.from_ndarray(random_array))
+    np.testing.assert_allclose(random_array[idx.data], np.sort(random_array)[::-1])
 
 
 def test_remove_zero_n_or_flagged():
