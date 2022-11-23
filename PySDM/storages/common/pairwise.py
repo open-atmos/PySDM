@@ -4,7 +4,7 @@ specialised storage equipped with particle pair-handling methods
 from typing import Type, TypeVar
 
 from PySDM.storages.common.backend import PairBackend
-from PySDM.storages.common.storage import Pairwise, Storage, StorageSignature
+from PySDM.storages.common.storage import Pairwise, Storage
 
 BackendType = TypeVar("BackendType", bound=PairBackend)
 
@@ -13,19 +13,6 @@ def pairwise(backend: BackendType, storage_cls: Type[Storage]):
     assert issubclass(storage_cls, Storage)
 
     class _PairwiseStorage(storage_cls, Pairwise):
-        def __init__(self, signature: StorageSignature):
-            super().__init__(signature)
-
-        @classmethod
-        def empty(cls, shape, dtype):
-            result = cls(cls._get_empty_data(shape, dtype))
-            return result
-
-        @classmethod
-        def from_ndarray(cls, array):
-            result = _PairwiseStorage(cls._get_data_from_ndarray(array))
-            return result
-
         def distance(self, other, is_first_in_pair):
             backend.distance_pair(self, other, is_first_in_pair, other.idx)
 
