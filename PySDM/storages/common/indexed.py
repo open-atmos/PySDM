@@ -5,14 +5,20 @@ from typing import Type
 
 import numpy as np
 
-from PySDM.storages.common.storage import Indexed, Storage, StorageSignature
+from PySDM.storages.common.storage import (
+    Index,
+    Indexed,
+    ShapeType,
+    Storage,
+    StorageSignature,
+)
 
 
 def indexed(storage_cls: Type[Storage]):
     assert issubclass(storage_cls, Storage)
 
     class _IndexedStorage(storage_cls, Indexed):
-        def __init__(self, idx, signature: StorageSignature):
+        def __init__(self, idx: Storage, signature: StorageSignature):
             super().__init__(signature)
             assert idx is not None
             self.idx = idx
@@ -27,18 +33,18 @@ def indexed(storage_cls: Type[Storage]):
             return result
 
         @classmethod
-        def indexed(cls, idx, storage: Storage):
+        def indexed(cls, idx: Storage, storage: Storage):
             return cls(
                 idx, StorageSignature(storage.data, storage.shape, storage.dtype)
             )
 
         @classmethod
-        def indexed_and_empty(cls, idx, shape, dtype):
+        def indexed_and_empty(cls, idx: Storage, shape: ShapeType, dtype: Type):
             storage = cls.empty(shape, dtype)
             return cls.indexed(idx, storage)
 
         @classmethod
-        def indexed_from_ndarray(cls, idx, array):
+        def indexed_from_ndarray(cls, idx: Storage, array: np.ndarray):
             storage = cls.from_ndarray(array)
             return cls.indexed(idx, storage)
 

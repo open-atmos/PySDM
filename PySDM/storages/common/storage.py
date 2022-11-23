@@ -178,7 +178,7 @@ class Index(Sized):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def remove_zero_n_or_flagged(self, indexed_storage: "Storage") -> None:
+    def remove_zero_n_or_flagged(self, indexed_storage: "Indexed") -> None:
         raise NotImplementedError()
 
 

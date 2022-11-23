@@ -52,7 +52,7 @@ def index(backend: BackendType, storage_cls: Type[Storage]):
                     idx=self.data, u01=temporary.data, cell_start=parts.data
                 )
 
-        def remove_zero_n_or_flagged(self, indexed_storage):
+        def remove_zero_n_or_flagged(self, indexed_storage: Storage):
             self.length = backend.remove_zero_n_or_flagged(
                 indexed_storage.data, self.data, self.length
             )
