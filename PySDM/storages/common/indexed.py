@@ -40,12 +40,12 @@ def indexed(storage_cls: Type[Storage]):
 
         @classmethod
         def indexed_and_empty(cls, idx: Storage, shape: ShapeType, dtype: Type):
-            storage = cls.empty(shape, dtype)
+            storage = storage_cls.empty(shape, dtype)
             return cls.indexed(idx, storage)
 
         @classmethod
         def indexed_from_ndarray(cls, idx: Storage, array: np.ndarray):
-            storage = cls.from_ndarray(array)
+            storage = storage_cls.from_ndarray(array)
             return cls.indexed(idx, storage)
 
         def to_ndarray(self, *, raw=False) -> np.ndarray:
