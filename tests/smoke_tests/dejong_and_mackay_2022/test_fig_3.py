@@ -5,7 +5,6 @@ import numpy as np
 from matplotlib import pyplot
 from PySDM_examples.deJong_Mackay_2022 import Settings0D, run_box_breakup
 
-from PySDM import Formulae
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
 from PySDM.physics.constants import si

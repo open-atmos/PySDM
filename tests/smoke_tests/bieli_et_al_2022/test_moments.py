@@ -12,7 +12,7 @@ from PySDM.physics import si
 
 def test_moments(plot=False):
     # arrange
-    settings = Settings(Formulae(fragentation_function="Feingold1988Frag"))
+    settings = Settings(Formulae(fragmentation_function="Feingold1988Frag"))
     if "CI" in os.environ:
         settings.n_sd = 10
     else:
