@@ -16,7 +16,7 @@ BINS = 32
 N_SD = 2**10
 
 
-def test_fig_3_reduced_resolution(plot=True):
+def test_fig_3_reduced_resolution(plot=False):
     # arrange
     settings = Settings0D(fragmentation=AlwaysN(n=8, vmin=V_MIN), seed=44)
     settings.n_sd = N_SD
