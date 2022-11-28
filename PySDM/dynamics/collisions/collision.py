@@ -44,7 +44,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         dt_coal_range=DEFAULTS.dt_coal_range,
         enable_breakup: bool = True,
         warn_overflows: bool = True,
-        handle_all_breakups: bool = False,
     ):
         assert substeps == 1 or adaptive is False
 
@@ -53,7 +52,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
-        self.handle_all_breakups = handle_all_breakups
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -214,7 +212,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
-            handle_all_breakups=self.handle_all_breakups,
         )
 
         if self.adaptive:

@@ -11,7 +11,7 @@ from PySDM.physics import si
 
 def test_fig_5(plot=False):
     # arrange
-    settings = Settings0D(seed=44)
+    settings = Settings0D(Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10), seed=44)
     steps = [0, 30, 60, 180, 540]
     settings._steps = steps  # pylint: disable=protected-access
     settings.n_sd = 2**11
@@ -20,7 +20,6 @@ def test_fig_5(plot=False):
         np.log10(10 * si.um), np.log10(2e3 * si.um), num=32, endpoint=True
     )
     settings.coal_eff = Straub2010Ec()
-    settings.fragmentation = Straub2010Nf(vmin=settings.X0 * 1e-3, nfmax=10)
 
     # act
     (data_x, data_y, _) = run_box_breakup(settings)

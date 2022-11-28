@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 import PySDM.physics.constants as const
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
 from PySDM.dynamics import Breakup
@@ -43,7 +43,9 @@ class TestSDMBreakup:
         nsteps = 10
 
         n_sd = len(attributes["n"])
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(
+            n_sd, backend_class(Formulae(fragmentation_function="AlwaysN"))
+        )
         builder.set_environment(Box(dv=1 * si.cm**3, dt=dt))
         builder.add_dynamic(breakup)
         particulator = builder.build(attributes=attributes, products=())
@@ -620,7 +622,6 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
-    @pytest.mark.xfail()  # TODO #871
     def test_nonnegative_even_if_overflow(
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
@@ -705,7 +706,7 @@ class TestSDMBreakup:
         # Arrange
         n_init = params["n_init"]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         particulator = builder.build(
             attributes={
@@ -753,7 +754,6 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
-            handle_all_breakups=True,
         )
 
         # Assert

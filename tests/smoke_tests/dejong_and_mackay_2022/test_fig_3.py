@@ -18,8 +18,7 @@ N_SD = 2**10
 
 def test_fig_3_reduced_resolution(plot=False):
     # arrange
-    settings = Settings0D()
-    settings.fragmentation = AlwaysN(n=8, vmin=V_MIN)
+    settings = Settings0D(fragmentation=AlwaysN(n=8, vmin=V_MIN), seed=44)
     settings.n_sd = N_SD
     settings.radius_bins_edges = np.logspace(
         np.log10(10 * si.um), np.log10(10000 * si.um), num=BINS, endpoint=True

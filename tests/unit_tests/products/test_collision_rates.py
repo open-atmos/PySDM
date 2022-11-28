@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Breakup, Coalescence, Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
@@ -229,14 +229,13 @@ class TestCollisionProducts:
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
         env = Box(**ENV_ARGS)
         builder.set_environment(env)
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
         )
-        dynamic.handle_all_breakups = True
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
