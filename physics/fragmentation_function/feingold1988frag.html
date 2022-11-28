@@ -4,9 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.physics.constants_defaults API documentation</title>
-<meta name="description" content="default values for constants which can be altered by providing alternative
-values in a constants dictionary passed to Formulae __init__ method" />
+<title>PySDM.physics.fragmentation_function.feingold1988frag API documentation</title>
+<meta name="description" content="Scaled exponential PDF" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -20,180 +19,27 @@ values in a constants dictionary passed to Formulae __init__ method" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.physics.constants_defaults</code></h1>
+<h1 class="title">Module <code>PySDM.physics.fragmentation_function.feingold1988frag</code></h1>
 </header>
 <section id="section-intro">
-<p>default values for constants which can be altered by providing alternative
-values in a constants dictionary passed to Formulae <strong>init</strong> method</p>
+<p>Scaled exponential PDF</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-default values for constants which can be altered by providing alternative
-values in a constants dictionary passed to Formulae __init__ method
+Scaled exponential PDF
 &#34;&#34;&#34;
 import numpy as np
-from chempy import Substance
-from scipy import constants as sci
 
-from .constants import (  # pylint: disable=unused-import
-    FOUR,
-    ONE_THIRD,
-    PI,
-    PI_4_3,
-    T0,
-    THREE,
-    TWO,
-    TWO_THIRDS,
-    M,
-    si,
-)
 
-Md = (
-    0.78 * Substance.from_formula(&#34;N2&#34;).mass * si.gram / si.mole
-    + 0.21 * Substance.from_formula(&#34;O2&#34;).mass * si.gram / si.mole
-    + 0.01 * Substance.from_formula(&#34;Ar&#34;).mass * si.gram / si.mole
-)
-Mv = Substance.from_formula(&#34;H2O&#34;).mass * si.gram / si.mole
+class Feingold1988Frag:  # pylint: disable=too-few-public-methods
+    def __init__(self, _):
+        pass
 
-R_str = sci.R * si.joule / si.kelvin / si.mole
-N_A = sci.N_A / si.mole
-
-eps = Mv / Md
-Rd = R_str / Md
-Rv = R_str / Mv
-
-D0 = 2.26e-5 * si.metre**2 / si.second
-D_exp = 1.81
-
-K0 = 2.4e-2 * si.joules / si.metres / si.seconds / si.kelvins
-
-# mass and heat accommodation coefficients
-MAC = 1.0
-HAC = 1.0
-
-p1000 = 1000 * si.hectopascals
-c_pd = 1005 * si.joule / si.kilogram / si.kelvin
-c_pv = 1850 * si.joule / si.kilogram / si.kelvin
-g_std = sci.g * si.metre / si.second**2
-
-c_pw = 4218 * si.joule / si.kilogram / si.kelvin
-
-Rd_over_c_pd = Rd / c_pd
-
-ARM_C1 = 6.1094 * si.hectopascal
-ARM_C2 = 17.625 * si.dimensionless
-ARM_C3 = 243.04 * si.kelvin
-
-FWC_C0 = 6.115836990e000 * si.hPa
-FWC_C1 = 0.444606896e000 * si.hPa / si.K
-FWC_C2 = 0.143177157e-01 * si.hPa / si.K**2
-FWC_C3 = 0.264224321e-03 * si.hPa / si.K**3
-FWC_C4 = 0.299291081e-05 * si.hPa / si.K**4
-FWC_C5 = 0.203154182e-07 * si.hPa / si.K**5
-FWC_C6 = 0.702620698e-10 * si.hPa / si.K**6
-FWC_C7 = 0.379534310e-13 * si.hPa / si.K**7
-FWC_C8 = -0.321582393e-15 * si.hPa / si.K**8
-
-FWC_I0 = 6.098689930e000 * si.hPa
-FWC_I1 = 0.499320233e000 * si.hPa / si.K
-FWC_I2 = 0.184672631e-01 * si.hPa / si.K**2
-FWC_I3 = 0.402737184e-03 * si.hPa / si.K**3
-FWC_I4 = 0.565392987e-05 * si.hPa / si.K**4
-FWC_I5 = 0.521693933e-07 * si.hPa / si.K**5
-FWC_I6 = 0.307839583e-09 * si.hPa / si.K**6
-FWC_I7 = 0.105785160e-11 * si.hPa / si.K**7
-FWC_I8 = 0.161444444e-14 * si.hPa / si.K**8
-
-L77W_A0 = 6.107799961 * si.hPa
-L77W_A1 = 4.436518521e-1 * si.hPa / si.K
-L77W_A2 = 1.428945805e-2 * si.hPa / si.K**2
-L77W_A3 = 2.650648471e-4 * si.hPa / si.K**3
-L77W_A4 = 3.031240396e-6 * si.hPa / si.K**4
-L77W_A5 = 2.034080948e-8 * si.hPa / si.K**5
-L77W_A6 = 6.136820929e-11 * si.hPa / si.K**6
-
-L77I_A0 = 6.109177956 * si.hPa
-L77I_A1 = 5.03469897e-1 * si.hPa / si.K
-L77I_A2 = 1.886013408e-2 * si.hPa / si.K**2
-L77I_A3 = 4.176223716e-4 * si.hPa / si.K**3
-L77I_A4 = 5.824720280e-6 * si.hPa / si.K**4
-L77I_A5 = 4.838803174e-8 * si.hPa / si.K**5
-L77I_A6 = 1.838826904e-10 * si.hPa / si.K**6
-
-rho_w = 1 * si.kilograms / si.litres
-rho_i = 916.8 * si.kg / si.metres**3
-pH_w = 7
-sgm_w = 0.072 * si.joule / si.metre**2
-nu_w = Mv / rho_w
-
-p_tri = 611.73 * si.pascal
-T_tri = 273.16 * si.kelvin
-l_tri = 2.5e6 * si.joule / si.kilogram
-
-l_l19_a = 0.167 * si.dimensionless
-l_l19_b = 3.65e-4 / si.kelvin
-
-k_l19_a = 4.2e-3 * si.joules / si.metres / si.seconds / si.kelvins
-k_l19_b = 1.0456 * si.dimensionless
-k_l19_c = 0.017 / si.kelvin
-
-d_l19_a = 0.211e-4 * si.metre**2 / si.second
-d_l19_b = 1.94
-
-MK05_ICE_C1 = 1 * si.Pa
-MK05_ICE_C2 = 9.550426 * si.dimensionless
-MK05_ICE_C3 = 5723.265 * si.K
-MK05_ICE_C4 = 3.53068 * si.dimensionless
-MK05_ICE_C5 = 1 * si.K
-MK05_ICE_C6 = 0.00728332 / si.K
-
-MK05_LIQ_C1 = 1 * si.Pa
-MK05_LIQ_C2 = 54.842763 * si.dimensionless
-MK05_LIQ_C3 = 6763.22 * si.K
-MK05_LIQ_C4 = 4.210 * si.dimensionless
-MK05_LIQ_C5 = 1 * si.K
-MK05_LIQ_C6 = 0.000367 / si.K
-MK05_LIQ_C7 = 0.0415 / si.K
-MK05_LIQ_C8 = 218.8 * si.K
-MK05_LIQ_C9 = 53.878 * si.dimensionless
-MK05_LIQ_C10 = 1331.22 * si.K
-MK05_LIQ_C11 = 9.44523 * si.dimensionless
-MK05_LIQ_C12 = 1 * si.K
-MK05_LIQ_C13 = 0.014025 / si.K
-
-# standard pressure and temperature (ICAO)
-T_STP = (sci.zero_Celsius + 15) * si.kelvin
-p_STP = 101325 * si.pascal
-rho_STP = p_STP / Rd / T_STP
-
-ROOM_TEMP = T_tri + 25 * si.K
-H_u = M / p_STP
-dT_u = si.K
-
-sgm_org = np.nan
-delta_min = np.nan
-
-RUEHL_nu_org = np.nan
-RUEHL_A0 = np.nan
-RUEHL_C0 = np.nan
-RUEHL_m_sigma = np.nan
-RUEHL_sgm_min = np.nan
-
-BIGG_DT_MEDIAN = np.nan
-
-NIEMAND_A = np.nan
-NIEMAND_B = np.nan
-
-ABIFM_M = np.inf
-ABIFM_C = np.inf
-ABIFM_UNIT = 1 / si.cm**2 / si.s
-
-J_HET = np.nan
-
-STRAUB_E_D1 = 0.04 * si.cm
-STRAUB_MU2 = 0.095 * si.cm</code></pre>
+    @staticmethod
+    def frag_size(_, scale, rand, x_plus_y, fragtol):
+        return -scale * np.log(max(1 - rand * scale / x_plus_y, fragtol))</code></pre>
 </details>
 </section>
 <section>
@@ -203,6 +49,45 @@ STRAUB_MU2 = 0.095 * si.cm</code></pre>
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag"><code class="flex name class">
+<span>class <span class="ident">Feingold1988Frag</span></span>
+<span>(</span><span>_)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Feingold1988Frag:  # pylint: disable=too-few-public-methods
+    def __init__(self, _):
+        pass
+
+    @staticmethod
+    def frag_size(_, scale, rand, x_plus_y, fragtol):
+        return -scale * np.log(max(1 - rand * scale / x_plus_y, fragtol))</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag.frag_size"><code class="name flex">
+<span>def <span class="ident">frag_size</span></span>(<span>_, scale, rand, x_plus_y, fragtol)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def frag_size(_, scale, rand, x_plus_y, fragtol):
+    return -scale * np.log(max(1 - rand * scale / x_plus_y, fragtol))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -213,7 +98,17 @@ STRAUB_MU2 = 0.095 * si.cm</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.physics" href="index.html">PySDM.physics</a></code></li>
+<li><code><a title="PySDM.physics.fragmentation_function" href="index.html">PySDM.physics.fragmentation_function</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag" href="#PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag">Feingold1988Frag</a></code></h4>
+<ul class="">
+<li><code><a title="PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag.frag_size" href="#PySDM.physics.fragmentation_function.feingold1988frag.Feingold1988Frag.frag_size">frag_size</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

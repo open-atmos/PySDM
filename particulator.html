@@ -174,7 +174,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        handle_all_breakups=False,
     ):
         # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
@@ -201,7 +200,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
                 volume=self.attributes[&#34;volume&#34;],
-                handle_all_breakups=handle_all_breakups,
             )
         else:
             self.backend.collision_coalescence(
@@ -598,7 +596,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        handle_all_breakups=False,
     ):
         # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
@@ -625,7 +622,6 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
                 volume=self.attributes[&#34;volume&#34;],
-                handle_all_breakups=handle_all_breakups,
             )
         else:
             self.backend.collision_coalescence(
@@ -1009,7 +1005,7 @@ def n_sd(self) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.particulator.Particulator.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, handle_all_breakups=False)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, enable_breakup, gamma, rand, Ec, Eb, n_fragment, fragment_size, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1032,7 +1028,6 @@ def n_sd(self) -&gt; int:
     breakup_rate_deficit,
     is_first_in_pair,
     warn_overflows,
-    handle_all_breakups=False,
 ):
     # pylint: disable=too-many-locals
     idx = self.attributes._ParticleAttributes__idx
@@ -1059,7 +1054,6 @@ def n_sd(self) -&gt; int:
             is_first_in_pair=is_first_in_pair,
             warn_overflows=warn_overflows,
             volume=self.attributes[&#34;volume&#34;],
-            handle_all_breakups=handle_all_breakups,
         )
     else:
         self.backend.collision_coalescence(
