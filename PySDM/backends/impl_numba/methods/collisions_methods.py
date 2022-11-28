@@ -570,7 +570,6 @@ class CollisionsMethods(BackendMethods):
                     frag_size[i] = x_plus_y[i] / nfmax
             if frag_size[i] == 0.0:
                 frag_size[i] = x_plus_y[i]
-                n_fragment[i] = 1.0
             n_fragment[i] = x_plus_y[i] / frag_size[i]
 
     def fragmentation_limiters(
