@@ -31,6 +31,7 @@ CPPYTHON = {
     "void*": "",
     "VectorView<int64_t> ": "",
     "VectorView<float> ": "",
+    "VectorView<double> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",
