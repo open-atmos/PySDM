@@ -50,6 +50,21 @@ struct Commons {
         }
     }
   }
+
+  static __device__ auto pair_indices(
+      int64_t i,
+      VectorView<int64_t> idx,
+      VectorView<bool> is_first_in_pair,
+      VectorView<real_type> gamma
+  ) {
+      if (gamma[i] == 0) {
+          return std::make_tuple(-1, -1, true);
+      }
+      auto offset = 1 - is_first_in_pair[2 * i];
+      auto j = idx[2 * i + offset];
+      auto k = idx[2 * i + 1 + offset];
+      return std::make_tuple(j, k, false);
+  }
 };
 """
 
@@ -71,32 +86,41 @@ class CollisionsMethods(
         self.__adaptive_sdm_gamma_body_2 = trtc.For(
             ("gamma", "idx", "n", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
-            """
-                if (gamma[i] == 0) {
+            f"""
+                {COMMONS}
+                bool skip_pair = false;
+                int64_t j = -1;
+                int64_t k = -1;
+                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
-                auto k = idx[2 * i + 1 + offset];
+                }}
                 auto prop = (int64_t)(n[j] / n[k]);
                 auto dt_optimal = dt * prop / gamma[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
                 atomicMin((unsigned int*)&dt_todo[cid], __float_as_uint(dt_optimal));
-            """,
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
         )
 
         self.__adaptive_sdm_gamma_body_3 = trtc.For(
             ("gamma", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
-            """
-                if (gamma[i] == 0) {
+            f"""
+                {COMMONS}
+                bool skip_pair = false;
+                int64_t j = -1;
+                int64_t k = -1;
+                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
+                }}
                 gamma[i] *= dt_todo[cell_id[j]] / dt;
-            """,
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
         )
 
         self.__adaptive_sdm_gamma_body_4 = trtc.For(
@@ -143,15 +167,59 @@ class CollisionsMethods(
             name_iter="i",
             body=f"""
             {COMMONS}
-            if (gamma[i] == 0) {{
+            bool skip_pair = false;
+            int64_t j = -1;
+            int64_t k = -1;
+            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            if (skip_pair) {{
                 return;
             }}
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
 
             Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
             Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
+        )
+
+        self.__collision_coalescence_breakup_body = trtc.For(
+            param_names=(
+                "multiplicity",
+                "idx",
+                "length",
+                "attributes",
+                "gamma",
+                "rand",
+                "Ec",
+                "Eb",
+                "n_fragment",
+                "fragment_size",
+                "healthy",
+                "cell_id",
+                "coalescence_rate",
+                "breakup_rate",
+                "breakup_rate_deficit",
+                "is_first_in_pair",
+                # "max_multiplicity",
+                "warn_overflows",
+                "volume",
+            ),
+            name_iter="i",
+            body=f"""
+            {COMMONS}
+            bool skip_pair = false;
+            int64_t j = -1;
+            int64_t k = -1;
+            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            if (skip_pair) {{
+                return;
+            }}
+            auto bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) > 0;
+            if (bouncing) {{
+                return;
+            }}
+
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -168,15 +236,17 @@ class CollisionsMethods(
                 "collision_rate",
             ),
             "i",
-            """
+            f"""
+            {COMMONS}
             gamma[i] = ceil(gamma[i] - rand[i]);
 
-            if (gamma[i] == 0) {
+            bool skip_pair = false;
+            int64_t j = -1;
+            int64_t k = -1;
+            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            if (skip_pair) {{
                 return;
-            }
-
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
+            }}
 
             auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
             auto g = min((int64_t)(gamma[i]), prop);
@@ -191,7 +261,9 @@ class CollisionsMethods(
             );
 
             gamma[i] = g;
-            """,
+            """.replace(
+                "real_type", self._get_c_type()
+            ),
         )
 
         self.__normalize_body_0 = trtc.For(
@@ -483,8 +555,8 @@ class CollisionsMethods(
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         self.__collision_coalescence_body.launch_n(
-            len(idx) // 2,
-            (
+            n=len(idx) // 2,
+            args=(
                 multiplicity.data,
                 idx.data,
                 n_sd,

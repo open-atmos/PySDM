@@ -13,15 +13,23 @@ from PySDM.backends.impl_numba.warnings import warn
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def pair_indices(i, idx, is_first_in_pair):
+def pair_indices(i, idx, is_first_in_pair, gamma):
     """given permutation array `idx` and `is_first_in_pair` flag array,
-    returns indices `j` and `k` of droplets within pair `i`
-    such that `j` points to the droplet with higher (or equal) multiplicity
+    returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
+    `j` points to the droplet that is first in pair (higher or equal multiplicity)
+    output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
+    otherwise the `skip_pair` flag is set to True and returned `j` & `k` indices are set to -1
     """
-    offset = 1 - is_first_in_pair[2 * i]
-    j = idx[2 * i + offset]
-    k = idx[2 * i + 1 + offset]
-    return j, k
+    skip_pair = False
+
+    if gamma[i] == 0:
+        skip_pair = True
+        j, k = -1, -1
+    else:
+        offset = 1 - is_first_in_pair[2 * i]
+        j = idx[2 * i + offset]
+        k = idx[2 * i + 1 + offset]
+    return j, k, skip_pair
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
@@ -38,12 +46,12 @@ def coalesce(  # pylint: disable=too-many-arguments
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n > 0:
         multiplicity[j] = new_n
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, k] += gamma[i] * attributes[a, j]
     else:  # new_n == 0
         multiplicity[j] = multiplicity[k] // 2
         multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             attributes[a, k] = attributes[a, j]
 
@@ -82,7 +90,7 @@ def breakup_fun0(
 def breakup_fun1(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
@@ -101,14 +109,14 @@ def breakup_fun2(
     j, k, nj, nk, attributes, multiplicity, take_from_j
 ):  # pylint: disable=too-many-arguments
     if multiplicity[j] <= take_from_j:
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = attributes[a, k]
 
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
     factor_k = nk / multiplicity[k]
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= factor_k
         attributes[a, j] *= factor_j
 
@@ -272,12 +280,12 @@ class CollisionsMethods(BackendMethods):
         ):
             # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
             for i in numba.prange(length // 2):
-                if gamma[i] == 0:
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+                if skip_pair:
                     continue
                 bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) > 0
                 if bouncing:
                     continue
-                j, k = pair_indices(i, idx, is_first_in_pair)
 
                 if rand[i] - Ec[i] < 0:
                     coalesce(
@@ -410,9 +418,9 @@ class CollisionsMethods(BackendMethods):
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO #571
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
             dt_optimal = dt * prop / gamma[i]
             cid = cell_id[j]
@@ -420,9 +428,9 @@ class CollisionsMethods(BackendMethods):
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
             stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            if gamma[i] == 0:
+            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-            j, _ = pair_indices(i, idx, is_first_in_pair)
             gamma[i] *= dt_todo[cell_id[j]] / dt
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
@@ -481,9 +489,9 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
             length // 2
         ):
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             coalesce(
                 i, j, k, cell_id[j], multiplicity, gamma, attributes, coalescence_rate
             )
@@ -754,6 +762,7 @@ class CollisionsMethods(BackendMethods):
         collision_rate,
         is_first_in_pair,
     ):
+        # TODO: document that gamma is also input
         """
         return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
@@ -762,12 +771,9 @@ class CollisionsMethods(BackendMethods):
         """
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             gamma[i] = np.ceil(gamma[i] - rand[i])
-
-            no_collision = gamma[i] == 0
-            if no_collision:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
             g = min(int(gamma[i]), prop)
             cid = cell_id[j]

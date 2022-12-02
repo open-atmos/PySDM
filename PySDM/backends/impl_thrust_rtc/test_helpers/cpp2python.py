@@ -32,11 +32,16 @@ CPPYTHON = {
     "VectorView<int64_t> ": "",
     "VectorView<float> ": "",
     "VectorView<double> ": "",
+    "VectorView<bool> ": "",
+    "std::make_tuple": "",
+    "std::tie": "",
     "::": "_",
     "(*": "",
     ")(, )": "",
     "else if": "elif",
     "printf": "print",
+    "false": "False",
+    "true": "True",
 }
 
 
