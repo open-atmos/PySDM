@@ -9,6 +9,7 @@ from . import (
     diffusion_kinetics,
     diffusion_thermics,
     drop_growth,
+    fragmentation_function,
     freezing_temperature_spectrum,
     heterogeneous_ice_nucleation_rate,
     hydrostatics,

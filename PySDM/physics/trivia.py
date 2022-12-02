@@ -73,5 +73,5 @@ class Trivia:
         return T * np.power(const.p1000 / p, const.Rd_over_c_pd)
 
     @staticmethod
-    def unfrozen(_, volume):
-        return volume > 0
+    def unfrozen_and_saturated(_, volume, relative_humidity):
+        return volume > 0 and relative_humidity > 1
