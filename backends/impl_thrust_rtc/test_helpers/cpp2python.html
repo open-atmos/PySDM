@@ -61,6 +61,8 @@ CPPYTHON = {
     &#34;return;&#34;: &#34;continue&#34;,
     &#34;void*&#34;: &#34;&#34;,
     &#34;VectorView&lt;int64_t&gt; &#34;: &#34;&#34;,
+    &#34;VectorView&lt;float&gt; &#34;: &#34;&#34;,
+    &#34;VectorView&lt;double&gt; &#34;: &#34;&#34;,
     &#34;::&#34;: &#34;_&#34;,
     &#34;(*&#34;: &#34;&#34;,
     &#34;)(, )&#34;: &#34;&#34;,
@@ -146,6 +148,7 @@ def replace_atomic_mins(cpp: str) -&gt; (str, bool):
 def atomic_add_to_python(cpp: str) -&gt; str:
     cpp = (
         cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
+        .replace(&#34;\n&#34;, &#34;&#34;)
         .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
         .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
         .replace(&#34;double*&#34;, &#34;&#34;)
@@ -251,6 +254,7 @@ def make(self):
 <pre><code class="python">def atomic_add_to_python(cpp: str) -&gt; str:
     cpp = (
         cpp.replace(&#34;atomicAdd&#34;, &#34;&#34;)
+        .replace(&#34;\n&#34;, &#34;&#34;)
         .replace(&#34;unsigned long long int*&#34;, &#34;&#34;)
         .replace(&#34;unsigned long long int&#34;, &#34;&#34;)
         .replace(&#34;double*&#34;, &#34;&#34;)
