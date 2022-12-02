@@ -30,6 +30,8 @@ CPPYTHON = {
     "return;": "continue",
     "void*": "",
     "VectorView<int64_t> ": "",
+    "VectorView<float> ": "",
+    "VectorView<double> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",
@@ -115,6 +117,7 @@ def replace_atomic_mins(cpp: str) -> (str, bool):
 def atomic_add_to_python(cpp: str) -> str:
     cpp = (
         cpp.replace("atomicAdd", "")
+        .replace("\n", "")
         .replace("unsigned long long int*", "")
         .replace("unsigned long long int", "")
         .replace("double*", "")
