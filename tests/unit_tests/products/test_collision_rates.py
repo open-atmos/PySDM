@@ -66,7 +66,12 @@ class TestCollisionProducts:
             },
         ],
     )
-    def test_individual_dynamics_rates_nonadaptive(params, backend_class=CPU):
+    # pylint: disable=redefined-outer-name
+    def test_individual_dynamics_rates_nonadaptive(params, backend_class):
+        # TODO #744
+        if backend_class.__name__ == "ThrustRTC" and params["enable_breakup"]:
+            return
+
         # Arrange
         n_init = [5, 2]
         n_sd = len(n_init)
