@@ -79,3 +79,17 @@ def test_max(pair_indicator_and_pairwise_storage, indexed_storage_cls, index_cls
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([1, 4, 3]))
+
+
+def test_min(pair_indicator_and_pairwise_storage, indexed_storage_cls, index_cls):
+    (
+        pair_indicator_instance,
+        pairwise_storage_instance,
+    ) = pair_indicator_and_pairwise_storage
+    data = np.asarray([1, -1, 2, 4, 3, 3])
+    data_idx = index_cls.identity_index(6)
+    pairwise_storage_instance.min(
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        pair_indicator_instance,
+    )
+    np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([-1, 2, 3]))
