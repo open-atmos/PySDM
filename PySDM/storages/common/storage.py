@@ -118,7 +118,7 @@ class StorageOperationsMixin(Sequence):
         raise NotImplementedError()
 
 
-class Storage(MathMagicMethodsMixin, StorageOperationsMixin):
+class Storage(MathMagicMethodsMixin, StorageOperationsMixin, Sized):
     INT: Type
     FLOAT: Type
     BOOL: Type
@@ -160,7 +160,7 @@ class Storage(MathMagicMethodsMixin, StorageOperationsMixin):
         return self.data.all()
 
 
-class Index(Sized):
+class Index(Storage):
     @classmethod
     @abc.abstractmethod
     def identity_index(cls, length: int) -> "Index":
@@ -183,7 +183,9 @@ class Index(Sized):
         raise NotImplementedError()
 
 
-class Indexed(abc.ABC):
+class Indexed(Storage):
+    idx: Index
+
     @classmethod
     @abc.abstractmethod
     def indexed(cls, idx: "Index", storage: Storage) -> "Indexed":
@@ -202,27 +204,33 @@ class Indexed(abc.ABC):
         raise NotImplementedError()
 
 
-class Pairwise(abc.ABC):
+class PairIndicator(Sized):
     @abc.abstractmethod
-    def distance(self, other, is_first_in_pair) -> None:
+    def update(self, cell_start, cell_idx, cell_id):
+        raise NotImplementedError()
+
+
+class Pairwise(Storage):
+    @abc.abstractmethod
+    def distance(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def max(self, other, is_first_in_pair) -> None:
+    def max(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def min(self, other, is_first_in_pair) -> None:
+    def min(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def sort(self, other, is_first_in_pair) -> None:
+    def sort(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def sum(self, other, is_first_in_pair) -> None:
+    def sum(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def multiply(self, other, is_first_in_pair) -> None:
+    def multiply(self, other: Indexed, is_first_in_pair: PairIndicator) -> None:
         raise NotImplementedError()

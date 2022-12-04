@@ -1,13 +1,13 @@
 from typing import Type, TypeVar
 
 from PySDM.storages.common.backend import PairBackend
-from PySDM.storages.common.storage import Storage
+from PySDM.storages.common.storage import PairIndicator, Storage
 
 BackendType = TypeVar("BackendType", bound=PairBackend)
 
 
 def pair_indicator(backend: BackendType, storage_cls: Type[Storage]):
-    class _PairIndicator:
+    class _PairIndicator(PairIndicator):
         def __init__(self, length):
             assert isinstance(
                 length, int
