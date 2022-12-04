@@ -9,6 +9,9 @@ BackendType = TypeVar("BackendType", bound=PairBackend)
 def pair_indicator(backend: BackendType, storage_cls: Type[Storage]):
     class _PairIndicator:
         def __init__(self, length):
+            assert isinstance(
+                length, int
+            ), "The length of the indicator must be integer."
             self.indicator = storage_cls.empty(length, dtype=storage_cls.BOOL)
             self.length = length
 

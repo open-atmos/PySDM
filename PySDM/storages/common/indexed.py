@@ -5,13 +5,7 @@ from typing import Type
 
 import numpy as np
 
-from PySDM.storages.common.storage import (
-    Index,
-    Indexed,
-    ShapeType,
-    Storage,
-    StorageSignature,
-)
+from PySDM.storages.common.storage import Indexed, ShapeType, Storage, StorageSignature
 
 
 def indexed(storage_cls: Type[Storage]):

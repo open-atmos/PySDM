@@ -52,7 +52,7 @@ class Storage(BaseStorage):
             return self.data[item]
 
     def __setitem__(self, key, value):
-        self.data[key] = value.data if hasattr(value, "data") else value
+        self.data[key] = value.data if self.is_storage(value) else value
         return self
 
     def __iadd__(self, other: Union["Storage", np.ndarray, Number]) -> "Storage":

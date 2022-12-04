@@ -1,5 +1,6 @@
 import abc
 from collections.abc import Sequence
+from numbers import Number
 from typing import Any, NamedTuple, Optional, Sized, Tuple, Type, Union
 
 import numpy as np
@@ -18,7 +19,7 @@ class StorageSignature(NamedTuple):
     dtype: Type
 
 
-_OtherType = Union["Storage", np.ndarray]
+_OtherType = Union["Storage", np.ndarray, Number]
 
 
 class MathMagicMethodsMixin:
