@@ -3,10 +3,12 @@ concentration of frozen particles (unactivated, activated or both)
 """
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
+    StandardTemperaturePressureConcentrationProduct,
+)
 
 
-class FrozenParticleConcentration(MomentProduct):
+class FrozenParticleConcentration(StandardTemperaturePressureConcentrationProduct):
     def __init__(
         self,
         *,
@@ -14,10 +16,10 @@ class FrozenParticleConcentration(MomentProduct):
         count_activated: bool,
         unit="m^-3",
         name=None,
-        specific=False
+        specific=False,
+        stp=False
     ):
-        super().__init__(unit=unit, name=name)
-        self.specific = specific
+        super().__init__(specific=specific, stp=stp, unit=unit, name=name)
         self.__filter_range = [-np.inf, 0]
         if not count_activated:
             self.__filter_range[0] = -1
@@ -35,16 +37,7 @@ class FrozenParticleConcentration(MomentProduct):
             filter_attr="wet to critical volume ratio",
             filter_range=self.__filter_range,
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-
-        if self.specific:
-            result = self.buffer.copy()
-            self._download_to_buffer(self.particulator.environment["rhod"])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-
-        return result
+        return super()._impl()
 
 
 class FrozenParticleSpecificConcentration(FrozenParticleConcentration):

@@ -3,13 +3,14 @@ immersed ice nucleus concentration (both within frozen and unfrozen particles)
 """
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
+    StandardTemperaturePressureConcentrationProduct,
+)
 
 
-class IceNucleiConcentration(MomentProduct):
-    def __init__(self, unit="m^-3", name=None, __specific=False):
-        super().__init__(unit=unit, name=name)
-        self.specific = __specific
+class IceNucleiConcentration(StandardTemperaturePressureConcentrationProduct):
+    def __init__(self, unit="m^-3", name=None, __specific=False, stp=False):
+        super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
         self.__nonzero_filter_range = (
             np.finfo(float).tiny,  # pylint: disable=no-member
             np.inf,
@@ -31,16 +32,7 @@ class IceNucleiConcentration(MomentProduct):
             filter_attr=self.__filter_attr,
             filter_range=self.__nonzero_filter_range,
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-
-        if self.specific:
-            result = self.buffer.copy()
-            self._download_to_buffer(self.particulator.environment["rhod"])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-
-        return result
+        return super()._impl()
 
 
 class SpecificIceNucleiConcentration(IceNucleiConcentration):
