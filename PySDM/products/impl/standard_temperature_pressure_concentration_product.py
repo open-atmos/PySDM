@@ -2,12 +2,11 @@
 common code for products computing particle concentrations with
 the option to return them at standard temperature and pressure conditions
 """
-from abc import ABC
 
 from PySDM.products.impl.moment_product import MomentProduct
 
 
-class StandardTemperaturePressureConcentrationProduct(ABC, MomentProduct):
+class StandardTemperaturePressureConcentrationProduct(MomentProduct):
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
         super().__init__(unit=unit, name=name)
         self.specific = specific
