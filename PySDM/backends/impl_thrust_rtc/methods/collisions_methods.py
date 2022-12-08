@@ -19,6 +19,37 @@ struct Commons {
         healthy[0] = 0;
     }
   }
+
+  static __device__ void coalesce(
+    int64_t i,
+    int64_t j,
+    int64_t k,
+    VectorView<int64_t> cell_id,
+    VectorView<int64_t> multiplicity,
+    VectorView<real_type> gamma,
+    VectorView<real_type> attributes,
+    VectorView<int64_t> coalescence_rate,
+    int64_t n_attr,
+    int64_t n_sd
+  ) {
+    auto cid = cell_id[j];
+    atomicAdd((unsigned long long int*)&coalescence_rate[cid], (unsigned long long int)(gamma[i] * multiplicity[k]));
+    auto new_n = multiplicity[j] - gamma[i] * multiplicity[k];
+    if (new_n > 0) {
+        multiplicity[j] = new_n;
+        for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+            attributes[attr + k] += gamma[i] * attributes[attr + j];
+        }
+    }
+    else {  // new_n == 0
+        multiplicity[j] = (int64_t)(multiplicity[k] / 2);
+        multiplicity[k] = multiplicity[k] - multiplicity[j];
+        for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {
+            attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
+            attributes[attr + k] = attributes[attr + j];
+        }
+    }
+  }
 };
 """
 
@@ -28,7 +59,6 @@ class CollisionsMethods(
 ):  # pylint: disable=too-many-instance-attributes
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
-        const = self.formulae.constants
 
         self.__adaptive_sdm_gamma_body_1 = trtc.For(
             ("dt_todo", "dt_left", "dt_max"),
@@ -100,13 +130,15 @@ class CollisionsMethods(
 
         self.__collision_coalescence_body = trtc.For(
             param_names=(
-                "n",
+                "multiplicity",
                 "idx",
                 "n_sd",
                 "attributes",
                 "n_attr",
                 "gamma",
                 "healthy",
+                "cell_id",
+                "coalescence_rate",
             ),
             name_iter="i",
             body=f"""
@@ -117,23 +149,9 @@ class CollisionsMethods(
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
-            auto new_n = n[j] - gamma[i] * n[k];
-            if (new_n > 0) {{
-                n[j] = new_n;
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
-                    attributes[attr + k] += gamma[i] * attributes[attr + j];
-                }}
-            }}
-            else {{  // new_n == 0
-                n[j] = (int64_t)(n[k] / 2);
-                n[k] = n[k] - n[j];
-                for (auto attr = 0; attr < n_attr * n_sd; attr+=n_sd) {{
-                    attributes[attr + j] = gamma[i] * attributes[attr + j] + attributes[attr + k];
-                    attributes[attr + k] = attributes[attr + j];
-                }}
-            }}
+            Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
-            Commons::flag_zero_multiplicity(j, k, n, healthy);
+            Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -144,7 +162,7 @@ class CollisionsMethods(
                 "gamma",
                 "rand",
                 "idx",
-                "n",
+                "multiplicity",
                 "cell_id",
                 "collision_rate_deficit",
                 "collision_rate",
@@ -160,12 +178,19 @@ class CollisionsMethods(
             auto j = idx[2 * i];
             auto k = idx[2 * i + 1];
 
-            auto prop = (int64_t)(n[j] / n[k]);
-            if (prop > gamma[i]) {
-                prop = gamma[i];
-            }
+            auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
+            auto g = min((int64_t)(gamma[i]), prop);
 
-            gamma[i] = prop;
+            atomicAdd(
+                (unsigned long long int*)&collision_rate[cell_id[j]],
+                (unsigned long long int)(g * multiplicity[k])
+            );
+            atomicAdd(
+                (unsigned long long int*)&collision_rate_deficit[cell_id[j]],
+                (unsigned long long int)(((int64_t)(gamma[i]) - g) * multiplicity[k])
+            );
+
+            gamma[i] = g;
             """,
         )
 
@@ -243,21 +268,25 @@ class CollisionsMethods(
             }
             if (frag_size[i] == 0.0) {
                 frag_size[i] = x_plus_y[i];
-                n_fragment[i] = 1.0;
             }
             n_fragment[i] = x_plus_y[i] / frag_size[i];
             """,
         )
 
-        self.__gauss_fragmentation_body = trtc.For(
-            param_names=("mu", "sigma", "frag_size", "rand"),
-            name_iter="i",
-            body=f"""
-            frag_size[i] = mu - sigma / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                (0.5 + rand[i]) / (1.5 - rand[i])
-            );
-            """,
-        )
+        if self.formulae.fragmentation_function.__name__ == "Gaussian":
+            self.__gauss_fragmentation_body = trtc.For(
+                param_names=("mu", "sigma", "frag_size", "rand"),
+                name_iter="i",
+                body=f"""
+                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+                    mu="mu",
+                    sigma="sigma",
+                    rand="rand[i]"
+                )};
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
         self.__slams_fragmentation_body = trtc.For(
             param_names=("n_fragment", "frag_size", "x_plus_y", "probs", "rand"),
@@ -277,141 +306,92 @@ class CollisionsMethods(
             """,
         )
 
-        self.__feingold1988_fragmentation_body = trtc.For(
-            param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
-            name_iter="i",
-            body="""
-            auto log_arg = max(1 - rand[i] * scale / x_plus_y[i], fragtol);
-            frag_size[i] = -scale * log(log_arg);
-            """,
-        )
+        if self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
+            self.__feingold1988_fragmentation_body = trtc.For(
+                param_names=("scale", "frag_size", "x_plus_y", "rand", "fragtol"),
+                name_iter="i",
+                body=f"""
+                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
+                    scale="scale",
+                    rand="rand[i]",
+                    x_plus_y="x_plus_y[i]",
+                    fragtol="fragtol"
+                )};
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
         self.__straub_Nr_body = """
-
-            if (gam[i] * CW[i] >= 7.0) {
-                Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
-            }
-            if (CW[i] >= 21.0) {
-                Nr2[i] = 0.22 * (CW[i] - 21.0);
-                if (CW[i] <= 46.0) {
-                    Nr3[i] = 0.04 * (46.0 - CW[i]);
+                if (gam[i] * CW[i] >= 7.0) {
+                    Nr1[i] = 0.088 * (gam[i] * CW[i] - 7.0);
                 }
-            }
-            else {
-                Nr3[i] = 1.0;
-            }
-            Nr4[i] = 1.0;
-            Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
+                if (CW[i] >= 21.0) {
+                    Nr2[i] = 0.22 * (CW[i] - 21.0);
+                    if (CW[i] <= 46.0) {
+                        Nr3[i] = 0.04 * (46.0 - CW[i]);
+                    }
+                }
+                else {
+                    Nr3[i] = 1.0;
+                }
+                Nr4[i] = 1.0;
+                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
         """
 
-        self.__straub_p1 = f"""
+        if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
+            self.__straub_fragmentation_body = trtc.For(
+                param_names=(
+                    "CW",
+                    "gam",
+                    "ds",
+                    "frag_size",
+                    "v_max",
+                    "rand",
+                    "Nr1",
+                    "Nr2",
+                    "Nr3",
+                    "Nr4",
+                    "Nrt",
+                ),
+                name_iter="i",
+                body=f"""
+                {self.__straub_Nr_body}
 
-                auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
-                auto var_1 = pow(delD1, 2.) / 12.;
-                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
-                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
-                auto X = rand[i];
-
-                frag_size[i] = exp(
-                    mu1
-                    - sigma1 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log((0.5 + X) / (1.5 - X))
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
-        self.__straub_p2 = f"""
-
-                auto mu2 = 0.095 * CM;
-                auto delD2 = 0.007 * (CW[i] - 21.0);
-                auto sigma2 = pow(delD2, 2.) / 12.;
-                auto X = rand[i];
-
-                frag_size[i] = mu2 - sigma2 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                    (0.5 + X) / (1.5 - X)
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
-        self.__straub_p3 = f"""
-
-                auto mu3 = 0.9 * ds[i];
-                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
-                auto sigma3 = pow(delD3, 2.) / 12.;
-                auto X = rand[i];
-
-                frag_size[i] = mu3 - sigma3 / {const.sqrt_two} / {const.sqrt_pi} / log(2.) * log(
-                    (0.5 + X) / (1.5 - X)
-                );
-                frag_size[i] = {const.PI} / 6. * pow(frag_size[i], (real_type) (3.));
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
-        self.__straub_p4 = f"""
-
-                auto E_D1 = 0.04 * CM;
-                auto delD1 = 0.0125 * pow(CW[i], (real_type) (0.5));
-                auto var_1 = pow(delD1, 2.) / 12.;
-                auto sigma1 = sqrt(log(var_1 / pow(E_D1, 2.) + 1));
-                auto mu1 = log(E_D1) - pow(sigma1, 2.) / 2.;
-                auto mu2 = 0.095 * CM;
-                auto delD2 = 0.007 * (CW[i] - 21.0);
-                auto sigma2 = pow(delD2, 2.) / 12.;
-                auto mu3 = 0.9 * ds[i];
-                auto delD3 = 0.01 * (0.76 * pow(CW[i], (real_type) (0.5)) + 1.0);
-                auto sigma3 = pow(delD3, 2.) / 12.;
-
-                auto M31 = Nr1[i] * exp(3 * mu1 + 9 * pow(sigma1, 2.) / 2.);
-                auto M32 = Nr2[i] * (pow(mu2, 3.) + 3 * mu2 * pow(sigma2, 2.));
-                auto M33 = Nr3[i] * (pow(mu3, 3.) + 3 * mu3 * pow(sigma3, 2.));
-
-                auto M34 = v_max[i] / {const.PI_4_3} * 8 + pow(ds[i], (real_type) (3.)) - M31 - M32 - M33;
-                frag_size[i] = {const.PI} / 6. * M34;
-        """.replace(
-            "real_type", self._get_c_type()
-        )
-
-        self.__straub_fragmentation_body = trtc.For(
-            param_names=(
-                "CW",
-                "gam",
-                "ds",
-                "frag_size",
-                "v_max",
-                "rand",
-                "Nr1",
-                "Nr2",
-                "Nr3",
-                "Nr4",
-                "Nrt",
-            ),
-            name_iter="i",
-            body=f"""
-            auto CM = .01;
-            {self.__straub_Nr_body}
-
-            if (rand[i] < Nr1[i] / Nrt[i]) {{
-                rand[i] = rand[i] * Nrt[i] / Nr1[i];
-                {self.__straub_p1}
-            }}
-            else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                rand[i] = (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i]);
-                {self.__straub_p2}
-            }}
-            else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                rand[i] = (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]);
-                {self.__straub_p3}
-            }}
-            else {{
-                {self.__straub_p4}
-            }}
-            """,
-        )
+                if (rand[i] < Nr1[i] / Nrt[i]) {{
+                    auto sigma1 = {self.formulae.fragmentation_function.sigma1.c_inline(CW="CW[i]")};
+                    frag_size[i] = {self.formulae.fragmentation_function.p1.c_inline(
+                        sigma1="sigma1",
+                        rand="rand[i] * Nrt[i] / Nr1[i]"
+                    )};
+                }}
+                else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    frag_size[i] = {self.formulae.fragmentation_function.p2.c_inline(
+                        CW="CW[i]",
+                        rand="(rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])"
+                    )};
+                }}
+                else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
+                    frag_size[i] = {self.formulae.fragmentation_function.p3.c_inline(
+                        CW="CW[i]",
+                        ds="ds[i]",
+                        rand="(rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])"
+                    )};
+                }}
+                else {{
+                    frag_size[i] = {self.formulae.fragmentation_function.p4.c_inline(
+                        CW="CW[i]",
+                        ds="ds[i]",
+                        v_max="v_max[i]",
+                        Nr1="Nr1[i]",
+                        Nr2="Nr2[i]",
+                        Nr3="Nr3[i]"
+                    )};
+                }}
+                """.replace(
+                    "real_type", self._get_c_type()
+                ),
+            )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
     def adaptive_sdm_end(self, dt_left, cell_start):
@@ -512,6 +492,8 @@ class CollisionsMethods(
                 n_attr,
                 gamma.data,
                 healthy.data,
+                cell_id.data,
+                coalescence_rate.data,
             ),
         )
 

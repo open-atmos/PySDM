@@ -1,0 +1,92 @@
+{
+  "title": "PySDM",
+  "description": "Pythonic particle-based (super-droplet) warm-rain/aqueous-chemistry cloud microphysics package with box, parcel & 1D/2D prescribed-flow examples in Python, Julia and Matlab",
+  "creators": [
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Arabas, Sylwester",
+      "orcid": "0000-0003-2361-0082"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Azimi, Sajjad",
+      "orcid": "0000-0002-6329-7775"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Bartman, Piotr",
+      "orcid": "0000-0003-0265-6428"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Bulenok, Oleksii",
+      "orcid": "0000-0003-2272-8548"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "de Jong, Emily",
+      "orcid": "0000-0002-5310-4554"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Derlatka, Kacper"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Dula, Isabella",
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Górski, Kamil"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Jaruga, Anna",
+      "orcid": "0000-0003-3194-6440"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Łazarski, Grzegorz",
+      "orcid": "0000-0002-5595-371X"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Mackay, J. Ben",
+      "orcid": "0000-0001-8677-3562"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Olesik, Michael",
+      "orcid": "0000-0002-6319-9358"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Piasecki, Bartosz"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Singer, Clare E.",
+      "orcid": "0000-0002-1708-0997"
+    },
+    {
+      "affiliation": "Jagiellonian University, Kraków, Poland",
+      "name": "Talar, Aleksandra"
+    },
+    {
+      "affiliation": "California Institute of Technology, Pasadena, CA, USA",
+      "name": "Ward, Ryan X.",
+      "orcid": "0000-0003-2317-3310"
+    }
+  ],
+  "keywords": [
+    "cloud microphysics",
+    "aerosol microphysics",
+    "aerosol-cloud interactions",
+    "atmospheric physics",
+    "super-droplet method",
+    "particle-based simulation",
+    "Monte-Carlo"
+  ],
+  "license": "GPL-3.0-only",
+  "upload_type": "software"
+}

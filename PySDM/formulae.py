@@ -24,7 +24,7 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         self,
         *,
         constants: Optional[dict] = None,
-        seed: int = physics.constants.default_random_seed,
+        seed: int = None,
         fastmath: bool = True,
         condensation_coordinate: str = "VolumeLogarithm",
         saturation_vapour_pressure: str = "FlatauWalkoCotton",
@@ -40,7 +40,28 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
         hydrostatics: str = "Default",
         freezing_temperature_spectrum: str = "Null",
         heterogeneous_ice_nucleation_rate: str = "Null",
+        fragmentation_function: str = "AlwaysN",
+        handle_all_breakups: bool = False,
     ):
+        # initialisation of the fields below is just to silence pylint and to enable code hints
+        # in PyCharm and alike, all these fields are later overwritten within this ctor
+        self.condensation_coordinate = condensation_coordinate
+        self.saturation_vapour_pressure = saturation_vapour_pressure
+        self.hygroscopicity = hygroscopicity
+        self.drop_growth = drop_growth
+        self.surface_tension = surface_tension
+        self.diffusion_kinetics = diffusion_kinetics
+        self.latent_heat = latent_heat
+        self.diffusion_thermics = diffusion_thermics
+        self.ventilation = ventilation
+        self.state_variable_triplet = state_variable_triplet
+        self.particle_advection = particle_advection
+        self.hydrostatics = hydrostatics
+        self.freezing_temperature_spectrum = freezing_temperature_spectrum
+        self.heterogeneous_ice_nucleation_rate = heterogeneous_ice_nucleation_rate
+        self.fragmentation_function = fragmentation_function
+        components = tuple(i for i in dir(self) if not i.startswith("__"))
+
         constants_defaults = {
             k: getattr(defaults, k)
             for defaults in (physics.constants, physics.constants_defaults)
@@ -51,100 +72,28 @@ class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attr
             **{**constants_defaults, **(constants or {})}
         )
         self.constants = constants
-        self.seed = seed
+        self.seed = seed or physics.constants.default_random_seed
         self.fastmath = fastmath
+        self.handle_all_breakups = handle_all_breakups
         dimensional_analysis = physics.impl.flag.DIMENSIONAL_ANALYSIS
 
         self.trivia = _magick(
             "Trivia", physics.trivia, fastmath, constants, dimensional_analysis
         )
 
-        self.condensation_coordinate = _magick(
-            condensation_coordinate,
-            physics.condensation_coordinate,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.saturation_vapour_pressure = _magick(
-            saturation_vapour_pressure,
-            physics.saturation_vapour_pressure,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.latent_heat = _magick(
-            latent_heat, physics.latent_heat, fastmath, constants, dimensional_analysis
-        )
-        self.hygroscopicity = _magick(
-            hygroscopicity,
-            physics.hygroscopicity,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.drop_growth = _magick(
-            drop_growth, physics.drop_growth, fastmath, constants, dimensional_analysis
-        )
-        self.surface_tension = _magick(
-            surface_tension,
-            physics.surface_tension,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.diffusion_kinetics = _magick(
-            diffusion_kinetics,
-            physics.diffusion_kinetics,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.diffusion_thermics = _magick(
-            diffusion_thermics,
-            physics.diffusion_thermics,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.ventilation = _magick(
-            ventilation, physics.ventilation, fastmath, constants, dimensional_analysis
-        )
-        self.state_variable_triplet = _magick(
-            state_variable_triplet,
-            physics.state_variable_triplet,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.particle_advection = _magick(
-            particle_advection,
-            physics.particle_advection,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.hydrostatics = _magick(
-            hydrostatics,
-            physics.hydrostatics,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.freezing_temperature_spectrum = _magick(
-            freezing_temperature_spectrum,
-            physics.freezing_temperature_spectrum,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
-        self.heterogeneous_ice_nucleation_rate = _magick(
-            heterogeneous_ice_nucleation_rate,
-            physics.heterogeneous_ice_nucleation_rate,
-            fastmath,
-            constants,
-            dimensional_analysis,
-        )
+        # each `component` corresponds to one subdirectory of PySDM/physics
+        for component in components:
+            setattr(
+                self,
+                component,
+                _magick(
+                    value=getattr(self, component),
+                    module=getattr(physics, component),
+                    fastmath=fastmath,
+                    constants=constants,
+                    dimensional_analysis=dimensional_analysis,
+                ),
+            )
 
     def __str__(self):
         description = []
@@ -217,6 +166,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
 
 def _boost(obj, fastmath, constants, dimensional_analysis):
+    """returns JIT-compiled, `c_inline`-equipped formulae with the constants catalogue attached"""
     formulae = {"__name__": obj.__class__.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
@@ -274,6 +224,7 @@ def _c_inline(fun, return_type=None, constants=None, **args):
 
 
 def _pick(value: str, choices: dict, constants: namedtuple):
+    """selects a given physics logic and instantiates it passing the constants catalogue"""
     for name, cls in choices.items():
         if name == value:
             return cls(constants)
@@ -288,6 +239,9 @@ def _choices(module):
 
 @lru_cache()
 def _magick(value, module, fastmath, constants, dimensional_analysis):
+    """
+    boosts (`PySDM.formulae.Formulae._boost`) the selected physics logic
+    """
     return _boost(
         _pick(value, _choices(module), constants),
         fastmath,
