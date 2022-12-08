@@ -13,7 +13,7 @@ from PySDM.backends.impl_numba.warnings import warn
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def pair_indices(i, idx, is_first_in_pair, gamma):
+def pair_indices(i, idx, is_first_in_pair, prob_or_gamma):
     """given permutation array `idx` and `is_first_in_pair` flag array,
     returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
     `j` points to the droplet that is first in pair (higher or equal multiplicity)
@@ -22,7 +22,7 @@ def pair_indices(i, idx, is_first_in_pair, gamma):
     """
     skip_pair = False
 
-    if gamma[i] == 0:
+    if prob_or_gamma[i] == 0:
         skip_pair = True
         j, k = -1, -1
     else:
@@ -402,7 +402,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def __adaptive_sdm_gamma_body(
-        gamma,
+        prob,
         idx,
         length,
         multiplicity,
@@ -413,25 +413,26 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
+        out,
     ):
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO #571
-            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
             if skip_pair:
                 continue
             prop = multiplicity[j] // multiplicity[k]
-            dt_optimal = dt * prop / gamma[i]
+            dt_optimal = dt * prop / prob[i]
             cid = cell_id[j]
             dt_optimal = max(dt_optimal, dt_range[0])
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
             stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
             if skip_pair:
                 continue
-            gamma[i] *= dt_todo[cell_id[j]] / dt
+            out[i] *= dt_todo[cell_id[j]] / dt
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
             if dt_todo[cid] > 0:
@@ -440,7 +441,7 @@ class CollisionsMethods(BackendMethods):
     def adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -449,9 +450,10 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
+        out,
     ):
         return self.__adaptive_sdm_gamma_body(
-            gamma.data,
+            prob.data,
             n.idx.data,
             len(n),
             n.data,
@@ -462,6 +464,7 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair.indicator.data,
             stats_n_substep.data,
             stats_dt_min.data,
+            out.data,
         )
 
     @staticmethod
@@ -752,7 +755,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def __compute_gamma_body(
-        gamma,
+        prob,
         rand,
         idx,
         length,
@@ -761,6 +764,7 @@ class CollisionsMethods(BackendMethods):
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         # TODO: document that gamma is also input
         """
@@ -770,32 +774,31 @@ class CollisionsMethods(BackendMethods):
               = floor(prob)     if rand >= prob - floor(prob)
         """
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            gamma[i] = np.ceil(gamma[i] - rand[i])
-            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            out[i] = np.ceil(prob[i] - rand[i])
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
             if skip_pair:
                 continue
             prop = multiplicity[j] // multiplicity[k]
-            g = min(int(gamma[i]), prop)
+            g = min(int(out[i]), prop)
             cid = cell_id[j]
             atomic_add(collision_rate, cid, g * multiplicity[k])
-            atomic_add(
-                collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k]
-            )
-            gamma[i] = g
+            atomic_add(collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k])
+            out[i] = g
 
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         return self.__compute_gamma_body(
-            gamma.data,
+            prob.data,
             rand.data,
             multiplicity.idx.data,
             len(multiplicity),
@@ -804,6 +807,7 @@ class CollisionsMethods(BackendMethods):
             collision_rate_deficit.data,
             collision_rate.data,
             is_first_in_pair.indicator.data,
+            out.data,
         )
 
     @staticmethod

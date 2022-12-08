@@ -78,7 +78,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.Ec_temp = None
         self.Eb_temp = None
         self.norm_factor_temp = None
-        self.prob = None
+        self.gamma = None
         self.is_first_in_pair = None
         self.dt_left = None
 
@@ -112,7 +112,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             **empty_args_pairwise
         )
         self.norm_factor_temp = self.particulator.Storage.empty(**empty_args_cellwise)
-        self.prob = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
+
+        self.gamma = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
+
         self.is_first_in_pair = self.particulator.PairIndicator(self.particulator.n_sd)
         self.dt_left = self.particulator.Storage.empty(**empty_args_cellwise)
 
@@ -185,7 +187,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.is_first_in_pair, pairs_rand
         )
 
-        self.compute_probabilities_of_collision(self.prob, self.is_first_in_pair)
         if self.enable_breakup:
             proc_rand = self.rnd_opt_proc.get_random_arrays()
             rand_frag = self.rnd_opt_frag.get_random_arrays()
@@ -197,11 +198,16 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         else:
             proc_rand = None
 
-        self.compute_gamma(self.prob, rand, self.is_first_in_pair)
+        prob = self.gamma
+        self.compute_probabilities_of_collision(self.is_first_in_pair, out=prob)
+
+        self.compute_gamma(
+            prob=prob, rand=rand, is_first_in_pair=self.is_first_in_pair, out=self.gamma
+        )
 
         self.particulator.collision_coalescence_breakup(
             enable_breakup=self.enable_breakup,
-            gamma=self.prob,
+            gamma=self.gamma,
             rand=proc_rand,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
@@ -230,24 +236,24 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         )
         self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
-    def compute_probabilities_of_collision(self, prob, is_first_in_pair):
+    def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        prob.max(self.particulator.attributes["n"], is_first_in_pair)
-        prob *= self.kernel_temp
-        self.particulator.normalize(prob, self.norm_factor_temp)
+        out.max(self.particulator.attributes["n"], is_first_in_pair)
+        out *= self.kernel_temp
+        self.particulator.normalize(out, self.norm_factor_temp)
 
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
         self.compute_number_of_fragments(n_fragment, u01, is_first_in_pair)
 
-    def compute_gamma(self, prob, rand, is_first_in_pair):
+    def compute_gamma(self, prob, rand, is_first_in_pair, out):
         """see sec. 5.1.3 point (3) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)
         note that in PySDM gamma also serves the purpose of disabling collisions
         for droplets without a pair (i.e. odd number of particles within a grid cell)
         """
         if self.adaptive:
             self.particulator.backend.adaptive_sdm_gamma(
-                gamma=prob,
+                prob=prob,
                 n=self.particulator.attributes["n"],
                 cell_id=self.particulator.attributes["cell id"],
                 dt_left=self.dt_left,
@@ -256,6 +262,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 is_first_in_pair=is_first_in_pair,
                 stats_n_substep=self.stats_n_substep,
                 stats_dt_min=self.stats_dt_min,
+                out=out,
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")
@@ -263,13 +270,14 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             prob /= self.__substeps
 
         self.particulator.backend.compute_gamma(
-            gamma=prob,
+            prob=prob,
             rand=rand,
             multiplicity=self.particulator.attributes["n"],
             cell_id=self.particulator.attributes["cell id"],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,
             is_first_in_pair=is_first_in_pair,
+            out=out,
         )
 
 

@@ -55,9 +55,9 @@ struct Commons {
       int64_t i,
       VectorView<int64_t> idx,
       VectorView<bool> is_first_in_pair,
-      VectorView<real_type> gamma
+      VectorView<real_type> prob_or_gamma
   ) {
-      if (gamma[i] == 0) {
+      if (prob_or_gamma[i] == 0) {
           return std::make_tuple(-1, -1, true);
       }
       auto offset = 1 - is_first_in_pair[2 * i];
@@ -84,19 +84,19 @@ class CollisionsMethods(
         )
 
         self.__adaptive_sdm_gamma_body_2 = trtc.For(
-            ("gamma", "idx", "n", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
+            ("prob", "idx", "n", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
             f"""
                 {COMMONS}
                 bool skip_pair = false;
                 int64_t j = -1;
                 int64_t k = -1;
-                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, prob);
                 if (skip_pair) {{
                     return;
                 }}
                 auto prop = (int64_t)(n[j] / n[k]);
-                auto dt_optimal = dt * prop / gamma[i];
+                auto dt_optimal = dt * prop / prob[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), "");
                 atomicMin((unsigned int*)&dt_todo[cid], __float_as_uint(dt_optimal));
@@ -106,18 +106,18 @@ class CollisionsMethods(
         )
 
         self.__adaptive_sdm_gamma_body_3 = trtc.For(
-            ("gamma", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
+            ("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo", "out"),
             "i",
             f"""
                 {COMMONS}
                 bool skip_pair = false;
                 int64_t j = -1;
                 int64_t k = -1;
-                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, prob);
                 if (skip_pair) {{
                     return;
                 }}
-                gamma[i] *= dt_todo[cell_id[j]] / dt;
+                out[i] *= dt_todo[cell_id[j]] / dt;
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -182,7 +182,7 @@ class CollisionsMethods(
                 "real_type", self._get_c_type()
             ),
         )
-
+        # pylint:disable=unused-private-member
         self.__collision_coalescence_breakup_body = trtc.For(
             param_names=(
                 "multiplicity",
@@ -227,29 +227,31 @@ class CollisionsMethods(
 
         self.__compute_gamma_body = trtc.For(
             (
-                "gamma",
+                "prob",
                 "rand",
                 "idx",
                 "multiplicity",
                 "cell_id",
                 "collision_rate_deficit",
                 "collision_rate",
+                "is_first_in_pair",
+                "out",
             ),
             "i",
             f"""
             {COMMONS}
-            gamma[i] = ceil(gamma[i] - rand[i]);
+            out[i] = ceil(prob[i] - rand[i]);
 
             bool skip_pair = false;
             int64_t j = -1;
             int64_t k = -1;
-            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, out);
             if (skip_pair) {{
                 return;
             }}
 
             auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
-            auto g = min((int64_t)(gamma[i]), prop);
+            auto g = min((int64_t)(out[i]), prop);
 
             atomicAdd(
                 (unsigned long long int*)&collision_rate[cell_id[j]],
@@ -257,10 +259,10 @@ class CollisionsMethods(
             );
             atomicAdd(
                 (unsigned long long int*)&collision_rate_deficit[cell_id[j]],
-                (unsigned long long int)(((int64_t)(gamma[i]) - g) * multiplicity[k])
+                (unsigned long long int)(((int64_t)(out[i]) - g) * multiplicity[k])
             );
 
-            gamma[i] = g;
+            out[i] = g;
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -477,7 +479,7 @@ class CollisionsMethods(
     def adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -486,6 +488,7 @@ class CollisionsMethods(
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
+        out,
     ):
         # TODO #406 implement stats_dt_min
         dt_todo = trtc.device_vector("float", len(dt_left))
@@ -498,7 +501,7 @@ class CollisionsMethods(
         self.__adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 n.data,
                 cell_id.data,
@@ -510,12 +513,13 @@ class CollisionsMethods(
         self.__adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 cell_id.data,
                 d_dt,
                 is_first_in_pair.indicator.data,
                 dt_todo,
+                out.data,
             ),
         )
         self.__adaptive_sdm_gamma_body_4.launch_n(
@@ -569,31 +573,33 @@ class CollisionsMethods(
             ),
         )
 
-    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         if len(multiplicity) < 2:
             return
         self.__compute_gamma_body.launch_n(
             len(multiplicity) // 2,
             (
-                gamma.data,
+                prob.data,
                 rand.data,
                 multiplicity.idx.data,
                 multiplicity.data,
                 cell_id.data,
                 collision_rate_deficit.data,
                 collision_rate.data,
+                is_first_in_pair.data,
+                out.data,
             ),
         )
 
