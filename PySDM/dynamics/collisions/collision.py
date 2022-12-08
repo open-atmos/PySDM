@@ -187,6 +187,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.is_first_in_pair, pairs_rand
         )
 
+        prob = self.gamma
+        self.compute_probabilities_of_collision(self.is_first_in_pair, out=prob)
+
         if self.enable_breakup:
             proc_rand = self.rnd_opt_proc.get_random_arrays()
             rand_frag = self.rnd_opt_frag.get_random_arrays()
@@ -197,9 +200,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             )
         else:
             proc_rand = None
-
-        prob = self.gamma
-        self.compute_probabilities_of_collision(self.is_first_in_pair, out=prob)
 
         self.compute_gamma(
             prob=prob, rand=rand, is_first_in_pair=self.is_first_in_pair, out=self.gamma

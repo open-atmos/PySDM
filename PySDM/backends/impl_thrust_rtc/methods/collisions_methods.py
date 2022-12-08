@@ -163,6 +163,7 @@ class CollisionsMethods(
                 "healthy",
                 "cell_id",
                 "coalescence_rate",
+                "is_first_in_pair",
             ),
             name_iter="i",
             body=f"""
@@ -570,6 +571,7 @@ class CollisionsMethods(
                 healthy.data,
                 cell_id.data,
                 coalescence_rate.data,
+                is_first_in_pair.indicator.data,
             ),
         )
 
@@ -598,7 +600,7 @@ class CollisionsMethods(
                 cell_id.data,
                 collision_rate_deficit.data,
                 collision_rate.data,
-                is_first_in_pair.data,
+                is_first_in_pair.indicator.data,
                 out.data,
             ),
         )
