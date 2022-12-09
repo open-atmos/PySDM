@@ -191,7 +191,6 @@ class TestCollisionMethods:
             is_first_in_pair=_is_first_in_pair,
             stats_n_substep=_n_substep,
             stats_dt_min=_dt_min,
-            out=_gamma,
         )
 
         # Assert

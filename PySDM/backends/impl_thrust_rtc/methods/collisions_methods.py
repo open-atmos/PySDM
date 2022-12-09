@@ -106,7 +106,7 @@ class CollisionsMethods(
         )
 
         self.__adaptive_sdm_gamma_body_3 = trtc.For(
-            ("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo", "out"),
+            ("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
             f"""
                 {COMMONS}
@@ -117,7 +117,7 @@ class CollisionsMethods(
                 if (skip_pair) {{
                     return;
                 }}
-                out[i] *= dt_todo[cell_id[j]] / dt;
+                prob[i] *= dt_todo[cell_id[j]] / dt;
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -488,7 +488,6 @@ class CollisionsMethods(
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
-        out,
     ):
         # TODO #406 implement stats_dt_min
         dt_todo = trtc.device_vector("float", len(dt_left))
@@ -519,7 +518,6 @@ class CollisionsMethods(
                 d_dt,
                 is_first_in_pair.indicator.data,
                 dt_todo,
-                out.data,
             ),
         )
         self.__adaptive_sdm_gamma_body_4.launch_n(
