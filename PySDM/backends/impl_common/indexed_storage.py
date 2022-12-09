@@ -16,8 +16,6 @@ def make_IndexedStorage(backend):
 
         def __getitem__(self, item):
             result = backend.Storage.__getitem__(self, item)
-            if isinstance(result, backend.Storage):
-                return IndexedStorage.indexed(self.idx, result)
             return result
 
         @staticmethod
