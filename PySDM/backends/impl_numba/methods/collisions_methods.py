@@ -13,16 +13,18 @@ from PySDM.backends.impl_numba.warnings import warn
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def pair_indices(i, idx, is_first_in_pair, prob_or_gamma):
+def pair_indices(i, idx, is_first_in_pair, prob_like):
     """given permutation array `idx` and `is_first_in_pair` flag array,
     returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
     `j` points to the droplet that is first in pair (higher or equal multiplicity)
     output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
-    otherwise the `skip_pair` flag is set to True and returned `j` & `k` indices are set to -1
+    otherwise the `skip_pair` flag is set to True and returned `j` & `k` indices are set to -1.
+    In addition, the `prob_like` array is checked for zeros at position `i`, in which case
+    the `skip_pair` is also set to `True`
     """
     skip_pair = False
 
-    if prob_or_gamma[i] == 0:
+    if prob_like[i] == 0:
         skip_pair = True
         j, k = -1, -1
     else:

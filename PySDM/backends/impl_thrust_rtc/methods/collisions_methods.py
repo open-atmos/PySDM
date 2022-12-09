@@ -55,9 +55,9 @@ struct Commons {
       int64_t i,
       VectorView<int64_t> idx,
       VectorView<bool> is_first_in_pair,
-      VectorView<real_type> prob_or_gamma
+      VectorView<real_type> prob_like
   ) {
-      if (prob_or_gamma[i] == 0) {
+      if (prob_like[i] == 0) {
           return std::make_tuple(-1, -1, true);
       }
       auto offset = 1 - is_first_in_pair[2 * i];
