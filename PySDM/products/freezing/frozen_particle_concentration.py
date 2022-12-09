@@ -3,9 +3,7 @@ concentration of frozen particles (unactivated, activated or both)
 """
 import numpy as np
 
-from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
-    ConcentrationProduct,
-)
+from PySDM.products.impl.concentration_product import ConcentrationProduct
 
 
 class FrozenParticleConcentration(ConcentrationProduct):

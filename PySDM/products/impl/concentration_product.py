@@ -22,7 +22,7 @@ class ConcentrationProduct(MomentProduct):
         self.rho_stp = builder.formulae.constants.rho_STP
 
     def _impl(self, **kwargs):
-        assert kwargs is None
+        assert len(kwargs) == 0
 
         self.buffer[:] /= self.particulator.mesh.dv
 
