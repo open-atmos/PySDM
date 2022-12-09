@@ -182,7 +182,7 @@ class TestCollisionMethods:
 
         # Act
         backend.adaptive_sdm_gamma(
-            gamma=_gamma,
+            prob=_gamma,
             n=_n,
             cell_id=_cell_id,
             dt_left=_dt_left,
@@ -191,6 +191,7 @@ class TestCollisionMethods:
             is_first_in_pair=_is_first_in_pair,
             stats_n_substep=_n_substep,
             stats_dt_min=_dt_min,
+            out=_gamma,
         )
 
         # Assert
