@@ -153,7 +153,7 @@ class TestCollisionMethods:
         ),
     )
     # pylint: disable=redefined-outer-name,too-many-locals
-    def test_adaptive_sdm_gamma(
+    def test_scale_prob_for_adaptive_sdm_gamma(
         *,
         backend_class,
         gamma,
@@ -181,7 +181,7 @@ class TestCollisionMethods:
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend.adaptive_sdm_gamma(
+        backend.scale_prob_for_adaptive_sdm_gamma(
             prob=_gamma,
             n=_n,
             cell_id=_cell_id,

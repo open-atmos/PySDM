@@ -403,7 +403,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
-    def __adaptive_sdm_gamma_body(
+    def __scale_prob_for_adaptive_sdm_gamma_body(
         prob,
         idx,
         length,
@@ -439,7 +439,7 @@ class CollisionsMethods(BackendMethods):
             if dt_todo[cid] > 0:
                 stats_n_substep[cid] += 1
 
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
         prob,
@@ -452,7 +452,7 @@ class CollisionsMethods(BackendMethods):
         stats_n_substep,
         stats_dt_min,
     ):
-        return self.__adaptive_sdm_gamma_body(
+        return self.__scale_prob_for_adaptive_sdm_gamma_body(
             prob.data,
             n.idx.data,
             len(n),

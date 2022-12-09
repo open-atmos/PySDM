@@ -252,7 +252,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         for droplets without a pair (i.e. odd number of particles within a grid cell)
         """
         if self.adaptive:
-            self.particulator.backend.adaptive_sdm_gamma(
+            self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
                 prob=prob,
                 n=self.particulator.attributes["n"],
                 cell_id=self.particulator.attributes["cell id"],

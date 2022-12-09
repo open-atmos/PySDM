@@ -77,7 +77,7 @@ class CollisionsMethods(
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
 
-        self.__adaptive_sdm_gamma_body_1 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1 = trtc.For(
             ("dt_todo", "dt_left", "dt_max"),
             "cid",
             """
@@ -85,7 +85,7 @@ class CollisionsMethods(
             """,
         )
 
-        self.__adaptive_sdm_gamma_body_2 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2 = trtc.For(
             ("prob", "idx", "n", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
             f"""
@@ -108,7 +108,7 @@ class CollisionsMethods(
             ),
         )
 
-        self.__adaptive_sdm_gamma_body_3 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3 = trtc.For(
             ("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
             "i",
             f"""
@@ -127,7 +127,7 @@ class CollisionsMethods(
             ),
         )
 
-        self.__adaptive_sdm_gamma_body_4 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4 = trtc.For(
             ("dt_left", "dt_todo", "stats_n_substep"),
             "cid",
             """
@@ -483,7 +483,7 @@ class CollisionsMethods(
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
         prob,
@@ -501,10 +501,10 @@ class CollisionsMethods(
         d_dt_max = self._get_floating_point(dt_range[1])
         d_dt = self._get_floating_point(dt)
 
-        self.__adaptive_sdm_gamma_body_1.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
             len(dt_left), (dt_todo, dt_left.data, d_dt_max)
         )
-        self.__adaptive_sdm_gamma_body_2.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (
                 prob.data,
@@ -516,7 +516,7 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_3.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2,
             (
                 prob.data,
@@ -527,7 +527,7 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_4.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4.launch_n(
             len(dt_left), (dt_left.data, dt_todo, stats_n_substep.data)
         )
 
