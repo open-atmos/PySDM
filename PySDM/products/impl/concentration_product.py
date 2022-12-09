@@ -1,6 +1,6 @@
 """
 common code for products computing particle concentrations with
-the option to return them at standard temperature and pressure conditions
+the option to return them at standard temperature and pressure (STP) conditions
 """
 
 from PySDM.products.impl.moment_product import MomentProduct
