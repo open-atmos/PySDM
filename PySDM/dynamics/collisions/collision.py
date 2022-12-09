@@ -262,7 +262,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 is_first_in_pair=is_first_in_pair,
                 stats_n_substep=self.stats_n_substep,
                 stats_dt_min=self.stats_dt_min,
-                out=out,
             )
             if self.stats_dt_min.amin() == self.dt_coal_range[0]:
                 warnings.warn("adaptive time-step reached dt_min")

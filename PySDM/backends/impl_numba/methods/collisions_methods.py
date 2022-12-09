@@ -413,7 +413,6 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
-        out,
     ):
         dt_todo = np.empty_like(dt_left)
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
@@ -432,7 +431,7 @@ class CollisionsMethods(BackendMethods):
             j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
             if skip_pair:
                 continue
-            out[i] *= dt_todo[cell_id[j]] / dt
+            prob[i] *= dt_todo[cell_id[j]] / dt
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
             if dt_todo[cid] > 0:
@@ -450,7 +449,6 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         stats_n_substep,
         stats_dt_min,
-        out,
     ):
         return self.__adaptive_sdm_gamma_body(
             prob.data,
@@ -464,7 +462,6 @@ class CollisionsMethods(BackendMethods):
             is_first_in_pair.indicator.data,
             stats_n_substep.data,
             stats_dt_min.data,
-            out.data,
         )
 
     @staticmethod
@@ -766,12 +763,13 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         out,
     ):
-        # TODO: document that gamma is also input
         """
-        return in "gamma" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+        return in "out" array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
         gamma = floor(prob) + 1 if rand <  prob - floor(prob)
               = floor(prob)     if rand >= prob - floor(prob)
+
+        out may point to the same array as prob
         """
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
             out[i] = np.ceil(prob[i] - rand[i])
