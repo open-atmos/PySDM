@@ -53,17 +53,19 @@ struct Commons {
 
   static __device__ auto pair_indices(
       int64_t i,
+      int64_t *j,
+      int64_t *k,
       VectorView<int64_t> idx,
       VectorView<bool> is_first_in_pair,
       VectorView<real_type> prob_like
   ) {
       if (prob_like[i] == 0) {
-          return std::make_tuple(-1, -1, true);
+          return true;
       }
       auto offset = 1 - is_first_in_pair[2 * i];
-      auto j = idx[2 * i + offset];
-      auto k = idx[2 * i + 1 + offset];
-      return std::make_tuple(j, k, false);
+      j[0] = idx[2 * i + offset];
+      k[0] = idx[2 * i + 1 + offset];
+      return false;
   }
 };
 """
@@ -88,10 +90,11 @@ class CollisionsMethods(
             "i",
             f"""
                 {COMMONS}
-                bool skip_pair = false;
-                int64_t j = -1;
-                int64_t k = -1;
-                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, prob);
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
                 if (skip_pair) {{
                     return;
                 }}
@@ -110,10 +113,11 @@ class CollisionsMethods(
             "i",
             f"""
                 {COMMONS}
-                bool skip_pair = false;
-                int64_t j = -1;
-                int64_t k = -1;
-                std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, prob);
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
                 if (skip_pair) {{
                     return;
                 }}
@@ -168,10 +172,11 @@ class CollisionsMethods(
             name_iter="i",
             body=f"""
             {COMMONS}
-            bool skip_pair = false;
-            int64_t j = -1;
-            int64_t k = -1;
-            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
             if (skip_pair) {{
                 return;
             }}
@@ -209,10 +214,11 @@ class CollisionsMethods(
             name_iter="i",
             body=f"""
             {COMMONS}
-            bool skip_pair = false;
-            int64_t j = -1;
-            int64_t k = -1;
-            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, gamma);
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
             if (skip_pair) {{
                 return;
             }}
@@ -242,10 +248,11 @@ class CollisionsMethods(
             {COMMONS}
             out[i] = ceil(prob[i] - rand[i]);
 
-            bool skip_pair = false;
-            int64_t j = -1;
-            int64_t k = -1;
-            std::tie(j, k, skip_pair) = Commons::pair_indices(i, idx, is_first_in_pair, out);
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, out);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
             if (skip_pair) {{
                 return;
             }}
