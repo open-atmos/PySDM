@@ -4,11 +4,11 @@ concentration of frozen particles (unactivated, activated or both)
 import numpy as np
 
 from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
-    StandardTemperaturePressureConcentrationProduct,
+    ConcentrationProduct,
 )
 
 
-class FrozenParticleConcentration(StandardTemperaturePressureConcentrationProduct):
+class FrozenParticleConcentration(ConcentrationProduct):
     def __init__(
         self,
         *,
@@ -37,7 +37,7 @@ class FrozenParticleConcentration(StandardTemperaturePressureConcentrationProduc
             filter_attr="wet to critical volume ratio",
             filter_range=self.__filter_range,
         )
-        return super()._impl()
+        return super()._impl(**kwargs)
 
 
 class FrozenParticleSpecificConcentration(FrozenParticleConcentration):

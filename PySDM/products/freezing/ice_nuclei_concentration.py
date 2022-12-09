@@ -4,11 +4,11 @@ immersed ice nucleus concentration (both within frozen and unfrozen particles)
 import numpy as np
 
 from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
-    StandardTemperaturePressureConcentrationProduct,
+    ConcentrationProduct,
 )
 
 
-class IceNucleiConcentration(StandardTemperaturePressureConcentrationProduct):
+class IceNucleiConcentration(ConcentrationProduct):
     def __init__(self, unit="m^-3", name=None, __specific=False, stp=False):
         super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
         self.__nonzero_filter_range = (
@@ -32,7 +32,7 @@ class IceNucleiConcentration(StandardTemperaturePressureConcentrationProduct):
             filter_attr=self.__filter_attr,
             filter_range=self.__nonzero_filter_range,
         )
-        return super()._impl()
+        return super()._impl(**kwargs)
 
 
 class SpecificIceNucleiConcentration(IceNucleiConcentration):

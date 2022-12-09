@@ -5,11 +5,12 @@ concentration of particles within a grid cell (either per-volume of per-mass-of-
 import numpy as np
 
 from PySDM.products.impl.standard_temperature_pressure_concentration_product import (
-    StandardTemperaturePressureConcentrationProduct,
+    ConcentrationProduct,
 )
 
 
-class ParticleConcentration(StandardTemperaturePressureConcentrationProduct):
+class ParticleConcentration(ConcentrationProduct):
+    # pylint: disable=too-many-arguments
     def __init__(
         self,
         radius_range=(0, np.inf),
@@ -21,9 +22,6 @@ class ParticleConcentration(StandardTemperaturePressureConcentrationProduct):
         self.radius_range = radius_range
         super().__init__(name=name, unit=unit, specific=specific, stp=stp)
 
-    def register(self, builder):
-        super().register(builder)
-
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
             attr="volume",
@@ -33,7 +31,7 @@ class ParticleConcentration(StandardTemperaturePressureConcentrationProduct):
                 self.formulae.trivia.volume(self.radius_range[1]),
             ),
         )
-        return super()._impl()
+        return super()._impl(**kwargs)
 
 
 class ParticleSpecificConcentration(ParticleConcentration):

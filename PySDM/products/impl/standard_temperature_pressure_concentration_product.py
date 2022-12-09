@@ -6,7 +6,7 @@ the option to return them at standard temperature and pressure conditions
 from PySDM.products.impl.moment_product import MomentProduct
 
 
-class StandardTemperaturePressureConcentrationProduct(MomentProduct):
+class ConcentrationProduct(MomentProduct):
     def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
         super().__init__(unit=unit, name=name)
         self.specific = specific
@@ -21,7 +21,9 @@ class StandardTemperaturePressureConcentrationProduct(MomentProduct):
         super().register(builder)
         self.rho_stp = builder.formulae.constants.rho_STP
 
-    def _impl(self):
+    def _impl(self, **kwargs):
+        assert kwargs is None
+
         self.buffer[:] /= self.particulator.mesh.dv
 
         if self.specific or self.stp:
