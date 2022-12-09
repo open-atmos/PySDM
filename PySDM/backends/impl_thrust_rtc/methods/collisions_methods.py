@@ -220,7 +220,6 @@ class CollisionsMethods(
             if (bouncing) {{
                 return;
             }}
-
             """.replace(
                 "real_type", self._get_c_type()
             ),
