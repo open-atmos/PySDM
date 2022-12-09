@@ -28,7 +28,7 @@ CONC = N_SD * MULTIPLICITY / DV
 class TestParticleConcentration:
     @staticmethod
     @pytest.mark.parametrize("stp", (True, False))
-    def test_stp(backend_class, stp):
+    def test_stp(backend_class, stp):  # pylint: disable=redefined-outer-name
         # arrange
         builder = Builder(n_sd=N_SD, backend=backend_class())
         builder.set_environment(ENV)
@@ -52,7 +52,7 @@ class TestParticleConcentration:
 
     @staticmethod
     @pytest.mark.parametrize("specific", (True, False))
-    def test_specific(backend_class, specific):
+    def test_specific(backend_class, specific):  # pylint: disable=redefined-outer-name
         # arrange
         builder = Builder(n_sd=N_SD, backend=backend_class())
         builder.set_environment(ENV)
