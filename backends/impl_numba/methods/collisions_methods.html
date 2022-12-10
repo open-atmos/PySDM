@@ -42,15 +42,25 @@ from PySDM.backends.impl_numba.warnings import warn
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def pair_indices(i, idx, is_first_in_pair):
+def pair_indices(i, idx, is_first_in_pair, prob_like):
     &#34;&#34;&#34;given permutation array `idx` and `is_first_in_pair` flag array,
-    returns indices `j` and `k` of droplets within pair `i`
-    such that `j` points to the droplet with higher (or equal) multiplicity
+    returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
+    `j` points to the droplet that is first in pair (higher or equal multiplicity)
+    output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
+    otherwise the `skip_pair` flag is set to True and returned `j` &amp; `k` indices are set to -1.
+    In addition, the `prob_like` array is checked for zeros at position `i`, in which case
+    the `skip_pair` is also set to `True`
     &#34;&#34;&#34;
-    offset = 1 - is_first_in_pair[2 * i]
-    j = idx[2 * i + offset]
-    k = idx[2 * i + 1 + offset]
-    return j, k
+    skip_pair = False
+
+    if prob_like[i] == 0:
+        skip_pair = True
+        j, k = -1, -1
+    else:
+        offset = 1 - is_first_in_pair[2 * i]
+        j = idx[2 * i + offset]
+        k = idx[2 * i + 1 + offset]
+    return j, k, skip_pair
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
@@ -67,12 +77,12 @@ def coalesce(  # pylint: disable=too-many-arguments
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n &gt; 0:
         multiplicity[j] = new_n
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, k] += gamma[i] * attributes[a, j]
     else:  # new_n == 0
         multiplicity[j] = multiplicity[k] // 2
         multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             attributes[a, k] = attributes[a, j]
 
@@ -111,7 +121,7 @@ def breakup_fun0(
 def breakup_fun1(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
@@ -130,14 +140,14 @@ def breakup_fun2(
     j, k, nj, nk, attributes, multiplicity, take_from_j
 ):  # pylint: disable=too-many-arguments
     if multiplicity[j] &lt;= take_from_j:
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = attributes[a, k]
 
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
     factor_k = nk / multiplicity[k]
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= factor_k
         attributes[a, j] *= factor_j
 
@@ -301,12 +311,12 @@ class CollisionsMethods(BackendMethods):
         ):
             # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
             for i in numba.prange(length // 2):
-                if gamma[i] == 0:
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+                if skip_pair:
                     continue
                 bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) &gt; 0
                 if bouncing:
                     continue
-                j, k = pair_indices(i, idx, is_first_in_pair)
 
                 if rand[i] - Ec[i] &lt; 0:
                     coalesce(
@@ -422,8 +432,8 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
-    def __adaptive_sdm_gamma_body(
-        gamma,
+    def __scale_prob_for_adaptive_sdm_gamma_body(
+        prob,
         idx,
         length,
         multiplicity,
@@ -439,29 +449,29 @@ class CollisionsMethods(BackendMethods):
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO #571
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
-            dt_optimal = dt * prop / gamma[i]
+            dt_optimal = dt * prop / prob[i]
             cid = cell_id[j]
             dt_optimal = max(dt_optimal, dt_range[0])
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
             stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            if gamma[i] == 0:
+            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+            if skip_pair:
                 continue
-            j, _ = pair_indices(i, idx, is_first_in_pair)
-            gamma[i] *= dt_todo[cell_id[j]] / dt
+            prob[i] *= dt_todo[cell_id[j]] / dt
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
             if dt_todo[cid] &gt; 0:
                 stats_n_substep[cid] += 1
 
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -471,8 +481,8 @@ class CollisionsMethods(BackendMethods):
         stats_n_substep,
         stats_dt_min,
     ):
-        return self.__adaptive_sdm_gamma_body(
-            gamma.data,
+        return self.__scale_prob_for_adaptive_sdm_gamma_body(
+            prob.data,
             n.idx.data,
             len(n),
             n.data,
@@ -510,9 +520,9 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
             length // 2
         ):
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             coalesce(
                 i, j, k, cell_id[j], multiplicity, gamma, attributes, coalescence_rate
             )
@@ -773,7 +783,7 @@ class CollisionsMethods(BackendMethods):
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def __compute_gamma_body(
-        gamma,
+        prob,
         rand,
         idx,
         length,
@@ -782,43 +792,42 @@ class CollisionsMethods(BackendMethods):
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         &#34;&#34;&#34;
-        return in &#34;gamma&#34; array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+        return in &#34;out&#34; array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
         gamma = floor(prob) + 1 if rand &lt;  prob - floor(prob)
               = floor(prob)     if rand &gt;= prob - floor(prob)
+
+        out may point to the same array as prob
         &#34;&#34;&#34;
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            gamma[i] = np.ceil(gamma[i] - rand[i])
-
-            no_collision = gamma[i] == 0
-            if no_collision:
+            out[i] = np.ceil(prob[i] - rand[i])
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
+            if skip_pair:
                 continue
-
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
-            g = min(int(gamma[i]), prop)
+            g = min(int(out[i]), prop)
             cid = cell_id[j]
             atomic_add(collision_rate, cid, g * multiplicity[k])
-            atomic_add(
-                collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k]
-            )
-            gamma[i] = g
+            atomic_add(collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k])
+            out[i] = g
 
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         return self.__compute_gamma_body(
-            gamma.data,
+            prob.data,
             rand.data,
             multiplicity.idx.data,
             len(multiplicity),
@@ -827,6 +836,7 @@ class CollisionsMethods(BackendMethods):
             collision_rate_deficit.data,
             collision_rate.data,
             is_first_in_pair.indicator.data,
+            out.data,
         )
 
     @staticmethod
@@ -1162,7 +1172,7 @@ def breakup_fun0(
 def breakup_fun1(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
@@ -1190,14 +1200,14 @@ def breakup_fun2(
     j, k, nj, nk, attributes, multiplicity, take_from_j
 ):  # pylint: disable=too-many-arguments
     if multiplicity[j] &lt;= take_from_j:
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = attributes[a, k]
 
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
     factor_k = nk / multiplicity[k]
-    for a in range(0, len(attributes)):
+    for a in range(len(attributes)):
         attributes[a, k] *= factor_k
         attributes[a, j] *= factor_j</code></pre>
 </details>
@@ -1219,12 +1229,12 @@ def coalesce(  # pylint: disable=too-many-arguments
     new_n = multiplicity[j] - gamma[i] * multiplicity[k]
     if new_n &gt; 0:
         multiplicity[j] = new_n
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, k] += gamma[i] * attributes[a, j]
     else:  # new_n == 0
         multiplicity[j] = multiplicity[k] // 2
         multiplicity[k] = multiplicity[k] - multiplicity[j]
-        for a in range(0, len(attributes)):
+        for a in range(len(attributes)):
             attributes[a, j] = gamma[i] * attributes[a, j] + attributes[a, k]
             attributes[a, k] = attributes[a, j]</code></pre>
 </details>
@@ -1245,26 +1255,40 @@ def flag_zero_multiplicity(j, k, multiplicity, healthy):
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.pair_indices"><code class="name flex">
-<span>def <span class="ident">pair_indices</span></span>(<span>i, idx, is_first_in_pair)</span>
+<span>def <span class="ident">pair_indices</span></span>(<span>i, idx, is_first_in_pair, prob_like)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>given permutation array <code>idx</code> and <code>is_first_in_pair</code> flag array,
-returns indices <code>j</code> and <code>k</code> of droplets within pair <code>i</code>
-such that <code>j</code> points to the droplet with higher (or equal) multiplicity</p></div>
+returns indices <code>j</code> and <code>k</code> of droplets within pair <code>i</code> and a <code>skip_pair</code> flag,
+<code>j</code> points to the droplet that is first in pair (higher or equal multiplicity)
+output is valid only if <code>2*i</code> or <code>2*i+1</code> points to a valid pair start index (within one cell)
+otherwise the <code>skip_pair</code> flag is set to True and returned <code>j</code> &amp; <code>k</code> indices are set to -1.
+In addition, the <code>prob_like</code> array is checked for zeros at position <code>i</code>, in which case
+the <code>skip_pair</code> is also set to <code>True</code></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def pair_indices(i, idx, is_first_in_pair):
+def pair_indices(i, idx, is_first_in_pair, prob_like):
     &#34;&#34;&#34;given permutation array `idx` and `is_first_in_pair` flag array,
-    returns indices `j` and `k` of droplets within pair `i`
-    such that `j` points to the droplet with higher (or equal) multiplicity
+    returns indices `j` and `k` of droplets within pair `i` and a `skip_pair` flag,
+    `j` points to the droplet that is first in pair (higher or equal multiplicity)
+    output is valid only if `2*i` or `2*i+1` points to a valid pair start index (within one cell)
+    otherwise the `skip_pair` flag is set to True and returned `j` &amp; `k` indices are set to -1.
+    In addition, the `prob_like` array is checked for zeros at position `i`, in which case
+    the `skip_pair` is also set to `True`
     &#34;&#34;&#34;
-    offset = 1 - is_first_in_pair[2 * i]
-    j = idx[2 * i + offset]
-    k = idx[2 * i + 1 + offset]
-    return j, k</code></pre>
+    skip_pair = False
+
+    if prob_like[i] == 0:
+        skip_pair = True
+        j, k = -1, -1
+    else:
+        offset = 1 - is_first_in_pair[2 * i]
+        j = idx[2 * i + offset]
+        k = idx[2 * i + 1 + offset]
+    return j, k, skip_pair</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.straub_Nr"><code class="name flex">
@@ -1344,12 +1368,12 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         ):
             # pylint: disable=not-an-iterable,too-many-nested-blocks,too-many-locals
             for i in numba.prange(length // 2):
-                if gamma[i] == 0:
+                j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+                if skip_pair:
                     continue
                 bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) &gt; 0
                 if bouncing:
                     continue
-                j, k = pair_indices(i, idx, is_first_in_pair)
 
                 if rand[i] - Ec[i] &lt; 0:
                     coalesce(
@@ -1465,8 +1489,8 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
-    def __adaptive_sdm_gamma_body(
-        gamma,
+    def __scale_prob_for_adaptive_sdm_gamma_body(
+        prob,
         idx,
         length,
         multiplicity,
@@ -1482,29 +1506,29 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_todo[cid] = min(dt_left[cid], dt_range[1])
         for i in range(length // 2):  # TODO #571
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
-            dt_optimal = dt * prop / gamma[i]
+            dt_optimal = dt * prop / prob[i]
             cid = cell_id[j]
             dt_optimal = max(dt_optimal, dt_range[0])
             dt_todo[cid] = min(dt_todo[cid], dt_optimal)
             stats_dt_min[cid] = min(stats_dt_min[cid], dt_optimal)
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            if gamma[i] == 0:
+            j, _, skip_pair = pair_indices(i, idx, is_first_in_pair, prob)
+            if skip_pair:
                 continue
-            j, _ = pair_indices(i, idx, is_first_in_pair)
-            gamma[i] *= dt_todo[cell_id[j]] / dt
+            prob[i] *= dt_todo[cell_id[j]] / dt
         for cid in numba.prange(len(dt_todo)):  # pylint: disable=not-an-iterable
             dt_left[cid] -= dt_todo[cid]
             if dt_todo[cid] &gt; 0:
                 stats_n_substep[cid] += 1
 
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -1514,8 +1538,8 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         stats_n_substep,
         stats_dt_min,
     ):
-        return self.__adaptive_sdm_gamma_body(
-            gamma.data,
+        return self.__scale_prob_for_adaptive_sdm_gamma_body(
+            prob.data,
             n.idx.data,
             len(n),
             n.data,
@@ -1553,9 +1577,9 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         for i in numba.prange(  # pylint: disable=not-an-iterable,too-many-nested-blocks
             length // 2
         ):
-            if gamma[i] == 0:
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, gamma)
+            if skip_pair:
                 continue
-            j, k = pair_indices(i, idx, is_first_in_pair)
             coalesce(
                 i, j, k, cell_id[j], multiplicity, gamma, attributes, coalescence_rate
             )
@@ -1816,7 +1840,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     @numba.njit(**conf.JIT_FLAGS)
     # pylint: disable=too-many-arguments,too-many-locals
     def __compute_gamma_body(
-        gamma,
+        prob,
         rand,
         idx,
         length,
@@ -1825,43 +1849,42 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         &#34;&#34;&#34;
-        return in &#34;gamma&#34; array gamma (see: http://doi.org/10.1002/qj.441, section 5)
+        return in &#34;out&#34; array gamma (see: http://doi.org/10.1002/qj.441, section 5)
         formula:
         gamma = floor(prob) + 1 if rand &lt;  prob - floor(prob)
               = floor(prob)     if rand &gt;= prob - floor(prob)
+
+        out may point to the same array as prob
         &#34;&#34;&#34;
         for i in numba.prange(length // 2):  # pylint: disable=not-an-iterable
-            gamma[i] = np.ceil(gamma[i] - rand[i])
-
-            no_collision = gamma[i] == 0
-            if no_collision:
+            out[i] = np.ceil(prob[i] - rand[i])
+            j, k, skip_pair = pair_indices(i, idx, is_first_in_pair, out)
+            if skip_pair:
                 continue
-
-            j, k = pair_indices(i, idx, is_first_in_pair)
             prop = multiplicity[j] // multiplicity[k]
-            g = min(int(gamma[i]), prop)
+            g = min(int(out[i]), prop)
             cid = cell_id[j]
             atomic_add(collision_rate, cid, g * multiplicity[k])
-            atomic_add(
-                collision_rate_deficit, cid, (int(gamma[i]) - g) * multiplicity[k]
-            )
-            gamma[i] = g
+            atomic_add(collision_rate_deficit, cid, (int(out[i]) - g) * multiplicity[k])
+            out[i] = g
 
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         return self.__compute_gamma_body(
-            gamma.data,
+            prob.data,
             rand.data,
             multiplicity.idx.data,
             len(multiplicity),
@@ -1870,6 +1893,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
             collision_rate_deficit.data,
             collision_rate.data,
             is_first_in_pair.indicator.data,
+            out.data,
         )
 
     @staticmethod
@@ -2129,43 +2153,6 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     return self.__adaptive_sdm_end_body(dt_left.data, len(dt_left), cell_start.data)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma"><code class="name flex">
-<span>def <span class="ident">adaptive_sdm_gamma</span></span>(<span>self, *, gamma, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def adaptive_sdm_gamma(
-    self,
-    *,
-    gamma,
-    n,
-    cell_id,
-    dt_left,
-    dt,
-    dt_range,
-    is_first_in_pair,
-    stats_n_substep,
-    stats_dt_min,
-):
-    return self.__adaptive_sdm_gamma_body(
-        gamma.data,
-        n.idx.data,
-        len(n),
-        n.data,
-        cell_id.data,
-        dt_left.data,
-        dt,
-        dt_range,
-        is_first_in_pair.indicator.data,
-        stats_n_substep.data,
-        stats_dt_min.data,
-    )</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id"><code class="name flex">
 <span>def <span class="ident">cell_id</span></span>(<span>self, cell_id, cell_origin, strides)</span>
 </code></dt>
@@ -2269,7 +2256,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.compute_gamma"><code class="name flex">
-<span>def <span class="ident">compute_gamma</span></span>(<span>self, *, gamma, rand, multiplicity, cell_id, collision_rate_deficit, collision_rate, is_first_in_pair)</span>
+<span>def <span class="ident">compute_gamma</span></span>(<span>self, *, prob, rand, multiplicity, cell_id, collision_rate_deficit, collision_rate, is_first_in_pair, out)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2280,16 +2267,17 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <pre><code class="python">def compute_gamma(
     self,
     *,
-    gamma,
+    prob,
     rand,
     multiplicity,
     cell_id,
     collision_rate_deficit,
     collision_rate,
     is_first_in_pair,
+    out,
 ):
     return self.__compute_gamma_body(
-        gamma.data,
+        prob.data,
         rand.data,
         multiplicity.idx.data,
         len(multiplicity),
@@ -2298,6 +2286,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
         collision_rate_deficit.data,
         collision_rate.data,
         is_first_in_pair.indicator.data,
+        out.data,
     )</code></pre>
 </details>
 </dd>
@@ -2450,6 +2439,43 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     )</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma"><code class="name flex">
+<span>def <span class="ident">scale_prob_for_adaptive_sdm_gamma</span></span>(<span>self, *, prob, n, cell_id, dt_left, dt, dt_range, is_first_in_pair, stats_n_substep, stats_dt_min)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def scale_prob_for_adaptive_sdm_gamma(
+    self,
+    *,
+    prob,
+    n,
+    cell_id,
+    dt_left,
+    dt,
+    dt_range,
+    is_first_in_pair,
+    stats_n_substep,
+    stats_dt_min,
+):
+    return self.__scale_prob_for_adaptive_sdm_gamma_body(
+        prob.data,
+        n.idx.data,
+        len(n),
+        n.data,
+        cell_id.data,
+        dt_left.data,
+        dt,
+        dt_range,
+        is_first_in_pair.indicator.data,
+        stats_n_substep.data,
+        stats_dt_min.data,
+    )</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.slams_fragmentation"><code class="name flex">
 <span>def <span class="ident">slams_fragmentation</span></span>(<span>self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax)</span>
 </code></dt>
@@ -2562,7 +2588,6 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <h4><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma">adaptive_sdm_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.cell_id">cell_id</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence">collision_coalescence</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence_breakup" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence_breakup">collision_coalescence_breakup</a></code></li>
@@ -2574,6 +2599,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.normalize">normalize</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged">remove_zero_n_or_flagged</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma">scale_prob_for_adaptive_sdm_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.slams_fragmentation" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.slams_fragmentation">slams_fragmentation</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.straub_fragmentation" href="#PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.straub_fragmentation">straub_fragmentation</a></code></li>
 </ul>

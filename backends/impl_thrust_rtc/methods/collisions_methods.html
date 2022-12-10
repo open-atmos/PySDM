@@ -79,6 +79,23 @@ struct Commons {
         }
     }
   }
+
+  static __device__ auto pair_indices(
+      int64_t i,
+      int64_t *j,
+      int64_t *k,
+      VectorView&lt;int64_t&gt; idx,
+      VectorView&lt;bool&gt; is_first_in_pair,
+      VectorView&lt;real_type&gt; prob_like
+  ) {
+      if (prob_like[i] == 0) {
+          return true;
+      }
+      auto offset = 1 - is_first_in_pair[2 * i];
+      j[0] = idx[2 * i + offset];
+      k[0] = idx[2 * i + 1 + offset];
+      return false;
+  }
 };
 &#34;&#34;&#34;
 
@@ -89,7 +106,7 @@ class CollisionsMethods(
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
 
-        self.__adaptive_sdm_gamma_body_1 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1 = trtc.For(
             (&#34;dt_todo&#34;, &#34;dt_left&#34;, &#34;dt_max&#34;),
             &#34;cid&#34;,
             &#34;&#34;&#34;
@@ -97,38 +114,49 @@ class CollisionsMethods(
             &#34;&#34;&#34;,
         )
 
-        self.__adaptive_sdm_gamma_body_2 = trtc.For(
-            (&#34;gamma&#34;, &#34;idx&#34;, &#34;n&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2 = trtc.For(
+            (&#34;prob&#34;, &#34;idx&#34;, &#34;n&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-                if (gamma[i] == 0) {
+            f&#34;&#34;&#34;
+                {COMMONS}
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
-                auto k = idx[2 * i + 1 + offset];
+                }}
                 auto prop = (int64_t)(n[j] / n[k]);
-                auto dt_optimal = dt * prop / gamma[i];
+                auto dt_optimal = dt * prop / prob[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), &#34;&#34;);
                 atomicMin((unsigned int*)&amp;dt_todo[cid], __float_as_uint(dt_optimal));
-            &#34;&#34;&#34;,
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
-        self.__adaptive_sdm_gamma_body_3 = trtc.For(
-            (&#34;gamma&#34;, &#34;idx&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3 = trtc.For(
+            (&#34;prob&#34;, &#34;idx&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-                if (gamma[i] == 0) {
+            f&#34;&#34;&#34;
+                {COMMONS}
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
-                gamma[i] *= dt_todo[cell_id[j]] / dt;
-            &#34;&#34;&#34;,
+                }}
+                prob[i] *= dt_todo[cell_id[j]] / dt;
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
-        self.__adaptive_sdm_gamma_body_4 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4 = trtc.For(
             (&#34;dt_left&#34;, &#34;dt_todo&#34;, &#34;stats_n_substep&#34;),
             &#34;cid&#34;,
             &#34;&#34;&#34;
@@ -168,15 +196,19 @@ class CollisionsMethods(
                 &#34;healthy&#34;,
                 &#34;cell_id&#34;,
                 &#34;coalescence_rate&#34;,
+                &#34;is_first_in_pair&#34;,
             ),
             name_iter=&#34;i&#34;,
             body=f&#34;&#34;&#34;
             {COMMONS}
-            if (gamma[i] == 0) {{
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
                 return;
             }}
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
 
             Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
@@ -185,30 +217,77 @@ class CollisionsMethods(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
+        # pylint:disable=unused-private-member
+        self.__collision_coalescence_breakup_body = trtc.For(
+            param_names=(
+                &#34;multiplicity&#34;,
+                &#34;idx&#34;,
+                &#34;length&#34;,
+                &#34;attributes&#34;,
+                &#34;gamma&#34;,
+                &#34;rand&#34;,
+                &#34;Ec&#34;,
+                &#34;Eb&#34;,
+                &#34;n_fragment&#34;,
+                &#34;fragment_size&#34;,
+                &#34;healthy&#34;,
+                &#34;cell_id&#34;,
+                &#34;coalescence_rate&#34;,
+                &#34;breakup_rate&#34;,
+                &#34;breakup_rate_deficit&#34;,
+                &#34;is_first_in_pair&#34;,
+                # &#34;max_multiplicity&#34;,
+                &#34;warn_overflows&#34;,
+                &#34;volume&#34;,
+            ),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            {COMMONS}
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
+                return;
+            }}
+            auto bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) &gt; 0;
+            if (bouncing) {{
+                return;
+            }}
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__compute_gamma_body = trtc.For(
             (
-                &#34;gamma&#34;,
+                &#34;prob&#34;,
                 &#34;rand&#34;,
                 &#34;idx&#34;,
                 &#34;multiplicity&#34;,
                 &#34;cell_id&#34;,
                 &#34;collision_rate_deficit&#34;,
                 &#34;collision_rate&#34;,
+                &#34;is_first_in_pair&#34;,
+                &#34;out&#34;,
             ),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-            gamma[i] = ceil(gamma[i] - rand[i]);
+            f&#34;&#34;&#34;
+            {COMMONS}
+            out[i] = ceil(prob[i] - rand[i]);
 
-            if (gamma[i] == 0) {
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, out);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
                 return;
-            }
-
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
+            }}
 
             auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
-            auto g = min((int64_t)(gamma[i]), prop);
+            auto g = min((int64_t)(out[i]), prop);
 
             atomicAdd(
                 (unsigned long long int*)&amp;collision_rate[cell_id[j]],
@@ -216,11 +295,13 @@ class CollisionsMethods(
             );
             atomicAdd(
                 (unsigned long long int*)&amp;collision_rate_deficit[cell_id[j]],
-                (unsigned long long int)(((int64_t)(gamma[i]) - g) * multiplicity[k])
+                (unsigned long long int)(((int64_t)(out[i]) - g) * multiplicity[k])
             );
 
-            gamma[i] = g;
-            &#34;&#34;&#34;,
+            out[i] = g;
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
         self.__normalize_body_0 = trtc.For(
@@ -431,10 +512,10 @@ class CollisionsMethods(
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -449,13 +530,13 @@ class CollisionsMethods(
         d_dt_max = self._get_floating_point(dt_range[1])
         d_dt = self._get_floating_point(dt)
 
-        self.__adaptive_sdm_gamma_body_1.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
             len(dt_left), (dt_todo, dt_left.data, d_dt_max)
         )
-        self.__adaptive_sdm_gamma_body_2.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 n.data,
                 cell_id.data,
@@ -464,10 +545,10 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_3.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 cell_id.data,
                 d_dt,
@@ -475,7 +556,7 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_4.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4.launch_n(
             len(dt_left), (dt_left.data, dt_todo, stats_n_substep.data)
         )
 
@@ -512,8 +593,8 @@ class CollisionsMethods(
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         self.__collision_coalescence_body.launch_n(
-            len(idx) // 2,
-            (
+            n=len(idx) // 2,
+            args=(
                 multiplicity.data,
                 idx.data,
                 n_sd,
@@ -523,34 +604,37 @@ class CollisionsMethods(
                 healthy.data,
                 cell_id.data,
                 coalescence_rate.data,
+                is_first_in_pair.indicator.data,
             ),
         )
 
-    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         if len(multiplicity) &lt; 2:
             return
         self.__compute_gamma_body.launch_n(
             len(multiplicity) // 2,
             (
-                gamma.data,
+                prob.data,
                 rand.data,
                 multiplicity.idx.data,
                 multiplicity.data,
                 cell_id.data,
                 collision_rate_deficit.data,
                 collision_rate.data,
+                is_first_in_pair.indicator.data,
+                out.data,
             ),
         )
 
@@ -805,7 +889,7 @@ class CollisionsMethods(
     def __init__(self):
         ThrustRTCBackendMethods.__init__(self)
 
-        self.__adaptive_sdm_gamma_body_1 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1 = trtc.For(
             (&#34;dt_todo&#34;, &#34;dt_left&#34;, &#34;dt_max&#34;),
             &#34;cid&#34;,
             &#34;&#34;&#34;
@@ -813,38 +897,49 @@ class CollisionsMethods(
             &#34;&#34;&#34;,
         )
 
-        self.__adaptive_sdm_gamma_body_2 = trtc.For(
-            (&#34;gamma&#34;, &#34;idx&#34;, &#34;n&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2 = trtc.For(
+            (&#34;prob&#34;, &#34;idx&#34;, &#34;n&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-                if (gamma[i] == 0) {
+            f&#34;&#34;&#34;
+                {COMMONS}
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
-                auto k = idx[2 * i + 1 + offset];
+                }}
                 auto prop = (int64_t)(n[j] / n[k]);
-                auto dt_optimal = dt * prop / gamma[i];
+                auto dt_optimal = dt * prop / prob[i];
                 auto cid = cell_id[j];
                 static_assert(sizeof(dt_todo[0]) == sizeof(unsigned int), &#34;&#34;);
                 atomicMin((unsigned int*)&amp;dt_todo[cid], __float_as_uint(dt_optimal));
-            &#34;&#34;&#34;,
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
-        self.__adaptive_sdm_gamma_body_3 = trtc.For(
-            (&#34;gamma&#34;, &#34;idx&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3 = trtc.For(
+            (&#34;prob&#34;, &#34;idx&#34;, &#34;cell_id&#34;, &#34;dt&#34;, &#34;is_first_in_pair&#34;, &#34;dt_todo&#34;),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-                if (gamma[i] == 0) {
+            f&#34;&#34;&#34;
+                {COMMONS}
+                int64_t jj[1] = {{}};
+                int64_t kk[1] = {{}};
+                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
+                int64_t j = jj[0];
+                int64_t k = kk[0];
+                if (skip_pair) {{
                     return;
-                }
-                auto offset = 1 - is_first_in_pair[2 * i];
-                auto j = idx[2 * i + offset];
-                gamma[i] *= dt_todo[cell_id[j]] / dt;
-            &#34;&#34;&#34;,
+                }}
+                prob[i] *= dt_todo[cell_id[j]] / dt;
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
-        self.__adaptive_sdm_gamma_body_4 = trtc.For(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4 = trtc.For(
             (&#34;dt_left&#34;, &#34;dt_todo&#34;, &#34;stats_n_substep&#34;),
             &#34;cid&#34;,
             &#34;&#34;&#34;
@@ -884,15 +979,19 @@ class CollisionsMethods(
                 &#34;healthy&#34;,
                 &#34;cell_id&#34;,
                 &#34;coalescence_rate&#34;,
+                &#34;is_first_in_pair&#34;,
             ),
             name_iter=&#34;i&#34;,
             body=f&#34;&#34;&#34;
             {COMMONS}
-            if (gamma[i] == 0) {{
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
                 return;
             }}
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
 
             Commons::coalesce(i, j, k, cell_id, multiplicity, gamma, attributes, coalescence_rate, n_attr, n_sd);
 
@@ -901,30 +1000,77 @@ class CollisionsMethods(
                 &#34;real_type&#34;, self._get_c_type()
             ),
         )
+        # pylint:disable=unused-private-member
+        self.__collision_coalescence_breakup_body = trtc.For(
+            param_names=(
+                &#34;multiplicity&#34;,
+                &#34;idx&#34;,
+                &#34;length&#34;,
+                &#34;attributes&#34;,
+                &#34;gamma&#34;,
+                &#34;rand&#34;,
+                &#34;Ec&#34;,
+                &#34;Eb&#34;,
+                &#34;n_fragment&#34;,
+                &#34;fragment_size&#34;,
+                &#34;healthy&#34;,
+                &#34;cell_id&#34;,
+                &#34;coalescence_rate&#34;,
+                &#34;breakup_rate&#34;,
+                &#34;breakup_rate_deficit&#34;,
+                &#34;is_first_in_pair&#34;,
+                # &#34;max_multiplicity&#34;,
+                &#34;warn_overflows&#34;,
+                &#34;volume&#34;,
+            ),
+            name_iter=&#34;i&#34;,
+            body=f&#34;&#34;&#34;
+            {COMMONS}
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
+                return;
+            }}
+            auto bouncing = rand[i] - (Ec[i] + (1 - Ec[i]) * (Eb[i])) &gt; 0;
+            if (bouncing) {{
+                return;
+            }}
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
+        )
 
         self.__compute_gamma_body = trtc.For(
             (
-                &#34;gamma&#34;,
+                &#34;prob&#34;,
                 &#34;rand&#34;,
                 &#34;idx&#34;,
                 &#34;multiplicity&#34;,
                 &#34;cell_id&#34;,
                 &#34;collision_rate_deficit&#34;,
                 &#34;collision_rate&#34;,
+                &#34;is_first_in_pair&#34;,
+                &#34;out&#34;,
             ),
             &#34;i&#34;,
-            &#34;&#34;&#34;
-            gamma[i] = ceil(gamma[i] - rand[i]);
+            f&#34;&#34;&#34;
+            {COMMONS}
+            out[i] = ceil(prob[i] - rand[i]);
 
-            if (gamma[i] == 0) {
+            int64_t jj[1] = {{}};
+            int64_t kk[1] = {{}};
+            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, out);
+            int64_t j = jj[0];
+            int64_t k = kk[0];
+            if (skip_pair) {{
                 return;
-            }
-
-            auto j = idx[2 * i];
-            auto k = idx[2 * i + 1];
+            }}
 
             auto prop = (int64_t)(multiplicity[j] / multiplicity[k]);
-            auto g = min((int64_t)(gamma[i]), prop);
+            auto g = min((int64_t)(out[i]), prop);
 
             atomicAdd(
                 (unsigned long long int*)&amp;collision_rate[cell_id[j]],
@@ -932,11 +1078,13 @@ class CollisionsMethods(
             );
             atomicAdd(
                 (unsigned long long int*)&amp;collision_rate_deficit[cell_id[j]],
-                (unsigned long long int)(((int64_t)(gamma[i]) - g) * multiplicity[k])
+                (unsigned long long int)(((int64_t)(out[i]) - g) * multiplicity[k])
             );
 
-            gamma[i] = g;
-            &#34;&#34;&#34;,
+            out[i] = g;
+            &#34;&#34;&#34;.replace(
+                &#34;real_type&#34;, self._get_c_type()
+            ),
         )
 
         self.__normalize_body_0 = trtc.For(
@@ -1147,10 +1295,10 @@ class CollisionsMethods(
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def adaptive_sdm_gamma(
+    def scale_prob_for_adaptive_sdm_gamma(
         self,
         *,
-        gamma,
+        prob,
         n,
         cell_id,
         dt_left,
@@ -1165,13 +1313,13 @@ class CollisionsMethods(
         d_dt_max = self._get_floating_point(dt_range[1])
         d_dt = self._get_floating_point(dt)
 
-        self.__adaptive_sdm_gamma_body_1.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
             len(dt_left), (dt_todo, dt_left.data, d_dt_max)
         )
-        self.__adaptive_sdm_gamma_body_2.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 n.data,
                 cell_id.data,
@@ -1180,10 +1328,10 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_3.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
             len(n) // 2,
             (
-                gamma.data,
+                prob.data,
                 n.idx.data,
                 cell_id.data,
                 d_dt,
@@ -1191,7 +1339,7 @@ class CollisionsMethods(
                 dt_todo,
             ),
         )
-        self.__adaptive_sdm_gamma_body_4.launch_n(
+        self.__scale_prob_for_adaptive_sdm_gamma_body_4.launch_n(
             len(dt_left), (dt_left.data, dt_todo, stats_n_substep.data)
         )
 
@@ -1228,8 +1376,8 @@ class CollisionsMethods(
         n_sd = trtc.DVInt64(attributes.shape[1])
         n_attr = trtc.DVInt64(attributes.shape[0])
         self.__collision_coalescence_body.launch_n(
-            len(idx) // 2,
-            (
+            n=len(idx) // 2,
+            args=(
                 multiplicity.data,
                 idx.data,
                 n_sd,
@@ -1239,34 +1387,37 @@ class CollisionsMethods(
                 healthy.data,
                 cell_id.data,
                 coalescence_rate.data,
+                is_first_in_pair.indicator.data,
             ),
         )
 
-    # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
     def compute_gamma(
         self,
         *,
-        gamma,
+        prob,
         rand,
         multiplicity,
         cell_id,
         collision_rate_deficit,
         collision_rate,
         is_first_in_pair,
+        out,
     ):
         if len(multiplicity) &lt; 2:
             return
         self.__compute_gamma_body.launch_n(
             len(multiplicity) // 2,
             (
-                gamma.data,
+                prob.data,
                 rand.data,
                 multiplicity.idx.data,
                 multiplicity.data,
                 cell_id.data,
                 collision_rate_deficit.data,
                 collision_rate.data,
+                is_first_in_pair.indicator.data,
+                out.data,
             ),
         )
 
@@ -1525,24 +1676,6 @@ class CollisionsMethods(
     return result</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma"><code class="name flex">
-<span>def <span class="ident">adaptive_sdm_gamma</span></span>(<span>*args, **kwargs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def wrapper(*args, **kwargs):
-    if debug_print:
-        print(func.__name__)
-    result = func(*args, **kwargs)
-    if wait:
-        trtc.Wait()
-    return result</code></pre>
-</details>
-</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id"><code class="name flex">
 <span>def <span class="ident">cell_id</span></span>(<span>*args, **kwargs)</span>
 </code></dt>
@@ -1775,6 +1908,24 @@ class CollisionsMethods(
     return result</code></pre>
 </details>
 </dd>
+<dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma"><code class="name flex">
+<span>def <span class="ident">scale_prob_for_adaptive_sdm_gamma</span></span>(<span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def wrapper(*args, **kwargs):
+    if debug_print:
+        print(func.__name__)
+    result = func(*args, **kwargs)
+    if wait:
+        trtc.Wait()
+    return result</code></pre>
+</details>
+</dd>
 <dt id="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.slams_fragmentation"><code class="name flex">
 <span>def <span class="ident">slams_fragmentation</span></span>(<span>self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax)</span>
 </code></dt>
@@ -1894,7 +2045,6 @@ class CollisionsMethods(
 <h4><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods">CollisionsMethods</a></code></h4>
 <ul class="">
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_end">adaptive_sdm_end</a></code></li>
-<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.adaptive_sdm_gamma">adaptive_sdm_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.cell_id">cell_id</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.collision_coalescence" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.collision_coalescence">collision_coalescence</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.compute_gamma">compute_gamma</a></code></li>
@@ -1904,6 +2054,7 @@ class CollisionsMethods(
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.make_cell_caretaker">make_cell_caretaker</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.normalize">normalize</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged">remove_zero_n_or_flagged</a></code></li>
+<li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.scale_prob_for_adaptive_sdm_gamma">scale_prob_for_adaptive_sdm_gamma</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.slams_fragmentation" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.slams_fragmentation">slams_fragmentation</a></code></li>
 <li><code><a title="PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.straub_fragmentation" href="#PySDM.backends.impl_thrust_rtc.methods.collisions_methods.CollisionsMethods.straub_fragmentation">straub_fragmentation</a></code></li>
 </ul>
