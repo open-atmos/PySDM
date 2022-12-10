@@ -32,7 +32,9 @@ class TestSDMSingleCell:
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n_2)
         )
-        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
+            out, 1
+        )
         attributes = {
             "n": n_2,
             "volume": v_2,
@@ -89,7 +91,9 @@ class TestSDMSingleCell:
     def test_single_collision_same_n(backend_class, n_in, n_out):
         # Arrange
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, 2)
-        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(prob, 1)
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
+            out, 1
+        )
         attributes = {"n": np.full(2, n_in), "volume": np.full(2, 1.0)}
         particulator.build(attributes)
 
@@ -118,9 +122,9 @@ class TestSDMSingleCell:
             backend_class, len(n_2)
         )
 
-        def _compute_gamma(prob, rand, is_first_in_pair):
+        def _compute_gamma(prob, rand, is_first_in_pair, out):
             backend_fill(prob, p)
-            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
 
@@ -162,9 +166,9 @@ class TestSDMSingleCell:
             backend_class, len(n)
         )
 
-        def _compute_gamma(prob, rand, is_first_in_pair):
+        def _compute_gamma(prob, rand, is_first_in_pair, out):
             backend_fill(prob, p, odd_zeros=True)
-            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair)
+            Coalescence.compute_gamma(sut, prob, rand, is_first_in_pair, out=out)
 
         sut.compute_gamma = _compute_gamma
         attributes = {"n": n, "volume": v}
@@ -190,8 +194,8 @@ class TestSDMSingleCell:
 
         particulator, sut = get_dummy_particulator_and_coalescence(backend_class, n_sd)
 
-        sut.compute_gamma = lambda prob, rand, is_first_in_pair: backend_fill(
-            prob, rand.to_ndarray() > 0.5, odd_zeros=True
+        sut.compute_gamma = lambda prob, rand, is_first_in_pair, out: backend_fill(
+            out, rand.to_ndarray() > 0.5, odd_zeros=True
         )
         attributes = {"n": n, "volume": v}
         particulator.build(attributes)
@@ -243,13 +247,14 @@ class TestSDMSingleCell:
                 )
 
                 backend.compute_gamma(
-                    gamma=prob_arr,
+                    prob=prob_arr,
                     rand=rand_arr,
                     multiplicity=mult,
                     cell_id=cell_id,
                     is_first_in_pair=indicator,
                     collision_rate=_,
                     collision_rate_deficit=_,
+                    out=prob_arr,
                 )
 
                 # Assert

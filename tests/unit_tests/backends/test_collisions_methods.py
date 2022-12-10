@@ -14,27 +14,54 @@ from ...backends_fixture import backend_class
 assert hasattr(backend_class, "_pytestfixturefunction")
 
 
+NONZERO = 44
+
+
 class TestCollisionMethods:
     @staticmethod
     @pytest.mark.parametrize(
-        "i, idx, is_first_in_pair, expected",
+        "i, idx, is_first_in_pair, gamma, expected",
         [
-            (0, (0, 1), (True, False), (0, 1)),
-            (0, (1, 0), (True, False), (1, 0)),
-            (0, (0, 1, 2), (False, True), (1, 2)),
+            (0, (0, 1), (True, False), (NONZERO,), (0, 1, False)),
+            (0, (1, 0), (True, False), (NONZERO,), (1, 0, False)),
+            (0, (0, 1, 2), (False, True, False), (NONZERO,), (1, 2, False)),
+            (
+                1,
+                (0, 1, 2, 3, 4, 5, 6, 7),
+                (True, False, False, True, False, False, True, False),
+                #              -i-  |____  _____        |
+                (NONZERO, NONZERO),
+                (3, 4, False),
+            ),
+            (
+                2,
+                (0, 1, 2, 3, 4, 5, 6, 7),
+                (True, False, False, True, False, False, True, False),
+                #                   |       -i-    ____ | ____
+                (NONZERO, NONZERO, 0),
+                (-1, -1, True),
+            ),
+            (
+                3,
+                (0, 1, 2, 3, 4, 5, 6, 7),  #             ____  _____
+                (True, False, False, True, False, False, True, False),
+                #                   |                   | -i-
+                (NONZERO, NONZERO, 0, NONZERO),
+                (6, 7, False),
+            ),
         ],
     )
-    def test_pair_indices(i, idx, is_first_in_pair, expected):
+    def test_pair_indices(i, idx, is_first_in_pair, gamma, expected):
         # Arrange
         sut = (
             pair_indices if "NUMBA_DISABLE_JIT" in os.environ else pair_indices.py_func
         )
 
         # Act
-        actual = sut(i, idx, is_first_in_pair)
+        actual = sut(i, idx, is_first_in_pair, gamma)
 
         # Assert
-        assert expected == actual
+        assert actual == expected
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -126,7 +153,7 @@ class TestCollisionMethods:
         ),
     )
     # pylint: disable=redefined-outer-name,too-many-locals
-    def test_adaptive_sdm_gamma(
+    def test_scale_prob_for_adaptive_sdm_gamma(
         *,
         backend_class,
         gamma,
@@ -154,8 +181,8 @@ class TestCollisionMethods:
         dt_range = (np.nan, dt_max)
 
         # Act
-        backend.adaptive_sdm_gamma(
-            gamma=_gamma,
+        backend.scale_prob_for_adaptive_sdm_gamma(
+            prob=_gamma,
             n=_n,
             cell_id=_cell_id,
             dt_left=_dt_left,
