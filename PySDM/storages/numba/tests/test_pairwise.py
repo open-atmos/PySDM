@@ -46,7 +46,7 @@ def pair_indicator_instance(pair_indicator_cls):
     pair_indicator_instance_ = pair_indicator_cls(6)
     pair_indicator_data = np.ones(6)
     pair_indicator_data[np.arange(1, 6, 2)] = 0
-    pair_indicator_instance_.indicator = pair_indicator_data
+    pair_indicator_instance_.indicator.data = pair_indicator_data.copy()
     return pair_indicator_instance_
 
 
@@ -58,10 +58,10 @@ def pairwise_storage_instance(pairwise_storage_cls):
 def test_distance(
     pair_indicator_instance, pairwise_storage_instance, indexed_storage_cls, index_cls
 ):
-    data = np.asarray([1, 4, 2, 5, 3, 6])
+    data = np.array([1, 4, 2, 5, 3, 6])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.distance(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([3, 3, 3]))
@@ -70,10 +70,10 @@ def test_distance(
 def test_max(
     pair_indicator_instance, pairwise_storage_instance, indexed_storage_cls, index_cls
 ):
-    data = np.asarray([1, -1, 2, 4, 3, 3])
+    data = np.array([1, -1, 2, 4, 3, 3])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.max(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([1, 4, 3]))
@@ -82,10 +82,10 @@ def test_max(
 def test_min(
     pair_indicator_instance, pairwise_storage_instance, indexed_storage_cls, index_cls
 ):
-    data = np.asarray([1, -1, 2, 4, 3, 3])
+    data = np.array([1, -1, 2, 4, 3, 3])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.min(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([-1, 2, 3]))
@@ -94,10 +94,10 @@ def test_min(
 def test_multiply(
     pair_indicator_instance, pairwise_storage_instance, indexed_storage_cls, index_cls
 ):
-    data = np.asarray([1, -1, 2, 4, 3, 3])
+    data = np.array([1, -1, 2, 4, 3, 3])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.multiply(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([-1, 8, 9]))
@@ -106,10 +106,10 @@ def test_multiply(
 def test_sum(
     pair_indicator_instance, pairwise_storage_instance, indexed_storage_cls, index_cls
 ):
-    data = np.asarray([1, -1, 2, 4, 3, 3])
+    data = np.array([1, -1, 2, 4, 3, 3])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.sum(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(pairwise_storage_instance.data, np.asarray([0, 6, 6]))
@@ -120,10 +120,10 @@ def test_sort(
 ):
     # Arrange
     pairwise_storage_instance = pairwise_storage_cls.empty(6, Storage.FLOAT)
-    data = np.asarray([-1, 1, 4, 2, 3, 3])
+    data = np.array([-1, 1, 4, 2, 3, 3])
     data_idx = index_cls.identity_index(6)
     pairwise_storage_instance.sort(
-        indexed_storage_cls.indexed_from_ndarray(data_idx, data),
+        indexed_storage_cls.indexed_from_ndarray(data_idx, data.copy()),
         pair_indicator_instance,
     )
     np.testing.assert_allclose(

@@ -86,7 +86,7 @@ def test_divide(data, power, expected):
 def test_row_modulo():
     # Arrange
     data = np.random.randint(8, size=(2, 4), dtype=np.int32)
-    modulo = np.random.randint(1, 9, size=(2, 1), dtype=np.int32)
+    modulo = np.random.randint(1, 9, size=2, dtype=np.int32)
     storage = Storage.from_ndarray(data)
     second_storage = Storage.from_ndarray(modulo)
 
@@ -94,7 +94,7 @@ def test_row_modulo():
     storage %= second_storage
 
     # Assert
-    np.testing.assert_array_almost_equal(storage.data, data % modulo)
+    np.testing.assert_array_equal(storage.data, (data.T % modulo).T)
 
 
 @pytest.mark.parametrize(
