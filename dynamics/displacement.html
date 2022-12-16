@@ -25,7 +25,7 @@
 <p>particle displacement due to advection by the flow &amp; sedimentation</p>
 <p>adaptive time-stepping controlled by comparing implicit-Euler (I)
 and explicit-Euler (E) maximal displacements with:
-rtol &lt; |(I - E) / E|
+rtol &gt; |(I - E) / E|
 (see eqs 13-16 in <a href="https://doi.org/10.5194/gmd-8-1677-2015">Arabas et al. 2015</a>)</p>
 <details class="source">
 <summary>
@@ -36,7 +36,7 @@ particle displacement due to advection by the flow &amp; sedimentation
 
 adaptive time-stepping controlled by comparing implicit-Euler (I)
 and explicit-Euler (E) maximal displacements with:
-rtol &lt; |(I - E) / E|
+rtol &gt; |(I - E) / E|
 (see eqs 13-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015))
 &#34;&#34;&#34;
 from collections import namedtuple
