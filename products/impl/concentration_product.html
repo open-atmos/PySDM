@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>PySDM.products.size_spectral.total_particle_specific_concentration API documentation</title>
-<meta name="description" content="particle specific concentration (per mass of dry air)" />
+<title>PySDM.products.impl.concentration_product API documentation</title>
+<meta name="description" content="common code for products computing particle concentrations with
+the option to return them at standard temperature and pressure (STP) conditions" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,27 +20,53 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>PySDM.products.size_spectral.total_particle_specific_concentration</code></h1>
+<h1 class="title">Module <code>PySDM.products.impl.concentration_product</code></h1>
 </header>
 <section id="section-intro">
-<p>particle specific concentration (per mass of dry air)</p>
+<p>common code for products computing particle concentrations with
+the option to return them at standard temperature and pressure (STP) conditions</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-particle specific concentration (per mass of dry air)
+common code for products computing particle concentrations with
+the option to return them at standard temperature and pressure (STP) conditions
 &#34;&#34;&#34;
-from PySDM.products.impl.concentration_product import ConcentrationProduct
+
+from PySDM.products.impl.moment_product import MomentProduct
 
 
-class TotalParticleSpecificConcentration(ConcentrationProduct):
-    def __init__(self, name=None, unit=&#34;kg^-1&#34;):
-        super().__init__(name=name, unit=unit, stp=False, specific=True)
+class ConcentrationProduct(MomentProduct):
+    def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
+        super().__init__(unit=unit, name=name)
+        self.specific = specific
+        self.stp = stp
+        self.rho_stp = None
+        if self.stp and self.specific:
+            raise ValueError(
+                &#34;std-temperature-and-pressure precludes specific conc. option&#34;
+            )
+
+    def register(self, builder):
+        super().register(builder)
+        self.rho_stp = builder.formulae.constants.rho_STP
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
-        return super()._impl(**kwargs)</code></pre>
+        assert len(kwargs) == 0
+
+        self.buffer[:] /= self.particulator.mesh.dv
+
+        if self.specific or self.stp:
+            result = self.buffer.copy()
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+            result[:] /= self.buffer
+            if self.stp:
+                result[:] *= self.rho_stp
+        else:
+            result = self.buffer
+
+        return result</code></pre>
 </details>
 </section>
 <section>
@@ -51,9 +78,9 @@ class TotalParticleSpecificConcentration(ConcentrationProduct):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration"><code class="flex name class">
-<span>class <span class="ident">TotalParticleSpecificConcentration</span></span>
-<span>(</span><span>name=None, unit='kg^-1')</span>
+<dt id="PySDM.products.impl.concentration_product.ConcentrationProduct"><code class="flex name class">
+<span>class <span class="ident">ConcentrationProduct</span></span>
+<span>(</span><span>*, unit: str, name: str, specific: bool, stp: bool)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -62,26 +89,56 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class TotalParticleSpecificConcentration(ConcentrationProduct):
-    def __init__(self, name=None, unit=&#34;kg^-1&#34;):
-        super().__init__(name=name, unit=unit, stp=False, specific=True)
+<pre><code class="python">class ConcentrationProduct(MomentProduct):
+    def __init__(self, *, unit: str, name: str, specific: bool, stp: bool):
+        super().__init__(unit=unit, name=name)
+        self.specific = specific
+        self.stp = stp
+        self.rho_stp = None
+        if self.stp and self.specific:
+            raise ValueError(
+                &#34;std-temperature-and-pressure precludes specific conc. option&#34;
+            )
+
+    def register(self, builder):
+        super().register(builder)
+        self.rho_stp = builder.formulae.constants.rho_STP
 
     def _impl(self, **kwargs):
-        self._download_moment_to_buffer(attr=&#34;volume&#34;, rank=0)
-        return super()._impl(**kwargs)</code></pre>
+        assert len(kwargs) == 0
+
+        self.buffer[:] /= self.particulator.mesh.dv
+
+        if self.specific or self.stp:
+            result = self.buffer.copy()
+            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
+            result[:] /= self.buffer
+            if self.stp:
+                result[:] *= self.rho_stp
+        else:
+            result = self.buffer
+
+        return result</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
-<li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
-<li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
+<li><a title="PySDM.products.impl.moment_product.MomentProduct" href="moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
+<li><a title="PySDM.products.impl.product.Product" href="product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="PySDM.products.freezing.frozen_particle_concentration.FrozenParticleConcentration" href="../freezing/frozen_particle_concentration.html#PySDM.products.freezing.frozen_particle_concentration.FrozenParticleConcentration">FrozenParticleConcentration</a></li>
+<li><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="../freezing/ice_nuclei_concentration.html#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.particle_concentration.ParticleConcentration" href="../size_spectral/particle_concentration.html#PySDM.products.size_spectral.particle_concentration.ParticleConcentration">ParticleConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration" href="../size_spectral/total_particle_concentration.html#PySDM.products.size_spectral.total_particle_concentration.TotalParticleConcentration">TotalParticleConcentration</a></li>
+<li><a title="PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration" href="../size_spectral/total_particle_specific_concentration.html#PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration">TotalParticleSpecificConcentration</a></li>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></b></code>:
+<li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.products.impl.concentration_product.ConcentrationProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.moment_product.MomentProduct.register" href="moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>
@@ -97,13 +154,13 @@ inheritance.</p></div>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="PySDM.products.size_spectral" href="index.html">PySDM.products.size_spectral</a></code></li>
+<li><code><a title="PySDM.products.impl" href="index.html">PySDM.products.impl</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration" href="#PySDM.products.size_spectral.total_particle_specific_concentration.TotalParticleSpecificConcentration">TotalParticleSpecificConcentration</a></code></h4>
+<h4><code><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></code></h4>
 </li>
 </ul>
 </li>

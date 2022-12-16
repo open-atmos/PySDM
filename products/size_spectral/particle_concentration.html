@@ -35,16 +35,21 @@ concentration of particles within a grid cell (either per-volume of per-mass-of-
 &#34;&#34;&#34;
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl.concentration_product import ConcentrationProduct
 
 
-class ParticleConcentration(MomentProduct):
+class ParticleConcentration(ConcentrationProduct):
+    # pylint: disable=too-many-arguments
     def __init__(
-        self, radius_range=(0, np.inf), specific=False, name=None, unit=&#34;m^-3&#34;
+        self,
+        radius_range=(0, np.inf),
+        specific=False,
+        stp=False,
+        name=None,
+        unit=&#34;m^-3&#34;,
     ):
         self.radius_range = radius_range
-        self.specific = specific
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, specific=specific, stp=stp)
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
@@ -55,14 +60,7 @@ class ParticleConcentration(MomentProduct):
                 self.formulae.trivia.volume(self.radius_range[1]),
             ),
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-        if self.specific:
-            result = self.buffer.copy()  # TODO #217
-            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-        return result
+        return super()._impl(**kwargs)
 
 
 class ParticleSpecificConcentration(ParticleConcentration):
@@ -81,7 +79,7 @@ class ParticleSpecificConcentration(ParticleConcentration):
 <dl>
 <dt id="PySDM.products.size_spectral.particle_concentration.ParticleConcentration"><code class="flex name class">
 <span>class <span class="ident">ParticleConcentration</span></span>
-<span>(</span><span>radius_range=(0, inf), specific=False, name=None, unit='m^-3')</span>
+<span>(</span><span>radius_range=(0, inf), specific=False, stp=False, name=None, unit='m^-3')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -90,13 +88,18 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ParticleConcentration(MomentProduct):
+<pre><code class="python">class ParticleConcentration(ConcentrationProduct):
+    # pylint: disable=too-many-arguments
     def __init__(
-        self, radius_range=(0, np.inf), specific=False, name=None, unit=&#34;m^-3&#34;
+        self,
+        radius_range=(0, np.inf),
+        specific=False,
+        stp=False,
+        name=None,
+        unit=&#34;m^-3&#34;,
     ):
         self.radius_range = radius_range
-        self.specific = specific
-        super().__init__(name=name, unit=unit)
+        super().__init__(name=name, unit=unit, specific=specific, stp=stp)
 
     def _impl(self, **kwargs):
         self._download_moment_to_buffer(
@@ -107,17 +110,11 @@ inheritance.</p></div>
                 self.formulae.trivia.volume(self.radius_range[1]),
             ),
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-        if self.specific:
-            result = self.buffer.copy()  # TODO #217
-            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-        return result</code></pre>
+        return super()._impl(**kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
@@ -128,9 +125,9 @@ inheritance.</p></div>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
+<li><code><b><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.products.impl.moment_product.MomentProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.concentration_product.ConcentrationProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>
@@ -153,6 +150,7 @@ inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="PySDM.products.size_spectral.particle_concentration.ParticleConcentration" href="#PySDM.products.size_spectral.particle_concentration.ParticleConcentration">ParticleConcentration</a></li>
+<li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>

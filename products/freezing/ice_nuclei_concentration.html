@@ -32,13 +32,12 @@ immersed ice nucleus concentration (both within frozen and unfrozen particles)
 &#34;&#34;&#34;
 import numpy as np
 
-from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.products.impl.concentration_product import ConcentrationProduct
 
 
-class IceNucleiConcentration(MomentProduct):
-    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False):
-        super().__init__(unit=unit, name=name)
-        self.specific = __specific
+class IceNucleiConcentration(ConcentrationProduct):
+    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False, stp=False):
+        super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
         self.__nonzero_filter_range = (
             np.finfo(float).tiny,  # pylint: disable=no-member
             np.inf,
@@ -60,16 +59,7 @@ class IceNucleiConcentration(MomentProduct):
             filter_attr=self.__filter_attr,
             filter_range=self.__nonzero_filter_range,
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-
-        if self.specific:
-            result = self.buffer.copy()
-            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-
-        return result
+        return super()._impl(**kwargs)
 
 
 class SpecificIceNucleiConcentration(IceNucleiConcentration):
@@ -88,7 +78,7 @@ class SpecificIceNucleiConcentration(IceNucleiConcentration):
 <dl>
 <dt id="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration"><code class="flex name class">
 <span>class <span class="ident">IceNucleiConcentration</span></span>
-<span>(</span><span>unit='m^-3', name=None)</span>
+<span>(</span><span>unit='m^-3', name=None, stp=False)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
@@ -97,10 +87,9 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class IceNucleiConcentration(MomentProduct):
-    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False):
-        super().__init__(unit=unit, name=name)
-        self.specific = __specific
+<pre><code class="python">class IceNucleiConcentration(ConcentrationProduct):
+    def __init__(self, unit=&#34;m^-3&#34;, name=None, __specific=False, stp=False):
+        super().__init__(unit=unit, name=name, specific=__specific, stp=stp)
         self.__nonzero_filter_range = (
             np.finfo(float).tiny,  # pylint: disable=no-member
             np.inf,
@@ -122,19 +111,11 @@ inheritance.</p></div>
             filter_attr=self.__filter_attr,
             filter_range=self.__nonzero_filter_range,
         )
-        self.buffer[:] /= self.particulator.mesh.dv
-
-        if self.specific:
-            result = self.buffer.copy()
-            self._download_to_buffer(self.particulator.environment[&#34;rhod&#34;])
-            result[:] /= self.buffer
-        else:
-            result = self.buffer
-
-        return result</code></pre>
+        return super()._impl(**kwargs)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
@@ -145,9 +126,9 @@ inheritance.</p></div>
 </ul>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></b></code>:
+<li><code><b><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></b></code>:
 <ul class="hlist">
-<li><code><a title="PySDM.products.impl.moment_product.MomentProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
+<li><code><a title="PySDM.products.impl.concentration_product.ConcentrationProduct.register" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct.register">register</a></code></li>
 </ul>
 </li>
 </ul>
@@ -170,6 +151,7 @@ inheritance.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration" href="#PySDM.products.freezing.ice_nuclei_concentration.IceNucleiConcentration">IceNucleiConcentration</a></li>
+<li><a title="PySDM.products.impl.concentration_product.ConcentrationProduct" href="../impl/concentration_product.html#PySDM.products.impl.concentration_product.ConcentrationProduct">ConcentrationProduct</a></li>
 <li><a title="PySDM.products.impl.moment_product.MomentProduct" href="../impl/moment_product.html#PySDM.products.impl.moment_product.MomentProduct">MomentProduct</a></li>
 <li><a title="PySDM.products.impl.product.Product" href="../impl/product.html#PySDM.products.impl.product.Product">Product</a></li>
 <li>abc.ABC</li>
