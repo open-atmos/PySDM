@@ -3,7 +3,7 @@ particle displacement due to advection by the flow & sedimentation
 
 adaptive time-stepping controlled by comparing implicit-Euler (I)
 and explicit-Euler (E) maximal displacements with:
-rtol < |(I - E) / E|
+rtol > |(I - E) / E|
 (see eqs 13-16 in [Arabas et al. 2015](https://doi.org/10.5194/gmd-8-1677-2015))
 """
 from collections import namedtuple

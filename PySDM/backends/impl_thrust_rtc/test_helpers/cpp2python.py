@@ -11,11 +11,13 @@ JIT_OPTS = "error_model='numpy', fastmath=True"
 CPPYTHON = {
     "int ": "",
     "void ": "",
+    "int64_t *": "",
     "int64_t ": "",
     "double ": "",
     "float ": "",
     "auto ": "",
     "bool ": "",
+    "[1] = {}": "=np.empty(1, dtype=np.int64)",
     "[] = {": " = (",
     " {": ":",
     "}; // array": ")",
@@ -32,11 +34,14 @@ CPPYTHON = {
     "VectorView<int64_t> ": "",
     "VectorView<float> ": "",
     "VectorView<double> ": "",
+    "VectorView<bool> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",
     "else if": "elif",
     "printf": "print",
+    "false": "False",
+    "true": "True",
 }
 
 
