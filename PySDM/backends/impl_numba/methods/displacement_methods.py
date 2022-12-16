@@ -16,7 +16,7 @@ def calculate_displacement_body_common(
     displacement[dim, droplet] = scheme(
         position_in_cell[dim, droplet],
         courant[_l] / n_substeps,
-        courant[_r] / n_substeps,
+        courant[_r] / n_substeps
     )
 
 
