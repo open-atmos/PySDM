@@ -8,5 +8,5 @@ class ImplicitInSpace:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def displacement(_, omega, c_l, c_r):
-        return (omega * c_r + c_l * (1 - omega)) / (1 - c_r + c_l)
+    def displacement(_, position_in_cell, c_l, c_r):
+        return (c_l * (1 - position_in_cell) + c_r * position_in_cell) / (1 - c_r + c_l)
