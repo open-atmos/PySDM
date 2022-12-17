@@ -75,12 +75,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 _r += _r_2 * courant_shape_0 * courant_shape_1;
             }}
 
-            auto omega = position_in_cell[i + n_sd * dim];
-            auto c_r = courant[_r] / n_substeps;
-            auto c_l = courant[_l] / n_substeps;
             displacement[i + n_sd * dim] = {
                 self.formulae.particle_advection.displacement.c_inline(
-                    c_l=&#34;c_l&#34;, c_r=&#34;c_r&#34;, omega=&#34;omega&#34;
+                    position_in_cell=&#34;position_in_cell[i + n_sd * dim]&#34;,
+                    c_l=&#34;courant[_l] / n_substeps&#34;,
+                    c_r=&#34;courant[_r] / n_substeps&#34;
                 )
             };
             &#34;&#34;&#34;.replace(
@@ -236,12 +235,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 _r += _r_2 * courant_shape_0 * courant_shape_1;
             }}
 
-            auto omega = position_in_cell[i + n_sd * dim];
-            auto c_r = courant[_r] / n_substeps;
-            auto c_l = courant[_l] / n_substeps;
             displacement[i + n_sd * dim] = {
                 self.formulae.particle_advection.displacement.c_inline(
-                    c_l=&#34;c_l&#34;, c_r=&#34;c_r&#34;, omega=&#34;omega&#34;
+                    position_in_cell=&#34;position_in_cell[i + n_sd * dim]&#34;,
+                    c_l=&#34;courant[_l] / n_substeps&#34;,
+                    c_r=&#34;courant[_r] / n_substeps&#34;
                 )
             };
             &#34;&#34;&#34;.replace(

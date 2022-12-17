@@ -42,9 +42,10 @@ from ...impl_common.backend_methods import BackendMethods
 def calculate_displacement_body_common(
     dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, n_substeps
 ):
-    omega = position_in_cell[dim, droplet]
     displacement[dim, droplet] = scheme(
-        omega, courant[_l] / n_substeps, courant[_r] / n_substeps
+        position_in_cell[dim, droplet],
+        courant[_l] / n_substeps,
+        courant[_r] / n_substeps,
     )
 
 
@@ -281,9 +282,10 @@ class DisplacementMethods(BackendMethods):
 def calculate_displacement_body_common(
     dim, droplet, scheme, _l, _r, displacement, courant, position_in_cell, n_substeps
 ):
-    omega = position_in_cell[dim, droplet]
     displacement[dim, droplet] = scheme(
-        omega, courant[_l] / n_substeps, courant[_r] / n_substeps
+        position_in_cell[dim, droplet],
+        courant[_l] / n_substeps,
+        courant[_r] / n_substeps,
     )</code></pre>
 </details>
 </dd>

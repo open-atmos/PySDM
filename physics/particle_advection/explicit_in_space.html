@@ -37,8 +37,8 @@ class ExplicitInSpace:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def displacement(_, omega, c_l, c_r):
-        return c_l * (1 - omega) + c_r * omega</code></pre>
+    def displacement(_, position_in_cell, c_l, c_r):
+        return c_l * (1 - position_in_cell) + c_r * position_in_cell</code></pre>
 </details>
 </section>
 <section>
@@ -65,13 +65,13 @@ class ExplicitInSpace:  # pylint: disable=too-few-public-methods
         pass
 
     @staticmethod
-    def displacement(_, omega, c_l, c_r):
-        return c_l * (1 - omega) + c_r * omega</code></pre>
+    def displacement(_, position_in_cell, c_l, c_r):
+        return c_l * (1 - position_in_cell) + c_r * position_in_cell</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.physics.particle_advection.explicit_in_space.ExplicitInSpace.displacement"><code class="name flex">
-<span>def <span class="ident">displacement</span></span>(<span>_, omega, c_l, c_r)</span>
+<span>def <span class="ident">displacement</span></span>(<span>_, position_in_cell, c_l, c_r)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -80,8 +80,8 @@ class ExplicitInSpace:  # pylint: disable=too-few-public-methods
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def displacement(_, omega, c_l, c_r):
-    return c_l * (1 - omega) + c_r * omega</code></pre>
+def displacement(_, position_in_cell, c_l, c_r):
+    return c_l * (1 - position_in_cell) + c_r * position_in_cell</code></pre>
 </details>
 </dd>
 </dl>
