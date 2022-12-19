@@ -19,6 +19,10 @@ from PySDM.physics import si
 from PySDM.physics.trivia import Trivia
 from PySDM.products.size_spectral import ParticleVolumeVersusRadiusLogarithmSpectrum
 
+from ....backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
+
 
 class TestSDMBreakup:
     @staticmethod
@@ -77,10 +81,11 @@ class TestSDMBreakup:
             ),
         ],
     )
-    def test_single_collision_bounce(params, backend_class=CPU):
+    def test_single_collision_bounce(params, backend_class):
         # Arrange
+        backend = backend_class()
         n_sd = 2
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend)
         builder.set_environment(Box(dv=np.NaN, dt=np.NaN))
         n_init = [1, 1]
         particulator = builder.build(
@@ -92,13 +97,13 @@ class TestSDMBreakup:
         )
 
         pairwise_zeros = particulator.PairwiseStorage.from_ndarray(np.array([0.0]))
-        general_zeros = particulator.Storage.from_ndarray(np.array([0.0]))
+        general_zeros = particulator.Storage.from_ndarray(np.array([0]))
 
         gamma = particulator.PairwiseStorage.from_ndarray(np.array([params["gamma"]]))
         rand = particulator.PairwiseStorage.from_ndarray(np.array([params["rand"]]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array([4]))
         fragment_size = particulator.PairwiseStorage.from_ndarray(np.array([-1]))
-        is_first_in_pair = make_PairIndicator(backend_class)(n_sd)
+        is_first_in_pair = make_PairIndicator(backend)(n_sd)
 
         # Act
         particulator.collision_coalescence_breakup(
@@ -114,6 +119,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
 
         # Assert
@@ -184,7 +193,7 @@ class TestSDMBreakup:
         Eb = particulator.PairwiseStorage.from_ndarray(
             np.array([params["Eb"]] * n_pairs)
         )
-        breakup_rate = particulator.Storage.from_ndarray(np.array([0.0]))
+        breakup_rate = particulator.Storage.from_ndarray(np.array([0]))
         n_fragment = particulator.PairwiseStorage.from_ndarray(np.array([4] * n_pairs))
         frag_size = particulator.PairwiseStorage.from_ndarray(np.array([-1] * n_pairs))
         is_first_in_pair = particulator.PairIndicator(n_sd)
@@ -206,6 +215,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=general_zeros,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
 
         # Assert
@@ -319,6 +332,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
 
         # Assert
@@ -404,6 +421,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
@@ -477,6 +498,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
         assert breakup_rate_deficit[0] > 0
         np.testing.assert_equal(
@@ -595,6 +620,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
 
         # Assert
@@ -754,6 +783,10 @@ class TestSDMBreakup:
             breakup_rate_deficit=breakup_rate_deficit,
             is_first_in_pair=is_first_in_pair,
             warn_overflows=True,
+            max_multiplicity=np.iinfo(  # TODO: max_representable_value Storage attribute
+                particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5),
         )
 
         # Assert

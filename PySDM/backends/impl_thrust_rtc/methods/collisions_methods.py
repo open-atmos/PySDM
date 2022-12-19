@@ -7,6 +7,8 @@ from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
 from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
+# pylint: disable=too-many-lines
+
 COMMONS = """
 struct Commons {
   static __device__ void flag_zero_multiplicity(
@@ -67,6 +69,154 @@ struct Commons {
       k[0] = idx[2 * i + 1 + offset];
       return false;
   }
+
+  static __device__ auto breakup_fun0(
+    real_type gamma,
+    int64_t j,
+    int64_t k,
+    VectorView<int64_t> multiplicity,
+    VectorView<real_type> volume,
+    int64_t nfi,
+    int64_t fragment_size_i,
+    int64_t max_multiplicity,
+
+    int64_t *take_from_j,
+    int64_t *new_mult_k
+  ) {
+    real_type gamma_j_k = 0;
+    auto take_from_j_test = multiplicity[k];
+    take_from_j[0] = 0;
+    auto new_mult_k_test = 0;
+    new_mult_k[0] = multiplicity[k];
+
+    for (auto m = 0; m < (int64_t) (gamma); m += 1) {
+        take_from_j_test += new_mult_k_test;
+        new_mult_k_test *= volume[j] / fragment_size_i;
+        new_mult_k_test += nfi * multiplicity[k];
+
+        if (new_mult_k_test > max_multiplicity) {
+            break;
+        }
+
+        if (take_from_j_test > multiplicity[j]) {
+            break;
+        }
+
+        take_from_j[0] = take_from_j_test;
+        new_mult_k[0] = new_mult_k_test;
+        gamma_j_k = m + 1;
+    }
+    return gamma_j_k;
+  }
+
+  static __device__ void breakup_fun1(
+    int64_t j,
+    int64_t k,
+    VectorView<real_type> attributes,
+    VectorView<int64_t> multiplicity,
+    int64_t take_from_j,
+    int64_t new_mult_k,
+    int64_t n_attr,
+
+    real_type *nj,
+    real_type *nk
+  ) {
+    for (auto a = 0; a < n_attr; a +=1) {
+        attributes[a + k] *= multiplicity[k];
+        attributes[a + k] += take_from_j * attributes[a + j];
+        attributes[a + k] /= new_mult_k;
+    }
+
+    if (multiplicity[j] > take_from_j) {
+        nj[0] = multiplicity[j] - take_from_j;
+        nk[0] = new_mult_k;
+    } else {
+        nj[0] = new_mult_k / 2;
+        nk[0] = nj[0];
+    }
+  }
+
+  static __device__ void breakup_fun2(
+    int64_t j,
+    int64_t k,
+    real_type nj,
+    real_type nk,
+    VectorView<real_type> attributes,
+    VectorView<int64_t> multiplicity,
+    int64_t take_from_j,
+    int64_t n_attr
+  ) {
+    if (multiplicity[j] <= take_from_j) {
+        for (auto a = 0; a < n_attr; a +=1) {
+            attributes[a + j] = attributes[a + k];
+        }
+    }
+
+    multiplicity[j] = max((int64_t)(round(nj)), (int64_t)(1));
+    multiplicity[k] = max((int64_t)(round(nk)), (int64_t)(1));
+    auto factor_j = nj / multiplicity[j];
+    auto factor_k = nk / multiplicity[k];
+    for (auto a = 0; a < n_attr; a +=1) {
+        attributes[a + k] *= factor_k;
+        attributes[a + j] *= factor_j;
+    }
+  }
+
+  static __device__ void break_up(
+    int64_t i,
+    int64_t j,
+    int64_t k,
+    int64_t cid,
+    VectorView<int64_t> multiplicity,
+    VectorView<real_type> gamma,
+    VectorView<real_type> attributes,
+    VectorView<int64_t> n_fragment,
+    VectorView<int64_t> fragment_size,
+    int64_t max_multiplicity,
+    VectorView<int64_t> breakup_rate,
+    VectorView<int64_t> breakup_rate_deficit,
+    VectorView<real_type> volume,
+    int64_t n_sd,
+    int64_t n_attr
+  ) {
+    int64_t take_from_j[1] = {};
+    int64_t new_mult_k[1] = {};
+    auto gamma_j_k = Commons::breakup_fun0(
+        gamma[i],
+        j,
+        k,
+        multiplicity,
+        volume,
+        n_fragment[i],
+        fragment_size[i],
+        max_multiplicity,
+        take_from_j,
+        new_mult_k
+    );
+    auto gamma_deficit = gamma[i] - gamma_j_k;
+
+    real_type nj[1] = {};
+    real_type nk[1] = {};
+
+    Commons::breakup_fun1(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
+
+    if (multiplicity[j] <= take_from_j[0] && (int64_t)(round(nj[0])) == 0) {
+        atomicAdd(
+            (unsigned long long int*)&breakup_rate_deficit[cid],
+            (unsigned long long int)(gamma[i] * multiplicity[k])
+        );
+    } else {
+        atomicAdd(
+            (unsigned long long int*)&breakup_rate[cid],
+            (unsigned long long int)(gamma_j_k * multiplicity[k])
+        );
+        atomicAdd(
+            (unsigned long long int*)&breakup_rate_deficit[cid],
+            (unsigned long long int)(gamma_deficit * multiplicity[k])
+        );
+        Commons::breakup_fun2(j, k, nj[0], nk[0], attributes, multiplicity, take_from_j[0], n_attr);
+    }
+  }
 };
 """
 
@@ -90,11 +240,11 @@ class CollisionsMethods(
             "i",
             f"""
                 {COMMONS}
-                int64_t jj[1] = {{}};
-                int64_t kk[1] = {{}};
-                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
-                int64_t j = jj[0];
-                int64_t k = kk[0];
+                int64_t _j[1] = {{}};
+                int64_t _k[1] = {{}};
+                auto skip_pair = Commons::pair_indices(i, _j, _k, idx, is_first_in_pair, prob);
+                auto j = _j[0];
+                auto k = _k[0];
                 if (skip_pair) {{
                     return;
                 }}
@@ -113,11 +263,11 @@ class CollisionsMethods(
             "i",
             f"""
                 {COMMONS}
-                int64_t jj[1] = {{}};
-                int64_t kk[1] = {{}};
-                bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, prob);
-                int64_t j = jj[0];
-                int64_t k = kk[0];
+                int64_t _j[1] = {{}};
+                int64_t _k[1] = {{}};
+                auto skip_pair = Commons::pair_indices(i, _j, _k, idx, is_first_in_pair, prob);
+                auto j = _j[0];
+                auto k = _k[0];
                 if (skip_pair) {{
                     return;
                 }}
@@ -172,11 +322,11 @@ class CollisionsMethods(
             name_iter="i",
             body=f"""
             {COMMONS}
-            int64_t jj[1] = {{}};
-            int64_t kk[1] = {{}};
-            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
-            int64_t j = jj[0];
-            int64_t k = kk[0];
+            int64_t _j[1] = {{}};
+            int64_t _k[1] = {{}};
+            auto skip_pair = Commons::pair_indices(i, _j, _k, idx, is_first_in_pair, gamma);
+            auto j = _j[0];
+            auto k = _k[0];
             if (skip_pair) {{
                 return;
             }}
@@ -188,12 +338,11 @@ class CollisionsMethods(
                 "real_type", self._get_c_type()
             ),
         )
-        # pylint:disable=unused-private-member
+
         self.__collision_coalescence_breakup_body = trtc.For(
             param_names=(
                 "multiplicity",
                 "idx",
-                "length",
                 "attributes",
                 "gamma",
                 "rand",
@@ -207,18 +356,19 @@ class CollisionsMethods(
                 "breakup_rate",
                 "breakup_rate_deficit",
                 "is_first_in_pair",
-                # "max_multiplicity",
-                "warn_overflows",
+                "max_multiplicity",
                 "volume",
+                "n_sd",
+                "n_attr",
             ),
             name_iter="i",
             body=f"""
             {COMMONS}
-            int64_t jj[1] = {{}};
-            int64_t kk[1] = {{}};
-            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, gamma);
-            int64_t j = jj[0];
-            int64_t k = kk[0];
+            int64_t _j[1] = {{}};
+            int64_t _k[1] = {{}};
+            auto skip_pair = Commons::pair_indices(i, _j, _k, idx, is_first_in_pair, gamma);
+            auto j = _j[0];
+            auto k = _k[0];
             if (skip_pair) {{
                 return;
             }}
@@ -226,6 +376,39 @@ class CollisionsMethods(
             if (bouncing) {{
                 return;
             }}
+
+            if (rand[i] - Ec[i] < 0) {{
+                Commons::coalesce(
+                    i,
+                    j,
+                    k,
+                    cell_id,
+                    multiplicity,
+                    gamma,
+                    attributes,
+                    coalescence_rate,
+                    n_attr,
+                    n_sd
+                );
+            }} else {{
+                Commons::break_up(
+                    i, j, k,
+                    cell_id[j],
+                    multiplicity,
+                    gamma,
+                    attributes,
+                    n_fragment,
+                    fragment_size,
+                    max_multiplicity,
+                    breakup_rate,
+                    breakup_rate_deficit,
+                    volume,
+                    n_sd,
+                    n_attr
+                );
+            }}
+
+            Commons::flag_zero_multiplicity(j, k, multiplicity, healthy);
             """.replace(
                 "real_type", self._get_c_type()
             ),
@@ -248,11 +431,11 @@ class CollisionsMethods(
             {COMMONS}
             out[i] = ceil(prob[i] - rand[i]);
 
-            int64_t jj[1] = {{}};
-            int64_t kk[1] = {{}};
-            bool skip_pair = Commons::pair_indices(i, jj, kk, idx, is_first_in_pair, out);
-            int64_t j = jj[0];
-            int64_t k = kk[0];
+            int64_t _j[1] = {{}};
+            int64_t _k[1] = {{}};
+            auto skip_pair = Commons::pair_indices(i, _j, _k, idx, is_first_in_pair, out);
+            auto j = _j[0];
+            auto k = _k[0];
             if (skip_pair) {{
                 return;
             }}
@@ -576,6 +759,61 @@ class CollisionsMethods(
                 cell_id.data,
                 coalescence_rate.data,
                 is_first_in_pair.indicator.data,
+            ),
+        )
+
+    @nice_thrust(**NICE_THRUST_FLAGS)
+    def collision_coalescence_breakup(  # pylint: disable=unused-argument,too-many-locals
+        self,
+        *,
+        multiplicity,
+        idx,
+        attributes,
+        gamma,
+        rand,
+        Ec,
+        Eb,
+        n_fragment,
+        fragment_size,
+        healthy,
+        cell_id,
+        coalescence_rate,
+        breakup_rate,
+        breakup_rate_deficit,
+        is_first_in_pair,
+        warn_overflows,
+        volume,
+        max_multiplicity,
+    ):
+        # TODO
+        # if warn_overflows:
+        #     raise NotImplementedError()
+        if len(idx) < 2:
+            return
+        n_sd = trtc.DVInt64(attributes.shape[1])
+        n_attr = trtc.DVInt64(attributes.shape[0])
+        self.__collision_coalescence_breakup_body.launch_n(
+            n=len(idx) // 2,
+            args=(
+                multiplicity.data,
+                idx.data,
+                attributes.data,
+                gamma.data,
+                rand.data,
+                Ec.data,
+                Eb.data,
+                n_fragment.data,
+                fragment_size.data,
+                healthy.data,
+                cell_id.data,
+                coalescence_rate.data,
+                breakup_rate.data,
+                breakup_rate_deficit.data,
+                is_first_in_pair.indicator.data,
+                trtc.DVInt64(max_multiplicity),
+                volume.data,
+                n_sd,
+                n_attr,
             ),
         )
 

@@ -22,6 +22,8 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
+# pylint: disable=too-many-lines
+
 DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
@@ -52,6 +54,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.max_multiplicity = None
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -181,6 +184,13 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 self.rnd_opt_frag.reset()
 
     def step(self):
+        self.max_multiplicity = (
+            np.iinfo(  # TODO: max_representable_value Storage attribute
+                self.particulator.attributes["n"].to_ndarray().dtype
+            ).max
+            // int(2e5)
+        )  # TODO: move to register
+
         pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
 
         self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
@@ -218,6 +228,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
+            max_multiplicity=self.max_multiplicity,
         )
 
         if self.adaptive:
