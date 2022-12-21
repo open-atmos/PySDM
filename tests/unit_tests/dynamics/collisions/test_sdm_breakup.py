@@ -33,6 +33,7 @@ class TestSDMBreakup:
             10 * si.s,
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_nonadaptive_same_results_regardless_of_dt(dt, backend_class=CPU):
         # Arrange
         attributes = {
@@ -81,6 +82,7 @@ class TestSDMBreakup:
             ),
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_single_collision_bounce(params, backend_class):
         # Arrange
         backend = backend_class()
@@ -162,6 +164,7 @@ class TestSDMBreakup:
             },
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_breakup_counters(
         params, backend_class=CPU
     ):  # pylint: disable=too-many-locals
@@ -278,6 +281,7 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    # pylint: disable=redefined-outer-name
     def test_attribute_update_single_breakup(
         params, flag, backend_class=CPU
     ):  # pylint: disable=too-many-locals
@@ -361,6 +365,7 @@ class TestSDMBreakup:
         }[flag]()
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_multiplicity_overflow(backend=CPU()):  # pylint: disable=too-many-locals
         # Arrange
         params = {
@@ -436,6 +441,7 @@ class TestSDMBreakup:
         )
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_same_multiplicity_overflow_no_substeps(
         backend=CPU(),
     ):  # pylint: disable=too-many-locals
@@ -563,6 +569,7 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    # pylint: disable=redefined-outer-name
     def test_noninteger_fragments(
         params, flag, backend_class=CPU
     ):  # pylint: disable=too-many-locals
@@ -729,6 +736,7 @@ class TestSDMBreakup:
         ],
     )
     @pytest.mark.parametrize("flag", ("n", "v", "conserve", "deficit"))
+    # pylint: disable=redefined-outer-name
     def test_while_loop_multi_breakup(
         params, flag, backend_class=CPU
     ):  # pylint:disable=too-many-locals
