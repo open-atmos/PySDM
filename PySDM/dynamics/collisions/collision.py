@@ -13,6 +13,7 @@ from collections import namedtuple
 
 import numpy as np
 
+from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -24,10 +25,13 @@ from PySDM.physics import si
 
 # pylint: disable=too-many-lines
 
-DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
+DEFAULTS = namedtuple(
+    "_", ("dt_coal_range", "adaptive", "substeps", "max_multiplicity")
+)(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
+    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
 )
 
 
@@ -54,7 +58,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
-        self.max_multiplicity = None
+        self.max_multiplicity = DEFAULTS.max_multiplicity
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -184,13 +188,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 self.rnd_opt_frag.reset()
 
     def step(self):
-        self.max_multiplicity = (
-            np.iinfo(  # TODO: max_representable_value Storage attribute
-                self.particulator.attributes["n"].to_ndarray().dtype
-            ).max
-            // int(2e5)
-        )  # TODO: move to register
-
         pairs_rand, rand = self.rnd_opt_coll.get_random_arrays()
 
         self.toss_candidate_pairs_and_sort_within_pair_by_multiplicity(

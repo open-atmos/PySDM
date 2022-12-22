@@ -785,9 +785,8 @@ class CollisionsMethods(
         volume,
         max_multiplicity,
     ):
-        # TODO
-        # if warn_overflows:
-        #     raise NotImplementedError()
+        if warn_overflows:
+            raise NotImplementedError()
         if len(idx) < 2:
             return
         n_sd = trtc.DVInt64(attributes.shape[1])
