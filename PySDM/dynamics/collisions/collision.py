@@ -327,6 +327,7 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        warn_overflows=True,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -340,4 +341,5 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            warn_overflows=warn_overflows,
         )

@@ -19,6 +19,7 @@ CPPYTHON = {
     "float ": "",
     "auto ": "",
     "bool ": "",
+    "[1] = {}; // float": "=np.empty(1, dtype=float)",
     "[1] = {}": "=np.empty(1, dtype=np.int64)",
     "[] = {": " = (",
     " {": ":",

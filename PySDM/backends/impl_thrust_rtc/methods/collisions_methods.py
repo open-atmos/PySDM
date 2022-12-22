@@ -76,17 +76,17 @@ struct Commons {
     int64_t k,
     VectorView<int64_t> multiplicity,
     VectorView<real_type> volume,
-    int64_t nfi,
-    int64_t fragment_size_i,
+    real_type nfi,
+    real_type fragment_size_i,
     int64_t max_multiplicity,
 
-    int64_t *take_from_j,
-    int64_t *new_mult_k
+    real_type *take_from_j,
+    real_type *new_mult_k
   ) {
     real_type gamma_j_k = 0;
-    auto take_from_j_test = multiplicity[k];
+    real_type take_from_j_test = multiplicity[k];
     take_from_j[0] = 0;
-    auto new_mult_k_test = 0;
+    real_type new_mult_k_test = 0;
     new_mult_k[0] = multiplicity[k];
 
     for (auto m = 0; m < (int64_t) (gamma); m += 1) {
@@ -114,8 +114,8 @@ struct Commons {
     int64_t k,
     VectorView<real_type> attributes,
     VectorView<int64_t> multiplicity,
-    int64_t take_from_j,
-    int64_t new_mult_k,
+    real_type take_from_j,
+    real_type new_mult_k,
     int64_t n_attr,
 
     real_type *nj,
@@ -143,11 +143,11 @@ struct Commons {
     real_type nk,
     VectorView<real_type> attributes,
     VectorView<int64_t> multiplicity,
-    int64_t take_from_j,
+    real_type take_from_j,
     int64_t n_attr
   ) {
     if (multiplicity[j] <= take_from_j) {
-        for (auto a = 0; a < n_attr; a +=1) {
+        for (auto a = 0; a < n_attr; a += 1) {
             attributes[a + j] = attributes[a + k];
         }
     }
@@ -179,8 +179,8 @@ struct Commons {
     int64_t n_sd,
     int64_t n_attr
   ) {
-    int64_t take_from_j[1] = {};
-    int64_t new_mult_k[1] = {};
+    real_type take_from_j[1] = {}; // float
+    real_type new_mult_k[1] = {}; // float
     auto gamma_j_k = Commons::breakup_fun0(
         gamma[i],
         j,
@@ -195,8 +195,8 @@ struct Commons {
     );
     auto gamma_deficit = gamma[i] - gamma_j_k;
 
-    real_type nj[1] = {};
-    real_type nk[1] = {};
+    real_type nj[1] = {}; // float
+    real_type nk[1] = {}; // float
 
     Commons::breakup_fun1(j, k, attributes, multiplicity, take_from_j[0], new_mult_k[0], n_attr, nj, nk);
 
