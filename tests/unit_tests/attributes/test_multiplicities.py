@@ -17,7 +17,7 @@ class TestMultiplicities:
         actual_max_multiplicity = Multiplicities.MAX_VALUE
         expected_max_multiplicity = np.iinfo(
             np.int64
-        ).max  # TODO: switch to uint64? #324
+        ).max  # TODO #324: switch to uint64?
 
         assert actual_max_multiplicity == expected_max_multiplicity
 
