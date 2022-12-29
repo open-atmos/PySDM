@@ -8,6 +8,7 @@ class SuperDropletCountPerGridbox(Product):
     def __init__(self, unit="dimensionless", name=None):
         super().__init__(unit=unit, name=name)
 
+    # TODO: should be njitted (with prange)
     def _impl(self, **kwargs):
         cell_start = self.particulator.attributes.cell_start
         n_cell = cell_start.shape[0] - 1

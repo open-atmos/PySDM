@@ -903,7 +903,7 @@ class CollisionsMethods(
             self.___sort_by_cell_id_and_update_cell_start_body.launch_n(
                 n=len(idx) - 1, args=(cell_id.data, cell_start.data, idx.data)
             )
-        return idx
+        return idx  # TODO: this is not used anywhere??
 
     def exp_fragmentation(
         self,
