@@ -811,9 +811,9 @@ class CollisionsMethods(BackendMethods):
         )
 
     @staticmethod
-    def make_cell_caretaker(idx, cell_start, scheme="default"):
+    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme="default"):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
-            def __init__(self, idx, cell_start, scheme):
+            def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
                 if scheme == "default":
                     if conf.JIT_FLAGS["parallel"]:
                         scheme = "counting_sort_parallel"
@@ -821,12 +821,12 @@ class CollisionsMethods(BackendMethods):
                         scheme = "counting_sort"
                 self.scheme = scheme
                 if scheme in ("counting_sort", "counting_sort_parallel"):
-                    self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
+                    self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
                 if scheme == "counting_sort_parallel":
                     self.cell_starts = Storage.empty(
                         (
                             numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                            len(cell_start),
+                            cell_start_len,
                         ),
                         dtype=int,
                     )
@@ -854,7 +854,7 @@ class CollisionsMethods(BackendMethods):
                     )
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
-        return CellCaretaker(idx, cell_start, scheme)
+        return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
