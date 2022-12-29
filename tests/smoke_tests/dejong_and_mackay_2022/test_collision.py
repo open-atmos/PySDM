@@ -8,8 +8,13 @@ from PySDM_examples.deJong_Mackay_2022 import (
     run_box_NObreakup,
 )
 
+from ...backends_fixture import backend_class
 
-def test_collision(plot=False):
+assert hasattr(backend_class, "_pytestfixturefunction")
+
+
+# pylint: disable=redefined-outer-name
+def test_collision(backend_class, plot=False):
     settings = Settings0D()
     t_steps = [0, 100, 200]
     if "CI" in os.environ:
@@ -17,8 +22,8 @@ def test_collision(plot=False):
     else:
         settings.n_sd = 100
 
-    (x1, y1, __) = run_box_NObreakup(settings, t_steps)
-    (x2, y2, __) = run_box_breakup(settings, t_steps)
+    (x1, y1, __) = run_box_NObreakup(settings, t_steps, backend_class)
+    (x2, y2, __) = run_box_breakup(settings, t_steps, backend_class)
 
     for step in settings.output_steps:
         if plot:

@@ -8,8 +8,13 @@ from PySDM.dynamics.collisions.breakup_fragmentations import Straub2010Nf
 from PySDM.dynamics.collisions.coalescence_efficiencies import Straub2010Ec
 from PySDM.physics import si
 
+from ...backends_fixture import backend_class
 
-def test_fig_5(plot=False):
+assert hasattr(backend_class, "_pytestfixturefunction")
+
+
+# pylint: disable=redefined-outer-name
+def test_fig_5(backend_class, plot=False):
     # arrange
     settings = Settings0D(Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10), seed=44)
     steps = [0, 30, 60, 180, 540]
@@ -22,7 +27,7 @@ def test_fig_5(plot=False):
     settings.coal_eff = Straub2010Ec()
 
     # act
-    (data_x, data_y, _) = run_box_breakup(settings)
+    (data_x, data_y, _) = run_box_breakup(settings, backend_class=backend_class)
 
     # plot
     cmap = matplotlib.cm.get_cmap("viridis")
