@@ -572,9 +572,9 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         warn_overflows,
         volume,
+        max_multiplicity,
     ):
         # pylint: disable=too-many-locals
-        max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity=multiplicity.data,
             idx=idx.data,
@@ -1629,9 +1629,9 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         is_first_in_pair,
         warn_overflows,
         volume,
+        max_multiplicity,
     ):
         # pylint: disable=too-many-locals
-        max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity=multiplicity.data,
             idx=idx.data,
@@ -2201,7 +2201,7 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.collision_coalescence_breakup"><code class="name flex">
-<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, rand, Ec, Eb, n_fragment, fragment_size, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, volume)</span>
+<span>def <span class="ident">collision_coalescence_breakup</span></span>(<span>self, *, multiplicity, idx, attributes, gamma, rand, Ec, Eb, n_fragment, fragment_size, healthy, cell_id, coalescence_rate, breakup_rate, breakup_rate_deficit, is_first_in_pair, warn_overflows, volume, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2229,9 +2229,9 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
     is_first_in_pair,
     warn_overflows,
     volume,
+    max_multiplicity,
 ):
     # pylint: disable=too-many-locals
-    max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
     self.__collision_coalescence_breakup_body(
         multiplicity=multiplicity.data,
         idx=idx.data,

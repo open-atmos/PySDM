@@ -52,6 +52,7 @@ from collections import namedtuple
 
 import numpy as np
 
+from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -61,10 +62,15 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
-DEFAULTS = namedtuple(&#34;_&#34;, (&#34;dt_coal_range&#34;, &#34;adaptive&#34;, &#34;substeps&#34;))(
+# pylint: disable=too-many-lines
+
+DEFAULTS = namedtuple(
+    &#34;_&#34;, (&#34;dt_coal_range&#34;, &#34;adaptive&#34;, &#34;substeps&#34;, &#34;max_multiplicity&#34;)
+)(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
+    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
 )
 
 
@@ -91,6 +97,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.max_multiplicity = DEFAULTS.max_multiplicity
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -257,6 +264,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
+            max_multiplicity=self.max_multiplicity,
         )
 
         if self.adaptive:
@@ -358,6 +366,7 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        warn_overflows=True,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -371,6 +380,7 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            warn_overflows=warn_overflows,
         )</code></pre>
 </details>
 </section>
@@ -385,7 +395,7 @@ class Breakup(Collision):
 <dl>
 <dt id="PySDM.dynamics.collisions.collision.Breakup"><code class="flex name class">
 <span>class <span class="ident">Breakup</span></span>
-<span>(</span><span>*, collision_kernel, fragmentation_function, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0))</span>
+<span>(</span><span>*, collision_kernel, fragmentation_function, croupier=None, optimized_random=False, substeps: int = 1, adaptive: bool = True, dt_coal_range=(0.1, 100.0), warn_overflows=True)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -404,6 +414,7 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        warn_overflows=True,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -417,6 +428,7 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            warn_overflows=warn_overflows,
         )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -517,6 +529,7 @@ class Breakup(Collision):
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.max_multiplicity = DEFAULTS.max_multiplicity
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -683,6 +696,7 @@ class Breakup(Collision):
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
+            max_multiplicity=self.max_multiplicity,
         )
 
         if self.adaptive:
@@ -956,6 +970,7 @@ for droplets without a pair (i.e. odd number of particles within a grid cell)</p
         breakup_rate_deficit=self.breakup_rate_deficit,
         is_first_in_pair=self.is_first_in_pair,
         warn_overflows=self.warn_overflows,
+        max_multiplicity=self.max_multiplicity,
     )
 
     if self.adaptive:

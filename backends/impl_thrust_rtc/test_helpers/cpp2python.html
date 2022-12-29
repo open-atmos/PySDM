@@ -44,10 +44,13 @@ CPPYTHON = {
     &#34;void &#34;: &#34;&#34;,
     &#34;int64_t *&#34;: &#34;&#34;,
     &#34;int64_t &#34;: &#34;&#34;,
+    &#34;double *&#34;: &#34;&#34;,
     &#34;double &#34;: &#34;&#34;,
+    &#34;float *&#34;: &#34;&#34;,
     &#34;float &#34;: &#34;&#34;,
     &#34;auto &#34;: &#34;&#34;,
     &#34;bool &#34;: &#34;&#34;,
+    &#34;[1] = {}; // float&#34;: &#34;=np.empty(1, dtype=float)&#34;,
     &#34;[1] = {}&#34;: &#34;=np.empty(1, dtype=np.int64)&#34;,
     &#34;[] = {&#34;: &#34; = (&#34;,
     &#34; {&#34;: &#34;:&#34;,
@@ -214,7 +217,8 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    result = f&#34;&#34;&#34;
+    result = (
+        f&#34;&#34;&#34;
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
@@ -232,9 +236,10 @@ def make(self):
 
     return {name}
 &#34;&#34;&#34;.replace(
-        &#34;};&#34;, &#34;)&#34;
-    ).replace(
-        &#34;}&#34;, &#34;&#34;
+            &#34;};&#34;, &#34;)&#34;
+        )
+        .replace(&#34;} &#34;, &#34;&#34;)
+        .replace(&#34;}&#34;, &#34;&#34;)
     )
 
     return result</code></pre>
@@ -468,7 +473,8 @@ def make(self):
 
     body, structs = extract_struct_defs(body)
 
-    result = f&#34;&#34;&#34;
+    result = (
+        f&#34;&#34;&#34;
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
@@ -486,9 +492,10 @@ def make(self):
 
     return {name}
 &#34;&#34;&#34;.replace(
-        &#34;};&#34;, &#34;)&#34;
-    ).replace(
-        &#34;}&#34;, &#34;&#34;
+            &#34;};&#34;, &#34;)&#34;
+        )
+        .replace(&#34;} &#34;, &#34;&#34;)
+        .replace(&#34;}&#34;, &#34;&#34;)
     )
 
     return result</code></pre>
