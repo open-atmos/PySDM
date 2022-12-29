@@ -13,6 +13,7 @@ from collections import namedtuple
 
 import numpy as np
 
+from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -22,10 +23,15 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
-DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
+# pylint: disable=too-many-lines
+
+DEFAULTS = namedtuple(
+    "_", ("dt_coal_range", "adaptive", "substeps", "max_multiplicity")
+)(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
+    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
 )
 
 
@@ -52,6 +58,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
+        self.max_multiplicity = DEFAULTS.max_multiplicity
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -218,6 +225,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
+            max_multiplicity=self.max_multiplicity,
         )
 
         if self.adaptive:
@@ -319,6 +327,7 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        warn_overflows=True,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -332,4 +341,5 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            warn_overflows=warn_overflows,
         )
