@@ -228,17 +228,25 @@ class CollisionsMethods(
         ThrustRTCBackendMethods.__init__(self)
 
         self.__scale_prob_for_adaptive_sdm_gamma_body_1 = trtc.For(
-            ("dt_todo", "dt_left", "dt_max"),
-            "cid",
-            """
+            param_names=("dt_todo", "dt_left", "dt_max"),
+            name_iter="cid",
+            body="""
                 dt_todo[cid] = min(dt_left[cid], dt_max);
             """,
         )
 
         self.__scale_prob_for_adaptive_sdm_gamma_body_2 = trtc.For(
-            ("prob", "idx", "n", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
-            "i",
-            f"""
+            param_names=(
+                "prob",
+                "idx",
+                "n",
+                "cell_id",
+                "dt",
+                "is_first_in_pair",
+                "dt_todo",
+            ),
+            name_iter="i",
+            body=f"""
                 {COMMONS}
                 int64_t _j[1] = {{}};
                 int64_t _k[1] = {{}};
@@ -259,9 +267,9 @@ class CollisionsMethods(
         )
 
         self.__scale_prob_for_adaptive_sdm_gamma_body_3 = trtc.For(
-            ("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
-            "i",
-            f"""
+            param_names=("prob", "idx", "cell_id", "dt", "is_first_in_pair", "dt_todo"),
+            name_iter="i",
+            body=f"""
                 {COMMONS}
                 int64_t _j[1] = {{}};
                 int64_t _k[1] = {{}};
@@ -278,9 +286,9 @@ class CollisionsMethods(
         )
 
         self.__scale_prob_for_adaptive_sdm_gamma_body_4 = trtc.For(
-            ("dt_left", "dt_todo", "stats_n_substep"),
-            "cid",
-            """
+            param_names=("dt_left", "dt_todo", "stats_n_substep"),
+            name_iter="cid",
+            body="""
                 dt_left[cid] -= dt_todo[cid];
                 if (dt_todo[cid] > 0) {
                     stats_n_substep[cid] += 1;
@@ -289,9 +297,9 @@ class CollisionsMethods(
         )
 
         self.___sort_by_cell_id_and_update_cell_start_body = trtc.For(
-            ("cell_id", "cell_start", "idx"),
-            "i",
-            """
+            param_names=("cell_id", "cell_start", "idx"),
+            name_iter="i",
+            body="""
             if (i == 0) {
                 cell_start[cell_id[idx[0]]] = 0;
             }
@@ -415,7 +423,7 @@ class CollisionsMethods(
         )
 
         self.__compute_gamma_body = trtc.For(
-            (
+            param_names=(
                 "prob",
                 "rand",
                 "idx",
@@ -426,8 +434,8 @@ class CollisionsMethods(
                 "is_first_in_pair",
                 "out",
             ),
-            "i",
-            f"""
+            name_iter="i",
+            body=f"""
             {COMMONS}
             out[i] = ceil(prob[i] - rand[i]);
 
@@ -459,9 +467,9 @@ class CollisionsMethods(
         )
 
         self.__normalize_body_0 = trtc.For(
-            ("cell_start", "norm_factor", "dt_div_dv"),
-            "i",
-            """
+            param_names=("cell_start", "norm_factor", "dt_div_dv"),
+            name_iter="i",
+            body="""
             auto sd_num = cell_start[i + 1] - cell_start[i];
             if (sd_num < 2) {
                 norm_factor[i] = 0;
@@ -474,17 +482,17 @@ class CollisionsMethods(
         )
 
         self.__normalize_body_1 = trtc.For(
-            ("prob", "cell_id", "norm_factor"),
-            "i",
-            """
+            param_names=("prob", "cell_id", "norm_factor"),
+            name_iter="i",
+            body="""
             prob[i] *= norm_factor[cell_id[i]];
             """,
         )
 
         self.__remove_zero_n_or_flagged_body = trtc.For(
-            ("data", "idx", "n_sd"),
-            "i",
-            """
+            param_names=("data", "idx", "n_sd"),
+            name_iter="i",
+            body="""
             if (idx[i] < n_sd && data[idx[i]] == 0) {
                 idx[i] = n_sd;
             }
@@ -492,9 +500,9 @@ class CollisionsMethods(
         )
 
         self.__cell_id_body = trtc.For(
-            ("cell_id", "cell_origin", "strides", "n_dims", "size"),
-            "i",
-            """
+            param_names=("cell_id", "cell_origin", "strides", "n_dims", "size"),
+            name_iter="i",
+            body="""
             cell_id[i] = 0;
             for (auto j = 0; j < n_dims; j += 1) {
                 cell_id[i] += cell_origin[size * j + i] * strides[j];
@@ -685,11 +693,11 @@ class CollisionsMethods(
         d_dt = self._get_floating_point(dt)
 
         self.__scale_prob_for_adaptive_sdm_gamma_body_1.launch_n(
-            len(dt_left), (dt_todo, dt_left.data, d_dt_max)
+            n=len(dt_left), args=(dt_todo, dt_left.data, d_dt_max)
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_2.launch_n(
-            len(n) // 2,
-            (
+            n=len(n) // 2,
+            args=(
                 prob.data,
                 n.idx.data,
                 n.data,
@@ -700,8 +708,8 @@ class CollisionsMethods(
             ),
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_3.launch_n(
-            len(n) // 2,
-            (
+            n=len(n) // 2,
+            args=(
                 prob.data,
                 n.idx.data,
                 cell_id.data,
@@ -711,7 +719,7 @@ class CollisionsMethods(
             ),
         )
         self.__scale_prob_for_adaptive_sdm_gamma_body_4.launch_n(
-            len(dt_left), (dt_left.data, dt_todo, stats_n_substep.data)
+            n=len(dt_left), args=(dt_left.data, dt_todo, stats_n_substep.data)
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -725,7 +733,8 @@ class CollisionsMethods(
         n_dims = trtc.DVInt64(cell_origin.shape[0])
         size = trtc.DVInt64(cell_origin.shape[1])
         self.__cell_id_body.launch_n(
-            len(cell_id), (cell_id.data, cell_origin.data, strides.data, n_dims, size)
+            n=len(cell_id),
+            args=(cell_id.data, cell_origin.data, strides.data, n_dims, size),
         )
 
     # pylint: disable=unused-argument
@@ -832,8 +841,8 @@ class CollisionsMethods(
         if len(multiplicity) < 2:
             return
         self.__compute_gamma_body.launch_n(
-            len(multiplicity) // 2,
-            (
+            n=len(multiplicity) // 2,
+            args=(
                 prob.data,
                 rand.data,
                 multiplicity.idx.data,
@@ -847,7 +856,7 @@ class CollisionsMethods(
         )
 
     # pylint: disable=unused-argument
-    def make_cell_caretaker(self, idx, cell_start, scheme=None):
+    def make_cell_caretaker(self, idx_shape, idx_dtype, cell_start_len, scheme=None):
         return self._sort_by_cell_id_and_update_cell_start
 
     # pylint: disable=unused-argument
@@ -858,7 +867,7 @@ class CollisionsMethods(
         n_cell = cell_start.shape[0] - 1
         device_dt_div_dv = self._get_floating_point(timestep / dv)
         self.__normalize_body_0.launch_n(
-            n_cell, (cell_start.data, norm_factor.data, device_dt_div_dv)
+            n=n_cell, args=(cell_start.data, norm_factor.data, device_dt_div_dv)
         )
         self.__normalize_body_1.launch_n(
             prob.shape[0], (prob.data, cell_id.data, norm_factor.data)
@@ -869,12 +878,12 @@ class CollisionsMethods(
         n_sd = trtc.DVInt64(idx.size())
 
         # Warning: (potential bug source): reading from outside of array
-        self.__remove_zero_n_or_flagged_body.launch_n(length, [data, idx, n_sd])
+        self.__remove_zero_n_or_flagged_body.launch_n(n=length, args=(data, idx, n_sd))
 
         trtc.Sort(idx)
 
-        result = idx.size() - trtc.Count(idx, n_sd)
-        return result
+        new_length = idx.size() - trtc.Count(idx, n_sd)
+        return new_length
 
     # pylint: disable=unused-argument
     @nice_thrust(**NICE_THRUST_FLAGS)
@@ -892,7 +901,7 @@ class CollisionsMethods(
         trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
         if len(idx) > 1:
             self.___sort_by_cell_id_and_update_cell_start_body.launch_n(
-                len(idx) - 1, (cell_id.data, cell_start.data, idx.data)
+                n=len(idx) - 1, args=(cell_id.data, cell_start.data, idx.data)
             )
         return idx
 
