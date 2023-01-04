@@ -15,7 +15,7 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 # pylint: disable=redefined-outer-name
 def test_collision(backend_class, plot=False):
-    settings = Settings0D()
+    settings = Settings0D(warn_overflows=False)
     t_steps = [0, 100, 200]
     if "CI" in os.environ:
         settings.n_sd = 10
