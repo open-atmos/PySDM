@@ -214,9 +214,14 @@ class TestCollisionMethods:
         backend = backend_class()
         idx = [0, 3, 2, 4]
 
-        cell_start = backend.Storage.from_ndarray(np.asarray([0, 4]))
+        cell_start = backend.Storage.from_ndarray(np.asarray([-1, -1]))
         _idx = make_Index(backend).from_ndarray(np.asarray(idx, dtype=np.int64))
-        _idx.length = len(idx) - 1
+
+        multiplicity = make_IndexedStorage(backend).from_ndarray(
+            _idx, np.asarray([1, 1, 1, 1])
+        )
+        _idx.remove_zero_n_or_flagged(multiplicity)
+
         cell_id = make_IndexedStorage(backend).from_ndarray(
             _idx, np.asarray([0, 0, 0, 0])
         )
