@@ -302,8 +302,7 @@ class CollisionsMethods(
             body="""
             if (i == 0) {
                 cell_start[cell_id[idx[0]]] = 0;
-            }
-            else {
+            } else {
                 auto cell_id_curr = cell_id[idx[i]];
                 auto cell_id_next = cell_id[idx[i + 1]];
                 auto diff = (cell_id_next - cell_id_curr);
