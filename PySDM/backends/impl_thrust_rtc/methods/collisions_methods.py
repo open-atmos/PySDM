@@ -896,13 +896,11 @@ class CollisionsMethods(
         #      max_cell_id = max(cell_id.to_ndarray())
         #      assert max_cell_id == 0
         #   no handling of cell_idx in ___sort_by_cell_id_and_update_cell_start_body yet
-        n_sd = cell_id.shape[0]
-        trtc.Fill(cell_start.data, trtc.DVInt64(n_sd))
+        trtc.Fill(cell_start.data, trtc.DVInt64(len(idx)))
         if len(idx) > 1:
             self.___sort_by_cell_id_and_update_cell_start_body.launch_n(
                 n=len(idx) - 1, args=(cell_id.data, cell_start.data, idx.data)
             )
-        return idx  # TODO: this is not used anywhere??
 
     def exp_fragmentation(
         self,
