@@ -80,8 +80,11 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     pyplot.xlabel("particle radius (um)")
     pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
     pyplot.legend()
+    pyplot.title(backend_class.__name__)
     if plot:
         pyplot.show()
+    else:
+        pyplot.clf()
 
     # assert
     for datum_x in data_x.values():

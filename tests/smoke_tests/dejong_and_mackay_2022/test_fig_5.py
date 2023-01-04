@@ -16,7 +16,11 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 # pylint: disable=redefined-outer-name
 def test_fig_5(backend_class, plot=False):
     # arrange
-    settings = Settings0D(Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10), seed=44)
+    settings = Settings0D(
+        fragmentation=Straub2010Nf(vmin=Settings0D.X0 * 1e-3, nfmax=10),
+        seed=44,
+        warn_overflows=False,
+    )
     steps = [0, 30, 60, 180, 540]
     settings._steps = steps  # pylint: disable=protected-access
     settings.n_sd = 2**11
@@ -44,9 +48,12 @@ def test_fig_5(backend_class, plot=False):
     pyplot.xscale("log")
     pyplot.xlabel("particle radius (um)")
     pyplot.ylabel("dm/dlnr (kg/m$^3$ / unit(ln R)")
+    pyplot.title(backend_class.__name__)
     pyplot.legend()
     if plot:
         pyplot.show()
+    else:
+        pyplot.clf()
 
     # assert
     peaks_expected = {

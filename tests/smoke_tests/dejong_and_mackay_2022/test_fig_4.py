@@ -40,11 +40,12 @@ class TestFig4:
         lbl = "initial"
         (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
         for (i, nf_val) in enumerate(nf_vals):
-            settings = Settings0D(fragmentation=AlwaysN(n=nf_val), seed=44)
+            settings = Settings0D(
+                fragmentation=AlwaysN(n=nf_val), seed=44, warn_overflows=False
+            )
             settings.n_sd = settings0.n_sd
             settings.radius_bins_edges = settings0.radius_bins_edges
             settings.coal_eff = ConstEc(Ec=0.95)
-            settings.warn_overflows = False
             settings.dt = DT
 
             lbl = "n_f = " + str(nf_val)
@@ -74,8 +75,11 @@ class TestFig4:
         pyplot.xlabel("particle radius (um)")
         pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
         pyplot.legend()
+        pyplot.title(backend_class.__name__)
         if plot:
             pyplot.show()
+        else:
+            pyplot.clf()
 
         # assert
         for datum_x in data_x.values():
@@ -113,11 +117,12 @@ class TestFig4:
         (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
         for (i, mu_val) in enumerate(mu_vals):
             settings = Settings0D(
-                fragmentation=Gaussian(mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None)
+                fragmentation=Gaussian(mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None),
+                warn_overflows=False,
+                seed=44,
             )
             settings.dt = DT
             settings.n_sd = settings0.n_sd
-            settings.warn_overflows = False
             settings.radius_bins_edges = settings0.radius_bins_edges
             settings.coal_eff = ConstEc(Ec=0.99)
             lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
@@ -149,9 +154,12 @@ class TestFig4:
         pyplot.xlabel("particle radius (um)")
         pyplot.ylabel("dm/dlnr (kg/m$^3$ / unit(ln R)")
         pyplot.legend()
+        pyplot.title(backend_class.__name__)
         pyplot.tight_layout()
         if plot:
             pyplot.show()
+        else:
+            pyplot.clf()
 
         # assert
         for datum_x in data_x.values():
