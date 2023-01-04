@@ -209,6 +209,7 @@ class TestCollisionMethods:
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
 
     @staticmethod
+    # pylint: disable=redefined-outer-name
     def test_cell_caretaker(backend_class):
         # Arrange
         backend = backend_class()
