@@ -543,9 +543,9 @@ class CollisionsMethods(BackendMethods):
         is_first_in_pair,
         warn_overflows,
         volume,
+        max_multiplicity,
     ):
         # pylint: disable=too-many-locals
-        max_multiplicity = np.iinfo(multiplicity.data.dtype).max // 2e5
         self.__collision_coalescence_breakup_body(
             multiplicity=multiplicity.data,
             idx=idx.data,

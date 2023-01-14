@@ -46,12 +46,11 @@ class DisplacementMethods(ThrustRTCBackendMethods):
                 _r += _r_2 * courant_shape_0 * courant_shape_1;
             }}
 
-            auto omega = position_in_cell[i + n_sd * dim];
-            auto c_r = courant[_r] / n_substeps;
-            auto c_l = courant[_l] / n_substeps;
             displacement[i + n_sd * dim] = {
                 self.formulae.particle_advection.displacement.c_inline(
-                    c_l="c_l", c_r="c_r", omega="omega"
+                    position_in_cell="position_in_cell[i + n_sd * dim]",
+                    c_l="courant[_l] / n_substeps",
+                    c_r="courant[_r] / n_substeps"
                 )
             };
             """.replace(
