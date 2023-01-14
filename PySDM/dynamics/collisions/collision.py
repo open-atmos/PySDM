@@ -231,7 +231,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             max_multiplicity=self.max_multiplicity,
         )
 
-
     def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
         self, is_first_in_pair, u01
     ):
