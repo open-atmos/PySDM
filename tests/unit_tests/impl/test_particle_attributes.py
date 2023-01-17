@@ -149,8 +149,24 @@ class TestParticleAttributes:
     @staticmethod
     def test_permutation_global_as_implemented_in_numba():
         n_sd = 8
-        u01 = [0.1, 0.4, 0.2, 0.5, 0.9, 0.1, 0.6, 0.3,
-               0.5, 0.1, 0.7, 0.2, 0.6, 0.3, 0.3, 0.8]
+        u01 = [
+            0.1,
+            0.4,
+            0.2,
+            0.5,
+            0.9,
+            0.1,
+            0.6,
+            0.3,
+            0.5,
+            0.1,
+            0.7,
+            0.2,
+            0.6,
+            0.3,
+            0.3,
+            0.8,
+        ]
 
         # Arrange
         particulator = DummyParticulator(CPU, n_sd=n_sd)

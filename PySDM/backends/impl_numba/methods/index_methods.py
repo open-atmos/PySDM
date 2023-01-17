@@ -43,7 +43,7 @@ class IndexMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def shuffle_global(idx, length, u01, cutoff=0X100000):
+    def shuffle_global(idx, length, u01, cutoff=0x100000):
         depth = 0
         while (length >> depth) > cutoff:
             depth += 1
@@ -56,8 +56,14 @@ class IndexMethods(BackendMethods):
         for i in range(1, depth + 1):
             for c in numba.prange(1 << (depth - i)):  # pylint: disable=not-an-iterable
                 start = c * i * 2
-                merge(idx, u01, split_start[start], split_start[start + i],
-                      split_start[start + i + i], length * i)
+                merge(
+                    idx,
+                    u01,
+                    split_start[start],
+                    split_start[start + i],
+                    split_start[start + i + i],
+                    length * i,
+                )
 
     @staticmethod
     @numba.njit(**conf.JIT_FLAGS)
