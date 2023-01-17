@@ -15,6 +15,7 @@ from PySDM.storages.thrust_rtc.operators import ThrustStorageOperators
 class Storage(BaseStorage):
     INT = np.int64
     BOOL = np.bool_
+    data: trtc.DVVector
 
     def __init_subclass__(
         cls,
