@@ -7,14 +7,16 @@ import numpy as np
 from typing_extensions import TypeGuard
 
 from PySDM.storages.common.random import Random
+from PySDM.storages.thrust_rtc.conf import trtc
 
 ShapeType = Union[int, Tuple[int, ...]]
+DataType = Union[np.ndarray, trtc.DVVector]
 
 
 class StorageSignature(NamedTuple):
     """groups items defining a storage"""
 
-    data: np.ndarray
+    data: DataType
     shape: ShapeType
     dtype: Type
 

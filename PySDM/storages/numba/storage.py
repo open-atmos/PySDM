@@ -9,7 +9,7 @@ import numpy as np
 from PySDM.storages.common.storage import Storage as BaseStorage
 from PySDM.storages.common.storage import StorageSignature
 from PySDM.storages.common.utils import get_data_from_ndarray
-from PySDM.storages.numba import impl
+from PySDM.storages.numba import operators as ops
 
 
 class Storage(BaseStorage):
@@ -57,20 +57,20 @@ class Storage(BaseStorage):
 
     def __iadd__(self, other: Union["Storage", np.ndarray, Number]) -> "Storage":
         if isinstance(other, Storage):
-            impl.add(self.data, other.data)
+            ops.add(self.data, other.data)
         else:
-            impl.add(self.data, other)
+            ops.add(self.data, other)
         return self
 
     def __isub__(self, other: "Storage") -> "Storage":
-        impl.subtract(self.data, other.data)
+        ops.subtract(self.data, other.data)
         return self
 
     def __imul__(self, other: Union["Storage", np.ndarray]) -> "Storage":
         if self.is_storage(other):
-            impl.multiply(self.data, other.data)
+            ops.multiply(self.data, other.data)
         else:
-            impl.multiply(self.data, other)
+            ops.multiply(self.data, other)
         return self
 
     def __itruediv__(self, other: Union["Storage", np.ndarray]):
@@ -81,11 +81,11 @@ class Storage(BaseStorage):
         return self
 
     def __imod__(self, other: "Storage"):
-        impl.row_modulo(self.data, other.data)
+        ops.row_modulo(self.data, other.data)
         return self
 
     def __ipow__(self, other: np.ndarray):
-        impl.power(self.data, other)
+        ops.power(self.data, other)
         return self
 
     def __bool__(self):
@@ -128,35 +128,35 @@ class Storage(BaseStorage):
         )
 
     def amin(self) -> Union[FLOAT, INT, BOOL]:
-        return impl.amin(self.data)
+        return ops.amin(self.data)
 
     def all(self) -> bool:
         return self.data.all()
 
     def floor(self, other: Optional["Storage"] = None):
         if other is None:
-            impl.floor(self.data)
+            ops.floor(self.data)
         else:
-            impl.floor_out_of_place(self.data, other.data)
+            ops.floor_out_of_place(self.data, other.data)
         return self
 
     def product(self, multiplicand, multiplier):
         if self.is_storage(multiplier):
-            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
+            ops.multiply_out_of_place(self.data, multiplicand.data, multiplier.data)
         else:
-            impl.multiply_out_of_place(self.data, multiplicand.data, multiplier)
+            ops.multiply_out_of_place(self.data, multiplicand.data, multiplier)
         return self
 
     def ratio(self, dividend, divisor):
-        impl.divide_out_of_place(self.data, dividend.data, divisor.data)
+        ops.divide_out_of_place(self.data, dividend.data, divisor.data)
         return self
 
     def divide_if_not_zero(self, divisor):
-        impl.divide_if_not_zero(self.data, divisor.data)
+        ops.divide_if_not_zero(self.data, divisor.data)
         return self
 
     def sum(self, arg_a, arg_b):
-        impl.sum_out_of_place(self.data, arg_a.data, arg_b.data)
+        ops.sum_out_of_place(self.data, arg_a.data, arg_b.data)
         return self
 
     def ravel(self, other):

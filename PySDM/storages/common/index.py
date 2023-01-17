@@ -1,21 +1,23 @@
 """
 permutation-defining Index class (can be shared between multiple IndexedStorage instances)
 """
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Union
 
 import numpy as np
 
 from PySDM.storages.common.backend import IndexBackend
 from PySDM.storages.common.storage import Index, Storage, StorageSignature
+from PySDM.storages.thrust_rtc.conf import trtc
 
 BackendType = TypeVar("BackendType", bound=IndexBackend)
+DataType = Union[np.ndarray, trtc.DVVector]
 
 
 def index(backend: BackendType, storage_cls: Type[Storage]):
     assert issubclass(storage_cls, Storage)
 
     class _Index(storage_cls, Index):
-        def __init__(self, data: np.ndarray, length: int):
+        def __init__(self, data: DataType, length: int):
             assert isinstance(length, int)
             self.length = storage_cls.INT(length)
             super().__init__(StorageSignature(data, length, storage_cls.INT))
