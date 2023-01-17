@@ -1,7 +1,7 @@
 """
 storage internals for the ThrustRTC backend
 """
-from typing import Any, Callable, Literal, Optional, Type
+from typing import Any, Callable, Literal, Optional, Type, cast
 
 import numpy as np
 
@@ -33,38 +33,9 @@ class Storage(BaseStorage):
         self.ops = ThrustStorageOperators(self._conv_function)
 
     def __getitem__(self, item):
-        dim = len(self.shape)
-        if isinstance(item, slice):
-            start = item.start or 0
-            stop = item.stop or self.shape[0]
-            if dim == 1:
-                result_data = self.data.range(start, stop)
-                result_shape = (stop - start,)
-            elif dim == 2:
-                result_data = self.data.range(
-                    self.shape[1] * start, self.shape[1] * stop
-                )
-                result_shape = (stop - start, self.shape[1])
-            else:
-                raise NotImplementedError(
-                    "Only 2 or less dimensions array is supported."
-                )
-            return StorageSignature(result_data, result_shape, self.dtype)
-        elif (
-            dim == 2
-            and isinstance(item, tuple)
-            and isinstance(item[0], int)
-            and isinstance(item[1], slice)
-        ):
-            assert item[1].start is None or item[1].start == 0
-            assert item[1].stop is None or item[1].stop == self.shape[1]
-            assert item[1].step is None or item[1].step == 1
-            result_data = self.data.range(
-                self.shape[1] * item[0], self.shape[1] * (item[0] + 1)
-            )
-            return StorageSignature(result_data, (*self.shape[1:],), self.dtype)
-        else:
-            return self.to_ndarray()[item]
+        raise RuntimeError(
+            "Not implemented - the method should be overriden in subclasses"
+        )
 
     def __setitem__(self, key, value):
         if not (
@@ -219,21 +190,63 @@ class Storage(BaseStorage):
         return self
 
 
-class FloatStorage(Storage):
+class ThrustRTCStorageGetItemMixin:
+
+    storage_class: Type[Storage]
+
     def __getitem__(self, item):
-        result = super().__getitem__(item)
-        if isinstance(result, StorageSignature):
-            return FloatStorage(result)
+        instance = cast(Storage, self)
+        dim = len(instance.shape)
+        if isinstance(item, slice):
+            start = item.start or 0
+            stop = item.stop or instance.shape[0]
+            if dim == 1:
+                result_data = instance.data.range(start, stop)
+                result_shape = (stop - start,)
+            elif dim == 2:
+                result_data = instance.data.range(
+                    instance.shape[1] * start, instance.shape[1] * stop
+                )
+                result_shape = (stop - start, instance.shape[1])
+            else:
+                raise NotImplementedError(
+                    "Only 2 or less dimensions array is supported."
+                )
+            return self.storage_class(
+                StorageSignature(result_data, result_shape, instance.dtype)
+            )
+        elif (
+            dim == 2
+            and isinstance(item, tuple)
+            and isinstance(item[0], int)
+            and isinstance(item[1], slice)
+        ):
+            assert item[1].start is None or item[1].start == 0
+            assert item[1].stop is None or item[1].stop == instance.shape[1]
+            assert item[1].step is None or item[1].step == 1
+            result_data = instance.data.range(
+                instance.shape[1] * item[0], instance.shape[1] * (item[0] + 1)
+            )
+            return self.storage_class(
+                StorageSignature(result_data, (*instance.shape[1:],), instance.dtype)
+            )
         else:
-            return result
+            return instance.to_ndarray()[item]
 
 
-class DoubleStorage(
+class BaseFloatStorage(Storage):
+    pass
+
+
+class FloatStorage(ThrustRTCStorageGetItemMixin, BaseFloatStorage):
+    storage_class = BaseFloatStorage
+
+
+class BaseDoubleStorage(
     Storage, conv_function=trtc.DVDouble, real_type="double", np_float_dtype=np.float64
 ):
-    def __getitem__(self, item):
-        result = super().__getitem__(item)
-        if isinstance(result, StorageSignature):
-            return DoubleStorage(result)
-        else:
-            return result
+    pass
+
+
+class DoubleStorage(ThrustRTCStorageGetItemMixin, BaseDoubleStorage):
+    storage_class = BaseDoubleStorage
