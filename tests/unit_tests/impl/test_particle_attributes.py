@@ -206,7 +206,7 @@ class TestParticleAttributes:
             return  # TODO #328
 
         n_sd = 800
-        u01 = np.random.random(n_sd * 9)
+        u01 = np.random.random(n_sd)
 
         # Arrange
         particulator = DummyParticulator(backend_class, n_sd=n_sd)
