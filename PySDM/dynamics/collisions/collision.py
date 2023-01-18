@@ -179,6 +179,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 while self.particulator.attributes.get_working_length() != 0:
                     self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
                     self.step()
+                    self.particulator.attributes.cut_working_length(
+                        self.particulator.adaptive_sdm_end(self.dt_left)
+                    )
 
                 self.particulator.attributes.reset_working_length()
                 self.particulator.attributes.reset_cell_idx()
@@ -227,11 +230,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             warn_overflows=self.warn_overflows,
             max_multiplicity=self.max_multiplicity,
         )
-
-        if self.adaptive:
-            self.particulator.attributes.cut_working_length(
-                self.particulator.adaptive_sdm_end(self.dt_left)
-            )
 
     def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
         self, is_first_in_pair, u01
