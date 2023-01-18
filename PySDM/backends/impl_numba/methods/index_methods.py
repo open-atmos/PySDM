@@ -16,7 +16,9 @@ def fisher_yates_shuffle(idx, u01, start, end, random_offset=0):
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def merge(idx, u01, start, middle, end, random_offset):
+def merge(
+    idx, u01, start, middle, end, random_offset
+):  # pylint: disable=too-many-arguments
     i = start
     j = middle
 
