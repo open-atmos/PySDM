@@ -45,9 +45,9 @@ class IndexMethods(BackendMethods):
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
-    def shuffle_global(idx, length, u01, cutoff=0x100000):
+    def shuffle_global(idx, length, u01, cutoff=None):
         depth = 0
-        while (length >> depth) > cutoff:
+        while cutoff is not None and (length >> depth) > cutoff:
             depth += 1
 
         split_start = np.linspace(0, length, (1 << depth) + 1).astype(np.uint32)
