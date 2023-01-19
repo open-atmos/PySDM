@@ -6,10 +6,10 @@ import numba
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.atomic_operations import atomic_add
-from PySDM.backends.impl_numba.storage import Storage
 from PySDM.backends.impl_numba.warnings import warn
+from PySDM.storages.numba import conf
+from PySDM.storages.numba.storage import Storage
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})

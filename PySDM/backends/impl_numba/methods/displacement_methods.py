@@ -3,7 +3,7 @@ CPU implementation of backend methods for particle displacement (advection and s
 """
 import numba
 
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 from ...impl_common.backend_methods import BackendMethods
 

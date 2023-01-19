@@ -15,6 +15,19 @@ from PySDM.storages.common.storage import (
 
 
 def indexed(storage_cls: Type[Storage]):
+    """
+    Creates a specialised storage class featuring particle permutation logic.
+
+    Parameters
+    ----------
+    storage_cls : Type[Storage]
+        storage class to be used for the storage
+
+    Returns
+    -------
+    Type[Indexed]
+        specialised storage class featuring particle permutation logic
+    """
     assert issubclass(storage_cls, Storage)
 
     class _IndexedStorage(storage_cls, Indexed):

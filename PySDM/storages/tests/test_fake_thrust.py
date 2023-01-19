@@ -1,5 +1,5 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from PySDM.backends.impl_thrust_rtc.test_helpers.fake_thrust_rtc import FakeThrustRTC
+from PySDM.storages.thrust_rtc.test_helpers.fake_thrust_rtc import FakeThrustRTC
 
 
 def test_device_vector_fails_on_zero_size():

@@ -5,8 +5,8 @@ Average collision timestep length used when adaptive timestepping is enabled in 
 import numba
 import numpy as np
 
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.products.impl.product import Product
+from PySDM.storages.numba.conf import JIT_FLAGS
 
 
 class CollisionTimestepMean(Product):

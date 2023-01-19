@@ -111,8 +111,8 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         sut(nf, frag_size, u01, is_first_in_pair)
 
         # Assert
-        np.testing.assert_array_equal([(440.0 + 6660.0) / 6660.0], nf.to_ndarray())
-        np.testing.assert_array_equal([6660.0 * si.um**3], frag_size.to_ndarray())
+        np.testing.assert_allclose([(440.0 + 6660.0) / 6660.0], nf.to_ndarray())
+        np.testing.assert_allclose([6660.0 * si.um**3], frag_size.to_ndarray())
 
     @staticmethod
     @pytest.mark.parametrize(

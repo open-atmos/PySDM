@@ -6,7 +6,7 @@ import sys
 
 import numba
 
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})

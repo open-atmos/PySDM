@@ -8,9 +8,9 @@ import numba
 import numpy as np
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
 from PySDM.backends.impl_numba.toms748 import toms748_solve
 from PySDM.backends.impl_numba.warnings import warn
+from PySDM.storages.numba import conf
 
 
 class CondensationMethods(BackendMethods):

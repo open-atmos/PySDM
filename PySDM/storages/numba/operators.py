@@ -4,7 +4,7 @@ Numba njit-ted basic arithmetics routines for CPU backend
 import numba
 import numpy as np
 
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})

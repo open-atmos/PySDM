@@ -1,9 +1,9 @@
 """
 GPU implementation of shuffling and sorting backend methods
 """
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust, trtc
 from PySDM.storages.common import backend
+from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS
+from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust, trtc
 
 
 class IndexBackend(backend.IndexBackend):
@@ -76,5 +76,4 @@ class IndexBackend(backend.IndexBackend):
 
         trtc.Sort(idx)
 
-        result = idx.size() - trtc.Count(idx, n_sd)
-        return result
+        return idx.size() - trtc.Count(idx, n_sd)

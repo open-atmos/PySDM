@@ -5,9 +5,9 @@ effective radius of particles within a grid cell (ratio of third to second momen
 import numba
 import numpy as np
 
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.physics import constants as const
 from PySDM.products.impl.moment_product import MomentProduct
+from PySDM.storages.numba.conf import JIT_FLAGS
 
 GEOM_FACTOR = const.PI_4_3 ** (-1 / 3)
 

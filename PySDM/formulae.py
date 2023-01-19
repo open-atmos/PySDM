@@ -16,7 +16,7 @@ import pint
 from numba.core.errors import NumbaExperimentalFeatureWarning
 
 from PySDM import physics
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 class Formulae:  # pylint: disable=too-few-public-methods,too-many-instance-attributes
@@ -118,10 +118,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
     if dimensional_analysis:
         first_param = parameters_keys[0]
-        if first_param in special_params:
-            return partial(func, constants)
-        return func
-
+        return partial(func, constants) if first_param in special_params else func
     source = "class _:\n"
     for line in inspect.getsourcelines(func)[0]:
         source += f"{line}\n"
@@ -170,9 +167,7 @@ def _boost(obj, fastmath, constants, dimensional_analysis):
     formulae = {"__name__": obj.__class__.__name__}
     for item in dir(obj):
         attr = getattr(obj, item)
-        if item.startswith("__") or not callable(attr):
-            pass
-        else:
+        if not item.startswith("__") and callable(attr):
             formula = _formula(
                 attr,
                 constants=constants,

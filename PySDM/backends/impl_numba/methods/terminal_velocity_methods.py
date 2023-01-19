@@ -4,7 +4,7 @@ CPU implementation of backend methods for terminal velocities
 import numba
 
 from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_numba import conf
+from PySDM.storages.numba import conf
 
 
 class TerminalVelocityMethods(BackendMethods):

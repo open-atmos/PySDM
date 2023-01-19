@@ -1,10 +1,9 @@
 """
 GPU implementation of backend methods for particle collisions
 """
-from PySDM.backends.impl_thrust_rtc.conf import NICE_THRUST_FLAGS
-from PySDM.backends.impl_thrust_rtc.nice_thrust import nice_thrust
+from PySDM.storages.thrust_rtc.conf import NICE_THRUST_FLAGS, trtc
+from PySDM.storages.thrust_rtc.nice_thrust import nice_thrust
 
-from ..conf import trtc
 from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 # pylint: disable=too-many-lines

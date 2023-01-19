@@ -13,10 +13,13 @@ CPPYTHON = {
     "void ": "",
     "int64_t *": "",
     "int64_t ": "",
+    "double *": "",
     "double ": "",
+    "float *": "",
     "float ": "",
     "auto ": "",
     "bool ": "",
+    "[1] = {}; // float": "=np.empty(1, dtype=float)",
     "[1] = {}": "=np.empty(1, dtype=np.int64)",
     "[] = {": " = (",
     " {": ":",
@@ -99,11 +102,12 @@ def atomic_min_to_python(cpp: str) -> str:
         .replace("()", "")
         .replace("&", "")
     )
-    return re.sub(
+    cpp = re.sub(
         r"atomicMin\((\w+)\[(\w+)],\s*__float_as_uint\(([^)]*)\)\);",
         r"np.minimum(\1[\2:\2+1], np.asarray(\3), \1[\2:\2+1]);",
         cpp,
     )
+    return cpp
 
 
 def replace_atomic_mins(cpp: str) -> (str, bool):
@@ -182,7 +186,8 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    return f"""
+    result = (
+        f"""
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
@@ -200,7 +205,10 @@ def make(self):
 
     return {name}
 """.replace(
-        "};", ")"
-    ).replace(
-        "}", ""
+            "};", ")"
+        )
+        .replace("} ", "")
+        .replace("}", "")
     )
+
+    return result

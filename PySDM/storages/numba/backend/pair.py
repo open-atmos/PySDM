@@ -4,8 +4,8 @@ CPU implementation of pairwise operations backend methods
 import numba
 import numpy as np
 
-from PySDM.backends.impl_numba import conf
 from PySDM.storages.common import backend
+from PySDM.storages.numba import conf
 
 
 class PairBackend(backend.PairBackend):

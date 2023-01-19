@@ -1,20 +1,22 @@
 """
 The very class exposing `PySDM.particulator.Particulator.run()` method for launching simulations
 """
+from typing import TypeVar
+
 import numpy as np
 
-from PySDM.backends.impl_common.backend_methods import BackendMethods
-from PySDM.backends.impl_common.index import make_Index
-from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
-from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
-from PySDM.backends.impl_common.pairwise_storage import make_PairwiseStorage
 from PySDM.impl.particle_attributes import ParticleAttributes
+from PySDM.storages.common.storage import StoragesHolder
+
+BackendType = TypeVar("BackendType", bound=StoragesHolder)
 
 
-class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance-attributes
-    def __init__(self, n_sd, backend: BackendMethods):
-        assert isinstance(backend, BackendMethods)
+class Particulator(
+    StoragesHolder
+):  # pylint: disable=too-many-public-methods,too-many-instance-attributes
+    def __init__(self, n_sd, backend: BackendType):
         self.__n_sd = n_sd
+        assert hasattr(backend, "formulae")
 
         self.backend = backend
         self.formulae = backend.formulae
@@ -29,14 +31,12 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         self.sorting_scheme = "default"
         self.condensation_solver = None
 
-        self.Index = make_Index(backend)  # pylint: disable=invalid-name
-        self.PairIndicator = make_PairIndicator(backend)  # pylint: disable=invalid-name
-        self.PairwiseStorage = make_PairwiseStorage(  # pylint: disable=invalid-name
-            backend
-        )
-        self.IndexedStorage = make_IndexedStorage(  # pylint: disable=invalid-name
-            backend
-        )
+        self.Storage = backend.Storage
+        self.Random = backend.Random
+        self.Index = backend.Index  # pylint: disable=invalid-name
+        self.PairIndicator = backend.PairIndicator  # pylint: disable=invalid-name
+        self.PairwiseStorage = backend.PairwiseStorage
+        self.IndexedStorage = backend.IndexedStorage
 
         self.timers = {}
         self.null = self.Storage.empty(0, dtype=float)
@@ -55,28 +55,16 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
             observer.notify()
 
     @property
-    def Storage(self):
-        return self.backend.Storage
-
-    @property
-    def Random(self):
-        return self.backend.Random
-
-    @property
     def n_sd(self) -> int:
         return self.__n_sd
 
     @property
     def dt(self) -> float:
-        if self.environment is not None:
-            return self.environment.dt
-        return None
+        return self.environment.dt if self.environment is not None else None
 
     @property
     def mesh(self):
-        if self.environment is not None:
-            return self.environment.mesh
-        return None
+        return self.environment.mesh if self.environment is not None else None
 
     def normalize(self, prob, norm_factor):
         self.backend.normalize(

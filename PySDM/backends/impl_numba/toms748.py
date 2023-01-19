@@ -12,8 +12,8 @@ from sys import float_info
 import numba
 from numpy import nan
 
-from PySDM.backends.impl_numba.conf import JIT_FLAGS
 from PySDM.backends.impl_numba.warnings import warn
+from PySDM.storages.numba.conf import JIT_FLAGS
 
 float_info_epsilon = float_info.epsilon
 float_info_max = float_info.max
@@ -51,9 +51,8 @@ def bracket(f, args, a, b, c, fa, fb):
 
 @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})
 def safe_div(num, denom, r):
-    if abs(denom) < 1:
-        if abs(denom * float_info_max) <= abs(num):
-            return r
+    if abs(denom) < 1 and abs(denom * float_info_max) <= abs(num):
+        return r
     return num / denom
 
 
@@ -61,9 +60,7 @@ def safe_div(num, denom, r):
 def secant_interpolate(a, b, fa, fb):
     tol = float_info_epsilon * 5
     c = a - (fa / (fb - fa)) * (b - a)
-    if c <= a + abs(a) * tol or c >= b - abs(b) * tol:
-        return (a + b) / 2
-    return c
+    return (a + b) / 2 if c <= a + abs(a) * tol or c >= b - abs(b) * tol else c
 
 
 @numba.njit(**{**JIT_FLAGS, **{"parallel": False}})

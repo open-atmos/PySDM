@@ -37,7 +37,6 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
             FakeThrustRTC.DVVector.DVRange = FakeThrustRTC.DVRange
             self.ndarray: np.ndarray = ndarray
             self.size = lambda: len(self.ndarray)
-            self.shape = self.ndarray.shape
             self.range = lambda start, stop: FakeThrustRTC.DVRange(
                 self.ndarray[start:stop]
             )
@@ -170,7 +169,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
     def Count(dvvector, value):  # pylint: disable=invalid-name
         unique, counts = np.unique(dvvector.ndarray, return_counts=True)
         results = dict(zip(unique, counts))
-        return results.get(value.ndarray, 0)
+        if value.ndarray in results:
+            return results[value.ndarray]
+        return 0
 
     @staticmethod
     def Reduce(dvvector, start, operator):  # pylint: disable=invalid-name
