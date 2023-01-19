@@ -856,6 +856,8 @@ class CollisionsMethods(
 
     # pylint: disable=unused-argument
     def make_cell_caretaker(self, idx_shape, idx_dtype, cell_start_len, scheme=None):
+        if not (scheme is None or scheme == "default"):
+            raise NotImplementedError()
         return self._sort_by_cell_id_and_update_cell_start
 
     # pylint: disable=unused-argument

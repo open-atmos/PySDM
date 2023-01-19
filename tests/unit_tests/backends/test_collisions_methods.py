@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pytest
 
+from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -209,8 +210,12 @@ class TestCollisionMethods:
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
 
     @staticmethod
+    @pytest.mark.parametrize(
+        "backend_class, scheme",
+        ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
+    )
     # pylint: disable=redefined-outer-name
-    def test_cell_caretaker(backend_class):
+    def test_cell_caretaker(backend_class, scheme):
         # Arrange
         backend = backend_class()
         idx = [0, 3, 2, 4]
@@ -229,7 +234,7 @@ class TestCollisionMethods:
         cell_idx = make_Index(backend).from_ndarray(np.asarray([0]))
 
         sut = backend.make_cell_caretaker(
-            _idx.shape, _idx.dtype, len(cell_start), scheme="counting_sort"
+            _idx.shape, _idx.dtype, len(cell_start), scheme=scheme
         )
 
         # Act
