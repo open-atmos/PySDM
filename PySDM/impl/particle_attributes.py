@@ -85,7 +85,7 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
     def __contains__(self, key):
         return key in self.__attributes
 
-    def permutation(self, u01, local, merge_shuffle):
+    def permutation(self, u01, local, merge_shuffle=False):
         """apply Fisher-Yates or MergeShuffle algorithm to all super-droplets (local=False) or
         otherwise on a per-cell basis"""
         if local:
