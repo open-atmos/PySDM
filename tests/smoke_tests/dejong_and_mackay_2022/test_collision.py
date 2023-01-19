@@ -28,13 +28,13 @@ def test_collision(backend_class, plot=False):
     for step in settings.output_steps:
         pyplot.step(
             x=x1,
-            y=y1,
+            y=y1[step],
             where="post",
             label=f"NO breakup, t = {step*settings.dt}s",
         )
         pyplot.step(
             x=x2,
-            y=y2,
+            y=y2[step],
             where="post",
             label=f"WITH breakup, t = {step*settings.dt}s",
         )
