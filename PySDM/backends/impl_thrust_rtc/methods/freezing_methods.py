@@ -23,13 +23,20 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 "cell",
                 "a_w_ice",
                 "relative_humidity",
+                "thaw",
+                "temperature",
             ),
             name_iter="i",
             body=f"""
                 if (immersed_surface_area[i] == 0) {{
                     return;
                 }}
-                if ({self.formulae.trivia.unfrozen_and_saturated.c_inline(
+                if (thaw && {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
+                    volume="wet_volume[i]",
+                    temperature="temperature[cell[i]]"
+                )}) {{
+                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                }} else if ({self.formulae.trivia.unfrozen_and_saturated.c_inline(
                         volume="wet_volume[i]",
                         relative_humidity="relative_humidity[cell[i]]"
                     )}) {{
@@ -55,13 +62,19 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 "temperature",
                 "relative_humidity",
                 "cell",
+                "thaw",
             ),
             name_iter="i",
             body=f"""
                 if (freezing_temperature[i] == 0) {{
                     return;
                 }}
-                if (
+                if (thaw && {self.formulae.trivia.frozen_and_above_freezing_point.c_inline(
+                    volume="wet_volume[i]",
+                    temperature="temperature[cell[i]]"
+                )}) {{
+                    wet_volume[i] = -1 * wet_volume[i] * {const.rho_i} / {const.rho_w};
+                }} else if (
                     {self.formulae.trivia.unfrozen_and_saturated.c_inline(
                         volume="wet_volume[i]",
                         relative_humidity="relative_humidity[cell[i]]"
@@ -75,7 +88,9 @@ class FreezingMethods(ThrustRTCBackendMethods):
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
-    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
+    def freeze_singular(
+        self, *, attributes, temperature, relative_humidity, cell, thaw
+    ):
         n_sd = len(attributes.freezing_temperature)
         self.freeze_singular_body.launch_n(
             n=n_sd,
@@ -85,6 +100,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 temperature.data,
                 relative_humidity.data,
                 cell.data,
+                trtc.DVBool(thaw),
             ),
         )
 
@@ -101,6 +117,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
         relative_humidity,
         record_freezing_temperature,
         freezing_temperature,
+        thaw,
     ):
         n_sd = len(attributes.immersed_surface_area)
         self.freeze_time_dependent_body.launch_n(
@@ -113,5 +130,7 @@ class FreezingMethods(ThrustRTCBackendMethods):
                 cell.data,
                 a_w_ice.data,
                 relative_humidity.data,
+                trtc.DVBool(thaw),
+                temperature.data,
             ),
         )
