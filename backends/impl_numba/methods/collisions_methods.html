@@ -840,9 +840,9 @@ class CollisionsMethods(BackendMethods):
         )
 
     @staticmethod
-    def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
+    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;default&#34;):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
-            def __init__(self, idx, cell_start, scheme):
+            def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
                 if scheme == &#34;default&#34;:
                     if conf.JIT_FLAGS[&#34;parallel&#34;]:
                         scheme = &#34;counting_sort_parallel&#34;
@@ -850,12 +850,12 @@ class CollisionsMethods(BackendMethods):
                         scheme = &#34;counting_sort&#34;
                 self.scheme = scheme
                 if scheme in (&#34;counting_sort&#34;, &#34;counting_sort_parallel&#34;):
-                    self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
+                    self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
                 if scheme == &#34;counting_sort_parallel&#34;:
                     self.cell_starts = Storage.empty(
                         (
                             numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                            len(cell_start),
+                            cell_start_len,
                         ),
                         dtype=int,
                     )
@@ -883,7 +883,7 @@ class CollisionsMethods(BackendMethods):
                     )
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
-        return CellCaretaker(idx, cell_start, scheme)
+        return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
@@ -1897,9 +1897,9 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         )
 
     @staticmethod
-    def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
+    def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;default&#34;):
         class CellCaretaker:  # pylint: disable=too-few-public-methods
-            def __init__(self, idx, cell_start, scheme):
+            def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
                 if scheme == &#34;default&#34;:
                     if conf.JIT_FLAGS[&#34;parallel&#34;]:
                         scheme = &#34;counting_sort_parallel&#34;
@@ -1907,12 +1907,12 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
                         scheme = &#34;counting_sort&#34;
                 self.scheme = scheme
                 if scheme in (&#34;counting_sort&#34;, &#34;counting_sort_parallel&#34;):
-                    self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
+                    self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
                 if scheme == &#34;counting_sort_parallel&#34;:
                     self.cell_starts = Storage.empty(
                         (
                             numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                            len(cell_start),
+                            cell_start_len,
                         ),
                         dtype=int,
                     )
@@ -1940,7 +1940,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
                     )
                 idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
-        return CellCaretaker(idx, cell_start, scheme)
+        return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)
 
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
@@ -2057,7 +2057,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.make_cell_caretaker"><code class="name flex">
-<span>def <span class="ident">make_cell_caretaker</span></span>(<span>idx, cell_start, scheme='default')</span>
+<span>def <span class="ident">make_cell_caretaker</span></span>(<span>idx_shape, idx_dtype, cell_start_len, scheme='default')</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -2066,9 +2066,9 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
+def make_cell_caretaker(idx_shape, idx_dtype, cell_start_len, scheme=&#34;default&#34;):
     class CellCaretaker:  # pylint: disable=too-few-public-methods
-        def __init__(self, idx, cell_start, scheme):
+        def __init__(self, idx_shape, idx_dtype, cell_start_len, scheme):
             if scheme == &#34;default&#34;:
                 if conf.JIT_FLAGS[&#34;parallel&#34;]:
                     scheme = &#34;counting_sort_parallel&#34;
@@ -2076,12 +2076,12 @@ def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
                     scheme = &#34;counting_sort&#34;
             self.scheme = scheme
             if scheme in (&#34;counting_sort&#34;, &#34;counting_sort_parallel&#34;):
-                self.tmp_idx = Storage.empty(idx.shape, idx.dtype)
+                self.tmp_idx = Storage.empty(idx_shape, idx_dtype)
             if scheme == &#34;counting_sort_parallel&#34;:
                 self.cell_starts = Storage.empty(
                     (
                         numba.config.NUMBA_NUM_THREADS,  # pylint: disable=no-member
-                        len(cell_start),
+                        cell_start_len,
                     ),
                     dtype=int,
                 )
@@ -2109,7 +2109,7 @@ def make_cell_caretaker(idx, cell_start, scheme=&#34;default&#34;):
                 )
             idx.data, self.tmp_idx.data = self.tmp_idx.data, idx.data
 
-    return CellCaretaker(idx, cell_start, scheme)</code></pre>
+    return CellCaretaker(idx_shape, idx_dtype, cell_start_len, scheme)</code></pre>
 </details>
 </dd>
 <dt id="PySDM.backends.impl_numba.methods.collisions_methods.CollisionsMethods.remove_zero_n_or_flagged"><code class="name flex">

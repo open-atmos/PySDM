@@ -40,11 +40,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 class IndexMethods(ThrustRTCBackendMethods):
 
     __identity_index_body = trtc.For(
-        [&#34;idx&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
-        idx[i] = i;
-    &#34;&#34;&#34;,
+        param_names=(&#34;idx&#34;,),
+        name_iter=&#34;i&#34;,
+        body=&#34;idx[i] = i;&#34;,
     )
 
     @staticmethod
@@ -65,9 +63,9 @@ class IndexMethods(ThrustRTCBackendMethods):
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(
-        [&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
+        param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
         for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
             auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
             auto tmp = idx[k];
@@ -113,11 +111,9 @@ class IndexMethods(ThrustRTCBackendMethods):
 <pre><code class="python">class IndexMethods(ThrustRTCBackendMethods):
 
     __identity_index_body = trtc.For(
-        [&#34;idx&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
-        idx[i] = i;
-    &#34;&#34;&#34;,
+        param_names=(&#34;idx&#34;,),
+        name_iter=&#34;i&#34;,
+        body=&#34;idx[i] = i;&#34;,
     )
 
     @staticmethod
@@ -138,9 +134,9 @@ class IndexMethods(ThrustRTCBackendMethods):
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(
-        [&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;],
-        &#34;i&#34;,
-        &#34;&#34;&#34;
+        param_names=(&#34;cell_start&#34;, &#34;u01&#34;, &#34;idx&#34;),
+        name_iter=&#34;i&#34;,
+        body=&#34;&#34;&#34;
         for (auto k = cell_start[i+1]-1; k &gt; cell_start[i]; k -= 1) {
             auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
             auto tmp = idx[k];

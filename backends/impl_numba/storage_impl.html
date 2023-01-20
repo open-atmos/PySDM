@@ -103,6 +103,7 @@ def subtract(output, subtrahend):
 
 # @numba.njit(void(f8[:]), **conf.JIT_FLAGS)
 def urand(output):
+    # TODO #986: seed
     output.data[:] = np.random.uniform(0, 1, output.shape)</code></pre>
 </details>
 </section>
@@ -296,6 +297,7 @@ def sum_out_of_place(output, a, b):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def urand(output):
+    # TODO #986: seed
     output.data[:] = np.random.uniform(0, 1, output.shape)</code></pre>
 </details>
 </dd>

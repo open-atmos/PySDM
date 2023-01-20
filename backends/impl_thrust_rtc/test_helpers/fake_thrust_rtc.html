@@ -131,7 +131,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
                     n, *(arg.ndarray for arg in args)
                 )
             except (NumbaError, IndexError) as error:
-                warnings.warn(f&#34;NumbaError occurred while JIT-compiling: {self.code}&#34;)
+                warnings.warn(
+                    f&#34;Error occurred while JIT-compiling/executing: {self.code}&#34;
+                )
                 raise error
             return result
 
@@ -364,7 +366,9 @@ class FakeThrustRTC:  # pylint: disable=too-many-public-methods
                     n, *(arg.ndarray for arg in args)
                 )
             except (NumbaError, IndexError) as error:
-                warnings.warn(f&#34;NumbaError occurred while JIT-compiling: {self.code}&#34;)
+                warnings.warn(
+                    f&#34;Error occurred while JIT-compiling/executing: {self.code}&#34;
+                )
                 raise error
             return result
 

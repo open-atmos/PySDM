@@ -62,7 +62,10 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = particulator.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = particulator.backend.make_cell_caretaker(
-            self.__idx, self.__cell_start, scheme=particulator.sorting_scheme
+            self.__idx.shape,
+            self.__idx.dtype,
+            len(self.__cell_start),
+            scheme=particulator.sorting_scheme,
         )
         self.__sorted = False
         self.__attributes = attributes
@@ -182,7 +185,10 @@ class ParticleAttributes:  # pylint: disable=too-many-instance-attributes
         self.cell_idx = particulator.Index.identity_index(len(cell_start) - 1)
         self.__cell_start = particulator.Storage.from_ndarray(cell_start)
         self.__cell_caretaker = particulator.backend.make_cell_caretaker(
-            self.__idx, self.__cell_start, scheme=particulator.sorting_scheme
+            self.__idx.shape,
+            self.__idx.dtype,
+            len(self.__cell_start),
+            scheme=particulator.sorting_scheme,
         )
         self.__sorted = False
         self.__attributes = attributes
