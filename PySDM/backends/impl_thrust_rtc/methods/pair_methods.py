@@ -10,9 +10,9 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 class PairMethods(ThrustRTCBackendMethods):
     __distance_pair_body = trtc.For(
-        ["data_out", "data_in", "is_first_in_pair"],
-        "i",
-        """
+        param_names=("data_out", "data_in", "is_first_in_pair"),
+        name_iter="i",
+        body="""
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = abs(data_in[i] - data_in[i + 1]);
         }
@@ -29,14 +29,17 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __find_pairs_body = trtc.For(
-        ["cell_start", "perm_cell_id", "is_first_in_pair", "length"],
-        "i",
-        """
-        is_first_in_pair[i] = (
-            i < length - 1 && // note: just to set the last element within the same loop
-            perm_cell_id[i] == perm_cell_id[i+1] &&
-            (i - cell_start[perm_cell_id[i]]) % 2 == 0
-        );
+        param_names=("cell_start", "perm_cell_id", "is_first_in_pair", "length"),
+        name_iter="i",
+        body="""
+        if (i < length -1) {
+            auto is_in_same_cell = perm_cell_id[i] == perm_cell_id[i + 1];
+            auto is_even_index = (i - cell_start[perm_cell_id[i]]) % 2 == 0;
+
+            is_first_in_pair[i] = is_in_same_cell && is_even_index;
+        } else {
+            is_first_in_pair[i] = false;
+        }
         """,
     )
 
@@ -47,14 +50,19 @@ class PairMethods(ThrustRTCBackendMethods):
         perm_cell_id = trtc.DVPermutation(cell_id.data, idx.data)
         d_length = trtc.DVInt64(len(idx))
         PairMethods.__find_pairs_body.launch_n(
-            len(idx),
-            [cell_start.data, perm_cell_id, is_first_in_pair.indicator.data, d_length],
+            n=len(idx),
+            args=(
+                cell_start.data,
+                perm_cell_id,
+                is_first_in_pair.indicator.data,
+                d_length,
+            ),
         )
 
     __max_pair_body = trtc.For(
-        ["data_out", "perm_in", "is_first_in_pair"],
-        "i",
-        """
+        param_names=("data_out", "perm_in", "is_first_in_pair"),
+        name_iter="i",
+        body="""
         if (is_first_in_pair[i]) {
             data_out[(int64_t)(i/2)] = max(perm_in[i], perm_in[i + 1]);
         }
@@ -71,9 +79,9 @@ class PairMethods(ThrustRTCBackendMethods):
         )
 
     __sort_pair_body = trtc.For(
-        ["data_out", "data_in", "is_first_in_pair"],
-        "i",
-        """
+        param_names=("data_out", "data_in", "is_first_in_pair"),
+        name_iter="i",
+        body="""
         if (is_first_in_pair[i]) {
             if (data_in[i] < data_in[i + 1]) {
                 data_out[i] = data_in[i + 1];
@@ -98,9 +106,9 @@ class PairMethods(ThrustRTCBackendMethods):
             )
 
     __sort_within_pair_by_attr_body = trtc.For(
-        ["idx", "is_first_in_pair", "attr"],
-        "i",
-        """
+        param_names=("idx", "is_first_in_pair", "attr"),
+        name_iter="i",
+        body="""
         if (is_first_in_pair[i]) {
             if (attr[idx[i]] < attr[idx[i + 1]]) {
                 auto tmp = idx[i];
