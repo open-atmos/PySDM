@@ -1,6 +1,9 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
+from collections import Counter
+
 import numpy as np
 import pytest
+from scipy import stats
 
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
@@ -17,6 +20,16 @@ def make_indexed_storage(backend, iterable, idx=None):
         result = make_IndexedStorage(backend).indexed(idx, index)
     else:
         result = index
+    return result
+
+
+def calculate_permutation_index(permutation, length):
+    result = 0
+    for i in range(length):
+        result = result * (length - i)
+        for j in range(i + 1, length):
+            if permutation[i] > permutation[j]:
+                result += 1
     return result
 
 
@@ -166,7 +179,7 @@ class TestParticleAttributes:
         sut.permutation(u01, local=False)
 
         # Assert
-        expected = np.array([1, 3, 5, 7, 6, 0, 4, 2])
+        expected = np.array([5, 3, 0, 7, 6, 1, 4, 2])
         np.testing.assert_array_equal(sut._ParticleAttributes__idx, expected)
         assert not sut._ParticleAttributes__sorted
 
@@ -280,3 +293,45 @@ class TestParticleAttributes:
         np.testing.assert_array_equal(
             sut._ParticleAttributes__idx.to_ndarray(), expected
         )
+
+    @staticmethod
+    # pylint: disable=redefined-outer-name
+    def test_permutation_global_uniform_distribution(backend_class):
+        if backend_class is ThrustRTC:
+            return  # TODO #328
+
+        n_sd = 4
+        possible_permutations_num = np.math.factorial(n_sd)
+        coverage = 1000
+
+        random_numbers = np.linspace(
+            0.0, 1.0, n_sd * possible_permutations_num * coverage
+        )
+        np.random.seed(1)
+        np.random.shuffle(random_numbers)
+
+        # Arrange
+        particulator = DummyParticulator(CPU, n_sd=n_sd)
+        sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
+        idx_length = len(sut._ParticleAttributes__idx)
+        sut._ParticleAttributes__tmp_idx = make_indexed_storage(
+            particulator.backend, [0] * idx_length
+        )
+        sut._ParticleAttributes__sorted = True
+        sut._ParticleAttributes__n_sd = particulator.n_sd
+
+        # Act
+        permutation_ids = np.zeros((possible_permutations_num * coverage,))
+
+        for i in range(possible_permutations_num * coverage):
+            u01 = make_indexed_storage(
+                particulator.backend, random_numbers[i * n_sd : (i + 1) * n_sd]
+            )
+            sut.permutation(u01, local=False)
+            permutation_ids[i] = calculate_permutation_index(
+                sut._ParticleAttributes__idx, idx_length
+            )
+
+        _, uniformity = stats.chisquare(list(Counter(permutation_ids).values()))
+
+        assert uniformity > 0.9
