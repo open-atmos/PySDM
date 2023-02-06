@@ -102,7 +102,9 @@ class TestParticleAttributes:
         sut.healthy = 0 not in multiplicity
         sut._ParticleAttributes__cell_caretaker = (
             particulator.backend.make_cell_caretaker(
-                sut._ParticleAttributes__idx, sut._ParticleAttributes__cell_start
+                sut._ParticleAttributes__idx.shape,
+                sut._ParticleAttributes__idx.dtype,
+                len(sut._ParticleAttributes__cell_start),
             )
         )
 

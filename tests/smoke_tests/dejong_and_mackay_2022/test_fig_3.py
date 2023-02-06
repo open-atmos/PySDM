@@ -9,6 +9,10 @@ from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc, Straub2010Ec
 from PySDM.physics.constants import si
 
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
+
 R_MIN = 0.1 * si.um
 V_MIN = 4 / 3 * np.pi * R_MIN**3
 EC_VALS = [1.0, 0.95, 0.9, 0.8]
@@ -16,7 +20,8 @@ BINS = 32
 N_SD = 2**10
 
 
-def test_fig_3_reduced_resolution(plot=False):
+# pylint: disable=redefined-outer-name
+def test_fig_3_reduced_resolution(backend_class, plot=False):
     # arrange
     settings = Settings0D(fragmentation=AlwaysN(n=8, vmin=V_MIN), seed=44)
     settings.n_sd = N_SD
@@ -30,18 +35,22 @@ def test_fig_3_reduced_resolution(plot=False):
 
     # act
     lbl = "initial"
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0])
+    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0], backend_class)
 
     for (i, ec_value) in enumerate(EC_VALS):
         settings.coal_eff = ConstEc(Ec=ec_value)
         lbl = "Ec = " + str(ec_value)
         if ec_value == 1.0:
             lbl = "Ec = 1.0"
-        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings)
+        (data_x[lbl], data_y[lbl], _) = run_box_breakup(
+            settings, backend_class=backend_class
+        )
 
     lbl = "Straub 2010"
     settings.coal_eff = Straub2010Ec()
-    (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings)
+    (data_x[lbl], data_y[lbl], _) = run_box_breakup(
+        settings, backend_class=backend_class
+    )
 
     # plot
     lbl = "initial"
@@ -71,8 +80,11 @@ def test_fig_3_reduced_resolution(plot=False):
     pyplot.xlabel("particle radius (um)")
     pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
     pyplot.legend()
+    pyplot.title(backend_class.__name__)
     if plot:
         pyplot.show()
+    else:
+        pyplot.clf()
 
     # assert
     for datum_x in data_x.values():
