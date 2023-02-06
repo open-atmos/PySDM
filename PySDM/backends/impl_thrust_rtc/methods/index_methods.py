@@ -9,7 +9,6 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class IndexMethods(ThrustRTCBackendMethods):
-
     __identity_index_body = trtc.For(
         param_names=("idx",),
         name_iter="i",
@@ -49,7 +48,7 @@ class IndexMethods(ThrustRTCBackendMethods):
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
-        raise Exception("Unpredictable behavior")  # TODO #358
+        raise AssertionError("Unpredictable behavior")  # TODO #358
         IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )

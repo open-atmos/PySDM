@@ -37,7 +37,7 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     lbl = "initial"
     (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings, [0], backend_class)
 
-    for (i, ec_value) in enumerate(EC_VALS):
+    for i, ec_value in enumerate(EC_VALS):
         settings.coal_eff = ConstEc(Ec=ec_value)
         lbl = "Ec = " + str(ec_value)
         if ec_value == 1.0:
@@ -57,7 +57,7 @@ def test_fig_3_reduced_resolution(backend_class, plot=False):
     pyplot.step(
         data_x[lbl], data_y[lbl][0] * settings.rho, color="k", linestyle="--", label=lbl
     )
-    for (i, ec_value) in enumerate(EC_VALS):
+    for i, ec_value in enumerate(EC_VALS):
         lbl = "Ec = " + str(ec_value)
         if ec_value == 1.0:
             lbl = "Ec = 1.0"
