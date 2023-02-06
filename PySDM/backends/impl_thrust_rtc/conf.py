@@ -33,6 +33,7 @@ else:
     # noinspection PyUnresolvedReferences
     rndrtc = None
 
-NICE_THRUST_FLAGS = dict(
-    wait=False, debug_print=False
-)  # TODO #325: move to GPU backend ctor
+NICE_THRUST_FLAGS = {
+    "wait": False,
+    "debug_print": False,
+}  # TODO #325: move to GPU backend ctor

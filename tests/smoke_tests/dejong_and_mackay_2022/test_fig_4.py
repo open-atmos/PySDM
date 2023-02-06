@@ -39,7 +39,7 @@ class TestFig4:
         # act
         lbl = "initial"
         (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
-        for (i, nf_val) in enumerate(nf_vals):
+        for i, nf_val in enumerate(nf_vals):
             settings = Settings0D(
                 fragmentation=AlwaysN(n=nf_val), seed=44, warn_overflows=False
             )
@@ -61,7 +61,7 @@ class TestFig4:
             linestyle="--",
             label="initial",
         )
-        for (i, nf_val) in enumerate(nf_vals):
+        for i, nf_val in enumerate(nf_vals):
             lbl = "n_f = " + str(nf_val)
             pyplot.step(
                 data_x[lbl],
@@ -115,7 +115,7 @@ class TestFig4:
         # act
         lbl = "initial"
         (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
-        for (i, mu_val) in enumerate(mu_vals):
+        for i, mu_val in enumerate(mu_vals):
             settings = Settings0D(
                 fragmentation=Gaussian(mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None),
                 warn_overflows=False,
@@ -138,7 +138,7 @@ class TestFig4:
             linestyle="--",
             label=lbl,
         )
-        for (i, mu_val) in enumerate(mu_vals):
+        for i, mu_val in enumerate(mu_vals):
             lbl = r"$\mu$ = " + str(round(mu_val / x_0, 2)) + "X$_0$"
             pyplot.step(
                 data_x[lbl],

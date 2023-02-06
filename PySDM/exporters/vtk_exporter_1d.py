@@ -16,7 +16,6 @@ class VTKExporter_1d:  # pylint: disable=too-few-public-methods
         path="./sd_attributes/",
         exclude_particle_reservoir=True,
     ):
-
         self.data = data
         self.settings = settings
         self.path = path
