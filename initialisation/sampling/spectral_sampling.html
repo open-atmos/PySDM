@@ -78,7 +78,7 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff &gt; self.error_threshold:
-            raise Exception(
+            raise ValueError(
                 f&#34;{100*diff}% error in total real-droplet number due to sampling&#34;
             )
 
@@ -332,7 +332,7 @@ class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
 
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff &gt; self.error_threshold:
-            raise Exception(
+            raise ValueError(
                 f&#34;{100*diff}% error in total real-droplet number due to sampling&#34;
             )
 

@@ -35,12 +35,12 @@ import warnings
 
 import numba
 
-JIT_FLAGS = dict(
-    parallel=True,
-    fastmath=True,
-    error_model=&#34;numpy&#34;,
-    cache=False,  # https://github.com/numba/numba/issues/2956
-)
+JIT_FLAGS = {
+    &#34;parallel&#34;: True,
+    &#34;fastmath&#34;: True,
+    &#34;error_model&#34;: &#34;numpy&#34;,
+    &#34;cache&#34;: False,  # https://github.com/numba/numba/issues/2956
+}
 
 try:
     numba.parfors.parfor.ensure_parallel_support()

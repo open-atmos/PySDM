@@ -41,13 +41,13 @@ def discretise_multiplicities(values_arg):
             1 - np.sum(values_arg) / np.sum(values_int.astype(float))
         )
         if percent_diff &gt; 1:
-            raise Exception(
+            raise ValueError(
                 f&#34;{percent_diff}% error in total real-droplet number&#34;
                 f&#34; due to casting multiplicities to ints&#34;
             )
 
         if not (values_int &gt; 0).all():
-            raise Exception(
+            raise ValueError(
                 f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})&#34;
             )
 
@@ -78,13 +78,13 @@ def discretise_multiplicities(values_arg):
             1 - np.sum(values_arg) / np.sum(values_int.astype(float))
         )
         if percent_diff &gt; 1:
-            raise Exception(
+            raise ValueError(
                 f&#34;{percent_diff}% error in total real-droplet number&#34;
                 f&#34; due to casting multiplicities to ints&#34;
             )
 
         if not (values_int &gt; 0).all():
-            raise Exception(
+            raise ValueError(
                 f&#34;int-casting resulted in multiplicity of zero (min(y_float)={min(values_arg)})&#34;
             )
 

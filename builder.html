@@ -84,7 +84,7 @@ class Builder:
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
-            raise Exception(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
+            raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
         product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product
@@ -215,7 +215,7 @@ def get_key(dynamic):
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
-            raise Exception(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
+            raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
         product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product
@@ -361,7 +361,7 @@ def get_key(dynamic):
 </summary>
 <pre><code class="python">def register_product(self, product, buffer):
     if product.name in self.particulator.products:
-        raise Exception(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
+        raise ValueError(f&#39;product name &#34;{product.name}&#34; already registered&#39;)
     product.set_buffer(buffer)
     product.register(self)
     self.particulator.products[product.name] = product</code></pre>

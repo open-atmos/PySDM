@@ -151,9 +151,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
             return partial(func, constants)
         return func
 
-    source = &#34;class _:\n&#34;
-    for line in inspect.getsourcelines(func)[0]:
-        source += f&#34;{line}\n&#34;
+    source = &#34;class _:\n&#34; + &#34;\n&#34;.join(inspect.getsourcelines(func)[0])
     loc = {}
     for arg_name in special_params:
         source = source.replace(
