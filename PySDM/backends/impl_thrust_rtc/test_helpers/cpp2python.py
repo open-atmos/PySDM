@@ -11,11 +11,16 @@ JIT_OPTS = "error_model='numpy', fastmath=True"
 CPPYTHON = {
     "int ": "",
     "void ": "",
+    "int64_t *": "",
     "int64_t ": "",
+    "double *": "",
     "double ": "",
+    "float *": "",
     "float ": "",
     "auto ": "",
     "bool ": "",
+    "[1] = {}; // float": "=np.empty(1, dtype=float)",
+    "[1] = {}": "=np.empty(1, dtype=np.int64)",
     "[] = {": " = (",
     " {": ":",
     "}; // array": ")",
@@ -30,11 +35,16 @@ CPPYTHON = {
     "return;": "continue",
     "void*": "",
     "VectorView<int64_t> ": "",
+    "VectorView<float> ": "",
+    "VectorView<double> ": "",
+    "VectorView<bool> ": "",
     "::": "_",
     "(*": "",
     ")(, )": "",
     "else if": "elif",
     "printf": "print",
+    "false": "False",
+    "true": "True",
 }
 
 
@@ -115,6 +125,7 @@ def replace_atomic_mins(cpp: str) -> (str, bool):
 def atomic_add_to_python(cpp: str) -> str:
     cpp = (
         cpp.replace("atomicAdd", "")
+        .replace("\n", "")
         .replace("unsigned long long int*", "")
         .replace("unsigned long long int", "")
         .replace("double*", "")
@@ -175,7 +186,8 @@ def to_numba(name, args, iter_var, body):
 
     body, structs = extract_struct_defs(body)
 
-    result = f"""
+    result = (
+        f"""
 def make(self):
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt
@@ -193,9 +205,10 @@ def make(self):
 
     return {name}
 """.replace(
-        "};", ")"
-    ).replace(
-        "}", ""
+            "};", ")"
+        )
+        .replace("} ", "")
+        .replace("}", "")
     )
 
     return result

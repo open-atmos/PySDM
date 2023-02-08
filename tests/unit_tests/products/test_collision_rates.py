@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.backends import CPU
 from PySDM.dynamics import Breakup, Coalescence, Collision
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
@@ -18,6 +18,10 @@ from PySDM.products import (
     CollisionRateDeficitPerGridbox,
     CollisionRatePerGridbox,
 )
+
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
 
 ENV_ARGS = {"dv": 1 * si.m**3, "dt": 1 * si.s}
 RHO_DRY = 1 * si.kg / si.m**3
@@ -69,7 +73,12 @@ class TestCollisionProducts:
             },
         ],
     )
-    def test_individual_dynamics_rates_nonadaptive(params, backend_class=CPU):
+    # pylint: disable=redefined-outer-name
+    def test_individual_dynamics_rates_nonadaptive(params, backend_class):
+        # TODO #744
+        if backend_class.__name__ == "ThrustRTC" and params["enable_breakup"]:
+            return
+
         # Arrange
         n_init = [5, 2]
         n_sd = len(n_init)
@@ -129,6 +138,7 @@ class TestCollisionProducts:
         "n_init",
         [[5, 2], [1, 2, 3, 4], [3, 7] * 10],
     )
+    # pylint: disable=redefined-outer-name
     def test_no_collision_deficits_when_adaptive(params, n_init, backend_class=CPU):
         # Arrange
         n_sd = len(n_init)
@@ -176,6 +186,7 @@ class TestCollisionProducts:
             },
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_breakup_deficits_when_adaptive(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]
@@ -225,18 +236,18 @@ class TestCollisionProducts:
             },
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_no_breakup_deficits_when_while_loop(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]
         n_sd = len(n_init)
-        builder = Builder(n_sd, backend_class())
+        builder = Builder(n_sd, backend_class(Formulae(handle_all_breakups=True)))
         env = Box(**ENV_ARGS)
         builder.set_environment(env)
 
         dynamic, _ = _get_dynamics_and_products(
             params, adaptive=True, kernel_a=1e4 * si.cm**3 / si.s
         )
-        dynamic.handle_all_breakups = True
         builder.add_dynamic(dynamic)
 
         particulator = builder.build(
@@ -283,6 +294,7 @@ class TestCollisionProducts:
             },
         ],
     )
+    # pylint: disable=redefined-outer-name
     def test_rate_sums_single_cell(params, backend_class=CPU):
         # Arrange
         n_init = [7, 353]

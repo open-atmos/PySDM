@@ -4,6 +4,6 @@ import pytest
 from PySDM.backends import CPU, GPU
 
 
-@pytest.fixture(params=[CPU, GPU])
+@pytest.fixture(params=(CPU, GPU))
 def backend_class(request):
     return request.param

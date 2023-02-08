@@ -13,6 +13,7 @@ from collections import namedtuple
 
 import numpy as np
 
+from PySDM.attributes.physics.multiplicities import Multiplicities
 from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.breakup_fragmentations import AlwaysN
 from PySDM.dynamics.collisions.coalescence_efficiencies import ConstEc
@@ -22,10 +23,15 @@ from PySDM.dynamics.impl.random_generator_optimizer_nopair import (
 )
 from PySDM.physics import si
 
-DEFAULTS = namedtuple("_", ("dt_coal_range", "adaptive", "substeps"))(
+# pylint: disable=too-many-lines
+
+DEFAULTS = namedtuple(
+    "_", ("dt_coal_range", "adaptive", "substeps", "max_multiplicity")
+)(
     dt_coal_range=(0.1 * si.second, 100.0 * si.second),
     adaptive=True,
     substeps=1,
+    max_multiplicity=Multiplicities.MAX_VALUE // int(2e5),
 )
 
 
@@ -44,7 +50,6 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         dt_coal_range=DEFAULTS.dt_coal_range,
         enable_breakup: bool = True,
         warn_overflows: bool = True,
-        handle_all_breakups: bool = False,
     ):
         assert substeps == 1 or adaptive is False
 
@@ -53,7 +58,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.enable = True
         self.enable_breakup = enable_breakup
         self.warn_overflows = warn_overflows
-        self.handle_all_breakups = handle_all_breakups
+        self.max_multiplicity = DEFAULTS.max_multiplicity
 
         self.collision_kernel = collision_kernel
         self.compute_coalescence_efficiency = coalescence_efficiency
@@ -80,7 +85,7 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         self.Ec_temp = None
         self.Eb_temp = None
         self.norm_factor_temp = None
-        self.prob = None
+        self.gamma = None
         self.is_first_in_pair = None
         self.dt_left = None
 
@@ -114,7 +119,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             **empty_args_pairwise
         )
         self.norm_factor_temp = self.particulator.Storage.empty(**empty_args_cellwise)
-        self.prob = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
+
+        self.gamma = self.particulator.PairwiseStorage.empty(**empty_args_pairwise)
+
         self.is_first_in_pair = self.particulator.PairIndicator(self.particulator.n_sd)
         self.dt_left = self.particulator.Storage.empty(**empty_args_cellwise)
 
@@ -172,6 +179,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
                 while self.particulator.attributes.get_working_length() != 0:
                     self.particulator.attributes.cell_idx.sort_by_key(self.dt_left)
                     self.step()
+                    self.particulator.attributes.cut_working_length(
+                        self.particulator.adaptive_sdm_end(self.dt_left)
+                    )
 
                 self.particulator.attributes.reset_working_length()
                 self.particulator.attributes.reset_cell_idx()
@@ -187,7 +197,9 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             self.is_first_in_pair, pairs_rand
         )
 
-        self.compute_probabilities_of_collision(self.prob, self.is_first_in_pair)
+        prob = self.gamma
+        self.compute_probabilities_of_collision(self.is_first_in_pair, out=prob)
+
         if self.enable_breakup:
             proc_rand = self.rnd_opt_proc.get_random_arrays()
             rand_frag = self.rnd_opt_frag.get_random_arrays()
@@ -199,11 +211,13 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         else:
             proc_rand = None
 
-        self.compute_gamma(self.prob, rand, self.is_first_in_pair)
+        self.compute_gamma(
+            prob=prob, rand=rand, is_first_in_pair=self.is_first_in_pair, out=self.gamma
+        )
 
         self.particulator.collision_coalescence_breakup(
             enable_breakup=self.enable_breakup,
-            gamma=self.prob,
+            gamma=self.gamma,
             rand=proc_rand,
             Ec=self.Ec_temp,
             Eb=self.Eb_temp,
@@ -214,13 +228,8 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             breakup_rate_deficit=self.breakup_rate_deficit,
             is_first_in_pair=self.is_first_in_pair,
             warn_overflows=self.warn_overflows,
-            handle_all_breakups=self.handle_all_breakups,
+            max_multiplicity=self.max_multiplicity,
         )
-
-        if self.adaptive:
-            self.particulator.attributes.cut_working_length(
-                self.particulator.adaptive_sdm_end(self.dt_left)
-            )
 
     def toss_candidate_pairs_and_sort_within_pair_by_multiplicity(
         self, is_first_in_pair, u01
@@ -233,24 +242,24 @@ class Collision:  # pylint: disable=too-many-instance-attributes
         )
         self.particulator.sort_within_pair_by_attr(is_first_in_pair, attr_name="n")
 
-    def compute_probabilities_of_collision(self, prob, is_first_in_pair):
+    def compute_probabilities_of_collision(self, is_first_in_pair, out):
         """eq. (20) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)"""
         self.collision_kernel(self.kernel_temp, is_first_in_pair)
-        prob.max(self.particulator.attributes["n"], is_first_in_pair)
-        prob *= self.kernel_temp
-        self.particulator.normalize(prob, self.norm_factor_temp)
+        out.max(self.particulator.attributes["n"], is_first_in_pair)
+        out *= self.kernel_temp
+        self.particulator.normalize(out, self.norm_factor_temp)
 
     def compute_n_fragment(self, n_fragment, u01, is_first_in_pair):
         self.compute_number_of_fragments(n_fragment, u01, is_first_in_pair)
 
-    def compute_gamma(self, prob, rand, is_first_in_pair):
+    def compute_gamma(self, prob, rand, is_first_in_pair, out):
         """see sec. 5.1.3 point (3) in [Shima et al. 2009](https://doi.org/10.1002/qj.441)
         note that in PySDM gamma also serves the purpose of disabling collisions
         for droplets without a pair (i.e. odd number of particles within a grid cell)
         """
         if self.adaptive:
-            self.particulator.backend.adaptive_sdm_gamma(
-                gamma=prob,
+            self.particulator.backend.scale_prob_for_adaptive_sdm_gamma(
+                prob=prob,
                 n=self.particulator.attributes["n"],
                 cell_id=self.particulator.attributes["cell id"],
                 dt_left=self.dt_left,
@@ -266,13 +275,14 @@ class Collision:  # pylint: disable=too-many-instance-attributes
             prob /= self.__substeps
 
         self.particulator.backend.compute_gamma(
-            gamma=prob,
+            prob=prob,
             rand=rand,
             multiplicity=self.particulator.attributes["n"],
             cell_id=self.particulator.attributes["cell id"],
             collision_rate_deficit=self.collision_rate_deficit,
             collision_rate=self.collision_rate,
             is_first_in_pair=is_first_in_pair,
+            out=out,
         )
 
 
@@ -315,6 +325,7 @@ class Breakup(Collision):
         substeps: int = DEFAULTS.substeps,
         adaptive: bool = DEFAULTS.adaptive,
         dt_coal_range=DEFAULTS.dt_coal_range,
+        warn_overflows=True,
     ):
         coalescence_efficiency = ConstEc(Ec=0.0)
         breakup_efficiency = ConstEb(Eb=1.0)
@@ -328,4 +339,5 @@ class Breakup(Collision):
             substeps=substeps,
             adaptive=adaptive,
             dt_coal_range=dt_coal_range,
+            warn_overflows=warn_overflows,
         )

@@ -33,10 +33,9 @@ class PairMethods(BackendMethods):
         *, cell_start, is_first_in_pair, cell_id, cell_idx, idx, length
     ):
         for i in numba.prange(length - 1):  # pylint: disable=not-an-iterable
-            is_first_in_pair[i] = (
-                cell_id[idx[i]] == cell_id[idx[i + 1]]
-                and (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
-            )
+            is_in_same_cell = cell_id[idx[i]] == cell_id[idx[i + 1]]
+            is_even_index = (i - cell_start[cell_idx[cell_id[idx[i]]]]) % 2 == 0
+            is_first_in_pair[i] = is_in_same_cell and is_even_index
         is_first_in_pair[length - 1] = False
 
     @staticmethod

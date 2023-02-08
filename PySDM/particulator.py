@@ -145,7 +145,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         breakup_rate_deficit,
         is_first_in_pair,
         warn_overflows,
-        handle_all_breakups=False,
+        max_multiplicity,
     ):
         # pylint: disable=too-many-locals
         idx = self.attributes._ParticleAttributes__idx
@@ -172,7 +172,7 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
                 is_first_in_pair=is_first_in_pair,
                 warn_overflows=warn_overflows,
                 volume=self.attributes["volume"],
-                handle_all_breakups=handle_all_breakups,
+                max_multiplicity=max_multiplicity,
             )
         else:
             self.backend.collision_coalescence(

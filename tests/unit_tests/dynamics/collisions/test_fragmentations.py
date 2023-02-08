@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from PySDM import Builder
+from PySDM import Builder, Formulae
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
@@ -23,14 +23,14 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "fragmentation_fn",
-        [
+        (
             AlwaysN(n=2),
             ExponFrag(scale=1e6 * si.um**3),
             Feingold1988Frag(scale=1e6 * si.um**3),
             Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             SLAMS(),
             Straub2010Nf(),
-        ],
+        ),
     )
     def test_fragmentation_fn_call(
         fragmentation_fn, backend_class
@@ -38,7 +38,12 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend_class())
+        builder = Builder(
+            volume.size,
+            backend_class(
+                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+            ),
+        )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
@@ -80,7 +85,13 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend_class(double_precision=True))
+        builder = Builder(
+            volume.size,
+            backend_class(
+                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__),
+                double_precision=True,
+            ),
+        )
         sut = fragmentation_fn
         sut.register(builder)
         builder.set_environment(Box(dv=None, dt=None))
@@ -121,7 +132,12 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend_class())
+        builder = Builder(
+            volume.size,
+            backend_class(
+                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+            ),
+        )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
@@ -163,7 +179,12 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         # arrange
         volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
         fragments = np.asarray([-1.0])
-        builder = Builder(volume.size, backend_class())
+        builder = Builder(
+            volume.size,
+            backend_class(
+                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+            ),
+        )
         sut = fragmentation_fn
         sut.vmin = 1 * si.um**3
         sut.register(builder)
