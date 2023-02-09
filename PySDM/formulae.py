@@ -2,6 +2,7 @@
 Logic for enabling common CPU/GPU physics formulae code
 """
 import inspect
+import math
 import numbers
 import re
 import warnings
@@ -131,7 +132,7 @@ def _formula(func, constants, dimensional_analysis, **kw):
 
     extras = func.__extras if hasattr(func, "__extras") else {}
     exec(  # pylint:disable=exec-used
-        source, {"const": constants, "np": np, **extras}, loc
+        source, {"const": constants, "np": np, "math": math, **extras}, loc
     )
 
     n_params = len(parameters_keys) - (1 if parameters_keys[0] in special_params else 0)
