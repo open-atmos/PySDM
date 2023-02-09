@@ -18,6 +18,9 @@ authors:
   - name: Sajjad Azimi
     affiliation: "2"
     orcid: 0000-0002-6329-7775
+  - name: Oleksii Bulenok
+    orcid: 0000-0003-2272-8548
+    affiliation: "3"
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
     affiliation: "3"
@@ -141,18 +144,22 @@ from PySDM import Builder
 from PySDM.backends import CPU
 from PySDM.environments import Box
 from PySDM.physics import si
+from PySDM.formulae import Formulae
 
+TRIVIA = Formulae().trivia
 builder = Builder(backend=CPU(), n_sd=100)
 builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
+frag_scale = TRIVIA.volume(radius=100 * si.micrometres)
 builder.add_dynamic(Collision(
   collision_kernel=Golovin(b=1.5e3 / si.s),
   coalescence_efficiency=ConstEc(Ec=0.9),
   breakup_efficiency=ConstEb(Eb=1.0),
-  fragmentation_function=ExponFrag(scale=100*si.um**3)
+  fragmentation_function=ExponFrag(scale=frag_scale),
+  adaptive=True,
 ))
 ```
 
-In `PySDM-examples`, we introduced a set of notebooks reproducing figures from two forthcoming publications.
+In `PySDM-examples`, we introduced a set of notebooks reproducing figures from two publications.
 In @Bieli_et_al_2022, `PySDM` results from collisional coalescence and breakup 
   were used as a calibration tool for learning microphysical rate parameters.
 In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are described,
@@ -161,9 +168,8 @@ In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are
 
 ## Immersion Freezing
 
-This release of `PySDM` introduces representation of immersion freezing, 
-  i.e. freezing contingent on the presence of insoluble ice nuclei immersed 
-  in supercooled water droplets.
+This release of `PySDM` introduces representation of immersion freezing and melting, 
+  i.e. liquid-solid phase change contingent on the presence of insoluble ice nuclei immersed in supercooled water droplets.
 There are two alternative models implemented: the singular approach presented in 
   @Shima_et_al_2020, and the time-dependent approach of @Alpert_and_Knopf_2016.
 For the time-dependent model, the water Activity Based Immersion Freezing Model (ABIFM)
@@ -229,7 +235,7 @@ The new aerosol initialization framework is used in several examples in `PySDM-e
   simulations against data retrieved from the
   publication as shown in \autoref{fig:ARG}).
 
-![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit). For comparison, we include the parameterization developed in @Abdul_Razzak_and_Ghan_2000 as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](ARG_fig1.pdf){#fig:ARG width="100%"}
+![Activated aerosol fraction in Mode 1 as a function of aerosol number concentration in Mode 2, reproducing results from @Abdul_Razzak_and_Ghan_2000. The figure shows the results from `PySDM` in color with two definitions of activated fraction based on the critical supersaturation threshold (Scrit) or the critical volume threshold (Vcrit). For comparison, we include the parameterization developed in @Abdul_Razzak_and_Ghan_2000 as formulated in their paper (solid line) and as implemented in a new Julia model (`CloudMicrophysics.jl`, dashed line), as well as the results from simulations reported in @Abdul_Razzak_and_Ghan_2000 (black dots).](joss-ARG-fig_1.pdf){#fig:ARG width="100%"}
 
 ## Surface-partitioning of organics to modify surface tension of droplets
 
@@ -260,7 +266,7 @@ In `PySDM` "v2", the `Condensation`, `Collision`, and `Displacement` "dynamics"
 Adaptivity is enabled by default and can be disabled by passing `False` as the value of optional `adaptive`
   keyword to the given dynamic.
 This adaptive time-stepping applies separately in each grid box of a multidimensional environment,
-  and includes a load-balancing logic.
+  and includes a load-balancing logic as described in @Bartman_et_al_2023.
 In the case of collisions, the time-step adaptivity is aimed at eliminating errors
   associated with multiple coalescence events within a timestep.
 In the case of condensation, the time-step adaptivity is aimed at reducing computational
@@ -270,6 +276,15 @@ In the case of condensation, the time-step adaptivity is aimed at reducing compu
 In the case of displacement, the time-step adaptivity is aimed at obeying a given tolerance
   in integration of the super-particle trajectories, and the error measure is constructed
   by comparing implicit- and explicit-Euler solutions.
+
+# Relevant recent open-source developments
+`PySDM` supports a `PyMPDATA`-based [@Bartman_et_al_2022_MP] reimplementation of the 1D kinematically-driven test framework in a recently-published intercomparison of microphysics methods [@Hill_et_al_2023]. 
+The authors are unaware of recent SDM algorithm implementations in open-source packages beyond those mentioned in [@Bartman_et_al_2022_JOSS]
+  and the related list of links in the `PySDM` README file. 
+Furthermore, none of these implementations include superdroplet-count-conserving collisional breakup,
+  organic surface partitioning, immersion freezing/melting, or adaptive time-stepping of coagulation or displacement. 
+The aerosol initialization method described
+  in `PySDM` v2 is similar to that of `pyrcel` [@Rothenberg_and_Wang_2017], but differs in its application to superdroplets rather than a moving-section representation.
 
 # Author contributions
 
@@ -281,7 +296,7 @@ PB led the formulation and worked with SAr on implementation of the adaptive tim
 KD contributed to setting up continuous integration workflows for the GPU backend. 
 ID, CES, and AJ contributed to the aerosol activation examples.
 The immersion freezing representation code was developed by SAr.
-Maintenance of the project have been carried out by SAr, CS, and EdJ.
+Maintenance of the project have been carried out by SAr, CES, and EdJ.
 
 # Acknowledgments
 
