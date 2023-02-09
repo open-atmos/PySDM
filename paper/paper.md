@@ -285,7 +285,7 @@ Furthermore, none of these implementations include superdroplet-count-conserving
   organic surface partitioning or adaptive time-stepping for coagulation. 
 The aerosol initialization method described
   in `PySDM` v2 is similar to that of `pyrcel` [@Rothenberg_and_Wang_2017].
-Leveraging the availability of `PyPartMC` - a new Python interface to the `PartMC` particle-resolved Monte-Carlo aerosol simulation code [@PyPartMC_AMS],
+Leveraging the availability of `PyPartMC` - a new Python interface to the `PartMC` particle-resolved Monte-Carlo aerosol simulation code [@PyPartMC_AMS2023],
   `PySDM` test suite has been extended with automated checks against `PartMC`.
 
 # Author contributions
