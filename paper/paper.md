@@ -146,10 +146,10 @@ from PySDM.environments import Box
 from PySDM.physics import si
 from PySDM.formulae import Formulae
 
-TRIVIA = Formulae().trivia
-builder = Builder(backend=CPU(), n_sd=100)
+formulae = Formulae(fragmentation_function="ExponFrag")
+builder = Builder(backend=CPU(formulae), n_sd=100)
 builder.set_environment(Box(dv=1 * si.m**3, dt=1 * si.s))
-frag_scale = TRIVIA.volume(radius=100 * si.micrometres)
+frag_scale = formulae.trivia.volume(radius=100 * si.micrometres)
 builder.add_dynamic(Collision(
   collision_kernel=Golovin(b=1.5e3 / si.s),
   coalescence_efficiency=ConstEc(Ec=0.9),
@@ -168,7 +168,7 @@ In @DeJong_et_al_2022, the physics of and algorithm for superdroplet breakup are
 
 ## Immersion Freezing
 
-This release of `PySDM` introduces representation of immersion freezing and melting, 
+This release of `PySDM` introduces representation of immersion freezing, 
   i.e. liquid-solid phase change contingent on the presence of insoluble ice nuclei immersed in supercooled water droplets.
 There are two alternative models implemented: the singular approach presented in 
   @Shima_et_al_2020, and the time-dependent approach of @Alpert_and_Knopf_2016.
@@ -282,9 +282,11 @@ In the case of displacement, the time-step adaptivity is aimed at obeying a give
 The authors are unaware of recent SDM algorithm implementations in open-source packages beyond those mentioned in [@Bartman_et_al_2022_JOSS]
   and the related list of links in the `PySDM` README file. 
 Furthermore, none of these implementations include superdroplet-count-conserving collisional breakup,
-  organic surface partitioning, immersion freezing/melting, or adaptive time-stepping of coagulation or displacement. 
+  organic surface partitioning or adaptive time-stepping for coagulation. 
 The aerosol initialization method described
-  in `PySDM` v2 is similar to that of `pyrcel` [@Rothenberg_and_Wang_2017], but differs in its application to superdroplets rather than a moving-section representation.
+  in `PySDM` v2 is similar to that of `pyrcel` [@Rothenberg_and_Wang_2017].
+Leveraging the availability of `PyPartMC` - a new Python interface to the `PartMC` particle-resolved Monte-Carlo aerosol simulation code [@PyPartMC_AMS],
+  `PySDM` test suite has been extended with automated checks against `PartMC`.
 
 # Author contributions
 
@@ -294,6 +296,7 @@ CES contributed the new surface tension models and relevant examples, in consult
 SAz contributed to extensions and enhancement of the one-dimensional kinematic framework environment.
 PB led the formulation and worked with SAr on implementation of the adaptive time-stepping schemes.
 KD contributed to setting up continuous integration workflows for the GPU backend. 
+OB implemented breakup handling within the GPU backend and contributed code refactors and new tests for both CPU and GPU backends.
 ID, CES, and AJ contributed to the aerosol activation examples.
 The immersion freezing representation code was developed by SAr.
 Maintenance of the project have been carried out by SAr, CES, and EdJ.
@@ -306,6 +309,7 @@ Development of ice-phase microphysics representation has been supported through
   grant no. DE-SC0021034 by the Atmospheric System Research Program and 
   Atmospheric Radiation Measurement Program sponsored by the U.S. Department of Energy (DOE).
 EdJ's contributions were made possible by support from the Department of Energy Computational Sciences Graduate Research Fellowship.
+SAr acknowledges support from the Polish National Science Centre (grant no. 2020/39/D/ST10/01220).
 
 # References
 
