@@ -53,7 +53,7 @@ class Builder:
 
     def register_product(self, product, buffer):
         if product.name in self.particulator.products:
-            raise Exception(f'product name "{product.name}" already registered')
+            raise ValueError(f'product name "{product.name}" already registered')
         product.set_buffer(buffer)
         product.register(self)
         self.particulator.products[product.name] = product

@@ -36,7 +36,7 @@ def test_fig_5(backend_class, plot=False):
 
     # plot
     cmap = matplotlib.cm.get_cmap("viridis")
-    for (j, step) in enumerate(steps):
+    for j, step in enumerate(steps):
         if j == 0:
             kwargs = {"color": "k", "linestyle": "--", "label": "initial"}
         else:
@@ -65,7 +65,7 @@ def test_fig_5(backend_class, plot=False):
         540: (717, 0.015),
     }
 
-    for (j, step) in enumerate(steps):
+    for j, step in enumerate(steps):
         print(step)
         peak = np.argmax(data_y[j])
         np.testing.assert_approx_equal(

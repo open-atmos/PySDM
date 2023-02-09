@@ -13,7 +13,6 @@ from PySDM.backends.impl_numba import storage_impl as impl
 
 
 class Storage(StorageBase):
-
     FLOAT = np.float64
     INT = np.int64
     BOOL = np.bool_
