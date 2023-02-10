@@ -96,13 +96,13 @@ def breakup_fun1(
         attributes[a, k] *= multiplicity[k]
         attributes[a, k] += take_from_j * attributes[a, j]
         attributes[a, k] /= new_mult_k
-
-    if multiplicity[j] > take_from_j:
-        nj = multiplicity[j] - take_from_j
-        nk = new_mult_k
-    else:
+        
+    if multiplicity[j] == take_from_j:
         nj = new_mult_k / 2
         nk = nj
+    else:
+        nj = multiplicity[j] - take_from_j
+        nk = new_mult_k
     return nj, nk
 
 
