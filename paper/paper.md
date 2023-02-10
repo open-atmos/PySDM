@@ -32,14 +32,14 @@ authors:
     affiliation: "2"
     orcid: 0000-0003-3194-6440
   - name: J. Ben Mackay
-    affiliation: "2"
+    affiliation: "2,4"
     orcid: 0000-0001-8677-3562
   - name: Ryan X. Ward
     affiliation: "2"
     orcid: 0000-0003-2317-3310
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "4,3"
+    affiliation: "5,3"
 affiliations:
  - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 1
@@ -47,8 +47,10 @@ affiliations:
    index: 2
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 3
- - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
+ - name: Scripps Institution of Oceanography, San Diego, CA, USA
    index: 4
+ - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
+   index: 5 
 bibliography: paper.bib
 
 ---
