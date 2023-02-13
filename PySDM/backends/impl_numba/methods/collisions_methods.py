@@ -110,7 +110,12 @@ def breakup1_update_mult_attributes(
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def breakup2_round_mults_to_ints(
-    j, k, nj, nk, attributes, multiplicity, take_from_j
+    j,
+    k,
+    nj,
+    nk,
+    attributes,
+    multiplicity,
 ):  # pylint: disable=too-many-arguments
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
@@ -159,7 +164,7 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
     # breakup2 also guarantees that no multiplicities are set to 0
-    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity, take_from_j)
+    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
     if overflow_flag and warn_overflows:
         warn("overflow", __file__)
 
@@ -224,9 +229,7 @@ def break_up_while(
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup2_round_mults_to_ints(
-            j, k, nj, nk, attributes, multiplicity, take_from_j
-        )
+        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
