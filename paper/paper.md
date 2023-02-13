@@ -214,16 +214,14 @@ class SimpleAerosol(DryAerosolMixture):
             is_soluble={"(NH4)2SO4": True, "NaCl": True},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
-        self.modes = (
-            {
-                "kappa": self.kappa(
-                  mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
-                "spectrum": spectra.Lognormal(
-                    norm_factor=100 / si.cm**3,
-                    m_mode=50 * si.nm, s_geom=2
-                ),
-            },
-        )
+        self.modes = ({
+            "kappa": self.kappa(
+              mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
+            "spectrum": spectra.Lognormal(
+                norm_factor=100 / si.cm**3,
+                m_mode=50 * si.nm, s_geom=2
+            ),
+        },)
 ```
 An aerosol object (instance of `DryAerosolMixture` subclass) is used during initialization to calculate the total number of 
   superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
