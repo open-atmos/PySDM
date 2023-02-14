@@ -29,11 +29,11 @@ setup(
         "scipy" + ("==1.7.3" if "CI" in os.environ else ""),
         "pyevtk" + ("==1.2.0" if "CI" in os.environ else ""),
     ],
-    author="https://github.com/atmos-cloud-sim-uj/PySDM/graphs/contributors",
+    author="https://github.com/open-atmos/PySDM/graphs/contributors",
     author_email="sylwester.arabas@uj.edu.pl",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
-    url="https://github.com/atmos-cloud-sim-uj/PySDM",
+    url="https://github.com/open-atmos/PySDM",
     license="GPL-3.0",
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -52,8 +52,8 @@ setup(
     " nvrtc, pint, atmospheric-physics",
     packages=find_packages(include=["PySDM", "PySDM.*"]),
     project_urls={
-        "Tracker": "https://github.com/atmos-cloud-sim-uj/PySDM/issues",
-        "Documentation": "https://atmos-cloud-sim-uj.github.io/PySDM",
-        "Source": "https://github.com/atmos-cloud-sim-uj/PySDM",
+        "Tracker": "https://github.com/open-atmos/PySDM/issues",
+        "Documentation": "https://open-atmos.github.io/PySDM",
+        "Source": "https://github.com/open-atmos/PySDM",
     },
 )
