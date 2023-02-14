@@ -6,7 +6,7 @@ ghapi
 pytest
 
 # note: if cloning both PySDM and PySDM examples, consider "pip install -e"
-PySDM-examples @ git+https://github.com/open-atmos/PySDM-examples@151a869#egg=PySDM-examples
+PySDM-examples @ git+https://github.com/open-atmos/PySDM-examples@885b82a#egg=PySDM-examples
 PyMPDATA @ git+https://github.com/open-atmos/PyMPDATA@63f1c11#egg=PyMPDATA
 
 PyPartMC==0.0.24

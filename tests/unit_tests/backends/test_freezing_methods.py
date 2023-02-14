@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
+import pytest
 from matplotlib import pyplot
 
 from PySDM import Builder, Formulae
@@ -22,6 +23,47 @@ class TestFreezingMethods:
     # TODO #599
     def test_no_subsaturated_freezing(self):
         pass
+
+    @staticmethod
+    @pytest.mark.parametrize("singular", (True, False))
+    @pytest.mark.parametrize("thaw", (True, False))
+    @pytest.mark.parametrize("epsilon", (0, 1e-5))
+    # pylint: disable=redefined-outer-name
+    def test_thaw(backend_class, singular, thaw, epsilon):
+        # arrange
+        formulae = Formulae()
+        builder = Builder(n_sd=1, backend=backend_class(formulae=formulae))
+        env = Box(dt=1 * si.s, dv=1 * si.m**3)
+        builder.set_environment(env)
+        builder.add_dynamic(Freezing(singular=singular, thaw=thaw))
+        particulator = builder.build(
+            products=(IceWaterContent(),),
+            attributes={
+                "n": np.ones(builder.particulator.n_sd),
+                "volume": -1 * np.ones(builder.particulator.n_sd) * si.um**3,
+                **(
+                    {"freezing temperature": np.full(builder.particulator.n_sd, -1)}
+                    if singular
+                    else {
+                        "immersed surface area": np.full(builder.particulator.n_sd, -1)
+                    }
+                ),
+            },
+        )
+        env["T"] = formulae.constants.T0 + epsilon
+        env["RH"] = np.nan
+        if not singular:
+            env["a_w_ice"] = np.nan
+        assert particulator.products["ice water content"].get() > 0
+
+        # act
+        particulator.run(steps=1)
+
+        # assert
+        if thaw and epsilon > 0:
+            assert particulator.products["ice water content"].get() == 0
+        else:
+            assert particulator.products["ice water content"].get() > 0
 
     @staticmethod
     # pylint: disable=redefined-outer-name
@@ -121,6 +163,7 @@ class TestFreezingMethods:
             particulator = builder.build(attributes=attributes, products=products)
             env["RH"] = 1.0001
             env["a_w_ice"] = np.nan
+            env["T"] = np.nan
 
             cell_id = 0
             for i in range(int(total_time / case["dt"]) + 1):

@@ -75,3 +75,7 @@ class Trivia:
     @staticmethod
     def unfrozen_and_saturated(_, volume, relative_humidity):
         return volume > 0 and relative_humidity > 1
+
+    @staticmethod
+    def frozen_and_above_freezing_point(const, volume, temperature):
+        return volume < 0 and temperature > const.T0
