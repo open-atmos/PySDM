@@ -38,10 +38,11 @@ from PySDM.physics.heterogeneous_ice_nucleation_rate import Null
 
 
 class Freezing:
-    def __init__(self, *, singular=True, record_freezing_temperature=False):
+    def __init__(self, *, singular=True, record_freezing_temperature=False, thaw=False):
         assert not (record_freezing_temperature and singular)
         self.singular = singular
         self.record_freezing_temperature = record_freezing_temperature
+        self.thaw = thaw
         self.enable = True
         self.rand = None
         self.rng = None
@@ -87,6 +88,7 @@ class Freezing:
                 temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
                 cell=self.particulator.attributes[&#34;cell id&#34;],
+                thaw=self.thaw,
             )
         else:
             self.rand.urand(self.rng)
@@ -101,11 +103,7 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
                 a_w_ice=self.particulator.environment[&#34;a_w_ice&#34;],
-                temperature=(
-                    self.particulator.environment[&#34;T&#34;]
-                    if self.record_freezing_temperature
-                    else None
-                ),
+                temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
                 record_freezing_temperature=self.record_freezing_temperature,
                 freezing_temperature=(
@@ -113,6 +111,7 @@ class Freezing:
                     if self.record_freezing_temperature
                     else None
                 ),
+                thaw=self.thaw,
             )
 
         self.particulator.attributes.mark_updated(&#34;volume&#34;)
@@ -131,7 +130,7 @@ class Freezing:
 <dl>
 <dt id="PySDM.dynamics.freezing.Freezing"><code class="flex name class">
 <span>class <span class="ident">Freezing</span></span>
-<span>(</span><span>*, singular=True, record_freezing_temperature=False)</span>
+<span>(</span><span>*, singular=True, record_freezing_temperature=False, thaw=False)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -140,10 +139,11 @@ class Freezing:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Freezing:
-    def __init__(self, *, singular=True, record_freezing_temperature=False):
+    def __init__(self, *, singular=True, record_freezing_temperature=False, thaw=False):
         assert not (record_freezing_temperature and singular)
         self.singular = singular
         self.record_freezing_temperature = record_freezing_temperature
+        self.thaw = thaw
         self.enable = True
         self.rand = None
         self.rng = None
@@ -189,6 +189,7 @@ class Freezing:
                 temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
                 cell=self.particulator.attributes[&#34;cell id&#34;],
+                thaw=self.thaw,
             )
         else:
             self.rand.urand(self.rng)
@@ -203,11 +204,7 @@ class Freezing:
                 timestep=self.particulator.dt,
                 cell=self.particulator.attributes[&#34;cell id&#34;],
                 a_w_ice=self.particulator.environment[&#34;a_w_ice&#34;],
-                temperature=(
-                    self.particulator.environment[&#34;T&#34;]
-                    if self.record_freezing_temperature
-                    else None
-                ),
+                temperature=self.particulator.environment[&#34;T&#34;],
                 relative_humidity=self.particulator.environment[&#34;RH&#34;],
                 record_freezing_temperature=self.record_freezing_temperature,
                 freezing_temperature=(
@@ -215,6 +212,7 @@ class Freezing:
                     if self.record_freezing_temperature
                     else None
                 ),
+                thaw=self.thaw,
             )
 
         self.particulator.attributes.mark_updated(&#34;volume&#34;)

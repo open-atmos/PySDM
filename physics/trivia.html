@@ -103,7 +103,11 @@ class Trivia:
 
     @staticmethod
     def unfrozen_and_saturated(_, volume, relative_humidity):
-        return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
+        return volume &gt; 0 and relative_humidity &gt; 1
+
+    @staticmethod
+    def frozen_and_above_freezing_point(const, volume, temperature):
+        return volume &lt; 0 and temperature &gt; const.T0</code></pre>
 </details>
 </section>
 <section>
@@ -195,7 +199,11 @@ class Trivia:
 
     @staticmethod
     def unfrozen_and_saturated(_, volume, relative_humidity):
-        return volume &gt; 0 and relative_humidity &gt; 1</code></pre>
+        return volume &gt; 0 and relative_humidity &gt; 1
+
+    @staticmethod
+    def frozen_and_above_freezing_point(const, volume, temperature):
+        return volume &lt; 0 and temperature &gt; const.T0</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -253,6 +261,20 @@ def arrhenius(const, A, Ea, T):
 <pre><code class="python">@staticmethod
 def explicit_euler(y, dt, dy_dt):
     return y + dt * dy_dt</code></pre>
+</details>
+</dd>
+<dt id="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point"><code class="name flex">
+<span>def <span class="ident">frozen_and_above_freezing_point</span></span>(<span>const, volume, temperature)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def frozen_and_above_freezing_point(const, volume, temperature):
+    return volume &lt; 0 and temperature &gt; const.T0</code></pre>
 </details>
 </dd>
 <dt id="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction"><code class="name flex">
@@ -462,6 +484,7 @@ def within_tolerance(error_estimate, value, rtol):
 <li><code><a title="PySDM.physics.trivia.Trivia.area" href="#PySDM.physics.trivia.Trivia.area">area</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.arrhenius" href="#PySDM.physics.trivia.Trivia.arrhenius">arrhenius</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.explicit_euler" href="#PySDM.physics.trivia.Trivia.explicit_euler">explicit_euler</a></code></li>
+<li><code><a title="PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point" href="#PySDM.physics.trivia.Trivia.frozen_and_above_freezing_point">frozen_and_above_freezing_point</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction" href="#PySDM.physics.trivia.Trivia.mixing_ratio_2_mole_fraction">mixing_ratio_2_mole_fraction</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio" href="#PySDM.physics.trivia.Trivia.mole_fraction_2_mixing_ratio">mole_fraction_2_mixing_ratio</a></code></li>
 <li><code><a title="PySDM.physics.trivia.Trivia.pH2H" href="#PySDM.physics.trivia.Trivia.pH2H">pH2H</a></code></li>
