@@ -30,7 +30,7 @@ jobs:
           pre-commit autoupdate
           pre-commit run --all-files
 
-  codecov:
+  nojit_and_codecov:
     runs-on: ubuntu-latest
     env:
       NUMBA_DISABLE_JIT: 1
@@ -106,7 +106,7 @@ jobs:
           prop_path: 'creators'
 
   build:
-    needs: [pylint, pdoc, codecov, precommit, zenodo_json]
+    needs: [pylint, pdoc, nojit_and_codecov, precommit, zenodo_json]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
