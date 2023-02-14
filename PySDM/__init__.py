@@ -11,15 +11,15 @@ PySDM development has been spearheaded at the Faculty of Mathematics and Compute
 [Jagiellonian University in Kraków](https://en.uj.edu.pl/en) (the copyright holder).
 
 For details on PySDM dependencies and installation procedures, see project
-[README.md file](https://github.com/atmos-cloud-sim-uj/PySDM/blob/master/README.md)
+[README.md file](https://github.com/open-atmos/PySDM/blob/master/README.md)
 which also includes basic usage examples in **Python**, **Julia** and **Matlab**.
 
 A set of more elaborate examples engineered in Python and accompanied with Jupyter
 notebooks are maintained in the
-[PySDM-examples package](https://github.com/atmos-cloud-sim-uj/PySDM-examples).
+[PySDM-examples package](https://github.com/open-atmos/PySDM-examples).
 
 PySDM test-suite built using [pytest](https://docs.pytest.org/) is located in the
-[tests package](https://github.com/atmos-cloud-sim-uj/PySDM/tree/master/tests).
+[tests package](https://github.com/open-atmos/PySDM/tree/master/tests).
 """
 
 from pkg_resources import DistributionNotFound, VersionConflict, get_distribution
