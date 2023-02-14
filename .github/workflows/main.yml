@@ -96,8 +96,17 @@ jobs:
         # TODO #682
         pylint --unsafe-load-any-extension=y --disable=fixme,invalid-name,missing-function-docstring,missing-class-docstring,protected-access,duplicate-code $(git ls-files '*.py')
 
+  zenodo_json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: notiz-dev/github-action-json-property@release
+        with: 
+          path: '.zenodo.json'
+          prop_path: 'creators'
+
   build:
-    needs: [pylint, pdoc, codecov, precommit]
+    needs: [pylint, pdoc, codecov, precommit, zenodo_json]
     strategy:
       matrix:
         platform: [ubuntu-latest, macos-12, windows-latest]
