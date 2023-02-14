@@ -600,6 +600,20 @@ The resultant plot (generated with the Matlab code) looks as follows:
 
 ## Contributing, reporting issues, seeking support 
 
+#### Our technologicial stack:   
+[![Python 3](https://img.shields.io/static/v1?label=+&logo=Python&color=darkred&message=Python)](https://www.python.org/)
+[![Numba](https://img.shields.io/static/v1?label=+&logo=Numba&color=orange&message=Numba)](https://numba.pydata.org)
+[![LLVM](https://img.shields.io/static/v1?label=+&logo=LLVM&color=gold&message=LLVM)](https://llvm.org)
+[![CUDA](https://img.shields.io/static/v1?label=+&logo=nVidia&color=darkgreen&message=ThrustRTC/CUDA)](https://pypi.org/project/ThrustRTC/)
+[![NumPy](https://img.shields.io/static/v1?label=+&logo=numpy&color=blue&message=NumPy)](https://numpy.org/)
+[![pytest](https://img.shields.io/static/v1?label=+&logo=pytest&color=purple&message=pytest)](https://pytest.org/)   
+[![Colab](https://img.shields.io/static/v1?label=+&logo=googlecolab&color=darkred&message=Colab)](https://colab.research.google.com/)
+[![Codecov](https://img.shields.io/static/v1?label=+&logo=codecov&color=orange&message=Codecov)](https://codecov.io/)
+[![PyPI](https://img.shields.io/static/v1?label=+&logo=pypi&color=gold&message=PyPI)](https://pypi.org/)
+[![GithubActions](https://img.shields.io/static/v1?label=+&logo=github&color=darkgreen&message=GitHub&nbsp;Actions)](https://github.com/features/actions)
+[![Jupyter](https://img.shields.io/static/v1?label=+&logo=Jupyter&color=blue&message=Jupyter)](https://jupyter.org/)
+[![PyCharm](https://img.shields.io/static/v1?label=+&logo=pycharm&color=purple&message=PyCharm)](https:///)
+
 Submitting new code to the project, please preferably use [GitHub pull requests](https://github.com/open-atmos/PySDM/pulls) 
 (or the [PySDM-examples PR site](https://github.com/open-atmos/PySDM-examples/pulls) if working on examples) - it helps to keep record of code authorship, 
 track and archive the code review workflow and allows to benefit
