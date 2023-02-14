@@ -1,7 +1,7 @@
 """
 Collision kernels including
-[Golovin](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/golovin.html),
-[Geometric](https://atmos-cloud-sim-uj.github.io/PySDM/physics/collisions/kernels/geometric.html)
+[Golovin](https://open-atmos.github.io/PySDM/physics/collisions/kernels/golovin.html),
+[Geometric](https://open-atmos.github.io/PySDM/physics/collisions/kernels/geometric.html)
 and other...
 """
 from .constantK import ConstantK

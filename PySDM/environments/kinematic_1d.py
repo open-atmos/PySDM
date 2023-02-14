@@ -1,6 +1,6 @@
 """
 Single-column time-varying-updraft framework with moisture advection handled by
-[PyMPDATA](http://github.com/atmos-cloud-sim-uj/PyMPDATA/)
+[PyMPDATA](http://github.com/open-atmos/PyMPDATA/)
 """
 
 import numpy as np

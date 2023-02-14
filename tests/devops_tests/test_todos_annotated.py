@@ -47,10 +47,10 @@ def gh_issues():
         "GITHUB_ACTIONS" in os.environ and sys.version_info.minor >= 8
     ):
         try:
-            api = GhApi(owner="atmos-cloud-sim-uj", repo="PySDM")
+            api = GhApi(owner="open-atmos", repo="PySDM")
             pages = paged(
                 api.issues.list_for_repo,
-                owner="atmos-cloud-sim-uj",
+                owner="open-atmos",
                 repo="PySDM",
                 state="all",
                 per_page=100,
