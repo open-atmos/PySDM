@@ -27,7 +27,7 @@ class TestFreezingMethods:
     @staticmethod
     @pytest.mark.parametrize("singular", (True, False))
     @pytest.mark.parametrize("thaw", (True, False))
-    @pytest.mark.parametrize("epsilon", (0, 1e-10))
+    @pytest.mark.parametrize("epsilon", (0, 1e-5))
     # pylint: disable=redefined-outer-name
     def test_thaw(backend_class, singular, thaw, epsilon):
         # arrange
