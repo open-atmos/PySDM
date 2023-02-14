@@ -29,7 +29,6 @@ class Condensation:  # pylint: disable=too-many-instance-attributes
         max_iters: int = 16,
         update_thd: bool = True,
     ):
-
         self.particulator = None
         self.enable = True
 

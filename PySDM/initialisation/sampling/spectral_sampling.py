@@ -47,7 +47,7 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 
         diff = abs(1 - np.sum(y_float) / spectrum.norm_factor)
         if diff > self.error_threshold:
-            raise Exception(
+            raise ValueError(
                 f"{100*diff}% error in total real-droplet number due to sampling"
             )
 

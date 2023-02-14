@@ -23,14 +23,14 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     @staticmethod
     @pytest.mark.parametrize(
         "fragmentation_fn",
-        [
+        (
             AlwaysN(n=2),
             ExponFrag(scale=1e6 * si.um**3),
             Feingold1988Frag(scale=1e6 * si.um**3),
             Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             SLAMS(),
             Straub2010Nf(),
-        ],
+        ),
     )
     def test_fragmentation_fn_call(
         fragmentation_fn, backend_class

@@ -9,13 +9,10 @@ from ..methods.thrust_rtc_backend_methods import ThrustRTCBackendMethods
 
 
 class IndexMethods(ThrustRTCBackendMethods):
-
     __identity_index_body = trtc.For(
-        ["idx"],
-        "i",
-        """
-        idx[i] = i;
-    """,
+        param_names=("idx",),
+        name_iter="i",
+        body="idx[i] = i;",
     )
 
     @staticmethod
@@ -36,9 +33,9 @@ class IndexMethods(ThrustRTCBackendMethods):
         trtc.Sort_By_Key(u01.range(0, length), idx.range(0, length))
 
     __shuffle_local_body = trtc.For(
-        ["cell_start", "u01", "idx"],
-        "i",
-        """
+        param_names=("cell_start", "u01", "idx"),
+        name_iter="i",
+        body="""
         for (auto k = cell_start[i+1]-1; k > cell_start[i]; k -= 1) {
             auto j = cell_start[i] + (int64_t)(u01[k] * (cell_start[i+1] - cell_start[i]) );
             auto tmp = idx[k];
@@ -51,7 +48,7 @@ class IndexMethods(ThrustRTCBackendMethods):
     @staticmethod
     @nice_thrust(**NICE_THRUST_FLAGS)
     def shuffle_local(idx, u01, cell_start):
-        raise Exception("Unpredictable behavior")  # TODO #358
+        raise AssertionError("Unpredictable behavior")  # TODO #358
         IndexMethods.__shuffle_local_body.launch_n(  # pylint: disable=unreachable
             cell_start.size() - 1, [cell_start, u01, idx]
         )

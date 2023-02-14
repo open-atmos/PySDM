@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pytest
 
+from PySDM.backends import CPU, GPU
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
 from PySDM.backends.impl_common.pair_indicator import make_PairIndicator
@@ -21,7 +22,7 @@ class TestCollisionMethods:
     @staticmethod
     @pytest.mark.parametrize(
         "i, idx, is_first_in_pair, gamma, expected",
-        [
+        (
             (0, (0, 1), (True, False), (NONZERO,), (0, 1, False)),
             (0, (1, 0), (True, False), (NONZERO,), (1, 0, False)),
             (0, (0, 1, 2), (False, True, False), (NONZERO,), (1, 2, False)),
@@ -49,7 +50,7 @@ class TestCollisionMethods:
                 (NONZERO, NONZERO, 0, NONZERO),
                 (6, 7, False),
             ),
-        ],
+        ),
     )
     def test_pair_indices(i, idx, is_first_in_pair, gamma, expected):
         # Arrange
@@ -66,10 +67,10 @@ class TestCollisionMethods:
     @staticmethod
     @pytest.mark.parametrize(
         "dt_left, cell_start, expected",
-        [
+        (
             ((4, 5, 4.5, 0, 0), (0, 1, 2, 3, 4, 5), 3),
             ((4, 5, 4.5, 3, 0.1), (0, 1, 2, 3, 4, 5), 5),
-        ],
+        ),
     )
     # pylint: disable=redefined-outer-name
     def test_adaptive_sdm_end(backend_class, dt_left, cell_start, expected):
@@ -207,3 +208,37 @@ class TestCollisionMethods:
                 )
         np.testing.assert_array_almost_equal(_gamma.to_ndarray(), expected_gamma)
         np.testing.assert_array_equal(_n_substep, np.asarray(expected_n_substep))
+
+    @staticmethod
+    @pytest.mark.parametrize(
+        "backend_class, scheme",
+        ((CPU, "counting_sort"), (CPU, "counting_sort_parallel"), (GPU, "default")),
+    )
+    # pylint: disable=redefined-outer-name
+    def test_cell_caretaker(backend_class, scheme):
+        # Arrange
+        backend = backend_class()
+        idx = [0, 3, 2, 4]
+
+        cell_start = backend.Storage.from_ndarray(np.asarray([-1, -1]))
+        _idx = make_Index(backend).from_ndarray(np.asarray(idx, dtype=np.int64))
+
+        multiplicity = make_IndexedStorage(backend).from_ndarray(
+            _idx, np.asarray([1, 1, 1, 1])
+        )
+        _idx.remove_zero_n_or_flagged(multiplicity)
+
+        cell_id = make_IndexedStorage(backend).from_ndarray(
+            _idx, np.asarray([0, 0, 0, 0])
+        )
+        cell_idx = make_Index(backend).from_ndarray(np.asarray([0]))
+
+        sut = backend.make_cell_caretaker(
+            _idx.shape, _idx.dtype, len(cell_start), scheme=scheme
+        )
+
+        # Act
+        sut(cell_id, cell_idx, cell_start, _idx)
+
+        # Assert
+        assert all(cell_start.data[:] == np.array([0, 3]))

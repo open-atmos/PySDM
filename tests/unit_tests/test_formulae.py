@@ -45,15 +45,24 @@ class TestFormulae:
             },
         ),
     )
-    @pytest.mark.parametrize("T", (300.0, np.array([300, 301])))
+    @pytest.mark.parametrize("temp", (300.0, np.array([300, 301])))
     @pytest.mark.parametrize("v_wet", (1e-8**3.0, np.array([1e-8**3, 2e-8**3])))
     @pytest.mark.parametrize("v_dry", (1e-9**3.0, np.array([1e-9**3, 2e-9**3])))
     @pytest.mark.parametrize("f_org", (0.5, np.array([1.0, 0.5])))
-    def test_trickier_formula_vectorised(formulae_init_args, T, v_wet, v_dry, f_org):
+    def test_trickier_formula_vectorised(formulae_init_args, temp, v_wet, v_dry, f_org):
         # arrange
         sut = formulae.Formulae(**formulae_init_args).surface_tension.sigma
 
         # act
-        sut(T, v_wet, v_dry, f_org)
+        actual = sut(temp, v_wet, v_dry, f_org)
 
         # assert
+        expected = np.empty((1 if isinstance(actual, float) else actual.size))
+        for i, _ in enumerate(expected):
+            expected[i] = sut(
+                temp if isinstance(temp, float) else temp[i],
+                v_wet if isinstance(v_wet, float) else v_wet[i],
+                v_dry if isinstance(v_dry, float) else v_dry[i],
+                f_org if isinstance(f_org, float) else f_org[i],
+            )
+        np.testing.assert_array_equal(actual, expected)
