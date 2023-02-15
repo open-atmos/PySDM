@@ -39,7 +39,7 @@ authors:
     orcid: 0000-0003-2317-3310
   - name: Sylwester Arabas
     orcid: 0000-0003-2361-0082
-    affiliation: "5,3"
+    affiliation: "3,5"
 affiliations:
  - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
    index: 1
@@ -72,7 +72,7 @@ Recent efforts have culminated
 
 # Background and Statement of Need
 
-The key motivation behind development of `PySDM` has been to offer the community an approachable
+The key motivation behind development of `PySDM` has been to offer the community an approachable,
   readily reusable software for users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
 To this end, we strive to maintain modularity of the `PySDM` building blocks, separation of
@@ -115,7 +115,7 @@ For an example of running basic zero-dimensional
   simulations with `PySDM`, we refer to the project `README.md` file and @Bartman_et_al_2022_JOSS.
 The key building blocks of the `PySDM` API and class hierarchy are: "attributes", "backends", "dynamics",
   "environments", "products" and physics "formulae".
-The following code snippets demonstrate new elements of `PySDM` API which
+The following code snippets demonstrate new elements of `PySDM` API, which
   can be added or substituted into the "v1" API description to run 
   simulations using the new features.
 Execution of code snippets from both the present "v2" and the previous "v1" papers
