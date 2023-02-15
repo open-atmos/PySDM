@@ -1,10 +1,10 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
-from collections import Counter
-
 import numpy as np
 import pytest
+from matplotlib import pyplot
 from scipy import stats
 
+from PySDM import Formulae
 from PySDM.backends import CPU, GPU, ThrustRTC
 from PySDM.backends.impl_common.index import make_Index
 from PySDM.backends.impl_common.indexed_storage import make_IndexedStorage
@@ -301,11 +301,11 @@ class TestParticleAttributes:
         )
 
     @staticmethod
+    @pytest.mark.parametrize("seed", (1, 2, 3))
     # pylint: disable=redefined-outer-name
-    def test_permutation_global_uniform_distribution(backend_class):
-        if backend_class is ThrustRTC:
-            return  # TODO #328
-
+    def test_permutation_global_uniform_distribution(
+        seed, backend_class=CPU, plot=False
+    ):
         n_sd = 4
         possible_permutations_num = np.math.factorial(n_sd)
         coverage = 1000
@@ -313,11 +313,12 @@ class TestParticleAttributes:
         random_numbers = np.linspace(
             0.0, 1.0, n_sd * possible_permutations_num * coverage
         )
-        np.random.seed(1)
+        np.random.seed(seed)
         np.random.shuffle(random_numbers)
 
         # Arrange
-        particulator = DummyParticulator(CPU, n_sd=n_sd)
+        particulator = DummyParticulator(CPU, n_sd=n_sd, formulae=Formulae(seed=seed))
+
         sut = ParticleAttributesFactory.empty_particles(particulator, n_sd)
         idx_length = len(sut._ParticleAttributes__idx)
         sut._ParticleAttributes__tmp_idx = make_indexed_storage(
@@ -338,6 +339,25 @@ class TestParticleAttributes:
                 sut._ParticleAttributes__idx, idx_length
             )
 
-        _, uniformity = stats.chisquare(list(Counter(permutation_ids).values()))
+        # Plot
+        counts, _ = np.histogram(permutation_ids, bins=possible_permutations_num)
+        _, uniformity = stats.chisquare(counts)
 
+        avg = np.mean(counts)
+        std = np.std(counts)
+
+        pyplot.plot(counts, marker=".")
+        pyplot.xlabel("permutation id")
+        pyplot.ylabel("occurrence count")
+        pyplot.xlim(0, possible_permutations_num)
+        pyplot.axhline(coverage, color="black", label="coverage")
+        pyplot.axhline(avg, color="green", label="mean +/- std")
+        for offset in (-std, +std):
+            pyplot.axhline(avg + offset, color="green", linestyle="--")
+        pyplot.legend()
+        if plot:
+            pyplot.show()
+
+        # Assert
+        assert abs(avg - coverage) / coverage < 1e-6
         assert uniformity > 0.9
