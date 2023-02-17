@@ -51,11 +51,12 @@ class Storage(StorageBase):
         return result
 
     def __setitem__(self, key, value):
-        if hasattr(value, "data"):
-            self.data[key] = value.data
-        else:
-            self.data[key] = value
-        return self
+        raise TypeError("Use to_ndarray() explicitly")
+        # if hasattr(value, "data"):
+        #     self.data[key] = value.data
+        # else:
+        #     self.data[key] = value
+        # return self
 
     def __iadd__(self, other):
         if isinstance(other, Storage):
@@ -187,3 +188,9 @@ class Storage(StorageBase):
 
     def upload(self, data):
         np.copyto(self.data, data, casting="safe")
+
+    def fill(self, other):
+        if isinstance(other, Storage):
+            self.data[:] = other.data
+        else:
+            self.data[:] = other
