@@ -25,6 +25,7 @@ authors:
     orcid: 0000-0003-0265-6428
     affiliation: "3"
   - name: Kacper Derlatka
+    orcid: 0000-0003-3137-1288
     affiliation: "3"
   - name: Isabella Dula
     affiliation: "2"
