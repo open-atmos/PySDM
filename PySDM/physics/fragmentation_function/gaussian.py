@@ -1,7 +1,6 @@
 """
 Gaussian PDF
 CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
 """
 import math
 
