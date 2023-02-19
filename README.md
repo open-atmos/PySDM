@@ -20,10 +20,6 @@
 [![Github Actions Build Status](https://github.com/open-atmos/PySDM/workflows/main/badge.svg?branch=main)](https://github.com/open-atmos/PySDM/actions)
 [![Appveyor Build status](http://ci.appveyor.com/api/projects/status/github/open-atmos/PySDM?branch=main&svg=true)](https://ci.appveyor.com/project/slayoo/pysdm/branch/main)
 [![Coverage Status](https://codecov.io/gh/open-atmos/PySDM/branch/main/graph/badge.svg)](https://codecov.io/github/open-atmos/PySDM?branch=main)    
-[![GitHub issues](https://img.shields.io/github/issues-pr/open-atmos/PySDM.svg?logo=github&logoColor=white)](https://github.com/open-atmos/PySDM/pulls?q=)
-[![GitHub issues](https://img.shields.io/github/issues-pr-closed/open-atmos/PySDM.svg?logo=github&logoColor=white)](https://github.com/open-atmos/PySDM/pulls?q=is:closed)    
-[![GitHub issues](https://img.shields.io/github/issues/open-atmos/PySDM.svg?logo=github&logoColor=white)](https://github.com/open-atmos/PySDM/issues?q=)
-[![GitHub issues](https://img.shields.io/github/issues-closed/open-atmos/PySDM.svg?logo=github&logoColor=white)](https://github.com/open-atmos/PySDM/issues?q=is:closed)   
 [![PyPI version](https://badge.fury.io/py/PySDM.svg)](https://pypi.org/project/PySDM)
 [![API docs](https://img.shields.io/badge/API_docs-pdoc3-blue.svg)](https://open-atmos.github.io/PySDM/)
 
