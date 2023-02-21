@@ -250,6 +250,25 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     Nr4[i] = 1.0
     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    Rf,
+    Nr2,
+    Nr3,
+    Nr4,
+    Nrt,
+    CKE,
+    CW,
+    gam,
+):  # pylint: disable=too-many-branches`
+    if CKE >= 89.3:
+        Rf[i] = 1.11e-4 * CKE[i]**(-0.654)
+    else:
+        Rf[i] = 1.0
+
+    
+
 
 class CollisionsMethods(BackendMethods):
     def __init__(self):
@@ -336,6 +355,41 @@ class CollisionsMethods(BackendMethods):
                     len(frag_size)
                 ):
                     straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
+                    if rand[i] < Nr1[i] / Nrt[i]:
+                        frag_size[i] = straub_p1(
+                            rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
+                        )
+                    elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
+                        frag_size[i] = straub_p2(
+                            CW[i], (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
+                        )
+                    elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
+                        frag_size[i] = straub_p3(
+                            CW[i],
+                            ds[i],
+                            (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]),
+                        )
+                    else:
+                        frag_size[i] = straub_p4(
+                            CW[i], ds[i], v_max[i], Nr1[i], Nr2[i], Nr3[i]
+                        )
+
+            self.__straub_fragmentation_body = __straub_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
+            straub_p1 = self.formulae.fragmentation_function.p1
+            straub_p2 = self.formulae.fragmentation_function.p2
+            straub_p3 = self.formulae.fragmentation_function.p3
+            straub_p4 = self.formulae.fragmentation_function.p4
+            straub_sigma1 = self.formulae.fragmentation_function.sigma1
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __ll82_fragmentation_body(
+                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    ll82_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
                     if rand[i] < Nr1[i] / Nrt[i]:
                         frag_size[i] = straub_p1(
                             rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
@@ -729,6 +783,48 @@ class CollisionsMethods(BackendMethods):
         Nrt,
     ):
         self.__straub_fragmentation_body(
+            CW=CW.data,
+            gam=gam.data,
+            ds=ds.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            rand=rand.data,
+            Nr1=Nr1.data,
+            Nr2=Nr2.data,
+            Nr3=Nr3.data,
+            Nr4=Nr4.data,
+            Nrt=Nrt.data,
+        )
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            vmin=vmin,
+            nfmax=nfmax,
+        )
+
+    def ll82_fragmentation(
+        # pylint: disable=too-many-arguments,too-many-locals
+        self,
+        *,
+        n_fragment,
+        CW,
+        gam,
+        ds,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        Nr1,
+        Nr2,
+        Nr3,
+        Nr4,
+        Nrt,
+    ):
+        self.__ll82_fragmentation_body(
             CW=CW.data,
             gam=gam.data,
             ds=ds.data,
