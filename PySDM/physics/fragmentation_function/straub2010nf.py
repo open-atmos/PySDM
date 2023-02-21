@@ -27,7 +27,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
                 - sigma1
                 / const.sqrt_two
                 / const.sqrt_pi
-                / np.log(2)
+                / const.LN_2
                 * np.log((0.5 + rand) / (1.5 - rand))
             )
             ** 3
@@ -43,7 +43,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
                 - ((0.007 * (CW - 21.0)) ** 2 / 12)
                 / const.sqrt_two
                 / const.sqrt_pi
-                / np.log(2)
+                / const.LN_2
                 * np.log((0.5 + rand) / (1.5 - rand))
             )
             ** 3
@@ -59,7 +59,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
                 - ((0.01 * (0.76 * CW**0.5 + 1.0)) ** 2 / 12)
                 / const.sqrt_two
                 / const.sqrt_pi
-                / np.log(2)
+                / const.LN_2
                 * np.log((0.5 + rand) / (1.5 - rand))
             )
             ** 3
