@@ -11,7 +11,7 @@ class LowList1982Nf:
         self.vmin = vmin
         self.nfmax = nfmax
         self.arrays = {}
-        self.straub_tmp = {}
+        self.ll82_tmp = {}
         self.max_size = None
         self.sum_of_volumes = None
         self.const = None
@@ -28,12 +28,12 @@ class LowList1982Nf:
         builder.request_attribute("radius")
         builder.request_attribute("volume")
         builder.request_attribute("terminal velocity")
-        for key in ("Sc", "tmp", "tmp2", "CKE", "We", "W2", "gam", "CW", "ds"):
+        for key in ("Sc", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
-        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
-            self.straub_tmp[key] = self.particulator.PairwiseStorage.empty(
+        for key in ("Rf", "Rs", "Rd"):
+            self.ll82_tmp[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
 
@@ -44,28 +44,26 @@ class LowList1982Nf:
         )
         self.arrays["ds"].min(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["ds"] *= 2
+        self.arrays["dl"].max(self.particulator.attributes["radius"], is_first_in_pair)
+        self.arrays["dl"] *= 2
+        self.arrays["dcoal"].sum(self.particulator.attributes["volume"], is_first_in_pair)
+        self.arrays["dcoal"] /= (self.const.PI / 6)
+        self.arrays["dcoal"] **= (1/3)
 
-        # compute the dimensionless numbers and CW=CKE * We
-        self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["Sc"][:] = self.arrays["tmp"][:]  # TODO #976
+        # compute the surface energy, CKE, & dimensionless numbers
+        self.arrays["Sc"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
-
-        self.arrays["W2"].max(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["tmp2"].min(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["W2"] **= 2/3
-        self.arrays["tmp2"] ** 2/3
-        self.arrays["W2"] *= (
-            self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
-        )
-        self.arrays["tmp2"] *= (
-            self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
-        )
-        self.arrays["W2"] += self.arrays["tmp2"]
-        self.arrays["W2"] **= (-1)
-
+        self.arrays["St"].min(self.particulator.attributes["radius"], is_first_in_pair)
+        self.arrays["St"] *= 2
+        self.arrays["St"] **= 2
+        self.arrays["tmp"].max(self.particulator.attributes["radius"], is_first_in_pair)
+        self.arrays["tmp"] *= 2
+        self.arrays["tmp"] **= 2
+        self.arrays["St"] += self.arrays["tmp"]
+        self.arrays["St"] *= (self.const.PI * self.const.sgm_w)
 
         self.arrays["tmp"] *= 2
         self.arrays["tmp2"].distance(
@@ -80,34 +78,29 @@ class LowList1982Nf:
         self.arrays["CKE"] *= self.const.rho_w
 
         self.arrays["We"][:] = self.arrays["CKE"][:]  # TODO #976
+        self.arrays["W2"][:] = self.arrays["CKE"][:]
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
-        self.arrays["W2"].multiply(self.arrays["CKE"])
+        self.arrays["W2"].divide_if_not_zero(self.arrays["St"])
 
-        self.arrays["CW"][:] = self.arrays["We"][:]  # TODO #976
-        self.arrays["CW"] *= self.arrays["CKE"]
-        self.arrays["CW"] /= si.joule * 1e-6  # convert to µJ
-
-        self.arrays["gam"].max(self.particulator.attributes["radius"], is_first_in_pair)
-        self.arrays["tmp"].min(self.particulator.attributes["radius"], is_first_in_pair)
-        self.arrays["gam"].divide_if_not_zero(self.arrays["tmp"])
-
-        for key in ("Nr1", "Nr2", "Nr3", "Nr4", "Nrt"):
-            self.straub_tmp[key] *= 0.0
+        for key in ("Rf","Rs","Rd"):
+            self.ll82_tmp[key] *= 0.0
 
         self.particulator.backend.ll82_fragmentation(
             n_fragment=nf,
-            CW=self.arrays["CW"],
-            gam=self.arrays["gam"],
+            CKE=self.arrays["CKE"],
+            W=self.arrays["We"],
+            W2=self.arrays["W2"],
+            St=self.arrays["St"],
             ds=self.arrays["ds"],
+            dl=self.arrays["dl"],
+            dcoal=self.arrays["dcoal"],
             frag_size=frag_size,
             v_max=self.max_size,
             x_plus_y=self.sum_of_volumes,
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
-            Nr1=self.straub_tmp["Nr1"],
-            Nr2=self.straub_tmp["Nr2"],
-            Nr3=self.straub_tmp["Nr3"],
-            Nr4=self.straub_tmp["Nr4"],
-            Nrt=self.straub_tmp["Nrt"],
+            Rf=self.straub_tmp["Rf"],
+            Rs=self.straub_tmp["Rs"],
+            Rd=self.straub_tmp["Rd"],
         )

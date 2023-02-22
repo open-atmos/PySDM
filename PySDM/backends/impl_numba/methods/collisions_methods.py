@@ -254,20 +254,24 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
 def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     i,
     Rf,
-    Nr2,
-    Nr3,
-    Nr4,
-    Nrt,
+    Rs,
+    Rd,
     CKE,
-    CW,
-    gam,
+    W,
+    W2,
 ):  # pylint: disable=too-many-branches`
-    if CKE >= 89.3:
+    if CKE[i] >= 89.3:
         Rf[i] = 1.11e-4 * CKE[i]**(-0.654)
     else:
         Rf[i] = 1.0
-
-    
+    if W[i] >= 0.86:
+        Rs[i] = 0.685 * (1 - np.exp(-1.63 * (W2[i] - 0.86)))
+    else:
+        Rs[i] = 0.0
+    if (Rs[i] + Rf[i]) > 1.0:
+        Rd[i] = 0.0
+    else:
+        Rd[i] = 1.0 - Rs[i] - Rf[i]
 
 
 class CollisionsMethods(BackendMethods):
@@ -376,40 +380,25 @@ class CollisionsMethods(BackendMethods):
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
-            straub_p1 = self.formulae.fragmentation_function.p1
-            straub_p2 = self.formulae.fragmentation_function.p2
-            straub_p3 = self.formulae.fragmentation_function.p3
-            straub_p4 = self.formulae.fragmentation_function.p4
-            straub_sigma1 = self.formulae.fragmentation_function.sigma1
-
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
-                *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
+                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd
             ):
+                ll82_pf = self.formulae.fragmentation_function.pf
+                ll82_ps = self.formulae.fragmentation_function.ps
+                ll82_pd = self.formulae.fragmentation_function.pd
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
-                    ll82_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
-                    if rand[i] < Nr1[i] / Nrt[i]:
-                        frag_size[i] = straub_p1(
-                            rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
-                        )
-                    elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                        frag_size[i] = straub_p2(
-                            CW[i], (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
-                        )
-                    elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                        frag_size[i] = straub_p3(
-                            CW[i],
-                            ds[i],
-                            (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]),
-                        )
-                    else:
-                        frag_size[i] = straub_p4(
-                            CW[i], ds[i], v_max[i], Nr1[i], Nr2[i], Nr3[i]
-                        )
+                    ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
+                    if rand[i] < Rf[i]: # filament breakup
+                        frag_size[i] = ll82_pf(rand[i]/Rf[i], ds[i], dl[i], dcoal[i])
+                    elif rand[i] < Rf[i] + Rs[i]: # sheet breakup
+                        frag_size[i] = ll82_ps((rand[i] - Rf[i]) / Rs[i], ds[i], dl[i], dcoal[i], St[i])
+                    else: # disk breakup
+                        frag_size[i] = ll82_pd((rand[i] - Rf[i] - Rs[i]) / Rd[i], ds[i], dl[i], dcoal[i], CKE[i], W1[i])
 
-            self.__straub_fragmentation_body = __straub_fragmentation_body
+            self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
             gaussian_frag_size = self.formulae.fragmentation_function.frag_size
 
@@ -809,33 +798,36 @@ class CollisionsMethods(BackendMethods):
         self,
         *,
         n_fragment,
-        CW,
-        gam,
+        CKE,
+        W,
+        W2,
+        St,
         ds,
+        dl,
+        dcoal,
         frag_size,
         v_max,
         x_plus_y,
         rand,
         vmin,
         nfmax,
-        Nr1,
-        Nr2,
-        Nr3,
-        Nr4,
-        Nrt,
+        Rf,
+        Rs,
+        Rd,
     ):
         self.__ll82_fragmentation_body(
-            CW=CW.data,
-            gam=gam.data,
+            CKE=CKE.data,
+            W=W.data,
+            W2=W2.data,
+            St=St.data,
             ds=ds.data,
+            dl=dl.data,
+            dcoal=dcoal.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             rand=rand.data,
-            Nr1=Nr1.data,
-            Nr2=Nr2.data,
-            Nr3=Nr3.data,
-            Nr4=Nr4.data,
-            Nrt=Nrt.data,
+            Rf=Rf.data,
+            Rs=Rs.data,
+            Rd=Rd.data,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
