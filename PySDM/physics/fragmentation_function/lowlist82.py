@@ -5,6 +5,8 @@ Formulae supporting `PySDM.dynamics.collisions.breakup_fragmentations.lowlist82`
 
 import numpy as np
 import math
+import scipy.special as sps
+from scipy.interpolate import interp1d
 from PySDM.physics.constants import si
 
 
@@ -134,17 +136,85 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         (H1, mu1, sigma1) = LowList1982Nf.params_f1(dl, dcoal)
         (H2, mu2, sigma2) = LowList1982Nf.params_f2(ds)
         (H3, mu3, sigma3) = LowList1982Nf.params_f3(ds, dl)
+        grid = default_interp_grid()
+        percentiles = [gaussian_inv_cdf(grid, mu1, sigma1), 
+                    gaussian_inv_cdf(grid, mu2, sigma2),
+                    lognormal_inv_cdf(grid, mu3, sigma3)
+        ]
+        cdf_arg = np.zeros(len(grid) * 3 + 1)
+        cdf_arg[1:] = np.concatenate(percentiles)
+        cdf = (
+            H1 * gaussian_cdf(cdf_arg, mu1, sigma1) +  
+            H2 * gaussian_cdf(cdf_arg, mu2, sigma2) +
+            H3 * lognormal_cdf(cdf_arg, mu3, sigma3)
+        ) / (H1 + H2 + H3)
+        inverse_cdf = interp1d(cdf, cdf_arg)
+        
+        return inverse_cdf(rand)
+
 
     @staticmethod
     def ps(rand, ds, dl, dcoal, St):
         (H1, mu1, sigma1) = LowList1982Nf.params_s1(dl, ds, dcoal)
         (H2, mu2, sigma2) = LowList1982Nf.params_s2(dl, ds, St)
+        grid = default_interp_grid()
+        percentiles = [gaussian_inv_cdf(grid, mu1, sigma1), 
+                    lognormal_inv_cdf(grid, mu2, sigma2)
+        ]
+        cdf_arg = np.zeros(len(grid) * 2 + 1)
+        cdf_arg[1:] = np.concatenate(percentiles)
+        cdf = (
+            H1 * gaussian_cdf(cdf_arg, mu1, sigma1) +  
+            H2 * lognormal_cdf(cdf_arg, mu2, sigma2)
+        ) / (H1 + H2)
+        inverse_cdf = interp1d(cdf, cdf_arg)
+        
+        return inverse_cdf(rand)
 
     @staticmethod
     def pd(rand, ds, dl, dcoal, CKE, W1):
         (H1, mu1, sigma1) = LowList1982Nf.params_d1(W1, dl, CKE, dcoal)
         (H2, mu2, sigma2) = LowList1982Nf.params_d2(ds, dl, CKE)
 
+        grid = default_interp_grid()
+        percentiles = [gaussian_inv_cdf(grid, mu1, sigma1), 
+                    lognormal_inv_cdf(grid, mu2, sigma2)
+        ]
+        cdf_arg = np.zeros(len(grid) * 2 + 1)
+        cdf_arg[1:] = np.concatenate(percentiles)
+        cdf = (
+            H1 * gaussian_cdf(cdf_arg, mu1, sigma1) +  
+            H2 * lognormal_cdf(cdf_arg, mu2, sigma2)
+        ) / (H1 + H2)
+        inverse_cdf = interp1d(cdf, cdf_arg)
+        
+        return inverse_cdf(rand)
+
+@staticmethod
+def default_interp_grid(diam_basis=True):
+    if diam_basis == True:
+        dmin = 1 * si.um
+        dmax = 5 * si.cm
+        return np.logspace(np.log(dmin), np.log(dmax), 100)
+    else:
+        pass
+
+@staticmethod
+def gaussian_cdf(arg, mu, sigma):
+    return (0.5 * (1 + math.erf((arg - mu)/np.sqrt(2)/sigma)))
+
+@staticmethod
+def lognormal_cdf(arg, mu, sigma):
+    return (0.5 * (1 + math.erf((np.log(arg) - mu)/np.sqrt(2)/sigma)))
+
+@staticmethod
+def gaussian_inv_cdf(X, mu, sigma):
+    return (mu + np.sqrt(2) * sigma * sps.erfinv(2*X - 1))
+
+@staticmethod
+def lognormal_inv_cdf(X, mu, sigma):
+    lnarg = LowList1982Nf.gaussian_cdf(X, mu, sigma)
+    return np.exp(lnarg)
 
 
     # @staticmethod
