@@ -9,9 +9,14 @@ from PySDM.backends.impl_numba import conf
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def draw_random_int(start: int, end: int, u01: float):
+    return min(int(start + u01 * (end - start + 1)), end)
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def fisher_yates_shuffle(idx, u01, start, end, random_offset=0):
     for i in range(end - 1, start, -1):
-        j = int(start + u01[random_offset + i] * (i - start) + 0.5)
+        j = draw_random_int(start=start, end=i, u01=u01[random_offset + i])
         idx[i], idx[j] = idx[j], idx[i]
 
 
