@@ -9,4 +9,4 @@ pytest
 PySDM-examples @ git+https://github.com/open-atmos/PySDM-examples@9142101#egg=PySDM-examples
 PyMPDATA @ git+https://github.com/open-atmos/PyMPDATA@63f1c11#egg=PyMPDATA
 
-PyPartMC==0.0.24
+PyPartMC==0.0.25
