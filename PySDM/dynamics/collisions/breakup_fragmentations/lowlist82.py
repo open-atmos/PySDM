@@ -28,7 +28,7 @@ class LowList1982Nf:
         builder.request_attribute("radius")
         builder.request_attribute("volume")
         builder.request_attribute("terminal velocity")
-        for key in ("Sc", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
+        for key in ("Sc", "St", "tmp", "tmp2", "CKE", "We", "W2", "ds", "dl", "dcoal"):
             self.arrays[key] = self.particulator.PairwiseStorage.empty(
                 self.particulator.n_sd // 2, dtype=float
             )
@@ -46,9 +46,11 @@ class LowList1982Nf:
         self.arrays["ds"] *= 2
         self.arrays["dl"].max(self.particulator.attributes["radius"], is_first_in_pair)
         self.arrays["dl"] *= 2
-        self.arrays["dcoal"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["dcoal"] /= (self.const.PI / 6)
-        self.arrays["dcoal"] **= (1/3)
+        self.arrays["dcoal"].sum(
+            self.particulator.attributes["volume"], is_first_in_pair
+        )
+        self.arrays["dcoal"] /= self.const.PI / 6
+        self.arrays["dcoal"] **= 1 / 3
 
         # compute the surface energy, CKE, & dimensionless numbers
         self.arrays["Sc"].sum(self.particulator.attributes["volume"], is_first_in_pair)
@@ -63,7 +65,7 @@ class LowList1982Nf:
         self.arrays["tmp"] *= 2
         self.arrays["tmp"] **= 2
         self.arrays["St"] += self.arrays["tmp"]
-        self.arrays["St"] *= (self.const.PI * self.const.sgm_w)
+        self.arrays["St"] *= self.const.PI * self.const.sgm_w
 
         self.arrays["tmp"] *= 2
         self.arrays["tmp2"].distance(
@@ -82,7 +84,7 @@ class LowList1982Nf:
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])
         self.arrays["W2"].divide_if_not_zero(self.arrays["St"])
 
-        for key in ("Rf","Rs","Rd"):
+        for key in ("Rf", "Rs", "Rd"):
             self.ll82_tmp[key] *= 0.0
 
         self.particulator.backend.ll82_fragmentation(
@@ -100,7 +102,7 @@ class LowList1982Nf:
             rand=u01,
             vmin=self.vmin,
             nfmax=self.nfmax,
-            Rf=self.straub_tmp["Rf"],
-            Rs=self.straub_tmp["Rs"],
-            Rd=self.straub_tmp["Rd"],
+            Rf=self.ll82_tmp["Rf"],
+            Rs=self.ll82_tmp["Rs"],
+            Rd=self.ll82_tmp["Rd"],
         )

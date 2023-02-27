@@ -250,6 +250,7 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
     Nr4[i] = 1.0
     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
 
+
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     i,
@@ -261,7 +262,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     W2,
 ):  # pylint: disable=too-many-branches`
     if CKE[i] >= 89.3:
-        Rf[i] = 1.11e-4 * CKE[i]**(-0.654)
+        Rf[i] = 1.11e-4 * CKE[i] ** (-0.654)
     else:
         Rf[i] = 1.0
     if W[i] >= 0.86:
@@ -380,23 +381,33 @@ class CollisionsMethods(BackendMethods):
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
+            ll82_pf = self.formulae.fragmentation_function.pf
+            ll82_ps = self.formulae.fragmentation_function.ps
+            ll82_pd = self.formulae.fragmentation_function.pd
+
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
                 *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd
             ):
-                ll82_pf = self.formulae.fragmentation_function.pf
-                ll82_ps = self.formulae.fragmentation_function.ps
-                ll82_pd = self.formulae.fragmentation_function.pd
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
                     ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
-                    if rand[i] < Rf[i]: # filament breakup
-                        frag_size[i] = ll82_pf(rand[i]/Rf[i], ds[i], dl[i], dcoal[i])
-                    elif rand[i] < Rf[i] + Rs[i]: # sheet breakup
-                        frag_size[i] = ll82_ps((rand[i] - Rf[i]) / Rs[i], ds[i], dl[i], dcoal[i], St[i])
-                    else: # disk breakup
-                        frag_size[i] = ll82_pd((rand[i] - Rf[i] - Rs[i]) / Rd[i], ds[i], dl[i], dcoal[i], CKE[i], W1[i])
+                    if rand[i] < Rf[i]:  # filament breakup
+                        frag_size[i] = ll82_pf(rand[i] / Rf[i], ds[i], dl[i], dcoal[i])
+                    elif rand[i] < Rf[i] + Rs[i]:  # sheet breakup
+                        frag_size[i] = ll82_ps(
+                            (rand[i] - Rf[i]) / Rs[i], ds[i], dl[i], dcoal[i], St[i]
+                        )
+                    else:  # disk breakup
+                        frag_size[i] = ll82_pd(
+                            (rand[i] - Rf[i] - Rs[i]) / Rd[i],
+                            ds[i],
+                            dl[i],
+                            dcoal[i],
+                            CKE[i],
+                            W1[i],
+                        )
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
