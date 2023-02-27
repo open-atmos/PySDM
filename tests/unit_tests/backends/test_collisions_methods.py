@@ -241,4 +241,4 @@ class TestCollisionMethods:
         sut(cell_id, cell_idx, cell_start, _idx)
 
         # Assert
-        assert all(cell_start.data[:] == np.array([0, 3]))
+        assert all(cell_start.to_ndarray()[:] == np.array([0, 3]))

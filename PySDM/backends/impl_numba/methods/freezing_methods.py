@@ -18,6 +18,9 @@ class FreezingMethods(BackendMethods):
         BackendMethods.__init__(self)
         const = self.formulae.constants
         unfrozen_and_saturated = self.formulae.trivia.unfrozen_and_saturated
+        frozen_and_above_freezing_point = (
+            self.formulae.trivia.frozen_and_above_freezing_point
+        )
 
         @numba.njit(
             **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
@@ -25,15 +28,27 @@ class FreezingMethods(BackendMethods):
         def _freeze(volume, i):
             volume[i] = -1 * volume[i] * const.rho_w / const.rho_i
             # TODO #599: change thd (latent heat)!
-            # TODO #599: handle the negative volume in tests, attributes, products, dynamics, ...
+
+        @numba.njit(
+            **{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath, "parallel": False}
+        )
+        def _thaw(volume, i):
+            volume[i] = -1 * volume[i] * const.rho_i / const.rho_w
+            # TODO #599: change thd (latent heat)!
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def freeze_singular_body(attributes, temperature, relative_humidity, cell):
+        def freeze_singular_body(
+            attributes, temperature, relative_humidity, cell, thaw
+        ):
             n_sd = len(attributes.freezing_temperature)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.freezing_temperature[i] == 0:
                     continue
-                if (
+                if thaw and frozen_and_above_freezing_point(
+                    attributes.wet_volume[i], temperature[cell[i]]
+                ):
+                    _thaw(attributes.wet_volume, i)
+                elif (
                     unfrozen_and_saturated(
                         attributes.wet_volume[i], relative_humidity[cell[i]]
                     )
@@ -56,13 +71,18 @@ class FreezingMethods(BackendMethods):
             relative_humidity,
             record_freezing_temperature,
             freezing_temperature,
+            thaw,
         ):
             n_sd = len(attributes.wet_volume)
             for i in numba.prange(n_sd):  # pylint: disable=not-an-iterable
                 if attributes.immersed_surface_area[i] == 0:
                     continue
                 cell_id = cell[i]
-                if unfrozen_and_saturated(
+                if thaw and frozen_and_above_freezing_point(
+                    attributes.wet_volume[i], temperature[cell_id]
+                ):
+                    _thaw(attributes.wet_volume, i)
+                elif unfrozen_and_saturated(
                     attributes.wet_volume[i], relative_humidity[cell_id]
                 ):
                     rate = j_het(a_w_ice[cell_id])
@@ -77,7 +97,9 @@ class FreezingMethods(BackendMethods):
 
         self.freeze_time_dependent_body = freeze_time_dependent_body
 
-    def freeze_singular(self, *, attributes, temperature, relative_humidity, cell):
+    def freeze_singular(
+        self, *, attributes, temperature, relative_humidity, cell, thaw: bool
+    ):
         self.freeze_singular_body(
             SingularAttributes(
                 freezing_temperature=attributes.freezing_temperature.data,
@@ -86,6 +108,7 @@ class FreezingMethods(BackendMethods):
             temperature.data,
             relative_humidity.data,
             cell.data,
+            thaw=thaw,
         )
 
     def freeze_time_dependent(
@@ -99,7 +122,8 @@ class FreezingMethods(BackendMethods):
         temperature,
         relative_humidity,
         record_freezing_temperature,
-        freezing_temperature
+        freezing_temperature,
+        thaw: bool
     ):
         self.freeze_time_dependent_body(
             rand.data,
@@ -110,10 +134,11 @@ class FreezingMethods(BackendMethods):
             timestep,
             cell.data,
             a_w_ice.data,
-            temperature.data if record_freezing_temperature else None,
+            temperature.data,
             relative_humidity.data,
             record_freezing_temperature=record_freezing_temperature,
-            freezing_temperature=freezing_temperature.data
-            if record_freezing_temperature
-            else None,
+            freezing_temperature=(
+                freezing_temperature.data if record_freezing_temperature else None
+            ),
+            thaw=thaw,
         )

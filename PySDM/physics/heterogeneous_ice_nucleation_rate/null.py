@@ -10,4 +10,4 @@ class Null:  # pylint: disable=too-few-public-methods,unused-argument
 
     @staticmethod
     def j_het(const, a_w_ice):
-        return const.NaN
+        return 0

@@ -25,6 +25,7 @@ authors:
     orcid: 0000-0003-0265-6428
     affiliation: "3"
   - name: Kacper Derlatka
+    orcid: 0000-0003-3137-1288
     affiliation: "3"
   - name: Isabella Dula
     affiliation: "2"
@@ -72,7 +73,7 @@ Recent efforts have culminated
 
 # Background and Statement of Need
 
-The key motivation behind development of `PySDM` has been to offer the community an approachable
+The key motivation behind development of `PySDM` has been to offer the community an approachable,
   readily reusable software for users and developers who wish to contribute to the
   scientific progress of particle-based methods for simulating atmospheric clouds.
 To this end, we strive to maintain modularity of the `PySDM` building blocks, separation of
@@ -115,7 +116,7 @@ For an example of running basic zero-dimensional
   simulations with `PySDM`, we refer to the project `README.md` file and @Bartman_et_al_2022_JOSS.
 The key building blocks of the `PySDM` API and class hierarchy are: "attributes", "backends", "dynamics",
   "environments", "products" and physics "formulae".
-The following code snippets demonstrate new elements of `PySDM` API which
+The following code snippets demonstrate new elements of `PySDM` API, which
   can be added or substituted into the "v1" API description to run 
   simulations using the new features.
 Execution of code snippets from both the present "v2" and the previous "v1" papers
@@ -214,16 +215,14 @@ class SimpleAerosol(DryAerosolMixture):
             is_soluble={"(NH4)2SO4": True, "NaCl": True},
             ionic_dissociation_phi={"(NH4)2SO4": 3, "NaCl": 2},
         )
-        self.modes = (
-            {
-                "kappa": self.kappa(
-                  mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
-                "spectrum": spectra.Lognormal(
-                    norm_factor=100 / si.cm**3,
-                    m_mode=50 * si.nm, s_geom=2
-                ),
-            },
-        )
+        self.modes = ({
+            "kappa": self.kappa(
+              mass_fractions={"(NH4)2SO4": 0.7, "NaCl": 0.3}),
+            "spectrum": spectra.Lognormal(
+                norm_factor=100 / si.cm**3,
+                m_mode=50 * si.nm, s_geom=2
+            ),
+        },)
 ```
 An aerosol object (instance of `DryAerosolMixture` subclass) is used during initialization to calculate the total number of 
   superdroplets given a prescribed number per mode, sample the size spectrum from the aerosol 
