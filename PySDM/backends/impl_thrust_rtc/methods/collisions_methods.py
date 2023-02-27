@@ -481,10 +481,10 @@ class CollisionsMethods(
         )
 
         self.__normalize_body_1 = trtc.For(
-            param_names=("prob", "cell_id", "norm_factor"),
+            param_names=("prob", "cell_idx", "cell_id", "norm_factor"),
             name_iter="i",
             body="""
-            prob[i] *= norm_factor[cell_id[i]];
+            prob[i] *= norm_factor[cell_idx[cell_id[i]]];
             """,
         )
 
@@ -871,7 +871,7 @@ class CollisionsMethods(
             n=n_cell, args=(cell_start.data, norm_factor.data, device_dt_div_dv)
         )
         self.__normalize_body_1.launch_n(
-            prob.shape[0], (prob.data, cell_id.data, norm_factor.data)
+            prob.shape[0], (prob.data, cell_idx.data, cell_id.data, norm_factor.data)
         )
 
     @nice_thrust(**NICE_THRUST_FLAGS)
