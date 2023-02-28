@@ -390,7 +390,10 @@ class CollisionsMethods(BackendMethods):
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
-            ll82_pf = self.formulae.fragmentation_function.pf
+            ll82_params_f1 = self.formulae.fragmentation_function.params_f1
+            ll82_params_f2 = self.formulae.fragmentation_function.params_f2
+            ll82_params_f3 = self.formulae.fragmentation_function.params_f3
+            ll82_erfinv = self.formulae.fragmentation_function.erfinv
             ll82_ps = self.formulae.fragmentation_function.ps
             ll82_pd = self.formulae.fragmentation_function.pd
 
@@ -403,7 +406,25 @@ class CollisionsMethods(BackendMethods):
                 ):
                     ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
                     if rand[i] < Rf[i]:  # filament breakup
-                        frag_size[i] = ll82_pf(rand[i] / Rf[i], ds[i], dl[i], dcoal[i])
+                        (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
+                        (H2, mu2, sigma2) = ll82_params_f2(ds[i])
+                        (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
+                        Hsum = H1 + H2 + H3
+                        if rand[i] < H1 / Hsum:
+                            X = rand[i] * Hsum / H1
+                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                2 * X - 1
+                            )
+                        elif rand[i] < (H1 + H2) / Hsum:
+                            X = (rand[i] * Hsum - H1) / H2
+                            frag_size[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                2 * X - 1
+                            )
+                        else:
+                            X = (rand[i] * Hsum - H1 - H2) / H3
+                            lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(2 * X - 1)
+                            frag_size[i] = np.exp(lnarg)
+
                     elif rand[i] < Rf[i] + Rs[i]:  # sheet breakup
                         frag_size[i] = ll82_ps(
                             (rand[i] - Rf[i]) / Rs[i], ds[i], dl[i], dcoal[i], St[i]

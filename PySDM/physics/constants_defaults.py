@@ -165,3 +165,4 @@ STRAUB_E_D1 = 0.04 * si.cm
 STRAUB_MU2 = 0.095 * si.cm
 
 CM = 1 * si.cm
+UM = 1 * si.um
