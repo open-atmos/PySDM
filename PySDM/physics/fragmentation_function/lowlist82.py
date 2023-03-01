@@ -44,10 +44,14 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
             + 9.67 * (dlCM - 0.170) ** 2
             + 4.95
         )
-        Ff2 = 1.02e4 * dsCM * (2.83) + 2
-        Ff = Ff1 + Ff2
+        Ff2 = 1.02e4 * dsCM ** (2.83) + 2
+
         # eq (3.5)
         ds0 = (Ff1 / 2.83) ** (1 / 1.02e4)
+        if dsCM > ds0:
+            Ff = max(2.0, Ff1)
+        else:
+            Ff = max(2.0, Ff2)
 
         Dff3 = 0.241 * (dsCM) + 0.0129  # (4.14)
         # eq (4.18) - (4.21)

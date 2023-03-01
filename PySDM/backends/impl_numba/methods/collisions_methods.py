@@ -393,51 +393,73 @@ class CollisionsMethods(BackendMethods):
             ll82_params_f1 = self.formulae.fragmentation_function.params_f1
             ll82_params_f2 = self.formulae.fragmentation_function.params_f2
             ll82_params_f3 = self.formulae.fragmentation_function.params_f3
+            ll82_params_s1 = self.formulae.fragmentation_function.params_s1
+            ll82_params_s2 = self.formulae.fragmentation_function.params_s2
+            ll82_params_d1 = self.formulae.fragmentation_function.params_d1
+            ll82_params_d2 = self.formulae.fragmentation_function.params_d2
             ll82_erfinv = self.formulae.fragmentation_function.erfinv
-            ll82_ps = self.formulae.fragmentation_function.ps
-            ll82_pd = self.formulae.fragmentation_function.pd
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
-                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd
+                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd, tol=1e-8
             ):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
                     ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
-                    if rand[i] < Rf[i]:  # filament breakup
+                    print(rand[i], Rf, Rs, Rd)
+                    if rand[i] <= Rf[i]:  # filament breakup
                         (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
                         (H2, mu2, sigma2) = ll82_params_f2(ds[i])
                         (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
                         Hsum = H1 + H2 + H3
-                        if rand[i] < H1 / Hsum:
-                            X = rand[i] * Hsum / H1
+                        rand[i] = rand[i] / Rf[i]
+                        if rand[i] <= H1 / Hsum:
+                            X = max(rand[i] * Hsum / H1, tol)
                             frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
                                 2 * X - 1
                             )
-                        elif rand[i] < (H1 + H2) / Hsum:
+                        elif rand[i] <= (H1 + H2) / Hsum:
                             X = (rand[i] * Hsum - H1) / H2
                             frag_size[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
                                 2 * X - 1
                             )
                         else:
-                            X = (rand[i] * Hsum - H1 - H2) / H3
+                            X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
                             lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(2 * X - 1)
                             frag_size[i] = np.exp(lnarg)
 
-                    elif rand[i] < Rf[i] + Rs[i]:  # sheet breakup
-                        frag_size[i] = ll82_ps(
-                            (rand[i] - Rf[i]) / Rs[i], ds[i], dl[i], dcoal[i], St[i]
-                        )
+                    elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
+                        (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
+                        (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
+                        Hsum = H1 + H2
+                        rand[i] = (rand[i] - Rf[i]) / (Rs[i])
+                        if rand[i] <= H1 / Hsum:
+                            X = max(rand[i] * Hsum / H1, tol)
+                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                2 * X - 1
+                            )
+                        else:
+                            X = min((rand[i] - H1) / H2, 1.0 - tol)
+                            lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(2 * X - 1)
+                            frag_size[i] = np.exp(lnarg)
+
                     else:  # disk breakup
-                        frag_size[i] = ll82_pd(
-                            (rand[i] - Rf[i] - Rs[i]) / Rd[i],
-                            ds[i],
-                            dl[i],
-                            dcoal[i],
-                            CKE[i],
-                            W1[i],
-                        )
+                        (H1, mu1, sigma1) = ll82_params_d1(W[i], dl[i], CKE[i])
+                        (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
+                        Hsum = H1 + H2
+                        rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
+                        if rand[i] <= H1 / Hsum:
+                            X = max(rand[i] * Hsum / H1, tol)
+                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                2 * X - 1
+                            )
+                        else:
+                            X = min((rand[i] - H1) / H2, 1 - tol)
+                            lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(2 * X - 1)
+                            frag_size[i] = np.exp(lnarg)
+
+                    frag_size[i] = frag_size[i] / 0.01
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":

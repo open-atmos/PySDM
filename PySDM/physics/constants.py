@@ -49,3 +49,6 @@ T0 = sci.zero_Celsius * si.kelvin
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 M = si.mole / si.litre
 K_H2O = 1e-14 * M * M
+
+CM = 1 * si.cm
+UM = 1 * si.um
