@@ -14,7 +14,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
     def params_f1(const, dl, dcoal):
         dcoalCM = dcoal / const.CM
         dlCM = dl / const.CM
-        Hf1 = 50.8 * ((dlCM) ** (-0.718))
+        Hf1 = 50.8 * (dlCM) ** (-0.718)
         mu = dlCM
         sigma = 1 / Hf1
         for i in range(10):
@@ -95,45 +95,6 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         arg = np.sqrt(arg)
         arg = arg - (2 / np.pi / a + np.log(1 - X**2) / 2)
         return np.sqrt(arg)
-
-    # @staticmethod
-    # def ps(const, rand, ds, dl, dcoal, St):
-    #     (H1, mu1, sigma1) = params_s1(dl, ds, dcoal)
-    #     (H2, mu2, sigma2) = params_s2(dl, ds, St)
-    #     grid = default_interp_grid()
-    #     percentiles = [
-    #         gaussian_inv_cdf(grid, mu1, sigma1),
-    #         lognormal_inv_cdf(grid, mu2, sigma2),
-    #     ]
-    #     cdf_arg = np.zeros(len(grid) * 2 + 1)
-    #     cdf_arg[1:] = np.concatenate(percentiles)
-    #     cdf = (
-    #         H1 * gaussian_cdf(cdf_arg, mu1, sigma1)
-    #         + H2 * lognormal_cdf(cdf_arg, mu2, sigma2)
-    #     ) / (H1 + H2)
-    #     inverse_cdf = interp1d(cdf, cdf_arg)
-
-    #     return inverse_cdf(rand)
-
-    # @staticmethod
-    # def pd(const, rand, ds, dl, dcoal, CKE, W1):
-    #     (H1, mu1, sigma1) = params_d1(W1, dl, CKE, dcoal)
-    #     (H2, mu2, sigma2) = params_d2(ds, dl, CKE)
-
-    #     grid = default_interp_grid()
-    #     percentiles = [
-    #         gaussian_inv_cdf(grid, mu1, sigma1),
-    #         lognormal_inv_cdf(grid, mu2, sigma2),
-    #     ]
-    #     cdf_arg = np.zeros(len(grid) * 2 + 1)
-    #     cdf_arg[1:] = np.concatenate(percentiles)
-    #     cdf = (
-    #         H1 * gaussian_cdf(cdf_arg, mu1, sigma1)
-    #         + H2 * lognormal_cdf(cdf_arg, mu2, sigma2)
-    #     ) / (H1 + H2)
-    #     inverse_cdf = interp1d(cdf, cdf_arg)
-
-    #     return inverse_cdf(rand)
 
     @staticmethod
     def params_s1(const, dl, ds, dcoal):
@@ -219,34 +180,3 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
             Hd2 = Pd20 * Ddd2 / np.exp(-0.5 * sigmad2**2)
 
         return (Hd2, mud2, sigmad2)
-
-
-# @staticmethod
-# def default_interp_grid(const, diam_basis=True):
-#     if diam_basis == True:
-#         dmin = 1 * const.UM
-#         dmax = 5 * const.CM
-#         return np.logspace(np.log(dmin), np.log(dmax), 100)
-#     else:
-#         pass
-
-
-# @staticmethod
-# def gaussian_cdf(arg, mu, sigma):
-#     return 0.5 * (1 + math.erf((arg - mu) / np.sqrt(2) / sigma))
-
-
-# @staticmethod
-# def lognormal_cdf(arg, mu, sigma):
-#     return 0.5 * (1 + math.erf((np.log(arg) - mu) / np.sqrt(2) / sigma))
-
-
-# @staticmethod
-# def gaussian_inv_cdf(X, mu, sigma):
-#     return mu + np.sqrt(2) * sigma * math.erfinv(2 * X - 1)
-
-
-# @staticmethod
-# def lognormal_inv_cdf(X, mu, sigma):
-#     lnarg = gaussian_cdf(X, mu, sigma)
-#     return np.exp(lnarg)

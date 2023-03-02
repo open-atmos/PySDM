@@ -401,13 +401,12 @@ class CollisionsMethods(BackendMethods):
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
-                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd, tol=1e-8
+                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd, tol
             ):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
                     ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
-                    print(rand[i], Rf, Rs, Rd)
                     if rand[i] <= Rf[i]:  # filament breakup
                         (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
                         (H2, mu2, sigma2) = ll82_params_f2(ds[i])
@@ -416,6 +415,7 @@ class CollisionsMethods(BackendMethods):
                         rand[i] = rand[i] / Rf[i]
                         if rand[i] <= H1 / Hsum:
                             X = max(rand[i] * Hsum / H1, tol)
+                            X = rand[i]
                             frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
                                 2 * X - 1
                             )
@@ -459,7 +459,8 @@ class CollisionsMethods(BackendMethods):
                             lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(2 * X - 1)
                             frag_size[i] = np.exp(lnarg)
 
-                    frag_size[i] = frag_size[i] / 0.01
+                    frag_size[i] = frag_size[i] * 0.01  # diameter in cm; convert to m
+                    frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
@@ -679,14 +680,19 @@ class CollisionsMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
+            if np.isnan(frag_size[i]):
+                frag_size[i] = x_plus_y[i]
             frag_size[i] = min(frag_size[i], v_max[i])
             frag_size[i] = max(frag_size[i], vmin)
+            frag_size[i] = min(frag_size[i], x_plus_y[i])
             if nfmax is not None:
                 if x_plus_y[i] / frag_size[i] > nfmax:
                     frag_size[i] = x_plus_y[i] / nfmax
             if frag_size[i] == 0.0:
                 frag_size[i] = x_plus_y[i]
             n_fragment[i] = x_plus_y[i] / frag_size[i]
+        # print("fragsize", frag_size)
+        # print("nf", n_fragment)
 
     def fragmentation_limiters(
         self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y
@@ -877,6 +883,7 @@ class CollisionsMethods(BackendMethods):
         Rf,
         Rs,
         Rd,
+        tol=1e-8,
     ):
         self.__ll82_fragmentation_body(
             CKE=CKE.data,
@@ -891,6 +898,7 @@ class CollisionsMethods(BackendMethods):
             Rf=Rf.data,
             Rs=Rs.data,
             Rd=Rd.data,
+            tol=tol,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
