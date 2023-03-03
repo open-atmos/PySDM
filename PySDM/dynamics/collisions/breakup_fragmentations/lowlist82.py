@@ -49,6 +49,7 @@ class LowList1982Nf:
         self.arrays["dcoal"].sum(
             self.particulator.attributes["volume"], is_first_in_pair
         )
+
         self.arrays["dcoal"] /= self.const.PI / 6
         self.arrays["dcoal"] **= 1 / 3
 

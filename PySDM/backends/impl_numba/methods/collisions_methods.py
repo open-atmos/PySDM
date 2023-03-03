@@ -406,61 +406,72 @@ class CollisionsMethods(BackendMethods):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
-                    ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
-                    if rand[i] <= Rf[i]:  # filament breakup
-                        (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
-                        (H2, mu2, sigma2) = ll82_params_f2(ds[i])
-                        (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
-                        Hsum = H1 + H2 + H3
-                        rand[i] = rand[i] / Rf[i]
-                        if rand[i] <= H1 / Hsum:
-                            X = max(rand[i] * Hsum / H1, tol)
-                            X = rand[i]
-                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                2 * X - 1
-                            )
-                        elif rand[i] <= (H1 + H2) / Hsum:
-                            X = (rand[i] * Hsum - H1) / H2
-                            frag_size[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
-                                2 * X - 1
-                            )
-                        else:
-                            X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
-                            lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(2 * X - 1)
-                            frag_size[i] = np.exp(lnarg)
+                    if ds[i] == 0.0 or dl[i] == 0.0:
+                        frag_size[i] = 1e-18
+                    else:
+                        ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
+                        if rand[i] <= Rf[i]:  # filament breakup
+                            (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
+                            (H2, mu2, sigma2) = ll82_params_f2(ds[i])
+                            (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
+                            Hsum = H1 + H2 + H3
+                            rand[i] = rand[i] / Rf[i]
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                X = rand[i]
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            elif rand[i] <= (H1 + H2) / Hsum:
+                                X = (rand[i] * Hsum - H1) / H2
+                                frag_size[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
+                                lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
 
-                    elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
-                        (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
-                        (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
-                        Hsum = H1 + H2
-                        rand[i] = (rand[i] - Rf[i]) / (Rs[i])
-                        if rand[i] <= H1 / Hsum:
-                            X = max(rand[i] * Hsum / H1, tol)
-                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                2 * X - 1
-                            )
-                        else:
-                            X = min((rand[i] - H1) / H2, 1.0 - tol)
-                            lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(2 * X - 1)
-                            frag_size[i] = np.exp(lnarg)
+                        elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
+                            (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
+                            (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
+                            Hsum = H1 + H2
+                            rand[i] = (rand[i] - Rf[i]) / (Rs[i])
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] - H1) / H2, 1.0 - tol)
+                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
 
-                    else:  # disk breakup
-                        (H1, mu1, sigma1) = ll82_params_d1(W[i], dl[i], CKE[i])
-                        (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
-                        Hsum = H1 + H2
-                        rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
-                        if rand[i] <= H1 / Hsum:
-                            X = max(rand[i] * Hsum / H1, tol)
-                            frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
-                                2 * X - 1
-                            )
-                        else:
-                            X = min((rand[i] - H1) / H2, 1 - tol)
-                            lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(2 * X - 1)
-                            frag_size[i] = np.exp(lnarg)
+                        else:  # disk breakup
+                            (H1, mu1, sigma1) = ll82_params_d1(W[i], dl[i], CKE[i])
+                            (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
+                            Hsum = H1 + H2
+                            rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] - H1) / H2, 1 - tol)
+                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
 
-                    frag_size[i] = frag_size[i] * 0.01  # diameter in cm; convert to m
-                    frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                        frag_size[i] = (
+                            frag_size[i] * 0.01
+                        )  # diameter in cm; convert to m
+                        frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
@@ -683,16 +694,17 @@ class CollisionsMethods(BackendMethods):
             if np.isnan(frag_size[i]):
                 frag_size[i] = x_plus_y[i]
             frag_size[i] = min(frag_size[i], v_max[i])
-            frag_size[i] = max(frag_size[i], vmin)
             frag_size[i] = min(frag_size[i], x_plus_y[i])
+            frag_size[i] = max(frag_size[i], vmin)
             if nfmax is not None:
-                if x_plus_y[i] / frag_size[i] > nfmax:
-                    frag_size[i] = x_plus_y[i] / nfmax
+                try:
+                    if x_plus_y[i] / frag_size[i] > nfmax:
+                        frag_size[i] = x_plus_y[i] / nfmax
+                except RuntimeWarning:
+                    print(x_plus_y[i], frag_size[i], nfmax)
             if frag_size[i] == 0.0:
                 frag_size[i] = x_plus_y[i]
             n_fragment[i] = x_plus_y[i] / frag_size[i]
-        # print("fragsize", frag_size)
-        # print("nf", n_fragment)
 
     def fragmentation_limiters(
         self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y

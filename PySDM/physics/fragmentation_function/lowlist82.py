@@ -39,27 +39,31 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         dsCM = ds / const.CM
         dlCM = dl / const.CM
         # eq (3.3), (3.4)
-        Ff1 = (
-            (-2.25e4 * (dlCM - 0.403) ** 2 - 37.9) * (dsCM) ** (2.5)
-            + 9.67 * (dlCM - 0.170) ** 2
-            + 4.95
+        Ff1 = max(
+            0,
+            (
+                (-2.25e4 * (dlCM - 0.403) ** 2 - 37.9) * (dsCM) ** (2.5)
+                + 9.67 * (dlCM - 0.170) ** 2
+                + 4.95
+            ),
         )
         Ff2 = 1.02e4 * dsCM ** (2.83) + 2
-
         # eq (3.5)
-        ds0 = (Ff1 / 2.83) ** (1 / 1.02e4)
+        ds0 = max(0.04, (Ff1 / 2.83) ** (1 / 1.02e4))
         if dsCM > ds0:
             Ff = max(2.0, Ff1)
         else:
             Ff = max(2.0, Ff2)
-
         Dff3 = 0.241 * (dsCM) + 0.0129  # (4.14)
         # eq (4.18) - (4.21)
         Pf301 = 1.68e5 * dsCM ** (2.33)
-        Pf302 = (
-            (43.4 * (dlCM + 1.81) ** 2 - 159.0) / dsCM
-            - 3870 * (dlCM - 0.285) ** 2
-            - 58.1
+        Pf302 = max(
+            0,
+            (
+                (43.4 * (dlCM + 1.81) ** 2 - 159.0) / dsCM
+                - 3870 * (dlCM - 0.285) ** 2
+                - 58.1
+            ),
         )
         alpha = (dsCM - ds0) / (0.2 * ds0)
         Pf303 = alpha * Pf301 + (1 - alpha) * Pf302
@@ -69,12 +73,13 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
             Pf0 = Pf302
         else:
             Pf0 = Pf303
-
         # eq (4.22), (4.16), (4.17) (4.23)
         sigmaf3 = 10 * Dff3
         muf3 = np.log(Dff3) + sigmaf3**2
         Hf3 = Pf0 * Dff3 / np.exp(-0.5 * sigmaf3**2)
         for i in range(10):
+            if sigmaf3 == 0.0 or Hf3 == 0:
+                return (0.0, np.log(ds0), np.log(ds0))
             sigmaf3 = (
                 np.sqrt(2 / np.pi)
                 * (Ff - 2)
