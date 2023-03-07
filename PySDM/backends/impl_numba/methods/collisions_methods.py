@@ -697,11 +697,8 @@ class CollisionsMethods(BackendMethods):
             frag_size[i] = min(frag_size[i], x_plus_y[i])
             frag_size[i] = max(frag_size[i], vmin)
             if nfmax is not None:
-                try:
-                    if x_plus_y[i] / frag_size[i] > nfmax:
-                        frag_size[i] = x_plus_y[i] / nfmax
-                except RuntimeWarning:
-                    print(x_plus_y[i], frag_size[i], nfmax)
+                if x_plus_y[i] / frag_size[i] > nfmax:
+                    frag_size[i] = x_plus_y[i] / nfmax
             if frag_size[i] == 0.0:
                 frag_size[i] = x_plus_y[i]
             n_fragment[i] = x_plus_y[i] / frag_size[i]

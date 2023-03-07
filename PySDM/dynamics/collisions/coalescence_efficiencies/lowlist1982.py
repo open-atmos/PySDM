@@ -62,7 +62,7 @@ class LowList1982Ec:
         self.arrays["dS"][:] = self.arrays["St"][:]
         self.arrays["dS"] -= self.arrays["Sc"]
 
-        self.arrays["tmp"] *= 2
+        self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["tmp2"].distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
@@ -72,7 +72,7 @@ class LowList1982Ec:
         )
         self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]
-        self.arrays["CKE"] *= self.const.rho_w
+        self.arrays["CKE"] *= self.const.rho_w / 2
 
         self.arrays["Et"][:] = self.arrays["CKE"][:]
         self.arrays["Et"] += self.arrays["dS"]
