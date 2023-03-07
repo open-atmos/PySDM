@@ -42,15 +42,15 @@ authors:
     orcid: 0000-0003-2361-0082
     affiliation: "5,3"
 affiliations:
- - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, USA
+ - name: Department of Mechanical and Civil Engineering, California Institute of Technology, Pasadena, CA, United States of America
    index: 1
- - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, USA
+ - name: Department of Environmental Science and Engineering, California Institute of Technology, Pasadena, CA, United States of America
    index: 2
  - name: Faculty of Mathematics and Computer Science, Jagiellonian University, Kraków, Poland
    index: 3
- - name: Scripps Institution of Oceanography, San Diego, CA, USA
+ - name: Scripps Institution of Oceanography, San Diego, CA, United States of America
    index: 4
- - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, USA
+ - name: Department of Atmospheric Sciences, University of Illinois at Urbana-Champaign, Urbana, IL, United States of America
    index: 5 
 bibliography: paper.bib
 
