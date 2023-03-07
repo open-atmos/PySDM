@@ -8,6 +8,7 @@ from PySDM.dynamics.collisions.breakup_efficiencies import ConstEb
 from PySDM.dynamics.collisions.coalescence_efficiencies import (
     Berry1967,
     ConstEc,
+    LowList1982Ec,
     SpecifiedEff,
     Straub2010Ec,
 )
@@ -24,6 +25,7 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
             ConstEc(Ec=0.5),
             SpecifiedEff(A=0.8, B=0.6),
             Straub2010Ec(),
+            LowList1982Ec(),
             ConstEb(Eb=0.3),
         ],
     )
@@ -49,3 +51,4 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_array_less([0.0 - 1e-6], eff.to_ndarray())
+        np.testing.assert_array_less(eff.to_ndarray(), [1.0])

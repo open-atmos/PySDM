@@ -59,7 +59,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun0(
+def breakup0_compute_mult_transfer(
     gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -78,7 +78,7 @@ def breakup_fun0(
             overflow_flag = True
             break
 
-        # check for new_n > 0
+        # check for new_n >= 0
         if take_from_j_test > multiplicity[j]:
             break
 
@@ -89,7 +89,7 @@ def breakup_fun0(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun1(
+def breakup1_update_mult_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
     for a in range(len(attributes)):
@@ -100,20 +100,23 @@ def breakup_fun1(
     if multiplicity[j] == take_from_j:
         nj = new_mult_k / 2
         nk = nj
-    else:
+        for a in range(len(attributes)):
+            attributes[a, j] = attributes[a, k]
+    else:  # take_from_j < multiplicity[j]
         nj = multiplicity[j] - take_from_j
         nk = new_mult_k
     return nj, nk
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun2(
-    j, k, nj, nk, attributes, multiplicity, take_from_j
+def breakup2_round_mults_to_ints(
+    j,
+    k,
+    nj,
+    nk,
+    attributes,
+    multiplicity,
 ):  # pylint: disable=too-many-arguments
-    if multiplicity[j] <= take_from_j:
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -139,8 +142,8 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     breakup_rate_deficit,
     warn_overflows,
     volume,
-):
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+):  # breakup0 guarantees take_from_j <= multiplicity[j]
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup0_compute_mult_transfer(
         gamma[i],
         j,
         k,
@@ -152,17 +155,16 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     )
     gamma_deficit = gamma[i] - gamma_j_k
 
-    nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-    if multiplicity[j] <= take_from_j and round(nj) == 0:
-        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-        return
+    # breakup1 also handles new_n[j] == 0 case via splitting
+    nj, nk = breakup1_update_mult_attributes(
+        j, k, attributes, multiplicity, take_from_j, new_mult_k
+    )
 
     atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
-    breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
-
+    # breakup2 also guarantees that no multiplicities are set to 0
+    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
     if overflow_flag and warn_overflows:
         warn("overflow", __file__)
 
@@ -201,7 +203,12 @@ def break_up_while(
         else:
             if multiplicity[k] > multiplicity[j]:
                 j, k = k, j
-            take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+            (
+                take_from_j,
+                new_mult_k,
+                gamma_j_k,
+                overflow_flag,
+            ) = breakup0_compute_mult_transfer(
                 gamma_deficit,
                 j,
                 k,
@@ -212,7 +219,9 @@ def break_up_while(
                 max_multiplicity,
             )
 
-        nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
+        nj, nk = breakup1_update_mult_attributes(
+            j, k, attributes, multiplicity, take_from_j, new_mult_k
+        )
 
         if multiplicity[j] <= take_from_j and round(nj) == 0:
             atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
@@ -220,7 +229,7 @@ def break_up_while(
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
+        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
@@ -249,6 +258,30 @@ def straub_Nr(  # pylint: disable=too-many-arguments,unused-argument
         Nr3[i] = 1.0
     Nr4[i] = 1.0
     Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
+
+
+@numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
+def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
+    i,
+    Rf,
+    Rs,
+    Rd,
+    CKE,
+    W,
+    W2,
+):  # pylint: disable=too-many-branches`
+    if CKE[i] >= 89.3:
+        Rf[i] = 1.11e-4 * CKE[i] ** (-0.654)
+    else:
+        Rf[i] = 1.0
+    if W[i] >= 0.86:
+        Rs[i] = 0.685 * (1 - np.exp(-1.63 * (W2[i] - 0.86)))
+    else:
+        Rs[i] = 0.0
+    if (Rs[i] + Rf[i]) > 1.0:
+        Rd[i] = 0.0
+    else:
+        Rd[i] = 1.0 - Rs[i] - Rf[i]
 
 
 class CollisionsMethods(BackendMethods):
@@ -356,6 +389,91 @@ class CollisionsMethods(BackendMethods):
                         )
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
+        elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":
+            ll82_params_f1 = self.formulae.fragmentation_function.params_f1
+            ll82_params_f2 = self.formulae.fragmentation_function.params_f2
+            ll82_params_f3 = self.formulae.fragmentation_function.params_f3
+            ll82_params_s1 = self.formulae.fragmentation_function.params_s1
+            ll82_params_s2 = self.formulae.fragmentation_function.params_s2
+            ll82_params_d1 = self.formulae.fragmentation_function.params_d1
+            ll82_params_d2 = self.formulae.fragmentation_function.params_d2
+            ll82_erfinv = self.formulae.fragmentation_function.erfinv
+
+            @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+            def __ll82_fragmentation_body(
+                *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd, tol
+            ):
+                for i in numba.prange(  # pylint: disable=not-an-iterable
+                    len(frag_size)
+                ):
+                    if ds[i] == 0.0 or dl[i] == 0.0:
+                        frag_size[i] = 1e-18
+                    else:
+                        ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
+                        if rand[i] <= Rf[i]:  # filament breakup
+                            (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
+                            (H2, mu2, sigma2) = ll82_params_f2(ds[i])
+                            (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
+                            Hsum = H1 + H2 + H3
+                            rand[i] = rand[i] / Rf[i]
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                X = rand[i]
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            elif rand[i] <= (H1 + H2) / Hsum:
+                                X = (rand[i] * Hsum - H1) / H2
+                                frag_size[i] = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] * Hsum - H1 - H2) / H3, 1.0 - tol)
+                                lnarg = mu3 + np.sqrt(2) * sigma3 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
+
+                        elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
+                            (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
+                            (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
+                            Hsum = H1 + H2
+                            rand[i] = (rand[i] - Rf[i]) / (Rs[i])
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] - H1) / H2, 1.0 - tol)
+                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
+
+                        else:  # disk breakup
+                            (H1, mu1, sigma1) = ll82_params_d1(W[i], dl[i], CKE[i])
+                            (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
+                            Hsum = H1 + H2
+                            rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
+                            if rand[i] <= H1 / Hsum:
+                                X = max(rand[i] * Hsum / H1, tol)
+                                frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                            else:
+                                X = min((rand[i] - H1) / H2, 1 - tol)
+                                lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
+                                    2 * X - 1
+                                )
+                                frag_size[i] = np.exp(lnarg)
+
+                        frag_size[i] = (
+                            frag_size[i] * 0.01
+                        )  # diameter in cm; convert to m
+                        frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+
+            self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
             gaussian_frag_size = self.formulae.fragmentation_function.frag_size
 
@@ -573,7 +691,10 @@ class CollisionsMethods(BackendMethods):
     # pylint: disable=too-many-arguments
     def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
+            if np.isnan(frag_size[i]):
+                frag_size[i] = x_plus_y[i]
             frag_size[i] = min(frag_size[i], v_max[i])
+            frag_size[i] = min(frag_size[i], x_plus_y[i])
             frag_size[i] = max(frag_size[i], vmin)
             if nfmax is not None:
                 if x_plus_y[i] / frag_size[i] > nfmax:
@@ -740,6 +861,53 @@ class CollisionsMethods(BackendMethods):
             Nr3=Nr3.data,
             Nr4=Nr4.data,
             Nrt=Nrt.data,
+        )
+        self.__fragmentation_limiters(
+            n_fragment=n_fragment.data,
+            frag_size=frag_size.data,
+            v_max=v_max.data,
+            x_plus_y=x_plus_y.data,
+            vmin=vmin,
+            nfmax=nfmax,
+        )
+
+    def ll82_fragmentation(
+        # pylint: disable=too-many-arguments,too-many-locals
+        self,
+        *,
+        n_fragment,
+        CKE,
+        W,
+        W2,
+        St,
+        ds,
+        dl,
+        dcoal,
+        frag_size,
+        v_max,
+        x_plus_y,
+        rand,
+        vmin,
+        nfmax,
+        Rf,
+        Rs,
+        Rd,
+        tol=1e-8,
+    ):
+        self.__ll82_fragmentation_body(
+            CKE=CKE.data,
+            W=W.data,
+            W2=W2.data,
+            St=St.data,
+            ds=ds.data,
+            dl=dl.data,
+            dcoal=dcoal.data,
+            frag_size=frag_size.data,
+            rand=rand.data,
+            Rf=Rf.data,
+            Rs=Rs.data,
+            Rd=Rd.data,
+            tol=tol,
         )
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,

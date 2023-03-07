@@ -9,6 +9,7 @@ from PySDM.dynamics.collisions.breakup_fragmentations import (
     ExponFrag,
     Feingold1988Frag,
     Gaussian,
+    LowList1982Nf,
     Straub2010Nf,
 )
 from PySDM.environments import Box
@@ -30,6 +31,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             SLAMS(),
             Straub2010Nf(),
+            LowList1982Nf(),
         ),
     )
     def test_fragmentation_fn_call(
@@ -58,7 +60,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -76,6 +78,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Gaussian(mu=2 * si.um**3, sigma=1 * si.um**3, vmin=6660.0 * si.um**3),
             SLAMS(vmin=6660.0 * si.um**3),
             Straub2010Nf(vmin=6660.0 * si.um**3),
+            LowList1982Nf(vmin=6660.0 * si.um**3),
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )
@@ -123,6 +126,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Gaussian(mu=1.0 * si.cm**3, sigma=1e6 * si.um**3),
             SLAMS(),
             Straub2010Nf(),
+            LowList1982Nf(),
             pytest.param(AlwaysN(n=0.01), marks=pytest.mark.xfail(strict=True)),
         ],
     )
@@ -170,6 +174,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             Gaussian(mu=1.0 * si.um**3, sigma=1e6 * si.um**3, nfmax=2),
             SLAMS(nfmax=2),
             Straub2010Nf(nfmax=2),
+            LowList1982Nf(nfmax=2),
             pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
         ],
     )

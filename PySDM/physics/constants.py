@@ -26,6 +26,7 @@ sqrt_two = np.sqrt(2)
 sqrt_pi = np.sqrt(sci.pi)
 PI = sci.pi
 PI_4_3 = PI * 4 / 3
+LN_2 = np.log(2)
 TWO = 2
 THREE = 3
 FOUR = 4
@@ -48,3 +49,6 @@ T0 = sci.zero_Celsius * si.kelvin
 # there are so few water ions instead of K we have K [H2O] (see Seinfeld & Pandis p 345)
 M = si.mole / si.litre
 K_H2O = 1e-14 * M * M
+
+CM = 1 * si.cm
+UM = 1 * si.um
