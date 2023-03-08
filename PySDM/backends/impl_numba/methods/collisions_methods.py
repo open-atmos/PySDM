@@ -270,7 +270,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     W,
     W2,
 ):  # pylint: disable=too-many-branches`
-    if CKE[i] >= 89.3e-6:
+    if CKE[i] >= 0.893e-6:
         Rf[i] = 1.11e-4 * CKE[i] ** (-0.654)
     else:
         Rf[i] = 1.0
@@ -354,6 +354,14 @@ class CollisionsMethods(BackendMethods):
 
         self.__collision_coalescence_breakup_body = __collision_coalescence_breakup_body
 
+        @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
+        def __ll82_coalescence_check_body(*, Ec, ds, dl):
+            for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
+                if dl[i] < 0.4e-3:
+                    Ec[i] = 1.0
+
+        self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
+
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
             straub_p1 = self.formulae.fragmentation_function.p1
             straub_p2 = self.formulae.fragmentation_function.p2
@@ -406,7 +414,9 @@ class CollisionsMethods(BackendMethods):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
-                    if ds[i] == 0.0 or dl[i] == 0.0:
+                    if dl[i] <= 0.4e-3:
+                        frag_size[i] = dcoal[i] ** 3 * 3.1415 / 6
+                    elif ds[i] == 0.0 or dl[i] == 0.0:
                         frag_size[i] = 1e-18
                     else:
                         ll82_Nr(i, Rf, Rs, Rd, CKE, W, W2)
@@ -414,11 +424,13 @@ class CollisionsMethods(BackendMethods):
                             (H1, mu1, sigma1) = ll82_params_f1(dl[i], dcoal[i])
                             (H2, mu2, sigma2) = ll82_params_f2(ds[i])
                             (H3, mu3, sigma3) = ll82_params_f3(ds[i], dl[i])
+                            H1 = H1 * mu1
+                            H2 = H2 * mu2
+                            H3 = H3 * np.exp(mu3)
                             Hsum = H1 + H2 + H3
                             rand[i] = rand[i] / Rf[i]
                             if rand[i] <= H1 / Hsum:
                                 X = max(rand[i] * Hsum / H1, tol)
-                                X = rand[i]
                                 frag_size[i] = mu1 + np.sqrt(2) * sigma1 * ll82_erfinv(
                                     2 * X - 1
                                 )
@@ -437,6 +449,8 @@ class CollisionsMethods(BackendMethods):
                         elif rand[i] <= Rf[i] + Rs[i]:  # sheet breakup
                             (H1, mu1, sigma1) = ll82_params_s1(dl[i], ds[i], dcoal[i])
                             (H2, mu2, sigma2) = ll82_params_s2(dl[i], ds[i], St[i])
+                            H1 = H1 * mu1
+                            H2 = H2 * np.exp(mu2)
                             Hsum = H1 + H2
                             rand[i] = (rand[i] - Rf[i]) / (Rs[i])
                             if rand[i] <= H1 / Hsum:
@@ -445,7 +459,7 @@ class CollisionsMethods(BackendMethods):
                                     2 * X - 1
                                 )
                             else:
-                                X = min((rand[i] - H1) / H2, 1.0 - tol)
+                                X = min((rand[i] * Hsum - H1) / H2, 1.0 - tol)
                                 lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
                                     2 * X - 1
                                 )
@@ -456,6 +470,7 @@ class CollisionsMethods(BackendMethods):
                                 W[i], dl[i], dcoal[i], CKE[i]
                             )
                             (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
+                            H1 = H1 * mu1
                             Hsum = H1 + H2
                             rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
                             if rand[i] <= H1 / Hsum:
@@ -464,7 +479,7 @@ class CollisionsMethods(BackendMethods):
                                     2 * X - 1
                                 )
                             else:
-                                X = min((rand[i] - H1) / H2, 1 - tol)
+                                X = min((rand[i] * Hsum - H1) / H2, 1 - tol)
                                 lnarg = mu2 + np.sqrt(2) * sigma2 * ll82_erfinv(
                                     2 * X - 1
                                 )
@@ -474,6 +489,7 @@ class CollisionsMethods(BackendMethods):
                             frag_size[i] * 0.01
                         )  # diameter in cm; convert to m
                         frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
+                # print(np.sum(Rf), np.sum(Rs), np.sum(Rd))
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
@@ -918,6 +934,13 @@ class CollisionsMethods(BackendMethods):
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
+        )
+
+    def ll82_coalescence_check(self, *, Ec, ds, dl):
+        self.__ll82_coalescence_check_body(
+            Ec=Ec.data,
+            ds=ds.data,
+            dl=dl.data,
         )
 
     @staticmethod

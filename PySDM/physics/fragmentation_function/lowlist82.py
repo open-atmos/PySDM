@@ -159,22 +159,30 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
                 * np.sqrt(2 / np.pi)
                 / (1 + math.erf((dcoalCM - mud1) / (np.sqrt(2) * sigmad1)))
             )
+
         return (Hd1, mud1, sigmad1)  # in cm
 
     @staticmethod
     def params_d2(const, ds, dl, CKE):
         dsCM = ds / const.CM
         dlCM = dl / const.CM
-        Ddd2 = np.exp(-1.74 * dsCM - 0.671 * (dlCM - dsCM)) * dsCM  # (4.37)
+        Ddd2 = np.exp(-17.4 * dsCM - 0.671 * (dlCM - dsCM)) * dsCM  # (4.37)
         bstar = 0.007 * dsCM ** (-2.54)  # (4.39)
         Pd20 = 0.0884 * dsCM ** (-2.52) * (dlCM - dsCM) ** (bstar)  # (4.38)
         sigmad2 = 10 * Ddd2
+
         mud2 = np.log(Ddd2) + sigmad2**2
         Hd2 = Pd20 * Ddd2 / np.exp(-0.5 * sigmad2**2)
 
-        Fd = 297.5 + 23.7 * np.log(CKE)  # (3.9)
+        Fd = max(1.0, 297.5 + 23.7 * np.log(CKE))  # (3.9)
+        if Fd == 1.0:
+            return (0.0, np.log(Ddd2), np.log(Ddd2))
 
         for i in range(10):
+            if sigmad2 == 0.0 or Hd2 <= 0.1:
+                return (0.0, np.log(Ddd2), np.log(Ddd2))
+            elif sigmad2 >= 1.0:
+                return (0.0, np.log(Ddd2), np.log(Ddd2))
             sigmad2 = (
                 np.sqrt(2 / np.pi)
                 * (Fd - 1)

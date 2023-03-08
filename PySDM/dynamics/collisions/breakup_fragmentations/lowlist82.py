@@ -68,7 +68,7 @@ class LowList1982Nf:
         self.arrays["St"] += self.arrays["tmp"]
         self.arrays["St"] *= self.const.PI * self.const.sgm_w
 
-        self.arrays["tmp"] *= 2
+        self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["tmp2"].distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
