@@ -67,11 +67,12 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_f1(
-            dl=100 * si.um, dcoal=200 * si.um
+            dl=0.36 * si.cm, dcoal=0.3744 * si.cm
         )
-
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, [105.78851401149461, 0.36, 0.003771383856549656]
+        )
 
     @staticmethod
     def test_ll82_pf2():
@@ -79,10 +80,12 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
         formulae = Formulae(fragmentation_function="LowList1982Nf")
 
         # act
-        params = formulae.fragmentation_function.params_f2(ds=100 * si.um)
+        params = formulae.fragmentation_function.params_f2(ds=0.18 * si.cm)
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (31.081892267202157, 0.18, 0.01283519925273017)
+        )
 
     @staticmethod
     def test_ll82_pf3():
@@ -91,11 +94,13 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_f3(
-            ds=100 * si.um, dl=200 * si.um
+            ds=0.0715 * si.cm, dl=0.18 * si.cm
         )
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (11.078017412424996, -3.4579794266811095, 0.21024917628814235)
+        )
 
     @staticmethod
     def test_ll82_ps1():
@@ -104,11 +109,13 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_s1(
-            dl=100 * si.um, ds=50 * si.um, dcoal=200 * si.um
+            dl=0.36 * si.cm, ds=0.18 * si.cm, dcoal=0.3744 * si.cm
         )
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (55.710586181217394, 0.36, 0.007344262785151853)
+        )
 
     @staticmethod
     def test_ll82_ps2():
@@ -117,11 +124,13 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_s2(
-            dl=100 * si.um, ds=50 * si.um, St=1e-6 * si.J
+            dl=0.36 * si.cm, ds=0.18 * si.cm, St=3.705e-6 * si.J
         )
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (13.120297517162507, -2.0082590717125437, 0.24857168491193957)
+        )
 
     @staticmethod
     def test_ll82_pd1():
@@ -130,11 +139,13 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_d1(
-            W1=1.0, dl=100 * si.um, CKE=1.0
+            W1=2.67, dl=0.36 * si.cm, dcoal=0.3744 * si.cm, CKE=8.55e-6 * si.J
         )
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (24.080107809942664, 0.28666015630152986, 0.016567297254868083)
+        )
 
     @staticmethod
     def test_ll82_pd2():
@@ -143,11 +154,13 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # act
         params = formulae.fragmentation_function.params_d2(
-            ds=100 * si.um, dl=100 * si.um, CKE=200 * si.um
+            ds=0.18 * si.cm, dl=0.36 * si.cm, CKE=8.55e-6 * si.J
         )
 
         # assert
-        np.testing.assert_approx_equal(len(params), 3.0)
+        np.testing.assert_array_equal(
+            params, (0.30464721998964595, -2.148778428091927, 3.1133226212867343e-147)
+        )
 
     @staticmethod
     def test_erfinv():
@@ -155,8 +168,8 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
         formulae = Formulae(fragmentation_function="LowList1982Nf")
 
         # act
-        params = formulae.fragmentation_function.erfinv(0.5)
+        params = formulae.fragmentation_function.erfinv(0.25)
 
         # assert
-        diff = np.abs(params - 0.476936)
+        diff = np.abs(params - 0.2253)
         np.testing.assert_array_less(diff, 1e-3)

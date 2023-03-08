@@ -123,12 +123,12 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         dsCM = ds / const.CM
         dlCM = dl / const.CM
         Dss2 = (
-            0.254 * (ds ** (0.413)) * np.exp(3.53 * dsCM ** (-2.51) * (dlCM - dsCM))
+            0.254 * (dsCM ** (0.413)) * np.exp(3.53 * dsCM ** (2.51) * (dlCM - dsCM))
         )  # (4.27)
         bstar = 14.2 * np.exp(-17.2 * dsCM)
         Ps20 = 0.23 * dsCM ** (-3.93) * dlCM ** (bstar)  # (4.29)
         sigmas2 = 10 * Dss2  # as in (4.22)
-        mus2 = np.log(Dss2) + sigmas2**22  # (4.32)
+        mus2 = np.log(Dss2) + sigmas2**2  # (4.32)
         Hs2 = Ps20 * Dss2 / np.exp(-0.5 * sigmas2**2)  # (4.28)
 
         Fs = 5 * math.erf((St - 2.52e-6) / (1.85e-6)) + 6  # (3.7)
@@ -140,15 +140,15 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
                 / Hs2
                 / (1 - math.erf((np.log(0.01) - mus2) / np.sqrt(2) / sigmas2))
             )
-            mus2 = np.log(Dss2) + sigmas2 * 2  # (4.32)
+            mus2 = np.log(Dss2) + sigmas2**2  # (4.32)
             Hs2 = Ps20 * Dss2 / np.exp(-0.5 * sigmas2**2)  # (4.28)
 
         return (Hs2, mus2, sigmas2)
 
     @staticmethod
-    def params_d1(const, W1, dl, CKE):
+    def params_d1(const, W1, dl, dcoal, CKE):
         dlCM = dl / const.CM
-        dcoalCM = dlCM / const.CM
+        dcoalCM = dcoal / const.CM
         mud1 = dlCM * (1 - np.exp(-3.70 * (3.10 - W1)))
         Hd1 = 1.58e-5 * CKE ** (-1.22)
         sigmad1 = 1 / Hd1
@@ -165,7 +165,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
     def params_d2(const, ds, dl, CKE):
         dsCM = ds / const.CM
         dlCM = dl / const.CM
-        Ddd2 = np.exp(-17.4 * dsCM - 0.671 * (dlCM - dsCM)) * dsCM  # (4.37)
+        Ddd2 = np.exp(-1.74 * dsCM - 0.671 * (dlCM - dsCM)) * dsCM  # (4.37)
         bstar = 0.007 * dsCM ** (-2.54)  # (4.39)
         Pd20 = 0.0884 * dsCM ** (-2.52) * (dlCM - dsCM) ** (bstar)  # (4.38)
         sigmad2 = 10 * Ddd2

@@ -270,7 +270,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
     W,
     W2,
 ):  # pylint: disable=too-many-branches`
-    if CKE[i] >= 89.3:
+    if CKE[i] >= 89.3e-6:
         Rf[i] = 1.11e-4 * CKE[i] ** (-0.654)
     else:
         Rf[i] = 1.0
@@ -452,7 +452,9 @@ class CollisionsMethods(BackendMethods):
                                 frag_size[i] = np.exp(lnarg)
 
                         else:  # disk breakup
-                            (H1, mu1, sigma1) = ll82_params_d1(W[i], dl[i], CKE[i])
+                            (H1, mu1, sigma1) = ll82_params_d1(
+                                W[i], dl[i], dcoal[i], CKE[i]
+                            )
                             (H2, mu2, sigma2) = ll82_params_d2(ds[i], dl[i], CKE[i])
                             Hsum = H1 + H2
                             rand[i] = (rand[i] - Rf[i] - Rs[i]) / Rd[i]
