@@ -70,7 +70,9 @@ def breakup_fun0(
     new_mult_k = multiplicity[k]
     for m in range(int(gamma)):
         take_from_j_test += new_mult_k_test
-        new_mult_k_test *= volume[j] / fragment_size_i
+        new_mult_k_test *= (
+            volume[j] / fragment_size_i
+        )  # TODO ??? new_mult_k_test == 0 in first pass
         new_mult_k_test += nfi * multiplicity[k]
 
         # check for overflow of multiplicity

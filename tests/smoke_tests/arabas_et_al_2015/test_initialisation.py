@@ -68,28 +68,28 @@ def test_initialisation(backend_class, plot=False):
         )
 
     # Plot
+    for level in range(0, n_levels):
+        color = str(0.75 * (level / (n_levels - 1)))
+        pyplot.step(
+            r_bins[:-1] * si.metres / si.micrometres,
+            histogram_dry[:, level] / si.metre**3 * si.centimetre**3,
+            where="post",
+            color=color,
+            label="level " + str(level),
+        )
+        pyplot.step(
+            r_bins[:-1] * si.metres / si.micrometres,
+            histogram_wet[:, level] / si.metre**3 * si.centimetre**3,
+            where="post",
+            color=color,
+            linestyle="--",
+        )
+    pyplot.grid()
+    pyplot.xscale("log")
+    pyplot.xlabel("particle radius [µm]")
+    pyplot.ylabel("concentration per bin [cm^{-3}]")
+    pyplot.legend()
     if plot:
-        for level in range(0, n_levels):
-            color = str(0.75 * (level / (n_levels - 1)))
-            pyplot.step(
-                r_bins[:-1] * si.metres / si.micrometres,
-                histogram_dry[:, level] / si.metre**3 * si.centimetre**3,
-                where="post",
-                color=color,
-                label="level " + str(level),
-            )
-            pyplot.step(
-                r_bins[:-1] * si.metres / si.micrometres,
-                histogram_wet[:, level] / si.metre**3 * si.centimetre**3,
-                where="post",
-                color=color,
-                linestyle="--",
-            )
-        pyplot.grid()
-        pyplot.xscale("log")
-        pyplot.xlabel("particle radius [µm]")
-        pyplot.ylabel("concentration per bin [cm^{-3}]")
-        pyplot.legend()
         pyplot.show()
 
     # Assert - total number
