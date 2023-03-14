@@ -47,12 +47,11 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays["tmp"].sum(self.particulator.attributes["volume"], is_first_in_pair)
-        self.arrays["Sc"][:] = self.arrays["tmp"][:]  # TODO #976
+        self.arrays["Sc"].sum(self.particulator.attributes["volume"], is_first_in_pair)
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
         )
-        self.arrays["tmp"] *= 2
         self.arrays["tmp2"].distance(
             self.particulator.attributes["terminal velocity"], is_first_in_pair
         )
@@ -62,7 +61,7 @@ class Straub2010Nf:
         )
         self.arrays["CKE"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["CKE"] *= self.arrays["tmp2"]
-        self.arrays["CKE"] *= self.const.rho_w
+        self.arrays["CKE"] *= self.const.rho_w / 2
 
         self.arrays["We"][:] = self.arrays["CKE"][:]  # TODO #976
         self.arrays["We"].divide_if_not_zero(self.arrays["Sc"])

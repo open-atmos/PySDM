@@ -44,7 +44,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
     def params_p1(const, CW):
         sigma1 = np.sqrt(
             np.log(
-                np.power((np.sqrt(CW) / 8) / 10, 2)
+                np.power((np.sqrt(CW) / 8) / 10 * const.CM, 2)
                 / 12
                 / np.power(const.STRAUB_E_D1, const.TWO)
                 + 1
@@ -72,7 +72,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
     @staticmethod
     def params_p2(const, CW):
         mu2 = const.STRAUB_MU2
-        deltaD2 = 7 * (CW - 21) / 1000
+        deltaD2 = 7 * (CW - 21) / 1000 * const.CM
         deltaD2 = max(0.0, deltaD2)
         sigma2 = deltaD2 / np.sqrt(12)
         return (mu2, sigma2)
@@ -96,7 +96,7 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
     @staticmethod
     def params_p3(const, CW, ds):
         mu3 = 0.9 * ds
-        deltaD3 = (1 + 0.76 * np.sqrt(CW)) / 100
+        deltaD3 = (1 + 0.76 * np.sqrt(CW)) / 100 * const.CM
         sigma3 = deltaD3 / np.sqrt(12)
         return (mu3, sigma3)
 
