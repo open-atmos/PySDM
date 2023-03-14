@@ -223,7 +223,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         "fragmentation_fn",
         (
             # AlwaysN(n=2),
-            ExponFrag(scale=1e6 * si.um**3),
+            # ExponFrag(scale=1e6 * si.um**3),
             # Feingold1988Frag(scale=1e6 * si.um**3),
             # Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             # SLAMS(),
@@ -232,7 +232,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         ),
     )
     def test_fragmentation_fn_distribution(
-        fragmentation_fn,
+        fragmentation_fn, plot=False
     ):  # pylint: disable=redefined-outer-name
         # arrange
         from PySDM.backends import CPU
@@ -304,9 +304,12 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             # np.testing.assert_array_less([0.0], frag_size.to_ndarray())
 
         # res = np.asarray(sorted(res, key=lambda x: x[1], reverse=True))
-        print(res[:, 0])
-        print(np.unique(res[:, 0]), len(np.unique(res[:, 0])))
-        print(np.unique(res[:, 1]), len(np.unique(res[:, 1])))
+        # print(res[:, 0])
+        unique_nfs, nfs_counts = np.unique(res[:, 0], return_counts=True)
+        unique_frag_size, frag_sizes_counts = np.unique(res[:, 1], return_counts=True)
+        print("nfs", unique_nfs, nfs_counts)
+        print("frag_sizes", unique_frag_size, frag_sizes_counts)
 
         plt.plot(rns, res[:, 0])
-        plt.show()
+        if plot:
+            plt.show()
