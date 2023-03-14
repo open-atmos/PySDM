@@ -739,7 +739,6 @@ class CollisionsMethods(BackendMethods):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             if np.isnan(frag_size[i]):
                 frag_size[i] = x_plus_y[i]
-            frag_size[i] = min(frag_size[i], v_max[i])
             frag_size[i] = min(frag_size[i], x_plus_y[i])
             frag_size[i] = max(frag_size[i], vmin)
             if nfmax is not None:
