@@ -363,11 +363,16 @@ class CollisionsMethods(BackendMethods):
         self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
 
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
-            straub_p1 = self.formulae.fragmentation_function.p1
-            straub_p2 = self.formulae.fragmentation_function.p2
-            straub_p3 = self.formulae.fragmentation_function.p3
-            straub_p4 = self.formulae.fragmentation_function.p4
-            straub_sigma1 = self.formulae.fragmentation_function.sigma1
+            # straub_p1 = self.formulae.fragmentation_function.p1
+            # straub_p2 = self.formulae.fragmentation_function.p2
+            # straub_p3 = self.formulae.fragmentation_function.p3
+            # straub_p4 = self.formulae.fragmentation_function.p4
+            # straub_sigma1 = self.formulae.fragmentation_function.sigma1
+            straub_paramsp1 = self.formulae.fragmentation_function.params_p1
+            straub_paramsp2 = self.formulae.fragmentation_function.params_p2
+            straub_paramsp3 = self.formulae.fragmentation_function.params_p3
+            straub_paramsp4 = self.formulae.fragmentation_function.params_p4
+            straub_erfinv = self.formulae.fragmentation_function.erfinv
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __straub_fragmentation_body(
@@ -377,24 +382,47 @@ class CollisionsMethods(BackendMethods):
                     len(frag_size)
                 ):
                     straub_Nr(i, Nr1, Nr2, Nr3, Nr4, Nrt, CW, gam)
+                    (mu1, sigma1) = straub_paramsp1(CW[i])
+                    (mu2, sigma2) = straub_paramsp2(CW[i])
+                    (mu3, sigma3) = straub_paramsp3(CW[i], ds[i])
+                    (M31, M32, M33, M34, d34) = straub_paramsp4(
+                        v_max[i],
+                        ds[i],
+                        mu1,
+                        sigma1,
+                        mu2,
+                        sigma2,
+                        mu3,
+                        sigma3,
+                        Nr1[i],
+                        Nr2[i],
+                        Nr3[i],
+                        CW[i],
+                    )
+                    Nr1[i] = Nr1[i] * M31
+                    Nr2[i] = Nr2[i] * M32
+                    Nr3[i] = Nr3[i] * M33
+                    Nr4[i] = Nr4[i] * M34
+                    Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i]
+
                     if rand[i] < Nr1[i] / Nrt[i]:
-                        frag_size[i] = straub_p1(
-                            rand[i] * Nrt[i] / Nr1[i], straub_sigma1(CW[i])
-                        )
+                        X = rand[i] * Nrt[i] / Nr1[i]
+                        lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(2 * X - 1)
+                        frag_size[i] = np.exp(lnarg)
                     elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
-                        frag_size[i] = straub_p2(
-                            CW[i], (rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])
+                        X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
+                        frag_size[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(
+                            2 * X - 1
                         )
                     elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
-                        frag_size[i] = straub_p3(
-                            CW[i],
-                            ds[i],
-                            (rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i]),
+                        X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
+                        frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(
+                            2 * X - 1
                         )
                     else:
-                        frag_size[i] = straub_p4(
-                            CW[i], ds[i], v_max[i], Nr1[i], Nr2[i], Nr3[i]
-                        )
+                        frag_size[i] = d34
+
+                    frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
 
             self.__straub_fragmentation_body = __straub_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "LowList1982Nf":

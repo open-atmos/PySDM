@@ -41,6 +41,19 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
+    def params_p1(const, CW):
+        sigma1 = np.sqrt(
+            np.log(
+                np.power((np.sqrt(CW) / 8) / 10, 2)
+                / 12
+                / np.power(const.STRAUB_E_D1, const.TWO)
+                + 1
+            )
+        )
+        mu1 = np.log(const.STRAUB_E_D1) - np.power(sigma1, const.TWO) / 2
+        return (mu1, sigma1)
+
+    @staticmethod
     def p2(const, CW, rand):
         return (
             const.PI
@@ -57,6 +70,14 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         )
 
     @staticmethod
+    def params_p2(const, CW):
+        mu2 = const.STRAUB_MU2
+        deltaD2 = 7 * (CW - 21) / 1000
+        deltaD2 = max(0.0, deltaD2)
+        sigma2 = deltaD2 / np.sqrt(12)
+        return (mu2, sigma2)
+
+    @staticmethod
     def p3(const, CW, ds, rand):
         return (
             const.PI
@@ -71,6 +92,13 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
                 const.THREE,
             )
         )
+
+    @staticmethod
+    def params_p3(const, CW, ds):
+        mu3 = 0.9 * ds
+        deltaD3 = (1 + 0.76 * np.sqrt(CW)) / 100
+        sigma3 = deltaD3 / np.sqrt(12)
+        return (mu3, sigma3)
 
     @staticmethod
     def p4(const, CW, ds, v_max, Nr1, Nr2, Nr3):  # pylint: disable=too-many-arguments
@@ -115,3 +143,27 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
                 )
             )
         )
+
+    @staticmethod
+    def params_p4(const, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, N1, N2, N3, CW):
+        M31 = N1 * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
+        M32 = N2 * (mu2**3 + 3 * mu2 * sigma2**2)
+        M33 = N3 * (mu3**3 + 3 * mu3 * sigma3**2)
+        dl = np.exp(np.log(vl / 4 * 3 / np.pi) / 3)
+        M34 = dl**3 + ds**3 - M31 - M32 - M33
+        if M34 <= 0.0:
+            d34 = 0
+            M34 = 0
+        else:
+            d34 = np.exp(np.log(M34) / 3)
+        return (M31, M32, M33, M34, d34)
+
+    @staticmethod
+    def erfinv(X):
+        a = 8 * (np.pi - 3) / (3 * np.pi * (4 - np.pi))
+        arg = (2 / np.pi / a) + np.log(1 - X**2) / 2
+        arg = arg * arg
+        arg = arg - np.log(1 - X**2) / a
+        arg = np.sqrt(arg)
+        arg = arg - (2 / np.pi / a + np.log(1 - X**2) / 2)
+        return np.sqrt(arg)
