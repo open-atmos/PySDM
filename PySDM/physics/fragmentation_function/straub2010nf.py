@@ -149,24 +149,13 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         M31 = N1 * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
         M32 = N2 * (mu2**3 + 3 * mu2 * sigma2**2)
         M33 = N3 * (mu3**3 + 3 * mu3 * sigma3**2)
-        dl = np.exp(np.log(vl / 4 * 3 / np.pi) / 3)
-        M34 = dl**3 + ds**3 - M31 - M32 - M33
+        M34 = vl * 6 / np.pi + ds**3 - M31 - M32 - M33
         if M34 <= 0.0:
             d34 = 0
             M34 = 0
         else:
             d34 = np.exp(np.log(M34) / 3)
         return (M31, M32, M33, M34, d34)
-
-    # @staticmethod
-    # def erfinv(X):
-    #     a = 8 * (np.pi - 3) / (3 * np.pi * (4 - np.pi))
-    #     arg = (2 / np.pi / a) + np.log(1 - X**2) / 2
-    #     arg = arg * arg
-    #     arg = arg - np.log(1 - X**2) / a
-    #     arg = np.sqrt(arg)
-    #     arg = arg - (2 / np.pi / a + np.log(1 - X**2) / 2)
-    #     return np.sqrt(arg)
 
     @staticmethod
     def erfinv(X):

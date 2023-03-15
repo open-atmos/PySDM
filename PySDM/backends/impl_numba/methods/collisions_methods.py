@@ -394,7 +394,6 @@ class CollisionsMethods(BackendMethods):
                         Nr3[i],
                         CW[i],
                     )
-                    print(mu1, sigma1, mu2, sigma2, mu3, sigma3, d34)
                     Nr1[i] = Nr1[i] * M31
                     Nr2[i] = Nr2[i] * M32
                     Nr3[i] = Nr3[i] * M33
@@ -403,18 +402,14 @@ class CollisionsMethods(BackendMethods):
 
                     if rand[i] < Nr1[i] / Nrt[i]:
                         X = rand[i] * Nrt[i] / Nr1[i]
-                        lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(2 * X - 1)
+                        lnarg = mu1 + np.sqrt(2) * sigma1 * straub_erfinv(X)
                         frag_size[i] = np.exp(lnarg)
                     elif rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]:
                         X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i]
-                        frag_size[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(
-                            2 * X - 1
-                        )
+                        frag_size[i] = mu2 + np.sqrt(2) * sigma2 * straub_erfinv(X)
                     elif rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]:
                         X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i]
-                        frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(
-                            2 * X - 1
-                        )
+                        frag_size[i] = mu3 + np.sqrt(2) * sigma3 * straub_erfinv(X)
                     else:
                         frag_size[i] = d34
 
