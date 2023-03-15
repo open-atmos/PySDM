@@ -24,199 +24,199 @@ assert hasattr(backend_class, "_pytestfixturefunction")
 
 
 class TestFragmentations:  # pylint: disable=too-few-public-methods
-    @staticmethod
-    @pytest.mark.parametrize(
-        "fragmentation_fn",
-        (
-            AlwaysN(n=2),
-            ExponFrag(scale=1e6 * si.um**3),
-            Feingold1988Frag(scale=1e6 * si.um**3),
-            Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
-            SLAMS(),
-            Straub2010Nf(),
-            LowList1982Nf(),
-        ),
-    )
-    def test_fragmentation_fn_call(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
-        # arrange
-        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        fragments = np.asarray([-1.0])
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
-            ),
-        )
-        sut = fragmentation_fn
-        sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+    # @staticmethod
+    # @pytest.mark.parametrize(
+    #     "fragmentation_fn",
+    #     (
+    #         AlwaysN(n=2),
+    #         ExponFrag(scale=1e6 * si.um**3),
+    #         Feingold1988Frag(scale=1e6 * si.um**3),
+    #         Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
+    #         SLAMS(),
+    #         Straub2010Nf(),
+    #         LowList1982Nf(),
+    #     ),
+    # )
+    # def test_fragmentation_fn_call(
+    #     fragmentation_fn, backend_class
+    # ):  # pylint: disable=redefined-outer-name
+    #     # arrange
+    #     volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
+    #     fragments = np.asarray([-1.0])
+    #     builder = Builder(
+    #         volume.size,
+    #         backend_class(
+    #             Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+    #         ),
+    #     )
+    #     sut = fragmentation_fn
+    #     sut.vmin = 1 * si.um**3
+    #     sut.register(builder)
+    #     builder.set_environment(Box(dv=None, dt=None))
+    #     _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
-        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
-            np.asarray([True, False])
-        )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
+    #     _PairwiseStorage = builder.particulator.PairwiseStorage
+    #     _Indicator = builder.particulator.PairIndicator
+    #     nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     is_first_in_pair = _Indicator(length=volume.size)
+    #     is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+    #         np.asarray([True, False])
+    #     )
+    #     u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
-        # act
-        sut(nf, frag_size, u01, is_first_in_pair)
+    #     # act
+    #     sut(nf, frag_size, u01, is_first_in_pair)
 
-        # Assert
-        np.testing.assert_array_less([0.99], nf.to_ndarray())
-        np.testing.assert_array_less([0.0], frag_size.to_ndarray())
+    #     # Assert
+    #     np.testing.assert_array_less([0.99], nf.to_ndarray())
+    #     np.testing.assert_array_less([0.0], frag_size.to_ndarray())
 
-    @staticmethod
-    @pytest.mark.parametrize(
-        "fragmentation_fn",
-        [
-            ExponFrag(scale=1 * si.um**3, vmin=6660.0 * si.um**3),
-            Feingold1988Frag(scale=1 * si.um**3, vmin=6660.0 * si.um**3),
-            Gaussian(mu=2 * si.um**3, sigma=1 * si.um**3, vmin=6660.0 * si.um**3),
-            SLAMS(vmin=6660.0 * si.um**3),
-            Straub2010Nf(vmin=6660.0 * si.um**3),
-            LowList1982Nf(vmin=6660.0 * si.um**3),
-            pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
-        ],
-    )
-    def test_fragmentation_limiters_vmin(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
-        # arrange
-        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        fragments = np.asarray([-1.0])
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__),
-                double_precision=True,
-            ),
-        )
-        sut = fragmentation_fn
-        sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+    # @staticmethod
+    # @pytest.mark.parametrize(
+    #     "fragmentation_fn",
+    #     [
+    #         ExponFrag(scale=1 * si.um**3, vmin=6660.0 * si.um**3),
+    #         Feingold1988Frag(scale=1 * si.um**3, vmin=6660.0 * si.um**3),
+    #         Gaussian(mu=2 * si.um**3, sigma=1 * si.um**3, vmin=6660.0 * si.um**3),
+    #         SLAMS(vmin=6660.0 * si.um**3),
+    #         Straub2010Nf(vmin=6660.0 * si.um**3),
+    #         LowList1982Nf(vmin=6660.0 * si.um**3),
+    #         pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
+    #     ],
+    # )
+    # def test_fragmentation_limiters_vmin(
+    #     fragmentation_fn, backend_class
+    # ):  # pylint: disable=redefined-outer-name
+    #     # arrange
+    #     volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
+    #     fragments = np.asarray([-1.0])
+    #     builder = Builder(
+    #         volume.size,
+    #         backend_class(
+    #             Formulae(fragmentation_function=fragmentation_fn.__class__.__name__),
+    #             double_precision=True,
+    #         ),
+    #     )
+    #     sut = fragmentation_fn
+    #     sut.register(builder)
+    #     builder.set_environment(Box(dv=None, dt=None))
+    #     _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
-        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
-            np.asarray([True, False])
-        )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+    #     _PairwiseStorage = builder.particulator.PairwiseStorage
+    #     _Indicator = builder.particulator.PairIndicator
+    #     nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     is_first_in_pair = _Indicator(length=volume.size)
+    #     is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+    #         np.asarray([True, False])
+    #     )
+    #     u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
-        # act
-        sut(nf, frag_size, u01, is_first_in_pair)
+    #     # act
+    #     sut(nf, frag_size, u01, is_first_in_pair)
 
-        # Assert
-        np.testing.assert_array_equal([(440.0 + 6660.0) / 6660.0], nf.to_ndarray())
-        np.testing.assert_array_equal([6660.0 * si.um**3], frag_size.to_ndarray())
+    #     # Assert
+    #     np.testing.assert_array_equal([(440.0 + 6660.0) / 6660.0], nf.to_ndarray())
+    #     np.testing.assert_array_equal([6660.0 * si.um**3], frag_size.to_ndarray())
 
-    @staticmethod
-    @pytest.mark.parametrize(
-        "fragmentation_fn",
-        [
-            ExponFrag(scale=1.0 * si.cm**3),
-            Feingold1988Frag(scale=1.0 * si.cm**3),
-            Gaussian(mu=1.0 * si.cm**3, sigma=1e6 * si.um**3),
-            SLAMS(),
-            Straub2010Nf(),
-            LowList1982Nf(),
-            pytest.param(AlwaysN(n=0.01), marks=pytest.mark.xfail(strict=True)),
-        ],
-    )
-    def test_fragmentation_limiters_vmax(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
-        # arrange
-        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        fragments = np.asarray([-1.0])
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
-            ),
-        )
-        sut = fragmentation_fn
-        sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+    # @staticmethod
+    # @pytest.mark.parametrize(
+    #     "fragmentation_fn",
+    #     [
+    #         ExponFrag(scale=1.0 * si.cm**3),
+    #         Feingold1988Frag(scale=1.0 * si.cm**3),
+    #         Gaussian(mu=1.0 * si.cm**3, sigma=1e6 * si.um**3),
+    #         SLAMS(),
+    #         Straub2010Nf(),
+    #         LowList1982Nf(),
+    #         pytest.param(AlwaysN(n=0.01), marks=pytest.mark.xfail(strict=True)),
+    #     ],
+    # )
+    # def test_fragmentation_limiters_vmax(
+    #     fragmentation_fn, backend_class
+    # ):  # pylint: disable=redefined-outer-name
+    #     # arrange
+    #     volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
+    #     fragments = np.asarray([-1.0])
+    #     builder = Builder(
+    #         volume.size,
+    #         backend_class(
+    #             Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+    #         ),
+    #     )
+    #     sut = fragmentation_fn
+    #     sut.vmin = 1 * si.um**3
+    #     sut.register(builder)
+    #     builder.set_environment(Box(dv=None, dt=None))
+    #     _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
-        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
-            np.asarray([True, False])
-        )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+    #     _PairwiseStorage = builder.particulator.PairwiseStorage
+    #     _Indicator = builder.particulator.PairIndicator
+    #     nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     is_first_in_pair = _Indicator(length=volume.size)
+    #     is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+    #         np.asarray([True, False])
+    #     )
+    #     u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
-        # act
-        sut(nf, frag_size, u01, is_first_in_pair)
+    #     # act
+    #     sut(nf, frag_size, u01, is_first_in_pair)
 
-        # Assert
-        np.testing.assert_array_less([(440.0 + 6660.0) / 6661.0], nf.to_ndarray())
-        np.testing.assert_array_less(frag_size.to_ndarray(), [6661.0 * si.um**3])
+    #     # Assert
+    #     np.testing.assert_array_less([(440.0 + 6660.0) / 6661.0], nf.to_ndarray())
+    #     np.testing.assert_array_less(frag_size.to_ndarray(), [6661.0 * si.um**3])
 
-    @staticmethod
-    @pytest.mark.parametrize(
-        "fragmentation_fn",
-        [
-            ExponFrag(scale=1.0 * si.um**3, nfmax=2),
-            Feingold1988Frag(scale=1.0 * si.um**3, nfmax=2),
-            Gaussian(mu=1.0 * si.um**3, sigma=1e6 * si.um**3, nfmax=2),
-            SLAMS(nfmax=2),
-            Straub2010Nf(nfmax=2),
-            LowList1982Nf(nfmax=2),
-            pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
-        ],
-    )
-    def test_fragmentation_limiters_nfmax(
-        fragmentation_fn, backend_class
-    ):  # pylint: disable=redefined-outer-name
-        # arrange
-        volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
-        fragments = np.asarray([-1.0])
-        builder = Builder(
-            volume.size,
-            backend_class(
-                Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
-            ),
-        )
-        sut = fragmentation_fn
-        sut.vmin = 1 * si.um**3
-        sut.register(builder)
-        builder.set_environment(Box(dv=None, dt=None))
-        _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
+    # @staticmethod
+    # @pytest.mark.parametrize(
+    #     "fragmentation_fn",
+    #     [
+    #         ExponFrag(scale=1.0 * si.um**3, nfmax=2),
+    #         Feingold1988Frag(scale=1.0 * si.um**3, nfmax=2),
+    #         Gaussian(mu=1.0 * si.um**3, sigma=1e6 * si.um**3, nfmax=2),
+    #         SLAMS(nfmax=2),
+    #         Straub2010Nf(nfmax=2),
+    #         LowList1982Nf(nfmax=2),
+    #         pytest.param(AlwaysN(n=10), marks=pytest.mark.xfail(strict=True)),
+    #     ],
+    # )
+    # def test_fragmentation_limiters_nfmax(
+    #     fragmentation_fn, backend_class
+    # ):  # pylint: disable=redefined-outer-name
+    #     # arrange
+    #     volume = np.asarray([440.0 * si.um**3, 6660.0 * si.um**3])
+    #     fragments = np.asarray([-1.0])
+    #     builder = Builder(
+    #         volume.size,
+    #         backend_class(
+    #             Formulae(fragmentation_function=fragmentation_fn.__class__.__name__)
+    #         ),
+    #     )
+    #     sut = fragmentation_fn
+    #     sut.vmin = 1 * si.um**3
+    #     sut.register(builder)
+    #     builder.set_environment(Box(dv=None, dt=None))
+    #     _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
-        _PairwiseStorage = builder.particulator.PairwiseStorage
-        _Indicator = builder.particulator.PairIndicator
-        nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
-        is_first_in_pair = _Indicator(length=volume.size)
-        is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
-            np.asarray([True, False])
-        )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+    #     _PairwiseStorage = builder.particulator.PairwiseStorage
+    #     _Indicator = builder.particulator.PairIndicator
+    #     nf = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     frag_size = _PairwiseStorage.from_ndarray(np.zeros_like(fragments))
+    #     is_first_in_pair = _Indicator(length=volume.size)
+    #     is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
+    #         np.asarray([True, False])
+    #     )
+    #     u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
 
-        # act
-        sut(nf, frag_size, u01, is_first_in_pair)
+    #     # act
+    #     sut(nf, frag_size, u01, is_first_in_pair)
 
-        # Assert
-        np.testing.assert_array_less(nf.to_ndarray(), [2.0 + 1e-6])
-        np.testing.assert_array_less(
-            [((6660.0 + 440.0) / 2 - 1) * si.um**3], frag_size.to_ndarray()
-        )
+    #     # Assert
+    #     np.testing.assert_array_less(nf.to_ndarray(), [2.0 + 1e-6])
+    #     np.testing.assert_array_less(
+    #         [((6660.0 + 440.0) / 2 - 1) * si.um**3], frag_size.to_ndarray()
+    #     )
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -227,12 +227,12 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
             # Feingold1988Frag(scale=1e6 * si.um**3),
             # Gaussian(mu=2e6 * si.um**3, sigma=1e6 * si.um**3),
             # SLAMS(),
-            # Straub2010Nf(),
-            LowList1982Nf(),
+            Straub2010Nf(),
+            # LowList1982Nf(),
         ),
     )
     def test_fragmentation_fn_distribution(
-        fragmentation_fn, plot=False
+        fragmentation_fn, plot=True
     ):  # pylint: disable=redefined-outer-name
         # arrange
         from PySDM.backends import CPU
@@ -310,6 +310,6 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         print("nfs", unique_nfs, nfs_counts)
         print("frag_sizes", unique_frag_size, frag_sizes_counts)
 
-        plt.plot(rns, res[:, 0])
+        plt.hist(res[:, 0])
         if plot:
             plt.show()

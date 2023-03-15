@@ -363,11 +363,6 @@ class CollisionsMethods(BackendMethods):
         self.__ll82_coalescence_check_body = __ll82_coalescence_check_body
 
         if self.formulae.fragmentation_function.__name__ == "Straub2010Nf":
-            # straub_p1 = self.formulae.fragmentation_function.p1
-            # straub_p2 = self.formulae.fragmentation_function.p2
-            # straub_p3 = self.formulae.fragmentation_function.p3
-            # straub_p4 = self.formulae.fragmentation_function.p4
-            # straub_sigma1 = self.formulae.fragmentation_function.sigma1
             straub_paramsp1 = self.formulae.fragmentation_function.params_p1
             straub_paramsp2 = self.formulae.fragmentation_function.params_p2
             straub_paramsp3 = self.formulae.fragmentation_function.params_p3
@@ -399,6 +394,7 @@ class CollisionsMethods(BackendMethods):
                         Nr3[i],
                         CW[i],
                     )
+                    print(mu1, sigma1, mu2, sigma2, mu3, sigma3, d34)
                     Nr1[i] = Nr1[i] * M31
                     Nr2[i] = Nr2[i] * M32
                     Nr3[i] = Nr3[i] * M33
@@ -521,7 +517,7 @@ class CollisionsMethods(BackendMethods):
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
-            gaussian_frag_size = self.formulae.fragmentation_function.frag_size
+            gaussian_erfinv = self.formulae.fragmentation_function.erfinv
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __gauss_fragmentation_body(
@@ -530,7 +526,7 @@ class CollisionsMethods(BackendMethods):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
-                    frag_size[i] = gaussian_frag_size(mu, sigma, rand[i])
+                    frag_size[i] = mu + sigma * gaussian_erfinv(rand[i])
 
             self.__gauss_fragmentation_body = __gauss_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
