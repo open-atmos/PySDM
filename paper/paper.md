@@ -18,11 +18,11 @@ authors:
   - name: Sajjad Azimi
     affiliation: "2"
     orcid: 0000-0002-6329-7775
-  - name: Oleksii Bulenok
-    orcid: 0000-0003-2272-8548
-    affiliation: "3"
   - name: Piotr Bartman
     orcid: 0000-0003-0265-6428
+    affiliation: "3"
+  - name: Oleksii Bulenok
+    orcid: 0000-0003-2272-8548
     affiliation: "3"
   - name: Kacper Derlatka
     orcid: 0000-0003-3137-1288
