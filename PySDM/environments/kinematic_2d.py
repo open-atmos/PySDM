@@ -49,7 +49,9 @@ class Kinematic2D(Moist):
         n_sd = n_sd or self.particulator.n_sd
         attributes = {}
         with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            positions = spatial_discretisation.sample(
+                self.particulator.backend, self.mesh.grid, n_sd
+            )
             (
                 attributes["cell id"],
                 attributes["cell origin"],

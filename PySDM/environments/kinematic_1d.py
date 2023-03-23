@@ -40,7 +40,7 @@ class Kinematic1D(Moist):
         attributes = {}
         with np.errstate(all="raise"):
             positions = spatial_discretisation.sample(
-                self.mesh.grid, self.particulator.n_sd
+                self.particulator.backend, self.mesh.grid, self.particulator.n_sd
             )
             (
                 attributes["cell id"],

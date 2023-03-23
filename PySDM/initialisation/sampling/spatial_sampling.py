@@ -9,9 +9,14 @@ import numpy as np
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(grid, n_sd):
+    def sample(backend, grid, n_sd):
         dimension = len(grid)
-        positions = np.random.rand(dimension, n_sd)
+        n_elements = dimension * n_sd
+
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        positions = storage.to_ndarray().reshape(dimension, n_sd)
+
         for dim in range(dimension):
             positions[dim, :] *= grid[dim]
         return positions
