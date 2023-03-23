@@ -392,7 +392,6 @@ class CollisionsMethods(BackendMethods):
                         Nr1[i],
                         Nr2[i],
                         Nr3[i],
-                        CW[i],
                     )
                     Nr1[i] = Nr1[i] * M31
                     Nr2[i] = Nr2[i] * M32
