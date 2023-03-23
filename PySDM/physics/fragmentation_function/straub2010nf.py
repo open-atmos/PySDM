@@ -14,9 +14,8 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
     def sigma1(const, CW):
         return np.sqrt(
             np.log(
-                np.power((np.sqrt(CW) / 8) / 10, 2)
-                / 12
-                / np.power(const.STRAUB_E_D1, const.TWO)
+                # np.power((np.sqrt(CW) / 8) / 10, 2)
+                CW / 64 / 100 / 12 / np.power(const.STRAUB_E_D1, const.TWO)
                 + 1
             )
         )
@@ -44,7 +43,12 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
     def params_p1(const, CW):
         sigma1 = np.sqrt(
             np.log(
-                np.power((np.sqrt(CW) / 8) / 10 * const.CM, 2)
+                # np.power((np.sqrt(CW) / 8) / 10 * const.CM, 2)
+                CW
+                / 64
+                / 100
+                * const.CM
+                * const.CM
                 / 12
                 / np.power(const.STRAUB_E_D1, const.TWO)
                 + 1

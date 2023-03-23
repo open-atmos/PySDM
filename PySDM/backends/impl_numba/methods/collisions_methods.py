@@ -731,11 +731,11 @@ class CollisionsMethods(BackendMethods):
             if np.isnan(frag_size[i]):
                 frag_size[i] = x_plus_y[i]
             frag_size[i] = min(frag_size[i], x_plus_y[i])
-            frag_size[i] = max(frag_size[i], vmin)
-            if nfmax is not None:
-                if x_plus_y[i] / frag_size[i] > nfmax:
-                    frag_size[i] = x_plus_y[i] / nfmax
-            if frag_size[i] == 0.0:
+            if nfmax is not None and x_plus_y[i] / frag_size[i] > nfmax:
+                frag_size[i] = x_plus_y[i] / nfmax
+            elif frag_size[i] < vmin:
+                frag_size[i] = x_plus_y[i]
+            elif frag_size[i] == 0.0:
                 frag_size[i] = x_plus_y[i]
             n_fragment[i] = x_plus_y[i] / frag_size[i]
 
