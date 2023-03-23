@@ -57,13 +57,6 @@ class Kinematic2D(Moist):
                 attributes["cell origin"],
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
-        with np.errstate(all="raise"):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-            (
-                attributes["cell id"],
-                attributes["cell origin"],
-                attributes["position in cell"],
-            ) = self.mesh.cellular_attributes(positions)
 
             r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
                 spectrum=dry_radius_spectrum
