@@ -19,7 +19,9 @@ assert hasattr(backend_class, "_pytestfixturefunction")
         pytest.param((44, 44), id="same seeds"),
     ),
 )
-def test_pseudorandom_reproducible(seeds, backend_class):
+def test_pseudorandom_reproducible(
+    seeds, backend_class
+):  # pylint: disable=redefined-outer-name
     # arrange
     assert len(seeds) == 2
     backends = [backend_class(Formulae(seed=seed)) for seed in seeds]
