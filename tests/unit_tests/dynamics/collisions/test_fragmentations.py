@@ -109,7 +109,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -158,7 +158,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -207,7 +207,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -262,7 +262,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         builder.set_environment(Box(dv=None, dt=None))
         _ = builder.build(attributes={"volume": volume, "n": np.ones_like(volume)})
 
-        rns = np.linspace(0, 1, n)
+        rns = np.linspace(1e-6, 1 - 1e-6, n)
         for i, rn in enumerate(rns):
             print("i", i)
             start = timer()

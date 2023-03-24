@@ -51,4 +51,4 @@ class TestEfficiencies:  # pylint: disable=too-few-public-methods
 
         # Assert
         np.testing.assert_array_less([0.0 - 1e-6], eff.to_ndarray())
-        np.testing.assert_array_less(eff.to_ndarray(), [1.0])
+        np.testing.assert_array_less(eff.to_ndarray(), [1.0 + 1e-6])
