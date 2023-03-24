@@ -26,10 +26,12 @@ def test_final_state(croupier, backend_class):
     x = 4
     y = 4
 
+    particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
     attributes = {}
     spectrum = Lognormal(n_part, v_mean, d)
-    attributes["volume"], attributes["n"] = Linear(spectrum).sample(n_sd)
-    particulator = DummyParticulator(backend_class, n_sd, grid=(x, y))
+    attributes["volume"], attributes["n"] = Linear(spectrum).sample(
+        particulator.backend, n_sd
+    )
     particulator.croupier = croupier
 
     attributes["cell id"] = np.array((n_sd,), dtype=int)

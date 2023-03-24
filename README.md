@@ -97,7 +97,11 @@ In order to depict the PySDM API with a practical example, the following
   listings provide sample code roughly reproducing the 
   Figure 2 from [Shima et al. 2009 paper](http://doi.org/10.1002/qj.441)
   using PySDM from Python, Julia and Matlab.
-It is a [`Coalescence`](https://open-atmos.github.io/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
+In the example, the ``backend`` points to an instance of the ``CPU`` class
+  what translates to choosing the multi-threaded Numba backend.
+To use GPU-resident computation mode, an instance of the ``GPU`` class
+  would be used.
+The example is a [`Coalescence`](https://open-atmos.github.io/PySDM/dynamics/coalescence.html)-only set-up in which the initial particle size 
   spectrum is [`Exponential`](https://open-atmos.github.io/PySDM/initialisation/spectra.html#PySDM.initialisation.spectra.Exponential) and is deterministically sampled to match
   the condition of each super-droplet having equal initial multiplicity:
 <details>
@@ -113,11 +117,13 @@ using PyCall
 si = pyimport("PySDM.physics").si
 ConstantMultiplicity = pyimport("PySDM.initialisation.sampling.spectral_sampling").ConstantMultiplicity
 Exponential = pyimport("PySDM.initialisation.spectra").Exponential
+CPU = pyimport("PySDM.backends").CPU
 
 n_sd = 2^15
+backend = CPU()
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um^3)
 attributes = Dict()
-attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(n_sd)
+attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_spectrum).sample(backend, n_sd)
 ```
 </details>
 <details>
@@ -127,13 +133,15 @@ attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum=initial_sp
 si = py.importlib.import_module('PySDM.physics').si;
 ConstantMultiplicity = py.importlib.import_module('PySDM.initialisation.sampling.spectral_sampling').ConstantMultiplicity;
 Exponential = py.importlib.import_module('PySDM.initialisation.spectra').Exponential;
+CPU = py.importlib.import_module('PySDM.backends').CPU;
 
 n_sd = 2^15;
+backend = CPU()
 initial_spectrum = Exponential(pyargs(...
     'norm_factor', 8.39e12, ...
     'scale', 1.19e5 * si.um ^ 3 ...
 ));
-tmp = ConstantMultiplicity(initial_spectrum).sample(int32(n_sd));
+tmp = ConstantMultiplicity(initial_spectrum).sample(backend, int32(n_sd));
 attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 ```
 </details>
@@ -144,11 +152,13 @@ attributes = py.dict(pyargs('volume', tmp{1}, 'n', tmp{2}));
 from PySDM.physics import si
 from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 from PySDM.initialisation.spectra.exponential import Exponential
+from PySDM.backends import CPU
 
 n_sd = 2 ** 15
+backend = CPU()
 initial_spectrum = Exponential(norm_factor=8.39e12, scale=1.19e5 * si.um ** 3)
 attributes = {}
-attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(n_sd)
+attributes['volume'], attributes['n'] = ConstantMultiplicity(initial_spectrum).sample(backend, n_sd)
 ```
 </details>
 
@@ -164,12 +174,11 @@ Builder = pyimport("PySDM").Builder
 Box = pyimport("PySDM.environments").Box
 Coalescence = pyimport("PySDM.dynamics").Coalescence
 Golovin = pyimport("PySDM.dynamics.collisions.collision_kernels").Golovin
-CPU = pyimport("PySDM.backends").CPU
 ParticleVolumeVersusRadiusLogarithmSpectrum = pyimport("PySDM.products").ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = 10 .^ range(log10(10*si.um), log10(5e3*si.um), length=32) 
 
-builder = Builder(n_sd=n_sd, backend=CPU())
+builder = Builder(n_sd=n_sd, backend=backend)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m^3))
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name="dv/dlnr")] 
@@ -184,12 +193,11 @@ Builder = py.importlib.import_module('PySDM').Builder;
 Box = py.importlib.import_module('PySDM.environments').Box;
 Coalescence = py.importlib.import_module('PySDM.dynamics').Coalescence;
 Golovin = py.importlib.import_module('PySDM.dynamics.collisions.collision_kernels').Golovin;
-CPU = py.importlib.import_module('PySDM.backends').CPU;
 ParticleVolumeVersusRadiusLogarithmSpectrum = py.importlib.import_module('PySDM.products').ParticleVolumeVersusRadiusLogarithmSpectrum;
 
 radius_bins_edges = logspace(log10(10 * si.um), log10(5e3 * si.um), 32);
 
-builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', CPU()));
+builder = Builder(pyargs('n_sd', int32(n_sd), 'backend', backend));
 builder.set_environment(Box(pyargs('dt', 1 * si.s, 'dv', 1e6 * si.m ^ 3)));
 builder.add_dynamic(Coalescence(pyargs('collision_kernel', Golovin(1.5e3 / si.s))));
 products = py.list({ ParticleVolumeVersusRadiusLogarithmSpectrum(pyargs( ...
@@ -208,12 +216,11 @@ from PySDM import Builder
 from PySDM.environments import Box
 from PySDM.dynamics import Coalescence
 from PySDM.dynamics.collisions.collision_kernels import Golovin
-from PySDM.backends import CPU
 from PySDM.products import ParticleVolumeVersusRadiusLogarithmSpectrum
 
 radius_bins_edges = np.logspace(np.log10(10 * si.um), np.log10(5e3 * si.um), num=32)
 
-builder = Builder(n_sd=n_sd, backend=CPU())
+builder = Builder(n_sd=n_sd, backend=backend)
 builder.set_environment(Box(dt=1 * si.s, dv=1e6 * si.m ** 3))
 builder.add_dynamic(Coalescence(collision_kernel=Golovin(b=1.5e3 / si.s)))
 products = [ParticleVolumeVersusRadiusLogarithmSpectrum(radius_bins_edges=radius_bins_edges, name='dv/dlnr')]
@@ -221,9 +228,6 @@ particulator = builder.build(attributes, products)
 ```
 </details>
 
-The ``backend`` argument may be set to ``CPU`` or ``GPU``
-  what translates to choosing the multi-threaded backend or the 
-  GPU-resident computation mode, respectively.
 The employed [`Box`](https://open-atmos.github.io/PySDM/environments/box.html) environment corresponds to a zero-dimensional framework
   (particle positions are not considered).
 The vectors of particle multiplicities ``n`` and particle volumes ``v`` are

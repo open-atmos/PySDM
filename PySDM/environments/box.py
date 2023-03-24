@@ -30,6 +30,6 @@ class Box:
     def init_attributes(self, *, spectral_discretisation):
         attributes = {}
         attributes["volume"], attributes["n"] = spectral_discretisation.sample(
-            self.particulator.n_sd
+            self.particulator.backend, self.particulator.n_sd
         )
         return attributes

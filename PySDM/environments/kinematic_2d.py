@@ -60,7 +60,7 @@ class Kinematic2D(Moist):
 
             r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
                 spectrum=dry_radius_spectrum
-            ).sample(n_sd)
+            ).sample(self.particulator.backend, n_sd)
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]

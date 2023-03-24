@@ -55,7 +55,7 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 
 
 class Linear(SpectralSampling):  # pylint: disable=too-few-public-methods
-    def sample(self, n_sd):
+    def sample(self, _backend, n_sd):
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
 
@@ -71,7 +71,7 @@ class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
         self.start = np.log10(self.size_range[0])
         self.stop = np.log10(self.size_range[1])
 
-    def sample(self, n_sd):
+    def sample(self, _backend, n_sd):
         grid = np.logspace(self.start, self.stop, num=2 * n_sd + 1)
         return self._sample(grid, self.spectrum)
 
@@ -86,7 +86,7 @@ class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-    def sample(self, n_sd):
+    def sample(self, _backend, n_sd):
         cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
         cdf_arg /= self.spectrum.norm_factor
         percentiles = self.spectrum.percentiles(cdf_arg)
@@ -97,11 +97,15 @@ class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-
 
 
 class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range=None, seed=const.default_random_seed):
+    def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
-        self.rng = np.random.default_rng(seed)
 
-    def sample(self, n_sd):
-        pdf_arg = self.rng.uniform(*self.size_range, n_sd)
+    def sample(self, backend, n_sd):
+        n_elements = n_sd
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        u01 = storage.to_ndarray()
+
+        pdf_arg = self.size_range[0] + u01 * (self.size_range[1] - self.size_range[0])
         dr = abs(self.size_range[1] - self.size_range[0]) / n_sd
         return pdf_arg, dr * self.spectrum.size_distribution(pdf_arg)

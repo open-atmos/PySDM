@@ -21,11 +21,11 @@ class TestMaths:
         d = 1.2
         n_sd = 32
 
+        particulator = DummyParticulator(backend_class, n_sd)
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = Linear(spectrum).sample(n_sd)
+        v, n = Linear(spectrum).sample(particulator.backend, n_sd)
         T = np.full_like(v, 300.0)
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class, n_sd)
         attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
         particulator.build(attribute)
 
@@ -81,11 +81,11 @@ class TestMaths:
         d = 1.2
         n_sd = 32
 
+        particulator = DummyParticulator(backend_class, n_sd)
         spectrum = Lognormal(n_part, v_mean, d)
-        v, n = Linear(spectrum).sample(n_sd)
+        v, n = Linear(spectrum).sample(particulator.backend, n_sd)
         T = np.full_like(v, 300.0)
         n = discretise_multiplicities(n)
-        particulator = DummyParticulator(backend_class, n_sd)
         attribute = {"n": n, "volume": v, "temperature": T, "heat": T * v}
         particulator.build(attribute)
 

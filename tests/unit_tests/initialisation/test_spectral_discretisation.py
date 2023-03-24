@@ -40,7 +40,7 @@ def test_spectral_discretisation(discretisation, backend_class):
     if isinstance(discretisation, spectro_glacial_sampling.SpectroGlacialSampling):
         m, _, __, n = discretisation.sample(backend, n_sd)
     else:
-        m, n = discretisation.sample(n_sd)
+        m, n = discretisation.sample(backend, n_sd)
 
     # Assert
     assert m.shape == n.shape

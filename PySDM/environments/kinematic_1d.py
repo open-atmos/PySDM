@@ -48,7 +48,9 @@ class Kinematic1D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(
+                self.particulator.backend, self.particulator.n_sd
+            )
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = attributes["dry volume"] * kappa
             r_wet = equilibrate_wet_radii(
