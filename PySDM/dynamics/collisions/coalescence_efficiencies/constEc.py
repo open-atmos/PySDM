@@ -10,4 +10,4 @@ class ConstEc:
         self.particulator = builder.particulator
 
     def __call__(self, output, is_first_in_pair):
-        output[:] = self.Ec
+        output.fill(self.Ec)
