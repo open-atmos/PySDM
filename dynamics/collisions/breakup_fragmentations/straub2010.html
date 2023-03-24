@@ -76,7 +76,7 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]  # TODO #976
+        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -93,12 +93,12 @@ class Straub2010Nf:
         self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
         self.arrays[&#34;CKE&#34;] *= self.const.rho_w
 
-        self.arrays[&#34;We&#34;][:] = self.arrays[&#34;CKE&#34;][:]  # TODO #976
+        self.arrays[&#34;We&#34;].fill(self.arrays[&#34;CKE&#34;])
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
 
-        self.arrays[&#34;CW&#34;][:] = self.arrays[&#34;We&#34;][:]  # TODO #976
+        self.arrays[&#34;CW&#34;].fill(self.arrays[&#34;We&#34;])
         self.arrays[&#34;CW&#34;] *= self.arrays[&#34;CKE&#34;]
-        self.arrays[&#34;CW&#34;] /= si.joule * 1e-6  # convert to µJ
+        self.arrays[&#34;CW&#34;] /= si.uJ
 
         self.arrays[&#34;gam&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;tmp&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
@@ -188,7 +188,7 @@ class Straub2010Nf:
 
         # compute the dimensionless numbers and CW=CKE * We
         self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]  # TODO #976
+        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;Sc&#34;] **= 2 / 3
         self.arrays[&#34;Sc&#34;] *= (
             self.const.PI * self.const.sgm_w * (6 / self.const.PI) ** (2 / 3)
@@ -205,12 +205,12 @@ class Straub2010Nf:
         self.arrays[&#34;CKE&#34;] *= self.arrays[&#34;tmp2&#34;]
         self.arrays[&#34;CKE&#34;] *= self.const.rho_w
 
-        self.arrays[&#34;We&#34;][:] = self.arrays[&#34;CKE&#34;][:]  # TODO #976
+        self.arrays[&#34;We&#34;].fill(self.arrays[&#34;CKE&#34;])
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
 
-        self.arrays[&#34;CW&#34;][:] = self.arrays[&#34;We&#34;][:]  # TODO #976
+        self.arrays[&#34;CW&#34;].fill(self.arrays[&#34;We&#34;])
         self.arrays[&#34;CW&#34;] *= self.arrays[&#34;CKE&#34;]
-        self.arrays[&#34;CW&#34;] /= si.joule * 1e-6  # convert to µJ
+        self.arrays[&#34;CW&#34;] /= si.uJ
 
         self.arrays[&#34;gam&#34;].max(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)
         self.arrays[&#34;tmp&#34;].min(self.particulator.attributes[&#34;radius&#34;], is_first_in_pair)

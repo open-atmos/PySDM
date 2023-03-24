@@ -54,7 +54,7 @@ class Straub2010Ec:
 
     def __call__(self, output, is_first_in_pair):
         self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]
+        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;tmp&#34;] *= 2
 
         self.arrays[&#34;tmp2&#34;].distance(
@@ -76,7 +76,7 @@ class Straub2010Ec:
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
         self.arrays[&#34;We&#34;] *= -1.15
 
-        output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>
+        output[:] = np.exp(self.arrays[&#34;We&#34;])  # TODO #976</code></pre>
 </details>
 </section>
 <section>
@@ -116,7 +116,7 @@ class Straub2010Ec:
 
     def __call__(self, output, is_first_in_pair):
         self.arrays[&#34;tmp&#34;].sum(self.particulator.attributes[&#34;volume&#34;], is_first_in_pair)
-        self.arrays[&#34;Sc&#34;][:] = self.arrays[&#34;tmp&#34;][:]
+        self.arrays[&#34;Sc&#34;].fill(self.arrays[&#34;tmp&#34;])
         self.arrays[&#34;tmp&#34;] *= 2
 
         self.arrays[&#34;tmp2&#34;].distance(
@@ -138,7 +138,7 @@ class Straub2010Ec:
         self.arrays[&#34;We&#34;].divide_if_not_zero(self.arrays[&#34;Sc&#34;])
         self.arrays[&#34;We&#34;] *= -1.15
 
-        output[:] = np.exp(self.arrays[&#34;We&#34;])</code></pre>
+        output[:] = np.exp(self.arrays[&#34;We&#34;])  # TODO #976</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
