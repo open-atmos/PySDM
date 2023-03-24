@@ -51,12 +51,11 @@ class Storage(StorageBase):
         return result
 
     def __setitem__(self, key, value):
-        raise TypeError("Use to_ndarray() explicitly")
-        # if hasattr(value, "data"):
-        #     self.data[key] = value.data
-        # else:
-        #     self.data[key] = value
-        # return self
+        if hasattr(value, "data"):
+            self.data[key] = value.data
+        else:
+            self.data[key] = value
+        return self
 
     def __iadd__(self, other):
         if isinstance(other, Storage):
