@@ -50,6 +50,10 @@ jobs:
       with:
         fail_ci_if_error: true
         verbose: true
+    - if: ${{ failure() }}
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
 
   pdoc:
     strategy:
