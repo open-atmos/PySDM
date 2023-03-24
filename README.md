@@ -367,12 +367,13 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
+backend = CPU(formulae)
+builder = Builder(backend=backend, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(backend, n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
@@ -449,12 +450,13 @@ output_points = 40;
 n_sd = 256;
 
 formulae = Formulae();
-builder = Builder(pyargs('backend', CPU(formulae), 'n_sd', int32(n_sd)));
+backend = CPU(formulae)
+builder = Builder(pyargs('backend', backend, 'n_sd', int32(n_sd)));
 builder.set_environment(env);
 builder.add_dynamic(AmbientThermodynamics());
 builder.add_dynamic(Condensation());
 
-tmp = spectral_sampling.Logarithmic(spectrum).sample(int32(n_sd));
+tmp = spectral_sampling.Logarithmic(spectrum).sample(backend, int32(n_sd));
 r_dry = tmp{1};
 v_dry = formulae.trivia.volume(pyargs('radius', r_dry));
 specific_concentration = tmp{2};
@@ -550,12 +552,13 @@ output_points = 40
 n_sd = 256
 
 formulae = Formulae()
-builder = Builder(backend=CPU(formulae), n_sd=n_sd)
+backend = CPU(formulae)
+builder = Builder(backend=backend, n_sd=n_sd)
 builder.set_environment(env)
 builder.add_dynamic(AmbientThermodynamics())
 builder.add_dynamic(Condensation())
 
-r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(n_sd)
+r_dry, specific_concentration = spectral_sampling.Logarithmic(spectrum).sample(backend, n_sd)
 v_dry = formulae.trivia.volume(radius=r_dry)
 r_wet = equilibrate_wet_radii(r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry)
 
