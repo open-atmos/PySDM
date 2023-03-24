@@ -12,4 +12,4 @@ class Gaussian:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def frag_size(const, mu, sigma, rand):
-        return mu + sigma * 2 * np.sqrt(3) / np.pi * np.arctanh(2 * rand - 1)
+        return mu + sigma * 2 * np.sqrt(3) / const.PI * np.arctanh(2 * rand - 1)

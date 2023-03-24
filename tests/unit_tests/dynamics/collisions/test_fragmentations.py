@@ -58,7 +58,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -105,7 +105,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -152,7 +152,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -199,7 +199,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments))
+        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
