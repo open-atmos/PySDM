@@ -31,6 +31,7 @@ formulae = Formulae(
         # TODO #599
     ],
 )
+# pylint: disable=redefined-outer-name
 def test_spectral_discretisation(discretisation, backend_class):
     # Arrange
     n_sd = 100000

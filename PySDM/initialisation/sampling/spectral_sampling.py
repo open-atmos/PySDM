@@ -7,8 +7,6 @@ from typing import Optional, Tuple
 import numpy as np
 from scipy import optimize
 
-from PySDM.physics import constants as const
-
 default_cdf_range = (0.00001, 0.99999)
 
 

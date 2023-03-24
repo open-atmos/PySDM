@@ -50,7 +50,8 @@ def test_single_supersaturation_peak(
     n_sd = 2
     kappa = 0.4
     spectrum = Lognormal(norm_factor=5000 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
-    builder = Builder(backend=CPU(), n_sd=n_sd)
+    backend = CPU()
+    builder = Builder(backend, n_sd=n_sd)
     builder.set_environment(env)
     builder.add_dynamic(AmbientThermodynamics())
     builder.add_dynamic(
@@ -61,7 +62,7 @@ def test_single_supersaturation_peak(
         )
     )
 
-    r_dry, concentration = ConstantMultiplicity(spectrum).sample(n_sd)
+    r_dry, concentration = ConstantMultiplicity(spectrum).sample(backend, n_sd)
     v_dry = builder.formulae.trivia.volume(radius=r_dry)
     r_wet = equilibrate_wet_radii(
         r_dry=r_dry, environment=env, kappa_times_dry_volume=kappa * v_dry
