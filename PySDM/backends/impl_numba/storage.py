@@ -187,3 +187,9 @@ class Storage(StorageBase):
 
     def upload(self, data):
         np.copyto(self.data, data, casting="safe")
+
+    def fill(self, other):
+        if isinstance(other, Storage):
+            self.data[:] = other.data
+        else:
+            self.data[:] = other

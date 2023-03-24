@@ -9,7 +9,7 @@ class ConstantK:
         self.particulator = None
 
     def __call__(self, output, is_first_in_pair):
-        output[:] = self.a
+        output.fill(self.a)
 
     def register(self, builder):
         self.particulator = builder.particulator

@@ -497,4 +497,17 @@ def make_storage_class(BACKEND):  # pylint: disable=too-many-statements
             Impl.divide_if_not_zero(self, divisor)
             return self
 
+        def fill(self, value):
+            if isinstance(value, Storage):
+                trtc.Copy(value.data, self.data)
+            else:
+                if isinstance(value, int):
+                    dvalue = trtc.DVInt64(value)
+                elif isinstance(value, float):
+                    dvalue = BACKEND._get_floating_point(value)
+                else:
+                    raise TypeError("Only Storage, int and float are supported.")
+                trtc.Fill(self.data, dvalue)
+            return self
+
     return Storage
