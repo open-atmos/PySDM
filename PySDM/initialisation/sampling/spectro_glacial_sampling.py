@@ -31,13 +31,19 @@ class SpectroGlacialSampling:  # pylint: disable=too-few-public-methods
         )
         self.seed = seed
 
-    def sample(self, n_sd):
+    def sample(self, backend, n_sd):
         simulated = np.empty((n_sd, N_DIMS))
+
+        n_elements = n_sd * N_DIMS
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        random_numbers = storage.to_ndarray().reshape(n_sd, N_DIMS)
+
         simulated[:, DIM_SURF] = self.insoluble_surface_spectrum.percentiles(
-            np.random.random(n_sd)
+            random_numbers[:, 0]
         )
         simulated[:, DIM_TEMP] = self.freezing_temperature_spectrum.invcdf(
-            np.random.random(n_sd), simulated[:, DIM_SURF]
+            random_numbers[:, 1], simulated[:, DIM_SURF]
         )
 
         return (

@@ -6,6 +6,10 @@ from PySDM import Formulae
 from PySDM.initialisation.sampling import spectral_sampling, spectro_glacial_sampling
 from PySDM.initialisation.spectra.lognormal import Lognormal
 
+from ...backends_fixture import backend_class
+
+assert hasattr(backend_class, "_pytestfixturefunction")
+
 m_mode = 0.5e-5
 n_part = 256 * 16
 s_geom = 1.5
@@ -27,13 +31,14 @@ formulae = Formulae(
         # TODO #599
     ],
 )
-def test_spectral_discretisation(discretisation):
+def test_spectral_discretisation(discretisation, backend_class):
     # Arrange
     n_sd = 100000
+    backend = backend_class()
 
     # Act
     if isinstance(discretisation, spectro_glacial_sampling.SpectroGlacialSampling):
-        m, _, __, n = discretisation.sample(n_sd)
+        m, _, __, n = discretisation.sample(backend, n_sd)
     else:
         m, n = discretisation.sample(n_sd)
 
