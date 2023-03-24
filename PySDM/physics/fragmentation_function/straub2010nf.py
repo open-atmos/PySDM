@@ -43,7 +43,8 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         return (mu3, sigma3)
 
     @staticmethod
-    def params_p4(const, vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, N1, N2, N3):
+    def params_p4(vl, ds, mu1, sigma1, mu2, sigma2, mu3, sigma3, N1, N2, N3):
+        # pylint: disable=too-many-arguments, too-many-locals
         M31 = N1 * np.exp(3 * mu1 + 9 * np.power(sigma1, 2) / 2)
         M32 = N2 * (mu2**3 + 3 * mu2 * sigma2**2)
         M33 = N3 * (mu3**3 + 3 * mu3 * sigma3**2)

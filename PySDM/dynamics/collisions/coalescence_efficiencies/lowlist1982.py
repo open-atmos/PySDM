@@ -93,5 +93,5 @@ class LowList1982Ec:
         output *= np.exp(self.arrays["tmp2"])
 
         self.particulator.backend.ll82_coalescence_check(
-            Ec=output, ds=self.arrays["ds"], dl=self.arrays["dl"]
+            Ec=output, dl=self.arrays["dl"]
         )

@@ -6,6 +6,7 @@ import numpy as np
 import pytest
 
 from PySDM import Builder, Formulae
+from PySDM.backends import CPU
 from PySDM.dynamics.collisions.breakup_fragmentations import (
     SLAMS,
     AlwaysN,
@@ -231,14 +232,15 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     )
     def test_fragmentation_fn_distribution(
         fragmentation_fn, plot=False
-    ):  # pylint: disable=redefined-outer-name
+    ):  # pylint: disable=redefined-outer-name, too-many-locals
         # arrange
-        from PySDM.backends import CPU
 
         drop_size_L_diam = 0.4 * si.cm
         drop_size_S_diam = 0.2 * si.cm
 
-        get_volume_from_diam = lambda d: (4 / 3) * np.pi * (d / 2) ** 3
+        get_volume_from_diam = (
+            lambda d: (4 / 3) * np.pi * (d / 2) ** 3
+        )  # pylint: disable=unnecessary-lambda-assignment
 
         n = 100
         res = np.empty((n, 2), dtype=np.double)

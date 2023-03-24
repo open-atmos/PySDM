@@ -1,7 +1,6 @@
 """
 See Low & List 1982
 """
-from PySDM.physics.constants import si
 
 
 class LowList1982Nf:

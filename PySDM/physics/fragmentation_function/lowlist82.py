@@ -17,7 +17,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         Hf1 = 50.8 * (dlCM) ** (-0.718)
         mu = dlCM
         sigma = 1 / Hf1
-        for i in range(10):
+        for _ in range(10):
             sigma = (
                 1
                 / Hf1
@@ -77,7 +77,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         sigmaf3 = 10 * Dff3
         muf3 = np.log(Dff3) + sigmaf3**2
         Hf3 = Pf0 * Dff3 / np.exp(-0.5 * sigmaf3**2)
-        for i in range(10):
+        for _ in range(10):
             if sigmaf3 == 0.0 or Hf3 == 0:
                 return (0.0, np.log(ds0), np.log(ds0))
             sigmaf3 = (
@@ -109,7 +109,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         Hs1 = 100 * np.exp(-3.25 * dsCM)
         mus1 = dlCM
         sigmas1 = 1 / Hs1
-        for i in range(10):
+        for _ in range(10):
             sigmas1 = (
                 1
                 / Hs1
@@ -133,7 +133,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
 
         Fs = 5 * math.erf((St - 2.52e-6) / (1.85e-6)) + 6  # (3.7)
 
-        for i in range(10):
+        for _ in range(10):
             sigmas2 = (
                 np.sqrt(2 / np.pi)
                 * (Fs - 1)
@@ -152,7 +152,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         mud1 = dlCM * (1 - np.exp(-3.70 * (3.10 - W1)))
         Hd1 = 1.58e-5 * CKE ** (-1.22)
         sigmad1 = 1 / Hd1
-        for i in range(10):
+        for _ in range(10):
             sigmad1 = (
                 1
                 / Hd1
@@ -178,10 +178,10 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         if Fd == 1.0:
             return (0.0, np.log(Ddd2), np.log(Ddd2))
 
-        for i in range(10):
+        for _ in range(10):
             if sigmad2 == 0.0 or Hd2 <= 0.1:
                 return (0.0, np.log(Ddd2), np.log(Ddd2))
-            elif sigmad2 >= 1.0:
+            if sigmad2 >= 1.0:
                 return (0.0, np.log(Ddd2), np.log(Ddd2))
             sigmad2 = (
                 np.sqrt(2 / np.pi)

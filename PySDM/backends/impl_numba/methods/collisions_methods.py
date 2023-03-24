@@ -285,7 +285,7 @@ def ll82_Nr(  # pylint: disable=too-many-arguments,unused-argument
 
 
 class CollisionsMethods(BackendMethods):
-    def __init__(self):
+    def __init__(self):  # pylint: disable=too-many-statements,too-many-locals
         BackendMethods.__init__(self)
 
         _break_up = break_up_while if self.formulae.handle_all_breakups else break_up
@@ -355,7 +355,7 @@ class CollisionsMethods(BackendMethods):
         self.__collision_coalescence_breakup_body = __collision_coalescence_breakup_body
 
         @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
-        def __ll82_coalescence_check_body(*, Ec, ds, dl):
+        def __ll82_coalescence_check_body(*, Ec, dl):
             for i in numba.prange(len(Ec)):  # pylint: disable=not-an-iterable
                 if dl[i] < 0.4e-3:
                     Ec[i] = 1.0
@@ -372,7 +372,7 @@ class CollisionsMethods(BackendMethods):
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __straub_fragmentation_body(
                 *, CW, gam, ds, v_max, frag_size, rand, Nr1, Nr2, Nr3, Nr4, Nrt
-            ):
+            ):  # pylint: disable=too-many-arguments,too-many-locals
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
@@ -428,7 +428,7 @@ class CollisionsMethods(BackendMethods):
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __ll82_fragmentation_body(
                 *, CKE, W, W2, St, ds, dl, dcoal, frag_size, rand, Rf, Rs, Rd, tol
-            ):
+            ):  # pylint: disable=too-many-branches,too-many-locals,too-many-statements
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
@@ -725,7 +725,7 @@ class CollisionsMethods(BackendMethods):
     @staticmethod
     @numba.njit(**{**conf.JIT_FLAGS})
     # pylint: disable=too-many-arguments
-    def __fragmentation_limiters(n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y):
+    def __fragmentation_limiters(n_fragment, frag_size, vmin, nfmax, x_plus_y):
         for i in numba.prange(len(frag_size)):  # pylint: disable=not-an-iterable
             if np.isnan(frag_size[i]):
                 frag_size[i] = x_plus_y[i]
@@ -738,13 +738,10 @@ class CollisionsMethods(BackendMethods):
                 frag_size[i] = x_plus_y[i]
             n_fragment[i] = x_plus_y[i] / frag_size[i]
 
-    def fragmentation_limiters(
-        self, *, n_fragment, frag_size, v_max, vmin, nfmax, x_plus_y
-    ):
+    def fragmentation_limiters(self, *, n_fragment, frag_size, vmin, nfmax, x_plus_y):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             vmin=vmin,
             nfmax=nfmax,
             x_plus_y=x_plus_y.data,
@@ -764,7 +761,7 @@ class CollisionsMethods(BackendMethods):
             frag_size[i] = x_plus_y[i] / n_fragment[i]
 
     def slams_fragmentation(
-        self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax
+        self, n_fragment, frag_size, x_plus_y, probs, rand, vmin, nfmax
     ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body(
             n_fragment.data, frag_size.data, x_plus_y.data, probs.data, rand.data
@@ -772,7 +769,6 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             vmin=vmin,
             nfmax=nfmax,
             x_plus_y=x_plus_y.data,
@@ -794,7 +790,6 @@ class CollisionsMethods(BackendMethods):
         n_fragment,
         scale,
         frag_size,
-        v_max,
         x_plus_y,
         rand,
         vmin,
@@ -810,7 +805,6 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
@@ -822,7 +816,6 @@ class CollisionsMethods(BackendMethods):
         n_fragment,
         scale,
         frag_size,
-        v_max,
         x_plus_y,
         rand,
         fragtol,
@@ -840,14 +833,13 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
         )
 
     def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        self, *, n_fragment, mu, sigma, frag_size, x_plus_y, rand, vmin, nfmax
     ):
         self.__gauss_fragmentation_body(
             mu=mu,
@@ -858,7 +850,6 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
@@ -900,7 +891,6 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
@@ -947,16 +937,14 @@ class CollisionsMethods(BackendMethods):
         self.__fragmentation_limiters(
             n_fragment=n_fragment.data,
             frag_size=frag_size.data,
-            v_max=v_max.data,
             x_plus_y=x_plus_y.data,
             vmin=vmin,
             nfmax=nfmax,
         )
 
-    def ll82_coalescence_check(self, *, Ec, ds, dl):
+    def ll82_coalescence_check(self, *, Ec, dl):
         self.__ll82_coalescence_check_body(
             Ec=Ec.data,
-            ds=ds.data,
             dl=dl.data,
         )
 
