@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from matplotlib import pylab
+from matplotlib import pyplot
 
 from PySDM import Formulae
 from PySDM.physics import constants as const
@@ -11,7 +11,7 @@ A = 1 * si.um**2
 
 
 @pytest.mark.parametrize("model", ("Niemand_et_al_2012", "Bigg_1953"))
-def test_freezing_temperature_spectra(model, plot=False):
+def test_freezing_temperature_spectra(model, plot=True):
     # Arrange
     formulae = Formulae(
         freezing_temperature_spectrum=model,
@@ -24,18 +24,18 @@ def test_freezing_temperature_spectra(model, plot=False):
     cdf = formulae.freezing_temperature_spectrum.cdf(temperature, A)
 
     # Plot
-    pylab.plot(temperature, pdf, linestyle="-", marker="o", label="pdf")
-    pdfax = pylab.gca()
+    pyplot.plot(temperature, pdf, linestyle="-", marker="o", label="pdf")
+    pdfax = pyplot.gca()
     cdfax = pdfax.twinx()
     cdfax.plot(temperature, cdf, linestyle="--", marker="x", label="cdf")
-    pylab.xlabel("T [K]")
-    pylab.xlim(np.amax(temperature), np.amin(temperature))
+    pyplot.xlabel("T [K]")
+    pyplot.xlim(np.amax(temperature), np.amin(temperature))
     pdfax.set_ylabel("pdf [K$^{-1}$]")
     cdfax.set_ylabel("cdf [1]")
-    pylab.grid()
-    pylab.title(model)
+    pyplot.grid()
+    pyplot.title(model)
     if plot:
-        pylab.show()
+        pyplot.show()
 
     # Assert
     dT = abs(temperature[1] - temperature[0])
