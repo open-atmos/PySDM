@@ -11,7 +11,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
-from PySDM.initialisation.sampling import spectral_sampling
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 from ..impl import arakawa_c
 
@@ -42,7 +42,8 @@ class Kinematic2D(Moist):
         kappa,
         dry_radius_spectrum,
         rtol=default_rtol,
-        n_sd=None
+        n_sd=None,
+        spectral_sampling=ConstantMultiplicity
     ):
         super().sync()
         self.notify()
@@ -58,9 +59,9 @@ class Kinematic2D(Moist):
                 attributes["position in cell"],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
-                spectrum=dry_radius_spectrum
-            ).sample(self.particulator.backend, n_sd)
+            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
+                n_sd, backend=self.particulator.backend
+            )
 
             attributes["dry volume"] = self.formulae.trivia.volume(radius=r_dry)
             attributes["kappa times dry volume"] = kappa * attributes["dry volume"]
