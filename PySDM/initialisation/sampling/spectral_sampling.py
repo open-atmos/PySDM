@@ -7,6 +7,8 @@ from typing import Optional, Tuple
 import numpy as np
 from scipy import optimize
 
+from PySDM.backends.impl_common.backend_methods import BackendMethods
+
 default_cdf_range = (0.00001, 0.99999)
 
 
@@ -38,7 +40,9 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
             assert size_range[1] > size_range[0]
             self.size_range = size_range
 
-    def _sample(self, grid, spectrum):
+    def _sample(self, grid, spectrum, backend):
+        assert backend is None or isinstance(backend, BackendMethods)
+
         x = grid[1:-1:2]
         cdf = spectrum.cumulative(grid[0::2])
         y_float = cdf[1:] - cdf[0:-1]
@@ -53,9 +57,9 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 
 
 class Linear(SpectralSampling):  # pylint: disable=too-few-public-methods
-    def sample(self, _backend, n_sd):
+    def sample(self, n_sd, *, backend=None):
         grid = np.linspace(*self.size_range, num=2 * n_sd + 1)
-        return self._sample(grid, self.spectrum)
+        return self._sample(grid, self.spectrum, backend)
 
 
 class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
@@ -69,9 +73,9 @@ class Logarithmic(SpectralSampling):  # pylint: disable=too-few-public-methods
         self.start = np.log10(self.size_range[0])
         self.stop = np.log10(self.size_range[1])
 
-    def sample(self, _backend, n_sd):
+    def sample(self, n_sd, *, backend=None):
         grid = np.logspace(self.start, self.stop, num=2 * n_sd + 1)
-        return self._sample(grid, self.spectrum)
+        return self._sample(grid, self.spectrum, backend)
 
 
 class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-methods
@@ -84,21 +88,21 @@ class ConstantMultiplicity(SpectralSampling):  # pylint: disable=too-few-public-
         )
         assert 0 < self.cdf_range[0] < self.cdf_range[1]
 
-    def sample(self, _backend, n_sd):
+    def sample(self, n_sd, *, backend=None):
         cdf_arg = np.linspace(self.cdf_range[0], self.cdf_range[1], num=2 * n_sd + 1)
         cdf_arg /= self.spectrum.norm_factor
         percentiles = self.spectrum.percentiles(cdf_arg)
 
         assert np.isfinite(percentiles).all()
 
-        return self._sample(percentiles, self.spectrum)
+        return self._sample(percentiles, self.spectrum, backend)
 
 
 class UniformRandom(SpectralSampling):  # pylint: disable=too-few-public-methods
     def __init__(self, spectrum, size_range=None):
         super().__init__(spectrum, size_range)
 
-    def sample(self, backend, n_sd):
+    def sample(self, n_sd, *, backend):
         n_elements = n_sd
         storage = backend.Storage.empty(n_elements, dtype=float)
         backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)

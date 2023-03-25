@@ -661,7 +661,7 @@ class TestSDMBreakup:
         spectrum = Exponential(norm_factor=norm_factor, scale=X0)
         attributes = {}
         attributes["volume"], attributes["n"] = ConstantMultiplicity(spectrum).sample(
-            backend, n_sd
+            n_sd
         )
 
         mu = Trivia.volume(const, radius=100 * si.um)

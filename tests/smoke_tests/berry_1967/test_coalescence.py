@@ -36,12 +36,11 @@ def test_coalescence(backend_class, kernel, croupier, adaptive):
     s.formulae.seed = 0
     steps = [0, 800]
 
-    backend = backend_class(formulae=s.formulae)
-    builder = Builder(n_sd=s.n_sd, backend=backend)
+    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes["volume"], attributes["n"] = ConstantMultiplicity(s.spectrum).sample(
-        backend, s.n_sd
+        s.n_sd
     )
     builder.add_dynamic(
         Coalescence(collision_kernel=kernel, croupier=croupier, adaptive=adaptive)
@@ -72,12 +71,11 @@ def test_coalescence_2_sd(backend_class):
     steps = [0, 200]
     s.n_sd = 2
 
-    backend = backend_class(formulae=s.formulae)
-    builder = Builder(n_sd=s.n_sd, backend=backend)
+    builder = Builder(n_sd=s.n_sd, backend=backend_class(formulae=s.formulae))
     builder.set_environment(Box(dt=s.dt, dv=s.dv))
     attributes = {}
     attributes["volume"], attributes["n"] = ConstantMultiplicity(s.spectrum).sample(
-        backend, s.n_sd
+        s.n_sd
     )
     builder.add_dynamic(Coalescence(collision_kernel=s.kernel, adaptive=False))
     particulator = builder.build(attributes)

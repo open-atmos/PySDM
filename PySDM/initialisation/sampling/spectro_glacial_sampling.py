@@ -31,7 +31,7 @@ class SpectroGlacialSampling:  # pylint: disable=too-few-public-methods
         )
         self.seed = seed
 
-    def sample(self, backend, n_sd):
+    def sample(self, *, backend, n_sd):
         simulated = np.empty((n_sd, N_DIMS))
 
         n_elements = n_sd * N_DIMS

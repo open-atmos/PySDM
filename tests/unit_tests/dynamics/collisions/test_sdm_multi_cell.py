@@ -34,7 +34,7 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
             backend_class, len(n), environment=env
         )
         cell_id, _, _ = env.mesh.cellular_attributes(
-            Pseudorandom.sample(particulator.backend, grid, len(n))
+            Pseudorandom.sample(backend=particulator.backend, grid=grid, n_sd=len(n))
         )
         attributes = {"n": n, "volume": v, "cell id": cell_id}
         particulator.build(attributes)

@@ -7,7 +7,7 @@ spatial sampling logic (i.e., physical x-y-z coordinates)
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(backend, grid, n_sd):
+    def sample(*, backend, grid, n_sd):
         dimension = len(grid)
         n_elements = dimension * n_sd
 
