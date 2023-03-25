@@ -29,7 +29,10 @@ def test_pseudorandom_reproducible(
     n_sd = 14
 
     # act
-    positions = [Pseudorandom.sample(backend, grid, n_sd) for backend in backends]
+    positions = [
+        Pseudorandom.sample(backend=backend, grid=grid, n_sd=n_sd)
+        for backend in backends
+    ]
 
     # assert
     np.testing.assert_array_equal(positions[0], positions[1])
