@@ -54,5 +54,9 @@ def test_spectral_discretisation(discretisation, backend_class):
     desired = spectrum.cumulative(m_range[1]) - spectrum.cumulative(m_range[0])
     quotient = actual / desired
     np.testing.assert_approx_equal(actual=quotient, desired=1.0, significant=2)
+
     assert (formulae.constants.T0 - 50 < freezing_temperatures).all()
     assert (freezing_temperatures < formulae.constants.T0).all()
+
+    assert (immersed_surfaces < m_range[1]).all()
+    assert (immersed_surfaces > m_range[0]).all()
