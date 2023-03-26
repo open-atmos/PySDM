@@ -11,7 +11,7 @@ A = 1 * si.um**2
 
 
 @pytest.mark.parametrize("model", ("Niemand_et_al_2012", "Bigg_1953"))
-def test_freezing_temperature_spectra(model, plot=True):
+def test_freezing_temperature_spectra(model, plot=False):
     # Arrange
     formulae = Formulae(
         freezing_temperature_spectrum=model,
