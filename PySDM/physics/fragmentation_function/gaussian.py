@@ -1,7 +1,7 @@
 """
 Gaussian PDF
-CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
+CDF = 1/2(1 + erf((x-mu)/sigma/sqrt(2)));
+Approx erf(x/sqrt(2)) ~ tanh(x*pi/2/sqrt(3))
 """
 import numpy as np
 
@@ -12,6 +12,4 @@ class Gaussian:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def frag_size(const, mu, sigma, rand):
-        return mu - sigma / const.sqrt_two / const.sqrt_pi / np.log(2) * np.log(
-            (0.5 + rand) / (1.5 - rand)
-        )
+        return mu + sigma * 2 * np.sqrt(3) / const.PI * np.arctanh(2 * rand - 1)
