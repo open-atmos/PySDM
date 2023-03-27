@@ -6,7 +6,7 @@ import math
 import numpy as np
 
 
-class LowList1982Nf:  # pylint: disable=too-few-public-methods
+class LowList1982Nf:  # pylint: disable=too-few-public-methods, too-many-locals
     def __init__(self, _):
         pass
 
@@ -35,7 +35,7 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods
         return (Hf2, mu, sigma)
 
     @staticmethod
-    def params_f3(const, ds, dl):
+    def params_f3(const, ds, dl):  # pylint: disable=too-many-locals
         dsCM = ds / const.CM
         dlCM = dl / const.CM
         # eq (3.3), (3.4)

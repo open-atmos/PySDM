@@ -909,7 +909,6 @@ class CollisionsMethods(BackendMethods):
         dl,
         dcoal,
         frag_size,
-        v_max,
         x_plus_y,
         rand,
         vmin,

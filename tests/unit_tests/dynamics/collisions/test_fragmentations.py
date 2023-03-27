@@ -232,15 +232,13 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
     )
     def test_fragmentation_fn_distribution(
         fragmentation_fn, plot=False
-    ):  # pylint: disable=redefined-outer-name, too-many-locals
+    ):  # pylint: disable=redefined-outer-name, too-many-locals, unnecessary-lambda-assignment
         # arrange
 
         drop_size_L_diam = 0.4 * si.cm
         drop_size_S_diam = 0.2 * si.cm
 
-        get_volume_from_diam = (
-            lambda d: (4 / 3) * np.pi * (d / 2) ** 3
-        )  # pylint: disable=unnecessary-lambda-assignment
+        get_volume_from_diam = lambda d: (4 / 3) * np.pi * (d / 2) ** 3
 
         n = 100
         res = np.empty((n, 2), dtype=np.double)
