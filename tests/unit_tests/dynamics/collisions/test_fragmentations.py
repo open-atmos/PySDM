@@ -18,6 +18,14 @@ from ....backends_fixture import backend_class
 
 assert hasattr(backend_class, "_pytestfixturefunction")
 
+ARBITRARY_VALUE_BETWEEN_0_AND_1 = 0.5
+
+
+def dummy_u01(builder, size):
+    return builder.particulator.PairwiseStorage.from_ndarray(
+        np.full(size, ARBITRARY_VALUE_BETWEEN_0_AND_1)
+    )
+
 
 class TestFragmentations:  # pylint: disable=too-few-public-methods
     @staticmethod
@@ -58,7 +66,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
+        u01 = dummy_u01(builder, fragments.size)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -105,7 +113,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
+        u01 = dummy_u01(builder, fragments.size)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -152,7 +160,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
+        u01 = dummy_u01(builder, fragments.size)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
@@ -199,7 +207,7 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         is_first_in_pair.indicator = builder.particulator.Storage.from_ndarray(
             np.asarray([True, False])
         )
-        u01 = _PairwiseStorage.from_ndarray(np.ones_like(fragments) * 0.5)
+        u01 = dummy_u01(builder, fragments.size)
 
         # act
         sut(nf, frag_size, u01, is_first_in_pair)
