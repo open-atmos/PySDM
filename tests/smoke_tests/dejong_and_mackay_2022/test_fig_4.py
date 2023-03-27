@@ -25,81 +25,81 @@ def bins_edges(num):
 
 # pylint: disable=redefined-outer-name
 class TestFig4:
-    # @staticmethod
-    # def test_fig_4a(backend_class, plot=False):
-    #     # arrange
-    #     settings0 = Settings0D(seed=44)
-    #     settings0.n_sd = N_SD
-    #     settings0.radius_bins_edges = bins_edges(32)
+    @staticmethod
+    def test_fig_4a(backend_class, plot=False):
+        # arrange
+        settings0 = Settings0D(seed=44)
+        settings0.n_sd = N_SD
+        settings0.radius_bins_edges = bins_edges(32)
 
-    #     nf_vals = [1, 4, 16, 64]
-    #     data_x = {}
-    #     data_y = {}
+        nf_vals = [1, 4, 16, 64]
+        data_x = {}
+        data_y = {}
 
-    #     # act
-    #     lbl = "initial"
-    #     (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
-    #     for i, nf_val in enumerate(nf_vals):
-    #         settings = Settings0D(
-    #             fragmentation=AlwaysN(n=nf_val), seed=44, warn_overflows=False
-    #         )
-    #         settings.n_sd = settings0.n_sd
-    #         settings.radius_bins_edges = settings0.radius_bins_edges
-    #         settings.coal_eff = ConstEc(Ec=0.95)
-    #         settings.dt = DT
+        # act
+        lbl = "initial"
+        (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
+        for i, nf_val in enumerate(nf_vals):
+            settings = Settings0D(
+                fragmentation=AlwaysN(n=nf_val), seed=44, warn_overflows=False
+            )
+            settings.n_sd = settings0.n_sd
+            settings.radius_bins_edges = settings0.radius_bins_edges
+            settings.coal_eff = ConstEc(Ec=0.95)
+            settings.dt = DT
 
-    #         lbl = "n_f = " + str(nf_val)
-    #         (data_x[lbl], data_y[lbl], _) = run_box_breakup(
-    #             settings, [120], backend_class
-    #         )
+            lbl = "n_f = " + str(nf_val)
+            (data_x[lbl], data_y[lbl], _) = run_box_breakup(
+                settings, [120], backend_class
+            )
 
-    #     # plot
-    #     pyplot.step(
-    #         data_x["initial"],
-    #         data_y["initial"][0] * settings.rho,
-    #         color="k",
-    #         linestyle="--",
-    #         label="initial",
-    #     )
-    #     for i, nf_val in enumerate(nf_vals):
-    #         lbl = "n_f = " + str(nf_val)
-    #         pyplot.step(
-    #             data_x[lbl],
-    #             data_y[lbl][0] * settings.rho,
-    #             color=CMAP(i / len(nf_vals)),
-    #             label=lbl
-    #             if lbl not in pyplot.gca().get_legend_handles_labels()[1]
-    #             else "",
-    #         )
-    #     pyplot.xscale("log")
-    #     pyplot.xlabel("particle radius (um)")
-    #     pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
-    #     pyplot.legend()
-    #     pyplot.title(backend_class.__name__)
-    #     if plot:
-    #         pyplot.show()
-    #     else:
-    #         pyplot.clf()
+        # plot
+        pyplot.step(
+            data_x["initial"],
+            data_y["initial"][0] * settings.rho,
+            color="k",
+            linestyle="--",
+            label="initial",
+        )
+        for i, nf_val in enumerate(nf_vals):
+            lbl = "n_f = " + str(nf_val)
+            pyplot.step(
+                data_x[lbl],
+                data_y[lbl][0] * settings.rho,
+                color=CMAP(i / len(nf_vals)),
+                label=lbl
+                if lbl not in pyplot.gca().get_legend_handles_labels()[1]
+                else "",
+            )
+        pyplot.xscale("log")
+        pyplot.xlabel("particle radius (um)")
+        pyplot.ylabel("dm/dlnR (kg/m$^3$ / unit(ln R)")
+        pyplot.legend()
+        pyplot.title(backend_class.__name__)
+        if plot:
+            pyplot.show()
+        else:
+            pyplot.clf()
 
-    #     # assert
-    #     for datum_x in data_x.values():
-    #         np.testing.assert_array_equal(data_x["initial"], datum_x)
+        # assert
+        for datum_x in data_x.values():
+            np.testing.assert_array_equal(data_x["initial"], datum_x)
 
-    #     peaks_expected = {
-    #         "initial": (30, 0.017),
-    #         "n_f = 1": (1600, 0.015),
-    #         "n_f = 4": (500, 0.01),
-    #         "n_f = 16": (200, 0.0075),
-    #         "n_f = 64": (24, 0.006),
-    #     }
+        peaks_expected = {
+            "initial": (30, 0.017),
+            "n_f = 1": (1600, 0.015),
+            "n_f = 4": (500, 0.01),
+            "n_f = 16": (200, 0.0075),
+            "n_f = 64": (24, 0.006),
+        }
 
-    #     for lbl, x_y in peaks_expected.items():
-    #         print(lbl)
-    #         peak = np.argmax(data_y[lbl][0])
-    #         np.testing.assert_approx_equal(data_x[lbl][peak], x_y[0], significant=1)
-    #         np.testing.assert_approx_equal(
-    #             data_y[lbl][0][peak] * settings.rho, x_y[1], significant=1
-    #        )
+        for lbl, x_y in peaks_expected.items():
+            print(lbl)
+            peak = np.argmax(data_y[lbl][0])
+            np.testing.assert_approx_equal(data_x[lbl][peak], x_y[0], significant=1)
+            np.testing.assert_approx_equal(
+                data_y[lbl][0][peak] * settings.rho, x_y[1], significant=1
+            )
 
     @staticmethod
     def test_fig_4b(backend_class, plot=False):
