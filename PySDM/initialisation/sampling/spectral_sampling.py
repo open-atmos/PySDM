@@ -36,7 +36,7 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 class DeterministicSpectralSampling(
     SpectralSampling
 ):  # pylint: disable=too-few-public-methods
-    # TODO #1031 - will not be needed as error_threshold will be also used in non-deterministic sampling
+    # TODO #1031 - error_threshold will be also used in non-deterministic sampling
     def __init__(
         self,
         spectrum,
