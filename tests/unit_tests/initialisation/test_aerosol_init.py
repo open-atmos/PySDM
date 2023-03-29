@@ -7,8 +7,6 @@ from chempy import Substance
 from PySDM.initialisation.aerosol_composition import DryAerosolMixture
 from PySDM.physics import si
 
-# spectrum = spectra.Lognormal(norm_factor=100.0 / si.cm**3, m_mode=50.0 * si.nm, s_geom=2.0)
-
 
 @pytest.mark.parametrize(
     "mass_fractions",
