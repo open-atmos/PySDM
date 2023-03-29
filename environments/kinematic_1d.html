@@ -71,7 +71,9 @@ class Kinematic1D(Moist):
         attributes = {}
         with np.errstate(all=&#34;raise&#34;):
             positions = spatial_discretisation.sample(
-                self.mesh.grid, self.particulator.n_sd
+                backend=self.particulator.backend,
+                grid=self.mesh.grid,
+                n_sd=self.particulator.n_sd,
             )
             (
                 attributes[&#34;cell id&#34;],
@@ -79,7 +81,9 @@ class Kinematic1D(Moist):
                 attributes[&#34;position in cell&#34;],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(
+                backend=self.particulator.backend, n_sd=self.particulator.n_sd
+            )
             attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
             r_wet = equilibrate_wet_radii(
@@ -151,7 +155,9 @@ class Kinematic1D(Moist):
         attributes = {}
         with np.errstate(all=&#34;raise&#34;):
             positions = spatial_discretisation.sample(
-                self.mesh.grid, self.particulator.n_sd
+                backend=self.particulator.backend,
+                grid=self.mesh.grid,
+                n_sd=self.particulator.n_sd,
             )
             (
                 attributes[&#34;cell id&#34;],
@@ -159,7 +165,9 @@ class Kinematic1D(Moist):
                 attributes[&#34;position in cell&#34;],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+            r_dry, n_per_kg = spectral_discretisation.sample(
+                backend=self.particulator.backend, n_sd=self.particulator.n_sd
+            )
             attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
             r_wet = equilibrate_wet_radii(
@@ -247,7 +255,9 @@ def dv(self):
     attributes = {}
     with np.errstate(all=&#34;raise&#34;):
         positions = spatial_discretisation.sample(
-            self.mesh.grid, self.particulator.n_sd
+            backend=self.particulator.backend,
+            grid=self.mesh.grid,
+            n_sd=self.particulator.n_sd,
         )
         (
             attributes[&#34;cell id&#34;],
@@ -255,7 +265,9 @@ def dv(self):
             attributes[&#34;position in cell&#34;],
         ) = self.mesh.cellular_attributes(positions)
 
-        r_dry, n_per_kg = spectral_discretisation.sample(self.particulator.n_sd)
+        r_dry, n_per_kg = spectral_discretisation.sample(
+            backend=self.particulator.backend, n_sd=self.particulator.n_sd
+        )
         attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
         attributes[&#34;kappa times dry volume&#34;] = attributes[&#34;dry volume&#34;] * kappa
         r_wet = equilibrate_wet_radii(

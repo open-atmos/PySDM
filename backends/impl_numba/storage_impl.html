@@ -98,13 +98,7 @@ def power(output, exponent):
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
 def subtract(output, subtrahend):
-    output[:] -= subtrahend[:]
-
-
-# @numba.njit(void(f8[:]), **conf.JIT_FLAGS)
-def urand(output):
-    # TODO #986: seed
-    output.data[:] = np.random.uniform(0, 1, output.shape)</code></pre>
+    output[:] -= subtrahend[:]</code></pre>
 </details>
 </section>
 <section>
@@ -287,20 +281,6 @@ def sum_out_of_place(output, a, b):
     output[:] = a + b</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.storage_impl.urand"><code class="name flex">
-<span>def <span class="ident">urand</span></span>(<span>output)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def urand(output):
-    # TODO #986: seed
-    output.data[:] = np.random.uniform(0, 1, output.shape)</code></pre>
-</details>
-</dd>
 </dl>
 </section>
 <section>
@@ -331,7 +311,6 @@ def sum_out_of_place(output, a, b):
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.row_modulo" href="#PySDM.backends.impl_numba.storage_impl.row_modulo">row_modulo</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.subtract" href="#PySDM.backends.impl_numba.storage_impl.subtract">subtract</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.storage_impl.sum_out_of_place" href="#PySDM.backends.impl_numba.storage_impl.sum_out_of_place">sum_out_of_place</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.storage_impl.urand" href="#PySDM.backends.impl_numba.storage_impl.urand">urand</a></code></li>
 </ul>
 </li>
 </ul>

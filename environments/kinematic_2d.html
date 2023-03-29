@@ -42,7 +42,7 @@ from PySDM.initialisation.equilibrate_wet_radii import (
     default_rtol,
     equilibrate_wet_radii,
 )
-from PySDM.initialisation.sampling import spectral_sampling
+from PySDM.initialisation.sampling.spectral_sampling import ConstantMultiplicity
 
 from ..impl import arakawa_c
 
@@ -73,30 +73,26 @@ class Kinematic2D(Moist):
         kappa,
         dry_radius_spectrum,
         rtol=default_rtol,
-        n_sd=None
+        n_sd=None,
+        spectral_sampling=ConstantMultiplicity
     ):
         super().sync()
         self.notify()
         n_sd = n_sd or self.particulator.n_sd
         attributes = {}
         with np.errstate(all=&#34;raise&#34;):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-            (
-                attributes[&#34;cell id&#34;],
-                attributes[&#34;cell origin&#34;],
-                attributes[&#34;position in cell&#34;],
-            ) = self.mesh.cellular_attributes(positions)
-        with np.errstate(all=&#34;raise&#34;):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            positions = spatial_discretisation.sample(
+                backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+            )
             (
                 attributes[&#34;cell id&#34;],
                 attributes[&#34;cell origin&#34;],
                 attributes[&#34;position in cell&#34;],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
-                spectrum=dry_radius_spectrum
-            ).sample(n_sd)
+            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
+                n_sd=n_sd, backend=self.particulator.backend
+            )
 
             attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#34;kappa times dry volume&#34;] = kappa * attributes[&#34;dry volume&#34;]
@@ -179,30 +175,26 @@ class Kinematic2D(Moist):
         kappa,
         dry_radius_spectrum,
         rtol=default_rtol,
-        n_sd=None
+        n_sd=None,
+        spectral_sampling=ConstantMultiplicity
     ):
         super().sync()
         self.notify()
         n_sd = n_sd or self.particulator.n_sd
         attributes = {}
         with np.errstate(all=&#34;raise&#34;):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-            (
-                attributes[&#34;cell id&#34;],
-                attributes[&#34;cell origin&#34;],
-                attributes[&#34;position in cell&#34;],
-            ) = self.mesh.cellular_attributes(positions)
-        with np.errstate(all=&#34;raise&#34;):
-            positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+            positions = spatial_discretisation.sample(
+                backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+            )
             (
                 attributes[&#34;cell id&#34;],
                 attributes[&#34;cell origin&#34;],
                 attributes[&#34;position in cell&#34;],
             ) = self.mesh.cellular_attributes(positions)
 
-            r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
-                spectrum=dry_radius_spectrum
-            ).sample(n_sd)
+            r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
+                n_sd=n_sd, backend=self.particulator.backend
+            )
 
             attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
             attributes[&#34;kappa times dry volume&#34;] = kappa * attributes[&#34;dry volume&#34;]
@@ -291,7 +283,7 @@ def dv(self):
 </details>
 </dd>
 <dt id="PySDM.environments.kinematic_2d.Kinematic2D.init_attributes"><code class="name flex">
-<span>def <span class="ident">init_attributes</span></span>(<span>self, *, spatial_discretisation, kappa, dry_radius_spectrum, rtol=1e-05, n_sd=None)</span>
+<span>def <span class="ident">init_attributes</span></span>(<span>self, *, spatial_discretisation, kappa, dry_radius_spectrum, rtol=1e-05, n_sd=None, spectral_sampling=PySDM.initialisation.sampling.spectral_sampling.ConstantMultiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -306,30 +298,26 @@ def dv(self):
     kappa,
     dry_radius_spectrum,
     rtol=default_rtol,
-    n_sd=None
+    n_sd=None,
+    spectral_sampling=ConstantMultiplicity
 ):
     super().sync()
     self.notify()
     n_sd = n_sd or self.particulator.n_sd
     attributes = {}
     with np.errstate(all=&#34;raise&#34;):
-        positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
-        (
-            attributes[&#34;cell id&#34;],
-            attributes[&#34;cell origin&#34;],
-            attributes[&#34;position in cell&#34;],
-        ) = self.mesh.cellular_attributes(positions)
-    with np.errstate(all=&#34;raise&#34;):
-        positions = spatial_discretisation.sample(self.mesh.grid, n_sd)
+        positions = spatial_discretisation.sample(
+            backend=self.particulator.backend, grid=self.mesh.grid, n_sd=n_sd
+        )
         (
             attributes[&#34;cell id&#34;],
             attributes[&#34;cell origin&#34;],
             attributes[&#34;position in cell&#34;],
         ) = self.mesh.cellular_attributes(positions)
 
-        r_dry, n_per_kg = spectral_sampling.ConstantMultiplicity(
-            spectrum=dry_radius_spectrum
-        ).sample(n_sd)
+        r_dry, n_per_kg = spectral_sampling(spectrum=dry_radius_spectrum).sample(
+            n_sd=n_sd, backend=self.particulator.backend
+        )
 
         attributes[&#34;dry volume&#34;] = self.formulae.trivia.volume(radius=r_dry)
         attributes[&#34;kappa times dry volume&#34;] = kappa * attributes[&#34;dry volume&#34;]

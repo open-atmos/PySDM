@@ -30,17 +30,20 @@
 <pre><code class="python">&#34;&#34;&#34;
 spatial sampling logic (i.e., physical x-y-z coordinates)
 &#34;&#34;&#34;
-import numpy as np
-
 # TODO #305 QUASIRANDOM &amp; GRID
 #  http://www.ii.uj.edu.pl/~arabas/workshop_2019/files/talk_Shima.pdf
 
 
 class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(grid, n_sd):
+    def sample(*, backend, grid, n_sd):
         dimension = len(grid)
-        positions = np.random.rand(dimension, n_sd)
+        n_elements = dimension * n_sd
+
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        positions = storage.to_ndarray().reshape(dimension, n_sd)
+
         for dim in range(dimension):
             positions[dim, :] *= grid[dim]
         return positions</code></pre>
@@ -66,9 +69,14 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 </summary>
 <pre><code class="python">class Pseudorandom:  # pylint: disable=too-few-public-methods
     @staticmethod
-    def sample(grid, n_sd):
+    def sample(*, backend, grid, n_sd):
         dimension = len(grid)
-        positions = np.random.rand(dimension, n_sd)
+        n_elements = dimension * n_sd
+
+        storage = backend.Storage.empty(n_elements, dtype=float)
+        backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+        positions = storage.to_ndarray().reshape(dimension, n_sd)
+
         for dim in range(dimension):
             positions[dim, :] *= grid[dim]
         return positions</code></pre>
@@ -76,7 +84,7 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 <h3>Static methods</h3>
 <dl>
 <dt id="PySDM.initialisation.sampling.spatial_sampling.Pseudorandom.sample"><code class="name flex">
-<span>def <span class="ident">sample</span></span>(<span>grid, n_sd)</span>
+<span>def <span class="ident">sample</span></span>(<span>*, backend, grid, n_sd)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -85,9 +93,14 @@ class Pseudorandom:  # pylint: disable=too-few-public-methods
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@staticmethod
-def sample(grid, n_sd):
+def sample(*, backend, grid, n_sd):
     dimension = len(grid)
-    positions = np.random.rand(dimension, n_sd)
+    n_elements = dimension * n_sd
+
+    storage = backend.Storage.empty(n_elements, dtype=float)
+    backend.Random(seed=backend.formulae.seed, size=n_elements)(storage)
+    positions = storage.to_ndarray().reshape(dimension, n_sd)
+
     for dim in range(dimension):
         positions[dim, :] *= grid[dim]
     return positions</code></pre>
