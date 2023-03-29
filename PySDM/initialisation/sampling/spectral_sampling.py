@@ -11,11 +11,7 @@ default_cdf_range = (0.00001, 0.99999)
 
 
 class SpectralSampling:  # pylint: disable=too-few-public-methods
-    def __init__(
-        self,
-        spectrum,
-        size_range: [None, Tuple[float, float]] = None,
-    ):
+    def __init__(self, spectrum, size_range: Optional[Tuple[float, float]] = None):
         self.spectrum = spectrum
 
         if size_range is None:
@@ -40,7 +36,13 @@ class SpectralSampling:  # pylint: disable=too-few-public-methods
 class DeterministicSpectralSampling(
     SpectralSampling
 ):  # pylint: disable=too-few-public-methods
-    def __init__(self, spectrum, size_range, error_threshold: Optional[float] = None):
+    # TODO #1031 - will not be needed as error_threshold will be also used in non-deterministic sampling
+    def __init__(
+        self,
+        spectrum,
+        size_range: Optional[Tuple[float, float]] = None,
+        error_threshold: Optional[float] = None,
+    ):
         super().__init__(spectrum, size_range)
         self.error_threshold = error_threshold or 0.01
 
