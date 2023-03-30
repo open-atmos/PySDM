@@ -189,7 +189,6 @@ def to_numba(name, args, iter_var, body):
     result = (
         f"""
 def make(self):
-    from math import erf
     import numpy as np
     from numpy import floor, ceil, exp, log, power, sqrt, arctanh
     import numba
