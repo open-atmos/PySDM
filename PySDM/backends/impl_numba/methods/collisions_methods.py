@@ -223,10 +223,6 @@ def break_up_while(
             j, k, attributes, multiplicity, take_from_j, new_mult_k
         )
 
-        if multiplicity[j] <= take_from_j and round(nj) == 0:
-            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-            return
-
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
         breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
