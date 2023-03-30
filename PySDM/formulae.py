@@ -2,7 +2,6 @@
 Logic for enabling common CPU/GPU physics formulae code
 """
 import inspect
-import math
 import numbers
 import re
 import warnings
