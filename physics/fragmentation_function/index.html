@@ -56,8 +56,8 @@ from .straub2010nf import Straub2010Nf</code></pre>
 <dt><code class="name"><a title="PySDM.physics.fragmentation_function.gaussian" href="gaussian.html">PySDM.physics.fragmentation_function.gaussian</a></code></dt>
 <dd>
 <div class="desc"><p>Gaussian PDF
-CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987</p></div>
+CDF = 1/2(1 + erf((x-mu)/sigma/sqrt(2)));
+Approx erf(x/sqrt(2)) ~ tanh(x*pi/2/sqrt(3))</p></div>
 </dd>
 <dt><code class="name"><a title="PySDM.physics.fragmentation_function.slams" href="slams.html">PySDM.physics.fragmentation_function.slams</a></code></dt>
 <dd>

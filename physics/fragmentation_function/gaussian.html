@@ -6,8 +6,8 @@
 <meta name="generator" content="pdoc 0.10.0" />
 <title>PySDM.physics.fragmentation_function.gaussian API documentation</title>
 <meta name="description" content="Gaussian PDF
-CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987" />
+CDF = 1/2(1 + erf((x-mu)/sigma/sqrt(2)));
+Approx erf(x/sqrt(2)) ~ tanh(x*pi/2/sqrt(3))" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -25,16 +25,16 @@ approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987" />
 </header>
 <section id="section-intro">
 <p>Gaussian PDF
-CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987</p>
+CDF = 1/2(1 + erf((x-mu)/sigma/sqrt(2)));
+Approx erf(x/sqrt(2)) ~ tanh(x*pi/2/sqrt(3))</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
 Gaussian PDF
-CDF = 1/2(1 + erf(x/sqrt(2)));
-approximate as erf(x) ~ tanh(ax) with a = sqrt(pi)log(2) as in Vedder 1987
+CDF = 1/2(1 + erf((x-mu)/sigma/sqrt(2)));
+Approx erf(x/sqrt(2)) ~ tanh(x*pi/2/sqrt(3))
 &#34;&#34;&#34;
 import numpy as np
 
@@ -45,9 +45,7 @@ class Gaussian:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def frag_size(const, mu, sigma, rand):
-        return mu - sigma / const.sqrt_two / const.sqrt_pi / np.log(2) * np.log(
-            (0.5 + rand) / (1.5 - rand)
-        )</code></pre>
+        return mu + sigma * 2 * np.sqrt(3) / const.PI * np.arctanh(2 * rand - 1)</code></pre>
 </details>
 </section>
 <section>
@@ -75,9 +73,7 @@ class Gaussian:  # pylint: disable=too-few-public-methods
 
     @staticmethod
     def frag_size(const, mu, sigma, rand):
-        return mu - sigma / const.sqrt_two / const.sqrt_pi / np.log(2) * np.log(
-            (0.5 + rand) / (1.5 - rand)
-        )</code></pre>
+        return mu + sigma * 2 * np.sqrt(3) / const.PI * np.arctanh(2 * rand - 1)</code></pre>
 </details>
 <h3>Static methods</h3>
 <dl>
@@ -92,9 +88,7 @@ class Gaussian:  # pylint: disable=too-few-public-methods
 </summary>
 <pre><code class="python">@staticmethod
 def frag_size(const, mu, sigma, rand):
-    return mu - sigma / const.sqrt_two / const.sqrt_pi / np.log(2) * np.log(
-        (0.5 + rand) / (1.5 - rand)
-    )</code></pre>
+    return mu + sigma * 2 * np.sqrt(3) / const.PI * np.arctanh(2 * rand - 1)</code></pre>
 </details>
 </dd>
 </dl>

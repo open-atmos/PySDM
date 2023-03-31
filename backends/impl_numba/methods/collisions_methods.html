@@ -88,7 +88,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun0(
+def breakup0_compute_mult_transfer(
     gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -107,7 +107,7 @@ def breakup_fun0(
             overflow_flag = True
             break
 
-        # check for new_n &gt; 0
+        # check for new_n &gt;= 0
         if take_from_j_test &gt; multiplicity[j]:
             break
 
@@ -118,7 +118,7 @@ def breakup_fun0(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun1(
+def breakup1_update_mult_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
     for a in range(len(attributes)):
@@ -129,20 +129,23 @@ def breakup_fun1(
     if multiplicity[j] == take_from_j:
         nj = new_mult_k / 2
         nk = nj
-    else:
+        for a in range(len(attributes)):
+            attributes[a, j] = attributes[a, k]
+    else:  # take_from_j &lt; multiplicity[j]
         nj = multiplicity[j] - take_from_j
         nk = new_mult_k
     return nj, nk
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun2(
-    j, k, nj, nk, attributes, multiplicity, take_from_j
+def breakup2_round_mults_to_ints(
+    j,
+    k,
+    nj,
+    nk,
+    attributes,
+    multiplicity,
 ):  # pylint: disable=too-many-arguments
-    if multiplicity[j] &lt;= take_from_j:
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -168,8 +171,8 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     breakup_rate_deficit,
     warn_overflows,
     volume,
-):
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+):  # breakup0 guarantees take_from_j &lt;= multiplicity[j]
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup0_compute_mult_transfer(
         gamma[i],
         j,
         k,
@@ -181,17 +184,16 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     )
     gamma_deficit = gamma[i] - gamma_j_k
 
-    nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-    if multiplicity[j] &lt;= take_from_j and round(nj) == 0:
-        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-        return
+    # breakup1 also handles new_n[j] == 0 case via splitting
+    nj, nk = breakup1_update_mult_attributes(
+        j, k, attributes, multiplicity, take_from_j, new_mult_k
+    )
 
     atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
-    breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
-
+    # breakup2 also guarantees that no multiplicities are set to 0
+    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
     if overflow_flag and warn_overflows:
         warn(&#34;overflow&#34;, __file__)
 
@@ -230,7 +232,12 @@ def break_up_while(
         else:
             if multiplicity[k] &gt; multiplicity[j]:
                 j, k = k, j
-            take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+            (
+                take_from_j,
+                new_mult_k,
+                gamma_j_k,
+                overflow_flag,
+            ) = breakup0_compute_mult_transfer(
                 gamma_deficit,
                 j,
                 k,
@@ -241,15 +248,13 @@ def break_up_while(
                 max_multiplicity,
             )
 
-        nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-        if multiplicity[j] &lt;= take_from_j and round(nj) == 0:
-            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-            return
+        nj, nk = breakup1_update_mult_attributes(
+            j, k, attributes, multiplicity, take_from_j, new_mult_k
+        )
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
+        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
@@ -1022,8 +1027,8 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     breakup_rate_deficit,
     warn_overflows,
     volume,
-):
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+):  # breakup0 guarantees take_from_j &lt;= multiplicity[j]
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup0_compute_mult_transfer(
         gamma[i],
         j,
         k,
@@ -1035,17 +1040,16 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     )
     gamma_deficit = gamma[i] - gamma_j_k
 
-    nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-    if multiplicity[j] &lt;= take_from_j and round(nj) == 0:
-        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-        return
+    # breakup1 also handles new_n[j] == 0 case via splitting
+    nj, nk = breakup1_update_mult_attributes(
+        j, k, attributes, multiplicity, take_from_j, new_mult_k
+    )
 
     atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
-    breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
-
+    # breakup2 also guarantees that no multiplicities are set to 0
+    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
     if overflow_flag and warn_overflows:
         warn(&#34;overflow&#34;, __file__)</code></pre>
 </details>
@@ -1093,7 +1097,12 @@ def break_up_while(
         else:
             if multiplicity[k] &gt; multiplicity[j]:
                 j, k = k, j
-            take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+            (
+                take_from_j,
+                new_mult_k,
+                gamma_j_k,
+                overflow_flag,
+            ) = breakup0_compute_mult_transfer(
                 gamma_deficit,
                 j,
                 k,
@@ -1104,15 +1113,13 @@ def break_up_while(
                 max_multiplicity,
             )
 
-        nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-        if multiplicity[j] &lt;= take_from_j and round(nj) == 0:
-            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-            return
+        nj, nk = breakup1_update_mult_attributes(
+            j, k, attributes, multiplicity, take_from_j, new_mult_k
+        )
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
+        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
@@ -1120,8 +1127,8 @@ def break_up_while(
         warn(&#34;overflow&#34;, __file__)</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun0"><code class="name flex">
-<span>def <span class="ident">breakup_fun0</span></span>(<span>gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity)</span>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup0_compute_mult_transfer"><code class="name flex">
+<span>def <span class="ident">breakup0_compute_mult_transfer</span></span>(<span>gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1130,7 +1137,7 @@ def break_up_while(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun0(
+def breakup0_compute_mult_transfer(
     gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -1149,7 +1156,7 @@ def breakup_fun0(
             overflow_flag = True
             break
 
-        # check for new_n &gt; 0
+        # check for new_n &gt;= 0
         if take_from_j_test &gt; multiplicity[j]:
             break
 
@@ -1159,8 +1166,8 @@ def breakup_fun0(
     return take_from_j, new_mult_k, gamma_j_k, overflow_flag</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun1"><code class="name flex">
-<span>def <span class="ident">breakup_fun1</span></span>(<span>j, k, attributes, multiplicity, take_from_j, new_mult_k)</span>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup1_update_mult_attributes"><code class="name flex">
+<span>def <span class="ident">breakup1_update_mult_attributes</span></span>(<span>j, k, attributes, multiplicity, take_from_j, new_mult_k)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1169,7 +1176,7 @@ def breakup_fun0(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun1(
+def breakup1_update_mult_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
     for a in range(len(attributes)):
@@ -1180,14 +1187,16 @@ def breakup_fun1(
     if multiplicity[j] == take_from_j:
         nj = new_mult_k / 2
         nk = nj
-    else:
+        for a in range(len(attributes)):
+            attributes[a, j] = attributes[a, k]
+    else:  # take_from_j &lt; multiplicity[j]
         nj = multiplicity[j] - take_from_j
         nk = new_mult_k
     return nj, nk</code></pre>
 </details>
 </dd>
-<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun2"><code class="name flex">
-<span>def <span class="ident">breakup_fun2</span></span>(<span>j, k, nj, nk, attributes, multiplicity, take_from_j)</span>
+<dt id="PySDM.backends.impl_numba.methods.collisions_methods.breakup2_round_mults_to_ints"><code class="name flex">
+<span>def <span class="ident">breakup2_round_mults_to_ints</span></span>(<span>j, k, nj, nk, attributes, multiplicity)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -1196,13 +1205,14 @@ def breakup_fun1(
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@numba.njit(**{**conf.JIT_FLAGS, **{&#34;parallel&#34;: False}})
-def breakup_fun2(
-    j, k, nj, nk, attributes, multiplicity, take_from_j
+def breakup2_round_mults_to_ints(
+    j,
+    k,
+    nj,
+    nk,
+    attributes,
+    multiplicity,
 ):  # pylint: disable=too-many-arguments
-    if multiplicity[j] &lt;= take_from_j:
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -2573,9 +2583,9 @@ def remove_zero_n_or_flagged(multiplicity, idx, length) -&gt; int:
 <ul class="">
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.break_up" href="#PySDM.backends.impl_numba.methods.collisions_methods.break_up">break_up</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.break_up_while" href="#PySDM.backends.impl_numba.methods.collisions_methods.break_up_while">break_up_while</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun0" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun0">breakup_fun0</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun1" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun1">breakup_fun1</a></code></li>
-<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun2" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup_fun2">breakup_fun2</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup0_compute_mult_transfer" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup0_compute_mult_transfer">breakup0_compute_mult_transfer</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup1_update_mult_attributes" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup1_update_mult_attributes">breakup1_update_mult_attributes</a></code></li>
+<li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.breakup2_round_mults_to_ints" href="#PySDM.backends.impl_numba.methods.collisions_methods.breakup2_round_mults_to_ints">breakup2_round_mults_to_ints</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.coalesce" href="#PySDM.backends.impl_numba.methods.collisions_methods.coalesce">coalesce</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.flag_zero_multiplicity" href="#PySDM.backends.impl_numba.methods.collisions_methods.flag_zero_multiplicity">flag_zero_multiplicity</a></code></li>
 <li><code><a title="PySDM.backends.impl_numba.methods.collisions_methods.pair_indices" href="#PySDM.backends.impl_numba.methods.collisions_methods.pair_indices">pair_indices</a></code></li>
