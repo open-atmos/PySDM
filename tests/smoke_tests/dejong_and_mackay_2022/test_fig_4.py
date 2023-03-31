@@ -117,7 +117,9 @@ class TestFig4:
         (data_x[lbl], data_y[lbl], _) = run_box_breakup(settings0, [0], backend_class)
         for i, mu_val in enumerate(mu_vals):
             settings = Settings0D(
-                fragmentation=Gaussian(mu=mu_val, sigma=mu_val / 2, vmin=0, nfmax=None),
+                fragmentation=Gaussian(
+                    mu=mu_val, sigma=mu_val / 2, vmin=(1 * si.um) ** 3, nfmax=None
+                ),
                 warn_overflows=False,
                 seed=44,
             )
@@ -167,9 +169,9 @@ class TestFig4:
 
         peaks_expected = {
             "initial": (30, 0.017),
-            r"$\mu$ = 0.25X$_0$": (14.5, 0.015),
-            r"$\mu$ = 4.0X$_0$": (42, 0.01),
-            r"$\mu$ = 1.0X$_0$": (25, 0.012),
+            r"$\mu$ = 0.25X$_0$": (25.5, 0.015),
+            r"$\mu$ = 4.0X$_0$": (62, 0.010),
+            r"$\mu$ = 1.0X$_0$": (42, 0.019),
         }
 
         for lbl, x_y in peaks_expected.items():

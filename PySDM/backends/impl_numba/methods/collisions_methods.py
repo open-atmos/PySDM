@@ -59,7 +59,7 @@ def coalesce(  # pylint: disable=too-many-arguments
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun0(
+def breakup0_compute_mult_transfer(
     gamma, j, k, multiplicity, volume, nfi, fragment_size_i, max_multiplicity
 ):  # pylint: disable=too-many-arguments
     overflow_flag = False
@@ -78,7 +78,7 @@ def breakup_fun0(
             overflow_flag = True
             break
 
-        # check for new_n > 0
+        # check for new_n >= 0
         if take_from_j_test > multiplicity[j]:
             break
 
@@ -89,7 +89,7 @@ def breakup_fun0(
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun1(
+def breakup1_update_mult_attributes(
     j, k, attributes, multiplicity, take_from_j, new_mult_k
 ):  # pylint: disable=too-many-arguments
     for a in range(len(attributes)):
@@ -100,20 +100,23 @@ def breakup_fun1(
     if multiplicity[j] == take_from_j:
         nj = new_mult_k / 2
         nk = nj
-    else:
+        for a in range(len(attributes)):
+            attributes[a, j] = attributes[a, k]
+    else:  # take_from_j < multiplicity[j]
         nj = multiplicity[j] - take_from_j
         nk = new_mult_k
     return nj, nk
 
 
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
-def breakup_fun2(
-    j, k, nj, nk, attributes, multiplicity, take_from_j
+def breakup2_round_mults_to_ints(
+    j,
+    k,
+    nj,
+    nk,
+    attributes,
+    multiplicity,
 ):  # pylint: disable=too-many-arguments
-    if multiplicity[j] <= take_from_j:
-        for a in range(len(attributes)):
-            attributes[a, j] = attributes[a, k]
-
     multiplicity[j] = max(round(nj), 1)
     multiplicity[k] = max(round(nk), 1)
     factor_j = nj / multiplicity[j]
@@ -139,8 +142,8 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     breakup_rate_deficit,
     warn_overflows,
     volume,
-):
-    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+):  # breakup0 guarantees take_from_j <= multiplicity[j]
+    take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup0_compute_mult_transfer(
         gamma[i],
         j,
         k,
@@ -152,17 +155,16 @@ def break_up(  # pylint: disable=too-many-arguments,c,too-many-locals
     )
     gamma_deficit = gamma[i] - gamma_j_k
 
-    nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-    if multiplicity[j] <= take_from_j and round(nj) == 0:
-        atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-        return
+    # breakup1 also handles new_n[j] == 0 case via splitting
+    nj, nk = breakup1_update_mult_attributes(
+        j, k, attributes, multiplicity, take_from_j, new_mult_k
+    )
 
     atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
-    breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
-
+    # breakup2 also guarantees that no multiplicities are set to 0
+    breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
     if overflow_flag and warn_overflows:
         warn("overflow", __file__)
 
@@ -201,7 +203,12 @@ def break_up_while(
         else:
             if multiplicity[k] > multiplicity[j]:
                 j, k = k, j
-            take_from_j, new_mult_k, gamma_j_k, overflow_flag = breakup_fun0(
+            (
+                take_from_j,
+                new_mult_k,
+                gamma_j_k,
+                overflow_flag,
+            ) = breakup0_compute_mult_transfer(
                 gamma_deficit,
                 j,
                 k,
@@ -212,15 +219,13 @@ def break_up_while(
                 max_multiplicity,
             )
 
-        nj, nk = breakup_fun1(j, k, attributes, multiplicity, take_from_j, new_mult_k)
-
-        if multiplicity[j] <= take_from_j and round(nj) == 0:
-            atomic_add(breakup_rate_deficit, cid, gamma[i] * multiplicity[k])
-            return
+        nj, nk = breakup1_update_mult_attributes(
+            j, k, attributes, multiplicity, take_from_j, new_mult_k
+        )
 
         atomic_add(breakup_rate, cid, gamma_j_k * multiplicity[k])
         gamma_deficit -= gamma_j_k
-        breakup_fun2(j, k, nj, nk, attributes, multiplicity, take_from_j)
+        breakup2_round_mults_to_ints(j, k, nj, nk, attributes, multiplicity)
 
     atomic_add(breakup_rate_deficit, cid, gamma_deficit * multiplicity[k])
 
