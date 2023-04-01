@@ -37,7 +37,7 @@ class Straub2010Ec:
         )
         self.arrays["We"].divide_if_not_zero(self.arrays["tmp"])
         self.arrays["We"] *= self.arrays["tmp2"]
-        self.arrays["We"] *= self.const.rho_w
+        self.arrays["We"] *= self.const.rho_w / 2
 
         self.arrays["Sc"] **= 2 / 3
         self.arrays["Sc"] *= (

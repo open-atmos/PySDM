@@ -521,7 +521,6 @@ class CollisionsMethods(
             param_names=(
                 "n_fragment",
                 "frag_size",
-                "v_max",
                 "x_plus_y",
                 "vmin",
                 "nfmax",
@@ -529,7 +528,6 @@ class CollisionsMethods(
             ),
             name_iter="i",
             body="""
-            frag_size[i] = min(frag_size[i], v_max[i]);
             frag_size[i] = max(frag_size[i], vmin);
 
             if (nfmax_is_not_none) {
@@ -537,7 +535,10 @@ class CollisionsMethods(
                     frag_size[i] = x_plus_y[i] / nfmax;
                 }
             }
-            if (frag_size[i] == 0.0) {
+            else if (frag_size[i] < vmin) {
+                frag_size[i] = x_plus_y[i];
+            }
+            else if (frag_size[i] == 0.0) {
                 frag_size[i] = x_plus_y[i];
             }
             n_fragment[i] = x_plus_y[i] / frag_size[i];
@@ -549,10 +550,8 @@ class CollisionsMethods(
                 param_names=("mu", "sigma", "frag_size", "rand"),
                 name_iter="i",
                 body=f"""
-                frag_size[i] = {self.formulae.fragmentation_function.frag_size.c_inline(
-                    mu="mu",
-                    sigma="sigma",
-                    rand="rand[i]"
+                frag_size[i] = mu[i] + sigma[i] * {self.formulae.fragmentation_function.erfinv.c_inline(
+                    X="rand[i]"
                 )};
                 """.replace(
                     "real_type", self._get_c_type()
@@ -628,37 +627,52 @@ class CollisionsMethods(
                 name_iter="i",
                 body=f"""
                 {self.__straub_Nr_body}
+                auto mu1, sigma1 = {self.formulae.fragmentation_function.params_p1.c_inline(CW="CW[i]")};
+                auto mu2, sigma2 = {self.formulae.fragmentation_function.params_p2.c_inline(CW="CW[i]")};
+                auto mu3, sigma3 = {self.formulae.fragmentation_function.params_p3.c_inline(CW="CW[i]", ds="ds[i]")};
+                auto M31, M32, M33, M34, d34 = {self.formulae.fragmentation_function.params_p4.c_inline(
+                    v_max="v_max[i]",
+                    ds="ds[i]",
+                    mu1="mu1",
+                    sigma1="sigma1",
+                    mu2="mu2",
+                    sigma2="sigma2",
+                    mu3="mu3",
+                    sigma3="sigma3",
+                    Nr1="Nr1[i]",
+                    Nr2="Nr2[i]",
+                    Nr3="Nr3[i]",
+                )};
+                Nr1[i] = Nr1[i] * M31;
+                Nr2[i] = Nr2[i] * M32;
+                Nr3[i] = Nr3[i] * M33;
+                Nr4[i] = Nr4[i] * M34;
+                Nrt[i] = Nr1[i] + Nr2[i] + Nr3[i] + Nr4[i];
 
                 if (rand[i] < Nr1[i] / Nrt[i]) {{
-                    auto sigma1 = {self.formulae.fragmentation_function.sigma1.c_inline(CW="CW[i]")};
-                    frag_size[i] = {self.formulae.fragmentation_function.p1.c_inline(
-                        sigma1="sigma1",
-                        rand="rand[i] * Nrt[i] / Nr1[i]"
+                    auto X = rand[i] * Nrt[i] / Nr1[i];
+                    auto lnarg = mu1[i] + sqrt(2.0) * sigma1 * {self.formulae.fragmentation_function.erfinv.c_inline(
+                        X="X"
                     )};
+                    frag_size[i] = expf(lnarg);
                 }}
                 else if (rand[i] < (Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    frag_size[i] = {self.formulae.fragmentation_function.p2.c_inline(
-                        CW="CW[i]",
-                        rand="(rand[i] * Nrt[i] - Nr1[i]) / (Nr2[i] - Nr1[i])"
+                    auto X = (rand[i] * Nrt[i] - Nr1[i]) / Nr2[i],
+                    frag_size[i] = mu2 + sqrt(2.0) * sigma2 * {self.formulae.fragmentation_function.erfinv.c_inline(
+                        X="X"
                     )};
                 }}
                 else if (rand[i] < (Nr3[i] + Nr2[i] + Nr1[i]) / Nrt[i]) {{
-                    frag_size[i] = {self.formulae.fragmentation_function.p3.c_inline(
-                        CW="CW[i]",
-                        ds="ds[i]",
-                        rand="(rand[i] * Nrt[i] - Nr2[i]) / (Nr3[i] - Nr2[i])"
+                    auto X = (rand[i] * Nrt[i] - Nr1[i] - Nr2[i]) / Nr3[i];
+                    frag_size[i] = mu3 + sqrt(2.0) * sigma3 * {self.formulae.fragmentation_function.erfinv.c_inline(
+                        X="X"
                     )};
                 }}
                 else {{
-                    frag_size[i] = {self.formulae.fragmentation_function.p4.c_inline(
-                        CW="CW[i]",
-                        ds="ds[i]",
-                        v_max="v_max[i]",
-                        Nr1="Nr1[i]",
-                        Nr2="Nr2[i]",
-                        Nr3="Nr3[i]"
-                    )};
+                    frag_size[i] = d34;
                 }}
+
+                frag_size[i] = pow(frag_size[i], 3.0) * 3.141592654f / 6
                 """.replace(
                     "real_type", self._get_c_type()
                 ),
@@ -910,7 +924,6 @@ class CollisionsMethods(
         n_fragment,
         scale,
         frag_size,
-        v_max,
         x_plus_y,
         rand,
         vmin,
@@ -932,7 +945,6 @@ class CollisionsMethods(
             args=(
                 n_fragment.data,
                 frag_size.data,
-                v_max.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -941,7 +953,7 @@ class CollisionsMethods(
         )
 
     def gauss_fragmentation(
-        self, *, n_fragment, mu, sigma, frag_size, v_max, x_plus_y, rand, vmin, nfmax
+        self, *, n_fragment, mu, sigma, frag_size, x_plus_y, rand, vmin, nfmax
     ):
         self.__gauss_fragmentation_body.launch_n(
             n=len(frag_size),
@@ -958,7 +970,6 @@ class CollisionsMethods(
             args=(
                 n_fragment.data,
                 frag_size.data,
-                v_max.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -967,7 +978,7 @@ class CollisionsMethods(
         )
 
     def slams_fragmentation(
-        self, n_fragment, frag_size, v_max, x_plus_y, probs, rand, vmin, nfmax
+        self, n_fragment, frag_size, x_plus_y, probs, rand, vmin, nfmax
     ):  # pylint: disable=too-many-arguments
         self.__slams_fragmentation_body.launch_n(
             n=(len(n_fragment)),
@@ -985,7 +996,6 @@ class CollisionsMethods(
             args=(
                 n_fragment.data,
                 frag_size.data,
-                v_max.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -999,7 +1009,6 @@ class CollisionsMethods(
         n_fragment,
         scale,
         frag_size,
-        v_max,
         x_plus_y,
         rand,
         fragtol,
@@ -1022,7 +1031,6 @@ class CollisionsMethods(
             args=(
                 n_fragment.data,
                 frag_size.data,
-                v_max.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
@@ -1072,7 +1080,6 @@ class CollisionsMethods(
             args=(
                 n_fragment.data,
                 frag_size.data,
-                v_max.data,
                 x_plus_y.data,
                 self._get_floating_point(vmin),
                 self._get_floating_point(nfmax if nfmax else -1),
