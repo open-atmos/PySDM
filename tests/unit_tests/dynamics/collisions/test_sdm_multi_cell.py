@@ -33,7 +33,9 @@ class TestSDMMultiCell:  # pylint: disable=too-few-public-methods
         particulator, sut = get_dummy_particulator_and_coalescence(
             backend_class, len(n), environment=env
         )
-        cell_id, _, _ = env.mesh.cellular_attributes(Pseudorandom.sample(grid, len(n)))
+        cell_id, _, _ = env.mesh.cellular_attributes(
+            Pseudorandom.sample(backend=particulator.backend, grid=grid, n_sd=len(n))
+        )
         attributes = {"n": n, "volume": v, "cell id": cell_id}
         particulator.build(attributes)
         sut.actual_length = particulator.attributes._ParticleAttributes__idx.length

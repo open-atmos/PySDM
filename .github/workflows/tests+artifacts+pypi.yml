@@ -44,7 +44,7 @@ jobs:
         pip install -e .
         pip install -r test-time-requirements.txt
         pip install pytest-cov
-        pytest -We tests/unit_tests --cov-report=xml --cov=PySDM
+        pytest --durations=10 -We tests/unit_tests --cov-report=xml --cov=PySDM
     - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: codecov/codecov-action@v2
       with:
@@ -112,7 +112,7 @@ jobs:
         platform: [ubuntu-latest, macos-12, windows-latest]
         python-version: ["3.7", "3.8", "3.9", "3.10"]
     runs-on: ${{ matrix.platform }}
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v2
 
@@ -140,7 +140,7 @@ jobs:
 
       - env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: pytest -p no:unraisableexception -We
+        run: pytest --durations=10 -p no:unraisableexception -We
 
 #       - if: ${{ failure() }}
 #         uses: mxschmitt/action-tmate@v3

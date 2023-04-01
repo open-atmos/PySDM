@@ -70,9 +70,3 @@ def power(output, exponent):
 @numba.njit(**{**conf.JIT_FLAGS, **{"parallel": False}})
 def subtract(output, subtrahend):
     output[:] -= subtrahend[:]
-
-
-# @numba.njit(void(f8[:]), **conf.JIT_FLAGS)
-def urand(output):
-    # TODO #986: seed
-    output.data[:] = np.random.uniform(0, 1, output.shape)

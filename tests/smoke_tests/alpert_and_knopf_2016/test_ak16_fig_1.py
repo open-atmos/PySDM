@@ -1,7 +1,7 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from matplotlib import pylab
+from matplotlib import pyplot
 from PySDM_examples.Alpert_and_Knopf_2016 import Table1, simulation
 
 from PySDM.physics import si
@@ -56,7 +56,7 @@ def test_ak16_fig_1(multiplicity, plot=False):  # pylint: disable=too-many-local
                 f"{key}: σ=ln({int(cases[key]['ISA'].s_geom)}),"
                 f"N={int(cases[key]['ISA'].norm_factor * dv)}"
             )
-            pylab.step(
+            pyplot.step(
                 dt / si.min * np.arange(len(output_item[run])),
                 output_item[run],
                 label=label if run == 0 else None,
@@ -64,22 +64,22 @@ def test_ak16_fig_1(multiplicity, plot=False):  # pylint: disable=too-many-local
                 linewidth=0.666,
             )
         output_item.append(np.mean(np.asarray(output_item), axis=0))
-        pylab.step(
+        pyplot.step(
             dt / si.min * np.arange(len(output_item[-1])),
             output_item[-1],
             color=cases[key]["color"],
             linewidth=1.666,
         )
 
-    pylab.legend()
-    pylab.yscale("log")
-    pylab.ylim(1e-2, 1)
-    pylab.xlim(0, total_time / si.min)
-    pylab.xlabel("t / min")
-    pylab.ylabel("$f_{ufz}$")
-    pylab.gca().set_box_aspect(1)
+    pyplot.legend()
+    pyplot.yscale("log")
+    pyplot.ylim(1e-2, 1)
+    pyplot.xlim(0, total_time / si.min)
+    pyplot.xlabel("t / min")
+    pyplot.ylabel("$f_{ufz}$")
+    pyplot.gca().set_box_aspect(1)
     if plot:
-        pylab.show()
+        pyplot.show()
 
     # Assert
     np.testing.assert_array_less(
