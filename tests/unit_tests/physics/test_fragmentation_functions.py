@@ -164,15 +164,3 @@ class TestFragmentationFunctions:  # pylint:disable=too-few-public-methods
 
         # assert
         np.testing.assert_array_almost_equal(params, [0.0, -4.967578, -4.967578])
-
-    @staticmethod
-    def test_erfinv():
-        # arrange
-        formulae = Formulae(fragmentation_function="LowList1982Nf")
-
-        # act
-        params = formulae.fragmentation_function.erfinv(0.25)
-
-        # assert
-        diff = np.abs(params - 0.2253)
-        np.testing.assert_array_less(diff, 1e-3)

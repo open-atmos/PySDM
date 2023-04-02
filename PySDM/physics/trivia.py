@@ -1,5 +1,7 @@
 """
 Various (hopefully) undebatable formulae
+
+`erfinv` approximation based on eqs. 11-12 from Vedder 1987, https://doi.org/10.1119/1.15018
 """
 import numpy as np
 
@@ -79,3 +81,19 @@ class Trivia:
     @staticmethod
     def frozen_and_above_freezing_point(const, volume, temperature):
         return volume < 0 and temperature > const.T0
+
+    @staticmethod
+    def erfinv_approx(const, c):
+        return (
+            2
+            * np.sqrt(const.VEDDER_1987_A)
+            * np.sinh(
+                np.arcsinh(
+                    np.arctanh(c)
+                    / 2
+                    / const.VEDDER_1987_b
+                    / np.power(const.VEDDER_1987_A, const.ONE_AND_A_HALF)
+                )
+                / 3
+            )
+        )

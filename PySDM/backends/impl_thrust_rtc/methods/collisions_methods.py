@@ -550,8 +550,8 @@ class CollisionsMethods(
                 param_names=("mu", "sigma", "frag_size", "rand"),
                 name_iter="i",
                 body=f"""
-                frag_size[i] = mu[i] + sigma[i] * {self.formulae.fragmentation_function.erfinv.c_inline(
-                    X="rand[i]"
+                frag_size[i] = mu + sigma * {self.formulae.trivia.erfinv_approx.c_inline(
+                    c="rand[i]"
                 )};
                 """.replace(
                     "real_type", self._get_c_type()

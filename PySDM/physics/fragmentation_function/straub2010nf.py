@@ -55,7 +55,3 @@ class Straub2010Nf:  # pylint: disable=too-few-public-methods
         else:
             d34 = np.exp(np.log(M34) / 3)
         return (M31, M32, M33, M34, d34)
-
-    @staticmethod
-    def erfinv(X):
-        return np.arctanh(2 * X - 1) * 2 * np.sqrt(3) / np.pi

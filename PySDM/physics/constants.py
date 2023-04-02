@@ -32,6 +32,7 @@ THREE = 3
 FOUR = 4
 ONE_THIRD = 1 / 3
 TWO_THIRDS = 2 / 3
+ONE_AND_A_HALF = 3 / 2
 NaN = np.nan
 
 default_random_seed = (

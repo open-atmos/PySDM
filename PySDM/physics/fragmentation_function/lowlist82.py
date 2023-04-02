@@ -92,16 +92,6 @@ class LowList1982Nf:  # pylint: disable=too-few-public-methods, too-many-locals
         return (Hf3, muf3, sigmaf3)
 
     @staticmethod
-    def erfinv(X):
-        a = 8 * (np.pi - 3) / (3 * np.pi * (4 - np.pi))
-        arg = (2 / np.pi / a) + np.log(1 - X**2) / 2
-        arg = arg * arg
-        arg = arg - np.log(1 - X**2) / a
-        arg = np.sqrt(arg)
-        arg = arg - (2 / np.pi / a + np.log(1 - X**2) / 2)
-        return np.sqrt(arg)
-
-    @staticmethod
     def params_s1(const, dl, ds, dcoal):
         dsCM = ds / const.CM
         dlCM = dl / const.CM

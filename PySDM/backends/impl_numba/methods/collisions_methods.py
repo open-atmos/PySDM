@@ -363,7 +363,7 @@ class CollisionsMethods(BackendMethods):
             straub_paramsp2 = self.formulae.fragmentation_function.params_p2
             straub_paramsp3 = self.formulae.fragmentation_function.params_p3
             straub_paramsp4 = self.formulae.fragmentation_function.params_p4
-            straub_erfinv = self.formulae.fragmentation_function.erfinv
+            straub_erfinv = self.formulae.trivia.erfinv_approx
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __straub_fragmentation_body(
@@ -503,11 +503,10 @@ class CollisionsMethods(BackendMethods):
                             frag_size[i] * 0.01
                         )  # diameter in cm; convert to m
                         frag_size[i] = frag_size[i] ** 3 * 3.1415 / 6
-                # print(np.sum(Rf), np.sum(Rs), np.sum(Rd))
 
             self.__ll82_fragmentation_body = __ll82_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Gaussian":
-            gaussian_erfinv = self.formulae.fragmentation_function.erfinv
+            erfinv_approx = self.formulae.trivia.erfinv_approx
 
             @numba.njit(**{**conf.JIT_FLAGS, "fastmath": self.formulae.fastmath})
             def __gauss_fragmentation_body(
@@ -516,7 +515,7 @@ class CollisionsMethods(BackendMethods):
                 for i in numba.prange(  # pylint: disable=not-an-iterable
                     len(frag_size)
                 ):
-                    frag_size[i] = mu + sigma * gaussian_erfinv(rand[i])
+                    frag_size[i] = mu + sigma * erfinv_approx(rand[i])
 
             self.__gauss_fragmentation_body = __gauss_fragmentation_body
         elif self.formulae.fragmentation_function.__name__ == "Feingold1988Frag":
