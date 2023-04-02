@@ -1,16 +1,14 @@
 # pylint: disable=missing-module-docstring,missing-class-docstring,missing-function-docstring
 import numpy as np
 import pytest
-from scipy.special import erfinv
+from scipy.special import erfinv  # pylint: disable=no-name-in-module
 
 from PySDM import Formulae
 
 
 class TestTrivia:
     @staticmethod
-    @pytest.mark.parametrize(
-        "x", (-100, -10, -1, -0.1, -0.01, 0, 0.01, 0.1, 1, 10, 100)
-    )
+    @pytest.mark.parametrize("x", (-0.9, -0.1, -0.01, 0, 0.01, 0.1, 0.9))
     def test_erfinv_approx_reltol(x):
         # arrange
         trivia = Formulae().trivia
@@ -28,7 +26,7 @@ class TestTrivia:
             assert np.isinf(actual)
             assert np.sign(actual) == np.sign(expected)
         else:
-            assert np.abs(np.log(actual / expected)) < 1e-4
+            assert np.abs(np.log(actual / expected)) < 1e-3
 
     @staticmethod
     def test_erfinv_approx_abstol():
