@@ -225,7 +225,10 @@ class TestFragmentations:  # pylint: disable=too-few-public-methods
         ),
     )
     def test_fragmentation_nf_and_frag_size_equals(  # TODO #987
-        fragmentation_fn, volume, expected_nf, backend_class=CPU  # pylint:disable=redefined-outer-name
+        fragmentation_fn,
+        volume,
+        expected_nf,
+        backend_class=CPU,  # pylint:disable=redefined-outer-name
     ):
         # arrange
         expected_frag_size = np.sum(volume) / expected_nf
