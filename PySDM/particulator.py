@@ -305,6 +305,17 @@ class Particulator:  # pylint: disable=too-many-public-methods,too-many-instance
         weighting_rank=0,
         skip_division_by_m0=False,
     ):
+        """
+        Writes to `moment_0` and `moment` the zero-th and the k-th statistical moments
+        of particle attributes computed filtering by value of the attribute `attr_name`
+        to fall within `attr_range`. The moment ranks are defined by `specs`.
+
+        Parameters:
+            specs: e.g., `specs={'volume': (1,2,3), 'kappa': (1)}` computes three moments
+                of volume and one moment of kappa
+            skip_division_by_m0: if set to `True`, the values written to `moments` are
+                multiplied by the 0-th moment (e.g., total volume instead of mean volume)
+        """
         if len(specs) == 0:
             raise ValueError("empty specs passed")
         attr_data, ranks = [], []
